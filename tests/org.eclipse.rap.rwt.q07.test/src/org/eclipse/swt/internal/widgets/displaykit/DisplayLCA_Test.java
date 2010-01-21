@@ -20,8 +20,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.*;
-import org.eclipse.rwt.internal.browser.Default;
-import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -96,7 +94,6 @@ public class DisplayLCA_Test extends TestCase {
 
   public void testStartup() throws IOException {
     Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
     Display display = new Display();
     Object adapter = display.getAdapter( ILifeCycleAdapter.class );
     IDisplayLifeCycleAdapter lcAdapter = ( IDisplayLifeCycleAdapter )adapter;
@@ -269,7 +266,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderInitiallyDisposed() throws Exception {
-    Fixture.fakeBrowser( new Default( true ) );
     Fixture.fakeResponseWriter();
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestRenderInitiallyDisposedEntryPoint.class );
@@ -285,7 +281,6 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderDisposed() throws Exception {
-    Fixture.fakeBrowser( new Default( true ) );
     Fixture.fakeResponseWriter();
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestRenderDisposedEntryPoint.class );

@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.browser.Mozilla1_7up;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -181,7 +180,6 @@ public class ControlLCA_Test extends TestCase {
   }
 
   public void testWriteBounds() throws IOException {
-    Fixture.fakeBrowser( new Mozilla1_7up( true, true ) );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );

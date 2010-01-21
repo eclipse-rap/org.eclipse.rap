@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -68,7 +67,6 @@ public class RenderDispose_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     PhaseListenerRegistry.add( preserveWidgetsPhaseListener );
   }
 

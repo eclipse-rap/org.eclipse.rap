@@ -16,7 +16,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.browser.Mozilla1_6;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -55,7 +54,6 @@ public class HTMLUtil_Test extends TestCase {
       // as expected
     }
     // to encode or not to encode
-    Fixture.fakeBrowser( new Mozilla1_6( true, false ) );
     Fixture.fakeResponseWriter();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter writer = stateInfo.getResponseWriter();

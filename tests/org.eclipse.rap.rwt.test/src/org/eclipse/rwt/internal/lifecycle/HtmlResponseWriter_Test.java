@@ -16,7 +16,6 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.browser.*;
 import org.eclipse.rwt.internal.util.CssClass;
 
 
@@ -39,7 +38,6 @@ public class HtmlResponseWriter_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeBrowser( new Default( true, true ) );
   }
   
   protected void tearDown() throws Exception {
@@ -89,7 +87,6 @@ public class HtmlResponseWriter_Test extends TestCase {
   }
   
   public void testInputTagCreationXHTML() throws IOException {
-    Fixture.fakeBrowser( new Ie5_5up( true, true ) );
     HtmlResponseWriter writer = new HtmlResponseWriter();
     writer.startElement( "input", null );
     writer.writeAttribute( "type", "text", null );
@@ -191,7 +188,6 @@ public class HtmlResponseWriter_Test extends TestCase {
   }
   
   public void testWriteAttributeXHTML() throws Exception {
-    Fixture.fakeBrowser( new Ie5_5up( true, true ) );
     HtmlResponseWriter writer = new HtmlResponseWriter();
     String element = "element";
     writer.startElement( element, null );
@@ -264,7 +260,6 @@ public class HtmlResponseWriter_Test extends TestCase {
   }
   
   public void testEndElementForXHTML() throws Exception {
-    Fixture.fakeBrowser( new Ie5_5up( true, false ) );
     HtmlResponseWriter writer = new HtmlResponseWriter();
     writer.startElement( "img", null );
     writer.writeAttribute( "src", "image.gif", null );
@@ -275,7 +270,6 @@ public class HtmlResponseWriter_Test extends TestCase {
 
   public void testWrite() throws IOException {
     HtmlResponseWriter writer;
-    Fixture.fakeBrowser( new Ie6( true ) );
     // script & style tags must not be encoded
     writer = new HtmlResponseWriter();
     writer.startElement( "style", null );

@@ -230,7 +230,7 @@ public class Fixture {
     return result;
   }
   
-  public static void fakeBrowser( final Browser browser ) {
+  private static void fakeBrowser( final Browser browser ) {
     ISessionStore session = ContextProvider.getSession();
     session.setAttribute( ServiceContext.DETECTED_SESSION_BROWSER, browser );
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();

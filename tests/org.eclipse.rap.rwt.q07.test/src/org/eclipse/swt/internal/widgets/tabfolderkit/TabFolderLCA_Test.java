@@ -17,7 +17,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -264,7 +263,6 @@ public class TabFolderLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeBrowser( new Ie6( true, true ) );
   }
 
   protected void tearDown() throws Exception {

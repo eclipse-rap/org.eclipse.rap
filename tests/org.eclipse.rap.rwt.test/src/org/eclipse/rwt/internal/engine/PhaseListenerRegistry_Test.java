@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.TestServletContext;
-import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.*;
 
@@ -34,7 +33,6 @@ public class PhaseListenerRegistry_Test extends TestCase {
   
   public void testDefaultInitialization() throws Exception {
     // ensures that the default phase listeners are registered
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
     Fixture.createContext( true );
     RWTServletContextListener listener = new RWTServletContextListener();

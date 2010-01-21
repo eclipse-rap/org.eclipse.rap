@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
@@ -427,7 +426,6 @@ public class RWTLifeCycle_Test extends TestCase {
     assertSame( listener, callbackHandler[ 0 ] );
     // Simulate new session and run lifecycle
     newSession();
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
     Fixture.registerAdapterFactories();
     callbackHandler[ 0 ] = null;
@@ -993,7 +991,6 @@ public class RWTLifeCycle_Test extends TestCase {
   protected void setUp() throws Exception {
     log.setLength( 0 );
     Fixture.setUp();
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
   }
 

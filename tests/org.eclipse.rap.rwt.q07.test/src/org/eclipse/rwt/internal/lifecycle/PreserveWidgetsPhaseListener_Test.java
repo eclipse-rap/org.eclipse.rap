@@ -19,8 +19,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.*;
-import org.eclipse.rwt.internal.browser.Ie6;
-import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -61,7 +59,6 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   public void testInitialization() throws Exception {
     // ensures that the default WidgetCopyPhaseListener is registered
     // and executes at the designated phases
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
     Fixture.registerAdapterFactories();
     Fixture.createContextWithoutResourceManager();
@@ -108,7 +105,6 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     // Build test environment:
     final StringBuffer log = new StringBuffer();
     Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
     AdapterFactory lifeCycleAdapterFactory = new AdapterFactory() {
 
@@ -185,7 +181,6 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     // Simulate startup with no startup entry point set
     // First request: (renders html skeletion that contains 'application')
     Fixture.createContextWithoutResourceManager();
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
     Fixture.registerResourceManager();
     ThemeManager.getInstance().initialize();

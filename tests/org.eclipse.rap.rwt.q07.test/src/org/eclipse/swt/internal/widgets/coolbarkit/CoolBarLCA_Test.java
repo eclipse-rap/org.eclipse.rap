@@ -15,7 +15,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
@@ -176,7 +175,6 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.markInitialized( item );
     item.setControl( button );
     Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     displayLCA.render( display );

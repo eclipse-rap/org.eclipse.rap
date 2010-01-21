@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -120,7 +119,6 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     request.setSession( session );
     Fixture.fakeContextProvider( response, request );
     Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.registerAdapterFactories();
     
     TestAdapterFactory.log = "";

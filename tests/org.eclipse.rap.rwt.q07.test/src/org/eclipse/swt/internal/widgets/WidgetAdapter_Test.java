@@ -16,7 +16,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -96,7 +95,6 @@ public class WidgetAdapter_Test extends TestCase {
   public void testInitializedForDisplay() throws IOException {
     Display display = new Display();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
     DisplayUtil.getLCA( display ).render( display );
     assertEquals( false, adapter.isInitialized() );
@@ -137,7 +135,6 @@ public class WidgetAdapter_Test extends TestCase {
     // request/DisplayLCA
     log.setLength( 0 );
     Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     displayLCA.render( display );

@@ -17,8 +17,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.browser.Default;
-import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.SWT;
@@ -325,26 +323,22 @@ public class JSWriter_Test extends TestCase {
 
     // call JSWriter once to get rid of prologue
     JSWriter writer = JSWriter.getWriterFor( shell );
-    Fixture.fakeBrowser( new Default( true, true ) );
     Fixture.fakeResponseWriter();
     writer.set( "foo", "bar" );
 
     // set property value to an empty array
-    Fixture.fakeBrowser( new Default( true, true ) );
     Fixture.fakeResponseWriter();
     writer.set( "buttons", "buttons", new Widget[ 0 ], null );
     assertEquals( "w.setButtons( [] );",
                   Fixture.getAllMarkup() );
 
     // set property value to an array that contains one item
-    Fixture.fakeBrowser( new Default( true, true ) );
     Fixture.fakeResponseWriter();
     writer.set( "buttons", "buttons", new Object[] { widget1 }, null );
     assertEquals( "w.setButtons( [wm.findWidgetById( \"w3\" ) ] );",
                   Fixture.getAllMarkup() );
 
     // set property value to an array that contains two items
-    Fixture.fakeBrowser( new Default( true, true ) );
     Fixture.fakeResponseWriter();
     writer.set( "buttons", "buttons", new Object[] { widget1, widget2 }, null );
     String expected
@@ -369,7 +363,6 @@ public class JSWriter_Test extends TestCase {
   }
 
   public void testSetWithStringArray() throws Exception {
-    Fixture.fakeBrowser( new Default( true, true ) );
     Display display = new Display();
     Shell shell = new Shell( display );
     Widget widget = new Button( shell, SWT.NONE );
@@ -629,7 +622,6 @@ public class JSWriter_Test extends TestCase {
     Composite shell = new Shell( display , SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     // Test initial rendering with no listeners
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     Fixture.clearPreserved();
@@ -704,7 +696,6 @@ public class JSWriter_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Button checkBox = new Button( shell, SWT.CHECK );
     // Test initial rendering with no action listeners
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     Fixture.clearPreserved();
@@ -768,7 +759,6 @@ public class JSWriter_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Button checkBox = new Button( shell, SWT.CHECK );
     // Test initial rendering with action listeners
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.markInitialized( display );
     Fixture.fakeResponseWriter();
     Fixture.clearPreserved();
@@ -821,7 +811,6 @@ public class JSWriter_Test extends TestCase {
     Button button = new Button( shell, SWT.NONE );
 
     // Test initial rendering with no listeners
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     Fixture.clearPreserved();
@@ -909,7 +898,6 @@ public class JSWriter_Test extends TestCase {
     Button checkBox = new Button( shell, SWT.CHECK );
 
     // Test initial rendering with no action listeners
-    Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     Fixture.clearPreserved();

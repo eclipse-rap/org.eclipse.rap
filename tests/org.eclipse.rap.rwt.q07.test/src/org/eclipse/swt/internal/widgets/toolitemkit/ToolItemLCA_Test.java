@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -217,16 +215,6 @@ public class ToolItemLCA_Test extends TestCase {
     assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6( true, true ) );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-
   private void testPreserveValues( final Display display, final ToolItem item )
   {
     Fixture.preserveWidgets();
@@ -260,5 +248,14 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( "tooltip text", adapter.getPreserved( Props.TOOLTIP ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     assertEquals( contextMenu, adapter.getPreserved( Props.MENU ) );
+  }
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
   }
 }

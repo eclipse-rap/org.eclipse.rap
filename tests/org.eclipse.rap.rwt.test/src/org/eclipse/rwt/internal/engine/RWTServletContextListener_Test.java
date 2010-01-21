@@ -19,7 +19,6 @@ import org.eclipse.rwt.*;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
@@ -233,7 +232,6 @@ public class RWTServletContextListener_Test extends TestCase {
     EntryPointManager.register( EntryPointManager.DEFAULT, 
                                 TestEntryPointWithShell.class );
     Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     phaseListenerLog = "";
     lifeCycle.execute();
@@ -275,7 +273,6 @@ public class RWTServletContextListener_Test extends TestCase {
     EntryPointManager.register( EntryPointManager.DEFAULT, 
                                 TestEntryPointWithShell.class );
     Fixture.fakeResponseWriter();
-    Fixture.fakeBrowser( new Ie6up( true, true ) );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.execute();
 
