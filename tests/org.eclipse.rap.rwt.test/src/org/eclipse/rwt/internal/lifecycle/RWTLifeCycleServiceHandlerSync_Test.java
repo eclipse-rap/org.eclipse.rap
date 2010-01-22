@@ -22,6 +22,7 @@ import org.eclipse.rwt.internal.service.ServiceContext;
 
 
 public class RWTLifeCycleServiceHandlerSync_Test extends TestCase {
+  
   private static final String BEFORE_SYNCHRONIZE = "before synchronize";
 
   private Object lock = new Object();
@@ -35,8 +36,7 @@ public class RWTLifeCycleServiceHandlerSync_Test extends TestCase {
           lock.notify();
           lock.wait();
         } catch( InterruptedException e ) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+          throw new RuntimeException( e  );
         }
       }
       super.serviceInternal();
@@ -59,11 +59,9 @@ public class RWTLifeCycleServiceHandlerSync_Test extends TestCase {
       try {
         syncHandler.service();
       } catch( ServletException e ) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        throw new RuntimeException( e );
       } catch( IOException e ) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        throw new RuntimeException( e );
       } finally {
         ContextProvider.releaseContextHolder();
       }
@@ -98,6 +96,7 @@ public class RWTLifeCycleServiceHandlerSync_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
+  
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }

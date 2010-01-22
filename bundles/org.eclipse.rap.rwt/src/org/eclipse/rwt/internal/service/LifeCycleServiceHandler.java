@@ -27,9 +27,6 @@ import org.eclipse.rwt.internal.lifecycle.*;
 
 public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
-//  public static BrowserSurvey.IStartupPageConfigurer configurer
-//    = new RWTStartupPageConfigurer();
-//  
   private static final LifeCycleServiceHandlerSync sync
     = new RWTLifeCycleServiceHandlerSync();
 

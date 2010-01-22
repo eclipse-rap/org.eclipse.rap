@@ -58,10 +58,10 @@ public final class TemplateHolder {
   public static final class Variable {
     
     private final static Map NAMES = new HashMap();
-    private final String varName;
+    private final String name;
 
     private Variable( final String varName ) {
-      this.varName = varName;
+      this.name = varName;
       NAMES.put( varName, this );
     }
 
@@ -70,7 +70,7 @@ public final class TemplateHolder {
     }
 
     public String toString() {
-      return "${" + varName + "}";
+      return "${" + name + "}";
     }
   }
 
