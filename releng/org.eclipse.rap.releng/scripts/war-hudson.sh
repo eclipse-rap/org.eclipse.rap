@@ -18,6 +18,12 @@ $scriptsDir/build-common.sh \
   --base-platform "$PLATFORM_DIR" \
   --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/warbuild"
 
+# start build-internal tomcat
+$tomcatDir/bin/startup.sh
+
+# give tomcat a chance to start
+sleep 1m
+
 if [ $? = 0 ]; then
   oldDeployment=`stat -c %Y $tomcatDir/work/Catalina/localhost/rapdemo/`
 
@@ -29,9 +35,14 @@ if [ $? = 0 ]; then
  
   # check if the deployment is newer then the last one
   newDeployment=`stat -c %Y $tomcatDir/work/Catalina/localhost/rapdemo/`
+  result=0;
   if [ $oldDeployment -ge $newDeployment ]; then
     echo "Demo War archive was not successfully deployed to Tomcat."
-    exit 42 
+    result=42 
   fi
+  
+  # shutdown tomcat
+  $tomcatDir/bin/shutdown.sh
 
+  exit $result
 fi
