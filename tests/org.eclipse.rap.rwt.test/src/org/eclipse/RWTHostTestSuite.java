@@ -107,7 +107,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( UICallBackManager_Test.class );
     suite.addTestSuite( UICallBackServiceHandler_Test.class );
     suite.addTestSuite( JSLibraryServiceHandler_Test.class);
-    suite.addTestSuite( RWTLifeCycleServiceHandlerSync_Test.class );
+    suite.addTestSuite( LifeCycleServiceHandler_Test.class );
     suite.addTestSuite( TemplateHolder_Test.class );
     suite.addTestSuite( CommonPatterns_Test.class );
 

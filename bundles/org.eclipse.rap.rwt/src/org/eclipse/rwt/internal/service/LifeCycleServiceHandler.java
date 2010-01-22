@@ -13,75 +13,50 @@ package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.MessageFormat;
 import java.util.*;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.browser.Browser;
 import org.eclipse.rwt.internal.browser.BrowserLoader;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.util.HTML;
 
 
 public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
-  private static final LifeCycleServiceHandlerSync sync
-    = new RWTLifeCycleServiceHandlerSync();
-
-  /**
-   * This class handles request synchronization of the 
-   * <code>LifeCycleServiceHandler</code>. It was introduced to allow
-   * different stratiegies for W4Toolkit and RWT.
-   */
-  public static abstract class LifeCycleServiceHandlerSync {
-
-    /**
-     * This method installs the fitting synchronization strategie for each 
-     * Lifecycle type. It has to call the <code>doService</code> method
-     * to get the lifecycle executed.
-     */
-    public abstract void service() throws ServletException, IOException;
-    
-    /**
-     * This method does the actual lifecycle service handler call.
-     */
-    protected final void doService() throws ServletException, IOException {
-      internalService();
-    }
-  }
+  // TODO [if]: Move this code to a fragment
+  private static final String PATTERN_RELOAD
+    = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
 
   public void service() throws IOException, ServletException {
-    sync.service();
-  }
-
-  public static boolean isSessionRestart() {
-    HttpServletRequest request = getRequest();
-    boolean startup = request.getParameter( RequestParams.STARTUP ) != null;
-    String uiRoot = request.getParameter( RequestParams.UIROOT );
-    HttpSession session = request.getSession();
-    return    !session.isNew() && !startup && uiRoot == null 
-           || startup && isBrowserDetected();
-  }
-  
-  public static void initializeStateInfo() {
-    if( ContextProvider.getStateInfo() == null ) {
-      IServiceStateInfo stateInfo = new ServiceStateInfo();
-      ContextProvider.getContext().setStateInfo( stateInfo );
-    }
-    if( ContextProvider.getStateInfo().getResponseWriter() == null ) {
-      HtmlResponseWriter htmlResponseWriter = new HtmlResponseWriter();
-      ContextProvider.getStateInfo().setResponseWriter( htmlResponseWriter );
+    synchronized( ContextProvider.getSession() ) {
+      synchronizedService();
     }
   }
 
+  void synchronizedService() throws ServletException, IOException {
+    LifeCycleServiceHandler.initializeStateInfo();
+    RWTRequestVersionControl.beforeService();
+    try {
+      if(    RWTRequestVersionControl.isValid()
+          || LifeCycleServiceHandler.isSessionRestart()
+          || ContextProvider.getRequest().getSession().isNew() )
+      {
+        runLifeCycle();
+      } else {
+        handleInvalidRequestCounter();
+      }
+    } finally {
+      RWTRequestVersionControl.afterService();
+    }
+  }
 
-  //////////////////
-  // helping methods
-  
-  private static void internalService() throws ServletException, IOException {
-    initializeStateInfo();
+  private static void runLifeCycle() throws ServletException, IOException {
     checkRequest();
     detectBrowser();
     if( isBrowserDetected() ) {
@@ -96,6 +71,44 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     writeOutput();
   }
   
+
+  //////////////////
+  // helping methods
+  
+  private static boolean isSessionRestart() {
+    HttpServletRequest request = getRequest();
+    boolean startup = request.getParameter( RequestParams.STARTUP ) != null;
+    String uiRoot = request.getParameter( RequestParams.UIROOT );
+    HttpSession session = request.getSession();
+    return    !session.isNew() && !startup && uiRoot == null 
+           || startup && isBrowserDetected();
+  }
+  
+  private static void initializeStateInfo() {
+    if( ContextProvider.getStateInfo() == null ) {
+      IServiceStateInfo stateInfo = new ServiceStateInfo();
+      ContextProvider.getContext().setStateInfo( stateInfo );
+    }
+    if( ContextProvider.getStateInfo().getResponseWriter() == null ) {
+      HtmlResponseWriter htmlResponseWriter = new HtmlResponseWriter();
+      ContextProvider.getStateInfo().setResponseWriter( htmlResponseWriter );
+    }
+  }
+
+  private static void handleInvalidRequestCounter()
+    throws IOException
+  {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    HtmlResponseWriter out = stateInfo.getResponseWriter();
+    String message = RWTMessages.getMessage( "RWT_MultipleInstancesError" );
+    Object[] args = new Object[] { message };
+    // Note: [rst] Do not use writeText as umlauts must not be encoded here
+    out.write( MessageFormat.format( PATTERN_RELOAD, args ) );
+    HttpServletResponse response = ContextProvider.getResponse();
+    response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
+    LifeCycleServiceHandler.writeOutput();
+  }
+
   private static boolean isBrowserDetected() {
     return getBrowser() != null;
   }
