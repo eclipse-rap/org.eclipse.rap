@@ -41,8 +41,5 @@ if [ $? = 0 ]; then
     result=42 
   fi
   
-  # shutdown tomcat
-  $tomcatDir/bin/shutdown.sh
-
   exit $result
 fi
