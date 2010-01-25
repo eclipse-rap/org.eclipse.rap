@@ -476,13 +476,12 @@ public class CellEditorActionHandler {
      */
     public CellEditorActionHandler(IActionBars actionBar) {
         super();
-// RAP [rh] clipboard operations (cut/copy/paste) not supported
-//        actionBar.setGlobalActionHandler(ActionFactory.CUT.getId(),
-//                cellCutAction);
-//        actionBar.setGlobalActionHandler(ActionFactory.COPY.getId(),
-//                cellCopyAction);
-//        actionBar.setGlobalActionHandler(ActionFactory.PASTE.getId(),
-//                cellPasteAction);
+        actionBar.setGlobalActionHandler(ActionFactory.CUT.getId(),
+                cellCutAction);
+        actionBar.setGlobalActionHandler(ActionFactory.COPY.getId(),
+                cellCopyAction);
+        actionBar.setGlobalActionHandler(ActionFactory.PASTE.getId(),
+                cellPasteAction);
         actionBar.setGlobalActionHandler(ActionFactory.DELETE.getId(),
                 cellDeleteAction);
         actionBar.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(),

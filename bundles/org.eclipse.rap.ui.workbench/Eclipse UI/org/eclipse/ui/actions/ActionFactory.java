@@ -348,62 +348,63 @@ public abstract class ActionFactory {
         }
     };
 
-    // RAP [bm]: clipboard
-//    /**
-//     * Workbench action (id "copy"): Copy. This action is a
-//     * {@link RetargetAction} with id "copy". This action maintains
-//     * its enablement state.
-//     */
-//    public static final ActionFactory COPY = new ActionFactory("copy") {//$NON-NLS-1$
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-//         */
-//        public IWorkbenchAction create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_copy);
-//            action.setToolTipText(WorkbenchMessages.get().Workbench_copyToolTip); 
-//            window.getPartService().addPartListener(action);
-//            action.setActionDefinitionId("org.eclipse.ui.edit.copy"); //$NON-NLS-1$
-//            ISharedImages sharedImages = window.getWorkbench()
-//                    .getSharedImages();
-//            action.setImageDescriptor(sharedImages
-//                    .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
-//            action.setDisabledImageDescriptor(sharedImages
-//                    .getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED));
-//            return action;
-//        }
-//    };
-//
-//    /**
-//     * Workbench action (id "cut"): Cut. This action is a
-//     * {@link RetargetAction} with id "cut". This action maintains
-//     * its enablement state.
-//     */
-//    public static final ActionFactory CUT = new ActionFactory("cut") {//$NON-NLS-1$
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-//         */
-//        public IWorkbenchAction create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_cut); 
-//            action.setToolTipText(WorkbenchMessages.get().Workbench_cutToolTip);
-//            window.getPartService().addPartListener(action);
-//            action.setActionDefinitionId("org.eclipse.ui.edit.cut"); //$NON-NLS-1$
-//            ISharedImages sharedImages = window.getWorkbench()
-//                    .getSharedImages();
-//            action.setImageDescriptor(sharedImages
-//                    .getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
-//            action.setDisabledImageDescriptor(sharedImages
-//                    .getImageDescriptor(ISharedImages.IMG_TOOL_CUT_DISABLED));
-//            return action;
-//        }
-//    };
+    /**
+     * Workbench action (id "copy"): Copy. This action is a
+     * {@link RetargetAction} with id "copy". This action maintains
+     * its enablement state.
+     * @since 1.3
+     */
+    public static final ActionFactory COPY = new ActionFactory("copy") {//$NON-NLS-1$
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+         */
+        public IWorkbenchAction create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_copy);
+            action.setToolTipText(WorkbenchMessages.get().Workbench_copyToolTip); 
+            window.getPartService().addPartListener(action);
+            action.setActionDefinitionId("org.eclipse.ui.edit.copy"); //$NON-NLS-1$
+            ISharedImages sharedImages = window.getWorkbench()
+                    .getSharedImages();
+            action.setImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+            action.setDisabledImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED));
+            return action;
+        }
+    };
+
+    /**
+     * Workbench action (id "cut"): Cut. This action is a
+     * {@link RetargetAction} with id "cut". This action maintains
+     * its enablement state.
+     * @since 1.3
+     */
+    public static final ActionFactory CUT = new ActionFactory("cut") {//$NON-NLS-1$
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+         */
+        public IWorkbenchAction create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_cut); 
+            action.setToolTipText(WorkbenchMessages.get().Workbench_cutToolTip);
+            window.getPartService().addPartListener(action);
+            action.setActionDefinitionId("org.eclipse.ui.edit.cut"); //$NON-NLS-1$
+            ISharedImages sharedImages = window.getWorkbench()
+                    .getSharedImages();
+            action.setImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
+            action.setDisabledImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_CUT_DISABLED));
+            return action;
+        }
+    };
 
     /**
      * Workbench action (id "delete"): Delete. This action is a
@@ -895,34 +896,34 @@ public abstract class ActionFactory {
         }
     };
 
-    // RAP [bm]: Clipboard
-//    /**
-//     * Workbench action (id "paste"): Paste. This action is a
-//     * {@link RetargetAction} with id "paste". This action maintains
-//     * its enablement state.
-//     */
-//    public static final ActionFactory PASTE = new ActionFactory("paste") {//$NON-NLS-1$
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-//         */
-//        public IWorkbenchAction create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_paste);
-//            action.setToolTipText(WorkbenchMessages.get().Workbench_pasteToolTip); 
-//            window.getPartService().addPartListener(action);
-//            action.setActionDefinitionId("org.eclipse.ui.edit.paste"); //$NON-NLS-1$
-//            ISharedImages sharedImages = window.getWorkbench()
-//                    .getSharedImages();
-//            action.setImageDescriptor(sharedImages
-//                    .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
-//            action.setDisabledImageDescriptor(sharedImages
-//                    .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE_DISABLED));
-//            return action;
-//        }
-//    };
+    /**
+     * Workbench action (id "paste"): Paste. This action is a
+     * {@link RetargetAction} with id "paste". This action maintains
+     * its enablement state.
+     * @since 1.3
+     */
+    public static final ActionFactory PASTE = new ActionFactory("paste") {//$NON-NLS-1$
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+         */
+        public IWorkbenchAction create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_paste);
+            action.setToolTipText(WorkbenchMessages.get().Workbench_pasteToolTip); 
+            window.getPartService().addPartListener(action);
+            action.setActionDefinitionId("org.eclipse.ui.edit.paste"); //$NON-NLS-1$
+            ISharedImages sharedImages = window.getWorkbench()
+                    .getSharedImages();
+            action.setImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
+            action.setDisabledImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE_DISABLED));
+            return action;
+        }
+    };
 
     /**
      * Workbench action (id "preferences"): Displays the Preferences dialog.
@@ -1063,34 +1064,34 @@ public abstract class ActionFactory {
         }
     };
 
-    // RAP [bm]: Printing? Maybe possible as Retargetable
-//    /**
-//     * Workbench action (id "print"): Print. This action is a
-//     * {@link RetargetAction} with id "print". This action maintains
-//     * its enablement state.
-//     */
-//    public static final ActionFactory PRINT = new ActionFactory("print") {//$NON-NLS-1$
-//        
-//        /* (non-Javadoc)
-//         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
-//         */
-//        public IWorkbenchAction create(IWorkbenchWindow window) {
-//            if (window == null) {
-//                throw new IllegalArgumentException();
-//            }
-//            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_print); 
-//            action.setToolTipText(WorkbenchMessages.get().Workbench_printToolTip); 
-//            window.getPartService().addPartListener(action);
-//            action.setActionDefinitionId("org.eclipse.ui.file.print"); //$NON-NLS-1$
-//            action
-//                    .setImageDescriptor(WorkbenchImages
-//                            .getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT));
-//            action
-//                    .setDisabledImageDescriptor(WorkbenchImages
-//                            .getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT_DISABLED));
-//            return action;
-//        }
-//    };
+    /**
+     * Workbench action (id "print"): Print. This action is a
+     * {@link RetargetAction} with id "print". This action maintains
+     * its enablement state.
+     * @since 1.3
+     */
+    public static final ActionFactory PRINT = new ActionFactory("print") {//$NON-NLS-1$
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.ui.actions.ActionFactory#create(org.eclipse.ui.IWorkbenchWindow)
+         */
+        public IWorkbenchAction create(IWorkbenchWindow window) {
+            if (window == null) {
+                throw new IllegalArgumentException();
+            }
+            RetargetAction action = new RetargetAction(getId(),WorkbenchMessages.get().Workbench_print); 
+            action.setToolTipText(WorkbenchMessages.get().Workbench_printToolTip); 
+            window.getPartService().addPartListener(action);
+            action.setActionDefinitionId("org.eclipse.ui.file.print"); //$NON-NLS-1$
+            action
+                    .setImageDescriptor(WorkbenchImages
+                            .getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT));
+            action
+                    .setDisabledImageDescriptor(WorkbenchImages
+                            .getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT_DISABLED));
+            return action;
+        }
+    };
 
     /**
      * Workbench action (id "properties"): Properties. This action is a
