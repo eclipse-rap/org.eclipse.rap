@@ -1437,7 +1437,7 @@ public class Table extends Composite {
    * </ul>
    */
   public void deselect( final int start, final int end ) {
-    checkWidget ();
+    checkWidget();
     if( start == 0 && end == itemCount - 1 ) {
       deselectAll();
     } else {
@@ -1954,7 +1954,7 @@ public class Table extends Composite {
                             final int hHint,
                             final boolean changed )
   {
-    checkWidget ();
+    checkWidget();
     int width = 0;
     int height = 0;
 
