@@ -1916,6 +1916,26 @@ public class SWT {
   public static final int IGNORE = 1 << 11;
 
   /**
+   * The <code>FileDialog</code> style constant for open file dialog behavior
+   * (value is 1&lt;&lt;12).
+   * <!-- RAP specific -->
+   * <p><strong>Note:</strong></p>This constant is meant to ease
+   * single-sourcing. in RAP, there is no <code>FileDialog</code> class (yet).
+   * @since 1.3
+   */
+  public static final int OPEN = 1 << 12;
+
+  /**
+   * The <code>FileDialog</code> style constant for save file dialog behavior
+   * (value is 1&lt;&lt;13).
+   * <!-- RAP specific -->
+   * <p><strong>Note:</strong></p>This constant is meant to ease
+   * single-sourcing. in RAP, there is no <code>FileDialog</code> class (yet).
+   * @since 1.3
+   */
+  public static final int SAVE = 1 << 13;
+
+  /**
    * The <code>Composite</code> constant to indicate that
    * an attribute (such as background) is not inherited
    * by the children (value is 0).
