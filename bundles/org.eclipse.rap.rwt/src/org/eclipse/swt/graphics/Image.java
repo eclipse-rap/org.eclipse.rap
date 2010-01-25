@@ -314,6 +314,28 @@ public final class Image extends Resource {
     return result;
   }
 
+  /**
+   * Returns an <code>ImageData</code> based on the receiver
+   * Modifications made to this <code>ImageData</code> will not
+   * affect the Image.
+   *
+   * @return an <code>ImageData</code> containing the image's data and attributes
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_INVALID_IMAGE - if the image is not a bitmap or an icon</li>
+   * </ul>
+   *
+   * @see ImageData
+   * @since 1.3
+   */
+  public ImageData getImageData() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    return ResourceFactory.getImageData( this );
+  }
+  
   ///////////
   // Disposal
 

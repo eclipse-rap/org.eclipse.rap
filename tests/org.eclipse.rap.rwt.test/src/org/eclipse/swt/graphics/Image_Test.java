@@ -286,7 +286,18 @@ public class Image_Test extends TestCase {
     image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertNotSame( image1, image2 );
   }
-  
+
+  public void testGetImageData() throws Exception {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    ImageData imageData = new ImageData( stream );
+    Device device = new Display();
+    Image image = new Image( device , imageData );
+    ImageData imageDataFromImage = image.getImageData();
+    assertEquals( 100, imageDataFromImage.width );
+    assertEquals( 50, imageDataFromImage.height );
+  }
+
   protected void setUp() throws Exception {
     // we do need the ressource manager for this test
     Fixture.setUpWithoutResourceManager();
