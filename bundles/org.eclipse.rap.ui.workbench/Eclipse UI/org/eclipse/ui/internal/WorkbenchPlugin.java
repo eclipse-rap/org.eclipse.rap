@@ -1106,8 +1106,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
           public Object addingService( final ServiceReference reference ) {
             Object result = super.addingService( reference );
             httpServiceTracker = new HttpServiceTracker(context);
+            ApplicationRegistry.registerApplicationEntryPoints();
             try {
-              ApplicationRegistry.registerApplicationEntryPoints();
               BrandingExtension.read();
             } catch( final IOException ioe ) {
               WorkbenchPlugin.log( "Unable to read branding extension", ioe ); //$NON-NLS-1$

@@ -76,7 +76,7 @@ public class ApplicationRegistry {
                                     EntrypointApplicationWrapper.class );
         EntryPointExtension.bind( applicationId, applicationParameter );
       }
-    } catch( final Exception e ) {
+    } catch( final ClassNotFoundException e ) {
       String text =   "Could not register application ''{0}'' " //$NON-NLS-1$
                     + "with request startup parameter ''{1}''."; //$NON-NLS-1$
       Object[] params = new Object[]{ className, applicationParameter };
