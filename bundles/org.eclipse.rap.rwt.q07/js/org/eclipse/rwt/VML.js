@@ -60,14 +60,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     handleAppear : function( canvas ) {
       var children = canvas.children;
       for( var hash in children ) {
-        var child = children[ hash ];
-        if( typeof child.restoreColor != "undefined" ) {
-          if( child.restoreColor != null ) {
-            child.fill.color = child.restoreColor; 
-          } else {
-            child.fill.on = false;
-          }
-        }
+        this._handleAppearShape( children[ hash ] );
       }
     },
     
@@ -88,10 +81,9 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       var fill = this._createNode( "fill" );
       fill.method = "sigma";
       fill.angle = 180;
-      fill.on = false;
-      result.restoreColor = null;
       result.node.appendChild( fill );
       result.fill = fill;
+      this.setFillColor( result, null );
       return result;
     },
     
@@ -107,6 +99,15 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       canvas.node.removeChild( shape.node );
     },
     
+    setDisplay : function( shape, value ) {
+      shape.node.style.display = value ? "" : "none";
+    },
+
+    getDisplay : function( shape) {
+      var result = shape.node.style.display == "none" ? false : true;
+      return result;
+    },
+
     setRectBounds : function( shape, x, y, width, height ) {
       var node = shape.node;      
       node.style.width = this._convertNumeric( width, false );
@@ -117,20 +118,24 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     
     setRoundRectLayout : function( shape, x, y, width, height, radii ) {
       var quarter = this._VMLQCIRCEL;
-      var maxRadius = Math.floor( Math.min( width, height ) / 2 );
-      var radiusLeftTop 
-        = this._convertNumeric( Math.min( radii[ 0 ], maxRadius ), false );
-      var radiusTopRight 
-        = this._convertNumeric( Math.min( radii[ 1 ], maxRadius ), false );
-      var radiusRightBottom 
-        = this._convertNumeric( Math.min( radii[ 2 ], maxRadius ), false );
-      var radiusBottomLeft 
-        = this._convertNumeric( Math.min( radii[ 3 ], maxRadius ), false );      
+      var radiusLeftTop = this._convertNumeric( radii[ 0 ], false );
+      var radiusTopRight = this._convertNumeric( radii[ 1 ], false );
+      var radiusRightBottom = this._convertNumeric( radii[ 2 ], false );
+      var radiusBottomLeft = this._convertNumeric( radii[ 3 ], false );
       var rectLeft = this._convertNumeric( x, true );
       var rectTop = this._convertNumeric( y, true )
       var rectWidth = this._convertNumeric( width, false );
       var rectHeight = this._convertNumeric( height, false );
-
+      if(    ( radiusLeftTop + radiusTopRight ) > rectWidth
+          || ( radiusRightBottom  + radiusBottomLeft ) > rectWidth
+          || ( radiusLeftTop + radiusBottomLeft ) > rectHeight
+          || ( radiusRightBottom + radiusTopRight ) > rectHeight )
+      {
+        radiusLeftTop = 0;
+        radiusTopRight = 0;
+        radiusRightBottom = 0;
+        radiusBottomLeft = 0;         
+      }      
       var path = [];
       if( radiusLeftTop > 0 ) {
         path.push( "AL", rectLeft + radiusLeftTop, rectTop + radiusLeftTop );
@@ -160,7 +165,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         path.push( "L", rectLeft, rectTop + rectHeight );
       }
 
-      path.push( "X E" );        
+      path.push( "X E" );
       shape.node.path = path.join(" ");      
     },   
     
@@ -168,26 +173,27 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       var fill = shape.fill;
       fill.type = "solid";
       if( color != null ) {
-        fill.on = true;
+        this._setFillEnabled( shape, true );
         fill.color = color;
+        shape.restoreColor = color;
       } else {
-        fill.on = false;
+        this._setFillEnabled( shape, false );
+        delete shape.restoreColor;
       }
-      shape.restoreColor = color;
     },
-    
+
     setFillGradient : function( shape, gradient ) {
       var fill = shape.fill;
       if( gradient != null ) {
         shape.node.removeChild( shape.fill );
-        fill.on = true;
+        this._setFillEnabled( shape, true );
+        delete shape.restoreColor;
         fill.type = "gradient";
         //the "color" attribute of fill is lost when the node
         //is removed from the dom. However, it can be overwritten
         //by a transition colors, so it doesn't matter
         var startColor = gradient[ 0 ][ 1 ];
         //fill.color = startColor;
-        delete shape.restoreColor;
         fill.color2 = gradient[ gradient.length - 1 ][ 1 ];
         var transitionColors = "0% " + startColor;
         var lastColor = qx.util.ColorUtil.stringToRgb( startColor );
@@ -211,10 +217,33 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         fill.colors = transitionColors;
         shape.node.appendChild( fill );
       } else {
-        fill.on = false;        
+        this._setFillEnabled( shape, true );
+      }
+    },
+
+    setFillPattern : function( shape, source, width, height ) {
+      var fill = shape.fill;
+      if( source != null ) {
+        shape.node.removeChild( shape.fill );
+        this._setFillEnabled( shape, true );
+        fill.type = "tile";
+        fill.src = source;
+        // IE only accepts "pt" for the size:
+        fill.size = ( width * 0.75 ) + "pt," + ( height * 0.75 ) + "pt";
+        shape.node.appendChild( fill );
+      } else {
+        this._setFillEnabled( shape, false );
       }
     },
     
+    getFillType : function( shape ) {
+      var on = shape.fill.on;
+      var result = !on ? null : shape.fill.type;
+      if( result == "solid" ) result = "color";
+      if( result == "tile" ) result = "pattern";
+      return result;
+    },
+
     // About VML-strokes and opacity:
     // There is a bug in the VML antialiasing, that can produce grey pixels
     // around vml elements if the css-opacity-filter is used on any of its
@@ -244,7 +273,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         
     _createNode : function( type ) {
       return document.createElement( "v:" + type );
-    },    
+    },
     
     _createRect : function() {
       var result = {};
@@ -267,10 +296,23 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       node.coordorigin="0 0";
       node.style.width = 100;
       node.style.height = 100;
+      node.style.top = 0;
+      node.style.left = 0;
       result.node = node;
       return result;      
     },
     
+//    _getNewPathArray : function() {
+//      // Note: These commands draw nothing, but force the origin of the 
+//      // shapes bounding-box to math those of its parent (needed for clipping)         
+//      return [ "M 0 0 NF NS X E" ];      
+//    },
+//    
+    _setFillEnabled : function( shape, value ) {
+      shape.fill.on = value;
+      shape.restoreFill = value;
+    },
+
     _transitionColors : function( color1, color2, start, stop, steps ) {
       var diff = stop-start;
       var stepwidth = diff / ( steps + 1 );
@@ -287,6 +329,15 @@ qx.Class.define( "org.eclipse.rwt.VML", {
                   + ")" );
       }
       return str.join(" ,");
+    },
+    
+    _handleAppearShape: function( shape ) {
+      shape.fill.on = shape.restoreFill;
+      if(   typeof shape.restoreColor != "undefined" 
+         && shape.restoreColor != null ) 
+      {
+        shape.fill.color = shape.restoreColor;
+      }
     },
 
     _transitionColorPart : function( color1, color2, pos ) {

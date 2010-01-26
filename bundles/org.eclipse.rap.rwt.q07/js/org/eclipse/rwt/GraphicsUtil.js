@@ -90,8 +90,9 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
       return result;      
     },
     
+    // TODO [tb] : There might currently be a glitch in IE if a shape is added
+    //             to an alreadey visible canvas.
     addToCanvas : function( canvas, shape ) {
-      // TODO [tb] : z-index support?
       this._renderClass.addToCanvas( canvas, shape );
     },
     
@@ -101,6 +102,20 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
     
     ////////////
     // Layouting
+    
+    /**
+     * value is a boolean
+     */
+    setDisplay : function( shape, value ) {
+      this._renderClass.setDisplay( shape, value );
+    },
+
+    /**
+     * returns a boolean
+     */
+    getDisplay : function( shape ) {
+      return this._renderClass.getDisplay( shape );
+    },
     
     /**
      * shape must be of type "rect"
@@ -120,12 +135,10 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
      * Other paramters as described in "setRectBounds".
      * Using this function in layout-mode "percentage" is not tested.
      * 
-     * NOTE ON MAXIMUM RADII:
-     * Currently, no radius may be greater than half of the smaller egdge.
-     * They will be reduced if needed. This could be handled more flexible
-     * if there are different radii in different corners, but currently it is 
-     * not. A 15x10 box can not have the radii 7 0 0 0, although it would
-     * be possible geometrically. The radii 5 0 0 0 will be rendered.
+     * If the shape is geometrically impossible to draw becuse the 
+     * the sum of the radii of any two opposite corners is larger than
+     * the corresponding edge, a normal rectagle will be drawn instead
+     * (i.e. ALL radii are 0).  
      */    
     setRoundRectLayout : function( shape, x, y, width, height, radii ) {
       this._renderClass.setRoundRectLayout( shape, 
@@ -148,7 +161,15 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
     },
     
     /**
+     * returns a string or null
+     */
+    getFillColor : function( shape, color ) {
+      return this._renderClass.getFillColor( shape );
+    },
+    
+    /**
      * gradient is a two dimensional array [ [ offset, color ] ] or null.
+     * offset is a number between 0 and 1
      * Iniital value is null (transparent). 
      */
     setFillGradient : function( shape, gradient ) {
@@ -156,9 +177,26 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
     },
     
     /**
+     * source is a valid URL of an image or null
+     * width and height are numbers representing the dimension of image in pixel
+     */
+    setFillPattern : function( shape, source, width, height ) {
+      this._renderClass.setFillPattern( shape, source, width, height );
+    },
+
+    /**
+     * Returns "color", "gradient", "pattern" or null
+     */
+    getFillType : function( shape, color ) {
+      return this._renderClass.getFillType( shape );
+    },
+
+    /**
      * color is any rgb-value or null (transparent)
      * width is any positive number or 0.
      * Initial values are null and 0.
+     * Note that strokes are (unlike css-borders) not part of the shapes
+     * geometric model, but drawn centered along the shapes path.
      */
     setStroke : function( shape, color, width ) {
       this._renderClass.setStroke( shape, color, width );

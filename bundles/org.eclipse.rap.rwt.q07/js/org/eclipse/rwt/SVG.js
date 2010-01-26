@@ -60,28 +60,33 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       }
       result.node.setAttribute( "stroke", "none" );
       result.node.setAttribute( "fill", "none" );
-      result.fillId = null;
-      result.fillNode = {};
+      result.defNodes = {};
       result.parent = null
       return result;
     },
     
     addToCanvas : function( canvas, shape ) {
-      canvas.node.appendChild( shape.node );
       shape.parent = canvas;
-      if( shape.fillId != null ) {
-        this._attachFill( shape );
-      } 
+      canvas.node.appendChild( shape.node );
+      this._attachDefinitions( shape );
     },
     
     removeFromCanvas : function( canvas, shape ) {
-      if( shape.fillId != null ) {
-        this._detachFill( shape );
-      }
+      this._detachDefinitions( shape );
       canvas.node.removeChild( shape.node );
       shape.parent = null;
     },
     
+    setDisplay : function( shape, value ) {
+      shape.node.setAttribute( "display", value ? "inline" : "none" );
+    },
+    
+    getDisplay : function( shape ) {
+      var display = shape.node.getAttribute( "display" );
+      var result = display == "none" ? false : true;
+      return result;
+    },
+
     setRectBounds : function( shape, x, y, width, height ) {
       var node = shape.node;      
       node.setAttribute( "width", this._convertNumeric( width ) );
@@ -91,30 +96,39 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
     },
     
     setRoundRectLayout : function( shape, x, y, width, height, radii ) {
-      var maxRadius = Math.min( width, height ) / 2;
-      var radiusLeftTop = Math.min( radii[ 0 ], maxRadius );
-      var radiusTopRight = Math.min( radii[ 1 ], maxRadius );
-      var radiusRightBottom = Math.min( radii[ 2 ], maxRadius );
-      var radiusBottomLeft = Math.min( radii[ 3 ], maxRadius );
+      var radiusLeftTop = radii[ 0 ];
+      var radiusTopRight = radii[ 1 ];
+      var radiusRightBottom = radii[ 2 ];
+      var radiusBottomLeft = radii[ 3 ];
+      if(    ( radiusLeftTop + radiusTopRight ) > width
+          || ( radiusRightBottom  + radiusBottomLeft ) > width
+          || ( radiusLeftTop + radiusBottomLeft ) > height
+          || ( radiusRightBottom + radiusTopRight ) > height )
+      {
+        radiusLeftTop = 0;
+        radiusTopRight = 0;
+        radiusRightBottom = 0;
+        radiusBottomLeft = 0;         
+      }
       var path = [];
       path.push( "M", x , y + radiusLeftTop );
       if( radiusLeftTop > 0 ) {
-        path.push( "A", radiusLeftTop, radiusLeftTop, 0, 0, 1);
+        path.push( "A", radiusLeftTop, radiusLeftTop, 0, 0, 1 );
         path.push( x + radiusLeftTop, y );
       }
       path.push( "L", x + width - radiusTopRight, y );
       if( radiusTopRight > 0 ) {
-        path.push( "A", radiusTopRight, radiusTopRight, 0, 0, 1);
+        path.push( "A", radiusTopRight, radiusTopRight, 0, 0, 1 );
       }
       path.push( x + width, y + radiusTopRight);
-      path.push( "L", x + width, y + height - radiusRightBottom  );
+      path.push( "L", x + width, y + height - radiusRightBottom );
       if( radiusRightBottom > 0 ) {
-        path.push( "A", radiusRightBottom, radiusRightBottom, 0, 0, 1);
+        path.push( "A", radiusRightBottom, radiusRightBottom, 0, 0, 1 );
       }
       path.push( x + width - radiusRightBottom, y + height );
       path.push( "L", x + radiusBottomLeft, y + height );
       if( radiusBottomLeft > 0 ) {
-        path.push( "A", radiusBottomLeft, radiusBottomLeft, 0, 0, 1);
+        path.push( "A", radiusBottomLeft, radiusBottomLeft, 0, 0, 1 );
       }
       path.push( x , y + height - radiusBottomLeft );
       path.push( "Z" );      
@@ -134,25 +148,16 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       if( gradient != null ) {
         var id = "gradient_" + qx.core.Object.toHashCode( shape );
         var gradNode;
-        if( typeof shape.fillNode[ id ] == "undefined" ) {
+        if( typeof shape.defNodes[ id ] == "undefined" ) {
           gradNode = this._createNode( "linearGradient" ); 
           gradNode.setAttribute( "id", id );
           gradNode.setAttribute( "x1", 0 );
           gradNode.setAttribute( "y1", 0 );
           gradNode.setAttribute( "x2", 0 );
           gradNode.setAttribute( "y2", 1 );
-          shape.fillNode[ id ] = gradNode;
+          this._addNewDefinition( shape, gradNode, id );
         } else {
-          gradNode = shape.fillNode[ id ];
-        }
-        if( shape.fillId != id ) {
-          if( shape.fillId != null ) {
-            this._detachFill( shape );
-          }
-          shape.fillId = id;
-          if( shape.parent != null ) {
-            this._attachFill( shape );
-          }
+          gradNode = shape.defNodes[ id ];
         }
         // clear old colors:
         var stopColor = null;
@@ -168,14 +173,60 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         }
         shape.node.setAttribute( "fill", "url(#" + id + ")" );
       } else {
-        if( shape.parent != null && shape.fillId != null ) {
-          this._detachFill( shape );
-        }
         shape.node.setAttribute( "fill", "none" );
-        shape.fillId = null;
+      }
+    },
+
+    setFillPattern : function( shape, source, width, height ) {
+      if( source != null ) {
+        var hash = qx.core.Object.toHashCode( shape );
+        var patternId = "pattern_" + hash;
+        var patternNode;
+        var imageNode;
+        if( typeof shape.defNodes[ patternId ] == "undefined" ) {
+          patternNode = this._createNode( "pattern" ); 
+          patternNode.setAttribute( "id", patternId );
+          patternNode.setAttribute( "x", 0 );
+          patternNode.setAttribute( "y", 0 );
+          patternNode.setAttribute( "patternUnits", "userSpaceOnUse" );                      
+          imageNode = this._createNode( "image" );       
+          imageNode.setAttribute( "x", 0 );
+          imageNode.setAttribute( "y", 0 );          
+          imageNode.setAttribute( "preserveAspectRatio", "none" );          
+          patternNode.appendChild( imageNode );                           
+          this._addNewDefinition( shape, patternNode, patternId );          
+        } else {
+          patternNode = shape.defNodes[ patternId ];
+          imageNode = patternNode.firstChild;
+        }
+        this._setXLink( imageNode, source );
+        // the "-1" offset drastically reduces the white lines between
+        // the tiles when zoomed in firefox.
+        patternNode.setAttribute( "width", width - 1 );
+        patternNode.setAttribute( "height", height - 1 );
+        imageNode.setAttribute( "width", width );
+        imageNode.setAttribute( "height", height );
+        shape.node.setAttribute( "fill", "url(#" + patternId + ")" );        
+        org.eclipse.rwt.SVG._redrawWebkit( shape );
+      } else {
+        shape.node.setAttribute( "fill", "none" );
       }
     },
     
+    getFillType : function( shape ) {
+      var result = shape.node.getAttribute( "fill" );     
+      if( result.search( "pattern_") != -1 ) {
+        result = "pattern";
+      } else if( result.search( "gradient_") != -1 ) { 
+        result = "gradient";
+      } else if( result == "none" ) { 
+        result = null;
+      } else {
+        result = "color";
+      }
+      return result;      
+    },
+
     setStroke : function( shape, color, width ) {
       shape.node.setAttribute( "stroke-width", width + "px");
       shape.node.setAttribute( "stroke", color != null ? color : "none" );      
@@ -200,6 +251,10 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       return result;      
     },
     
+    _setXLink : function( node, value ) {
+      node.setAttributeNS( "http://www.w3.org/1999/xlink", "href", value ); 
+    },
+
     _createRoundRect : function() {
       var result = {};
       result.type = "svgRoundRect";
@@ -208,20 +263,56 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       return result;      
     },
     
-    _attachFill : function( shape ) {
-      var id = shape.fillId;
-      var node = shape.fillNode[ id ];
-      shape.parent.defsNode.appendChild( node );
+    _addNewDefinition : function( shape, node, id ) {
+      shape.defNodes[ id ] = node;
+      if( shape.parent != null ) {     
+        shape.parent.defsNode.appendChild( node );
+      }
     },
     
-    _detachFill : function( shape ) {
-      var id = shape.fillId;
-      var node = shape.fillNode[ id ];
-      node.parentNode.removeChild( node );
+    // TODO [tb] : optimize so only the currently needed defs. are attached?
+    _attachDefinitions : function( shape ) {
+      for( var id in shape.defNodes ) {
+        var node = shape.defNodes[ id ];
+        shape.parent.defsNode.appendChild( node );
+      }
+    },
+    
+    _detachDefinitions : function( shape ) {
+      for( var id in shape.defNodes ) {
+        var node = shape.defNodes[ id ];
+        node.parentNode.removeChild( node );
+      }
     },
     
     _convertNumeric : function( value ) {
       return typeof value == "string" ? value : value + "px";
+    },
+   
+    _redrawWebkit : function( shape ) {
+      if( qx.core.Client.getEngine() == "webkit" ) {
+        var wrapper = function() {
+          org.eclipse.rwt.SVG._redrawWebkitCore( shape );
+        };
+        window.setTimeout( wrapper, 10 );
+      }
+    },
+
+    _redrawWebkitCore : function( shape ) {
+      if( shape.parent != null ) {
+        shape.node.style.webkitTransform = "scale(1)"; 
+      }
+    },
+    
+    // TODO [tb] : remove if no longer needed:
+    
+    _dummyNode : null,
+    
+    _getDummyNode : function() {
+      if( this._dummyNode == null ) {
+        this._dummyNode = this._createNode( "rect" );
+      }
+      return this._dummyNode;
     }
     
   }

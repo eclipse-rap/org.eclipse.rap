@@ -20,13 +20,26 @@
         description="Background color for progress bars" />
 
     <property name="background-image"
-        description="Background image for progress bars" />
+        description="Background image for progress bars. Gradient supported." />
 
     <property name="border"
         description="Border for progress bars." />
 
+    <property name="border-radius">
+      <description>
+        Border radius. The border radius has no effect if an enhanced border,
+        like "inset" or "outset" is used.
+      </description>
+    </property>
+    
     <state name="disabled"
         description="Applies to disabled progress bars." />
+
+    <style name="VERTICAL"
+        description="The indicator grows from bottom to top." />
+
+    <style name="UNDETERMINED"
+        description="Indicates that the state of progress is unkown." />
 
     <element name="ProgressBar-Indicator"
         description="The movable bar that indicates the progress">
@@ -35,8 +48,17 @@
           description="Background color for progress indicator" />
 
       <property name="background-image"
-          description="Background image for progress indicator" />
+          description="Background image for progress indicator. Gradient supported." />
 
+      <property name="border"
+          description="The separator-line at the right/top of the indicator. Supports only solid borders" />
+      
+      <style name="VERTICAL"
+	     description="The indicator grows from bottom to top." />
+
+	  <style name="UNDETERMINED"
+	      description="Indicates that the state of progress is unkown." />
+        
       <state name="disabled"
           description="Applies to the progress indicator of a disabled progress bar." />
 

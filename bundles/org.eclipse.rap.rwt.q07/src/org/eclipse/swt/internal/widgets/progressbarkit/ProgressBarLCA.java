@@ -15,6 +15,10 @@ import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Widget;
 
@@ -25,6 +29,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   private static final String PROP_MAXIMUM = "maximum";
   private static final String PROP_SELECTION = "selection";
   static final String PROP_STATE = "state";
+  static final String PROP_BACKGROUND_IMAGE_SIZED = "backgroundImageSized";
 
   public void preserveValues( final Widget widget ) {
     ProgressBar progressBar = ( ProgressBar )widget;
@@ -35,6 +40,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION,
                       new Integer( progressBar.getSelection() ) );
     adapter.preserve( PROP_STATE, getState( progressBar ) );
+    preserveBackgroundImage( progressBar );
     WidgetLCAUtil.preserveCustomVariant( progressBar );
   }
 
@@ -61,9 +67,41 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     writeSetInt( pBar, PROP_MAXIMUM, "maximum", pBar.getMaximum(), 100 );
     writeSetInt( pBar, PROP_SELECTION, "selection", pBar.getSelection(), 0 );
     writeState( pBar );
+    writeBackgroundImage( pBar );
     WidgetLCAUtil.writeCustomVariant( pBar );
   }
-
+  
+  private static void preserveBackgroundImage( final ProgressBar progressBar ) {
+    IControlAdapter controlAdapter
+      = ( IControlAdapter )progressBar.getAdapter( IControlAdapter.class );
+    Image image = controlAdapter.getUserBackgroundImage();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
+    adapter.preserve( PROP_BACKGROUND_IMAGE_SIZED, image );
+  }
+  
+  private static void writeBackgroundImage( final ProgressBar progressBar ) 
+    throws IOException 
+  {
+    IControlAdapter controlAdapter
+      = ( IControlAdapter )progressBar.getAdapter( IControlAdapter.class );
+    Image image = controlAdapter.getUserBackgroundImage();
+    if( WidgetLCAUtil.hasChanged( progressBar, 
+                                  PROP_BACKGROUND_IMAGE_SIZED, 
+                                  image, 
+                                  null ) ) 
+    {
+      String imagePath = ResourceFactory.getImagePath( image );
+      JSWriter writer = JSWriter.getWriterFor( progressBar );
+      Rectangle bounds = image != null ? image.getBounds() : null;      
+      Object[] args = new Object[]{
+        imagePath,
+        new Integer( bounds != null ? bounds.width : 0 ),
+        new Integer( bounds != null ? bounds.height : 0 )
+      };
+      writer.set( "backgroundImageSized", new Object[]{ args } );
+    }
+  }
+  
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();

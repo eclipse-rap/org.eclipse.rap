@@ -33,7 +33,8 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
   },
   
   statics : {
-    NONE_IMAGE : null
+    NONE_IMAGE : null,
+    NONE_IMAGE_SIZED : [ null, 0, 0 ]
   },
 
   members : {
@@ -137,12 +138,18 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
 
     getCssSizedImage : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
-      var result = this._store.getThemeValues().images[ vkey ];
-      this.__checkDefined( result, element, key );
-      // TODO [tb] : Revise hardcoded path
-      return [ "rwt-resources/themes/images/" + result[ 0 ], 
-               result[ 1 ], 
-               result[ 2 ] ];
+      var image = this._store.getThemeValues().images[ vkey ];
+      this.__checkDefined( image, element, key );
+      var result;
+      if( image != null ) {
+        // TODO [tb] : Revise hardcoded path
+        result = [ "rwt-resources/themes/images/" + image[ 0 ], 
+                   image[ 1 ], 
+                   image[ 2 ] ];
+      } else {
+        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE_SIZED;        
+      } 
+      return result; 
     },
 
     getCssGradient : function( element, key ) {

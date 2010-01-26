@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.rwt.test.fixture.TestUtil", {
+qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
   type : "static",
 
   statics : {

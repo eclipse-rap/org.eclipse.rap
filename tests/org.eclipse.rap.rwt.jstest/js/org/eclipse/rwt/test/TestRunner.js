@@ -23,10 +23,19 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     this._asserts = 0;
     var classes = qx.Class.__registry;
     this._testClasses = {};
+    var engine = qx.core.Client.getEngine();
+    var skip;
     for( var clazz in classes) {
       if( clazz.substr( clazz.length - 4 ) == "Test" ) {
+        skip = false;        
+        if( classes[ clazz ].prototype.TARGETENGINE instanceof Array ) {
+          var targetEngine = classes[ clazz ].prototype.TARGETENGINE;
+          skip = targetEngine.indexOf( engine ) == -1;
+        }
+        if( !skip ) {
           this._testClasses[clazz] = classes[clazz];
           this._testsTotal++;
+        }
       }
     }    
     this._presenter = org.eclipse.rwt.test.Presenter.getInstance();    
@@ -34,10 +43,10 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     getLog = function() {
       return org.eclipse.rwt.test.TestRunner.getInstance().getLog();
     }
+    this._FREEZEONFAIL = true;
     //temporarily setting this to true can help debugging in IE
-    this._NOTRYCATCH = false; 
+    this._NOTRYCATCH = false;
   },
-
 
   members : {
   	
@@ -51,7 +60,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
         this._run();
       } else {    
     	  try {  	    
-      	    this._run();
+      	  this._run();
     	  } catch( e ) { 
     	    this.info( e );      
     	  }
@@ -66,6 +75,11 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
         this.info( " -----===== " + this._currentClass + " =====-----");      	
       	var obj = null;
       	this._currentFunction = "construct";
+      	// also stop on "this.error":
+      	qx.core.Object.prototype.error = function( msg, exc ) {
+          this.getLogger().error(msg, this.toHashCode(), exc);
+      	  throw msg; 
+      	};
       	if( this._NOTRYCATCH ) {
           obj = new this._testClasses[ this._currentClass ]();
           var testFunctions = this._getTestFunctions( obj );      
@@ -85,7 +99,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
             }
           } catch( e ) {
             // a test failed:          
-            this._freezeQooxdoo();
+            if( this._FREEZEONFAIL ) this._freezeQooxdoo();
             this._presenter.setFailed( true );
             this.info( this._currentFunction + " failed:" );
             this.info( e );          

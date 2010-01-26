@@ -1745,23 +1745,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "ProgressBar", "border" );
       result.backgroundColor = tv.getCssColor( "ProgressBar",
                                                "background-color" );
-      result.backgroundImage = tv.getCssImage( "ProgressBar",
-                                               "background-image" );
+      result.backgroundImageSized = tv.getCssSizedImage( "ProgressBar",
+                                                         "background-image" );
       result.backgroundGradient = tv.getCssGradient( "ProgressBar",
                                                      "background-image" );
-      return result;
-    }
-  },
-
-  "progressbar-indicator" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {};
-      result.backgroundColor = tv.getCssColor( "ProgressBar-Indicator",
+      result.separatorBorder = tv.getCssBorder( "ProgressBar-Indicator", 
+                                                "border" );
+      result.indicatorColor = tv.getCssColor( "ProgressBar-Indicator",
                                                "background-color" );
-      result.backgroundImage = tv.getCssImage( "ProgressBar-Indicator",
-                                               "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "ProgressBar-Indicator",
+      result.indicatorImage = tv.getCssSizedImage( "ProgressBar-Indicator",
+                                                   "background-image" );
+      result.indicatorGradient = tv.getCssGradient( "ProgressBar-Indicator",
                                                      "background-image" );
       return result;
     }
