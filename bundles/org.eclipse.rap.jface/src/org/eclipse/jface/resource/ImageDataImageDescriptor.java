@@ -12,13 +12,15 @@ package org.eclipse.jface.resource;
 
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
  * @since 1.0
  */
 class ImageDataImageDescriptor extends ImageDescriptor {
 
-//    private ImageData data;
+    private ImageData data;
     
     /**
      * Original image being described, or null if this image is described
@@ -32,19 +34,22 @@ class ImageDataImageDescriptor extends ImageDescriptor {
      * @param originalImage
      */
     ImageDataImageDescriptor(Image originalImage) {
-//        this(originalImage.getImageData());
+        this(originalImage.getImageData());
         this.originalImage = originalImage;
     }
     
-//    /**
-//     * Creates an image descriptor, given some image data.
-//     * 
-//     * @param data describing the image
-//     */
-//
-//    ImageDataImageDescriptor(ImageData data) {
-//        this.data = data;
-//    }
+    /**
+     * Creates an image descriptor, given some image data.
+     * 
+     * @param data describing the image
+     */
+
+    ImageDataImageDescriptor(ImageData data) {
+        this.data = data;
+        // RAP [bm] we need to create the image anyway
+        this.originalImage = ResourceFactory.findImage(data);
+        // ENDRAP
+    }
     
     /* (non-Javadoc)
      * @see org.eclipse.jface.resource.DeviceResourceDescriptor#create(org.eclipse.swt.graphics.Device)
@@ -55,9 +60,9 @@ class ImageDataImageDescriptor extends ImageDescriptor {
         // if this is the same device.
         if (originalImage != null) {
             // If we're allocating on the same device as the original font, return the original.
-//            if (originalImage.getDevice() == device) {
+            if (originalImage.getDevice() == device) {
                 return originalImage;
-//            }
+            }
         }
         
         return super.createResource(device);
@@ -77,16 +82,16 @@ class ImageDataImageDescriptor extends ImageDescriptor {
     /* (non-Javadoc)
      * @see org.eclipse.jface.resource.ImageDescriptor#getImageData()
      */
-//    public ImageData getImageData() {
-//        return data;
-//    }
+    public ImageData getImageData() {
+        return data;
+    }
     
     /* (non-Javadoc)
      * @see Object#hashCode
      */
-//    public int hashCode() {
-//        return data.hashCode();
-//    }
+    public int hashCode() {
+        return data.hashCode();
+    }
 
     /* (non-Javadoc)
      * @see Object#equals
@@ -98,13 +103,14 @@ class ImageDataImageDescriptor extends ImageDescriptor {
         
         ImageDataImageDescriptor imgWrap = (ImageDataImageDescriptor) obj;
        
-//        if (originalImage != null) {
+        if (originalImage != null) {
             return imgWrap.originalImage == originalImage;
-//        }
-//        
-//        return (imgWrap.originalImage == null && data.equals(imgWrap.data));
+        }
+        
+        return (imgWrap.originalImage == null && data.equals(imgWrap.data));
     }
     
+    // RAP [bm] alternative to ImageData for performance reasons
     public Image createImage(boolean returnMissingImageOnError, Device device) {
       return originalImage;
     }

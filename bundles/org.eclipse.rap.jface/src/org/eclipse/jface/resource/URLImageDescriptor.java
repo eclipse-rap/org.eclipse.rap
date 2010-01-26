@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 
 /**
  * An ImageDescriptor that gets its information from a URL.
@@ -47,28 +52,28 @@ class URLImageDescriptor extends ImageDescriptor {
      * Method declared on ImageDesciptor.
      * Returns null if the image data cannot be read.
      */
-//    public ImageData getImageData() {
-//        ImageData result = null;
-//        InputStream in = getStream();
-//        if (in != null) {
-//            try {
-//                result = new ImageData(in);
-//            } catch (SWTException e) {
-//                if (e.code != SWT.ERROR_INVALID_IMAGE) {
-//					throw e;
-//                // fall through otherwise
-//				}
-//            } finally {
-//                try {
-//                    in.close();
-//                } catch (IOException e) {
-//                    //System.err.println(getClass().getName()+".getImageData(): "+
-//                    //  "Exception while closing InputStream : "+e);
-//                }
-//            }
-//        }
-//        return result;
-//    }
+    public ImageData getImageData() {
+        ImageData result = null;
+        InputStream in = getStream();
+        if (in != null) {
+            try {
+                result = new ImageData(in);
+            } catch (SWTException e) {
+                if (e.code != SWT.ERROR_INVALID_IMAGE) {
+					throw e;
+                // fall through otherwise
+				}
+            } finally {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    //System.err.println(getClass().getName()+".getImageData(): "+
+                    //  "Exception while closing InputStream : "+e);
+                }
+            }
+        }
+        return result;
+    }
 
     /**
      * Returns a stream on the image contents.  Returns
@@ -101,6 +106,7 @@ class URLImageDescriptor extends ImageDescriptor {
         return "URLImageDescriptor(" + url + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+  // RAP [bm] alternative to ImageData for performance reasons
   public Image createImage( boolean returnMissingImageOnError, Device device ) {
     String path = url.toString();
     String schema = "bundleentry://"; //$NON-NLS-1$

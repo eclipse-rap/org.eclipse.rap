@@ -11,8 +11,13 @@
 package org.eclipse.jface.resource;
 
 import java.net.URL;
+
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -50,8 +55,8 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor  {
      * A small red square used to warn that an image cannot be created.
      * <p>
      */
-//    protected static final ImageData DEFAULT_IMAGE_DATA = new ImageData(6, 6,
-//            1, new PaletteData(new RGB[] { new RGB(255, 0, 0) }));
+    protected static final ImageData DEFAULT_IMAGE_DATA = new ImageData(6, 6,
+            1, new PaletteData(new RGB[] { new RGB(255, 0, 0) }));
 
     /**
      * Constructs an image descriptor.
@@ -82,9 +87,9 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor  {
      * @param data contents of the image
      * @return newly created image descriptor
      */
-//    public static ImageDescriptor createFromImageData(ImageData data) {
-//        return new ImageDataImageDescriptor(data);
-//    }
+    public static ImageDescriptor createFromImageData(ImageData data) {
+        return new ImageDataImageDescriptor(data);
+    }
     
     /**
      * Creates and returns a new image descriptor for the given image. Note 
@@ -264,37 +269,37 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor  {
 	 * @since 1.0
 	 */
     public Image createImage(boolean returnMissingImageOnError, Device device) {
-      throw new UnsupportedOperationException( "Must be overriden in derived classes." ); //$NON-NLS-1$
-      
-//        ImageData data = getImageData();
-//        if (data == null) {
-//            if (!returnMissingImageOnError) {
-//                return null;
-//            }
-//            data = DEFAULT_IMAGE_DATA;
-//        }
-//
-//        /*
-//         * Try to create the supplied image. If there is an SWT Exception try and create
-//         * the default image if that was requested. Return null if this fails.
-//         */
-//
-//        try {
+        ImageData data = getImageData();
+        if (data == null) {
+            if (!returnMissingImageOnError) {
+                return null;
+            }
+            data = DEFAULT_IMAGE_DATA;
+        }
+
+        /*
+         * Try to create the supplied image. If there is an SWT Exception try and create
+         * the default image if that was requested. Return null if this fails.
+         */
+
+        try {
+        	// RAP [bm] no support for mask, see bug 300520
 //            if (data.transparentPixel >= 0) {
 //                ImageData maskData = data.getTransparencyMask();
 //                return new Image(device, data, maskData);
 //            }
-//            return new Image(device, data);
-//        } catch (SWTException exception) {
-//            if (returnMissingImageOnError) {
-//                try {
-//                    return new Image(device, DEFAULT_IMAGE_DATA);
-//                } catch (SWTException nextException) {
-//                    return null;
-//                }
-//            }
-//            return null;
-//        }
+        	// ENDRAP
+            return new Image(device, data);
+        } catch (SWTException exception) {
+            if (returnMissingImageOnError) {
+                try {
+                    return new Image(device, DEFAULT_IMAGE_DATA);
+                } catch (SWTException nextException) {
+                    return null;
+                }
+            }
+            return null;
+        }
     }
 
     /**
@@ -312,7 +317,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor  {
      *
      * @return a new image data or <code>null</code>
      */
-//    public abstract ImageData getImageData();
+    public abstract ImageData getImageData();
 
     /**
      * Returns the shared image descriptor for a missing image.

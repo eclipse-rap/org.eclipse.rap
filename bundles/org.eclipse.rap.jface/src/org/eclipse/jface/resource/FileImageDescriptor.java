@@ -10,11 +10,18 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 
 /**
  * An image descriptor that loads its image information
@@ -76,29 +83,30 @@ class FileImageDescriptor extends ImageDescriptor {
      * Method declared on ImageDesciptor.
      * Returns null if the image data cannot be read.
      */
-//    public ImageData getImageData() {
-//        InputStream in = getStream();
-//        ImageData result = null;
-//        if (in != null) {
-//            try {
-//                result = new ImageData(in);
-//            } catch (SWTException e) {
-//                if (e.code != SWT.ERROR_INVALID_IMAGE) {
-//					throw e;
-//                // fall through otherwise
-//				}
-//            } finally {
-//                try {
-//                    in.close();
-//                } catch (IOException e) {
-//                    //System.err.println(getClass().getName()+".getImageData(): "+
-//                    //  "Exception while closing InputStream : "+e);
-//                }
-//            }
-//        }
-//        return result;
-//    }
+    public ImageData getImageData() {
+        InputStream in = getStream();
+        ImageData result = null;
+        if (in != null) {
+            try {
+                result = new ImageData(in);
+            } catch (SWTException e) {
+                if (e.code != SWT.ERROR_INVALID_IMAGE) {
+					throw e;
+                // fall through otherwise
+				}
+            } finally {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    //System.err.println(getClass().getName()+".getImageData(): "+
+                    //  "Exception while closing InputStream : "+e);
+                }
+            }
+        }
+        return result;
+    }
 
+    // RAP [bm] alternative to ImageData for performance reasons
     public Image createImage(boolean returnMissingImageOnError, Device device) {
       String path = location.getPackage().getName().replace( '.', '/' );
       return Graphics.getImage( path + "/" + name, getStream() ); //$NON-NLS-1$

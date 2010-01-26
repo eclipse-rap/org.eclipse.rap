@@ -131,11 +131,7 @@ public class CommandUtil {
         }
       }
     } );
-    ImageDescriptor desc = new ImageDescriptor() {
-      public Image createImage() {
-        return param.getIcon();
-      }      
-    };
+    ImageDescriptor desc = ImageDescriptor.createFromImage(param.getIcon());
     
     result.setImageDescriptor( desc );
     result.setToolTipText( toolTipText );    

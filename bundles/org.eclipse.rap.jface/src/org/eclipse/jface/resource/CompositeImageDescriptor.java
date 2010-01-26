@@ -142,7 +142,7 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 	/*
 	 * (non-Javadoc) Method declared on ImageDesciptor.
 	 */
-	/*public*/ private ImageData getImageData() {
+	public ImageData getImageData() {
 		Point size = getSize();
 
 		/* Create a 24 bit image data with alpha channel */
@@ -178,6 +178,7 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 		return imageData;
 	}
 
+	 // RAP [bm] alternative to ImageData for performance reasons
 	public Image createImage( final boolean returnMissingImageOnError,
 	                          final Device device ) {
 	  return ResourceFactory.findImage( getImageData() );

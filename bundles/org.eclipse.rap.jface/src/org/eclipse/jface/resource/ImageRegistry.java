@@ -110,10 +110,7 @@ public class ImageRegistry {
          * @see org.eclipse.jface.resource.ImageDescriptor#getImageData()
          */
         public ImageData getImageData() {
-        	// RAP [bm]: 
-//            return original.getImageData();
-        	return ResourceFactory.getImageData(original);
-            // RAPEND: [bm] 
+            return original.getImageData();
         }
     }
         

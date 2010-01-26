@@ -112,20 +112,12 @@ public class DecorationOverlayIcon extends CompositeImageDescriptor {
             if (overlay == null) {
 				continue;
 			}
-            // RAP [bm]: 
-//            ImageData overlayData = overlay.getImageData();
-            ImageData overlayData = ResourceFactory.getImageData(overlay.createImage());
-            // RAPEND: [bm] 
+            ImageData overlayData = overlay.getImageData();
 
             //Use the missing descriptor if it is not there.
             if (overlayData == null) {
-            	// RAP [bm]: 
-//				overlayData = ImageDescriptor.getMissingImageDescriptor()
-//                        .getImageData();
-				overlayData = ResourceFactory.getImageData(ImageDescriptor.getMissingImageDescriptor()
-                        .createImage());
-				// RAPEND: [bm] 
-
+				overlayData = ImageDescriptor.getMissingImageDescriptor()
+                        .getImageData();
 			}
             switch (i) {
             case IDecoration.TOP_LEFT:
@@ -177,28 +169,14 @@ public class DecorationOverlayIcon extends CompositeImageDescriptor {
     	if (overlays.length > IDecoration.UNDERLAY) {
 	        ImageDescriptor underlay = overlays[IDecoration.UNDERLAY];
 	        if (underlay != null) {
-	        	// RAP [bm]: 
-//				drawImage(underlay.getImageData(), 0, 0);
-				ImageData imageData = ResourceFactory.getImageData(underlay.createImage());
-				drawImage(imageData, 0, 0);
-				// RAPEND: [bm] 
-
+				drawImage(underlay.getImageData(), 0, 0);
 			}
     	}
     	if (overlays.length > IDecoration.REPLACE && overlays[IDecoration.REPLACE] != null) {
-    		// RAP [bm]: 
-//    		drawImage(overlays[IDecoration.REPLACE].getImageData(), 0, 0);
-    		ImageData imageData = ResourceFactory.getImageData(overlays[IDecoration.REPLACE].createImage());
-			drawImage(imageData, 0, 0);
-    		// RAPEND: [bm] 
+    		drawImage(overlays[IDecoration.REPLACE].getImageData(), 0, 0);
 
     	} else {
-    		// RAP [bm]: 
-//    		drawImage(base.getImageData(), 0, 0);
-    		ImageData imageData = ResourceFactory.getImageData(base);
-    		drawImage(imageData, 0, 0);
-    		// RAPEND: [bm] 
-
+    		drawImage(base.getImageData(), 0, 0);
     	}
         drawOverlays(overlays);
     }
@@ -214,11 +192,7 @@ public class DecorationOverlayIcon extends CompositeImageDescriptor {
      * @see org.eclipse.jface.resource.CompositeImageDescriptor#getTransparentPixel()
      */
     protected int getTransparentPixel() {
-    	// RAP [bm]: 
-//    	return base.getImageData().transparentPixel();
-    	return ResourceFactory.getImageData(base).transparentPixel;
-    	// RAPEND: [bm] 
-
+    	return base.getImageData().transparentPixel;
     }
 
 }

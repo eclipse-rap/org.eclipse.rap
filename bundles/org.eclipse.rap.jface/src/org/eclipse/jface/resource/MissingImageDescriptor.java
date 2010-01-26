@@ -13,6 +13,7 @@ package org.eclipse.jface.resource;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 
 
 /**
@@ -37,9 +38,9 @@ class MissingImageDescriptor extends ImageDescriptor {
     /* (non-Javadoc)
      * Method declared on ImageDesciptor.
      */
-//    public ImageData getImageData() {
-//        return DEFAULT_IMAGE_DATA;
-//    }
+    public ImageData getImageData() {
+        return DEFAULT_IMAGE_DATA;
+    }
 
     /**
      * Returns the shared missing image descriptor instance.
@@ -53,6 +54,7 @@ class MissingImageDescriptor extends ImageDescriptor {
         return instance;
     }
 
+    // RAP [bm] alternative to ImageData for performance reasons
     public Image createImage( final boolean returnMissingImageOnError,
                               final Device device )
     {
