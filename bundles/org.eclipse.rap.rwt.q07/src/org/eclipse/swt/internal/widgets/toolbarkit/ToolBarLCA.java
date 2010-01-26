@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.toolbarkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -41,6 +42,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( toolBar );
     writer.newWidget( "org.eclipse.rwt.widgets.ToolBar" );
     ControlLCAUtil.writeStyleFlags( toolBar );
+    WidgetLCAUtil.writeStyleFlag( toolBar, SWT.FLAT, "FLAT" );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

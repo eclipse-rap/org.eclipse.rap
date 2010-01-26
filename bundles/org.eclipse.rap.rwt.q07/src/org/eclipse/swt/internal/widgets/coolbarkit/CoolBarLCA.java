@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -42,7 +43,8 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     // TODO [rh] use constant from qx.constant.Style.js
     writer.set( "overflow", "hidden" );
     writer.set( JSConst.QX_FIELD_APPEARANCE, "coolbar" );
-    ControlLCAUtil.writeStyleFlags( coolBar );    
+    ControlLCAUtil.writeStyleFlags( coolBar );
+    WidgetLCAUtil.writeStyleFlag( coolBar, SWT.FLAT, "FLAT" );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

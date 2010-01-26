@@ -456,7 +456,6 @@ public class ControlLCAUtil {
   public static void writeStyleFlags( final Control control ) throws IOException
   {
     WidgetLCAUtil.writeStyleFlag( control, SWT.BORDER, "BORDER" );
-    WidgetLCAUtil.writeStyleFlag( control, SWT.FLAT, "FLAT" );
   }
 
   /**

@@ -890,7 +890,8 @@ public final class WidgetLCAUtil {
    */
   public static void writeStyleFlag( final Widget widget,
                                      final int style,
-                                     final String styleName ) throws IOException
+                                     final String styleName ) 
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( widget );
     if( ( widget.getStyle() & style ) != 0 ) {

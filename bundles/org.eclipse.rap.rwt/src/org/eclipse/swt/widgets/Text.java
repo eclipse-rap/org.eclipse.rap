@@ -93,7 +93,6 @@ public class Text extends Scrollable {
   public Text( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
     textAdapter = new ITextAdapter() {
-
       public void setText( final String text, final Point selection ) {
         Text.this.setText( text, selection );
       }

@@ -49,6 +49,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     writer.newWidget( QX_TYPE, args );
     ControlLCAUtil.writeStyleFlags( button );
     WidgetLCAUtil.writeStyleFlag( button, SWT.PUSH, "PUSH" );
+    WidgetLCAUtil.writeStyleFlag( button, SWT.FLAT, "FLAT" );
     WidgetLCAUtil.writeStyleFlag( button, SWT.TOGGLE, "TOGGLE" );
   }
 

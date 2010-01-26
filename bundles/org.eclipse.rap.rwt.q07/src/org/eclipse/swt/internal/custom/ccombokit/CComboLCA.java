@@ -96,6 +96,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     writer.newWidget( "org.eclipse.swt.widgets.Combo",
                       new Object[] { "ccombo" } );
     ControlLCAUtil.writeStyleFlags( ccombo );
+    WidgetLCAUtil.writeStyleFlag( ccombo, SWT.FLAT, "FLAT" );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

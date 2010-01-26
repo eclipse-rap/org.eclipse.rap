@@ -188,6 +188,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );
     CTabFolder tabFolder = ( CTabFolder )widget;
     ControlLCAUtil.writeStyleFlags( tabFolder );
+    WidgetLCAUtil.writeStyleFlag( tabFolder, SWT.FLAT, "FLAT" );
     String[] args = new String[] {
       SWT.getMessage( "SWT_Minimize" ),
       SWT.getMessage( "SWT_Maximize" ),
