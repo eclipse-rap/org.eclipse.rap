@@ -1289,6 +1289,7 @@ Slider-Thumb:pressed {
 
 Display {
   background-image: url( /theme/fancy/icons/browser_bg.png );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 /* CTabFolder, TabFolder */

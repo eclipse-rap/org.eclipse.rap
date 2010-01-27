@@ -1321,6 +1321,7 @@ Slider-Thumb:pressed {
 /* Display */
 Display {
   background-image: url( /theme/business/icons/browser_bg.png );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 /* CTabFolder, TabFolder */
