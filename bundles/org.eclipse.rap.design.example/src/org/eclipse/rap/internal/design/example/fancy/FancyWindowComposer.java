@@ -154,7 +154,7 @@ public class FancyWindowComposer implements IWindowComposer {
     RowLayout layout = new RowLayout();
     layout.marginLeft = 30; 
     layout.marginRight = 0;
-    layout.marginTop = 5;
+    layout.marginTop = 2;
     menuBarComp.setLayout( layout );
     manager.fill( menuBarComp );
   }

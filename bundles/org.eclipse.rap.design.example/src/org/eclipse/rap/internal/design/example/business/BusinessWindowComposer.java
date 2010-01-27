@@ -162,7 +162,7 @@ public class BusinessWindowComposer implements IWindowComposer {
     RowLayout layout = new RowLayout();
     layout.marginLeft = 0; 
     layout.marginRight = 0;
-    layout.marginTop = 5;
+    layout.marginTop = 3;
     menuBarComp.setLayout( layout );
     manager.fill( menuBarComp );
   }

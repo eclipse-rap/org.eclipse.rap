@@ -12,47 +12,40 @@ package org.eclipse.rap.internal.design.example.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.SubContributionItem;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
-import org.eclipse.rap.internal.design.example.popups.MenuPopup;
-import org.eclipse.rap.ui.interactiondesign.layout.LayoutRegistry;
-import org.eclipse.rap.ui.interactiondesign.layout.model.Layout;
-import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 
 public class MenuBarManager extends MenuManager {
-  
-  private static final String PLUGIN_ID = "org.eclipse.rap.design.example";
+
+  private static final String MENU_BAR_VARIANT = "menuBar";
   private Composite menuParent;
-  private List buttonList = new ArrayList();
+  private List toolItemList = new ArrayList();
+  private ToolBar toolbar;
 
   public void fill( final Composite parent ) {
     menuParent = parent;    
+    toolbar = new ToolBar( parent, SWT.WRAP );
+    toolbar.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
     update( false, false );
   }
   
   protected void update( final boolean force, final boolean recursive ) {
-    if( menuParent != null ) {
-      disposeButtons();
+    super.update( force, recursive );
+    if( menuParent != null && ( force || isDirty() ) ) {
+      disposeToolItems();
       IContributionItem[] items = getItems();
       if( items.length > 0 && menuParent != null ) {
         for( int i = 0; i < items.length; i++ ) {
@@ -66,111 +59,73 @@ public class MenuBarManager extends MenuManager {
     }
   }
 
-  private void disposeButtons() {
-    for( int i = 0; i < buttonList.size(); i++ ) {
-      Control control = ( Control ) buttonList.get( i );
-      control.dispose();
+  private void disposeToolItems() {
+    for( int i = 0; i < toolItemList.size(); i++ ) {
+      ToolItem item = ( ToolItem ) toolItemList.get( i );
+      if( !item.isDisposed() ) {
+        Object data = item.getData();
+        if( data != null && data instanceof Menu ) {
+          Menu menu = ( Menu ) data;
+          if( !menu.isDisposed() ) {
+            menu.dispose();
+          }
+        }      
+        item.dispose();
+      }
     }
   }
 
   private void makeEntry( final IContributionItem item ) {
     if( item instanceof MenuManager ) {
-      makeManagerEntry( ( MenuManager ) item );
-    } else if( item instanceof SubContributionItem ) {
-      SubContributionItem subItem = ( SubContributionItem ) item;
-      IContributionItem innerItem = subItem.getInnerItem();
-      if( innerItem instanceof MenuManager ) {
-        makeManagerEntry( ( MenuManager ) innerItem ); 
+      final MenuManager manager = ( MenuManager ) item;
+      int style = SWT.NONE;
+      if( manager.getItems() != null && manager.getItems().length > 0 ) {
+        style = SWT.DROP_DOWN;
       }
-    } else if( item instanceof ActionContributionItem ) {
-      ActionContributionItem actionItem = (ActionContributionItem ) item;
-      IAction action = actionItem.getAction();
-      makeActionEntry( action );
-    }
-  }
-
-  private void makeActionEntry( final IAction action ) {
-    Button button = new Button( menuParent, SWT.PUSH | SWT.FLAT );
-    button.setData( WidgetUtil.CUSTOM_VARIANT, "menuBar" );
-    button.setText( action.getText() );
-    button.setToolTipText( action.getToolTipText() );
-    button.addSelectionListener( new SelectionAdapter(){
-      public void widgetSelected(SelectionEvent e) {
-        action.run();
-      };
-    } );
-    
-    // needed to clear all controls in case of an update
-    buttonList.add( button );
-  }
-
-  private void makeManagerEntry( final MenuManager manager ) {
-    Composite buttonParent = new Composite( menuParent, SWT.NONE );
-    buttonParent.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
-    RowLayout layout = new RowLayout();
-    layout.spacing = 0;
-    layout.marginLeft = -6;
-    layout.marginTop = -1;
-    layout.marginRight = 33;
-    buttonParent.setLayout( layout );
-    
-    final Button textButton = new Button( buttonParent, SWT.PUSH | SWT.FLAT );
-    textButton.setData( WidgetUtil.CUSTOM_VARIANT, "menuBar" );
-    textButton.setText( manager.getMenuText() );
-    
-    Button iconButton = new Button( buttonParent, SWT.PUSH | SWT.FLAT );
-    iconButton.setData( WidgetUtil.CUSTOM_VARIANT, "menuBar" );
-    LayoutRegistry registry = LayoutRegistry.getInstance();
-    Layout activeLayout = registry.getActiveLayout();
-    LayoutSet set 
-      = activeLayout.getLayoutSet( ILayoutSetConstants.SET_ID_MENUBAR );
-    String path = set.getImagePath( ILayoutSetConstants.MENUBAR_ARROW );
-    ImageDescriptor imgDesc 
-      = AbstractUIPlugin.imageDescriptorFromPlugin( PLUGIN_ID, path );
-    iconButton.setImage( imgDesc.createImage() );   
-    
-    SelectionAdapter selAdapter = new SelectionAdapter(){
-      public void widgetSelected( SelectionEvent e ) {
-        makePopup( manager, textButton );
-      }
-    };
-    textButton.addSelectionListener( selAdapter );
-    iconButton.addSelectionListener( selAdapter );
-    
-    // needed to clear all controls in case of an update
-    buttonList.add( buttonParent );
-  }
-
-  private void makePopup( 
-    final MenuManager manager, 
-    final Button textButton ) 
-  {
-    IContributionItem[] items = manager.getItems();
-    if( items.length > 0 ) {
-      IWorkbench workbench = PlatformUI.getWorkbench();
-      Shell shell = workbench.getActiveWorkbenchWindow().getShell();
-      MenuPopup popup = new MenuPopup( 
-                                           shell,
-                                           SWT.ON_TOP,
-                                           false,
-                                           false,
-                                           false,
-                                           false,
-                                           false,
-                                           null,
-                                           null,
-                                           manager,
-                                           null );
+      final ToolItem toolItem = new ToolItem( toolbar, style );
+      toolItem.setText( manager.getMenuText() );
+      toolItem.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+      // create the menu
+      final Menu menu = new Menu( menuParent );
+      toolItem.setData( menu );
+      menu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );      
+      toolItem.addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( final SelectionEvent e ) {
+          // hook menu to toolitem.
+          IContributionItem[] contribItems = manager.getItems();
+          if( contribItems != null && contribItems.length > 0 ) {
+            for( int i = 0; i < contribItems.length; i++ ) {
+              contribItems[ i ].fill( menu, -1 );
+            }
+          }
+          // set the menu position
+          Display display = toolItem.getDisplay();       
+          Rectangle bounds = toolItem.getBounds();
+          int leftIndent = bounds.x;
+          int topIndent = bounds.y + bounds.height;
+          Point indent = new Point( leftIndent, topIndent );
+          Point menuLocation 
+            = display.map( toolbar, toolbar.getShell(), indent );
+          menu.setLocation( menuLocation );
+          // style the menuitems and show the menu
+          menu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+          styleMenuItems( menu );
+          menu.setVisible( true );
+        };
+      } );
       
-      popup.open();
-      Display display = shell.getDisplay();
-      Point pos = display.map( textButton, null, 0, textButton.getSize().y );      
-      final Shell popupShell = popup.getShell();
-      popupShell.setLocation( pos );
-      popupShell.setActive();
-    }
-    
-    
+      // needed to clear all controls in case of an update
+      toolItemList.add( toolItem );
+    } 
   }
-  
+
+  private void styleMenuItems( final Menu menu ) {
+    MenuItem[] items = menu.getItems();
+    if( items != null && items.length > 0 ) {
+      for( int i = 0; i < items.length; i++ ) {
+        items[ i ].setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+      }
+    }
+  }
+
 }

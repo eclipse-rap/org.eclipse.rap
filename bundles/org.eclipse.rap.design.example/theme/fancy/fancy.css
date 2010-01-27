@@ -672,6 +672,7 @@ Menu {
   color: rgb( 0, 89, 165 );
   background-color: white;
   border: 1px #abe033;
+  border-radius: 2px;
 }
 
 MenuItem:hover {
@@ -1289,7 +1290,6 @@ Slider-Thumb:pressed {
 
 Display {
   background-image: url( /theme/fancy/icons/browser_bg.png );
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 /* CTabFolder, TabFolder */
@@ -1432,5 +1432,63 @@ MenuItem.header-overflow {
 
 MenuItem.header-overflow:hover {
   color: #3b8fc2;
+  background-color: transparent;
+}
+
+/* MenuBar */
+
+ToolBar.menuBar {
+  background-color: transparent;
+  padding: 0px;
+  color: #656565;
+  spacing: 25px;
+}
+
+ToolItem.menuBar {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #656565;
+  padding: 0px 10px 0px 10px;
+  font: 13px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  spacing: 5px;
+}
+
+ToolItem.menuBar:hover {
+  background-color: transparent;
+    background-image: gradient(
+    linear, left top, left bottom,
+    from( #9acd2b ),
+    to( #8fbe29 )
+  );
+  border: 1px solid #83a438;
+  border-radius: 3px 3px 0px 0px;
+  color: white;
+  padding: 0px 10px 0px 10px;
+  font: 13px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+ToolItem-DropDownIcon.menuBar {
+  background-image: url( img/fancy/menu_arrow.png );
+}
+
+ToolItem-DropDownIcon.menuBar:hover {
+  background-image: url( img/fancy/menu_arrow_hover.png );
+  border: 1px solid #83a438;
+}
+
+Menu.menuBar {
+  color: #656565;
+  background-color: #f1fbdb;
+  border: 1px solid #83a438;
+  border-radius: 0px 0px 3px 3px;
+}
+
+MenuItem.menuBar {
+  color: #656565;
+}
+
+MenuItem.menuBar:hover {
+  color: #8fbe29;
   background-color: transparent;
 }

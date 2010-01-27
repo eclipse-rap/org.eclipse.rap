@@ -705,7 +705,7 @@ Menu {
   color: rgb( 0, 89, 165 );
   background-color: white;
   border: 1px rgb( 0, 89, 165 );
-/*  border-radius: 2px 2px 0px 0px; */
+  border-radius: 2px;
 }
 
 MenuItem:hover {
@@ -1321,7 +1321,6 @@ Slider-Thumb:pressed {
 /* Display */
 Display {
   background-image: url( /theme/business/icons/browser_bg.png );
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 /* CTabFolder, TabFolder */
@@ -1467,6 +1466,64 @@ MenuItem.header-overflow {
 }
 
 MenuItem.header-overflow:hover {
+  color: #0369bc;
+  background-color: transparent;
+}
+
+/* MenuBar */
+
+ToolBar.menuBar {
+  background-color: transparent;
+  padding: 0px;
+  color: #0059a5;
+  spacing: 25px;
+}
+
+ToolItem.menuBar {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #0059a5;
+  padding: 0px 10px 0px 10px;
+  font: 13px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  spacing: 5px;
+}
+
+ToolItem.menuBar:hover {
+  background-color: transparent;
+    background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    to( #f1f1f1 )
+  );
+  border: 1px solid #cccccc;
+  border-radius: 2px 2px 0px 0px;
+  color: #0059a5;
+  padding: 0px 10px 0px 10px;
+  font: 13px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+ToolItem-DropDownIcon.menuBar {
+  background-image: url( img/business/menu_arrow.png );
+}
+
+ToolItem-DropDownIcon.menuBar:hover {
+  background-image: url( img/business/menu_arrow.png );
+  border: 1px solid #cccccc;
+}
+
+Menu.menuBar {
+  color: #0059a5;
+  background-color: white;
+  border: 1px solid #cccccc;
+  border-radius: 0px 0px 2px 2px;
+}
+
+MenuItem.menuBar {
+  color: #004277;
+}
+
+MenuItem.menuBar:hover {
   color: #0369bc;
   background-color: transparent;
 }
