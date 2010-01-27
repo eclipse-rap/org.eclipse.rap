@@ -113,6 +113,12 @@
         Background image for the display (client area of the browser window).
       </description>
     </property>
+    
+    <property name="font">
+      <description>
+        The default system font. Returned by Display#getSystemFont().
+      </description>
+    </property>
 
   </element>
 

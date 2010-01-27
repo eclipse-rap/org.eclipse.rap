@@ -34,4 +34,5 @@ Display {
   rwt-warning-image: url( resource/widget/rap/dialog/warning.png );
   
   background-image: url( resource/widget/rap/display/bg.gif );
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
 public abstract class Device {
 
   private boolean disposed;
-  
+
   /**
    * Returns the matching standard color for the given
    * constant, which should be one of the color constants
@@ -127,14 +127,15 @@ public abstract class Device {
    */
   public Font getSystemFont() {
     checkDevice();
-    QxType font = ThemeUtil.getCssValue( "*", "font", SimpleSelector.DEFAULT );
+    QxType font
+      = ThemeUtil.getCssValue( "Display", "font", SimpleSelector.DEFAULT );
     return QxFont.createFont( ( QxFont )font );
   }
 
   /**
    * Returns a rectangle which describes the area of the receiver which is
    * capable of displaying data.
-   * 
+   *
    * @return the client area
    * @exception SWTException <ul>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
@@ -146,10 +147,10 @@ public abstract class Device {
     checkDevice();
     return getBounds();
   }
-  
+
   /**
    * Returns a rectangle describing the receiver's size and location.
-   * 
+   *
    * @return the bounding rectangle
    * @exception SWTException <ul>
    *   <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
