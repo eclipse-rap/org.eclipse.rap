@@ -56,8 +56,11 @@ class ExtensionEventHandler implements IRegistryChangeListener {
                     .getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE);
             IExtension ext;
             IExtensionPoint extPt;
-            IWorkbenchWindow[] win = PlatformUI.getWorkbench()
-                    .getWorkbenchWindows();
+// RAP [rh] fix for bug 290920            
+//            IWorkbenchWindow[] win = PlatformUI.getWorkbench()
+//                    .getWorkbenchWindows();
+            IWorkbenchWindow[] win = workbench.getWorkbenchWindows();
+// End of fix            
             if (win.length == 0) {
 				return;
 			}
