@@ -19025,8 +19025,10 @@ old){if(!this._internalValueChange&&this._isCreated){this._positionKnob(value);
 }},
 _applyMaximum:function(value,
 old){if(this._horizontal){this._scrollContent.setWidth(value);
-}else{this._scrollContent.setHeight(value);
-}this.setValue(this._checkValue(this.getValue()));
+if(this._scrollContent.isCreated()){this._scrollContent.getElement().style.width=value+"px";
+}}else{this._scrollContent.setHeight(value);
+if(this._scrollContent.isCreated()){this._scrollContent.getElement().style.height=value+"px";
+}}this.setValue(this._checkValue(this.getValue()));
 },
 _applyVisibility:function(value,
 old){if(!value){this._positionKnob(0);
@@ -19074,7 +19076,14 @@ _positionKnob:function(value){if(this.isCreated()){if(this._horizontal){this._sc
 }else{this._scrollBar.setScrollTop(value);
 }}},
 _afterAppear:function(){this.base(arguments);
-this._positionKnob(this.getValue());
+if(qx.core.Client.getEngine()=="mshtml"&&this._scrollContent.isCreated()){var style=this._scrollContent.getElement().style;
+var width=style.width;
+var height=style.height;
+style.width="0px";
+style.height="0px";
+style.width=width;
+style.height=height;
+}this._positionKnob(this.getValue());
 }},
 destruct:function(){this._disposeObjects("_scrollContent",
 "_scrollBar",
