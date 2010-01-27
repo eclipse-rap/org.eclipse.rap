@@ -1,4 +1,4 @@
-/******************************************************************************* 
+/*******************************************************************************
 * Copyright (c) 2009 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
@@ -6,7 +6,7 @@
 *
 * Contributors:
 *   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*******************************************************************************/
 package org.eclipse.rap.ui.interactiondesign;
 
 import java.util.ArrayList;
@@ -55,48 +55,48 @@ import org.eclipse.ui.presentations.StackPresentation;
 
 /**
  * This represents an object, which extends the original <code>
- * {@link StackPresentation}</code>. 
+ * {@link StackPresentation}</code>.
  * <p>
- * You can do everything with this as you can do with the original one. It 
+ * You can do everything with this as you can do with the original one. It
  * just provides more methods for making a StackPresentation configurable.
  * </p>
- * 
+ *
  * @see StackPresentation
  * @since 1.2
  */
 public abstract class ConfigurableStack extends StackPresentation {
 
   private static final String CONFIG_ACTION_NAME = "actionClass";
-  
-  private static IStackPresentationSite siteDummy 
-    = new IStackPresentationSite() 
+
+  private static IStackPresentationSite siteDummy
+    = new IStackPresentationSite()
   {
 
     public void addSystemActions( final IMenuManager menuManager ) {
-      
-    }
-    
-    public void close( final IPresentablePart[] toClose ) {
-      
+
     }
 
-    public void dragStart( 
+    public void close( final IPresentablePart[] toClose ) {
+
+    }
+
+    public void dragStart(
       final IPresentablePart beingDragged,
       final Point initialPosition,
       final boolean keyboard )
     {
-      
+
     }
 
-    public void dragStart( 
-      final Point initialPosition, 
-      final boolean keyboard ) 
+    public void dragStart(
+      final Point initialPosition,
+      final boolean keyboard )
     {
-      
+
     }
 
     public void flushLayout() {
-      
+
     }
 
     public IPresentablePart[] getPartList() {
@@ -128,45 +128,45 @@ public abstract class ConfigurableStack extends StackPresentation {
     }
 
     public void selectPart( final IPresentablePart toSelect ) {
-      
+
     }
 
     public void setState( final int newState ) {
-      
+
     }
 
     public boolean supportsState( final int state ) {
       return false;
     }
-    
+
   };
-  
+
   /**
    * Extension Point ID of the StackPresentation Extension point.
    */
-  public static final String STACK_PRESENTATION_EXT_ID 
+  public static final String STACK_PRESENTATION_EXT_ID
     = "org.eclipse.rap.ui.stackPresentations";
   /**
-   * This method is used for getting the <code>{@link LayoutPart}</code> ID for 
-   * a specific <code>IStackPresentationSite</code>. Their is no other 
+   * This method is used for getting the <code>{@link LayoutPart}</code> ID for
+   * a specific <code>IStackPresentationSite</code>. Their is no other
    * oppertunity to get this id.
-   * 
+   *
    * @param site an instance of <code>IStackPreentationSite</code>.
-   * 
-   * @return the unique <code>LayoutPart</code> ID defined in a Perspective or 
+   *
+   * @return the unique <code>LayoutPart</code> ID defined in a Perspective or
    * <code>null</code> if their is no id.
-   * 
+   *
    * @see LayoutPart
    * @see IStackPresentationSite
    */
-  public static final String getLayoutPartId( 
-    final IStackPresentationSite site ) 
+  public static final String getLayoutPartId(
+    final IStackPresentationSite site )
   {
     String result = null;
     if( site != null && site instanceof DefaultStackPresentationSite ) {
-      DefaultStackPresentationSite defaultSite 
+      DefaultStackPresentationSite defaultSite
         = ( DefaultStackPresentationSite) site;
-      result = defaultSite.getProperty( "id" );     
+      result = defaultSite.getProperty( "id" );
     }
     return result;
   }
@@ -175,42 +175,42 @@ public abstract class ConfigurableStack extends StackPresentation {
    * store using a specific <code>IStackPresentationSite</code>. This id is
    * needed to instantiate the <code>ConfigurableStack</code> for a specific
    * LayoutPart.
-   * 
+   *
    * @param site an instance of <code>IStackPreentationSite</code>.
-   * 
-   * @return the saved <code>ConfigurableStack</code> id for the part 
+   *
+   * @return the saved <code>ConfigurableStack</code> id for the part
    * represented by the <code>IStackPresentationSite</code> or <code>null</code>
    * if no id is saved.
-   * 
+   *
    * @see LayoutPart
    * @see IStackPresentationSite
    */
   public static String getSavedStackId( final IStackPresentationSite site ) {
     String layoutPartId = null;
     String result = IPreferenceStore.STRING_DEFAULT_DEFAULT;
-    
+
     layoutPartId = getLayoutPartId( site );
-    
-    if( layoutPartId != null ) {    
+
+    if( layoutPartId != null ) {
       ScopedPreferenceStore prefStore
         = ( ScopedPreferenceStore )PrefUtil.getAPIPreferenceStore();
       String stackPresentationId = ConfigurableStackProxy.STACK_PRESENTATION_ID;
       String stackPresentationKey = stackPresentationId + "/" + layoutPartId;
       result = prefStore.getString( stackPresentationKey );
     }
-    
+
     return result;
   }
-  
+
   private ConfigurationAction configAction;
   private ImageDescriptor menuIcon;
-  
+
   private Composite parent;
 
   private ConfigurableStackProxy proxy;
   private IStackPresentationSite site;
-    
-  
+
+
   private String stackPresentationId;
 
   private List managersWhoHasListeners;
@@ -218,14 +218,14 @@ public abstract class ConfigurableStack extends StackPresentation {
   /**
    * Instantiate an object of this class by calling the super constructor with
    * a dummy <code>{@link IStackPresentationSite}</code>.
-   * 
+   *
    * @see IStackPresentationSite
    */
   public ConfigurableStack() {
     super( siteDummy );
   }
-  
-  
+
+
   public Control createPartToolBar() {
     Control result = null;
     IToolBarManager manager = getPartToolBarManager();
@@ -236,51 +236,51 @@ public abstract class ConfigurableStack extends StackPresentation {
       addPropertyChangeListenerToToolBar( manager );
       IContributionItem[] items = manager.getItems();
       String paneId = getPaneId( site );
-      
-      // get the toolbar 
+
+      // get the toolbar
       IPresentablePart selectedPart = site.getSelectedPart();
       if( selectedPart instanceof PresentablePart ) {
         PresentablePart part = ( PresentablePart ) selectedPart;
         result = part.getPane().getToolBar();
-      }        
+      }
       // set the correct visibility
       for( int i = 0; i < items.length; i++ ) {
           IContributionItem item = items[ i ];
-          boolean isVisible 
+          boolean isVisible
             = action.isViewActionVisibile( paneId, item.getId() );
-          if( ( !item.isVisible() && isVisible ) 
-              || ( item.isVisible() && !isVisible ) ) 
+          if(    ( !item.isVisible() && isVisible )
+              || ( item.isVisible() && !isVisible ) )
           {
             item.setVisible( isVisible );
-          } 
-          if( isVisible ) {     
+          }
+          if( isVisible ) {
             actionCount++;
           }
       }
-      
+
       // update the toolbar manager with the new visibility
       if( manager != null && result != null ) {
         manager.update( false );
-      }      
+      }
 
       // if no item is visible the toolbar should be null
       if( actionCount <= 0 ) {
         result = null;
-      } 
+      }
       if( result != null ) {
         result.pack();
         result.setVisible( true );
-      } 
-    }    
+      }
+    }
     return result;
   }
-  
-  private void addPropertyChangeListenerToToolBar( 
-    final IToolBarManager manager ) 
+
+  private void addPropertyChangeListenerToToolBar(
+    final IToolBarManager manager )
   {
     if( manager instanceof IToolBarManager2 && !hasListener( manager ) ) {
       final IToolBarManager2 manager2 = ( IToolBarManager2 ) manager;
-      final IPropertyChangeListener listener = new IPropertyChangeListener() {        
+      final IPropertyChangeListener listener = new IPropertyChangeListener() {
         public void propertyChange( final PropertyChangeEvent event ) {
           if( event.getProperty().equals( IToolBarManager2.PROP_LAYOUT ) ) {
             if( configAction != null ) {
@@ -294,7 +294,7 @@ public abstract class ConfigurableStack extends StackPresentation {
       if( toolBar != null ) {
         // Remove all listeners from the manager and the manager from the list
         // to prevent memory leaks
-        toolBar.addDisposeListener( new DisposeListener() {          
+        toolBar.addDisposeListener( new DisposeListener() {
           public void widgetDisposed( final DisposeEvent event ) {
             toolBar.removeDisposeListener( this );
             manager2.removePropertyChangeListener( listener );
@@ -305,9 +305,9 @@ public abstract class ConfigurableStack extends StackPresentation {
         } );
       }
     }
-    
+
   }
-  
+
   private boolean hasListener( final IToolBarManager manager ) {
     boolean result = false;
     if( managersWhoHasListeners == null ) {
@@ -320,12 +320,12 @@ public abstract class ConfigurableStack extends StackPresentation {
     }
     return result;
   }
-  
-  public IPartMenu createViewMenu() {    
+
+  public IPartMenu createViewMenu() {
     IPartMenu result = null;
-    if( isPartMenuVisisble() ) {    
+    if( isPartMenuVisisble() ) {
       result = new IPartMenu() {
-        public void showMenu(Point location) {
+        public void showMenu(final Point location) {
           IPresentablePart selectedPart = site.getSelectedPart();
           if( selectedPart instanceof PresentablePart ) {
             PresentablePart part = ( PresentablePart ) selectedPart;
@@ -336,15 +336,15 @@ public abstract class ConfigurableStack extends StackPresentation {
     }
     return result;
   }
-  
+
   /**
    * Returns an instance of <code>{@link ConfigurationAction}</code> for this
-   * <code>ConfigurableStack</code> object, which is declared over the same 
+   * <code>ConfigurableStack</code> object, which is declared over the same
    * extension.
-   * 
-   * @return the <code>ConfigurationAction</code> or <code>null</code> if no 
+   *
+   * @return the <code>ConfigurationAction</code> or <code>null</code> if no
    * action is declared for the id holding by this object.
-   * 
+   *
    * @see ConfigurationAction
    */
   public ConfigurationAction getConfigAction() {
@@ -354,21 +354,18 @@ public abstract class ConfigurableStack extends StackPresentation {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         String stackId = STACK_PRESENTATION_EXT_ID;
         IExtensionPoint point = registry.getExtensionPoint( stackId );
-        
+
         if( point != null ) {
           IConfigurationElement[] elements = point.getConfigurationElements();
           String defaultValue = IPreferenceStore.STRING_DEFAULT_DEFAULT;
           String actionClass = defaultValue;
-          
+
           boolean breakValue = true;
           IConfigurationElement element = null;
           ImageDescriptor imageDesc = null;
           for( int i = 0;  breakValue && i < elements.length; i++ ) {
             String id = elements[ i ].getAttribute( "id" );
-            
-            
             if( id.equals( stackPresentationId ) ) {
-              
               actionClass = elements[ i ].getAttribute( CONFIG_ACTION_NAME );
               if( actionClass != null && !actionClass.equals( defaultValue ) ) {
                 breakValue = false;
@@ -377,25 +374,26 @@ public abstract class ConfigurableStack extends StackPresentation {
                 String menuImage = element.getAttribute( "menuIcon" );
                 String contributerId = element.getContributor().getName();
                 if( actionImage != null ) {
-                  imageDesc 
-                    = AbstractUIPlugin.imageDescriptorFromPlugin( contributerId, 
+                  imageDesc
+                    = AbstractUIPlugin.imageDescriptorFromPlugin( contributerId,
                                                                   actionImage );
                 }
                 if( menuImage != null ) {
-                  menuIcon 
-                    = AbstractUIPlugin.imageDescriptorFromPlugin( contributerId, 
+                  menuIcon
+                    = AbstractUIPlugin.imageDescriptorFromPlugin( contributerId,
                                                                   menuImage );
                 }
               }
             }
           }
-          
+
           String defaultStore = defaultValue;
-          if( actionClass != null && !actionClass.equals( defaultStore ) 
-              && element != null ) 
+          if(    actionClass != null
+              && !actionClass.equals( defaultStore )
+              && element != null )
           {
             try {
-              Object obj 
+              Object obj
                 = element.createExecutableExtension( CONFIG_ACTION_NAME );
               if( obj instanceof ConfigurationAction ) {
                 configAction = ( ConfigurationAction ) obj;
@@ -404,44 +402,42 @@ public abstract class ConfigurableStack extends StackPresentation {
                   configAction.setImageDescriptor( imageDesc );
                 }
               }
-              
             } catch( CoreException e ) {
               e.printStackTrace();
             }
-          }        
-        }      
-      }      
+          }
+        }
+      }
     }
     result = configAction;
-    
     return result;
   }
-  
+
   /**
-   * Represents the menuIcon which is declared in the extension for the 
-   * extension point org.eclipse.rap.ui.stackPresentations. Return the 
+   * Represents the menuIcon which is declared in the extension for the
+   * extension point org.eclipse.rap.ui.stackPresentations. Return the
    * ImageDescriptor for this image.
    */
   protected ImageDescriptor getMenuIcon() {
     return menuIcon;
   }
-  
+
   /**
-   * This method returns the <code>{@link PartPane}</code> id defined in the 
-   * selected <code>{@link PresentablePart}</code> of a 
+   * This method returns the <code>{@link PartPane}</code> id defined in the
+   * selected <code>{@link PresentablePart}</code> of a
    * <code>IStackPresentationSite</code> instance.
-   * 
+   *
    * @param site an instance of <code>IStackPresentationSite</code>
-   * 
+   *
    * @return the id of the <code>PartPane</code> from the selected
    * <code>PresentablePart</code> or an empty String if no part is selected.
-   * 
+   *
    * @see PartPane
    * @see PresentablePart
    * @see IStackPresentationSite
    */
   public final String getPaneId( final IStackPresentationSite site ) {
-    String result = "";    
+    String result = "";
     IPresentablePart selectedPart = site.getSelectedPart();
     if( selectedPart instanceof PresentablePart ) {
       PresentablePart part = ( PresentablePart ) selectedPart;
@@ -449,9 +445,9 @@ public abstract class ConfigurableStack extends StackPresentation {
     }
     return result;
   }
-  
-  private final String getSecondaryPaneId( final IStackPresentationSite site ) {
-    String result = null;    
+
+  private String getSecondaryPaneId( final IStackPresentationSite site ) {
+    String result = null;
     IPresentablePart selectedPart = site.getSelectedPart();
     if( selectedPart instanceof PresentablePart ) {
       PresentablePart part = ( PresentablePart ) selectedPart;
@@ -463,7 +459,7 @@ public abstract class ConfigurableStack extends StackPresentation {
     }
     return result;
   }
-  
+
   /**
    * Returns the parent composite for this kind of <code>StackPresentation
    * </code>.
@@ -472,14 +468,14 @@ public abstract class ConfigurableStack extends StackPresentation {
   public Composite getParent() {
     return parent;
   }
-  
+
   /**
-   * This method returns the <code>{@link IToolBarManager}</code> for the 
+   * This method returns the <code>{@link IToolBarManager}</code> for the
    * selected <code>{@link ViewPart}</code>.
-   * 
-   * @return the <code>IToolBarManager</code> or <code>null</code> if their is 
+   *
+   * @return the <code>IToolBarManager</code> or <code>null</code> if their is
    * no <code>ViewPart</code> selected.
-   * 
+   *
    * @see IToolBarManager
    * @see ViewPart
    */
@@ -501,9 +497,9 @@ public abstract class ConfigurableStack extends StackPresentation {
       } else {
         viewPart = activePage.findView( paneId );
       }
-      
+
       IActionBars bars = null;
-      if( viewPart != null ) {    
+      if( viewPart != null ) {
         IViewSite viewSite = ( IViewSite ) viewPart.getSite();
         bars = viewSite.getActionBars();
         result = bars.getToolBarManager();
@@ -513,39 +509,39 @@ public abstract class ConfigurableStack extends StackPresentation {
   }
 
   /**
-   * If this Stack is from the type standaloneview, than it will have an 
-   * attribute called showTitle. This is a parameter of the crate method in the 
-   * original <code>AbstractPresentationFactory</code>. This is just a separate 
-   * method, because the creation is now automated and using proxy objects. 
+   * If this Stack is from the type standaloneview, than it will have an
+   * attribute called showTitle. This is a parameter of the crate method in the
+   * original <code>AbstractPresentationFactory</code>. This is just a separate
+   * method, because the creation is now automated and using proxy objects.
    * To match the old behaviour, this method was introduced.
-   * @return the showTitle flag for the standalone view. If the view is not 
+   * @return the showTitle flag for the standalone view. If the view is not
    * standalone, it will return allways <code>false</code>.
    */
   public boolean getShowTitle() {
     return proxy.getShowTitle();
   }
-  
 
-  
+
+
   /**
-   * Returns the <code>{@link IStackPresentationSite}</code> holding by this 
+   * Returns the <code>{@link IStackPresentationSite}</code> holding by this
    * instance.
-   * 
+   *
    * @return the site used for communication between the presentation and
    * the workbench.
-   * 
+   *
    * @see IStackPresentationSite
    */
   public IStackPresentationSite getSite() {
     return site;
   }
-  
+
   public String getStackPresentationId() {
     return stackPresentationId;
   }
-  
+
   /**
-   * Returns the type of the Stack. 
+   * Returns the type of the Stack.
    * @return the type. See <code>PresentationFactory</code> constants.
    */
   protected String getType() {
@@ -555,36 +551,36 @@ public abstract class ConfigurableStack extends StackPresentation {
 
   /**
    * This is called right after all necessary fields are initialized e.g. site,
-   * stackPresentationId, parent and proxy. Subclasses can implement any 
+   * stackPresentationId, parent and proxy. Subclasses can implement any
    * initializaion behaviour using this mehtod.
    */
   public abstract void init();
-  
+
   /**
-   * This method is called right after the constructor is called. It's 
-   * necessary for creating a <code>ConfigurableStack</code> object over an 
-   * extension because the standard <code>StackPresentation</code> has no 
+   * This method is called right after the constructor is called. It's
+   * necessary for creating a <code>ConfigurableStack</code> object over an
+   * extension because the standard <code>StackPresentation</code> has no
    * parameterless constructor.
    * <p>
    * This method just set the mandatory fields.
    * </p>
-   * 
+   *
    * @param site the site used for communication between the presentation and
-   * the workbench. 
-   * @param stackId the StackPresentation ID, which is declared in the 
-   * Extension. 
-   * @param parent the parent composite to use for the presentation's controls. 
-   * @param proxy the <code>{@link ConfigurableStackProxy}</code> that holds 
+   * the workbench.
+   * @param stackId the StackPresentation ID, which is declared in the
+   * Extension.
+   * @param parent the parent composite to use for the presentation's controls.
+   * @param proxy the <code>{@link ConfigurableStackProxy}</code> that holds
    * this instance.
-   * 
+   *
    * @see ConfigurableStackProxy
    * @see StackPresentation
    */
-  public void init( 
-    final IStackPresentationSite site, 
-    final String stackId, 
+  public void init(
+    final IStackPresentationSite site,
+    final String stackId,
     final Composite parent,
-    final ConfigurableStackProxy proxy ) 
+    final ConfigurableStackProxy proxy )
   {
     this.site = site;
     this.stackPresentationId = stackId;
@@ -592,24 +588,23 @@ public abstract class ConfigurableStack extends StackPresentation {
     this.proxy = proxy;
     init();
   }
-  
+
   private boolean isPartMenuVisisble() {
     boolean result = false;
     if( configAction != null ) {
       result = configAction.isPartMenuVisible();
     }
-    
     return result;
   }
-  
+
   /**
    * Method to change the current StackPresentation of a part. This method just
-   * calls the 
+   * calls the
    * <code>{@link ConfigurableStackProxy#setCurrentStackPresentation(String)}
    * </code> method.
-   * 
+   *
    * @param newStackId the id of the stack to change.
-   * 
+   *
    * @see ConfigurableStackProxy
    */
   public void setCurrentStackPresentation( final String newStackId ) {
@@ -617,5 +612,5 @@ public abstract class ConfigurableStack extends StackPresentation {
       proxy.setCurrentStackPresentation( newStackId );
     }
   }
-  
+
 }
