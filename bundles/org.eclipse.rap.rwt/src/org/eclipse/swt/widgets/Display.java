@@ -188,6 +188,8 @@ public class Display extends Device implements Adaptable {
   private Set closeListeners;
   private Set disposeListeners;
   private Runnable[] disposeList;
+  private Composite[] layoutDeferred;
+  private int layoutDeferredCount;
 
   /* Display Data */
   private Object data;
@@ -979,6 +981,7 @@ public class Display extends Device implements Adaptable {
    */
   public boolean readAndDispatch() {
     checkDevice();
+    runDeferredLayouts();
     return RWTLifeCycle.readAndDispatch();
   }
 
@@ -1416,6 +1419,39 @@ public class Display extends Device implements Adaptable {
    */
   void error( final int code ) {
     SWT.error( code );
+  }
+
+  //////////////////
+  // Deferred layout
+
+  void addLayoutDeferred( final Composite comp ) {
+    if( layoutDeferred == null ) {
+      layoutDeferred = new Composite[ 64 ];
+    }
+    if( layoutDeferredCount == layoutDeferred.length ) {
+      Composite[] temp = new Composite[ layoutDeferred.length + 64 ];
+      System.arraycopy( layoutDeferred, 0, temp, 0, layoutDeferred.length );
+      layoutDeferred = temp;
+    }
+    layoutDeferred[ layoutDeferredCount++ ] = comp;
+  }
+
+  boolean runDeferredLayouts() {
+    boolean result = false;
+    if( layoutDeferredCount != 0 ) {
+      Composite[] temp = layoutDeferred;
+      int count = layoutDeferredCount;
+      layoutDeferred = null;
+      layoutDeferredCount = 0;
+      for( int i = 0; i < count; i++ ) {
+        Composite comp = temp[ i ];
+        if( !comp.isDisposed() ) {
+          comp.setLayoutDeferred( false );
+        }
+      }
+      result = true;
+    }
+    return result;
   }
 
   ///////////////

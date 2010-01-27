@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -499,6 +499,48 @@ public class SWT {
 //   * @since 1.2
 //   */
 //  public static final int TRAVERSE_PAGE_NEXT = 1 << 9;
+
+  /**
+   * A constant indicating that a given operation should be performed on
+   * all widgets (value is 1&lt;&lt;0).
+   *
+   * <p><b>Used By:</b><ul>
+   * <li><code>Composite</code> layout</li>
+   * </ul></p>
+   *
+   * @see org.eclipse.swt.widgets.Composite#layout(org.eclipse.swt.widgets.Control[], int)
+   *
+   * @since 1.3
+   */
+  public static final int ALL = 1 << 0;
+
+  /**
+   * A constant indicating that widgets have changed.
+   * (value is 1&lt;&lt;1).
+   *
+   * <p><b>Used By:</b><ul>
+   * <li><code>Composite</code> layout</li>
+   * </ul></p>
+   *
+   * @see org.eclipse.swt.widgets.Composite#layout(org.eclipse.swt.widgets.Control[], int)
+   *
+   * @since 1.3
+   */
+  public static final int CHANGED = 1 << 1;
+
+  /**
+   * A constant indicating that a given operation should be deferred.
+   * (value is 1&lt;&lt;2).
+   *
+   * <p><b>Used By:</b><ul>
+   * <li><code>Composite</code> layout</li>
+   * </ul></p>
+   *
+   * @see org.eclipse.swt.widgets.Composite#layout(org.eclipse.swt.widgets.Control[], int)
+   *
+   * @since 1.3
+   */
+  public static final int DEFER = 1 << 2;
 
   /**
    * A constant known to be zero (0), used in operations which
@@ -2423,12 +2465,12 @@ public class SWT {
    * (value is 48).
    */
   public static final int ERROR_INVALID_FONT = 48;
-  
-  /** 
+
+  /**
    * SWT error constant indicating that an attempt was made to
    * use an BrowserFunction object which had already been disposed
    * (value is 49).
-   * 
+   *
    * @since 1.3
    */
   public static final int ERROR_FUNCTION_DISPOSED = 49;
