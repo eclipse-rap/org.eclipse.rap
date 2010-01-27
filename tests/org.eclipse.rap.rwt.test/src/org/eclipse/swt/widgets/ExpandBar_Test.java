@@ -157,4 +157,16 @@ public class ExpandBar_Test extends TestCase {
       // expected
     }
   }
+
+  // bug 301005
+  public void testSetFontNull() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    try {
+      expandBar.setFont( null );
+    } catch( Throwable e ) {
+      fail( "setFont() must accept null value" );
+    }
+  }
 }
