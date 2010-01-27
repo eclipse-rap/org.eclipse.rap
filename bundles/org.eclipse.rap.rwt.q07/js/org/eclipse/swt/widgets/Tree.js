@@ -122,6 +122,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       this._tree.setBackgroundColor( color );
     },
 
+    setBackgroundImage : function( image ) {
+      this._tree.setBackgroundImage( image );
+    },
+
+    resetBackgroundImage : function() {
+      this._tree.resetBackgroundImage();
+    },
+
     resetBackgroundColor : function() {
       this._tree.resetBackgroundColor();
     },

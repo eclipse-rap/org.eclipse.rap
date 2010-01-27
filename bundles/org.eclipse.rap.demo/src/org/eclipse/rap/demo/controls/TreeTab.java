@@ -58,6 +58,7 @@ public class TreeTab extends ExampleTab {
     createShowColumnControl();
     createFgColorButton();
     createBgColorButton();
+    createBgImageButton();
     createFontChooser();
     final Button itemFgButton
       = createPropertyButton( "Custom foreground on 1st item", SWT.CHECK );
