@@ -1016,31 +1016,70 @@ public class SWT {
    */
   public static final int F12 = KEYCODE_BIT + 21;
 
-// TODO [rh] find out how what client-side the key codes are for F13 - F15
-//  /**
-//   * Keyboard event constant representing the F13 key
-//   * (value is (1&lt;&lt;24)+22).
-//   *
-//   * @since 1.2
-//   */
-//  public static final int F13 = KEYCODE_BIT + 22;
-//
-//  /**
-//   * Keyboard event constant representing the F14 key
-//   * (value is (1&lt;&lt;24)+23).
-//   *
-//   * @since 1.2
-//   */
-//  public static final int F14 = KEYCODE_BIT + 23;
-//
-//  /**
-//   * Keyboard event constant representing the F15 key
-//   * (value is (1&lt;&lt;24)+24).
-//   *
-//   * @since 1.2
-//   */
-//  public static final int F15 = KEYCODE_BIT + 24;
-//
+  /**
+   * Keyboard event constant representing the F13 key
+   * (value is (1&lt;&lt;24)+22).
+   *
+   * @since 1.3
+   */
+  public static final int F13 = KEYCODE_BIT + 22;
+
+  /**
+   * Keyboard event constant representing the F14 key
+   * (value is (1&lt;&lt;24)+23).
+   *
+   * @since 1.3
+   */
+  public static final int F14 = KEYCODE_BIT + 23;
+
+  /**
+   * Keyboard event constant representing the F15 key
+   * (value is (1&lt;&lt;24)+24).
+   *
+   * @since 1.3
+   */
+  public static final int F15 = KEYCODE_BIT + 24;
+
+  /**
+   * Keyboard event constant representing the F16 key
+   * (value is (1&lt;&lt;25)+25).
+   * 
+   * @since 1.3
+   */
+  public static final int F16 = KEYCODE_BIT + 25;
+  
+  /**
+   * Keyboard event constant representing the F17 key
+   * (value is (1&lt;&lt;26)+26).
+   * 
+   * @since 1.3
+   */
+  public static final int F17 = KEYCODE_BIT + 26;
+  
+  /**
+   * Keyboard event constant representing the F18 key
+   * (value is (1&lt;&lt;27)+27).
+   * 
+   * @since 1.3
+   */
+  public static final int F18 = KEYCODE_BIT + 27;
+
+  /**
+   * Keyboard event constant representing the F19 key
+   * (value is (1&lt;&lt;28)+28).
+   * 
+   * @since 1.3
+   */
+  public static final int F19 = KEYCODE_BIT + 28;
+  
+  /**
+   * Keyboard event constant representing the F20 key
+   * (value is (1&lt;&lt;29)+29).
+   * 
+   * @since 1.3
+   */
+  public static final int F20 = KEYCODE_BIT + 29;
+
   /**
    * Keyboard event constant representing the numeric key
    * pad multiply key (value is (1&lt;&lt;24)+42).
