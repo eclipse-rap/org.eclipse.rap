@@ -102,7 +102,10 @@ public class CoolBarManager extends CoolBarManager2 {
     
     public void widgetSelected( final SelectionEvent e ) {
       Widget widget = e.widget;
-      if( widget != null && widget instanceof ToolItem ) {
+      if( widget != null 
+          && widget instanceof ToolItem 
+          && !widget.isDisposed() ) 
+      {
         if( widget.getData( WidgetUtil.CUSTOM_VARIANT ) != null ) {
           IContributionItem item = ( IContributionItem ) widget.getData();
           if( item instanceof CommandContributionItem ) {
@@ -134,7 +137,8 @@ public class CoolBarManager extends CoolBarManager2 {
   }
   
   public CoolBarManager() {
-    dummyBuilder = new DummyBuilder( null, ILayoutSetConstants.SET_ID_COOLBAR );
+    dummyBuilder 
+      = new DummyBuilder( null, ILayoutSetConstants.SET_ID_COOLBAR );
   }
   
   public Control createControl2( final Composite parent ) {
@@ -147,20 +151,18 @@ public class CoolBarManager extends CoolBarManager2 {
         update( true );
       }
     } );
-
-
     return toolbar;
   }
   
   public Control getControl2() {
     return toolbar;
   }
-
   
   public void update( final boolean force ) {
     if( ( isDirty() || force ) && getControl2() != null ) {
       refresh();
       boolean changed = false;
+            
       /*
        * Make a list of items including only those items that are
        * visible. Separators are being removed. Because we use only one Toolbar
@@ -175,7 +177,7 @@ public class CoolBarManager extends CoolBarManager2 {
           if( item instanceof IToolBarContributionItem ) {
             IToolBarContributionItem toolbarItem 
               = ( IToolBarContributionItem ) item;
-            IToolBarManager toolBarManager = toolbarItem.getToolBarManager();
+            IToolBarManager toolBarManager = toolbarItem.getToolBarManager();       
             IContributionItem[] toolbarItems = toolBarManager.getItems();
             for( int j = 0; j < toolbarItems.length; j++ ) {
               final IContributionItem toolItem = toolbarItems[ j ];
@@ -193,14 +195,14 @@ public class CoolBarManager extends CoolBarManager2 {
        * to be disposed. Dynamic items are also removed.
        */
       ToolItem[] toolItems = toolbar.getItems();
-      final ArrayList toolItemsToRemove = new ArrayList(toolItems.length);
-      for (int i = 0; i < toolItems.length; i++) {
+      final ArrayList toolItemsToRemove = new ArrayList( toolItems.length );
+      for( int i = 0; i < toolItems.length; i++ ) {
           final Object data = toolItems[i].getData();
-          if ((data == null)
-                  || (!visibleItems.contains(data))
-                  || ((data instanceof IContributionItem) && ((IContributionItem) data)
-                          .isDynamic())) {
-              toolItemsToRemove.add(toolItems[i]);
+          if( ( data == null )
+                  || ( !visibleItems.contains( data ) )
+                  || ( ( data instanceof IContributionItem ) 
+                      && ( ( IContributionItem ) data ).isDynamic() ) ) {
+              toolItemsToRemove.add( toolItems[i] );
           }
       }
       
@@ -301,8 +303,7 @@ public class CoolBarManager extends CoolBarManager2 {
       toolbar.pack();
       toolbar.layout( true, true );
       manageOverflow();
-    } 
-    
+    }     
   }
   
   /*

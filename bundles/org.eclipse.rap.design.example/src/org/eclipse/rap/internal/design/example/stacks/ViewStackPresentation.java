@@ -303,17 +303,19 @@ public class ViewStackPresentation extends ConfigurableStack {
         // Toolbar Layer
         if( !deactivated ) {
           getToolBarLayer();
-          toolBarLayer.setVisible( false );
-          if( state != AS_ACTIVE_FOCUS ) {
-            Display display = toolBarLayer.getDisplay();
-            Point newLocation = display.map( toolbarBg, null, 0, 0 );
-            toolBarLayer.setBounds( newLocation.x,
-                                    newLocation.y,
-                                    size.x,
-                                    size.y - 1
-                                  );
-            toolBarLayer.moveAbove( toolBar );
-            toolBarLayer.setVisible( true );
+          if( toolBarLayer != null ) {
+            toolBarLayer.setVisible( false );
+            if( state != AS_ACTIVE_FOCUS ) {
+              Display display = toolBarLayer.getDisplay();
+              Point newLocation = display.map( toolbarBg, null, 0, 0 );
+              toolBarLayer.setBounds( newLocation.x,
+                                      newLocation.y,
+                                      size.x,
+                                      size.y - 1
+                                    );
+              toolBarLayer.moveAbove( toolBar );
+              toolBarLayer.setVisible( true );              
+            }
           }
         }
       } else {
@@ -942,7 +944,8 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( currentPart != null  ) {
       oldPart = currentPart;
       if( currentPart instanceof PresentablePart
-          && ( (PresentablePart) currentPart ).getPane() != null ) {
+          && ( (PresentablePart) currentPart ).getPane() != null ) 
+      {
         currentPart.setVisible( false );
       }
     }
@@ -1180,7 +1183,6 @@ public class ViewStackPresentation extends ConfigurableStack {
       toolBarLayer = new Shell( toolbarBg.getShell(), SWT.NO_TRIM );
       toolBarLayer.setData( WidgetUtil.CUSTOM_VARIANT, "toolbarLayer" );
       toolBarLayer.setAlpha( 200 );
-      toolBarLayer.open();
       toolBarLayer.addListener( SWT.MouseDown, new Listener() {
         public void handleEvent( final Event event ) {
           activatePart( currentPart );

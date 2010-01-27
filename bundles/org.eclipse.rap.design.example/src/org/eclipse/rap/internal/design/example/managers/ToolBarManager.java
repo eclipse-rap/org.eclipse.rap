@@ -21,8 +21,6 @@ import org.eclipse.swt.widgets.ToolBar;
 
 public class ToolBarManager extends ToolBarManager2
 {
-
-  private ToolBar toolBar;
   
   
   public ToolBarManager() {
@@ -33,7 +31,7 @@ public class ToolBarManager extends ToolBarManager2
   }
 
   public ToolBar createControl( Composite parent ) {
-    return toolBar;
+    return super.createControl( parent );
   }
 
   public Control createControl2( Composite parent ) {
@@ -41,17 +39,15 @@ public class ToolBarManager extends ToolBarManager2
   }
 
   public void dispose() {
-    if( toolBar != null ) {
-      toolBar.dispose();
-    }
+    super.dispose();
   }
 
   public ToolBar getControl() {
-    return toolBar;
+    return super.getControl();
   }
 
   public Control getControl2() {
-    return toolBar;
+    return super.getControl2();
   }
 
   public int getItemCount() {
@@ -142,9 +138,6 @@ public class ToolBarManager extends ToolBarManager2
   }
 
   public void update( boolean force ) {
-    IContributionItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      
-    }
+    super.update( force );
   }
 }

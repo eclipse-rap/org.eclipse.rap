@@ -248,7 +248,11 @@ public abstract class ConfigurableStack extends StackPresentation {
           IContributionItem item = items[ i ];
           boolean isVisible 
             = action.isViewActionVisibile( paneId, item.getId() );
-          item.setVisible( isVisible );
+          if( ( !item.isVisible() && isVisible ) 
+              || ( item.isVisible() && !isVisible ) ) 
+          {
+            item.setVisible( isVisible );
+          } 
           if( isVisible ) {     
             actionCount++;
           }
