@@ -2082,7 +2082,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
   private void registerFocusListener() {
     if( focusListener == null ) {
-      focusListener = new FocusListener( ) {
+      focusListener = new FocusListener() {
         public void focusGained( final FocusEvent event ) {
           onFocus();
         }
