@@ -1092,6 +1092,7 @@ ProgressBar {
 
 ProgressBar-Indicator {
   background-color: #abe033;
+  background-image: url( /theme/fancy/icons/progress.png );
 }
 
 ProgressBar-Indicator:paused {
