@@ -224,7 +224,9 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     },
 
     _onInterval : function() {
-      this._renderIndicatorSelection();      
+      if( this.isSeeable() ) {
+        this._renderIndicatorSelection();
+      }      
     },
 
     ///////
