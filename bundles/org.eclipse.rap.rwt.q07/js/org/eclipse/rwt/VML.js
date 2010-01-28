@@ -302,12 +302,6 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       return result;      
     },
     
-//    _getNewPathArray : function() {
-//      // Note: These commands draw nothing, but force the origin of the 
-//      // shapes bounding-box to math those of its parent (needed for clipping)         
-//      return [ "M 0 0 NF NS X E" ];      
-//    },
-//    
     _setFillEnabled : function( shape, value ) {
       shape.fill.on = value;
       shape.restoreFill = value;
