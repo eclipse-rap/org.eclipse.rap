@@ -1545,10 +1545,10 @@ public class Tree extends Composite {
   // Methods to cleanup on dispose
 
   void releaseWidget() {
-    super.releaseWidget();
     if( resizeListener != null ) {
       removeControlListener( resizeListener );
     }
+    super.releaseWidget();
   }
 
   void releaseChildren() {

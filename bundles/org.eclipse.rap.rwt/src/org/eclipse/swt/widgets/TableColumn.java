@@ -377,6 +377,7 @@ public class TableColumn extends Item {
    * @see #removeControlListener
    */
   public void addControlListener( final ControlListener listener ) {
+    checkWidget();
     ControlEvent.addListener( this, listener );
   }
 
@@ -398,6 +399,7 @@ public class TableColumn extends Item {
    * @see #addControlListener
    */
   public void removeControlListener( final ControlListener listener ) {
+    checkWidget();
     ControlEvent.removeListener( this, listener );
   }
 
@@ -426,6 +428,7 @@ public class TableColumn extends Item {
    * @see SelectionEvent
    */
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
@@ -447,6 +450,7 @@ public class TableColumn extends Item {
    * @see #addSelectionListener
    */
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 

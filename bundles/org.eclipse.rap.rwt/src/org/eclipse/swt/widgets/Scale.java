@@ -100,6 +100,7 @@ public class Scale extends Control {
    * @see #removeSelectionListener
    */
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
@@ -120,6 +121,7 @@ public class Scale extends Control {
    * @see #addSelectionListener
    */
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 

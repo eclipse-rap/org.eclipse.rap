@@ -147,9 +147,6 @@ public class TreeColumn extends Item {
    */
   public void addControlListener( final ControlListener listener ) {
     checkWidget();
-    if( listener == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
     ControlEvent.addListener( this, listener );
   }
 
@@ -178,9 +175,6 @@ public class TreeColumn extends Item {
    */
   public void addSelectionListener( final SelectionListener listener ) {
     checkWidget();
-    if( listener == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
     SelectionEvent.addListener( this, listener );
   }
 

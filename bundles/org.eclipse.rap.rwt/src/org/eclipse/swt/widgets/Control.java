@@ -1461,6 +1461,7 @@ public abstract class Control extends Widget {
    * @see #removeControlListener
    */
   public void addControlListener( final ControlListener listener ) {
+    checkWidget();
     ControlEvent.addListener( this, listener );
   }
 
@@ -1482,6 +1483,7 @@ public abstract class Control extends Widget {
    * @see #addControlListener
    */
   public void removeControlListener( final ControlListener listener ) {
+    checkWidget();
     ControlEvent.removeListener( this, listener );
   }
 
@@ -1507,6 +1509,7 @@ public abstract class Control extends Widget {
    * @since 1.1
    */
   public void addMouseListener( final MouseListener listener ) {
+    checkWidget();
     MouseEvent.addListener( this, listener );
   }
 
@@ -1530,6 +1533,7 @@ public abstract class Control extends Widget {
    * @since 1.1
    */
   public void removeMouseListener( final MouseListener listener ) {
+    checkWidget();
     MouseEvent.removeListener( this, listener );
   }
 
@@ -1672,6 +1676,7 @@ public abstract class Control extends Widget {
    * @see #removeFocusListener
    */
   public void addFocusListener( final FocusListener listener ) {
+    checkWidget();
     FocusEvent.addListener( this, listener );
   }
 
@@ -1693,6 +1698,7 @@ public abstract class Control extends Widget {
    * @see #addFocusListener
    */
   public void removeFocusListener( final FocusListener listener ) {
+    checkWidget();
     FocusEvent.removeListener( this, listener );
   }
 

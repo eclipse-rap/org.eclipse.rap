@@ -1003,6 +1003,7 @@ public final class CCombo extends Composite {
    *
    */
   public void addVerifyListener( final VerifyListener verifyListener ) {
+    checkWidget();
     VerifyEvent.addListener( this, verifyListener );
   }
 
@@ -1025,6 +1026,7 @@ public final class CCombo extends Composite {
    *
    */
   public void removeVerifyListener( final VerifyListener verifyListener ) {
+    checkWidget();
     VerifyEvent.removeListener( this, verifyListener );
   }
 

@@ -800,6 +800,7 @@ public class Text extends Scrollable {
    * @see #removeVerifyListener
    */
   public void addVerifyListener( final VerifyListener verifyListener ) {
+    checkWidget();
     VerifyEvent.addListener( this, verifyListener );
   }
 
@@ -821,6 +822,7 @@ public class Text extends Scrollable {
    * @see #addVerifyListener
    */
   public void removeVerifyListener( final VerifyListener verifyListener ) {
+    checkWidget();
     VerifyEvent.removeListener( this, verifyListener );
   }
 

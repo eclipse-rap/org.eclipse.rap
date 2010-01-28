@@ -281,6 +281,7 @@ public class Browser extends Composite {
    * </ul>
    */
   public void addLocationListener( final LocationListener listener ) {
+    checkWidget();
     LocationEvent.addListener( this, listener );
   }
 
@@ -300,6 +301,7 @@ public class Browser extends Composite {
    * </ul>
    */
   public void removeLocationListener( final LocationListener listener ) {
+    checkWidget();
     LocationEvent.removeListener( this, listener );
   }
 

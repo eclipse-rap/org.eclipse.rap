@@ -503,6 +503,7 @@ public class Spinner extends Composite {
    * @see #removeModifyListener
    */
   public void addModifyListener( final ModifyListener listener ) {
+    checkWidget();
     ModifyEvent.addListener( this, listener );
   }
 
@@ -524,6 +525,7 @@ public class Spinner extends Composite {
    * @see #addModifyListener
    */
   public void removeModifyListener( final ModifyListener listener ) {
+    checkWidget();
     ModifyEvent.removeListener( this, listener );
   }
 
@@ -555,9 +557,6 @@ public class Spinner extends Composite {
    */
   public void addSelectionListener( final SelectionListener listener ) {
     checkWidget();
-    if( listener == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
     SelectionEvent.addListener( this, listener );
   }
 
@@ -582,9 +581,6 @@ public class Spinner extends Composite {
    */
   public void removeSelectionListener( final SelectionListener listener ) {
     checkWidget();
-    if( listener == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
     SelectionEvent.addListener( this, listener );
   }
   

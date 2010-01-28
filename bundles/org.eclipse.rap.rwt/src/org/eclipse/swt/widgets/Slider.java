@@ -147,6 +147,7 @@ public class Slider extends Control {
    * @see SelectionEvent
    */
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
@@ -168,6 +169,7 @@ public class Slider extends Control {
    * @see #addSelectionListener
    */
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 

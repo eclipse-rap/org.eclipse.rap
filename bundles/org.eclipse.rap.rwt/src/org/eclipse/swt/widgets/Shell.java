@@ -1018,6 +1018,7 @@ public class Shell extends Decorations {
    * @see #removeShellListener
    */
   public void addShellListener( final ShellListener listener ) {
+    checkWidget();
     ShellEvent.addListener( this, listener );
   }
 
@@ -1039,6 +1040,7 @@ public class Shell extends Decorations {
    * @see #addShellListener
    */
   public void removeShellListener( final ShellListener listener ) {
+    checkWidget();
     ShellEvent.removeListener( this, listener );
   }
 

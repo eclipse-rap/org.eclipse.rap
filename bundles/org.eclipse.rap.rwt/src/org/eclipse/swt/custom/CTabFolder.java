@@ -1381,6 +1381,7 @@ public class CTabFolder extends Composite {
    * </ul>
    */
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
@@ -1399,6 +1400,7 @@ public class CTabFolder extends Composite {
    * </ul>
    */
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
@@ -1424,6 +1426,7 @@ public class CTabFolder extends Composite {
    * @see #removeCTabFolder2Listener(CTabFolder2Listener)
    */
   public void addCTabFolder2Listener( final CTabFolder2Listener listener ) {
+    checkWidget();
     CTabFolderEvent.addListener( this, listener );
   }
 
@@ -1444,6 +1447,7 @@ public class CTabFolder extends Composite {
    * @see #addCTabFolder2Listener(CTabFolder2Listener)
    */
   public void removeCTabFolder2Listener( final CTabFolder2Listener listener ) {
+    checkWidget();
     CTabFolderEvent.removeListener( this, listener );
   }
 

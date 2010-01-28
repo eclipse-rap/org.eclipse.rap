@@ -1020,6 +1020,7 @@ public class Combo extends Composite {
    * @see #removeVerifyListener
    */
   public void addVerifyListener( final VerifyListener verifyListener ) {
+    checkWidget();
     VerifyEvent.addListener( this, verifyListener );
   }
 
@@ -1041,6 +1042,7 @@ public class Combo extends Composite {
    * @see #addVerifyListener
    */
   public void removeVerifyListener( final VerifyListener verifyListener ) {
+    checkWidget();
     VerifyEvent.removeListener( this, verifyListener );
   }
 

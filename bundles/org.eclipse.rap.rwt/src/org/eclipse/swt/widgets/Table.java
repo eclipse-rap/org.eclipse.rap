@@ -2181,8 +2181,8 @@ public class Table extends Composite {
   }
 
   void releaseWidget() {
-    super.releaseWidget();
     removeControlListener( resizeListener );
+    super.releaseWidget();
   }
 
   //////////////////////////////////

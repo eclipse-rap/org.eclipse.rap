@@ -132,6 +132,7 @@ public class ExpandBar extends Composite {
    * @see #removeExpandListener
    */
   public void addExpandListener( final ExpandListener listener ) {
+    checkWidget();
     ExpandEvent.addListener( this, listener );
   }
 
@@ -154,6 +155,7 @@ public class ExpandBar extends Composite {
    * @see #addExpandListener
    */
   public void removeExpandListener( final ExpandListener listener ) {
+    checkWidget();
     ExpandEvent.removeListener( this, listener );
   }
 
@@ -485,10 +487,10 @@ public class ExpandBar extends Composite {
   // Destroy expand bar
 
   void releaseWidget() {
-    super.releaseWidget();
     if( resizeListener != null ) {
       removeControlListener( resizeListener );
     }
+    super.releaseWidget();
   }
 
   void releaseChildren() {
