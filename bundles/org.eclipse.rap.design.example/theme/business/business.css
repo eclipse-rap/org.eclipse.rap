@@ -1112,6 +1112,7 @@ ProgressBar {
   background-color: #ffffff;
   background-image: none;
   border: 1px solid #A4A4A4;
+  border-radius: 2px;
 }
 
 ProgressBar-Indicator {
