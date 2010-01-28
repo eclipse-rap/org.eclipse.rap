@@ -1170,6 +1170,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _removeColumn : function( column ) {
       this._unhookColumnMove( column );
       column.removeEventListener( "changeWidth", this._onColumnChangeSize, this );
+      this._columnArea.remove( column );
       this._updateScrollWidth();
       this._updateRows();
     },
