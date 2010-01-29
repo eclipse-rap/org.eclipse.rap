@@ -199,15 +199,26 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
           patternNode = shape.defNodes[ patternId ];
           imageNode = patternNode.firstChild;
         }
-        this._setXLink( imageNode, source );
         // the "-1" offset drastically reduces the white lines between
         // the tiles when zoomed in firefox.
         patternNode.setAttribute( "width", width - 1 );
         patternNode.setAttribute( "height", height - 1 );
         imageNode.setAttribute( "width", width );
         imageNode.setAttribute( "height", height );
-        shape.node.setAttribute( "fill", "url(#" + patternId + ")" );        
-        org.eclipse.rwt.SVG._redrawWebkit( shape );
+        shape.node.setAttribute( "fill", "url(#" + patternId + ")" );
+        if( qx.core.Client.getEngine() == "webkit" ) {
+          // Bug 301236: Loading an image using SVG causes a bad request
+          // AFTER the image-request. Prevent by pre-loading the image. 
+          var loader = new Image();
+          loader.src = source;
+          var that = this;
+          loader.onload = function() { 
+            that._setXLink( imageNode, source );
+            org.eclipse.rwt.SVG._redrawWebkit( shape );
+          };
+        } else {
+          this._setXLink( imageNode, source );          
+        }
       } else {
         shape.node.setAttribute( "fill", "none" );
       }
@@ -289,13 +300,11 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       return typeof value == "string" ? value : value + "px";
     },
    
-    _redrawWebkit : function( shape ) {
-      if( qx.core.Client.getEngine() == "webkit" ) {
-        var wrapper = function() {
-          org.eclipse.rwt.SVG._redrawWebkitCore( shape );
-        };
-        window.setTimeout( wrapper, 10 );
-      }
+    _redrawWebkit : function( shape ) {      
+      var wrapper = function() {
+        org.eclipse.rwt.SVG._redrawWebkitCore( shape );
+      };
+      window.setTimeout( wrapper, 10 );
     },
 
     _redrawWebkitCore : function( shape ) {

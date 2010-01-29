@@ -104,11 +104,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
+      var url = "./js/resource/tex.jpg";
       gfxUtil.setLayoutMode( canvas, "absolute" );
       var shape = gfxUtil.createShape( "rect" );
       gfxUtil.setRectBounds( shape, 10, 10, 100, 100 );
       gfxUtil.setStroke( shape, "black", 2 );
-      gfxUtil.setFillPattern( shape, "./js/resource/tex.jpg", 70, 70 );
+      gfxUtil.setFillPattern( shape, url, 70, 70 );
       gfxUtil.addToCanvas( canvas, shape );
       parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );
@@ -120,7 +121,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertEquals( "image", imageNode.tagName );
       assertEquals( 70, imageNode.getAttribute( "width" ) );
       assertEquals( 70, imageNode.getAttribute( "height" ) );
-      assertEquals( "./js/resource/tex.jpg", imageNode.getAttribute( "href" ) );
+      // this is due to the workaround for Bug 301236:
+      if( qx.core.Client.getEngine() != "webkit" ) {
+        assertEquals( url, imageNode.getAttribute( "href" ) );
+      }
       assertEquals( "pattern", gfxUtil.getFillType( shape ) );
       parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
     }
