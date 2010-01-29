@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
@@ -35,7 +36,7 @@ public class TextSizeDetermination {
 
 
   public interface ICalculationItem {
-    Font getFont();
+    FontData getFontData();
     String getString();
     int getWrapWidth();
   }
@@ -102,14 +103,15 @@ public class TextSizeDetermination {
                                       final int wrapWidth,
                                       final int estimationMode )
   {
-    boolean expandNewLines = estimationMode == TEXT_EXTENT;
     String toMeasure = string;
     if( estimationMode != MARKUP_EXTENT ) {
+      boolean expandNewLines = estimationMode == TEXT_EXTENT;
       toMeasure
         = TextSizeDeterminationFacade.createMeasureString( string,
                                                            expandNewLines );
     }
-    Point result = TextSizeDataBase.lookup( font, toMeasure, wrapWidth );
+    FontData fontData = font.getFontData()[ 0 ];
+    Point result = TextSizeDataBase.lookup( fontData, toMeasure, wrapWidth );
     if( result == null ) {
       switch( estimationMode ) {
         case MARKUP_EXTENT: {
@@ -128,7 +130,7 @@ public class TextSizeDetermination {
           throw new IllegalStateException( "Unknown estimation mode." );
         }
       }
-      addCalculationItem( font, toMeasure, wrapWidth );
+      addCalculationItem( fontData, toMeasure, wrapWidth );
     }
     // TODO [rst] Still returns wrong result for texts that contain only
     //            whitespace ( and possibly more that one line )
@@ -140,12 +142,13 @@ public class TextSizeDetermination {
 
   public static int getCharHeight( final Font font ) {
     int result;
+    FontData fontData = font.getFontData()[ 0 ];
     TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
-    if( probeStore.containsProbeResult( font ) ) {
-      IProbeResult probeResult = probeStore.getProbeResult( font );
+    if( probeStore.containsProbeResult( fontData ) ) {
+      IProbeResult probeResult = probeStore.getProbeResult( fontData );
       result = probeResult.getSize().y;
     } else {
-      TextSizeProbeStore.addProbeRequest( font );
+      TextSizeProbeStore.addProbeRequest( fontData );
       result = TextSizeEstimation.getCharHeight( font );
     }
     return result;
@@ -154,11 +157,12 @@ public class TextSizeDetermination {
   public static float getAvgCharWidth( final Font font ) {
     float result;
     TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
-    if( probeStore.containsProbeResult( font ) ) {
-      IProbeResult probeResult = probeStore.getProbeResult( font );
+    FontData fontData = font.getFontData()[ 0 ];
+    if( probeStore.containsProbeResult( fontData ) ) {
+      IProbeResult probeResult = probeStore.getProbeResult( fontData );
       result = probeResult.getAvgCharWidth();
     } else {
-      TextSizeProbeStore.addProbeRequest( font );
+      TextSizeProbeStore.addProbeRequest( fontData );
       result = TextSizeEstimation.getAvgCharWidth( font );
     }
     return result;
@@ -183,24 +187,24 @@ public class TextSizeDetermination {
     return result;
   }
 
-  private static void addCalculationItem( final Font font,
+  private static void addCalculationItem( final FontData fontData,
                                           final String string,
                                           final int wrapWidth )
   {
     ICalculationItem[] oldItems = getCalculationItems();
     boolean mustAdd = true;
     for( int i = 0; mustAdd && i < oldItems.length; i++ ) {
-      FontData oldFontData = oldItems[ i ].getFont().getFontData()[ 0 ];
+      FontData oldFontData = oldItems[ i ].getFontData();
       mustAdd = !(    oldItems[ i ].getString().equals( string )
-                   && oldFontData.equals( font.getFontData()[ 0 ] )
+                   && oldFontData.equals( fontData )
                    && oldItems[ i ].getWrapWidth() == wrapWidth );
     }
     if( mustAdd ) {
       ICalculationItem[] newItems = new ICalculationItem[ oldItems.length + 1 ];
       System.arraycopy( oldItems, 0, newItems, 0, oldItems.length );
       newItems[ oldItems.length ] = new ICalculationItem() {
-        public Font getFont() {
-          return font;
+        public FontData getFontData() {
+          return fontData;
         }
         public String getString() {
           return string;

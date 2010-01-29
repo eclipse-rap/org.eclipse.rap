@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ final class TextSizeProbeStore extends SessionSingletonBase {
   
   
   public interface IProbe {
-    Font getFont();
+    FontData getFontData();
     String getString();
     String getJSProbeParam();
   }
@@ -58,17 +58,17 @@ final class TextSizeProbeStore extends SessionSingletonBase {
   private static final class ProbeImpl implements IProbe {
 
     private final String probeText;
-    private final Font font;
+    private final FontData fontData;
     private String jsProbeParam;
 
-    private ProbeImpl( final String probeText, final Font font ) {
+    private ProbeImpl( final String probeText, final FontData fontData ) {
       this.probeText = probeText;
-      this.font = font;
+      this.fontData = fontData;
       this.jsProbeParam = createProbeParam( this );
     }
 
-    public Font getFont() {
-      return font;
+    public FontData getFontData() {
+      return fontData;
     }
 
     public String getString() {
@@ -91,17 +91,16 @@ final class TextSizeProbeStore extends SessionSingletonBase {
     return ( TextSizeProbeStore )getInstance( TextSizeProbeStore.class );
   }
   
-  IProbeResult getProbeResult( final Font font ) {
-    FontData fontData = font.getFontData()[ 0 ];
+  IProbeResult getProbeResult( final FontData fontData ) {
     return ( IProbeResult )probeResults.get( fontData );
   }
   
-  boolean containsProbeResult( final Font font ) {
-    return getProbeResult( font ) != null;
+  boolean containsProbeResult( final FontData fontData ) {
+    return getProbeResult( fontData ) != null;
   }
   
   IProbeResult createProbeResult( final IProbe probe, final Point size ) {
-    FontData fontData = probe.getFont().getFontData()[ 0 ];
+    FontData fontData = probe.getFontData();
     IProbeResult result = new IProbeResult() {
       private float avgCharWidth;
       public IProbe getProbe() {
@@ -134,7 +133,7 @@ final class TextSizeProbeStore extends SessionSingletonBase {
     IProbe[] result;
     synchronized( probes ) {
       if( probes.isEmpty() ) {
-        Font[] fontList = TextSizeStorageRegistry.obtain().getFontList();
+        FontData[] fontList = TextSizeStorageRegistry.obtain().getFontList();
         for( int i = 0; i < fontList.length; i++ ) {
           createProbe( fontList[ i ], getProbeString( fontList[ i ] ) );
         }
@@ -145,31 +144,29 @@ final class TextSizeProbeStore extends SessionSingletonBase {
     return result;
   }
 
-  private static String getProbeString( final Font font ) {
+  private static String getProbeString( final FontData fontData ) {
     // TODO [fappel]: probe string determination different from default
     return DEFAULT_PROBE;
   }
   
-  static IProbe getProbe( final Font font ) {
-    FontData fontData = font.getFontData()[ 0 ];
+  static IProbe getProbe( final FontData font ) {
     IProbe result;
     synchronized( probes ) {
-      result = ( IProbe )probes.get( fontData );
+      result = ( IProbe )probes.get( font );
     }
     return result;
   }
   
-  static boolean containsProbe( final Font font ) {
-    return getProbe( font ) != null;
+  static boolean containsProbe( final FontData fontData ) {
+    return getProbe( fontData ) != null;
   }
   
-  static IProbe createProbe( final Font font, final String probeText ) {
-    IProbe result = new ProbeImpl( probeText, font );
-    FontData fontData = font.getFontData()[ 0 ];
+  static IProbe createProbe( final FontData fontData, final String probeText ) {
+    IProbe result = new ProbeImpl( probeText, fontData );
     synchronized( probes ) {
       probes.put( fontData, result );
     }
-    TextSizeStorageRegistry.obtain().storeFont( font );
+    TextSizeStorageRegistry.obtain().storeFont( fontData );
     return result;
   }
 
@@ -183,10 +180,11 @@ final class TextSizeProbeStore extends SessionSingletonBase {
     }
   }
 
-  static void addProbeRequest( final Font font ) {
+  static void addProbeRequest( final FontData font ) {
     IProbe probe = getProbe( font );
     if( probe == null ) {
-      probe = createProbe( font, getProbeString( font ) );
+      FontData fontData = font;
+      probe = createProbe( fontData, getProbeString( fontData ) );
     }
     getProbeRequestsInternal().add( probe );
   }
@@ -207,13 +205,13 @@ final class TextSizeProbeStore extends SessionSingletonBase {
     final Display display = Display.getCurrent();
     if( display != null ) {
       result.append( "[ " );
-      result.append( probe.getFont().hashCode() );
+      result.append( probe.getFontData().hashCode() );
       result.append( ", " );
       result.append( "\"" );
       result.append( probe.getString() );
       result.append( "\", " );
       result.append(
-        TextSizeDeterminationFacade.createFontParam( probe.getFont() ) );
+        TextSizeDeterminationFacade.createFontParam( probe.getFontData() ) );
       result.append( " ]" );
     }
     return result.toString();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
@@ -15,48 +16,54 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
 
 
-public class DefaultTextSizeStorage implements ITextSizeStorage {
+public final class DefaultTextSizeStorage implements ITextSizeStorage {
 
   public static final int MIN_STORE_SIZE = 1000;
   public static final int DEFAULT_STORE_SIZE = 10000;
 
   static final String COMMENT = "RAP DefaultFontSizeStorage";
   static final String PREFIX_FONT_KEY = "FONT_";
-  private static Set fonts = new HashSet();
-  private static Map data = new HashMap();
-  private static Object lock = new Object();
-  private static int storeSize ;
-  private static int clearRange;
-  private static int clock;
-  static {
-    setStoreSize( DEFAULT_STORE_SIZE );
-  }
-
+  
   private static class Entry {
     private Point point;
     private long timeStamp;
   }
+  
+  private final Object lock;
+  // access is guarded by 'lock'
+  private final Set fontDatas;
+  // access is guarded by 'lock'
+  private final Map data;
+  private int storeSize;
+  private int clearRange;
+  private int clock;
 
+  public DefaultTextSizeStorage() {
+    lock = new Object();
+    data = new HashMap();
+    fontDatas = new HashSet();
+    setStoreSize( DEFAULT_STORE_SIZE );
+  }
 
   /////////////////////////////
   // interface IFontSizeStorage
 
-  public Font[] getFontList() {
-    Font[] result;
+  public FontData[] getFontList() {
+    FontData[] result;
     synchronized( lock ) {
-      result = new Font[ fonts.size() ];
-      fonts.toArray( result );
+      result = new FontData[ fontDatas.size() ];
+      fontDatas.toArray( result );
     }
     return result;
   }
 
-  public void storeFont( final Font font ) {
+  public void storeFont( final FontData fontData ) {
     synchronized( lock ) {
-      fonts.add( font );
+      fontDatas.add( fontData );
     }
   }
 
@@ -73,9 +80,7 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
     return result;
   }
 
-  public void storeTextSize( final Integer key,
-                               final Point size )
-  {
+  public void storeTextSize( final Integer key, final Point size ) {
     Point clone = defensiveCopy( size );
     Entry entry = new Entry();
     entry.point = clone;
@@ -89,11 +94,11 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
   //////////////
   // persistance
 
-  public void save( final OutputStream out ) throws IOException {
+  public void save( final OutputStream stream ) throws IOException {
     Properties properties = new Properties();
-    Font[] fontList;
+    FontData[] fontDataList;
     synchronized( lock ) {
-      fontList = getFontList();
+      fontDataList = getFontList();
       Iterator iterator = data.keySet().iterator();
       while( iterator.hasNext() ) {
         Integer key = ( Integer )iterator.next();
@@ -105,19 +110,19 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
         properties.setProperty( key.toString(), value.toString() );
       }
     }
-    for( int i = 0; i < fontList.length; i++ ) {
+    for( int i = 0; i < fontDataList.length; i++ ) {
       StringBuffer key = new StringBuffer();
       key.append( PREFIX_FONT_KEY );
       key.append( i );
-      String value = fontList[ i ].getFontData()[ 0 ].toString();
+      String value = fontDataList[ i ].toString();
       properties.setProperty( key.toString(), value );
     }
-    properties.store( out, COMMENT );
+    properties.store( stream, COMMENT );
   }
 
-  public void read( final InputStream in ) throws IOException {
+  public void read( final InputStream stream ) throws IOException {
     Properties properties = new Properties();
-    properties.load( in );
+    properties.load( stream );
     synchronized( lock ) {
       Enumeration keys = properties.keys();
       while( keys.hasMoreElements() ) {
@@ -125,7 +130,7 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
         String value = properties.getProperty( key );
         if( key.startsWith( PREFIX_FONT_KEY ) ) {
           FontData fontData = new FontData( value );
-          storeFont( Graphics.getFont( fontData ) );
+          storeFont( fontData );
         } else {
           storeTextSize( new Integer( key ), parsePoint( value ) );
         }
@@ -137,7 +142,7 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
   ////////////////////
   // overflow handling
 
-  public static void setStoreSize( final int storeSize ) {
+  public void setStoreSize( final int storeSize ) {
     if( storeSize < MIN_STORE_SIZE ) {
       String txt = "Store size must be >= {0}.";
       Object[] param = new Object[] { new Integer( MIN_STORE_SIZE ) };
@@ -148,15 +153,15 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
     BigDecimal bdStoreSize = new BigDecimal( storeSize );
     int rounding = BigDecimal.ROUND_HALF_UP;
     clearRange = bdStoreSize.divide( ten, 0, rounding ).intValue();
-    DefaultTextSizeStorage.storeSize = storeSize;
+    this.storeSize = storeSize;
   }
 
-  public static int getStoreSize() {
+  public int getStoreSize() {
     return storeSize;
   }
 
   private void handleOverFlow() {
-    if( data.size() >= DefaultTextSizeStorage.storeSize ) {
+    if( data.size() >= storeSize ) {
       Entry[] entries = new Entry[ data.size() ];
       data.values().toArray( entries );
       Arrays.sort( entries, new Comparator() {
@@ -182,25 +187,11 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
   //////////////////
   // helping methods
 
-  private Point parsePoint( final String value ) {
+  private static Point parsePoint( final String value ) {
     String[] values = value.split( "," );
     int x = Integer.valueOf( values[ 0 ] ).intValue();
     int y = Integer.valueOf( values[ 1 ] ).intValue();
     return new Point( x, y );
-  }
-
-  // for test purposes only
-  void resetFontList() {
-    synchronized( fonts ) {
-      fonts.clear();
-    }
-  }
-
-  // for test purposes only
-  void resetStringSizes() {
-    synchronized( data ) {
-      data.clear();
-    }
   }
 
   private static Point defensiveCopy( final Point point ) {
@@ -210,4 +201,19 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
     }
     return result;
   }
+
+  // for test purposes only
+  void resetFontList() {
+    synchronized( fontDatas ) {
+      fontDatas.clear();
+    }
+  }
+  
+  // for test purposes only
+  void resetStringSizes() {
+    synchronized( data ) {
+      data.clear();
+    }
+  }
+  
 }

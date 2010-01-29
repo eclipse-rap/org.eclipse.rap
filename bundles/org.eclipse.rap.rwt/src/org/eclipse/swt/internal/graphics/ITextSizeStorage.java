@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,11 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 
 
 /**
@@ -22,12 +22,12 @@ public interface ITextSizeStorage {
   /**
    * TODO [fappel]: Documentation
    */
-  Font[] getFontList();
+  FontData[] getFontList();
   
   /**
    * TODO [fappel]: Documentation
    */
-  void storeFont( Font font );
+  void storeFont( FontData fontData );
   
   /**
    * TODO [fappel]: Documentation

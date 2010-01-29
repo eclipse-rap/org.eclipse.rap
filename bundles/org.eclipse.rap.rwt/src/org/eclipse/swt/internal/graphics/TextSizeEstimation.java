@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2006, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,15 +7,15 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
 import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 
-class TextSizeEstimation {
+final class TextSizeEstimation {
 
   /**
    * Estimates the size of a given text. Line breaks are not respected.
@@ -99,14 +99,15 @@ class TextSizeEstimation {
    */
   static float getAvgCharWidth( final Font font ) {
     float result;
+    FontData fontData = font.getFontData()[ 0 ];
     TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
-    if( probeStore.containsProbeResult( font ) ) {
+    if( probeStore.containsProbeResult( fontData ) ) {
       // we can improve char width estimations in case that we already have the
       // specified font probed.
-      result = probeStore.getProbeResult( font ).getAvgCharWidth();
+      result = probeStore.getProbeResult( fontData ).getAvgCharWidth();
     } else {
-      result = font.getFontData()[ 0 ].getHeight() * 0.48f;
-      if( ( font.getFontData()[ 0 ].getStyle() & SWT.BOLD ) != 0 ) {
+      result = fontData.getHeight() * 0.48f;
+      if( ( fontData.getStyle() & SWT.BOLD ) != 0 ) {
         result *= 1.45;
       }
     }

@@ -413,7 +413,7 @@ public class Widget_Test extends TestCase {
 
   public void testReskin() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final ArrayList log = new ArrayList();
+    final java.util.List log = new ArrayList();
     Display display = new Display();
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {

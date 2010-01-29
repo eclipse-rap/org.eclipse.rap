@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -170,7 +170,7 @@ final class TextSizeDeterminationHandler
     HttpServletRequest request = ContextProvider.getRequest();
     for( int i = 0; hasProbes && i < probes.length; i++ ) {
       IProbe probe = probes[ i ];
-      String name = String.valueOf( probe.getFont().hashCode() );
+      String name = String.valueOf( probe.getFontData().hashCode() );
       String value = request.getParameter( name );
       if( value != null ) {
         Point size = getSize( value );
@@ -207,7 +207,7 @@ final class TextSizeDeterminationHandler
       // TODO [fappel]: Workaround for background process problem
       if( value != null ) {
         Point size = getSize( value );
-        TextSizeDataBase.store( item.getFont(),
+        TextSizeDataBase.store( item.getFontData(),
                                 item.getString(),
                                 item.getWrapWidth(),
                                 size );

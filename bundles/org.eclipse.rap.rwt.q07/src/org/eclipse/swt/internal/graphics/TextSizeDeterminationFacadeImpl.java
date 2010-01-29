@@ -16,7 +16,6 @@ import java.io.IOException;
 import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
@@ -76,7 +75,7 @@ public final class TextSizeDeterminationFacadeImpl
         itemString = CommonPatterns.escapeLeadingTrailingSpaces( itemString );
         param.append( itemString );
         param.append( "\", " );
-        param.append( createFontParam( item.getFont() ) );
+        param.append( createFontParam( item.getFontData() ) );
         param.append( ", " );
         param.append( item.getWrapWidth() );
         param.append( " ]" );
@@ -113,9 +112,8 @@ public final class TextSizeDeterminationFacadeImpl
     return requests;
   }
 
-  public String createFontParamInternal( final Font font ) {
+  public String createFontParamInternal( final FontData fontData ) {
     StringBuffer result = new StringBuffer();
-    FontData fontData = font.getFontData()[ 0 ];
     String[] names = WidgetLCAUtil.parseFontName( fontData.getName() );
     result.append( "[ " );
     for( int i = 0; i < names.length; i++ ) {

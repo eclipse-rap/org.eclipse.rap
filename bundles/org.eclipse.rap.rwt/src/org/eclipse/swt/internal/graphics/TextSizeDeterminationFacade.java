@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,14 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.FacadesInitializer;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
 
@@ -38,8 +39,8 @@ abstract class TextSizeDeterminationFacade {
     return FACADE_IMPL.writeFontProbingInternal();
   }
 
-  static String createFontParam( final Font font ) {
-    return FACADE_IMPL.createFontParamInternal( font );
+  static String createFontParam( final FontData fontData ) {
+    return FACADE_IMPL.createFontParamInternal( fontData );
   }
 
   public abstract String createMeasureStringInternal( String string,
@@ -50,5 +51,5 @@ abstract class TextSizeDeterminationFacade {
 
   public abstract IProbe[] writeFontProbingInternal() throws IOException;
 
-  public abstract String createFontParamInternal( Font font );
+  public abstract String createFontParamInternal( FontData fontData );
 }

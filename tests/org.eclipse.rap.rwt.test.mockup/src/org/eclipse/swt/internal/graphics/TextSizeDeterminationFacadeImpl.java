@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.graphics;
 
 import java.io.IOException;
 
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
 
@@ -38,7 +38,7 @@ public final class TextSizeDeterminationFacadeImpl
     return new IProbe[ 0 ];
   }
 
-  public String createFontParamInternal( final Font font ) {
+  public String createFontParamInternal( final FontData font ) {
     return null;
   }
 }
