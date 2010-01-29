@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -640,42 +640,59 @@ public class CTabFolder_Test extends TestCase {
     assertSame( item1, folder.getItem( new Point( 10, 7 ) ) );
   }
   
-  public void testSetSelectionBackground()
-  {
+  public void testSetSelectionBackground() {
     Display display = new Display();
     Composite control = new Shell( display );
     CTabFolder folder = new CTabFolder( control, SWT.NONE );
-    Color color = new Color(display, 0, 0, 0);
+    Color color = new Color( display, 0, 0, 0 );
     color.dispose();
-    try{
+    try {
       folder.setSelectionBackground( color );
-      fail("Disposed Image must not be set.");
-    }
-    catch (IllegalArgumentException e)
-    {
-      //Expected Exception
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
     }
   }
   
-  public void testSetSelectionBackgroundI()
-  {
+  public void testSetSelectionBackgroundI() {
     Display display = new Display();
     Composite control = new Shell( display );
     CTabFolder folder = new CTabFolder( control, SWT.NONE );
-    //Now testing the method CTabFolder#setSelectionBackground(Color[], int[], boolean);
-    Color color = new Color(display, 255, 0, 0);
+    Color color = new Color( display, 255, 0, 0 );
     color.dispose();
-    Color[] colors = new Color[] { new Color(display, 0, 0, 0), color, new Color(display, 0, 0, 255) };
-    int[] percents = new int[] {10, 40, 50};
+    Color[] colors = new Color[]{
+      new Color( display, 0, 0, 0 ), 
+      color, 
+      new Color( display, 0, 0, 255 )
+    };
+    int[] percents = new int[]{ 10, 40, 50 };
     try {
       folder.setSelectionBackground( colors, percents, true );
-      fail("Disposed Image must not be set.");
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
     }
-    catch (IllegalArgumentException e)
-    {
-      //Expected Exception
+  }
+  
+  // bug 300998
+  public void testRemoveLastItem() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.open();
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    item.setControl( new Button( folder, SWT.PUSH ) );
+    item.getControl().setVisible( true );
+    item.getControl().forceFocus();
+    assertSame( item.getControl(), display.getFocusControl() ); // precondition
+    folder.setSelection( item );
+    try {
+      item.dispose();
+    } catch( Throwable e ) {
+      e.printStackTrace();
+      fail( "Disposing last item that contains focused control must not fail" );
     }
-    
   }
 
   protected void setUp() throws Exception {

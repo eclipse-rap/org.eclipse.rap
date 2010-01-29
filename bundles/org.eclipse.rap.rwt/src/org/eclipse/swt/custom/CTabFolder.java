@@ -2200,6 +2200,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
     if( !inDispose && index != -1  ) {
       CTabItem[] items = getItems();
       if( items.length == 1 ) {
+        itemHolder.remove( item );
         priority = new int[ 0 ];
         firstIndex = -1;
         selectedIndex = -1;
@@ -2210,7 +2211,6 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
         }
         setToolTipText( null );
         setButtonBounds();
-        itemHolder.remove( item );
       } else {
         itemHolder.remove( item );
         int[] newPriority = new int[ priority.length - 1 ];
