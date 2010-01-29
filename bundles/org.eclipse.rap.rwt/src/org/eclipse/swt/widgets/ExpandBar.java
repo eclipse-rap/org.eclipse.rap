@@ -305,7 +305,7 @@ public class ExpandBar extends Composite {
    */
   public ExpandItem[] getItems() {
     checkWidget();
-    return ( org.eclipse.swt.widgets.ExpandItem[] )itemHolder.getItems();
+    return ( ExpandItem[] )itemHolder.getItems();
   }
 
   /**
@@ -510,5 +510,21 @@ public class ExpandBar extends Composite {
     Object object = getDisplay().getAdapter( IDisplayAdapter.class );
     IDisplayAdapter adapter = ( IDisplayAdapter )object;
     return adapter.getScrollBarSize();
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    ExpandItem[] items = getItems();
+    if( items != null ) {
+      for( int i = 0; i < items.length; i++ ) {
+        ExpandItem item = items[ i ];
+        if( item != null ) {
+          item.reskin( flags );
+        }
+      }
+    }
+    super.reskinChildren( flags );
   }
 }

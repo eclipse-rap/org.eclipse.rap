@@ -389,6 +389,23 @@ public class SWT {
   public static final int SetData = 36;
 
   /**
+   * The skin event type (value is 45).
+   *
+   * <p>
+   * The skin event is sent by the display when a widget needs to
+   * be skinned.
+   * </p>
+   *
+   * @see org.eclipse.swt.widgets.Display#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Widget#reskin(int)
+   *
+   * @since 1.3
+   */
+  public static final int Skin = 45;
+
+  /**
    * Indicates that a user-interface component is being dragged,
    * for example dragging the thumb of a scroll bar (value is 1).
    *
@@ -1043,23 +1060,23 @@ public class SWT {
   /**
    * Keyboard event constant representing the F16 key
    * (value is (1&lt;&lt;25)+25).
-   * 
+   *
    * @since 1.3
    */
   public static final int F16 = KEYCODE_BIT + 25;
-  
+
   /**
    * Keyboard event constant representing the F17 key
    * (value is (1&lt;&lt;26)+26).
-   * 
+   *
    * @since 1.3
    */
   public static final int F17 = KEYCODE_BIT + 26;
-  
+
   /**
    * Keyboard event constant representing the F18 key
    * (value is (1&lt;&lt;27)+27).
-   * 
+   *
    * @since 1.3
    */
   public static final int F18 = KEYCODE_BIT + 27;
@@ -1067,15 +1084,15 @@ public class SWT {
   /**
    * Keyboard event constant representing the F19 key
    * (value is (1&lt;&lt;28)+28).
-   * 
+   *
    * @since 1.3
    */
   public static final int F19 = KEYCODE_BIT + 28;
-  
+
   /**
    * Keyboard event constant representing the F20 key
    * (value is (1&lt;&lt;29)+29).
-   * 
+   *
    * @since 1.3
    */
   public static final int F20 = KEYCODE_BIT + 29;
@@ -2667,6 +2684,26 @@ public class SWT {
    * @since 1.1.1
    */
   public static final int LONG = 1 << 28;
+
+  /**
+   * Key value for setting and getting the skin class of a widget.
+   *
+   * @see org.eclipse.swt.widgets.Widget#getData(String)
+   * @see org.eclipse.swt.widgets.Widget#setData(String, Object)
+   *
+   * @since 1.3
+   */
+  public static final String SKIN_CLASS = "org.eclipse.swt.skin.class";
+
+  /**
+   * Key value for setting and getting the skin id of a widget.
+   *
+   * @see org.eclipse.swt.widgets.Widget#getData(String)
+   * @see org.eclipse.swt.widgets.Widget#setData(String, Object)
+   *
+   * @since 1.3
+   */
+  public static final String SKIN_ID = "org.eclipse.swt.skin.id";
 
   static {
     /*

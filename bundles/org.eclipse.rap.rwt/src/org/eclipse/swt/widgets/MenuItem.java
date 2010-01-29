@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -18,7 +19,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
 
 /**
  * Instances of this class represent a selectable user interface object
- * that issues notification when pressed and released. 
+ * that issues notification when pressed and released.
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>CHECK, CASCADE, PUSH, RADIO, SEPARATOR</dd>
@@ -47,7 +48,7 @@ public class MenuItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -78,7 +79,7 @@ public class MenuItem extends Item {
     this.parent = parent;
     ItemHolder.addItem( parent, this );
   }
-  
+
   /**
    * Constructs a new instance of this class given its parent
    * (which must be a <code>Menu</code>), a style value
@@ -87,7 +88,7 @@ public class MenuItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -120,7 +121,7 @@ public class MenuItem extends Item {
     this.parent = parent;
     ItemHolder.insertItem( parent, this, index );
   }
-  
+
   /**
    * Returns the receiver's parent, which must be a <code>Menu</code>.
    *
@@ -194,7 +195,7 @@ public class MenuItem extends Item {
   /**
    * Returns the receiver's cascade menu if it has one or null
    * if it does not. Only <code>CASCADE</code> menu items can have
-   * a pull down menu. The sequence of key strokes, button presses 
+   * a pull down menu. The sequence of key strokes, button presses
    * and/or button releases that are used to request a pull down
    * menu is platform specific.
    *
@@ -209,7 +210,7 @@ public class MenuItem extends Item {
     checkWidget();
     return menu;
   }
-  
+
   /**
    * Sets the image the receiver will display to the argument.
    * <p>
@@ -230,7 +231,7 @@ public class MenuItem extends Item {
       super.setImage( image );
     }
   }
-  
+
   //////////
   // Enabled
 
@@ -254,7 +255,7 @@ public class MenuItem extends Item {
       state |= DISABLED;
     }
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is enabled, and
    * <code>false</code> otherwise. A disabled menu item is typically
@@ -267,14 +268,14 @@ public class MenuItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #isEnabled
    */
   public boolean getEnabled() {
     checkWidget();
     return ( state & DISABLED ) == 0;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is enabled and all
    * of the receiver's ancestors are enabled, and <code>false</code>
@@ -287,16 +288,16 @@ public class MenuItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #getEnabled
    */
   public boolean isEnabled() {
     return getEnabled() && parent.isEnabled();
   }
-  
+
   ////////////
   // Selection
-  
+
   /**
    * Returns <code>true</code> if the receiver is selected,
    * and false otherwise.
@@ -315,7 +316,7 @@ public class MenuItem extends Item {
     checkWidget();
     return selection;
   }
-  
+
   /**
    * Sets the selection state of the receiver.
    * <p>
@@ -333,12 +334,12 @@ public class MenuItem extends Item {
     checkWidget();
     if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
       this.selection = selection;
-    } 
+    }
   }
 
   ///////////////////////
   // Listener maintenance
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the menu item is selected, by sending
@@ -440,7 +441,7 @@ public class MenuItem extends Item {
 
   //////////////////
   // Item overrides
-  
+
   final void releaseChildren() {
     if( menu != null ) {
       removeMenuDisposeListener();
@@ -462,10 +463,10 @@ public class MenuItem extends Item {
     }
     return result;
   }
-  
+
   ///////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menu
-  
+
   private void addMenuDisposeListener() {
     if( menu != null ) {
       if( menuDisposeListener == null ) {
@@ -488,7 +489,7 @@ public class MenuItem extends Item {
 
   ///////////////////////////////////////
   // Helping methods to verify arguments
-  
+
   private static int checkStyle( final int style ) {
     return checkBits( style,
                       SWT.PUSH,
@@ -497,5 +498,15 @@ public class MenuItem extends Item {
                       SWT.SEPARATOR,
                       SWT.CASCADE,
                       0 );
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    if( menu != null ) {
+      menu.reskin( flags );
+    }
+    super.reskinChildren( flags );
   }
 }

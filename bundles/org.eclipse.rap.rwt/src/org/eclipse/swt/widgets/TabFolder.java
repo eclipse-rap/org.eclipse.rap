@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -118,7 +119,7 @@ public class TabFolder extends Composite {
    */
   public TabItem[] getItems() {
     checkWidget();
-    return (org.eclipse.swt.widgets.TabItem[] )itemHolder.getItems();
+    return ( TabItem[] )itemHolder.getItems();
   }
 
   /**
@@ -525,5 +526,21 @@ public class TabFolder extends Composite {
     * the SWT style.
     */
     return result & ~( SWT.H_SCROLL | SWT.V_SCROLL );
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    TabItem[] items = getItems();
+    if( items != null ) {
+      for( int i = 0; i < items.length; i++ ) {
+        TabItem item = items[ i ];
+        if( item != null ) {
+          item.reskin( flags );
+        }
+      }
+    }
+    super.reskinChildren( flags );
   }
 }

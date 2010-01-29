@@ -1025,7 +1025,7 @@ public class CoolBar extends Composite {
   		if (height != size.x) super.setSize(trim.width, size.y);
   	} else {
   		Rectangle trim = computeTrim (0, 0, 0, height);
-  		if (height != size.y) super.setSize(size.x, trim.height);		
+  		if (height != size.y) super.setSize(size.x, trim.height);
   	}
   }
 
@@ -1381,6 +1381,22 @@ public class CoolBar extends Composite {
       result = super.getAdapter( adapter );
     }
     return result;
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    CoolItem[] items = getItems();
+    if( items != null ) {
+      for( int i = 0; i < items.length; i++ ) {
+        CoolItem item = items[ i ];
+        if( item != null ) {
+          item.reskin( flags );
+        }
+      }
+    }
+    super.reskinChildren( flags );
   }
 
 }

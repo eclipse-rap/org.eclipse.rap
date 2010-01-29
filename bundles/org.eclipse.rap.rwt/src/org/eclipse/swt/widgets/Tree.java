@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -366,7 +366,7 @@ public class Tree extends Composite {
    */
   public TreeItem[] getItems() {
     checkWidget();
-    return ( org.eclipse.swt.widgets.TreeItem[] )itemHolder.getItems();
+    return ( TreeItem[] )itemHolder.getItems();
   }
 
   /**
@@ -1846,5 +1846,30 @@ public class Tree extends Composite {
     Object object = getDisplay().getAdapter( IDisplayAdapter.class );
     IDisplayAdapter adapter = ( IDisplayAdapter )object;
     return adapter.getScrollBarSize();
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    TreeItem[] items = getItems();
+    if( items != null ) {
+      for( int i = 0; i < items.length; i++ ) {
+        TreeItem item = items[ i ];
+        if( item != null ) {
+          item.reskinChildren( flags );
+        }
+      }
+    }
+    TreeColumn[] columns = getColumns();
+    if( columns != null ) {
+      for( int i = 0; i < columns.length; i++ ) {
+        TreeColumn column = columns[ i ];
+        if( !column.isDisposed() ) {
+          column.reskinChildren( flags );
+        }
+      }
+    }
+    super.reskinChildren( flags );
   }
 }

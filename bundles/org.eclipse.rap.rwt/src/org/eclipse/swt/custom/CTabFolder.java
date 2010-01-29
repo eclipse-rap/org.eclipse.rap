@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1114,7 +1114,7 @@ public class CTabFolder extends Composite {
    *                 less than the size of the colors array.
    *
    * @param vertical indicate the direction of the gradient.  True is vertical and false is horizontal.
-   * 
+   *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    *
@@ -2280,6 +2280,17 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
     CTabFolderThemeAdapter themeAdapter
       = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getItemSpacing( selected );
+  }
+
+  ///////////////////
+  // Skinning support
+
+  public void reskin( final int flags ) {
+    super.reskin( flags );
+    CTabItem[] items = getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      items[ i ].reskin( flags );
+    }
   }
 
   ////////////////

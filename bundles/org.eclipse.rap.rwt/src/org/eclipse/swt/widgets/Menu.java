@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -120,7 +121,7 @@ public class Menu extends Widget {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -182,7 +183,7 @@ public class Menu extends Widget {
     checkWidget ();
     return cascade;
   }
-  
+
   /**
    * Returns the receiver's parent item, which must be a
    * <code>Menu</code> or null when the receiver is a
@@ -202,7 +203,7 @@ public class Menu extends Widget {
     }
     return null;
   }
-  
+
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
@@ -221,7 +222,7 @@ public class Menu extends Widget {
     }
     return result;
   }
-  
+
   /**
    * Sets the location of the receiver, which must be a popup,
    * to the point specified by the arguments which are relative
@@ -249,7 +250,7 @@ public class Menu extends Widget {
       this.y = y;
     }
   }
-  
+
   /**
    * Sets the location of the receiver, which must be a popup,
    * to the point specified by the argument which is relative
@@ -271,7 +272,7 @@ public class Menu extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setLocation( final Point location ) {
@@ -281,7 +282,7 @@ public class Menu extends Widget {
     }
     setLocation( location.x, location.y );
   }
-  
+
   /**
    * Returns the receiver's shell. For all controls other than
    * shells, this simply returns the control's nearest ancestor
@@ -304,10 +305,10 @@ public class Menu extends Widget {
 
   ///////////
   // Visible
-  
+
   /**
    * Marks the receiver as visible if the argument is <code>true</code>,
-   * and marks it invisible otherwise. 
+   * and marks it invisible otherwise.
    * <p>
    * If one of the receiver's ancestors is not visible or some
    * other condition makes the receiver not visible, marking
@@ -333,7 +334,7 @@ public class Menu extends Widget {
       }
     }
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is visible, and
    * <code>false</code> otherwise.
@@ -364,7 +365,7 @@ public class Menu extends Widget {
     }
     return result;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is visible and all
    * of the receiver's ancestors are visible and <code>false</code>
@@ -383,10 +384,10 @@ public class Menu extends Widget {
     checkWidget();
     return getVisible();
   }
-  
+
   ///////////
   // Enabled
-  
+
   /**
    * Enables the receiver if the argument is <code>true</code>,
    * and disables it otherwise. A disabled menu is typically
@@ -420,7 +421,7 @@ public class Menu extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #isEnabled
    */
   public boolean getEnabled() {
@@ -440,7 +441,7 @@ public class Menu extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #getEnabled
    */
   public boolean isEnabled() {
@@ -451,10 +452,10 @@ public class Menu extends Widget {
     }
     return getEnabled() && parentMenu.isEnabled();
   }
-  
+
   ////////////////////////////
   // Management of menu items
-  
+
   /**
    * Returns the number of items contained in the receiver.
    *
@@ -472,11 +473,11 @@ public class Menu extends Widget {
 
   /**
    * Returns a (possibly empty) array of <code>MenuItem</code>s which
-   * are the items in the receiver. 
+   * are the items in the receiver.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver
@@ -488,7 +489,7 @@ public class Menu extends Widget {
    */
   public MenuItem[] getItems() {
     checkWidget();
-    return (org.eclipse.swt.widgets.MenuItem[] )itemHolder.getItems();
+    return ( MenuItem[] )itemHolder.getItems();
   }
 
   /**
@@ -510,10 +511,10 @@ public class Menu extends Widget {
     checkWidget();
     return ( MenuItem )itemHolder.getItem( index );
   }
-  
+
   /**
    * Searches the receiver's list starting at the first item
-   * (index 0) until an item is found that is equal to the 
+   * (index 0) until an item is found that is equal to the
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
@@ -538,10 +539,10 @@ public class Menu extends Widget {
     }
     return itemHolder.indexOf( menuItem );
   }
-  
+
   ////////////////////
   // Widget overrides
-  
+
   // TODO [rh] disposal of Menu and its items not yet completely implemented
   final void releaseChildren() {
     MenuItem[] menuItems = ( MenuItem[] )ItemHolder.getItems( this );
@@ -571,7 +572,7 @@ public class Menu extends Widget {
 
   ///////////////////////////////////////
   // Listener registration/deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when menus are hidden or shown, by sending it
@@ -668,7 +669,7 @@ public class Menu extends Widget {
 
   //////////////////
   // Helping methods
-  
+
   private static Control checkNull( final Control control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -692,5 +693,17 @@ public class Menu extends Widget {
 
   private static int checkStyle( final int style ) {
     return checkBits( style, SWT.POP_UP, SWT.BAR, SWT.DROP_DOWN, 0, 0, 0 );
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    MenuItem[] items = getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      MenuItem item = items[ i ];
+      item.reskin( flags );
+    }
+    super.reskinChildren( flags );
   }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
+
+import java.util.ArrayList;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
@@ -134,7 +136,7 @@ public class Widget_Test extends TestCase {
     shell.dispose();
     // no assert: this test ensures that no StackOverflowError occurs
   }
-  
+
   public void testDisposeSelfWhileInDispose() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -407,5 +409,74 @@ public class Widget_Test extends TestCase {
       }
     } );
     assertTrue( control.isListening( SWT.Help ) );
+  }
+
+  public void testReskin() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final ArrayList log = new ArrayList();
+    Display display = new Display();
+    Listener listener = new Listener() {
+      public void handleEvent( final Event event ) {
+        if( event.type == SWT.Skin ) {
+          log.add( event.widget );
+        }
+      }
+    };
+    display.addListener( SWT.Skin, listener );
+    Shell shell = new Shell( display );
+    Composite child1 = new Composite( shell, SWT.NONE );
+    Label subchild1 = new Label( child1, SWT.NONE );
+    Composite child2 = new Composite( shell, SWT.NONE );
+    Label subchild2 = new Label( child2, SWT.NONE );
+    Composite child3 = new Composite( shell, SWT.NONE );
+    Label subchild3 = new Label( child3, SWT.NONE );
+    shell.reskin( SWT.ALL );
+    display.readAndDispatch();
+    assertEquals( 7, log.size() );
+    assertSame( shell, log.get( 0 ) );
+    assertSame( child1, log.get( 1 ) );
+    assertSame( subchild1, log.get( 2 ) );
+    assertSame( child2, log.get( 3 ) );
+    assertSame( subchild2, log.get( 4 ) );
+    assertSame( child3, log.get( 5 ) );
+    assertSame( subchild3, log.get( 6 ) );
+    log.clear();
+    shell.setData( SWT.SKIN_CLASS, "skin" );
+    display.readAndDispatch();
+    assertEquals( 7, log.size() );
+    assertSame( shell, log.get( 0 ) );
+    assertSame( child1, log.get( 1 ) );
+    assertSame( subchild1, log.get( 2 ) );
+    assertSame( child2, log.get( 3 ) );
+    assertSame( subchild2, log.get( 4 ) );
+    assertSame( child3, log.get( 5 ) );
+    assertSame( subchild3, log.get( 6 ) );
+    log.clear();
+    shell.setData( SWT.SKIN_ID, "skin" );
+    display.readAndDispatch();
+    assertEquals( 7, log.size() );
+    assertSame( shell, log.get( 0 ) );
+    assertSame( child1, log.get( 1 ) );
+    assertSame( subchild1, log.get( 2 ) );
+    assertSame( child2, log.get( 3 ) );
+    assertSame( subchild2, log.get( 4 ) );
+    assertSame( child3, log.get( 5 ) );
+    assertSame( subchild3, log.get( 6 ) );
+    log.clear();
+    child3.reskin( SWT.ALL );
+    display.readAndDispatch();
+    assertEquals( 2, log.size() );
+    assertSame( child3, log.get( 0 ) );
+    assertSame( subchild3, log.get( 1 ) );
+    log.clear();
+    child2.reskin( SWT.NONE );
+    display.readAndDispatch();
+    assertEquals( 1, log.size() );
+    assertSame( child2, log.get( 0 ) );
+    log.clear();
+    display.removeListener( SWT.Skin, listener );
+    shell.reskin( SWT.ALL );
+    display.readAndDispatch();
+    assertEquals( 0, log.size() );
   }
 }

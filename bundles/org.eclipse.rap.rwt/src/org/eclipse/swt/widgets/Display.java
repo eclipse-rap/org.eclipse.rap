@@ -130,6 +130,8 @@ public class Display extends Device implements Adaptable {
   // Keep in sync with client-side (EventUtil.js)
   private static final int DOUBLE_CLICK_TIME = 500;
 
+  private static final int GROW_SIZE = 1024;
+
   /**
    * Returns the display which the currently running thread is
    * the user-interface thread for, or null if the currently
@@ -190,6 +192,9 @@ public class Display extends Device implements Adaptable {
   private Runnable[] disposeList;
   private Composite[] layoutDeferred;
   private int layoutDeferredCount;
+  private Widget[] skinList;
+  private int skinCount;
+  private Set skinListeners;
 
   /* Display Data */
   private Object data;
@@ -557,6 +562,11 @@ public class Display extends Device implements Adaptable {
         disposeListeners = new HashSet();
         disposeListeners.add( listener );
       }
+    } else if( eventType == SWT.Skin ) {
+      if( skinListeners == null ) {
+        skinListeners = new HashSet();
+        skinListeners.add( listener );
+      }
     }
   }
 
@@ -596,6 +606,11 @@ public class Display extends Device implements Adaptable {
       disposeListeners.remove( listener );
       if( disposeListeners.size() == 0 ) {
         disposeListeners = null;
+      }
+    } else if ( eventType == SWT.Skin && skinListeners != null ) {
+      skinListeners.remove( listener );
+      if( skinListeners.size() == 0 ) {
+        skinListeners = null;
       }
     }
   }
@@ -981,6 +996,7 @@ public class Display extends Device implements Adaptable {
    */
   public boolean readAndDispatch() {
     checkDevice();
+    runSkin();
     runDeferredLayouts();
     return RWTLifeCycle.readAndDispatch();
   }
@@ -1452,6 +1468,56 @@ public class Display extends Device implements Adaptable {
       result = true;
     }
     return result;
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void addSkinnableWidget( final Widget widget ) {
+    if( skinList == null ) {
+      skinList = new Widget[ GROW_SIZE ];
+    }
+    if( skinCount >= skinList.length ) {
+      Widget[] newSkinWidgets = new Widget[ skinList.length + GROW_SIZE ];
+      System.arraycopy( skinList, 0, newSkinWidgets, 0, skinList.length );
+      skinList = newSkinWidgets;
+    }
+    skinList[ skinCount++ ] = widget;
+  }
+
+  boolean runSkin() {
+    boolean result = false;
+    if( skinCount > 0 ) {
+      Widget[] oldSkinWidgets = skinList;
+      int count = skinCount;
+      skinList = new Widget[ GROW_SIZE ];
+      skinCount = 0;
+      for( int i = 0; i < count; i++ ) {
+        Widget widget = oldSkinWidgets[ i ];
+        if( widget != null && !widget.isDisposed() ) {
+          widget.state &= ~Widget.SKIN_NEEDED;
+          oldSkinWidgets[ i ] = null;
+          sendSkinEvent( widget );
+        }
+      }
+      result = true;
+    }
+    return result;
+  }
+
+  private void sendSkinEvent( final Widget widget ) {
+    Event event = new Event();
+    event.widget = widget;
+    event.display = this;
+    event.type = SWT.Skin;
+    notifyFilters( event );
+    if( skinListeners != null ) {
+      Listener[] listeners = new Listener[ skinListeners.size() ];
+      skinListeners.toArray( listeners );
+      for( int i = 0; i < listeners.length; i++ ) {
+        listeners[ i ].handleEvent( event );
+      }
+    }
   }
 
   ///////////////

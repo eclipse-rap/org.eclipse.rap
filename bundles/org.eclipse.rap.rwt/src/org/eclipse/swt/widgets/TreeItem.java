@@ -267,7 +267,7 @@ public class TreeItem extends Item {
         if( index < 0 || index > numberOfItems ) {
           error( SWT.ERROR_INVALID_RANGE );
         }
-        
+
     this.parent = parent;
     this.parentItem = parentItem;
     if( parentItem != null ) {
@@ -556,7 +556,7 @@ public class TreeItem extends Item {
    * Sets the background color at the given column index in the receiver to the
    * color specified by the argument, or to the default system color for the
    * item if the argument is null.
-   * 
+   *
    * @param columnIndex the column index
    * @param value the new color (or null)
    * @exception IllegalArgumentException <ul>
@@ -1439,7 +1439,7 @@ public class TreeItem extends Item {
    */
   public TreeItem[] getItems() {
     checkWidget();
-    return ( org.eclipse.swt.widgets.TreeItem[] )itemHolder.getItems();
+    return ( TreeItem[] )itemHolder.getItems();
   }
 
   /**

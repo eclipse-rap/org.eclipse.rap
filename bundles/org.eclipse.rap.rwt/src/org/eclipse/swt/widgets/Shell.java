@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -162,6 +162,7 @@ public class Shell extends Decorations {
     minWidth = MIN_WIDTH_LIMIT;
     minHeight = getMinHeightLimit();
     this.display.addShell( this );
+    reskinWidget();
     createWidget();
     setInitialSize();
   }
@@ -1316,5 +1317,19 @@ public class Shell extends Decorations {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
     return parent;
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    Shell[] shells = getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      Shell shell = shells[ i ];
+      if( shell != null ) {
+        shell.reskin( flags );
+      }
+    }
+    super.reskinChildren( flags );
   }
 }

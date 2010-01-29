@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,6 +87,9 @@ public abstract class Widget implements Adaptable {
   static final int RELEASED = 1 << 11;
   static final int DISPOSE_SENT = 1 << 12;
 
+  /* Notify of the opportunity to skin this widget */
+  static final int SKIN_NEEDED = 1 << 21;
+
   int style;
   int state;
   Display display;
@@ -138,6 +141,7 @@ public abstract class Widget implements Adaptable {
     }
     this.style = style;
     this.display = parent.display;
+    reskinWidget();
   }
 
   /**
@@ -151,8 +155,8 @@ public abstract class Widget implements Adaptable {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IEventAdapter.class ) {
-      // Note: This is not implemented via the AdapterManager, since the 
-      // manager's mapping mechanism prevents the component being released 
+      // Note: This is not implemented via the AdapterManager, since the
+      // manager's mapping mechanism prevents the component being released
       // unless the session is invalidated.
       if( eventAdapter == null ) {
         eventAdapter = new EventAdapter();
@@ -160,7 +164,7 @@ public abstract class Widget implements Adaptable {
       result = eventAdapter;
     } else if( adapter == IWidgetAdapter.class ) {
       // [fappel] Directly return the WidgetAdapter instead of consulting the
-      // adapter factory. This is done for performance reasons and must not 
+      // adapter factory. This is done for performance reasons and must not
       // be changed without good reason.
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
@@ -272,7 +276,7 @@ public abstract class Widget implements Adaptable {
    */
   public Object getData( final String key ) {
     // Must not call checkWidget() here to allow to obtain the custom id after
-    // the widget has been disposed of (see WidgetUtil#getId). Only validate 
+    // the widget has been disposed of (see WidgetUtil#getId). Only validate
     // thread.
     if( !isValidThread() ) {
       error( SWT.ERROR_THREAD_INVALID_ACCESS );
@@ -362,6 +366,9 @@ public abstract class Widget implements Adaptable {
           }
         }
       }
+    }
+    if( key.equals( SWT.SKIN_CLASS ) || key.equals( SWT.SKIN_ID ) ) {
+      reskin( SWT.ALL );
     }
   }
 
@@ -551,7 +558,7 @@ public abstract class Widget implements Adaptable {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see SWT
    * @see #addListener
    * @see #getListeners(int)
@@ -595,10 +602,10 @@ public abstract class Widget implements Adaptable {
     }
     return result;
   }
-  
+
   /**
-   * Returns an array of listeners who will be notified when an event 
-   * of the given type occurs. The event type is one of the event constants 
+   * Returns an array of listeners who will be notified when an event
+   * of the given type occurs. The event type is one of the event constants
    * defined in class <code>SWT</code>.
    *
    * @param eventType the type of event to listen for
@@ -614,7 +621,7 @@ public abstract class Widget implements Adaptable {
    * @see #addListener(int, Listener)
    * @see #removeListener(int, Listener)
    * @see #notifyListeners
-   * 
+   *
    * @since 1.3
    */
   public Listener[] getListeners( final int eventType ) {
@@ -626,6 +633,55 @@ public abstract class Widget implements Adaptable {
       listeners = untypedAdapter.getListeners( eventType );
     }
     return listeners;
+  }
+
+  ///////////////////
+  // Skinning support
+
+  /**
+   * Marks the widget to be skinned.
+   * <p>
+   * The skin event is sent to the receiver's display when appropriate (usually before the next event
+   * is handled). Widgets are automatically marked for skinning upon creation as well as when its skin
+   * id or class changes. The skin id and/or class can be changed by calling <code>Display.setData(String, Object)</code>
+   * with the keys SWT.SKIN_ID and/or SWT.SKIN_CLASS. Once the skin event is sent to a widget, it
+   * will not be sent again unless <code>reskin(int)</code> is called on the widget or on an ancestor
+   * while specifying the <code>SWT.ALL</code> flag.
+   * </p>
+   * <p>
+   * The parameter <code>flags</code> may be either:
+   * <dl>
+   * <dt><b>SWT.ALL</b></dt>
+   * <dd>all children in the receiver's widget tree should be skinned</dd>
+   * <dt><b>SWT.NONE</b></dt>
+   * <dd>only the receiver should be skinned</dd>
+   * </dl>
+   * </p>
+   * @param flags the flags specifying how to reskin
+   *
+   * @exception SWTException
+   * <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.3
+   */
+  public void reskin( final int flags ) {
+    checkWidget();
+    reskinWidget();
+    if( ( flags & SWT.ALL ) != 0 ) {
+      reskinChildren( flags );
+    }
+  }
+
+  void reskinChildren( final int flags ) {
+  }
+
+  void reskinWidget() {
+    if( ( state & SKIN_NEEDED ) != SKIN_NEEDED ) {
+      this.state |= SKIN_NEEDED;
+      display.addSkinnableWidget( this );
+    }
   }
 
   ///////////////////////
@@ -892,8 +948,8 @@ public abstract class Widget implements Adaptable {
     }
     style = checkBits (style, SWT.LEFT_TO_RIGHT, 0 /*SWT.RIGHT_TO_LEFT*/, 0, 0, 0, 0);
   }
-  
-  
+
+
   void error( final int code ) {
     SWT.error( code );
   }

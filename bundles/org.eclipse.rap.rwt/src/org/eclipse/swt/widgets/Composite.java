@@ -842,4 +842,18 @@ public class Composite extends Scrollable {
     }
     super.notifyResize( oldSize );
   }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    super.reskinChildren( flags );
+    Control[] children = controlHolder.getControls();
+    for( int i = 0; i < children.length; i++ ) {
+      Control child = children[ i ];
+      if( child != null ) {
+        child.reskin( flags );
+      }
+    }
+  }
 }

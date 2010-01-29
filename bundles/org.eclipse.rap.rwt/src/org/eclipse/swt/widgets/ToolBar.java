@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -366,5 +366,21 @@ public class ToolBar extends Composite {
     * the SWT style.
     */
     return style & ~( SWT.H_SCROLL | SWT.V_SCROLL );
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    ToolItem[] items = getItems();
+    if( items != null ) {
+      for( int i = 0; i < items.length; i++ ) {
+        ToolItem item = items[ i ];
+        if( item != null ) {
+          item.reskin( flags );
+        }
+      }
+    }
+    super.reskinChildren( flags );
   }
 }

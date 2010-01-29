@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -19,7 +20,7 @@ import org.eclipse.swt.internal.widgets.MenuHolder.IMenuHolderAdapter;
 
 
 /**
- * <p>This class was introduced to be API compatible with SWT and does only 
+ * <p>This class was introduced to be API compatible with SWT and does only
  * provide those methods that are absolutely necessary to serve this purpose.
  * </p>
  */
@@ -60,7 +61,7 @@ public class Decorations extends Canvas {
    * the "best" attributes. It is expected that the array will
    * contain the same icon rendered at different sizes, with
    * different depth and transparency attributes.
-   * 
+   *
    * @param images the new image array
    *
    * @exception IllegalArgumentException <ul>
@@ -73,7 +74,7 @@ public class Decorations extends Canvas {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
    *                                      created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public void setImages( final Image[] images ) {
@@ -88,9 +89,9 @@ public class Decorations extends Canvas {
     }
     this.images = images;
   }
-  
+
   /**
-   * Returns the receiver's images if they had previously been 
+   * Returns the receiver's images if they had previously been
    * set using <code>setImages()</code>. Images are typically
    * displayed by the window manager when the instance is
    * marked as iconified, and may also be displayed somewhere
@@ -99,14 +100,14 @@ public class Decorations extends Canvas {
    * chooses the icon with the "best" attributes.  It is expected
    * that the array will contain the same icon rendered at different
    * sizes, with different depth and transparency attributes.
-   * 
+   *
    * <p>
    * Note: This method will return an empty array if called before
    * <code>setImages()</code> is called. It does not provide
    * access to a window manager provided, "default" image
    * even if one exists.
    * </p>
-   * 
+   *
    * @return the images
    *
    * @exception SWTException <ul>
@@ -114,14 +115,14 @@ public class Decorations extends Canvas {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
    *                                      created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public Image[] getImages() {
     checkWidget();
     return images;
   }
-  
+
   /**
    * Sets the receiver's image to the argument, which may
    * be null. The image is typically displayed by the window
@@ -172,7 +173,7 @@ public class Decorations extends Canvas {
 
   //////////
   // MenuBar
-  
+
   /**
    * Sets the receiver's menu bar to the argument, which
    * may be null.
@@ -180,7 +181,7 @@ public class Decorations extends Canvas {
    * @param menuBar the new menu bar
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the menu has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the menu has been disposed</li>
    *    <li>ERROR_INVALID_PARENT - if the menu is not in the same widget tree</li>
    * </ul>
    * @exception SWTException <ul>
@@ -226,7 +227,7 @@ public class Decorations extends Canvas {
 
   ///////////
   // Disposal
-  
+
   final void releaseWidget() {
     removeMenuBarDisposeListener();
     super.releaseWidget();
@@ -234,7 +235,7 @@ public class Decorations extends Canvas {
 
   //////////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menuBar
-  
+
   private void addMenuBarDisposeListener() {
     if( menuBar != null ) {
       if( menuBarDisposeListener == null ) {
@@ -252,5 +253,22 @@ public class Decorations extends Canvas {
     if( menuBar != null ) {
       menuBar.removeDisposeListener( menuBarDisposeListener );
     }
+  }
+
+  ///////////////////
+  // Skinning support
+
+  void reskinChildren( final int flags ) {
+    if( menuBar != null ) {
+      menuBar.reskin( flags );
+    }
+    Menu[] menus =  MenuHolder.getMenus( this );
+    for( int i = 0; i < menus.length; i++ ) {
+      Menu menu = menus[ i ];
+      if( menu != null ) {
+        menu.reskin( flags );
+      }
+    }
+    super.reskinChildren( flags );
   }
 }
