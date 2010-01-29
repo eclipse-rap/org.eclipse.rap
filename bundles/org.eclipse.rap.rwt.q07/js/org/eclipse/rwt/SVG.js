@@ -239,8 +239,13 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
     },
 
     setStroke : function( shape, color, width ) {
-      shape.node.setAttribute( "stroke-width", width + "px");
-      shape.node.setAttribute( "stroke", color != null ? color : "none" );      
+      shape.node.setAttribute( "stroke-width", width + "px" );
+      // needed due to a bug in Google Chrome (see bug 300509 ):
+      if( width == 0 ) {
+        shape.node.setAttribute( "stroke", "none" );
+      } else {
+        shape.node.setAttribute( "stroke", color != null ? color : "none" );
+      }      
     },
 
     /////////
