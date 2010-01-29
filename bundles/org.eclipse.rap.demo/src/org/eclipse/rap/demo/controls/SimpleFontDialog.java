@@ -35,19 +35,11 @@ final class SimpleFontDialog extends Dialog {
     this( parent, SWT.DIALOG_TRIM | SWT.RESIZE | SWT.APPLICATION_MODAL );
   }
 
-  // TODO [rst] When shell close can be prevented, this dialog should be
-  //            implemented as SessionSingleton
   public SimpleFontDialog( final Shell parent, final int style ) {
     super( parent, style );
     setText( "Font Dialog" );
     shell = new Shell( parent, style );
     createControls( shell );
-//    shell.addShellListener( new ShellAdapter() {
-//      public void shellClosed( ShellEvent event ) {
-//         shell.setVisible( false );
-//         event.doit = false;
-//      }
-//    } );
   }
 
   public void open( final Runnable callback ) {
@@ -125,6 +117,7 @@ final class SimpleFontDialog extends Dialog {
         applyPressed();
       }
     } );
+    btnApply.getShell().setDefaultButton( btnApply );
   }
 
   private void updateFontControls() {
