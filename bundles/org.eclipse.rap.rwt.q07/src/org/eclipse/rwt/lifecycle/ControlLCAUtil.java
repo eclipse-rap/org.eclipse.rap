@@ -86,6 +86,7 @@ public class ControlLCAUtil {
     = "org.eclipse.rwt.KeyEventUtil.getInstance().allowEvent";
   static final int MAX_STATIC_ZORDER = 300;
 
+  private static final String CURSOR_UPARROW = "widget/cursors/up_arrow.cur";
 
   private ControlLCAUtil() {
     // prevent instance creation
@@ -1089,6 +1090,9 @@ public class ControlLCAUtil {
         break;
         case SWT.CURSOR_HAND:
           result = "pointer";
+        break;
+        case SWT.CURSOR_UPARROW:
+          result = CURSOR_UPARROW;
         break;
       }
     }

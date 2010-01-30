@@ -1904,6 +1904,14 @@ public class SWT {
   public static final int CURSOR_SIZENW = 17;
 
   /**
+   * System up arrow cursor  (value is 18).
+   *
+   * @see Graphics#getCursor(int)
+   * @since 1.3
+   */
+  public static final int CURSOR_UPARROW = 18;
+
+  /**
    * System i-beam cursor (value is 19).
    *
    * @see Graphics#getCursor(int)

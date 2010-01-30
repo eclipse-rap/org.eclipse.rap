@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,22 +16,22 @@ import org.eclipse.swt.SWT;
 /**
  * Instances of this class manage operating system resources that specify the
  * appearance of the on-screen pointer.
- * 
+ *
  * <p>To obtain cursors, it is recommended to use one of the
  * <code>getSystemCursor</code> method from class <code>Display</code>.
  * </p>
- * 
+ *
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>CURSOR_ARROW, CURSOR_WAIT, CURSOR_CROSS, CURSOR_HELP, CURSOR_SIZEALL,
  * CURSOR_SIZENS, CURSOR_SIZEWE, CURSOR_SIZEN, CURSOR_SIZES, CURSOR_SIZEE,
  * CURSOR_SIZEW, CURSOR_SIZENE, CURSOR_SIZESE, CURSOR_SIZESW, CURSOR_SIZENW,
- * CURSOR_IBEAM, CURSOR_HAND</dd>
+ * CURSOR_IBEAM, CURSOR_HAND, CURSOR_UPARROW</dd>
  * </dl>
  * <p>
  * Note: Only one of the above styles may be specified.
  * </p>
- * 
+ *
  * @see Graphics
  * @since 1.2
  */
@@ -45,23 +45,23 @@ public final class Cursor extends Resource {
     checkStyle( style );
     value = style;
   }
-  
-  /**  
+
+  /**
    * Constructs a new cursor given a device and a style
    * constant describing the desired cursor appearance.
    * <p>
-   * You must dispose the cursor when it is no longer required. 
+   * You must dispose the cursor when it is no longer required.
    * </p>
    *
    * <p><strong>Note</strong>, this constructor is provided for convenience when
    * single-sourcing code with SWT. For RWT, the recommended way to create cursors
-   * is to use one of the <code>getSystemCursor</code> method from class 
+   * is to use one of the <code>getSystemCursor</code> method from class
    * <code>Display</code>.
    * </p>
    *
    * @param device the device on which to allocate the cursor
    * @param style the style of cursor to allocate
-   * 
+   *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
    *    <li>ERROR_INVALID_ARGUMENT - when an unknown style is specified</li>
@@ -93,7 +93,7 @@ public final class Cursor extends Resource {
    * @see SWT#CURSOR_NO
    * @see SWT#CURSOR_HAND
    * @see org.eclipse.swt.widgets.Display#getSystemCursor(int)
-   * 
+   *
    * @since 1.3
    */
   public Cursor( final Device device, final int style ) {
@@ -125,8 +125,8 @@ public final class Cursor extends Resource {
   }
 
   /**
-   * Returns an integer hash code for the receiver. Any two 
-   * objects that return <code>true</code> when passed to 
+   * Returns an integer hash code for the receiver. Any two
+   * objects that return <code>true</code> when passed to
    * <code>equals</code> must return the same value for this
    * method.
    *
@@ -173,6 +173,7 @@ public final class Cursor extends Resource {
       case SWT.CURSOR_SIZENW:
       case SWT.CURSOR_IBEAM:
       case SWT.CURSOR_HAND:
+      case SWT.CURSOR_UPARROW:
         break;
       default:
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );

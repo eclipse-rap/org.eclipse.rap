@@ -6690,7 +6690,7 @@ __cursorMap:qx.core.Variant.select("qx.client",
 "not-allowed":"not-allowed",
 "no-drop":"no-drop"}}),
 _applyCursor:function(value,
-old){if(value){var url="url( "+value+" ), default";
+old){if(value){var url="url( "+qx.io.Alias.getInstance().resolve(value)+" ), default";
 this.setStyleProperty("cursor",
 this.__cursorMap[value]||url);
 }else{this.removeStyleProperty("cursor");
