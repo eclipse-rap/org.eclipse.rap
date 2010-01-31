@@ -134,9 +134,8 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   }
   
   private static void checkRequest() {
-    HttpSession session = getRequest().getSession();
     if( isSessionRestart() ) {
-      clearSession( session );
+      clearSession( getRequest().getSession() );
     }
   }
 
