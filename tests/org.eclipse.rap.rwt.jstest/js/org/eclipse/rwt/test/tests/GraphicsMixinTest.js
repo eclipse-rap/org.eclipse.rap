@@ -354,7 +354,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertTrue( this.usesGfxBorder( widget ) );
       var radii = widget.getGfxProperty( "borderRadii", radii );
       assertEquals( [ 5, 0, 0, 0 ], radii );
-    },    
+    },
+
+    testGfxBackgroundImage : function() {
+      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] ); 
+      widget.addToDocument();
+      widget.setLocation( 0, 0 );
+      widget.setDimension( 100, 100 );
+      this.gfxBorder.setWidth( 0 );
+      this.gfxBorder.setRadius( 5 );
+      widget.setBorder( this.gfxBorder ); 
+      widget.setBackgroundImage( "bla.jpg" );
+      qx.ui.core.Widget.flushGlobalQueues();
+      assertTrue( this.usesGfxBackground( widget ) );
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var shape = widget._gfxData.currentShape;
+      assertTrue( gfxUtil.getFillType( shape ) == "pattern" );
+      widget.destroy();
+      qx.ui.core.Widget.flushGlobalQueues();
+    },
     
     /////////
     // Helper
@@ -468,6 +486,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
            widget._gfxBackgroundEnabled 
         && this.widgetContainsCanvas( widget ) 
         && !this.testUtil.getCssBackgroundColor( widget )
+        && this.testUtil.getCssBackgroundImage( widget._getTargetNode() ) == ""
      );      
     },
     

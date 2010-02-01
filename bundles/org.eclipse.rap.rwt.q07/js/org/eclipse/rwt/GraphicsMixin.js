@@ -56,6 +56,19 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       }
     },
 
+    //overwritten
+    _styleBackgroundImage : function( value ) {
+      if( this._gfxBackgroundEnabled ) {
+        this.setGfxProperty( "backgroundImage", value );
+        if(    this.getGfxProperty( "fillType" ) == "image"
+            && this._isCanvasReady() ) {
+          this._renderGfxBackground();
+        }
+      } else {
+        this.base( arguments, value );
+      }
+    },
+
     //called by RoundedBorder:    
     _styleGfxBorder : function( width, color, radii ) {
       // NOTE: widgets with no dimensions of their own wont work together 
@@ -142,8 +155,12 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     _handleGfxBackground : function() {
       var useGradient = this.getGfxProperty( "gradient" ) != null;
-      // TODO [tb] : Dont set it every single time!
-      this.setGfxProperty( "fillType", useGradient ? "gradient" : "solid" );
+      if( useGradient ) {
+        this.setGfxProperty( "fillType", "gradient" );
+      } else {
+        var useImage = this.getBackgroundImage() != null; 
+        this.setGfxProperty( "fillType", useImage? "image" : "solid" );        
+      }
       var useBackground = ( useGradient || this._gfxBorderEnabled );
       var toggle = ( this._gfxBackgroundEnabled != useBackground );
       if( toggle ) {
@@ -151,6 +168,9 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
           var backgroundColor = this.getStyleProperty( "backgroundColor" );
           this.removeStyleProperty( "backgroundColor" );
           this.setGfxProperty( "backgroundColor", backgroundColor );
+          var backgroundImage = this.getBackgroundImage();
+          this.setGfxProperty( "backgroundImage", backgroundImage );
+          this.removeStyleProperty( "backgroundImage" );
           this._gfxBackgroundEnabled = true;
         } else {
           this._gfxBackgroundEnabled = false;
@@ -388,6 +408,11 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       if( fillType == "gradient" ) {
         var gradient = this.getGfxProperty( "gradient" );
         util.setFillGradient( this._gfxData.currentShape, gradient );
+      } else if( fillType == "image" ) { 
+        var image = this.getGfxProperty( "backgroundImage" );
+        image = typeof image == "undefined" ? null : image;
+        var size = this._getImageSize( image );
+        util.setFillPattern( this._gfxData.currentShape, image, size[ 0 ], size[ 1 ] );
       } else { //assume fillType is "solid"
         var color = this.getGfxProperty( "backgroundColor" );
         color = color == "" ? null : color;
@@ -500,6 +525,15 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     ////////////////////////////////////
     // internals - helper & eventhandler
     
+    _getImageSize : function( source ) {
+      var result = this.getUserData( "backgroundImageSize" ); 
+      if( result == null ) {
+        var themeStore = org.eclipse.swt.theme.ThemeStore.getInstance();
+        result = themeStore.getImageSize( source );
+      }
+      return result;
+    },
+    
     _willBeLayouted : function() {
       return    typeof this._jobQueue != "undefined" 
              || !qx.lang.Object.isEmpty( this._layoutChanges );
@@ -539,6 +573,9 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       // not work unless the widget implements the code below itself:
       this.base( arguments, changes );
       if( this._gfxLayoutEnabled ) {
+        if ( changes.paddingRight || changes.paddingBottom ) {
+          this.setGfxProperty( "borderLayouted", false ); 
+        }
         this._layoutGfxBorder();
       }
     }

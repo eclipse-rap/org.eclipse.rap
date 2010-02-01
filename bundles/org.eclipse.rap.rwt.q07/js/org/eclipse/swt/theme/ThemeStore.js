@@ -233,6 +233,12 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       }
       return result;
     },
+    
+    getImageSize : function( source ) {
+      var key = source.slice( "rwt-resources/themes/images/".length );
+      var image = this._values.images[ key ];      
+      return image != null ? [ image[ 1 ], image[ 2 ] ] : [ 0, 0 ];
+    },
 
     _matches : function( states, element, constraints ) {
       var result = true;

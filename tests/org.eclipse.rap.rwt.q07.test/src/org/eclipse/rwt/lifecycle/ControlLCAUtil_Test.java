@@ -549,6 +549,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeBackgroundImage( control );
     String imageLocation = "rwt-resources/" + Fixture.IMAGE1;
     String expected =   "var w = wm.findWidgetById( \"w2\" );"
+                      + "w.setUserData( \"backgroundImageSize\", [58,12 ] );"
                       + "w.setBackgroundImage( \""
                       + imageLocation
                       + "\" );";
@@ -558,7 +559,8 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.preserveBackgroundImage( control );
     control.setBackgroundImage( null );
     ControlLCAUtil.writeBackgroundImage( control );
-    expected = "w.resetBackgroundImage();";
+    expected =   "w.setUserData( \"backgroundImageSize\", null );"
+               + "w.resetBackgroundImage();";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

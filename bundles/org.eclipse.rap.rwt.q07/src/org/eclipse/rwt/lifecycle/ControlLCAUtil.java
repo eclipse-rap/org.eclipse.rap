@@ -76,6 +76,8 @@ public class ControlLCAUtil {
 
   private static final String USER_DATA_KEY_LISTENER = "keyListener";
   private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
+  private static final String USER_DATA_BACKGROUND_IMAGE_SIZE 
+    = "backgroundImageSize";
   private static final String ATT_CANCEL_KEY_EVENT
     = ControlLCAUtil.class.getName() + "#cancelKeyEvent";
   private static final String ATT_ALLOW_KEY_EVENT
@@ -439,8 +441,19 @@ public class ControlLCAUtil {
       JSWriter writer = JSWriter.getWriterFor( control );
       if( image != null ) {
         String imagePath = ResourceFactory.getImagePath( image );
+        Rectangle bounds = image.getBounds();
+        Object[] args = new Object[]{ 
+          USER_DATA_BACKGROUND_IMAGE_SIZE,
+          new Integer[]{ 
+            new Integer( bounds.width ), 
+            new Integer( bounds.height ) 
+          }
+        };
+        writer.call( "setUserData", args );
         writer.set( "backgroundImage", imagePath );
       } else {
+        Object[] args = new Object[]{ USER_DATA_BACKGROUND_IMAGE_SIZE, null };
+        writer.call( "setUserData", args );
         writer.reset( "backgroundImage" );
       }
     }
