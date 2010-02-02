@@ -17369,10 +17369,11 @@ e,
 this.__dragCache.sourceWidget),
 true);
 this.__dragCache.hasFiredDragStart=true;
-if(this.__dragCache.dragHandlerActive){this._fireUserEvents(this.__dragCache.currentDropWidget,
-this.__dragCache.sourceWidget,
+if(this.__dragCache.dragHandlerActive){var currentDropWidget=this.getDropTarget(e);
+this._fireUserEvents(null,
+currentDropWidget,
 e);
-this.__dragCache.currentDropWidget=this.__dragCache.sourceWidget;
+this.__dragCache.currentDropWidget=currentDropWidget;
 qx.ui.core.ClientDocument.getInstance().setCapture(true);
 }}}},
 _handleMouseUp:function(e){if(!this.__dragCache){return;
