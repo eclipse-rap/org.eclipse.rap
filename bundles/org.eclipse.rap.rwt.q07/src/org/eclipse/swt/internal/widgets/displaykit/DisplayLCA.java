@@ -406,11 +406,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void writeScrollBarStyle() throws IOException {
-    // TODO [rh] the browser does not seem to be detected when this
-    //      code gets executed. Once this is fixed, do only render this when
-    //      browser is IE
-	  // TODO [bm] this could be part of ralfs themeing or?
+	  // TODO [bm] this could be part of the themeing or?
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
+    // Changing the scrollbar style is only supported by IE
+    out.write( "<!--[if IE]>" );
     out.startElement( HTML.STYLE, out );
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_CSS, null );
     StringBuffer css = new StringBuffer();
@@ -426,6 +425,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     css.append( "}" );
     out.write( css.toString() );
     out.endElement( HTML.STYLE );
+    out.write( "<![endif]-->" );
   }
 
   private static void writeFocus( final Display display ) throws IOException {
