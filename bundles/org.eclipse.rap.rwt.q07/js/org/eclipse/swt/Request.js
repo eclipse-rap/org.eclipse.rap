@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
     requestQueue.setMaxConcurrentRequests( 1 );
     // References the currently running request or null if no request is active
     this._currentRequest = null;
+    // References the last running transport
+    this._lastTransport = null;
     this._timeoutPage = "";
   },
 
@@ -217,6 +219,12 @@ qx.Class.define( "org.eclipse.swt.Request", {
     },
 
     _sendStandalone : function( request ) {
+      // [if] Dispose the last transport before creating the new one
+      // see bug 301261
+      if( this._lastTransport != null ) {
+        this._lastTransport.getRequest().dispose();
+        this._lastTransport.dispose();
+      }
       // TODO [rh] WORKAROUND
       //      we would need two requestQueues (one for 'normal' requests that
       //      is limited to 1 concurrent request and one for the 'independant'
@@ -234,6 +242,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       vTransport.addEventListener("timeout", vRequest._ontimeout, vRequest);
       vTransport.addEventListener("failed", vRequest._onfailed, vRequest);
       vTransport._start = (new Date).valueOf();
+      this._lastTransport = vTransport;
       vTransport.send();
       // END WORKAROUND
     },
