@@ -895,7 +895,7 @@ public class FormHeading extends Canvas {
 //		setBackgroundImage(gradientImage);
 // RAP [if] Background gradient rendering
 	  if( gradientInfo != null ) {
-	    IWidgetGraphicsAdapter adapter 
+	    IWidgetGraphicsAdapter adapter
 	      = ( IWidgetGraphicsAdapter )getAdapter( IWidgetGraphicsAdapter.class );
       adapter.setBackgroundGradient( gradientInfo.gradientColors,
                                      gradientInfo.percents );
@@ -960,12 +960,13 @@ public class FormHeading extends Canvas {
 // RAP [if] Separator rendering
     private void updateSeparator() {
       if( separator == null ) {
-        separator = new Composite( this, SWT.NONE );
+        separator = new Composite( getParent(), SWT.NONE );
+        separator.moveAbove( this );
       }
-      Rectangle carea = getClientArea();
-      separator.setBounds( carea.x,
-                           carea.height - 1,
-                           carea.x + carea.width - 1,
+      Rectangle bounds = getBounds();
+      separator.setBounds( bounds.x,
+                           bounds.y + bounds.height - 1,
+                           bounds.width,
                            1 );
       Color bottomColor = getForeground();
       if( hasColor( IFormColors.H_BOTTOM_KEYLINE2 ) ) {
