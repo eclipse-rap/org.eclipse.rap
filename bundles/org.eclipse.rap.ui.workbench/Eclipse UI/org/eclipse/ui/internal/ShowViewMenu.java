@@ -38,14 +38,17 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.internal.intro.IIntroConstants;
+import org.eclipse.ui.internal.registry.ViewDescriptor;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
+import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
 
@@ -202,17 +205,56 @@ public class ShowViewMenu extends ContributionItem {
 		}
 		Collections.sort(actions, actionComparator);
 		for (Iterator i = actions.iterator(); i.hasNext();) {
-			CommandContributionItem item = new CommandContributionItem((CommandContributionItemParameter) i.next());
-			if (WorkbenchActivityHelper.filterItem(item)) {
-				item.dispose();
+		    CommandContributionItemParameter ccip = (CommandContributionItemParameter) i.next();
+			if (WorkbenchActivityHelper.filterItem(ccip)) {
 				continue;
 			}
-			innerMgr.add(item);
+			CommandContributionItem item = new CommandContributionItem(ccip);
+            innerMgr.add(item);
 		}
 
+		// We only want to add the separator if there are show view shortcuts,
+        // otherwise, there will be a separator and then the 'Other...' entry
+        // and that looks weird as the separator is separating nothing
+        if (!innerMgr.isEmpty()) {
+            innerMgr.add(new Separator());
+        }
+		
 		// Add Other ..
-		innerMgr.add(new Separator());
 		innerMgr.add(showDlgAction);
+	}
+	
+	static class PluginCCIP extends CommandContributionItemParameter implements
+	        IPluginContribution {
+	  
+	  private String localId;
+	  private String pluginId;
+	  
+	  public PluginCCIP(IViewDescriptor v, IServiceLocator serviceLocator,
+	      String id, String commandId, int style) {
+	    super(serviceLocator, id, commandId, style);
+	    localId = ((ViewDescriptor) v).getLocalId();
+	    pluginId = ((ViewDescriptor) v).getPluginId();
+	  }
+	  
+	  /*
+	   * (non-Javadoc)
+	   * 
+	   * @see org.eclipse.ui.IPluginContribution#getLocalId()
+	   */
+	  public String getLocalId() {
+	    return localId;
+	  }
+	  
+	  /*
+	   * (non-Javadoc)
+	   * 
+	   * @see org.eclipse.ui.IPluginContribution#getPluginId()
+	   */
+	  public String getPluginId() {
+	    return pluginId;
+	  }
+	  
 	}
 
 	private CommandContributionItemParameter getItem(String viewId) {
@@ -223,7 +265,7 @@ public class ShowViewMenu extends ContributionItem {
 		}
 		String label = desc.getLabel();
 		
-		CommandContributionItemParameter parms = new CommandContributionItemParameter(
+		CommandContributionItemParameter parms = new PluginCCIP(desc,
 				window, viewId, SHOW_VIEW_ID,
 				CommandContributionItem.STYLE_PUSH);
 		parms.label = label;
