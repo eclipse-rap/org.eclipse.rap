@@ -94,6 +94,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var request = testUtil.getRequestLog()[ 0 ];
       var dragFinished = "org.eclipse.swt.dnd.dragFinished=w1";
       assertTrue( request.search( dragFinished ) != -1 );
+      assertFalse( dndSupport._blockDrag );
       dndSupport.deregisterDragSource( source );
       source.setParent( null );
       source.destroy();
@@ -119,6 +120,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       dndSupport.cancel();
       assertNull( dndHandler.__dragCache );
       assertEquals( 0, testUtil.getRequestsSend() ); // no dragFinished
+      assertFalse( dndSupport._blockDrag );
       dndSupport.deregisterDragSource( source );
       source.setParent( null );
       source.destroy();

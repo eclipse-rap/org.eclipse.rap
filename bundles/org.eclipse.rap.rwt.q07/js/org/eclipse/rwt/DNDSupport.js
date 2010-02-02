@@ -28,6 +28,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     this._dropFeedbackRenderer = null;
     this._dropFeedbackFlags = 0;
     this._dragFeedbackWidget = null;
+    this._blockDrag = false;
   },
 
   members : {
@@ -66,7 +67,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var target = event.getCurrentTarget();
       var control = wm.findControl( event.getTarget() );
-      if( control == target ) {
+      if( control == target && !this._blockDrag ) {
         var hash = target.toHashCode();
         var dataTypes = this._dragSources[ hash ].dataTypes;
         if( dataTypes.length > 0 ) {
@@ -99,8 +100,14 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _dragEndHandler : function( event ) {
       var target = event.getCurrentTarget();
       var mouseEvent = event.getMouseEvent();
+      // fix for Bug 301544: block new dragStarts until request is send
+      this._blockDrag = true;
+      if( !this._requestScheduled ) {
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addEventListener( "send", this._onSend, this );
+      }
       this._sendDragSourceEvent( target, "dragFinished", mouseEvent );
-      this._cleanUp()
+      this._cleanUp();
     },
 
     _sendDragSourceEvent : function( widget, type, qxDomEvent ) {
@@ -461,6 +468,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _onSend : function( event ) {
       this._attachTropTargetEvents();
       this._requestScheduled = false;
+      this._blockDrag = false;
       var req = org.eclipse.swt.Request.getInstance();
       req.removeEventListener( "send", this._onSend, this );
     },
