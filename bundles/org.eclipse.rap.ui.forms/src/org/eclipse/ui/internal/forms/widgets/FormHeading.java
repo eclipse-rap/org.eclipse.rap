@@ -973,7 +973,12 @@ public class FormHeading extends Canvas {
         bottomColor = getColor( IFormColors.H_BOTTOM_KEYLINE2 );
       }
       separator.setBackground( bottomColor );
-      separator.setVisible( isSeparatorVisible() );
+      separator.setVisible( isSeparatorVisible() && getVisible() );
+    }
+
+    public void setVisible( final boolean visible ) {
+      super.setVisible( visible );
+      updateSeparator();
     }
 //RAPEND [if]
 
