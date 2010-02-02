@@ -651,6 +651,12 @@ public class ScrolledComposite extends Composite {
       if( content != null && !content.isDisposed() ) {
         content.removeControlListener( contentListener );
       }
+      if( horizontalBar != null ) {
+        horizontalBar.dispose();
+      }
+      if( verticalBar != null ) {
+        verticalBar.dispose();
+      }
       super.dispose();
     } 
   }

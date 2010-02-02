@@ -46,9 +46,14 @@ public class ScrolledComposite_Test extends TestCase {
                                                   SWT.V_SCROLL | SWT.H_SCROLL );
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
+    
+    ScrollBar horizontalBar = sc.getHorizontalBar();
+    ScrollBar verticalBar = sc.getVerticalBar();
     sc.dispose();
     assertTrue( sc.isDisposed() );
     assertTrue( content.isDisposed() );
+    assertTrue( horizontalBar.isDisposed() );
+    assertTrue( verticalBar.isDisposed() );
   }
   
   public void testContent() {
