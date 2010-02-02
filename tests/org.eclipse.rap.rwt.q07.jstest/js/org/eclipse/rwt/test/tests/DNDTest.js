@@ -248,6 +248,62 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.flush();
     },
 
+    // See Bug 301276
+    testSetPropertyRetroactively : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
+      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      // request uses SWT-like event-names: 
+      var dragOver = "org.eclipse.swt.dnd.dragEnter";
+      var dragMove = "org.eclipse.swt.dnd.dragOver";
+      testUtil.prepareTimerUse();
+      testUtil.initRequestLog();
+      var source = this.createSource();
+      var target = this.createTarget();
+      var sourceNode = source._getTargetNode();
+      var targetNode = target._getTargetNode();
+      var doc = document.body;
+      // drag
+      testUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
+      testUtil.clearRequestLog();
+      testUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
+      // Over
+      testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton, 31, 15 );
+      testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 32, 15 );
+      testUtil.forceTimerOnce();
+      assertEquals( 2, testUtil.getRequestsSend() );
+      var request = testUtil.getRequestLog()[ 1 ];      
+      assertTrue( request.search( dragOver + "=w2" ) != -1 );
+      assertTrue( request.search( dragOver + ".dataType=null" ) != -1 );
+      assertTrue( request.search( dragOver + ".operation=move" ) != -1 );
+      testUtil.clearTimerOnceLog();
+      testUtil.clearRequestLog();
+      // Move
+      testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton, 33, 15 );
+      assertTrue( testUtil.getTimerOnceLog().length > 0 );
+      // set properties
+      dndSupport.setDataType( target, "76135" );
+      dndSupport.setOperationOverwrite( target, "copy" );
+      // send event:
+      testUtil.forceTimerOnce();
+      assertEquals( 1, testUtil.getRequestsSend() );
+      var request = testUtil.getRequestLog()[ 0 ];
+      assertTrue( request.search( dragMove + "=w2" ) != -1 );      
+      assertTrue( request.search( dragMove + ".operation=copy" ) != -1 );
+      assertTrue( request.search( dragMove + ".dataType=76135" ) != -1 );
+      testUtil.clearTimerOnceLog();
+      testUtil.clearRequestLog();
+      dndSupport.cancel();
+      dndSupport.deregisterDragSource( source );
+      dndSupport.deregisterDropTarget( target );
+      source.setParent( null );
+      source.destroy();
+      target.setParent( null );
+      target.destroy();
+      testUtil.flush();
+    },
+
     // for Bug 299034
     testStopDropEventPropagation : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

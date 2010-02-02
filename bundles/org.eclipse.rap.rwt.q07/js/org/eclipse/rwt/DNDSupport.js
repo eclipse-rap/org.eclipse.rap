@@ -255,6 +255,17 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       delete this._dropTargetEventQueue[ type ];
     },
     
+    _setPropertyRetroactively : function( dropTarget, property, value ) {
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      for( var type in this._dropTargetEventQueue ) {
+        var event = this._dropTargetEventQueue[ type ];
+        if( event[ "id" ] == wm.findIdByWidget( dropTarget ) ) {
+          var eventName = event[ "eventName" ];
+          event[ "param" ][ eventName + "." + property ] = value;
+        }
+      } 
+    },
+    
     _attachTropTargetEvents : function() {
       var req = org.eclipse.swt.Request.getInstance();
       var events = this._dropTargetEventQueue;
@@ -582,6 +593,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         this._setAction( action, null );
         dndHandler._renderCursor();
       }
+      this._setPropertyRetroactively( widget, "operation", operation );
     },
     
     /*
@@ -614,6 +626,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       if( widget == this._currentDropTarget ) {
         this._dataTypeOverwrite = type;
       }
+      this._setPropertyRetroactively( widget, "dataType", type );
     }
   
   }
