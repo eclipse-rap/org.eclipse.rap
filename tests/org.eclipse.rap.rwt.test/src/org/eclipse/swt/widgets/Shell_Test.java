@@ -232,6 +232,14 @@ public class Shell_Test extends TestCase {
     assertTrue( childShell.isDisposed() );
   }
 
+  public void testDisposeMenu() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Menu menu = new Menu( shell, SWT.BAR );
+    shell.dispose();
+    assertTrue( menu.isDisposed() );
+  }
+
   public void testCreateDescendantShell() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

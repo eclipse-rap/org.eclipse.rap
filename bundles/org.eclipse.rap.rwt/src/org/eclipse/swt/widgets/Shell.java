@@ -20,8 +20,7 @@ import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 
 /**
@@ -1053,6 +1052,10 @@ public class Shell extends Decorations {
     Shell[] dialogShells = internalGetShells();
     for( int i = 0; i < dialogShells.length; i++ ) {
       dialogShells[ i ].dispose();
+    }
+    Menu[] menus = MenuHolder.getMenus( this );
+    for( int i = 0; i < menus.length; i++ ) {
+      menus[ i ].dispose();
     }
   }
 
