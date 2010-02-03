@@ -43,9 +43,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 0, bar._gfxBorderWidth );
       assertEquals( 100, bar._getIndicatorLength() );
       assertEquals( [ 0, 0, 0, 0 ], bar._getIndicatorRadii( 0, 100 ) );
-      // style.border is always "" in IE, we need to check a single edge
-      var edge = bar.getElement().style.borderLeftStyle;  
-      assertTrue( edge == "" || edge == "none"  );      
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;       
+      assertFalse( testUtil.hasCssBorder( bar.getElement() ) ) ;       
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },

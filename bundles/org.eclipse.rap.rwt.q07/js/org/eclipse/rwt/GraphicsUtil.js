@@ -200,6 +200,13 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
      */
     setStroke : function( shape, color, width ) {
       this._renderClass.setStroke( shape, color, width );
+    },
+    
+    /**
+     * returns the width of the stroke as a number (pixel)
+     */
+    getStrokeWidth : function( shape ) {
+      return this._renderClass.getStrokeWidth( shape );      
     }
     
   }

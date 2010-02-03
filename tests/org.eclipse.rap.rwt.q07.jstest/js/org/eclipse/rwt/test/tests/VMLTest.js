@@ -39,6 +39,101 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       testUtil.flush();
     },
 
+    testLayoutMode : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var canvas = gfxUtil.createCanvas();
+      assertEquals( "100%", canvas.node.style.width );
+      assertEquals( "100%", canvas.node.style.height );
+      assertEquals( "1000, 1000", canvas.node.getAttribute( "coordsize") );
+      gfxUtil.setLayoutMode( canvas, "absolute" );
+      assertEquals( "100px", canvas.node.style.width );
+      assertEquals( "100px", canvas.node.style.height );
+      assertEquals( "1000, 1000", canvas.node.getAttribute( "coordsize") );
+    },
+
+    testFillColor : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      gfxUtil.handleAppear( canvas );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.setFillColor( shape, null);
+      assertEquals( null, gfxUtil.getFillType( shape ) );
+      assertEquals( null, gfxUtil.getFillColor( shape ) );
+      assertFalse( shape.fill.on );
+      gfxUtil.setFillColor( shape, "green" );
+      assertTrue( shape.fill.on );
+      assertEquals( "solid", shape.fill.type );      
+      assertEquals( "green", shape.fill.color.value );
+      assertEquals( "color", gfxUtil.getFillType( shape ) );
+      assertEquals( "green", gfxUtil.getFillColor( shape ) );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+    
+    testColorRestore : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.setFillColor( shape, "green" );
+      assertEquals( "green", gfxUtil.getFillColor( shape ) );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );      
+      assertEquals( "green", gfxUtil.getFillColor( shape ) );
+      assertFalse( "green" == shape.fill.color );
+      gfxUtil.handleAppear( canvas );
+      assertTrue( "green" == shape.fill.color );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+
+    testFillGradient : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      gfxUtil.handleAppear( canvas );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.setFillGradient( shape, [ [ 0, "red" ], [ 1, "yellow" ] ] );
+      assertTrue( shape.fill.on );
+      assertEquals( "gradient", shape.fill.type );      
+      assertEquals( "gradient", gfxUtil.getFillType( shape ) );
+      assertEquals( "yellow", shape.fill.color2.value );
+      var expected = "0 red;.25 #ff4000;.5 #ff8000;.75 #ffbf00;1 yellow";
+      assertEquals( expected, shape.fill.colors.value );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+
+    testDrawRoundRect : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      var canvas = gfxUtil.createCanvas();
+      var parent = document.body;
+      gfxUtil.setLayoutMode( canvas, "absolute" );
+      shape = gfxUtil.createShape( "roundrect" );
+      gfxUtil.setRoundRectLayout( shape, 10, 10, 20, 20, [ 0, 4, 3, 2 ] );
+      gfxUtil.setStroke( shape, "black", 2 );
+      gfxUtil.addToCanvas( canvas, shape );
+      parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
+      var expected =   " m95,95 ae255,135,40,40,-17694450,-5898150 " 
+                     + "ae265,265,30,30,0,-5898150 " 
+                     + "ae115,275,20,20,-5898150,-5898150 x e";
+      assertEquals( expected, shape.node.path.v );
+      parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
+    },
+
     testDrawRoundRectOneRadiusOnlyMinimalMize : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil

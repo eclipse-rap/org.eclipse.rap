@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       if( style.cssText.indexOf( "%" ) != -1 ) {
         throw( "getElementBounds does not support '%'!" );
       }
-      var ret = {
+      var result = {
         top : parseInt( style.top ),
         left : parseInt( style.left ),
         width : parseInt( style.width ),
@@ -32,19 +32,19 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         if( ps.cssText.indexOf( "%" ) != -1 ) {
           throw( "getElementBounds does not support '%'!" );
         }
-        ret.right =   parseInt( ps.width ) 
-                    - parseInt( ps.borderLeftWidth || 0 ) 
-                    - parseInt( ps.borderRightWidth || 0 ) 
-                    - ( ret.left + ret.width )
-        ret.bottom =   parseInt( ps.height ) 
-                     - parseInt( ps.borderTopWidth || 0 ) 
-                     - parseInt( ps.borderBottomWidth || 0 ) 
-                     - ( ret.top + ret.height );
+        result.right =   parseInt( ps.width ) 
+                       - parseInt( ps.borderLeftWidth || 0 ) 
+                       - parseInt( ps.borderRightWidth || 0 ) 
+                       - ( result.left + result.width )
+        result.bottom =   parseInt( ps.height ) 
+                        - parseInt( ps.borderTopWidth || 0 ) 
+                        - parseInt( ps.borderBottomWidth || 0 ) 
+                        - ( result.top + result.height );
       } catch( e ) {
         this.printStackTrace();
         throw( " could not get bounds: no parentNode!" );
       }
-      return ret;
+      return result;
     },
     
     hasElementOpacity : function( node ) {
@@ -52,31 +52,47 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     },
     
     getCssBackgroundImage : function( node ) {
-      var ret = "";
+      var result = "";
       if( node.style.filter && node.style.filter.indexOf( "src='" ) != -1 ) {
         var filter = node.style.filter;
         var startStr = filter.indexOf( "src='" ) + 5;
         var stopStr = filter.indexOf( "'", startStr );
-        ret = filter.slice( startStr, stopStr );
+        result = filter.slice( startStr, stopStr );
       } else if(   node.style.backgroundImage 
                 && node.style.backgroundImage.indexOf( 'url(' ) != -1 ) 
       {
-        ret = node.style.backgroundImage.slice( 4, -1 );              
+        result = node.style.backgroundImage.slice( 4, -1 );              
       }
       // Webkit re-writes the url in certain situations: 
-      if(    ret.length > 0 
-          && ( ret == document.URL ) ) {
-        ret = "";
+      if( result.length > 0 && result == document.URL ) {
+        result = "";
       }
-      return ret;
+      return result;
     },
         
     getCssBackgroundColor : function( widget ) {      
       var inner = widget._getTargetNode().style.backgroundColor;
       var outer = widget.getElement().style.backgroundColor;
       return ( ( inner || outer ) || null );      
-    },    
+    },
     
+    hasCssBorder : function( node ) {
+      var result = false;
+      var edge = [ "Top", "Left", "Bottom", "Right" ];
+      for( var i=0; i < 4; i++ ) {
+        if( !result ) {
+          var width = parseInt( node.style[ "border" + edge[ i ] + "Width" ] );
+          var color = node.style[ "border" + edge[ i ] + "Color" ];
+          var style = node.style[ "border" + edge[ i ] + "Style" ];
+          var hasWidth = !isNaN( width ) && width > 0; 
+          var hasColor = color != "transparent"; 
+          var hasStyle = style != "" && style != "none";
+          result = hasWidth && hasColor && hasStyle; 
+        }        
+      } 
+      return result;     
+    },
+
     getElementSelectable : function( node ) {
       return node.style.cssText.search( "user-select: none" ) == -1;
     },

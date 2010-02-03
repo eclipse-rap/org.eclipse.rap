@@ -38,6 +38,70 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       parent.destroy();
       testUtil.flush();
     },
+    
+    testFillColor : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      gfxUtil.handleAppear( canvas );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.setFillColor( shape, null);
+      assertEquals( null, gfxUtil.getFillType( shape ) );
+      assertEquals( null, gfxUtil.getFillColor( shape ) );
+      assertEquals( "none", shape.node.getAttribute( "fill" ) );
+      gfxUtil.setFillColor( shape, "green" );      
+      assertEquals( "green", shape.node.getAttribute( "fill" ) );
+      assertEquals( "color", gfxUtil.getFillType( shape ) );
+      assertEquals( "green", gfxUtil.getFillColor( shape ) );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+
+    testFillGradient : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      var shape = gfxUtil.createShape( "rect" );
+      var hash = qx.core.Object.toHashCode( shape );
+      gfxUtil.addToCanvas( canvas, shape );
+      gfxUtil.handleAppear( canvas );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.setFillGradient( shape, [ [ 0, "red" ], [ 1, "green" ] ] );
+      assertEquals( "gradient", gfxUtil.getFillType( shape ) );
+      var expected = "url(#gradient_" + hash + ")"; 
+      assertEquals( expected, shape.node.getAttribute( "fill" ) );
+      var gradNode = canvas.defsNode.firstChild;
+      assertEquals( "linearGradient", gradNode.tagName ); 
+      assertEquals( "gradient_" + hash, gradNode.getAttribute( "id" ) ); 
+      assertEquals( "0", gradNode.firstChild.getAttribute( "offset" ) ); 
+      assertEquals( "red", gradNode.firstChild.getAttribute( "stop-color" ) ); 
+      assertEquals( "1", gradNode.lastChild.getAttribute( "offset" ) ); 
+      assertEquals( "green", gradNode.lastChild.getAttribute( "stop-color" ) ); 
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+
+    testDrawRoundRect : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      var canvas = gfxUtil.createCanvas();
+      var parent = document.body;
+      gfxUtil.setLayoutMode( canvas, "absolute" );
+      var shape = gfxUtil.createShape( "roundrect" );
+      gfxUtil.setRoundRectLayout( shape, 10, 10, 20, 20, [ 0, 4, 3, 2 ] );
+      gfxUtil.setStroke( shape, "black", 2 );
+      gfxUtil.addToCanvas( canvas, shape );
+      parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
+      var expected =   "M 10 10 L 26 10 A 4 4 0 0 1 30 14 L 30 27 "
+                     + "A 3 3 0 0 1 27 30 L 12 30 A 2 2 0 0 1 10 28 Z";
+      assertEquals( expected, shape.node.getAttribute( "d" ) );
+      parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
+    },
 
     testDrawRoundRectOneRadiusOnlyMinimalMize : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -52,8 +116,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       gfxUtil.addToCanvas( canvas, shape );
       parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );
-      var expected =    "M 10 30 A 20 20 0 0 1 30 10 L 30 10 30 10 L 30 30 " 
-                      + "30 30 L 10 30 10 30 Z"
+      var expected =   "M 10 30 A 20 20 0 0 1 30 10 L 30 10 30 10 L 30 30 "
+                     + "30 30 L 10 30 10 30 Z";
       assertEquals( expected, shape.node.getAttribute( "d" ) );
       parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
     },

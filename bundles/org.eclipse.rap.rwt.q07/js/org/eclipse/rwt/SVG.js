@@ -59,6 +59,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         break;
       }
       result.node.setAttribute( "stroke", "none" );
+      result.node.setAttribute( "stroke-width", "0px" );
       result.node.setAttribute( "fill", "none" );
       result.defNodes = {};
       result.parent = null
@@ -142,6 +143,14 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       } else {
         shape.node.setAttribute( "fill", "none" );
       }
+    },
+    
+    getFillColor : function( shape ) {
+      var result = null;
+      if( this.getFillType( shape ) == "color" ) {
+        result = shape.node.getAttribute( "fill" );
+      }
+      return result;
     },
     
     setFillGradient : function( shape, gradient ) {
@@ -246,6 +255,11 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       } else {
         shape.node.setAttribute( "stroke", color != null ? color : "none" );
       }      
+    },
+
+    getStrokeWidth : function( shape ) {
+      // this assumes that only px can be set, which is true within this class
+      return parseFloat( shape.node.getAttribute( "stroke-width" ) );
     },
 
     /////////

@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         var node = canvas.node;
         node.style.width = 100 + "px";
         node.style.height = 100 + "px";
-        var coordsize = 100 * this._VMLFACTOR + "," + 100 * this._VMLFACTOR;
+        var coordsize = 100 * this._VMLFACTOR + ", " + 100 * this._VMLFACTOR;
         node.setAttribute( "coordsize", coordsize );
       } else if( mode == "relative" ) {
         var node = canvas.node;
@@ -181,6 +181,14 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         delete shape.restoreColor;
       }
     },
+    
+    getFillColor : function( shape ) {
+      var result = null;
+      if( this.getFillType( shape ) == "color" ) {
+        result = shape.restoreColor;
+      }
+      return result;
+    },
 
     setFillGradient : function( shape, gradient ) {
       var fill = shape.fill;
@@ -263,6 +271,19 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       } else {
         shape.node.stroked = false;
       }
+    },
+    
+    getStrokeWidth : function( shape ) {
+      // IE returns strokeweight either as number (then its pt)
+      // or as string with a "px" or "pt" postfix
+      var result = false;
+      if( shape.node.stroked ) {
+        result = shape.node.strokeweight;
+        var isPt = typeof result == "number" || result.search( "pt" ) != -1;
+        result = parseFloat( result );                     
+        result = isPt ? result / 0.75 : result;
+      }
+      return result; 
     },
 
     /////////
