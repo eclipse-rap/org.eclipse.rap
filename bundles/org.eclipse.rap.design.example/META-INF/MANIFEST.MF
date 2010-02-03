@@ -11,5 +11,4 @@ Export-Package: org.eclipse.rap.internal.design.example.builder;x-internal:=true
  org.eclipse.rap.internal.design.example.business;x-internal:=true,
  org.eclipse.rap.internal.design.example.business.layoutsets;x-internal:=true,
  org.eclipse.rap.internal.design.example.managers;x-internal:=true,
- org.eclipse.rap.internal.design.example.popups;x-internal:=true,
  org.eclipse.rap.internal.design.example.stacks;x-internal:=true

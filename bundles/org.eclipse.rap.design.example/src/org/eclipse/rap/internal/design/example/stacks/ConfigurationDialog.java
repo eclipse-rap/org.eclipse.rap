@@ -335,8 +335,4 @@ public class ConfigurationDialog extends PopupDialog {
 
   }
 
-  protected Color getBackground() {
-    return Graphics.getColor( 255, 255, 255 );
-  }
-
 }

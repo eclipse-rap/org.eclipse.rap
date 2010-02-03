@@ -1322,6 +1322,7 @@ Slider-Thumb:pressed {
 /* Display */
 Display {
   background-image: url( /theme/business/icons/browser_bg.png );
+  rwt-infobackground-color: rgb( 255, 255, 255 );
 }
 
 /* CTabFolder, TabFolder */
