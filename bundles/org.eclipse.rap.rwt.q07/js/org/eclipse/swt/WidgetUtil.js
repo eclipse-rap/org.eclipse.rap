@@ -24,7 +24,7 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
       req.addParameter( id + "." + propertyName, propertyValue );
     },
 
-    /*
+    /**
      * workaround for IE bug
      * div's have the height of the font even if they are empty
      */
@@ -46,6 +46,45 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
           org.eclipse.swt.WidgetUtil.forAllChildren( this, func );
         }
       } );
+    },
+    
+    /**
+     * Can be used simulate mouseEvents on the qooxdoo event-layer.
+     * Manager and handler that are usually notified by 
+     * qx.event.handler.EventHandler will not receive the event. 
+     */
+    _fakeMouseEvent : function( originalTarget, type ) {
+      var domTarget = originalTarget._getTargetNode();
+      var eventHandler = qx.event.handler.EventHandler;
+      var target = eventHandler.getTargetObject( null, 
+                                                 originalTarget,
+                                                 true );
+      var domEvent = {
+        "type" : type,
+        "target" : domTarget,
+        "button" : 0,
+        "wheelData" : 0,
+        "detail" : 0,
+        "pageX" : 0,
+        "pageY" : 0,
+        "clientX" : 0,
+        "clientY" : 0,
+        "screenX" : 0,
+        "screenY" : 0,
+        "shiftKey" : false,
+        "ctrlKey" : false,
+        "altKey" : false,
+        "metaKey" : false,
+        "preventDefault" : function(){}
+      };
+      var event = new qx.event.type.MouseEvent( type, 
+                                                domEvent, 
+                                                domTarget, 
+                                                target,
+                                                originalTarget,
+                                                null );
+      target.dispatchEvent( event );
     }
+
   }
 });

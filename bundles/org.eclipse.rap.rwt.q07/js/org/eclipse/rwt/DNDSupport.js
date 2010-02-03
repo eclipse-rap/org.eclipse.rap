@@ -83,7 +83,9 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
           doc.addEventListener( "keydown", this._onKeyEvent, this );
           doc.addEventListener( "keyup", this._onKeyEvent, this );
           this.setCurrentTargetWidget( event.getOriginalTarget() );
-          this._fakeMouseEvent( "mouseout" ); // fix for bug 296348
+          // fix for bug 296348
+          var widgetUtil = org.eclipse.swt.WidgetUtil;
+          widgetUtil._fakeMouseEvent( this._currentTargetWidget, "mouseout" );
           var sourceWidget = dndHandler.__dragCache.sourceWidget;
           var feedbackWidget = this._getFeedbackWidget( control, sourceWidget );
           // Note: Unlike SWT, the feedbackWidget can not be rendered behind
@@ -522,7 +524,9 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     // helper
 
     _cleanUp : function() {
-      this._fakeMouseEvent( "mouseover" ); // fix for bug 296348
+      // fix for bug 296348
+      var widgetUtil = org.eclipse.swt.WidgetUtil;
+      widgetUtil._fakeMouseEvent( this._currentTargetWidget, "mouseover" );
       this.setCurrentTargetWidget( null );
       if( this._currentDropTarget != null) {
         this.setFeedback( this._currentDropTarget, null, 0 );
@@ -539,39 +543,6 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       doc.removeEventListener( "mouseover", this._onMouseOver, this );
       doc.removeEventListener( "keydown", this._onKeyEvent, this );
       doc.removeEventListener( "keyup", this._onKeyEvent, this );
-    },
-
-    _fakeMouseEvent : function( type ) {
-      var domTarget = this._currentTargetWidget._getTargetNode();
-      var eventHandler = qx.event.handler.EventHandler;
-      var target = eventHandler.getTargetObject( null, 
-                                                 this._currentTargetWidget,
-                                                 true );
-      var domEvent = {
-        "type" : type,
-        "target" : domTarget,
-        "button" : 0,
-        "wheelData" : 0,
-        "detail" : 0,
-        "pageX" : 0,
-        "pageY" : 0,
-        "clientX" : 0,
-        "clientY" : 0,
-        "screenX" : 0,
-        "screenY" : 0,
-        "shiftKey" : false,
-        "ctrlKey" : false,
-        "altKey" : false,
-        "metaKey" : false,
-        "preventDefault" : function(){}
-      };
-      var event = new qx.event.type.MouseEvent( type, 
-                                                domEvent, 
-                                                domTarget, 
-                                                target,
-                                                this._currentTargetWidget,
-                                                null );
-      target.dispatchEvent( event );
     },
 
     //////////////////

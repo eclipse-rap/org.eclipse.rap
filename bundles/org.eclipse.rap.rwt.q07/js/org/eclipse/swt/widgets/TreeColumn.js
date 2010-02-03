@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
   construct : function( parent ) {
     this.base( arguments );
     this.setAppearance( "tree-column" );
-    this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT ); 
+    this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     // Getter/setter variables
     this._resizable = true;
@@ -117,7 +117,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
     },
 
     _onMouseOver : function( evt ) {
-      this.addState( "mouseover" );
+      if( !this._inMove && !this._inResize ) {
+        this.addState( "mouseover" );
+      }
     },
 
     /////////////////////////////
@@ -125,6 +127,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
     
     _onMouseDown : function( evt ) {
       this._inResize = this._isResizeLocation( evt.getPageX() );
+      var widgetUtil = org.eclipse.swt.WidgetUtil;
       if( this._inResize ) {
         var position = this.getLeft() + this.getWidth();
         this._tree._showResizeLine( position );
@@ -132,6 +135,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
         this.setCapture( true );
         evt.stopPropagation();
         evt.preventDefault();
+        widgetUtil._fakeMouseEvent( this, "mouseout" );
       } else if( this._moveable ){
         this._inMove = true;
         this.setCapture( true );
@@ -143,11 +147,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
         this._initialLeft = this.getLeft();
         evt.stopPropagation();
         evt.preventDefault();
+        widgetUtil._fakeMouseEvent( this, "mouseout" );
       }
       this._tree.focus();
     },
 
     _onMouseUp : function( evt ) {
+      var widgetUtil = org.eclipse.swt.WidgetUtil;
       if( this._inResize ) {
         this._tree._hideResizeLine();
         this.getTopLevelWidget().setGlobalCursor( null );
@@ -158,6 +164,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
         this._wasResizeOrMoveEvent = true;
         evt.stopPropagation();
         evt.preventDefault();
+        widgetUtil._fakeMouseEvent( evt.getTarget(), "mouseover" );
       } else if( this._inMove ) {
         this._inMove = false;
         this.setCapture( false );
@@ -175,6 +182,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
         }
         evt.stopPropagation();
         evt.preventDefault();
+        widgetUtil._fakeMouseEvent( evt.getTarget(), "mouseover" );
       }
     },
 

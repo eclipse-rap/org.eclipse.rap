@@ -124,7 +124,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     },
 
     _onMouseOver : function( evt ) {
-      this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOUSE_OVER );
+      if( !this._inMove && !this._inResize ) {
+        this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOUSE_OVER );
+      }
     },
 
     /////////////////////////////
@@ -132,6 +134,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     
     _onMouseDown : function( evt ) {
       if( !this._inMove && !this._inResize ) {
+        var widgetUtil = org.eclipse.swt.WidgetUtil;
         if( this._isResizeLocation( evt.getPageX() ) ) {
           this._inResize = true;
           var position = this.getLeft() + this.getWidth();
@@ -140,6 +143,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
           this.setCapture( true );
           evt.stopPropagation();
           evt.preventDefault();
+          widgetUtil._fakeMouseEvent( this, "mouseout" );
         } else if( this._moveable ) {
           this._inMove = true;
           this.setCapture( true );
@@ -150,11 +154,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
           this._initialLeft = this.getLeft();
           evt.stopPropagation();
           evt.preventDefault();
+          widgetUtil._fakeMouseEvent( this, "mouseout" );
         }
       }
     },
 
     _onMouseUp : function( evt ) {
+      var widgetUtil = org.eclipse.swt.WidgetUtil;
       if( this._inResize ) {
         this._table._hideResizeLine();
         this.getTopLevelWidget().setGlobalCursor( null );
@@ -165,6 +171,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._wasResizeOrMoveEvent = true;
         evt.stopPropagation();
         evt.preventDefault();
+        widgetUtil._fakeMouseEvent( evt.getTarget(), "mouseover" );        
       } else if( this._inMove ) {
         this._inMove = false;
         this.setCapture( false );
@@ -182,6 +189,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         }
         evt.stopPropagation();
         evt.preventDefault();
+        widgetUtil._fakeMouseEvent( evt.getTarget(), "mouseover" );
       }
     },
 
