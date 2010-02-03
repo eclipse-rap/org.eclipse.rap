@@ -41,7 +41,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_MINIMUM_SIZE = "minimumSize";
   static final String PROP_SHELL_LISTENER = "shellListener";
   private static final String PROP_SHELL_MENU  = "menuBar";
-  private static final String PROP_SHELL_MENU_BOUNDS  = "menuBarShellClientArea";
+  private static final String PROP_SHELL_MENU_BOUNDS = "menuBarShellClientArea";
 
   private final static Object[] NULL_PARAMETER = new Object[] { null };
 
