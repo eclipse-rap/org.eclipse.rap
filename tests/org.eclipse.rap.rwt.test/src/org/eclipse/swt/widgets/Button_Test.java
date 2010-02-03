@@ -13,6 +13,7 @@
 package org.eclipse.swt.widgets;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
@@ -46,6 +47,17 @@ public class Button_Test extends TestCase {
     Button arrowButton = new Button( shell, SWT.ARROW );
     arrowButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertEquals( null, arrowButton.getImage() );
+    
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
+    Image image = new Image( display, stream );
+    image.dispose();
+    try {
+      button.setImage( image );
+      fail( "Must not allow disposed image" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testText() {

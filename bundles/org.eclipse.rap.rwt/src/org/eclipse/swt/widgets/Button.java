@@ -283,6 +283,9 @@ public class Button extends Control {
    */
   public void setImage( final Image image ) {
     checkWidget();
+    if( image != null && image.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     if( ( style & SWT.ARROW ) == 0 ) {
       this.image = image;
     }
