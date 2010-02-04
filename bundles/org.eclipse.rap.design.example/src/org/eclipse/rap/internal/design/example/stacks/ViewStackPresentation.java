@@ -517,7 +517,11 @@ public class ViewStackPresentation extends ConfigurableStack {
             close.setData( WidgetUtil.CUSTOM_VARIANT, "viewCloseInactive" );
             close.addSelectionListener( new SelectionAdapter() {
               public void widgetSelected( SelectionEvent e ) {
-                getSite().close( new IPresentablePart[] { part } );
+                IStackPresentationSite site = getSite();
+                if( site.isCloseable( part ) ) {
+                  site.close( new IPresentablePart[] { part } );
+                  showPartButton( currentPart );
+                }
               };
             } );
             FormData fdClose = new FormData();
@@ -722,11 +726,13 @@ public class ViewStackPresentation extends ConfigurableStack {
   private void showPartButton( final IPresentablePart part ) {
     Control button = ( Control ) partButtonMap.get( part );
     Control hiddenButton = hideLastVisibleButton();
-    button.setVisible( true );
-    overflowButtons.remove( button );
-    button.moveAbove( hiddenButton );
-    tabBg.layout( true, true );
-    manageOverflow();
+    if( button != null && !button.isDisposed() ) {
+      button.setVisible( true );
+      overflowButtons.remove( button );
+      button.moveAbove( hiddenButton );
+      tabBg.layout( true, true );
+      manageOverflow();
+    }        
   }
 
   private void showLastChildIfNecessary( final int recursionCount ) {
@@ -788,26 +794,28 @@ public class ViewStackPresentation extends ConfigurableStack {
    */
   private Control hideLastVisibleButton() {
     Control result = null;
-    Control[] children = tabBg.getChildren();
-    boolean lastChildHidden = false;
-    for( int i = children.length - 1; i >= 0 && !lastChildHidden; i-- ) {
-      if( children[ i ].isVisible() ) {
-        if( isButtonActive( children[ i ] ) ) {
-          if( i > 0 ) {
-            children[ i - 1 ].setVisible( false );
-            result = children[ i - 1 ];
-            overflowButtons.add( children[ i - 1 ] );
-            children[ i ].moveAbove( children[ i - 1 ] );
+    if( tabBg != null && !tabBg.isDisposed() ) {
+      Control[] children = tabBg.getChildren();
+      boolean lastChildHidden = false;
+      for( int i = children.length - 1; i >= 0 && !lastChildHidden; i-- ) {
+        if( children[ i ].isVisible() ) {
+          if( isButtonActive( children[ i ] ) ) {
+            if( i > 0 ) {
+              children[ i - 1 ].setVisible( false );
+              result = children[ i - 1 ];
+              overflowButtons.add( children[ i - 1 ] );
+              children[ i ].moveAbove( children[ i - 1 ] );
+            }
+          } else {
+            children[ i ].setVisible( false );
+            result = children[ i ];
+            overflowButtons.add( children[ i ] );
           }
-        } else {
-          children[ i ].setVisible( false );
-          result = children[ i ];
-          overflowButtons.add( children[ i ] );
+          lastChildHidden = true;
+  
+          tabBg.layout( true, true );
+  
         }
-        lastChildHidden = true;
-
-        tabBg.layout( true, true );
-
       }
     }
     return result;
