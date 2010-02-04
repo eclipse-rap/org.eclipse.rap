@@ -67,6 +67,8 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   private static final String VARIANT_PART_INACTIVE = "partInactive";
   private static final String VARIANT_PART_ACTIVE = "partActive";
+  private static final String VARIANT_PART_INACTIVE_ACTIVE 
+    = "partInActiveActive";
   private static final int BUTTON_SPACING = 6;
   private static final String ID_CLOSE = "close";
   private static final String BUTTON_ID = "buttonId";
@@ -790,7 +792,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     boolean lastChildHidden = false;
     for( int i = children.length - 1; i >= 0 && !lastChildHidden; i-- ) {
       if( children[ i ].isVisible() ) {
-        if( buttonIsActive( children[ i ] ) ) {
+        if( isButtonActive( children[ i ] ) ) {
           if( i > 0 ) {
             children[ i - 1 ].setVisible( false );
             result = children[ i - 1 ];
@@ -811,7 +813,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     return result;
   }
 
-  private boolean buttonIsActive( final Control control ) {
+  private boolean isButtonActive( final Control control ) {
     boolean result = false;
     // check against the button variant
     if( control instanceof Composite ) {
@@ -820,7 +822,9 @@ public class ViewStackPresentation extends ConfigurableStack {
       for( int i = 0; i < children.length && !result; i++ ) {
         if( children[ i ] instanceof Button ) {
           Object data = children[ i ].getData( WidgetUtil.CUSTOM_VARIANT );
-          if( data.equals( VARIANT_PART_ACTIVE ) ) {
+          if( data.equals( VARIANT_PART_INACTIVE_ACTIVE )
+              || data.equals( VARIANT_PART_ACTIVE ) ) 
+          {
             result = true;
           }
         }
