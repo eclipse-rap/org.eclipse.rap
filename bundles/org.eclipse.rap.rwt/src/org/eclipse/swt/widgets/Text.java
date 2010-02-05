@@ -54,6 +54,13 @@ public class Text extends Scrollable {
    */
   public static final int LIMIT = Integer.MAX_VALUE;
 
+  /**
+   * The delimiter used by multi-line text widgets.  When text
+   * is queried from the widget, it will be delimited using
+   * this delimiter.
+   */
+  public static final String DELIMITER = "\n";
+
   private final ITextAdapter textAdapter;
   private String text = "";
   private int textLimit = LIMIT;
@@ -245,11 +252,11 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * <!--@see #DELIMITER-->
+   * @see #DELIMITER
    */
   public String getLineDelimiter() {
     checkWidget();
-    return "\n";
+    return DELIMITER;
   }
 
   /**
