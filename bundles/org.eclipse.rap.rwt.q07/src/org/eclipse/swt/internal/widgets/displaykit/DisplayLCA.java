@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -163,7 +163,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     Object[] args = new Object[] { RWTRequestVersionControl.nextRequestId() };
     out.write( MessageFormat.format( PATTERN_REQUEST_COUNTER, args ) );
   }
-  
+
   private static void writeTheme( final Display display ) throws IOException {
     String currThemeId = ThemeUtil.getCurrentThemeId();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
@@ -327,7 +327,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       WidgetTreeVisitor.accept( shell, visitor );
     }
     for( int i = 0; i < shells.length; i++ ) {
-      if( shells[ i ].getMaximized() ) {
+      if( shells[ i ].getMaximized() || shells[ i ].getFullScreen() ) {
         Object adapter = shells[ i ].getAdapter( IShellAdapter.class );
         IShellAdapter shellAdapter = ( IShellAdapter )adapter;
         shellAdapter.setBounds( display.getBounds() );
@@ -368,7 +368,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void disposeWidgets() throws IOException {
     Widget[] disposedWidgets = DisposedWidgets.getAll();
-    // TODO [rh] get rid of dependency on DragSource/DropTarget 
+    // TODO [rh] get rid of dependency on DragSource/DropTarget
     // Must dispose of DragSources and DropTargets first
     for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
       Widget toDispose = disposedWidgets[ i ];
@@ -385,7 +385,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     //           SWT).
     for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
       Widget toDispose = disposedWidgets[ i ];
-      if(    !( toDispose instanceof DragSource ) 
+      if(    !( toDispose instanceof DragSource )
           && !( toDispose instanceof DropTarget ) )
       {
         AbstractWidgetLCA lca = WidgetUtil.getLCA( toDispose );

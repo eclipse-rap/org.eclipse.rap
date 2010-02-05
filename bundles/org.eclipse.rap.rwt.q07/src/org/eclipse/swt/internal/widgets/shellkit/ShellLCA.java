@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_ACTIVE_CONTROL = "activeControl";
   static final String PROP_ACTIVE_SHELL = "activeShell";
   static final String PROP_MODE = "mode";
+  static final String PROP_FULLSCREEN = "fullScreen";
   static final String PROP_MINIMUM_SIZE = "minimumSize";
   static final String PROP_SHELL_LISTENER = "shellListener";
   private static final String PROP_SHELL_MENU  = "menuBar";
@@ -55,6 +56,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_IMAGE, shell.getImage() );
     adapter.preserve( PROP_ALPHA, new Integer( shell.getAlpha() ) );
     adapter.preserve( PROP_MODE, getMode( shell ) );
+    adapter.preserve( PROP_FULLSCREEN,
+                      Boolean.valueOf( shell.getFullScreen() ) );
     adapter.preserve( PROP_SHELL_LISTENER,
                       Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
     adapter.preserve( PROP_SHELL_MENU, shell.getMenuBar() );
@@ -119,7 +122,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
-    // TODO [rst] Do not render bounds if shell is maximized
+    // Important: Order matters, write setMode() before setBounds()
+    writeMode( shell );
     ControlLCAUtil.writeChanges( shell );
     writeImage( shell );
     writeText( shell );
@@ -128,7 +132,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     //            strange behavior!
     writeOpen( shell );
     writeActiveShell( shell );
-    writeMode( shell );
+    writeFullScreen( shell );
     writeCloseListener( shell );
     writeMinimumSize( shell );
     writeDefaultButton( shell );
@@ -335,11 +339,20 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.set( PROP_SHELL_LISTENER, "hasShellListener", newValue, defValue );
   }
 
+  private static void writeFullScreen( final Shell shell ) throws IOException {
+    Object defValue = Boolean.FALSE;
+    Boolean newValue = Boolean.valueOf( shell.getFullScreen() );
+    if( WidgetLCAUtil.hasChanged( shell, PROP_FULLSCREEN, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      writer.set( "fullScreen", newValue );
+    }
+  }
+
   private static String getMode( final Shell shell ) {
     String result = null;
     if( shell.getMinimized() ) {
       result = "minimized";
-    } else if( shell.getMaximized() ) {
+    } else if( shell.getMaximized() || shell.getFullScreen() ) {
       result = "maximized";
     }
     return result;

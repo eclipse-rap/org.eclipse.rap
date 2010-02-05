@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -482,6 +482,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           this._blocker.destroy();
           this._blocker = null;
         }
+      }
+    },
+    
+    setFullScreen : function( fullScreen ) {
+      if( fullScreen ) {
+        this._captionBar.setDisplay( false );
+      } else {
+        this._captionBar.setDisplay( this.hasState( "rwt_TITLE" ) );
       }
     }
   }

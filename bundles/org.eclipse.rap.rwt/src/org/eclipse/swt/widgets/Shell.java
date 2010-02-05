@@ -15,8 +15,7 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
@@ -123,6 +122,7 @@ public class Shell extends Decorations {
   private static final int MODE_NONE = 0;
   private static final int MODE_MAXIMIZED = 1;
   private static final int MODE_MINIMIZED = 2;
+  private static final int MODE_FULLSCREEN = 4;
 
   private static final int INITIAL_SIZE_PERCENT = 60;
   private static final int MIN_WIDTH_LIMIT = 80;
@@ -134,6 +134,7 @@ public class Shell extends Decorations {
   private Button defaultButton;
   private Button saveDefault;
   private Control savedFocus;  // TODO [rh] move to Decorations when exist
+  private Rectangle savedBounds;
   private int mode;
   private boolean modified;
   private int minWidth;
@@ -538,16 +539,28 @@ public class Shell extends Decorations {
     return result;
   }
 
+  public int getBorderWidth() {
+    return getFullScreen() ? 0 : super.getBorderWidth();
+  }
+
   private int getTitleBarHeight() {
-    ShellThemeAdapter themeAdapter
-      = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getTitleBarHeight( this );
+    int result = 0;
+    if( !getFullScreen() ) {
+      ShellThemeAdapter themeAdapter
+        = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+      result = themeAdapter.getTitleBarHeight( this );
+    }
+    return result;
   }
 
   private Rectangle getTitleBarMargin() {
-    ShellThemeAdapter themeAdapter
-      = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getTitleBarMargin( this );
+    Rectangle result = new Rectangle( 0, 0, 0, 0 );
+    if( !getFullScreen() ) {
+      ShellThemeAdapter themeAdapter
+        = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+      result = themeAdapter.getTitleBarMargin( this );
+    }
+    return result;
   }
 
   private int getMenuBarHeight() {
@@ -570,6 +583,7 @@ public class Shell extends Decorations {
   void updateMode() {
     mode &= ~MODE_MAXIMIZED;
     mode &= ~MODE_MINIMIZED;
+    mode &= ~MODE_FULLSCREEN;
   }
 
   /////////////////////
@@ -1197,6 +1211,7 @@ public class Shell extends Decorations {
    * @see #setMaximized
    */
   public void setMinimized( final boolean minimized ) {
+    checkWidget();
     if( minimized ) {
       mode |= MODE_MINIMIZED;
     } else {
@@ -1231,15 +1246,22 @@ public class Shell extends Decorations {
    * @see #setMinimized
    */
   public void setMaximized( final boolean maximized ) {
-    if( maximized ) {
-      if( mode != MODE_MAXIMIZED ) {
-        setActive();
-        setBounds( display.getBounds() );
+    checkWidget();
+    if( ( mode & MODE_FULLSCREEN ) == 0 ) {
+      if( maximized ) {
+        if( ( mode & MODE_MAXIMIZED ) == 0 ) {
+          setActive();
+          savedBounds = getBounds();
+          setBounds( display.getBounds(), false );
+        }
+        mode |= MODE_MAXIMIZED;
+        mode &= ~MODE_MINIMIZED;
+      } else {
+        if( ( mode & MODE_MAXIMIZED ) != 0 ) {
+          setBounds( savedBounds, false );
+        }
+        mode &= ~MODE_MAXIMIZED;
       }
-      mode |= MODE_MAXIMIZED;
-      mode &= ~MODE_MINIMIZED;
-    } else {
-      mode &= ~MODE_MAXIMIZED;
     }
   }
 
@@ -1258,7 +1280,8 @@ public class Shell extends Decorations {
    * @see #setMinimized
    */
   public boolean getMinimized() {
-    return ( this.mode & MODE_MINIMIZED ) != 0;
+    checkWidget();
+    return ( mode & MODE_MINIMIZED ) != 0;
   }
 
   /**
@@ -1276,7 +1299,73 @@ public class Shell extends Decorations {
    * @see #setMaximized
    */
   public boolean getMaximized() {
-    return mode == MODE_MAXIMIZED;
+    checkWidget();
+    return    ( mode & MODE_FULLSCREEN ) == 0
+           && ( mode & MODE_MINIMIZED ) == 0
+           && ( mode & MODE_MAXIMIZED ) != 0;
+  }
+
+  /**
+   * Sets the full screen state of the receiver.
+   * If the argument is <code>true</code> causes the receiver
+   * to switch to the full screen state, and if the argument is
+   * <code>false</code> and the receiver was previously switched
+   * into full screen state, causes the receiver to switch back
+   * to either the maximized or normal states.
+   * <p>
+   * Note: The result of intermixing calls to <code>setFullScreen(true)</code>,
+   * <code>setMaximized(true)</code> and <code>setMinimized(true)</code> will
+   * vary by platform. Typically, the behavior will match the platform user's
+   * expectations, but not always. This should be avoided if possible.
+   * </p>
+   *
+   * @param fullScreen the new fullscreen state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setFullScreen( final boolean fullScreen ) {
+    checkWidget();
+    if( ( ( mode & MODE_FULLSCREEN ) != 0 ) != fullScreen ) {
+      if( fullScreen ) {
+        setActive();
+        if( ( mode & MODE_MAXIMIZED ) == 0 ) {
+          savedBounds = getBounds();
+        }
+        setBounds( display.getBounds(), false );
+        mode |= MODE_FULLSCREEN;
+        mode &= ~MODE_MINIMIZED;
+      } else {
+        if( ( mode & MODE_MAXIMIZED ) == 0 ) {
+          setBounds( savedBounds, false );
+        }
+        mode &= ~MODE_FULLSCREEN;
+      }
+      layout();
+    }
+  }
+
+  /**
+   * Returns <code>true</code> if the receiver is currently
+   * in fullscreen state, and false otherwise.
+   * <p>
+   *
+   * @return the fullscreen state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public boolean getFullScreen() {
+    checkWidget();
+    return ( this.mode & MODE_FULLSCREEN ) != 0;
   }
 
   ///////////////////

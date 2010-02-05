@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.layout.FillLayout;
 
@@ -131,7 +132,7 @@ public class Shell_Test extends TestCase {
     assertNull( backgroundShell[ 0 ] );
     assertTrue( failed[ 0 ] );
   }
-  
+
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -591,6 +592,145 @@ public class Shell_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+  }
+
+  public void testFullScreen() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Rectangle displayBounds = new Rectangle( 0, 0, 800, 600 );
+    getDisplayAdapter( display ).setBounds( displayBounds );
+    Shell shell = new Shell( display );
+    Rectangle shellBounds = new Rectangle( 10, 10, 100, 100 );
+    shell.setBounds( shellBounds );
+    shell.addControlListener( new ControlListener() {
+      public void controlMoved( final ControlEvent event ) {
+        log.add( "controlMoved" );
+      }
+      public void controlResized( final ControlEvent event ) {
+        log.add( "controlResized" );
+      }
+    } );
+    shell.open();
+    assertFalse( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+
+    log.clear();
+    shell.setMaximized( true );
+    assertFalse( shell.getFullScreen() );
+    assertTrue( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    assertEquals( 2, log.size() );
+    assertEquals( "controlMoved", log.get( 0 ) );
+    assertEquals( "controlResized", log.get( 1 ) );
+    assertEquals( displayBounds, shell.getBounds() );
+
+    shell.setMinimized( true );
+    assertFalse( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertTrue( shell.getMinimized() );
+
+    shell.setMinimized( false );
+    assertFalse( shell.getFullScreen() );
+    assertTrue( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+
+    log.clear();
+    shell.setFullScreen( true );
+    assertTrue( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    assertEquals( 0, log.size() );
+    assertEquals( displayBounds, shell.getBounds() );
+
+    log.clear();
+    shell.setMaximized( true );
+    assertTrue( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    assertEquals( 0, log.size() );
+    assertEquals( displayBounds, shell.getBounds() );
+
+    log.clear();
+    shell.setMaximized( false );
+    assertTrue( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    assertEquals( 0, log.size() );
+    assertEquals( displayBounds, shell.getBounds() );
+
+    log.clear();
+    shell.setMinimized( true );
+    assertTrue( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertTrue( shell.getMinimized() );
+    assertEquals( 0, log.size() );
+
+    log.clear();
+    shell.setMinimized( false );
+    assertTrue( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    assertEquals( 0, log.size() );
+
+    log.clear();
+    shell.setFullScreen( false );
+    assertFalse( shell.getFullScreen() );
+    assertTrue( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    assertEquals( 0, log.size() );
+    assertEquals( displayBounds, shell.getBounds() );
+
+    shell.setMaximized( false );
+    shell.setMinimized( true );
+    log.clear();
+    shell.setFullScreen( true );
+    assertTrue( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    assertEquals( 2, log.size() );
+    assertEquals( "controlMoved", log.get( 0 ) );
+    assertEquals( "controlResized", log.get( 1 ) );
+    assertEquals( displayBounds, shell.getBounds() );
+
+    log.clear();
+    shell.setFullScreen( false );
+    assertFalse( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    assertEquals( 2, log.size() );
+    assertEquals( "controlMoved", log.get( 0 ) );
+    assertEquals( "controlResized", log.get( 1 ) );
+    assertEquals( shellBounds, shell.getBounds() );
+
+    shell.setFullScreen( true );
+    log.clear();
+    shell.setBounds( 20, 20, 200, 200 );
+    assertFalse( shell.getFullScreen() );
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    assertEquals( 2, log.size() );
+    assertEquals( "controlMoved", log.get( 0 ) );
+    assertEquals( "controlResized", log.get( 1 ) );
+  }
+
+  public void testActiveShellOnFullScreen() {
+    Display display = new Display();
+    Shell shell1 = new Shell( display );
+    shell1.setBounds( 20, 20, 200, 200 );
+    shell1.open();
+    Shell shell2 = new Shell( display );
+    shell2.setBounds( 20, 20, 200, 200 );
+    shell2.open();
+    assertEquals( shell2, display.getActiveShell() );
+    shell1.setFullScreen( true );
+    assertEquals( shell1, display.getActiveShell() );
+  }
+
+  private static IDisplayAdapter getDisplayAdapter( final Display display ) {
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    return ( IDisplayAdapter )adapter;
   }
 
   protected void setUp() throws Exception {
