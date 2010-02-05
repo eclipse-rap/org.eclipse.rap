@@ -217,16 +217,13 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         shape.node.setAttribute( "fill", "url(#" + patternId + ")" );
         if( qx.core.Client.getEngine() == "webkit" ) {
           // Bug 301236: Loading an image using SVG causes a bad request
-          // AFTER the image-request. Prevent by pre-loading the image. 
-          var loader = new Image();
-          loader.src = source;
-          var that = this;
-          loader.onload = function() { 
-            that._setXLink( imageNode, source );
+          // AFTER the image-request. Prevent by pre-loading the image.
+          this._onImageLoad( source, function() {
+            org.eclipse.rwt.SVG._setXLink( imageNode, source );
             org.eclipse.rwt.SVG._redrawWebkit( shape );
-          };
+          } );
         } else {
-          this._setXLink( imageNode, source );          
+          this._setXLink( imageNode, source );
         }
       } else {
         shape.node.setAttribute( "fill", "none" );
@@ -264,6 +261,20 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
 
     /////////
     // helper
+    
+    _onImageLoad : function( source, func ) {
+      var loader = new Image();
+      loader.src = source;
+      loader.onload = function( ev ) {
+        // Fix for bug 301768: "onload" is sometimes called too early due
+        // to a bug in Google Chrome. This can be detected by this check:
+        if( arguments.callee.caller != null ) {
+          org.eclipse.rwt.SVG._onImageLoad( source, func );
+        } else {
+          func();
+        }
+      };
+    },
         
     _createNode : function( type ) {
       return document.createElementNS( "http://www.w3.org/2000/svg", type );
@@ -282,7 +293,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
     },
     
     _setXLink : function( node, value ) {
-      node.setAttributeNS( "http://www.w3.org/1999/xlink", "href", value ); 
+      node.setAttributeNS( "http://www.w3.org/1999/xlink", "href", value );
     },
 
     _createRoundRect : function() {
