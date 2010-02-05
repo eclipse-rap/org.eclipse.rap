@@ -560,13 +560,13 @@ public class Display extends Device implements Adaptable {
     } else if( eventType == SWT.Dispose ) {
       if( disposeListeners == null ) {
         disposeListeners = new HashSet();
-        disposeListeners.add( listener );
       }
+      disposeListeners.add( listener );
     } else if( eventType == SWT.Skin ) {
       if( skinListeners == null ) {
         skinListeners = new HashSet();
-        skinListeners.add( listener );
       }
+      skinListeners.add( listener );
     }
   }
 
