@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -288,6 +289,21 @@ public class MenuItemLCA_Test extends TestCase {
     assertSame( radioItem2, event.widget );
     event = ( Event )log.get( 1 );
     assertSame( radioItem1, event.widget );
+  }
+  
+  public void testRemoveKeyShortcutText() throws IOException {
+    String shortcut = "Some shortcut";
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Menu menuBar = new Menu( shell, SWT.BAR );
+    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
+    Menu menu = new Menu( menuBarItem );
+    menuBarItem.setMenu( menu );
+    MenuItem menuItem = new MenuItem( menu, SWT.NONE );
+    menuItem.setText( "Some item\t" + shortcut );
+    MenuItemLCA lca = new MenuItemLCA();
+    lca.renderChanges( menuItem );
+    assertEquals( -1, Fixture.getAllMarkup().indexOf( shortcut ) );
   }
     
   private void testPreserveSelectionListener( final MenuItem menuItem ) {

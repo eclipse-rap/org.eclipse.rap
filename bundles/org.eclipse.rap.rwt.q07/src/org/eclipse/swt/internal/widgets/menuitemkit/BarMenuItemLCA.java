@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,14 +44,18 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   // TODO [tb] the client-side menuItem supports images, but the menubar 
   //           ignores them in its layout, so it is currently not rendered  
   void renderChanges( final MenuItem menuItem ) throws IOException {
+    writeText( menuItem );
+    MenuItemLCAUtil.writeEnabled( menuItem );
+    WidgetLCAUtil.writeCustomVariant( menuItem );
+    WidgetLCAUtil.writeHelpListener( menuItem );
+  }
+
+  private static void writeText( final MenuItem menuItem ) throws IOException {
     String text = menuItem.getText();
     if( WidgetLCAUtil.hasChanged( menuItem, Props.TEXT, text ) ) {
       JSWriter writer = JSWriter.getWriterFor( menuItem );
       text = WidgetLCAUtil.escapeText( text, true );
       writer.set( "text", text );
     }
-    MenuItemLCAUtil.writeEnabled( menuItem );
-    WidgetLCAUtil.writeCustomVariant( menuItem );
-    WidgetLCAUtil.writeHelpListener( menuItem );
   }
 }
