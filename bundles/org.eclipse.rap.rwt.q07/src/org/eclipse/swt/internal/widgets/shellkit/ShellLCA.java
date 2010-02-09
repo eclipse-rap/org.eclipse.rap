@@ -69,8 +69,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
     Shell shell = ( Shell )widget;
     // [if] Preserve the menu bounds before setting the new shell bounds.
     preserveMenuBounds( shell );
-    readBounds( shell );
+    // Important: Order matters, readMode() before readBounds()
     readMode( shell );
+    readBounds( shell );
     if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
       shell.close();
     }

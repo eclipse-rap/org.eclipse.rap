@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
-import org.eclipse.swt.internal.widgets.IShellAdapter;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -260,6 +259,33 @@ public class ShellLCA_Test extends TestCase {
     assertFalse( shell.getMinimized() );
   }
 
+  public void testReadModeBoundsOrder() {
+    Display display = new Display();
+    Rectangle displayBounds = new Rectangle( 0, 0, 800, 600 );
+    getDisplayAdapter( display ).setBounds( displayBounds );
+    Shell shell = new Shell( display );
+    Rectangle shellBounds = new Rectangle( 10, 10, 100, 100 );
+    shell.setBounds( shellBounds );
+    shell.open();
+    assertFalse( shell.getMaximized() );
+    assertFalse( shell.getMinimized() );
+    String shellId = WidgetUtil.getId( shell );
+    Fixture.fakeRequestParam( shellId + ".mode", "maximized" );
+    Fixture.fakeRequestParam( shellId + ".bounds.width", "800" );
+    Fixture.fakeRequestParam( shellId + ".bounds.heigth", "600" );
+    Fixture.fakeRequestParam( shellId + ".bounds.x", "0" );
+    Fixture.fakeRequestParam( shellId + ".bounds.y", "0" );
+    Fixture.readDataAndProcessAction( shell );
+    assertEquals( displayBounds, shell.getBounds() );
+    Fixture.fakeRequestParam( shellId + ".mode", "null" );
+    Fixture.fakeRequestParam( shellId + ".bounds.width", "100" );
+    Fixture.fakeRequestParam( shellId + ".bounds.heigth", "100" );
+    Fixture.fakeRequestParam( shellId + ".bounds.x", "10" );
+    Fixture.fakeRequestParam( shellId + ".bounds.y", "10" );
+    Fixture.readDataAndProcessAction( shell );
+    assertEquals( shellBounds, shell.getBounds() );
+  }
+
   public void testShellActivate() {
     final StringBuffer activateEventLog = new StringBuffer();
     ActivateListener activateListener = new ActivateListener() {
@@ -490,5 +516,10 @@ public class ShellLCA_Test extends TestCase {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     shellAdapter.setActiveControl( control );
+  }
+
+  private static IDisplayAdapter getDisplayAdapter( final Display display ) {
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    return ( IDisplayAdapter )adapter;
   }
 }
