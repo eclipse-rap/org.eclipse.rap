@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,8 +104,8 @@ public final class WidgetLCAUtil {
    * @param bounds the value to preserve
    * @see #writeBounds(Widget, Control, Rectangle)
    */
-  public static void preserveBounds( final Widget widget, 
-                                     final Rectangle bounds ) 
+  public static void preserveBounds( final Widget widget,
+                                     final Rectangle bounds )
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( Props.BOUNDS, bounds );
@@ -799,7 +799,7 @@ public final class WidgetLCAUtil {
     int width = graphicsAdapter.getRoundedBorderWidth();
     Color color = graphicsAdapter.getRoundedBorderColor();
     Rectangle radius = graphicsAdapter.getRoundedBorderRadius();
-    return 
+    return
          WidgetLCAUtil.hasChanged( widget,
                                    PROP_ROUNDED_BORDER_WIDTH,
                                    new Integer( width ),
@@ -890,7 +890,7 @@ public final class WidgetLCAUtil {
    */
   public static void writeStyleFlag( final Widget widget,
                                      final int style,
-                                     final String styleName ) 
+                                     final String styleName )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( widget );
@@ -987,7 +987,7 @@ public final class WidgetLCAUtil {
 
   private static int readBoundsValue( final String value, final int current ) {
     int result;
-    if( value != null && !"null".equals( value ) ) {
+    if( value != null && !"null".equals( value ) && !"auto".equals( value ) ) {
       result = Integer.parseInt( value );
     } else {
       result = current;
