@@ -122,9 +122,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
-    // Important: Order matters, write setMode() before setBounds()
-    writeMode( shell );
-    ControlLCAUtil.writeChanges( shell );
     writeImage( shell );
     writeText( shell );
     writeAlpha( shell );
@@ -132,10 +129,14 @@ public final class ShellLCA extends AbstractWidgetLCA {
     //            strange behavior!
     writeOpen( shell );
     writeActiveShell( shell );
+    // Important: Order matters, write setMode() after open() and before
+    // setBounds() - see bug 302224
+    writeMode( shell );
     writeFullScreen( shell );
     writeCloseListener( shell );
     writeMinimumSize( shell );
     writeDefaultButton( shell );
+    ControlLCAUtil.writeChanges( shell );
     WidgetLCAUtil.writeCustomVariant( shell );
   }
 
