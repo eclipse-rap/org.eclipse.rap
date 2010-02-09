@@ -147,12 +147,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       widget.setBorder( null );
       testUtil.flush();      
       assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );      
-      // IE handles targetNode differently:
-      if( qx.core.Client.getEngine() == "mshtml" ) {
-        assertEquals ( [ 0, 2, 2, 0 ], this.getFakePadding( widget ) );
-      } else {
-        assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
-      }
+      assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       widget.destroy();
       testUtil.flush();
     },

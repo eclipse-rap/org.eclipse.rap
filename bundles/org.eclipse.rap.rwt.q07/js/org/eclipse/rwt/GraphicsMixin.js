@@ -115,6 +115,15 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       return typeof value != "undefined" ? value : null;       
     },
     
+    //overwritten:
+    _computeUsesComplexBorder : function() {
+      var result = this._gfxEnabled;
+      if( !result ) {
+        result = this.base( arguments );
+      }
+      return result;
+    },
+
     ///////////////////
     // internals - main
 

@@ -4835,6 +4835,7 @@ construct:function(){this.base(arguments);
 this._layoutChanges={};
 if(qx.core.Setting.get("qx.widgetDebugId")){this._generateHtmlId();
 }this.initHideFocus();
+this._usesComplexBorder=false;
 },
 events:{"beforeAppear":"qx.event.type.Event",
 "appear":"qx.event.type.Event",
@@ -6865,7 +6866,10 @@ if(changes.borderRight){border.resetRight(this);
 if(changes.borderBottom){border.resetBottom(this);
 }
 if(changes.borderLeft){border.resetLeft(this);
-}}},
+}}this._usesComplexBorder=this._computeUsesComplexBorder();
+},
+_computeUsesComplexBorder:function(){return this.__borderObject&&this.__borderObject.__complexTop;
+},
 prepareEnhancedBorder:qx.core.Variant.select("qx.client",
 {"gecko":qx.lang.Function.returnTrue,
 "default":function(){var elem=this.getElement();
@@ -6980,10 +6984,12 @@ defer:function(statics,
 members){statics.__initApplyMethods(members);
 if(qx.core.Variant.isSet("qx.client",
 "mshtml")){members._renderRuntimeWidth=function(v){this._style.pixelWidth=(v==null)?0:v;
-if(this._innerStyle){this._innerStyle.pixelWidth=(v==null)?0:v-2;
+if(this._innerStyle){var innerValue=this._usesComplexBorder&&v!=null?v-2:v;
+this._innerStyle.pixelWidth=innerValue==null?0:v;
 }};
 members._renderRuntimeHeight=function(v){this._style.pixelHeight=(v==null)?0:v;
-if(this._innerStyle){this._innerStyle.pixelHeight=(v==null)?0:v-2;
+if(this._innerStyle){var innerValue=this._usesComplexBorder&&v!=null?v-2:v;
+this._innerStyle.pixelHeight=innerValue==null?0:v;
 }};
 members._resetRuntimeWidth=function(){this._style.width="";
 if(this._innerStyle){this._innerStyle.width="";
