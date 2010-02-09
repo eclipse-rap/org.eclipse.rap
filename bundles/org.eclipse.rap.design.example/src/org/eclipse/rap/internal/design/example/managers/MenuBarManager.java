@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.SubContributionItem;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -76,8 +77,15 @@ public class MenuBarManager extends MenuManager {
   }
 
   private void makeEntry( final IContributionItem item ) {
-    if( item instanceof MenuManager ) {
-      final MenuManager manager = ( MenuManager ) item;
+    IContributionItem tempItem = null;
+    if( item instanceof SubContributionItem ) {
+      SubContributionItem subItem = ( SubContributionItem ) item;
+      tempItem = subItem.getInnerItem();
+    } else if( item instanceof MenuManager ) {
+      tempItem = item;
+    }    
+    if( tempItem != null && tempItem instanceof MenuManager ) {
+      final MenuManager manager = ( MenuManager ) tempItem;
       int style = SWT.NONE;
       if( manager.getItems() != null && manager.getItems().length > 0 ) {
         style = SWT.DROP_DOWN;
