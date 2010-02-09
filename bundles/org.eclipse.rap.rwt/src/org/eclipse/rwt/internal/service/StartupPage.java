@@ -21,29 +21,24 @@ import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.internal.util.EntitiesUtil;
-import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.*;
 
 
-/** 
+/**
  * <p>A helping class that loads a special html page in order to
- * determine which browser has originated the request.</p>
+ * bootstrap the client-side session.</p>
  */
-public final class BrowserSurvey {
+public final class StartupPage {
 
   public interface IStartupPageConfigurer {
-    TemplateHolder getTemplate() throws IOException;
+    StartupPageTemplateHolder getTemplate() throws IOException;
     boolean isModifiedSince();
   }
-  
+
   public static IStartupPageConfigurer configurer
     = new RWTStartupPageConfigurer();
 
-  /** 
-   * <p>Writes a special html page into the passed HtmlResponseWriter,
-   * in order to  determine which browser has originated the request.</p> 
-   */
-  static void sendBrowserSurvey() throws IOException {
+  static void send() throws IOException {
     if( configurer.isModifiedSince() ) {
       // send out the survey
       render();
@@ -57,8 +52,8 @@ public final class BrowserSurvey {
 
   private static String getBgImage() {
     String result = "";
-    QxType cssValue = ThemeUtil.getCssValue( "Display", 
-                                             "background-image", 
+    QxType cssValue = ThemeUtil.getCssValue( "Display",
+                                             "background-image",
                                              SimpleSelector.DEFAULT );
     if( cssValue instanceof QxImage ) {
       QxImage image = ( QxImage )cssValue;
@@ -71,22 +66,16 @@ public final class BrowserSurvey {
     return result;
   }
 
-  public static String getSerlvetName() {
-    String result = ContextProvider.getRequest().getServletPath();
-    if( result.startsWith( "/" ) ) {
-      result = result.substring( 1 );
-    }
-    return result;
-  }
-
   private static void render() throws IOException {
     ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
-    TemplateHolder template = configurer.getTemplate();
-    template.replace( TemplateHolder.VAR_BACKGROUND_IMAGE, getBgImage() );
+    StartupPageTemplateHolder template = configurer.getTemplate();
+    template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE, 
+                      getBgImage() );
     // TODO [fappel]: check whether servletName has to be url encoded
     //                in case the client has switched of cookies
-    template.replace( TemplateHolder.VAR_SERVLET, getSerlvetName() );
-    template.replace( TemplateHolder.VAR_ENTRY_POINT,
+    template.replace( StartupPageTemplateHolder.VAR_SERVLET, 
+                      URLHelper.getSerlvetName() );
+    template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
                       EntitiesUtil.encodeHTMLEntities( getEntryPoint() ) );
     String[] tokens = template.getTokens();
     for( int i = 0; i < tokens.length; i++ ) {

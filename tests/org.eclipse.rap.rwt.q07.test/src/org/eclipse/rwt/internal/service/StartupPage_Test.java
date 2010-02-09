@@ -17,24 +17,25 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 
 
-public class BrowserSurvey_Test extends TestCase {
-  private BrowserSurvey.IStartupPageConfigurer bufferedConfigurer;
+public class StartupPage_Test extends TestCase {
+  
+  private StartupPage.IStartupPageConfigurer bufferedConfigurer;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    bufferedConfigurer = BrowserSurvey.configurer; 
-    BrowserSurvey.configurer = new RWTStartupPageConfigurer();
+    bufferedConfigurer = StartupPage.configurer; 
+    StartupPage.configurer = new RWTStartupPageConfigurer();
   }
   
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-    BrowserSurvey.configurer = bufferedConfigurer;
+    StartupPage.configurer = bufferedConfigurer;
   }
 
   public void testSurveyGeneration() throws IOException {
     Fixture.fakeResponseWriter();
 //    long start = System.currentTimeMillis();
-    BrowserSurvey.sendBrowserSurvey();
+    StartupPage.send();
 //    long end = System.currentTimeMillis();
 //    long initialCreationTime = end - start;
     String initialMarkup = Fixture.getAllMarkup();
@@ -45,7 +46,7 @@ public class BrowserSurvey_Test extends TestCase {
     for( int i = 0; i < 10; i++ ) {
       Fixture.fakeResponseWriter();
 //      start = System.currentTimeMillis();
-      BrowserSurvey.sendBrowserSurvey();
+      StartupPage.send();
 //      end = System.currentTimeMillis();
 //      long successiveCreationTime = end - start;
 

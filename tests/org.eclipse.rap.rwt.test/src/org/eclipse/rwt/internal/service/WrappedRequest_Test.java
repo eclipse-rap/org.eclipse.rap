@@ -95,11 +95,11 @@ public class WrappedRequest_Test extends TestCase {
   
   public void testStartupRequestWithParameter() throws Exception {
     System.setProperty( "lifecycle", RWTLifeCycle.class.getName() );
-    BrowserSurvey.IStartupPageConfigurer bufferedConfigurer 
-      = BrowserSurvey.configurer;
-    BrowserSurvey.configurer = new BrowserSurvey.IStartupPageConfigurer() {
-      public TemplateHolder getTemplate() throws IOException {
-        return new TemplateHolder( "Startup Page" );
+    StartupPage.IStartupPageConfigurer bufferedConfigurer 
+      = StartupPage.configurer;
+    StartupPage.configurer = new StartupPage.IStartupPageConfigurer() {
+      public StartupPageTemplateHolder getTemplate() throws IOException {
+        return new StartupPageTemplateHolder( "Startup Page" );
       }
       public boolean isModifiedSince() {
         return true;
@@ -118,14 +118,13 @@ public class WrappedRequest_Test extends TestCase {
     Fixture.fakeRequestParam( p1, null );
     Fixture.fakeRequestParam( RequestParams.STARTUP, 
                               EntryPointManager.DEFAULT );
-    Fixture.fakeRequestParam( "w4t_scriptEnabled", "true" );
-    Fixture.fakeRequestParam( "w4t_ajaxEnabled", "true" );
+    Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setHeader( "User-Agent", "myAgent" );
     ServiceManager.getHandler().service();
 
     assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );
-    BrowserSurvey.configurer = bufferedConfigurer;
+    StartupPage.configurer = bufferedConfigurer;
     System.getProperties().remove( "lifecycle" );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }

@@ -47,7 +47,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   private static java.util.List eventLog;
   private static PhaseId currentPhase;
 
-  private BrowserSurvey.IStartupPageConfigurer bufferedConfigurer;
+  private StartupPage.IStartupPageConfigurer bufferedConfigurer;
   private TestSession session;
 
   public static final class ExceptionInReadAndDispatchEntryPoint 
@@ -293,8 +293,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   private TestRequest newRequest() {
     TestRequest result = new TestRequest();
     result.setSession( session );
-    result.setParameter( RequestParams.AJAX_ENABLED, "true" );
-    result.setParameter( RequestParams.SCRIPT, "true" );
+    result.setParameter( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
     return result;
   }
   
@@ -302,9 +301,9 @@ public class RWTLifeCycle2_Test extends TestCase {
     maliciousButtonId = null;
     createUIEntered = false;
     createUIExited = false;
-    bufferedConfigurer = BrowserSurvey.configurer;
+    bufferedConfigurer = StartupPage.configurer;
     eventLog = new ArrayList();
-    BrowserSurvey.configurer = new RWTStartupPageConfigurer();
+    StartupPage.configurer = new RWTStartupPageConfigurer();
     Fixture.clearSingletons();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
                         RWTLifeCycle.class.getName() );
@@ -345,6 +344,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
     LifeCycleFactory.destroy();
     Fixture.clearSingletons();
-    BrowserSurvey.configurer = bufferedConfigurer;
+    StartupPage.configurer = bufferedConfigurer;
   }
 }

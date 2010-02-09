@@ -18,7 +18,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.service.TemplateHolder;
+import org.eclipse.rwt.internal.service.StartupPageTemplateHolder;
 
 
 public class BrandingUtil_Test extends TestCase {
@@ -57,22 +57,22 @@ public class BrandingUtil_Test extends TestCase {
   }
 
   public void testReplacePlaceholder() {
-    String templateString = TemplateHolder.VAR_ENTRY_POINT.toString();
-    TemplateHolder template = new TemplateHolder( templateString );
+    String templateString = StartupPageTemplateHolder.VAR_ENTRY_POINT.toString();
+    StartupPageTemplateHolder template = new StartupPageTemplateHolder( templateString );
 
     BrandingUtil.replacePlaceholder( template,
-                                     TemplateHolder.VAR_ENTRY_POINT,
+                                     StartupPageTemplateHolder.VAR_ENTRY_POINT,
                                      "replacement" );
     assertEquals( "replacement", getTemplateContent( template ).toString() );
 
     template.reset();
     BrandingUtil.replacePlaceholder( template,
-                                     TemplateHolder.VAR_ENTRY_POINT,
+                                     StartupPageTemplateHolder.VAR_ENTRY_POINT,
                                      null );
     assertEquals( "", getTemplateContent( template ).toString() );
   }
 
-  private StringBuffer getTemplateContent( final TemplateHolder template ) {
+  private StringBuffer getTemplateContent( final StartupPageTemplateHolder template ) {
     String[] tokens = template.getTokens();
     StringBuffer result = new StringBuffer();
     for( int i = 0; i < tokens.length; i++ ) {

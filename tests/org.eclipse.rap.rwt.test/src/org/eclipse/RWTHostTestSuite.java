@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager_Test;
 import org.eclipse.rwt.internal.branding.BrandingUtil_Test;
-import org.eclipse.rwt.internal.browser.BrowserLoader_Test;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.events.EventAdapter_Test;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -26,7 +25,6 @@ import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.*;
-import org.eclipse.rwt.internal.util.HTMLUtil_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
 import org.eclipse.rwt.widgets.BrowserHistory_Test;
@@ -78,11 +76,9 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ResourceManagerImpl_Test.class );
     suite.addTestSuite( ResourceUtil_Test.class );
     suite.addTestSuite( EventAdapter_Test.class );
-    suite.addTestSuite( BrowserLoader_Test.class );
     suite.addTestSuite( WrappedRequest_Test.class );
     suite.addTestSuite( RequestParameterBuffer_Test.class );
     suite.addTestSuite( ConfigurationReader_Test.class );
-    suite.addTestSuite( HTMLUtil_Test.class );
     suite.addTestSuite( ContextProvider_Test.class );
 
     // RWT Tests
@@ -108,7 +104,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( UICallBackServiceHandler_Test.class );
     suite.addTestSuite( JSLibraryServiceHandler_Test.class);
     suite.addTestSuite( LifeCycleServiceHandler_Test.class );
-    suite.addTestSuite( TemplateHolder_Test.class );
+    suite.addTestSuite( StartupPageTemplateHolder_Test.class );
     suite.addTestSuite( CommonPatterns_Test.class );
 
     suite.addTestSuite( Display_Test.class );

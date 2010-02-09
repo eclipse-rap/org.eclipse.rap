@@ -61,8 +61,7 @@
       
       function appendInitParameters() {
         var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( "w4t_scriptEnabled", "true" );
-        req.addParameter( "w4t_ajaxEnabled", "true" );
+        req.addParameter( "rwt_initialize", "true" );
         req.addParameter( "startup", "${startup}" );
         var size = discoverSize();
         req.addParameter( "w4t_width", size.width );

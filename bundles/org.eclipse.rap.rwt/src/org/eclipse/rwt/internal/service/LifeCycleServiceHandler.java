@@ -21,17 +21,21 @@ import javax.servlet.http.*;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.RWTMessages;
-import org.eclipse.rwt.internal.browser.Browser;
-import org.eclipse.rwt.internal.browser.BrowserLoader;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.service.ISessionStore;
 
 
 public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
+  public static final String RWT_INITIALIZE = "rwt_initialize";
+
   // TODO [if]: Move this code to a fragment
   private static final String PATTERN_RELOAD
     = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
+  
+  private final static String SESSION_INITIALIZED
+    = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
 
   public void service() throws IOException, ServletException {
     synchronized( ContextProvider.getSession() ) {
@@ -40,7 +44,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   }
 
   void synchronizedService() throws ServletException, IOException {
-    LifeCycleServiceHandler.initializeStateInfo();
+    initializeStateInfo();
     RWTRequestVersionControl.beforeService();
     try {
       if(    RWTRequestVersionControl.isValid()
@@ -58,15 +62,15 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
   private static void runLifeCycle() throws ServletException, IOException {
     checkRequest();
-    detectBrowser();
-    if( isBrowserDetected() ) {
+    initializeSession();
+    if( isSessionInitialized() ) {
       RequestParameterBuffer.merge();
       LifeCycle lifeCycle = ( LifeCycle )LifeCycleFactory.getLifeCycle();
       lifeCycle.execute();
     } else {
       Map parameters = ContextProvider.getRequest().getParameterMap();
       RequestParameterBuffer.store( parameters );
-      BrowserSurvey.sendBrowserSurvey();
+      StartupPage.send();
     }
     writeOutput();
   }
@@ -81,7 +85,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     String uiRoot = request.getParameter( RequestParams.UIROOT );
     HttpSession session = request.getSession();
     return    !session.isNew() && !startup && uiRoot == null 
-           || startup && isBrowserDetected();
+           || startup && isSessionInitialized();
   }
   
   private static void initializeStateInfo() {
@@ -109,27 +113,17 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     LifeCycleServiceHandler.writeOutput();
   }
 
-  private static boolean isBrowserDetected() {
-    return getBrowser() != null;
+  private static boolean isSessionInitialized() {
+    ISessionStore session = ContextProvider.getSession();
+    return Boolean.TRUE.equals( session.getAttribute( SESSION_INITIALIZED ) );
   }
 
-  private static Browser getBrowser() {
-    String id = ServiceContext.DETECTED_SESSION_BROWSER;
-    return ( Browser )ContextProvider.getSession().getAttribute( id );
-  }
-  
-  private static void detectBrowser() {
-    if( !isBrowserDetected() ) {
-      if(    getRequest().getParameter( RequestParams.SCRIPT ) != null 
-          && getRequest().getParameter( RequestParams.AJAX_ENABLED ) != null )
-      {
-        Browser browser = BrowserLoader.load();
-        String id = ServiceContext.DETECTED_SESSION_BROWSER;
-        ContextProvider.getSession().setAttribute( id, browser );
+  public static void initializeSession() {
+    if( !isSessionInitialized() ) {
+      if(  getRequest().getParameter( RWT_INITIALIZE ) != null ) {
+        ISessionStore session = ContextProvider.getSession();
+        session.setAttribute( SESSION_INITIALIZED, Boolean.TRUE );
       }
-    }
-    if ( isBrowserDetected() ) {
-      ContextProvider.getStateInfo().setDetectedBrowser( getBrowser() );
     }
   }
   
@@ -170,17 +164,9 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
         = ContextProvider.getStateInfo().getResponseWriter();
       PrintWriter out = getOutputWriter();
       try {
-        // send the head to the client
-        for( int i = 0; i < content.getHeadSize(); i++ ) {
-          out.print( content.getHeadToken( i ) );
-        }
         // send the body to the client
         for( int i = 0; i < content.getBodySize(); i++ ) {
           out.print( content.getBodyToken( i ) );
-        }
-        // send the foot to the client
-        for( int i = 0; i < content.getFootSize(); i++ ) {
-          out.print( content.getFootToken( i ) );
         }
       } finally {
         out.close();

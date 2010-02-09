@@ -66,12 +66,12 @@ public class ServiceHandler_Test extends TestCase {
     ServiceManager.getHandler().service();
     assertEquals( SERVICE_DONE, log );
     // Unregister
-    BrowserSurvey.IStartupPageConfigurer bufferedConfigurer 
-      = BrowserSurvey.configurer;
-    BrowserSurvey.configurer = new BrowserSurvey.IStartupPageConfigurer()
+    StartupPage.IStartupPageConfigurer bufferedConfigurer 
+      = StartupPage.configurer;
+    StartupPage.configurer = new StartupPage.IStartupPageConfigurer()
     {
-      public TemplateHolder getTemplate() throws IOException {
-        return new TemplateHolder( "Startup Page" );
+      public StartupPageTemplateHolder getTemplate() throws IOException {
+        return new StartupPageTemplateHolder( "Startup Page" );
       }
       public boolean isModifiedSince() {
         return true;
@@ -82,7 +82,7 @@ public class ServiceHandler_Test extends TestCase {
     RWT.getServiceManager().unregisterServiceHandler( PROGRAMATIC_HANDLER_ID );
     ServiceManager.getHandler().service();
     assertEquals( "", log );
-    BrowserSurvey.configurer = bufferedConfigurer; 
+    StartupPage.configurer = bufferedConfigurer; 
   }
 
   private void initResponseOutputStream() {

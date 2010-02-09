@@ -31,7 +31,7 @@ import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 public final class RWTStartupPageConfigurer
-  implements BrowserSurvey.IStartupPageConfigurer
+  implements StartupPage.IStartupPageConfigurer
 {
 
   private static final String PACKAGE_NAME 
@@ -44,17 +44,17 @@ public final class RWTStartupPageConfigurer
   private static int probeCount;
   private static long lastModified = System.currentTimeMillis();
 
-  private static TemplateHolder template;
+  private static StartupPageTemplateHolder template;
   private static final List registeredBrandings = new ArrayList();
   
   ////////////////////////////////////////////////////
   // ILifeCycleServiceHandlerConfigurer implementation 
   
-  public TemplateHolder getTemplate() throws IOException {
+  public StartupPageTemplateHolder getTemplate() throws IOException {
     readContent();
     template.reset();
-    template.replace( TemplateHolder.VAR_LIBRARIES, getLibraries() );
-    template.replace( TemplateHolder.VAR_APPSCRIPT, getAppScript() );
+    template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getLibraries() );
+    template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, getAppScript() );
     applyBranding();
     return template;
   }
@@ -111,7 +111,7 @@ public final class RWTStartupPageConfigurer
           buffer.append( "\n" );
           line = reader.readLine();
         }
-        template = new TemplateHolder( buffer.toString() );
+        template = new StartupPageTemplateHolder( buffer.toString() );
       } finally {
         reader.close();
       }
@@ -212,26 +212,26 @@ public final class RWTStartupPageConfigurer
       ThemeUtil.setCurrentThemeId( branding.getThemeId() );
     }
     BrandingUtil.replacePlaceholder( template,
-                                     TemplateHolder.VAR_BODY,
+                                     StartupPageTemplateHolder.VAR_BODY,
                                      branding.getBody() );
     BrandingUtil.replacePlaceholder( template,
-                                     TemplateHolder.VAR_TITLE,
+                                     StartupPageTemplateHolder.VAR_TITLE,
                                      branding.getTitle() );
     String headers = BrandingUtil.headerMarkup( branding );
     BrandingUtil.replacePlaceholder( template,
-                                     TemplateHolder.VAR_HEADERS,
+                                     StartupPageTemplateHolder.VAR_HEADERS,
                                      headers );
     String encodedEntryPoint = EntitiesUtil.encodeHTMLEntities( entryPoint );
     BrandingUtil.replacePlaceholder( template,
-                                     TemplateHolder.VAR_STARTUP,
+                                     StartupPageTemplateHolder.VAR_STARTUP,
                                      encodedEntryPoint );
     String script = BrandingUtil.exitMessageScript( branding );
     BrandingUtil.replacePlaceholder( template,
-                                     TemplateHolder.VAR_EXIT_CONFIRMATION,
+                                     StartupPageTemplateHolder.VAR_EXIT_CONFIRMATION,
                                      script );
     String noScriptWarning = RWTMessages.getMessage( "RWT_NoScriptWarning" );
     BrandingUtil.replacePlaceholder( template, 
-                                     TemplateHolder.VAR_NO_SCRIPT_MESSAGE, 
+                                     StartupPageTemplateHolder.VAR_NO_SCRIPT_MESSAGE, 
                                      noScriptWarning );
   }
 

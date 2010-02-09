@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -24,13 +25,6 @@ import org.eclipse.rwt.lifecycle.PhaseListener;
   * W4TModelCore using the org.eclipse.rap.engine.lifecycle.LifeCycleFactory.</p>
   */
 public abstract class LifeCycle implements ILifeCycle {
-  
-  /** <p>Whether the ErrorFormular is shown in its own popup window.
-   *  Default is true.</p> */
-  public static boolean showExceptionInPopUp = true;
-  /** <p>Whether the LifeCycle is running in development mode,
-   * which means that e.g. after init events are suppressed.</p> */
-  public static boolean isDevelopmentMode = false;  
   
   /** 
    * <p>Executes the lifecycle defined in this LifeCycle. Implementing 

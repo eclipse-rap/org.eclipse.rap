@@ -26,11 +26,6 @@ Export-Package: org.apache.batik.css.parser;x-internal:=true,
    org.eclipse.rap.rwt.test,
    org.eclipse.rap.ui.workbench",
  org.eclipse.rwt.internal.branding;x-friends:="org.eclipse.rap.rwt.test,org.eclipse.rap.ui.workbench",
- org.eclipse.rwt.internal.browser;
-  x-friends:="org.eclipse.rap.w4t,
-   org.eclipse.rap.w4t.test,
-   org.eclipse.rap.rwt.test,
-   org.eclipse.rap.ui.workbench",
  org.eclipse.rwt.internal.engine;
   x-friends:="org.eclipse.rap.w4t,
    org.eclipse.rap.w4t.test,

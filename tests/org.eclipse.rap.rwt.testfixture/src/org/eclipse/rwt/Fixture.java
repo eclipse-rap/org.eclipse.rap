@@ -23,8 +23,6 @@ import junit.framework.Assert;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.browser.Browser;
-import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
@@ -230,13 +228,6 @@ public class Fixture {
     return result;
   }
   
-  private static void fakeBrowser( final Browser browser ) {
-    ISessionStore session = ContextProvider.getSession();
-    session.setAttribute( ServiceContext.DETECTED_SESSION_BROWSER, browser );
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setDetectedBrowser( browser );
-  }
-  
   public static void fakeRequestParam( final String key, final String value ) {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setParameter( key, value );
@@ -289,30 +280,6 @@ public class Fixture {
   }
   
   public static String getAllMarkup( final HtmlResponseWriter writer ) {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append( getHeadMarkup( writer ) );
-    buffer.append( getBodyMarkup( writer ) );
-    buffer.append( getFootMarkup( writer ) );
-    return buffer.toString();
-  }
-  
-  private static String getHeadMarkup( final HtmlResponseWriter writer ) {
-    StringBuffer buffer = new StringBuffer();
-    for( int i = 0; i < writer.getHeadSize(); i++ ) {
-      buffer.append( writer.getHeadToken( i ) );
-    }
-    return buffer.toString();
-  }
-  
-  private static String getFootMarkup( final HtmlResponseWriter writer ) {
-    StringBuffer buffer = new StringBuffer();
-    for( int i = 0; i < writer.getFootSize(); i++ ) {
-      buffer.append( writer.getFootToken( i ) );
-    }
-    return buffer.toString();
-  }
-  
-  private static String getBodyMarkup( final HtmlResponseWriter writer ) {
     StringBuffer buffer = new StringBuffer();
     for( int i = 0; i < writer.getBodySize(); i++ ) {
       buffer.append( writer.getBodyToken( i ) );
@@ -370,7 +337,7 @@ public class Fixture {
     ContextProvider.disposeContext();
     ContextProvider.setContext( serviceContext );
     fakeResponseWriter();
-    fakeBrowser( new Ie6( true, true ) );
+    LifeCycleServiceHandler.initializeSession();
   }
 
   public static void markInitialized( final Widget widget ) {

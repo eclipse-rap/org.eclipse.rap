@@ -17,8 +17,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.service.BrowserSurvey;
 import org.eclipse.rwt.internal.service.RWTStartupPageConfigurer;
+import org.eclipse.rwt.internal.util.URLHelper;
 
 
 public class BrandingManager_Test extends TestCase {
@@ -187,7 +187,7 @@ public class BrandingManager_Test extends TestCase {
   }
   
   public void testRegisterResources() throws IOException {
-    String servletName = BrowserSurvey.getSerlvetName();
+    String servletName = URLHelper.getSerlvetName();
     TestBranding branding = new TestBranding( servletName, null, "default" );
     BrandingManager.register( branding );
     RWTStartupPageConfigurer configurer;

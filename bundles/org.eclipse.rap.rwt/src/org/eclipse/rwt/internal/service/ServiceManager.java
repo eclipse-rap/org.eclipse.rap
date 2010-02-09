@@ -30,8 +30,6 @@ import org.w3c.dom.*;
 /** <p>provides the appropriate HttpServlet request service handler for the
  *  given runtime mode.</p> 
  */
-// TODO [rh] Could implement resource/timestamp request handler as regular
-//      IServiceHandler
 // TODO [rh] access to customHandlers Map is unsynchronized and may cause
 //      trouble in case of unproper use
 public final class ServiceManager {

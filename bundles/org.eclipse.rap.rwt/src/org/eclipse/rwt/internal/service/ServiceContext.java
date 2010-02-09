@@ -26,13 +26,6 @@ import org.eclipse.rwt.service.ISessionStore;
  */
 public final class ServiceContext {
   
-  /** 
-   * The key which is used to store the {@link org.eclipse.rwt.internal.browser.Browser} instance
-   * of the current session. 
-   */
-  public final static String DETECTED_SESSION_BROWSER 
-    = "com_w4t_detected_session_browser";
-  
   private HttpServletRequest request;
   private HttpServletResponse response;
   private IServiceStateInfo stateInfo;

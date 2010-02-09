@@ -45,56 +45,18 @@ public class HtmlResponseWriter extends Writer {
   public static final String CLASS_PREFIX = "w4tCss";
 
 
-  private List head   = new ArrayList();
-  private List body   = new ArrayList();
-  private List layers = new ArrayList();
-  private List foot   = new ArrayList();
+  private List body = new ArrayList();
   
   private String elementStarted;
   private boolean closed;
   private boolean avoidEscape;
 
 
-  /** contains css classes that have been collected from style settings on 
-    * components. Every style content (keys) gets assigned a generated
-    * class name (elements).
-    * 
-    * It is assured that for every content there is exactly one class name, 
-    * and the latter is used when the style declaration
-    */
-  private Hashtable registeredCssClasses = new Hashtable();
-  /** contains css classes that have been set and named programmatically,
-    * that is which have been set with class name and content (keys).
-    * The elements are ArrayLists with all the class names assigned to 
-    * the content that is the key.
-    * 
-    * This means that, as opposed to managedCssClasses, there can be more than
-    * one class name for the same content. In this case a content gets a name
-    * of the form ".someName, .someOtherName"
-    */
-  private Hashtable namedCssClasses = new Hashtable();
   /** contains the names of the javascript libraries that are needed for
     * the content which was rendered into this HtmlResponseWriter. */
   private List jsLibraries = new ArrayList();
   
   
-  /**
-   * <p>Append a token to the token list of the header's token</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void appendHead( final StringBuffer token ) {
-    head.add( token.toString() );
-  }
-  
-  /** 
-   * <p>Append the given <code>token</code> to the token list of the header's 
-   * token</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void appendHead( final String token ) {
-    head.add( token );
-  }
-
   /** 
    * <p>Append a token to the token list of the body's token</p>
    * <p>This method is not inteded to be used by clients.</p>
@@ -114,58 +76,6 @@ public class HtmlResponseWriter extends Writer {
     }
   }
 
-  /** 
-   * <p>Append a token to the list of footer tokens</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void appendFoot( final StringBuffer token ) {
-    foot.add( token.toString() );
-  }
-
-  /** 
-   * <p>Append the given <code>token</code> to the list of footer tokens.</p> 
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void appendFoot( final String token ) {
-    foot.add( token );
-  }
-
-  /** 
-   * <p>Append a token to the list of layer tokens</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void appendLayer( final StringBuffer token ) {
-    appendLayer( token.toString() );
-  }
-  
-  /**
-   * <p>Append a token to the list of layer tokens</p> 
-   * <p>This method is not inteded to be used by clients.</p>
-   */  
-  public void appendLayer( final String token ) {
-    layers.add( token );
-  }
- 
-  /** <p>Concatenates this HtmlResponseWriter's layers to its body token list.
-   * </p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void concatLayers() {
-    for( int i = 0; i < layers.size(); i++ ) {
-      append( layers.get( i ).toString() );
-    }
-    layers.clear();
-  }
-  
-  /**
-   * <p>Removes all of the tokens from the head list. The head list will be
-   * empty after this call returns.</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void clearHead() {
-    head.clear();
-  }
-
   /**
    * <p>Removes all of the tokens from the body list. The body list will be
    * empty after this call returns</p>
@@ -175,45 +85,12 @@ public class HtmlResponseWriter extends Writer {
     body.clear();
   }
 
-  /**
-   * </p>Removes all of the tokens from the foot list. The foot list will be
-   * empty after this call returns.</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void clearFoot() {
-    foot.clear();
-  }
-
-  /**
-   * <p>Returns the number of tokens in the head list.</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public int getHeadSize() {
-    return head.size();
-  }
-
  /**
    * <p>Returns the number of tokens in the body list.</p>
    * <p>This method is not inteded to be used by clients.</p>
    */
   public int getBodySize() {
     return body.size();
-  }
-
- /**
-   * <p>Returns the number of tokens in the foot list.</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public int getFootSize() {
-    return foot.size();
-  }
-
-  /**
-   * <p>Returns the token at the specified position in the head list.</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public String getHeadToken( final int index ) {
-    return head.get( index ).toString();
   }
 
   /**
@@ -232,37 +109,8 @@ public class HtmlResponseWriter extends Writer {
     return body.iterator();
   }
 
-  /**
-   * <p>Returns the token at the specified position in the foot list.</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public String getFootToken( final int index ) {
-    return foot.get( index ).toString();
-  }
-
-  /**
-   * <p>Equalizes the head, body and foot list of this HtmlResponseWriter with
-   * the lists of the parameter HtmlResponseWriter.</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void equalize( final HtmlResponseWriter tokenBuffer ) {
-    this.foot.clear();
-    this.body.clear();
-    this.layers.clear();
-    this.head.clear();
-    this.jsLibraries.clear();
-    this.foot   = tokenBuffer.foot;
-    this.body   = tokenBuffer.body;
-    this.layers = tokenBuffer.layers;
-    this.head   = tokenBuffer.head;
-    this.jsLibraries = tokenBuffer.jsLibraries;
-    this.registeredCssClasses = tokenBuffer.registeredCssClasses;
-    this.namedCssClasses = tokenBuffer.namedCssClasses;
-  }
-  
-  
-  // control methods for javascript library rendering
   ///////////////////////////////////////////////////
+  // control methods for javascript library rendering
 
   /** <p>Returns the names of the JavaScript libraries that the components
     * which were rendered into this HtmlResponseWriter need.</p> */
@@ -316,106 +164,6 @@ public class HtmlResponseWriter extends Writer {
   }
 
 
-  /** <p>Returns a unique identifier for a css class that is contained in this
-    * HtmlResponseWriter's cache and contains exactly the settings in the passed
-    * <code>style</code>.</p>
-    * 
-    * <p>If no entry for the passed content is contained yet, a name will be
-    * generated.</p>
-    * 
-    * <p>Any renderer that calls this method can be sure that the css class 
-    * named by the return value of this method is available in the HTML
-    * document (the corresponding style tag will be rendered into the head
-    * section of the HTML document).</p>
-    */ 
-  public String registerCssClass( final String style ) {
-    String result = "";
-    if( registeredCssClasses.containsKey( style ) ) {
-      result = ( String )registeredCssClasses.get( style );
-    } else {
-      result = createClassName( style );
-      registeredCssClasses.put( style, result );
-    }
-    return result;
-  }
-
-  /** <p>Adds the passed css class to the classes that are declared on top 
-    * of the page.</p> */  
-  public void addNamedCssClass( final CssClass cssClass ) {
-    Assert.isNotNull( cssClass );
-    
-    String content = cssClass.getContent();
-    List allNames;    
-    if( namedCssClasses.containsKey( content ) ) {
-      allNames = ( List )namedCssClasses.get( content );
-    } else {
-      allNames = new ArrayList();
-      namedCssClasses.put( content, allNames );
-    }
-    if( !allNames.contains( cssClass.getClassName() ) ) {
-      allNames.add( cssClass.getClassName() );
-    }
-  }
-
-  /** <p>Adds the passed css classes to the classes that are declared on top 
-    * of the page; they will be regarded as if they had been registered with
-    * {@link #registerCssClass( String ) registerCssClass()}.</p> */
-  public void mergeRegisteredCssClasses( final CssClass[] classes ) {
-    for( int i = 0; i < classes.length; i++ ) {
-      Assert.isNotNull( classes[ i ] );
-      registeredCssClasses.put( classes[ i ].getContent(), 
-                                classes[ i ].getClassName() );
-    }
-  }
-
-  /** <p>Returns the css classes that have been used for rendering 
-    * into this HtmlResponseWriter, this includes the classes managed by the
-    * library and the named classes set by the user.</p> */
-  public CssClass[] getCssClasses() {
-    ArrayList alResult = new ArrayList();
-    Enumeration keys = registeredCssClasses.keys();
-    while( keys.hasMoreElements() ) {
-      String content = ( String )keys.nextElement(); 
-      String className = ( String )registeredCssClasses.get( content );
-      if( !className.startsWith( "." ) ) {
-        className = "." + className;
-      }
-      alResult.add( new CssClass( className, content ) ); 
-    }
-    keys = namedCssClasses.keys();
-    while( keys.hasMoreElements() ) {
-      String content = ( String )keys.nextElement();
-      ArrayList alNames = ( ArrayList )namedCssClasses.get( content );
-      String className = getCompoundName( alNames );
-      alResult.add( new CssClass( className, content ) );
-    } 
-    CssClass[] result = new CssClass[ alResult.size() ];
-    alResult.toArray( result );
-    return result;
-  }
-  
-  /**
-   * <p>Returns the number of css classes that were registered via calls to 
-   * <code>addNamedCssClass(CssClass)</code> or 
-   * <code>registerCssClass(String)</code></p>
-   */
-  public int getCssClassCount() {
-    return registeredCssClasses.size() + namedCssClasses.size();
-  }
-  
-  /**
-   * <p>Removes the css class which contains the given <code>content</code>
-   * from list of registered css classes.</p>
-   * <p>Does nothing if there is no css class with the given
-   * <code>content</code>.</p>
-   * @param content the content of the css class to be removed.
-   */
-  public void removeCssClass( final String content ) {
-    registeredCssClasses.remove( content );
-    // Note: do not remove namedCssClasses, since then different styles for the
-    //       same css classname cannot be dynamically switched in AJAX-mode
-  }
-  
   //////////////////
   // response writer
   
@@ -634,8 +382,6 @@ public class HtmlResponseWriter extends Writer {
    */
   // TODO [rh] We could check whether 'elementStarted' is null, since comments 
   //      are not allowed inside element tags in XHTML 'mode'
-  // TODO [rh] calling this method 'inside' an AJaX envelope leads to invalid
-  //      XML
   public void writeComment( final Object comment ) throws IOException {
     checkIfWriterClosed();
     ParamCheck.notNull( comment, "comment" ); 
@@ -705,24 +451,10 @@ public class HtmlResponseWriter extends Writer {
   // helping methods
   //////////////////
 
-  private static String getCompoundName( final List allNames ) {
-    Assert.isTrue( allNames.size() > 0 );
-    String result = "." + ( String )allNames.get( 0 );
-    for( int i = 1; i < allNames.size(); i++ ) {
-      result += ", ." + ( String )allNames.get( i );
-    }
-    return result;
-  }
-  
-  private static String createClassName( final String key ) {
-    return CLASS_PREFIX + Integer.toHexString( key.hashCode() );
-  }
-  
-  private void checkIfWriterClosed() throws IOException {
-    // TODO [rh] replace by IllegalStateException?
+  private void checkIfWriterClosed() {
     if( closed ) {
       String msg = "Operation is not allowed since the writer was closed.";
-      throw new IOException( msg );
+      throw new IllegalStateException( msg );
     }
   }
 }

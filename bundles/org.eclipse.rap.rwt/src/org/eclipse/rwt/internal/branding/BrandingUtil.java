@@ -17,6 +17,7 @@ import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.util.URLHelper;
 
 
 public final class BrandingUtil {
@@ -24,8 +25,8 @@ public final class BrandingUtil {
   private static final String ATTR_BRANDING_ID 
     = BrandingUtil.class.getName() + "#brandingId";
 
-  public static void replacePlaceholder( final TemplateHolder template, 
-                                         final TemplateHolder.Variable variable, 
+  public static void replacePlaceholder( final StartupPageTemplateHolder template, 
+                                         final StartupPageTemplateHolder.Variable variable, 
                                          final String replacement ) 
   {
     String safeReplacement = replacement == null ? "" : replacement;
@@ -60,7 +61,7 @@ public final class BrandingUtil {
 
   public static AbstractBranding findBranding() {
     HttpServletRequest request = ContextProvider.getRequest();
-    String servletName = BrowserSurvey.getSerlvetName();
+    String servletName = URLHelper.getSerlvetName();
     String entryPoint = request.getParameter( RequestParams.STARTUP );
     AbstractBranding branding = BrandingManager.get( servletName, entryPoint );
     RWT.getSessionStore().setAttribute( ATTR_BRANDING_ID, branding.getId() );

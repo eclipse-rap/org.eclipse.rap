@@ -295,7 +295,6 @@ public class ResourceManagerImpl
     ParamCheck.notNull( name, "name" );
     String key = createKey( name );
     String fileName = ( String )repository.get( key );
-    Assert.isNotNull( fileName, "No resource registered for key " + name );
     return createRequestURL( fileName, findVersion( name ) );
   }
 

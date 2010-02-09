@@ -13,22 +13,22 @@ package org.eclipse.rwt.internal.service;
 import junit.framework.TestCase;
 
 
-public class TemplateHolder_Test extends TestCase {
+public class StartupPageTemplateHolder_Test extends TestCase {
   private static final String SOME_TEXT_WITH_VARIABLE_DELIMITERS = "a$b{c}";
   private static final String NON_VARIABLE_TOKEN = "${nonVariable}";
   private static final String POSTFIX = "</template>";
   private static final String PREFIX = "<template>";
   private static final String TEMPLATE 
     =   PREFIX 
-      + TemplateHolder.VAR_LIBRARIES
+      + StartupPageTemplateHolder.VAR_LIBRARIES
       + NON_VARIABLE_TOKEN
       + SOME_TEXT_WITH_VARIABLE_DELIMITERS
-      + TemplateHolder.VAR_LIBRARIES
-      + TemplateHolder.VAR_APPSCRIPT
+      + StartupPageTemplateHolder.VAR_LIBRARIES
+      + StartupPageTemplateHolder.VAR_APPSCRIPT
       + POSTFIX;
 
   public void testTemplateParsing() {
-    TemplateHolder template = new TemplateHolder( TEMPLATE  );
+    StartupPageTemplateHolder template = new StartupPageTemplateHolder( TEMPLATE  );
     String expected
       =   PREFIX 
         + "null"
@@ -41,9 +41,9 @@ public class TemplateHolder_Test extends TestCase {
   }
   
   public void testVariableReplacement() {
-    TemplateHolder template = new TemplateHolder( TEMPLATE  );
+    StartupPageTemplateHolder template = new StartupPageTemplateHolder( TEMPLATE  );
     String myLibraries = "myLibraries";
-    template.replace( TemplateHolder.VAR_LIBRARIES, myLibraries );
+    template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, myLibraries );
     String expected
       =   PREFIX 
         + myLibraries
@@ -62,16 +62,16 @@ public class TemplateHolder_Test extends TestCase {
         + myLibraries
         + myAppScript
         + POSTFIX;
-    template.replace( TemplateHolder.VAR_APPSCRIPT, myAppScript );
+    template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, myAppScript );
     assertEquals( expected, getContent( template ) );
   }
   
   public void testVariableReset() {
-    TemplateHolder template = new TemplateHolder( TEMPLATE  );
+    StartupPageTemplateHolder template = new StartupPageTemplateHolder( TEMPLATE  );
     String myLibraries = "myLibraries";
-    template.replace( TemplateHolder.VAR_LIBRARIES, myLibraries );
+    template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, myLibraries );
     String myAppScript = "myAppScript";
-    template.replace( TemplateHolder.VAR_APPSCRIPT, myAppScript );
+    template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, myAppScript );
     template.reset();
     
     String expected
@@ -86,7 +86,7 @@ public class TemplateHolder_Test extends TestCase {
     
   }
 
-  private String getContent( final TemplateHolder template ) {
+  private String getContent( final StartupPageTemplateHolder template ) {
     String[] tokens = template.getTokens();
     StringBuffer result = new StringBuffer();
     for( int i = 0; i < tokens.length; i++ ) {

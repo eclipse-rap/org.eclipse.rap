@@ -16,25 +16,11 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.util.CssClass;
 
 
 /** <p>Tests functionality of org.eclipse.rap.HtmlResponseWriter</p>
   */
 public class HtmlResponseWriter_Test extends TestCase {
-  
-  private static final String SAMPLE_CSS_1
-    = "background-color:#ffffff;font-family:arial,verdana;font-size:8pt;";
-  private static final String SAMPLE_CSS_2
-    = "background-color:#f3fb48;font-size:12pt;";
-
-  private HtmlResponseWriter tb;
-  
-  
-  public HtmlResponseWriter_Test( final String name ) {
-    super( name );
-    tb = new HtmlResponseWriter();
-  }
   
   protected void setUp() throws Exception {
     Fixture.setUp();
@@ -45,27 +31,8 @@ public class HtmlResponseWriter_Test extends TestCase {
   }
   
   
-  // actual testing code
   //////////////////////
-  
-  /** tests the functionality for collecting css classes with equal content
-    * that are named (the names of the classes must be pooled correctly into
-    * a compound name).*/
-  public void testNamedCssClasses() {
-    tb.addNamedCssClass( new CssClass( "someClassName", SAMPLE_CSS_1 ) );
-    check( new String[] { ".someClassName" } );
-    
-    tb.addNamedCssClass( new CssClass( "anotherClassName", SAMPLE_CSS_2 ) );
-    check( new String[] { ".anotherClassName", ".someClassName" } );
-    
-    tb.addNamedCssClass( new CssClass( "thirdClassName", SAMPLE_CSS_1 ) );    
-    check( new String[] { ".anotherClassName", 
-                          ".someClassName, .thirdClassName" } );
-    
-    tb.addNamedCssClass( new CssClass( "lastClassName", SAMPLE_CSS_1 ) );
-    check( new String[] { ".anotherClassName", 
-                          ".someClassName, .thirdClassName, .lastClassName" } );
-  }
+  // actual testing code
   
   public void testTokenAppending() throws Exception {
     HtmlResponseWriter tokenBuffer = new HtmlResponseWriter();
@@ -389,93 +356,88 @@ public class HtmlResponseWriter_Test extends TestCase {
     try {
       writer.close();
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.close();
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.endDocument();
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.endElement( "xxx" );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.flush();
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.startDocument();
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.startElement( "xxx", null );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.write( new char[]{ 'X' } );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.write( new char[]{ 'X' }, 0, 1 );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.write( 13 );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.write( "xxx" );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.write( "xxx", 0, 3 );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.writeAttribute( "xxx", "trallala", "xyz" );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.writeComment( "xxx" );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.writeText( new char[] { 'X' }, 0, 1 );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.writeText( "xxx", "nothing" );
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
     try {
       writer.writeNBSP();
       fail();
-    } catch( IOException ioe ) {
+    } catch( IllegalStateException ioe ) {
     }
-//    try {
-//      writer.writeURIAttribute( "xxx", "nothing", "tirili" );
-//      fail();
-//    } catch( IOException ioe ) {
-//    }
   }
 
   public void testWriteNBSP() throws IOException {
@@ -520,8 +482,8 @@ public class HtmlResponseWriter_Test extends TestCase {
     }
   }
   
-  // helping methods
   //////////////////
+  // helping methods
   
   static String getContent( final HtmlResponseWriter tokenBuffer ) {
     String result = "";
@@ -530,26 +492,5 @@ public class HtmlResponseWriter_Test extends TestCase {
       result += tokens.next().toString();
     }
     return result;
-  }
-
-  
-  private void check( final String[] expectedClassNames ) {
-    assertTrue( createMessage( expectedClassNames ),
-                expectedClassNames.length == tb.getCssClasses().length );
-
-    for( int i = 0; i < expectedClassNames.length; i++ ) {
-      String compoundName = tb.getCssClasses()[ i ].getClassName();
-      assertTrue(   "Expected compound class name mathes not the actually "                  + "created one.",
-                  expectedClassNames[ i ].equals( compoundName ) );
-    }
-
-  }
-
-  private String createMessage( final String[] expectedClassNames ) {
-    return   "Number of entries for named classes is incorrect: "
-           + tb.getCssClasses().length 
-           + " instead of " 
-           + expectedClassNames.length
-           + ".";
   }
 }

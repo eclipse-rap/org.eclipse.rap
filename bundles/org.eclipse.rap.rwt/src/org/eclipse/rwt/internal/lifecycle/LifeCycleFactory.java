@@ -34,12 +34,12 @@ public final class LifeCycleFactory {
   public static ILifeCycle getLifeCycle() {
     ISessionStore session = ContextProvider.getSession();
     String id = LifeCycle.class.getName();
-    ILifeCycle lifeCycle = ( ILifeCycle )session.getAttribute( id );
-    if( lifeCycle == null ) {
-      lifeCycle = loadLifeCycle();
-      session.setAttribute( id, lifeCycle );
+    ILifeCycle result = ( ILifeCycle )session.getAttribute( id );
+    if( result == null ) {
+      result = loadLifeCycle();
+      session.setAttribute( id, result );
     }
-    return lifeCycle;
+    return result;
   }
   
   public static void destroy() {

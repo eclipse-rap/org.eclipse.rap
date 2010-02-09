@@ -18,7 +18,6 @@ import javax.servlet.http.*;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.IEngineConfig;
-import org.eclipse.rwt.internal.browser.Browser;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -110,11 +109,6 @@ public class ContextProvider {
     return result;
   }
   
-  public static Browser getBrowser() {
-    String id = ServiceContext.DETECTED_SESSION_BROWSER;
-    return ( Browser )getSession().getAttribute( id );
-  }
-
   public static String getWebAppBase() {
     IEngineConfig engineConfig = ConfigurationReader.getEngineConfig();
     return engineConfig.getServerContextDir().toString();

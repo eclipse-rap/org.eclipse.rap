@@ -28,6 +28,14 @@ public final class URLHelper {
     // no instance creation
   }
 
+  public static String getSerlvetName() {
+    String result = ContextProvider.getRequest().getServletPath();
+    if( result.startsWith( "/" ) ) {
+      result = result.substring( 1 );
+    }
+    return result;
+  }
+
   /** returns the servlets URL of the current W4Toolkit installation. */
   public static String getURLString( final boolean addEncodingDummy ) {
     HttpServletRequest request = ContextProvider.getRequest();

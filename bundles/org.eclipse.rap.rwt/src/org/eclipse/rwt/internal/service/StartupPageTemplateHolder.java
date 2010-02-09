@@ -16,7 +16,7 @@ import java.util.*;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
-public final class TemplateHolder {
+public final class StartupPageTemplateHolder {
   
   private static final int[] EMPTY_INDICES = new int[ 0 ];
   private final static String TOKEN_BACKGROUND_IMAGE = "backgroundImage";
@@ -79,7 +79,7 @@ public final class TemplateHolder {
   private final Map replacementIndices;
 
 
-  public TemplateHolder( final String template ) {
+  public StartupPageTemplateHolder( final String template ) {
     ParamCheck.notNull( template, "template" );
     replacementIndices = new HashMap();
     StringTokenizer tokenizer = new StringTokenizer( template, "${}", true );
