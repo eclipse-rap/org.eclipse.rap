@@ -40,7 +40,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text._ontabfocus = function() {
         text.setSelectionLength( 0 );
       };
-      org.eclipse.swt.TextUtil._createMessageLabel( text );
     },
 
     /*
@@ -329,28 +328,42 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     //////////////////////////////////////////
     // Functions to maintain the message label
     
-    _createMessageLabel : function( text ) {
-      if( text.hasState( "rwt_SINGLE" ) ) {
-        var label = new qx.ui.basic.Atom( "" );
-        label.setAppearance( "text-field-message" );
-        label.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-        label.addEventListener( "mousedown",
-                                org.eclipse.swt.TextUtil._onMessageLabelMouseDown,
-                                text );
-        label.setParent( text.getParent() );
-        text.setUserData( "messageLabel", label );
-        text.addEventListener( "changeZIndex",
-                               org.eclipse.swt.TextUtil._onTextPropertyChange,
-                               text );
-        text.addEventListener( "changeVisibility",
-                               org.eclipse.swt.TextUtil._onTextPropertyChange,
-                               text );
-      }
+    _createMessageLabel : function( text, message ) {
+      var label = new qx.ui.basic.Atom( message );
+      label.setAppearance( "text-field-message" );
+      label.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+      label.addEventListener( "mousedown",
+                              org.eclipse.swt.TextUtil._onMessageLabelMouseDown,
+                              text );
+      label.setParent( text.getParent() );      
+      text.addEventListener( "changeZIndex",
+                             org.eclipse.swt.TextUtil._onTextPropertyChange,
+                             text );
+      text.addEventListener( "changeVisibility",
+                             org.eclipse.swt.TextUtil._onTextPropertyChange,
+                             text );
+      text.addEventListener( "changeLeft",
+                             org.eclipse.swt.TextUtil._onTextPropertyChange,
+                             text );
+      text.addEventListener( "changeTop",
+                             org.eclipse.swt.TextUtil._onTextPropertyChange,
+                             text );
+      text.addEventListener( "changeWidth",
+                             org.eclipse.swt.TextUtil._onTextPropertyChange,
+                             text );
+      text.addEventListener( "changeHeight",
+                             org.eclipse.swt.TextUtil._onTextPropertyChange,
+                             text );
+      text.setUserData( "messageLabel", label );
     },
     
     _updateMessageLabel : function( text ) {
       var label = text.getUserData( "messageLabel" );
       if( label != null ) {
+        label.setLeft( text.getLeft() );
+        label.setTop( text.getTop() )
+        label.setWidth( text.getWidth() );
+        label.setHeight( text.getHeight() );
         label.setZIndex( text.getZIndex() + 1 );
         var visible =    text.getVisibility()
                       && text.getValue() === ""
@@ -362,20 +375,17 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     disposeMessageLabel : function( text ) {
       var label = text.getUserData( "messageLabel" );
       if( label != null ) {
-        label.dispose();
-      }
-    },
-    
-    setMessageBounds : function( text, left, width, top, height ) {
-      var label = text.getUserData( "messageLabel" );
-      if( label != null ) {
-        label.setSpace( left, width, top, height );
+        label.setParent( null );
+        label.destroy();
       }
     },
     
     setMessage : function( text, message ) {
       var label = text.getUserData( "messageLabel" );
-      if( label != null ) {
+      if( label == null ) {
+        org.eclipse.swt.TextUtil._createMessageLabel( text, message );
+        org.eclipse.swt.TextUtil._updateMessageLabel( text );
+      } else {
         label.setLabel( message );
       }
     },

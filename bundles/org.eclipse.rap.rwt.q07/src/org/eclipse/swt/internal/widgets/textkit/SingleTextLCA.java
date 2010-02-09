@@ -15,8 +15,6 @@ import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Text;
 
 final class SingleTextLCA extends AbstractTextDelegateLCA {
@@ -65,7 +63,6 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeSelectionListener( text );
     WidgetLCAUtil.writeCustomVariant( text );
     writeMessage( text );
-    writeMessageBounds( text );
   }
 
   void renderDispose( final Text text ) throws IOException {
@@ -84,22 +81,6 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
       JSWriter writer = JSWriter.getWriterFor( text );
       writer.callStatic( "org.eclipse.swt.TextUtil.setMessage",
                          new Object[] { text, newValue } );
-    }
-  }
-
-  private static void writeMessageBounds( final Text text ) throws IOException {
-    Rectangle newValue = text.getBounds();
-    if( WidgetLCAUtil.hasChanged( text, Props.BOUNDS, newValue ) ) {
-      int borderWidth = text.getBorderWidth();
-      Object[] args = new Object[] {
-        text,
-        new Integer( newValue.x + borderWidth ),
-        new Integer( newValue.width - 2 * borderWidth ),
-        new Integer( newValue.y + borderWidth ),
-        new Integer( newValue.height - 2 * borderWidth )
-      };
-      JSWriter writer = JSWriter.getWriterFor( text );
-      writer.callStatic( "org.eclipse.swt.TextUtil.setMessageBounds", args );
     }
   }
 
