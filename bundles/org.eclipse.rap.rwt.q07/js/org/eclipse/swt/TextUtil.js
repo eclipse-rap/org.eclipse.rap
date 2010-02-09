@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text._ontabfocus = function() {
         text.setSelectionLength( 0 );
       };
+      org.eclipse.swt.TextUtil._createMessageLabel( text );
     },
 
     /*
@@ -120,6 +121,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.addEventListener( "changeValue", org.eclipse.swt.TextUtil._onTextChange );
       text.addEventListener( "changeFont", org.eclipse.swt.TextUtil._onFontChange, text );
       text.addEventListener( "focus", org.eclipse.swt.TextUtil._onFocus, text );
+      text.addEventListener( "blur", org.eclipse.swt.TextUtil._onBlur, text );
       org.eclipse.swt.TextUtil._updateLineHeight( text );
     },
 
@@ -167,8 +169,9 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onTextChange : function( event ) {
+      var text = event.getTarget();
+      org.eclipse.swt.TextUtil._updateMessageLabel( text );
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleModification( text );
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
@@ -180,10 +183,16 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onFocus : function( event ) {
+      var text = event.getTarget();
+      org.eclipse.swt.TextUtil._updateMessageLabel( text );
       if( !qx.event.handler.FocusHandler.mouseFocus ) {
-        var text = event.getTarget();
         org.eclipse.swt.TextUtil._doSetSelection( text );
       }
+    },
+    
+    _onBlur : function( event ) {
+      var text = event.getTarget();      
+      org.eclipse.swt.TextUtil._updateMessageLabel( text );
     },
 
     // this function is also used by Combo.js
@@ -315,6 +324,69 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
                                                        length );
         }
       }
+    },
+    
+    //////////////////////////////////////////
+    // Functions to maintain the message label
+    
+    _createMessageLabel : function( text ) {
+      if( text.hasState( "rwt_SINGLE" ) ) {
+        var label = new qx.ui.basic.Atom( "" );
+        label.setAppearance( "text-field-message" );
+        label.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+        label.addEventListener( "mousedown",
+                                org.eclipse.swt.TextUtil._onMessageLabelMouseDown,
+                                text );
+        label.setParent( text.getParent() );
+        text.setUserData( "messageLabel", label );
+        text.addEventListener( "changeZIndex",
+                               org.eclipse.swt.TextUtil._onTextPropertyChange,
+                               text );
+        text.addEventListener( "changeVisibility",
+                               org.eclipse.swt.TextUtil._onTextPropertyChange,
+                               text );
+      }
+    },
+    
+    _updateMessageLabel : function( text ) {
+      var label = text.getUserData( "messageLabel" );
+      if( label != null ) {
+        label.setZIndex( text.getZIndex() + 1 );
+        var visible =    text.getVisibility()
+                      && text.getValue() === ""
+                      && !text.getFocused();
+        label.setVisibility( visible );
+      }
+    },
+    
+    disposeMessageLabel : function( text ) {
+      var label = text.getUserData( "messageLabel" );
+      if( label != null ) {
+        label.dispose();
+      }
+    },
+    
+    setMessageBounds : function( text, left, width, top, height ) {
+      var label = text.getUserData( "messageLabel" );
+      if( label != null ) {
+        label.setSpace( left, width, top, height );
+      }
+    },
+    
+    setMessage : function( text, message ) {
+      var label = text.getUserData( "messageLabel" );
+      if( label != null ) {
+        label.setLabel( message );
+      }
+    },
+    
+    _onMessageLabelMouseDown : function( event ) {
+      this.focus();
+    },
+    
+    _onTextPropertyChange : function( event ) {
+      var text = event.getTarget();
+      org.eclipse.swt.TextUtil._updateMessageLabel( text );
     }
 
   }

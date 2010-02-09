@@ -22,3 +22,7 @@ Text[MULTI] {
 Text[MULTI][BORDER] {
   /* padding: 0px 0px 0px 4px; */
 }
+
+Text-Message {
+  color: rgb( 167, 166, 170 );
+}

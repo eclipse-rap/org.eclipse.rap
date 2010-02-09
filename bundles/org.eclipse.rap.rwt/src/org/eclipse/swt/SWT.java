@@ -1469,6 +1469,16 @@ public class SWT {
    */
   public static final int WRAP = 1 << 6;
 
+  /**
+   * Style constant for search behavior (value is 1&lt;&lt;7).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Text</code></li>
+   * </ul></p>
+   *
+   * @since 1.3
+   */
+  public static final int SEARCH = 1 << 7;
+
   // Combo style flags
 
   /**
@@ -1958,6 +1968,40 @@ public class SWT {
    * behavior (value is 1&lt;&lt;4).
    */
   public static final int ICON_WORKING = 1 << 4;
+
+  /**
+   * The style constant for "search" icon. This style constant is
+   * used with <code>Text</code> in combination with <code>SWT.SEARCH
+   * </code> (value is 1&lt;&lt;9).
+   * <br>Note that this is a <em>HINT</em>.
+   *
+   * <p><b>Used By:</b><ul>
+   * <li><code>Text</code></li>
+   * </ul></p>
+   *
+   * @see #SEARCH
+   * @see #ICON_CANCEL
+   *
+   * @since 1.3
+   */
+  public static final int ICON_SEARCH = 1 << 9;
+
+  /**
+   * The style constant for "cancel" icon. This style constant is
+   * used with <code>Text</code> in combination with <code>SWT.SEARCH
+   * </code> (value is 1&lt;&lt;8).
+   * <br>Note that this is a <em>HINT</em>.
+   *
+   * <p><b>Used By:</b><ul>
+   * <li><code>Text</code></li>
+   * </ul></p>
+   *
+   * @see #SEARCH
+   * @see #ICON_SEARCH
+   *
+   * @since 1.3
+   */
+  public static final int ICON_CANCEL = 1 << 8;
 
   /**
    * The <code>MessageBox</code> style constant for an OK button;

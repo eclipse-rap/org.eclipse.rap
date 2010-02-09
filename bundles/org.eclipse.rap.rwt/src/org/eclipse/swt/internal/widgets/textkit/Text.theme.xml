@@ -52,6 +52,17 @@
 
     <state name="read-only"
         description="Applies to text fields in read-only mode." />
+        
+    <element name="Text-Message">
+      <description>
+        The Text message. The message text is displayed as a hint for the user,
+        indicating the purpose of the field.
+      </description>
+      
+      <property name="color"
+        description="Text message color" />
+      
+    </element>
 
   </element>
 

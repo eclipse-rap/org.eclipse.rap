@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,6 +79,7 @@ public class TextTab extends ExampleTab {
     createStyleButton( "SINGLE", SWT.SINGLE );
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "PASSWORD", SWT.PASSWORD );
+    createStyleButton( "SEARCH", SWT.SEARCH );
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createStyleButton( "LEFT", SWT.LEFT );
     createStyleButton( "CENTER", SWT.CENTER );
@@ -96,6 +97,7 @@ public class TextTab extends ExampleTab {
     createCursorCombo();
     createLimitText( parent );
     createSelectionChooser( parent );
+    createMessage( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -106,6 +108,7 @@ public class TextTab extends ExampleTab {
     text = new Text( textComposite, getStyle() );
     text.setText( "Lorem ipsum dolor sit amet" );
     text.setSelection( 0, 5 );
+    text.setMessage( "Please enter something" );
     text.setFocus();
     // button bar
     Composite buttonBar = new Composite( parent, SWT.NONE );
@@ -240,7 +243,7 @@ public class TextTab extends ExampleTab {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
     Label lblSelectionFrom = new Label( composite, SWT.NONE );
-    lblSelectionFrom.setText( "selection from" );
+    lblSelectionFrom.setText( "Selection from" );
     final Text txtSelectionFrom = new Text( composite, SWT.BORDER );
     Util.textSizeAdjustment( lblSelectionFrom, txtSelectionFrom );
     Label lblSelectionTo = new Label( composite, SWT.NONE );
@@ -248,7 +251,7 @@ public class TextTab extends ExampleTab {
     final Text txtSelectionTo = new Text( composite, SWT.BORDER );
     Util.textSizeAdjustment( lblSelectionTo, txtSelectionTo );
     Button btnChange = new Button( composite, SWT.PUSH );
-    btnChange.setText( "set" );
+    btnChange.setText( "Set" );
     btnChange.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         int from = parseInt( txtSelectionFrom.getText() );
@@ -267,10 +270,9 @@ public class TextTab extends ExampleTab {
       }
     } );
     Button selectAllButton = new Button( composite, SWT.PUSH );
-    selectAllButton.setText( "select all" );
+    selectAllButton.setText( "Select all" );
     selectAllButton.addSelectionListener( new SelectionAdapter() {
-
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         text.selectAll();
         text.setFocus();
       }
@@ -281,16 +283,15 @@ public class TextTab extends ExampleTab {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 4, false ) );
     Label label = new Label( composite, SWT.NONE );
-    label.setText( "textLimit" );
+    label.setText( "Text limit" );
     final Text limitText = new Text( composite, SWT.BORDER );
     limitText.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
     Button setButton = new Button( composite, SWT.PUSH );
-    setButton.setText( "set" );
+    setButton.setText( "Set" );
     Button resetButton = new Button( composite, SWT.PUSH );
-    resetButton.setText( "reset" );
+    resetButton.setText( "Reset" );
     Listener changeListener = new Listener() {
-
-      public void handleEvent( Event event ) {
+      public void handleEvent( final Event event ) {
         try {
           text.setTextLimit( Integer.parseInt( limitText.getText() ) );
           limitText.setText( String.valueOf( text.getTextLimit() ) );
@@ -303,11 +304,26 @@ public class TextTab extends ExampleTab {
     limitText.addListener( SWT.DefaultSelection, changeListener );
     setButton.addListener( SWT.Selection, changeListener  );
     resetButton.addSelectionListener( new SelectionAdapter() {
-
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         text.setTextLimit( Text.LIMIT );
         limitText.setText( "" );
         limitText.setBackground( null );
+      }
+    } );
+  }
+
+  private void createMessage( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Message" );
+    final Text message = new Text( composite, SWT.BORDER );
+    message.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
+    Button setButton = new Button( composite, SWT.PUSH );
+    setButton.setText( "Set" );
+    setButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        text.setMessage( message.getText() );
       }
     } );
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
  * <p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>CENTER, LEFT, MULTI, PASSWORD, SINGLE, RIGHT, READ_ONLY, WRAP</dd>
+ * <dd>CENTER, LEFT, MULTI, PASSWORD, SEARCH, SINGLE, RIGHT, READ_ONLY, WRAP</dd>
  * <dt><b>Events:</b></dt>
  * <dd>DefaultSelection, Modify, Verify</dd>
  * </dl>
@@ -62,7 +62,8 @@ public class Text extends Scrollable {
   public static final String DELIMITER = "\n";
 
   private final ITextAdapter textAdapter;
-  private String text = "";
+  private String text;
+  private String message;
   private int textLimit = LIMIT;
   private final Point selection = new Point( 0, 0 );
 
@@ -94,6 +95,8 @@ public class Text extends Scrollable {
    * @see SWT#MULTI
    * @see SWT#READ_ONLY
    * @see SWT#WRAP
+   * @see SWT#PASSWORD
+   * @see SWT#SEARCH;
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
@@ -104,6 +107,8 @@ public class Text extends Scrollable {
         Text.this.setText( text, selection );
       }
     };
+    text = "";
+    message = "";
   }
 
   void initState() {
@@ -176,7 +181,7 @@ public class Text extends Scrollable {
     checkWidget();
     return text;
   }
-  
+
   /**
    * Returns a range of text. Returns an empty string if the start of the range
    * is greater than the end.
@@ -184,7 +189,7 @@ public class Text extends Scrollable {
    * Indexing is zero based. The range of a selection is from 0..N-1 where N is
    * the number of characters in the widget.
    * </p>
-   * 
+   *
    * @param start the start of the range
    * @param end the end of the range
    * @return the range of text
@@ -276,8 +281,56 @@ public class Text extends Scrollable {
     return ( int )Math.floor( fontSize * LINE_HEIGHT_FACTOR );
   }
 
+  /**
+   * Sets the widget message. The message text is displayed
+   * as a hint for the user, indicating the purpose of the field.
+   * <p>
+   * Typically this is used in conjunction with <code>SWT.SEARCH</code>.
+   * </p>
+   *
+   * @param message the new message
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the message is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setMessage( final String message ) {
+    checkWidget();
+    if( message == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    this.message = message;
+  }
+
+  /**
+   * Returns the widget message.  The message text is displayed
+   * as a hint for the user, indicating the purpose of the field.
+   * <p>
+   * Typically this is used in conjunction with <code>SWT.SEARCH</code>.
+   * </p>
+   *
+   * @return the widget message
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public String getMessage() {
+    checkWidget();
+    return message;
+  }
+
   //////////////////////////
-  // Imput length constraint
+  // Input length constraint
 
   /**
    * Sets the maximum number of characters that the receiver
@@ -643,6 +696,9 @@ public class Text extends Scrollable {
       // Single-line text field should have same size as Combo, Spinner, etc.
       if( ( getStyle() & SWT.SINGLE ) != 0 ) {
         extent = TextSizeDetermination.stringExtent( getFont(), text );
+        int messageWidth
+          = TextSizeDetermination.stringExtent( getFont(), message ).x;
+        extent.x = Math.max( extent.x, messageWidth );
       } else {
         extent = TextSizeDetermination.textExtent( getFont(), text, wrapWidth );
       }
@@ -884,6 +940,10 @@ public class Text extends Scrollable {
 
   private static int checkStyle( final int style ) {
     int result = style;
+    if( ( result & SWT.SEARCH ) != 0 ) {
+      result |= SWT.SINGLE | SWT.BORDER;
+      result &= ~SWT.PASSWORD;
+    }
     if( ( result & SWT.SINGLE ) != 0 && ( result & SWT.MULTI ) != 0 ) {
       result &= ~SWT.MULTI;
     }

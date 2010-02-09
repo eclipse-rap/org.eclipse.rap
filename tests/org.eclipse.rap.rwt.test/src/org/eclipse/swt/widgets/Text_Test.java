@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ public class Text_Test extends TestCase {
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     assertEquals( "", text.getText() );
+    assertEquals( "", text.getMessage() );
     assertEquals( Text.LIMIT, text.getTextLimit() );
     assertEquals( 0, text.getSelectionCount() );
     assertEquals( new Point( 0, 0 ), text.getSelection() );
@@ -367,6 +368,10 @@ public class Text_Test extends TestCase {
     expected = new Point( 138, 19 );
     assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    text.setMessage( "This is a message that is longer than the text!" );
+    expected = new Point( 254, 19 );
+    assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
     text = new Text( shell, SWT.MULTI );
     text.setText( "This is a long long text!\nThis is the second row." );
     expected = new Point( 138, 34 );
@@ -428,7 +433,7 @@ public class Text_Test extends TestCase {
     assertEquals( new Point( 8, 8 ), text.getSelection() );
     assertEquals( 8, text.getCaretPosition() );
   }
-  
+
   public void testGetText() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -439,5 +444,24 @@ public class Text_Test extends TestCase {
     assertEquals( "s", text.getText( 2, 2 ) );
     assertEquals( "Test Text", text.getText( 0, 25 ) );
     assertEquals( "Test ", text.getText( -3, 4 ) );
+  }
+
+  public void testMessage() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.SINGLE );
+    assertEquals( "", text.getMessage() );
+    text.setMessage( "New message" );
+    assertEquals( "New message", text.getMessage() );
+  }
+
+  public void testStyle() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.SEARCH | SWT.PASSWORD );
+    int style = text.getStyle();
+    assertTrue( ( style & SWT.SINGLE ) != 0 );
+    assertTrue( ( style & SWT.BORDER ) != 0 );
+    assertTrue( ( style & SWT.PASSWORD ) == 0 );
   }
 }

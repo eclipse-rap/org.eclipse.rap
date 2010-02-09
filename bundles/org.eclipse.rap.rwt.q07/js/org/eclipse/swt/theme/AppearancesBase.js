@@ -662,6 +662,21 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
+  
+  "text-field-message" : {
+    style : function( states ) {
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.font = tv.getCssFont( "Text", "font" );
+      result.textColor = tv.getCssColor( "Text-Message", "color" );
+      // [if] Do not apply top/bottom paddings on the client
+      var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
+      result.paddingRight = cssPadding[ 1 ];
+      result.paddingLeft = cssPadding[ 3 ];
+      result.horizontalChildrenAlign = "left";
+      return result;
+    }
+  },
 
   "text-area" : {
     include : "text-field",
