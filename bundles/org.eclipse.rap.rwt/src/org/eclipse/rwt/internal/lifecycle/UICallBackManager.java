@@ -210,8 +210,9 @@ public final class UICallBackManager
           session.addSessionStoreListener( listener );
           runnablesLock.wait();
         }
-      } catch( final InterruptedException ie ) {
+      } catch( InterruptedException ie ) {
         result = true;
+        Thread.interrupted(); // Reset interrupted state, see bug 300254
       } finally {
         locked.remove( currentThread );
         if( !result ) {
