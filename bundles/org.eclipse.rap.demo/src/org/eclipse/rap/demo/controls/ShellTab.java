@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -300,7 +301,7 @@ public class ShellTab extends ExampleTab {
     Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
     fileItem.setMenu( fileMenu );
     MenuItem newItem = new MenuItem( fileMenu, SWT.PUSH );
-    newItem.setText( "New" );
+    newItem.setText( "&New\tStrg+FOO" );
     newItem.setImage( Graphics.getImage( "resources/newfile_wiz.gif" ) );
     new MenuItem( fileMenu, SWT.PUSH ).setText( "Open" );
     new MenuItem( fileMenu, SWT.PUSH ).setText( "Close" );
