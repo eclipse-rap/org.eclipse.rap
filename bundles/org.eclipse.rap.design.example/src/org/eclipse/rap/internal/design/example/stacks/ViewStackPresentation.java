@@ -155,7 +155,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       action.addConfigurationChangeListener( new IConfigurationChangeListener(){
 
         public void toolBarChanged() {
-          ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();
+          ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();         
           registry.fireToolBarChanged( );
         }
 
@@ -269,14 +269,14 @@ public class ViewStackPresentation extends ConfigurableStack {
           viewMenuButton.setImage( icon );
           FormData fdViewMenuButton = new FormData();
           viewMenuButton.setLayoutData( fdViewMenuButton );
-          fdViewMenuButton.right = new FormAttachment( 100, -3 );
-          fdViewMenuButton.top = new FormAttachment( 0, 7 );
+          fdViewMenuButton.right = new FormAttachment( 100, -4 );
+          fdViewMenuButton.top = new FormAttachment( 0, 8 );
           viewMenuButton.addSelectionListener( new SelectionAdapter() {
             public void widgetSelected( final SelectionEvent e ) {
               Display display = viewMenuButton.getDisplay();
               int height = viewMenuButton.getSize().y;
               Point newLoc = display.map( viewMenuButton, null, 0, height );
-              viewMenu.showMenu( newLoc );
+              viewMenu.showMenu( newLoc );              
             };
           } );
         }
@@ -528,7 +528,7 @@ public class ViewStackPresentation extends ConfigurableStack {
             close.setLayoutData( fdClose );
             fdClose.right = new FormAttachment( 100, -5 );
             fdClose.top = new FormAttachment( 0, 6 );
-            fdClose.width = 8;
+            fdClose.width = 7;
             fdClose.height = 8;
             close.setLayoutData( fdClose );
             close.moveAbove( corner );
@@ -1221,8 +1221,8 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( currentPart != null && getPartPane( currentPart ) != null ) {
       currentPart.setVisible( isVisible );
       // Toolbar Layer
-      deactivated = !isVisible;
-      layoutToolBar();
+      deactivated = !isVisible;    
+      layoutToolBar();     
       if( toolBarLayer != null ) {
         if( !isVisible ) {
           toolBarLayer.setVisible( false );

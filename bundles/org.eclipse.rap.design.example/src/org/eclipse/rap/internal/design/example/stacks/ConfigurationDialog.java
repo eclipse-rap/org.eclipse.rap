@@ -13,16 +13,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
+import org.eclipse.rap.internal.design.example.managers.ViewToolBarManager;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -39,12 +37,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 
 /**
@@ -115,6 +111,12 @@ public class ConfigurationDialog extends PopupDialog {
     if( !modalBackground.isDisposed() ) {
       modalBackground.close();
       modalBackground.dispose();
+    }    
+    ConfigurableStack stackPresentation
+      = ( ConfigurableStack ) action.getStackPresentation();
+    IToolBarManager manager = stackPresentation.getPartToolBarManager();
+    if( manager != null ) {
+      manager.update( true );     
     }
     action.fireToolBarChange();
     return super.close();
@@ -209,87 +211,56 @@ public class ConfigurationDialog extends PopupDialog {
     fdActionDesc.left = new FormAttachment( 0, OFFSET );
     if( manager != null ) {
       String paneId = stackPresentation.getPaneId( site );
-      IContributionItem[] items = manager.getItems();
-
-      for( int i = 0; i < items.length; i++ ) {
-        if( !( items[ i ] instanceof Separator ) ) {
-          // handle items
-          String itemId = items[ i ].getId();
-          String text = null;
-          Image icon = null;
-          if( items[ i ] instanceof ActionContributionItem ) {
-            // actions
-            ActionContributionItem item = ( ActionContributionItem ) items[ i ];
-            icon = item.getAction().getImageDescriptor().createImage();
-            if( item.getAction().getText() != null
-                && !item.getAction().getText().equals( "" ) ) {
-              text = item.getAction().getText();
+      if( manager instanceof ViewToolBarManager ) {
+        //manager.update( true );
+        List toolItems = ( ( ViewToolBarManager) manager ).getToolItems();
+        for( int i = 0; i < toolItems.size(); i++ ) {
+          ToolItem item = ( ToolItem ) toolItems.get( i );
+          if( item != null && !item.isDisposed() ) {
+            // handle parameter
+            IContributionItem contribItem 
+              = ( IContributionItem ) item.getData();
+            String itemId = contribItem.getId();
+            Image icon = item.getImage();
+            String text = "";
+            if( item.getText() != null && !item.getText().equals( "" ) ) {
+              text = item.getText();
             } else {
-              text = item.getAction().getToolTipText();
+              text = item.getToolTipText();
             }
-          } else if( items[ i ] instanceof CommandContributionItem ) {
-            // commands
-            CommandContributionItem item
-              = ( CommandContributionItem ) items[ i ];
-            Object[] commandInfo = getCommandInfo( item, container );
-            if( commandInfo != null ) {
-              icon = ( Image ) commandInfo[ 0 ];
-              if( commandInfo[ 1 ] != null
-                  && !commandInfo[ 1 ].equals( "" ) ) {
-                text = ( String ) commandInfo[ 1 ];
-              } else {
-                text = ( String  ) commandInfo[ 2 ];
-              }
+  
+            // render the dialog
+            Label imageLabel = new Label( container, SWT.NONE );
+            imageLabel.setImage( icon );
+            FormData fdImageLabel = new FormData();
+            imageLabel.setLayoutData( fdImageLabel );
+            if( lastImageLabel != null ) {
+              fdImageLabel.top = new FormAttachment( lastImageLabel, OFFSET );
+              lastImageLabel = imageLabel;
+            } else {
+              fdImageLabel.top = new FormAttachment( description, OFFSET );
+              lastImageLabel = imageLabel;
             }
-          }
-          Label imageLabel = new Label( container, SWT.NONE );
-          imageLabel.setImage( icon );
-          FormData fdImageLabel = new FormData();
-          imageLabel.setLayoutData( fdImageLabel );
-          if( lastImageLabel != null ) {
-            fdImageLabel.top = new FormAttachment( lastImageLabel, OFFSET );
+            fdImageLabel.left = new FormAttachment( 0, OFFSET * 4 );
+  
+            Button check = new Button( container, SWT.CHECK );
+            check.setText( text );
+            check.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+            boolean selected
+              = action.isViewActionVisibile( paneId, itemId );
+            FormData fdCheck = new FormData();
+            check.setLayoutData( fdCheck );
+            fdCheck.left = new FormAttachment( imageLabel, OFFSET + 5 );
+            fdCheck.top = fdImageLabel.top;
+            check.setSelection( selected );
+            check.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" );
+            actionButtonMap.put( itemId, check );
+            actionList.add( itemId );
             lastImageLabel = imageLabel;
-          } else {
-            fdImageLabel.top = new FormAttachment( description, OFFSET );
-            lastImageLabel = imageLabel;
           }
-          fdImageLabel.left = new FormAttachment( 0, OFFSET * 4 );
-
-          Button check = new Button( container, SWT.CHECK );
-          check.setText( text );
-          check.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-          boolean selected
-            = action.isViewActionVisibile( paneId, itemId );
-          FormData fdCheck = new FormData();
-          check.setLayoutData( fdCheck );
-          fdCheck.left = new FormAttachment( imageLabel, OFFSET + 5 );
-          fdCheck.top = fdImageLabel.top;
-          check.setSelection( selected );
-          check.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" );
-          actionButtonMap.put( itemId, check );
-          actionList.add( itemId );
-          lastImageLabel = imageLabel;
         }
       }
     }
-  }
-
-  private Object[] getCommandInfo( final CommandContributionItem item,
-                                   final Composite container )
-  {
-    Object[] result = null;
-    ToolBar toolbar = new ToolBar( container, SWT.NONE );
-    toolbar.setVisible( false );
-    item.fill( toolbar, -1 );
-    ToolItem[] items = toolbar.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      result = new Object[ 3 ];
-      result[ 0 ] = items[ i ].getImage();
-      result[ 1 ] = items[ i ].getText();
-      result[ 2 ] = items[ i ].getToolTipText();
-    }
-    toolbar.dispose();
-    return result;
   }
 
   public int open() {
@@ -305,7 +276,8 @@ public class ConfigurationDialog extends PopupDialog {
     Shell shell = getShell();
     shell.setBackgroundMode( SWT.INHERIT_NONE );
     shell.setText( "Configuration for " + site.getSelectedPart().getName() );
-    shell.setImage( builder.getImage( ILayoutSetConstants.CONFIG_DIALOG_ICON ) );
+    String configDialogIcon = ILayoutSetConstants.CONFIG_DIALOG_ICON;
+    shell.setImage( builder.getImage( configDialogIcon ) );
     shell.setActive();
     shell.setFocus();
     action.fireToolBarChange();
@@ -332,7 +304,6 @@ public class ConfigurationDialog extends PopupDialog {
         action.savePartMenuVisibility( selection );
       }
     }
-
   }
 
 }

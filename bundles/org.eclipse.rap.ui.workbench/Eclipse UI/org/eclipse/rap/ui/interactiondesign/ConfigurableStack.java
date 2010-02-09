@@ -238,10 +238,8 @@ public abstract class ConfigurableStack extends StackPresentation {
       String paneId = getPaneId( site );
 
       // get the toolbar
-      IPresentablePart selectedPart = site.getSelectedPart();
-      if( selectedPart instanceof PresentablePart ) {
-        PresentablePart part = ( PresentablePart ) selectedPart;
-        result = part.getPane().getToolBar();
+      if( manager instanceof IToolBarManager2 ) {
+        result = ( ( IToolBarManager2 ) manager ).getControl2();
       }
       // set the correct visibility
       for( int i = 0; i < items.length; i++ ) {
@@ -260,7 +258,7 @@ public abstract class ConfigurableStack extends StackPresentation {
 
       // update the toolbar manager with the new visibility
       if( manager != null && result != null ) {
-        manager.update( false );
+        manager.update( true );
       }
 
       // if no item is visible the toolbar should be null

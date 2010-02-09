@@ -1529,3 +1529,25 @@ MenuItem.menuBar:hover {
   color: #0369bc;
   background-color: transparent;
 }
+
+/* View ToolBar */
+
+ToolBar.viewToolbar {
+  background-color: transparent;
+  padding: 3px 2px;
+  spacing: 2px;
+}
+
+ToolItem.viewToolbar {
+  border: none;
+}
+
+ToolItem:selected.viewToolbar {
+  padding: 0px;
+  border: 1px solid #0059a5;
+}
+
+ToolItem-DropDownIcon.viewToolbar {
+  background-image: url( img/business/viewMenu.png );
+  border: none;
+}
