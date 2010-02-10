@@ -98,6 +98,7 @@ public class ListLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( list );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    list.setEnabled( true );
     // visible
     list.setSize( 10, 10 );
     Fixture.preserveWidgets();

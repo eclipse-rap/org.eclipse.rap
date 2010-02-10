@@ -83,6 +83,7 @@ public class ScaleLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( scale );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    scale.setEnabled( true );
     // visible
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );

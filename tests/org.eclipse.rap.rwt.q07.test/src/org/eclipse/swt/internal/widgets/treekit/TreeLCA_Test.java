@@ -105,6 +105,7 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    tree.setEnabled( true );
     // visible
     tree.setSize( 10, 10 );
     Fixture.preserveWidgets();

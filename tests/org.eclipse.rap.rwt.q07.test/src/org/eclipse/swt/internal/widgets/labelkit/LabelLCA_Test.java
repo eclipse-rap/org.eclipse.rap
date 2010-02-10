@@ -19,8 +19,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
@@ -124,6 +123,7 @@ public class LabelLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    label.setEnabled( true );
     //control_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
@@ -131,14 +131,7 @@ public class LabelLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    label.addControlListener( new ControlListener() {
-
-      public void controlMoved( final ControlEvent e ) {
-      }
-
-      public void controlResized( final ControlEvent e ) {
-      }
-    } );
+    label.addControlListener( new ControlAdapter() { } );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );

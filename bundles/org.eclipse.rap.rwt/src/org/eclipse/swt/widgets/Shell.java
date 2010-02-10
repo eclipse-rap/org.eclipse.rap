@@ -632,7 +632,7 @@ public class Shell extends Decorations {
 
   public boolean isEnabled() {
     checkWidget();
-    return getEnabled ();
+    return getEnabled();
   }
 
   /////////////

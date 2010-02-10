@@ -6,8 +6,8 @@ Tree {
 }
 
 TreeItem {
-  color: black;
-  background-color: white;  
+  color: inherit;
+  background-color: transparent;
 }
 
 TreeItem:selected {

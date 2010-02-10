@@ -55,6 +55,7 @@ public final class CoolBarLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    bar.setEnabled( true );
     // visible
     bar.setSize( 10, 10 );
     lca.preserveValues( bar );

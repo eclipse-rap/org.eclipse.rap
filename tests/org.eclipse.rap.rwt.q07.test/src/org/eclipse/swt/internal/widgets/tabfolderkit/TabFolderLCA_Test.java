@@ -48,6 +48,7 @@ public class TabFolderLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tabfolder );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    tabfolder.setEnabled( true );
     //visible
     tabfolder.setSize( 10, 10 );
     Fixture.preserveWidgets();

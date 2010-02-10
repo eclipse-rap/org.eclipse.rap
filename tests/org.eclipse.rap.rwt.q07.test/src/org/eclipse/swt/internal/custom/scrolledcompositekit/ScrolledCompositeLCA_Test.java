@@ -118,6 +118,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    sc.setEnabled( true );
     // selection listeners
     Fixture.preserveWidgets();
     Boolean hasListeners

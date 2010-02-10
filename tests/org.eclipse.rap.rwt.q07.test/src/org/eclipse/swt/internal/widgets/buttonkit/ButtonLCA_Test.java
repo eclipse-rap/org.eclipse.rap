@@ -165,14 +165,7 @@ public class ButtonLCA_Test extends TestCase {
       hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
       assertEquals( Boolean.FALSE, hasListeners );
       Fixture.clearPreserved();
-      button.addFocusListener( new FocusListener() {
-
-        public void focusGained( final FocusEvent event ) {
-        }
-
-        public void focusLost( final FocusEvent event ) {
-        }
-      } );
+      button.addFocusListener( new FocusAdapter() { } );
       Fixture.preserveWidgets();
       adapter = WidgetUtil.getAdapter( button );
       hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -237,6 +230,7 @@ public class ButtonLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    button.setEnabled( true );
     //control_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );

@@ -91,6 +91,7 @@ public class ShellLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    shell.setEnabled( true );
     //visible
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );

@@ -81,6 +81,7 @@ public class ExpandBarLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    expandBar.setEnabled( true );
     // visible
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( expandBar );

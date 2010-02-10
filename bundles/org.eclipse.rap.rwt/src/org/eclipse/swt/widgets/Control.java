@@ -74,7 +74,11 @@ public abstract class Control extends Widget {
     }
 
     public Color getUserForeground() {
-      return foreground;
+      Color result = null;
+      if( isEnabled() ) {
+        result = foreground;
+      }
+      return result;
     }
 
     public Color getUserBackground() {

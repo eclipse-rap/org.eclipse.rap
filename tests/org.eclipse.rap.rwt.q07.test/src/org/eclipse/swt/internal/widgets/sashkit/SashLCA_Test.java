@@ -61,6 +61,7 @@ public class SashLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( sash );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    sash.setEnabled( true );
     //visible
     sash.setSize( 10, 10 );
     Fixture.preserveWidgets();

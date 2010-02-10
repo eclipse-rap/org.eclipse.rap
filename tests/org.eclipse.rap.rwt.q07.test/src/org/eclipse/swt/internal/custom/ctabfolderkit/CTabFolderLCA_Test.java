@@ -269,6 +269,7 @@ public class CTabFolderLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( folder );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    folder.setEnabled( true );
     // control_listeners
     folder.addControlListener( new ControlListener() {
 

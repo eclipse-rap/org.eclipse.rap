@@ -413,6 +413,39 @@ public class Control_Test extends TestCase {
     assertEquals( false, control.isEnabled() );
   }
 
+  public void testUserForeground() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Composite composite = new Composite( shell, SWT.NONE );
+    Control control = new Label( composite, SWT.NONE );
+    Color blue = display.getSystemColor( SWT.COLOR_BLUE );
+    IControlAdapter adapter
+      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    assertNull( adapter.getUserForeground() );
+    Color themeColor = control.getForeground();
+    // enabled state:
+    control.setForeground( blue );    
+    assertEquals( blue, adapter.getUserForeground() );
+    assertEquals( blue, control.getForeground() );
+    // disabled directly
+    control.setEnabled( false );
+    assertEquals( null, adapter.getUserForeground() );
+    assertEquals( blue, control.getForeground() );
+    // disabled indirectly
+    control.setEnabled( true );
+    composite.setEnabled( false );
+    assertEquals( null, adapter.getUserForeground() );
+    assertEquals( blue, control.getForeground() );
+    // re-enabled 
+    composite.setEnabled( true );
+    assertEquals( blue, adapter.getUserForeground() );
+    assertEquals( blue, control.getForeground() );
+    // reset
+    control.setForeground( null );
+    assertEquals( null, adapter.getUserForeground() );
+    assertEquals( themeColor, control.getForeground() );
+  }
+  
   public void testVisible() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

@@ -111,12 +111,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   // Appearance used for qooxdoo "labelObjects" which are part of Atoms etc.
   "label-graytext" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        textColor : states.disabled
-                    ? tv.getCssColor( "*", "color" )
-                    : "undefined"
-      };
     }
   },
 
@@ -331,9 +325,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         verticalChildrenAlign : "middle"
       };
       result.spacing = tv.getCssDimension( "ToolItem", "spacing" );
-      result.textColor = states.disabled
-                       ? tv.getCssColor( "*", "color" )
-                       : tv.getCssColor( "ToolItem", "color" );
+      result.textColor = tv.getCssColor( "ToolItem", "color" );
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
       // TODO [tb] no longer needed?
       result.backgroundImage = states.selected && !states.over
@@ -542,11 +534,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundColor : tv.getCssColor( "MenuItem", "background-color" ),
         height : states.bar ? "100%" : "auto"         
       };
-      if( states.disabled ) {
-        result.textColor = tv.getCssColor( "*", "color" );
-      } else {
-        result.textColor = tv.getCssColor( "MenuItem", "color" );
-      }
+      result.textColor = tv.getCssColor( "MenuItem", "color" );
       if( states.cascade ) {                
         result.arrow
           = tv.getCssSizedImage( "MenuItem-CascadeIcon", "background-image" );
@@ -632,10 +620,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : [ 3, 5 ],
         minWidth : "auto"
       };
-      result.textColor = states.disabled ? tv.getCssColor( "*", "color" ) : "undefined";
-      if( states.selected ) {
-        result.textColor = tv.getCssColor( "List-Item", "color" );
-      }
       result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );
       return result;
     }
@@ -884,16 +868,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.cursor = "default";
       result.height = 16;
       result.padding = 2;
-      if( states.selected ) {
-        result.textColor = tv.getCssColor( "TreeItem", "color" );
-        result.backgroundColor = tv.getCssColor( "TreeItem", "background-color" );
-      } else if( states.disabled ) {
-        result.textColor = tv.getCssColor( "*", "color" );
-        result.backgroundColor = "undefined";
-      } else {
-        result.textColor = "undefined";
-        result.backgroundColor = "undefined";
-      }
+      result.textColor = tv.getCssColor( "TreeItem", "color" );
+      result.backgroundColor = tv.getCssColor( "TreeItem", "background-color" );
       return result;
     }
   },
@@ -927,7 +903,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.verticalChildrenAlign = "top";
       result.backgroundColor = tv.getCssColor( "Tree", "background-color" );
-      result.textColor = states.disabled ? tv.getCssColor( "*", "color" ) : tv.getCssColor( "Tree", "color" );
+      result.textColor = tv.getCssColor( "Tree", "color" );
       return result;
     }
   },
@@ -1126,9 +1102,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TabItem",
                                                      "background-image" );
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : "undefined";
       return result;
     }
   },
@@ -1163,9 +1136,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         margin : tv.getCssBoxDimensions( "Group-Label", "margin" ),
         backgroundColor : tv.getCssColor( "Group-Label", "background-color" ),
         font : tv.getCssFont( "Group", "font"),
-        textColor : states.disabled
-                    ? tv.getCssColor( "Group", "color" )
-                    : tv.getCssColor( "Group-Label", "color" )
+        textColor : tv.getCssColor( "Group-Label", "color" )
       };
     }
   },
@@ -1213,10 +1184,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var cssPadding = tv.getCssBoxDimensions( "Spinner", "padding" );
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : "undefined";
-
       result.top = 0;
       result.left = 0;
       result.right = 0;
@@ -1365,9 +1332,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.border = "undefined";
       }
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : tv.getCssColor( "TableItem", "color" );
+      result.textColor = tv.getCssColor( "TableItem", "color" );
       if( result.textColor == "undefined" ) {
         result.textColor = "inherit";
       }
@@ -1744,9 +1709,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        textColor: states.disabled
-                   ? tv.getCssColor( "*", "color" )
-                   : "inherit"
+        textColor: "inherit"
       }
     }
   },

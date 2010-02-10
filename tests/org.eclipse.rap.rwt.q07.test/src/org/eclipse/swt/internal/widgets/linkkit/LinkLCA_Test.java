@@ -67,6 +67,7 @@ public class LinkLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+    link.setEnabled( true );
     //visible
     link.setSize( 10, 10 );
     Fixture.preserveWidgets();
