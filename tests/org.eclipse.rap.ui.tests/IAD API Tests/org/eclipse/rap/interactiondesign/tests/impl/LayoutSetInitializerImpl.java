@@ -13,6 +13,7 @@ import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormData;
 
 
 public class LayoutSetInitializerImpl implements ILayoutSetInitializer {
@@ -28,5 +29,7 @@ public class LayoutSetInitializerImpl implements ILayoutSetInitializer {
     layoutSet.addImagePath( "conf", "img/configure.png" );
     layoutSet.addColor( "color", Graphics.getColor( 0, 0, 0 ) );
     layoutSet.addFont( "font", Graphics.getFont( "Arial", 12, SWT.BOLD ) );
+    FormData fd = new FormData();
+    layoutSet.addPosition( "pos", fd );
   }
 }

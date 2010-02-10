@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -93,8 +94,12 @@ public class ElementBuilderTest extends RAPTestCase {
     assertNotNull( exists );
     registry.notifyLayoutChanged();
     exists = impl.getExists();
-    assertNull( exists );
-    
+    assertNull( exists );    
+  }
+  
+  public void testGetPosition() {
+    FormData position = builder.getPosition( "pos" );
+    assertNotNull( position );
   }
 
 }
