@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -40,7 +41,7 @@ public abstract class Scrollable extends Control {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -71,7 +72,7 @@ public abstract class Scrollable extends Control {
    * Returns a rectangle which describes the area of the
    * receiver which is capable of displaying data (that is,
    * not covered by the "trimmings").
-   * 
+   *
    * @return the client area
    *
    * @exception SWTException <ul>
@@ -85,10 +86,9 @@ public abstract class Scrollable extends Control {
     checkWidget();
     Rectangle bounds = getBounds();
     int borderWidth = getBorderWidth();
-    return new Rectangle( 0,
-                          0,
-                          bounds.width - borderWidth * 2,
-                          bounds.height - borderWidth * 2 );
+    int width = bounds.width - borderWidth * 2 - getVScrollBarWidth();
+    int height = bounds.height - borderWidth * 2 - getHScrollBarHeight();
+    return new Rectangle( 0, 0, width, height );
   }
 
   /**
@@ -104,7 +104,7 @@ public abstract class Scrollable extends Control {
    * rectangle described by the arguments (relative to the
    * receiver's parent).
    * </p>
-   * 
+   *
    * @param x the desired x coordinate of the client area
    * @param y the desired y coordinate of the client area
    * @param width the desired width of the client area
@@ -127,7 +127,17 @@ public abstract class Scrollable extends Control {
     int borderWidth = getBorderWidth();
     return new Rectangle( x - borderWidth,
                           y - borderWidth,
-                          width + borderWidth * 2,
-                          height + borderWidth * 2 );
+                          width + borderWidth * 2 + getVScrollBarWidth(),
+                          height + borderWidth * 2 + getHScrollBarHeight() );
+  }
+
+  int getVScrollBarWidth() {
+    //subclasses may override
+    return 0;
+  }
+
+  int getHScrollBarHeight() {
+    //subclasses may override
+    return 0;
   }
 }

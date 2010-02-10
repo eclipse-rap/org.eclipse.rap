@@ -1598,7 +1598,7 @@ public class Table extends Composite {
       if( 0 <= index && index < getColumnCount() ) {
         int leftColumnsWidth = 0;
         int columnWidth = column.getWidth();
-        int clientWidth = getClientArea().width - getVScrollBarWidth();
+        int clientWidth = getClientArea().width;
         int[] columnOrder = getColumnOrder();
         boolean found = false;
         for( int i = 0; i < columnOrder.length && !found; i++ ) {
@@ -2571,7 +2571,7 @@ public class Table extends Composite {
   }
 
   boolean needsVScrollBar() {
-    int availableHeight = getClientArea().height - getHScrollBarHeight();
+    int availableHeight = getClientArea().height;
     int height = getHeaderHeight();
     height += getItemCount() * getItemHeight();
     return height > availableHeight;
@@ -2579,7 +2579,7 @@ public class Table extends Composite {
 
   boolean needsHScrollBar() {
     boolean result = false;
-    int availableWidth = getClientArea().width - getVScrollBarWidth();
+    int availableWidth = getClientArea().width;
     int columnCount = getColumnCount();
     if( columnCount > 0 ) {
       int totalWidth = 0;

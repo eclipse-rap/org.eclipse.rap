@@ -76,7 +76,7 @@ public class ControlLCAUtil {
 
   private static final String USER_DATA_KEY_LISTENER = "keyListener";
   private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
-  private static final String USER_DATA_BACKGROUND_IMAGE_SIZE 
+  private static final String USER_DATA_BACKGROUND_IMAGE_SIZE
     = "backgroundImageSize";
   private static final String ATT_CANCEL_KEY_EVENT
     = ControlLCAUtil.class.getName() + "#cancelKeyEvent";
@@ -442,11 +442,11 @@ public class ControlLCAUtil {
       if( image != null ) {
         String imagePath = ResourceFactory.getImagePath( image );
         Rectangle bounds = image.getBounds();
-        Object[] args = new Object[]{ 
+        Object[] args = new Object[]{
           USER_DATA_BACKGROUND_IMAGE_SIZE,
-          new Integer[]{ 
-            new Integer( bounds.width ), 
-            new Integer( bounds.height ) 
+          new Integer[]{
+            new Integer( bounds.width ),
+            new Integer( bounds.height )
           }
         };
         writer.call( "setUserData", args );
@@ -1010,7 +1010,7 @@ public class ControlLCAUtil {
     if( control instanceof Scrollable ) {
       Scrollable scrollable = ( Scrollable )control;
       Rectangle clientArea = scrollable.getClientArea();
-      pass = event.x >= clientArea.x && event.y >= clientArea.y;
+      pass = clientArea.contains( event.x, event.y );
     } else {
       pass = event.x >= 0 && event.y >= 0;
     }

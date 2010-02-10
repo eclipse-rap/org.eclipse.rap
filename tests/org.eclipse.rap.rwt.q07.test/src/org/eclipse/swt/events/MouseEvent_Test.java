@@ -22,6 +22,7 @@ import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
 
@@ -307,6 +308,38 @@ public class MouseEvent_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     fakeMouseDownRequest( shellId, shellX + 24, shellY + 24 );
     fakeMouseUpRequest( shellId, shellX + 24, shellY + 24 );
+    Fixture.executeLifeCycleFromServerThread();
+    assertEquals( 0, events.size() );
+  }
+
+  public void testNoMouseEventOnScrollBars() {
+    final java.util.List events = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 100, 100 );
+    for( int i = 0; i < 50; i++ ) {
+      new TableItem( table, SWT.NONE);
+    }
+    table.addMouseListener( new MouseListener() {
+      public void mouseDoubleClick( final MouseEvent event ) {
+        events.add( event );
+      }
+      public void mouseDown( final MouseEvent event ) {
+        events.add( event );
+      }
+      public void mouseUp( final MouseEvent event ) {
+        events.add( event );
+      }
+    } );
+    assertEquals( new Rectangle( 0, 0, 84, 100 ), table.getClientArea() );
+    String displayId = DisplayUtil.getId( display );
+    String tableId = WidgetUtil.getId( table );
+    // Simulate request that sends a mouseDown + mouseUp on scrollbar
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    fakeMouseDownRequest( tableId, 90, 10 );
+    fakeMouseUpRequest( tableId, 90, 10 );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 0, events.size() );
   }
