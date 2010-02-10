@@ -34,7 +34,7 @@ public class Text_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testInitialValues() {
+  public void testInitialValuesForSingleText() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
@@ -43,6 +43,7 @@ public class Text_Test extends TestCase {
     assertEquals( Text.LIMIT, text.getTextLimit() );
     assertEquals( 0, text.getSelectionCount() );
     assertEquals( new Point( 0, 0 ), text.getSelection() );
+    assertEquals( ( char )0, text.getEchoChar() );
   }
 
   public void testTextLimit() {
@@ -463,5 +464,25 @@ public class Text_Test extends TestCase {
     assertTrue( ( style & SWT.SINGLE ) != 0 );
     assertTrue( ( style & SWT.BORDER ) != 0 );
     assertTrue( ( style & SWT.PASSWORD ) == 0 );
+  }
+  
+  public void testEchoChar() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    // single line text field
+    Text singleText = new Text( shell, SWT.NONE );
+    assertEquals( ( char )0, singleText.getEchoChar() );
+    singleText.setEchoChar( '?' );
+    assertEquals( '?', singleText.getEchoChar() );
+    // multi line text field
+    Text multiText = new Text( shell, SWT.MULTI );
+    assertEquals( ( char )0, multiText.getEchoChar() );
+    multiText.setEchoChar( '?' );
+    assertEquals( ( char )0, multiText.getEchoChar() );
+    // password text field
+    Text passwordText = new Text( shell, SWT.PASSWORD );
+    assertEquals( '?', passwordText.getEchoChar() );
+    passwordText.setEchoChar( '*' );
+    assertEquals( '*', passwordText.getEchoChar() );
   }
 }

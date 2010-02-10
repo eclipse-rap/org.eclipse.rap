@@ -338,7 +338,72 @@ public class TextLCA_Test extends TestCase {
     expected = "setMaxLength( null );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
+  
+  public void testEchoCharMultiLine() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Text text = new Text( shell, SWT.MULTI );
+    Fixture.executeLifeCycleFromServerThread();
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
+    text.setEchoChar( ( char )27 );
+    Fixture.executeLifeCycleFromServerThread();
+    assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
+  }
 
+  public void testEchoCharSingleLine() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    String displayId = DisplayUtil.getId( display );
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.executeLifeCycleFromServerThread();
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
+    text.setEchoChar( ( char )27 );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );    
+    Fixture.executeLifeCycleFromServerThread();
+    markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
+    text.setEchoChar( ( char )0 );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );    
+    Fixture.executeLifeCycleFromServerThread();
+    markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
+  }
+  
+  public void testEchoCharPassword() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    String displayId = DisplayUtil.getId( display );
+    Text text = new Text( shell, SWT.PASSWORD );
+    Fixture.markInitialized( display );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.executeLifeCycleFromServerThread();
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
+    text.setEchoChar( (char) 0 );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.executeLifeCycleFromServerThread();
+    markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
+    text.setEchoChar( (char) 27 );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.executeLifeCycleFromServerThread();
+    markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
+  }
+  
   private void testPreserveValues( final Display display, final Text text ) {
     Boolean hasListeners;
     //text

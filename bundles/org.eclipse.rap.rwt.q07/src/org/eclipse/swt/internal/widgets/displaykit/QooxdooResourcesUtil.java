@@ -191,6 +191,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rwt/TableDNDFeedback.js";
   private static final String CONTROL_DECORATOR_JS
    = "org/eclipse/rwt/widgets/ControlDecorator.js";
+  private static final String TEXT_JS
+    = "org/eclipse/rwt/widgets/Text.js";
 
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -298,6 +300,7 @@ final class QooxdooResourcesUtil {
       register( TREE_DND_FEEDBACK, compress );
       register( TABLE_DND_FEEDBACK, compress );
       register( CONTROL_DECORATOR_JS, compress );
+      register( TEXT_JS, compress );
 
       // register contributions
       registerContributions();

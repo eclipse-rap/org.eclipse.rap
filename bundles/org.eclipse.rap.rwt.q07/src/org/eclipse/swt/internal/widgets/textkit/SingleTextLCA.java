@@ -26,6 +26,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
+    TextLCAUtil.preservePasswordMode( text );
     TextLCAUtil.preserveVerifyAndModifyListener( text );
     TextLCAUtil.preserveSelectionListener( text );
     WidgetLCAUtil.preserveCustomVariant( text );
@@ -46,7 +47,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
 
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( "qx.ui.form.TextField" );
+    writer.newWidget( "org.eclipse.rwt.widgets.Text" );
     WidgetLCAUtil.writeStyleFlag( text, SWT.SINGLE, "SINGLE" );
     TextLCAUtil.writeInitialize( text );
     ControlLCAUtil.writeStyleFlags( text );
@@ -55,6 +56,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
 
   void renderChanges( final Text text ) throws IOException {
     ControlLCAUtil.writeChanges( text );
+    TextLCAUtil.writePasswordMode( text );
     TextLCAUtil.writeText( text );
     TextLCAUtil.writeReadOnly( text );
     TextLCAUtil.writeSelection( text );

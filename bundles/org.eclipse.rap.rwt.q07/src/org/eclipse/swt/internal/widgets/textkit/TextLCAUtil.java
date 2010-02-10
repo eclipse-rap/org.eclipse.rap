@@ -29,6 +29,7 @@ final class TextLCAUtil {
   static final String PROP_READONLY = "readonly";
   static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
   static final String PROP_SELECTION_LISTENER = "selectionListener";
+  static final String PROP_PASSWORD_MODE = "passwordMode";
 
   private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Text.LIMIT );
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
@@ -37,6 +38,7 @@ final class TextLCAUtil {
   private static final String JS_PROP_READ_ONLY = "readOnly";
   private static final String JS_PROP_VALUE = "value";
   private static final String JS_PROP_TEXT_ALIGN = "textAlign";
+  private static final String JS_PROP_PASSWORD_MODE = "passwordMode";
 
   private TextLCAUtil() {
     // prevent instantiation
@@ -205,6 +207,21 @@ final class TextLCAUtil {
         writer.callStatic( "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener",
                            new Object[] { text, newValue } );
       }
+    }
+  }
+  
+  static void preservePasswordMode( final Text text ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+    Boolean value = new Boolean( text.getEchoChar() != 0 );
+    adapter.preserve( PROP_PASSWORD_MODE, value );
+  }
+  
+  static void writePasswordMode( final Text text ) throws IOException {
+    Boolean newValue = new Boolean( text.getEchoChar() != 0 );
+    String prop = PROP_PASSWORD_MODE;
+    if( WidgetLCAUtil.hasChanged( text, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( text );
+      writer.set( JS_PROP_PASSWORD_MODE, newValue );
     }
   }
 

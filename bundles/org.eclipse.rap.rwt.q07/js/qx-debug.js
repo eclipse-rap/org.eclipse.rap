@@ -16265,6 +16265,385 @@ if(vCommand){vCommand.execute();
 
 
 
+/* ID: qx.ui.form.RadioButton */
+qx.Class.define("qx.ui.form.RadioButton",
+{extend:qx.ui.form.CheckBox,
+construct:function(vText,
+vValue,
+vName,
+vChecked){this.base(arguments,
+vText,
+vValue,
+vName,
+vChecked);
+this.addEventListener("keypress",
+this._onkeypress);
+},
+properties:{appearance:{refine:true,
+init:"radio-button"},
+manager:{check:"qx.ui.selection.RadioManager",
+nullable:true,
+apply:"_applyManager"}},
+members:{INPUT_TYPE:"radio",
+_applyChecked:function(value,
+old){if(this._iconObject){this._iconObject.setChecked(value);
+}var vManager=this.getManager();
+if(vManager){vManager.handleItemChecked(this,
+value);
+}},
+_applyManager:function(value,
+old){if(old){old.remove(this);
+}
+if(value){value.add(this);
+}},
+_applyName:function(value,
+old){if(this._iconObject){this._iconObject.setName(value);
+}
+if(this.getManager()){this.getManager().setName(value);
+}},
+_applyValue:function(value,
+old){if(this.isCreated()&&this._iconObject){this._iconObject.setValue(value);
+}},
+_onkeydown:function(e){if(e.getKeyIdentifier()=="Enter"&&!e.isAltPressed()){this.setChecked(true);
+}},
+_onkeypress:function(e){switch(e.getKeyIdentifier()){case "Left":case "Up":qx.event.handler.FocusHandler.mouseFocus=false;
+qx.event.handler.FocusHandler.mouseFocus=false;
+return this.getManager()?this.getManager().selectPrevious(this):true;
+case "Right":case "Down":qx.event.handler.FocusHandler.mouseFocus=false;
+return this.getManager()?this.getManager().selectNext(this):true;
+}},
+_onclick:function(e){this.setChecked(true);
+},
+_onkeyup:function(e){if(e.getKeyIdentifier()=="Space"){this.setChecked(true);
+}}}});
+
+
+
+
+/* ID: qx.ui.form.Spinner */
+qx.Class.define("qx.ui.form.Spinner",
+{extend:qx.ui.layout.HorizontalBoxLayout,
+construct:function(vMin,
+vValue,
+vMax){this.base(arguments);
+if(qx.core.Variant.isSet("qx.client",
+"mshtml")){this.setStyleProperty("fontSize",
+"0px");
+}this._textfield=new qx.ui.form.TextField;
+this._textfield.setBorder(null);
+this._textfield.setWidth("1*");
+this._textfield.setAllowStretchY(true);
+this._textfield.setHeight(null);
+this._textfield.setLiveUpdate(true);
+this._textfield.setVerticalAlign("middle");
+this._textfield.setAppearance("spinner-text-field");
+this.add(this._textfield);
+this._buttonlayout=new qx.ui.layout.VerticalBoxLayout;
+this._buttonlayout.setWidth("auto");
+this.add(this._buttonlayout);
+this._upbutton=new qx.ui.form.Button;
+this._upbutton.setAppearance("spinner-button-up");
+this._upbutton.setTabIndex(null);
+this._upbutton.setHeight("1*");
+this._buttonlayout.add(this._upbutton);
+this._downbutton=new qx.ui.form.Button;
+this._downbutton.setAppearance("spinner-button-down");
+this._downbutton.setTabIndex(null);
+this._downbutton.setHeight("1*");
+this._buttonlayout.add(this._downbutton);
+this._timer=new qx.client.Timer(this.getInterval());
+this.setManager(new qx.util.range.Range());
+this.initWrap();
+this.addEventListener("keypress",
+this._onkeypress,
+this);
+this.addEventListener("keydown",
+this._onkeydown,
+this);
+this.addEventListener("keyup",
+this._onkeyup,
+this);
+this.addEventListener("mousewheel",
+this._onmousewheel,
+this);
+this._textfield.addEventListener("changeValue",
+this._ontextchange,
+this);
+this._textfield.addEventListener("input",
+this._oninput,
+this);
+this._textfield.addEventListener("blur",
+this._onblur,
+this);
+this._upbutton.addEventListener("mousedown",
+this._onmousedown,
+this);
+this._downbutton.addEventListener("mousedown",
+this._onmousedown,
+this);
+this._timer.addEventListener("interval",
+this._oninterval,
+this);
+if(vMin!=null){this.setMin(vMin);
+}
+if(vMax!=null){this.setMax(vMax);
+}
+if(vValue!=null){this.setValue(vValue);
+}this._checkValue=this.__checkValue;
+this._numberFormat=null;
+this.initWidth();
+this.initHeight();
+this._last_value="";
+},
+events:{"change":"qx.event.type.DataEvent"},
+properties:{appearance:{refine:true,
+init:"spinner"},
+width:{refine:true,
+init:60},
+height:{refine:true,
+init:22},
+incrementAmount:{check:"Number",
+init:1,
+apply:"_applyIncrementAmount"},
+wheelIncrementAmount:{check:"Number",
+init:1},
+pageIncrementAmount:{check:"Number",
+init:10},
+interval:{check:"Integer",
+init:100},
+firstInterval:{check:"Integer",
+init:500},
+minTimer:{check:"Integer",
+init:20},
+timerDecrease:{check:"Integer",
+init:2},
+amountGrowth:{check:"Number",
+init:1.01},
+wrap:{check:"Boolean",
+init:false,
+apply:"_applyWrap"},
+editable:{check:"Boolean",
+init:true,
+apply:"_applyEditable"},
+manager:{check:"qx.util.range.IRange",
+apply:"_applyManager",
+dispose:true},
+checkValueFunction:{apply:"_applyCheckValueFunction"},
+numberFormat:{check:"qx.util.format.NumberFormat",
+apply:"_applyNumberFormat"},
+selectTextOnInteract:{check:"Boolean",
+init:true}},
+members:{_applyIncrementAmount:function(value,
+old){this._computedIncrementAmount=value;
+},
+_applyEditable:function(value,
+old){if(this._textfield){this._textfield.setReadOnly(!value);
+}},
+_applyWrap:function(value,
+old){this.getManager().setWrap(value);
+this._onchange();
+},
+_applyManager:function(value,
+old){if(old){old.removeEventListener("change",
+this._onchange,
+this);
+}
+if(value){value.addEventListener("change",
+this._onchange,
+this);
+}this._onchange();
+},
+_applyCheckValueFunction:function(value,
+old){this._checkValue=value;
+},
+_applyNumberFormat:function(value,
+old){this._numberFormat=value;
+this.getManager().setPrecision(value.getMaximumFractionDigits());
+this._onchange();
+},
+_computePreferredInnerWidth:function(){return 50;
+},
+_computePreferredInnerHeight:function(){return 14;
+},
+_onkeypress:function(e){var vIdentifier=e.getKeyIdentifier();
+if(vIdentifier=="Enter"&&!e.isAltPressed()){this._checkValue(true,
+false);
+if(this.getSelectTextOnInteract()){this._textfield.selectAll();
+}}else{switch(vIdentifier){case "Up":case "Down":case "Left":case "Right":case "Shift":case "Control":case "Alt":case "Escape":case "Delete":case "Backspace":case "Insert":case "Home":case "End":case "PageUp":case "PageDown":case "NumLock":case "Tab":break;
+default:if((vIdentifier>="0"&&vIdentifier<="9")||(vIdentifier=='-')){return;
+}
+if(this._numberFormat){var locale=this._numberFormat._locale;
+if((vIdentifier==qx.locale.Number.getGroupSeparator(locale))||(vIdentifier==qx.locale.Number.getDecimalSeparator(locale)))return;
+}if(e.getModifiers()==0){e.preventDefault();
+}}}},
+_onkeydown:function(e){var vIdentifier=e.getKeyIdentifier();
+if(this._intervalIncrease==null){switch(vIdentifier){case "Up":case "Down":this._intervalIncrease=vIdentifier=="Up";
+this._intervalMode="single";
+this._resetIncrements();
+this._checkValue(true,
+false);
+this._increment();
+this._timer.startWith(this.getFirstInterval());
+break;
+case "PageUp":case "PageDown":this._intervalIncrease=vIdentifier=="PageUp";
+this._intervalMode="page";
+this._resetIncrements();
+this._checkValue(true,
+false);
+this._pageIncrement();
+this._timer.startWith(this.getFirstInterval());
+break;
+}}},
+_onkeyup:function(e){if(this._intervalIncrease!=null){switch(e.getKeyIdentifier()){case "Up":case "Down":case "PageUp":case "PageDown":this._timer.stop();
+this._intervalIncrease=null;
+this._intervalMode=null;
+}}},
+_onmousedown:function(e){if(!e.isLeftButtonPressed()){return;
+}this._checkValue(true);
+var vButton=e.getCurrentTarget();
+vButton.addState("pressed");
+vButton.addEventListener("mouseup",
+this._onmouseup,
+this);
+vButton.addEventListener("mouseout",
+this._onmouseup,
+this);
+this._intervalIncrease=vButton==this._upbutton;
+this._resetIncrements();
+this._increment();
+if(this.getSelectTextOnInteract()){this._textfield.selectAll();
+}this._timer.setInterval(this.getFirstInterval());
+this._timer.start();
+},
+_onmouseup:function(e){var vButton=e.getCurrentTarget();
+vButton.removeState("pressed");
+vButton.removeEventListener("mouseup",
+this._onmouseup,
+this);
+vButton.removeEventListener("mouseout",
+this._onmouseup,
+this);
+if(this.getSelectTextOnInteract()){this._textfield.selectAll();
+}this._textfield.setFocused(true);
+this._timer.stop();
+this._intervalIncrease=null;
+},
+_onmousewheel:function(e){this._checkValue(true);
+if(this.getManager().incrementValue){this.getManager().incrementValue(this.getWheelIncrementAmount()*e.getWheelDelta());
+}else{var value=this.getManager().getValue()+(this.getWheelIncrementAmount()*e.getWheelDelta());
+value=this.getManager().limit(value);
+this.getManager().setValue(value);
+}this._textfield.selectAll();
+e.preventDefault();
+e.stopPropagation();
+},
+_ontextchange:function(e){this._last_value=e.getOldValue();
+},
+_oninput:function(e){this._checkValue(true,
+true);
+},
+_onchange:function(e){var vValue=this.getManager().getValue();
+if(this._numberFormat){this._textfield.setValue(this._numberFormat.format(vValue));
+}else{this._textfield.setValue(String(vValue));
+}
+if(vValue==this.getMin()&&!this.getWrap()){this._downbutton.removeState("pressed");
+this._downbutton.setEnabled(false);
+this._timer.stop();
+}else{this._downbutton.resetEnabled();
+}
+if(vValue==this.getMax()&&!this.getWrap()){this._upbutton.removeState("pressed");
+this._upbutton.setEnabled(false);
+this._timer.stop();
+}else{this._upbutton.resetEnabled();
+}this.createDispatchDataEvent("change",
+vValue);
+},
+_onblur:function(e){this._checkValue(false);
+},
+setValue:function(nValue){this.getManager().setValue(this.getManager().limit(nValue));
+},
+getValue:function(){this._checkValue(true);
+return this.getManager().getValue();
+},
+resetValue:function(){this.getManager().resetValue();
+},
+setMax:function(vMax){return this.getManager().setMax(vMax);
+},
+getMax:function(){return this.getManager().getMax();
+},
+setMin:function(vMin){return this.getManager().setMin(vMin);
+},
+getMin:function(){return this.getManager().getMin();
+},
+_intervalIncrease:null,
+_oninterval:function(e){this._timer.stop();
+this.setInterval(Math.max(this.getMinTimer(),
+this.getInterval()-this.getTimerDecrease()));
+if(this._intervalMode=="page"){this._pageIncrement();
+}else{if(this.getInterval()==this.getMinTimer()){this._computedIncrementAmount=this.getAmountGrowth()*this._computedIncrementAmount;
+}this._increment();
+}var wrap=this.getManager().getWrap();
+switch(this._intervalIncrease){case true:if(this.getValue()==this.getMax()&&!wrap){return;
+}case false:if(this.getValue()==this.getMin()&&!wrap){return;
+}}this._timer.restartWith(this.getInterval());
+},
+__checkValue:function(acceptEmpty,
+acceptEdit){var el=this._textfield.getInputElement();
+if(!el){return;
+}
+if((el.value=="")||(el.value=="-")){if(!acceptEmpty){this.resetValue();
+return;
+}}else{var str_val=el.value;
+var parsable_str;
+if(this._numberFormat){var groupSepEsc=qx.lang.String.escapeRegexpChars(qx.locale.Number.getGroupSeparator(this._numberFormat._locale)+"");
+var decimalSepEsc=qx.lang.String.escapeRegexpChars(qx.locale.Number.getDecimalSeparator(this._numberFormat._locale)+"");
+parsable_str=str_val.replace(new RegExp(groupSepEsc,
+"g"),
+"");
+parsable_str=parsable_str.replace(new RegExp(decimalSepEsc),
+".");
+}else{parsable_str=str_val;
+}var val=parseFloat(parsable_str);
+var limitedVal=this.getManager().limit(val);
+var oldValue=this.getManager().getValue();
+var fixedVal=limitedVal;
+if(isNaN(val)||(limitedVal!=val)||(val!=parsable_str)){if(acceptEdit){this._textfield.setValue(this._last_value);
+}else{if(isNaN(limitedVal)){fixedVal=oldValue;
+}else{fixedVal=limitedVal;
+}}}
+if(acceptEdit)return;
+var formattedValue;
+if(this._numberFormat){formattedValue=this._numberFormat.format(fixedVal);
+}else{formattedValue=String(fixedVal);
+}
+if((fixedVal===oldValue)&&(str_val!==formattedValue)){this._textfield.setValue(formattedValue);
+}this.getManager().setValue(fixedVal);
+}},
+_increment:function(){if(this.getManager().incrementValue){this.getManager().incrementValue((this._intervalIncrease?1:-1)*this._computedIncrementAmount);
+}else{var value=this.getManager().getValue()+((this._intervalIncrease?1:-1)*this._computedIncrementAmount);
+value=this.getManager().limit(value);
+this.getManager().setValue(value);
+}},
+_pageIncrement:function(){if(this.getManager().pageIncrementValue){this.getManager().pageIncrementValue();
+}else{var value=this.getManager().getValue()+((this._intervalIncrease?1:-1)*this.getPageIncrementAmount());
+value=this.getManager().limit(value);
+this.getManager().setValue(value);
+}},
+_resetIncrements:function(){this._computedIncrementAmount=this.getIncrementAmount();
+this.resetInterval();
+}},
+destruct:function(){var mgr=this.getManager();
+if(mgr){mgr.dispose();
+}this._disposeObjects("_textfield",
+"_buttonlayout",
+"_upbutton",
+"_downbutton",
+"_timer");
+}});
+
+
+
+
 /* ID: qx.ui.form.TextField */
 qx.Class.define("qx.ui.form.TextField",
 {extend:qx.ui.basic.Terminator,
@@ -16679,393 +17058,6 @@ false);
 }}this._disposeFields("_inputElement",
 "__font",
 "__oninput");
-}});
-
-
-
-
-/* ID: qx.ui.form.PasswordField */
-qx.Class.define("qx.ui.form.PasswordField",
-{extend:qx.ui.form.TextField,
-members:{_inputType:"password"}});
-
-
-
-
-/* ID: qx.ui.form.RadioButton */
-qx.Class.define("qx.ui.form.RadioButton",
-{extend:qx.ui.form.CheckBox,
-construct:function(vText,
-vValue,
-vName,
-vChecked){this.base(arguments,
-vText,
-vValue,
-vName,
-vChecked);
-this.addEventListener("keypress",
-this._onkeypress);
-},
-properties:{appearance:{refine:true,
-init:"radio-button"},
-manager:{check:"qx.ui.selection.RadioManager",
-nullable:true,
-apply:"_applyManager"}},
-members:{INPUT_TYPE:"radio",
-_applyChecked:function(value,
-old){if(this._iconObject){this._iconObject.setChecked(value);
-}var vManager=this.getManager();
-if(vManager){vManager.handleItemChecked(this,
-value);
-}},
-_applyManager:function(value,
-old){if(old){old.remove(this);
-}
-if(value){value.add(this);
-}},
-_applyName:function(value,
-old){if(this._iconObject){this._iconObject.setName(value);
-}
-if(this.getManager()){this.getManager().setName(value);
-}},
-_applyValue:function(value,
-old){if(this.isCreated()&&this._iconObject){this._iconObject.setValue(value);
-}},
-_onkeydown:function(e){if(e.getKeyIdentifier()=="Enter"&&!e.isAltPressed()){this.setChecked(true);
-}},
-_onkeypress:function(e){switch(e.getKeyIdentifier()){case "Left":case "Up":qx.event.handler.FocusHandler.mouseFocus=false;
-qx.event.handler.FocusHandler.mouseFocus=false;
-return this.getManager()?this.getManager().selectPrevious(this):true;
-case "Right":case "Down":qx.event.handler.FocusHandler.mouseFocus=false;
-return this.getManager()?this.getManager().selectNext(this):true;
-}},
-_onclick:function(e){this.setChecked(true);
-},
-_onkeyup:function(e){if(e.getKeyIdentifier()=="Space"){this.setChecked(true);
-}}}});
-
-
-
-
-/* ID: qx.ui.form.Spinner */
-qx.Class.define("qx.ui.form.Spinner",
-{extend:qx.ui.layout.HorizontalBoxLayout,
-construct:function(vMin,
-vValue,
-vMax){this.base(arguments);
-if(qx.core.Variant.isSet("qx.client",
-"mshtml")){this.setStyleProperty("fontSize",
-"0px");
-}this._textfield=new qx.ui.form.TextField;
-this._textfield.setBorder(null);
-this._textfield.setWidth("1*");
-this._textfield.setAllowStretchY(true);
-this._textfield.setHeight(null);
-this._textfield.setLiveUpdate(true);
-this._textfield.setVerticalAlign("middle");
-this._textfield.setAppearance("spinner-text-field");
-this.add(this._textfield);
-this._buttonlayout=new qx.ui.layout.VerticalBoxLayout;
-this._buttonlayout.setWidth("auto");
-this.add(this._buttonlayout);
-this._upbutton=new qx.ui.form.Button;
-this._upbutton.setAppearance("spinner-button-up");
-this._upbutton.setTabIndex(null);
-this._upbutton.setHeight("1*");
-this._buttonlayout.add(this._upbutton);
-this._downbutton=new qx.ui.form.Button;
-this._downbutton.setAppearance("spinner-button-down");
-this._downbutton.setTabIndex(null);
-this._downbutton.setHeight("1*");
-this._buttonlayout.add(this._downbutton);
-this._timer=new qx.client.Timer(this.getInterval());
-this.setManager(new qx.util.range.Range());
-this.initWrap();
-this.addEventListener("keypress",
-this._onkeypress,
-this);
-this.addEventListener("keydown",
-this._onkeydown,
-this);
-this.addEventListener("keyup",
-this._onkeyup,
-this);
-this.addEventListener("mousewheel",
-this._onmousewheel,
-this);
-this._textfield.addEventListener("changeValue",
-this._ontextchange,
-this);
-this._textfield.addEventListener("input",
-this._oninput,
-this);
-this._textfield.addEventListener("blur",
-this._onblur,
-this);
-this._upbutton.addEventListener("mousedown",
-this._onmousedown,
-this);
-this._downbutton.addEventListener("mousedown",
-this._onmousedown,
-this);
-this._timer.addEventListener("interval",
-this._oninterval,
-this);
-if(vMin!=null){this.setMin(vMin);
-}
-if(vMax!=null){this.setMax(vMax);
-}
-if(vValue!=null){this.setValue(vValue);
-}this._checkValue=this.__checkValue;
-this._numberFormat=null;
-this.initWidth();
-this.initHeight();
-this._last_value="";
-},
-events:{"change":"qx.event.type.DataEvent"},
-properties:{appearance:{refine:true,
-init:"spinner"},
-width:{refine:true,
-init:60},
-height:{refine:true,
-init:22},
-incrementAmount:{check:"Number",
-init:1,
-apply:"_applyIncrementAmount"},
-wheelIncrementAmount:{check:"Number",
-init:1},
-pageIncrementAmount:{check:"Number",
-init:10},
-interval:{check:"Integer",
-init:100},
-firstInterval:{check:"Integer",
-init:500},
-minTimer:{check:"Integer",
-init:20},
-timerDecrease:{check:"Integer",
-init:2},
-amountGrowth:{check:"Number",
-init:1.01},
-wrap:{check:"Boolean",
-init:false,
-apply:"_applyWrap"},
-editable:{check:"Boolean",
-init:true,
-apply:"_applyEditable"},
-manager:{check:"qx.util.range.IRange",
-apply:"_applyManager",
-dispose:true},
-checkValueFunction:{apply:"_applyCheckValueFunction"},
-numberFormat:{check:"qx.util.format.NumberFormat",
-apply:"_applyNumberFormat"},
-selectTextOnInteract:{check:"Boolean",
-init:true}},
-members:{_applyIncrementAmount:function(value,
-old){this._computedIncrementAmount=value;
-},
-_applyEditable:function(value,
-old){if(this._textfield){this._textfield.setReadOnly(!value);
-}},
-_applyWrap:function(value,
-old){this.getManager().setWrap(value);
-this._onchange();
-},
-_applyManager:function(value,
-old){if(old){old.removeEventListener("change",
-this._onchange,
-this);
-}
-if(value){value.addEventListener("change",
-this._onchange,
-this);
-}this._onchange();
-},
-_applyCheckValueFunction:function(value,
-old){this._checkValue=value;
-},
-_applyNumberFormat:function(value,
-old){this._numberFormat=value;
-this.getManager().setPrecision(value.getMaximumFractionDigits());
-this._onchange();
-},
-_computePreferredInnerWidth:function(){return 50;
-},
-_computePreferredInnerHeight:function(){return 14;
-},
-_onkeypress:function(e){var vIdentifier=e.getKeyIdentifier();
-if(vIdentifier=="Enter"&&!e.isAltPressed()){this._checkValue(true,
-false);
-if(this.getSelectTextOnInteract()){this._textfield.selectAll();
-}}else{switch(vIdentifier){case "Up":case "Down":case "Left":case "Right":case "Shift":case "Control":case "Alt":case "Escape":case "Delete":case "Backspace":case "Insert":case "Home":case "End":case "PageUp":case "PageDown":case "NumLock":case "Tab":break;
-default:if((vIdentifier>="0"&&vIdentifier<="9")||(vIdentifier=='-')){return;
-}
-if(this._numberFormat){var locale=this._numberFormat._locale;
-if((vIdentifier==qx.locale.Number.getGroupSeparator(locale))||(vIdentifier==qx.locale.Number.getDecimalSeparator(locale)))return;
-}if(e.getModifiers()==0){e.preventDefault();
-}}}},
-_onkeydown:function(e){var vIdentifier=e.getKeyIdentifier();
-if(this._intervalIncrease==null){switch(vIdentifier){case "Up":case "Down":this._intervalIncrease=vIdentifier=="Up";
-this._intervalMode="single";
-this._resetIncrements();
-this._checkValue(true,
-false);
-this._increment();
-this._timer.startWith(this.getFirstInterval());
-break;
-case "PageUp":case "PageDown":this._intervalIncrease=vIdentifier=="PageUp";
-this._intervalMode="page";
-this._resetIncrements();
-this._checkValue(true,
-false);
-this._pageIncrement();
-this._timer.startWith(this.getFirstInterval());
-break;
-}}},
-_onkeyup:function(e){if(this._intervalIncrease!=null){switch(e.getKeyIdentifier()){case "Up":case "Down":case "PageUp":case "PageDown":this._timer.stop();
-this._intervalIncrease=null;
-this._intervalMode=null;
-}}},
-_onmousedown:function(e){if(!e.isLeftButtonPressed()){return;
-}this._checkValue(true);
-var vButton=e.getCurrentTarget();
-vButton.addState("pressed");
-vButton.addEventListener("mouseup",
-this._onmouseup,
-this);
-vButton.addEventListener("mouseout",
-this._onmouseup,
-this);
-this._intervalIncrease=vButton==this._upbutton;
-this._resetIncrements();
-this._increment();
-if(this.getSelectTextOnInteract()){this._textfield.selectAll();
-}this._timer.setInterval(this.getFirstInterval());
-this._timer.start();
-},
-_onmouseup:function(e){var vButton=e.getCurrentTarget();
-vButton.removeState("pressed");
-vButton.removeEventListener("mouseup",
-this._onmouseup,
-this);
-vButton.removeEventListener("mouseout",
-this._onmouseup,
-this);
-if(this.getSelectTextOnInteract()){this._textfield.selectAll();
-}this._textfield.setFocused(true);
-this._timer.stop();
-this._intervalIncrease=null;
-},
-_onmousewheel:function(e){this._checkValue(true);
-if(this.getManager().incrementValue){this.getManager().incrementValue(this.getWheelIncrementAmount()*e.getWheelDelta());
-}else{var value=this.getManager().getValue()+(this.getWheelIncrementAmount()*e.getWheelDelta());
-value=this.getManager().limit(value);
-this.getManager().setValue(value);
-}this._textfield.selectAll();
-e.preventDefault();
-e.stopPropagation();
-},
-_ontextchange:function(e){this._last_value=e.getOldValue();
-},
-_oninput:function(e){this._checkValue(true,
-true);
-},
-_onchange:function(e){var vValue=this.getManager().getValue();
-if(this._numberFormat){this._textfield.setValue(this._numberFormat.format(vValue));
-}else{this._textfield.setValue(String(vValue));
-}
-if(vValue==this.getMin()&&!this.getWrap()){this._downbutton.removeState("pressed");
-this._downbutton.setEnabled(false);
-this._timer.stop();
-}else{this._downbutton.resetEnabled();
-}
-if(vValue==this.getMax()&&!this.getWrap()){this._upbutton.removeState("pressed");
-this._upbutton.setEnabled(false);
-this._timer.stop();
-}else{this._upbutton.resetEnabled();
-}this.createDispatchDataEvent("change",
-vValue);
-},
-_onblur:function(e){this._checkValue(false);
-},
-setValue:function(nValue){this.getManager().setValue(this.getManager().limit(nValue));
-},
-getValue:function(){this._checkValue(true);
-return this.getManager().getValue();
-},
-resetValue:function(){this.getManager().resetValue();
-},
-setMax:function(vMax){return this.getManager().setMax(vMax);
-},
-getMax:function(){return this.getManager().getMax();
-},
-setMin:function(vMin){return this.getManager().setMin(vMin);
-},
-getMin:function(){return this.getManager().getMin();
-},
-_intervalIncrease:null,
-_oninterval:function(e){this._timer.stop();
-this.setInterval(Math.max(this.getMinTimer(),
-this.getInterval()-this.getTimerDecrease()));
-if(this._intervalMode=="page"){this._pageIncrement();
-}else{if(this.getInterval()==this.getMinTimer()){this._computedIncrementAmount=this.getAmountGrowth()*this._computedIncrementAmount;
-}this._increment();
-}var wrap=this.getManager().getWrap();
-switch(this._intervalIncrease){case true:if(this.getValue()==this.getMax()&&!wrap){return;
-}case false:if(this.getValue()==this.getMin()&&!wrap){return;
-}}this._timer.restartWith(this.getInterval());
-},
-__checkValue:function(acceptEmpty,
-acceptEdit){var el=this._textfield.getInputElement();
-if(!el){return;
-}
-if((el.value=="")||(el.value=="-")){if(!acceptEmpty){this.resetValue();
-return;
-}}else{var str_val=el.value;
-var parsable_str;
-if(this._numberFormat){var groupSepEsc=qx.lang.String.escapeRegexpChars(qx.locale.Number.getGroupSeparator(this._numberFormat._locale)+"");
-var decimalSepEsc=qx.lang.String.escapeRegexpChars(qx.locale.Number.getDecimalSeparator(this._numberFormat._locale)+"");
-parsable_str=str_val.replace(new RegExp(groupSepEsc,
-"g"),
-"");
-parsable_str=parsable_str.replace(new RegExp(decimalSepEsc),
-".");
-}else{parsable_str=str_val;
-}var val=parseFloat(parsable_str);
-var limitedVal=this.getManager().limit(val);
-var oldValue=this.getManager().getValue();
-var fixedVal=limitedVal;
-if(isNaN(val)||(limitedVal!=val)||(val!=parsable_str)){if(acceptEdit){this._textfield.setValue(this._last_value);
-}else{if(isNaN(limitedVal)){fixedVal=oldValue;
-}else{fixedVal=limitedVal;
-}}}
-if(acceptEdit)return;
-var formattedValue;
-if(this._numberFormat){formattedValue=this._numberFormat.format(fixedVal);
-}else{formattedValue=String(fixedVal);
-}
-if((fixedVal===oldValue)&&(str_val!==formattedValue)){this._textfield.setValue(formattedValue);
-}this.getManager().setValue(fixedVal);
-}},
-_increment:function(){if(this.getManager().incrementValue){this.getManager().incrementValue((this._intervalIncrease?1:-1)*this._computedIncrementAmount);
-}else{var value=this.getManager().getValue()+((this._intervalIncrease?1:-1)*this._computedIncrementAmount);
-value=this.getManager().limit(value);
-this.getManager().setValue(value);
-}},
-_pageIncrement:function(){if(this.getManager().pageIncrementValue){this.getManager().pageIncrementValue();
-}else{var value=this.getManager().getValue()+((this._intervalIncrease?1:-1)*this.getPageIncrementAmount());
-value=this.getManager().limit(value);
-this.getManager().setValue(value);
-}},
-_resetIncrements:function(){this._computedIncrementAmount=this.getIncrementAmount();
-this.resetInterval();
-}},
-destruct:function(){var mgr=this.getManager();
-if(mgr){mgr.dispose();
-}this._disposeObjects("_textfield",
-"_buttonlayout",
-"_upbutton",
-"_downbutton",
-"_timer");
 }});
 
 

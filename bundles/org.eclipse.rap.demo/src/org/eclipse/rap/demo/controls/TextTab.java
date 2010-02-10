@@ -31,6 +31,7 @@ public class TextTab extends ExampleTab {
   private Button btnNumbersOnlyVerifyListener;
   private Button btnModifyListener;
   private Button btnEditable;
+  private Button btnEchoChar;
   private final SelectionListener selectionListener;
   private final VerifyListener blockingVerifyListener;
   private final VerifyListener numberOnlyVerifyListener;
@@ -87,6 +88,7 @@ public class TextTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createEditableButton();
+    createEchoCharButton();
     createSelectionListenerButton();
     createBlockingVerifyListenerButton();
     createNumbersOnlyVerifyListenerButton();
@@ -239,6 +241,16 @@ public class TextTab extends ExampleTab {
     } );
   }
 
+  private void createEchoCharButton() {
+    btnEchoChar= createPropertyButton( "EchoChar" );
+    btnEchoChar.setSelection( false );
+    btnEchoChar.addSelectionListener( new SelectionAdapter() {      
+      public void widgetSelected( final SelectionEvent event ) {
+        updateEchoChar();
+      }
+    } );
+  }
+  
   private void createSelectionChooser( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
@@ -381,6 +393,12 @@ public class TextTab extends ExampleTab {
   private void updateEditable() {
     if( btnEditable != null ) {
       text.setEditable( btnEditable.getSelection() );
+    }
+  }
+
+  private void updateEchoChar() {
+    if( btnEchoChar != null ) {
+      text.setEchoChar( btnEchoChar.getSelection() ? '*' : 0);
     }
   }
 }

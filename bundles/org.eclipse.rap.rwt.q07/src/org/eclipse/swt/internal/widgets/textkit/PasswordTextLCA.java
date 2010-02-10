@@ -20,6 +20,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
+    TextLCAUtil.preservePasswordMode( text );
     TextLCAUtil.preserveVerifyAndModifyListener( text );
     TextLCAUtil.preserveSelectionListener( text );
     WidgetLCAUtil.preserveCustomVariant( text );
@@ -39,13 +40,14 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
 
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( "qx.ui.form.PasswordField" );
+    writer.newWidget( "org.eclipse.rwt.widgets.Text" );
     TextLCAUtil.writeInitialize( text );    
     ControlLCAUtil.writeStyleFlags( text );
   }
 
   void renderChanges( final Text text ) throws IOException {
     ControlLCAUtil.writeChanges( text );
+    TextLCAUtil.writePasswordMode( text );
     TextLCAUtil.writeText( text );
     TextLCAUtil.writeReadOnly( text );
     TextLCAUtil.writeSelection( text );

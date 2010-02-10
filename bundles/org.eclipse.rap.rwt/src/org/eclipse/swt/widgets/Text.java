@@ -64,8 +64,9 @@ public class Text extends Scrollable {
   private final ITextAdapter textAdapter;
   private String text;
   private String message;
-  private int textLimit = LIMIT;
-  private final Point selection = new Point( 0, 0 );
+  private int textLimit;
+  private final Point selection;
+  private char echoChar;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -107,8 +108,14 @@ public class Text extends Scrollable {
         Text.this.setText( text, selection );
       }
     };
+    textLimit = LIMIT;
+    selection = new Point( 0, 0 );
     text = "";
     message = "";
+    echoChar = ( char )0;
+    if( ( style & SWT.PASSWORD ) != 0 ) {
+      echoChar = '?';
+    }
   }
 
   void initState() {
@@ -329,6 +336,58 @@ public class Text extends Scrollable {
     return message;
   }
 
+  /**
+   * Sets the echo character.
+   * <p>
+   * The echo character is the character that is
+   * displayed when the user enters text or the
+   * text is changed by the programmer. Setting
+   * the echo character to '\0' clears the echo
+   * character and redraws the original text.
+   * If for any reason the echo character is invalid,
+   * or if the platform does not allow modification
+   * of the echo character, the default echo character
+   * for the platform is used.
+   * </p>
+   *
+   * @param echo the new echo character
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.3
+   */
+  public void setEchoChar( final char echo ) {
+    checkWidget();
+    if( ( style & SWT.MULTI ) == 0 ) {
+      echoChar = echo;
+    }
+  }
+
+  /**
+   * Returns the echo character.
+   * <p>
+   * The echo character is the character that is
+   * displayed when the user enters text or the
+   * text is changed by the programmer.
+   * </p>
+   * 
+   * @return the echo character
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #setEchoChar
+   * @since 1.3
+   */
+  public char getEchoChar() {
+    checkWidget ();
+    return echoChar;
+  }
+  
   //////////////////////////
   // Input length constraint
 
