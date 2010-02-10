@@ -74,7 +74,7 @@ public class MenuBarManager extends MenuManager {
         item.dispose();
       }
     }
-  }
+  } 
 
   private void makeEntry( final IContributionItem item ) {
     IContributionItem tempItem = null;
@@ -134,6 +134,10 @@ public class MenuBarManager extends MenuManager {
         items[ i ].setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
       }
     }
+  }
+  
+  public ToolBar getMenuToolBar() {
+    return toolbar;
   }
 
 }
