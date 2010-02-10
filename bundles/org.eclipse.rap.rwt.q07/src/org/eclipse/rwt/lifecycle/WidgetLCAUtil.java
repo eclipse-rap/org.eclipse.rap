@@ -987,7 +987,7 @@ public final class WidgetLCAUtil {
 
   private static int readBoundsValue( final String value, final int current ) {
     int result;
-    if( value != null && !"null".equals( value ) && !"auto".equals( value ) ) {
+    if( value != null && !"null".equals( value ) ) {
       result = Integer.parseInt( value );
     } else {
       result = current;

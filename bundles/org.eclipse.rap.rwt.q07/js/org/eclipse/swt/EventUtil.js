@@ -113,8 +113,10 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
             width = document.body.clientWidth;
           }
         }
-        req.addParameter( id + ".bounds.height", height );
-        req.addParameter( id + ".bounds.width", width );
+        if( !isNaN( height ) && !isNaN( width ) ) {
+          req.addParameter( id + ".bounds.height", height );
+          req.addParameter( id + ".bounds.width", width );          
+        }
         req.send();
       }
     },
@@ -124,8 +126,12 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
-        req.addParameter( id + ".bounds.x", evt.getTarget().getLeft() );
-        req.addParameter( id + ".bounds.y", evt.getTarget().getTop() );
+        var left = evt.getTarget().getLeft();
+        var top = evt.getTarget().getTop();
+        if( !isNaN( left ) && !isNaN( top ) ) {
+          req.addParameter( id + ".bounds.x", left );
+          req.addParameter( id + ".bounds.y", top );
+        }
 //      req.send();
       }
     },
