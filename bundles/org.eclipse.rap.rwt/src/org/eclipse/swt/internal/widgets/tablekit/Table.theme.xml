@@ -20,6 +20,9 @@
 
     <property name="background-color"
         description="Background color for tables." />
+        
+    <property name="background-image"
+        description="Background image or gradient for table client area." />
 
     <state name="disabled"
         description="Applies to disabled tables." />

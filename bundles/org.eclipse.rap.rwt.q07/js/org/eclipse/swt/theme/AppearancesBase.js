@@ -1261,7 +1261,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        backgroundColor : tv.getCssColor( "Table", "background-color" )
+        backgroundColor : tv.getCssColor( "Table", "background-color" ),
+        backgroundImage : tv.getCssImage( "Table", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "Table", "background-image" )
       };
       return result;
     }

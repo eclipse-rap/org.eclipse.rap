@@ -3,6 +3,7 @@
 Table {
   color: black;
   background-color: white;
+  background-image: none;
 }
 
 TableItem {
