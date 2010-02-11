@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -74,6 +74,7 @@ public abstract class FormsControlLCA_AbstractTest extends TestCase {
     control.setForeground( foreground );
     Font font = Graphics.getFont( "font", 12, SWT.BOLD );
     control.setFont( font );
+    control.setEnabled( true );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( control );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
