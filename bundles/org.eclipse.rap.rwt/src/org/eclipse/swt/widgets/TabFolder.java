@@ -15,7 +15,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
@@ -140,6 +139,40 @@ public class TabFolder extends Composite {
   public TabItem getItem( final int index ) {
     checkWidget();
     return ( TabItem )itemHolder.getItem( index );
+  }
+
+  /**
+   * Returns the tab item at the given point in the receiver
+   * or null if no such item exists. The point is in the
+   * coordinate system of the receiver.
+   *
+   * @param point the point used to locate the item
+   * @return the tab item at the given point, or null if the point is not in a tab item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public TabItem getItem( final Point point ) {
+    checkWidget();
+    if( point == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    TabItem result = null;
+    for( int i = 0; i < getItemCount() && result == null; i++ ) {
+      TabItem item = getItem( i );
+      Rectangle itemBounds = item.getBounds();
+      if( itemBounds.contains( point  ) ) {
+        result = item;
+      }
+    }
+    return result;
   }
 
   /**
@@ -370,9 +403,9 @@ public class TabFolder extends Composite {
     TabItem[] items = getItems();
     // TODO: one item should be enough since layout already includes all items
     for( int i = 0; i < items.length; i++ ) {
-      Point thisItemSize = computeItemSize( items[ i ] );
-      itemsSize.x += thisItemSize.x;
-      itemsSize.y = Math.max( itemsSize.y, thisItemSize.y );
+      Rectangle thisItemBounds = items[ i ].getBounds();
+      itemsSize.x += thisItemBounds.width;
+      itemsSize.y = Math.max( itemsSize.y, thisItemBounds.height );
       Control control = items[ i ].getControl();
       if( control != null ) {
         Point thisSize = control.computeSize( SWT.DEFAULT, SWT.DEFAULT );
@@ -496,25 +529,6 @@ public class TabFolder extends Composite {
 
   ///////////////////
   // Helping methods
-
-  private Point computeItemSize( final TabItem item ) {
-    Point result = new Point( 0, 0 );
-    String text = item.getText();
-    if( text != null ) {
-      Point extent = TextSizeDetermination.stringExtent( getFont(), text );
-      // TODO [rst] these are only rough estimations
-      result.x += extent.x + 10 + 6;
-      result.y = extent.y + 4 + 6;
-    }
-    Image image = item.getImage();
-    if( image != null ) {
-      // TODO [rst] use image.getBounds()
-      Point size = new Point( 16, 16 );
-      result.x += size.x + 4;
-      result.y = Math.max( size.x, result.x );
-    }
-    return result;
-  }
 
   private static int checkStyle( final int style ) {
     int result = checkBits( style, SWT.TOP, SWT.BOTTOM, 0, 0, 0, 0 );

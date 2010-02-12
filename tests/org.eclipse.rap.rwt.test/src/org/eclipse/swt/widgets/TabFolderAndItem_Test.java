@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
 
@@ -257,7 +259,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( true, item.isDisposed() );
     assertEquals( 0, ItemHolder.getItems( folder ).length );
   }
-  
+
   public void testIndexedItemCreation() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -270,7 +272,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertSame( secondItem, folder.getItem( 1 ) );
     assertEquals( 1, folder.indexOf( secondItem ) );
   }
-  
+
   public void testItemDispose() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -285,18 +287,70 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( true, item.isDisposed() );
     assertEquals( 2, folder.getItemCount() );
   }
-  
+
   public void testToolTip() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem tabItem = new TabItem( folder, SWT.NONE );
-    
+
     assertEquals( null, tabItem.getToolTipText() );
     tabItem.setToolTipText( "funny" );
     assertEquals( "funny", tabItem.getToolTipText() );
   }
-  
+
+  public void testGetItemAtPoint() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    // Test with bar on top
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    folder.setSize( 400, 400 );
+    for( int i = 0; i < 3; i++ ) {
+      TabItem tabItem = new TabItem( folder, SWT.NONE );
+      tabItem.setText( "TabItem " + i );
+    }
+    Rectangle expected = new Rectangle( 0, 0, 65, 21 );
+    assertEquals( expected, folder.getItem( 0 ).getBounds() );
+    expected = new Rectangle( 65, 3, 60, 18 );
+    assertEquals( expected, folder.getItem( 1 ).getBounds() );
+    expected = new Rectangle( 126, 3, 61, 18 );
+    assertEquals( expected, folder.getItem( 2 ).getBounds() );
+    assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 2 ) ) );
+    assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 10 ) ) );
+    assertNull( folder.getItem( new Point( 95, 2 ) ) );
+    assertEquals( folder.getItem( 1 ), folder.getItem( new Point( 95, 10 ) ) );
+    assertNull( folder.getItem( new Point( 130, 2 ) ) );
+    assertEquals( folder.getItem( 2 ), folder.getItem( new Point( 130, 10 ) ) );
+
+    // Test with bar on bottom
+    folder = new TabFolder( shell, SWT.BOTTOM );
+    folder.setSize( 400, 400 );
+    for( int i = 0; i < 3; i++ ) {
+      TabItem tabItem = new TabItem( folder, SWT.NONE );
+      tabItem.setText( "TabItem " + i );
+    }
+    expected = new Rectangle( 0, 379, 65, 21 );
+    assertEquals( expected, folder.getItem( 0 ).getBounds() );
+    expected = new Rectangle( 65, 379, 60, 18 );
+    assertEquals( expected, folder.getItem( 1 ).getBounds() );
+    expected = new Rectangle( 126, 379, 61, 18 );
+    assertEquals( expected, folder.getItem( 2 ).getBounds() );
+    assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 398 ) ) );
+    assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 390 ) ) );
+    assertNull( folder.getItem( new Point( 95, 398 ) ) );
+    assertEquals( folder.getItem( 1 ), folder.getItem( new Point( 95, 390 ) ) );
+    assertNull( folder.getItem( new Point( 130, 398 ) ) );
+    assertEquals( folder.getItem( 2 ), folder.getItem( new Point( 130, 390 ) ) );
+
+    assertNull( folder.getItem( new Point( 200, 200 ) ) );
+
+    try {
+      folder.getItem( null );
+      fail( "Null argument" );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();

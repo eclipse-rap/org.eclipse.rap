@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,8 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
 /**
@@ -31,6 +32,14 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  */
 public class TabItem extends Item {
 
+  // [if] This constants must be kept in sync with AppearancesBase.js
+  private final static int TABS_SPACING = 1;
+  private final static int IMAGE_TEXT_SPACING = 4;
+  private final static int ITEM_BORDER = 1;
+  private final static int SELECTED_ITEM_BORDER = 3;
+  private final static int SELECTED_ITEM_ADDITIONAL_PADDING = 4;
+  private final static Rectangle PADDING = new Rectangle( 5, 2, 11, 4 );
+
   private final TabFolder parent;
   private Control control;
   private String toolTipText;
@@ -43,7 +52,7 @@ public class TabItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -79,7 +88,7 @@ public class TabItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -108,7 +117,7 @@ public class TabItem extends Item {
     this.parent = parent;
     parent.createItem( this, index );
   }
-  
+
   /**
    * Returns the receiver's parent, which must be a <code>TabFolder</code>.
    *
@@ -148,7 +157,7 @@ public class TabItem extends Item {
    * @param control the new control (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li>
    *    <li>ERROR_INVALID_PARENT - if the control is not in the same widget tree</li>
    * </ul>
    * @exception SWTException <ul>
@@ -187,7 +196,78 @@ public class TabItem extends Item {
       }
     }
   }
-  
+
+  /**
+   * Returns a rectangle describing the receiver's size and location
+   * relative to its parent.
+   *
+   * @return the receiver's bounding rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public Rectangle getBounds() {
+    checkWidget();
+    Rectangle result = new Rectangle( 0, 0, 0, 0 );
+    int index = parent.indexOf( this );
+    if( index != -1 ) {
+      int selectionIndex = parent.getSelectionIndex();
+      String text = getText();
+      if( text != null ) {
+        Point extent
+          = TextSizeDetermination.stringExtent( parent.getFont(), text );
+        result.width = extent.x;
+        result.height = extent.y;
+      }
+      Image image = getImage();
+      if( image != null ) {
+        Rectangle imageSize = image.getBounds();
+        result.width += imageSize.width + IMAGE_TEXT_SPACING;
+        result.height = Math.max( result.height, imageSize.height );
+      }
+      result.width += 2 * ITEM_BORDER + PADDING.width;
+      result.height += ITEM_BORDER + PADDING.height;
+      if( index == selectionIndex ) {
+        result.width += SELECTED_ITEM_ADDITIONAL_PADDING;
+        result.height += SELECTED_ITEM_BORDER;
+      }
+      if( selectionIndex != -1 ) {
+        if( index + 1 == selectionIndex || index - 1 == selectionIndex ) {
+          result.width -= ITEM_BORDER;
+        }
+      }
+      if( isBarTop() ) {
+        if( index != selectionIndex ) {
+          result.y += SELECTED_ITEM_BORDER;
+        }
+      } else {
+        result.y = parent.getBounds().height
+                 - 2 * parent.getBorderWidth()
+                 - result.height;
+        if( index != selectionIndex ) {
+          result.y -= SELECTED_ITEM_BORDER;
+        }
+      }
+      if( index > 0 ) {
+        TabItem leftItem = parent.getItem( index - 1 );
+        Rectangle leftItemBounds = leftItem.getBounds();
+        result.x = leftItemBounds.x + leftItemBounds.width + TABS_SPACING;
+        if( index == selectionIndex || index - 1 == selectionIndex ) {
+          result.x -= TABS_SPACING;
+        }
+      }
+    }
+    return result;
+  }
+
+  private boolean isBarTop() {
+    return ( parent.getStyle() & SWT.BOTTOM ) == 0;
+  }
+
   public void setImage( final Image image ) {
     checkWidget();
     int index = parent.indexOf( this );
@@ -195,7 +275,7 @@ public class TabItem extends Item {
       super.setImage( image );
     }
   }
-  
+
   /**
    * Sets the receiver's tool tip text to the argument, which
    * may be null indicating that no tool tip text should be shown.
@@ -206,14 +286,14 @@ public class TabItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.2
    */
   public void setToolTipText( final String toolTip ) {
     checkWidget();
     toolTipText = toolTip;
   }
-  
+
   /**
    * Returns the receiver's tool tip text, or null if it has
    * not been set.
@@ -224,14 +304,14 @@ public class TabItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.2
    */
   public String getToolTipText() {
     checkWidget();
     return toolTipText;
   }
-  
+
   ///////////////////////////////////
   // Methods to dispose of the widget
 
