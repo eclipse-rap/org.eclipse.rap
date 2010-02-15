@@ -26,6 +26,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeActive", this._onChangeActive );
     this.addEventListener( "changeMode", this._onChangeMode );
+    this.addEventListener( "changeLeft", this._onChangeLocation );
+    this.addEventListener( "changeTop", this._onChangeLocation );
+    this.addEventListener( "changeWidth", this._onChangeSize );
+    this.addEventListener( "changeHeight", this._onChangeSize );
     this.addEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSend, this );
@@ -135,6 +139,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.removeEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.removeEventListener( "changeActive", this._onChangeActive );
     this.removeEventListener( "changeMode", this._onChangeMode );
+    this.removeEventListener( "changeLeft", this._onChangeLocation );
+    this.removeEventListener( "changeTop", this._onChangeLocation );
+    this.removeEventListener( "changeWidth", this._onChangeSize );
+    this.removeEventListener( "changeHeight", this._onChangeSize );
     this.removeEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSend, this );
@@ -354,7 +362,51 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( id + ".mode", value );
     },
+        
+    _onChangeSize : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var req = org.eclipse.swt.Request.getInstance();
+        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        // TODO: [fappel] replace this ugly hack that is used in case of
+        //                window maximizations
+        var height = evt.getTarget().getHeight();
+        if( height == null ) {
+          height = window.innerHeight;
+          if( isNaN( height ) ) {  // IE special
+            height = document.body.clientHeight;
+          }
+        }
+        var width = evt.getTarget().getWidth();
+        if( width == null ) {
+          width = window.innerWidth;
+          if( isNaN( width ) ) {  // IE special
+            width = document.body.clientWidth;
+          }
+        }
+        if( !isNaN( height ) && !isNaN( width ) ) {
+          req.addParameter( id + ".bounds.height", height );
+          req.addParameter( id + ".bounds.width", width );          
+        }
+        req.send();
+      }
+    },
 
+    _onChangeLocation : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var req = org.eclipse.swt.Request.getInstance();
+        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        var left = evt.getTarget().getLeft();
+        var top = evt.getTarget().getTop();
+        if( !isNaN( left ) && !isNaN( top ) ) {
+          req.addParameter( id + ".bounds.x", left );
+          req.addParameter( id + ".bounds.y", top );
+        }
+//      req.send();
+      }
+    },
+    
     _onKeydown : function( evt ) {
       var keyId = evt.getKeyIdentifier();
       if(    keyId == "Enter"

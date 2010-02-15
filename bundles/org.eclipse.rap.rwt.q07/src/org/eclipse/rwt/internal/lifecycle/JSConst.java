@@ -116,10 +116,6 @@ public final class JSConst {
   // function pointers for client side event handling
   public static final String JS_WIDGET_SELECTED
     = "org.eclipse.swt.EventUtil.widgetSelected";
-  public static final String JS_WIDGET_RESIZED
-    = "org.eclipse.swt.EventUtil.widgetResized";
-  public static final String JS_WIDGET_MOVED
-    = "org.eclipse.swt.EventUtil.widgetMoved";
   public static final String JS_TREE_SELECTED
     = "org.eclipse.swt.TreeUtil.widgetSelected";
   public static final String JS_CONTEXT_MENU

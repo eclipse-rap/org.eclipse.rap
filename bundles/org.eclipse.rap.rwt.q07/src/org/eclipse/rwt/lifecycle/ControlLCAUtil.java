@@ -308,43 +308,6 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that adds client-side resize
-   * listeners to a control. These listeners send notifications when the control
-   * is resized.
-   *
-   * @param control the control to add a resize notification listener to
-   * @throws IOException
-   */
-  // TODO [rst] Change parameter type to Control
-  public static void writeResizeNotificator( final Widget control )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( control );
-    writer.addListener( JSConst.QX_EVENT_CHANGE_WIDTH,
-                        JSConst.JS_WIDGET_RESIZED );
-    writer.addListener( JSConst.QX_EVENT_CHANGE_HEIGHT,
-                        JSConst.JS_WIDGET_RESIZED );
-  }
-
-  /**
-   * Writes JavaScript code to the response that adds client-side move listeners
-   * to a control. These listeners send notifications when the control is moved.
-   * @param control the control to add move notification listeners to
-   *
-   * @throws IOException
-   */
-  // TODO [rst] Change parameter type to Control
-  public static void writeMoveNotificator( final Widget control )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( control );
-    writer.addListener( JSConst.QX_EVENT_CHANGE_LOCATION_X,
-                        JSConst.JS_WIDGET_MOVED );
-    writer.addListener( JSConst.QX_EVENT_CHANGE_LOCATION_Y,
-                        JSConst.JS_WIDGET_MOVED );
-  }
-
-  /**
    * Determines whether the property <code>menu</code> of the given control
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side menu

@@ -92,50 +92,6 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       return modifier;
     },
 
-    widgetResized : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        // TODO: [fappel] replace this ugly hack that is used in case of
-        //                window maximizations
-        var height = evt.getTarget().getHeight();
-        if( height == null ) {
-          height = window.innerHeight;
-          if( isNaN( height ) ) {  // IE special
-            height = document.body.clientHeight;
-          }
-        }
-        var width = evt.getTarget().getWidth();
-        if( width == null ) {
-          width = window.innerWidth;
-          if( isNaN( width ) ) {  // IE special
-            width = document.body.clientWidth;
-          }
-        }
-        if( !isNaN( height ) && !isNaN( width ) ) {
-          req.addParameter( id + ".bounds.height", height );
-          req.addParameter( id + ".bounds.width", width );          
-        }
-        req.send();
-      }
-    },
-
-    widgetMoved : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        var left = evt.getTarget().getLeft();
-        var top = evt.getTarget().getTop();
-        if( !isNaN( left ) && !isNaN( top ) ) {
-          req.addParameter( id + ".bounds.x", left );
-          req.addParameter( id + ".bounds.y", top );
-        }
-//      req.send();
-      }
-    },
-
     focusGained : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         // [if] The focusControl parameter is added in the request in Shell.js

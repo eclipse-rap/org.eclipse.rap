@@ -117,8 +117,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
       writer.set( "parentShell", parent );
     }
     writer.call( "initialize", null );
-    ControlLCAUtil.writeResizeNotificator( widget );
-    ControlLCAUtil.writeMoveNotificator( widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
