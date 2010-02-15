@@ -2094,9 +2094,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         font          : tv.getCssFont( "DateTime-Calendar-Navbar", "font" ),
         textAlign     : "center",
-        textColor     : states.disabled
-                        ? tv.getCssColor( "DateTime", "color" )
-                        : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
+        textColor     : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
         verticalAlign : "middle",
         cursor        : "default"
       };
