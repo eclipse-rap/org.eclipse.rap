@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import java.text.MessageFormat;
@@ -16,9 +15,8 @@ import java.text.MessageFormat;
 
 public class QxBoolean implements QxType {
 
-  public static final QxBoolean TRUE = new QxBoolean( true );
-
-  public static final QxBoolean FALSE = new QxBoolean( false );
+  private static final QxBoolean TRUE = new QxBoolean( true );
+  private static final QxBoolean FALSE = new QxBoolean( false );
 
   private static final String[] VALID_TRUE_STRINGS = new String[] {
     "true", "yes", "on"
@@ -28,14 +26,14 @@ public class QxBoolean implements QxType {
     "false", "no", "off"
   };
 
+  public static QxBoolean valueOf( final String input ) {
+    return evalInput( input ) ? TRUE : FALSE;
+  }
+
   public final boolean value;
 
   private QxBoolean( final boolean value ) {
     this.value = value;
-  }
-
-  public static QxBoolean valueOf( final String input ) {
-    return evalInput( input ) ? TRUE : FALSE;
   }
 
   public String toDefaultString() {

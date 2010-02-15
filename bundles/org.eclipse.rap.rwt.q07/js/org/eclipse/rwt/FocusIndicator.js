@@ -34,6 +34,7 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
       var states = typeof widget.__states != "undefined" ? widget.__states : {}; 
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var border = tv.getCssBorder( cssSelector, "border" );
+      var opacity = tv.getCssFloat( cssSelector, "opacity" );
       var hasValidBorder = border instanceof qx.ui.core.Border;
       var margin = tv.getCssBoxDimensions( cssSelector, "margin" );
       var padding = tv.getCssBoxDimensions( cssSelector, "padding" );
@@ -46,6 +47,7 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
         var color = tv.getCssColor( cssSelector, "background-color" );
         theme = {
           "backgroundColor" : color != "undefined" ? color : "",
+          "opacity" : opacity,
           "border" : border,
           "margin" : margin,
           "padding" : usePadding ? padding : null
@@ -97,7 +99,24 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
           = border[ "getWidth" + edge ]() + "px";
       }
       style.backgroundColor = theme[ "backgroundColor" ];
+      this._styleFocusIndiactorOpacity( theme[ "opacity" ] );      
     },
+    
+    _styleFocusIndiactorOpacity : qx.core.Variant.select( "qx.client", {
+      "default" : function( value ) {
+        var style = this._frame.style;
+        var opacity = value == 1 ? "" : value; 
+        style.opacity = opacity;
+        style.KhtmlOpacity = opacity; 
+        style.MozOpacity = opacity;
+      },
+      "mshtml" : function( value ) {
+        var style = this._frame.style;
+        var opacity = 
+          value == 1 ? "" : "Alpha(Opacity=" + ( value * 100 ) + ")";
+        style.filter = opacity;
+      }
+    } ),    
     
     _layoutFocusIndicator : function( widget, theme, focusElement ) {
       // NOTE : It is assumed that a focusElement, if given, has 

@@ -113,6 +113,12 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       return result;
     },
 
+    getCssFloat : function( element, key ) {
+      var result = this._store.getCssValue( element, this._states, key );
+      this.__checkDefined( result, element, key );
+      return result;
+    },
+
     getCssIdentifier : function( element, key ) {
       var result = this._store.getCssValue( element, this._states, key );
       this.__checkDefined( result, element, key );

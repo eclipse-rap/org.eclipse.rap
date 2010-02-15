@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -115,6 +115,8 @@ public final class PropertyResolver {
       result = readTextDecoration( unit );
     } else if( isCursorProperty( name ) ) {
       result = readCursor( unit, loader );
+    } else if( isFloatProperty( name ) ) {
+      result = readFloat( unit );
     } else {
       throw new IllegalArgumentException( "Unknown property " + name );
     }
@@ -632,6 +634,33 @@ public final class PropertyResolver {
     return result;
   }
 
+  static boolean isFloatProperty( final String property ) {
+    return "opacity".equals( property );
+  }
+  
+  static QxFloat readFloat( final LexicalUnit unit ) {
+    QxFloat result;
+    if(    unit.getLexicalUnitType() == LexicalUnit.SAC_REAL
+        || unit.getLexicalUnitType() == LexicalUnit.SAC_INTEGER )
+    {
+      float value;
+      if( unit.getLexicalUnitType() == LexicalUnit.SAC_INTEGER ) {
+        value = unit.getIntegerValue();
+      } else {
+        value = unit.getFloatValue();        
+      }
+      if( value >= 0 && value <= 1 ) {
+        result = QxFloat.create( value );
+      } else {
+        throw new IllegalArgumentException( "Float out of bounds: " + value );
+      }
+    } else {
+      String msg = "Failed to parse float " + toString( unit );
+      throw new IllegalArgumentException( msg );
+    }
+    return result;
+  }
+
   private static Integer readSingleLengthUnit( final LexicalUnit unit ) {
     Integer result = null;
     short type = unit.getLexicalUnitType();
@@ -701,7 +730,7 @@ public final class PropertyResolver {
     short type = value.getLexicalUnitType();
     if( type == LexicalUnit.SAC_ATTR ) {
       buffer.append( "ATTR " + value.getStringValue() );
-    } else if( type == LexicalUnit.SAC_CENTIMETER
+    } else if(    type == LexicalUnit.SAC_CENTIMETER
                || type == LexicalUnit.SAC_DEGREE
                || type == LexicalUnit.SAC_EM
                || type == LexicalUnit.SAC_EX

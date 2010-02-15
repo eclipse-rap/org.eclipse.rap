@@ -63,8 +63,10 @@ public final class Theme {
 
   public static String createCssKey( final QxType value ) {
     String result;
-    if( value instanceof QxIdentifier || value instanceof QxBoolean ) {
-      // Identifiers and boolean values are written directly
+    if(    value instanceof QxIdentifier 
+        || value instanceof QxBoolean 
+        || value instanceof QxFloat ) {
+      // Identifiers, boolean and float values are written directly
       result = value.toDefaultString();
     } else {
       result = Integer.toHexString( value.hashCode() );

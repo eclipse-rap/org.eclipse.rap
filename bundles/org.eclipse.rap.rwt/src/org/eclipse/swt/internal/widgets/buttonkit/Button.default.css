@@ -91,6 +91,7 @@ Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
   border: 1px dotted #909090;
   margin: 2px;
   padding: 0px;
+  opacity: 1;
 }
 
 Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
@@ -98,4 +99,5 @@ Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
   border: 1px dotted #909090;
   padding: 2px 2px 2px 1px;
   margin: 0px;
+  opacity: 1;
 }

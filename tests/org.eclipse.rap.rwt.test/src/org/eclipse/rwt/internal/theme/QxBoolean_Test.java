@@ -52,14 +52,8 @@ public class QxBoolean_Test extends TestCase {
     assertFalse( QxBoolean.valueOf( "off" ).value );
   }
 
-  public void testSame() {
-    assertSame( QxBoolean.TRUE, QxBoolean.valueOf( "true" ) );
-    assertSame( QxBoolean.FALSE, QxBoolean.valueOf( "no" ) );
-    assertNotSame( QxBoolean.TRUE, QxBoolean.FALSE );
-  }
-
   public void testDefaultString() {
-    assertEquals( "true", QxBoolean.TRUE.toDefaultString() );
-    assertEquals( "false", QxBoolean.FALSE.toDefaultString() );
+    assertEquals( "true", QxBoolean.valueOf( "yes" ).toDefaultString() );
+    assertEquals( "false", QxBoolean.valueOf( "no" ).toDefaultString() );
   }
 }

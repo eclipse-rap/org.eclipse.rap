@@ -409,6 +409,38 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  public void testFloat() throws Exception {
+    QxFloat zero = PropertyResolver.readFloat( parseProperty( "0" ) );
+    assertNotNull( zero );
+    assertEquals( 0.0, zero.value, 0.001 );
+    QxFloat one = PropertyResolver.readFloat( parseProperty( "1" ) );
+    assertNotNull( one );
+    assertEquals( 1.0, one.value, 0.001 );
+    QxFloat floatValue = PropertyResolver.readFloat( parseProperty( "0.62" ) );
+    assertNotNull( floatValue );
+    assertEquals( 0.62, floatValue.value, 0.001 );
+    assertEquals( floatValue.toDefaultString(), "0.62" );
+    floatValue = null;
+    try {
+      floatValue = PropertyResolver.readFloat( parseProperty( "asdf" ) );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    assertNull( floatValue );
+    try {
+      floatValue = PropertyResolver.readFloat( parseProperty( "-0.4" ) );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    assertNull( floatValue );
+    try {
+      floatValue = PropertyResolver.readFloat( parseProperty( "1.0001" ) );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    assertNull( floatValue );
+  }
+
   public void testCursor() throws Exception {
     // Test predefined cursor
     String input = "default";

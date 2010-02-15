@@ -142,6 +142,9 @@
           Only used if padding is set to "0px".        
         </description>
       </property>
+      
+      <property name="opacity" 
+          description="The opacity of the indicator. A value between 0 and 1." />
 
       <style name="PUSH"
           description="Indicates that the button is a push button." />
