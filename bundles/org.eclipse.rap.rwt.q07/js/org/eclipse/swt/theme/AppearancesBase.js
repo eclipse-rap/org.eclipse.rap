@@ -1898,10 +1898,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textAlign : "center",
         padding   : [ 0, 3 ]
       };
-      if( states.disabled ) {
-        result.textColor = tv.getCssColor( "DateTime", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
-      } else if( states.selected ) {
+      if( states.selected ) {
         result.textColor = tv.getCssColor( "DateTime-Field", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Field", "background-color" );
       } else {
@@ -1918,13 +1915,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {
         cursor     : "default"
       };
-      if( states.disabled ) {
-        result.textColor = tv.getCssColor( "DateTime", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
-      } else {
-        result.textColor = "undefined";
-        result.backgroundColor = "undefined";
-      }
       return result;
     }
   },
@@ -2137,9 +2127,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         textAlign       : "center",
         verticalAlign   : "middle",
-        textColor       : states.disabled
-                          ? tv.getCssColor( "DateTime", "color" )
-                          : "undefined",
         border          : border
       };
     }
@@ -2161,10 +2148,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         font            : smallFont,
         border          : border,
-        textAlign       : "center",
-        textColor       : states.disabled
-                          ? tv.getCssColor( "DateTime", "color" )
-                          : "undefined"
+        textAlign       : "center"
       };
     }
   },
@@ -2176,10 +2160,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textAlign       : "center",
         verticalAlign   : "middle"
       };
-      if( states.disabled ) {
-        result.textColor = tv.getCssColor( "DateTime", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
-      } else if( states.selected || states.otherMonth || states.over ) {
+      if( !states.disabled 
+          && ( states.selected || states.otherMonth || states.over ) ) {
         result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day",
                                                  "background-color" );
