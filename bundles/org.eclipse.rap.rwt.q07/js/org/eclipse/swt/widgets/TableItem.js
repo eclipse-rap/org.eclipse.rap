@@ -283,6 +283,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       // fix IE box height issue
       node.style.fontSize = "0";
       node.style.lineHeight = "0";
+      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        node.style.filter = "";
+      } else {
+        node.style.opacity = "";
+        node.style.KhtmlOpacity = "";
+        node.style.MozOpacity = "";
+      }
     },
 
     _renderImage : function( node, left, width, height, image ) {
@@ -303,10 +310,19 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.backgroundImage = "url(" + url+ ")";
       node.style.backgroundRepeat = "no-repeat";
       node.style.backgroundPosition = "center";
+      // Dim out disabled image
+      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        node.style.filter = this._parent.getEnabled() ? "" : "Alpha(Opacity=30)";
+      } else {
+        var opacity = this._parent.getEnabled() ? "" : 0.3;
+        node.style.opacity = opacity;
+        node.style.KhtmlOpacity = opacity;
+        node.style.MozOpacity = opacity;
+      }
     },
 
     _renderText : function( node, left, width, height, text, align, font, foreground ) {
-      // Fix for bug#288807: only assign text to innerHTML it has changed
+      // Fix for bug#288807: only assign text to innerHTML if it has changed
       if( node.innerHTML != text ) {
         node.innerHTML = text;
       }
@@ -339,6 +355,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.color = foreground;
       node.style.backgroundColor = "";
       node.style.backgroundImage = "none";
+      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        node.style.filter = "";
+      } else {
+        node.style.opacity = "";
+        node.style.KhtmlOpacity = "";
+        node.style.MozOpacity = "";
+      }
     },
 
     _getIndex : function() {
