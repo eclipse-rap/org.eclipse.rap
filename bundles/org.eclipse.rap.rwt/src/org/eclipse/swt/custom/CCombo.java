@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -859,13 +859,15 @@ public final class CCombo extends Composite {
         }
       }
     }
-    Rectangle padding = getPadding();
+    Rectangle fieldPadding = getFieldPadding();
     int buttonWidth = getButtonWidth();
     if( width != 0 ) {
-      width += padding.width + buttonWidth;
+      width += fieldPadding.width + buttonWidth;
     }
     if( height != 0 ) {
-      height += padding.height;
+      height += fieldPadding.height;
+      // TODO [rst] Workaround for two missing pixels (Ö, p are cut off), revise
+      height += 2;
     }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
@@ -1100,11 +1102,10 @@ public final class CCombo extends Composite {
     modifyEvent.processEvent();
   }
 
-  // Made in the same way as in Combo.java
-  private Rectangle getPadding() {
+  private Rectangle getFieldPadding() {
     CComboThemeAdapter themeAdapter
       = ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getPadding( this );
+    return themeAdapter.getFieldPadding( this );
   }
 
   private int getButtonWidth() {

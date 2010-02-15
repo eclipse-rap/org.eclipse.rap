@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,10 +63,10 @@ public class Combo extends Composite {
    * @since 1.3
    */
   public static final int LIMIT = Integer.MAX_VALUE;
-  
+
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
-  
+
   // This factor must be kept in sync with TextUtil.js#_updateLineHeight
   private static final double LINE_HEIGHT_FACTOR = 1.2;
 
@@ -537,7 +537,7 @@ public class Combo extends Composite {
     checkWidget();
     return model.getItemCount();
   }
-  
+
   /**
    * Returns the height of the area which would be used to
    * display <em>one</em> of the items in the receiver's list.
@@ -548,7 +548,7 @@ public class Combo extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public int getItemHeight() {
@@ -599,7 +599,7 @@ public class Combo extends Composite {
     checkWidget();
     return visibleCount ;
   }
-  
+
   /**
    * Marks the receiver's list as visible if the argument is <code>true</code>,
    * and marks it invisible otherwise.
@@ -832,7 +832,7 @@ public class Combo extends Composite {
       textLimit = LIMIT;
     }
   }
-  
+
   /**
    * Returns the height of the receivers's text field.
    *
@@ -874,13 +874,15 @@ public class Combo extends Composite {
         }
       }
     }
-    Rectangle padding = getPadding();
+    Rectangle fieldPadding = getFieldPadding();
     int buttonWidth = getButtonWidth();
     if( width != 0 ) {
-      width += padding.width + buttonWidth;
+      width += fieldPadding.width + buttonWidth;
     }
     if( height != 0 ) {
-      height += padding.height;
+      height += fieldPadding.height;
+      // TODO [rst] Workaround for two missing pixels (Ö, p are cut off), revise
+      height += 2;
     }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
@@ -1098,10 +1100,10 @@ public class Combo extends Composite {
     modifyEvent.processEvent();
   }
 
-  private Rectangle getPadding() {
+  private Rectangle getFieldPadding() {
     ComboThemeAdapter adapter
       = ( ComboThemeAdapter )getAdapter( IThemeAdapter.class );
-    return adapter.getPadding( this );
+    return adapter.getFieldPadding( this );
   }
 
   private int getButtonWidth() {

@@ -37,3 +37,7 @@ CCombo-Button[FLAT]:hover {
 CCombo-List {
   border: 1px rgb( 167, 166, 170 );
 }
+
+CCombo-Field {
+  padding: 2px 3px;
+}

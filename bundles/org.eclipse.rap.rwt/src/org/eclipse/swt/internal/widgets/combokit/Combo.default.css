@@ -25,3 +25,7 @@ Combo-Button-Icon {
 Combo-List {
   border: 1px rgb( 167, 166, 170 );
 }
+
+Combo-Field {
+  padding: 2px 3px;
+}

@@ -711,7 +711,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.font = tv.getCssFont( "*", "font" );
       // [if] Do not apply top/bottom paddings on the client
-      var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
+      var cssPadding = tv.getCssBoxDimensions( "Combo-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
       result.width = null;
@@ -793,7 +793,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.font = tv.getCssFont( "*", "font" );
       // [if] Do not apply top/bottom paddings on the client
-      var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
+      var cssPadding = tv.getCssBoxDimensions( "CCombo-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
       result.width = null;
