@@ -33,8 +33,8 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   // TODO [if]: Move this code to a fragment
   private static final String PATTERN_RELOAD
     = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
-  
-  private final static String SESSION_INITIALIZED
+
+  final static String SESSION_INITIALIZED
     = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
 
   public void service() throws IOException, ServletException {
@@ -74,20 +74,20 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
     writeOutput();
   }
-  
+
 
   //////////////////
   // helping methods
-  
+
   private static boolean isSessionRestart() {
     HttpServletRequest request = getRequest();
     boolean startup = request.getParameter( RequestParams.STARTUP ) != null;
     String uiRoot = request.getParameter( RequestParams.UIROOT );
     HttpSession session = request.getSession();
-    return    !session.isNew() && !startup && uiRoot == null 
+    return    !session.isNew() && !startup && uiRoot == null
            || startup && isSessionInitialized();
   }
-  
+
   private static void initializeStateInfo() {
     if( ContextProvider.getStateInfo() == null ) {
       IServiceStateInfo stateInfo = new ServiceStateInfo();
@@ -126,7 +126,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       }
     }
   }
-  
+
   private static void checkRequest() {
     if( isSessionRestart() ) {
       clearSession( getRequest().getSession() );
@@ -157,7 +157,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       }
     }
   }
-  
+
   public static void writeOutput() throws IOException {
     if( !ContextProvider.getContext().isDisposed() ) {
       HtmlResponseWriter content

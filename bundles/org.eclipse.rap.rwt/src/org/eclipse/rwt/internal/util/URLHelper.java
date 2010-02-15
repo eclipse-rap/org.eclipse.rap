@@ -13,7 +13,6 @@ package org.eclipse.rwt.internal.util;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.RequestParams;
 
 
 /**<p>Utility class to construct URL's.</p> */
@@ -22,6 +21,8 @@ public final class URLHelper {
   public static final String EQUAL = "=";
   public static final String AMPERSAND = "&";
   public static final String QUESTION_MARK = "?";
+  
+  private final static String ENCODING_DUMMY = "w4t_enc";
 
   
   private URLHelper() {
@@ -48,7 +49,7 @@ public final class URLHelper {
     // if cookies are disabled
     if( addEncodingDummy ) {
       result.append( QUESTION_MARK );
-      result.append( RequestParams.ENCODING_DUMMY );
+      result.append( URLHelper.ENCODING_DUMMY );
       result.append( "=no" );
     }
     ///////////////////////////////////////////////////////////////////////

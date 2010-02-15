@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.service.RequestParams;
 
 
 public class RWTRequestVersionControl_Test extends TestCase {
@@ -23,16 +22,16 @@ public class RWTRequestVersionControl_Test extends TestCase {
     assertTrue( RWTRequestVersionControl.isValid() );
     Integer nextRequestId = RWTRequestVersionControl.nextRequestId();
     
-    Fixture.fakeRequestParam( RequestParams.REQUEST_COUNTER,
+    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER,
                               nextRequestId.toString() );
     assertFalse( RWTRequestVersionControl.isValid() );
 
     RWTRequestVersionControl.beforeService();
-    Fixture.fakeRequestParam( RequestParams.REQUEST_COUNTER,
+    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER,
                               nextRequestId.toString() );
     assertTrue( RWTRequestVersionControl.isValid() );
     
-    Fixture.fakeRequestParam( RequestParams.REQUEST_COUNTER,
+    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER,
                               "4711" );
     assertFalse( RWTRequestVersionControl.isValid() );
   }

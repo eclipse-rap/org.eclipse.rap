@@ -67,18 +67,18 @@ public class ResourceManagerImpl_Test extends TestCase {
     =   TEST_CONTEXT_URL
       + TEST_SERVLET_PATH
       + "?"
-      + RequestParams.RESOURCE
+      + ResourceManagerImpl.RESOURCE
       + "="
       + TEST_RESOURCE_2;
   private static final String TEST_LOCATION_VERSIONED_SERVLET
     =   TEST_CONTEXT_URL
       + TEST_SERVLET_PATH
       + "?"
-      + RequestParams.RESOURCE
+      + ResourceManagerImpl.RESOURCE
       + "="
       + TEST_RESOURCE_1
       + "&"
-      + RequestParams.RESOURCE_VERSION
+      + ResourceManagerImpl.RESOURCE_VERSION
       + "="
       + "1895582734";
 

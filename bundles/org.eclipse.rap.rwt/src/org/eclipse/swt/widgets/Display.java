@@ -120,6 +120,8 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
  */
 public class Display extends Device implements Adaptable {
 
+  private final static String AVAILABLE_WIDTH = "w4t_width";
+  private final static String AVAILABLE_HEIGHT = "w4t_height";
   private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
 
@@ -1784,12 +1786,12 @@ public class Display extends Device implements Adaptable {
 
   private void readInitialBounds() {
     HttpServletRequest request = ContextProvider.getRequest();
-    String widthVal = request.getParameter( RequestParams.AVAILABLE_WIDTH );
+    String widthVal = request.getParameter( Display.AVAILABLE_WIDTH );
     int width = 1024;
     if( widthVal != null ) {
       width = Integer.parseInt( widthVal );
     }
-    String heightVal = request.getParameter( RequestParams.AVAILABLE_HEIGHT );
+    String heightVal = request.getParameter( Display.AVAILABLE_HEIGHT );
     int height = 768;
     if( heightVal != null ) {
       height = Integer.parseInt( heightVal );

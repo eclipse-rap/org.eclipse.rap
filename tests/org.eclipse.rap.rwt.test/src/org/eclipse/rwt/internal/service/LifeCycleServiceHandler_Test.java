@@ -16,17 +16,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rwt.service.ISessionStore;
 
 
 public class LifeCycleServiceHandler_Test extends TestCase {
   
+  private static final String SESSION_STORE_ATTRIBUTE
+    = "session-store-attribute";
+  private static final String HTTP_SESSION_ATTRIBUTE
+    = "http-session-attribute";
+
   private static final int THREAD_COUNT = 10;
-  
   private static final String ENTER = "enter|";
   private static final String EXIT = "exit|";
 
@@ -89,6 +95,25 @@ public class LifeCycleServiceHandler_Test extends TestCase {
       expected += ENTER + EXIT;
     }
     assertEquals( expected, log.toString() );
+  }
+  
+  public void testSessionRestart() throws Exception {
+    ISessionStore sessionStore = ContextProvider.getSession();
+    // set up session-store and http-session
+    sessionStore.setAttribute( SESSION_STORE_ATTRIBUTE, new Object() );
+    HttpSession httpSession = sessionStore.getHttpSession();
+    httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, new Object() );
+    // fake required environment settings
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+    Fixture.fakeResponseWriter();
+    sessionStore.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED,
+                               Boolean.TRUE );
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    response.setOutputStream( new TestServletOutputStream() );
+    // run life cycle
+    new LifeCycleServiceHandler().service();
+    assertNull( sessionStore.getAttribute( SESSION_STORE_ATTRIBUTE ) );
+    assertNull( httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
   }
 
   protected void setUp() throws Exception {

@@ -19,7 +19,6 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.IEngineConfig;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.resources.IResourceManager;
 
@@ -38,6 +37,9 @@ public class ResourceManagerImpl
 {
 
   public static final String RESOURCES = "rwt-resources";
+
+  final static String RESOURCE = "w4t_resource";
+  final static String RESOURCE_VERSION = "w4t_res_version";
 
   /** <p>The singleton instance of ResourceManager.</p> */
   private static IResourceManager _instance;
@@ -386,10 +388,10 @@ public class ResourceManagerImpl
     } else {
       StringBuffer url = new StringBuffer();
       url.append( URLHelper.getURLString( false ) );
-      URLHelper.appendFirstParam( url, RequestParams.RESOURCE, newFileName );
+      URLHelper.appendFirstParam( url, RESOURCE, newFileName );
       if( version != null ) {
         URLHelper.appendParam( url,
-                               RequestParams.RESOURCE_VERSION,
+                               RESOURCE_VERSION,
                                String.valueOf( version.intValue() ) );
       }
       result = ContextProvider.getResponse().encodeURL( url.toString() );

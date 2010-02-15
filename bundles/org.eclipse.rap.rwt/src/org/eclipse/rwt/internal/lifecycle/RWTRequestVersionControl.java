@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -14,20 +15,20 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 
 
 public final class RWTRequestVersionControl {
   
+  static final String REQUEST_COUNTER = "requestCounter";
   private static final String VERSION
     = RWTRequestVersionControl.class + ".Version";
 
   public static boolean isValid() {
     Integer version = ( Integer )RWT.getServiceStore().getAttribute( VERSION );    
     HttpServletRequest request = ContextProvider.getRequest();
-    String requestId = request.getParameter( RequestParams.REQUEST_COUNTER );
+    String requestId = request.getParameter( REQUEST_COUNTER );
     boolean initialRequest = requestId == null;
     boolean inValidVersionState = version == null && requestId != null;
     return    !inValidVersionState
@@ -67,7 +68,7 @@ public final class RWTRequestVersionControl {
       //                to 1.1 this hack will be also obsolete soon. 
     }
   }
-  
+
   private RWTRequestVersionControl() {
     // prevent instantiation
   }
