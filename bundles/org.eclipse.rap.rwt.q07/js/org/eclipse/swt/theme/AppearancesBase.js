@@ -2229,9 +2229,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "ExpandItem-Header", "border" );
       result.backgroundColor
         = tv.getCssColor( "ExpandItem-Header", "background-color" );
-      result.textColor = states.disabled
-                         ? tv.getCssColor( "*", "color" )
-                         : "undefined";
       result.cursor = tv.getCssCursor( "ExpandItem-Header", "cursor" );
       result.backgroundImage = tv.getCssImage( "ExpandItem-Header",
                                                "background-image" );
