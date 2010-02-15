@@ -620,6 +620,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : [ 3, 5 ],
         minWidth : "auto"
       };
+      result.textColor = tv.getCssColor( "List-Item", "color" );
       result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );
       return result;
     }
