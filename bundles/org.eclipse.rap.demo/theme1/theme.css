@@ -82,6 +82,11 @@ Button[TOGGLE]:hover, Button[TOGGLE][BORDER]:hover {
   background-color: #abe3ff;
 }
 
+/* Browser */
+Browser[BORDER] {
+  border: 1px blue;
+}
+
 /* Combo */
 
 Combo {
