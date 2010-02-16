@@ -4,6 +4,9 @@ Spinner {
   border: none;
   color: black;
   background-color: white;
+}
+
+Spinner-Field {
   padding: 2px 3px;
 }
 

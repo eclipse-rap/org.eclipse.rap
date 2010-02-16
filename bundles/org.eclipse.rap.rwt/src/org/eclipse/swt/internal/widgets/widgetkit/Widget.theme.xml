@@ -166,6 +166,8 @@
     <property name="font"/>
 
     <property name="border"/>
+    
+    <property name="padding"/>
 
   </element>
 

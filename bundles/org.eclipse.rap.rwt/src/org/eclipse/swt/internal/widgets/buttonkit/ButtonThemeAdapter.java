@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 import org.eclipse.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Button;
 
@@ -30,10 +29,6 @@ public final class ButtonThemeAdapter extends ControlThemeAdapter {
     matcher.addStyle( "RADIO", SWT.RADIO );
   }
 
-  public Rectangle getPadding( final Button button ) {
-    return getCssBoxDimensions( "Button", "padding", button );
-  }
-
   public int getSpacing( final Button button ) {
     return getCssDimension( "Button", "spacing", button );
   }
@@ -45,15 +40,15 @@ public final class ButtonThemeAdapter extends ControlThemeAdapter {
   public Point getCheckSize( final Button button ) {
     Point result = null;
     if( ( button.getStyle() & SWT.RADIO ) != 0) {
-      result = getCssImageDimension( "Button-RadioIcon", 
-                                     "background-image", 
+      result = getCssImageDimension( "Button-RadioIcon",
+                                     "background-image",
                                      button );
     } else if( ( button.getStyle() & SWT.CHECK ) != 0) {
-      result = getCssImageDimension( "Button-CheckIcon", 
-                                     "background-image", 
-                                     button );      
-    }    
+      result = getCssImageDimension( "Button-CheckIcon",
+                                     "background-image",
+                                     button );
+    }
     return result;
   }
-  
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets.textkit;
 import org.eclipse.rwt.internal.theme.WidgetMatcher;
 import org.eclipse.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
@@ -32,9 +31,5 @@ public final class TextThemeAdapter extends ControlThemeAdapter {
         return !text.getEditable();
       }
     });
-  }
-
-  public Rectangle getPadding( final Text text ) {
-    return getCssBoxDimensions( "Text", "padding", text );
   }
 }

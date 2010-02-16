@@ -638,7 +638,7 @@ public class DateTime extends Composite {
   private Point computeSubWidgetsBounds() {
     Font font = getFont();
     int width = 0, height = 0;
-    Rectangle padding = getPadding();
+    Rectangle padding = getFieldPadding();
     int border = getBorderWidth();
     if( ( style & SWT.CALENDAR ) != 0 ) {
       width = cellSize.x * 8 + border * 2;
@@ -710,7 +710,7 @@ public class DateTime extends Composite {
 
   private Point computeMDYBounds() {
     Font font = getFont();
-    Rectangle padding = getPadding();
+    Rectangle padding = getFieldPadding();
     // The weekday text field bounds
     weekdayTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
@@ -800,7 +800,7 @@ public class DateTime extends Composite {
 
   private Point computeDMYBounds() {
     Font font = getFont();
-    Rectangle padding = getPadding();
+    Rectangle padding = getFieldPadding();
     // The weekday text field bounds
     weekdayTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
@@ -890,7 +890,7 @@ public class DateTime extends Composite {
 
   private Point computeYMDBounds() {
     Font font = getFont();
-    Rectangle padding = getPadding();
+    Rectangle padding = getFieldPadding();
     // The weekday text field bounds
     weekdayTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
@@ -1001,10 +1001,10 @@ public class DateTime extends Composite {
     return themeAdapter.getDropDownButtonWidth( this );
   }
 
-  private Rectangle getPadding() {
+  private Rectangle getFieldPadding() {
     DateTimeThemeAdapter themeAdapter
       = ( DateTimeThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getPadding( this );
+    return themeAdapter.getFieldPadding( this );
   }
 
   String getNameText() {

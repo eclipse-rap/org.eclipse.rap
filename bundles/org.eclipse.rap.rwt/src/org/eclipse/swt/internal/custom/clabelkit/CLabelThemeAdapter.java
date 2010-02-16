@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -12,7 +12,6 @@ package org.eclipse.swt.internal.custom.clabelkit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 
 
@@ -26,10 +25,6 @@ public final class CLabelThemeAdapter extends ControlThemeAdapter {
       result = 1;
     }
     return result;
-  }
-
-  public Rectangle getPadding( final CLabel clabel ) {
-    return getCssBoxDimensions( "CLabel", "padding", clabel );
   }
 
   public int getSpacing( final CLabel clabel ) {

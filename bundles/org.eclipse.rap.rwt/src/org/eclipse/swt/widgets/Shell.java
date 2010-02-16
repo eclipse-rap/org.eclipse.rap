@@ -569,13 +569,6 @@ public class Shell extends Decorations {
     return themeAdapter.getMenuBarHeight( this );
   }
 
-  // margin of the client area
-  private Rectangle getPadding() {
-    ShellThemeAdapter themeAdapter
-      = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getPadding( this );
-  }
-
   Composite findDeferredControl() {
     return layoutCount > 0 ? this : null;
   }

@@ -35,13 +35,21 @@
     </property>
 
     <property name="padding"
-        description="Padding for spinner text fields." />
+        description="Padding for spinner." />
 
     <style name="BORDER"
         description="Style constant for bordered behavior." />
 
     <state name="disabled"
         description="Applies to disabled Spinner controls." />
+        
+    <element name="Spinner-Field"
+        description="The spinner text field">
+      
+      <property name="padding"
+        description="Padding for spinner text fields." />
+      
+    </element>
 
     <element name="Spinner-UpButton"
         description="The spinner up button">

@@ -11,14 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
-import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
 
 /**
  * Instances of this class are selectable user interface
@@ -372,14 +370,14 @@ public class Text extends Scrollable {
    * displayed when the user enters text or the
    * text is changed by the programmer.
    * </p>
-   * 
+   *
    * @return the echo character
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #setEchoChar
    * @since 1.3
    */
@@ -387,7 +385,7 @@ public class Text extends Scrollable {
     checkWidget ();
     return echoChar;
   }
-  
+
   //////////////////////////
   // Input length constraint
 
@@ -761,12 +759,11 @@ public class Text extends Scrollable {
       } else {
         extent = TextSizeDetermination.textExtent( getFont(), text, wrapWidth );
       }
-      Rectangle padding = getPadding();
       if( extent.x != 0 ) {
-        width = extent.x + padding.width;
+        width = extent.x;
       }
       if( extent.y != 0 ) {
-        height = extent.y + padding.height;
+        height = extent.y;
       }
     }
     if( width == 0 ) {
@@ -950,12 +947,6 @@ public class Text extends Scrollable {
 
   boolean isTabGroup() {
     return true;
-  }
-
-  private Rectangle getPadding() {
-    TextThemeAdapter themeAdapter
-      = ( TextThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getPadding( this );
   }
 
   ////////////////////////////////////////////

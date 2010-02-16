@@ -109,6 +109,7 @@ public abstract class Control extends Widget {
   private boolean backgroundTransparency;
   private Font font;
   private Cursor cursor;
+  private Rectangle bufferedPadding;
 
   Control( final Composite parent ) {
     // prevent instantiation from outside this package; only called by Shell
@@ -420,7 +421,7 @@ public abstract class Control extends Widget {
     }
     Color result = control.background;
     if( result == null ) {
-      IControlThemeAdapter themeAdapter = 
+      IControlThemeAdapter themeAdapter =
         ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
       result = themeAdapter.getBackground( control );
     }
@@ -513,7 +514,7 @@ public abstract class Control extends Widget {
     if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-      foreground = color; 
+      foreground = color;
   }
 
   /**
@@ -1127,6 +1128,15 @@ public abstract class Control extends Widget {
     IControlThemeAdapter themeAdapter
       = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getBorderWidth( this );
+  }
+
+  Rectangle getPadding() {
+    if( bufferedPadding == null ) {
+      IControlThemeAdapter themeAdapter
+        = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+      bufferedPadding = themeAdapter.getPadding( this );
+    }
+    return bufferedPadding;
   }
 
   /**
@@ -1772,7 +1782,7 @@ public abstract class Control extends Widget {
    *
    * @see DragDetectListener
    * @see #removeDragDetectListener
-   * 
+   *
    * @since 1.3
    */
   public void addDragDetectListener( final DragDetectListener listener ) {
@@ -1796,7 +1806,7 @@ public abstract class Control extends Widget {
    *
    * @see DragDetectListener
    * @see #addDragDetectListener
-   * 
+   *
    * @since 1.3
    */
   public void removeDragDetectListener( final DragDetectListener listener ) {

@@ -363,7 +363,7 @@ public class Text_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
-    Point expected = new Point( 64, 17 );
+    Point expected = new Point( 70, 17 );
     assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     text.setText( "This is a long long text!" );
     expected = new Point( 138, 19 );
@@ -380,16 +380,16 @@ public class Text_Test extends TestCase {
 
     text = new Text( shell, SWT.MULTI | SWT.WRAP );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 50, 116 );
+    expected = new Point( 56, 116 );
     assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
 
     text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 52, 118 );
+    expected = new Point( 58, 118 );
     assertEquals( 1, text.getBorderWidth() );
     assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
 
-    expected = new Point( 102, 104 );
+    expected = new Point( 108, 108 );
     assertEquals( expected, text.computeSize( 100, 100 ) );
   }
 
@@ -398,19 +398,19 @@ public class Text_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SINGLE );
-    Rectangle expected = new Rectangle( 0, 0, 0, 0 );
+    Rectangle expected = new Rectangle( -3, -2, 6, 4 );
     assertEquals( expected, text.computeTrim( 0, 0, 0, 0 ) );
-    expected = new Rectangle( 10, 10, 100, 100 );
+    expected = new Rectangle( 7, 8, 106, 104 );
     assertEquals( expected, text.computeTrim( 10, 10, 100, 100 ) );
 
     text = new Text( shell, SWT.H_SCROLL );
-    expected = new Rectangle( 0, 0, 1, 0 );
+    expected = new Rectangle( -3, -2, 7, 4 );
     assertEquals( expected, text.computeTrim( 0, 0, 0, 0 ) );
-    expected = new Rectangle( 10, 10, 101, 100 );
+    expected = new Rectangle( 7, 8, 107, 104 );
     assertEquals( expected, text.computeTrim( 10, 10, 100, 100 ) );
 
     text = new Text( shell, SWT.BORDER );
-    expected = new Rectangle( -1, -1, 3, 2 );
+    expected = new Rectangle( -4, -3, 9, 6 );
     assertEquals( 1, text.getBorderWidth() );
     assertEquals( expected, text.computeTrim( 0, 0, 1, 0 ) );
   }
@@ -465,7 +465,7 @@ public class Text_Test extends TestCase {
     assertTrue( ( style & SWT.BORDER ) != 0 );
     assertTrue( ( style & SWT.PASSWORD ) == 0 );
   }
-  
+
   public void testEchoChar() {
     Display display = new Display();
     Shell shell = new Shell( display );

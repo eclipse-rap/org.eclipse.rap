@@ -4,6 +4,9 @@ DateTime {
   border: none;
   background-color: white;
   color: black;
+}
+
+DateTime-Field {
   padding: 2px 3px;
 }
 

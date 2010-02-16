@@ -1182,7 +1182,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
 
       // [if] Do not apply top/bottom paddings on the client
-      var cssPadding = tv.getCssBoxDimensions( "Spinner", "padding" );
+      var cssPadding = tv.getCssBoxDimensions( "Spinner-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
       result.top = 0;

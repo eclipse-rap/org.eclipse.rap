@@ -43,7 +43,7 @@ public class Spinner extends Composite {
   /**
    * the <!-- operating system --> limit for the number of characters
    * that the text field in an instance of this class can hold
-   * 
+   *
    * @since 1.3
    */
   public static final int LIMIT = Integer.MAX_VALUE;
@@ -334,7 +334,7 @@ public class Spinner extends Composite {
     setPageIncrement( pageIncrement );
     setSelection( selection );
   }
-  
+
   /**
    * Returns a string containing a copy of the contents of the
    * receiver's text field, or an empty string if there are no
@@ -346,7 +346,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public String getText() {
@@ -436,7 +436,7 @@ public class Spinner extends Composite {
         string = buffer.toString();
       }
       Point textSize = TextSizeDetermination.stringExtent( getFont(), string );
-      Rectangle padding = getPadding();
+      Rectangle padding = getFieldPadding();
       int buttonWidth = getButtonWidth();
       width = textSize.x + buttonWidth + padding.width;
       height = textSize.y + padding.height;
@@ -552,7 +552,7 @@ public class Spinner extends Composite {
    * @see SelectionListener
    * @see #removeSelectionListener
    * @see SelectionEvent
-   * 
+   *
    * @since 1.2
    */
   public void addSelectionListener( final SelectionListener listener ) {
@@ -583,16 +583,16 @@ public class Spinner extends Composite {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
-  
+
   //////////////////
   // Helping methods
 
-  private Rectangle getPadding() {
+  private Rectangle getFieldPadding() {
     SpinnerThemeAdapter themeAdapter
       = ( SpinnerThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getPadding( this );
+    return themeAdapter.getFieldPadding( this );
   }
-  
+
   private int getButtonWidth() {
     SpinnerThemeAdapter themeAdapter
       = ( SpinnerThemeAdapter )getAdapter( IThemeAdapter.class );

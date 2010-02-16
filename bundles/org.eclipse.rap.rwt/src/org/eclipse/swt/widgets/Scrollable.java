@@ -86,9 +86,12 @@ public abstract class Scrollable extends Control {
     checkWidget();
     Rectangle bounds = getBounds();
     int borderWidth = getBorderWidth();
-    int width = bounds.width - borderWidth * 2 - getVScrollBarWidth();
-    int height = bounds.height - borderWidth * 2 - getHScrollBarHeight();
-    return new Rectangle( 0, 0, width, height );
+    Rectangle padding = getPadding();
+    int width
+      = bounds.width - borderWidth * 2 - padding.width - getVScrollBarWidth();
+    int height
+      = bounds.height - borderWidth * 2 - padding.height - getHScrollBarHeight();
+    return new Rectangle( padding.x, padding.y, width, height );
   }
 
   /**
@@ -125,10 +128,15 @@ public abstract class Scrollable extends Control {
   {
     checkWidget();
     int borderWidth = getBorderWidth();
-    return new Rectangle( x - borderWidth,
-                          y - borderWidth,
-                          width + borderWidth * 2 + getVScrollBarWidth(),
-                          height + borderWidth * 2 + getHScrollBarHeight() );
+    Rectangle padding = getPadding();
+    int newWidth
+      = width + borderWidth * 2 + padding.width + getVScrollBarWidth();
+    int newHeight
+      = height + borderWidth * 2 + padding.height + getHScrollBarHeight();
+    return new Rectangle( x - borderWidth - padding.x,
+                          y - borderWidth - padding.y,
+                          newWidth,
+                          newHeight );
   }
 
   int getVScrollBarWidth() {

@@ -48,13 +48,16 @@ public class Scrollable_Test extends TestCase {
       int getHScrollBarHeight() {
         return 20;
       }
+      Rectangle getPadding() {
+        return new Rectangle( 10, 10, 10, 10 );
+      }
     };
     assertEquals( 2, composite.getBorderWidth() );
     trim = composite.computeTrim( 20, 30, 200, 300 );
-    assertEquals( 18, trim.x );
-    assertEquals( 28, trim.y );
-    assertEquals( 224, trim.width );
-    assertEquals( 324, trim.height );
+    assertEquals( 8, trim.x );
+    assertEquals( 18, trim.y );
+    assertEquals( 234, trim.width );
+    assertEquals( 334, trim.height );
   }
 
   public void testGetClientArea() {
@@ -73,10 +76,13 @@ public class Scrollable_Test extends TestCase {
       int getHScrollBarHeight() {
         return 20;
       }
+      Rectangle getPadding() {
+        return new Rectangle( 10, 10, 10, 10 );
+      }
     };
     composite.setSize( 100, 100 );
     assertEquals( 2, composite.getBorderWidth() );
-    expected = new Rectangle( 0, 0, 76, 76 );
+    expected = new Rectangle( 10, 10, 66, 66 );
     assertEquals( expected, composite.getClientArea() );
   }
 }
