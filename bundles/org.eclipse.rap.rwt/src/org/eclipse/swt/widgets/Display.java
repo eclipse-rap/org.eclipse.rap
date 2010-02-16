@@ -1337,6 +1337,28 @@ public class Display extends Device implements Adaptable {
   }
 
   /**
+   * Returns true when the high contrast mode is enabled.
+   * Otherwise, false is returned.
+   * <p>
+   * Note: This operation is a hint and is not supported on
+   * platforms that do not have this concept.
+   * </p>
+   *
+   * @return the high contrast mode
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public boolean getHighContrast() {
+    checkDevice();
+    return false;
+  }
+
+  /**
    * Returns the location of the on-screen pointer relative
    * to the top left corner of the screen.
    *
