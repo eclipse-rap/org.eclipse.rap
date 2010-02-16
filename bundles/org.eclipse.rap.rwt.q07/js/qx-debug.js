@@ -5,6 +5,7 @@ if(qxsettings["qx.version"]==undefined)qxsettings["qx.version"]="0.7.4 (r16878) 
 if(qxsettings["qx.isSource"]==undefined)qxsettings["qx.isSource"]=false;
 if(!window.qxvariants)qxvariants={};
 qxvariants["qx.compatibility"]="off";
+qxvariants["qx.aspects"]="off";
 qxvariants["qx.debug"]="on";
 
 
@@ -987,8 +988,7 @@ extend,
 statics,
 construct,
 destruct){var clazz;
-if(!extend&&qx.core.Variant.isSet("qx.aspects",
-"off")){clazz=statics||{};
+if(!extend&&true){clazz=statics||{};
 }else{clazz={};
 if(extend){if(!construct){construct=this.__createDefaultConstructor();
 }clazz=this.__wrapConstructor(construct,
@@ -998,14 +998,10 @@ type);
 for(var i=0,
 a=qx.lang.Object.getKeys(statics),
 l=a.length;i<l;i++){key=a[i];
-if(qx.core.Variant.isSet("qx.aspects",
-"on")){var staticValue=statics[key];
-if(staticValue instanceof Function){staticValue=qx.core.Aspect.wrap(name+"."+key,
-staticValue,
-"static");
-}clazz[key]=staticValue;
-}else{clazz[key]=statics[key];
-}}}}var basename=this.createNamespace(name,
+{clazz[key]=statics[key];
+};
+var staticValue;
+}}}var basename=this.createNamespace(name,
 clazz,
 false);
 clazz.name=clazz.classname=name;
@@ -1021,11 +1017,8 @@ proto.name=proto.classname=name;
 proto.basename=basename;
 construct.base=clazz.superclass=extend;
 construct.self=clazz.constructor=proto.constructor=clazz;
-if(destruct){if(qx.core.Variant.isSet("qx.aspects",
-"on")){destruct=qx.core.Aspect.wrap(name,
-destruct,
-"destructor");
-}clazz.$$destructor=destruct;
+if(destruct){{};
+clazz.$$destructor=destruct;
 }}{};
 this.__registry[name]=clazz;
 return clazz;
@@ -1129,12 +1122,8 @@ if(base!==false&&member instanceof Function){if(wrap==true){member=this.__mixinM
 proto[key]);
 }else{if(proto[key]){member.base=proto[key];
 }member.self=clazz;
-}
-if(qx.core.Variant.isSet("qx.aspects",
-"on")){member=qx.core.Aspect.wrap(clazz.classname+"."+key,
-member,
-"member");
-}}proto[key]=member;
+}{};
+}proto[key]=member;
 }},
 __mixinMemberWrapper:function(member,
 base){if(base){return function(){var oldBase=member.base;
@@ -1222,23 +1211,14 @@ name,
 '.classname)this.$$initialized=true;');
 code.push('return retval;');
 var wrapper=new Function(code.join(""));
-if(qx.core.Variant.isSet("qx.aspects",
-"on")){var aspectWrapper=qx.core.Aspect.wrap(name,
-wrapper,
-"constructor");
-wrapper.$$original=construct;
-wrapper.constructor=aspectWrapper;
-wrapper=aspectWrapper;
-}if(type==="singleton"){wrapper.getInstance=this.getInstance;
+var aspectWrapper;
+if(type==="singleton"){wrapper.getInstance=this.getInstance;
 }wrapper.$$original=construct;
 construct.wrapper=wrapper;
 return wrapper;
 }},
-defer:function(statics){if(qx.core.Variant.isSet("qx.aspects",
-"on")){for(var key in statics){if(statics[key] instanceof Function){statics[key]=qx.core.Aspect.wrap("qx.Class."+key,
-statics[key],
-"static");
-}}}}});
+defer:function(statics){var key;
+}});
 
 
 
@@ -1959,11 +1939,8 @@ args){var store=this.$$method[variant][name];
 code.join(""));
 }catch(ex){alert("Malformed generated code to unwrap method: "+this.$$method[variant][name]+"\n"+code.join(""));
 }};
-if(qx.core.Variant.isSet("qx.aspects",
-"on")){members[store]=qx.core.Aspect.wrap(instance.classname+"."+store,
-members[store],
-"property");
-}if(args===undefined){return instance[store]();
+{};
+if(args===undefined){return instance[store]();
 }else{return instance[store].apply(instance,
 args);
 }},
