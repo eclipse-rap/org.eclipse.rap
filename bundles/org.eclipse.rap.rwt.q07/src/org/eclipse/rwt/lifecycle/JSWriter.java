@@ -19,6 +19,7 @@ import java.util.Map;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
@@ -951,8 +952,8 @@ public final class JSWriter {
 
   // TODO [rh] revise how to handle newline characters (\n)
   private static String escapeString( final String input ) {
-    String result = CommonPatterns.escapeDoubleQuoted( input );
-    return CommonPatterns.replaceNewLines( result );
+    String result = EncodingUtil.escapeDoubleQuoted( input );
+    return EncodingUtil.replaceNewLines( result );
   }
 
   private static String getSetterName( final String jsProperty ) {

@@ -18,9 +18,9 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.HelpEvent;
@@ -848,7 +848,7 @@ public final class WidgetLCAUtil {
   public static String replaceNewLines( final String input,
                                         final String replacement )
   {
-    return CommonPatterns.replaceNewLines( input, replacement );
+    return EncodingUtil.replaceNewLines( input, replacement );
   }
 
   /**

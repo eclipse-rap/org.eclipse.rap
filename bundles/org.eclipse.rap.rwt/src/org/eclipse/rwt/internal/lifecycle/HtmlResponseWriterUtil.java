@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.rwt.internal.util.EntitiesUtil;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 
 
 /**
@@ -47,6 +47,6 @@ final class HtmlResponseWriterUtil {
   }
   
   static String encode( final String text ) {
-    return EntitiesUtil.encodeHTMLEntities( text );
+    return EncodingUtil.encodeHTMLEntities( text );
   }
 }

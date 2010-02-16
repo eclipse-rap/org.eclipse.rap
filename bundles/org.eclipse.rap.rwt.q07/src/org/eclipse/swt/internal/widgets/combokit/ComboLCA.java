@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.combokit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -192,7 +192,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       for( int i = 0; i < items.length; i++ ) {
         items[ i ] = WidgetLCAUtil.replaceNewLines( items[ i ], " " );
         items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
-        items[ i ] = CommonPatterns.replaceWhiteSpaces( items[ i ] );
+        items[ i ] = EncodingUtil.replaceWhiteSpaces( items[ i ] );
       }
       writer.set( PROP_ITEMS, new Object[] { items } );
     }

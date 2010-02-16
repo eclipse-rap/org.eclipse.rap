@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,32 +9,23 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rwt.internal.lifecycle;
+package org.eclipse.rwt.internal.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
- * Utility class to provide common pattern matching and replacement methods.
+ * Utility class to provide commonly used encoding methods.
  */
-public final class CommonPatterns {
+public final class EncodingUtil {
 
-  private CommonPatterns() {
-    // prevent instantiation
-  }
 
-  /**
-   * String to replace line feed matches with <code>\n</code>.
-   */
-  private static final String NEWLINE_REPLACEMENT = "\\n";
-
-  /**
-   * Replacement string that is used for all leading and trailing spaces.
-   */
-  private static final String LEADING_TRAILING_SPACES_REPLACEMENT = "&nbsp;";
-
-  private static final String SPACES_REPLACEMENT = "&nbsp;";
+  private static final Pattern DOUBLE_HYPHEN_PATTERN = Pattern.compile( "--" );
+  private static final String UNIX_NEWLINE = "\\n";
+  private static final String NBSP = "&nbsp;";
 
   /**
    * Escapes all double quote and backslash characters in the given input
@@ -70,7 +61,7 @@ public final class CommonPatterns {
     int endIndex = input.length();
     while( beginIndex < input.length() && input.charAt( beginIndex ) == ' ' ) {
       beginIndex++;
-      buffer.append( LEADING_TRAILING_SPACES_REPLACEMENT );
+      buffer.append( NBSP );
     }
     while( endIndex > beginIndex && input.charAt( endIndex - 1 ) == ' ' ) {
       endIndex--;
@@ -78,7 +69,7 @@ public final class CommonPatterns {
     buffer.append( input.substring( beginIndex, endIndex ) );
     int endCount = input.length() - endIndex;
     for( int i = 0; i < endCount; i++ ) {
-      buffer.append( LEADING_TRAILING_SPACES_REPLACEMENT );
+      buffer.append( NBSP );
     }
     return buffer.toString();
   }
@@ -92,7 +83,7 @@ public final class CommonPatterns {
    * @return a copy of the input string with all newline characters replaced
    */
   public static String replaceNewLines( final String input ) {
-    return replaceNewLines( input, NEWLINE_REPLACEMENT );
+    return replaceNewLines( input, UNIX_NEWLINE );
   }
 
   /**
@@ -144,7 +135,7 @@ public final class CommonPatterns {
     StringBuffer buffer = new StringBuffer();
     for( int i = 0; i < input.length(); i++ ) {
       if( input.charAt( i ) == ' ' ) {
-        buffer.append( SPACES_REPLACEMENT );
+        buffer.append( NBSP );
       } else {
         // Index should be greater then 1 for the case when the string begin
         // with single white space.
@@ -152,7 +143,7 @@ public final class CommonPatterns {
           // Replaces back with ' ' the single white space between words
           // or the last white space in a white spaces sequence.
           if( input.charAt( i - 1 ) == ' ' ) {
-            int start = buffer.length() - SPACES_REPLACEMENT.length();
+            int start = buffer.length() - NBSP.length();
             buffer.replace( start, buffer.length(), " " );
           }
         }
@@ -162,7 +153,7 @@ public final class CommonPatterns {
     return buffer.toString();
   }
 
-  public static String[] splitNewLines( String input ) {
+  public static String[] splitNewLines( final String input ) {
     int length = input.length();
     List resultList = new ArrayList();
     int start = 0;
@@ -184,5 +175,17 @@ public final class CommonPatterns {
     String[] result = new String[ resultList.size() ];
     resultList.toArray( result );
     return result;
+  }
+
+  public static String encodeHTMLEntities( final String text ) {
+    String result = Entities.HTML40.escape( text );
+    // Encode double-hyphens because they are not allowed inside comments
+    Matcher matcher = EncodingUtil.DOUBLE_HYPHEN_PATTERN.matcher( result );
+    result = matcher.replaceAll( "&#045;&#045;" );
+    return result;
+  }
+
+  private EncodingUtil() {
+    // prevent instantiation
   }
 }

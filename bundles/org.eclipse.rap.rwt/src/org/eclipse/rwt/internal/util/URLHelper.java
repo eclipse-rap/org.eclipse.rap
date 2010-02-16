@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
@@ -24,7 +25,6 @@ public final class URLHelper {
   
   private final static String ENCODING_DUMMY = "w4t_enc";
 
-  
   private URLHelper() {
     // no instance creation
   }
@@ -66,14 +66,6 @@ public final class URLHelper {
     return result.toString();
   }
 
-  /** returns the servlets URL of current W4Toolkit installation with
-   *  session id encoding if cookies are not accepted by the browser. */  
-  public static String getEncodedURLString() {
-    String result = getURLString( true );
-    return ContextProvider.getResponse().encodeURL( result );
-  }
-
-  
   //////////////////
   // helping methods
 

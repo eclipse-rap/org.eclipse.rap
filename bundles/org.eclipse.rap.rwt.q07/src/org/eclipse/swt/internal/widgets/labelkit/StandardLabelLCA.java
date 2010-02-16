@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -79,7 +79,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       // Order is important here: escapeText, replace line breaks
       String text = WidgetLCAUtil.escapeText( label.getText(), true );
       text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
-      text = CommonPatterns.replaceWhiteSpaces( text ); // fixes bug 192634
+      text = EncodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{ label, text };
       writer.callStatic( JS_FUNC_LABEL_UTIL_SET_TEXT, args );

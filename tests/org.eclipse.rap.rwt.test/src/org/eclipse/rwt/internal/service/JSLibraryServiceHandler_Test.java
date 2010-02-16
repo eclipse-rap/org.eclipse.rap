@@ -41,21 +41,22 @@ public class JSLibraryServiceHandler_Test extends TestCase {
     JSLibraryServiceHandler handler = new JSLibraryServiceHandler();
     handler.service();
     String encoding
-      = response.getHeader( HTML.CONTENT_ENCODING );
+      = response.getHeader( JSLibraryServiceHandler.CONTENT_ENCODING );
     assertNull( encoding );
     String contentType = response.getHeader( HTML.CONTENT_TYPE );
     assertEquals( HTML.CONTENT_TEXT_JAVASCRIPT, contentType );
-    String expires = response.getHeader( HTML.EXPIRES );
+    String expires = response.getHeader( "Expires" );
     assertEquals( JSLibraryServiceHandler.EXPIRES_NEVER, expires );
     
     // test with encoding allowed by browser
     response.setOutputStream( new TestServletOutputStream() );
     TestRequest request = ( TestRequest )RWT.getRequest();
-    request.setHeader( HTML.ACCEPT_ENCODING, HTML.ENCODING_GZIP );
+    request.setHeader( JSLibraryServiceHandler.ACCEPT_ENCODING, 
+                       JSLibraryServiceHandler.ENCODING_GZIP );
     handler.service();
-    encoding = response.getHeader( HTML.CONTENT_ENCODING );
+    encoding = response.getHeader( JSLibraryServiceHandler.CONTENT_ENCODING );
     assertNotNull( encoding );
-    assertEquals( HTML.ENCODING_GZIP, encoding );
+    assertEquals( JSLibraryServiceHandler.ENCODING_GZIP, encoding );
     // clean up
     System.getProperties().remove( "org.eclipse.rwt.compression" );
   }

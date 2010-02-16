@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 
@@ -50,7 +50,7 @@ final class TextSizeEstimation {
     }
     int lineCount = 0;
     int maxWidth = 0;
-    String[] lines = CommonPatterns.splitNewLines( string );
+    String[] lines = EncodingUtil.splitNewLines( string );
     for( int i = 0; i < lines.length; i++ ) {
       String line = lines[ i ];
       lineCount++;

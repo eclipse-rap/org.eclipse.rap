@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.URLHelper;
 
 
@@ -125,8 +125,8 @@ public final class BrandingUtil {
   }
 
   private static String escapeString( final String input ) {
-    String result = CommonPatterns.escapeDoubleQuoted( input );
-    return CommonPatterns.replaceNewLines( result );
+    String result = EncodingUtil.escapeDoubleQuoted( input );
+    return EncodingUtil.replaceNewLines( result );
   }
 
   private BrandingUtil() {

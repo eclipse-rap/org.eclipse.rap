@@ -25,7 +25,7 @@ import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rwt.internal.util.EntitiesUtil;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
@@ -221,7 +221,7 @@ public final class RWTStartupPageConfigurer
     BrandingUtil.replacePlaceholder( template,
                                      StartupPageTemplateHolder.VAR_HEADERS,
                                      headers );
-    String encodedEntryPoint = EntitiesUtil.encodeHTMLEntities( entryPoint );
+    String encodedEntryPoint = EncodingUtil.encodeHTMLEntities( entryPoint );
     BrandingUtil.replacePlaceholder( template,
                                      StartupPageTemplateHolder.VAR_STARTUP,
                                      encodedEntryPoint );

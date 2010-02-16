@@ -410,8 +410,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
     // Changing the scrollbar style is only supported by IE
     out.write( "<!--[if IE]>" );
-    out.startElement( HTML.STYLE, out );
-    out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_CSS, null );
+    out.startElement( "style", out );
+    out.writeAttribute( "type", "text/css", null );
     StringBuffer css = new StringBuffer();
     css.append( "html, body, iframe { " );
     css.append( "scrollbar-base-color:#c0c0c0;" );
@@ -424,7 +424,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     css.append( "scrollbar-track-color:#f0f0f8;" );
     css.append( "}" );
     out.write( css.toString() );
-    out.endElement( HTML.STYLE );
+    out.endElement( "style" );
     out.write( "<![endif]-->" );
   }
 

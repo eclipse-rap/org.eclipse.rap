@@ -21,6 +21,7 @@ import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.events.*;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.SessionStoreEvent;
 import org.eclipse.rwt.service.SessionStoreListener;
@@ -59,10 +60,10 @@ public final class BrowserHistory
     if( id.length() == 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    String quotedId = "\"" + CommonPatterns.escapeDoubleQuoted( id ) + "\"";
+    String quotedId = "\"" + EncodingUtil.escapeDoubleQuoted( id ) + "\"";
     String quotedText = text;
     if( quotedText != null ) {
-      quotedText = "\"" + CommonPatterns.escapeDoubleQuoted( text ) + "\"";
+      quotedText = "\"" + EncodingUtil.escapeDoubleQuoted( text ) + "\"";
     }
     String[] args = new String[]{ quotedId, quotedText };
     JSExecutor.executeJS( MessageFormat.format( ADD_TO_HISTORY, args ) );

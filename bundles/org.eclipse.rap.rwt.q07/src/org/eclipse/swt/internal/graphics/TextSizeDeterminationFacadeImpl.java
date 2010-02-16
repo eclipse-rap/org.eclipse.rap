@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.graphics;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -71,8 +71,8 @@ public final class TextSizeDeterminationFacadeImpl
         param.append( ", " );
         param.append( "\"" );
         String itemString = item.getString();
-        itemString = CommonPatterns.escapeDoubleQuoted( itemString );
-        itemString = CommonPatterns.escapeLeadingTrailingSpaces( itemString );
+        itemString = EncodingUtil.escapeDoubleQuoted( itemString );
+        itemString = EncodingUtil.escapeLeadingTrailingSpaces( itemString );
         param.append( itemString );
         param.append( "\", " );
         param.append( createFontParam( item.getFontData() ) );

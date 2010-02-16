@@ -28,22 +28,29 @@ import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.IServiceHandler;
 
 /**
- *  <p>This class is used to deliver the concatenated javascript libraries that
- *  are needed to run RWT on the client site in one request.</p>
+ *  <p>This class is used to deliver the concatenated Javascript libraries that
+ *  are needed to run RWT on the client in one request.</p>
  *  <p>Depending on the 'Accept-Encoding' header of the request and the 
  *  configuration settings the content is either sent uncompressed or compressed. 
  *  The latter should be the normal case, since this reduces the size of the 
  *  content that has to be sent over the wire.</p>
- *  <p>As the filename of the delivered javascript has a version postfix the
- *  browser is informed to store the javascript in its cache.</p>
+ *  <p>As the filename of the delivered Javascript has a version postfix the
+ *  browser is informed to store the Javascript in its cache.</p>
  */
 public class JSLibraryServiceHandler implements IServiceHandler {
 
   public static final String HANDLER_ID
     = JSLibraryServiceHandler.class.getName();
+  public final static String CONTENT_ENCODING = "Content-Encoding";
+  public final static String ENCODING_GZIP = "gzip";
+  public final static String ACCEPT_ENCODING = "Accept-Encoding";
+  
+
+  private static final String EXPIRES = "Expires";
   static final String EXPIRES_NEVER = "Sun, 17 Jan 2038 19:14:07 GMT";
 
   private static final String REQUEST_PATTERN = "{0}?{1}={2}&hash={3}";
+  
   private static String hashCode;
   private static byte[] unCompressed;
   private static byte[] compressed; 
@@ -58,12 +65,12 @@ public class JSLibraryServiceHandler implements IServiceHandler {
     };
     return MessageFormat.format( REQUEST_PATTERN, param );
   }
-  
+
   public void service() throws IOException, ServletException {
     initializeOutput();
     HttpServletResponse response = RWT.getResponse();
     response.setHeader( HTML.CONTENT_TYPE, HTML.CONTENT_TEXT_JAVASCRIPT );
-    response.setHeader( HTML.EXPIRES, EXPIRES_NEVER );
+    response.setHeader( EXPIRES, EXPIRES_NEVER );
     response.setCharacterEncoding( HTML.CHARSET_NAME_UTF_8 );
     if( isAcceptEncoding() && getInitProps().isCompression()) {
       writeCompressedOutput();
@@ -73,7 +80,7 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   }
 
   private static void writeCompressedOutput() throws IOException {
-    RWT.getResponse().setHeader( HTML.CONTENT_ENCODING, HTML.ENCODING_GZIP );
+    RWT.getResponse().setHeader( JSLibraryServiceHandler.CONTENT_ENCODING, JSLibraryServiceHandler.ENCODING_GZIP );
     HttpServletResponse response = RWT.getResponse();
     OutputStream out = new BufferedOutputStream( response.getOutputStream() );
     write( out, compressed );
@@ -115,8 +122,8 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   }
   
   private static boolean isAcceptEncoding() {
-    String encodings = RWT.getRequest().getHeader( HTML.ACCEPT_ENCODING );
-    return encodings != null && encodings.indexOf( HTML.ENCODING_GZIP ) != -1;
+    String encodings = RWT.getRequest().getHeader( JSLibraryServiceHandler.ACCEPT_ENCODING );
+    return encodings != null && encodings.indexOf( JSLibraryServiceHandler.ENCODING_GZIP ) != -1;
   }
   
   private static IInitialization getInitProps() {

@@ -76,7 +76,7 @@ public final class StartupPage {
     template.replace( StartupPageTemplateHolder.VAR_SERVLET, 
                       URLHelper.getSerlvetName() );
     template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
-                      EntitiesUtil.encodeHTMLEntities( getEntryPoint() ) );
+                      EncodingUtil.encodeHTMLEntities( getEntryPoint() ) );
     String[] tokens = template.getTokens();
     for( int i = 0; i < tokens.length; i++ ) {
       if( tokens[ i ] != null ) {
