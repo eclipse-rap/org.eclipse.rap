@@ -1,0 +1,9 @@
+/* Browser default theme */
+
+Browser {
+  border: none;
+}
+
+Browser[BORDER] {
+  border: 2px inset;
+}

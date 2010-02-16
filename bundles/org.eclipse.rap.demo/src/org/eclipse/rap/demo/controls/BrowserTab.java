@@ -81,13 +81,7 @@ final class BrowserTab extends ExampleTab {
     lblHTML.setLayoutData( new GridData( GridData.VERTICAL_ALIGN_BEGINNING ) );
     final Text txtHTML = new Text( composite, SWT.BORDER | SWT.MULTI );
     txtHTML.setText( DEFAULT_HTML );
-    lblHTML.addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent evt ) {
-        GridData data
-          = new GridData( txtURL.getSize().x, lblHTML.getSize().y * 8 );
-        txtHTML.setLayoutData( data );
-      }
-    } );
+    txtHTML.setLayoutData( new GridData( 110, 100 ) );
 
     Button btnHTML = new Button( composite, SWT.PUSH );
     btnHTML.setText( "Go" );

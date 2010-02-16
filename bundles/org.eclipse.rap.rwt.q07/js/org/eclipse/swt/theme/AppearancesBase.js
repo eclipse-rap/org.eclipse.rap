@@ -1660,7 +1660,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : tv.getCssBorder( "*", "border" ),
+        border : tv.getCssBorder( "Browser", "border" ),
         backgroundColor : "white"
       }
     }
