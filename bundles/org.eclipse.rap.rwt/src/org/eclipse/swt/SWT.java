@@ -1670,6 +1670,18 @@ public class SWT {
   public static final int DIALOG_TRIM = TITLE | CLOSE | BORDER;
 
   /**
+   * Style constant for modeless behavior (value is 0).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Dialog</code></li>
+   * <li><code>Shell</code></li>
+   * </ul></p>
+   *
+   * @since 1.3
+   */
+  public static final int MODELESS = 0;
+
+  /**
    * Style constant for application modal behavior (value is 1&lt;&lt;16).
    * <br>Note that this is a <em>HINT</em>.
    * <p><b>Used By:</b><ul>
