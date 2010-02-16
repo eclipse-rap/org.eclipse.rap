@@ -831,6 +831,62 @@ public class SWT {
   public static final int MODIFIER_MASK;
 
   /**
+   * Keyboard and/or mouse event mask indicating that mouse button one
+   * was pushed when the event was generated. (value is 1&lt;&lt;19).
+   *
+   * @since 1.3
+   */
+  public static final int BUTTON1 = 1 << 19;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that mouse button two
+   * was pushed when the event was generated. (value is 1&lt;&lt;20).
+   *
+   * @since 1.3
+   */
+  public static final int BUTTON2 = 1 << 20;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that mouse button three
+   * was pushed when the event was generated. (value is 1&lt;&lt;21).
+   *
+   * @since 1.3
+   */
+  public static final int BUTTON3 = 1 << 21;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that mouse button four
+   * was pushed when the event was generated. (value is 1&lt;&lt;23).
+   *
+   * @since 1.3
+   */
+  public static final int BUTTON4 = 1 << 23;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that mouse button five
+   * was pushed when the event was generated. (value is 1&lt;&lt;25).
+   *
+   * @since 1.3
+   */
+  public static final int BUTTON5 = 1 << 25;
+
+  /**
+   * Keyboard and/or mouse event mask indicating all possible
+   * mouse buttons.
+   *
+   * To allow for the future, this mask  is intended to be used
+   * in place of code that references each individual button mask.
+   * For example, the following expression will determine whether
+   * any button is pressed and will continue to work as new button
+   * masks are added.
+   *
+   * <code>(stateMask & SWT.BUTTON_MASK) != 0</code>.
+   *
+   * @since 1.3
+   */
+  public static final int BUTTON_MASK;
+
+  /**
    * Accelerator constant used to differentiate a key code from a
    * unicode character.
    *
@@ -1688,7 +1744,7 @@ public class SWT {
    * <li><code>Dialog</code></li>
    * <li><code>Shell</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.3
    */
   public static final int PRIMARY_MODAL = 1 << 15;
@@ -1710,7 +1766,7 @@ public class SWT {
    * <li><code>Dialog</code></li>
    * <li><code>Shell</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.3
    */
   public static final int SYSTEM_MODAL = 1 << 17;
@@ -2799,7 +2855,7 @@ public class SWT {
     * expand in the future.  Therefore they are not initialized
     * in the declaration to stop the compiler from inlining.
     */
-//    BUTTON_MASK = BUTTON1 | BUTTON2 | BUTTON3 | BUTTON4 | BUTTON5;
+    BUTTON_MASK = BUTTON1 | BUTTON2 | BUTTON3 | BUTTON4 | BUTTON5;
     MODIFIER_MASK = ALT | SHIFT | CTRL | COMMAND;
   }
 

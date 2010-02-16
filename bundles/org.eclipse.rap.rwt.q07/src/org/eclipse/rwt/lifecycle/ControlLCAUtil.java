@@ -933,7 +933,8 @@ public class ControlLCAUtil {
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_DOWN_TIME );
       event.stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_DOWN_MODIFIER );
+        = EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_DOWN_MODIFIER )
+        | EventLCAUtil.translateButton( event.button );
       checkAndProcessMouseEvent( event );
     }
     String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
@@ -949,7 +950,8 @@ public class ControlLCAUtil {
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME );
       String stateMaskParam = JSConst.EVENT_MOUSE_DOUBLE_CLICK_MODIFIER;
-      event.stateMask = EventLCAUtil.readStateMask( stateMaskParam );
+      event.stateMask = EventLCAUtil.readStateMask( stateMaskParam )
+                      | EventLCAUtil.translateButton( event.button );
       checkAndProcessMouseEvent( event );
     }
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
@@ -962,7 +964,8 @@ public class ControlLCAUtil {
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_UP_TIME );
       event.stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_UP_MODIFIER );
+        = EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_UP_MODIFIER )
+        | EventLCAUtil.translateButton( event.button );
       checkAndProcessMouseEvent( event );
     }
   }

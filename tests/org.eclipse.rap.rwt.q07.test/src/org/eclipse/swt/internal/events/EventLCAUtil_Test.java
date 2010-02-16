@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -39,5 +39,55 @@ public class EventLCAUtil_Test extends TestCase {
     assertEquals( SWT.SHIFT | SWT.CTRL | SWT.ALT,
                   stateMask & SWT.MODIFIER_MASK );
     assertEquals( stateMask, stateMask & SWT.MODIFIER_MASK );
+  }
+
+  public void testTranslateButton() {
+    int button = EventLCAUtil.translateButton( 0 );
+    assertEquals( 0, button & SWT.BUTTON_MASK );
+    assertEquals( 0, button & SWT.BUTTON1 );
+    assertEquals( 0, button & SWT.BUTTON2 );
+    assertEquals( 0, button & SWT.BUTTON3 );
+    assertEquals( 0, button & SWT.BUTTON4 );
+    assertEquals( 0, button & SWT.BUTTON5 );
+
+    button = EventLCAUtil.translateButton( 1 );
+    assertTrue( ( button & SWT.BUTTON_MASK ) != 0 );
+    assertTrue( ( button & SWT.BUTTON1 ) != 0 );
+    assertEquals( 0, button & SWT.BUTTON2 );
+    assertEquals( 0, button & SWT.BUTTON3 );
+    assertEquals( 0, button & SWT.BUTTON4 );
+    assertEquals( 0, button & SWT.BUTTON5 );
+
+    button = EventLCAUtil.translateButton( 2 );
+    assertTrue( ( button & SWT.BUTTON_MASK ) != 0 );
+    assertEquals( 0, button & SWT.BUTTON1 );
+    assertTrue( ( button & SWT.BUTTON2 ) != 0 );
+    assertEquals( 0, button & SWT.BUTTON3 );
+    assertEquals( 0, button & SWT.BUTTON4 );
+    assertEquals( 0, button & SWT.BUTTON5 );
+
+    button = EventLCAUtil.translateButton( 3 );
+    assertTrue( ( button & SWT.BUTTON_MASK ) != 0 );
+    assertEquals( 0, button & SWT.BUTTON1 );
+    assertEquals( 0, button & SWT.BUTTON2 );
+    assertTrue( ( button & SWT.BUTTON3 ) != 0 );
+    assertEquals( 0, button & SWT.BUTTON4 );
+    assertEquals( 0, button & SWT.BUTTON5 );
+
+    button = EventLCAUtil.translateButton( 4 );
+    assertTrue( ( button & SWT.BUTTON_MASK ) != 0 );
+    assertEquals( 0, button & SWT.BUTTON1 );
+    assertEquals( 0, button & SWT.BUTTON2 );
+    assertEquals( 0, button & SWT.BUTTON3 );
+    assertTrue( ( button & SWT.BUTTON4 ) != 0 );
+    assertEquals( 0, button & SWT.BUTTON5 );
+
+    button = EventLCAUtil.translateButton( 5 );
+    assertTrue( ( button & SWT.BUTTON_MASK ) != 0 );
+    assertEquals( 0, button & SWT.BUTTON1 );
+    assertEquals( 0, button & SWT.BUTTON2 );
+    assertEquals( 0, button & SWT.BUTTON3 );
+    assertEquals( 0, button & SWT.BUTTON4 );
+    assertTrue( ( button & SWT.BUTTON5 ) != 0 );
   }
 }
