@@ -284,10 +284,10 @@ public class Shell extends Decorations {
    * @see SWT#NO_TRIM
    * @see SWT#SHELL_TRIM
    * @see SWT#DIALOG_TRIM
-   * <!--@see SWT#MODELESS-->
-   * <!--@see SWT#PRIMARY_MODAL-->
+   * @see SWT#MODELESS
+   * @see SWT#PRIMARY_MODAL
    * @see SWT#APPLICATION_MODAL
-   * <!--@see SWT#SYSTEM_MODAL-->
+   * @see SWT#SYSTEM_MODAL
    * @see SWT#SHEET
    */
   public Shell( final Display display, final int style ) {

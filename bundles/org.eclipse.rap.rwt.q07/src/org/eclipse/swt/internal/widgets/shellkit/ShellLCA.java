@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import java.io.IOException;
@@ -29,6 +28,9 @@ import org.eclipse.swt.widgets.*;
 
 
 public final class ShellLCA extends AbstractWidgetLCA {
+
+  private static final int MODAL
+    = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL;
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Shell";
 
@@ -88,7 +90,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( shell );
     int style = widget.getStyle();
-    if( ( style & SWT.APPLICATION_MODAL ) != 0 ) {
+    if( ( style & MODAL ) != 0 ) {
       writer.call( "addState", new Object[] { "rwt_APPLICATION_MODAL" } );
     }
     if( ( style & SWT.ON_TOP ) != 0 ) {
