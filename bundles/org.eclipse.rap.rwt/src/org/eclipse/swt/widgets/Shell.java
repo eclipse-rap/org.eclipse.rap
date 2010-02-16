@@ -1358,7 +1358,7 @@ public class Shell extends Decorations {
    */
   public boolean getFullScreen() {
     checkWidget();
-    return ( this.mode & MODE_FULLSCREEN ) != 0;
+    return ( mode & MODE_FULLSCREEN ) != 0;
   }
 
   ///////////////////
