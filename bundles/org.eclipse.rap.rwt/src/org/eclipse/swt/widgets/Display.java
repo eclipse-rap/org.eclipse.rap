@@ -1315,6 +1315,28 @@ public class Display extends Device implements Adaptable {
   }
 
   /**
+   * Returns the button dismissal alignment, one of <code>LEFT</code> or <code>RIGHT</code>.
+   * The button dismissal alignment is the ordering that should be used when positioning the
+   * default dismissal button for a dialog.  For example, in a dialog that contains an OK and
+   * CANCEL button, on platforms where the button dismissal alignment is <code>LEFT</code>, the
+   * button ordering should be OK/CANCEL.  When button dismissal alignment is <code>RIGHT</code>,
+   * the button ordering should be CANCEL/OK.
+   *
+   * @return the button dismissal order
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public int getDismissalAlignment() {
+    checkDevice();
+    return SWT.LEFT;
+  }
+
+  /**
    * Returns the location of the on-screen pointer relative
    * to the top left corner of the screen.
    *
