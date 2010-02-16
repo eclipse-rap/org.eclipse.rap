@@ -104,7 +104,7 @@ class StackPresentationImpl extends StackPresentation {
     fdMiddleLeft.top = new FormAttachment( topLeft );
     fdMiddleLeft.left = new FormAttachment( 0, 0 );
     fdMiddleLeft.width = Images.IMG_MIDDLE_LEFT.getBounds().width;
-    fdMiddleLeft.bottom 
+    fdMiddleLeft.bottom
       = new FormAttachment( 100, -Images.IMG_BOTTOM_LEFT.getBounds().height );
     Label middleRight = new Label( background, SWT.NONE );
     middleRight.setBackgroundImage( Images.IMG_MIDDLE_RIGHT );
@@ -220,5 +220,11 @@ class StackPresentationImpl extends StackPresentation {
   }
 
   public void showSystemMenu() {
+  }
+
+  public StackDropResult dragOver( final Control currentControl,
+                                   final Point location )
+  {
+    return null;
   }
 }

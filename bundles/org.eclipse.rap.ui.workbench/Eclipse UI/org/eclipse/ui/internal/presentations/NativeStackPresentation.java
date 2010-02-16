@@ -37,6 +37,7 @@ import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IStackPresentationSite;
+import org.eclipse.ui.presentations.StackDropResult;
 import org.eclipse.ui.presentations.StackPresentation;
 
 /**
@@ -428,24 +429,23 @@ public class NativeStackPresentation extends StackPresentation {
     /* (non-Javadoc)
      * @see org.eclipse.ui.internal.skins.StackPresentation#dragOver(org.eclipse.swt.widgets.Control, org.eclipse.swt.graphics.Point)
      */
-    // RAP [bm]: 
-//    public StackDropResult dragOver(Control currentControl, Point location) {
-//
-//        // Determine which tab we're currently dragging over
-//        //		Point localPos = tabFolder.toControl(location);
-//        //		final TabItem tabUnderPointer = tabFolder.getItem(localPos);
-//        final TabItem tabUnderPointer = null;
-//
-//        // This drop target only deals with tabs... if we're not dragging over
-//        // a tab, exit.
-//        if (tabUnderPointer == null) {
-//            return null;
-//        }
-//
-//        //		return new StackDropResult(Geometry.toDisplay(tabFolder, tabUnderPointer.getBounds()),
-//        //			tabFolder.indexOf(tabUnderPointer));
-//        return null;
-//    }
+    public StackDropResult dragOver(Control currentControl, Point location) {
+
+        // Determine which tab we're currently dragging over
+        //		Point localPos = tabFolder.toControl(location);
+        //		final TabItem tabUnderPointer = tabFolder.getItem(localPos);
+        final TabItem tabUnderPointer = null;
+
+        // This drop target only deals with tabs... if we're not dragging over
+        // a tab, exit.
+        if (tabUnderPointer == null) {
+            return null;
+        }
+
+        //		return new StackDropResult(Geometry.toDisplay(tabFolder, tabUnderPointer.getBounds()),
+        //			tabFolder.indexOf(tabUnderPointer));
+        return null;
+    }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.presentations.StackPresentation#showSystemMenu()

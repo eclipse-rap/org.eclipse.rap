@@ -219,19 +219,20 @@ public abstract class StackPresentation implements ISizeProvider {
      */
     public abstract void selectPart(IPresentablePart toSelect);
 
-    // RAP [bm]: 
-//    /**
-//     * This method is invoked whenever a part is dragged over the stack's control.
-//     * It returns a StackDropResult if and only if the part may be dropped in this
-//     * location.
-//     *
-//     * @param currentControl the control being dragged over
-//     * @param location cursor location (display coordinates)
-//     * @return a StackDropResult or null if the presentation does not have
-//     * a drop target in this location.
-//     */
-//    public abstract StackDropResult dragOver(Control currentControl,
-//            Point location);
+    /**
+     * This method is invoked whenever a part is dragged over the stack's control.
+     * It returns a StackDropResult if and only if the part may be dropped in this
+     * location.
+     *
+     * @param currentControl the control being dragged over
+     * @param location cursor location (display coordinates)
+     * @return a StackDropResult or null if the presentation does not have
+     * a drop target in this location.
+     * 
+     * @since 1.3
+     */
+    public abstract StackDropResult dragOver(Control currentControl,
+            Point location);
 
     /**
      * Instructs the presentation to display the system menu

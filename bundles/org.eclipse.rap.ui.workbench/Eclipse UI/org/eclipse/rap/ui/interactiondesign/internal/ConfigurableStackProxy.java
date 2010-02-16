@@ -31,6 +31,7 @@ import org.eclipse.ui.presentations.IPartMenu;
 import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IPresentationSerializer;
 import org.eclipse.ui.presentations.IStackPresentationSite;
+import org.eclipse.ui.presentations.StackDropResult;
 import org.eclipse.ui.presentations.StackPresentation;
 
 /**
@@ -424,6 +425,12 @@ public class ConfigurableStackProxy extends StackPresentation {
     getDelegate().selectPart( toSelect );
   }
 
+  public StackDropResult dragOver( final Control currentControl, 
+                                   final Point location )
+  {
+    return null;
+  }
+  
   /**
    * @see StackPresentation
    */

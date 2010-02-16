@@ -38,6 +38,7 @@ import org.eclipse.ui.presentations.IPartMenu;
 import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IPresentationSerializer;
 import org.eclipse.ui.presentations.IStackPresentationSite;
+import org.eclipse.ui.presentations.StackDropResult;
 import org.eclipse.ui.presentations.StackPresentation;
 
 /**
@@ -481,10 +482,11 @@ public final class TabbedStackPresentation extends StackPresentation {
     /* (non-Javadoc)
      * @see org.eclipse.ui.presentations.StackPresentation#dragOver(org.eclipse.swt.widgets.Control, org.eclipse.swt.graphics.Point)
      */
-    // RAP [bm]: 
-//    public StackDropResult dragOver(Control currentControl, Point location) {
+    public StackDropResult dragOver(Control currentControl, Point location) {
+// RAP [rh] dragging over stacks is unsupported by RAP's TabbedStackPresentation    	
 //        return dragBehavior.dragOver(currentControl, location, dragStart);
-//    }
+    	return null;
+    }
 
     public void showSystemMenu() {
         showSystemMenu(folder.getTabFolder().getSystemMenuLocation(), getSite().getSelectedPart());

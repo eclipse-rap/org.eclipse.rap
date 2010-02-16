@@ -61,6 +61,7 @@ import org.eclipse.ui.internal.presentations.PresentablePart;
 import org.eclipse.ui.presentations.IPartMenu;
 import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IStackPresentationSite;
+import org.eclipse.ui.presentations.StackDropResult;
 
 
 public class ViewStackPresentation extends ConfigurableStack {
@@ -74,6 +75,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   private static final String BUTTON_ID = "buttonId";
   private static final int WIDTH_SPACING = 65;
   private static final int HEIGHT_SPACING = 15;
+  
   private Control presentationControl;
   private IPresentablePart currentPart;
   private ElementBuilder stackBuilder;
@@ -969,6 +971,12 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( toolBarLayer != null ) {
       toolBarLayer.setVisible( false );
     }
+  }
+  
+  public StackDropResult dragOver( final Control currentControl, 
+                                   final Point location )
+  {
+    return null;
   }
 
   public void setActive( final int newState ) {
