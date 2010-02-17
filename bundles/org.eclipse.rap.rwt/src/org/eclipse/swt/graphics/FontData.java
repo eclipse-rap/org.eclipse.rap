@@ -178,6 +178,27 @@ public final class FontData {
   }
   
   /**
+   * Returns the locale of the receiver.
+   * <p>
+   * The locale determines which platform character set this
+   * font is going to use. Widgets and graphics operations that
+   * use this font will convert UNICODE strings to the platform
+   * character set of the specified locale.
+   * </p>
+   * <p>
+   * On platforms where there are multiple character sets for a
+   * given language/country locale, the variant portion of the
+   * locale will determine the character set.
+   * </p>
+   * 
+   * @return the <code>String</code> representing a Locale object
+   * @since 1.3
+   */
+  public String getLocale() {
+    return "";
+  }
+
+  /**
    * Compares the argument to the receiver, and returns true
    * if they represent the <em>same</em> object using a class
    * specific comparison.
