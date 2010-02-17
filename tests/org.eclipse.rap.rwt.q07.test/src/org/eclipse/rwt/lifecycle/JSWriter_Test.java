@@ -98,15 +98,17 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "qx.ui.form.Button" );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.newWidget( \"w2\", \"w3\", true, "
-        + "\"qx.ui.form.Button\" );";
+        + "var w = new qx.ui.form.Button();"
+        + "wm.add( w, \"w2\", true );"
+        + "wm.setParent( w, \"w3\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that the WidgetManager, once initialized, is not initialized
     // twice
     writer = JSWriter.getWriterFor( shell.button );
     writer.newWidget( "qx.ui.form.Button" );
-    expected +=   "var w = wm.newWidget( \"w2\", \"w3\", true, "
-                +  "\"qx.ui.form.Button\" );";
+    expected +=   "var w = new qx.ui.form.Button();"
+                + "wm.add( w, \"w2\", true );" 
+                + "wm.setParent( w, \"w3\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that obtaining the widget reference (var w =) is only rendered
     // once
@@ -123,8 +125,8 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "qx.ui.form.Button" );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.newWidget( \"w2\", \"w3\", true, "
-        + "\"qx.ui.form.Button\" );";
+        + "var w = new qx.ui.form.Button();"
+        + "wm.add( w, \"w2\", true );wm.setParent( w, \"w3\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
     Fixture.fakeResponseWriter();
@@ -145,8 +147,8 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "qx.ui.form.Button", params );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.newWidget( \"w2\", \"w3\", true, "
-        + "\"qx.ui.form.Button\", '\"abc\", [\"#ff0000\" ]' );";
+        + "var w = new qx.ui.form.Button( \"abc\", [\"#ff0000\" ] );"
+        + "wm.add( w, \"w2\", true );wm.setParent( w, \"w3\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
     Fixture.fakeResponseWriter();
@@ -158,9 +160,7 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer = JSWriter.getWriterFor( item );
     writer.newWidget( "TreeItem", null );
-    expected
-      =   "var w = wm.newWidget( \"w4\", \"\", false, "
-        + "\"TreeItem\" );";
+    expected = "var w = new TreeItem();wm.add( w, \"w4\", false );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

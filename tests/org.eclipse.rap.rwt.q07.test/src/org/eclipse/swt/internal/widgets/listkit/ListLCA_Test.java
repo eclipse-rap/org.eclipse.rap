@@ -366,24 +366,24 @@ public class ListLCA_Test extends TestCase {
     AbstractWidgetLCA listLCA = WidgetUtil.getLCA( list );
     listLCA.renderInitialization( list );
     String parentId = WidgetUtil.getId( shell );
-    String expected = "var w = wm.newWidget( \""
+    String expected =   "var w = new org.eclipse.swt.widgets.List( false );"
+                      + "wm.add( w, \""
                       + WidgetUtil.getId( list )
-                      + "\", \""
+                      + "\", true );wm.setParent( w, \""
                       + parentId
-                      + "\", true, \"org.eclipse.swt.widgets.List\", "
-                      + "'false' );";
+                      + "\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
 
     // multiselection
     Fixture.fakeNewRequest();
     list = new List( shell, SWT.MULTI );
     listLCA.renderInitialization( list );
-    expected = "var w = wm.newWidget( \""
+    expected =   "var w = new org.eclipse.swt.widgets.List( true );"
+               + "wm.add( w, \""
                + WidgetUtil.getId( list )
-               + "\", \""
+               + "\", true );wm.setParent( w, \""
                + parentId
-               + "\", true, \"org.eclipse.swt.widgets.List\","
-               + " 'true' );";
+               + "\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

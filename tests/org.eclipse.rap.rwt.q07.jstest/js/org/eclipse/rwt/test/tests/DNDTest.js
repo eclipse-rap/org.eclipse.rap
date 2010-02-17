@@ -1151,8 +1151,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     },
     
     createTable : function() {
-      // TODO [tb] : wm in global namepsace only due to bug 297066
-      wm = org.eclipse.swt.WidgetManager.getInstance();
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
       var table = new org.eclipse.swt.widgets.Table( "w2", "|multi" );
       wm.add( table, "w2", true );
       table.addToDocument();
@@ -1163,48 +1162,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       table.updateRows();
       table.setItemCount( 4 );
       table.setScrollBarsVisibile( false, true );
-      var w = wm.newWidget( "w3", 
-                            "", 
-                            false, 
-                            "org.eclipse.swt.widgets.TableColumn", 
-                            'wm.findWidgetById( "w2" )' );
+      var w = new org.eclipse.swt.widgets.TableColumn( table );
+      wm.add( w, "w3", false );
       w.setLabel( "" );
       w.setWidth( 105 );
-      var w = wm.newWidget( "w4", 
-                            "", 
-                            false, 
-                            "org.eclipse.swt.widgets.TableColumn", 
-                            'wm.findWidgetById( "w2" )' );
+      w = new org.eclipse.swt.widgets.TableColumn( table );
+      wm.add( w, "w4", false );
       w.setLabel( "" );
       w.setLeft( 105 );
       w.setWidth( 104 );
       w.setZIndex( 299 );
-      var w = wm.newWidget( "w5", 
-                            "", 
-                            false, 
-                            "org.eclipse.swt.widgets.TableItem", 
-                            'wm.findWidgetById( "w2" ), 0');
+      w = new org.eclipse.swt.widgets.TableItem( table, 0 );
+      wm.add( w, "w5", false );
       w.setTexts( [ "Item name 1", "Item Value 1" ] );
       w.update();
-      var w = wm.newWidget( "w6", 
-                            "", 
-                            false, 
-                            "org.eclipse.swt.widgets.TableItem", 
-                            'wm.findWidgetById( "w2" ), 0');
+      w = new org.eclipse.swt.widgets.TableItem( table, 0 );
+      wm.add( w, "w6", false );
       w.setTexts( [ "Item name 2", "Item Value 2" ] );
       w.update();
-      var w = wm.newWidget( "w7", 
-                            "", 
-                            false, 
-                            "org.eclipse.swt.widgets.TableItem", 
-                            'wm.findWidgetById( "w2" ), 0');
+      w = new org.eclipse.swt.widgets.TableItem( table, 0 );
+      wm.add( w, "w7", false );
       w.setTexts( [ "Item name 3", "Item Value 3" ] );
       w.update();
-      var w = wm.newWidget( "w8",
-                            "", 
-                            false, 
-                            "org.eclipse.swt.widgets.TableItem", 
-                            'wm.findWidgetById( "w2" ), 0');
+      w = new org.eclipse.swt.widgets.TableItem( table, 0 );
+      wm.add( w, "w8", false );
       w.setTexts( [ "Item name 4", "Item Value 4" ] );
       w.update();
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

@@ -150,20 +150,18 @@ public final class JSWriter {
   {
     ensureWidgetManager();
     StringBuffer buffer = new StringBuffer();
-    buffer.append( "var w = wm.newWidget( \"" );
-    buffer.append( WidgetUtil.getId( widget ) );
-    buffer.append( "\", \"" );
-    buffer.append( getJSParentId( widget ) );
-    buffer.append( "\", " );
-    buffer.append( useSetParent() );
-    buffer.append( ", \"" );
-    buffer.append( className );
-    buffer.append( "\"" );
-    buffer.append( createParamList( ", '", args, "'", false ) );
-    buffer.append( " );" );
+    boolean isControl = widget instanceof Control;
+    boolean isShell = widget instanceof Shell;
+    buffer.append( "var w = new " + className );
+    buffer.append( "(" + createParamList( " ", args, " ", false ) + ");" );
+    buffer.append( "wm.add( w, " ); 
+    buffer.append( "\"" + WidgetUtil.getId( widget ) + "\", " );
+    buffer.append( isControl + " );" );
     getWriter().write( buffer.toString() );
     setCurrentWidgetRef( widget );
-    if( widget instanceof Shell ) {
+    if( isControl && !isShell ) {
+      setParent( getJSParentId( widget ) );
+    } else if( isShell ) {
       call( "addToDocument", null );
     }
   }
@@ -738,12 +736,6 @@ public final class JSWriter {
   /////////////////////////////////////////////////////////////////////
   // Helping methods for JavaScript WidgetManager and Widget references
 
-
-  private Boolean useSetParent() {
-    return   !( widget instanceof Shell ) && widget instanceof Control
-           ? Boolean.TRUE
-           : Boolean.FALSE;
-  }
 
   private String getJSParentId( final Widget widget ) {
     String result = "";

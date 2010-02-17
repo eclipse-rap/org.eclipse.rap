@@ -68,38 +68,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         }
       }
     },
-    
-    newWidget : function( widgetId, parentId, isControl, type, paramList ) {
-      // Note [fappel]: Do not remove the 'wm' declaration. This is needed
-      //                for IE if the 'newExpression' has a reference to
-      //                the variable defined in the script from the server.
-      // TODO [fappel]: Think about improvement of the hardcoded expression... 
-      var wm = this;
-      
-      var newExpression;
-      if( paramList != null ) {
-        newExpression = "new " + type + "(" + paramList + ");";
-      } else {
-        newExpression = "new " + type + "();";
-      }
-      var result = window.eval( newExpression );
-      
-      // map the widget to the server side widgetId
-      if( result.classname == "org.eclipse.swt.widgets.Shell" ) {
-        // TODO [rh] HACK: when a Shell is created, the isControl parameter is
-        //      set to false so that setParent isn't called (see below).
-        //      But to keep the activeControl mechanism working, it must be 
-        //      added to the WidgetManager with the isCcontrol flag set to true     
-        this.add( result, widgetId, true );
-      } else {
-        this.add( result, widgetId, isControl );
-      }
-      // insert controls into the widget tree
-      if( isControl ) {
-        this.setParent( result, parentId );
-      }
-      return result;
-    },
 
     /**
      * Registers the given widget under the given id at the WidgetManager.
