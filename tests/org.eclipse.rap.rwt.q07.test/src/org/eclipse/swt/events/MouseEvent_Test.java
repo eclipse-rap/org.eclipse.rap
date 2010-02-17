@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -161,6 +161,7 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 1, mouseEvent.button );
     assertEquals( 22, mouseEvent.x );
     assertEquals( 22, mouseEvent.y );
+    assertTrue( ( mouseEvent.stateMask & SWT.BUTTON1 ) != 0 );
     // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
     events.clear();
     Fixture.fakeResponseWriter();
@@ -176,18 +177,21 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 1, mouseEvent.button );
     assertEquals( 22, mouseEvent.x );
     assertEquals( 22, mouseEvent.y );
+    assertTrue( ( mouseEvent.stateMask & SWT.BUTTON1 ) != 0 );
     mouseEvent = ( ( MouseEvent )events.get( 1 ) );
     assertEquals( MouseEvent.MOUSE_DOUBLE_CLICK, mouseEvent.getID() );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
     assertEquals( 22, mouseEvent.x );
     assertEquals( 22, mouseEvent.y );
+    assertTrue( ( mouseEvent.stateMask & SWT.BUTTON1 ) != 0 );
     mouseEvent = ( ( MouseEvent )events.get( 2 ) );
     assertEquals( MouseEvent.MOUSE_UP, mouseEvent.getID() );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
     assertEquals( 22, mouseEvent.x );
     assertEquals( 22, mouseEvent.y );
+    assertTrue( ( mouseEvent.stateMask & SWT.BUTTON1 ) != 0 );
   }
 
   public void testUntypedMouseEventOrder() {
