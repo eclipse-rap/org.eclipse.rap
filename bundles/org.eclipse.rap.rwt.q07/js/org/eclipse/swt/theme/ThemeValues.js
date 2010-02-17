@@ -55,7 +55,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
       var result = values.borders[ vkey ];
-      this.__checkDefined( result, element, key );
       // construct rounded border if "border-radius" is set
       vkey = this._store.getCssValue( element, this._states, "border-radius" );
       var radius = values.boxdims[ vkey ];
@@ -79,7 +78,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
       var result = values.colors[ vkey ];
-      this.__checkDefined( result, element, key );
       return result;
     },
 
@@ -87,7 +85,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
       var result = values.fonts[ vkey ];
-      this.__checkDefined( result, element, key );
       return result;
     },
 
@@ -95,7 +92,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
       var result = values.dimensions[ vkey ];
-      this.__checkDefined( result, element, key );
       return result;
     },
 
@@ -103,25 +99,21 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
       var result = values.boxdims[ vkey ];
-      this.__checkDefined( result, element, key );
       return result;
     },
 
     getCssBoolean : function( element, key ) {
       var result = this._store.getCssValue( element, this._states, key );
-      this.__checkDefined( result, element, key );
       return result;
     },
 
     getCssFloat : function( element, key ) {
       var result = this._store.getCssValue( element, this._states, key );
-      this.__checkDefined( result, element, key );
       return result;
     },
 
     getCssIdentifier : function( element, key ) {
       var result = this._store.getCssValue( element, this._states, key );
-      this.__checkDefined( result, element, key );
       return result;
     },
 
@@ -129,7 +121,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
       var result = values.images[ vkey ];
-      this.__checkDefined( result, element, key );
       if( result != null ) {
         // TODO [rh] remove hard-coded path (first segment is defined by 
         //      resource-manager)
@@ -145,7 +136,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
     getCssSizedImage : function( element, key ) {
       var vkey = this._store.getCssValue( element, this._states, key );
       var image = this._store.getThemeValues().images[ vkey ];
-      this.__checkDefined( image, element, key );
       var result;
       if( image != null ) {
         // TODO [tb] : Revise hardcoded path
@@ -162,7 +152,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
       var result = values.gradients[ vkey ];
-      this.__checkDefined( result, element, key );
       return result;
     },
     
@@ -170,17 +159,11 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var vkey = this._store.getCssValue( element, this._states, key );
       var values = this._store.getThemeValues();
       var result = values.cursors[ vkey ];
-      this.__checkDefined( result, element, key );
       if( vkey === result ) {
         result = "rwt-resources/themes/cursors/" + result;
       }
       return result;
-    },
+    }
 
-    __checkDefined : function( value, element, key ) {
-      if( value === undefined ) {
-        this.error( "undefined value for " + element + "/" + key );
-      }
-  	}
   }
 } );
