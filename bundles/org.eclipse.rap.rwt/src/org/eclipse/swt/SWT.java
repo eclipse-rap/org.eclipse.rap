@@ -887,6 +887,42 @@ public class SWT {
   public static final int BUTTON_MASK;
 
   /**
+   * Keyboard and/or mouse event mask indicating that the MOD1 key
+   * was pushed on the keyboard when the event was generated.
+   *
+   * This is the primary keyboard modifier for the platform.
+   *
+   * @since 1.3
+   */
+  public static final int MOD1;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that the MOD2 key
+   * was pushed on the keyboard when the event was generated.
+   *
+   * This is the secondary keyboard modifier for the platform.
+   *
+   * @since 1.3
+   */
+  public static final int MOD2;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that the MOD3 key
+   * was pushed on the keyboard when the event was generated.
+   *
+   * @since 1.3
+   */
+  public static final int MOD3;
+
+  /**
+   * Keyboard and/or mouse event mask indicating that the MOD4 key
+   * was pushed on the keyboard when the event was generated.
+   *
+   * @since 1.3
+   */
+  public static final int MOD4;
+
+  /**
    * Accelerator constant used to differentiate a key code from a
    * unicode character.
    *
@@ -2857,6 +2893,11 @@ public class SWT {
     */
     BUTTON_MASK = BUTTON1 | BUTTON2 | BUTTON3 | BUTTON4 | BUTTON5;
     MODIFIER_MASK = ALT | SHIFT | CTRL | COMMAND;
+
+    MOD1 = CONTROL;
+    MOD2 = SHIFT;
+    MOD3 = ALT;
+    MOD4 = 0;
   }
 
   /**

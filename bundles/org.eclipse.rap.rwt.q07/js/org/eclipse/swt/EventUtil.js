@@ -36,7 +36,8 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
     _shiftKey : false,
     _ctrlKey : false,
-    _altKey : false,       
+    _altKey : false,
+    _metaKey : false,
 
     eventTimestamp : function() {
       var app = qx.core.Init.getInstance().getApplication();
@@ -80,10 +81,12 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     
     _getKeyModifier : function() {
       var modifier = "";
+      var commandKey
+        = qx.core.Client.runsOnMacintosh() && org.eclipse.swt.EventUtil._metaKey;
       if( org.eclipse.swt.EventUtil._shiftKey ) {
         modifier += "shift,";
       }
-      if( org.eclipse.swt.EventUtil._ctrlKey ) {
+      if( org.eclipse.swt.EventUtil._ctrlKey || commandKey ) {
         modifier += "ctrl,";
       }
       if( org.eclipse.swt.EventUtil._altKey ) {
