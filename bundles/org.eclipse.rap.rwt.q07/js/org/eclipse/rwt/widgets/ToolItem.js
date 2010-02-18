@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -52,7 +52,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
     // overwritten:
     _onKeyPress : function( event ) {
       // give to toolBar for keyboard control (left/right keys):
-      this.getParent().dispatchEvent( "keypress", event );     
+      this.getParent().dispatchEvent( event );     
       this.base( arguments, event ); 
     },
     
