@@ -48,6 +48,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     ProgressBar progressBar = ( ProgressBar )widget;
     ControlLCAUtil.processMouseEvents( progressBar );
     ControlLCAUtil.processKeyEvents( progressBar );
+    ControlLCAUtil.processMenuDetect( progressBar );
     WidgetLCAUtil.processHelp( progressBar );
   }
 

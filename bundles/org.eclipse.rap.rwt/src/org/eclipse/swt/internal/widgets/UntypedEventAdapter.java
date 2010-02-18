@@ -36,7 +36,8 @@ public final class UntypedEventAdapter
              ShowListener,
              ActivateListener,
              HelpListener,
-             DragDetectListener
+             DragDetectListener,
+             MenuDetectListener
 {
 
   private static final class Entry {
@@ -232,6 +233,12 @@ public final class UntypedEventAdapter
     dispatchEvent( event );
   }
 
+  public void menuDetected( final MenuDetectEvent typedEvent ) {
+    Event event = createEvent( SWT.MenuDetect, typedEvent.getSource() );
+    copyFields( typedEvent, event );
+    dispatchEvent( event );
+  }
+
   //////////////////////
   // Listener management
 
@@ -284,6 +291,9 @@ public final class UntypedEventAdapter
         } else {
           MenuEvent.addListener( widget, this );
         }
+      break;
+      case SWT.MenuDetect:
+        MenuDetectEvent.addListener( widget, this );
       break;
       case SWT.Modify:
         ModifyEvent.addListener( widget, this );
@@ -373,6 +383,9 @@ public final class UntypedEventAdapter
         } else {
           MenuEvent.removeListener( widget, this );
         }
+      break;
+      case SWT.MenuDetect:
+        MenuDetectEvent.removeListener( widget, this );
       break;
       case SWT.Modify:
         ModifyEvent.removeListener( widget, this );
@@ -561,6 +574,9 @@ public final class UntypedEventAdapter
           typedEvent = new MenuEvent( event );
         }
       break;
+      case SWT.MenuDetect:
+        typedEvent = new MenuDetectEvent( event );
+      break;
       case SWT.Modify:
         typedEvent = new ModifyEvent( event );
       break;
@@ -700,6 +716,13 @@ public final class UntypedEventAdapter
     to.keyCode = from.keyCode;
     to.stateMask = from.stateMask;
     to.detail = from.detail;
+    to.doit = from.doit;
+  }
+
+  private static void copyFields( final MenuDetectEvent from, final Event to ) {
+    copyFields( ( TypedEvent )from, to );
+    to.x = from.x;
+    to.y = from.y;
     to.doit = from.doit;
   }
 }

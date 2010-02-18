@@ -81,6 +81,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     processActivate( shell );
     ControlLCAUtil.processMouseEvents( shell );
     ControlLCAUtil.processKeyEvents( shell );
+    ControlLCAUtil.processMenuDetect( shell );
     WidgetLCAUtil.processHelp( shell );
   }
 

@@ -17,7 +17,7 @@ import org.eclipse.ui.internal.presentations.PresentablePart;
 import org.eclipse.ui.internal.presentations.PresentationFactoryUtil;
 import org.eclipse.ui.internal.presentations.SystemMenuDetach;
 import org.eclipse.ui.internal.presentations.SystemMenuFastView;
-import org.eclipse.ui.internal.presentations.SystemMenuSize;
+//import org.eclipse.ui.internal.presentations.SystemMenuSize;
 import org.eclipse.ui.internal.presentations.UpdatingActionContributionItem;
 import org.eclipse.ui.presentations.AbstractPresentationFactory;
 import org.eclipse.ui.presentations.IPresentablePart;
@@ -43,7 +43,9 @@ public class ViewStack extends PartStack {
 
     private WorkbenchPage page;
 
-    private SystemMenuSize sizeItem = new SystemMenuSize(null);
+    // RAP [bm]: size menu unusable due to missing keyboard support for Sash
+//    private SystemMenuSize sizeItem = new SystemMenuSize(null);
+    // RAPEND: [bm]
 
     private SystemMenuFastView fastViewAction;
 
@@ -54,8 +56,10 @@ public class ViewStack extends PartStack {
                 "misc", new UpdatingActionContributionItem(fastViewAction)); //$NON-NLS-1$
         appendToGroupIfPossible(menuManager,
         		"misc", new UpdatingActionContributionItem(detachViewAction)); //$NON-NLS-1$
-        sizeItem = new SystemMenuSize(getSelection());
-        appendToGroupIfPossible(menuManager, "size", sizeItem); //$NON-NLS-1$
+        // RAP [bm]: size menu unusable due to missing keyboard support for Sash
+//        sizeItem = new SystemMenuSize(getSelection());
+//        appendToGroupIfPossible(menuManager, "size", sizeItem); //$NON-NLS-1$
+        // RAPEND: [bm]
     }
 
     public ViewStack(WorkbenchPage page) {
@@ -117,7 +121,9 @@ public class ViewStack extends PartStack {
 
         fastViewAction.setPane(current);
         detachViewAction.setPane(pane);
-        sizeItem.setPane(pane);
+        // RAP [bm]: size menu unusable due to missing keyboard support for Sash
+//        sizeItem.setPane(pane);
+        // RAPEND: [bm]
     }
 
 	/**

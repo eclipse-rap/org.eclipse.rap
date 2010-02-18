@@ -378,6 +378,17 @@ public class SWT {
   public static final int Traverse = 31;
 
   /**
+   * The menu detect event type (value is 35).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @since 1.3
+   */
+  public static final int MenuDetect = 35;
+  
+  /**
    * The set data event type (value is 36).
    *
    * @see org.eclipse.swt.widgets.Widget#addListener

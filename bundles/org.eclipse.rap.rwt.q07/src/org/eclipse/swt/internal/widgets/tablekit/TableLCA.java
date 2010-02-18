@@ -113,6 +113,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     readCellToolTipTextRequested( table );
     ControlLCAUtil.processMouseEvents( table );
     ControlLCAUtil.processKeyEvents( table );
+    ControlLCAUtil.processMenuDetect( table );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

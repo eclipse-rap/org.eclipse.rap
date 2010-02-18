@@ -67,6 +67,7 @@ public class SliderLCA extends AbstractWidgetLCA {
       slider.setSelection( Integer.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( slider, null, true );
+    ControlLCAUtil.processMenuDetect( slider );
     WidgetLCAUtil.processHelp( slider );
   }
 

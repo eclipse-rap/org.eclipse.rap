@@ -27,6 +27,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -211,18 +213,16 @@ public class ToolBarContributionItem extends ContributionItem implements IToolBa
             // ToolBarManager.createControl can actually return a pre-existing control.
             // Only add the listener if the toolbar was newly created (bug 62097).
             if (oldToolBar != toolBar) {
-            	// RAP [bm]: MenuDetect
-//	            toolBar.addListener(SWT.MenuDetect, new Listener() {
-//	
-//	                public void handleEvent(Event event) {
-//	                    // if the toolbar does not have its own context menu then
-//	                    // handle the event
-//	                    if (toolBarManager.getContextMenuManager() == null) {
-//	                        handleContextMenu(event);
-//	                    }
-//	                }
-//	            });
-            	// RAPEND: [bm] 
+	            toolBar.addListener(SWT.MenuDetect, new Listener() {
+	
+	                public void handleEvent(Event event) {
+	                    // if the toolbar does not have its own context menu then
+	                    // handle the event
+	                    if (toolBarManager.getContextMenuManager() == null) {
+	                        handleContextMenu(event);
+	                    }
+	                }
+	            });
 
             }
 
@@ -400,29 +400,29 @@ public class ToolBarContributionItem extends ContributionItem implements IToolBa
      * @param event
      *            the event object
      */
-//    private void handleContextMenu(Event event) {
-//        ToolBar toolBar = toolBarManager.getControl();
-//        // If parent has a menu then use that one
-//        Menu parentMenu = toolBar.getParent().getMenu();
-//        if ((parentMenu != null) && (!parentMenu.isDisposed())) {
-//            toolBar.setMenu(parentMenu);
-//            // Hook listener to remove menu once it has disapeared
-//            parentMenu.addListener(SWT.Hide, new Listener() {
-//
-//                public void handleEvent(Event innerEvent) {
-//                    ToolBar innerToolBar = toolBarManager.getControl();
-//                    if (innerToolBar != null) {
-//                        innerToolBar.setMenu(null);
-//                        Menu innerParentMenu = innerToolBar.getParent()
-//                                .getMenu();
-//                        if (innerParentMenu != null) {
-//                            innerParentMenu.removeListener(SWT.Hide, this);
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//    }
+    private void handleContextMenu(Event event) {
+        ToolBar toolBar = toolBarManager.getControl();
+        // If parent has a menu then use that one
+        Menu parentMenu = toolBar.getParent().getMenu();
+        if ((parentMenu != null) && (!parentMenu.isDisposed())) {
+            toolBar.setMenu(parentMenu);
+            // Hook listener to remove menu once it has disapeared
+            parentMenu.addListener(SWT.Hide, new Listener() {
+
+                public void handleEvent(Event innerEvent) {
+                    ToolBar innerToolBar = toolBarManager.getControl();
+                    if (innerToolBar != null) {
+                        innerToolBar.setMenu(null);
+                        Menu innerParentMenu = innerToolBar.getParent()
+                                .getMenu();
+                        if (innerParentMenu != null) {
+                            innerParentMenu.removeListener(SWT.Hide, this);
+                        }
+                    }
+                }
+            });
+        }
+    }
 
     /**
      * Handles the disposal of the widget.

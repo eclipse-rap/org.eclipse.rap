@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.controlkit;
 
@@ -17,12 +18,12 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
@@ -224,6 +225,30 @@ public class ControlLCA_Test extends TestCase {
     markup = Fixture.getAllMarkup();
     assertEquals( -1, markup.indexOf( focusGained ) );
     assertEquals( -1, markup.indexOf( focusLost ) );
+  }
+
+  public void testMenuDetectListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Label label = new Label( shell, SWT.NONE );
+    final StringBuffer log = new StringBuffer();
+    label.addMenuDetectListener( new MenuDetectListener() {
+      public void menuDetected( final MenuDetectEvent e ) {
+        log.append( e.x );
+        log.append( "|" );
+        log.append( e.y );
+      }
+    });
+    String displayId = DisplayUtil.getId( display );
+    String labelId = WidgetUtil.getId( label );
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT, labelId );
+    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_X, "10" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_Y, "30" );
+    Fixture.executeLifeCycleFromServerThread();
+    assertEquals( "10|30", log.toString() );
   }
 
   public void testRedrawAndDispose() {

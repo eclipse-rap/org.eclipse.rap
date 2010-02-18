@@ -68,6 +68,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     processWidgetDefaultSelectedEvent( tree );
     ControlLCAUtil.processMouseEvents( tree );
     ControlLCAUtil.processKeyEvents( tree );
+    ControlLCAUtil.processMenuDetect( tree );
     WidgetLCAUtil.processHelp( tree );
   }
 

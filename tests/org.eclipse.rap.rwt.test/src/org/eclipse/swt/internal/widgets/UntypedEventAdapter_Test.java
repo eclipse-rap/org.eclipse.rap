@@ -111,6 +111,9 @@ public class UntypedEventAdapter_Test extends TestCase {
     adapter.addListener( SWT.Help, listener );
     adapter.helpRequested( new HelpEvent( widget ) );
     assertEquals( SWT.Help, eventType );
+    adapter.addListener( SWT.MenuDetect, listener );
+    adapter.menuDetected( new MenuDetectEvent( widget ) );
+    assertEquals( SWT.MenuDetect, eventType );
   }
 
   public void testAdditionAndRemovalOfListener() throws Exception {

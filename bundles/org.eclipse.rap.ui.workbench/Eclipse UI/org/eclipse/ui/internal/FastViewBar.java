@@ -107,10 +107,7 @@ public class FastViewBar implements IWindowTrim {
     private Listener addMenuListener = new Listener() {
         public void handleEvent(Event event) {
             Point loc = new Point(event.x, event.y);
-            // RAP [bm]: SWT.MenuDetect
-//            if (event.type == SWT.MenuDetect) {
-            if (event.button == 2) {
-            // RAPEND: [bm] 
+            if (event.type == SWT.MenuDetect) {
                 showAddFastViewPopup(loc);
             }
         }
@@ -119,10 +116,7 @@ public class FastViewBar implements IWindowTrim {
     private Listener menuListener = new Listener() {
         public void handleEvent(Event event) {
             Point loc = new Point(event.x, event.y);
-            // RAP [bm]: 
-//            if (event.type == SWT.MenuDetect) {
-            if (event.button == 2) {
-            // RAPEND: [bm] 
+            if (event.type == SWT.MenuDetect) {
                 showFastViewBarPopup(loc);
             }
         }
@@ -334,10 +328,7 @@ public class FastViewBar implements IWindowTrim {
         String tip = WorkbenchMessages.get().FastViewBar_0; 
         fvbComposite.setToolTipText(tip);
 
-        // RAP [bm]: SWT.MenuDetect
-//        fvbComposite.addListener(SWT.MenuDetect, menuListener);
-        fvbComposite.addListener(SWT.MouseUp, menuListener);
-        // RAPEND: [bm] 
+        fvbComposite.addListener(SWT.MenuDetect, menuListener);
 
         // RAP [bm]: DnD
 //        PresentationUtil.addDragListener(fvbComposite, dragListener);
@@ -404,9 +395,8 @@ public class FastViewBar implements IWindowTrim {
 
         	// Bring up the 'Add Fast View' menu on a left -or- right button click
         	// Right click (context menu)
-        	// RAP [bm]: SWT.MenuDetect
-//        	menuItem.addListener(SWT.MenuDetect, addMenuListener);        
-//        	menuTB.addListener(SWT.MenuDetect, addMenuListener);
+        	menuItem.addListener(SWT.MenuDetect, addMenuListener);        
+        	menuTB.addListener(SWT.MenuDetect, addMenuListener);
         	menuItem.addListener(SWT.MouseUp, addMenuListener);        
         	menuTB.addListener(SWT.MouseUp, addMenuListener);
         	// RAPEND: [bm] 
@@ -435,10 +425,7 @@ public class FastViewBar implements IWindowTrim {
 
         fastViewBar.createControl(fvbComposite);
 
-        // RAP [bm]: 
-//        getToolBar().addListener(SWT.MenuDetect, menuListener);
-        getToolBar().addListener(SWT.MouseUp, menuListener);
-        // RAPEND: [bm] 
+        getToolBar().addListener(SWT.MenuDetect, menuListener);
 
         // RAP [bm]: DnD
 //        IDragOverListener fastViewDragTarget = new IDragOverListener() {

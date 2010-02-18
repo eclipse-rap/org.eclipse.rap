@@ -34,6 +34,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.readTextAndSelection( text );
     ControlLCAUtil.processMouseEvents( text );
     ControlLCAUtil.processKeyEvents( text );
+    ControlLCAUtil.processMenuDetect( text );
     WidgetLCAUtil.processHelp( text );
   }
 

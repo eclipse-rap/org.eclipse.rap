@@ -20,9 +20,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.internal.IChangeListener;
@@ -63,8 +66,7 @@ public class TrimCommonUIHandle extends Composite {
 	 */
 	private TrimLayout  layout;
     private IWindowTrim trim;
-    // RAP [bm]:
-//	private Control     toDrag;
+	private Control     toDrag;
 	private int orientation;
 
 	// CoolBar handling
@@ -82,8 +84,8 @@ public class TrimCommonUIHandle extends Composite {
 	private MenuItem dockCascade;
     private RadioMenu radioButtons;
     private IntModel radioVal = new IntModel(0);
-//	private Menu showMenu;
-//	private MenuItem showCascade;
+	private Menu showMenu;
+	private MenuItem showCascade;
 
 	/*
 	 * Listeners...
@@ -107,15 +109,14 @@ public class TrimCommonUIHandle extends Composite {
     /**
      * This listener brings up the context menu
      */
-    // RAP [bm]:
-//    private Listener menuListener = new Listener() {
-//        public void handleEvent(Event event) {
-//            Point loc = new Point(event.x, event.y);
-//            if (event.type == SWT.MenuDetect) {
-//                showDockTrimPopup(loc);
-//            }
-//        }
-//    };
+    private Listener menuListener = new Listener() {
+        public void handleEvent(Event event) {
+            Point loc = new Point(event.x, event.y);
+            if (event.type == SWT.MenuDetect) {
+                showDockTrimPopup(loc);
+            }
+        }
+    };
 
     /**
      * Listen to size changes in the control so we can adjust the
@@ -499,13 +500,12 @@ public class TrimCommonUIHandle extends Composite {
 //        DragUtil.performDrag(trim, fakeBounds, position, true);
 //    }
 
-    // RAP [bm]:
-//    /**
-//     * Shows the popup menu for an item in the fast view bar.
-//     */
-//    private void showDockTrimPopup(Point pt) {
-//        Menu menu = dockMenuManager.createContextMenu(toDrag);
-//        menu.setLocation(pt.x, pt.y);
-//        menu.setVisible(true);
-//    }
+    /**
+     * Shows the popup menu for an item in the fast view bar.
+     */
+    private void showDockTrimPopup(Point pt) {
+        Menu menu = dockMenuManager.createContextMenu(toDrag);
+        menu.setLocation(pt.x, pt.y);
+        menu.setVisible(true);
+    }
 }

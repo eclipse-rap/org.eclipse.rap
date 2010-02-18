@@ -41,6 +41,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     }
     ControlLCAUtil.processMouseEvents( button );
     ControlLCAUtil.processKeyEvents( button );
+    ControlLCAUtil.processMenuDetect( button );
     WidgetLCAUtil.processHelp( button );
   }
 

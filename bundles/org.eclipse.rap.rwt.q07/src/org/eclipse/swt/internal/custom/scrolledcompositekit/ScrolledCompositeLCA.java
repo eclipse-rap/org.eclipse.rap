@@ -82,6 +82,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     composite.setOrigin( origin );
     ControlLCAUtil.processMouseEvents( composite );
     ControlLCAUtil.processKeyEvents( composite );
+    ControlLCAUtil.processMenuDetect( composite );
     WidgetLCAUtil.processHelp( composite );
   }
 

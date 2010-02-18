@@ -37,6 +37,7 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
   void readData( final Label label ) {
     ControlLCAUtil.processMouseEvents( label );
     ControlLCAUtil.processKeyEvents( label );
+    ControlLCAUtil.processMenuDetect( label );
     WidgetLCAUtil.processHelp( label );
   }
 

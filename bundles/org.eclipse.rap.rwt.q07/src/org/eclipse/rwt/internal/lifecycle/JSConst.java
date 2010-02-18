@@ -58,6 +58,8 @@ public final class JSConst {
     = "org.eclipse.swt.events.keyDown";
   public static final String EVENT_HELP
     = "org.eclipse.swt.events.help";
+  public static final String EVENT_MENU_DETECT
+    = "org.eclipse.swt.events.menuDetect";
 
 
   // Parameter names that specify further event details
@@ -107,6 +109,10 @@ public final class JSConst {
     = "org.eclipse.swt.events.keyDown.charCode";
   public static final String EVENT_KEY_DOWN_MODIFIER
     = "org.eclipse.swt.events.keyDown.modifier";
+  public static final String EVENT_MENU_DETECT_X
+    = "org.eclipse.swt.events.menuDetect.x";
+  public static final String EVENT_MENU_DETECT_Y
+    = "org.eclipse.swt.events.menuDetect.y";
 
   // Indicates that a shell was closed on the client side. The parameter
   // value holds the id of the shell that was closed.

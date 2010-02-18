@@ -37,6 +37,7 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     ControlLCAUtil.processKeyEvents( ( Control )widget );
+    ControlLCAUtil.processMenuDetect( ( Control )widget );
     WidgetLCAUtil.processHelp( widget );
   }
 

@@ -12,8 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -27,6 +35,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -34,8 +43,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IMemento;
@@ -45,6 +57,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PerspectiveAdapter;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.layout.CacheWrapper;
 import org.eclipse.ui.internal.layout.CellLayout;
@@ -105,11 +119,9 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     // The menus are cached, so the radio buttons should not be disposed until
     // the switcher is disposed.
-    // RAP [bm]: 
-//    private Menu popupMenu;
-//
-//    private Menu genericMenu;
-    // RAPEND: [bm] 
+    private Menu popupMenu;
+
+    private Menu genericMenu;
 
     private static final int INITIAL = -1;
 
@@ -126,15 +138,13 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     private IPropertyChangeListener propertyChangeListener;
 
-    // RAP [bm]: 
-//    private Listener popupListener = new Listener() {
-//        public void handleEvent(Event event) {
-//            if (event.type == SWT.MenuDetect) {
-//        	if (event.button == 2) {
-//                showPerspectiveBarPopup(new Point(event.x, event.y));
-//            }
-//        }
-//    };
+    private Listener popupListener = new Listener() {
+        public void handleEvent(Event event) {
+            if (event.type == SWT.MenuDetect) {
+                showPerspectiveBarPopup(new Point(event.x, event.y));
+            }
+        }
+    };
 
     class ChangeListener extends PerspectiveAdapter implements IPageListener {
         public void perspectiveOpened(IWorkbenchPage page,
@@ -727,10 +737,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
         perspectiveBar = createBarManager(SWT.VERTICAL);
 
         perspectiveBar.createControl(trimControl);
-        // RAP [bm]: 
-//        perspectiveBar.getControl().addListener(SWT.MenuDetect, popupListener);
-//        perspectiveBar.getControl().addListener(SWT.MouseUp, popupListener);
-        // RAPEND: [bm]
+        perspectiveBar.getControl().addListener(SWT.MenuDetect, popupListener);
         // the following code is commented out by Platform itself, not RAP
 
 //        trimSeparator = new Label(trimControl, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -776,10 +783,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
             }
         });
         coolItem.setMinimumSize(0, 0);
-        // RAP [bm]: 
-//        perspectiveBar.getControl().addListener(SWT.MenuDetect, popupListener);
-//        perspectiveBar.getControl().addListener(SWT.MouseUp, popupListener);
-        // RAPEND: [bm] 
+        perspectiveBar.getControl().addListener(SWT.MenuDetect, popupListener);
 
     }
 
@@ -820,156 +824,148 @@ public class PerspectiveSwitcher implements IWindowTrim {
         coolItem.setSize(coolItem.computeSize(w, h));
     }
 
-    // RAP [bm]: 
-//    private void showPerspectiveBarPopup(Point pt) {
-//        if (perspectiveBar == null) {
-//			return;
-//		}
-//
-//        // Get the tool item under the mouse.
-//        ToolBar toolBar = perspectiveBar.getControl();
-//        ToolItem toolItem = toolBar.getItem(toolBar.toControl(pt));
-//        ToolItem toolItem = null;
-//
-//        // Get the action for the tool item.
-//        Object data = null;
-//        if (toolItem != null){
-//            data = toolItem.getData();
-//        }
-//        if (toolItem == null
-//                || !(data instanceof PerspectiveBarContributionItem)) {
-//            if (genericMenu == null) {
-//                Menu menu = new Menu(toolBar);
-//                addDockOnSubMenu(menu);
-//                addShowTextItem(menu);
-//                genericMenu = menu;
-//            }
-//
-//            // set the state of the menu items to match the preferences
-//            genericMenu
-//                    .getItem(1)
-//                    .setSelection(
-//                            PrefUtil
-//                                    .getAPIPreferenceStore()
-//                                    .getBoolean(
-//                                            IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR));
-//            updateLocationItems(genericMenu.getItem(0).getMenu(),
-//                    currentLocation);
-//
-//            // Show popup menu.
-//            genericMenu.setLocation(pt.x, pt.y);
-//            genericMenu.setVisible(true);
-//            return;
-//        }
-//
-//        if (data == null || !(data instanceof PerspectiveBarContributionItem)) {
-//			return;
-//		}
-//
-//        PerspectiveBarContributionItem pbci = (PerspectiveBarContributionItem) data;
-//        IPerspectiveDescriptor selectedPerspective = pbci.getPerspective();
-//
-//        // The perspective bar menu is created lazily here.
-//        // Its data is set (each time) to the tool item, which refers to the SetPagePerspectiveAction
-//        // which in turn refers to the page and perspective.
-//        // It is important not to refer to the action, the page or the perspective directly
-//        // since otherwise the menu hangs on to them after they are closed.
-//        // By hanging onto the tool item instead, these references are cleared when the
-//        // corresponding page or perspective is closed.
-//        // See bug 11282 for more details on why it is done this way.
-//        if (popupMenu != null) {
-//        	popupMenu.dispose();
-//        	popupMenu = null;
-//        }
-//        popupMenu = createPopup(toolBar, selectedPerspective);
-//        popupMenu.setData(toolItem);
-//        
-//        // Show popup menu.
-//        popupMenu.setLocation(pt.x, pt.y);
-//        popupMenu.setVisible(true);
-//    }
+    private void showPerspectiveBarPopup(Point pt) {
+        if (perspectiveBar == null) {
+			return;
+		}
 
-    // RAP [bm]: 
-//    /**
-//     * @param persp the perspective
-//     * @return <code>true</code> if the perspective is active in the active page 
-//     */
-//    private boolean perspectiveIsActive(IPerspectiveDescriptor persp) {
-//    	IWorkbenchPage page = window.getActivePage();
-//        return page != null && persp.equals(page.getPerspective());
-//    }
+        // Get the tool item under the mouse.
+        ToolBar toolBar = perspectiveBar.getControl();
+        ToolItem toolItem = toolBar.getItem(toolBar.toControl(pt));
 
-    // RAP [bm]: 
-//    /**
-//     * @param persp the perspective
-//     * @return <code>true</code> if the perspective is open in the active page 
-//     */
-//    private boolean perspectiveIsOpen(IPerspectiveDescriptor persp) {
-//    	IWorkbenchPage page = window.getActivePage();
-//    	return page != null && Arrays.asList(page.getOpenPerspectives()).contains(persp);
-//    }
+        // Get the action for the tool item.
+        Object data = null;
+        if (toolItem != null){
+            data = toolItem.getData();
+        }
+        if (toolItem == null
+                || !(data instanceof PerspectiveBarContributionItem)) {
+            if (genericMenu == null) {
+                Menu menu = new Menu(toolBar);
+                addDockOnSubMenu(menu);
+                addShowTextItem(menu);
+                genericMenu = menu;
+            }
 
-    // RAP [bm]: 
-//	private Menu createPopup(ToolBar toolBar, IPerspectiveDescriptor persp){
-//		Menu menu = new Menu(toolBar);
-//		if (perspectiveIsActive(persp)) {
-//			addCustomizeItem(menu);
-//			addSaveAsItem(menu);
-//			addResetItem(menu);
-//		}
-//		if (perspectiveIsOpen(persp)) {
-//			addCloseItem(menu);
-//		}
-//
-//		new MenuItem(menu, SWT.SEPARATOR);
-//		addDockOnSubMenu(menu);
-//		addShowTextItem(menu);
-//		return menu;
-//	}
+            // set the state of the menu items to match the preferences
+            genericMenu
+                    .getItem(1)
+                    .setSelection(
+                            PrefUtil
+                                    .getAPIPreferenceStore()
+                                    .getBoolean(
+                                            IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR));
+            updateLocationItems(genericMenu.getItem(0).getMenu(),
+                    currentLocation);
 
-    // RAP [bm]: 
-//    private void addCloseItem(Menu menu) {
-//        MenuItem menuItem = new MenuItem(menu, SWT.NONE);
-//        menuItem.setText(WorkbenchMessages.get().WorkbenchWindow_close);
-//        // RAP [bm]: HelpSystem
-////        window.getWorkbench().getHelpSystem().setHelp(menuItem,
-////        		IWorkbenchHelpContextIds.CLOSE_PAGE_ACTION);
-//        // RAPEND: [bm] 
-//        menuItem.addSelectionListener(new SelectionAdapter() {
-//			private static final String COMMAND_CLOSE_PERSP = "org.eclipse.ui.window.closePerspective"; //$NON-NLS-1$
-//			private static final String PARAMETER_CLOSE_PERSP_ID = "org.eclipse.ui.window.closePerspective.perspectiveId"; //$NON-NLS-1$
-//
-//			public void widgetSelected(SelectionEvent e) {
-//                ToolItem perspectiveToolItem = (ToolItem) popupMenu
-//                        .getData();
-//
-//                if (perspectiveToolItem != null
-//						&& !perspectiveToolItem.isDisposed()) {
-//					PerspectiveBarContributionItem item = (PerspectiveBarContributionItem) perspectiveToolItem
-//							.getData();
-//					IPerspectiveDescriptor persp = item.getPerspective();
-//					
-//					ICommandService commandService = (ICommandService) window.getService(ICommandService.class);
-//					Command command = commandService.getCommand(COMMAND_CLOSE_PERSP);
-//					
-//					HashMap parameters = new HashMap();
-//					parameters.put(PARAMETER_CLOSE_PERSP_ID, persp.getId());
-//					
-//					ParameterizedCommand pCommand = ParameterizedCommand.generateCommand(command, parameters);
-//					
-//					IHandlerService handlerService = (IHandlerService) window
-//							.getService(IHandlerService.class);
-//					try {
-//						handlerService.executeCommand(pCommand, new Event());
-//					} catch (ExecutionException e1) {
-//					} catch (NotDefinedException e1) {
-//					} catch (NotEnabledException e1) {
-//					} catch (NotHandledException e1) {
-//					}
-//                }
-//            }
-//        });
-//    }
+            // Show popup menu.
+            genericMenu.setLocation(pt.x, pt.y);
+            genericMenu.setVisible(true);
+            return;
+        }
+
+        if (data == null || !(data instanceof PerspectiveBarContributionItem)) {
+			return;
+		}
+
+        PerspectiveBarContributionItem pbci = (PerspectiveBarContributionItem) data;
+        IPerspectiveDescriptor selectedPerspective = pbci.getPerspective();
+
+        // The perspective bar menu is created lazily here.
+        // Its data is set (each time) to the tool item, which refers to the SetPagePerspectiveAction
+        // which in turn refers to the page and perspective.
+        // It is important not to refer to the action, the page or the perspective directly
+        // since otherwise the menu hangs on to them after they are closed.
+        // By hanging onto the tool item instead, these references are cleared when the
+        // corresponding page or perspective is closed.
+        // See bug 11282 for more details on why it is done this way.
+        if (popupMenu != null) {
+        	popupMenu.dispose();
+        	popupMenu = null;
+        }
+        popupMenu = createPopup(toolBar, selectedPerspective);
+        popupMenu.setData(toolItem);
+        
+        // Show popup menu.
+        popupMenu.setLocation(pt.x, pt.y);
+        popupMenu.setVisible(true);
+    }
+
+    /**
+     * @param persp the perspective
+     * @return <code>true</code> if the perspective is active in the active page 
+     */
+    private boolean perspectiveIsActive(IPerspectiveDescriptor persp) {
+    	IWorkbenchPage page = window.getActivePage();
+        return page != null && persp.equals(page.getPerspective());
+    }
+
+    /**
+     * @param persp the perspective
+     * @return <code>true</code> if the perspective is open in the active page 
+     */
+    private boolean perspectiveIsOpen(IPerspectiveDescriptor persp) {
+    	IWorkbenchPage page = window.getActivePage();
+    	return page != null && Arrays.asList(page.getOpenPerspectives()).contains(persp);
+    }
+
+	private Menu createPopup(ToolBar toolBar, IPerspectiveDescriptor persp){
+		Menu menu = new Menu(toolBar);
+		if (perspectiveIsActive(persp)) {
+			addCustomizeItem(menu);
+			addSaveAsItem(menu);
+			addResetItem(menu);
+		}
+		if (perspectiveIsOpen(persp)) {
+			addCloseItem(menu);
+		}
+
+		new MenuItem(menu, SWT.SEPARATOR);
+		addDockOnSubMenu(menu);
+		addShowTextItem(menu);
+		return menu;
+	}
+
+    private void addCloseItem(Menu menu) {
+        MenuItem menuItem = new MenuItem(menu, SWT.NONE);
+        menuItem.setText(WorkbenchMessages.get().WorkbenchWindow_close);
+        window.getWorkbench().getHelpSystem().setHelp(menuItem,
+        		IWorkbenchHelpContextIds.CLOSE_PAGE_ACTION);
+        menuItem.addSelectionListener(new SelectionAdapter() {
+			private static final String COMMAND_CLOSE_PERSP = "org.eclipse.ui.window.closePerspective"; //$NON-NLS-1$
+			private static final String PARAMETER_CLOSE_PERSP_ID = "org.eclipse.ui.window.closePerspective.perspectiveId"; //$NON-NLS-1$
+
+			public void widgetSelected(SelectionEvent e) {
+                ToolItem perspectiveToolItem = (ToolItem) popupMenu
+                        .getData();
+
+                if (perspectiveToolItem != null
+						&& !perspectiveToolItem.isDisposed()) {
+					PerspectiveBarContributionItem item = (PerspectiveBarContributionItem) perspectiveToolItem
+							.getData();
+					IPerspectiveDescriptor persp = item.getPerspective();
+					
+					ICommandService commandService = (ICommandService) window.getService(ICommandService.class);
+					Command command = commandService.getCommand(COMMAND_CLOSE_PERSP);
+					
+					HashMap parameters = new HashMap();
+					parameters.put(PARAMETER_CLOSE_PERSP_ID, persp.getId());
+					
+					ParameterizedCommand pCommand = ParameterizedCommand.generateCommand(command, parameters);
+					
+					IHandlerService handlerService = (IHandlerService) window
+							.getService(IHandlerService.class);
+					try {
+						handlerService.executeCommand(pCommand, new Event());
+					} catch (ExecutionException e1) {
+					} catch (NotDefinedException e1) {
+					} catch (NotEnabledException e1) {
+					} catch (NotHandledException e1) {
+					}
+                }
+            }
+        });
+    }
 
     /**
      * @param direction one of <code>SWT.HORIZONTAL</code> or <code>SWT.VERTICAL</code>
@@ -996,188 +992,179 @@ public class PerspectiveSwitcher implements IWindowTrim {
         return barManager;
     }
 
-    // RAP [bm]: 
-//    private void updateLocationItems(Menu parent, int newLocation) {
-//        MenuItem left;
-//        MenuItem topLeft;
-//        MenuItem topRight;
-//
-//        topRight = parent.getItem(0);
-//        topLeft = parent.getItem(1);
-//        left = parent.getItem(2);
-//
-//        if (newLocation == LEFT) {
-//            left.setSelection(true);
-//            topRight.setSelection(false);
-//            topLeft.setSelection(false);
-//        } else if (newLocation == TOP_LEFT) {
-//            topLeft.setSelection(true);
-//            left.setSelection(false);
-//            topRight.setSelection(false);
-//        } else {
-//            topRight.setSelection(true);
-//            left.setSelection(false);
-//            topLeft.setSelection(false);
-//        }
-//    }
+    private void updateLocationItems(Menu parent, int newLocation) {
+        MenuItem left;
+        MenuItem topLeft;
+        MenuItem topRight;
 
-    // RAP [bm]: 
-//    private void addDockOnSubMenu(Menu menu) {
-//        MenuItem item = new MenuItem(menu, SWT.CASCADE);
-//        item.setText(WorkbenchMessages.get().PerspectiveSwitcher_dockOn);
-//
-//        final Menu subMenu = new Menu(item);
-//
-//        final MenuItem menuItemTopRight = new MenuItem(subMenu, SWT.RADIO);
-//        menuItemTopRight.setText(WorkbenchMessages.get().PerspectiveSwitcher_topRight); 
-//
-//        // RAP [bm]: HelpSystem
-////        window.getWorkbench().getHelpSystem().setHelp(menuItemTopRight,
-////        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
-//
-//        final MenuItem menuItemTopLeft = new MenuItem(subMenu, SWT.RADIO);
-//        menuItemTopLeft.setText(WorkbenchMessages.get().PerspectiveSwitcher_topLeft); 
-//
-//        // RAP [bm]: HelpSystem
-////        window.getWorkbench().getHelpSystem().setHelp(menuItemTopLeft,
-////        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
-//
-//        final MenuItem menuItemLeft = new MenuItem(subMenu, SWT.RADIO);
-//        menuItemLeft.setText(WorkbenchMessages.get().PerspectiveSwitcher_left); 
-//        
-//        // RAP [bm]: HelpSystem
-////        window.getWorkbench().getHelpSystem().setHelp(menuItemLeft,
-////        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
-//
-//        SelectionListener listener = new SelectionAdapter() {
-//            public void widgetSelected(SelectionEvent e) {
-//                MenuItem item = (MenuItem) e.widget;
-//                String pref = null;
-//                if (item.equals(menuItemLeft)) {
-//                    updateLocationItems(subMenu, LEFT);
-//                    pref = IWorkbenchPreferenceConstants.LEFT;
-//                } else if (item.equals(menuItemTopLeft)) {
-//                    updateLocationItems(subMenu, TOP_LEFT);
-//                    pref = IWorkbenchPreferenceConstants.TOP_LEFT;
-//                } else {
-//                    updateLocationItems(subMenu, TOP_RIGHT);
-//                    pref = IWorkbenchPreferenceConstants.TOP_RIGHT;
-//                }
-//                IPreferenceStore apiStore = PrefUtil.getAPIPreferenceStore();
-//                if (!pref
-//						.equals(apiStore
-//								.getDefaultString(IWorkbenchPreferenceConstants.DOCK_PERSPECTIVE_BAR))) {
-//					PrefUtil.getInternalPreferenceStore().setValue(
-//							IPreferenceConstants.OVERRIDE_PRESENTATION, true);
-//				}
-//                apiStore.setValue(
-//                        IWorkbenchPreferenceConstants.DOCK_PERSPECTIVE_BAR,
-//                        pref);
-//            }
-//        };
-//
-//        menuItemTopRight.addSelectionListener(listener);
-//        menuItemTopLeft.addSelectionListener(listener);
-//        menuItemLeft.addSelectionListener(listener);
-//        item.setMenu(subMenu);
-//        updateLocationItems(subMenu, currentLocation);
-//    }
-//
-//    private void addShowTextItem(Menu menu) {
-//        final MenuItem showtextMenuItem = new MenuItem(menu, SWT.CHECK);
-//        showtextMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_showText);
-//        // RAP [bm]: HelpSystem
-////        window.getWorkbench().getHelpSystem().setHelp(showtextMenuItem,
-////        		IWorkbenchHelpContextIds.SHOW_TEXT_PERSPECTIVE_ACTION);
-//
-//        showtextMenuItem.addSelectionListener(new SelectionAdapter() {
-//            public void widgetSelected(SelectionEvent e) {
-//                if (perspectiveBar == null) {
-//					return;
-//				}
-//
-//                boolean preference = showtextMenuItem.getSelection();
-//                if (preference != PrefUtil
-//						.getAPIPreferenceStore()
-//						.getDefaultBoolean(
-//								IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR)) {
-//                	PrefUtil.getInternalPreferenceStore().setValue(
-//							IPreferenceConstants.OVERRIDE_PRESENTATION, true);
-//				}
-//                PrefUtil
-//                        .getAPIPreferenceStore()
-//                        .setValue(
-//                                IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR,
-//                                preference);
-//            }
-//        });
-//        showtextMenuItem.setSelection(
-//                PrefUtil
-//                        .getAPIPreferenceStore()
-//                        .getBoolean(
-//                                IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR));        
-//    }
-//
-//    private void addCustomizeItem(Menu menu) {
-//        final MenuItem customizeMenuItem = new MenuItem(menu, SWT.Activate);
-//		customizeMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_customize);
-//		// RAP [bm]: HelpSystem
-////		window.getWorkbench().getHelpSystem().setHelp(customizeMenuItem,
-////				IWorkbenchHelpContextIds.EDIT_ACTION_SETS_ACTION);
-//		customizeMenuItem.addSelectionListener(new SelectionAdapter() {
-//			public void widgetSelected(SelectionEvent e) {
-//				if (perspectiveBar == null) {
-//					return;
-//				}
-//				IHandlerService handlerService = (IHandlerService) window
-//						.getService(IHandlerService.class);
-//				try {
-//					handlerService.executeCommand(
-//							"org.eclipse.ui.window.customizePerspective", null); //$NON-NLS-1$
-//				} catch (ExecutionException e1) {
-//				} catch (NotDefinedException e1) {
-//				} catch (NotEnabledException e1) {
-//				} catch (NotHandledException e1) {
-//				}
-//			}
-//		});
-//    }
-//    
-//    private void addSaveAsItem(Menu menu) {
-//        final MenuItem saveasMenuItem = new MenuItem(menu, SWT.Activate);
-//        saveasMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_saveAs);
-//        // RAP [bm]: HelpSystem
-////        window.getWorkbench().getHelpSystem().setHelp(saveasMenuItem,
-////        		IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_ACTION);
-//        saveasMenuItem.addSelectionListener(new SelectionAdapter() {
-//            public void widgetSelected(SelectionEvent e) {
-//                if (perspectiveBar == null) {
-//					return;
-//				}
-//                SavePerspectiveAction saveAction=new SavePerspectiveAction(window);
-//                saveAction.setEnabled(true);
-//                saveAction.run();
-//            }
-//        });
-//    }
-//    
-//    private void addResetItem(Menu menu) {
-//        final MenuItem resetMenuItem = new MenuItem(menu, SWT.Activate);
-//        resetMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_reset);
-//        // RAP [bm]: 
-////        window.getWorkbench().getHelpSystem().setHelp(resetMenuItem,
-////        		IWorkbenchHelpContextIds.RESET_PERSPECTIVE_ACTION);
-//        resetMenuItem.addSelectionListener(new SelectionAdapter() {
-//            public void widgetSelected(SelectionEvent e) {
-//                if (perspectiveBar == null) {
-//					return;
-//				}
-//                ResetPerspectiveAction resetAction=new ResetPerspectiveAction(window);
-//                resetAction.setEnabled(true);
-//                resetAction.run(); 
-//             }
-//        });
-//    }
+        topRight = parent.getItem(0);
+        topLeft = parent.getItem(1);
+        left = parent.getItem(2);
+
+        if (newLocation == LEFT) {
+            left.setSelection(true);
+            topRight.setSelection(false);
+            topLeft.setSelection(false);
+        } else if (newLocation == TOP_LEFT) {
+            topLeft.setSelection(true);
+            left.setSelection(false);
+            topRight.setSelection(false);
+        } else {
+            topRight.setSelection(true);
+            left.setSelection(false);
+            topLeft.setSelection(false);
+        }
+    }
+
+    private void addDockOnSubMenu(Menu menu) {
+        MenuItem item = new MenuItem(menu, SWT.CASCADE);
+        item.setText(WorkbenchMessages.get().PerspectiveSwitcher_dockOn);
+
+        final Menu subMenu = new Menu(item);
+
+        final MenuItem menuItemTopRight = new MenuItem(subMenu, SWT.RADIO);
+        menuItemTopRight.setText(WorkbenchMessages.get().PerspectiveSwitcher_topRight); 
+
+        window.getWorkbench().getHelpSystem().setHelp(menuItemTopRight,
+        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
+
+        final MenuItem menuItemTopLeft = new MenuItem(subMenu, SWT.RADIO);
+        menuItemTopLeft.setText(WorkbenchMessages.get().PerspectiveSwitcher_topLeft); 
+
+        window.getWorkbench().getHelpSystem().setHelp(menuItemTopLeft,
+        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
+
+        final MenuItem menuItemLeft = new MenuItem(subMenu, SWT.RADIO);
+        menuItemLeft.setText(WorkbenchMessages.get().PerspectiveSwitcher_left); 
+        
+        window.getWorkbench().getHelpSystem().setHelp(menuItemLeft,
+        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
+
+        SelectionListener listener = new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                MenuItem item = (MenuItem) e.widget;
+                String pref = null;
+                if (item.equals(menuItemLeft)) {
+                    updateLocationItems(subMenu, LEFT);
+                    pref = IWorkbenchPreferenceConstants.LEFT;
+                } else if (item.equals(menuItemTopLeft)) {
+                    updateLocationItems(subMenu, TOP_LEFT);
+                    pref = IWorkbenchPreferenceConstants.TOP_LEFT;
+                } else {
+                    updateLocationItems(subMenu, TOP_RIGHT);
+                    pref = IWorkbenchPreferenceConstants.TOP_RIGHT;
+                }
+                IPreferenceStore apiStore = PrefUtil.getAPIPreferenceStore();
+                if (!pref
+						.equals(apiStore
+								.getDefaultString(IWorkbenchPreferenceConstants.DOCK_PERSPECTIVE_BAR))) {
+					PrefUtil.getInternalPreferenceStore().setValue(
+							IPreferenceConstants.OVERRIDE_PRESENTATION, true);
+				}
+                apiStore.setValue(
+                        IWorkbenchPreferenceConstants.DOCK_PERSPECTIVE_BAR,
+                        pref);
+            }
+        };
+
+        menuItemTopRight.addSelectionListener(listener);
+        menuItemTopLeft.addSelectionListener(listener);
+        menuItemLeft.addSelectionListener(listener);
+        item.setMenu(subMenu);
+        updateLocationItems(subMenu, currentLocation);
+    }
+
+    private void addShowTextItem(Menu menu) {
+        final MenuItem showtextMenuItem = new MenuItem(menu, SWT.CHECK);
+        showtextMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_showText);
+        window.getWorkbench().getHelpSystem().setHelp(showtextMenuItem,
+        		IWorkbenchHelpContextIds.SHOW_TEXT_PERSPECTIVE_ACTION);
+
+        showtextMenuItem.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                if (perspectiveBar == null) {
+					return;
+				}
+
+                boolean preference = showtextMenuItem.getSelection();
+                if (preference != PrefUtil
+						.getAPIPreferenceStore()
+						.getDefaultBoolean(
+								IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR)) {
+                	PrefUtil.getInternalPreferenceStore().setValue(
+							IPreferenceConstants.OVERRIDE_PRESENTATION, true);
+				}
+                PrefUtil
+                        .getAPIPreferenceStore()
+                        .setValue(
+                                IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR,
+                                preference);
+            }
+        });
+        showtextMenuItem.setSelection(
+                PrefUtil
+                        .getAPIPreferenceStore()
+                        .getBoolean(
+                                IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR));        
+    }
+
+    private void addCustomizeItem(Menu menu) {
+        final MenuItem customizeMenuItem = new MenuItem(menu, SWT.Activate);
+		customizeMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_customize);
+		window.getWorkbench().getHelpSystem().setHelp(customizeMenuItem,
+				IWorkbenchHelpContextIds.EDIT_ACTION_SETS_ACTION);
+		customizeMenuItem.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (perspectiveBar == null) {
+					return;
+				}
+				IHandlerService handlerService = (IHandlerService) window
+						.getService(IHandlerService.class);
+				try {
+					handlerService.executeCommand(
+							"org.eclipse.ui.window.customizePerspective", null); //$NON-NLS-1$
+				} catch (ExecutionException e1) {
+				} catch (NotDefinedException e1) {
+				} catch (NotEnabledException e1) {
+				} catch (NotHandledException e1) {
+				}
+			}
+		});
+    }
+    
+    private void addSaveAsItem(Menu menu) {
+        final MenuItem saveasMenuItem = new MenuItem(menu, SWT.Activate);
+        saveasMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_saveAs);
+        window.getWorkbench().getHelpSystem().setHelp(saveasMenuItem,
+        		IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_ACTION);
+        saveasMenuItem.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                if (perspectiveBar == null) {
+					return;
+				}
+                SavePerspectiveAction saveAction=new SavePerspectiveAction(window);
+                saveAction.setEnabled(true);
+                saveAction.run();
+            }
+        });
+    }
+    
+    private void addResetItem(Menu menu) {
+        final MenuItem resetMenuItem = new MenuItem(menu, SWT.Activate);
+        resetMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_reset);
+        window.getWorkbench().getHelpSystem().setHelp(resetMenuItem,
+        		IWorkbenchHelpContextIds.RESET_PERSPECTIVE_ACTION);
+        resetMenuItem.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                if (perspectiveBar == null) {
+					return;
+				}
+                ResetPerspectiveAction resetAction=new ResetPerspectiveAction(window);
+                resetAction.setEnabled(true);
+                resetAction.run(); 
+             }
+        });
+    }
     
     /**
      * Method to save the width of the perspective bar in the 

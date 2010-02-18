@@ -68,6 +68,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processSelection( widget, null, false );
     ControlLCAUtil.processMouseEvents( spinner );
     ControlLCAUtil.processKeyEvents( spinner );
+    ControlLCAUtil.processMenuDetect( spinner );
     WidgetLCAUtil.processHelp( spinner );
   }
 

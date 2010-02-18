@@ -87,6 +87,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processSelection( ccombo, null, true );
     ControlLCAUtil.processMouseEvents( ccombo );
     ControlLCAUtil.processKeyEvents( ccombo );
+    ControlLCAUtil.processMenuDetect( ccombo );
     WidgetLCAUtil.processHelp( ccombo );
   }
 

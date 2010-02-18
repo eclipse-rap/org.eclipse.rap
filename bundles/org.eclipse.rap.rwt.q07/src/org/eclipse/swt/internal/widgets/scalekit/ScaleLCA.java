@@ -64,6 +64,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     }
     ControlLCAUtil.processSelection( scale, null, true );
     ControlLCAUtil.processKeyEvents( scale );
+    ControlLCAUtil.processMenuDetect( scale );
     WidgetLCAUtil.processHelp( scale );
   }
 

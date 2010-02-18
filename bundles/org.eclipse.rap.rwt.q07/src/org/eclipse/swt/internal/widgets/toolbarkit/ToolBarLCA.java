@@ -34,6 +34,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
   public void readData( final  Widget widget ) {
     ControlLCAUtil.processMouseEvents( ( Control )widget );
     ControlLCAUtil.processKeyEvents( ( Control )widget );
+    ControlLCAUtil.processMenuDetect( ( Control )widget );
     WidgetLCAUtil.processHelp( widget );
   }
 

@@ -58,6 +58,14 @@ public class ControlLCAUtil {
     = new JSListenerInfo( "mouseup",
                           "org.eclipse.swt.EventUtil.mouseUp",
                           JSListenerType.ACTION );
+  private static final JSListenerInfo MENU_DETECT_LISTENER_INFO_MOUSE
+    = new JSListenerInfo( "keydown",
+                          "org.eclipse.swt.EventUtil.menuDetectedByKey",
+                          JSListenerType.ACTION );
+  private static final JSListenerInfo MENU_DETECT_LISTENER_INFO_KEY
+    = new JSListenerInfo( "mouseup",
+                          "org.eclipse.swt.EventUtil.menuDetectedByMouse",
+                          JSListenerType.ACTION );
 
   private static final String JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
     = "addActivateListenerWidget";
@@ -70,6 +78,7 @@ public class ControlLCAUtil {
   private static final String PROP_MOUSE_LISTENER = "mouseListener";
   private static final String PROP_KEY_LISTENER = "keyListener";
   private static final String PROP_TRAVERSE_LISTENER = "traverseListener";
+  private static final String PROP_MENU_DETECT_LISTENER = "menuDetectListener";
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
@@ -116,6 +125,7 @@ public class ControlLCAUtil {
    * <li>whether KeyListeners are registered</li>
    * <li>whether TraverseListeners are registered</li>
    * <li>whether HelpListeners are registered</li>
+   * <li>whether MenuDetectListeners are registered</li>
    * </ul>
    *
    * @param control the control whose parameters to preserve
@@ -158,6 +168,7 @@ public class ControlLCAUtil {
     adapter.preserve( PROP_TRAVERSE_LISTENER,
                       Boolean.valueOf( TraverseEvent.hasListener( control ) ) );
     WidgetLCAUtil.preserveHelpListener( control );
+    preserveMenuDetectListener( control );
   }
 
   /**
@@ -304,6 +315,7 @@ public class ControlLCAUtil {
     writeKeyListener( control );
     writeTraverseListener( control );
     writeKeyEventResponse( control );
+    writeMenuDetectListener( control );
     WidgetLCAUtil.writeHelpListener( control );
   }
 
@@ -573,6 +585,63 @@ public class ControlLCAUtil {
         Object[] args = new Object[] { USER_DATA_TRAVERSE_LISTENER, null };
         writer.call( "setUserData", args );
       }
+    }
+  }
+
+  ///////////////////////
+  // Menu Detect Listener
+
+  /**
+   * Preserves whether the given <code>widget</code> has one or more
+   * <code>MenuDetect</code>s attached.
+   *
+   * @param control the widget to preserve
+   * @since 1.3
+   */
+  public static void preserveMenuDetectListener( final Control control ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    boolean hasListener = MenuDetectEvent.hasListener( control );
+    adapter.preserve( PROP_MENU_DETECT_LISTENER,
+                      Boolean.valueOf( hasListener ) );
+  }
+
+  /**
+   * Adds or removes client-side menu detect listeners for the the given
+   * <code>control</code> as necessary.
+   *
+   * @param control
+   * @since 1.3
+   */
+  public static void writeMenuDetectListener( final Control control )
+    throws IOException
+  {
+    boolean hasListener = MenuDetectEvent.hasListener( control );
+    JSWriter writer = JSWriter.getWriterFor( control );
+    writer.updateListener( MENU_DETECT_LISTENER_INFO_MOUSE,
+                           PROP_MENU_DETECT_LISTENER,
+                           hasListener );
+    writer.updateListener( MENU_DETECT_LISTENER_INFO_KEY,
+                           PROP_MENU_DETECT_LISTENER,
+                           hasListener );
+  }
+
+  /**
+   * Process a <code>HelpEvent</code> if the current request specifies that
+   * there occured a help event for the given <code>widget</code>.
+   *
+   * @param control the control to process
+   * @since 1.3
+   */
+  public static void processMenuDetect( final Control control ) {
+    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MENU_DETECT ) ) {
+      MenuDetectEvent event = new MenuDetectEvent( control );
+      Point point = readXYParams( control,
+                                  JSConst.EVENT_MENU_DETECT_X,
+                                  JSConst.EVENT_MENU_DETECT_Y );
+      point = control.getDisplay().map( control, null, point );
+      event.x = point.x;
+      event.y = point.y;
+      event.processEvent();
     }
   }
 

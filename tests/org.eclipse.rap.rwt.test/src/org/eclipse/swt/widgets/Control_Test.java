@@ -825,6 +825,7 @@ public class Control_Test extends TestCase {
     assertEquals( display.getPrimaryMonitor(), monitor );
   }
   
+  
   public void testUntypedHelpListener() {
     final Event[] untypedHelpEvent = { null }; 
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );

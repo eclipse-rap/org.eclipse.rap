@@ -1814,6 +1814,58 @@ public abstract class Control extends Widget {
     DragDetectEvent.removeListener( this, listener );
   }
 
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the platform-specific context menu trigger
+   * has occurred, by sending it one of the messages defined in
+   * the <code>MenuDetectListener</code> interface.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *                                      created the receiver</li>
+   * </ul>
+   *
+   * @see MenuDetectListener
+   * @see #removeMenuDetectListener
+   *
+   * @since 1.3
+   */
+  public void addMenuDetectListener( final MenuDetectListener listener ) {
+    checkWidget();
+    MenuDetectEvent.addListener( this, listener );
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the platform-specific context menu trigger has
+   * occurred.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see MenuDetectListener
+   * @see #addMenuDetectListener
+   *
+   * @since 1.3
+   */
+  public void removeMenuDetectListener( final MenuDetectListener listener ) {
+    checkWidget();
+    MenuDetectEvent.removeListener( this, listener );
+  }
+  
   ////////////////
   // drawing (Note that we can't really force a redraw. This is just a
   // fake for event notifications that come on OS systems with redraws)

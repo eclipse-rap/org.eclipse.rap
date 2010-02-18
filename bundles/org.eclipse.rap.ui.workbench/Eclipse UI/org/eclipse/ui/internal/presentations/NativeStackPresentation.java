@@ -86,22 +86,21 @@ public class NativeStackPresentation extends StackPresentation {
         }
     };
 
-    // RAP [bm]: 
-//    private Listener menuListener = new Listener() {
-//        /* (non-Javadoc)
-//         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-//         */
-//        public void handleEvent(Event event) {
-//            Point pos = new Point(event.x, event.y);
-//            //			TabItem item = tabFolder.getItem(pos);
-//            TabItem item = null;
-//            IPresentablePart part = null;
-//            if (item != null) {
-//                part = getPartForTab(item);
-//            }
-//            showPaneMenu(part, pos);
-//        }
-//    };
+    private Listener menuListener = new Listener() {
+        /* (non-Javadoc)
+         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+         */
+        public void handleEvent(Event event) {
+            Point pos = new Point(event.x, event.y);
+            //			TabItem item = tabFolder.getItem(pos);
+            TabItem item = null;
+            IPresentablePart part = null;
+            if (item != null) {
+                part = getPartForTab(item);
+            }
+            showPaneMenu(part, pos);
+        }
+    };
 
     private Listener selectionListener = new Listener() {
         public void handleEvent(Event e) {
@@ -158,8 +157,7 @@ public class NativeStackPresentation extends StackPresentation {
         // listen for mouse down on tab to set focus.
         tabFolder.addMouseListener(mouseListener);
 
-        // RAP [bm]: 
-//        tabFolder.addListener(SWT.MenuDetect, menuListener);
+        tabFolder.addListener(SWT.MenuDetect, menuListener);
 
         // RAP [bm]: 
 //        dragListener = new Listener() {

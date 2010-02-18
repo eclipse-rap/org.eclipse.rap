@@ -51,16 +51,15 @@ public abstract class AbstractTabFolder {
     public abstract void enablePaneMenu(boolean enabled);
     private int activeState = IStackPresentationSite.STATE_RESTORED;
     
-    // RAP [bm]: 
-//	private Listener menuListener = new Listener() {
-//		/* (non-Javadoc)
-//		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-//		 */
-//		public void handleEvent(Event event) {
-//			Point globalPos = new Point(event.x, event.y);
-//		    handleContextMenu(globalPos, event);			
-//		}
-//	};
+	private Listener menuListener = new Listener() {
+		/* (non-Javadoc)
+		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+		 */
+		public void handleEvent(Event event) {
+			Point globalPos = new Point(event.x, event.y);
+		    handleContextMenu(globalPos, event);			
+		}
+	};
 
     // RAP [bm]: DnD not supported
 //    private Listener dragListener = new Listener() {
@@ -300,8 +299,7 @@ public abstract class AbstractTabFolder {
     }
     
     protected void attachListeners(Control theControl, boolean recursive) {
-    	// RAP [bm]: 
-//        theControl.addListener(SWT.MenuDetect, menuListener);
+        theControl.addListener(SWT.MenuDetect, menuListener);
 // RAP [rh] part activation via mouse listeners does not work reliably (see also DefaultTabFolder ctor)    	
 //        theControl.addMouseListener(mouseListener);
 // RAP [rh] replace 'manual' double-click detection with default-selected    	
@@ -322,8 +320,7 @@ public abstract class AbstractTabFolder {
     }
     
     protected void detachListeners(Control theControl, boolean recursive) {
-    	// RAP [bm]: 
-//        theControl.removeListener(SWT.MenuDetect, menuListener);
+        theControl.removeListener(SWT.MenuDetect, menuListener);
 // RAP [rh] part activation via mouse listeners does not work reliably (see also DefaultTabFolder ctor)    	
 //        theControl.removeMouseListener(mouseListener);
 // RAP [rh] replace 'manual' double-click detection with default-selected    	
@@ -343,17 +340,17 @@ public abstract class AbstractTabFolder {
         }
     }
     
+    protected void handleContextMenu(Point displayPos, Event e) {
+        if (isOnBorder(displayPos)) {
+            return;
+        }
+
+        AbstractTabItem tab = getItem(displayPos); 
+        
+        fireEvent(TabFolderEvent.EVENT_SYSTEM_MENU, tab, displayPos);
+    }
+    
 // RAP [rh] unused code: MouseListener deactivated    
-//    protected void handleContextMenu(Point displayPos, Event e) {
-//        if (isOnBorder(displayPos)) {
-//            return;
-//        }
-//
-//        AbstractTabItem tab = getItem(displayPos); 
-//        
-//        fireEvent(TabFolderEvent.EVENT_SYSTEM_MENU, tab, displayPos);
-//    }
-//    
 //    protected void handleMouseDown(Point displayPos, MouseEvent e) {
 //        fireEvent(TabFolderEvent.EVENT_GIVE_FOCUS_TO_PART);
 //    }

@@ -57,6 +57,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     processSelectionEvent( link );
     ControlLCAUtil.processMouseEvents( link );
     ControlLCAUtil.processKeyEvents( link );
+    ControlLCAUtil.processMenuDetect( link );
     WidgetLCAUtil.processHelp( link );
   }
 

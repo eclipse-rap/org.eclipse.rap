@@ -179,6 +179,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processMouseEvents( tabFolder );
     // Key events
     ControlLCAUtil.processKeyEvents( tabFolder );
+    // Menu Detect events
+    ControlLCAUtil.processMenuDetect( tabFolder );
     // Help events
     WidgetLCAUtil.processHelp( tabFolder );
   }

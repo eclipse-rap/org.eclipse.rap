@@ -33,6 +33,7 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     Control coolBar = ( Control )widget;
     ControlLCAUtil.processMouseEvents( coolBar );
     ControlLCAUtil.processKeyEvents( coolBar );
+    ControlLCAUtil.processMenuDetect( coolBar );
     WidgetLCAUtil.processHelp( coolBar );
   }
 

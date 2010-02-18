@@ -35,6 +35,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
     ControlLCAUtil.processSelection( text, null, false );
     ControlLCAUtil.processMouseEvents( text );
     ControlLCAUtil.processKeyEvents( text );
+    ControlLCAUtil.processMenuDetect( text );
     WidgetLCAUtil.processHelp( text );
   }
 

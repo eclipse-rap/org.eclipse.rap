@@ -32,6 +32,7 @@ public class GroupLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     ControlLCAUtil.processMouseEvents( ( Group )widget );
     ControlLCAUtil.processKeyEvents( ( Group )widget );
+    ControlLCAUtil.processMenuDetect( ( Group )widget );
     WidgetLCAUtil.processHelp( widget );
   }
 

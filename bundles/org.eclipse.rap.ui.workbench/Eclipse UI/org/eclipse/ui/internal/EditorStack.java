@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.presentations.PresentablePart;
 import org.eclipse.ui.internal.presentations.PresentationFactoryUtil;
 import org.eclipse.ui.internal.presentations.SystemMenuPinEditor;
-import org.eclipse.ui.internal.presentations.SystemMenuSize;
+//import org.eclipse.ui.internal.presentations.SystemMenuSize;
 import org.eclipse.ui.internal.presentations.UpdatingActionContributionItem;
 import org.eclipse.ui.internal.presentations.util.TabbedStackPresentation;
 import org.eclipse.ui.internal.util.Util;
@@ -45,7 +45,8 @@ public class EditorStack extends PartStack {
 
     private WorkbenchPage page;
 
-    private SystemMenuSize sizeItem = new SystemMenuSize(null);
+    // RAP [bm]: size menu unusable due to missing keyboard support for Sash
+//    private SystemMenuSize sizeItem = new SystemMenuSize(null);
 
     private SystemMenuPinEditor pinEditorItem = new SystemMenuPinEditor(null);
 
@@ -72,8 +73,10 @@ public class EditorStack extends PartStack {
         pinEditorItem = new SystemMenuPinEditor((EditorPane) getSelection());
         appendToGroupIfPossible(menuManager,
                 "misc", new UpdatingActionContributionItem(pinEditorItem)); //$NON-NLS-1$
-        sizeItem = new SystemMenuSize(getSelection());
-        appendToGroupIfPossible(menuManager, "size", sizeItem); //$NON-NLS-1$
+        // RAP [bm]: size menu unusable due to missing keyboard support for Sash
+//        sizeItem = new SystemMenuSize(getSelection());
+//        appendToGroupIfPossible(menuManager, "size", sizeItem); //$NON-NLS-1$
+        // RAPEND: [bm]
     }
 
     public boolean isMoveable(IPresentablePart part) {
@@ -122,7 +125,10 @@ public class EditorStack extends PartStack {
             pane = (EditorPane) current.getPane();
         }
 
-        sizeItem.setPane(pane);
+        // RAP [bm]: size menu unusable due to missing keyboard support for Sash
+//        sizeItem.setPane(pane);
+        // RAPEND: [bm]
+        
         pinEditorItem.setPane(pane);
     }
 

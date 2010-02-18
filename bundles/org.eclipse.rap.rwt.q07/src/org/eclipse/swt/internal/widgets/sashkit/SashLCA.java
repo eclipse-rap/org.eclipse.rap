@@ -44,6 +44,7 @@ public final class SashLCA extends AbstractWidgetLCA {
     processSelection( sash );
     ControlLCAUtil.processMouseEvents( sash );
     ControlLCAUtil.processKeyEvents( sash );
+    ControlLCAUtil.processMenuDetect( sash );
     WidgetLCAUtil.processHelp( sash );
   }
 
