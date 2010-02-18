@@ -34,18 +34,18 @@ public class DemoSelectionViewPart extends ViewPart {
     list.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     createSelectionListener();
   }
-  
+
   public void setFocus() {
     list.setFocus();
   }
-  
+
   private void createSelectionListener() {
     IWorkbench workbench = PlatformUI.getWorkbench();
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     ISelectionService selectionService = window.getSelectionService();
     selectionService.addSelectionListener( new ISelectionListener() {
-      public void selectionChanged( final IWorkbenchPart part, 
-                                    final ISelection selection ) 
+      public void selectionChanged( final IWorkbenchPart part,
+                                    final ISelection selection )
       {
         String entry = part.getTitle() + " / ";
         IStructuredSelection sselection = ( IStructuredSelection )selection;
@@ -59,9 +59,11 @@ public class DemoSelectionViewPart extends ViewPart {
             entry += firstElement.toString();
           }
         }
-        list.add( entry, 0 );
-        list.setSelection( 0 );
-      } 
+        if( !list.isDisposed() ) {
+          list.add( entry, 0 );
+          list.setSelection( 0 );
+        }
+      }
     } );
   }
 }

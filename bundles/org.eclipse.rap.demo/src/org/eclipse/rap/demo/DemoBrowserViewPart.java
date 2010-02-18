@@ -23,7 +23,7 @@ import org.eclipse.ui.part.ViewPart;
 public class DemoBrowserViewPart extends ViewPart {
 
   Browser browser;
-  private static String BIRT_DEMO 
+  private static String BIRT_DEMO
                  = "http://www.eclipse.org/birt/phoenix/examples/solution/TopSellingProducts.html";
 
 
@@ -35,7 +35,7 @@ public class DemoBrowserViewPart extends ViewPart {
     setUrlFromSelection( selection );
     createSelectionListener();
   }
-  
+
   public void setFocus() {
     browser.setFocus();
   }
@@ -55,14 +55,16 @@ public class DemoBrowserViewPart extends ViewPart {
   }
 
   private void setUrlFromSelection( final ISelection selection ) {
-    browser.setUrl( BIRT_DEMO );
-    if( selection != null ) {
-      IStructuredSelection sselection = ( IStructuredSelection )selection;
-      Object firstElement = sselection.getFirstElement();
-      if( firstElement instanceof TreeObject ) {
-        String location = ( ( TreeObject )firstElement ).getLocation();
-        if( location != null ) {
-          browser.setUrl( location );
+    if( !browser.isDisposed() ) {
+      browser.setUrl( BIRT_DEMO );
+      if( selection != null ) {
+        IStructuredSelection sselection = ( IStructuredSelection )selection;
+        Object firstElement = sselection.getFirstElement();
+        if( firstElement instanceof TreeObject ) {
+          String location = ( ( TreeObject )firstElement ).getLocation();
+          if( location != null ) {
+            browser.setUrl( location );
+          }
         }
       }
     }
