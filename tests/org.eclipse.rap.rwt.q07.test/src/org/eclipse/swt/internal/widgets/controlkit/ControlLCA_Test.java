@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.controlkit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -232,12 +233,10 @@ public class ControlLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );
-    final StringBuffer log = new StringBuffer();
+    final java.util.List log = new ArrayList();
     label.addMenuDetectListener( new MenuDetectListener() {
-      public void menuDetected( final MenuDetectEvent e ) {
-        log.append( e.x );
-        log.append( "|" );
-        log.append( e.y );
+      public void menuDetected( final MenuDetectEvent event ) {
+        log.add( event );
       }
     });
     String displayId = DisplayUtil.getId( display );
@@ -248,7 +247,10 @@ public class ControlLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_X, "10" );
     Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_Y, "30" );
     Fixture.executeLifeCycleFromServerThread();
-    assertEquals( "10|30", log.toString() );
+    MenuDetectEvent event = ( MenuDetectEvent )log.get( 0 );
+    assertSame( label, event.widget );
+    assertEquals( 10, event.x );
+    assertEquals( 30, event.y );
   }
 
   public void testRedrawAndDispose() {
