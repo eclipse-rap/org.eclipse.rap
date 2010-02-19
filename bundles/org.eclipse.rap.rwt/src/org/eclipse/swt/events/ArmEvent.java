@@ -29,9 +29,9 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class ArmEvent extends TypedEvent {
 
-	static final long serialVersionUID = 3258126964249212217L;
+  private static final long serialVersionUID = 3258126964249212217L;
 
-	public static final int WIDGET_ARMED = SWT.Arm;
+	private static final int WIDGET_ARMED = SWT.Arm;
 
 	private static final Class LISTENER = ArmListener.class;
 
