@@ -437,6 +437,45 @@ public class SWT {
    */
   public static final int DRAG = 1;
 
+  
+  /**
+   * Event detail field that indicates a user-interface component
+   * state is selected (value is 1&lt;&lt;1).
+   *
+   * @since 1.3
+   */
+  public static final int SELECTED = 1 << 1;
+  
+  /**
+   * Event detail field that indicates a user-interface component
+   * state is focused (value is 1&lt;&lt;2).
+   *
+   * @since 1.3
+   */ 
+  public static final int FOCUSED = 1 << 2;
+  
+  /**
+   * Event detail field that indicates a user-interface component
+   * draws the background (value is 1&lt;&lt;3).
+   */
+  public static final int BACKGROUND = 1 << 3;
+  
+  /**
+   * Event detail field that indicates a user-interface component
+   * draws the foreground (value is 1&lt;&lt;4).
+   *
+   * @since 1.2
+   */
+  public static final int FOREGROUND = 1 << 4;
+  
+  /**
+   * Event detail field that indicates a user-interface component
+   * state is hot (value is 1&lt;&lt;5).
+   *
+   * @since 1.3
+   */
+  public static final int HOT = 1 << 5;
+
   /**
    * Traversal event detail field value indicating that no
    * traversal action should be taken
@@ -596,16 +635,23 @@ public class SWT {
   public static final int NONE = 0;
 
   /**
-   * Event detail field that indicates a user-interface component
-   * draws the background (value is 1&lt;&lt;3).
-   */
-  public static final int BACKGROUND = 1 << 3;
-
-
-  /**
    * Indicates that a default should be used (value is -1).
    */
   public static final int DEFAULT = -1;
+
+  /**
+   * Indicates that a property is off (value is 0).
+   * 
+   * @since 1.3
+   */
+  public static final int OFF = 0;
+  
+  /**
+   * Indicates that a property is on (value is 1).
+   * 
+   * @since 1.3
+   */
+  public static final int ON = 1;
 
   /**
    * Style constant for align up behavior (value is 1&lt;&lt;7,
@@ -1892,6 +1938,16 @@ public class SWT {
    * </ul></p>
    */
   public static final int VIRTUAL = 1 << 28;
+
+  /**
+   * Style constant to indicate double buffering (value is 1&lt;&lt;29).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code></li>
+   * </ul></p>
+   * 
+   * @since 1.3
+   */
+  public static final int DOUBLE_BUFFERED = 1 << 29;
 
   // ProgressBar State constants
   /**
