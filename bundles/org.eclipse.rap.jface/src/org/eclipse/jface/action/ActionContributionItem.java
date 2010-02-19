@@ -1317,8 +1317,7 @@ public class ActionContributionItem extends ContributionItem {
 
 			// pass through any events
 			proxyItem.addListener(SWT.Selection, passThrough);
-			// RAP [bm]: SWT.Arm missing
-//			proxyItem.addListener(SWT.Arm, passThrough);
+			proxyItem.addListener(SWT.Arm, passThrough);
 			proxyItem.addListener(SWT.Help, passThrough);
 
 			final Menu itemMenu = realItem.getMenu();
