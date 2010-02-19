@@ -501,6 +501,9 @@ public final class UntypedEventAdapter
           result = MenuEvent.hasListener( widget );
         }
         break;
+      case SWT.MenuDetect:
+        result = MenuDetectEvent.hasListener( widget );
+        break;
       case SWT.Modify:
         result = ModifyEvent.hasListener( widget );
         break;
