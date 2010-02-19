@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.menuitemkit;
@@ -23,8 +24,7 @@ import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -232,7 +232,7 @@ public class MenuItemLCA_Test extends TestCase {
     final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
     radioItem1.setText( "1" );
     final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
-    radioItem2.setText( "2" );    
+    radioItem2.setText( "2" );
     SelectionAdapter listener = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         log.add( event );
@@ -267,14 +267,14 @@ public class MenuItemLCA_Test extends TestCase {
     final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
     radioItem1.setText( "1" );
     final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
-    radioItem2.setText( "2" );    
+    radioItem2.setText( "2" );
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
       }
     };
     radioItem1.addListener( SWT.Selection, listener );
-    radioItem2.addListener( SWT.Selection, listener );    
+    radioItem2.addListener( SWT.Selection, listener );
     radioItem2.setSelection( true );
     String displayId = DisplayUtil.getId( display );
     String item1Id = WidgetUtil.getId( radioItem1 );
@@ -290,7 +290,7 @@ public class MenuItemLCA_Test extends TestCase {
     event = ( Event )log.get( 1 );
     assertSame( radioItem1, event.widget );
   }
-  
+
   public void testRemoveKeyShortcutText() throws IOException {
     String shortcut = "Some shortcut";
     Display display = new Display();
@@ -305,7 +305,44 @@ public class MenuItemLCA_Test extends TestCase {
     lca.renderChanges( menuItem );
     assertEquals( -1, Fixture.getAllMarkup().indexOf( shortcut ) );
   }
-    
+
+  public void testArmEvent() {
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Menu menuBar = new Menu( shell, SWT.BAR );
+    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
+    Menu menu = new Menu( menuBarItem );
+    menuBarItem.setMenu( menu );
+    final MenuItem pushItem = new MenuItem( menu, SWT.PUSH );
+    final MenuItem radioItem1 = new MenuItem( menu, SWT.RADIO );
+    final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
+    final MenuItem radioItem3 = new MenuItem( menu, SWT.RADIO );
+    final MenuItem checkItem = new MenuItem( menu, SWT.CHECK );
+    ArmListener listener = new ArmListener() {
+      public void widgetArmed( final ArmEvent event ) {
+        log.add( event.widget );
+      }
+    };
+    pushItem.addArmListener( listener );
+    radioItem1.addArmListener( listener );
+    radioItem2.addArmListener( listener );
+    radioItem3.addArmListener( listener );
+    checkItem.addArmListener( listener );
+    String displayId = DisplayUtil.getId( display );
+    String menuId = WidgetUtil.getId( menu );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_MENU_SHOWN, menuId );
+    Fixture.executeLifeCycleFromServerThread();
+    assertEquals( 5, log.size() );
+    assertTrue( log.contains( pushItem ) );
+    assertTrue( log.contains( radioItem1 ) );
+    assertTrue( log.contains( radioItem2 ) );
+    assertTrue( log.contains( radioItem3 ) );
+    assertTrue( log.contains( checkItem ) );
+  }
+
   private void testPreserveSelectionListener( final MenuItem menuItem ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     Fixture.preserveWidgets();
@@ -335,16 +372,16 @@ public class MenuItemLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();    
+    Fixture.clearPreserved();
     menuItem.setEnabled( false );
     Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();    
+    Fixture.clearPreserved();
     menuItem.setEnabled( true );
     menuItem.getParent().setEnabled( false );
     Fixture.preserveWidgets();
     // even if parent is disabled
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
-    Fixture.clearPreserved();    
+    Fixture.clearPreserved();
   }
 }

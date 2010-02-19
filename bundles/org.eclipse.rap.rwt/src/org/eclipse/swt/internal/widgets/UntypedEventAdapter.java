@@ -37,7 +37,8 @@ public final class UntypedEventAdapter
              ActivateListener,
              HelpListener,
              DragDetectListener,
-             MenuDetectListener
+             MenuDetectListener,
+             ArmListener
 {
 
   private static final class Entry {
@@ -239,6 +240,12 @@ public final class UntypedEventAdapter
     dispatchEvent( event );
   }
 
+  public void widgetArmed( final ArmEvent typedEvent ) {
+    Event event = createEvent( SWT.Arm, typedEvent.getSource() );
+    copyFields( typedEvent, event );
+    dispatchEvent( event );
+  }
+
   //////////////////////
   // Listener management
 
@@ -321,6 +328,9 @@ public final class UntypedEventAdapter
       break;
       case SWT.DragDetect:
         DragDetectEvent.addListener( widget, ( DragDetectListener )this );
+      break;
+      case SWT.Arm:
+        ArmEvent.addListener( widget, this );
       break;
       default:
         validEventType = false;
@@ -413,6 +423,9 @@ public final class UntypedEventAdapter
       break;
       case SWT.DragDetect:
         DragDetectEvent.removeListener( widget, ( DragDetectListener )this );
+      break;
+      case SWT.Arm:
+        ArmEvent.removeListener( widget, this );
       break;
       default:
         validEventType = false;
@@ -528,6 +541,9 @@ public final class UntypedEventAdapter
       case SWT.Help:
         result = HelpEvent.hasListener( widget );
         break;
+      case SWT.Arm:
+        result = ArmEvent.hasListener( widget );
+        break;
     }
     return result;
   }
@@ -606,6 +622,9 @@ public final class UntypedEventAdapter
       break;
       case SWT.DragDetect:
         typedEvent = new DragDetectEvent( event );
+      break;
+      case SWT.Arm:
+        typedEvent = new ArmEvent( event );
       break;
     }
     if( typedEvent != null ) {

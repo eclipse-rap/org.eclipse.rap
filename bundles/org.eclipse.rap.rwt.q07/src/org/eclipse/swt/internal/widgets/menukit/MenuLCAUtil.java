@@ -17,6 +17,7 @@ import java.io.IOException;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Menu;
@@ -48,14 +49,14 @@ final class MenuLCAUtil {
   }
 
   public static void preserveMenuListener( final Menu menu ) {
-    Boolean hasListener = Boolean.valueOf( MenuEvent.hasListener( menu ) );
+    Boolean hasListener = Boolean.valueOf( hasListener( menu ) );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_MENU_LISTENER, hasListener );
   }
-  
+
   public static void writeMenuListener( final Menu menu ) throws IOException {
     String prop = PROP_MENU_LISTENER;
-    Boolean newValue = Boolean.valueOf( MenuEvent.hasListener( menu ) );
+    Boolean newValue = Boolean.valueOf( hasListener( menu ) );
     Boolean defValue = Boolean.FALSE;
     if( WidgetLCAUtil.hasChanged( menu, prop, newValue, defValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( menu );
@@ -121,6 +122,17 @@ final class MenuLCAUtil {
       + ITEM_SPACING
       + ITEM_IMAGE
       + ITEM_RIGHT_PADDING;
+    return result;
+  }
+
+  private static boolean hasListener( final Menu menu ) {
+    boolean result = MenuEvent.hasListener( menu );
+    if( !result ) {
+      MenuItem[] items = menu.getItems();
+      for( int i = 0; i < items.length && !result; i++ ) {
+        result = ArmEvent.hasListener( items[ i ] );
+      }
+    }
     return result;
   }
 }

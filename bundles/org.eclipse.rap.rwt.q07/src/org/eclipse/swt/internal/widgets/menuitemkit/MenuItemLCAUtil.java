@@ -15,11 +15,13 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 final class MenuItemLCAUtil {
@@ -102,5 +104,16 @@ final class MenuItemLCAUtil {
                 JS_PROP_SELECTION,
                 Boolean.valueOf( menuItem.getSelection() ),
                 Boolean.FALSE );
+  }
+
+  static void processArmEvent( final MenuItem menuItem ) {
+    Menu menu = menuItem.getParent();
+    String eventId = JSConst.EVENT_MENU_SHOWN;
+    if( WidgetLCAUtil.wasEventSent( menu, eventId ) ) {
+      if( ArmEvent.hasListener( menuItem ) ) {
+        ArmEvent event = new ArmEvent( menuItem );
+        event.processEvent();
+      }
+    }
   }
 }

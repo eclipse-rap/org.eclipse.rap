@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,14 +23,14 @@ import org.eclipse.swt.widgets.MenuItem;
 final class CheckMenuItemLCA extends MenuItemDelegateLCA {
 
   private static final String ITEM_TYPE_CHECK = "check";
-  
+
   void preserveValues( final MenuItem menuItem ) {
     ItemLCAUtil.preserve( menuItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     boolean hasListener = SelectionEvent.hasListener( menuItem );
-    adapter.preserve( Props.SELECTION_LISTENERS, 
+    adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
-    adapter.preserve( MenuItemLCAUtil.PROP_SELECTION, 
+    adapter.preserve( MenuItemLCAUtil.PROP_SELECTION,
                       Boolean.valueOf( menuItem.getSelection() ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
     WidgetLCAUtil.preserveCustomVariant( menuItem );
@@ -44,17 +44,18 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
     }
     ControlLCAUtil.processSelection( menuItem, null, false );
     WidgetLCAUtil.processHelp( menuItem );
+    MenuItemLCAUtil.processArmEvent( menuItem );
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, 
-                             "org.eclipse.rwt.widgets.MenuItem", 
+    MenuItemLCAUtil.newItem( menuItem,
+                             "org.eclipse.rwt.widgets.MenuItem",
                              ITEM_TYPE_CHECK );
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.writeImageAndText( menuItem );    
-    MenuItemLCAUtil.writeSelectionListener( menuItem ); 
+    MenuItemLCAUtil.writeImageAndText( menuItem );
+    MenuItemLCAUtil.writeSelectionListener( menuItem );
     MenuItemLCAUtil.writeSelection( menuItem );
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );

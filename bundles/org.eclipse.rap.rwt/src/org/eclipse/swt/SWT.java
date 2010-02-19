@@ -363,6 +363,19 @@ public class SWT {
   public static final int DragDetect = 29;
 
   /**
+   * The arm event type (value is 30).
+   *
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   *
+   * @see org.eclipse.swt.widgets.MenuItem#addArmListener
+   * @see org.eclipse.swt.events.ArmListener#widgetArmed
+   * @see org.eclipse.swt.events.ArmEvent
+   */
+  public static final int Arm = 30;
+
+  /**
    * The traverse event type (value is 31).
    *
    * @see org.eclipse.swt.widgets.Widget#addListener
@@ -379,15 +392,15 @@ public class SWT {
 
   /**
    * The menu detect event type (value is 35).
-   * 
+   *
    * @see org.eclipse.swt.widgets.Widget#addListener
    * @see org.eclipse.swt.widgets.Display#addFilter
    * @see org.eclipse.swt.widgets.Event
-   * 
+   *
    * @since 1.3
    */
   public static final int MenuDetect = 35;
-  
+
   /**
    * The set data event type (value is 36).
    *

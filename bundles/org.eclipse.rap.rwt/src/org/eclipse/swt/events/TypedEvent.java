@@ -70,7 +70,8 @@ public class TypedEvent extends Event {
     DragDetectEvent.class,
     DragSourceEvent.class,
     DropTargetEvent.class,
-    HelpEvent.class
+    HelpEvent.class,
+    ArmEvent.class
   };
 
   /**
