@@ -29,7 +29,13 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class MenuDetectEvent extends TypedEvent {
 
-	/**
+  private static final long serialVersionUID = -3061660596590828941L;
+  
+  private static final int MENU_DETECT = SWT.MenuDetect;
+  
+  private static final Class LISTENER = MenuDetectListener.class;
+
+  /**
 	 * the display-relative x coordinate of the pointer
 	 * at the time the context menu trigger occurred
 	 */
@@ -39,19 +45,14 @@ public final class MenuDetectEvent extends TypedEvent {
 	 * the display-relative y coordinate of the pointer
 	 * at the time the context menu trigger occurred
 	 */
-	public int y;
-
-	/**
-	 * A flag indicating whether the operation should be allowed.
-	 * Setting this field to <code>false</code> will cancel the operation.
-	 */
-	public boolean doit;
-
-	private static final long serialVersionUID = -3061660596590828941L;
-
-  private static final int MENU_DETECT = SWT.MenuDetect;
-
-  private static final Class LISTENER = MenuDetectListener.class;
+  public int y;
+  
+  /**
+   * A flag indicating whether the operation should be allowed. Setting this
+   * field to <code>false</code> will cancel the operation.
+   */
+  public boolean doit;
+  
 
   /**
    * Constructs a new instance of this class based on the
