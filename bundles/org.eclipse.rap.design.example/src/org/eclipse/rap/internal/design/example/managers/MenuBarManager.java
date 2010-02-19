@@ -99,7 +99,12 @@ public class MenuBarManager extends MenuManager {
       menu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );      
       toolItem.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent e ) {
-          // hook menu to toolitem.
+          // cleanup the menu
+          MenuItem[] menuItems = menu.getItems();
+          for( int i = 0; i < menuItems.length; i++ ) {
+            menuItems[ i ].dispose();
+          }
+          // hook menu to toolitem.          
           IContributionItem[] contribItems = manager.getItems();
           if( contribItems != null && contribItems.length > 0 ) {
             for( int i = 0; i < contribItems.length; i++ ) {
