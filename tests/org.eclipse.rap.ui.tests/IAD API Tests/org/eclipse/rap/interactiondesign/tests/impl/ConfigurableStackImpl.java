@@ -11,10 +11,12 @@ package org.eclipse.rap.interactiondesign.tests.impl;
 
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.presentations.IPresentablePart;
+import org.eclipse.ui.presentations.StackDropResult;
 
 
 public class ConfigurableStackImpl extends ConfigurableStack {
@@ -73,5 +75,13 @@ public class ConfigurableStackImpl extends ConfigurableStack {
 
   public void showSystemMenu() {
 
+  }
+
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.presentations.StackPresentation#dragOver(org.eclipse.swt.widgets.Control, org.eclipse.swt.graphics.Point)
+   */
+  public StackDropResult dragOver( Control currentControl, Point location ) {
+    // TODO Auto-generated method stub
+    return null;
   }
 }
