@@ -133,61 +133,61 @@ Button.configMenuButton:hover, Button.configMenuButton:selected, Button.configMe
 
 Button.viewClose {
   background-color: transparent;
-  background-image: url( /img/fancy/stack_tab_active_close_active.png );
+  background-image: url( img/fancy/stack_tab_active_close_active.png );
   border: none;
   padding: 2px;
 }
 
 Button.viewClose:pressed {
-  background-image: url( /img/fancy/stack_tab_active_close_active.png );
+  background-image: url( img/fancy/stack_tab_active_close_active.png );
 }
 
 Button.viewClose:hover {
-  background-image: url( /img/fancy/stack_tab_active_close_active_hover.png );
+  background-image: url( img/fancy/stack_tab_active_close_active_hover.png );
 }
 
 Button.viewCloseInactive {
   background-color: transparent;
-  background-image: url( /img/fancy/stack_tab_inactive_close_active.png );
+  background-image: url( img/fancy/stack_tab_inactive_close_active.png );
   border: none;
 }
 
 Button.viewCloseInactive:pressed {
-  background-image: url( /img/fancy/stack_tab_inactive_close_active.png );
+  background-image: url( img/fancy/stack_tab_inactive_close_active.png );
 }
 
 Button.viewCloseInactive:hover {
-  background-image: url( /img/fancy/stack_tab_inactive_close_active_hover.png );
+  background-image: url( img/fancy/stack_tab_inactive_close_active_hover.png );
 }
 
 Button.toolbarOverflowInactive {
   background-color: transparent;
-  background-image: url( /img/fancy/toolbar_overflow.png );
+  background-image: url( img/fancy/toolbar_overflow.png );
   border: none;
   padding: 2px;
 }
 
 Button.toolbarOverflowInactive:pressed {
-  background-image: url( /img/fancy/toolbar_overflow.png );
+  background-image: url( img/fancy/toolbar_overflow.png );
 }
 
 Button.toolbarOverflowInactive:hover {
-  background-image: url( /img/fancy/toolbar_overflow_hover.png );
+  background-image: url( img/fancy/toolbar_overflow_hover.png );
 }
 
 Button.toolbarOverflowActive {
   background-color: transparent;
-  background-image: url( /img/fancy/toolbar_overflow_active.png );
+  background-image: url( img/fancy/toolbar_overflow_active.png );
   border: none;
   padding: 2px;
 }
 
 Button.toolbarOverflowActive:pressed {
-  background-image: url( /img/fancy/toolbar_overflow_active.png );
+  background-image: url( img/fancy/toolbar_overflow_active.png );
 }
 
 Button.toolbarOverflowActive:hover {
-  background-image: url( /img/fancy/toolbar_overflow_hover_active.png );
+  background-image: url( img/fancy/toolbar_overflow_hover_active.png );
 }
 
 Button.menuBar {
@@ -212,11 +212,11 @@ Button.coolBar {
 }
 
 Button.coolBar:hover {
-  background-image: url( /img/fancy/toolbarButtonBg.png );
+  background-image: url( img/fancy/toolbarButtonBg.png );
 }
 
 Button.coolBar:pressed {
-  background-image: url( /img/fancy/toolbarButtonBg.png );
+  background-image: url( img/fancy/toolbarButtonBg.png );
 }
 
 Button.coolBarPulldown {
@@ -228,7 +228,7 @@ Button.coolBarPulldown {
 }
 
 Button.coolBarPulldown:hover {
-  background-image: url( /img/fancy/toolbarButtonBg.png );
+  background-image: url( img/fancy/toolbarButtonBg.png );
 }
 
 Button.coolBarPulldown:pressed {
@@ -304,30 +304,30 @@ Button.tabOverflowActive {
   background-color: transparent;
   border: none;
   padding: 2px;
-  background-image: url( /img/fancy/stack_tab_overflow_active.png );
+  background-image: url( img/fancy/stack_tab_overflow_active.png );
 }
 
 Button.tabOverflowActive:pressed {
-  background-image: url( /img/fancy/stack_tab_overflow_active.png );
+  background-image: url( img/fancy/stack_tab_overflow_active.png );
 }
 
 Button.tabOverflowActive:hover {
-  background-image: url( /img/fancy/stack_tab_overflow_active_hover.png );
+  background-image: url( img/fancy/stack_tab_overflow_active_hover.png );
 }
 
 Button.tabOverflowInactive {
   background-color: transparent;
   border: none;
   padding: 2px;
-  background-image: url( /img/fancy/stack_tab_overflow_inactive.png );
+  background-image: url( img/fancy/stack_tab_overflow_inactive.png );
 }
 
 Button.tabOverflowInactive:pressed {
-  background-image: url( /img/fancy/stack_tab_overflow_inactive.png );
+  background-image: url( img/fancy/stack_tab_overflow_inactive.png );
 }
 
 Button.tabOverflowInactive:hover {
-  background-image: url( /img/fancy/stack_tab_overflow_inactive_hover.png );
+  background-image: url( img/fancy/stack_tab_overflow_inactive_hover.png );
 }
 
 /* Shell */
@@ -368,30 +368,30 @@ Shell[BORDER]:inactive, Shell[TITLE]:inactive {
 }
 
 Shell-CloseButton {
-  background-image: url( "/theme/fancy/icons/shell-close.png" );
+  background-image: url( "theme/fancy/icons/shell-close.png" );
   margin: 0px 5px 0px 0px;
 }
 
 Shell-MaxButton {
-  background-image: url( "/theme/fancy/icons/shell-max.png" );
+  background-image: url( "theme/fancy/icons/shell-max.png" );
   margin: 0px 6px 0px 0px;
 }
 
 Shell-MinButton {
-  background-image: url( "/theme/fancy/icons/shell-min.png" );
+  background-image: url( "theme/fancy/icons/shell-min.png" );
   margin: 0px 6px 0px 0px;
 }
 
 Shell-CloseButton:hover {
-  background-image: url( "/theme/fancy/icons/shell-close-hover.png" );
+  background-image: url( "theme/fancy/icons/shell-close-hover.png" );
 }
 
 Shell-MaxButton:hover {
-  background-image: url( "/theme/fancy/icons/shell-max-hover.png" );
+  background-image: url( "theme/fancy/icons/shell-max-hover.png" );
 }
 
 Shell-MinButton:hover {
-  background-image: url( "/theme/fancy/icons/shell-min-hover.png" );
+  background-image: url( "theme/fancy/icons/shell-min-hover.png" );
 }
 
 .shellGray {
@@ -427,7 +427,7 @@ TreeItem:selected:unfocused {
 }
 
 TreeColumn {
-  background-image: url( "/theme/fancy/icons/table-column.png" );
+  background-image: url( "theme/fancy/icons/table-column.png" );
   color: #666666;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom:none;
@@ -435,7 +435,7 @@ TreeColumn {
 }
 
 TreeColumn:hover {
-  background-image: url( "/theme/fancy/icons/table-column-hover.png" );
+  background-image: url( "theme/fancy/icons/table-column-hover.png" );
   border-bottom:none;
 }
 
@@ -444,11 +444,11 @@ TreeColumn-SortIndicator {
 }
 
 TreeColumn-SortIndicator:up {
-  background-image: url( /theme/fancy/icons/sort-indicator-up.png );
+  background-image: url( theme/fancy/icons/sort-indicator-up.png );
 }
 
 TreeColumn-SortIndicator:down {
-  background-image: url( /theme/fancy/icons/sort-indicator-down.png );
+  background-image: url( theme/fancy/icons/sort-indicator-down.png );
 }
 
 /* Table */
@@ -459,14 +459,14 @@ Table {
 }
 
 TableColumn {
-  background-image: url( "/theme/fancy/icons/table-column.png" );
+  background-image: url( "theme/fancy/icons/table-column.png" );
   color: #666666;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom:none;
 }
 
 TableColumn:hover {
-  background-image: url( "/theme/fancy/icons/table-column-hover.png" );
+  background-image: url( "theme/fancy/icons/table-column-hover.png" );
   border-bottom:none;
 }
 
@@ -518,35 +518,35 @@ Table-GridLine {
 
 Table-Checkbox {
   width: 21px;
-  background-image: url( /theme/fancy/icons/check-unselected.png );
+  background-image: url( theme/fancy/icons/check-unselected.png );
 }
 
 Table-Checkbox:hover {
-  background-image: url( /theme/fancy/icons/check-unselected-hover.png );
+  background-image: url( theme/fancy/icons/check-unselected-hover.png );
 }
 
 Table-Checkbox:checked {
-  background-image: url( /theme/fancy/icons/check-selected.png );
+  background-image: url( theme/fancy/icons/check-selected.png );
 }
 
 Table-Checkbox:checked:hover {
-  background-image: url( /theme/fancy/icons/check-selected-hover.png );
+  background-image: url( theme/fancy/icons/check-selected-hover.png );
 }
 
 Table-Checkbox:checked:grayed {
-  background-image: url( /theme/fancy/icons/check-grayed.png );
+  background-image: url( theme/fancy/icons/check-grayed.png );
 }
 
 Table-Checkbox:checked:grayed:hover {
-  background-image: url( /theme/fancy/icons/check-grayed-hover.png );
+  background-image: url( theme/fancy/icons/check-grayed-hover.png );
 }
 
 TableColumn-SortIndicator:up {
-  background-image: url( /theme/fancy/icons/sort-indicator-up.png );
+  background-image: url( theme/fancy/icons/sort-indicator-up.png );
 }
 
 TableColumn-SortIndicator:down {
-  background-image: url( /theme/fancy/icons/sort-indicator-down.png );
+  background-image: url( theme/fancy/icons/sort-indicator-down.png );
 }
 
 /* Table for Coolbar Overflow */
@@ -642,45 +642,45 @@ List-Item:even:selected:unfocused {
 /* Check Buttons */
 
 Button-CheckIcon {
-  background-image: url( /theme/fancy/icons/check-unselected.png );
+  background-image: url( theme/fancy/icons/check-unselected.png );
 }
 
 Button-CheckIcon:selected {
-  background-image: url( /theme/fancy/icons/check-selected.png );
+  background-image: url( theme/fancy/icons/check-selected.png );
 }
 
 Button-CheckIcon:hover {
-  background-image: url( /theme/fancy/icons/check-unselected-hover.png );
+  background-image: url( theme/fancy/icons/check-unselected-hover.png );
 }
 
 Button-CheckIcon:selected:hover {
-  background-image: url( /theme/fancy/icons/check-selected-hover.png );
+  background-image: url( theme/fancy/icons/check-selected-hover.png );
 }
 
 Button-CheckIcon:selected:grayed {
-  background-image: url( /theme/fancy/icons/check-grayed.png );
+  background-image: url( theme/fancy/icons/check-grayed.png );
 }
 
 Button-CheckIcon:selected:grayed:hover {
-  background-image: url( /theme/fancy/icons/check-grayed-hover.png );
+  background-image: url( theme/fancy/icons/check-grayed-hover.png );
 }
 
 /* Radio Buttons */
 
 Button-RadioIcon {
-  background-image: url( /theme/fancy/icons/radio-unselected.png );
+  background-image: url( theme/fancy/icons/radio-unselected.png );
 }
 
 Button-RadioIcon:selected {
-  background-image: url( /theme/fancy/icons/radio-selected.png );
+  background-image: url( theme/fancy/icons/radio-selected.png );
 }
 
 Button-RadioIcon:hover {
-  background-image: url( /theme/fancy/icons/radio-unselected-hover.png );
+  background-image: url( theme/fancy/icons/radio-unselected-hover.png );
 }
 
 Button-RadioIcon:selected:hover {
-  background-image: url( /theme/fancy/icons/radio-selected-hover.png );
+  background-image: url( theme/fancy/icons/radio-selected-hover.png );
 }
 
 /* Menu */
@@ -775,19 +775,19 @@ ExpandItem {
 }
 
 ExpandItem-Button {
-  background-image: url( /theme/fancy/icons/expanditem-expand.png );
+  background-image: url( theme/fancy/icons/expanditem-expand.png );
 }
 
 ExpandItem-Button:hover {
-  background-image: url( /theme/fancy/icons/expanditem-expand-hover.png );
+  background-image: url( theme/fancy/icons/expanditem-expand-hover.png );
 }
 
 ExpandItem-Button:expanded {
-  background-image: url( /theme/fancy/icons/expanditem-collapse.png );
+  background-image: url( theme/fancy/icons/expanditem-collapse.png );
 }
 
 ExpandItem-Button:expanded:hover {
-  background-image: url( /theme/fancy/icons/expanditem-collapse-hover.png );
+  background-image: url( theme/fancy/icons/expanditem-collapse-hover.png );
 }
 
 /* Combo */
@@ -806,11 +806,11 @@ Combo, CCombo[BORDER] {
 }
 
 Combo-Button-Icon, CCombo-Button-Icon {
-  background-image: url( /theme/fancy/icons/down.png );
+  background-image: url( theme/fancy/icons/down.png );
 }
 
 Combo-Button-Icon:hover, CCombo-Button-Icon:hover {
-  background-image: url( /theme/fancy/icons/down-hover.png );
+  background-image: url( theme/fancy/icons/down-hover.png );
 }
 
 Combo-Button, CCombo-Button {
@@ -852,11 +852,11 @@ Spinner {
 }
 
 Spinner-DownButton-Icon {
-  background-image: url( /theme/fancy/icons/down.png );
+  background-image: url( theme/fancy/icons/down.png );
 }
 
 Spinner-DownButton-Icon:hover {
-  background-image: url( /theme/fancy/icons/down-hover.png );
+  background-image: url( theme/fancy/icons/down-hover.png );
 }
 
 Spinner-DownButton {
@@ -880,11 +880,11 @@ Spinner-DownButton:pressed {
 }
 
 Spinner-UpButton-Icon {
-  background-image: url( /theme/fancy/icons/up.png );
+  background-image: url( theme/fancy/icons/up.png );
 }
 
 Spinner-UpButton-Icon:hover {
-  background-image: url( /theme/fancy/icons/up-hover.png );
+  background-image: url( theme/fancy/icons/up-hover.png );
 }
 
 Spinner-UpButton {
@@ -939,43 +939,43 @@ DateTime-Calendar-Navbar {
 }
 
 DateTime-Calendar-PreviousMonthButton {
-  background-image: url( /theme/fancy/icons/lastMonth.png );
+  background-image: url( theme/fancy/icons/lastMonth.png );
 }
 
 DateTime-Calendar-PreviousMonthButton:hover {
-  background-image: url( /theme/fancy/icons/lastMonth-hover.png );
+  background-image: url( theme/fancy/icons/lastMonth-hover.png );
 }
 
 DateTime-Calendar-NextMonthButton {
-  background-image: url( /theme/fancy/icons/nextMonth.png );
+  background-image: url( theme/fancy/icons/nextMonth.png );
 }
 
 DateTime-Calendar-NextMonthButton:hover {
-  background-image: url( /theme/fancy/icons/nextMonth-hover.png );
+  background-image: url( theme/fancy/icons/nextMonth-hover.png );
 }
 
 DateTime-Calendar-PreviousYearButton {
-  background-image: url( /theme/fancy/icons/lastYear.png );
+  background-image: url( theme/fancy/icons/lastYear.png );
 }
 
 DateTime-Calendar-PreviousYearButton:hover {
-  background-image: url( /theme/fancy/icons/lastYear-hover.png );
+  background-image: url( theme/fancy/icons/lastYear-hover.png );
 }
 
 DateTime-Calendar-NextYearButton {
-  background-image: url( /theme/fancy/icons/nextYear.png );
+  background-image: url( theme/fancy/icons/nextYear.png );
 }
 
 DateTime-Calendar-NextYearButton:hover {
-  background-image: url( /theme/fancy/icons/nextYear-hover.png );
+  background-image: url( theme/fancy/icons/nextYear-hover.png );
 }
 
 DateTime-DownButton-Icon {
-  background-image: url( /theme/fancy/icons/down.png );
+  background-image: url( theme/fancy/icons/down.png );
 }
 
 DateTime-DownButton-Icon:hover {
-  background-image: url( /theme/fancy/icons/down-hover.png );
+  background-image: url( theme/fancy/icons/down-hover.png );
 }
 
 DateTime-DownButton {
@@ -999,11 +999,11 @@ DateTime-DownButton:pressed {
 }
 
 DateTime-UpButton-Icon {
-  background-image: url( /theme/fancy/icons/up.png );
+  background-image: url( theme/fancy/icons/up.png );
 }
 
 DateTime-UpButton-Icon:hover {
-  background-image: url( /theme/fancy/icons/up-hover.png );
+  background-image: url( theme/fancy/icons/up-hover.png );
 }
 
 DateTime-UpButton {
@@ -1027,11 +1027,11 @@ DateTime-UpButton:pressed {
 }
 
 DateTime-DropDownButton-Icon {
-  background-image: url( /theme/fancy/icons/down.png );
+  background-image: url( theme/fancy/icons/down.png );
 }
 
 DateTime-DropDownButton-Icon:hover {
-  background-image: url( /theme/fancy/icons/down-hover.png );
+  background-image: url( theme/fancy/icons/down-hover.png );
 }
 
 DateTime-DropDownButton {
@@ -1108,7 +1108,7 @@ ProgressBar {
 
 ProgressBar-Indicator {
   background-color: #abe033;
-  background-image: url( /theme/fancy/icons/progress.png );
+  background-image: url( theme/fancy/icons/progress.png );
 }
 
 ProgressBar-Indicator:paused {
@@ -1193,11 +1193,11 @@ Slider-DownButton:horizontal:pressed {
 }
 
 Slider-DownButton-Icon:horizontal {
-  background-image: url( /theme/fancy/icons/left.png );
+  background-image: url( theme/fancy/icons/left.png );
 }
 
 Slider-DownButton-Icon:horizontal:hover {
-  background-image: url( /theme/fancy/icons/left-hover.png );
+  background-image: url( theme/fancy/icons/left-hover.png );
 }
 
 Slider-UpButton:horizontal {
@@ -1223,11 +1223,11 @@ Slider-UpButton:horizontal:pressed {
 }
 
 Slider-UpButton-Icon:horizontal {
-  background-image: url( /theme/fancy/icons/right.png );
+  background-image: url( theme/fancy/icons/right.png );
 }
 
 Slider-UpButton-Icon:horizontal:hover {
-  background-image: url( /theme/fancy/icons/right-hover.png );
+  background-image: url( theme/fancy/icons/right-hover.png );
 }
 
 Slider-DownButton:vertical {
@@ -1253,11 +1253,11 @@ Slider-DownButton:vertical:pressed {
 }
 
 Slider-DownButton-Icon:vertical {
-  background-image: url( /theme/fancy/icons/up.png );
+  background-image: url( theme/fancy/icons/up.png );
 }
 
 Slider-DownButton-Icon:vertical:hover {
-  background-image: url( /theme/fancy/icons/up-hover.png );
+  background-image: url( theme/fancy/icons/up-hover.png );
 }
 
 Slider-UpButton:vertical {
@@ -1283,11 +1283,11 @@ Slider-UpButton:vertical:pressed {
 }
 
 Slider-UpButton-Icon:vertical {
-  background-image: url( /theme/fancy/icons/down.png );
+  background-image: url( theme/fancy/icons/down.png );
 }
 
 Slider-UpButton-Icon:vertical:hover {
-  background-image: url( /theme/fancy/icons/down-hover.png );
+  background-image: url( theme/fancy/icons/down-hover.png );
 }
 
 Slider-Thumb {
@@ -1315,7 +1315,7 @@ Slider-Thumb:pressed {
 /* Display */
 
 Display {
-  background-image: url( /theme/fancy/icons/browser_bg.png );
+  background-image: url( theme/fancy/icons/browser_bg.png );
   rwt-infobackground-color: rgb( 255, 255, 255 );
 }
 
@@ -1366,11 +1366,11 @@ CTabItem:disabled {
 }
 
 CTabFolder-DropDownButton-Icon {
-  background-image: url( /theme/fancy/icons/ctabfolder-dropdown.png );
+  background-image: url( theme/fancy/icons/ctabfolder-dropdown.png );
 }
 
 CTabFolder-DropDownButton-Icon:hover {
-  background-image: url( /theme/fancy/icons/ctabfolder-dropdown-hover.png );
+  background-image: url( theme/fancy/icons/ctabfolder-dropdown-hover.png );
 }
 
 /* Header Toolbar */
