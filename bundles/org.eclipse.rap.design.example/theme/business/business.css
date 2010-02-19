@@ -97,6 +97,22 @@ Button[RADIO][BORDER] {
   background-image: none;
 }
 
+Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
+  background-color: transparent; 
+  border: 1px solid #0274cf;
+  margin: 1px;
+  padding: 0px;
+  opacity: 1;
+}
+
+Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
+  background-color: transparent; 
+  border: 1px solid #00589f;
+  padding: 2px 2px 2px 1px;
+  margin: 0px;
+  opacity: 1;
+}
+
 Button.clearButton {
   color: #4a4a4a;
   background-color: transparent;
