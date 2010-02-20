@@ -39,7 +39,7 @@ public final class ArmEvent extends TypedEvent {
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
    *
-   * @param e the untyped event containing the information
+   * @param event the untyped event containing the information
    */
   public ArmEvent( final Event event ) {
   	this( event.widget );
