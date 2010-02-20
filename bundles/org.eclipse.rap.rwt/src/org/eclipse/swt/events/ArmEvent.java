@@ -31,9 +31,9 @@ public final class ArmEvent extends TypedEvent {
 
   private static final long serialVersionUID = 3258126964249212217L;
 
-	private static final int WIDGET_ARMED = SWT.Arm;
+  private static final int WIDGET_ARMED = SWT.Arm;
 
-	private static final Class LISTENER = ArmListener.class;
+  private static final Class LISTENER = ArmListener.class;
 
   /**
    * Constructs a new instance of this class based on the
@@ -42,7 +42,7 @@ public final class ArmEvent extends TypedEvent {
    * @param event the untyped event containing the information
    */
   public ArmEvent( final Event event ) {
-  	this( event.widget );
+    this( event.widget );
   }
 
   /**
