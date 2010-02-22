@@ -22,7 +22,7 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
  *
  * <p>This class is <em>not</em> intended to be directly used by clients.</p>
  */
-public abstract class Device {
+public abstract class Device implements Drawable {
 
   private boolean disposed;
 

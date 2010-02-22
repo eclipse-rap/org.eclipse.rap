@@ -42,7 +42,7 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
  *
  * @since 1.0
  */
-public abstract class Control extends Widget {
+public abstract class Control extends Widget implements Drawable {
 
   private final class ControlAdapter implements IControlAdapter {
 

@@ -19,6 +19,7 @@ import org.eclipse.jface.action.MenuManager;
 //import org.eclipse.swt.custom.StyledText;
 //import org.eclipse.swt.graphics.GC;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
@@ -275,17 +276,15 @@ public abstract class QuickMenuCreator {
 	}
 
 	private int getAvarageCharWith(Control control) {
-// RAP [rh] FontMetrics#getAverageCharWidth  
-//		GC gc = null;
-//		try {
-//			gc = new GC(control);
-//			return gc.getFontMetrics().getAverageCharWidth();
-//		} finally {
-//			if (gc != null) {
-//				gc.dispose();
-//			}
-//		}
-	  return ( int )Graphics.getAvgCharWidth( control.getFont() );
+		GC gc = null;
+		try {
+			gc = new GC(control);
+			return gc.getFontMetrics().getAverageCharWidth();
+		} finally {
+			if (gc != null) {
+				gc.dispose();
+			}
+		}
 	}
 
 	/**

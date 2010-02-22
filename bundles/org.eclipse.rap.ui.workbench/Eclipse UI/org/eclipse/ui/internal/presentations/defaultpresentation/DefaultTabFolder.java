@@ -23,6 +23,7 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -493,17 +494,13 @@ public class DefaultTabFolder extends AbstractTabFolder {
      * @return the required tab height for this folder.
      */
     protected int computeTabHeight() {
-    	// RAP [bm]: 
-//        GC gc = new GC(getControl());
-//
-//        // Compute the tab height
-//        int tabHeight = Math.max(viewToolBar.computeSize(SWT.DEFAULT,
-//                SWT.DEFAULT).y, gc.getFontMetrics().getHeight());
-//
-//        gc.dispose();
+        GC gc = new GC(getControl());
+
+        // Compute the tab height
         int tabHeight = Math.max(viewToolBar.computeSize(SWT.DEFAULT,
-              SWT.DEFAULT).y, Graphics.getCharHeight(getControl().getFont()));
-    	// RAPEND: [bm] 
+                SWT.DEFAULT).y, gc.getFontMetrics().getHeight());
+
+        gc.dispose();
 
         return tabHeight;
     }

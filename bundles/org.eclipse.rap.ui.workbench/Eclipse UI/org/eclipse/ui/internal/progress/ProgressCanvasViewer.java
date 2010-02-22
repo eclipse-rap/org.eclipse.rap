@@ -22,6 +22,8 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -286,15 +288,11 @@ public class ProgressCanvasViewer extends AbstractProgressViewer {
 
         Display display = canvas.getDisplay();
 
-        // RAP [bm]: 
-//        GC gc = new GC(canvas);
-//        FontMetrics fm = gc.getFontMetrics();
-//        int charWidth = fm.getAverageCharWidth();
-//        int charHeight = fm.getHeight();
-//        gc.dispose();
-        int charWidth = (int) Graphics.getAvgCharWidth(canvas.getFont());
-        int charHeight = Graphics.getCharHeight(canvas.getFont());
-        // RAPEND: [bm] 
+        GC gc = new GC(canvas);
+        FontMetrics fm = gc.getFontMetrics();
+        int charWidth = fm.getAverageCharWidth();
+        int charHeight = fm.getHeight();
+        gc.dispose();
 
         int maxWidth = display.getBounds().width / 2;
         int maxHeight = display.getBounds().height / 6;

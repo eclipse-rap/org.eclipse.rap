@@ -177,6 +177,8 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Resource_Test.class );
     suite.addTestSuite( Cursor_Test.class );
     suite.addTestSuite( Device_Test.class );
+    suite.addTestSuite( GC_Test.class );
+    suite.addTestSuite( FontMetrics_Test.class );
     suite.addTestSuite( TextSizeEstimation_Test.class );
     suite.addTestSuite( TextSizeDetermination_Test.class );
     suite.addTestSuite( ResourceFactory_Test.class );

@@ -14,11 +14,11 @@ import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -224,22 +224,19 @@ public class PerspectiveBarContributionItem extends ContributionItem {
 			return null;
 		}
         String returnText = textValue;
-// RAP [rh] Changes due to different text size determination         
-//        GC gc = new GC(item.getParent());
+        GC gc = new GC(item.getParent());
         int maxWidth = getMaxWidth(item.getImage());
-//        if (gc.textExtent(textValue).x >= maxWidth) {
-        if (Graphics.stringExtent(item.getParent().getFont(), textValue).x >= maxWidth) {
+        if (gc.textExtent(textValue).x >= maxWidth) {
             for (int i = textValue.length(); i > 0; i--) {
                 String test = textValue.substring(0, i);
                 test = test + ellipsis;
-//                if (gc.textExtent(test).x < maxWidth) {
-                  if (Graphics.stringExtent(item.getParent().getFont(), test).x < maxWidth) {
+                if (gc.textExtent(test).x < maxWidth) {
                     returnText = test;
                     break;
                 }
             }
         }
-//        gc.dispose();
+        gc.dispose();
         return returnText;
     }
 }
