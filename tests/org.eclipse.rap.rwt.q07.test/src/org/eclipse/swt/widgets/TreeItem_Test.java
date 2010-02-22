@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ public class TreeItem_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
    // expected
     }
-    
+
     try {
       new TreeItem( item, SWT.NONE, 5 );
       fail( "No exception thrown for illegal index argument" );
@@ -64,7 +64,7 @@ public class TreeItem_Test extends TestCase {
       fail( "No exception thrown for illegal index argument" );
     } catch( IllegalArgumentException e ) {
    // expected
-    } 
+    }
   }
 
   public void testRemoveAll() {
@@ -414,7 +414,7 @@ public class TreeItem_Test extends TestCase {
     treeItem.setImage( images[ 1 ] );
     treeItem.setImage( 0, images[ 0 ] );
     assertEquals( images[ 0 ], treeItem.getImage( 0 ) );
-    
+
     // Test for a disposed Image in the array
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -565,7 +565,7 @@ public class TreeItem_Test extends TestCase {
       // Expected Exception
     }
   }
-  
+
   public void testSetFont() {
       Display display = new Display();
       Shell shell = new Shell( display, SWT.NONE );
@@ -922,6 +922,99 @@ public class TreeItem_Test extends TestCase {
     treeItem.setForeground( 1, display.getSystemColor( SWT.COLOR_BLACK ) );
     treeItem.setBackground( 1, display.getSystemColor( SWT.COLOR_BLACK ) );
     treeItem.setImage( 1, Graphics.getImage( Fixture.IMAGE1 ) );
+  }
+
+  public void testTextBounds() {
+    // Test setup
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
+    column1.setWidth( 50 );
+    TreeColumn column2 = new TreeColumn( tree, SWT.NONE );
+    column2.setWidth( 50 );
+    item.setText( 0, "col1" );
+    item.setText( 1, "col2" );
+
+    Rectangle textBounds1 = item.getTextBounds( 0 );
+    Rectangle textBounds2 = item.getTextBounds( 1 );
+    assertTrue( textBounds1.x + textBounds1.width <= textBounds2.x );
+  }
+
+  public void testTextBoundsWithInvalidIndex() {
+    // Test setup
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "abc" );
+    // without columns
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getTextBounds( 123 ) );
+    // with column
+    new TreeColumn( tree, SWT.NONE );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getTextBounds( 123 ) );
+  }
+
+  public void testTextBoundsWithImageAndColumns() {
+    // Test setup
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    column.setWidth( 200 );
+
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    item.setImage( 0, image );
+    assertTrue( item.getTextBounds( 0 ).x > image.getBounds().width );
+    item.setImage( 0, null );
+    assertTrue( item.getTextBounds( 0 ).x < image.getBounds().width );
+  }
+
+  public void testTextBoundsWithChangedFont() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "abc" );
+    Rectangle origBounds = item.getTextBounds( 0 );
+    item.setFont( Graphics.getFont( "Helvetica", 50, SWT.BOLD ) );
+    Rectangle actualBounds = item.getTextBounds( 0 );
+    assertTrue( actualBounds.width > origBounds.width );
+    item.setFont( null );
+    actualBounds = item.getTextBounds( 0 );
+    assertEquals( origBounds, actualBounds );
+  }
+
+  public void testTextBoundsWithCheckboxTree() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.CHECK );
+    TreeColumn column = new TreeColumn( tree, SWT.LEFT );
+    column.setWidth( 100 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "rama rama ding dong" );
+    Rectangle textBounds = item.getTextBounds( 0 );
+    // Item 0 must share the first column with the check box
+    assertTrue( textBounds.width < 65 );
+  }
+
+  public void testTextBoundsWithCollapsedParentItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.LEFT );
+    column.setWidth( 100 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "item" );
+    item.setExpanded( false );
+    TreeItem subitem = new TreeItem( item, SWT.NONE );
+    subitem.setText( "subitem" );
+    Rectangle emptyBounds = new Rectangle( 0, 0, 0, 0 );
+    assertTrue( emptyBounds.equals( subitem.getTextBounds( 0 ) ) );
+    item.setExpanded( true );
+    assertFalse( emptyBounds.equals( subitem.getTextBounds( 0 ) ) );
   }
 
   protected void setUp() throws Exception {

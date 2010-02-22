@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -598,5 +598,24 @@ public class TreeColumn extends Item {
   void releaseParent() {
     super.releaseParent();
     parent.destroyColumn( this );
+  }
+
+  //////////////
+  // Left offset
+
+  final int getLeft() {
+    int result = 0;
+    TreeColumn[] columns = parent.getColumns();
+    int[] columnOrder = parent.getColumnOrder();
+    int orderedIndex = -1;
+    for( int i = 0; orderedIndex == -1 && i < columnOrder.length; i++ ) {
+      if( columnOrder[ i ] == parent.indexOf( this ) ) {
+        orderedIndex = i;
+      }
+    }
+    for( int i = 0; i < orderedIndex; i++ ) {
+      result += columns[ columnOrder[ i ] ].getWidth();
+    }
+    return result;
   }
 }

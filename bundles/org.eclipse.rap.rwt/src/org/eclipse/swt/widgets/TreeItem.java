@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1008,6 +1008,57 @@ public class TreeItem extends Item {
       return ""; //$NON-NLS-1$
     }
     return texts[ columnIndex ];
+  }
+
+  /**
+   * Returns a rectangle describing the size and location
+   * relative to its parent of the text at a column in the
+   * tree.
+   *
+   * @param index the index that specifies the column
+   * @return the receiver's bounding text rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public Rectangle getTextBounds( final int index ) {
+    checkWidget();
+    int left = 0;
+    int top = 0;
+    int width = 0;
+    int height = 0;
+    int columnCount = parent.getColumnCount();
+    if( parentItem == null || parentItem.getExpanded() ) {
+      int indent = index == 0 ? ( depth + 1 ) * INDENT_WIDTH : 0;
+      if( index == 0 && columnCount == 0 ) {
+        left =   indent
+               + getCheckWidth( 0 )
+               + getImageBounds( 0 ).width
+               + getImageGap( 0 );
+        width = TextSizeDetermination.stringExtent( getFont(), getText( 0 ) ).x;
+        top = getItemTop();
+        height = parent.getItemHeight();
+      } else if( index >= 0 && index < columnCount ) {
+        left =   parent.getColumn( index ).getLeft()
+               + indent
+               + getCheckWidth( index )
+               + getImageBounds( index ).width
+               + getImageGap( index );
+        width =   parent.getColumn( index ).getWidth()
+                - indent
+                - getCheckWidth( index )
+                - getImageBounds( index ).width
+                - getImageGap( index );
+        width = Math.max( 0, width );
+        top = getItemTop();
+        height = parent.getItemHeight();
+      }
+    }
+    return new Rectangle( left, top, width, height );
   }
 
   /**
