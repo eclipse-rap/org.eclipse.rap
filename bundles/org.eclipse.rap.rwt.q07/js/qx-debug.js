@@ -1187,30 +1187,21 @@ __createEmptyFunction:function(){return function(){};
 },
 __wrapConstructor:function(construct,
 name,
-type){var code=[];
-code.push('var clazz=arguments.callee.constructor;');
-{code.push('if(!(this instanceof clazz))throw new Error("Please initialize ',
-name,
-' objects using the new keyword!");');
-if(type==="abstract"){code.push('if(this.classname===',
-name,
-'.classname)throw new Error("The class ',
-name,
-' is abstract! It is not possible to instantiate it.");');
-}else if(type==="singleton"){code.push('if(!clazz.$$allowconstruct)throw new Error("The class ',
-name,
-' is a singleton! It is not possible to instantiate it directly. Use the static getInstance() method instead.");');
+type){var wrapper=function(){var clazz=arguments.callee.constructor;
+{if(!(this instanceof clazz))throw new Error("Please initialize "+name+" objects using the new keyword!");
+if(type==="abstract"){if(this.classname===name)throw new Error("The class "+name+" is abstract! It is not possible to instantiate it.");
+}else if(type==="singleton"){if(!clazz.$$allowconstruct)throw new Error("The class "+name+" is a singleton! It is not possible to instantiate it directly. Use the static getInstance() method instead.");
 }};
-code.push('if(!clazz.$$propertiesAttached)qx.core.Property.attach(clazz);');
-code.push('var retval=clazz.$$original.apply(this,arguments);');
-code.push('if(clazz.$$includes){var mixins=clazz.$$flatIncludes;');
-code.push('for(var i=0,l=mixins.length;i<l;i++){');
-code.push('if(mixins[i].$$constructor){mixins[i].$$constructor.apply(this,arguments);}}}');
-code.push('if(this.classname===',
-name,
-'.classname)this.$$initialized=true;');
-code.push('return retval;');
-var wrapper=new Function(code.join(""));
+if(!clazz.$$propertiesAttached)qx.core.Property.attach(clazz);
+var retval=clazz.$$original.apply(this,
+arguments);
+if(clazz.$$includes){var mixins=clazz.$$flatIncludes;
+for(var i=0,
+l=mixins.length;i<l;i++){if(mixins[i].$$constructor){mixins[i].$$constructor.apply(this,
+arguments);
+}}}if(this.classname===', name, '.classname)this.$$initialized=true;
+return retval;
+};
 var aspectWrapper;
 if(type==="singleton"){wrapper.getInstance=this.getInstance;
 }wrapper.$$original=construct;
