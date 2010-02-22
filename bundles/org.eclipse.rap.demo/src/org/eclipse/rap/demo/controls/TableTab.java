@@ -73,6 +73,7 @@ public class TableTab extends ExampleTab {
     createDisposeFirstColumnButton();
     createDisposeSelectionButton();
     createRecreateButton();
+    createClearButton();
     createTopIndexButton();
     createShowSelectionButton();
     createChangeCheckButton();
@@ -227,6 +228,17 @@ public class TableTab extends ExampleTab {
             columns[ i ].setImage( null );
           }
         }
+      }
+    } );
+  }
+
+  private void createClearButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "ClearAll" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        table.clearAll();
+        table.setItemCount( 0 );
       }
     } );
   }

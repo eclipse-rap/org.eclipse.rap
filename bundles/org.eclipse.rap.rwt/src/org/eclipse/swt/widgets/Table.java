@@ -949,6 +949,7 @@ public class Table extends Composite {
         item.clear();
       }
     }
+    clearItemImageSize();
   }
 
   /**
@@ -2312,6 +2313,10 @@ public class Table extends Composite {
   final Point getItemImageSize() {
     return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
   }
+  
+  final void clearItemImageSize() {
+    itemImageSize = null;
+  }
 
   Rectangle getCellPadding() {
     if( bufferedCellPadding == null ) {
@@ -2560,6 +2565,7 @@ public class Table extends Composite {
 
   private void setTableEmpty() {
     items = new TableItem[ 4 ];
+    clearItemImageSize();
   }
 
   private static int checkStyle( final int style ) {

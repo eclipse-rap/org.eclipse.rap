@@ -1573,6 +1573,27 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getSelectionIndex() );
     assertEquals( selectedItem, table.getSelection()[ 0 ] );
   }
+  
+  // bug 303473
+  public void testItemImageSizeAfterClear() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    table.clearAll();
+    assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
+  }
+  
+  public void testItemImageSizeAfterRemovingAllItems() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item.dispose();
+    assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
+  }
 
   public void testSetItemCountWithSetDataListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -2368,7 +2389,7 @@ public class Table_Test extends TestCase {
     } );
     assertEquals( 1, table.getItemCount() );
   }
-
+  
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {
