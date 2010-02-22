@@ -143,30 +143,24 @@ public class MessageBox extends Dialog {
   public int open() {
     shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
     shell.setText( getText() );
-
     createControls( shell );
-
     Rectangle parentSize = parent.getBounds();
     Point prefSize = shell.computeSize( SWT.DEFAULT, SWT.DEFAULT );
     if( prefSize.x > MAX_WIDTH ) {
       prefSize.x = MAX_WIDTH;
     }
     shell.setSize( prefSize );
-
     int locationX = ( parentSize.width - prefSize.x ) / 2 + parentSize.x;
     int locationY = ( parentSize.height - prefSize.y ) / 2 + parentSize.y;
     shell.setLocation( new Point( locationX, locationY ) );
-
     shell.pack();
     shell.open();
-
     Display display = parent.getDisplay();
     while( !shell.isDisposed() ) {
       if( !display.readAndDispatch() ) {
         display.sleep();
       }
     }
-
     return returnCode;
   }
 
