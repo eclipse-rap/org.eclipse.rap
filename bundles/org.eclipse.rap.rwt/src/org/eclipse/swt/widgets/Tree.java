@@ -959,6 +959,8 @@ public class Tree extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
+   *
+   * @since 1.3
    */
   public int getItemHeight() {
     checkWidget();
