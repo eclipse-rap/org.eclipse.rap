@@ -19,8 +19,7 @@ import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
@@ -95,6 +94,7 @@ public class Tree extends Composite {
   // This values must be kept in sync with appearance of list items
   private static final int CHECK_HEIGHT = 13;
   private static final int VERTICAL_ITEM_MARGIN = 3;
+  private static final int ITEM_HEIGHT = 16;
 
   /* package */final ItemHolder itemHolder;
   /* package */final ItemHolder columnHolder;
@@ -112,6 +112,7 @@ public class Tree extends Composite {
   /* package */int scrollTop, scrollLeft;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
+  private Point itemImageSize;
 
   private final class CompositeItemHolder implements IItemHolderAdapter {
 
@@ -959,14 +960,18 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  // TODO: [bm] improve and offer as API in next release
-  private int getItemHeight() {
+  public int getItemHeight() {
     checkWidget();
-    int charHeight = TextSizeDetermination.getCharHeight( getFont() );
-    int result = charHeight + VERTICAL_ITEM_MARGIN;
+    int textHeight = TextSizeDetermination.getCharHeight( getFont() );
+    textHeight += VERTICAL_ITEM_MARGIN;
+    int itemImageHeight = getItemImageSize().y + VERTICAL_ITEM_MARGIN;
+    int result = Math.max( itemImageHeight, textHeight );
     if( ( style & SWT.CHECK ) != 0 ) {
       result = Math.max( CHECK_HEIGHT, result );
     }
+    // TODO [if] qx tree item height is hard coded to 16. Height bigger than 16
+    // leads to broken tree layout. Remove, when it is fixed.
+    result = ITEM_HEIGHT;
     return result;
   }
 
@@ -1650,6 +1655,17 @@ public class Tree extends Composite {
       result = CHECK_HEIGHT + 4;
     }
     return result;
+  }
+
+  final void updateItemImageSize( final Image image ) {
+    if( image != null && itemImageSize == null ) {
+      Rectangle imageBounds = image.getBounds();
+      itemImageSize = new Point( imageBounds.width, imageBounds.height );
+    }
+  }
+
+  final Point getItemImageSize() {
+    return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
   }
 
   static void checkAllData( final Tree tree ) {

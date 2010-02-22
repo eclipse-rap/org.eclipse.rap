@@ -74,7 +74,6 @@ public class TreeItem extends Item {
 
   private static final int IMAGE_TEXT_GAP = 2;
   private static final int INDENT_WIDTH = 19;
-  private static final int ITEM_HEIGHT = 16;
 
   private final TreeItem parentItem;
   private final Tree parent;
@@ -438,7 +437,10 @@ public class TreeItem extends Item {
       } else {
         left = getItemLeft( columnIndex );
       }
-      result = new Rectangle( left, getItemTop(), width, getItemHeight() );
+      result = new Rectangle( left,
+                              getItemTop(),
+                              width,
+                              parent.getItemHeight() );
     }
     return result;
   }
@@ -453,13 +455,10 @@ public class TreeItem extends Item {
     return result;
   }
 
-  private int getItemHeight() {
-    return ITEM_HEIGHT;
-  }
-
   private int getItemTop() {
     int headerHeight = parent.getHeaderHeight();
-    return headerHeight + flatIndex * ITEM_HEIGHT - parent.scrollTop;
+    int itemHeight = parent.getItemHeight();
+    return headerHeight + flatIndex * itemHeight - parent.scrollTop;
   }
 
   private int getImageGap( final int index ) {
@@ -1339,6 +1338,7 @@ public class TreeItem extends Item {
     } else {
       images[ columnIndex ] = value;
     }
+    parent.updateItemImageSize( value );
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       cached = true;
     }
