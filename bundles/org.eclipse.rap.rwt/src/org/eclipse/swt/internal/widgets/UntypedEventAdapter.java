@@ -543,10 +543,10 @@ public final class UntypedEventAdapter
         break;
       case SWT.DragDetect:
         result = DragDetectEvent.hasListener( widget );
-      break;
+        break;
       case SWT.Arm:
         result = ArmEvent.hasListener( widget );
-      break;
+        break;
     }
     return result;
   }
