@@ -541,9 +541,12 @@ public final class UntypedEventAdapter
       case SWT.Help:
         result = HelpEvent.hasListener( widget );
         break;
+      case SWT.DragDetect:
+        result = DragDetectEvent.hasListener( widget );
+      break;
       case SWT.Arm:
         result = ArmEvent.hasListener( widget );
-        break;
+      break;
     }
     return result;
   }
