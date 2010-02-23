@@ -130,8 +130,6 @@ public final class JSConst {
   // states that represent SWT style flags
   public static final String JS_STYLE_FLAG_BORDER = "rwt_BORDER";
   public static final String JS_STYLE_FLAG_FLAT = "rwt_FLAT";
-  public static final String JS_STYLE_FLAG_SHADOW_IN = "rwt_SHADOW_IN";
-  public static final String JS_STYLE_FLAG_SHADOW_OUT = "rwt_SHADOW_OUT";
 
   // keys of the Qooxdoo listeners, used to register the client side
   // eventhandlers

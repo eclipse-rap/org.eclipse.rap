@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,20 +7,19 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
- * This class represents RWT Labels with style RWT.SEPARATOR
+ * This class represents SWT Labels with style SWT.SEPARATOR
  */
 qx.Class.define( "org.eclipse.swt.widgets.Separator", {
   extend : qx.ui.layout.BoxLayout,
 
   construct : function() {
     this.base( arguments );
-
     // Fix IE Styling issues
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this );
-
     // the actual separator line
     this._line = new qx.ui.basic.Terminator();
     this._line.setAnonymous( true );
@@ -33,31 +32,22 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     appearance : {
       refine : true,
       init : "separator"
-    },
-
-    lineOrientation : {
-      check : [ "horizontal", "vertical" ],
-      apply : "_applyLineOrientation",
-      init : "horizontal",
-      nullable : true
     }
   },
   
   destruct : function() {
-    this._disposeObjects( "_line" );
+  	this._line.dispose();
+  	this._line = null;
+//    this._disposeObjects( "_line" );
   },
   
   members : {
 
-    addLineStyle : function( style ) {
+    setLineStyle : function( style ) {
       this._line.addState( style );
     },
     
-    removeLineStyle : function( style ) {
-      this._line.removeState( style );
-    },
-    
-    _applyLineOrientation : function( value, old ) {
+    setLineOrientation : function( value ) {
       if( value == "vertical" ) {
         this.setHorizontalChildrenAlign( "center" );
         this._line.setWidth( "auto" );
