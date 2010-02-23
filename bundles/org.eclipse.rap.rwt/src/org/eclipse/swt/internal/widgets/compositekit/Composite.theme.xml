@@ -42,6 +42,12 @@
         Background image or gradient for composites.
       </description>
     </property>
+    
+    <property name="padding">
+      <description>
+        Padding (inner distance) for composites.
+      </description>
+    </property>
 
     <style name="BORDER"
         description="Style constant for bordered behavior." />
