@@ -31,8 +31,10 @@ public class TableViewerFocusCellManager extends SWTFocusCellManager {
 	 * <ul>
 	 * <li><code>SWT.ARROW_UP</code>: navigate to cell above</li>
 	 * <li><code>SWT.ARROW_DOWN</code>: navigate to cell below</li>
-	 * <li><code>SWT.ARROW_RIGHT</code>: navigate to next visible cell on the right</li>
-	 * <li><code>SWT.ARROW_LEFT</code>: navigate to next visible cell on the left</li>
+	 * <li><code>SWT.ARROW_RIGHT</code>: navigate to next visible cell on
+	 * the right</li>
+	 * <li><code>SWT.ARROW_LEFT</code>: navigate to next visible cell on the
+	 * left</li>
 	 * </ul>
 	 *
 	 * @param viewer
@@ -64,12 +66,32 @@ public class TableViewerFocusCellManager extends SWTFocusCellManager {
 	ViewerCell getInitialFocusCell() {
 		Table table = (Table) getViewer().getControl();
 
-		if (table.getItemCount() > 0) {
-			return getViewer().getViewerRowFromItem(table.getItem(0))
-					.getCell(0);
-		}
+		if (!table.isDisposed() && table.getItemCount() > 0
+				&& !table.getItem(0).isDisposed()) {
+			final ViewerRow aViewerRow = getViewer().getViewerRowFromItem(
+					table.getItem(0));
+			for (int i = 0; i < table.getColumnCount(); i++) {
+				if (aViewerRow.getWidth(i) > 0)
+					return aViewerRow.getCell(i);
+			}}
 
 		return null;
+	}
+
+	public ViewerCell getFocusCell() {
+		ViewerCell cell = super.getFocusCell();
+		Table t = (Table) getViewer().getControl();
+
+		// It is possible that the selection has changed under the hood
+		if (cell != null) {
+			if (t.getSelection().length == 1
+					&& t.getSelection()[0] != cell.getItem()) {
+				setFocusCell(getViewer().getViewerRowFromItem(
+						t.getSelection()[0]).getCell(cell.getColumnIndex()));
+			}
+		}
+
+		return super.getFocusCell();
 	}
 
 }

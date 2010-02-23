@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * </p>
  *
  * @see IContributionManager
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IContributionItem {
 
@@ -46,7 +47,6 @@ public interface IContributionItem {
      * IContributionManager before the contribution lifecycle
      * has ended.
      * 
-     * @since 1.0
      */
     public void dispose();
 
@@ -85,7 +85,6 @@ public interface IContributionItem {
      * @param parent the parent cool bar
      * @param index the index where the controls are inserted,
      *   or <code>-1</code> to insert at the end
-     * @since 1.0
      */
     public void fill(CoolBar parent, int index);
 
@@ -157,7 +156,6 @@ public interface IContributionItem {
      * Saves any state information of the control(s) owned by this contribution item.
      * The contribution manager calls this method before disposing of the controls.
      * 
-     * @since 1.0
      */
     public void saveWidgetState();
 
@@ -165,7 +163,6 @@ public interface IContributionItem {
      * Sets the parent manager of this item
      * 
      * @param parent the parent contribution manager
-     * @since 1.0
      */
     public void setParent(IContributionManager parent);
 
@@ -189,7 +186,6 @@ public interface IContributionItem {
      * for the the given property. 
      * 
      * @param id the id of the changed property
-     * @since 1.0
      */
     public void update(String id);
 }

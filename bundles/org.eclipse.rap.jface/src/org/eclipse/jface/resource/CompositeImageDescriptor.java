@@ -68,7 +68,7 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 	 * @param oy
 	 *            the y position
 	 */
-	final protected void drawImage(ImageData src, final int ox, final int oy) {
+	final protected void drawImage(ImageData src, int ox, int oy) {
 		ImageData dst = imageData;
 		PaletteData srcPalette = src.palette;
 		ImageData srcMask = null;

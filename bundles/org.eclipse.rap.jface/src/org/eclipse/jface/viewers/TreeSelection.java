@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,9 +135,6 @@ public class TreeSelection extends StructuredSelection implements ITreeSelection
 	/**
 	 * Creates a new empty selection. See also the static field
 	 * <code>EMPTY</code> which contains an empty selection singleton.
-	 * <p>
-	 * Note that TreeSelection.EMPTY is not equals() to StructuredViewer.EMPTY.
-	 * </p>
 	 * 
 	 * @see #EMPTY
 	 */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,6 @@ public abstract class SubContributionManager implements IContributionManager {
      * Method declared on IContributionManager.
      */
     public void add(IContributionItem item) {
-        item.setParent(this);
         SubContributionItem wrap = wrap(item);
         wrap.setVisible(visible);
         parentMgr.add(wrap);
@@ -78,7 +77,6 @@ public abstract class SubContributionManager implements IContributionManager {
      * Method declared on IContributionManager.
      */
     public void appendToGroup(String groupName, IContributionItem item) {
-        item.setParent(this);
         SubContributionItem wrap = wrap(item);
         wrap.setVisible(visible);
         parentMgr.appendToGroup(groupName, wrap);
@@ -91,7 +89,6 @@ public abstract class SubContributionManager implements IContributionManager {
      * This must leave no trace of this sub contribution manager
      * in the parent manager.  Subclasses may extend.
      * 
-     * @since 1.0
      */
     public void disposeManager() {
         Iterator it = mapItemToWrapper.values().iterator();
@@ -156,7 +153,6 @@ public abstract class SubContributionManager implements IContributionManager {
      * Method declared on IContributionManager.
      */
     public void insertAfter(String id, IContributionItem item) {
-        item.setParent(this);
         SubContributionItem wrap = wrap(item);
         wrap.setVisible(visible);
         parentMgr.insertAfter(id, wrap);
@@ -174,7 +170,6 @@ public abstract class SubContributionManager implements IContributionManager {
      * Method declared on IContributionManager.
      */
     public void insertBefore(String id, IContributionItem item) {
-        item.setParent(this);
         SubContributionItem wrap = wrap(item);
         wrap.setVisible(visible);
         parentMgr.insertBefore(id, wrap);
@@ -217,6 +212,7 @@ public abstract class SubContributionManager implements IContributionManager {
      *      contributed by the client
      */
     protected void itemAdded(IContributionItem item, SubContributionItem wrap) {
+    	item.setParent(this);
         mapItemToWrapper.put(item, wrap);
     }
 
@@ -230,6 +226,7 @@ public abstract class SubContributionManager implements IContributionManager {
      */
     protected void itemRemoved(IContributionItem item) {
         mapItemToWrapper.remove(item);
+        item.setParent(null);
     }
 
     /**
@@ -267,7 +264,6 @@ public abstract class SubContributionManager implements IContributionManager {
      * Method declared on IContributionManager.
      */
     public void prependToGroup(String groupName, IContributionItem item) {
-        item.setParent(this);
         SubContributionItem wrap = wrap(item);
         wrap.setVisible(visible);
         parentMgr.prependToGroup(groupName, wrap);
@@ -279,8 +275,10 @@ public abstract class SubContributionManager implements IContributionManager {
      */
     public IContributionItem remove(String id) {
         IContributionItem result = parentMgr.remove(id);
+        // result is the wrapped item
         if (result != null) {
-			itemRemoved(result);
+        	IContributionItem item = unwrap(result);
+			itemRemoved(item);
 		}
         return result;
     }
@@ -306,11 +304,11 @@ public abstract class SubContributionManager implements IContributionManager {
      * Method declared on IContributionManager.
      */
     public void removeAll() {
-        Iterator it = mapItemToWrapper.values().iterator();
-        while (it.hasNext()) {
-            IContributionItem item = (IContributionItem) it.next();
-            parentMgr.remove(item);
-        }
+    	Object[] array = mapItemToWrapper.keySet().toArray();
+    	for (int i = 0; i < array.length; i++) {
+			IContributionItem item = (IContributionItem) array[i];
+			remove(item);
+		}
         mapItemToWrapper.clear();
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,9 @@ import org.eclipse.swt.graphics.Rectangle;
  * All methods declared on this class are static. This
  * class cannot be instantiated.
  * </p>
+ * @noinstantiate This class is not intended to be instantiated by clients.
+ * @noextend This class is not intended to be subclassed by clients.
+ * @since 1.0
  */
 public class StringConverter {
 
@@ -320,7 +323,6 @@ public class StringConverter {
      * 
      * @param value the font list string 
      * @return the value as a font list
-     * @since 1.0
      */
     public static FontData[] asFontDataArray(String value) {
         String[] strings = getArrayFromList(value, FONT_SEPARATOR);
@@ -693,7 +695,6 @@ public class StringConverter {
      * 
      * @param value The font data.
      * @return The string representation of the font data arra.
-     * @since 1.0
      */
     public static String asString(FontData[] value) {
         StringBuffer buffer = new StringBuffer();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,29 @@ import java.util.Collection;
  * </p> 
  * 
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class ArrayContentProvider implements IStructuredContentProvider {
 
+	private static ArrayContentProvider instance;
+
+	/**
+	 * Returns an instance of ArrayContentProvider. Since instances of this
+	 * class do not maintain any state, they can be shared between multiple
+	 * clients.
+	 * 
+	 * @return an instance of ArrayContentProvider
+	 * 
+	 * @since 1.3
+	 */
+	public static ArrayContentProvider getInstance() {
+		synchronized(ArrayContentProvider.class) {
+			if (instance == null) {
+				instance = new ArrayContentProvider();
+			}
+			return instance;
+		}
+	}
     /**
      * Returns the elements in the input, which must be either an array or a
      * <code>Collection</code>. 

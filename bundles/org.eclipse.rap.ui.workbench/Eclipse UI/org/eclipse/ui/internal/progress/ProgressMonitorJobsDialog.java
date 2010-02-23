@@ -19,10 +19,10 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.rap.ui.internal.progress.ProgressUtil;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -219,8 +219,7 @@ public class ProgressMonitorJobsDialog extends ProgressMonitorDialog {
         composite.setFont(parent.getFont());
         // Add the buttons to the button bar.
         if (arrowCursor == null) {
-			//arrowCursor = new Cursor(parent.getDisplay(), SWT.CURSOR_ARROW);
-            arrowCursor = Graphics.getCursor( SWT.CURSOR_ARROW );
+			arrowCursor = new Cursor(parent.getDisplay(), SWT.CURSOR_ARROW);
 		}
         createButtonsForButtonBar(composite);
         return composite;

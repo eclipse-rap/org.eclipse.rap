@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Tom Schindl <tom.schindl@bestsolution.at> - initial API and implementation
- *     											 - fix in bug: 195908,198035,215069,215735
+ *     											 - fix in bug: 195908,198035,215069,215735,227421
  *******************************************************************************/
 
 package org.eclipse.jface.viewers;
@@ -253,8 +253,8 @@ public class ViewerCell {
 	 * neighbor exists in the given direction. Direction constants can be
 	 * combined by bitwise OR; for example, this method will return the cell to
 	 * the upper-left of the current cell by passing {@link #ABOVE} |
-	 * {@link #LEFT}. If <code>sameLevel</code> is <code>true</code>, only
-	 * cells in sibling rows (under the same parent) will be considered.
+	 * {@link #LEFT}. If <code>sameLevel</code> is <code>true</code>, only cells
+	 * in sibling rows (under the same parent) will be considered.
 	 *
 	 * @param directionMask
 	 *            the direction mask used to identify the requested neighbor
@@ -291,7 +291,9 @@ public class ViewerCell {
 			if (columnIndex >= 0 && columnIndex < row.getColumnCount()) {
 				ViewerCell cell = row.getCellAtVisualIndex(columnIndex);
 				if( cell != null ) {
-					while( cell != null ) {
+					while (cell != null
+							&& columnIndex < row.getColumnCount() - 1
+							&& columnIndex > 0) {
 						if( cell.isVisible() ) {
 							break;
 						}
@@ -346,7 +348,8 @@ public class ViewerCell {
 	/**
 	 * Gets the foreground color of the cell.
 	 * 
-	 * @return the foreground of the cell or <code>null</code> for the default foreground
+	 * @return the foreground of the cell or <code>null</code> for the default
+	 *         foreground
 	 * 
 	 * @since 1.1
 	 */
@@ -357,7 +360,8 @@ public class ViewerCell {
 	/**
 	 * Gets the background color of the cell.
 	 * 
-	 * @return the background of the cell or <code>null</code> for the default background
+	 * @return the background of the cell or <code>null</code> for the default
+	 *         background
 	 * 
 	 * @since 1.1
 	 */
@@ -413,6 +417,16 @@ public class ViewerCell {
 	}
 
 	private boolean isVisible() {
-		return getBounds().width > 0;
+		return row.isColumnVisible(columnIndex);
+	}
+
+	/**
+	 * Scroll the cell into view
+	 * 
+	 * @return true if the cell was scrolled into view
+	 * @since 1.3
+	 */
+	public boolean scrollIntoView() {
+		return row.scrollCellIntoView(columnIndex);
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.jface.internal;
 
-import java.util.Map;
 
 /**
  * Internal class used for non-API debug flags.
@@ -28,8 +27,20 @@ public class InternalPolicy {
 	public static boolean DEBUG_LOG_REENTRANT_VIEWER_CALLS = false;
 
 	/**
-	 * (NON-API) Instead of logging current conflicts they can be
-	 * held here.  If there is a problem, they can be reported then.
+	 * (NON-API) A flag to indicate whether label provider changed notifications
+	 * should always be logged when the underlying control has been disposed. If
+	 * false, only the first notification when disposed will cause a log entry.
+	 * 
+	 * @since 1.3
 	 */
-	public static Map currentConflicts = null;
+	public static boolean DEBUG_LOG_LABEL_PROVIDER_NOTIFICATIONS_WHEN_DISPOSED = false;
+	
+	/**
+	 * (NON-API) A flag to indicate whether the JFace bundle is running inside an OSGi
+	 * container
+	 * 
+	 * @since 1.3
+	 */
+	public static boolean OSGI_AVAILABLE; // default value is false
+	
 }

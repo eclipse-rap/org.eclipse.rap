@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.jface.dialogs.PopupDialog;
-import org.eclipse.jface.preference.JFacePreferences;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.ILabelProvider;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -30,14 +27,22 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+
+import org.eclipse.jface.dialogs.PopupDialog;
+import org.eclipse.jface.preference.JFacePreferences;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.Util;
+import org.eclipse.jface.viewers.ILabelProvider;
 
 /**
  * ContentProposalAdapter can be used to attach content proposal behavior to a
@@ -50,7 +55,8 @@ import org.eclipse.swt.widgets.Text;
  * is activated, and whether any filtering should be done on the proposals as
  * the user types characters.
  * <p>
- * This class is not intended to be subclassed.
+ * This class provides some overridable methods to allow clients to manually
+ * control the popup. However, most of the implementation remains private.
  * 
  * @since 1.0
  */
@@ -441,7 +447,7 @@ public class ContentProposalAdapter {
 			 * Construct an info-popup with the specified parent.
 			 */
 			InfoPopupDialog(Shell parent) {
-				super(parent, PopupDialog.HOVER_SHELLSTYLE, false, false,
+				super(parent, PopupDialog.HOVER_SHELLSTYLE, false, false, false,
 						false, false, null, null);
 			}
 
@@ -520,8 +526,8 @@ public class ContentProposalAdapter {
 			 * @see org.eclipse.jface.dialogs.PopupDialog#getForeground()
 			 */
 			protected Color getForeground() {
-				return JFaceResources.getColorRegistry().get(
-						JFacePreferences.CONTENT_ASSIST_INFO_FOREGROUND_COLOR);
+				return control.getDisplay().
+						getSystemColor(SWT.COLOR_INFO_FOREGROUND);
 			}
 			
 			/*
@@ -529,8 +535,8 @@ public class ContentProposalAdapter {
 			 * @see org.eclipse.jface.dialogs.PopupDialog#getBackground()
 			 */
 			protected Color getBackground() {
-				return JFaceResources.getColorRegistry().get(
-						JFacePreferences.CONTENT_ASSIST_INFO_BACKGROUND_COLOR);
+				return control.getDisplay().
+						getSystemColor(SWT.COLOR_INFO_BACKGROUND);
 			}
 
 			/*
@@ -612,7 +618,7 @@ public class ContentProposalAdapter {
 			// On platforms where SWT.ON_TOP overrides SWT.RESIZE, we will live
 			// with this.
 			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=126138
-			super(control.getShell(), SWT.RESIZE | SWT.ON_TOP, false, false,
+			super(control.getShell(), SWT.RESIZE | SWT.ON_TOP, false, false, false,
 					false, false, null, infoText);
 			this.proposals = proposals;
 		}
@@ -692,8 +698,7 @@ public class ContentProposalAdapter {
 		 */
 		protected void adjustBounds() {
 			// Get our control's location in display coordinates.
-			Point location = control.getDisplay().map(control.getParent(),
-					null, control.getLocation());
+			Point location = control.getDisplay().map(control.getParent(), null, control.getLocation());			
 			int initialX = location.x + POPUP_OFFSET;
 			int initialY = location.y + control.getSize().y + POPUP_OFFSET;
 			// If we are inserting content, use the cursor position to
@@ -718,7 +723,16 @@ public class ContentProposalAdapter {
 				getShell().pack();
 				popupSize = getShell().getSize();
 			}
-			getShell().setBounds(initialX, initialY, popupSize.x, popupSize.y);
+			
+			// Constrain to the display
+			Rectangle constrainedBounds = getConstrainedShellBounds(new Rectangle(initialX, initialY, popupSize.x, popupSize.y));
+			
+			// If there has been an adjustment causing the popup to overlap 
+			// with the control, then put the popup above the control.
+			if (constrainedBounds.y < initialY)
+				getShell().setBounds(initialX, location.y - popupSize.y, popupSize.x, popupSize.y);
+			else
+				getShell().setBounds(initialX, initialY, popupSize.x, popupSize.y);
 
 			// Now set up a listener to monitor any changes in size.
 			getShell().addListener(SWT.Resize, new Listener() {
@@ -999,9 +1013,11 @@ public class ContentProposalAdapter {
 		/*
 		 * Request the proposals from the proposal provider, and recompute any
 		 * caches. Repopulate the popup if it is open.
-		 */ 
+		 */
 		private void recomputeProposals(String filterText) {
 			IContentProposal[] allProposals = getProposals();
+			if (allProposals == null)
+				 allProposals = getEmptyProposalArray();
 			// If the non-filtered proposal list is empty, we should
 			// close the popup.
 			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=147377
@@ -1013,13 +1029,13 @@ public class ContentProposalAdapter {
 				setProposals(filterProposals(allProposals, filterText));
 			}
 		}
-		
+
 		/*
 		 * In an async block, request the proposals. This is used when clients
 		 * are in the middle of processing an event that affects the widget
 		 * content. By using an async, we ensure that the widget content is up
 		 * to date with the event.
-		 */ 
+		 */
 		private void asyncRecomputeProposals(final String filterText) {
 			if (isValid()) {
 				control.getDisplay().asyncExec(new Runnable() {
@@ -1121,7 +1137,7 @@ public class ContentProposalAdapter {
 	 * The corresponding SWT bug is
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=90321
 	 */
-	private static final boolean USE_VIRTUAL = !"motif".equals(SWT.getPlatform()); //$NON-NLS-1$
+	private static final boolean USE_VIRTUAL = !Util.isMotif();
 
 	/*
 	 * The delay before showing a secondary popup.
@@ -1728,6 +1744,11 @@ public class ContentProposalAdapter {
 							sb.append(" after being handled by popup"); //$NON-NLS-1$
 							dump(sb.toString(), e);
 						}
+						// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=192633
+						// If the popup is open and this is a valid character, we
+						// want to watch for the modified text.
+						if (propagateKeys && e.character != 0)
+							watchModify = true;
 
 						return;
 					}
@@ -1770,9 +1791,13 @@ public class ContentProposalAdapter {
 							} else {
 								// No autoactivation occurred, so record the key
 								// down as a means to interrupt any
-								// autoactivation
-								// that is pending due to autoactivation delay.
+								// autoactivation that is pending due to
+								// autoactivation delay.
 								receivedKeyDown = true;
+								// watch the modify so we can close the popup in
+								// cases where there is no longer a trigger
+								// character in the content
+								watchModify = true;
 							}
 						} else {
 							// The autoactivate string is null. If the trigger
@@ -1784,6 +1809,10 @@ public class ContentProposalAdapter {
 								watchModify = true;
 //							}
 						}
+					} else {
+						// A non-character key has been pressed. Interrupt any
+						// autoactivation that is pending due to autoactivation delay.
+						receivedKeyDown = true;
 					}
 					break;
 
@@ -1845,7 +1874,7 @@ public class ContentProposalAdapter {
 				return "[0x" + Integer.toHexString(i) + ']'; //$NON-NLS-1$
 			}
 		};
-		control.addListener(SWT.KeyDown, controlListener);		
+		control.addListener(SWT.KeyDown, controlListener);
 		control.addListener(SWT.Traverse, controlListener);
 		control.addListener(SWT.Modify, controlListener);
 
@@ -1884,12 +1913,11 @@ public class ContentProposalAdapter {
 						}
 					});
 					notifyPopupOpened();
+				} else if (!autoActivated) {
 					// RAP [bm]: beep yourself!
-//				} else if (!autoActivated) {
 //					getControl().getDisplay().beep();
 					// RAPEND: [bm] 
 				}
-
 			}
 		}
 	}
@@ -2133,4 +2161,73 @@ public class ContentProposalAdapter {
 		return getControlContentAdapter().getControlContents(getControl())
 				.length() == 0;
 	}
+	
+	/*
+	 * The popup has just opened, but listeners have not yet
+	 * been notified.  Perform any cleanup that is needed.
+	 */
+	private void internalPopupOpened() {
+		// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=243612
+		if (control instanceof Combo) {
+			((Combo)control).setListVisible(false);
+		}
+	}
+	
+	/*
+	 * Return whether a proposal popup should remain open.
+	 * If it was autoactivated by specific characters, and 
+	 * none of those characters remain, then it should not remain
+	 * open.  This method should not be used to determine
+	 * whether autoactivation has occurred or should occur, only whether
+	 * the circumstances would dictate that a popup remain open.
+	 */
+	private boolean shouldPopupRemainOpen() {
+		// If we always autoactivate or never autoactivate, it should remain open
+		if (autoActivateString == null || autoActivateString.length() == 0)
+			return true;
+		String content = getControlContentAdapter().getControlContents(getControl());
+		for (int i=0; i<autoActivateString.length(); i++) {
+			if (content.indexOf(autoActivateString.charAt(i)) >= 0)
+				return true;
+		}
+		return false;
+	}
+	
+	/*
+	 * Return whether this adapter is configured for autoactivation, by
+	 * specific characters or by any characters.
+	 */
+	private boolean allowsAutoActivate() {
+// RAP [rh]	no triggerKeyStroke
+//		return (autoActivateString != null && autoActivateString.length() > 0) // there are specific autoactivation chars supplied
+//		  || (autoActivateString == null && triggerKeyStroke == null);    // we autoactivate on everything
+		return (autoActivateString != null && autoActivateString.length() > 0); // there are specific autoactivation chars supplied
+	}
+	
+	/**
+	 * Sets focus to the proposal popup.  If the proposal popup is not opened,
+	 * this method is ignored.  If the secondary popup has focus, focus is returned
+	 * to the main proposal popup.
+	 * 
+	 * @since 1.3
+	 */
+	public void setProposalPopupFocus() {
+		if (isValid() && popup != null)
+			popup.getShell().setFocus();
+	}
+	
+	/**
+	 * Answers a boolean indicating whether the main proposal popup is open.
+	 * 
+	 * @return <code>true</code> if the proposal popup is open, and
+	 *         <code>false</code> if it is not.
+	 * 
+	 * @since 1.3
+	 */
+	public boolean isProposalPopupOpen() {
+		if (isValid() && popup != null)
+			return true;
+		return false;
+	}
+
 }

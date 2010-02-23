@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.eclipse.swt.SWT;
 
 /**
  * <p>
@@ -464,7 +466,6 @@ public final class Util {
 	 * @param find the string to find.
 	 * @param replacement the string to replace.
 	 * @return The new string.
-	 * @since 1.1
 	 */
 	public static final String replaceAll(String src, String find, String replacement) {
 		final int len = src.length();
@@ -492,6 +493,168 @@ public final class Util {
 			buf.append(src.substring(beginIndex, (idx==-1?len:idx)));
 		}
 		return buf.toString();
+	}
+
+	//
+	// Methods for working with the windowing system
+	//
+	
+	/**
+	 * Windowing system constant.
+	 * @since 1.3
+	 */
+	public static final String WS_WIN32 = "win32";//$NON-NLS-1$
+
+	/**
+	 * Windowing system constant.
+	 * @since 1.3
+	 */
+	public static final String WS_MOTIF = "motif";//$NON-NLS-1$
+
+	/**
+	 * Windowing system constant.
+	 * @since 1.3
+	 */
+	public static final String WS_GTK = "gtk";//$NON-NLS-1$
+
+	/**
+	 * Windowing system constant.
+	 * @since 1.3
+	 */
+	public static final String WS_PHOTON = "photon";//$NON-NLS-1$
+
+	/**
+	 * Windowing system constant.
+	 * @since 1.3
+	 */
+	public static final String WS_CARBON = "carbon";//$NON-NLS-1$
+
+	/**
+	 * Windowing system constant.
+	 * @since 1.3
+	 */
+	public static final String WS_COCOA = "cocoa";//$NON-NLS-1$
+
+	/**
+	 * Windowing system constant.
+	 * @since 1.3
+	 */
+	public static final String WS_WPF = "wpf";//$NON-NLS-1$
+
+	/**
+	 * Windowing system constant.
+	 * @since 1.3
+	 */
+	public static final String WS_UNKNOWN = "unknown";//$NON-NLS-1$
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for windows platforms
+	 * @since 1.3
+	 */
+	public static final boolean isWindows() {
+		final String ws = SWT.getPlatform();
+		return WS_WIN32.equals(ws) || WS_WPF.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for mac platforms
+	 * @since 1.3
+	 */
+	public static final boolean isMac() {
+		final String ws = SWT.getPlatform();
+		return WS_CARBON.equals(ws) || WS_COCOA.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for linux platform
+	 * @since 1.3
+	 */
+	public static final boolean isLinux() {
+		final String ws = SWT.getPlatform();
+		return WS_GTK.equals(ws) || WS_MOTIF.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for gtk platforms
+	 * @since 1.3
+	 */
+	public static final boolean isGtk() {
+		final String ws = SWT.getPlatform();
+		return WS_GTK.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for motif platforms
+	 * @since 1.3
+	 */
+	public static final boolean isMotif() {
+		final String ws = SWT.getPlatform();
+		return WS_MOTIF.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for photon platforms
+	 * @since 1.3
+	 */
+	public static final boolean isPhoton() {
+		final String ws = SWT.getPlatform();
+		return WS_PHOTON.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for carbon platforms
+	 * @since 1.3
+	 */
+	public static final boolean isCarbon() {
+		final String ws = SWT.getPlatform();
+		return WS_CARBON.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for the cocoa platform.
+	 * @since 1.3
+	 */
+	public static final boolean isCocoa() {
+		final String ws = SWT.getPlatform();
+		return WS_COCOA.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for WPF
+	 * @since 1.3
+	 */
+	public static final boolean isWpf() {
+		final String ws = SWT.getPlatform();
+		return WS_WPF.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return <code>true</code> for win32
+	 * @since 1.3
+	 */
+	public static final boolean isWin32() {
+		final String ws = SWT.getPlatform();
+		return WS_WIN32.equals(ws);
+	}
+	
+	/**
+	 * Common WS query helper method. 
+	 * @return the SWT windowing platform string.
+	 * @see SWT#getPlatform()
+	 * @since 1.3
+	 */
+	public static final String getWS() {
+		return SWT.getPlatform();
 	}
 
 	/**

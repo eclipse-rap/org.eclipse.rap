@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.presentations;
 
-import org.eclipse.jface.internal.RAPDialogUtil;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -28,6 +27,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -361,15 +362,12 @@ public abstract class AbstractTableInformationControl {
         fFilterText = new Text(parent, SWT.NONE);
 
         GridData data = new GridData();
-        // RAP [bm]: 
-//        GC gc = new GC(parent);
-//        gc.setFont(parent.getFont());
-//        FontMetrics fontMetrics = gc.getFontMetrics();
-//        gc.dispose();
-//        data.heightHint = org.eclipse.jface.dialogs.Dialog
-//        .convertHeightInCharsToPixels(fontMetrics, 1);
-        data.heightHint = RAPDialogUtil.convertHeightInCharsToPixels(parent.getFont(), 1);
-        // RAPEND: [bm] 
+        GC gc = new GC(parent);
+        gc.setFont(parent.getFont());
+        FontMetrics fontMetrics = gc.getFontMetrics();
+        gc.dispose();
+        data.heightHint = org.eclipse.jface.dialogs.Dialog
+        .convertHeightInCharsToPixels(fontMetrics, 1);
 
         data.horizontalAlignment = GridData.FILL;
         data.verticalAlignment = GridData.BEGINNING;

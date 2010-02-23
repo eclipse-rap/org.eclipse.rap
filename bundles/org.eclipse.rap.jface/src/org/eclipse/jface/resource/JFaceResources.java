@@ -43,6 +43,8 @@ import org.osgi.framework.Bundle;
  * <li>a resource bundle</li>
  * </ul>
  * </p>
+ * @noinstantiate This class is not intended to be instantiated by clients.
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class JFaceResources {
 
@@ -113,10 +115,6 @@ public class JFaceResources {
 				display.getSystemColor(SWT.COLOR_LIST_BACKGROUND).getRGB());
 		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_FOREGROUND_COLOR,
 				display.getSystemColor(SWT.COLOR_LIST_FOREGROUND).getRGB());
-		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_INFO_BACKGROUND_COLOR,
-				display.getSystemColor(SWT.COLOR_INFO_BACKGROUND).getRGB());
-		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_INFO_FOREGROUND_COLOR,
-				display.getSystemColor(SWT.COLOR_INFO_FOREGROUND).getRGB());
 	}
   }
 
@@ -375,19 +373,17 @@ public class JFaceResources {
 			final DeviceResourceManager mgr = new DeviceResourceManager(toQuery);
 			reg = mgr;
 			registries.put(toQuery, reg);
-			// RAP [bm]: 
-//			toQuery.disposeExec(new Runnable() {
-//				/*
-//				 * (non-Javadoc)
-//				 * 
-//				 * @see java.lang.Runnable#run()
-//				 */
-//				public void run() {
-//					mgr.dispose();
-//					registries.remove(toQuery);
-//				}
-//			});
-			// RAPEND: [bm] 
+			toQuery.disposeExec(new Runnable() {
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see java.lang.Runnable#run()
+				 */
+				public void run() {
+					mgr.dispose();
+					registries.remove(toQuery);
+		        }
+			});
 		}
 
 		return reg;
@@ -693,5 +689,4 @@ public class JFaceResources {
 	private JFaceResources() {
 		// no-op
 	}
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Event;
  * </p>
  * 
  * @see Action
+ * @noimplement This interface is not intended to be implemented by clients.
+ * @since 1.0
  */
 public interface IAction {
 
@@ -49,7 +51,6 @@ public interface IAction {
      * to a check box, or if <code>setMenuCreator</code> is called, then the
      * style will change to a drop down menu.
      * 
-     * @since 1.0
      */
     public static int AS_UNSPECIFIED = 0x00;
 
@@ -75,7 +76,6 @@ public interface IAction {
      * Action style constant (value <code>8</code>) indicating action is 
      * a radio button.
      * 
-     * @since 1.0
      */
     public static int AS_RADIO_BUTTON = 0x08;
 
@@ -127,7 +127,6 @@ public interface IAction {
      * action succeeded in the absence of notification to the contrary. 
      * </p>
      * 
-     * @since 1.0
      */
     public static final String RESULT = "result"; //$NON-NLS-1$
     
@@ -140,7 +139,6 @@ public interface IAction {
      * This is used to support backward compatibility of actions within the
      * commands framework.
      * 
-     * @since 1.0
      */
 	public static final String HANDLED = IHandlerAttributes.ATTRIBUTE_HANDLED;
 
@@ -168,7 +166,6 @@ public interface IAction {
      * 
      * @return the action definition id of this action, or
      * <code>null</code> if none
-     * @since 1.0
      */
     public String getActionDefinitionId();
 
@@ -306,7 +303,6 @@ public interface IAction {
 	 * 
 	 * @return <code>true</code> if all of the action's behaviour is
 	 *         available; <code>false</code> otherwise.
-	 * @since 1.0
 	 */
 	public boolean isHandled();
 
@@ -334,7 +330,6 @@ public interface IAction {
      * simply calls <code>run()</code> for backwards compatibility.
      * 
      * @param event the SWT event which triggered this action being run 
-     * @since 1.0
      */
     public void runWithEvent(Event event);
 
@@ -342,7 +337,6 @@ public interface IAction {
      * Sets the action definition id of this action.
      * 
      * @param id the action definition id
-     * @since 1.0
      */
     public void setActionDefinitionId(String id);
 
@@ -440,17 +434,25 @@ public interface IAction {
      */
     public void setId(String id);
 
-    /**
-     * Sets the image for this action, as an image descriptor.
-     * <p>
-     * Fires a property change event for the <code>IMAGE</code> property
-     * if the image actually changes as a consequence.
-     * </p>
-     *
-     * @param newImage the image, or <code>null</code> if this 
-     *   action should not have an image
-     * @see #IMAGE
-     */
+	/**
+	 * Sets the image for this action, as an image descriptor.
+	 * <p>
+	 * Fires a property change event for the <code>IMAGE</code> property if the
+	 * image actually changes as a consequence.
+	 * </p>
+	 * <p>
+	 * Note: This operation is a hint and is not supported in all contexts on
+	 * platforms that do not have this concept (for example, Windows NT).
+	 * Furthermore, some platforms (such as GTK), cannot display both a check
+	 * box and an image at the same time. Instead, they hide the image and
+	 * display the check box.
+	 * </p>
+	 * 
+	 * @param newImage
+	 *            the image, or <code>null</code> if this action should not have
+	 *            an image
+	 * @see #IMAGE
+	 */
     public void setImageDescriptor(ImageDescriptor newImage);
 
     /**

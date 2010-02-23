@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
-import org.eclipse.jface.internal.RAPDialogUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -78,8 +79,7 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
     /**
      * Font metrics to use for determining pixel sizes.
      */
-    // RAP [bm]: 
-//    private FontMetrics fontMetrics;
+    private FontMetrics fontMetrics;
 
     /**
      * Creates a new empty dialog page.
@@ -128,13 +128,10 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
      */
     protected int convertHeightInCharsToPixels(int chars) {
         // test for failure to initialize for backward compatibility
-    	// RAP [bm]: 
-//        if (fontMetrics == null) {
-//			return 0;
-//		}
-//        return Dialog.convertHeightInCharsToPixels(fontMetrics, chars);
-      Font font = JFaceResources.getDialogFont();
-      return RAPDialogUtil.convertHeightInCharsToPixels( font, chars );      
+        if (fontMetrics == null) {
+			return 0;
+		}
+        return Dialog.convertHeightInCharsToPixels(fontMetrics, chars);
     }
 
     /**
@@ -154,13 +151,10 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
      */
     protected int convertHorizontalDLUsToPixels(int dlus) {
         // test for failure to initialize for backward compatibility
-    	// RAP [bm]: 
-//        if (fontMetrics == null) {
-//			return 0;
-//		}
-//        return Dialog.convertHorizontalDLUsToPixels(fontMetrics, dlus);
-    	return RAPDialogUtil.convertHorizontalDLUsToPixels(dlus);
-    	// RAPEND: [bm] 
+        if (fontMetrics == null) {
+			return 0;
+		}
+        return Dialog.convertHorizontalDLUsToPixels(fontMetrics, dlus);
     }
 
     /**
@@ -180,14 +174,10 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
      */
     protected int convertVerticalDLUsToPixels(int dlus) {
         // test for failure to initialize for backward compatibility
-    	// RAP [bm]: 
-//        if (fontMetrics == null) {
-//			return 0;
-//		}
-//        return Dialog.convertVerticalDLUsToPixels(fontMetrics, dlus);
-    	return RAPDialogUtil.convertVerticalDLUsToPixels(dlus);
-    	// RAPEND: [bm] 
-
+        if (fontMetrics == null) {
+			return 0;
+		}
+        return Dialog.convertVerticalDLUsToPixels(fontMetrics, dlus);
     }
 
     /**
@@ -207,18 +197,17 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
      */
     protected int convertWidthInCharsToPixels(int chars) {
         // test for failure to initialize for backward compatibility
-    	// RAP [bm]: 
-//        if (fontMetrics == null) {
-//			return 0;
-//		}
-//        return Dialog.convertWidthInCharsToPixels(fontMetrics, chars);
-      Font font = JFaceResources.getDialogFont();
-      return RAPDialogUtil.convertWidthInCharsToPixels( font, chars );
+        if (fontMetrics == null) {
+			return 0;
+		}
+        return Dialog.convertWidthInCharsToPixels(fontMetrics, chars);
     }
 
     /**
-     * The <code>DialogPage</code> implementation of an
-     * <code>IDialogPage</code> method does nothing. Subclasses may extend.
+     * The <code>DialogPage</code> implementation of this
+     * <code>IDialogPage</code> method disposes of the page
+     * image if it has one. 
+     * Subclasses may extend.
      */
     public void dispose() {
         // deallocate SWT resources
@@ -344,12 +333,10 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
      */
     protected void initializeDialogUnits(Control testControl) {
         // Compute and store a font metric
-    	// RAP [bm]: 
-//        GC gc = new GC(testControl);
-//        gc.setFont(JFaceResources.getDialogFont());
-//        fontMetrics = gc.getFontMetrics();
-//        gc.dispose();
-    	// RAPEND: [bm] 
+        GC gc = new GC(testControl);
+        gc.setFont(JFaceResources.getDialogFont());
+        fontMetrics = gc.getFontMetrics();
+        gc.dispose();
     }
 
     /**
@@ -460,7 +447,6 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
      *            the message, or <code>null</code> to clear the message
      * @param newType
      *            the message type
-     * @since 1.0
      */
     public void setMessage(String newMessage, int newType) {
         message = newMessage;

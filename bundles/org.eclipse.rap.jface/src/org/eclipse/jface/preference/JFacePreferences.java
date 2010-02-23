@@ -75,21 +75,6 @@ public final class JFacePreferences {
 	public static final String CONTENT_ASSIST_FOREGROUND_COLOR = "CONTENT_ASSIST_FOREGROUND_COLOR"; //$NON-NLS-1$
 
 	
-	/**
-	 * Identifier for the color used for the background of content assist
-	 * secondary information popups.
-	 * 
-	 * @since 1.1
-	 */
-	public static final String CONTENT_ASSIST_INFO_BACKGROUND_COLOR = "CONTENT_ASSIST_INFO_BACKGROUND_COLOR"; //$NON-NLS-1$
-
-	/**
-	 * Identifier for the color used for the background of content assist
-	 * secondary information popups.
-	 * 
-	 * @since 1.1
-	 */
-	public static final String CONTENT_ASSIST_INFO_FOREGROUND_COLOR = "CONTENT_ASSIST_INFO_FOREGROUND_COLOR"; //$NON-NLS-1$
 
 	private static IPreferenceStore preferenceStore;
 

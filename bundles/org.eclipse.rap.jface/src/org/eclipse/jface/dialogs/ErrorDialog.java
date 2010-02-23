@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,15 @@ import org.eclipse.swt.widgets.Shell;
  * <code>IStatus</code> object. If an error contains additional detailed
  * information then a Details button is automatically supplied, which shows or
  * hides an error details viewer when pressed by the user.
+ * 
+ * <p>
+ * This dialog should be considered being a "local" way of error handling. It
+ * cannot be changed or replaced by "global" error handling facility (
+ * <code>org.eclipse.ui.statushandler.StatusManager</code>). If product defines
+ * its own way of handling errors, this error dialog may cause UI inconsistency,
+ * so until it is absolutely necessary, <code>StatusManager</code> should be
+ * used.
+ * </p>
  * 
  * @see org.eclipse.core.runtime.IStatus
  */
@@ -92,7 +101,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	/**
 	 * The current clipboard. To be disposed when closing the dialog.
 	 */
-	// RAP [bm]: 
+	// RAP [bm]: clipboard
 //	private Clipboard clipboard;
 
 	private boolean shouldIncludeTopLevelErrorInDetails = false;
@@ -192,7 +201,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 		provider.createSupportArea(supportArea, status);
 
 		GridData supportData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		supportData.verticalSpan = 4;
+		supportData.verticalSpan = 3;
 		supportArea.setLayoutData(supportData);
 		if (supportArea.getLayout() == null){
 			GridLayout layout = new GridLayout();
@@ -209,7 +218,6 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * 
 	 * @param parent
 	 *            the parent composite
-	 * @since 1.0
 	 */
 	protected void createDetailsButton(Composite parent) {
 		if (shouldShowDetailsButton()) {
@@ -230,10 +238,13 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * layout data and set grabExcessVerticalSpace to true.
 	 */
 	protected Control createDialogArea(Composite parent) {
-		createMessageArea(parent);
-		createSupportArea(parent);
-		// create a composite with standard margins and spacing
+		// Create a composite with standard margins and spacing
+		// Add the messageArea to this composite so that as subclasses add widgets to the messageArea
+		// and dialogArea, the number of children of parent remains fixed and with consistent layout.
+		// Fixes bug #240135
 		Composite composite = new Composite(parent, SWT.NONE);
+		createMessageArea(composite);
+		createSupportArea(parent);
 		GridLayout layout = new GridLayout();
 		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
 		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
@@ -283,11 +294,17 @@ public class ErrorDialog extends IconAndMessageDialog {
 	}
 
 	/**
-	 * Create this dialog's drop-down list component.
+	 * Create this dialog's drop-down list component. The list is displayed
+	 * after the user presses details button. It is developer responsibility
+	 * to display details button if and only if there is some content on 
+	 * drop down list. The visibility of the details button is controlled by
+	 * {@link #shouldShowDetailsButton()}, which should also be overridden
+	 * together with this method.
 	 * 
 	 * @param parent
 	 *            the parent composite
 	 * @return the drop-down list component
+	 * @see #shouldShowDetailsButton()
 	 */
 	protected List createDropDownList(Composite parent) {
 		// create the list
@@ -411,10 +428,24 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * 
 	 * @param listToPopulate
 	 *            The list to fill.
+	 * 
+	 * @see #listContentExists()
 	 */
 	private void populateList(List listToPopulate) {
 		populateList(listToPopulate, status, 0,
 				shouldIncludeTopLevelErrorInDetails);
+	}
+	
+	/**
+	 * This method checks if any content will be placed on the list.
+	 * It mimics the behavior of {@link #populateList(List)}.
+	 * 
+	 * @return true if {@link #populateList(List)} will add anything to a list
+	 * 
+	 * @see #populateList(List)
+	 */
+	private boolean listContentExists() {
+		return listContentExists(status, shouldIncludeTopLevelErrorInDetails);
 	}
 
 	/**
@@ -491,6 +522,58 @@ public class ErrorDialog extends IconAndMessageDialog {
 		for (int i = 0; i < children.length; i++) {
 			populateList(listToPopulate, children[i], nesting, true);
 		}
+	}
+	
+	/**
+	 * This method checks if {@link #populateList(List, IStatus, int, boolean)}
+	 * will add anything to the list.
+	 * 
+	 * @param buildingStatus
+	 *            A status to be considered.
+	 * @param includeStatus
+	 *            This flag indicates if top level status should be placed on a
+	 *            list.
+	 * @return true if any new content will be added to the list.
+	 * @see #listContentExists(IStatus, boolean)
+	 */
+	private boolean listContentExists(IStatus buildingStatus,
+			boolean includeStatus) {
+		
+		if (!buildingStatus.matches(displayMask)) {
+			return false;
+		}
+
+		Throwable t = buildingStatus.getException();
+		boolean isCoreException = t instanceof CoreException;
+
+		if (includeStatus) {
+			return true;
+		}
+
+		if (!isCoreException && t != null) {
+			return true;
+		}
+		
+		boolean result = false;
+
+		// Look for a nested core exception
+		if (isCoreException) {
+			CoreException ce = (CoreException) t;
+			IStatus eStatus = ce.getStatus();
+			// Gets exception message if it is not contained in the
+			// parent message
+			if (message == null || message.indexOf(eStatus.getMessage()) == -1) {
+				result |= listContentExists(eStatus, true);
+			}
+		}
+
+		// Look for child status
+		IStatus[] children = buildingStatus.getChildren();
+		for (int i = 0; i < children.length; i++) {
+			result |= listContentExists(children[i], true);
+		}
+		
+		return result;
 	}
 
 	/**
@@ -621,7 +704,6 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * of the dialog. Invoking the method before the content area has been set
 	 * or after the dialog has been disposed will have no effect.
 	 * 
-	 * @since 1.0
 	 */
 	protected final void showDetailsArea() {
 		if (!listCreated) {
@@ -634,16 +716,15 @@ public class ErrorDialog extends IconAndMessageDialog {
 
 	/**
 	 * Return whether the Details button should be included. This method is
-	 * invoked once when the dialog is built. By default, the Details button is
-	 * only included if the status used when creating the dialog was a
-	 * multi-status or if the status contains an exception. Subclasses may
-	 * override.
+	 * invoked once when the dialog is built. Default implementation is tight to
+	 * default implementation of {@link #createDropDownList(Composite)} and 
+	 * displays details button if there is anything on the display list.
 	 * 
 	 * @return whether the Details button should be included
-	 * @since 1.0
+	 * @see #createDropDownList(Composite)
 	 */
 	protected boolean shouldShowDetailsButton() {
-		return status.isMultiStatus() || status.getException() != null;
+		return listContentExists();
 	}
 
 	/**
@@ -653,7 +734,6 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * 
 	 * @param status
 	 *            the status to be displayed in the details list
-	 * @since 1.0
 	 */
 	protected final void setStatus(IStatus status) {
 		if (this.status != status) {

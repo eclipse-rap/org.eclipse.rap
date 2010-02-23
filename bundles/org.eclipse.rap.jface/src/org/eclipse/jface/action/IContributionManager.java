@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,14 +39,14 @@ public interface IContributionManager {
      * Adds an action as a contribution item to this manager.
      * Equivalent to <code>add(new ActionContributionItem(action))</code>.
      *
-     * @param action the action
+     * @param action the action, this cannot be <code>null</code>
      */
     public void add(IAction action);
 
     /**
      * Adds a contribution item to this manager.
      *
-     * @param item the contribution item
+     * @param item the contribution item, this cannot be <code>null</code>
      */
     public void add(IContributionItem item);
 
@@ -94,7 +94,6 @@ public interface IContributionManager {
      * Returns the overrides for the items of this manager.
      * 
      * @return the overrides for the items of this manager
-     * @since 1.0 
      */
     public IContributionManagerOverrides getOverrides();
 

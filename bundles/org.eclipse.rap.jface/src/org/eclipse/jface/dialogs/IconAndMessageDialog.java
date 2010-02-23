@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,11 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.LayoutConstants;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -28,6 +30,10 @@ import org.eclipse.swt.widgets.Shell;
  * icon and a message as the first two widgets. In this dialog the icon and
  * message are direct children of the shell in order that they can be read by
  * accessibility tools more easily.
+ * <p>
+ * <strong>Note:</strong> Clients are expected to call {@link #createMessageArea(Composite)},
+ * otherwise neither the icon nor the message will appear.
+ * </p>
  */
 public abstract class IconAndMessageDialog extends Dialog {
 	/**
@@ -63,6 +69,10 @@ public abstract class IconAndMessageDialog extends Dialog {
 	 * since the parent is typically the composite created in
 	 * {@link Dialog#createDialogArea}.
 	 * </p>
+	 * <p>
+	 * <strong>Note:</strong> Clients are expected to call this method, otherwise
+	 * neither the icon nor the message will appear.
+	 * </p>
 	 * 
 	 * @param composite
 	 *            The composite to parent from.
@@ -77,7 +87,7 @@ public abstract class IconAndMessageDialog extends Dialog {
 			// RAP [bm]: Image#setBackground
 //			image.setBackground(imageLabel.getBackground());
 			imageLabel.setImage(image);
-			// RAP [bm]: 
+			// RAP [bm]: accessibility
 //			addAccessibleListeners(imageLabel, image);
 			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.BEGINNING)
 					.applyTo(imageLabel);
@@ -97,53 +107,31 @@ public abstract class IconAndMessageDialog extends Dialog {
 		return composite;
 	}
 
-	// RAP [bm]: 
-//	private String getAccessibleMessageFor(Image image) {
-//		if (image.equals(getErrorImage())) {
-//			return JFaceResources.getString("error");//$NON-NLS-1$
-//		}
-//
-//		if (image.equals(getWarningImage())) {
-//			return JFaceResources.getString("warning");//$NON-NLS-1$
-//		}
-//
-//		if (image.equals(getInfoImage())) {
-//			return JFaceResources.getString("info");//$NON-NLS-1$
-//		}
-//
-//		if (image.equals(getQuestionImage())) {
-//			return JFaceResources.getString("question"); //$NON-NLS-1$
-//		}
-//
-//		return null;
-//	}
+	private String getAccessibleMessageFor(Image image) {
+		if (image.equals(getErrorImage())) {
+			return JFaceResources.getString("error");//$NON-NLS-1$
+		}
 
-	// RAP [bm]: 
-//	/**
-//	 * Add an accessible listener to the label if it can be inferred from the
-//	 * image.
-//	 * 
-//	 * @param label
-//	 * @param image
-//	 */
-//	private void addAccessibleListeners(Label label, final Image image) {
-//		label.getAccessible().addAccessibleListener(new AccessibleAdapter() {
-//			public void getName(AccessibleEvent event) {
-//				final String accessibleMessage = getAccessibleMessageFor(image);
-//				if (accessibleMessage == null) {
-//					return;
-//				}
-//				event.result = accessibleMessage;
-//			}
-//		});
-//	}
+		if (image.equals(getWarningImage())) {
+			return JFaceResources.getString("warning");//$NON-NLS-1$
+		}
+
+		if (image.equals(getInfoImage())) {
+			return JFaceResources.getString("info");//$NON-NLS-1$
+		}
+
+		if (image.equals(getQuestionImage())) {
+			return JFaceResources.getString("question"); //$NON-NLS-1$
+		}
+
+		return null;
+	}
 
 	/**
 	 * Returns the style for the message label.
 	 * 
 	 * @return the style for the message label
 	 * 
-	 * @since 1.0
 	 */
 	protected int getMessageLabelStyle() {
 		return SWT.WRAP;
@@ -173,7 +161,6 @@ public abstract class IconAndMessageDialog extends Dialog {
 	 * </p>
 	 * 
 	 * @return the image to display beside the message
-	 * @since 1.0
 	 */
 	protected abstract Image getImage();
 
@@ -197,7 +184,6 @@ public abstract class IconAndMessageDialog extends Dialog {
 	 * Get the number of columns in the layout of the Shell of the dialog.
 	 * 
 	 * @return int
-	 * @since 1.0
 	 */
 	int getColumnCount() {
 		return 2;
@@ -262,11 +248,17 @@ public abstract class IconAndMessageDialog extends Dialog {
 	private Image getSWTImage(final int imageID) {
 		Shell shell = getShell();
 		final Display display;
-		if (shell == null) {
+		if (shell == null || shell.isDisposed()) {
 			shell = getParentShell();
 		}
-		if (shell == null) {
+		if (shell == null || shell.isDisposed()) {
 			display = Display.getCurrent();
+			// The dialog should be always instantiated in UI thread.
+			// However it was possible to instantiate it in other threads
+			// (the code worked in most cases) so the assertion covers
+			// only the failing scenario. See bug 107082 for details.
+			Assert.isNotNull(display,
+					"The dialog should be created in UI thread"); //$NON-NLS-1$
 		} else {
 			display = shell.getDisplay();
 		}

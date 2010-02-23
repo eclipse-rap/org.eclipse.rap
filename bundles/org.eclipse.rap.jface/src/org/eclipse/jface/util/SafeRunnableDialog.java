@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,12 +56,8 @@ class SafeRunnableDialog extends ErrorDialog {
 		super(null, JFaceResources.getString("error"), status.getMessage(), //$NON-NLS-1$
 				status, IStatus.ERROR);
 
-		// RAP [bm]: SWT.MODELESS
-//		setShellStyle(SWT.DIALOG_TRIM | SWT.MODELESS | SWT.RESIZE | SWT.MIN | SWT.MAX
-//				| getDefaultOrientation());
-		setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MIN | SWT.MAX
+		setShellStyle(SWT.DIALOG_TRIM | SWT.MODELESS | SWT.RESIZE | SWT.MIN | SWT.MAX
 				| getDefaultOrientation());
-		// RAPEND: [bm] 
 		
 		setStatus(status);
 		statuses.add(status);
@@ -75,8 +71,8 @@ class SafeRunnableDialog extends ErrorDialog {
 					.getException().toString() : status.getException()
 					.getMessage();
 		}
-		this.message = JFaceResources.format(JFaceResources
-				.getString("SafeRunnableDialog_reason"), new Object[] { //$NON-NLS-1$
+		this.message = JFaceResources.format(
+				"SafeRunnableDialog_reason", new Object[] { //$NON-NLS-1$
 				status.getMessage(), reason });
 	}
 
@@ -168,6 +164,7 @@ class SafeRunnableDialog extends ErrorDialog {
 		GridData data = new GridData(GridData.FILL_BOTH
 				| GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
 		data.heightHint = convertHeightInCharsToPixels(10);
+		data.horizontalSpan = 2;
 		control.setLayoutData(data);
 		statusListViewer.setContentProvider(getStatusContentProvider());
 		statusListViewer.setLabelProvider(getStatusListLabelProvider());

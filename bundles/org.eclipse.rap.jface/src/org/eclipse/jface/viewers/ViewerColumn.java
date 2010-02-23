@@ -7,12 +7,14 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Tom Shindl <tom.schindl@bestsolution.at> - initial API and implementation
+ *     Tom Schindl <tom.schindl@bestsolution.at> - initial API and implementation
  * 												  fix for bug 163317, 201905
+ *     Ralf Ebert - bug 294738
  *******************************************************************************/
 
 package org.eclipse.jface.viewers;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -122,7 +124,10 @@ public abstract class ViewerColumn {
 	/**
 	 * Set the editing support. Subclasses may extend but must call the super
 	 * implementation.
-	 * 
+	 * <p>
+	 * Users setting up an editable {@link TreeViewer} or {@link TableViewer} with more than 1 column <b>have</b>
+	 * to pass the SWT.FULL_SELECTION style bit when creating the viewer
+	 * </p>
 	 * @param editingSupport
 	 *            The {@link EditingSupport} to set.
 	 * @since 1.2
@@ -140,7 +145,12 @@ public abstract class ViewerColumn {
 	 *            {@link ViewerCell}
 	 */
 	/* package */void refresh(ViewerCell cell) {
-		getLabelProvider().update(cell);
+		CellLabelProvider labelProvider = getLabelProvider();
+		if (labelProvider == null) {
+			Assert.isTrue(false, "Column " + cell.getColumnIndex() + //$NON-NLS-1$
+			" has no label provider."); //$NON-NLS-1$
+		}
+		labelProvider.update(cell);
 	}
 
 	/**

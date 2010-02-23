@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Tom Schindl <tom.schindl@bestsolution.at> - initial API and implementation
- *     											 - fix in bug: 174355,195908,198035,215069
+ *     											 - fix in bug: 174355,195908,198035,215069,227421
  *******************************************************************************/
 
 package org.eclipse.jface.viewers;
@@ -235,5 +235,18 @@ public class TableViewerRow extends ViewerRow {
 
 	private boolean isValidOrderIndex(int currentIndex) {
 		return currentIndex < this.item.getParent().getColumnOrder().length;
+	}
+	
+	int getWidth(int columnIndex) {
+		return item.getParent().getColumn(columnIndex).getWidth();
+	}
+	
+	protected boolean scrollCellIntoView(int columnIndex) {
+		item.getParent().showItem(item);
+		if( hasColumns() ) {
+			item.getParent().showColumn(item.getParent().getColumn(columnIndex));	
+		}
+		
+		return true;
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,10 +63,14 @@ public abstract class EditingSupport {
 	protected abstract Object getValue(Object element);
 
 	/**
-	 * Restore the value from the CellEditor
+	 * Sets the new value on the given element. Note that implementers need to
+	 * ensure that <code>getViewer().update(element, null)</code> or similar
+	 * methods are called, either directly or through some kind of listener
+	 * mechanism on the implementer's model, to cause the new value to appear in
+	 * the viewer.
 	 *
 	 * <p>
-	 * <b>Subclasses should overwrite!</b>
+	 * <b>Subclasses should overwrite.</b>
 	 * </p>
 	 *
 	 * @param element

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,12 +20,12 @@ package org.eclipse.jface.action;
  * </p>
  * 
  * @since 1.0
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IContributionManagerOverrides {
     /**
      * Id for the enabled property. Value is <code>"enabled"</code>.
      * 
-     * @since 1.0
      */
     public final static String P_ENABLED = "enabled"; //$NON-NLS-1$
 
@@ -38,7 +38,6 @@ public interface IContributionManagerOverrides {
      * 				<li><code>Boolean.FALSE</code> if the item should be disabled</li>
      * 				<li><code>null</code> if the item may determine its own enablement</li>
      * 			</ul>
-     * @since 1.0 
      */
     public Boolean getEnabled(IContributionItem item);
 
@@ -71,4 +70,17 @@ public interface IContributionManagerOverrides {
      * @return the text
      */
     public String getText(IContributionItem item);
+    
+    /**
+     * Visiblity override.
+     * 
+     * @param item the contribution item in question
+     * @return  <ul>
+     * 				<li><code>Boolean.TRUE</code> if the given contribution item should be visible</li>
+     * 				<li><code>Boolean.FALSE</code> if the item should not be visible</li>
+     * 				<li><code>null</code> if the item may determine its own visibility</li>
+     * 			</ul>
+     * @since 1.3
+     */
+    public Boolean getVisible(IContributionItem item);
 }

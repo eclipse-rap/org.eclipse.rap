@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Font;
@@ -351,8 +352,8 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      */
     protected void createTrimWidgets(Shell shell) {
         if (menuBarManager != null) {
-            menuBarManager.updateAll(true);
             shell.setMenuBar(menuBarManager.createMenuBar((Decorations) shell));
+            menuBarManager.updateAll(true);
         }
 
         if (showTopSeperator()) {
@@ -383,7 +384,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * @since 1.0
      */
     protected boolean showTopSeperator() {
-        return !"carbon".equals(SWT.getPlatform()); //$NON-NLS-1$
+        return !Util.isMac();
     }
 
     /**

@@ -69,7 +69,7 @@ public final class ActionHandler extends AbstractHandler {
 	 * When a listener is attached to this handler, then this registers a
 	 * listener with the underlying action.
 	 * 
-	 * @since 1.0
+	 * @since 3.1
 	 */
 	private final void attachListener() {
 		if (propertyChangeListener == null) {
@@ -131,7 +131,6 @@ public final class ActionHandler extends AbstractHandler {
 	 * Returns the action associated with this handler
 	 * 
 	 * @return the action associated with this handler (not null)
-	 * @since 1.0
 	 */
 	public final IAction getAction() {
 		return action;

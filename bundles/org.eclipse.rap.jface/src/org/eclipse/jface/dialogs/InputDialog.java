@@ -256,7 +256,6 @@ public class InputDialog extends Dialog {
      * 
      * @param errorMessage
      *            the error message, or <code>null</code> to clear
-     * @since 1.0
      */
     public void setErrorMessage(String errorMessage) {
     	this.errorMessage = errorMessage;
@@ -270,7 +269,6 @@ public class InputDialog extends Dialog {
     		errorMessageText.setEnabled(hasError);
     		errorMessageText.setVisible(hasError);
     		errorMessageText.getParent().update();
-
     		// Access the ok button by id, in case clients have overridden button creation.
     		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=113643
     		Control button = getButton(IDialogConstants.OK_ID);

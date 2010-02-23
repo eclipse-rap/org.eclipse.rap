@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,6 @@ public class TitleAreaDialog extends TrayDialog {
 	/**
 	 * Message type constant used to display an info icon with the message.
 	 * 
-	 * @since 1.0
 	 * @deprecated
 	 */
 	public final static String INFO_MESSAGE = "INFO_MESSAGE"; //$NON-NLS-1$
@@ -65,7 +64,6 @@ public class TitleAreaDialog extends TrayDialog {
 	/**
 	 * Message type constant used to display a warning icon with the message.
 	 * 
-	 * @since 1.0
 	 * @deprecated
 	 */
 	public final static String WARNING_MESSAGE = "WARNING_MESSAGE"; //$NON-NLS-1$
@@ -194,8 +192,7 @@ public class TitleAreaDialog extends TrayDialog {
 		parent.addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
 				if (titleAreaColor != null) {
-					// RAP [bm]: Color#dispose
-//					titleAreaColor.dispose();
+					titleAreaColor.dispose();
 				}
 			}
 		});
@@ -204,10 +201,7 @@ public class TitleAreaDialog extends TrayDialog {
 		Color background;
 		Color foreground;
 		if (titleAreaRGB != null) {
-			// RAP [bm]: 
-//			titleAreaColor = new Color(display, titleAreaRGB);
-			titleAreaColor = Graphics.getColor(titleAreaRGB);
-			// RAPEND: [bm] 
+			titleAreaColor = new Color(display, titleAreaRGB);
 			background = titleAreaColor;
 			foreground = null;
 		} else {
@@ -493,7 +487,6 @@ public class TitleAreaDialog extends TrayDialog {
 	 *            the message, or <code>null</code> to clear the message
 	 * @param newType
 	 *            the message type
-	 * @since 1.0
 	 */
 	public void setMessage(String newMessage, int newType) {
 		Image newImage = null;
@@ -522,13 +515,16 @@ public class TitleAreaDialog extends TrayDialog {
 	 * @param newImage
 	 */
 	private void showMessage(String newMessage, Image newImage) {
+		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=249915
+		if (newMessage == null)
+			newMessage = ""; //$NON-NLS-1$
+		
 		// Any change?
 		if (message.equals(newMessage) && messageImage == newImage) {
 			return;
 		}
 		message = newMessage;
-		if (message == null)
-			message = "";//$NON-NLS-1$
+		
 		// Message string to be shown - if there is an image then add in
 		// a space to the message for layout purposes
 		String shownMessage = (newImage == null) ? message : " " + message; //$NON-NLS-1$  
@@ -588,8 +584,6 @@ public class TitleAreaDialog extends TrayDialog {
 		titleAreaImage = newTitleImage;
 		if (titleImageLabel != null) {
 			titleImageLabel.setImage(newTitleImage);
-			titleImageLabel.setVisible(newTitleImage != null);
-			if (newTitleImage != null) {
 				determineTitleImageLargest();
 				Control top;
 				if (titleImageLargest)
@@ -599,7 +593,6 @@ public class TitleAreaDialog extends TrayDialog {
 				resetWorkAreaAttachments(top);
 			}
 		}
-	}
 
 	/**
 	 * Make the label used for displaying error images visible depending on

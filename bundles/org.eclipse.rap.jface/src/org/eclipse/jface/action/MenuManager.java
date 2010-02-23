@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,7 +98,6 @@ public class MenuManager extends ContributionManager implements IMenuManager {
     /**
      * Indicates this item is visible in its manager; <code>true</code> 
      * by default.
-     * @since 1.0
      */
     protected boolean visible = true;
 
@@ -186,7 +185,6 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      *
      * @param parent the parent decorations
      * @return the menu control
-     * @since 1.0
      */
     public Menu createMenuBar(Decorations parent) {
         if (!menuExist()) {
@@ -260,7 +258,10 @@ public class MenuManager extends ContributionManager implements IMenuManager {
 				menuItem = new MenuItem(parent, SWT.CASCADE);
 			}
 
-            menuItem.setText(getMenuText());
+			String text = getMenuText();
+			if (text != null) {
+				menuItem.setText(text);
+			}
 
             if (image != null) {
 				LocalResourceManager localManager = new LocalResourceManager(
@@ -427,6 +428,9 @@ public class MenuManager extends ContributionManager implements IMenuManager {
                     public String getText(IContributionItem item) {
                         return null;
                     }
+    				public Boolean getVisible(IContributionItem item) {
+    					return null;
+    				}
                 };
             } else {
                 overrides = parent.getOverrides();
@@ -440,7 +444,6 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      * Returns the parent contribution manager of this manger.
      * 
      * @return the parent contribution manager
-     * @since 1.0
      */
     public IContributionManager getParent() {
         return parent;
@@ -554,7 +557,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
         IContributionItem[] childItems = getItems();
         boolean visibleChildren = false;
         for (int j = 0; j < childItems.length; j++) {
-            if (childItems[j].isVisible() && !childItems[j].isSeparator()) {
+            if (isChildVisible(childItems[j]) && !childItems[j].isSeparator()) {
                 visibleChildren = true;
                 break;
             }
@@ -568,7 +571,6 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      * The <code>MenuManager</code> implementation of this <code>ContributionManager</code> method
      * also propagates the dirty flag up the parent chain.
      * 
-     * @since 1.0
      */
     public void markDirty() {
         super.markDirty();
@@ -613,7 +615,6 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      * Sets the overrides for this contribution manager
      * 
      * @param newOverrides the overrides for the items of this manager
-     * @since 1.0
      */
     public void setOverrides(IContributionManagerOverrides newOverrides) {
         overrides = newOverrides;
@@ -749,7 +750,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
                 IContributionItem separator = null;
                 for (int i = 0; i < items.length; ++i) {
                     IContributionItem ci = items[i];
-                    if (!ci.isVisible()) {
+                    if (!isChildVisible(ci)) {
 						continue;
 					}
                     if (ci.isSeparator()) {
@@ -849,7 +850,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
                     IContributionItem ci = items[i];
                     if (ci instanceof IMenuManager) {
                         IMenuManager mm = (IMenuManager) ci;
-                        if (mm.isVisible()) {
+                        if (isChildVisible(mm)) {
                             mm.updateAll(force);
                         }
                     }
@@ -969,4 +970,12 @@ public class MenuManager extends ContributionManager implements IMenuManager {
             }
         }
     }
+    
+	private boolean isChildVisible(IContributionItem item) {
+		Boolean v = getOverrides().getVisible(item);
+		if (v != null) {
+			return v.booleanValue();
+		}
+		return item.isVisible();
+	}
 }

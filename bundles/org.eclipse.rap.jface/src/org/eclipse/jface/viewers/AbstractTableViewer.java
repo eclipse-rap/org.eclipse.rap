@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
@@ -67,6 +68,13 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 				public void handleEvent(Event event) {
 					Item item = (Item) event.item;
 					final int index = doIndexOf(item);
+					
+					if (index == -1) {
+						// Should not happen, but the spec for doIndexOf allows returning -1.
+						// See bug 241117.
+						return;
+					}
+					
 					Object element = resolveElement(index);
 					if (element == null) {
 						// Didn't find it so make a request
@@ -209,6 +217,11 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 	protected void hookControl(Control control) {
 		super.hookControl(control);
 		initializeVirtualManager(getControl().getStyle());
+	}
+	
+	protected void handleDispose(DisposeEvent event) {
+		super.handleDispose(event);
+		virtualManager = null;
 	}
 
 	/**
@@ -1029,11 +1042,10 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 	}
 
 	/**
-	 * Replace the entries starting at index with elements. This method assumes
-	 * all of these values are correct and will not call the content provider to
-	 * verify. <strong>Note that this method will create a TableItem for all of
-	 * the elements provided</strong>.
-	 *
+	 * Replace the element at the given index with the given element. This
+	 * method will not call the content provider to verify. <strong>Note that
+	 * this method will materialize a TableItem the given index.</strong>.
+	 * 
 	 * @param element
 	 * @param index
 	 * @see ILazyContentProvider

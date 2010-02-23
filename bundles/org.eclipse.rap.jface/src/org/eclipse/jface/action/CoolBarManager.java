@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2003, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -144,11 +145,13 @@ public class CoolBarManager extends ContributionManager implements
 
                 }
             }
-            // Now check last element to see if there is a separator
-            item = (IContributionItem) contributionList.get(contributionList
-                    .size() - 1);
-            if (item.isSeparator()) {
-                contributionList.remove(contributionList.size() - 1);
+            if (contributionList.size() != 0) {
+	            // Now check last element to see if there is a separator
+	            item = (IContributionItem) contributionList.get(contributionList
+	                    .size() - 1);
+	            if (item.isSeparator()) {
+	                contributionList.remove(contributionList.size() - 1);
+	            }
             }
         }
         return contributionList;
@@ -255,16 +258,16 @@ public class CoolBarManager extends ContributionManager implements
      */
     public void dispose() {
         if (coolBarExist()) {
-            IContributionItem[] items = getItems();
-            for (int i = 0; i < items.length; i++) {
-                // Disposes of the contribution item.
-                // If Contribution Item is a toolbar then it will dispose of
-                // all the nested
-                // contribution items.
-                items[i].dispose();
-            }
             coolBar.dispose();
             coolBar = null;
+        }
+        IContributionItem[] items = getItems();
+        for (int i = 0; i < items.length; i++) {
+            // Disposes of the contribution item.
+            // If Contribution Item is a toolbar then it will dispose of
+            // all the nested
+            // contribution items.
+            items[i].dispose();
         }
         // If a context menu existed then dispose of it.
         if (contextMenuManager != null) {
@@ -290,6 +293,8 @@ public class CoolBarManager extends ContributionManager implements
             // for 19630
             if ((control != null) && !control.isDisposed()) {
                 item.setControl(null);
+                // we created it, we dispose it, see bug 293433
+            	control.dispose();
             }
             item.dispose();
         }
@@ -425,7 +430,7 @@ public class CoolBarManager extends ContributionManager implements
             if (items[i].isSeparator()) {
                 separatorFound = true;
             }
-            if ((separatorFound) && (items[i].isVisible())
+            if ((separatorFound) && (isChildVisible(items[i]))
                     && (!items[i].isGroupMarker()) && (!items[i].isSeparator())) {
                 numRows++;
                 separatorFound = false;
@@ -653,8 +658,8 @@ public class CoolBarManager extends ContributionManager implements
             }
         }
 
+        contributionList = adjustContributionList(contributionList);
         if (contributionList.size() != 0) {
-            contributionList = adjustContributionList(contributionList);
             IContributionItem[] array = new IContributionItem[contributionList
                     .size() - 1];
             array = (IContributionItem[]) contributionList.toArray(array);
@@ -841,7 +846,7 @@ public class CoolBarManager extends ContributionManager implements
             final List visibleItems = new ArrayList(items.length);
             for (int i = 0; i < items.length; i++) {
                 final IContributionItem item = items[i];
-                if (item.isVisible()) {
+                if (isChildVisible(item)) {
                     visibleItems.add(item);
                 }
             }
@@ -916,6 +921,12 @@ public class CoolBarManager extends ContributionManager implements
 
                 // Otherwise, a new item has to be added.
                 final int start = coolBar.getItemCount();
+                if (sourceItem instanceof ToolBarContributionItem) {
+	                IToolBarManager manager = ((ToolBarContributionItem)sourceItem).getToolBarManager();
+	            	if(manager instanceof IToolBarManager2) {
+	            		((IToolBarManager2)manager).setOverrides(getOverrides());
+	            	}
+                }
                 sourceItem.fill(coolBar, destinationIndex);
                 final int newItems = coolBar.getItemCount() - start;
                 for (int i = 0; i < newItems; i++) {
@@ -1009,7 +1020,7 @@ public class CoolBarManager extends ContributionManager implements
                 foundSeparator = true;
             }
             if ((!item.isSeparator()) && (!item.isGroupMarker())
-                    && (item.isVisible()) && (coolItem != null)
+                    && (isChildVisible(item)) && (coolItem != null)
                     && (foundSeparator)) {
                 wrapIndices[j] = coolBar.indexOf(coolItem);
                 j++;
@@ -1038,4 +1049,20 @@ public class CoolBarManager extends ContributionManager implements
             coolBar.setWrapIndices(wrapIndices);
         }
     }
+    
+	private boolean isChildVisible(IContributionItem item) {
+		Boolean v;
+		
+		IContributionManagerOverrides overrides = getOverrides();
+		if(overrides == null) {
+			v = null;
+		} else {
+			v = getOverrides().getVisible(item); 
+		}
+		
+		if (v != null) {
+			return v.booleanValue();
+		}
+		return item.isVisible();
+	}
 }

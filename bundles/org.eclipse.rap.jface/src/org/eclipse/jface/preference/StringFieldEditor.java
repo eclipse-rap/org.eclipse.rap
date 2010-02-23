@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -20,6 +19,7 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Text;
  * <p>
  * This class may be used as is, or subclassed as required.
  * </p>
+ * @since 1.0
  */
 public class StringFieldEditor extends FieldEditor {
 
@@ -117,7 +118,6 @@ public class StringFieldEditor extends FieldEditor {
      *  on the fly checking (the default), or <code>VALIDATE_ON_FOCUS_LOST</code> to
      *  perform validation only after the text has been typed in
      * @param parent the parent of the field editor's control
-     * @since 1.0
      */
     public StringFieldEditor(String name, String labelText, int width,
             int strategy, Composite parent) {
@@ -231,17 +231,13 @@ public class StringFieldEditor extends FieldEditor {
         GridData gd = new GridData();
         gd.horizontalSpan = numColumns - 1;
         if (widthInChars != UNLIMITED) {
-        	// RAP [bm]: 
-//            GC gc = new GC(textField);
-//            try {
-//                Point extent = gc.textExtent("X");//$NON-NLS-1$
-//                gd.widthHint = widthInChars * extent.x;
-//            } finally {
-//                gc.dispose();
-//            }
-        	Point extent = Graphics.textExtent(textField.getFont(), "X", 0); //$NON-NLS-1$
-			gd.widthHint = widthInChars * extent.x;
-        	// RAPEND: [bm] 
+            GC gc = new GC(textField);
+            try {
+                Point extent = gc.textExtent("X");//$NON-NLS-1$
+ 			    gd.widthHint = widthInChars * extent.x;
+            } finally {
+                gc.dispose();
+            }
         } else {
             gd.horizontalAlignment = GridData.FILL;
             gd.grabExcessHorizontalSpace = true;

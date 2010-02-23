@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.jface.internal.provisional.action;
 
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IContributionManagerOverrides;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -38,7 +39,6 @@ public interface ICoolBarManager2 extends ICoolBarManager {
      * @param parent
      *            the parent control
      * @return the control
-	 * @since 1.0
      */
     public Control createControl2(Composite parent);
 
@@ -53,7 +53,6 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * </p>
      *  
      * @return the bar control, or <code>null</code> if none
-	 * @since 1.0
      */
     public Control getControl2();
 
@@ -76,7 +75,6 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * consulting with the Platform/UI team.
 	 * </p>
      * 
-	 * @since 1.0
      */
     public void refresh();
     
@@ -90,7 +88,6 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * consulting with the Platform/UI team.
 	 * </p>
      * 
-     * @since 1.0 
      */
     public void dispose();
 
@@ -105,7 +102,6 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * consulting with the Platform/UI team.
 	 * </p>
      * 
-	 * @since 1.0     
 	 */
     public void resetItemOrder();
 
@@ -121,8 +117,16 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * </p>
      * 
      * @param newItems the items with which to replace the current items
-     * @since 1.0
 	 */
     public void setItems(IContributionItem[] newItems);
+
+	/**
+	 * Sets the overrides for this contribution manager
+	 * 
+	 * @param newOverrides
+	 *            the overrides for the items of this manager
+	 * @since 1.3
+	 */
+	public void setOverrides(IContributionManagerOverrides newOverrides);
 
 }

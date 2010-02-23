@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -385,9 +385,21 @@ public abstract class ListEditor extends FieldEditor {
     }
 
     /**
-     * Notifies that the list selection has changed.
+	 * Invoked when the selection in the list has changed.
+	 * 
+	 * <p>
+	 * The default implementation of this method utilizes the selection index
+	 * and the size of the list to toggle the enablement of the up, down and
+	 * remove buttons.
+	 * </p>
+	 * 
+	 * <p>
+	 * Sublcasses may override.
+	 * </p>
+	 * 
+	 * @since 1.3
      */
-    private void selectionChanged() {
+    protected void selectionChanged() {
 
         int index = list.getSelectionIndex();
         int size = list.getItemCount();
@@ -444,5 +456,55 @@ public abstract class ListEditor extends FieldEditor {
         removeButton.setEnabled(enabled);
         upButton.setEnabled(enabled);
         downButton.setEnabled(enabled);
+    }
+    
+    /**
+     * Return the Add button.  
+     * 
+     * @return the button
+     * @since 1.3
+     */
+    protected Button getAddButton() {
+    	return addButton;
+    }
+    
+    /**
+     * Return the Remove button.  
+     * 
+     * @return the button
+     * @since 1.3
+     */
+    protected Button getRemoveButton() {
+    	return removeButton;
+    }
+    
+    /**
+     * Return the Up button.  
+     * 
+     * @return the button
+     * @since 1.3
+     */
+    protected Button getUpButton() {
+    	return upButton;
+    }
+    
+    /**
+     * Return the Down button.  
+     * 
+     * @return the button
+     * @since 1.3
+     */
+    protected Button getDownButton() {
+    	return downButton;
+    }
+    
+    /**
+     * Return the List.
+     * 
+     * @return the list
+     * @since 1.3
+     */
+    protected List getList() {
+    	return list;
     }
 }

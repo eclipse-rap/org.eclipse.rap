@@ -13,9 +13,8 @@ package org.eclipse.jface.preference;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Font;
-//import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -75,14 +74,12 @@ public class ColorFieldEditor extends FieldEditor {
 		// Make the image height as high as a corresponding character. This
 		// makes sure that the button has the same size as a "normal" text
 		// button.
-// RAP [if] GC not supported
-//		GC gc = new GC(window);
+		GC gc = new GC(window);
 		Font f = JFaceResources.getFontRegistry().get(
 				JFaceResources.DEFAULT_FONT);
-//		gc.setFont(f);
-//		int height = gc.getFontMetrics().getHeight();
-		int height = Graphics.getCharHeight( f );
-//		gc.dispose();
+		gc.setFont(f);
+		int height = gc.getFontMetrics().getHeight();
+		gc.dispose();
 		Point p = new Point(height * 3 - 6, height);
 		return p;
 	}

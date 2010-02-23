@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,8 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Widget;
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
+ * @noextend This class is not intended to be subclassed by clients.
  * @since 1.0
  */
 public class ActionContributionItem extends ContributionItem {
@@ -418,7 +419,6 @@ public class ActionContributionItem extends ContributionItem {
 	 * 
 	 * @return the presentation mode settings
 	 * 
-	 * @since 1.0
 	 */
 	public int getMode() {
 		return mode;
@@ -674,7 +674,6 @@ public class ActionContributionItem extends ContributionItem {
 	 * <code>false</code> otherwise.
 	 * 
 	 * @return if this item is allowed to be enabled
-	 * @since 1.0
 	 */
 	protected boolean isEnabledAllowed() {
 		if (getParent() == null) {
@@ -701,7 +700,6 @@ public class ActionContributionItem extends ContributionItem {
 	 * @param mode
 	 *            the presentation mode settings
 	 * 
-	 * @since 1.0
 	 */
 	public void setMode(int mode) {
 		this.mode = mode;
@@ -1022,7 +1020,6 @@ public class ActionContributionItem extends ContributionItem {
 				ImageDescriptor disabledImage = action
 						.getDisabledImageDescriptor();
 
-
 				// Make sure there is a valid image.
 				if (image == null && forceImage) {
 					image = ImageDescriptor.getMissingImageDescriptor();
@@ -1158,40 +1155,25 @@ public class ActionContributionItem extends ContributionItem {
 			return null;
 		}
 
-		// RAP [bm]: 
-//		GC gc = new GC(item.getParent());
+		GC gc = new GC(item.getParent());
 
 		int maxWidth = item.getImage().getBounds().width * 4;
 
-		// RAP [bm]: 
-//		if (gc.textExtent(textValue).x < maxWidth) {
-//			gc.dispose();
-//			return textValue;
-//		}
-		if (Graphics.textExtent(item.getParent().getFont(), textValue, 0).x < maxWidth) {
+		if (gc.textExtent(textValue).x < maxWidth) {
+			gc.dispose();
 			return textValue;
 		}
-		// RAPEND: [bm] 
-
 
 		for (int i = textValue.length(); i > 0; i--) {
 			String test = textValue.substring(0, i);
 			test = test + ellipsis;
-			// RAP [bm]: 
-//			if (gc.textExtent(test).x < maxWidth) {
-//				gc.dispose();
-//				return test;
-//			}
-			if (Graphics.textExtent(item.getParent().getFont(), test, 0).x < maxWidth) {
+			if (gc.textExtent(test).x < maxWidth) {
+				gc.dispose();
 				return test;
 			}
-			// RAPEND: [bm] 
 
 		}
-		
-		// RAP [bm]: 
-//		gc.dispose();
-		
+		gc.dispose();
 		// If for some reason we fall through abort
 		return textValue;
 	}
@@ -1282,7 +1264,6 @@ public class ActionContributionItem extends ContributionItem {
 		// listening for SWT.Show
 		realMenu.notifyListeners(SWT.Show, null);
 
-		
 		final Listener passThrough = new Listener() {
 			public void handleEvent(Event event) {
 				if (!event.widget.isDisposed()) {
@@ -1290,7 +1271,7 @@ public class ActionContributionItem extends ContributionItem {
 					if (!realItem.isDisposed()) {
 						int style = event.widget.getStyle();
 						if (event.type == SWT.Selection
-								&& ((style & (SWT.TOGGLE | SWT.CHECK)) != 0)
+								&& ((style & (SWT.TOGGLE | SWT.CHECK | SWT.RADIO)) != 0)
 								&& realItem instanceof MenuItem) {
 							((MenuItem) realItem)
 									.setSelection(((MenuItem) event.widget)
@@ -1358,7 +1339,6 @@ public class ActionContributionItem extends ContributionItem {
 				}
 				if (holdMenu != null && !holdMenu.isDisposed()) {
 					holdMenu.notifyListeners(SWT.Hide, null);
-
 				}
 				holdMenu = null;
 			}

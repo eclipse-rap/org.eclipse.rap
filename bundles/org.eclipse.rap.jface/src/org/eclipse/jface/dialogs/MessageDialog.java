@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,33 +27,68 @@ import org.eclipse.swt.widgets.Shell;
  * This concrete dialog class can be instantiated as is, or further subclassed
  * as required.
  * </p>
+ * <p>
+ * <strong>Note:</strong> This class does not use button IDs from
+ * IDialogConstants. Instead, the ID is the index of the button in the supplied
+ * array.
+ * </p>
  */
 public class MessageDialog extends IconAndMessageDialog {
     /**
-     * Constant for a dialog with no image (value 0).
+     * Constant for no image (value 0).
+     * 
+     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
      */
     public final static int NONE = 0;
 
     /**
-     * Constant for a dialog with an error image (value 1).
+     * Constant for the error image, or a simple dialog with the error image and a single OK button (value 1).
+     * 
+     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
+     * @see #open(int, Shell, String, String, int)
      */
     public final static int ERROR = 1;
 
     /**
-     * Constant for a dialog with an info image (value 2).
+     * Constant for the info image, or a simple dialog with the info image and a single OK button (value 2).
+     * 
+     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
+     * @see #open(int, Shell, String, String, int)
      */
     public final static int INFORMATION = 2;
 
     /**
-     * Constant for a dialog with a question image (value 3).
+     * Constant for the question image, or a simple dialog with the question image and Yes/No buttons (value 3).
+     * 
+     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
+     * @see #open(int, Shell, String, String, int)
      */
     public final static int QUESTION = 3;
 
     /**
-     * Constant for a dialog with a warning image (value 4).
+     * Constant for the warning image, or a simple dialog with the warning image and a single OK button (value 4).
+     * 
+     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
+     * @see #open(int, Shell, String, String, int)
      */
     public final static int WARNING = 4;
-
+    
+    /**
+     * Constant for a simple dialog with the question image and OK/Cancel buttons (value 5).
+     * 
+     * @see #open(int, Shell, String, String, int)
+     * @since 1.3
+     */
+    public final static int CONFIRM = 5;
+    
+    /**
+     * Constant for a simple dialog with the question image and Yes/No/Cancel buttons (value 6).
+     * 
+     * @see #open(int, Shell, String, String, int)
+     * @since 1.3
+     */
+    public final static int QUESTION_WITH_CANCEL = 6;
+    
     /**
      * Labels for buttons in the button bar (localized strings).
      */
@@ -96,11 +131,14 @@ public class MessageDialog extends IconAndMessageDialog {
      * The labels of the buttons to appear in the button bar are supplied in
      * this constructor as an array. The <code>open</code> method will return
      * the index of the label in this array corresponding to the button that was
-     * pressed to close the dialog. If the dialog was dismissed without pressing
-     * a button (ESC, etc.) then -1 is returned. Note that the <code>open</code>
-     * method blocks.
+     * pressed to close the dialog.
      * </p>
-     * 
+     * <p>
+     * <strong>Note:</strong> If the dialog was dismissed without pressing
+     * a button (ESC key, close box, etc.) then {@link SWT#DEFAULT} is returned.
+     * Note that the <code>open</code> method blocks.
+     * </p>
+     *
      * @param parentShell
      *            the parent shell
      * @param dialogTitle
@@ -145,7 +183,9 @@ public class MessageDialog extends IconAndMessageDialog {
             this.image = getInfoImage();
             break;
         }
-        case QUESTION: {
+        case QUESTION:
+        case QUESTION_WITH_CANCEL:
+        case CONFIRM: {
             this.image = getQuestionImage();
             break;
         }
@@ -243,9 +283,11 @@ public class MessageDialog extends IconAndMessageDialog {
      * 
      * @param index
      *            the index of the button in the dialog's button bar
-     * @return a button in the dialog's button bar
+     * @return a button in the dialog's button bar, or <code>null</code> if there's no button with that index
      */
     protected Button getButton(int index) {
+        if (buttons == null || index < 0 || index >= buttons.length)
+            return null;
         return buttons[index];
     }
 
@@ -275,6 +317,90 @@ public class MessageDialog extends IconAndMessageDialog {
         setReturnCode(SWT.DEFAULT);
     }
 
+	/**
+	 * Opens this message dialog, creating it first if it has not yet been created.
+	 * <p>
+	 * This method waits until the dialog is closed by the end user, and then it
+	 * returns the dialog's return code. The dialog's return code is either the
+	 * index of the button the user pressed, or {@link SWT#DEFAULT} if the dialog
+	 * has been closed by other means.
+	 * </p>
+	 *
+	 * @return the return code
+	 *
+	 * @see org.eclipse.jface.window.Window#open()
+	 */
+    public int open() {
+    	return super.open();
+    }
+
+	/**
+	 * Convenience method to open a simple dialog as specified by the
+	 * <code>kind</code> flag.
+	 * 
+	 * @param kind
+	 *            the kind of dialog to open, one of {@link #ERROR},
+	 *            {@link #INFORMATION}, {@link #QUESTION}, {@link #WARNING},
+	 *            {@link #CONFIRM}, or {@link #QUESTION_WITH_CANCEL}.
+	 * @param parent
+	 *            the parent shell of the dialog, or <code>null</code> if none
+	 * @param title
+	 *            the dialog's title, or <code>null</code> if none
+	 * @param message
+	 *            the message
+	 * @param style
+	 *            {@link SWT#NONE} for a default dialog, or {@link SWT#SHEET} for
+	 *            a dialog with sheet behavior
+	 * @return <code>true</code> if the user presses the OK or Yes button,
+	 *         <code>false</code> otherwise
+	 * @since 1.3
+	 */
+	public static boolean open(int kind, Shell parent, String title,
+			String message, int style) {
+		MessageDialog dialog = new MessageDialog(parent, title, null, message,
+				kind, getButtonLabels(kind), 0);
+		style &= SWT.SHEET;
+		dialog.setShellStyle(dialog.getShellStyle() | style);
+		return dialog.open() == 0;
+	}
+
+	/**
+	 * @param kind
+	 * @return
+	 */
+	static String[] getButtonLabels(int kind) {
+		String[] dialogButtonLabels;
+		switch (kind) {
+		case ERROR:
+		case INFORMATION:
+		case WARNING: {
+			dialogButtonLabels = new String[] { IDialogConstants.get().OK_LABEL };
+			break;
+		}
+		case CONFIRM: {
+			dialogButtonLabels = new String[] { IDialogConstants.get().OK_LABEL,
+					IDialogConstants.get().CANCEL_LABEL };
+			break;
+		}
+		case QUESTION: {
+			dialogButtonLabels = new String[] { IDialogConstants.get().YES_LABEL,
+					IDialogConstants.get().NO_LABEL };
+			break;
+		}
+		case QUESTION_WITH_CANCEL: {
+			dialogButtonLabels = new String[] { IDialogConstants.get().YES_LABEL,
+                    IDialogConstants.get().NO_LABEL,
+                    IDialogConstants.get().CANCEL_LABEL };
+			break;
+		}
+		default: {
+			throw new IllegalArgumentException(
+					"Illegal value for kind in MessageDialog.open()"); //$NON-NLS-1$
+		}
+		}
+		return dialogButtonLabels;
+	}
+    
     /**
      * Convenience method to open a simple confirm (OK/Cancel) dialog.
      * 
@@ -288,15 +414,7 @@ public class MessageDialog extends IconAndMessageDialog {
      *         <code>false</code> otherwise
      */
     public static boolean openConfirm(Shell parent, String title, String message) {
-        MessageDialog dialog = new MessageDialog(parent, title, null, // accept
-                // the
-                // default
-                // window
-                // icon
-                message, QUESTION, new String[] { IDialogConstants.get().OK_LABEL,
-                        IDialogConstants.get().CANCEL_LABEL }, 0); // OK is the
-        // default
-        return dialog.open() == 0;
+        return open(CONFIRM, parent, title, message, SWT.NONE);
     }
 
     /**
@@ -310,17 +428,7 @@ public class MessageDialog extends IconAndMessageDialog {
      *            the message
      */
     public static void openError(Shell parent, String title, String message) {
-        MessageDialog dialog = new MessageDialog(parent, title, null, // accept
-                // the
-                // default
-                // window
-                // icon
-                message, ERROR, new String[] { IDialogConstants.get().OK_LABEL }, 0); // ok
-        // is
-        // the
-        // default
-        dialog.open();
-        return;
+        open(ERROR, parent, title, message, SWT.NONE);
     }
 
     /**
@@ -335,16 +443,7 @@ public class MessageDialog extends IconAndMessageDialog {
      */
     public static void openInformation(Shell parent, String title,
             String message) {
-        MessageDialog dialog = new MessageDialog(parent, title, null, // accept
-                // the
-                // default
-                // window
-                // icon
-                message, INFORMATION,
-                new String[] { IDialogConstants.get().OK_LABEL }, 0);
-        // ok is the default
-        dialog.open();
-        return;
+        open(INFORMATION, parent, title, message, SWT.NONE);
     }
 
     /**
@@ -356,19 +455,12 @@ public class MessageDialog extends IconAndMessageDialog {
      *            the dialog's title, or <code>null</code> if none
      * @param message
      *            the message
-     * @return <code>true</code> if the user presses the OK button,
+     * @return <code>true</code> if the user presses the Yes button,
      *         <code>false</code> otherwise
      */
     public static boolean openQuestion(Shell parent, String title,
             String message) {
-        MessageDialog dialog = new MessageDialog(parent, title, null, // accept
-                // the
-                // default
-                // window
-                // icon
-                message, QUESTION, new String[] { IDialogConstants.get().YES_LABEL,
-                        IDialogConstants.get().NO_LABEL }, 0); // yes is the default
-        return dialog.open() == 0;
+        return open(QUESTION, parent, title, message, SWT.NONE);
     }
 
     /**
@@ -382,17 +474,7 @@ public class MessageDialog extends IconAndMessageDialog {
      *            the message
      */
     public static void openWarning(Shell parent, String title, String message) {
-        MessageDialog dialog = new MessageDialog(parent, title, null, // accept
-                // the
-                // default
-                // window
-                // icon
-                message, WARNING, new String[] { IDialogConstants.get().OK_LABEL }, 0); // ok
-        // is
-        // the
-        // default
-        dialog.open();
-        return;
+        open(WARNING, parent, title, message, SWT.NONE);
     }
 
     /*

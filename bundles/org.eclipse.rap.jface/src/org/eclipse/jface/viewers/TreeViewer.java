@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *     Tom Schindl <tom.schindl@bestsolution.at> - concept of ViewerRow,
  *                                                 refactoring (bug 153993), bug 167323, 191468, 205419
  *     Matthew Hall - bug 221988
+ *     Pawel Piech, WindRiver - bug 296573
  *******************************************************************************/
 
 package org.eclipse.jface.viewers;
@@ -44,15 +45,26 @@ import org.eclipse.swt.widgets.Widget;
  * filter (optional), and element sorter (optional).
  * </p>
  * <p>
+ * As of 3.2, TreeViewer supports multiple equal elements (each with a
+ * different parent chain) in the tree. This support requires that clients
+ * enable the element map by calling <code>setUseHashLookup(true)</code>.
+ * </p>
+ * <p>
  * Content providers for tree viewers must implement either the
  * {@link ITreeContentProvider} interface, (as of 3.2) the
  * {@link ILazyTreeContentProvider} interface, or (as of 3.3) the
  * {@link ILazyTreePathContentProvider}. If the content provider is an
  * <code>ILazyTreeContentProvider</code> or an
  * <code>ILazyTreePathContentProvider</code>, the underlying Tree must be
- * created using the {@link SWT#VIRTUAL} style bit, and the tree viewer will not
- * support sorting or filtering.
+ * created using the {@link SWT#VIRTUAL} style bit, the tree viewer will not
+ * support sorting or filtering, and hash lookup must be enabled by calling
+ * {@link #setUseHashlookup(boolean)}.
  * </p>
+ * <p>
+ * Users setting up an editable tree with more than 1 column <b>have</b> to pass the
+ * SWT.FULL_SELECTION style bit
+ * </p>
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class TreeViewer extends AbstractTreeViewer {
 
@@ -81,7 +93,7 @@ public class TreeViewer extends AbstractTreeViewer {
 	/**
 	 * true if we are inside a preservingSelection() call
 	 */
-	private boolean preservingSelection;
+	private boolean insidePreservingSelection;
 
 	/**
 	 * Creates a tree viewer on a newly-created tree control under the given
@@ -380,17 +392,17 @@ public class TreeViewer extends AbstractTreeViewer {
 	}
 
 	void preservingSelection(Runnable updateCode, boolean reveal) {
-		if (preservingSelection){
+		if (insidePreservingSelection || !getPreserveSelection()){
 			// avoid preserving the selection if called reentrantly,
 			// see bug 172640
 			updateCode.run();
 			return;
 		}
-		preservingSelection = true;
+		insidePreservingSelection = true;
 		try {
 			super.preservingSelection(updateCode, reveal);
 		} finally {
-			preservingSelection = false;
+			insidePreservingSelection = false;
 		}
 	}
 
@@ -516,7 +528,7 @@ public class TreeViewer extends AbstractTreeViewer {
 			}
 		}
 		// Restore the selection if we are not already in a nested preservingSelection:
-		if (!preservingSelection) {
+		if (!insidePreservingSelection) {
 			setSelectionToWidget(selection, false);
 			// send out notification if old and new differ
 			ISelection newSelection = getSelection();
@@ -870,13 +882,23 @@ public class TreeViewer extends AbstractTreeViewer {
 							continue;
 						if (index < parentItem.getItemCount()) {
 							TreeItem item = parentItem.getItem(index);
-							if (item.getData() != null) {
+							
+							if (item.getData() == null) {
+								// If getData()==null and index == 0, and the 
+								// parent item is collapsed, then we are
+								// being asked to remove the dummy node. We'll
+								// just ignore the request to remove the dummy
+								// node (bug 292322 and bug 296573).
+								if (index > 0 || parentItem.getExpanded()) {
+									item.dispose();
+								}
+							} else {
 								removedPath = getTreePathFromItem(item);
 								disassociate(item);
-							}
 							item.dispose();
 						}
 					}
+				  }
 				}
 				if (removedPath != null) {
 					boolean removed = false;
@@ -905,6 +927,11 @@ public class TreeViewer extends AbstractTreeViewer {
 	 * @see org.eclipse.jface.viewers.AbstractTreeViewer#handleTreeExpand(org.eclipse.swt.events.TreeEvent)
 	 */
 	protected void handleTreeExpand(TreeEvent event) {
+	    // Fix for Bug 271744 because windows expanding doesn't fire a focus lost
+		if( isCellEditorActive() ) {
+			applyEditorValue();
+		}
+		
 		if (contentProviderIsLazy) {
 			if (event.item.getData() != null) {
 				Item[] children = getChildren(event.item);
@@ -919,6 +946,16 @@ public class TreeViewer extends AbstractTreeViewer {
 			return;
 		}
 		super.handleTreeExpand(event);
+	}
+
+	protected void handleTreeCollapse(TreeEvent event) {
+		// Fix for Bug 271744 because windows is firing collapse before
+		// focus lost event
+		if( isCellEditorActive() ) {
+			applyEditorValue();
+		}
+		
+		super.handleTreeCollapse(event);
 	}
 
 	/* (non-Javadoc)
@@ -1052,7 +1089,7 @@ public class TreeViewer extends AbstractTreeViewer {
 			if (contentProviderIsTreeBased) {
 				TreePath treePath;
 				treePath = getTreePathFromItem(item);
-				if (currentChildCount == 0) {
+				if (currentChildCount == 0 || !((TreeItem)item).getExpanded()) {
 					// item is not expanded (but may have a plus currently)
 					((ILazyTreePathContentProvider) getContentProvider())
 					.updateHasChildren(treePath);

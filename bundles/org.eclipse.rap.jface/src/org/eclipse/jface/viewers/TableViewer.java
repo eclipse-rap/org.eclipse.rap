@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,10 @@
  *     Tom Schindl <tom.schindl@bestsolution.at> - concept of ViewerRow,
  *                                                 fix for 159597, refactoring (bug 153993),
  *                                                 widget-independency (bug 154329), fix for 187826, 191468
+ *     Peter Centgraf - bug 251575
  *******************************************************************************/
 
 package org.eclipse.jface.viewers;
-
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
@@ -35,16 +35,16 @@ import org.eclipse.swt.widgets.Widget;
  * </p>
  * <p>
  * Label providers for table viewers must implement either the
- * <code>ITableLabelProvider</code> or the <code>ILabelProvider</code>
- * interface (see <code>TableViewer.setLabelProvider</code> for more details).
+ * <code>ITableLabelProvider</code> or the <code>ILabelProvider</code> interface
+ * (see <code>TableViewer.setLabelProvider</code> for more details).
  * </p>
  * <p>
  * As of 3.1 the TableViewer now supports the SWT.VIRTUAL flag. If the
- * underlying table is SWT.VIRTUAL, the content provider may implement
- * {@link ILazyContentProvider} instead of {@link IStructuredContentProvider}.
- * Note that in this case, the viewer does not support sorting or filtering.
- * Also note that in this case, the Widget based APIs may return null if the
- * element is not specified or not created yet.
+ * underlying table is SWT.VIRTUAL, the content provider may implement {@link
+ * ILazyContentProvider} instead of {@link IStructuredContentProvider} . Note
+ * that in this case, the viewer does not support sorting or filtering. Also
+ * note that in this case, the Widget based APIs may return null if the element
+ * is not specified or not created yet.
  * </p>
  * <p>
  * Users of SWT.VIRTUAL should also avoid using getItems() from the Table within
@@ -52,10 +52,15 @@ import org.eclipse.swt.widgets.Widget;
  * TreeViewer to populate the items. It also has the side effect of creating all
  * of the items thereby eliminating the performance improvements of SWT.VIRTUAL.
  * </p>
- *
+ * <p>
+ * Users setting up an editable table with more than 1 column <b>have</b> to pass the
+ * SWT.FULL_SELECTION style bit
+ * </p>
+ * 
  * @see SWT#VIRTUAL
  * @see #doFindItem(Object)
  * @see #internalRefresh(Object, boolean)
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class TableViewer extends AbstractTableViewer {
 	/**
@@ -74,9 +79,9 @@ public class TableViewer extends AbstractTableViewer {
 	 * <code>MULTI, H_SCROLL, V_SCROLL,</code> and <code>BORDER</code>. The
 	 * viewer has no input, no content provider, a default label provider, no
 	 * sorter, and no filters. The table has no columns.
-	 *
+	 * 
 	 * @param parent
-	 *            the parent control
+	 * 		the parent control
 	 */
 	public TableViewer(Composite parent) {
 		this(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
@@ -124,7 +129,9 @@ public class TableViewer extends AbstractTableViewer {
 	}
 
 	protected ColumnViewerEditor createViewerEditor() {
-		return new TableViewerEditor(this,null,new ColumnViewerEditorActivationStrategy(this),ColumnViewerEditor.DEFAULT);
+		return new TableViewerEditor(this, null,
+				new ColumnViewerEditorActivationStrategy(this),
+				ColumnViewerEditor.DEFAULT);
 	}
 
 	/**
@@ -142,8 +149,8 @@ public class TableViewer extends AbstractTableViewer {
 	 * @param selection
 	 *            the new selection
 	 * @param reveal
-	 *            <code>true</code> if the selection is to be made visible,
-	 *            and <code>false</code> otherwise
+	 * 		<code>true</code> if the selection is to be made visible, and
+	 * 		<code>false</code> otherwise
 	 * @see Table#setSelection(int[])
 	 * @see Table#showSelection()
 	 */
@@ -297,8 +304,8 @@ public class TableViewer extends AbstractTableViewer {
 
 	/**
 	 * Refreshes this viewer starting with the given element. Labels are updated
-	 * as described in <code>refresh(boolean updateLabels)</code>. The
-	 * methods attempts to preserve the selection.
+	 * as described in <code>refresh(boolean updateLabels)</code>. The methods
+	 * attempts to preserve the selection.
 	 * <p>
 	 * Unlike the <code>update</code> methods, this handles structural changes
 	 * to the given element (e.g. addition or removal of children). If only the
@@ -315,11 +322,10 @@ public class TableViewer extends AbstractTableViewer {
 	 *            the element
 	 * @param updateLabels
 	 *            <code>true</code> to update labels for existing elements,
-	 *            <code>false</code> to only update labels as needed, assuming
-	 *            that labels for existing elements are unchanged.
+	 * 		<code>false</code> to only update labels as needed, assuming that labels
+	 * 		for existing elements are unchanged.
 	 * @param reveal
-	 *            <code>true</code> to make the preserved selection visible
-	 *            afterwards
+	 * 		<code>true</code> to make the preserved selection visible afterwards
 	 *
 	 * @since 1.0
 	 */
@@ -341,25 +347,24 @@ public class TableViewer extends AbstractTableViewer {
 
 	/**
 	 * Refreshes this viewer with information freshly obtained from this
-	 * viewer's model. If <code>updateLabels</code> is <code>true</code>
-	 * then labels for otherwise unaffected elements are updated as well.
-	 * Otherwise, it assumes labels for existing elements are unchanged, and
-	 * labels are only obtained as needed (for example, for new elements).
+	 * viewer's model. If <code>updateLabels</code> is <code>true</code> then
+	 * labels for otherwise unaffected elements are updated as well. Otherwise,
+	 * it assumes labels for existing elements are unchanged, and labels are
+	 * only obtained as needed (for example, for new elements).
 	 * <p>
 	 * Calling <code>refresh(true)</code> has the same effect as
 	 * <code>refresh()</code>.
 	 * <p>
 	 * Note that the implementation may still obtain labels for existing
-	 * elements even if <code>updateLabels</code> is false. The intent is
-	 * simply to allow optimization where possible.
+	 * elements even if <code>updateLabels</code> is false. The intent is simply
+	 * to allow optimization where possible.
 	 *
 	 * @param updateLabels
 	 *            <code>true</code> to update labels for existing elements,
-	 *            <code>false</code> to only update labels as needed, assuming
-	 *            that labels for existing elements are unchanged.
+	 * 		<code>false</code> to only update labels as needed, assuming that labels
+	 * 		for existing elements are unchanged.
 	 * @param reveal
-	 *            <code>true</code> to make the preserved selection visible
-	 *            afterwards
+	 * 		<code>true</code> to make the preserved selection visible afterwards
 	 *
 	 * @since 1.0
 	 */
@@ -367,10 +372,64 @@ public class TableViewer extends AbstractTableViewer {
 		refresh(getRoot(), updateLabels, reveal);
 	}
 
-// RAP: [if] Table cell tooltips support
-	public void setLabelProvider( final IBaseLabelProvider labelProvider ) {
-	  super.setLabelProvider( labelProvider );
-	  CellToolTipProvider.attach( this, labelProvider );
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.AbstractTableViewer#remove(java.lang.Object[])
+	 */
+	public void remove(Object[] elements) {
+		assertElementsNotNull(elements);
+		if (checkBusy())
+			return;
+		if (elements.length == 0) {
+			return;
 	}
-// RAPEND: [if]
+
+		// deselect any items that are being removed, see bug 97786
+		boolean deselectedItems = false;
+		Object elementToBeRemoved = null;
+		CustomHashtable elementsToBeRemoved = null;
+		if (elements.length == 1) {
+			elementToBeRemoved = elements[0];
+		} else {
+			elementsToBeRemoved = new CustomHashtable(getComparer());
+			for (int i = 0; i < elements.length; i++) {
+				Object element = elements[i];
+				elementsToBeRemoved.put(element, element);
+			}
+		}
+		int[] selectionIndices = doGetSelectionIndices();
+		for (int i = 0; i < selectionIndices.length; i++) {
+			int index = selectionIndices[i];
+			Item item = doGetItem(index);
+			Object data = item.getData();
+			if (data != null) {
+				if ((elementsToBeRemoved != null && elementsToBeRemoved
+						.containsKey(data))
+						|| equals(elementToBeRemoved, data)) {
+					table.deselect(index);
+					deselectedItems = true;
+				}
+			}
+		}
+		super.remove(elements);
+
+		if (deselectedItems) {
+			ISelection sel = getSelection();
+			updateSelection(sel);
+			firePostSelectionChanged(new SelectionChangedEvent(this, sel));
+		}
+	}
+	
+	protected Widget doFindItem(Object element) {
+		IContentProvider contentProvider = getContentProvider();
+		if (contentProvider instanceof IIndexableLazyContentProvider) {
+			IIndexableLazyContentProvider indexable = (IIndexableLazyContentProvider) contentProvider;
+			int idx = indexable.findElement(element);
+			if (idx != -1) {
+				return doGetItem(idx);
+			}
+			return null;
+		}
+		return super.doFindItem(element);
+	}
+
 }

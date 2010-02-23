@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ public class ToolBarManager extends ContributionManager implements
 	private int itemStyle = SWT.NONE;
 
 	/**
-	 * The tool bat control; <code>null</code> before creation and after
+	 * The tool bar control; <code>null</code> before creation and after
 	 * disposal.
 	 */
 	private ToolBar toolBar = null;
@@ -52,7 +52,6 @@ public class ToolBarManager extends ContributionManager implements
 	/**
 	 * The menu manager to the context menu associated with the toolbar.
 	 * 
-	 * @since 1.0
 	 */
 	private MenuManager contextMenuManager = null;
 
@@ -95,7 +94,7 @@ public class ToolBarManager extends ContributionManager implements
 		this.toolBar = toolbar;
 	}
 
-	// RAP [bm]: 
+	// RAP [bm]: no accessible support
 	/**
 	 * Creates and returns this manager's tool bar control. Does not create a
 	 * new control if one already exists.
@@ -112,7 +111,7 @@ public class ToolBarManager extends ContributionManager implements
 			toolBar.setMenu(getContextMenuControl());
 			update(true);
 			
-			// RAP [bm]: 
+			// RAP [bm]: no accessible support
 //			toolBar.getAccessible().addAccessibleListener(getAccessibleListener());
 		}
 
@@ -124,7 +123,6 @@ public class ToolBarManager extends ContributionManager implements
 	 * 
 	 * @return AccessibleListener
 	 * 
-	 * @since 1.0
 	 */
 	// RAP [bm]: 
 //	private AccessibleListener getAccessibleListener() {
@@ -258,7 +256,7 @@ public class ToolBarManager extends ContributionManager implements
 				//			}
 				for (int i = 0; i < items.length; ++i) {
 					IContributionItem ci = items[i];
-					if (!ci.isVisible()) {
+					if (!isChildVisible(ci)) {
 						continue;
 					}
 					if (ci.isSeparator()) {
@@ -285,6 +283,10 @@ public class ToolBarManager extends ContributionManager implements
 				ToolItem[] mi = toolBar.getItems();
 				ArrayList toRemove = new ArrayList(mi.length);
 				for (int i = 0; i < mi.length; i++) {
+					// there may be null items in a toolbar
+					if (mi[i] == null)
+						continue;
+					
 					Object data = mi[i].getData();
 					if (data == null
 							|| !clean.contains(data)
@@ -419,7 +421,6 @@ public class ToolBarManager extends ContributionManager implements
 	 * Returns the context menu manager for this tool bar manager.
 	 * 
 	 * @return the context menu manager, or <code>null</code> if none
-	 * @since 1.0
 	 */
 	public MenuManager getContextMenuManager() {
 		return contextMenuManager;
@@ -432,7 +433,6 @@ public class ToolBarManager extends ContributionManager implements
 	 * 
 	 * @param contextMenuManager
 	 *            the context menu manager, or <code>null</code> if none
-	 * @since 1.0
 	 */
 	public void setContextMenuManager(MenuManager contextMenuManager) {
 		this.contextMenuManager = contextMenuManager;
@@ -441,4 +441,19 @@ public class ToolBarManager extends ContributionManager implements
 		}
 	}
 
+	private boolean isChildVisible(IContributionItem item) {
+		Boolean v;
+		
+		IContributionManagerOverrides overrides = getOverrides();
+		if(overrides == null) {
+			v = null;
+		} else {
+			v = getOverrides().getVisible(item); 
+		}
+		
+		if (v != null) {
+			return v.booleanValue();
+		}
+		return item.isVisible();
+	}
 }

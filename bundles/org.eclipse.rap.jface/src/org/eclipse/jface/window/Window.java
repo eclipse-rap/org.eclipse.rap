@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -469,10 +469,10 @@ public abstract class Window implements IShellProvider {
 	/**
 	 * Creates and returns this window's shell.
 	 * <p>
-	 * The default implementation of this framework method creates a new shell
-	 * and configures it using <code/>configureShell</code>. Rather than
-	 * override this method, subclasses should instead override
-	 * <code/>configureShell</code>.
+	 * This method creates a new shell and configures
+	 * it using <code>configureShell</code>. Subclasses
+	 * should  override <code>configureShell</code> if the
+	 * shell needs to be customized.
 	 * </p>
 	 * 
 	 * @return the shell
@@ -606,10 +606,7 @@ public abstract class Window implements IShellProvider {
      * @since 1.0
      */
     private static Shell getModalChild(Shell[] toSearch) {
-    	// RAP [bm]: SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL
-//        int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL;
-    	int modal = SWT.APPLICATION_MODAL;
-        // RAPEND: [bm] 
+        int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL;
 
         for (int i = toSearch.length - 1; i >= 0; i--) {
             Shell shell = toSearch[i];
@@ -639,10 +636,7 @@ public abstract class Window implements IShellProvider {
 	protected Shell getParentShell() {
         Shell parent = parentShell.getShell();
   
-        // RAP [bm]: SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL
-//        int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL;
-        int modal = SWT.APPLICATION_MODAL;
-        // RAPEND: [bm] 
+        int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL;
 
         if ((getShellStyle() & modal) != 0) {
             // If this is a modal shell with no parent, pick a shell using defaultModalParent.
@@ -838,7 +832,7 @@ public abstract class Window implements IShellProvider {
 				exceptionHandler.handleException(e);
 			}
 		}
-		display.update();
+		if (!display.isDisposed()) display.update();
 	}
 
 	/**

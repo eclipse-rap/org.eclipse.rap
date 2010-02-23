@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -265,6 +265,10 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 				});
 			}
 		}
+		
+		// Give subclasses the choice to save the state of the preference pages if needed
+		handleSave();
+
 		setReturnCode(CANCEL);
 		close();
 	}
@@ -530,6 +534,8 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 		//Create an outer composite for spacing
 		scrolled = new ScrolledComposite(outer, SWT.V_SCROLL | SWT.H_SCROLL);
 
+		// always show the focus control
+		scrolled.setShowFocusedControl(true);
 		scrolled.setExpandHorizontal(true);
 		scrolled.setExpandVertical(true);
 		
@@ -693,8 +699,10 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 			}
 
 			public void selectionChanged(SelectionChangedEvent event) {
-				Object selection = getSingleSelection(event.getSelection());
+				final Object selection = getSingleSelection(event.getSelection());
 				if (selection instanceof IPreferenceNode) {
+					BusyIndicator.showWhile(getShell().getDisplay(), new Runnable(){
+						public void run() {
 					if (!isCurrentPageValid()) {
 						handleError();
 					} else if (!showPage((IPreferenceNode) selection)) {
@@ -705,6 +713,8 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 						lastSuccessfulNode = (IPreferenceNode) selection;
 					}
 				}
+					});
+			}
 			}
 		});
 		((Tree) viewer.getControl()).addSelectionListener(new SelectionAdapter() {
@@ -721,9 +731,36 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 		//Register help listener on the tree to use context sensitive help
 		viewer.getControl().addHelpListener(new HelpListener() {
 			public void helpRequested(HelpEvent event) {
-				// call perform help on the current page
-				if (currentPage != null) {
+				if (currentPage == null) { // no current page? open dialog's help
+					openDialogHelp();
+					return;
+				}
+				// A) A typical path: the current page has registered its own help link 
+				// via WorkbenchHelpSystem#setHelp(). When just call it and let 
+				// it handle the help request.
+				Control pageControl = currentPage.getControl();
+				if (pageControl != null && pageControl.isListening(SWT.Help)) {
 					currentPage.performHelp();
+					return;
+				}
+				
+				// B) Less typical path: no standard listener has been created for the page.
+				// In this case we may or may not have an override of page's #performHelp().
+				// 1) Try to get default help opened for the dialog;
+				openDialogHelp();
+				// 2) Next call currentPage's #performHelp(). If it was overridden, it might switch help 
+				// to something else.
+				currentPage.performHelp();
+			}
+			
+			private void openDialogHelp() {
+				if (pageContainer == null)
+					return;
+		    	for(Control currentControl = pageContainer; currentControl != null; currentControl = currentControl.getParent()) {  
+		    		if (currentControl.isListening(SWT.Help)) {
+		    			currentControl.notifyListeners(SWT.Help, new Event());
+		    			break;
+		    		}
 				}
 			}
 		});
@@ -1317,9 +1354,9 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * Shows the "Page Flipping abort" dialog.
 	 */
 	void showPageFlippingAbortDialog() {
-		MessageDialog.openError(getShell(), JFaceResources
+		MessageDialog.open(MessageDialog.ERROR, getShell(), JFaceResources
 				.getString("AbortPageFlippingDialog.title"), //$NON-NLS-1$
-				JFaceResources.getString("AbortPageFlippingDialog.message")); //$NON-NLS-1$
+				JFaceResources.getString("AbortPageFlippingDialog.message"), SWT.SHEET); //$NON-NLS-1$
 	}
 
 	/**

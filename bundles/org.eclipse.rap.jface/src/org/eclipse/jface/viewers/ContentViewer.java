@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,10 @@
 package org.eclipse.jface.viewers;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.internal.InternalPolicy;
+import org.eclipse.jface.util.Policy;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Control;
@@ -70,7 +74,26 @@ public abstract class ContentViewer extends Viewer {
      * for internal events.
      */
     private final ILabelProviderListener labelProviderListener = new ILabelProviderListener() {
+    	private boolean logWhenDisposed = true; // initially true, set to false
+        
         public void labelProviderChanged(LabelProviderChangedEvent event) {
+        	Control control = getControl();
+        	if (control == null || control.isDisposed()) {
+    			if (logWhenDisposed) {
+    				String message = "Ignored labelProviderChanged notification because control is diposed." + //$NON-NLS-1$
+    						" This indicates a potential memory leak."; //$NON-NLS-1$
+    				if (!InternalPolicy.DEBUG_LOG_LABEL_PROVIDER_NOTIFICATIONS_WHEN_DISPOSED) {
+    					// stop logging after the first
+    					logWhenDisposed = false;
+    					message += " This is only logged once per viewer instance," + //$NON-NLS-1$
+    							" but similar calls will still be ignored."; //$NON-NLS-1$
+    				}
+    				Policy.getLog().log(
+    						new Status(IStatus.WARNING, Policy.JFACE, message,
+    								new RuntimeException()));
+    			}
+        		return;
+        	}
             ContentViewer.this.handleLabelProviderChanged(event);
         }
     };

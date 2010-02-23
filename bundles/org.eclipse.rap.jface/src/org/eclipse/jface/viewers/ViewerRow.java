@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Tom Schindl <tom.schindl@bestsolution.at> - initial API and implementation
- *                                               - fix in bug: 166346,167325,174355,195908,198035,215069
+ *                                               - fix in bug: 166346,167325,174355,195908,198035,215069,227421
  *******************************************************************************/
 
 package org.eclipse.jface.viewers;
@@ -162,7 +162,8 @@ public abstract class ViewerRow implements Cloneable {
 	 * Get the ViewerCell at point.
 	 * 
 	 * @param point
-	 * @return {@link ViewerCell}
+	 * @return @return {@link ViewerCell} or <code>null</code> if the point is
+	 *         not in the bounds of a cell
 	 */
 	public ViewerCell getCell(Point point) {
 		int index = getColumnIndex(point);
@@ -196,8 +197,7 @@ public abstract class ViewerRow implements Cloneable {
 	 * Get a ViewerCell for the column at index.
 	 * 
 	 * @param column
-	 * @return {@link ViewerCell} or <code>null</code> if the index is
-	 *         negative.
+	 * @return {@link ViewerCell} or <code>null</code> if the index is negative.
 	 */
 	public ViewerCell getCell(int column) {
 		if (column >= 0)
@@ -214,9 +214,9 @@ public abstract class ViewerRow implements Cloneable {
 	public abstract Control getControl();
 
 	/**
-	 * Returns a neighboring row, or <code>null</code> if no neighbor exists
-	 * in the given direction. If <code>sameLevel</code> is <code>true</code>,
-	 * only sibling rows (under the same parent) will be considered.
+	 * Returns a neighboring row, or <code>null</code> if no neighbor exists in
+	 * the given direction. If <code>sameLevel</code> is <code>true</code>, only
+	 * sibling rows (under the same parent) will be considered.
 	 * 
 	 * @param direction
 	 *            the direction {@link #BELOW} or {@link #ABOVE}
@@ -326,7 +326,6 @@ public abstract class ViewerRow implements Cloneable {
 	public Rectangle getTextBounds(int index) {
 		return null;
 	}
-	
 
 	/**
 	 * Returns the location and bounds of the area where the image is drawn.
@@ -341,32 +340,93 @@ public abstract class ViewerRow implements Cloneable {
 	public Rectangle getImageBounds(int index) {
 		return null;
 	}
-	
-	// RAP [bm]: StyledText
+
+// RAP [rh] StyleRange	
 //	/**
 //	 * Set the style ranges to be applied on the text label at the column index
 //	 * Note: Requires {@link StyledCellLabelProvider} with owner draw enabled.
 //	 * 
-//	 * @param columnIndex the index of the column
-//	 * @param styleRanges the styled ranges
+//	 * @param columnIndex
+//	 *            the index of the column
+//	 * @param styleRanges
+//	 *            the styled ranges
 //	 * 
-//	 * @since 1.1
+//	 * @since 3.4
 //	 */
 //	public void setStyleRanges(int columnIndex, StyleRange[] styleRanges) {
-//		getItem().setData(KEY_TEXT_LAYOUT + columnIndex, styleRanges);
+//		getItem().setData(getStyleRangesDataKey(columnIndex), styleRanges);
 //	}
-	
-	// RAP [bm]: StyledText
+//
 //	/**
-//	 * Returns the style ranges to be applied on the text label at the column index or <code>null</code> if no
-//	 * style ranges have been set.
+//	 * @param columnIndex
+//	 * @return
+//	 */
+//	private String getStyleRangesDataKey(int columnIndex) {
+//		if (columnIndex == 0)
+//			return KEY_TEXT_LAYOUT_0;
+//
+//		if (cachedDataKeys == null) {
+//			int size = Math.max(10, columnIndex + 1);
+//			cachedDataKeys= new String[size];
+//			for (int i = 1; i < cachedDataKeys.length; i++) {
+//				cachedDataKeys[i] = KEY_TEXT_LAYOUT + i;
+//			}
+//		} else if (columnIndex >= cachedDataKeys.length) {
+//			String[] newCachedDataKeys = new String[columnIndex + 1];
+//			System.arraycopy(cachedDataKeys, 0, newCachedDataKeys, 0, cachedDataKeys.length);
+//			for (int i = cachedDataKeys.length; i < newCachedDataKeys.length; i++) {
+//				newCachedDataKeys[i] = KEY_TEXT_LAYOUT + i;
+//			}
+//			cachedDataKeys = newCachedDataKeys;
+//		}
+//		return cachedDataKeys[columnIndex];
+//	}
+//
+//	/**
+//	 * Returns the style ranges to be applied on the text label at the column
+//	 * index or <code>null</code> if no style ranges have been set.
 //	 * 
-//	 * @param columnIndex the index of the column
+//	 * @param columnIndex
+//	 *            the index of the column
 //	 * @return styleRanges the styled ranges
 //	 * 
-//	 * @since 1.1
+//	 * @since 3.4
 //	 */
 //	public StyleRange[] getStyleRanges(int columnIndex) {
-//		return (StyleRange[]) getItem().getData(KEY_TEXT_LAYOUT + columnIndex);
+//		return (StyleRange[]) getItem().getData(getStyleRangesDataKey(columnIndex));
 //	}
+
+	int getWidth(int columnIndex) {
+		return getBounds(columnIndex).width;
+	}
+
+	/**
+	 * Scrolls the cell at this index into view
+	 * <p>
+	 * <b>Because of backwards API compatibility the default implementation is a
+	 * no-op. Implementators of {@link ColumnViewer} should overwrite this
+	 * method if their widget supports reordered columns</b>
+	 * </p>
+	 * 
+	 * @param columnIndex
+	 *            the column index
+	 * @return return <code>true</code> when the cell is scrolled into view
+	 * @since 1.3
+	 */
+	protected boolean scrollCellIntoView(int columnIndex) {
+		return false;
+	}
+
+	/**
+	 * Returns <code>true</code> if the column with the given index is visible
+	 * 
+	 * @param columnIndex
+	 *            the column index
+	 * 
+	 * @return <code>true</code> if the column is visible
+	 * @since 1.3
+	 */
+	protected boolean isColumnVisible(int columnIndex) {
+		return getWidth(columnIndex) > 0;
+	}
 }

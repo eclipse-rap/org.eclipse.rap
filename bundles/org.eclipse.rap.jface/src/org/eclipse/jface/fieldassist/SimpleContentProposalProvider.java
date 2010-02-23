@@ -71,7 +71,7 @@ public class SimpleContentProposalProvider implements IContentProposalProvider {
 				if (proposals[i].length() >= contents.length()
 						&& proposals[i].substring(0, contents.length())
 								.equalsIgnoreCase(contents)) {
-					list.add(makeContentProposal(proposals[i]));
+					list.add(new ContentProposal(proposals[i]));
 				}
 			}
 			return (IContentProposal[]) list.toArray(new IContentProposal[list
@@ -80,7 +80,7 @@ public class SimpleContentProposalProvider implements IContentProposalProvider {
 		if (contentProposals == null) {
 			contentProposals = new IContentProposal[proposals.length];
 			for (int i = 0; i < proposals.length; i++) {
-				contentProposals[i] = makeContentProposal(proposals[i]);
+				contentProposals[i] = new ContentProposal(proposals[i]);
 			}
 		}
 		return contentProposals;
@@ -106,34 +106,10 @@ public class SimpleContentProposalProvider implements IContentProposalProvider {
 	 *            show only those that match the current contents of the field,
 	 *            and <code>false</code> if the proposals should remain the
 	 *            same, ignoring the field content.
-	 * @since 1.0
 	 */
 	public void setFiltering(boolean filterProposals) {
 		this.filterProposals = filterProposals;
 		// Clear any cached proposals.
 		contentProposals = null;
-	}
-
-	/*
-	 * Make an IContentProposal for showing the specified String.
-	 */
-	private IContentProposal makeContentProposal(final String proposal) {
-		return new IContentProposal() {
-			public String getContent() {
-				return proposal;
-			}
-
-			public String getDescription() {
-				return null;
-			}
-
-			public String getLabel() {
-				return null;
-			}
-
-			public int getCursorPosition() {
-				return proposal.length();
-			}
-		};
 	}
 }

@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
-// RAP [bm]: JavaDoc
 /**
  * An IControlCreator for SWT Text controls. This is a convenience class
  * for creating text controls to be supplied to a decorated field.
@@ -24,7 +23,6 @@ import org.eclipse.swt.widgets.Text;
 *             of DecoratedField.
 * 
  */
-// RAPEND: [bm] 
 public class TextControlCreator implements IControlCreator {
 
 	public Control createControl(Composite parent, int style) {

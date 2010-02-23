@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,16 +12,16 @@
 package org.eclipse.jface.action;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.util.Util;
-import org.eclipse.rwt.graphics.Graphics;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-//import org.eclipse.swt.graphics.FontMetrics;
-//import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+
+import org.eclipse.jface.util.Util;
 
 /**
  * A contribution item to be used with status line managers.
@@ -34,6 +34,14 @@ import org.eclipse.swt.widgets.Label;
 public class StatusLineContributionItem extends ContributionItem {
 
 	private final static int DEFAULT_CHAR_WIDTH = 40;
+	
+	/**
+	 * constant indicating that the contribution should compute its actual size
+	 * depending on the text. It will grab all space necessary to display the whole text.
+	 *
+	 * @since 1.3
+	 */
+	public final static int CALC_TRUE_WIDTH = -1;
 
 	private int charWidth;
 
@@ -71,7 +79,10 @@ public class StatusLineContributionItem extends ContributionItem {
 	 *            the contribution item's id, or <code>null</code> if it is to
 	 *            have no id
 	 * @param charWidth
-	 *            the number of characters to display
+	 *            the number of characters to display. If the value is
+	 *            CALC_TRUE_WIDTH then the contribution will compute the
+	 *            preferred size exactly. Otherwise the size will be based on the
+	 *            average character size * 'charWidth'
 	 */
 	public StatusLineContributionItem(String id, int charWidth) {
 		super(id);
@@ -84,26 +95,26 @@ public class StatusLineContributionItem extends ContributionItem {
 
 		Label sep = new Label(parent, SWT.SEPARATOR);
 		label = new CLabel(statusLine, SWT.SHADOW_NONE);
-
-		if (widthHint < 0) {
-			// RAP [bm]: GC
-//			GC gc = new GC(statusLine);
-//			gc.setFont(statusLine.getFont());
-//			FontMetrics fm = gc.getFontMetrics();
-//			widthHint = fm.getAverageCharWidth() * charWidth;
-//			heightHint = fm.getHeight();
-//			gc.dispose();
-			Font font = statusLine.getFont();
-			widthHint = (int) (Graphics.getAvgCharWidth(font) * charWidth);
-			heightHint = Graphics.getCharHeight(font);
-			// RAPEND: [bm] 
-
+		label.setText(text);		
+		
+		if (charWidth == CALC_TRUE_WIDTH) {
+			// compute the size of the label to get the width hint for the contribution
+			Point preferredSize = label.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+			widthHint = preferredSize.x;
+			heightHint = preferredSize.y;
+		} else if (widthHint < 0) {
+			// Compute the size base on 'charWidth' average char widths
+			GC gc = new GC(statusLine);
+			gc.setFont(statusLine.getFont());
+			FontMetrics fm = gc.getFontMetrics();
+			widthHint = fm.getAverageCharWidth() * charWidth;
+			heightHint = fm.getHeight();
+			gc.dispose();
 		}
 
 		StatusLineLayoutData data = new StatusLineLayoutData();
 		data.widthHint = widthHint;
 		label.setLayoutData(data);
-		label.setText(text);
 
 		data = new StatusLineLayoutData();
 		data.heightHint = heightHint;
@@ -143,7 +154,7 @@ public class StatusLineContributionItem extends ContributionItem {
 	public void setText(String text) {
 		Assert.isNotNull(text);
 
-		this.text = escape(text);
+		this.text = LegacyActionTools.escapeMnemonics(text);
 
 		if (label != null && !label.isDisposed()) {
 			label.setText(this.text);
@@ -159,7 +170,8 @@ public class StatusLineContributionItem extends ContributionItem {
 				}
 			}
 		} else {
-			if (!isVisible()) {
+			// Always update if using 'CALC_TRUE_WIDTH'
+			if (!isVisible() || charWidth == CALC_TRUE_WIDTH) {
 				setVisible(true);
 				IContributionManager contributionManager = getParent();
 
@@ -168,9 +180,5 @@ public class StatusLineContributionItem extends ContributionItem {
 				}
 			}
 		}
-	}
-
-	private String escape(String text) {
-		return Util.replaceAll(text, "&", "&&");  //$NON-NLS-1$//$NON-NLS-2$
 	}
 }

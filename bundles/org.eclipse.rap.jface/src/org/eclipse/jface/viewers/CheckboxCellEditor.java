@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Control;
  * of the check box is being toggled by the end users; the listener method
  * <code>applyEditorValue</code> is immediately called to signal the change.
  * </p>
+ * @noextend This class is not intended to be subclassed by clients.
  * @since 1.2
  */
 public class CheckboxCellEditor extends CellEditor {
@@ -51,7 +52,7 @@ public class CheckboxCellEditor extends CellEditor {
 
     /**
      * Creates a new checkbox cell editor parented under the given control.
-     * The cell editor value is a boolean value, which is initially <code>false</code>. 
+     * The cell editor value is a boolean value, which is initially <code>false</code>.
      * Initially, the cell editor has no cell validator.
      *
      * @param parent the parent control
@@ -62,7 +63,7 @@ public class CheckboxCellEditor extends CellEditor {
 
     /**
      * Creates a new checkbox cell editor parented under the given control.
-     * The cell editor value is a boolean value, which is initially <code>false</code>. 
+     * The cell editor value is a boolean value, which is initially <code>false</code>.
      * Initially, the cell editor has no cell validator.
      *
      * @param parent the parent control
@@ -120,5 +121,11 @@ public class CheckboxCellEditor extends CellEditor {
     protected void doSetValue(Object value) {
         Assert.isTrue(value instanceof Boolean);
         this.value = ((Boolean) value).booleanValue();
+    }
+
+    public void activate(ColumnViewerEditorActivationEvent activationEvent) {
+    	if (activationEvent.eventType != ColumnViewerEditorActivationEvent.TRAVERSAL) {
+    		super.activate(activationEvent);
+    	}
     }
 }

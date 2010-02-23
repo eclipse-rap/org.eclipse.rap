@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ package org.eclipse.jface.viewers;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -54,6 +56,8 @@ public abstract class ColumnViewerEditor {
 	private ColumnViewerEditorActivationStrategy editorActivationStrategy;
 
 	private boolean inEditorDeactivation;
+
+	private DisposeListener disposeListener;
 
 	/**
 	 * Tabbing from cell to cell is turned off
@@ -111,7 +115,7 @@ public abstract class ColumnViewerEditor {
 	 *            <li>{@link ColumnViewerEditor#TABBING_VERTICAL}</li>
 	 *            </ul>
 	 */
-	protected ColumnViewerEditor(ColumnViewer viewer,
+	protected ColumnViewerEditor(final ColumnViewer viewer,
 			ColumnViewerEditorActivationStrategy editorActivationStrategy,
 			int feature) {
 		this.viewer = viewer;
@@ -121,6 +125,15 @@ public abstract class ColumnViewerEditor {
 					.setEnableEditorActivationWithKeyboard(true);
 		}
 		this.feature = feature;
+		this.disposeListener = new DisposeListener() {
+
+			public void widgetDisposed(DisposeEvent e) {
+				if( viewer.isCellEditorActive() ) {
+					cancelEditing();
+				}
+			}
+			
+		};
 		initCellEditorListener();
 	}
 
@@ -209,7 +222,7 @@ public abstract class ColumnViewerEditor {
 					public void mouseDown(MouseEvent e) {
 						// time wrap?
 						// check for expiration of doubleClickTime
-						if (shouldFireDoubleClick(activationTime, e.time, activationEvent)) {
+						if (shouldFireDoubleClick(activationTime, e.time, activationEvent) && e.button == 1) {
 							control.removeMouseListener(mouseListener);
 							cancelEditing();
 							handleDoubleClickEvent();
@@ -247,6 +260,8 @@ public abstract class ColumnViewerEditor {
 								.afterEditorActivated(activationEvent);
 					}
 				}
+
+				this.cell.getItem().addDisposeListener(disposeListener);
 
 				return true;
 			}
@@ -324,6 +339,10 @@ public abstract class ColumnViewerEditor {
 									.afterEditorDeactivated(tmp);
 						}
 					}
+					
+					if( ! this.cell.getItem().isDisposed() ) {
+						this.cell.getItem().removeDisposeListener(disposeListener);
+					}
 				}
 
 				this.cellEditor = null;
@@ -390,6 +409,10 @@ public abstract class ColumnViewerEditor {
 						}
 					}
 
+					if( ! this.cell.getItem().isDisposed() ) {
+						this.cell.getItem().addDisposeListener(disposeListener);
+					}
+					
 					this.cellEditor = null;
 					this.cell = null;
 
@@ -416,7 +439,8 @@ public abstract class ColumnViewerEditor {
 
 			this.cell = (ViewerCell) event.getSource();
 
-			if( ! activateCellEditor(event) ) {
+			// Only null if we are not in a deactivation process see bug 260892
+			if( ! activateCellEditor(event) && ! inEditorDeactivation ) {
 				this.cell = null;
 				this.cellEditor = null;
 			}

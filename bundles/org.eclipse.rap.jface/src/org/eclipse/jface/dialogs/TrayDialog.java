@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,10 @@ package org.eclipse.jface.dialogs;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Cursor;
@@ -52,6 +56,34 @@ import org.eclipse.swt.widgets.ToolItem;
  */
 public abstract class TrayDialog extends Dialog {
 
+	private final class ResizeListener extends ControlAdapter {
+
+		private final GridData data;
+		private final Shell shell;
+		private final int TRAY_RATIO = 100; // Percentage of extra width devoted to tray when resizing
+		private int remainder = 0; // Used to prevent rounding errors from accumulating
+
+		private ResizeListener(GridData data, Shell shell) {
+			this.data = data;
+			this.shell = shell;
+		}
+
+		public void controlResized (ControlEvent event) {
+				int newWidth = shell.getSize().x;
+				if (newWidth != shellWidth) {					
+					int shellWidthIncrease = newWidth - shellWidth;
+					int trayWidthIncreaseTimes100 = (shellWidthIncrease * TRAY_RATIO) + remainder;
+					int trayWidthIncrease = trayWidthIncreaseTimes100/100;
+					remainder = trayWidthIncreaseTimes100 - (100 * trayWidthIncrease);
+					data.widthHint = data.widthHint + trayWidthIncrease;
+					shellWidth = newWidth;
+					if (!shell.isDisposed()) {
+						shell.layout();
+					}
+				}
+		  }
+	}
+
 	private static boolean dialogHelpAvailable;
 
 	/*
@@ -84,6 +116,10 @@ public abstract class TrayDialog extends Dialog {
 	 */
 	private boolean helpAvailable = isDialogHelpAvailable();
 
+	private int shellWidth;
+
+	private ControlAdapter resizeListener;
+
 	/**
 	 * Creates a tray dialog instance. Note that the window will have no visual
 	 * representation (no widgets) until it is told to open.
@@ -112,6 +148,9 @@ public abstract class TrayDialog extends Dialog {
 		if (getTray() == null) {
 			throw new IllegalStateException("Tray was not open"); //$NON-NLS-1$
 		}
+		Shell shell = getShell();
+		shell.removeControlListener (resizeListener);
+		resizeListener = null;
 		int trayWidth = trayControl.getSize().x + leftSeparator.getSize().x + sash.getSize().x + rightSeparator.getSize().x;
 		trayControl.dispose();
 		trayControl = null;
@@ -122,9 +161,8 @@ public abstract class TrayDialog extends Dialog {
 		rightSeparator = null;
 		sash.dispose();
 		sash = null;
-		Shell shell = getShell();
 		Rectangle bounds = shell.getBounds();
-		// RAP [bm]: 
+		// RAP [bm]: SWT.RIGHT_TO_LEFT missing
 //		shell.setBounds(bounds.x + ((getDefaultOrientation() == SWT.RIGHT_TO_LEFT) ? trayWidth : 0), bounds.y, bounds.width - trayWidth, bounds.height);
 		shell.setBounds(bounds.x + 0, bounds.y, bounds.width - trayWidth, bounds.height);
 		// RAPEND: [bm] 
@@ -198,16 +236,13 @@ public abstract class TrayDialog extends Dialog {
         ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.NO_FOCUS);
         ((GridLayout) parent.getLayout()).numColumns++;
 		toolBar.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-		// RAP [bm]: Cursor ctor
-//		final Cursor cursor = new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
-		final Cursor cursor = parent.getDisplay().getSystemCursor(SWT.CURSOR_HAND);
+		final Cursor cursor = new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
 		toolBar.setCursor(cursor);
-		// RAP [bm]: Cursor#dispose
-//		toolBar.addDisposeListener(new DisposeListener() {
-//			public void widgetDisposed(DisposeEvent e) {
-//				cursor.dispose();
-//			}
-//		});		
+		toolBar.addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				cursor.dispose();
+			}
+		});		
 
         ToolItem item = new ToolItem(toolBar, SWT.NONE);
 		item.setImage(image);
@@ -344,7 +379,7 @@ public abstract class TrayDialog extends Dialog {
 		trayControl.setLayoutData(data);
 		int trayWidth = leftSeparator.computeSize(SWT.DEFAULT, clientArea.height).x + sash.computeSize(SWT.DEFAULT, clientArea.height).x + rightSeparator.computeSize(SWT.DEFAULT, clientArea.height).x + data.widthHint;
 		Rectangle bounds = shell.getBounds();
-		// RAP [bm]: 
+		// RAP [bm]: SWT.RIGHT_TO_LEFT missing
 //		shell.setBounds(bounds.x - ((getDefaultOrientation() == SWT.RIGHT_TO_LEFT) ? trayWidth : 0), bounds.y, bounds.width + trayWidth, bounds.height);
 		shell.setBounds(bounds.x - 0, bounds.y, bounds.width + trayWidth, bounds.height);
 		// RAPEND: [bm] 
@@ -360,6 +395,11 @@ public abstract class TrayDialog extends Dialog {
 				}
 			}
 		});
+		shellWidth = shell.getSize().x;
+		
+		resizeListener = new ResizeListener(data, shell);
+		shell.addControlListener (resizeListener);
+		   
 		this.tray = tray;
 	}
 	
@@ -381,7 +421,6 @@ public abstract class TrayDialog extends Dialog {
 	 * 
 	 * @return <code>true</code> if dialogs that support help
 	 * control should show it by default, <code>false</code> otherwise.
-	 * @since 1.0
 	 */
 	public static boolean isDialogHelpAvailable() {
 		return dialogHelpAvailable;
@@ -394,7 +433,6 @@ public abstract class TrayDialog extends Dialog {
 	 * 
 	 * @param helpAvailable <code>true</code> to show the help
 	 * control, <code>false</code> otherwise.
-	 * @since 1.0
 	 */
 	public static void setDialogHelpAvailable(boolean helpAvailable) {
 		dialogHelpAvailable = helpAvailable;

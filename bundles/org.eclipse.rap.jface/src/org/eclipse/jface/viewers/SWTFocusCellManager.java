@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,10 @@ abstract class SWTFocusCellManager {
 			CellNavigationStrategy navigationDelegate) {
 		this.viewer = viewer;
 		this.cellHighlighter = focusDrawingDelegate;
+		if( this.cellHighlighter != null ) {
+			this.cellHighlighter.setMgr(this);
+		}
+		
 		this.navigationStrategy = navigationDelegate;
 		hookListener(viewer);
 	}
@@ -103,7 +107,7 @@ abstract class SWTFocusCellManager {
 
 	private void handleSelection(Event event) {
 		if ((event.detail & SWT.CHECK) == 0 && focusCell != null && focusCell.getItem() != event.item
-				&& event.item != null ) {
+				&& event.item != null && ! event.item.isDisposed() ) {
 			ViewerRow row = viewer.getViewerRowFromItem(event.item);
 			Assert
 					.isNotNull(row,
@@ -115,6 +119,11 @@ abstract class SWTFocusCellManager {
 		}
 	}
 
+	/**
+	 * Handles the {@link SWT#FocusIn} event.
+	 * 
+	 * @param event the event
+	 */
 	private void handleFocusIn(Event event) {
 		if (focusCell == null) {
 			setFocusCell(getInitialFocusCell());
@@ -123,7 +132,7 @@ abstract class SWTFocusCellManager {
 
 	abstract ViewerCell getInitialFocusCell();
 
-	private void hookListener(ColumnViewer viewer) {
+	private void hookListener(final ColumnViewer viewer) {
 		Listener listener = new Listener() {
 
 			public void handleEvent(Event event) {
@@ -157,6 +166,35 @@ abstract class SWTFocusCellManager {
 
 		});
 		viewer.getControl().addListener(SWT.FocusIn, listener);
+// RAP [rh] accessibility		
+//		viewer.getControl().getAccessible().addAccessibleListener(
+//				new AccessibleAdapter() {
+//					public void getName(AccessibleEvent event) {
+//						ViewerCell cell = getFocusCell();
+//						if (cell == null)
+//							return;
+//						
+//						ViewerRow row = cell.getViewerRow();
+//						if (row == null)
+//							return;
+//						
+//						Object element = row.getItem().getData();
+//						ViewerColumn viewPart = viewer.getViewerColumn(cell
+//								.getColumnIndex());
+//						
+//						if (viewPart == null)
+//							return;
+//						
+//						ColumnLabelProvider labelProvider = (ColumnLabelProvider) viewPart
+//								.getLabelProvider();
+//						
+//						if (labelProvider == null)
+//							return;
+//						
+//						event.result = labelProvider.getText(element);
+//					}
+//				});
+
 	}
 
 	/**
@@ -164,6 +202,10 @@ abstract class SWTFocusCellManager {
 	 *
 	 */
 	public ViewerCell getFocusCell() {
+		return focusCell;
+	}
+	
+	final ViewerCell _getFocusCell() {
 		return focusCell;
 	}
 
@@ -180,7 +222,14 @@ abstract class SWTFocusCellManager {
 			this.focusCell.getItem().addDisposeListener(itemDeletionListener);
 		}
 
+		if( focusCell != null ) {
+			focusCell.scrollIntoView();	
+		}
+		
 		this.cellHighlighter.focusCellChanged(focusCell,oldCell);
+
+// RAP [rh] accessibility		
+//		getViewer().getControl().getAccessible().setFocus(ACC.CHILDID_SELF);
 	}
 
 	ColumnViewer getViewer() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,10 @@ import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -54,7 +55,7 @@ public class ProgressMonitorPart extends Composite implements
     protected Control fCancelComponent;
 
     /** true if canceled */
-    protected boolean fIsCanceled;
+    protected volatile boolean fIsCanceled;
 
     /** current blocked status */
     protected IStatus blockedStatus;
@@ -112,6 +113,7 @@ public class ProgressMonitorPart extends Composite implements
      */
     public void beginTask(String name, int totalWork) {
         fTaskName = name;
+        fSubTaskName = ""; //$NON-NLS-1$
         updateLabel();
         if (totalWork == IProgressMonitor.UNKNOWN || totalWork == 0) {
             fProgressIndicator.beginAnimatedTask();
@@ -126,6 +128,7 @@ public class ProgressMonitorPart extends Composite implements
      */
     public void done() {
         fLabel.setText("");//$NON-NLS-1$
+        fSubTaskName = ""; //$NON-NLS-1$
         fProgressIndicator.sendRemainingWork();
         fProgressIndicator.done();
     }
@@ -175,13 +178,10 @@ public class ProgressMonitorPart extends Composite implements
         fLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         if (progressIndicatorHeight == SWT.DEFAULT) {
-        	// RAP [bm]: 
-//            GC gc = new GC(fLabel);
-//            FontMetrics fm = gc.getFontMetrics();
-//            gc.dispose();
-//            progressIndicatorHeight = fm.getHeight();
-        	progressIndicatorHeight = Graphics.getCharHeight(fLabel.getFont());
-        	// RAPEND: [bm] 
+            GC gc = new GC(fLabel);
+            FontMetrics fm = gc.getFontMetrics();
+            gc.dispose();
+            progressIndicatorHeight = fm.getHeight();
         }
 
         fProgressIndicator = new ProgressIndicator(this);

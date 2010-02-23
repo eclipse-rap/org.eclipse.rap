@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -207,7 +207,6 @@ public final class GridDataFactory {
      * @see GridLayoutFactory#generateLayout(org.eclipse.swt.widgets.Composite)
      * @param theControl 
      * @return a GridLayoutFactory initialized with defaults that GridLayoutFactory would have 
-     * @since 1.0
      */
     public static GridDataFactory defaultsFor(Control theControl) {
     	return LayoutGenerator.defaultsFor(theControl);
@@ -226,7 +225,6 @@ public final class GridDataFactory {
      * @param theControl
      * @param hSpan number of columns spanned by the control
      * @param vSpan number of rows spanned by the control
-     * @since 1.0
      */
     public static void generate(Control theControl, int hSpan, int vSpan) {
     	defaultsFor(theControl).span(hSpan, vSpan).applyTo(theControl);
@@ -245,7 +243,6 @@ public final class GridDataFactory {
      * @param theControl
      * @param span The x coordinate indicates the number of
      * columns spanned, and the y coordinate indicates the number of rows.
-     * @since 1.0
      */
     public static void generate(Control theControl, Point span) {
     	defaultsFor(theControl).span(span).applyTo(theControl);
@@ -437,9 +434,9 @@ public final class GridDataFactory {
     }
 
     /**
-     * Creates a copy of the reciever.
+     * Creates a copy of the receiver.
      * 
-     * @return a copy of the reciever
+     * @return a copy of the receiver
      */
     public GridDataFactory copy() {
     	return new GridDataFactory(create());

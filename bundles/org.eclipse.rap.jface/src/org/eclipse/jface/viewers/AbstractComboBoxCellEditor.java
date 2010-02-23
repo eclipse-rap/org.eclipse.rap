@@ -90,7 +90,6 @@ abstract class AbstractComboBoxCellEditor extends CellEditor {
 			}
 
 			if (dropDown) {
-
 				getControl().getDisplay().asyncExec(new Runnable() {
 
 					public void run() {

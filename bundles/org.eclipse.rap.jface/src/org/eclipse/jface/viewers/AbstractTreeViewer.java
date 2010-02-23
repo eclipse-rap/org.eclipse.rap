@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -197,10 +197,9 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 	 * parent element.
 	 * <p>
 	 * EXPERIMENTAL. Not to be used except by JDT. This method was added to
-	 * support JDT's explorations into grouping by working sets, which requires
-	 * viewers to support multiple equal elements. See bug 76482 for more
-	 * details. This support will likely be removed in Eclipse 3.2 in favor of
-	 * proper support for multiple equal elements.
+	 * support JDT's explorations into grouping by working sets. This method
+	 * cannot be removed without breaking binary backwards compatibility, but
+	 * should not be called by clients.
 	 * </p>
 	 *
 	 * @param widget
@@ -1509,7 +1508,14 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 		if (level == ALL_LEVELS || level > 0) {
 
 			if (widget instanceof Item) {
-				setExpanded((Item) widget, false);
+				Item item = (Item) widget;
+				setExpanded(item, false);
+				Object element = item.getData();
+				if (element != null && level == ALL_LEVELS) {
+					if (optionallyPruneChildren(item, element)) {
+						return;
+					}
+				}
 			}
 
 			if (level == ALL_LEVELS || level > 1) {
@@ -1538,10 +1544,13 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 		Item[] items = getChildren(widget);
 		for (int i = 0; i < items.length; i++) {
 			Item item = items[i];
-			if (getExpanded(item)) {
-				result.add(item);
+			// Disregard dummy nodes (see bug 287765)
+			if (item.getData() != null) {
+				if (getExpanded(item)) {
+					result.add(item);
+				}
+				internalCollectExpandedItems(result, item);
 			}
-			internalCollectExpandedItems(result, item);
 		}
 	}
 
@@ -1793,10 +1802,9 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 	 * Refreshes the tree starting at the given widget.
 	 * <p>
 	 * EXPERIMENTAL. Not to be used except by JDT. This method was added to
-	 * support JDT's explorations into grouping by working sets, which requires
-	 * viewers to support multiple equal elements. See bug 76482 for more
-	 * details. This support will likely be removed in Eclipse 3.2 in favor of
-	 * proper support for multiple equal elements.
+	 * support JDT's explorations into grouping by working sets. This method
+	 * cannot be removed without breaking binary backwards compatibility, but
+	 * should not be called by clients.
 	 * </p>
 	 *
 	 * @param widget
@@ -1870,10 +1878,9 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 	 * Removes the given elements from this viewer.
 	 * <p>
 	 * EXPERIMENTAL. Not to be used except by JDT. This method was added to
-	 * support JDT's explorations into grouping by working sets, which requires
-	 * viewers to support multiple equal elements. See bug 76482 for more
-	 * details. This support will likely be removed in Eclipse 3.2 in favor of
-	 * proper support for multiple equal elements.
+	 * support JDT's explorations into grouping by working sets. This method
+	 * cannot be removed without breaking binary backwards compatibility, but
+	 * should not be called by clients.
 	 * </p>
 	 *
 	 * @param elementsOrPaths
@@ -2272,15 +2279,23 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 	}
 
 	/**
-	 * Sets the auto-expand level. The value 0 means that there is no
-	 * auto-expand; 1 means that top-level elements are expanded, but not their
-	 * children; 2 means that top-level elements are expanded, and their
-	 * children, but not grandchildren; and so on.
+	 * Sets the auto-expand level to be used when the input of the viewer is set
+	 * using {@link #setInput(Object)}. The value 0 means that there is no
+	 * auto-expand; 1 means that the invisible root element is expanded (since
+	 * most concrete subclasses do not show the root element, there is usually
+	 * no practical difference between using the values 0 and 1); 2 means that
+	 * top-level elements are expanded, but not their children; 3 means that
+	 * top-level elements are expanded, and their children, but not
+	 * grandchildren; and so on.
 	 * <p>
 	 * The value <code>ALL_LEVELS</code> means that all subtrees should be
 	 * expanded.
 	 * </p>
-	 *
+	 * <p>
+	 * Note that in previous releases, the Javadoc for this method had an off-by
+	 * one error. See bug 177669 for details.
+	 * </p>
+	 * 
 	 * @param level
 	 *            non-negative level, or <code>ALL_LEVELS</code> to expand all
 	 *            levels of the tree
@@ -2515,7 +2530,7 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 	 *            <code>true</code> to update labels for existing elements,
 	 *            <code>false</code> to only update labels as needed, assuming
 	 *            that labels for existing elements are unchanged.
-	 * @since 1.0
+	 * @since 2.1
 	 */
 	private void updateChildren(Widget widget, Object parent,
 			Object[] elementChildren, boolean updateLabels) {
@@ -2523,29 +2538,33 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 		if (widget instanceof Item) {
 			Item ti = (Item) widget;
 			if (!getExpanded(ti)) {
-				// need a dummy node if element is expandable;
-				// but try to avoid recreating the dummy node
-				boolean needDummy = isExpandable(ti, null, parent);
-				boolean haveDummy = false;
-				// remove all children
-				Item[] items = getItems(ti);
-				for (int i = 0; i < items.length; i++) {
-					if (items[i].getData() != null) {
-						disassociate(items[i]);
-						items[i].dispose();
-					} else {
-						if (needDummy && !haveDummy) {
-							haveDummy = true;
-						} else {
-							items[i].dispose();
-						}
+				if (optionallyPruneChildren(ti, parent)) {
+					// children were pruned, nothing left to do
+					return;
+				}
+				// The following code is being executed if children were not pruned.
+				// This is (as of 3.5) only the case for CheckboxTreeViewer.
+				Item[] its = getItems(ti);
+				if (isExpandable(ti, null, parent)) {
+					if (its.length == 0) {
+						// need dummy node
+						newItem(ti, SWT.NULL, -1);
+						return;
+					} else if (its.length == 1 && its[0].getData() == null) {
+						// dummy node exists, nothing left to do
+						return;
 					}
+					// else fall through to normal update code below
+				} else {
+					for (int i = 0; i < its.length; i++) {
+						if (its[i].getData() != null) {
+							disassociate(its[i]);
+						}
+						its[i].dispose();
+					}
+					// nothing left to do
+					return;
 				}
-				if (needDummy && !haveDummy) {
-					newItem(ti, SWT.NULL, -1);
-				}
-
-				return;
 			}
 		}
 
@@ -2568,7 +2587,7 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 			oldCnt = getItemCount(tree);
 		}
 
-		Item[] items = getChildren(widget,elementChildren);
+		Item[] items = getChildren(widget);
 		
 		// save the expanded elements
 		CustomHashtable expanded = newHashtable(CustomHashtable.DEFAULT_CAPACITY); // assume
@@ -2715,15 +2734,43 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 		}
 	}
 
+	/** Returns true if children were pruned */
+	/*package*/ boolean optionallyPruneChildren(Item item, Object element) {
+		// need a dummy node if element is expandable;
+		// but try to avoid recreating the dummy node
+		boolean needDummy = isExpandable(item, null, element);
+		boolean haveDummy = false;
+		// remove all children
+		Item[] items = getItems(item);
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].getData() != null) {
+				disassociate(items[i]);
+				items[i].dispose();
+			} else {
+				if (needDummy && !haveDummy) {
+					haveDummy = true;
+				} else {
+					items[i].dispose();
+				}
+			}
+		}
+		if (needDummy && !haveDummy) {
+			newItem(item, SWT.NULL, -1);
+		}
+		return true;
+	}
+
 	/**
-	 * Return the items to be refreshed as part of an update. elementChildren are the
-	 * new elements.
+	 * Not to be called by clients. Return the items to be refreshed as part of
+	 * an update. elementChildren are the new elements.
+	 * 
 	 * @param widget
 	 * @param elementChildren
 	 * @since 1.1
 	 * @return Item[]
-	 * <strong>NOTE:</strong> This API is experimental and may be deleted
-	 * before 3.4 is released.
+	 * 
+	 * @deprecated This method was inadvertently released as API but is not
+	 *             intended to be called by clients.
 	 */
 	public Item[] getChildren(Widget widget,  Object[] elementChildren) {
 		return getChildren(widget);

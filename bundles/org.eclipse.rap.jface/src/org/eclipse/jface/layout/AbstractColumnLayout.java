@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package org.eclipse.jface.layout;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.Policy;
+import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -44,18 +45,22 @@ import org.eclipse.swt.widgets.Widget;
 public abstract class AbstractColumnLayout extends Layout {
 	private static int COLUMN_TRIM;
 	static {
-		if ("win32".equals(SWT.getPlatform())) { //$NON-NLS-1$
+		if (Util.isWindows()) {
 			COLUMN_TRIM = 4;
-		} else if ("carbon".equals(SWT.getPlatform())) { //$NON-NLS-1$
+		} else if (Util.isMac()) {
 			COLUMN_TRIM = 24;
 		} else {
 			COLUMN_TRIM = 3;
 		}
 	}
 
-	static final boolean IS_GTK = "gtk".equals(SWT.getPlatform());//$NON-NLS-1$
+	static final boolean IS_GTK = Util.isGtk();
 
-	static final String LAYOUT_DATA = Policy.JFACE + ".LAYOUT_DATA"; //$NON-NLS-1$
+	/**
+	 * Key used to restore the layout data in the columns data-slot
+     * @since 1.3
+	 */
+	protected static final String LAYOUT_DATA = Policy.JFACE + ".LAYOUT_DATA"; //$NON-NLS-1$
 
 	private boolean inupdateMode = false;
 
@@ -177,8 +182,8 @@ public abstract class AbstractColumnLayout extends Layout {
 				ColumnWeightData cw = (ColumnWeightData) getLayoutData(
 						scrollable, colIndex);
 				final int minWidth = cw.minimumWidth;
-				final int allowedWidth = (width - fixedWidth) * cw.weight
-						/ totalWeight;
+				final int allowedWidth = totalWeight == 0 ? 0
+						: (width - fixedWidth) * cw.weight / totalWeight;
 				if (allowedWidth < minWidth) {
 					/*
 					 * if the width assigned by weight is less than the minimum,
@@ -215,8 +220,9 @@ public abstract class AbstractColumnLayout extends Layout {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see org.eclipse.swt.widgets.Layout#computeSize(org.eclipse.swt.widgets.Composite,
-	 *      int, int, boolean)
+	 * @see
+	 * org.eclipse.swt.widgets.Layout#computeSize(org.eclipse.swt.widgets.Composite
+	 * , int, int, boolean)
 	 */
 	protected Point computeSize(Composite composite, int wHint, int hHint,
 			boolean flushCache) {
@@ -226,7 +232,8 @@ public abstract class AbstractColumnLayout extends Layout {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see org.eclipse.swt.widgets.Layout#layout(org.eclipse.swt.widgets.Composite,
+	 * @see
+	 * org.eclipse.swt.widgets.Layout#layout(org.eclipse.swt.widgets.Composite,
 	 *      boolean)
 	 */
 	protected void layout(Composite composite, boolean flushCache) {
@@ -285,21 +292,45 @@ public abstract class AbstractColumnLayout extends Layout {
 	/**
 	 * Get the number of columns for the receiver.
 	 *
+	 * @param tableTree
+	 *            the control
+	 * 
 	 * @return the number of columns
 	 */
-	abstract int getColumnCount(Scrollable tableTree);
+	protected abstract int getColumnCount(Scrollable tableTree);
 
 	/**
 	 * Set the widths of the columns.
 	 *
+	 * @param tableTree
+	 *            the control
+	 * 
 	 * @param widths
+	 *            the widths of the column
 	 */
-	abstract void setColumnWidths(Scrollable tableTree, int[] widths);
+	protected abstract void setColumnWidths(Scrollable tableTree, int[] widths);
 
-	abstract ColumnLayoutData getLayoutData(Scrollable tableTree,
+	/**
+	 * Get the layout data for a column
+	 * 
+	 * @param tableTree
+	 *            the control
+	 * @param columnIndex
+	 *            the column index
+	 * @return the layout data, might <b>not</b> null
+     * @since 1.3
+	 */
+	protected abstract ColumnLayoutData getLayoutData(Scrollable tableTree,
 			int columnIndex);
 
-	abstract void updateColumnData(Widget column);
+	/**
+	 * Update the layout data for a column
+	 * 
+	 * @param column
+	 *            the column
+     * @since 1.3
+	 */
+	protected abstract void updateColumnData(Widget column);
 
 	/**
 	 * The number of extra pixels taken as horizontal trim by the table column.

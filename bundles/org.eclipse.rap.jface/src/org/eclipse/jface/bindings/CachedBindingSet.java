@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.jface.bindings;
 
+import java.util.Collections;
 import java.util.Map;
 
+import org.eclipse.core.commands.util.Tracing;
 import org.eclipse.jface.util.Util;
 
 /**
@@ -66,7 +68,6 @@ final class CachedBindingSet {
 	 * A map of triggers to collections of bindings. If this binding set
 	 * contains conflicts, they are logged here.
 	 * 
-	 * @since 1.0
 	 */
 	private Map conflictsByTrigger = null;
 
@@ -243,7 +244,6 @@ final class CachedBindingSet {
 	 * 
 	 * @return A map of trigger to a collection of Bindings. May be
 	 *         <code>null</code>.
-	 * @since 1.0
 	 */
 	final Map getConflictsByTrigger() {
 		return conflictsByTrigger;
@@ -319,7 +319,6 @@ final class CachedBindingSet {
 	 * 
 	 * @param conflicts
 	 *            The map to set; must not be <code>null</code>.
-	 * @since 1.0
 	 */
 	final void setConflictsByTrigger(final Map conflicts) {
 		if (conflicts == null) {
@@ -343,7 +342,11 @@ final class CachedBindingSet {
 	 */
 	final void setPrefixTable(final Map prefixTable) {
 		if (prefixTable == null) {
-			throw new NullPointerException("Cannot set a null prefix table"); //$NON-NLS-1$
+			this.prefixTable = Collections.EMPTY_MAP;
+			if (BindingManager.DEBUG) {
+				Tracing.printTrace("BINDINGS", "Cannot set a null prefix table, set to EMPTY_MAP"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+			return;
 		}
 
 		this.prefixTable = prefixTable;

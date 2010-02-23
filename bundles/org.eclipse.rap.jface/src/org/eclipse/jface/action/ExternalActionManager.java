@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,6 @@ public final class ExternalActionManager {
 	 * <b>Note:</b> this class is not intended to be subclassed by clients.
 	 * </p>
 	 * 
-	 * @since 1.0
 	 */
 	public static class CommandCallback implements
 			IBindingManagerListener, IBindingManagerCallback, IExecuteCallback {
@@ -140,7 +139,6 @@ public final class ExternalActionManager {
 		 *            The command manager which will provide the callback; must
 		 *            not be <code>null</code>.
 		 * 
-		 * @since 1.0
 		 */
 		public CommandCallback(final BindingManager bindingManager,
 				final CommandManager commandManager) {
@@ -169,7 +167,6 @@ public final class ExternalActionManager {
 		 *            The callback mechanism for checking whether a command is
 		 *            active; must not be <code>null</code>.
 		 * 
-		 * @since 1.0
 		 */
 		public CommandCallback(final BindingManager bindingManager,
 				final CommandManager commandManager,
@@ -242,6 +239,7 @@ public final class ExternalActionManager {
 				ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
 				listeners.add(existing);
 				listeners.add(listener);
+				registeredListeners.put(commandId, listeners);
 			} else {
 				registeredListeners.put(commandId, listener);
 			}
@@ -285,7 +283,6 @@ public final class ExternalActionManager {
 		 * @see org.eclipse.jface.action.ExternalActionManager.ICallback#getAccelerator(String)
 		 */
 		public final Integer getAccelerator(final String commandId) {
-
 			// RAP [bm]: KeyEvents 
 //			final TriggerSequence triggerSequence = bindingManager
 //					.getBestActiveBindingFor(commandId);
@@ -302,7 +299,6 @@ public final class ExternalActionManager {
 //				}
 //			}
 			// RAPEND: [bm] 
-
 			return null;
 		}
 
@@ -329,7 +325,6 @@ public final class ExternalActionManager {
 		 * @return The array of active triggers (<code>TriggerSequence</code>)
 		 *         for a particular command identifier. This value is guaranteed
 		 *         not to be <code>null</code>, but it may be empty.
-		 * @since 1.0
 		 */
 		public final TriggerSequence[] getActiveBindingsFor(
 				final String commandId) {
@@ -347,7 +342,6 @@ public final class ExternalActionManager {
 //			return bindingManager.isPerfectMatch(keySequence)
 //					|| bindingManager.isPartialMatch(keySequence);
 			// RAPEND: [bm] 
-
 			return false;
 		}
 
@@ -476,7 +470,6 @@ public final class ExternalActionManager {
 	 * Defines a callback mechanism for developer who wish to further control
 	 * the visibility of legacy action-based contribution items.
 	 * 
-	 * @since 1.0
 	 */
 	public static interface IActiveChecker {
 		/**
@@ -504,7 +497,6 @@ public final class ExternalActionManager {
 	 * Clients may implement this interface, but must not extend.
 	 * </p>
 	 * 
-	 * @since 1.0
 	 */
 	public static interface IBindingManagerCallback extends ICallback {
 
@@ -624,7 +616,6 @@ public final class ExternalActionManager {
 	 * A callback mechanism for some external tool to communicate extra
 	 * information to actions and action contribution items.
 	 * 
-	 * @since 1.0
 	 */
 	public static interface ICallback {
 

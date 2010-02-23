@@ -228,7 +228,6 @@ public final class GridLayoutFactory {
 	 * @see #spacing(Point)
 	 * @see #spacing(int, int)
 	 * 
-	 * @since 1.0
 	 */
     public GridLayoutFactory extendedMargins(int left, int right, int top, int bottom) {
         l.marginLeft = left;
@@ -263,7 +262,6 @@ public final class GridLayoutFactory {
 	 * @see #spacing(Point)
 	 * @see #spacing(int, int)
 	 * 
-	 * @since 1.0
 	 */
     public GridLayoutFactory extendedMargins(Rectangle differenceRect) {
         l.marginLeft = -differenceRect.x;

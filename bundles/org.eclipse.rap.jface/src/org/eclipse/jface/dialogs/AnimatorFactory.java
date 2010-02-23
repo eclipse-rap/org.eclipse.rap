@@ -31,7 +31,6 @@ public class AnimatorFactory {
 	 * 
 	 * @param control the SWT Control to de displayed 
 	 * @return the ControlAnimator.
-	 * @since 1.0
 	 */
 	public ControlAnimator createAnimator(Control control) {
 		return new ControlAnimator(control);

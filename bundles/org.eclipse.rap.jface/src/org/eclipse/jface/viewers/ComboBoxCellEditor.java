@@ -16,7 +16,6 @@ import java.text.MessageFormat; // Not using ICU to support standalone JFace
 // scenario
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.FocusAdapter;
@@ -27,6 +26,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Control;
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * @since 1.2
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class ComboBoxCellEditor extends AbstractComboBoxCellEditor {
 
@@ -204,13 +204,10 @@ public class ComboBoxCellEditor extends AbstractComboBoxCellEditor {
 			layoutData.minimumWidth = 60;
 		} else {
 			// make the comboBox 10 characters wide
-// RAP [rh] font metrics missing
-//			GC gc = new GC(comboBox);
-//			layoutData.minimumWidth = (gc.getFontMetrics()
-//					.getAverageCharWidth() * 10) + 10;
-//			gc.dispose();
-		  layoutData.minimumWidth
-		    = ( int )( Graphics.getAvgCharWidth( comboBox.getFont() ) * 10 + 10 );
+			GC gc = new GC(comboBox);
+			layoutData.minimumWidth = (gc.getFontMetrics()
+					.getAverageCharWidth() * 10) + 10;
+			gc.dispose();
 		}
 		return layoutData;
 	}

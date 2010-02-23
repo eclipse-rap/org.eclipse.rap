@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -41,10 +40,10 @@ import org.eclipse.swt.graphics.Cursor;
  * </p>
  * <p>
  * Typical usage is:
- *
+ * 
  * <pre>
- *
- *
+ *  
+ *   
  *    try {
  *       IRunnableWithProgress op = ...;
  *       new ProgressMonitorDialog(activeShell).run(true, true, op);
@@ -53,10 +52,10 @@ import org.eclipse.swt.graphics.Cursor;
  *    } catch (InterruptedException e) {
  *       // handle cancelation
  *    }
- *
- *
+ *    
+ *   
  * </pre>
- *
+ * 
  * </p>
  * <p>
  * Note that the ProgressMonitorDialog is not intended to be used with multiple
@@ -157,7 +156,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	private class ProgressMonitor implements IProgressMonitorWithBlocking {
 		private String fSubTask = "";//$NON-NLS-1$
 
-		private boolean fIsCanceled;
+		private volatile boolean fIsCanceled;
 
 		/**
 		 * is the process forked
@@ -259,7 +258,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 		 * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#clearBlocked()
 		 */
 		public void clearBlocked() {
-			if (getShell().isDisposed())
+			if (getShell() == null || getShell().isDisposed())
 				return;
 			locked = false;
 			updateForClearBlocked();
@@ -271,7 +270,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 		 * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#setBlocked(org.eclipse.core.runtime.IStatus)
 		 */
 		public void setBlocked(IStatus reason) {
-			if (getShell().isDisposed())
+			if (getShell() == null || getShell().isDisposed())
 				return;
 			locked = true;
 			updateForSetBlocked(reason);
@@ -282,8 +281,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * Clear blocked state from the receiver.
 	 */
 	protected void updateForClearBlocked() {
-		// RAP [bm]:
-//		progressIndicator.showNormal();
+		progressIndicator.showNormal();
 		setMessage(task, true);
 		imageLabel.setImage(getImage());
 
@@ -296,8 +294,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 *            IStatus that gives the details
 	 */
 	protected void updateForSetBlocked(IStatus reason) {
-		// RAP [bm]:
-//		progressIndicator.showPaused();
+		progressIndicator.showPaused();
 		setMessage(reason.getMessage(), true);
 		imageLabel.setImage(getImage());
 
@@ -379,12 +376,12 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 		if (shell != null && !shell.isDisposed()) {
 			shell.setCursor(null);
 		}
-//		if (arrowCursor != null) {
-//			arrowCursor.dispose();
-//		}
-//		if (waitCursor != null) {
-//			waitCursor.dispose();
-//		}
+		if (arrowCursor != null) {
+			arrowCursor.dispose();
+		}
+		if (waitCursor != null) {
+			waitCursor.dispose();
+		}
 		arrowCursor = null;
 		waitCursor = null;
 
@@ -397,8 +394,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 		super.configureShell(shell);
 		shell.setText(JFaceResources.getString("ProgressMonitorDialog.title")); //$NON-NLS-1$
 		if (waitCursor == null) {
-		  //waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
-		  waitCursor = Graphics.getCursor( SWT.CURSOR_WAIT );
+		  waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
 		}
 		shell.setCursor(waitCursor);
 		// Add a listener to set the message properly when the dialog becomes
@@ -434,8 +430,7 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 		cancel = createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.get().CANCEL_LABEL, true);
 		if (arrowCursor == null) {
-		  //arrowCursor = new Cursor(cancel.getDisplay(), SWT.CURSOR_ARROW);
-		  arrowCursor = Graphics.getCursor( SWT.CURSOR_ARROW );
+			arrowCursor = new Cursor(cancel.getDisplay(), SWT.CURSOR_ARROW);
 		}
 		cancel.setCursor(arrowCursor);
 
@@ -613,7 +608,9 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 */
 	protected void setOperationCancelButtonEnabled(boolean b) {
 		operationCancelableState = b;
-		cancel.setEnabled(b);
+		if (cancel != null && !cancel.isDisposed()) {
+		    cancel.setEnabled(b);
+	    }
 	}
 
 	/*

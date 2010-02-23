@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.Policy;
 
 /**
@@ -34,6 +35,7 @@ import org.eclipse.jface.util.Policy;
  * Note: A <code>ContributionItem</code> cannot be shared between different
  * <code>ContributionManager</code>s.
  * </p>
+ * @since 1.0
  */
 public abstract class ContributionManager implements IContributionManager {
 
@@ -71,6 +73,7 @@ public abstract class ContributionManager implements IContributionManager {
 	 * (non-Javadoc) Method declared on IContributionManager.
 	 */
 	public void add(IAction action) {
+		Assert.isNotNull(action, "Action must not be null"); //$NON-NLS-1$
 		add(new ActionContributionItem(action));
 	}
 
@@ -78,6 +81,7 @@ public abstract class ContributionManager implements IContributionManager {
 	 * (non-Javadoc) Method declared on IContributionManager.
 	 */
 	public void add(IContributionItem item) {
+		Assert.isNotNull(item, "Item must not be null"); //$NON-NLS-1$
 		if (allowItem(item)) {
 			contributions.add(item);
 			itemAdded(item);
@@ -154,7 +158,6 @@ public abstract class ContributionManager implements IContributionManager {
 	 * @return <code>true</code> if the addition should be allowed;
 	 *         <code>false</code> otherwise. The default implementation allows
 	 *         all items.
-	 * @since 1.0
 	 */
 	protected boolean allowItem(IContributionItem itemToAdd) {
 		return true;
@@ -210,7 +213,6 @@ public abstract class ContributionManager implements IContributionManager {
 	 * Return the number of contributions in this manager.
 	 * 
 	 * @return the number of contributions in this manager
-	 * @since 1.0
 	 */
 	public int getSize() {
 		return contributions.size();
@@ -222,7 +224,6 @@ public abstract class ContributionManager implements IContributionManager {
 	 * overrides. If there is no overrides it lazily creates one which overrides
 	 * no item state.
 	 * 
-	 * @since 1.0
 	 */
 	public IContributionManagerOverrides getOverrides() {
 		if (overrides == null) {
@@ -240,6 +241,10 @@ public abstract class ContributionManager implements IContributionManager {
 				}
 
 				public String getText(IContributionItem item) {
+					return null;
+				}
+
+				public Boolean getVisible(IContributionItem item) {
 					return null;
 				}
 			};
@@ -286,7 +291,6 @@ public abstract class ContributionManager implements IContributionManager {
 	 * @param item
 	 *            The contribution item
 	 * @return the index, or -1 if the item is not found
-	 * @since 1.0
 	 */
 	protected int indexOf(IContributionItem item) {
 		return contributions.indexOf(item);
@@ -491,7 +495,6 @@ public abstract class ContributionManager implements IContributionManager {
 	 *            {@link org.eclipse.jface.action.ContributionManager#remove(java.lang.String) remove}
 	 *            if that is what you want to do.
 	 * @return <code>true</code> if the given identifier can be; <code>
-	 * @since 1.0
 	 */
 	public boolean replaceItem(final String identifier,
 			final IContributionItem replacementItem) {
@@ -546,7 +549,6 @@ public abstract class ContributionManager implements IContributionManager {
 	 * 
 	 * @param newOverrides
 	 *            the overrides for the items of this manager
-	 * @since 1.0
 	 */
 	public void setOverrides(IContributionManagerOverrides newOverrides) {
 		overrides = newOverrides;
@@ -557,7 +559,6 @@ public abstract class ContributionManager implements IContributionManager {
 	 * 
 	 * @param items
 	 *            the contribution items in the specified order
-	 * @since 1.0
 	 */
 	protected void internalSetItems(IContributionItem[] items) {
 		contributions.clear();

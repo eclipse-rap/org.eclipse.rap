@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Pawel Pogorzelski - <Pawel.Pogorzelski@pl.ibm.com> - fix for bug 289599  
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
@@ -37,6 +38,7 @@ import org.eclipse.jface.util.SafeRunnable;
  * </p>
  * 
  * @see IPreferenceStore
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class PreferenceStore extends EventManager implements
 		IPersistentPreferenceStore {
@@ -551,6 +553,8 @@ public class PreferenceStore extends EventManager implements
 	 * (non-Javadoc) Method declared on IPreferenceStore.
 	 */
 	public void setToDefault(String name) {
+		if (!properties.containsKey(name))
+			return;
 		Object oldValue = properties.get(name);
 		properties.remove(name);
 		dirty = true;

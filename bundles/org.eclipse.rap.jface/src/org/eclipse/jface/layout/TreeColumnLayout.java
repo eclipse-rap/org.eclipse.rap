@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,32 +73,43 @@ public class TreeColumnLayout extends AbstractColumnLayout {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.layout.AbstractColumnLayout#getColumnCount(org.eclipse.swt.widgets.Scrollable)
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @since 1.3
 	 */
-	int getColumnCount(Scrollable tree) {
+	protected int getColumnCount(Scrollable tree) {
 		return ((Tree) tree).getColumnCount();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.layout.AbstractColumnLayout#setColumnWidths(org.eclipse.swt.widgets.Scrollable, int[])
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @since 1.3
 	 */
-	void setColumnWidths(Scrollable tree, int[] widths) {
+	protected void setColumnWidths(Scrollable tree, int[] widths) {
 		TreeColumn[] columns = ((Tree) tree).getColumns();
 		for (int i = 0; i < widths.length; i++) {
 			columns[i].setWidth(widths[i]);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.layout.AbstractColumnLayout#getLayoutData(org.eclipse.swt.widgets.Scrollable, int)
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @since 1.3
 	 */
-	ColumnLayoutData getLayoutData(Scrollable tableTree, int columnIndex) {
+	protected ColumnLayoutData getLayoutData(Scrollable tableTree, int columnIndex) {
 		TreeColumn column = ((Tree) tableTree).getColumn(columnIndex);
 		return (ColumnLayoutData) column.getData(LAYOUT_DATA);
 	}
 	
-	void updateColumnData(Widget column) {
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @since 1.3
+	 */
+	protected void updateColumnData(Widget column) {
 		TreeColumn tColumn = (TreeColumn) column;
 		Tree t = tColumn.getParent();
 		

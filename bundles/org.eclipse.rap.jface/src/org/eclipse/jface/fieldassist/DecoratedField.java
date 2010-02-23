@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.jface.fieldassist;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.util.Util;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -19,6 +20,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
@@ -63,8 +65,7 @@ public class DecoratedField {
 	/**
 	 * Cached platform flags for dealing with platform-specific issues.
 	 */
-	// RAP [bm]: 
-//	private static boolean CARBON = "carbon".equals(SWT.getPlatform()); //$NON-NLS-1$
+	private static boolean MAC = Util.isMac();
 
 	/**
 	 * Constants describing the array indices used to hold the decorations in
@@ -202,7 +203,7 @@ public class DecoratedField {
 		Hover(Shell parent) {
 			final Display display = parent.getDisplay();
 			hoverShell = new Shell(parent, SWT.NO_TRIM | SWT.ON_TOP
-					| SWT.NO_FOCUS);
+					| SWT.NO_FOCUS | SWT.TOOL);
 			hoverShell.setBackground(display
 					.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 			hoverShell.setForeground(display
@@ -318,13 +319,9 @@ public class DecoratedField {
 		 * Compute the extent of the hover for the current text.
 		 */
 		Point getExtent() {
-			// RAP [bm]: 
-//			GC gc = new GC(hoverShell);
-//			Point e = gc.textExtent(text);
-//			gc.dispose();
-			Point e = Graphics.textExtent(hoverShell.getFont(), text, 0);
-			// RAPEND: [bm] 
-
+			GC gc = new GC(hoverShell);
+			Point e = gc.textExtent(text);
+			gc.dispose();
 			e.x += hm * 2;
 			e.y += hm * 2;
 			return e;

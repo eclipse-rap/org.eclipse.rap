@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,15 +26,16 @@ import org.eclipse.swt.graphics.Image;
  * </p>
  */
 public interface IStatusLineManager extends IContributionManager {
-    /**
-     * Returns a progress monitor which reports progress
-     * in the status line.
-     *
-     * @return the progress monitor
-     * 
-     * Note: There is a delay after a beginTask message before the monitor is shown.
-     *   This may not be appropriate for all apps.
-     */
+	/**
+	 * Returns a progress monitor which reports progress in the status line.
+	 * Note that the returned progress monitor may only be accessed from the UI
+	 * thread.
+	 * 
+	 * @return the progress monitor
+	 * 
+	 *         Note: There is a delay after a beginTask message before the
+	 *         monitor is shown. This may not be appropriate for all apps.
+	 */
     public IProgressMonitor getProgressMonitor();
 
     /**

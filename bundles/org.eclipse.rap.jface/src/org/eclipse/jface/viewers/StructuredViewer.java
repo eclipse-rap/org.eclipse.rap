@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,12 +78,20 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	private List filters;
 
 	/**
+	 * Indicates whether the viewer should attempt to preserve the selection
+	 * across update operations.
+	 * 
+	 * @see #setSelection(ISelection, boolean)
+	 */
+	private boolean preserveSelection = true;
+
+	/**
 	 * Indicates whether a selection change is in progress on this viewer.
 	 * 
 	 * @see #setSelection(ISelection, boolean)
 	 */
 	private boolean inChange;
-
+	
 	/**
 	 * Used while a selection change is in progress on this viewer to indicates
 	 * whether the selection should be restored.
@@ -125,6 +133,12 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * @since 1.0
 	 */
 	private ColorAndFontCollector colorAndFontCollector = new ColorAndFontCollector();
+	
+	
+	/** 
+	 * Calls when associate() and disassociate() are called
+	 */
+	private StructuredViewerInternals.AssociateListener associateListener;
 	
 	/**
 	 * Empty array of widgets.
@@ -492,7 +506,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * identical listener is already registered.
 	 * 
 	 * @param listener
-	 *            a double-click listener
+	 *            an open listener
 	 */
 	public void addOpenListener(IOpenListener listener) {
 		openListeners.add(listener);
@@ -601,13 +615,18 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 				disassociate(item);
 			}
 			item.setData(element);
+			mapElement(element, item);
+		} else {
+			// Always map the element, even if data == element,
+			// since unmapAllElements() can leave the map inconsistent
+			// See bug 2741 for details.
+			mapElement(element, item);
 		}
-		// Always map the element, even if data == element,
-		// since unmapAllElements() can leave the map inconsistent
-		// See bug 2741 for details.
-		mapElement(element, item);
+		if (associateListener != null)
+			associateListener.associate(element, item);
 	}
 
+	
 	/**
 	 * Disassociates the given SWT item from its corresponding element. Sets the
 	 * item's data to <code>null</code> and removes the element from the
@@ -617,6 +636,8 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 *            the widget
 	 */
 	protected void disassociate(Item item) {
+		if (associateListener != null)
+			associateListener.disassociate(item);
 		Object element = item.getData();
 		Assert.isNotNull(element);
 		//Clear the map before we clear the data
@@ -754,7 +775,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * done by calling <code>doFindInputItem</code>. If it is not found
 	 * there, the widgets are looked up in the internal element map provided
 	 * that this feature has been enabled. If the element map is disabled, the
-	 * widget is found via <code>doFindInputItem</code>.
+	 * widget is found via <code>doFindItem</code>.
 	 * </p>
 	 * 
 	 * @param element
@@ -919,7 +940,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	protected Item getItem(int x, int y) {
 		return null;
 	}
-
+	
 	/**
 	 * Returns the children of the given parent without sorting and filtering
 	 * them. The resulting array must not be modified, as it may come directly
@@ -1310,7 +1331,8 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 
 	/**
 	 * Attempts to preserves the current selection across a run of the given
-	 * code.
+	 * code. This method should not preserve the selection if
+	 * {link #getPreserveSelection()} returns false.
 	 * <p>
 	 * The default implementation of this method:
 	 * <ul>
@@ -1318,14 +1340,16 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * <li>runs the given runnable</li>
 	 * <li>attempts to restore the old selection (using
 	 * <code>setSelectionToWidget</code></li>
-	 * <li>rediscovers the resulting selection (via <code>getSelection</code>)
-	 * </li>
-	 * <li>calls <code>handleInvalidSelection</code> if the resulting selection is different from the old selection</li>
+	 * <li>rediscovers the resulting selection (via <code>getSelection</code>)</li>
+	 * <li>calls <code>handleInvalidSelection</code> if the resulting selection
+	 * is different from the old selection</li>
 	 * </ul>
 	 * </p>
 	 * 
 	 * @param updateCode
 	 *            the code to run
+	 * 
+	 * see #getPreserveSelection()
 	 */
 	protected void preservingSelection(Runnable updateCode) {
 		preservingSelection(updateCode, false);
@@ -1333,8 +1357,8 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 
 	/**
 	 * Attempts to preserves the current selection across a run of the given
-	 * code, with a best effort to avoid scrolling if <code>reveal</code> is false,
-	 * or to reveal the selection if <code>reveal</code> is true.
+	 * code, with a best effort to avoid scrolling if <code>reveal</code> is
+	 * false, or to reveal the selection if <code>reveal</code> is true.
 	 * <p>
 	 * The default implementation of this method:
 	 * <ul>
@@ -1342,8 +1366,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * <li>runs the given runnable</li>
 	 * <li>attempts to restore the old selection (using
 	 * <code>setSelectionToWidget</code></li>
-	 * <li>rediscovers the resulting selection (via <code>getSelection</code>)
-	 * </li>
+	 * <li>rediscovers the resulting selection (via <code>getSelection</code>)</li>
 	 * <li>calls <code>handleInvalidSelection</code> if the selection did not
 	 * take</li>
 	 * </ul>
@@ -1357,7 +1380,10 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * @since 1.0
 	 */
 	void preservingSelection(Runnable updateCode, boolean reveal) {
-
+		if (!preserveSelection) {
+			return;
+		}
+		
 		ISelection oldSelection = null;
 		try {
 			// preserve selection
@@ -1484,7 +1510,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * identical listener is not registered.
 	 * 
 	 * @param listener
-	 *            a double-click listener
+	 *            an open listener
 	 */
 	public void removeOpenListener(IOpenListener listener) {
 		openListeners.remove(listener);
@@ -1537,6 +1563,10 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 		}
 	}
 
+	void setAssociateListener(StructuredViewerInternals.AssociateListener l) {
+		associateListener = l;
+	}
+	
 	/**
 	 * Sets the filters, replacing any previous filters, and triggers
 	 * refiltering and resorting of the elements.
@@ -1761,6 +1791,43 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	}
 
 	/**
+	 * NON-API - to be removed - see bug 200214
+	 * Enable or disable the preserve selection behavior of this viewer. The
+	 * default is that the viewer attempts to preserve the selection across
+	 * update operations. This is an advanced option, to support clients that
+	 * manage the selection without relying on the viewer, or clients running
+	 * into performance problems when using viewers and {@link SWT#VIRTUAL}.
+	 * Note that this method has been introduced in 3.5 and that trying to
+	 * disable the selection behavior may not be possible for all subclasses of
+	 * <code>StructuredViewer</code>, or may cause program errors. This method
+	 * is supported for {@link TableViewer}, {@link TreeViewer},
+	 * {@link ListViewer}, {@link CheckboxTableViewer},
+	 * {@link CheckboxTreeViewer}, and {@link ComboViewer}, but no promises are
+	 * made for other subclasses of StructuredViewer, or subclasses of the
+	 * listed viewer classes.
+	 * 
+	 * @param preserve
+	 *            <code>true</code> if selection should be preserved,
+	 *            <code>false</code> otherwise
+	 */
+	void setPreserveSelection(boolean preserve) {
+		this.preserveSelection = preserve;
+	}
+
+	/**
+	 * NON-API - to be removed - see bug 200214
+	 * Returns whether an attempt should be made to preserve selection across
+	 * update operations. To be used by subclasses that override
+	 * {@link #preservingSelection(Runnable)}.
+	 * 
+	 * @return <code>true</code> if selection should be preserved,
+	 *         <code>false</code> otherwise
+	 */
+	boolean getPreserveSelection() {
+		return this.preserveSelection;
+	}
+
+	/**
 	 * Hook for testing.
 	 * @param element
 	 * @return Widget
@@ -1888,13 +1955,14 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * <p>
 	 * If the viewer has a sorter which is affected by a change to one of the
 	 * properties, the elements' positions are updated to maintain the sort
-	 * order. Note that resorting does not happen if <code>properties</code>
+	 * order. Note that resorting may not happen if <code>properties</code>
 	 * is <code>null</code>.
 	 * </p>
 	 * <p>
 	 * If the viewer has a filter which is affected by a change to one of the
 	 * properties, elements may appear or disappear if the change affects
-	 * whether or not they are filtered out.
+	 * whether or not they are filtered out. Note that resorting may not happen
+	 * if <code>properties</code> is <code>null</code>.
 	 * </p>
 	 * 
 	 * @param elements
@@ -1942,13 +2010,14 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * <p>
 	 * If the viewer has a sorter which is affected by a change to one of the
 	 * properties, the element's position is updated to maintain the sort order.
-	 * Note that resorting does not happen if <code>properties</code> is
+	 * Note that resorting may not happen if <code>properties</code> is
 	 * <code>null</code>.
 	 * </p>
 	 * <p>
 	 * If the viewer has a filter which is affected by a change to one of the
 	 * properties, the element may appear or disappear if the change affects
-	 * whether or not the element is filtered out.
+	 * whether or not the element is filtered out. Note that filtering may not
+	 * happen if <code>properties</code> is <code>null</code>.
 	 * </p>
 	 * 
 	 * @param element

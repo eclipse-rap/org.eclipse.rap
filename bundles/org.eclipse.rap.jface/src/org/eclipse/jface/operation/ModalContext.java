@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.Display;
  * <p>
  * This class is not intended to be subclassed.
  * </p>
+ * @noinstantiate This class is not intended to be instantiated by clients.
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class ModalContext {
 
@@ -86,7 +88,6 @@ public class ModalContext {
 		/**
 		 * The thread that forked this modal context thread.
 		 * 
-		 * @since 1.0
 		 */
 		private Thread callingThread;
 
@@ -134,7 +135,12 @@ public class ModalContext {
 			} finally {
 				// notify the operation of change of thread of control
 				if (runnable instanceof IThreadListener) {
-					((IThreadListener) runnable).threadChange(callingThread);
+					Throwable exception = 
+						invokeThreadListener(((IThreadListener) runnable), callingThread);
+					
+					//Forward it if we don't already have one
+					if(exception != null && throwable == null)
+						throwable = exception;
 				}
 
 				// Make sure that all events in the asynchronous event queue
@@ -169,6 +175,7 @@ public class ModalContext {
 		 */
 		public void block() {
 			if (display == Display.getCurrent()) {
+				int exceptionCount = 0;
 				while (continueEventDispatching) {
 					// Run the event loop. Handle any uncaught exceptions caused
 					// by UI events.
@@ -176,6 +183,7 @@ public class ModalContext {
 						if (!display.readAndDispatch()) {
 							display.sleep();
 						}
+						exceptionCount = 0;
 					}
 					// ThreadDeath is a normal error when the thread is dying.
 					// We must
@@ -184,7 +192,23 @@ public class ModalContext {
 						throw (e);
 					}
 					// For all other exceptions, log the problem.
-					catch (Throwable e) {
+					catch (Throwable t) {
+						if (t instanceof VirtualMachineError) {
+							throw (VirtualMachineError) t;
+						}
+						exceptionCount++;
+						// We're counting exceptions in client code, such as asyncExecs,
+						// so be generous about how many may fail consecutively before we
+						// give up.
+						if (exceptionCount > 50 || display.isDisposed()) {
+			                if (t instanceof RuntimeException) {
+								throw (RuntimeException) t;
+							} else if (t instanceof Error) {
+								throw (Error) t;
+							} else {
+								throw new RuntimeException(t);
+							}
+						}
 						Policy
 								.getLog()
 								.log(
@@ -192,7 +216,7 @@ public class ModalContext {
 												IStatus.ERROR,
 												Policy.JFACE,
 												"Unhandled event loop exception during blocked modal context.",//$NON-NLS-1$
-												e));
+												t));
 					}
 				}
 			} else {
@@ -364,14 +388,21 @@ public class ModalContext {
 					runInCurrentThread(operation, monitor);
 				} else {
 					t = new ModalContextThread(operation, monitor, display);
+					Throwable listenerException = null;
 					if (operation instanceof IThreadListener) {
-						((IThreadListener) operation).threadChange(t);
+						listenerException = invokeThreadListener((IThreadListener) operation, t);
 					}
 					// RAP [fappel]: start UI-Callback to enable UI-updates
 					UICallBack.activate( String.valueOf( t.hashCode() ) );
 					
-					t.start();
-					t.block();
+					if(listenerException == null){
+						t.start();
+						t.block();
+					}
+					else {
+						if(t.throwable == null)
+							t.throwable = listenerException;
+					}
 					Throwable throwable = t.throwable;
 					if (throwable != null) {
 						if (debug
@@ -407,6 +438,30 @@ public class ModalContext {
 		} finally {
 			modalLevel--;
 		}
+	}
+
+	/**
+	 * Invoke the ThreadListener if there are any errors or RuntimeExceptions
+	 * return them.
+	 * 
+	 * @param listener
+	 * @param switchingThread
+	 *            the {@link Thread} being switched to
+	 */
+	static Throwable invokeThreadListener(IThreadListener listener,
+			Thread switchingThread) {
+		try {
+			listener.threadChange(switchingThread);
+		} catch (ThreadDeath e) {
+			// Make sure to propagate ThreadDeath, or threads will never
+			// fully terminate
+			throw e;
+		} catch (Error e) {
+			return e;
+		}catch (RuntimeException e) {
+			return e;
+		}
+		return null;
 	}
 
 	/**
@@ -459,7 +514,6 @@ public class ModalContext {
 	 *            while running an operation, <code>false</code> if
 	 *            Display.readAndDispatch() should not be called from
 	 *            ModalContext.
-	 * @since 1.0
 	 */
 	public static void setAllowReadAndDispatch(boolean allowReadAndDispatch) {
 		// use a separate thread if and only if it is OK to spin the event loop

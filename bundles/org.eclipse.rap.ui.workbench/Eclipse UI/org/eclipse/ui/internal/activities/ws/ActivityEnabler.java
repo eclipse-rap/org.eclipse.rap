@@ -15,12 +15,13 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.internal.RAPDialogUtil;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -258,16 +259,13 @@ public class ActivityEnabler {
 	 * @return the composite in which the controls exist.
 	 */
 	public Control createControl(Composite parent) {
-// RAP [fappel]: GC and FontMetrics not supported
-//        GC gc = new GC(parent);
-//        gc.setFont(JFaceResources.getDialogFont());
-//        FontMetrics fontMetrics = gc.getFontMetrics();
-//        gc.dispose();
+        GC gc = new GC(parent);
+        gc.setFont(JFaceResources.getDialogFont());
+        FontMetrics fontMetrics = gc.getFontMetrics();
+        gc.dispose();
         
 		Composite composite = new Composite(parent, SWT.NONE);
-// RAP [fappel]: FontMetrics not supported
-//		composite.setLayout(createGridLayoutWithoutMargins(1, fontMetrics));
-		composite.setLayout(createGridLayoutWithoutMargins(1));
+		composite.setLayout(createGridLayoutWithoutMargins(1, fontMetrics));
 
 		new Label(composite, SWT.NONE).setText(strings.getProperty(ActivitiesPreferencePage.ACTIVITY_NAME, ActivityMessages.get().ActivityEnabler_activities) + ':');
 
@@ -280,9 +278,7 @@ public class ActivityEnabler {
 		dualViewer.getControl().setLayoutData(data);
 
 		Composite buttonComposite = new Composite(composite, SWT.NONE);
-// RAP [fappel]: FontMetrics not supported
-//		buttonComposite.setLayout(createGridLayoutWithoutMargins(2, fontMetrics));
-		buttonComposite.setLayout(createGridLayoutWithoutMargins(2));
+		buttonComposite.setLayout(createGridLayoutWithoutMargins(2, fontMetrics));
 
 		Button selectAllButton = new Button(buttonComposite, SWT.PUSH);
 		selectAllButton.setText(ActivityMessages.get().ActivityEnabler_selectAll);
@@ -296,9 +292,7 @@ public class ActivityEnabler {
 				toggleTreeEnablement(true);
 			}
 		});
-// RAP [fappel]: FontMetrics not supported
-//		setButtonLayoutData(selectAllButton, fontMetrics);
-		setButtonLayoutData(selectAllButton);
+		setButtonLayoutData(selectAllButton, fontMetrics);
 
 		Button deselectAllButton = new Button(buttonComposite, SWT.PUSH);
 		deselectAllButton.setText(ActivityMessages.get().ActivityEnabler_deselectAll); 
@@ -312,18 +306,14 @@ public class ActivityEnabler {
 				toggleTreeEnablement(false);
 			}
 		});
-// RAP [fappel]: FontMetrics not supported
-//		setButtonLayoutData(deselectAllButton, fontMetrics);
-		setButtonLayoutData(deselectAllButton);
+		setButtonLayoutData(deselectAllButton, fontMetrics);
 
 		new Label(composite, SWT.NONE).setText(ActivityMessages.get().ActivityEnabler_description);
 
 		descriptionText = new Text(composite, SWT.READ_ONLY | SWT.WRAP | SWT.BORDER
 				| SWT.V_SCROLL);
 		data = new GridData(SWT.FILL, SWT.FILL, true, false);
-// RAP [fappel]: FontMetrics not supported
-//		data.heightHint = Dialog.convertHeightInCharsToPixels(fontMetrics, 5);
-		data.heightHint = RAPDialogUtil.convertHeightInCharsToPixels(JFaceResources.getDialogFont(),5);
+		data.heightHint = Dialog.convertHeightInCharsToPixels(fontMetrics, 5);
 		descriptionText.setLayoutData(data);
 		setInitialStates();
 
@@ -337,27 +327,18 @@ public class ActivityEnabler {
 		return composite;
 	}
 
-// RAP [fappel]: FontMetrics not supported	
-//	private GridLayout createGridLayoutWithoutMargins(int nColumns, FontMetrics fontMetrics) {
-	private GridLayout createGridLayoutWithoutMargins(int nColumns) {
+	private GridLayout createGridLayoutWithoutMargins(int nColumns, FontMetrics fontMetrics) {
 		GridLayout layout = new GridLayout(nColumns, false);
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
-// RAP [fappel]: FontMetrics not supported	
-//		layout.horizontalSpacing = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.HORIZONTAL_SPACING);
-//		layout.verticalSpacing = Dialog.convertVerticalDLUsToPixels(fontMetrics, IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing = RAPDialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		layout.verticalSpacing = RAPDialogUtil.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+		layout.horizontalSpacing = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.HORIZONTAL_SPACING);
+		layout.verticalSpacing = Dialog.convertVerticalDLUsToPixels(fontMetrics, IDialogConstants.VERTICAL_SPACING);
 		return layout;
 	}
 
-// RAP [fappel]: FontMetrics not supported	
-//    private GridData setButtonLayoutData(Button button, FontMetrics fontMetrics) {
-      private GridData setButtonLayoutData(Button button) {
+    private GridData setButtonLayoutData(Button button, FontMetrics fontMetrics) {
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-// RAP [fappel]: FontMetrics not supported	
-//        int widthHint = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.BUTTON_WIDTH);
-        int widthHint = RAPDialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+        int widthHint = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.BUTTON_WIDTH);
         Point minSize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
         data.widthHint = Math.max(widthHint, minSize.x);
         button.setLayoutData(data);

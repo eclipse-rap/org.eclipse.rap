@@ -82,6 +82,8 @@ public final class BindingManager extends HandleObjectManager implements
 	 */
 	private static final String LOCALE_SEPARATOR = "_"; //$NON-NLS-1$
 
+	private Map currentConflicts = null;
+
 	/**
 	 * </p>
 	 * A utility method for adding entries to a map. The map is checked for
@@ -254,7 +256,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 * The platform for this manager. This defaults to the current platform. The
 	 * value will never be <code>null</code>.
 	 */
-	private String platform = SWT.getPlatform();
+	private String platform = Util.getWS();
 
 	/**
 	 * The array of platforms, starting with the active platform and moving up
@@ -454,7 +456,6 @@ public final class BindingManager extends HandleObjectManager implements
 	 *         scheme is active; <code>1</code> if the second scheme is the
 	 *         youngest; and <code>-1</code> if the first scheme is the
 	 *         youngest.
-	 * @since 1.0
 	 */
 	private final int compareSchemes(final String schemeId1,
 			final String schemeId2) {
@@ -697,7 +698,6 @@ public final class BindingManager extends HandleObjectManager implements
 	 *            The triggers on which to count strokes; must not be
 	 *            <code>null</code>.
 	 * @return The value of the strokes in the triggers.
-	 * @since 1.0
 	 */
 	private final int countStrokes(final Trigger[] triggers) {
 		int strokeCount = triggers.length;
@@ -1021,7 +1021,6 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @return A map of trigger (<code>TriggerSequence</code>) to bindings (
 	 *         <code>Collection</code> containing <code>Binding</code>).
 	 *         This map may be empty, but it is never <code>null</code>.
-	 * @since 1.0
 	 */
 	private final Map getActiveBindingsDisregardingContextByParameterizedCommand() {
 		if (bindings == null) {
@@ -1120,7 +1119,6 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @return The array of active triggers (<code>TriggerSequence</code>)
 	 *         for a particular command identifier. This value is guaranteed to
 	 *         never be <code>null</code>, but it may be empty.
-	 * @since 1.0
 	 */
 	public final TriggerSequence[] getActiveBindingsDisregardingContextFor(
 			final ParameterizedCommand parameterizedCommand) {
@@ -1201,7 +1199,6 @@ public final class BindingManager extends HandleObjectManager implements
 	 *            should be retrieved; must not be <code>null</code>.
 	 * @return The active bindings for the given command; this value may be
 	 *         <code>null</code> if there are no active bindings.
-	 * @since 1.0
 	 */
 	private final Binding[] getActiveBindingsFor1(final ParameterizedCommand command) {
 		final TriggerSequence[] triggers = getActiveBindingsFor(command);
@@ -1256,7 +1253,6 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @return The trigger sequence for the best binding; may be
 	 *         <code>null</code> if no bindings are active for the given
 	 *         command.
-	 * @since 1.0
 	 */
 	public final TriggerSequence getBestActiveBindingFor(final String commandId) {
 		return getBestActiveBindingFor(new ParameterizedCommand(commandManager.getCommand(commandId), null));
@@ -1265,7 +1261,7 @@ public final class BindingManager extends HandleObjectManager implements
 	/**
 	 * @param command
 	 * @return
-	 * 		blah
+	 * 		a trigger sequence, or <code>null</code>
 	 */
 	public final TriggerSequence getBestActiveBindingFor(final ParameterizedCommand command) {
 		final Binding[] bindings = getActiveBindingsFor1(command);
@@ -1374,7 +1370,6 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @return The formatted string for the best binding; may be
 	 *         <code>null</code> if no bindings are active for the given
 	 *         command.
-	 * @since 1.0
 	 */
 	public final String getBestActiveBindingFormattedFor(final String commandId) {
 		final TriggerSequence binding = getBestActiveBindingFor(commandId);
@@ -1774,7 +1769,6 @@ public final class BindingManager extends HandleObjectManager implements
 	 * 
 	 * @param binding
 	 *            The binding to be removed; must not be <code>null</code>.
-	 * @since 1.0
 	 */
 	public final void removeBinding(final Binding binding) {
 		if (bindings == null || bindings.length < 1) {
@@ -2168,12 +2162,42 @@ public final class BindingManager extends HandleObjectManager implements
 		final Map previousBindingsByParameterizedCommand = this.activeBindingsByParameterizedCommand;
 		this.activeBindingsByParameterizedCommand = activeBindingsByCommandId;
 		this.prefixTable = prefixTable;
-		InternalPolicy.currentConflicts = conflicts;
+		currentConflicts = conflicts;
 
 		fireBindingManagerChanged(new BindingManagerEvent(this, true,
 				previousBindingsByParameterizedCommand, false, null, false,
 				false, false));
 	}
+
+	/**
+	 * Provides the current conflicts in the bindings as a Map The key will
+	 * be {@link TriggerSequence} and the value will be the {@link Collection} of
+	 * {@link Binding}
+	 * 
+	 * @return Read-only {@link Map} of the current conflicts. If no conflicts,
+	 *         then return an empty map. Never <code>null</code>
+	 * @since 1.3
+	 */
+	public Map getCurrentConflicts() {
+		if (currentConflicts == null)
+			return Collections.EMPTY_MAP;
+		return Collections.unmodifiableMap(currentConflicts);
+	}
+	
+	/**
+	 * Provides the current conflicts in the keybindings for the given 
+	 * TriggerSequence as a {@link Collection} of {@link Binding}
+	 * 
+	 * @param sequence The sequence for which conflict info is required
+	 * 
+	 * @return Collection of KeyBinding. If no conflicts,
+	 *         then returns a <code>null</code>
+	 * @since 1.3
+	 */
+	public Collection getConflictsFor(TriggerSequence sequence) {
+		return (Collection) getCurrentConflicts().get(sequence);
+	}
+
 
 	/**
 	 * <p>
@@ -2292,6 +2316,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @param platform
 	 *            The new platform; must not be <code>null</code>.
 	 * @see org.eclipse.swt.SWT#getPlatform()
+	 * @see Util#getWS()
 	 */
 	public final void setPlatform(final String platform) {
 		if (platform == null) {

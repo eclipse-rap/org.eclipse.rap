@@ -90,6 +90,9 @@ class ImageDataImageDescriptor extends ImageDescriptor {
      * @see Object#hashCode
      */
     public int hashCode() {
+    	 if (originalImage != null) {
+             return System.identityHashCode(originalImage);
+         }
         return data.hashCode();
     }
 
@@ -102,6 +105,9 @@ class ImageDataImageDescriptor extends ImageDescriptor {
 		} 
         
         ImageDataImageDescriptor imgWrap = (ImageDataImageDescriptor) obj;
+       
+        //Intentionally using == instead of equals() as Image.hashCode() changes
+        //when the image is disposed and so leaks may occur with equals()
        
         if (originalImage != null) {
             return imgWrap.originalImage == originalImage;

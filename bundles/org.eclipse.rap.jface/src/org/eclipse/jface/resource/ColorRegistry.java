@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Display;
  * </p>
  * 
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class ColorRegistry extends ResourceRegistry {
 
@@ -111,7 +112,7 @@ public class ColorRegistry extends ResourceRegistry {
      * @param cleanOnDisplayDisposal
 	 *            whether all fonts allocated by this <code>ColorRegistry</code>
 	 *            should be disposed when the display is disposed
-     * @since 1.0
+     * @since 3.1
      */
     public ColorRegistry(Display display, boolean cleanOnDisplayDisposal) {
         Assert.isNotNull(display);

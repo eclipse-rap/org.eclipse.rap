@@ -16,7 +16,6 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -72,7 +71,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	/**
 	 * The cursor for the buttons.
 	 */
-//	private Cursor arrowCursor;
+	private Cursor arrowCursor;
 
 	/**
 	 * The cursor for the Shell.
@@ -363,13 +362,13 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	private void clearCursors() {
 		clearCursor(cancelSelected);
 		clearCursor(getShell());
-//		if (arrowCursor != null) {
-//			arrowCursor.dispose();
-//		}
-//		if (waitCursor != null) {
-//			waitCursor.dispose();
-//		}
-//		arrowCursor = null;
+		if (arrowCursor != null) {
+			arrowCursor.dispose();
+		}
+		if (waitCursor != null) {
+			waitCursor.dispose();
+		}
+		arrowCursor = null;
 		waitCursor = null;
 	}
 
@@ -393,8 +392,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 		super.configureShell(shell);
 		shell.setText(ProgressMessages.get().BlockedJobsDialog_BlockedTitle);
 		if (waitCursor == null) {
-			//waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
-		    waitCursor = Graphics.getCursor( SWT.CURSOR_WAIT );
+			waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
 		}
 		shell.setCursor(waitCursor);
 	}

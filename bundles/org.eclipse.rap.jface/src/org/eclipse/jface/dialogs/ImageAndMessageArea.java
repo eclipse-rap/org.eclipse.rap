@@ -83,7 +83,6 @@ public class ImageAndMessageArea extends Composite {
 
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		int lineHeight = ((Text) messageField.getControl()).getLineHeight();
-
 		if ((style & SWT.WRAP) > 0)
 			gd.heightHint = 2 * lineHeight;
 		else
