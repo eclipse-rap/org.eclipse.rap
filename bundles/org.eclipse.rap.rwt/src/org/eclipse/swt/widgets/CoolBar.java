@@ -256,7 +256,7 @@ public class CoolBar extends Composite {
     int sIndex = index;
     if ( index < 0 )
       error( SWT.ERROR_INVALID_RANGE );
-    for ( int row = 0; row < items.length; row++ ) {
+    for ( int row = 0; row < items.length && item == null; row++ ) {
       if ( items[row].length > sIndex ) {
         item = items[row][sIndex];
       } else {
