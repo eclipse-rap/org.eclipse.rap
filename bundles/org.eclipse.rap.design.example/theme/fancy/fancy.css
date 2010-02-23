@@ -116,6 +116,10 @@ Button.clearButton {
   padding: 2px;
 }
 
+Button-FocusIndicator.clearButton {
+  border: none;
+}
+
 Button.clearButton:hover, Button.clearButton:selected, Button.clearButton:pressed {
   background-image: none;
 }
@@ -129,6 +133,10 @@ Button.configMenuButton {
 
 Button.configMenuButton:hover, Button.configMenuButton:selected, Button.configMenuButton:pressed {
   background-image: none;
+}
+
+Button-FocusIndicator.configMenuButton {
+  border: none;
 }
 
 Button.viewClose {
@@ -146,6 +154,10 @@ Button.viewClose:hover {
   background-image: url( img/fancy/stack_tab_active_close_active_hover.png );
 }
 
+Button-FocusIndicator.viewClose {
+  border: none;
+}
+
 Button.viewCloseInactive {
   background-color: transparent;
   background-image: url( img/fancy/stack_tab_inactive_close_active.png );
@@ -158,6 +170,10 @@ Button.viewCloseInactive:pressed {
 
 Button.viewCloseInactive:hover {
   background-image: url( img/fancy/stack_tab_inactive_close_active_hover.png );
+}
+
+Button-FocusIndicator.viewCloseInactive {
+  border: none;
 }
 
 Button.toolbarOverflowInactive {
@@ -175,6 +191,10 @@ Button.toolbarOverflowInactive:hover {
   background-image: url( img/fancy/toolbar_overflow_hover.png );
 }
 
+Button-FocusIndicator.toolbarOverflowInactive {
+  border: none;
+}
+
 Button.toolbarOverflowActive {
   background-color: transparent;
   background-image: url( img/fancy/toolbar_overflow_active.png );
@@ -190,6 +210,10 @@ Button.toolbarOverflowActive:hover {
   background-image: url( img/fancy/toolbar_overflow_hover_active.png );
 }
 
+Button-FocusIndicator.toolbarOverflowActive {
+  border: none;
+}
+
 Button.partActive {
   background-color: transparent;
   background-image: none;
@@ -200,6 +224,10 @@ Button.partActive {
 
 Button.partActive:pressed, Button.partActive:hover {
   background-image: none;
+}
+
+Button-FocusIndicator.partActive {
+  border: none;
 }
 
 Button.partInActiveActive {
@@ -214,6 +242,10 @@ Button.partInActiveActive:pressed, Button.partInActiveActive:hover {
   background-image: none;
 }
 
+Button-FocusIndicator.partInActiveActive {
+  border: none;
+}
+
 Button.partInactive {
   background-color: transparent;
   background-image: none;
@@ -226,12 +258,29 @@ Button.partInactive:pressed, Button.partInactive:hover {
   background-image: none;
 }
 
+Button-FocusIndicator.partInactive {
+  border: none;
+}
+
 Button.perspective {
   background-color: transparent;
   background-image: none;
   border: none;
   color: rgb( 204, 204, 204 );
   font: 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+}
+
+Button.perspective:hover {
+  font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+  background-image: none;
+}
+
+Button.perspective:pressed {
+  background-image: none;
+}
+
+Button-FocusIndicator.perspective {
+  border: none;
 }
 
 Button.perspectiveActive {
@@ -246,13 +295,8 @@ Button.perspectiveActive:hover, Button.perspectiveActive:pressed, Button.perspec
   background-image: none;
 }
 
-Button.perspective:hover {
-  font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
-  background-image: none;
-}
-
-Button.perspective:pressed {
-  background-image: none;
+Button-FocusIndicator.perspectiveActive {
+  border: none;
 }
 
 Button.tabOverflowActive {
@@ -270,6 +314,10 @@ Button.tabOverflowActive:hover {
   background-image: url( img/fancy/stack_tab_overflow_active_hover.png );
 }
 
+Button-FocusIndicator.tabOverflowActive {
+  border: none;
+}
+
 Button.tabOverflowInactive {
   background-color: transparent;
   border: none;
@@ -283,6 +331,10 @@ Button.tabOverflowInactive:pressed {
 
 Button.tabOverflowInactive:hover {
   background-image: url( img/fancy/stack_tab_overflow_inactive_hover.png );
+}
+
+Button-FocusIndicator.tabOverflowInactive {
+  border: none;
 }
 
 /* Shell */
