@@ -190,51 +190,6 @@ Button.toolbarOverflowActive:hover {
   background-image: url( img/fancy/toolbar_overflow_hover_active.png );
 }
 
-Button.menuBar {
-  background-color: transparent;
-  background-image: none;
-  border: none;
-  color: rgb( 101, 101, 101 );
-  font: 13px Arial, Helvetica, sans-serif;
-}
-
-Button.menuBar:pressed, Button.menuBar:hover {
-  background-image: none;
-}
-
-Button.coolBar {
-  background-color: transparent;
-  background-image: none;
-  border: none;
-  spacing: 6px;
-  color: rgb( 255, 255, 255 );
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-}
-
-Button.coolBar:hover {
-  background-image: url( img/fancy/toolbarButtonBg.png );
-}
-
-Button.coolBar:pressed {
-  background-image: url( img/fancy/toolbarButtonBg.png );
-}
-
-Button.coolBarPulldown {
-  background-color: transparent;
-  background-image: none;
-  border: none;
-  color: rgb( 255, 255, 255 );
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-}
-
-Button.coolBarPulldown:hover {
-  background-image: url( img/fancy/toolbarButtonBg.png );
-}
-
-Button.coolBarPulldown:pressed {
-  background-image: none;
-}
-
 Button.partActive {
   background-color: transparent;
   background-image: none;
@@ -549,52 +504,6 @@ TableColumn-SortIndicator:down {
   background-image: url( theme/fancy/icons/sort-indicator-down.png );
 }
 
-/* Table for Coolbar Overflow */
-
-Table.overflow {
-  color: rgb( 255, 255, 255 );
-  background-color: transparent;
-}
-
-TableColumn.overflow {
-  background-color: transparent;
-}
-
-TableItem.overflow {
-  background-color: transparent;
-  color: rgb( 255, 255, 255 );
-}
-
-TableItem.overflow:even {
-  background-color: transparent;
-  color: rgb( 255, 255, 255 );
-}
-
-TableItem.overflow:selected {
-  background-color: transparent;
-  color: rgb( 255, 255, 255 );
-}
-
-TableItem.overflow:hover {
-  background-color: transparent;
-  color: rgb( 255, 255, 255 );
-}
-
-TableItem.overflow:even:selected {
-  background-color: transparent;
-  color: rgb( 255, 255, 255 );
-}
-
-TableItem.overflow:even {
-  background-color: transparent;
-  color: rgb( 255, 255, 255 );
-}
-
-TableItem.overflow:even:hover {
-  background-color: transparent;
-  color: rgb( 255, 255, 255 );
-}
-
 /* List */
 
 List {
@@ -696,11 +605,7 @@ MenuItem:hover {
   color: #4a4a4a;
 }
 
-/* Selection color */
-
-.menuBarPopup {
-  border: none;
-}
+/* Label */
 
 Label.menuBorder {
   background-color: rgb( 221, 221, 221 );
@@ -717,6 +622,8 @@ Label.standaloneView {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
+/* Custom Variants */
+
 Composite.compGray {
   background-color: rgb( 255, 255, 255 );
 }
@@ -727,20 +634,6 @@ Composite.compGray {
 
 .partBorder {
   border: rgb( 235, 0, 0 );
-}
-
-.compTransNoBorder {
-  border: none;
-  background-color: rgb( 252, 252, 252 );
-}
-
-.formKey {
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  color: gray;
-}
-
-.formValue {
-  font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 /* Label */
@@ -1145,11 +1038,6 @@ Composite.tabInactive {
 }
 
 Composite.inactiveButton {
-  background-color: transparent;
-  border: none;
-}
-
-Composite.partBackgroundTrans {
   background-color: transparent;
   border: none;
 }

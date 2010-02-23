@@ -204,51 +204,6 @@ Button.toolbarOverflowActive:hover {
   background-image: url( img/business/toolbar_overflow_hover_active.png );
 }
 
-Button.menuBar {
-  background-color: transparent;
-  background-image: none;
-  border: none;
-  color: rgb( 0, 89, 165 );
-  font: 13px Arial, Helvetica, sans-serif;
-}
-
-Button.menuBar:pressed, Button.menuBar:hover {
-  background-image: none;
-}
-
-Button.coolBar {
-  background-color: transparent;
-  background-image: none;
-  border: none;
-  spacing: 6px;
-  color: rgb( 255, 255, 255 );
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-}
-
-Button.coolBar:hover {
-  background-image: url( img/business/toolbarButtonBg.png );
-}
-
-Button.coolBar:pressed {
-  background-image: url( img/business/toolbarButtonBg.png );
-}
-
-Button.coolBarPulldown {
-  background-color: transparent;
-  background-image: none;
-  border: none;
-  color: rgb( 255, 255, 255 );
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-}
-
-Button.coolBarPulldown:hover {
-  background-image: url( img/business/toolbarButtonBg.png );
-}
-
-Button.coolBarPulldown:pressed {
-  background-image: none;
-}
-
 Button.partActive {
   background-color: transparent;
   background-image: none;
@@ -420,8 +375,6 @@ Shell.toolbarLayer {
 
 /* Tree */
 
-/* Tree */
-
 Tree {
   background-color: rgb( 255, 255, 255 );
   border: none;
@@ -466,38 +419,6 @@ TreeColumn-SortIndicator:up {
 
 TreeColumn-SortIndicator:down {
   background-image: url( theme/business/icons/sort-indicator-down.png );
-}
-
-/* Table for Coolbar overflow */
-
-TableColumn.overflow {
-  background-color: transparent;
-}
-
-TableItem.overflow {
-  background-color: transparent;
-}
-
-TableItem.overflow:selected {
-  background-color: transparent;
-  color: #00589f;
-}
-
-TableItem.overflow:hover {
-  background-color: transparent;
-}
-
-TableItem.overflow:even:selected {
-  background-color: transparent;
-  color: #00589f;
-}
-
-TableItem.overflow:even {
-  background-color: transparent;
-}
-
-TableItem.overflow:even:hover {
-  background-color: transparent;
 }
 
 /* Table */
@@ -729,12 +650,6 @@ MenuItem:hover {
   color: #4a4a4a;
 }
 
-/* Selection color */
-
-.menuBarPopup {
-  border: none;
-}
-
 /* Label */
 
 Label, CLabel {
@@ -757,6 +672,8 @@ Label.standaloneView {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
+/* Custom Variants */
+
 .compGray {
   background-color: rgb( 235, 235, 235 );
 }
@@ -767,20 +684,6 @@ Label.standaloneView {
 
 .partBorder {
   border: rgb( 235, 0, 0 );
-}
-
-.compTransNoBorder {
-  border: none;
-  background-color: rgb( 252, 252, 252 );
-}
-
-.formKey {
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  color: gray;
-}
-
-.formValue {
-  font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 /* Expand Bar */
@@ -1172,11 +1075,6 @@ Composite.inactiveButton {
   border: none;
 }
 
-Composite.partBackgroundTrans {
-  background-color: transparent;
-  border: none;
-}
-
 /* ToolTip */
 
 ToolTip {
@@ -1336,6 +1234,7 @@ Slider-Thumb:pressed {
 }
 
 /* Display */
+
 Display {
   background-image: url( theme/business/icons/browser_bg.png );
   rwt-infobackground-color: rgb( 255, 255, 255 );
