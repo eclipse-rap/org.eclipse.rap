@@ -99,6 +99,7 @@ public class TextTab extends ExampleTab {
     createCursorCombo();
     createLimitText( parent );
     createSelectionChooser( parent );
+    createText( parent );
     createMessage( parent );
   }
 
@@ -244,13 +245,13 @@ public class TextTab extends ExampleTab {
   private void createEchoCharButton() {
     btnEchoChar= createPropertyButton( "EchoChar" );
     btnEchoChar.setSelection( false );
-    btnEchoChar.addSelectionListener( new SelectionAdapter() {      
+    btnEchoChar.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         updateEchoChar();
       }
     } );
   }
-  
+
   private void createSelectionChooser( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
@@ -297,7 +298,7 @@ public class TextTab extends ExampleTab {
     Label label = new Label( composite, SWT.NONE );
     label.setText( "Text limit" );
     final Text limitText = new Text( composite, SWT.BORDER );
-    limitText.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
+    limitText.setLayoutData( new GridData( 100, SWT.DEFAULT ) );
     Button setButton = new Button( composite, SWT.PUSH );
     setButton.setText( "Set" );
     Button resetButton = new Button( composite, SWT.PUSH );
@@ -324,13 +325,46 @@ public class TextTab extends ExampleTab {
     } );
   }
 
+  private void createText( final Composite parent ) {
+    Group group = new Group( parent, SWT.NONE );
+    group.setText( "Text" );
+    group.setLayout( new GridLayout( 2, false ) );
+    final Text setText = new Text( group, SWT.BORDER );
+    setText.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
+    Button setButton = new Button( group, SWT.PUSH );
+    setButton.setText( "Set" );
+    setButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        text.setText( setText.getText() );
+      }
+    } );
+    final Text appendText = new Text( group, SWT.BORDER );
+    appendText.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
+    Button appendButton = new Button( group, SWT.PUSH );
+    appendButton.setText( "Append" );
+    appendButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        text.append( appendText.getText() );
+      }
+    } );
+    final Text insertText = new Text( group, SWT.BORDER );
+    insertText.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
+    Button insertButton = new Button( group, SWT.PUSH );
+    insertButton.setText( "Insert" );
+    insertButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        text.insert( insertText.getText() );
+      }
+    } );
+  }
+
   private void createMessage( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );
     label.setText( "Message" );
     final Text message = new Text( composite, SWT.BORDER );
-    message.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
+    message.setLayoutData( new GridData( 185, SWT.DEFAULT ) );
     Button setButton = new Button( composite, SWT.PUSH );
     setButton.setText( "Set" );
     setButton.addSelectionListener( new SelectionAdapter() {
