@@ -107,6 +107,17 @@ public class TypedEvent extends Event {
   /**
    * Constructs a new instance of this class.
    *
+   * @param source the object that fired the event
+   *
+   * @since 1.3
+   */
+  public TypedEvent( final Object source ) {
+    this( source, SWT.None );
+  }
+
+  /**
+   * Constructs a new instance of this class.
+   *
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
    * within the packages provided by RWT. It should never be accessed
