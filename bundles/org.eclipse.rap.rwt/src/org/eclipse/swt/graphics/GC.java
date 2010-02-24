@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -18,25 +18,25 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Class <code>GC</code> is provided to ease single-sourcing SWT and RWT code.
- * Its text measurement methods directly delegate to the respective 
+ * Its text measurement methods directly delegate to the respective
  * <code>Graphics</code> methods.
- * <!-- 
- * Class <code>GC</code> is where all of the drawing capabilities that are 
- * supported by SWT are located. Instances are used to draw on either an 
+ * <!--
+ * Class <code>GC</code> is where all of the drawing capabilities that are
+ * supported by SWT are located. Instances are used to draw on either an
  * <code>Image</code>, a <code>Control</code>, or directly on a <code>Display</code>.
  * -->
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>LEFT_TO_RIGHT <!--, RIGHT_TO_LEFT --></dd>
  * </dl>
- * 
+ *
  * <!--
  * <p>
  * The SWT drawing coordinate system is the two-dimensional space with the origin
  * (0,0) at the top left corner of the drawing area and with (x,y) values increasing
  * to the right and downward respectively.
  * </p>
- * 
+ *
  * <p>
  * The result of drawing on an image that was created with an indexed
  * palette using a color that is not in the palette is platform specific.
@@ -45,15 +45,15 @@ import org.eclipse.swt.widgets.Display;
  * a direct palette on platforms that do not support indexed palette.
  * </p>
  * -->
- * 
+ *
  * <p>
- * Application code must explicitly invoke the <code>GC.dispose()</code> 
+ * Application code must explicitly invoke the <code>GC.dispose()</code>
  * method to release the operating system resources managed by each instance
  * when those instances are no longer required. <!-- This is <em>particularly</em>
  * important on Windows95 and Windows98 where the operating system has a limited
  * number of device contexts available. -->
  * </p>
- * 
+ *
  * <!--
  * <p>
  * Note: Only one of LEFT_TO_RIGHT and RIGHT_TO_LEFT may be specified.
@@ -69,14 +69,16 @@ import org.eclipse.swt.widgets.Display;
 public class GC extends Resource {
 
   private Font font;
+  private Color background;
+  private Color foreground;
 
-  /**  
+  /**
    * Constructs a new instance of this class which has been
    * configured to draw on the specified drawable. Sets the
    * foreground color, background color and font in the GC
    * to match those in the drawable.
    * <p>
-   * You must dispose the graphics context when it is no longer required. 
+   * You must dispose the graphics context when it is no longer required.
    * </p>
    * @param drawable the drawable to draw on
    * @exception IllegalArgumentException <ul>
@@ -98,9 +100,11 @@ public class GC extends Resource {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     font = determineFont( drawable );
+    background = determineBackground( drawable );
+    foreground = determineForeground( drawable );
   }
 
-  /** 
+  /**
    * Sets the font which will be used by the receiver
    * to draw and measure text to the argument. If the
    * argument is null, then a default font appropriate
@@ -125,7 +129,7 @@ public class GC extends Resource {
     this.font = font;
   }
 
-  /** 
+  /**
    * Returns the font currently being used by the receiver
    * to draw and measure text.
    *
@@ -144,7 +148,7 @@ public class GC extends Resource {
 
   /**
    * Returns the width of the specified character in the font
-   * selected into the receiver. 
+   * selected into the receiver.
    * <p>
    * The width is defined as the space taken up by the actual
    * character, not including the leading and tailing whitespace
@@ -193,7 +197,7 @@ public class GC extends Resource {
     }
     return Graphics.stringExtent( font, string );
   }
-  
+
   /**
    * Returns the extent of the given string. Tab expansion and
    * carriage return processing are performed.
@@ -241,6 +245,93 @@ public class GC extends Resource {
     return new FontMetrics( font );
   }
 
+  /**
+   * Sets the background color. The background color is used
+   * for fill operations and as the background color when text
+   * is drawn.
+   *
+   * @param color the new background color for the receiver
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the color is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the color has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void setBackground( final Color color ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( color == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( color.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    background = color;
+  }
+
+  /**
+   * Returns the background color.
+   *
+   * @return the receiver's background color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public Color getBackground() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    return background;
+  }
+
+  /**
+   * Sets the foreground color. The foreground color is used
+   * for drawing operations including when text is drawn.
+   *
+   * @param color the new foreground color for the receiver
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the color is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the color has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void setForeground( final Color color ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( color == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( color.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    foreground = color;
+  }
+
+  /**
+   * Returns the receiver's foreground color.
+   *
+   * @return the color used for drawing foreground things
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public Color getForeground() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    return foreground;
+  }
+
   private static Device determineDevice( final Drawable drawable ) {
     Device result = null;
     if( drawable instanceof Control ) {
@@ -257,6 +348,26 @@ public class GC extends Resource {
       result = ( ( Control )drawable ).getFont();
     } else if( drawable instanceof Display ) {
       result = ( ( Display )drawable ).getSystemFont();
+    }
+    return result;
+  }
+
+  private Color determineBackground( final Drawable drawable ) {
+    Color result = null;
+    if( drawable instanceof Control ) {
+      result = ( ( Control )drawable ).getBackground();
+    } else if( drawable instanceof Display ) {
+      result = ( ( Display )drawable ).getSystemColor( SWT.COLOR_WHITE );
+    }
+    return result;
+  }
+
+  private Color determineForeground( final Drawable drawable ) {
+    Color result = null;
+    if( drawable instanceof Control ) {
+      result = ( ( Control )drawable ).getForeground();
+    } else if( drawable instanceof Display ) {
+      result = ( ( Display )drawable ).getSystemColor( SWT.COLOR_BLACK );
     }
     return result;
   }
