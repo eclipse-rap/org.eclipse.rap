@@ -1303,6 +1303,24 @@ public class CTabFolder extends Composite {
     return topRight;
   }
 
+  /**
+   * Returns the alignment of the top right control. 
+   *
+   * @return the alignment of the top right control which is either
+   * <code>SWT.RIGHT</code> or <code>SWT.FILL</code> 
+   * 
+   * @exception  SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
+   *
+   * @since 1.3
+   */
+  public int getTopRightAlignment() {
+    checkWidget();
+    return topRightAlignment;
+  }
+
   ///////////////////////////
   // Adaptable implementation
 
