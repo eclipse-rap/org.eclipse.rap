@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Display;
 
 
-final class TextSizeProbeStore extends SessionSingletonBase {
+final class TextSizeProbeStore {
   
   // TODO [fappel]: improve probe text determination...
   static String DEFAULT_PROBE;
@@ -88,7 +88,9 @@ final class TextSizeProbeStore extends SessionSingletonBase {
   }
    
   static TextSizeProbeStore getInstance() {
-    return ( TextSizeProbeStore )getInstance( TextSizeProbeStore.class );
+    Object instance
+      = SessionSingletonBase.getInstance( TextSizeProbeStore.class );
+    return ( TextSizeProbeStore )instance;
   }
   
   IProbeResult getProbeResult( final FontData fontData ) {
