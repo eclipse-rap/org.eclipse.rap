@@ -30,7 +30,16 @@ import org.eclipse.swt.internal.widgets.ITextAdapter;
  * </dl>
  * <p>
  * Note: Only one of the styles MULTI and SINGLE may be specified.
- * </p><p>
+ * </p>
+ * <p>
+ * Note: The styles ICON_CANCEL and ICON_SEARCH are hints used in combination with SEARCH.
+ * When the platform supports the hint, the text control shows these icons.  When an icon
+ * is selected, a default selection event is sent with the detail field set to one of
+ * ICON_CANCEL or ICON_SEARCH.  Normally, application code does not need to check the
+ * detail.  In the case of ICON_CANCEL, the text is cleared before the default selection
+ * event is sent causing the application to search for an empty string.
+ * </p>
+ * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  * <p>Due to limitations of the JavaScript library, the current WRAP behavior
@@ -96,6 +105,8 @@ public class Text extends Scrollable {
    * @see SWT#WRAP
    * @see SWT#PASSWORD
    * @see SWT#SEARCH;
+   * @see SWT#ICON_SEARCH
+   * @see SWT#ICON_CANCEL
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
@@ -809,7 +820,9 @@ public class Text extends Scrollable {
    * interface.
    * <p>
    * <code>widgetSelected</code> is not called for texts.
-   * <code>widgetDefaultSelected</code> is typically called when ENTER is pressed in a single-line text.
+   * <code>widgetDefaultSelected</code> is typically called when ENTER is pressed in a single-line text,
+   * or when ENTER is pressed in a search text. If the receiver has the <code>SWT.SEARCH | SWT.CANCEL</code> style
+   * and the user cancels the search, the event object detail field contains the value <code>SWT.CANCEL</code>.
    * </p>
    *
    * @param listener the listener which should be notified
@@ -993,6 +1006,7 @@ public class Text extends Scrollable {
     if( ( result & SWT.SEARCH ) != 0 ) {
       result |= SWT.SINGLE | SWT.BORDER;
       result &= ~SWT.PASSWORD;
+      result &= ~SWT.CANCEL;
     }
     if( ( result & SWT.SINGLE ) != 0 && ( result & SWT.MULTI ) != 0 ) {
       result &= ~SWT.MULTI;

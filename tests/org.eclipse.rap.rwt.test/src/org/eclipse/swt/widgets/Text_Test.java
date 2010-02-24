@@ -485,4 +485,13 @@ public class Text_Test extends TestCase {
     passwordText.setEchoChar( '*' );
     assertEquals( '*', passwordText.getEchoChar() );
   }
+  
+  // Ensure that the CANCEL hint isn't returned by getStyle if it isn't 
+  // actually supported
+  public void testCancelStyle() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.SEARCH | SWT.CANCEL );
+    assertTrue( ( text.getStyle() & SWT.CANCEL ) == 0 );
+  }
 }
