@@ -77,6 +77,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 //import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -1715,18 +1716,15 @@ public abstract class FilteredItemsSelectionDialog extends
 
 			int width = rect.width - borderWidth - imageWidth;
 
-//RAP [rh] Changes due to different text size calculation			
-//			GC gc = new GC(list.getTable());
-//			gc.setFont(list.getTable().getFont());
-//
-//			int fSeparatorWidth = gc.getAdvanceWidth('-');
-//			int fMessageLength = gc.textExtent(separatorLabel).x;
-//
-//			gc.dispose();
+			GC gc = new GC(list.getTable());
+			gc.setFont(list.getTable().getFont());
 
-			Font font = list.getTable().getFont();
-			int fSeparatorWidth = Graphics.stringExtent( font, "-" ).x; //$NON-NLS-1$
-			int fMessageLength = Graphics.stringExtent( font, separatorLabel ).x;
+//RAP [rh] GC#getAdvanceWidth missing			
+//			int fSeparatorWidth = gc.getAdvanceWidth('-');
+			int fSeparatorWidth = gc.getCharWidth('-');
+			int fMessageLength = gc.textExtent(separatorLabel).x;
+
+			gc.dispose();
 
 			StringBuffer dashes = new StringBuffer();
 			int chars = (((width - fMessageLength) / fSeparatorWidth) / 2) - 2;

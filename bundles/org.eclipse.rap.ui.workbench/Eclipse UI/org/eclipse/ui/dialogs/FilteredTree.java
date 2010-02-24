@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.IContentProvider;
 //import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 //import org.eclipse.osgi.util.NLS;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.accessibility.AccessibleAdapter;
 //import org.eclipse.swt.accessibility.AccessibleEvent;
@@ -33,6 +32,8 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.events.KeyAdapter;
 //import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -416,12 +417,8 @@ public class FilteredTree extends Composite {
 						 */
 						TreeItem[] items = getViewer().getTree().getItems();
 						int treeHeight = getViewer().getTree().getBounds().height;
-// RAP [rh] Tree#getItemHeight missing
-//						int numVisibleItems = treeHeight
-//								/ getViewer().getTree().getItemHeight();
-            Font treeFont = getViewer().getTree().getFont();
-            int charHeight = Graphics.getCharHeight( treeFont );
-            int numVisibleItems = treeHeight / charHeight + 2;
+						int numVisibleItems = treeHeight
+								/ getViewer().getTree().getItemHeight();
 						long stopTime = SOFT_MAX_EXPAND_TIME
 								+ System.currentTimeMillis();
 						boolean cancel = false;
@@ -679,27 +676,25 @@ public class FilteredTree extends Composite {
 		// if we're using a field with built in cancel we need to listen for
 		// default selection changes (which tell us the cancel button has been
 		// pressed)
-// RAP [rh] Text(SWT.CANCEL) not supported
-//		if ((filterText.getStyle() & SWT.CANCEL) != 0) {
-//			filterText.addSelectionListener(new SelectionAdapter() {
-//				/*
-//				 * (non-Javadoc)
-//				 *
-//				 * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-//				 */
-//				public void widgetDefaultSelected(SelectionEvent e) {
-//					if (e.detail == SWT.CANCEL)
-//						clearText();
-//				}
-//			});
-//		}
+		if ((filterText.getStyle() & SWT.CANCEL) != 0) {
+			filterText.addSelectionListener(new SelectionAdapter() {
+				/*
+				 * (non-Javadoc)
+				 *
+				 * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+				 */
+				public void widgetDefaultSelected(SelectionEvent e) {
+					if (e.detail == SWT.CANCEL)
+						clearText();
+				}
+			});
+		}
 
 		GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
 		// if the text widget supported cancel then it will have it's own
 		// integrated button. We can take all of the space.
-// RAP [rh] Text(SWT.CANCEL) not supported
-//		if ((filterText.getStyle() & SWT.CANCEL) != 0)
-//			gridData.horizontalSpan = 2;
+		if ((filterText.getStyle() & SWT.CANCEL) != 0)
+			gridData.horizontalSpan = 2;
 		filterText.setLayoutData(gridData);
 	}
 
@@ -712,9 +707,8 @@ public class FilteredTree extends Composite {
 	 * @return the text widget
 	 */
 	protected Text doCreateFilterText(Composite parent) {
-// RAP [r] SWT.SEARCH, SWT.CANCEL not implemented for Text widget
-		return new Text(parent, SWT.SINGLE | SWT.BORDER /* | SWT.SEARCH
-				| SWT.CANCEL */ );
+		return new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.SEARCH
+				| SWT.CANCEL );
 	}
 
 	private String previousFilterText;
@@ -758,8 +752,7 @@ public class FilteredTree extends Composite {
 	private void createClearText(Composite parent) {
 		// only create the button if the text widget doesn't support one
 		// natively
-// RAP [rh] Text(SWT.CANCEL) not supported
-//		if ((filterText.getStyle() & SWT.CANCEL) == 0) {
+		if ((filterText.getStyle() & SWT.CANCEL) == 0) {
 			filterToolBar = new ToolBarManager(SWT.FLAT | SWT.HORIZONTAL);
 			filterToolBar.createControl(parent);
 
@@ -782,7 +775,7 @@ public class FilteredTree extends Composite {
 					.getImageRegistry().getDescriptor(DCLEAR_ICON));
 
 			filterToolBar.add(clearTextAction);
-//		}
+		}
 	}
 
 	/**
