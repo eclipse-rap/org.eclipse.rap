@@ -342,7 +342,7 @@ public class GC extends Resource {
     return result;
   }
 
-  private Font determineFont( final Drawable drawable ) {
+  private static Font determineFont( final Drawable drawable ) {
     Font result = null;
     if( drawable instanceof Control ) {
       result = ( ( Control )drawable ).getFont();
@@ -352,7 +352,7 @@ public class GC extends Resource {
     return result;
   }
 
-  private Color determineBackground( final Drawable drawable ) {
+  private static Color determineBackground( final Drawable drawable ) {
     Color result = null;
     if( drawable instanceof Control ) {
       result = ( ( Control )drawable ).getBackground();
@@ -362,7 +362,7 @@ public class GC extends Resource {
     return result;
   }
 
-  private Color determineForeground( final Drawable drawable ) {
+  private static Color determineForeground( final Drawable drawable ) {
     Color result = null;
     if( drawable instanceof Control ) {
       result = ( ( Control )drawable ).getForeground();
