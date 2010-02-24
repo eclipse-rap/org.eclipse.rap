@@ -11,11 +11,59 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.util.EncodingUtil;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 
-final class TextSizeEstimation {
+public final class TextSizeEstimation {
+  
+  private static final class DefaultFontMetricsEstimation
+    implements IFontMetricsEstimation
+  {
+
+    public float getAverageCharWidth( final Font font ) {
+      float result;
+      FontData fontData = font.getFontData()[ 0 ];
+      TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
+      if( probeStore.containsProbeResult( fontData ) ) {
+        // we can improve char width estimations in case that we already have the
+        // specified font probed.
+        result = probeStore.getProbeResult( fontData ).getAvgCharWidth();
+      } else {
+        result = fontData.getHeight() * 0.48f;
+        if( ( fontData.getStyle() & SWT.BOLD ) != 0 ) {
+          result *= 1.45;
+        }
+      }
+      return result;
+    }
+
+    public int getCharHeight( final Font font ) {
+      // at 72 dpi, 1 pt == 1 px
+      return font.getFontData()[ 0 ].getHeight();
+    }
+  }
+
+  private static final String FONT_METRICS_ESTIMATION
+    = TextSizeEstimation.class.getName() + "#fontMetricsEstimation";
+
+  public static void setFontMetricsEstimation( IFontMetricsEstimation value ) {
+    ISessionStore sessionStore = RWT.getSessionStore();
+    sessionStore.setAttribute( FONT_METRICS_ESTIMATION, value );
+  }
+  
+  public static IFontMetricsEstimation getFontMetricsEstimation() {
+    ISessionStore sessionStore = RWT.getSessionStore();
+    Object attribute = sessionStore.getAttribute( FONT_METRICS_ESTIMATION );
+    IFontMetricsEstimation result = ( IFontMetricsEstimation )attribute;
+    if( result == null ) {
+      result = new DefaultFontMetricsEstimation();
+      setFontMetricsEstimation( result );
+    }
+    return result;
+  }
 
   /**
    * Estimates the size of a given text. Line breaks are not respected.
@@ -80,8 +128,7 @@ final class TextSizeEstimation {
    * @return the estimated character height in pixels
    */
   static int getCharHeight( final Font font ) {
-    // at 72 dpi, 1 pt == 1 px
-    return font.getFontData()[ 0 ].getHeight();
+    return getFontMetricsEstimation().getCharHeight( font );
   }
   
   /**
@@ -92,20 +139,7 @@ final class TextSizeEstimation {
    * @return the estimated average character width in pixels
    */
   static float getAvgCharWidth( final Font font ) {
-    float result;
-    FontData fontData = font.getFontData()[ 0 ];
-    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
-    if( probeStore.containsProbeResult( fontData ) ) {
-      // we can improve char width estimations in case that we already have the
-      // specified font probed.
-      result = probeStore.getProbeResult( fontData ).getAvgCharWidth();
-    } else {
-      result = fontData.getHeight() * 0.48f;
-      if( ( fontData.getStyle() & SWT.BOLD ) != 0 ) {
-        result *= 1.45;
-      }
-    }
-    return result;
+    return getFontMetricsEstimation().getAverageCharWidth( font );
   }
   
   /**

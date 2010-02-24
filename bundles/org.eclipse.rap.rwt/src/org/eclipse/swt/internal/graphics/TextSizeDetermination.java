@@ -30,6 +30,7 @@ public class TextSizeDetermination {
     = TextSizeDetermination.class.getName() + ".CalculationItems";
   private static final ICalculationItem[] EMTY_ITEMS
     = new ICalculationItem[ 0 ];
+  
   private static final int STRING_EXTENT = 0;
   private static final int TEXT_EXTENT = 1;
   private static final int MARKUP_EXTENT = 2;
