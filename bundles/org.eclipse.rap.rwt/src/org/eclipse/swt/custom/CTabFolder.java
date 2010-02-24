@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -18,7 +19,6 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderThemeAdapter;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
@@ -1913,7 +1913,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 //      GC gc = new GC(this);
       if (items.length == 0) {
 //        tempHeight = gc.textExtent("Default", CTabItem.FLAGS).y + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN; //$NON-NLS-1$
-        tempHeight =   TextSizeDetermination.getCharHeight( getFont() )
+        tempHeight =   Graphics.getCharHeight( getFont() )
                      + getItemPadding( false ).height;
       } else {
         for (int i=0; i < items.length; i++) {

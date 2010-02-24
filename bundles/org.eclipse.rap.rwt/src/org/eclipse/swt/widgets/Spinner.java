@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerThemeAdapter;
 
 
@@ -435,7 +435,7 @@ public class Spinner extends Composite {
         }
         string = buffer.toString();
       }
-      Point textSize = TextSizeDetermination.stringExtent( getFont(), string );
+      Point textSize = Graphics.stringExtent( getFont(), string );
       Rectangle padding = getFieldPadding();
       int buttonWidth = getButtonWidth();
       width = textSize.x + buttonWidth + padding.width;

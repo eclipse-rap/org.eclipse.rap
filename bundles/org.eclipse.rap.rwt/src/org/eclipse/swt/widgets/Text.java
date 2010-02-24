@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
 
 /**
@@ -763,12 +763,11 @@ public class Text extends Scrollable {
       Point extent;
       // Single-line text field should have same size as Combo, Spinner, etc.
       if( ( getStyle() & SWT.SINGLE ) != 0 ) {
-        extent = TextSizeDetermination.stringExtent( getFont(), text );
-        int messageWidth
-          = TextSizeDetermination.stringExtent( getFont(), message ).x;
+        extent = Graphics.stringExtent( getFont(), text );
+        int messageWidth = Graphics.stringExtent( getFont(), message ).x;
         extent.x = Math.max( extent.x, messageWidth );
       } else {
-        extent = TextSizeDetermination.textExtent( getFont(), text, wrapWidth );
+        extent = Graphics.textExtent( getFont(), text, wrapWidth );
       }
       if( extent.x != 0 ) {
         width = extent.x;

@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
@@ -18,7 +19,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
@@ -1825,7 +1825,7 @@ public class Table extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    int textHeight = TextSizeDetermination.getCharHeight( getFont() );
+    int textHeight = Graphics.getCharHeight( getFont() );
     int paddingHeight = getCellPadding().height;
     textHeight += Math.max( paddingHeight, 4 );
     int itemImageHeight = getItemImageSize().y + paddingHeight;
@@ -1855,7 +1855,7 @@ public class Table extends Composite {
       TableThemeAdapter themeAdapter
         = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
       Font headerFont = themeAdapter.getHeaderFont( this );
-      int textHeight = TextSizeDetermination.getCharHeight( headerFont );
+      int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
         Image image = getColumn( i ).getImage();

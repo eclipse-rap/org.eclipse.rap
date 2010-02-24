@@ -13,12 +13,12 @@ package org.eclipse.swt.internal.widgets.combokit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Widget;
@@ -351,7 +351,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   static int getListItemHeight( final Combo combo ) {
-    int charHeight = TextSizeDetermination.getCharHeight( combo.getFont() );
+    int charHeight = Graphics.getCharHeight( combo.getFont() );
     int padding = 2 * LIST_ITEM_PADDING;
     return charHeight + padding;
   }

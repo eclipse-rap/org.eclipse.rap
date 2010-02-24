@@ -12,11 +12,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarThemeAdapter;
 
 
@@ -241,7 +241,7 @@ public class ExpandItem extends Item {
           w += INTERNAL_SPACING;
         }
         Font parentFont = getParent().getFont();
-        w += TextSizeDetermination.stringExtent( parentFont, text ).x;
+        w += Graphics.stringExtent( parentFont, text ).x;
       }
       result = w + LEFT_MARGIN + RIGHT_MARGIN;
     }

@@ -14,10 +14,10 @@ import java.util.StringTokenizer;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 
@@ -265,7 +265,7 @@ public class MessageBox extends Dialog {
     StringTokenizer st = new StringTokenizer( message, "\n" );
     while( st.hasMoreTokens() ) {
       String line = st.nextToken();
-      int lineWidth = TextSizeDetermination.stringExtent( font, line ).x;
+      int lineWidth = Graphics.stringExtent( font, line ).x;
       maxLineWidth = Math.max( maxLineWidth, lineWidth );
     }
     // Set wrap width

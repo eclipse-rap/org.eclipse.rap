@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.graphics;
 
 import junit.framework.TestCase;
@@ -22,10 +21,15 @@ public class Graphics_Test extends TestCase {
 
   public void testTextExtentNull() throws Exception {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
-    assertNotNull( font );
     try {
       Graphics.textExtent( font , null, 0 );
       fail( "Null string should throw IAE" );
+    } catch( final IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      Graphics.textExtent( null, "", 0 );
+      fail( "Null font should throw IAE" );
     } catch( final IllegalArgumentException e ) {
       // expected
     }
@@ -33,10 +37,15 @@ public class Graphics_Test extends TestCase {
 
   public void testStringExtentNull() throws Exception {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
-    assertNotNull( font );
     try {
       Graphics.stringExtent( font , null );
       fail( "Null string should throw IAE" );
+    } catch( final IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      Graphics.stringExtent( null, "" );
+      fail( "Null font should throw IAE" );
     } catch( final IllegalArgumentException e ) {
       // expected
     }

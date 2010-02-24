@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 
 
@@ -1008,7 +1009,7 @@ public class TableItem extends Item {
              + spacing;
       top = getTop( itemIndex );
       Font font = getFont();
-      width = TextSizeDetermination.stringExtent( font, getText( 0 ) ).x;
+      width = Graphics.stringExtent( font, getText( 0 ) ).x;
     } else if( itemIndex != -1 && index < parent.getColumnCount() ) {
       int imageWidth = 0;
       if( parent.hasColumnImages( index ) ) {
@@ -1094,7 +1095,7 @@ public class TableItem extends Item {
     int result = 0;
     String text = getText( index );
     if( text.length() > 0 ) {
-      result = TextSizeDetermination.stringExtent( parent.getFont(), text ).x;
+      result = Graphics.stringExtent( parent.getFont(), text ).x;
     }
     return result;
   }

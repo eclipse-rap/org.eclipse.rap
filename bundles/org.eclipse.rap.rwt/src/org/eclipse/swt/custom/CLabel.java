@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -193,7 +194,7 @@ public class CLabel extends Canvas {
       if ( image != null )
         size.x += spacing;
     } else {
-      int charHeight = TextSizeDetermination.getCharHeight( getFont() );
+      int charHeight = Graphics.getCharHeight( getFont() );
       size.y = Math.max( size.y, charHeight );
     }
 

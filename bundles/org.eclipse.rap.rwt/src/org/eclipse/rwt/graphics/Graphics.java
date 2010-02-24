@@ -207,7 +207,7 @@ public final class Graphics {
                                   final String string,
                                   final int wrapWidth )
   {
-    if( string == null ) {
+    if( font == null || string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return TextSizeDetermination.textExtent( font, string, wrapWidth );
@@ -230,7 +230,7 @@ public final class Graphics {
    *                </ul>
    */
   public static Point stringExtent( final Font font, final String string ) {
-    if( string == null ) {
+    if( font == null || string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return TextSizeDetermination.stringExtent( font, string );

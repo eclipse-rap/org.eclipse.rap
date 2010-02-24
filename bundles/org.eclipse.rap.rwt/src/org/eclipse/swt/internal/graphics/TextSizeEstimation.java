@@ -24,9 +24,6 @@ final class TextSizeEstimation {
    * @return the estimated size
    */
   static Point stringExtent( final Font font, final String string ) {
-    if ( string == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
     int width = getLineWidth( string, font );
     int height = getCharHeight( font ) + 2;
     return new Point( width, height );
@@ -45,9 +42,6 @@ final class TextSizeEstimation {
                            final String string,
                            final int wrapWidth )
   {
-    if ( string == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
     int lineCount = 0;
     int maxWidth = 0;
     String[] lines = EncodingUtil.splitNewLines( string );

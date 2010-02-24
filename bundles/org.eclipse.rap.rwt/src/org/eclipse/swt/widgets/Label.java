@@ -10,9 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 /**
  * Instances of this class represent a non-selectable
@@ -275,12 +276,11 @@ public class Label extends Control {
       if( ( style & SWT.WRAP ) != 0 && wHint != SWT.DEFAULT ) {
         wrapWidth = wHint;
       }
-      Point extent
-        = TextSizeDetermination.textExtent( getFont(), text, wrapWidth );
+      Point extent = Graphics.textExtent( getFont(), text, wrapWidth );
       width = extent.x;
       height = extent.y + 2;
     } else {
-      height = TextSizeDetermination.getCharHeight( getFont() );
+      height = Graphics.getCharHeight( getFont() );
     }
     if( wHint != SWT.DEFAULT ) {
       width = wHint;

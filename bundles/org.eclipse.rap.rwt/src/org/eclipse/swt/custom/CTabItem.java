@@ -12,11 +12,11 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.*;
 
 
 /**
@@ -460,13 +460,13 @@ public class CTabItem extends Item {
       if (w > 0) w += parent.getItemSpacing( isSelected );
       if (font == null) {
 //        w += gc.textExtent(text, FLAGS).x;
-        w += TextSizeDetermination.stringExtent( getFont(), text ).x;
+        w += Graphics.stringExtent( getFont(), text ).x;
       } else {
 //        Font gcFont = gc.getFont();
 //        gc.setFont(font);
 //        w += gc.textExtent(text, FLAGS).x;
 //        gc.setFont(gcFont);
-        w += TextSizeDetermination.stringExtent( getFont(), text ).x;
+        w += Graphics.stringExtent( getFont(), text ).x;
       }
     }
     if (parent.showClose || showClose) {

@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 
 
@@ -991,7 +992,7 @@ public class List extends Scrollable {
   public int getItemHeight() {
     checkWidget();
     int margin = VERTICAL_ITEM_MARGIN * 2;
-    return TextSizeDetermination.getCharHeight( getFont() ) + margin;
+    return Graphics.getCharHeight( getFont() ) + margin;
   }
 
   /////////////////////////////////////////
@@ -1134,7 +1135,7 @@ public class List extends Scrollable {
 
   private int getItemWidth( final String item ) {
     int margin = HORIZONTAL_ITEM_MARGIN * 2;
-    return TextSizeDetermination.stringExtent( getFont(), item ).x + margin;
+    return Graphics.stringExtent( getFont(), item ).x + margin;
   }
 
   private void adjustTopIndex() {

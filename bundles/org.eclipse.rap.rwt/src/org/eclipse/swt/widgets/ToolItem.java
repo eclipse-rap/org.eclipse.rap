@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
@@ -557,7 +557,7 @@ public class ToolItem extends Item {
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       int frameHeight = getPadding().height + ( getBorderWidth() * 2 );
       if( !"".equals( getText() ) ) {
-        int charHeight = TextSizeDetermination.getCharHeight( parent.getFont() );
+        int charHeight = Graphics.getCharHeight( parent.getFont() );
         height = Math.max( DEFAULT_HEIGHT, charHeight + frameHeight );
       }
       if( getImage() != null ) {
@@ -577,7 +577,7 @@ public class ToolItem extends Item {
     }
     if( hasText ) {
       Font font = parent.getFont();
-      result += TextSizeDetermination.stringExtent( font, text ).x;
+      result += Graphics.stringExtent( font, text ).x;
     }
     if( hasText && hasImage ) {
       result += getSpacing();

@@ -11,10 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 
 
@@ -412,7 +413,7 @@ public class ExpandBar extends Composite {
   public void setFont( final Font font ) {
     if( font != getFont() ) {
       super.setFont( font );
-      charHeight = TextSizeDetermination.getCharHeight( getFont() ) + 4;
+      charHeight = Graphics.getCharHeight( getFont() ) + 4;
     }
   }
 

@@ -133,7 +133,7 @@ public class TextSizeDetermination {
       addCalculationItem( fontData, toMeasure, wrapWidth );
     }
     // TODO [rst] Still returns wrong result for texts that contain only
-    //            whitespace ( and possibly more that one line )
+    //            whitespace (and possibly more that one line)
     if( result.y == 0 ) {
       result.y = getCharHeight( font );
     }

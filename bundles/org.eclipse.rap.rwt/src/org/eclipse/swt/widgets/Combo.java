@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
 
@@ -553,7 +554,7 @@ public class Combo extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    int charHeight = TextSizeDetermination.getCharHeight( getFont() );
+    int charHeight = Graphics.getCharHeight( getFont() );
     int padding = 2 * LIST_ITEM_PADDING;
     return charHeight + padding;
   }
@@ -863,13 +864,12 @@ public class Combo extends Composite {
   {
     checkWidget();
     int width = 0;
-    int height = TextSizeDetermination.getCharHeight( getFont() );
+    int height = Graphics.getCharHeight( getFont() );
     if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
       String[] items = model.getItems();
       for( int i = 0; i < items.length; i++ ) {
         if( !"".equals( items[ i ] ) ) {
-          Point extent
-            = TextSizeDetermination.stringExtent( getFont(), items[ i ] );
+          Point extent = Graphics.stringExtent( getFont(), items[ i ] );
           width = Math.max( width, extent.x + 10 );
         }
       }

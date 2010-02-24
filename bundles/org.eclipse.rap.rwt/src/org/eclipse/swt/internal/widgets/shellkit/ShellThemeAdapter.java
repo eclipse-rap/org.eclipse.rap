@@ -9,13 +9,15 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.shellkit;import org.eclipse.rwt.internal.theme.*;
+package org.eclipse.swt.internal.widgets.shellkit;import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 public final class ShellThemeAdapter extends ControlThemeAdapter {  private static final int MENU_BAR_MIN_HEIGHT = 20;
 
   protected void configureMatcher( final WidgetMatcher matcher ) {
@@ -40,4 +42,4 @@ import org.eclipse.swt.widgets.*;
                                                "height",
                                                SimpleSelector.DEFAULT );
       result = ( ( QxDimension )cssValue ).value;
-    }    return result;  }  public int getMenuBarHeight( final Shell shell ) {    int result = 0;    if( shell.getMenuBar() != null ) {      Font font = getCssFont( "Shell", "font", shell );      int fontHeight = TextSizeDetermination.getCharHeight( font );      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight );    }    return result;  }}
+    }    return result;  }  public int getMenuBarHeight( final Shell shell ) {    int result = 0;    if( shell.getMenuBar() != null ) {      Font font = getCssFont( "Shell", "font", shell );      int fontHeight = Graphics.getCharHeight( font );      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight );    }    return result;  }}

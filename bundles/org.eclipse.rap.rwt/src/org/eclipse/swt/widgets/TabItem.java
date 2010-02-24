@@ -12,9 +12,10 @@
 
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
 /**
@@ -218,8 +219,7 @@ public class TabItem extends Item {
       int selectionIndex = parent.getSelectionIndex();
       String text = getText();
       if( text != null ) {
-        Point extent
-          = TextSizeDetermination.stringExtent( parent.getFont(), text );
+        Point extent = Graphics.stringExtent( parent.getFont(), text );
         result.width = extent.x;
         result.height = extent.y;
       }

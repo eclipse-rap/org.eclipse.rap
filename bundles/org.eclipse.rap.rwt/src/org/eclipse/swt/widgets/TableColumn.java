@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
@@ -462,7 +462,7 @@ public class TableColumn extends Item {
     int width = 0;
     if( parent.getHeaderVisible() ) {
       Font font = parent.getFont();
-      width = TextSizeDetermination.stringExtent( font, getText() ).x;
+      width = Graphics.stringExtent( font, getText() ).x;
       Image image = getImage();
       if( image != null ) {
         width += image.getBounds().width + SPACING;

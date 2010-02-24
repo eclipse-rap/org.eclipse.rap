@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import java.util.*;
 import java.util.List;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
@@ -21,7 +22,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
@@ -964,7 +964,7 @@ public class Tree extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    int textHeight = TextSizeDetermination.getCharHeight( getFont() );
+    int textHeight = Graphics.getCharHeight( getFont() );
     textHeight += VERTICAL_ITEM_MARGIN;
     int itemImageHeight = getItemImageSize().y + VERTICAL_ITEM_MARGIN;
     int result = Math.max( itemImageHeight, textHeight );
@@ -1101,7 +1101,7 @@ public class Tree extends Composite {
     checkWidget();
     int result = 0;
     if( headerVisible ) {
-      int textHeight = TextSizeDetermination.getCharHeight( getFont() );
+      int textHeight = Graphics.getCharHeight( getFont() );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
         Image image = getColumn( i ).getImage();

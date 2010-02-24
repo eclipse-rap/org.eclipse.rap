@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -384,7 +385,7 @@ public class TreeColumn extends Item {
     TreeItem[] availableItems = parent.getItems();
     int index = getIndex();
     int newWidth;
-    newWidth = TextSizeDetermination.stringExtent( parent.getFont(), getText() ).x;
+    newWidth = Graphics.stringExtent( parent.getFont(), getText() ).x;
     newWidth = Math.max( getPreferredWidth(), newWidth );
     if( image != null ) {
       newWidth += image.getBounds().width + MARGIN_IMAGE;

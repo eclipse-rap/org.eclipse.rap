@@ -11,9 +11,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 
 /**
@@ -418,7 +419,7 @@ public class TreeItem extends Item {
     } else {
       Rectangle imageBounds = getImageBounds( columnIndex );
       String text = getText( 0, checkData );
-      Point textWidth = TextSizeDetermination.stringExtent( getFont(), text );
+      Point textWidth = Graphics.stringExtent( getFont(), text );
       int width;
       if( columnIndex == 0 && columnCount == 0 ) {
         int gap = getImageGap( columnIndex );
@@ -1039,7 +1040,7 @@ public class TreeItem extends Item {
                + getCheckWidth( 0 )
                + getImageBounds( 0 ).width
                + getImageGap( 0 );
-        width = TextSizeDetermination.stringExtent( getFont(), getText( 0 ) ).x;
+        width = Graphics.stringExtent( getFont(), getText( 0 ) ).x;
         top = getItemTop();
         height = parent.getItemHeight();
       } else if( index >= 0 && index < columnCount ) {
@@ -1212,9 +1213,9 @@ public class TreeItem extends Item {
    */
   int getPreferredWidth( final int columnIndex, final boolean checkData ) {
     int width = 0;
-    width += TextSizeDetermination.stringExtent( parent.getFont(),
-                                                 getText( columnIndex,
-                                                          checkData ) ).x;
+    width += Graphics.stringExtent( parent.getFont(),
+                                    getText( columnIndex,
+                                             checkData ) ).x;
     int orderedIndex = 0;
     if( parent.columnHolder.size() > 0 ) {
       TreeColumn column = ( TreeColumn )parent.columnHolder.getItem( columnIndex );
