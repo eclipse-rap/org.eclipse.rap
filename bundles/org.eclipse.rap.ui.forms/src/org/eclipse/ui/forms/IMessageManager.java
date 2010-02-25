@@ -12,8 +12,7 @@
 package org.eclipse.ui.forms;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
-//RAP [rh] ControlDecoration missing yet
-//import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.Form;
 

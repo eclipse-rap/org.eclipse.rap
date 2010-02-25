@@ -24,11 +24,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Sash;
-// RAP [rh] Scale widget not yet implemented
-//import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Scrollable;
-// RAP [rh] Slide widget not yet implemented
-//import org.eclipse.swt.widgets.Slider;
+import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
@@ -346,11 +344,10 @@ public class SizeCache {
     static boolean independentLengthAndWidth(Control control) {
         if (control == null || control.isDisposed()) {
             return true;
-        }
-        // RAP [rh] Scale, Slider widget not yet implemented
+        }        
         if (control instanceof Button || control instanceof ProgressBar
-                || control instanceof Sash /* || control instanceof Scale */
-                /* || control instanceof Slider */ || control instanceof List
+                || control instanceof Sash || control instanceof Scale
+                || control instanceof Slider || control instanceof List
                 || control instanceof Combo || control instanceof Tree) {
             return true;
         }

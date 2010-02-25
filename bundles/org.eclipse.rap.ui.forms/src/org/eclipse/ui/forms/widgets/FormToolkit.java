@@ -14,7 +14,6 @@ package org.eclipse.ui.forms.widgets;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-// RAP [rh] CCombo missing
 //import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusAdapter;

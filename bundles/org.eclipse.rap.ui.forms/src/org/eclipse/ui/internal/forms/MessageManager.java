@@ -19,10 +19,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
-//RAP [rh] ControlDecoration missing yet
-//import org.eclipse.jface.fieldassist.ControlDecoration;
-//import org.eclipse.jface.fieldassist.FieldDecoration;
-//import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.widgets.Composite;
@@ -46,13 +45,12 @@ public class MessageManager implements IMessageManager {
 	private ScrolledForm scrolledForm;
 	private IMessagePrefixProvider prefixProvider = DEFAULT_PREFIX_PROVIDER;
 	private int decorationPosition = SWT.LEFT | SWT.BOTTOM;
-//RAP [rh] ControlDecoration missing yet
-//	private static FieldDecoration standardError = FieldDecorationRegistry
-//			.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
-//	private static FieldDecoration standardWarning = FieldDecorationRegistry
-//			.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING);
-//	private static FieldDecoration standardInformation = FieldDecorationRegistry
-//	.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+	private static FieldDecoration standardError = FieldDecorationRegistry
+			.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
+	private static FieldDecoration standardWarning = FieldDecorationRegistry
+			.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING);
+	private static FieldDecoration standardInformation = FieldDecorationRegistry
+	        .getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 
 	private static final String[] SINGLE_MESSAGE_SUMMARY_KEYS = {
 			Messages.MessageManager_sMessageSummary,
@@ -168,32 +166,27 @@ public class MessageManager implements IMessageManager {
 		}
 	}
 
-	class ControlDecorator {
-	  // RAP [rh] ControlDecoration missing yet
-//		private ControlDecoration decoration;
+	class ControlDecorator {	  
+		private ControlDecoration decoration;
 		private ArrayList controlMessages = new ArrayList();
 		private String prefix;
 
 		ControlDecorator(Control control) {
-		// RAP [rh] ControlDecoration missing yet
-//			this.decoration = new ControlDecoration(control, decorationPosition, scrolledForm.getBody());
+			this.decoration = new ControlDecoration(control, decorationPosition, scrolledForm.getBody());
 		}
 
 		public boolean isDisposed() {
-		// RAP [rh] ControlDecoration missing yet
-//			return decoration.getControl() == null;
-		  return false;
+			return decoration.getControl() == null;
 		}
 
 		void updatePrefix() {
 			prefix = null;
 		}
 
-		void updatePosition() {
-		// RAP [rh] ControlDecoration missing yet
-//			Control control = decoration.getControl();
-//			decoration.dispose();
-//			this.decoration = new ControlDecoration(control, decorationPosition, scrolledForm.getBody());
+		void updatePosition() {		
+			Control control = decoration.getControl();
+			decoration.dispose();
+			this.decoration = new ControlDecoration(control, decorationPosition, scrolledForm.getBody());
 			update();
 		}
 
@@ -208,9 +201,7 @@ public class MessageManager implements IMessageManager {
 				prefix = ""; //$NON-NLS-1$
 				return;
 			}
-		// RAP [rh] ControlDecoration missing yet
-//			prefix = prefixProvider.getPrefix(decoration.getControl());
-			prefix = null;
+			prefix = prefixProvider.getPrefix(decoration.getControl());
 			if (prefix == null)
 				// make a prefix anyway
 				prefix = ""; //$NON-NLS-1$
@@ -223,8 +214,7 @@ public class MessageManager implements IMessageManager {
 		void addMessage(Object key, String text, Object data, int type) {
 			Message message = MessageManager.this.addMessage(getPrefix(), key,
 					text, data, type, controlMessages);
-		// RAP [rh] ControlDecoration missing yet			
-//			message.control = decoration.getControl();
+			message.control = decoration.getControl();
 			if (isAutoUpdate())
 				update();
 		}
@@ -249,23 +239,22 @@ public class MessageManager implements IMessageManager {
 		}
 
 		public void update() {
-		// RAP [rh] ControlDecoration missing yet
-//		  if (controlMessages.isEmpty()) {
-//				decoration.setDescriptionText(null);
-//				decoration.hide();
-//			} else {
-//				ArrayList peers = createPeers(controlMessages);
-//				int type = ((IMessage) peers.get(0)).getMessageType();
-//				String description = createDetails(createPeers(peers), true);
-//				if (type == IMessageProvider.ERROR)
-//					decoration.setImage(standardError.getImage());
-//				else if (type == IMessageProvider.WARNING)
-//					decoration.setImage(standardWarning.getImage());
-//				else if (type == IMessageProvider.INFORMATION)
-//					decoration.setImage(standardInformation.getImage());
-//				decoration.setDescriptionText(description);
-//				decoration.show();
-//			}
+		  if (controlMessages.isEmpty()) {
+				decoration.setDescriptionText(null);
+				decoration.hide();
+			} else {
+				ArrayList peers = createPeers(controlMessages);
+				int type = ((IMessage) peers.get(0)).getMessageType();
+				String description = createDetails(createPeers(peers), true);
+				if (type == IMessageProvider.ERROR)
+					decoration.setImage(standardError.getImage());
+				else if (type == IMessageProvider.WARNING)
+					decoration.setImage(standardWarning.getImage());
+				else if (type == IMessageProvider.INFORMATION)
+					decoration.setImage(standardInformation.getImage());
+				decoration.setDescriptionText(description);
+				decoration.show();
+			}
 		}
 	}
 
@@ -498,21 +487,20 @@ public class MessageManager implements IMessageManager {
 		}
 		return peers;
 	}
+	
+	private String createDetails(ArrayList messages, boolean excludePrefix) {
+		StringWriter sw = new StringWriter();
+		PrintWriter out = new PrintWriter(sw);
 
-// RAP [rh] Unused code: was used in #update	
-//	private String createDetails(ArrayList messages, boolean excludePrefix) {
-//		StringWriter sw = new StringWriter();
-//		PrintWriter out = new PrintWriter(sw);
-//
-//		for (int i = 0; i < messages.size(); i++) {
-//			if (i > 0)
-//				out.println();
-//			IMessage m = (IMessage) messages.get(i);
-//			out.print(excludePrefix ? m.getMessage() : getFullMessage(m));
-//		}
-//		out.flush();
-//		return sw.toString();
-//	}
+		for (int i = 0; i < messages.size(); i++) {
+			if (i > 0)
+				out.println();
+			IMessage m = (IMessage) messages.get(i);
+			out.print(excludePrefix ? m.getMessage() : getFullMessage(m));
+		}
+		out.flush();
+		return sw.toString();
+	}
 
 	public static String createDetails(IMessage[] messages) {
 		if (messages == null || messages.length == 0)
