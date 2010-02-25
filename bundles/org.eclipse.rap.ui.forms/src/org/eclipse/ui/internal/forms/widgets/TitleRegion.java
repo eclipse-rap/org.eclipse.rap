@@ -28,8 +28,8 @@ import org.eclipse.swt.dnd.Transfer;
 //import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-//import org.eclipse.swt.graphics.FontMetrics;
-//import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -462,14 +462,12 @@ public class TitleRegion extends Canvas {
 	 */
 	public int getFontHeight() {
 		if (fontHeight == -1) {
-			Font font = getFont();
-		// RAP [rh] Changes due to different API for text size determination
-//			GC gc = new GC(getDisplay());
-//			gc.setFont(font);
-//			FontMetrics fm = gc.getFontMetrics();
-//			fontHeight = fm.getHeight();
-//			gc.dispose();
-			fontHeight = Graphics.getCharHeight( font );
+			Font font = getFont();		
+			GC gc = new GC(getDisplay());
+			gc.setFont(font);
+			FontMetrics fm = gc.getFontMetrics();
+			fontHeight = fm.getHeight();
+			gc.dispose();
 		}
 		return fontHeight;
 	}
@@ -481,14 +479,14 @@ public class TitleRegion extends Canvas {
 	public int getFontBaselineHeight() {
 		if (fontBaselineHeight == -1) {
 			Font font = getFont();
-// RAP [rh] Changed text size determination; inaccurate as baseline-height is
-//    faked by font-height 
-//			GC gc = new GC(getDisplay());
-//			gc.setFont(font);
-//			FontMetrics fm = gc.getFontMetrics();
+			GC gc = new GC(getDisplay());
+			gc.setFont(font);
+			FontMetrics fm = gc.getFontMetrics();
+// RAP [if] FontMetrics#getDescent() is missing; inaccurate as baseline-height
+// is faked by font-height
 //			fontBaselineHeight = fm.getHeight() - fm.getDescent();
-//			gc.dispose();
-      fontBaselineHeight = Graphics.getCharHeight( font );
+			fontBaselineHeight = fm.getHeight();
+			gc.dispose();
 		}
 		return fontBaselineHeight;
 	}

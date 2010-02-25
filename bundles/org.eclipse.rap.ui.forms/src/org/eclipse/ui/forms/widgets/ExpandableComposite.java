@@ -13,7 +13,6 @@ package org.eclipse.ui.forms.widgets;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.events.FocusEvent;
 //import org.eclipse.swt.events.FocusListener;
@@ -25,8 +24,8 @@ import org.eclipse.swt.SWT;
 //import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-//import org.eclipse.swt.graphics.FontMetrics;
-//import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
@@ -268,9 +267,7 @@ public class ExpandableComposite extends Canvas {
 					if (twidth < size.x + IGAP + tcsize.x) {
 						twidth -= IGAP;
 						if (textLabel instanceof Label)
-// RAP [rh] Changes due to differences in text size determination
-//							size = FormUtil.computeWrapSize(new GC(textLabel), ((Label)textLabel).getText(), Math.round(twidth*(size.x/(float)(size.x+tcsize.x))));
-  						size = FormUtil.computeWrapSize(textLabel.getFont(), ((Label)textLabel).getText(), Math.round(twidth*(size.x/(float)(size.x+tcsize.x))));
+							size = FormUtil.computeWrapSize(new GC(textLabel), ((Label)textLabel).getText(), Math.round(twidth*(size.x/(float)(size.x+tcsize.x))));  						
 						else
 							size = textLabelCache.computeSize(Math.round(twidth*(size.x/(float)(size.x+tcsize.x))), SWT.DEFAULT);
 						tcsize = textClientCache.computeSize(twidth-size.x, SWT.DEFAULT);
@@ -291,13 +288,11 @@ public class ExpandableComposite extends Canvas {
 				}
 			}
 			if (toggle != null) {
-// RAP [rh] Chnages due to different text size calcuation
-//				GC gc = new GC(ExpandableComposite.this);
-//				gc.setFont(getFont());
-//				FontMetrics fm = gc.getFontMetrics();
-//				int textHeight = fm.getHeight();
-//				gc.dispose();
-			  int textHeight = Graphics.getCharHeight( getFont() );
+				GC gc = new GC(ExpandableComposite.this);
+				gc.setFont(getFont());
+				FontMetrics fm = gc.getFontMetrics();
+				int textHeight = fm.getHeight();
+				gc.dispose();			  
 				if (textClient != null
 						&& (expansionStyle & LEFT_TEXT_CLIENT_ALIGNMENT) != 0) {
 					textHeight = Math.max(textHeight, tcsize.y);
@@ -412,9 +407,7 @@ public class ExpandableComposite extends Canvas {
 					if (innertHint != SWT.DEFAULT && innertHint < size.x + IGAP + tcsize.x) {
 						innertHint -= IGAP;
 						if (textLabel instanceof Label)
-// RAP [rh] Changes due to differences in text size calculation
-//							size = FormUtil.computeWrapSize(new GC(textLabel), ((Label)textLabel).getText(), Math.round(innertHint*(size.x/(float)(size.x+tcsize.x))));
-  						size = FormUtil.computeWrapSize(textLabel.getFont(), ((Label)textLabel).getText(), Math.round(innertHint*(size.x/(float)(size.x+tcsize.x))));
+							size = FormUtil.computeWrapSize(new GC(textLabel), ((Label)textLabel).getText(), Math.round(innertHint*(size.x/(float)(size.x+tcsize.x))));  						
 						else
 							size = textLabelCache.computeSize(Math.round(innertHint*(size.x/(float)(size.x+tcsize.x))), SWT.DEFAULT);
 						tcsize = textClientCache.computeSize(innertHint-size.x, SWT.DEFAULT);

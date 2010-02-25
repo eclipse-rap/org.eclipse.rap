@@ -46,9 +46,7 @@ public abstract class ObjectSegment extends ParagraphSegment {
 
 	protected abstract Point getObjectSize(Hashtable resourceTable, int wHint);
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public boolean advanceLocator(GC gc, int wHint, Locator loc,
-	public boolean advanceLocator(Font font, int wHint, Locator loc,
+	public boolean advanceLocator(GC gc, int wHint, Locator loc,
 			Hashtable objectTable, boolean computeHeightOnly) {
 		Point objectSize = getObjectSize(objectTable, wHint);
 		int iwidth = 0;
@@ -115,9 +113,7 @@ public abstract class ObjectSegment extends ParagraphSegment {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.internal.forms.widgets.ParagraphSegment#layout(org.eclipse.swt.graphics.GC, int, org.eclipse.ui.internal.forms.widgets.Locator, java.util.Hashtable, boolean, org.eclipse.ui.internal.forms.widgets.SelectionData)
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void layout(GC gc, int width, Locator loc, Hashtable resourceTable,
-	public void layout(Font font, int width, Locator loc, Hashtable resourceTable,
+	public void layout(GC gc, int width, Locator loc, Hashtable resourceTable,
 			boolean selected) {
 		Point size = getObjectSize(resourceTable, width);
 
@@ -149,9 +145,7 @@ public abstract class ObjectSegment extends ParagraphSegment {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.internal.forms.widgets.ParagraphSegment#computeSelection(org.eclipse.swt.graphics.GC, java.util.Hashtable, boolean, org.eclipse.ui.internal.forms.widgets.SelectionData)
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void computeSelection(GC gc, Hashtable resourceTable, SelectionData selData) {
-	public void computeSelection(Font font, Hashtable resourceTable, SelectionData selData) {
+	public void computeSelection(GC gc, Hashtable resourceTable, SelectionData selData) {
 		// TODO we should add this to the selection
 		// if we want to support rich text
 	}

@@ -13,12 +13,12 @@ package org.eclipse.ui.internal.forms.widgets;
 import java.util.Hashtable;
 
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.graphics.Graphics;
 // RAP [if] unnecessary
 //import org.eclipse.swt.graphics.Color;
-// RAP [if] GC not supported
-//import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.forms.internal.widgets.IBulletParagraphAdapter;
 
 public class BulletParagraph extends Paragraph implements Adaptable {
@@ -105,16 +105,11 @@ public class BulletParagraph extends Paragraph implements Adaptable {
 		return text;
 	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void layout(GC gc, int width, Locator loc, int lineHeight,
-	public void layout(Font font, int width, Locator loc, int lineHeight,
+	public void layout(GC gc, int width, Locator loc, int lineHeight,	
 			Hashtable resourceTable, IHyperlinkSegment selectedLink) {
-//		computeRowHeights(gc, width, loc, lineHeight, resourceTable);
-//		layoutBullet(gc, loc, lineHeight, resourceTable);
-//		super.layout(gc, width, loc, lineHeight, resourceTable, selectedLink);
-		computeRowHeights(font, width, loc, lineHeight, resourceTable);
-        layoutBullet(font, loc, lineHeight, resourceTable);
-        super.layout(font, width, loc, lineHeight, resourceTable, selectedLink);
+		computeRowHeights(gc, width, loc, lineHeight, resourceTable);
+		layoutBullet(gc, loc, lineHeight, resourceTable);
+		super.layout(gc, width, loc, lineHeight, resourceTable, selectedLink);		
 	}
 
 // RAP [if] paint unnecessary
@@ -125,9 +120,7 @@ public class BulletParagraph extends Paragraph implements Adaptable {
 //		super.paint(gc, repaintRegion, resourceTable, selectedLink, selData);
 //	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	private void layoutBullet(GC gc, Locator loc, int lineHeight,
-	private void layoutBullet(Font font, Locator loc, int lineHeight,
+	private void layoutBullet(GC gc, Locator loc, int lineHeight,
 			Hashtable resourceTable) {
 		int x = loc.x - getIndent() + getBulletIndent();
 		int rowHeight = ((int[]) loc.heights.get(0))[0];
@@ -136,8 +129,7 @@ public class BulletParagraph extends Paragraph implements Adaptable {
 			bbounds = new Rectangle(x, y, CIRCLE_DIAM, CIRCLE_DIAM);
 		} else if (style == TEXT && text != null) {
 			//int height = gc.getFontMetrics().getHeight();
-//			Point textSize = gc.textExtent(text);
-		    Point textSize = Graphics.stringExtent( font, text );
+			Point textSize = gc.textExtent(text);
 			bbounds = new Rectangle(x, loc.y, textSize.x, textSize.y);
 		} else if (style == IMAGE && text != null) {
 			Image image = (Image) resourceTable.get(text);

@@ -16,8 +16,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.eclipse.swt.graphics.*;
-// RAP [if] GC not supported
-//import org.eclipse.swt.graphics.GC;
 import org.eclipse.ui.forms.HyperlinkSettings;
 
 /**
@@ -115,9 +113,7 @@ public class Paragraph {
 		addSegment(hs);
 	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	protected void computeRowHeights(GC gc, int width, Locator loc,
-	protected void computeRowHeights(Font font, int width, Locator loc,
+	protected void computeRowHeights(GC gc, int width, Locator loc,	
 			int lineHeight, Hashtable resourceTable) {
 		ParagraphSegment[] segments = getSegments();
 		// compute heights
@@ -128,17 +124,14 @@ public class Paragraph {
 		int innerWidth = width - loc.marginWidth*2;
 		for (int j = 0; j < segments.length; j++) {
 			ParagraphSegment segment = segments[j];
-//			segment.advanceLocator(gc, innerWidth, hloc, resourceTable, true);
-			segment.advanceLocator(font, innerWidth, hloc, resourceTable, true);
+			segment.advanceLocator(gc, innerWidth, hloc, resourceTable, true);
 		}
 		hloc.collectHeights();
 		loc.heights = heights;
 		loc.rowCounter = 0;
 	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void layout(GC gc, int width, Locator loc, int lineHeight,
-	public void layout(Font font, int width, Locator loc, int lineHeight,
+	public void layout(GC gc, int width, Locator loc, int lineHeight,	
 			Hashtable resourceTable, IHyperlinkSegment selectedLink) {
 		ParagraphSegment[] segments = getSegments();
 		//int height;
@@ -150,15 +143,13 @@ public class Paragraph {
 			*/
 			// compute heights
 			if (loc.heights == null)
-//				computeRowHeights(gc, width, loc, lineHeight, resourceTable);
-			    computeRowHeights(font, width, loc, lineHeight, resourceTable);
+				computeRowHeights(gc, width, loc, lineHeight, resourceTable);			    
 			for (int j = 0; j < segments.length; j++) {
 				ParagraphSegment segment = segments[j];
 				boolean doSelect = false;
 				if (selectedLink != null && segment.equals(selectedLink))
 					doSelect = true;
-//				segment.layout(gc, width, loc, resourceTable, doSelect);
-				segment.layout(font, width, loc, resourceTable, doSelect);
+				segment.layout(gc, width, loc, resourceTable, doSelect);				
 			}
 			loc.heights = null;
 			loc.y += loc.rowHeight;
@@ -184,9 +175,7 @@ public class Paragraph {
 //		}
 //	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void computeSelection(GC gc,	Hashtable resourceTable, IHyperlinkSegment selectedLink,
-	public void computeSelection(Font font, Hashtable resourceTable, IHyperlinkSegment selectedLink,
+	public void computeSelection(GC gc,	Hashtable resourceTable, IHyperlinkSegment selectedLink,	
 			SelectionData selData) {
 		ParagraphSegment[] segments = getSegments();
 
@@ -195,8 +184,7 @@ public class Paragraph {
 			//boolean doSelect = false;
 			//if (selectedLink != null && segment.equals(selectedLink))
 				//doSelect = true;
-//			segment.computeSelection(gc, resourceTable, selData);
-			segment.computeSelection(font, resourceTable, selData);
+			segment.computeSelection(gc, resourceTable, selData);
 		}
 	}
 

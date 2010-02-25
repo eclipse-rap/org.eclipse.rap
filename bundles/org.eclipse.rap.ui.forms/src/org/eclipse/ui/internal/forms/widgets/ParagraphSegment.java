@@ -13,8 +13,7 @@ package org.eclipse.ui.internal.forms.widgets;
 import java.util.Hashtable;
 
 import org.eclipse.swt.graphics.*;
-// RAP [if] GC not supported
-//import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.GC;
 
 /**
  * @version 	1.0
@@ -30,9 +29,7 @@ public abstract class ParagraphSegment {
 	 * @param computeHeightOnly
 	 * @return <code>true</code> if text wrapped to the new line, <code>false</code> otherwise.
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public abstract boolean advanceLocator(GC gc, int wHint, Locator loc, Hashtable objectTable, boolean computeHeightOnly);
-	public abstract boolean advanceLocator(Font font, int wHint, Locator loc, Hashtable objectTable, boolean computeHeightOnly);
+	public abstract boolean advanceLocator(GC gc, int wHint, Locator loc, Hashtable objectTable, boolean computeHeightOnly);	
 	/**
 	 * Computes bounding rectangles and row heights of this segments.
 	 * @param gc
@@ -41,9 +38,7 @@ public abstract class ParagraphSegment {
 	 * @param resourceTable
 	 * @param selected
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public abstract void layout(GC gc, int width, Locator loc, Hashtable resourceTable, boolean selected);
-	public abstract void layout(Font font, int width, Locator loc, Hashtable resourceTable, boolean selected);
+	public abstract void layout(GC gc, int width, Locator loc, Hashtable resourceTable, boolean selected);	
 // RAP [if] paint unnecessary
 //	/**
 //	 * Paints this segment.
@@ -61,9 +56,7 @@ public abstract class ParagraphSegment {
 	 * @param resourceTable
 	 * @param selData
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public abstract void computeSelection(GC gc, Hashtable resourceTable, SelectionData selData);
-	public abstract void computeSelection(Font font, Hashtable resourceTable, SelectionData selData);
+	public abstract void computeSelection(GC gc, Hashtable resourceTable, SelectionData selData);	
 	/**
 	 * Tests if the coordinates are contained in one of the
 	 * bounding rectangles of this segment.

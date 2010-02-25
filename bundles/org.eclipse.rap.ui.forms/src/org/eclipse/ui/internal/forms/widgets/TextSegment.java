@@ -15,14 +15,12 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 // RAP [if] unnecessary
 //import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-//RAP [if] GC/FontMetrics not supported
-//import org.eclipse.swt.graphics.FontMetrics;
-//import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.forms.internal.widgets.ITextSegmentAdapter;
@@ -233,29 +231,23 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 		return new Rectangle(x, y, width, height);
 	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public boolean advanceLocator(GC gc, int wHint, Locator locator,
-	public boolean advanceLocator(Font font, int wHint, Locator locator,
+	public boolean advanceLocator(GC gc, int wHint, Locator locator,
 			Hashtable objectTable, boolean computeHeightOnly) {
-	    Font gcFont = font;
-		Font oldFont = null;
-		if (fontId != null) {
-//			oldFont = gc.getFont();
-		    oldFont = gcFont;
-			Font newFont = (Font) objectTable.get(fontId);
-			if (newFont != null)
-//				gc.setFont(newFont);
-			    gcFont = newFont;
-		}
-//		FontMetrics fm = gc.getFontMetrics();
-//		int lineHeight = fm.getHeight();
-		int lineHeight = Graphics.getCharHeight( gcFont );
+  	    Font oldFont = null;
+        if (fontId != null) {
+            oldFont = gc.getFont();
+            Font newFont = (Font) objectTable.get(fontId);
+            if (newFont != null)
+                gc.setFont(newFont);
+        }
+		FontMetrics fm = gc.getFontMetrics();
+		int lineHeight = fm.getHeight();
+		// RAP [if] fm.getLeading() is missing
 		int lineLeading = Math.round( lineHeight / LINE_LEADING_RATIO );
 		boolean newLine = false;
 
 		if (wHint == SWT.DEFAULT || !wrapAllowed) {
-//			Point extent = gc.textExtent(text);
-		    Point extent = Graphics.stringExtent( gcFont, text );
+			Point extent = gc.textExtent(text);
 			int totalExtent = locator.x+extent.x;
 			if (isSelectable())
 				totalExtent+=1;
@@ -276,13 +268,13 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 			locator.x += width;
 			locator.width = locator.indent + width;
 			locator.rowHeight = Math.max(locator.rowHeight, extent.y);
+			// RAP [if] fm.getLeading() is missing
 //			locator.leading = Math.max(locator.leading, fm.getLeading());
 			locator.leading = Math.max(locator.leading, lineLeading);
 			return newLine;
 		}
 
-//		computeTextFragments(gc);
-		computeTextFragments(gcFont);
+		computeTextFragments(gc);
 
 		int width = 0;
 		Point lineExtent = new Point(0, 0);
@@ -298,6 +290,7 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 				// overflow
 				int lineWidth = currentExtent;
 				locator.rowHeight = Math.max(locator.rowHeight, lineExtent.y);
+				// RAP [if] fm.getLeading() is missing
 //				locator.leading = Math.max(locator.leading, fm.getLeading());
 				locator.leading = Math.max(locator.leading, lineLeading);
 				if (computeHeightOnly)
@@ -320,11 +313,11 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 		locator.x += lineWidth;
 		locator.width = width;
 		locator.rowHeight = Math.max(locator.rowHeight, lineExtent.y);
+		// RAP [if] fm.getLeading() is missing
 //		locator.leading = Math.max(locator.leading, fm.getLeading());
 		locator.leading = Math.max(locator.leading, lineLeading);
 		if (oldFont != null) {
-//			gc.setFont(oldFont);
-		    gcFont = oldFont;
+			gc.setFont(oldFont);
 		}
 		return newLine;
 	}
@@ -340,14 +333,9 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 	 * @param lineHeight
 	 * @param descent
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	private void layoutWithoutWrapping(GC gc, int width, Locator locator,
-//			boolean selected, FontMetrics fm, int lineHeight, int descent) {
-	private void layoutWithoutWrapping(Font font, int width, Locator locator,
-	        boolean selected, int lineHeight, int descent) {
-//		Point extent = gc.textExtent(text);
-	    Point extent = Graphics.stringExtent( font, text );
-	    int lineLeading = Math.round( lineHeight / LINE_LEADING_RATIO );
+	private void layoutWithoutWrapping(GC gc, int width, Locator locator,
+			boolean selected, FontMetrics fm, int lineHeight, int descent) {	
+		Point extent = gc.textExtent(text);	    
 		int ewidth = extent.x;
 		if (isSelectable())
 			ewidth += 1;
@@ -358,8 +346,10 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 			locator.rowHeight = 0;
 			locator.rowCounter++;
 		}
+		// RAP [if] fm.getLeading() is missing
 //		int ly = locator.getBaseline(fm.getHeight() - fm.getLeading());
-		int ly = locator.getBaseline(Graphics.getCharHeight( font ) - lineLeading);
+		int lineLeading = Math.round( lineHeight / LINE_LEADING_RATIO );
+		int ly = locator.getBaseline(fm.getHeight() - lineLeading);
 		//int lineY = ly + lineHeight - descent + 1;
 		Rectangle br = new Rectangle(locator.x, ly, ewidth,
 				lineHeight - descent + 3);
@@ -369,16 +359,13 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 		locator.rowHeight = Math.max(locator.rowHeight, extent.y);
 	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	protected int convertOffsetToStringIndex(GC gc, String s, int x,
-	protected int convertOffsetToStringIndex(Font font, String s, int x,
+	protected int convertOffsetToStringIndex(GC gc, String s, int x,
 			int swidth, int selOffset) {
 		int index = s.length();
 		while (index > 0 && x + swidth > selOffset) {
 			index--;
 			String ss = s.substring(0, index);
-//			swidth = gc.textExtent(ss).x;
-			swidth = Graphics.stringExtent( font, ss ).x;
+			swidth = gc.textExtent(ss).x;
 		}
 		return index;
 	}
@@ -479,35 +466,27 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 //		}
 //	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void computeSelection(GC gc, Hashtable resourceTable, SelectionData selData) {
-	public void computeSelection(Font font, Hashtable resourceTable, SelectionData selData) {
-		Font gcFont = font;
-	    Font oldFont = null;
-
-		if (fontId != null) {
-//			oldFont = gc.getFont();
-		    oldFont = gcFont;
-			Font newFont = (Font) resourceTable.get(fontId);
-			if (newFont != null)
-//				gc.setFont(newFont);
-			    gcFont = newFont;
-		}
+	public void computeSelection(GC gc, Hashtable resourceTable, SelectionData selData) {
+  	    Font oldFont = null;
+  
+        if (fontId != null) {
+            oldFont = gc.getFont();
+            Font newFont = (Font) resourceTable.get(fontId);
+            if (newFont != null)
+                gc.setFont(newFont);
+        }
 
 		for (int i = 0; i < areaRectangles.size(); i++) {
 			AreaRectangle areaRectangle = (AreaRectangle) areaRectangles.get(i);
 			Rectangle rect = areaRectangle.rect;
 			String text = areaRectangle.getText();
-//			Point extent = gc.textExtent(text);
-			Point extent = Graphics.stringExtent( gcFont, text );
-//			computeSelection(gc, text, extent.x, selData,
-			computeSelection(gcFont, text, extent.x, selData,
+			Point extent = gc.textExtent(text);
+			computeSelection(gc, text, extent.x, selData,
 					rect);
 		}
 		// restore GC resources
 		if (oldFont != null) {
-//			gc.setFont(oldFont);
-			gcFont = oldFont;
+			gc.setFont(oldFont);
 		}
 	}
 
@@ -582,9 +561,7 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 //		}
 //	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	private void computeSelection(GC gc, String s, int swidth, SelectionData selData, Rectangle bounds) {
-	private void computeSelection(Font font, String s, int swidth, SelectionData selData, Rectangle bounds) {
+	private void computeSelection(GC gc, String s, int swidth, SelectionData selData, Rectangle bounds) {
 		int leftOffset = selData.getLeftOffset(bounds.height);
 		int rightOffset = selData.getRightOffset(bounds.height);
 		boolean firstRow = selData.isFirstSelectionRow(bounds.y, bounds.height);
@@ -595,13 +572,11 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 		int sstop = -1;
 
 		if (firstRow && bounds.x + swidth > leftOffset) {
-//			sstart = convertOffsetToStringIndex(gc, s, bounds.x, swidth,
-		    sstart = convertOffsetToStringIndex(font, s, bounds.x, swidth,
+			sstart = convertOffsetToStringIndex(gc, s, bounds.x, swidth,
 					leftOffset);
 		}
 		if (lastRow && bounds.x + swidth > rightOffset) {
-//			sstop = convertOffsetToStringIndex(gc, s, bounds.x, swidth,
-		    sstop = convertOffsetToStringIndex(font, s, bounds.x, swidth,
+			sstop = convertOffsetToStringIndex(gc, s, bounds.x, swidth,
 					rightOffset);
 		}
 
@@ -671,39 +646,34 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 	 *      java.util.Hashtable, boolean,
 	 *      org.eclipse.ui.internal.forms.widgets.SelectionData)
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void layout(GC gc, int width, Locator locator,
-	public void layout(Font font, int width, Locator locator,
+	public void layout(GC gc, int width, Locator locator,
 			Hashtable resourceTable, boolean selected) {
-	    Font gcFont = font;
-		Font oldFont = null;
-
-		areaRectangles.clear();
-
-		if (fontId != null) {
-//			oldFont = gc.getFont();
-		    oldFont = gcFont;
-			Font newFont = (Font) resourceTable.get(fontId);
-			if (newFont != null)
-//				gc.setFont(newFont);
-			    gcFont = newFont;
-		}
-//		FontMetrics fm = gc.getFontMetrics();
-//		int lineHeight = fm.getHeight();
-		int lineHeight = Graphics.getCharHeight( gcFont );
-		int lineLeading = Math.round( lineHeight / LINE_LEADING_RATIO );
+  	    Font oldFont = null;
+  
+        areaRectangles.clear();
+  
+        if (fontId != null) {
+            oldFont = gc.getFont();
+            Font newFont = (Font) resourceTable.get(fontId);
+            if (newFont != null)
+                gc.setFont(newFont);
+        }
+		FontMetrics fm = gc.getFontMetrics();
+		int lineHeight = fm.getHeight();		
+		// RAP [if] fm.getDescent() is missing
+//		int descent = fm.getDescent();
 		int descent = Math.round( lineHeight / LINE_DESCENT_RATIO );
+		// RAP [if] fm.getLeading() is missing
+        int lineLeading = Math.round( lineHeight / LINE_LEADING_RATIO );
 
 		if (!wrapAllowed) {
-//			layoutWithoutWrapping(gc, width, locator, selected, fm, lineHeight,
-		    layoutWithoutWrapping(gcFont, width, locator, selected, lineHeight,
+			layoutWithoutWrapping(gc, width, locator, selected, fm, lineHeight,
 					descent);
 		} else {
 			int lineStart = 0;
 			int lastLoc = 0;
 			Point lineExtent = new Point(0, 0);
-//			computeTextFragments(gc);
-			computeTextFragments(gcFont);
+			computeTextFragments(gc);
 			int rightEdge = width-locator.marginWidth;
 			for (int i = 0; i < textFragments.length; i++) {
 				TextFragment fragment = textFragments[i];
@@ -715,6 +685,8 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 					int lineWidth = locator.x + lineExtent.x;
 					if (isSelectable())
 						lineWidth += 1;
+					// RAP [if] fm.getLeading() is missing
+//					int ly = locator.getBaseline(lineHeight - fm.getLeading());					
 					int ly = locator.getBaseline(lineHeight - lineLeading);
 					Rectangle br = new Rectangle(isSelectable()?
 							locator.x - 1:locator.x, ly,
@@ -739,6 +711,8 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 				lineExtent.y = Math.max(lineHeight, lineExtent.y);
 			}
 			//String lastLine = text.substring(lineStart, lastLoc);
+			// RAP [if] fm.getLeading() is missing
+//			int ly = locator.getBaseline(lineHeight - fm.getLeading());
 			int ly = locator.getBaseline(lineHeight - lineLeading);
 			int lastWidth = lineExtent.x;
 			if (isSelectable())
@@ -752,14 +726,11 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 			locator.rowHeight = Math.max(locator.rowHeight, lineExtent.y);
 		}
 		if (oldFont != null) {
-//			gc.setFont(oldFont);
-			gcFont = oldFont;
+			gc.setFont(oldFont);
 		}
 	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	private void computeTextFragments(GC gc) {
-	private void computeTextFragments(Font font) {
+	private void computeTextFragments(GC gc) {
 		if (textFragments != null)
 			return;
 		ArrayList list = new ArrayList();
@@ -770,8 +741,7 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 			if (loc == 0)
 				continue;
 			String word = text.substring(cursor, loc);
-//			Point extent = gc.textExtent(word);
-			Point extent = Graphics.stringExtent( font, word );
+			Point extent = gc.textExtent(word);
 			list.add(new TextFragment((short) loc, (short) extent.x));
 			cursor = loc;
 		}

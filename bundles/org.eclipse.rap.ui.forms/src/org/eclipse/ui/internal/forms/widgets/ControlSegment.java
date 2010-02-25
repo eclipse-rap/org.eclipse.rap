@@ -13,9 +13,7 @@ package org.eclipse.ui.internal.forms.widgets;
 import java.util.Hashtable;
 
 import org.eclipse.swt.SWT;
-//RAP [if] GC not supported
-//import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -66,12 +64,9 @@ public class ControlSegment extends ObjectSegment implements IFocusSelectable {
 		return size;
 	}
 
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void layout(GC gc, int width, Locator loc, Hashtable resourceTable,
-	public void layout(Font font, int width, Locator loc, Hashtable resourceTable,
+	public void layout(GC gc, int width, Locator loc, Hashtable resourceTable,
 			boolean selected) {
-//		super.layout(gc, width, loc, resourceTable, selected);
-		super.layout(font, width, loc, resourceTable, selected);
+		super.layout(gc, width, loc, resourceTable, selected);		
 		Control control = getControl(resourceTable);
 		if (control!=null)
 			control.setBounds(getBounds());

@@ -16,9 +16,7 @@ import java.util.Vector;
 // RAP [if] unnecessary
 //import org.eclipse.swt.graphics.Color;
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.swt.graphics.Font;
-// RAP [if] GC not supported
-//import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.forms.internal.widgets.IAggregateHyperlinkSegmentAdapter;
 
@@ -72,15 +70,12 @@ public class AggregateHyperlinkSegment extends ParagraphSegment implements
 	 *      int, org.eclipse.ui.internal.forms.widgets.Locator,
 	 *      java.util.Hashtable, boolean)
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public boolean advanceLocator(GC gc, int wHint, Locator loc,
-	public boolean advanceLocator(Font font, int wHint, Locator loc,
+	public boolean advanceLocator(GC gc, int wHint, Locator loc,
 			Hashtable objectTable, boolean computeHeightOnly) {
 		boolean newLine = false;
 		for (int i = 0; i < segments.size(); i++) {
 			ParagraphSegment segment = (ParagraphSegment) segments.get(i);
-//			if (segment.advanceLocator(gc, wHint, loc, objectTable,
-			if (segment.advanceLocator(font, wHint, loc, objectTable,
+			if (segment.advanceLocator(gc, wHint, loc, objectTable,
 					computeHeightOnly))
 				newLine = true;
 		}
@@ -189,14 +184,11 @@ public class AggregateHyperlinkSegment extends ParagraphSegment implements
 	 *      java.util.Hashtable, boolean,
 	 *      org.eclipse.ui.internal.forms.widgets.SelectionData)
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void layout(GC gc, int width, Locator locator,
-	public void layout(Font font, int width, Locator locator,
+	public void layout(GC gc, int width, Locator locator,
 			Hashtable resourceTable, boolean selected) {
 		for (int i = 0; i < segments.size(); i++) {
 			ParagraphSegment segment = (ParagraphSegment) segments.get(i);
-//			segment.layout(gc, width, locator, resourceTable, selected);
-			segment.layout(font, width, locator, resourceTable, selected);
+			segment.layout(gc, width, locator, resourceTable, selected);
 		}
 	}
 
@@ -207,14 +199,11 @@ public class AggregateHyperlinkSegment extends ParagraphSegment implements
 	 *      java.util.Hashtable, boolean,
 	 *      org.eclipse.ui.internal.forms.widgets.SelectionData)
 	 */
-// RAP [if] changed method signature and implementation to cope with missing GC
-//	public void computeSelection(GC gc, Hashtable resourceTable,
-	public void computeSelection(Font font, Hashtable resourceTable,
+	public void computeSelection(GC gc, Hashtable resourceTable,
 			SelectionData selData) {
 		for (int i = 0; i < segments.size(); i++) {
 			ParagraphSegment segment = (ParagraphSegment) segments.get(i);
-//			segment.computeSelection(gc, resourceTable, selData);
-			segment.computeSelection(font, resourceTable, selData);
+			segment.computeSelection(gc, resourceTable, selData);
 		}
 	}
 

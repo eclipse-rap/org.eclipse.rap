@@ -16,7 +16,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 // RAP [if] accessibility not supported
@@ -52,9 +51,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-// RAP [if] GC/FontMetrics not supported
-//import org.eclipse.swt.graphics.FontMetrics;
-//import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -272,16 +270,14 @@ public class FormText extends Canvas {
 			return result;
 		}
 
-// RAP [if] changed implementation to cope with missing GC
 		private Point computeTextSize(int wHint) {
 			Paragraph[] paragraphs = model.getParagraphs();
-//			GC gc = new GC(FormText.this);
-//			gc.setFont(getFont());
+			GC gc = new GC(FormText.this);
+			gc.setFont(getFont());
 			Locator loc = new Locator();
 			int width = wHint != SWT.DEFAULT ? wHint : 0;
-//			FontMetrics fm = gc.getFontMetrics();
-//			int lineHeight = fm.getHeight();
-			int lineHeight = Graphics.getCharHeight( getFont() );
+			FontMetrics fm = gc.getFontMetrics();
+			int lineHeight = fm.getHeight();
 			boolean selectableInTheLastRow = false;
 			for (int i = 0; i < paragraphs.length; i++) {
 				Paragraph p = paragraphs[i];
@@ -297,8 +293,7 @@ public class FormText extends Canvas {
 					int pwidth = 0;
 					for (int j = 0; j < segments.length; j++) {
 						ParagraphSegment segment = segments[j];
-//						segment.advanceLocator(gc, wHint, loc, resourceTable,
-						segment.advanceLocator(getFont(), wHint, loc, resourceTable,
+						segment.advanceLocator(gc, wHint, loc, resourceTable,						
 								false);
 						if (wHint != SWT.DEFAULT) {
 							width = Math.max(width, loc.width);
@@ -316,13 +311,12 @@ public class FormText extends Canvas {
 					loc.y += lineHeight;
 				}
 			}
-//			gc.dispose();
+			gc.dispose();
 			if (selectableInTheLastRow)
 				loc.y += 1;
 			return new Point(width, loc.y);
 		}
 
-// RAP [if] changed implementation to cope with missing GC
 		protected void layout(Composite composite, boolean flushCache) {
   		    // RAP [if] Instruct LCA to relayout the segments to the client
 		    model.clearCache( null );
@@ -339,20 +333,19 @@ public class FormText extends Canvas {
 				System.out.println("FormText layout ("+model.getAccessibleText()+"), carea="+carea); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
-//			GC gc = new GC(composite);
-//			gc.setFont(getFont());
+			GC gc = new GC(composite);
+			gc.setFont(getFont());
 			ensureBoldFontPresent(getFont());
-//			gc.setForeground(getForeground());
-//			gc.setBackground(getBackground());
+			gc.setForeground(getForeground());
+			gc.setBackground(getBackground());
 
 			Locator loc = new Locator();
 			loc.marginWidth = marginWidth;
 			loc.marginHeight = marginHeight;
 			loc.x = marginWidth;
 			loc.y = marginHeight;
-//			FontMetrics fm = gc.getFontMetrics();
-//			int lineHeight = fm.getHeight();
-			int lineHeight = Graphics.getCharHeight( getFont() );
+			FontMetrics fm = gc.getFontMetrics();
+			int lineHeight = fm.getHeight();
 
 			Paragraph[] paragraphs = model.getParagraphs();
 			IHyperlinkSegment selectedLink = getSelectedLink();
@@ -363,11 +356,10 @@ public class FormText extends Canvas {
 				loc.indent = p.getIndent();
 				loc.resetCaret();
 				loc.rowHeight = 0;
-//				p.layout(gc, carea.width, loc, lineHeight, resourceTable,
-				p.layout(getFont(), carea.width, loc, lineHeight, resourceTable,
+				p.layout(gc, carea.width, loc, lineHeight, resourceTable,				
 						selectedLink);
 			}
-//			gc.dispose();
+			gc.dispose();
 			if (DEBUG_TEXT) {
 				long stop = System.currentTimeMillis();
 				System.out.println("FormText.layout: " + (stop - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1064,8 +1056,8 @@ public class FormText extends Canvas {
 	 * @since 3.1
 	 */
 	public void addSelectionListener(SelectionListener listener) {
+	    checkWidget();
 // RAP [if]
-//		checkWidget();
 //		if (listener == null) {
 //			SWT.error(SWT.ERROR_NULL_ARGUMENT);
 //		}
@@ -1094,8 +1086,8 @@ public class FormText extends Canvas {
 	 * @since 3.1
 	 */
 	public void removeSelectionListener(SelectionListener listener) {
-// RAP [if]
-//		checkWidget();
+	    checkWidget();
+// RAP [if]		
 //		if (listener == null) {
 //			SWT.error(SWT.ERROR_NULL_ARGUMENT);
 //		}
@@ -1350,7 +1342,7 @@ public class FormText extends Canvas {
 	}
 
 	private void computeSelection() {
-//		GC gc = new GC(this);
+		GC gc = new GC(this);
 		Paragraph[] paragraphs = model.getParagraphs();
 		IHyperlinkSegment selectedLink = getSelectedLink();
 		if (getDisplay().getFocusControl() != this)
@@ -1359,10 +1351,9 @@ public class FormText extends Canvas {
 			Paragraph p = paragraphs[i];
 			if (i > 0)
 				selData.markNewLine();
-//			p.computeSelection(gc, resourceTable, selectedLink, selData);
-			p.computeSelection(getFont(), resourceTable, selectedLink, selData);
+			p.computeSelection(gc, resourceTable, selectedLink, selData);
 		}
-//		gc.dispose();
+		gc.dispose();
 	}
 
 	void clearSelection() {

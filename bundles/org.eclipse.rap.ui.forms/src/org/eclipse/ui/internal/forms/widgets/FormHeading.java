@@ -20,7 +20,6 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.dnd.DragSourceListener;
@@ -33,8 +32,8 @@ import org.eclipse.swt.events.DisposeListener;
 //import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-//import org.eclipse.swt.graphics.FontMetrics;
-//import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -388,13 +387,11 @@ public class FormHeading extends Canvas {
 			if (fontHeight == -1) {
 				Control c = getMessageControl();
 				if (c == null)
-					return 0;
-				// RAP [rh] Changes due to different API for text size determination
-//				GC gc = new GC(c.getDisplay());
-//				gc.setFont(c.getFont());
-//				fontHeight = gc.getFontMetrics().getHeight();
-//				gc.dispose();
-				fontHeight = Graphics.getCharHeight( c.getFont() );
+					return 0;				
+				GC gc = new GC(c.getDisplay());
+				gc.setFont(c.getFont());
+				fontHeight = gc.getFontMetrics().getHeight();
+				gc.dispose();
 			}
 			return fontHeight;
 		}
@@ -404,14 +401,14 @@ public class FormHeading extends Canvas {
 				Control c = getMessageControl();
 				if (c == null)
 					return 0;
-// RAP [rh] Changed text size determination; inaccurate as baseline-height is
-//		 faked by font-height
-//				GC gc = new GC(c.getDisplay());
-//				gc.setFont(c.getFont());
-//				FontMetrics fm = gc.getFontMetrics();
+				GC gc = new GC(c.getDisplay());
+				gc.setFont(c.getFont());
+				FontMetrics fm = gc.getFontMetrics();
+// RAP [if] FontMetrics#getDescent() is missing; inaccurate as baseline-height
+// is faked by font-height
 //				fontBaselineHeight = fm.getHeight() - fm.getDescent();
-//				gc.dispose();
-				fontBaselineHeight = Graphics.getCharHeight( getFont() );
+				fontBaselineHeight = fm.getHeight();
+				gc.dispose();
 			}
 			return fontBaselineHeight;
 		}

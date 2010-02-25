@@ -11,11 +11,16 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.forms.widgets;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.*;
+//import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
+//import org.eclipse.swt.graphics.Image;
+//import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 //import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -24,7 +29,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 //import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.*;
+import org.eclipse.ui.forms.widgets.ColumnLayout;
+import org.eclipse.ui.forms.widgets.Form;
+import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ILayoutExtension;
 
@@ -92,34 +99,30 @@ public class FormUtil {
 		return text;
 	}
 
-// RAP [rh] FormUtil#computeMinimumWidth unnecessary
-//	public static int computeMinimumWidth(GC gc, String text) {
-//		BreakIterator wb = BreakIterator.getWordInstance();
-//		wb.setText(text);
-//		int last = 0;
-//
-//		int width = 0;
-//
-//		for (int loc = wb.first(); loc != BreakIterator.DONE; loc = wb.next()) {
-//			String word = text.substring(last, loc);
-//			Point extent = gc.textExtent(word);
-//			width = Math.max(width, extent.x);
-//			last = loc;
-//		}
-//		String lastWord = text.substring(last);
-//		Point extent = gc.textExtent(lastWord);
-//		width = Math.max(width, extent.x);
-//		return width;
-//	}
-	
-// RAP [rh] changed method signature and implementation to cope with  missing GC
-//	public static Point computeWrapSize(GC gc, String text, int wHint) {
-	public static Point computeWrapSize(Font font, String text, int wHint) {
+	public static int computeMinimumWidth(GC gc, String text) {
 		BreakIterator wb = BreakIterator.getWordInstance();
 		wb.setText(text);
-//		FontMetrics fm = gc.getFontMetrics();
-//		int lineHeight = fm.getHeight();
-		int lineHeight = Graphics.getCharHeight( font );
+		int last = 0;
+
+		int width = 0;
+
+		for (int loc = wb.first(); loc != BreakIterator.DONE; loc = wb.next()) {
+			String word = text.substring(last, loc);
+			Point extent = gc.textExtent(word);
+			width = Math.max(width, extent.x);
+			last = loc;
+		}
+		String lastWord = text.substring(last);
+		Point extent = gc.textExtent(lastWord);
+		width = Math.max(width, extent.x);
+		return width;
+	}
+	
+	public static Point computeWrapSize(GC gc, String text, int wHint) {	
+		BreakIterator wb = BreakIterator.getWordInstance();
+		wb.setText(text);
+		FontMetrics fm = gc.getFontMetrics();
+		int lineHeight = fm.getHeight();
 		
 		int saved = 0;
 		int last = 0;
@@ -127,16 +130,14 @@ public class FormUtil {
 		int maxWidth = 0;
 		for (int loc = wb.first(); loc != BreakIterator.DONE; loc = wb.next()) {
 			String word = text.substring(saved, loc);
-//			Point extent = gc.textExtent(word);
-			Point extent = Graphics.stringExtent( font, word );
+			Point extent = gc.textExtent(word);
 			if (extent.x > wHint) {
 				// overflow
 				saved = last;
 				height += extent.y;
 				// switch to current word so maxWidth will accommodate very long single words
 				word = text.substring(last, loc);
-//				extent = gc.textExtent(word);
-				extent = Graphics.stringExtent( font, word );
+				extent = gc.textExtent(word);
 			}
 			maxWidth = Math.max(maxWidth, extent.x);
 			last = loc;
@@ -146,10 +147,8 @@ public class FormUtil {
 		 * The recursive call proved to be the only thing that worked in all cases. Some attempts can be made
 		 * to estimate the height, but the algorithm needs to be run again to be sure.
 		 */
-//		if (maxWidth > wHint)
-//			return computeWrapSize(gc, text, maxWidth);
-		  if (maxWidth > wHint)
-	 	    return computeWrapSize(font, text, maxWidth);
+		if (maxWidth > wHint)
+			return computeWrapSize(gc, text, maxWidth);		  
 		return new Point(maxWidth, height);
 	}
 
