@@ -26,9 +26,7 @@ public final class ExpansionEvent extends TypedEvent {
 	 *            the new expansion state
 	 */
 	public ExpansionEvent(Object obj, boolean state) {
-    // RAP [rh] different constructor signature in TypedEvent
-//    super(widget);
-    super( obj, 0 );
+	    super(obj);
 		data = state ? Boolean.TRUE : Boolean.FALSE;
 	}
 	/**

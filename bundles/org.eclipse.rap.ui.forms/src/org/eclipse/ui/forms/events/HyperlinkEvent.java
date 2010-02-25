@@ -34,10 +34,8 @@ public final class HyperlinkEvent extends TypedEvent {
 	 * @param stateMask
 	 *            the given state mask
 	 */
-	public HyperlinkEvent(Widget widget, Object href, String label, int stateMask) {
-    // RAP [rh] different constructor signature in TypedEvent
-//		super(widget);
-	  super( widget, 0 );
+	public HyperlinkEvent(Widget widget, Object href, String label, int stateMask) {    
+		super(widget);
 		this.widget = widget;
 		this.data = href;
 		this.label = label;
