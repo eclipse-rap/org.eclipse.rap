@@ -176,10 +176,9 @@ public abstract class Dialog {
   }
 
   protected void checkSubclass() {
-    // TODO [rst] Do we copy this mechanism?
-    // if (!Display.isValidClass (getClass ())) {
-    // error (SWT.ERROR_INVALID_SUBCLASS);
-    // }
+    if( !Display.isValidClass( getClass() ) ) {
+      error( SWT.ERROR_INVALID_SUBCLASS );
+    }
   }
 
   void checkParent( final Shell parent ) {
