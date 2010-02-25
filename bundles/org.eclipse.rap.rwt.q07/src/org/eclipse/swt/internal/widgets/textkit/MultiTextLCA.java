@@ -40,7 +40,8 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
 
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( "qx.ui.form.TextArea" );
+    writer.newWidget( "org.eclipse.rwt.widgets.Text",
+                      new Object[]{ Boolean.TRUE } );
     TextLCAUtil.writeInitialize( text );
     ControlLCAUtil.writeStyleFlags( text );
     WidgetLCAUtil.writeStyleFlag( text, SWT.MULTI, "MULTI" );

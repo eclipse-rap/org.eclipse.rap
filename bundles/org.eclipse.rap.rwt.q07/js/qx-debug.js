@@ -17108,49 +17108,6 @@ if(precision!=null){return Math.round(value*mover)/mover;
 
 
 
-/* ID: qx.ui.form.TextArea */
-qx.Class.define("qx.ui.form.TextArea",
-{extend:qx.ui.form.TextField,
-properties:{appearance:{refine:true,
-init:"text-area"},
-allowStretchY:{refine:true,
-init:true},
-spellCheck:{refine:true,
-init:true},
-wrap:{check:"Boolean",
-init:true,
-apply:"_applyWrap"}},
-members:{_inputTag:"textarea",
-_inputType:null,
-_inputOverflow:"auto",
-_applyElement:function(value,
-old){this.base(arguments,
-value,
-old);
-this._styleWrap();
-},
-_applyWrap:function(value,
-old){this._styleWrap();
-},
-_styleWrap:qx.core.Variant.select("qx.client",
-{"mshtml":function(){if(this._inputElement){this._inputElement.wrap=this.getWrap()?"soft":"off";
-}},
-"gecko":function(){if(this._inputElement){var wrapValue=this.getWrap()?"soft":"off";
-var styleValue=this.getWrap()?"":"auto";
-this._inputElement.setAttribute('wrap',
-wrapValue);
-this._inputElement.style.overflow=styleValue;
-}},
-"default":function(){if(this._inputElement){var wrapValue=this.getWrap()?"soft":"off";
-this._inputElement.setAttribute('wrap',
-wrapValue);
-}}}),
-_computePreferredInnerHeight:function(){return 60;
-}}});
-
-
-
-
 /* ID: qx.ui.groupbox.GroupBox */
 qx.Class.define("qx.ui.groupbox.GroupBox",
 {extend:qx.ui.layout.CanvasLayout,

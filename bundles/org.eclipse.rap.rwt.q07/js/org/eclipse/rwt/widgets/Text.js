@@ -11,12 +11,114 @@
 qx.Class.define( "org.eclipse.rwt.widgets.Text", {
 
   extend : qx.ui.form.TextField,
+  
+  construct : function( isTextarea ) {
+    this.base( arguments );
+    if( isTextarea ) {
+      // NOTE: This essentially turns TextField into qx.ui.form.TextArea
+      this._inputTag = "textarea";
+      this._inputType = null;
+      this._inputOverflow = "auto";
+      this.setAppearance( "text-area" );
+      this.setAllowStretchY( true );
+      this.setSpellCheck( true );
+      this.__oninput = 
+        qx.lang.Function.bindEvent( this._oninputDomTextarea, this );
+    }
+  },
+
+  properties : {
+
+    wrap : {
+      check : "Boolean",
+      init : true,
+      apply : "_applyWrap"
+    }
+
+  },
 
   members : {
     
+    ///////////////////
+    // textarea support
+    
+    _applyElement : function( value, oldValue ) {
+      this.base( arguments, value, oldValue );
+      if( this._inputTag == "textarea" ) {
+        this._styleWrap();
+      }
+    },
+
+    _applyWrap : function( value, oldValue ) {
+      if( this._inputTag == "textarea" ) {
+        this._styleWrap();
+      }
+    },
+
+    _styleWrap : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function() {
+        if( this._inputElement ) {
+          this._inputElement.wrap = this.getWrap() ? "soft" : "off";
+        }
+      },
+      "gecko" : function() {
+        if( this._inputElement ) {
+          var wrapValue = this.getWrap() ? "soft" : "off";
+          var styleValue = this.getWrap() ? "" : "auto";
+          this._inputElement.setAttribute( 'wrap', wrapValue );
+          this._inputElement.style.overflow = styleValue;
+        }
+      },
+      "default" : function() {
+        if( this._inputElement ) {
+          var wrapValue = this.getWrap() ? "soft" : "off";
+          this._inputElement.setAttribute( 'wrap', wrapValue );
+        }
+      }
+    } ),
+
+    _applyMaxLength : function( value, oldValue ) {
+      if( this._inputTag != "textarea" ) {
+        this.base( arguments, value, oldValue );
+      }
+    },
+
+    _oninputDomTextarea : function( event ) {
+      var maxLength = this.getMaxLength();
+      var fireEvents = true;
+      if( maxLength != null ) {
+        var value = this._inputElement.value;
+        if( value.length > this.getMaxLength() ) {
+          //NOTE [tb] : Works because LiveUpdate is true, set by TextUtil
+          var oldValue = this.getValue();
+          // NOTE [tb] : When pasting strings, this might not always 
+          //             behave like SWT. There is no reliable fix for that.
+          if( oldValue.length == ( value.length - 1 ) ) {
+            // The user added one character, undo.
+            var position = this.getSelectionStart();
+            this._inputElement.value = oldValue;
+            this.setSelectionStart( position - 1 );
+            this.setSelectionLength( 0 );
+          } else if( value.length >= oldValue.length && value != oldValue) {
+            // The user pasted a string, shorten:
+            this._inputElement.value = value.slice( 0, this.getMaxLength() );
+          }
+          if( this._inputElement.value == oldValue ) {
+            fireEvents = false;
+          }
+        }
+      } 
+      if( fireEvents ) {
+        this._oninputDom( event );
+      }
+    },
+    
+    ///////////////////
+    // password support
+    
     setPasswordMode : function( value ) {
       var type = value ? "password" : "text";
-      if( this._inputType != type ) {
+      if( this._inputTag != "textarea" && this._inputType != type ) {
         this._inputType = type;
         if( this._isCreated ) {
           if( qx.core.Client.getEngine() == "mshtml" ) {

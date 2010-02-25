@@ -48,7 +48,8 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
 
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( "org.eclipse.rwt.widgets.Text" );
+    writer.newWidget( "org.eclipse.rwt.widgets.Text",
+                      new Object[]{ Boolean.FALSE } );
     WidgetLCAUtil.writeStyleFlag( text, SWT.SINGLE, "SINGLE" );
     TextLCAUtil.writeInitialize( text );
     ControlLCAUtil.writeStyleFlags( text );
