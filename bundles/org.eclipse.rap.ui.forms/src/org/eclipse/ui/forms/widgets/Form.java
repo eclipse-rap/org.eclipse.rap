@@ -13,10 +13,9 @@ package org.eclipse.ui.forms.widgets;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
-// RAP [rh] missing DnD
-//import org.eclipse.swt.dnd.DragSourceListener;
-//import org.eclipse.swt.dnd.DropTargetListener;
-//import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -682,48 +681,47 @@ public class Form extends Composite {
 		head.setBusy(busy);
 	}
 
-// RAP [rh] missing DnD
-//	/**
-//	 * Adds support for dragging items out of the form title area via a user
-//	 * drag-and-drop operation.
-//	 *
-//	 * @param operations
-//	 *            a bitwise OR of the supported drag and drop operation types (
-//	 *            <code>DROP_COPY</code>,<code>DROP_LINK</code>, and
-//	 *            <code>DROP_MOVE</code>)
-//	 * @param transferTypes
-//	 *            the transfer types that are supported by the drag operation
-//	 * @param listener
-//	 *            the callback that will be invoked to set the drag data and to
-//	 *            cleanup after the drag and drop operation finishes
-//	 * @see org.eclipse.swt.dnd.DND
-//	 * @since 3.3
-//	 */
-//	public void addTitleDragSupport(int operations, Transfer[] transferTypes,
-//			DragSourceListener listener) {
-//		head.addDragSupport(operations, transferTypes, listener);
-//	}
-//
-//	/**
-//	 * Adds support for dropping items into the form title area via a user
-//	 * drag-and-drop operation.
-//	 *
-//	 * @param operations
-//	 *            a bitwise OR of the supported drag and drop operation types (
-//	 *            <code>DROP_COPY</code>,<code>DROP_LINK</code>, and
-//	 *            <code>DROP_MOVE</code>)
-//	 * @param transferTypes
-//	 *            the transfer types that are supported by the drop operation
-//	 * @param listener
-//	 *            the callback that will be invoked after the drag and drop
-//	 *            operation finishes
-//	 * @see org.eclipse.swt.dnd.DND
-//	 * @since 3.3
-//	 */
-//	public void addTitleDropSupport(int operations, Transfer[] transferTypes,
-//			DropTargetListener listener) {
-//		head.addDropSupport(operations, transferTypes, listener);
-//	}
+	/**
+	 * Adds support for dragging items out of the form title area via a user
+	 * drag-and-drop operation.
+	 *
+	 * @param operations
+	 *            a bitwise OR of the supported drag and drop operation types (
+	 *            <code>DROP_COPY</code>,<code>DROP_LINK</code>, and
+	 *            <code>DROP_MOVE</code>)
+	 * @param transferTypes
+	 *            the transfer types that are supported by the drag operation
+	 * @param listener
+	 *            the callback that will be invoked to set the drag data and to
+	 *            cleanup after the drag and drop operation finishes
+	 * @see org.eclipse.swt.dnd.DND
+	 * @since 3.3
+	 */
+	public void addTitleDragSupport(int operations, Transfer[] transferTypes,
+			DragSourceListener listener) {
+		head.addDragSupport(operations, transferTypes, listener);
+	}
+
+	/**
+	 * Adds support for dropping items into the form title area via a user
+	 * drag-and-drop operation.
+	 *
+	 * @param operations
+	 *            a bitwise OR of the supported drag and drop operation types (
+	 *            <code>DROP_COPY</code>,<code>DROP_LINK</code>, and
+	 *            <code>DROP_MOVE</code>)
+	 * @param transferTypes
+	 *            the transfer types that are supported by the drop operation
+	 * @param listener
+	 *            the callback that will be invoked after the drag and drop
+	 *            operation finishes
+	 * @see org.eclipse.swt.dnd.DND
+	 * @since 3.3
+	 */
+	public void addTitleDropSupport(int operations, Transfer[] transferTypes,
+			DropTargetListener listener) {
+		head.addDropSupport(operations, transferTypes, listener);
+	}
 
 	/*
 	 * (non-Javadoc)

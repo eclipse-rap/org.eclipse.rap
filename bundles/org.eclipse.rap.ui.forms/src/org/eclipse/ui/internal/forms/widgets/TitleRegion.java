@@ -14,13 +14,13 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.dnd.DragSource;
-//import org.eclipse.swt.dnd.DragSourceEffect;
-//import org.eclipse.swt.dnd.DragSourceEvent;
-//import org.eclipse.swt.dnd.DragSourceListener;
-//import org.eclipse.swt.dnd.DropTarget;
-//import org.eclipse.swt.dnd.DropTargetListener;
-//import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEffect;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.Transfer;
 //import org.eclipse.swt.events.MouseEvent;
 //import org.eclipse.swt.events.MouseMoveListener;
 //import org.eclipse.swt.events.MouseTrackListener;
@@ -35,7 +35,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-//import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
@@ -69,13 +69,11 @@ public class TitleRegion extends Canvas {
 	private int fontBaselineHeight = -1;
 	private MenuHyperlink menuHyperlink;
 	private MenuManager menuManager;
-// RAP [rh] DnD missing	
-//	private boolean dragSupport;
-//	private int dragOperations;
-// RAP [rh] DnD not implemented	
-//	private Transfer[] dragTransferTypes;
-//	private DragSourceListener dragListener;
-//	private DragSource dragSource;
+	private boolean dragSupport;
+	private int dragOperations;
+	private Transfer[] dragTransferTypes;
+	private DragSourceListener dragListener;
+	private DragSource dragSource;
 	private Image dragImage;
 
 // RAP [rh] Unused code since no MouseTrack- and MouseMove events supported 	
@@ -306,8 +304,7 @@ public class TitleRegion extends Canvas {
 	}
 
 	public void setHoverState(int state) {
-// RAP [rh] DnD not implemented	  
-		if (/*dragSource == null ||*/ this.hoverState == state)
+		if (dragSource == null || this.hoverState == state)
 			return;
 		this.hoverState = state;
 		Color color = getHoverBackground();
@@ -411,9 +408,8 @@ public class TitleRegion extends Canvas {
 //			busyLabel.addMouseMoveListener(listener);
 			if (menuManager != null)
 				busyLabel.setMenu(menuManager.createContextMenu(this));
-// RAP [rh] DnD not implemented			
-//			if (dragSupport)
-//				addDragSupport(busyLabel, dragOperations, dragTransferTypes, dragListener);
+			if (dragSupport)
+				addDragSupport(busyLabel, dragOperations, dragTransferTypes, dragListener);
 			IMessageToolTipManager mng = ((FormHeading) getParent())
 					.getMessageToolTipManager();
 			if (mng != null)
@@ -430,8 +426,8 @@ public class TitleRegion extends Canvas {
 //		HoverListener listener = new HoverListener();
 //		menuHyperlink.addMouseTrackListener(listener);
 //		menuHyperlink.addMouseMoveListener(listener);
-//		if (dragSupport)
-//			addDragSupport(menuHyperlink, dragOperations, dragTransferTypes, dragListener);
+		if (dragSupport)
+			addDragSupport(menuHyperlink, dragOperations, dragTransferTypes, dragListener);
 	}
 
 	/**
@@ -510,49 +506,48 @@ public class TitleRegion extends Canvas {
 		return menuManager;
 	}
 
-// RAP [rh] DnD not supported
-//	public void addDragSupport(int operations, Transfer[] transferTypes,
-//			DragSourceListener listener) {
-//		dragSupport = true;
-//		dragOperations = operations;
-//		dragTransferTypes = transferTypes;
-//		dragListener = listener;
-//		dragSource = addDragSupport(titleLabel, operations, transferTypes,
-//				listener);
-//		addDragSupport(this, operations, transferTypes, listener);
-//		if (busyLabel != null)
-//			addDragSupport(busyLabel, operations, transferTypes, listener);
-//		if (menuHyperlink != null)
-//			addDragSupport(menuHyperlink, operations, transferTypes, listener);
-//	}
-//
-//	private DragSource addDragSupport(Control control, int operations,
-//			Transfer[] transferTypes, DragSourceListener listener) {
-//		DragSource source = new DragSource(control, operations);
-//		source.setTransfer(transferTypes);
-//		source.addDragListener(listener);
-//		source.setDragSourceEffect(new DragSourceEffect(control) {
-//			public void dragStart(DragSourceEvent event) {
-//				event.image = createDragEffectImage();
-//			}
-//		});
-//		return source;
-//	}
-//
-//	private Image createDragEffectImage() {
-//		/*
-//		 * if (dragImage != null) { dragImage.dispose(); } GC gc = new GC(this);
-//		 * Point size = getSize(); dragImage = new Image(getDisplay(), size.x,
-//		 * size.y); gc.copyArea(dragImage, 0, 0); gc.dispose(); return
-//		 * dragImage;
-//		 */
-//		return null;
-//	}
-//
-//	public void addDropSupport(int operations, Transfer[] transferTypes,
-//			DropTargetListener listener) {
-//		final DropTarget target = new DropTarget(this, operations);
-//		target.setTransfer(transferTypes);
-//		target.addDropListener(listener);
-//	}
+	public void addDragSupport(int operations, Transfer[] transferTypes,
+			DragSourceListener listener) {
+		dragSupport = true;
+		dragOperations = operations;
+		dragTransferTypes = transferTypes;
+		dragListener = listener;
+		dragSource = addDragSupport(titleLabel, operations, transferTypes,
+				listener);
+		addDragSupport(this, operations, transferTypes, listener);
+		if (busyLabel != null)
+			addDragSupport(busyLabel, operations, transferTypes, listener);
+		if (menuHyperlink != null)
+			addDragSupport(menuHyperlink, operations, transferTypes, listener);
+	}
+
+	private DragSource addDragSupport(Control control, int operations,
+			Transfer[] transferTypes, DragSourceListener listener) {
+		DragSource source = new DragSource(control, operations);
+		source.setTransfer(transferTypes);
+		source.addDragListener(listener);
+		source.setDragSourceEffect(new DragSourceEffect(control) {
+			public void dragStart(DragSourceEvent event) {
+				event.image = createDragEffectImage();
+			}
+		});
+		return source;
+	}
+
+	private Image createDragEffectImage() {
+		/*
+		 * if (dragImage != null) { dragImage.dispose(); } GC gc = new GC(this);
+		 * Point size = getSize(); dragImage = new Image(getDisplay(), size.x,
+		 * size.y); gc.copyArea(dragImage, 0, 0); gc.dispose(); return
+		 * dragImage;
+		 */
+		return null;
+	}
+
+	public void addDropSupport(int operations, Transfer[] transferTypes,
+			DropTargetListener listener) {
+		final DropTarget target = new DropTarget(this, operations);
+		target.setTransfer(transferTypes);
+		target.addDropListener(listener);
+	}
 }

@@ -9,8 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ui.internal.forms.widgets;
-//import org.eclipse.swt.dnd.DragSource;
-//import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DropTarget;
 //import org.eclipse.swt.widgets.Caret;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -46,13 +46,13 @@ public class SWTUtil {
 	public static Shell getShell(Widget widget) {
 		if (widget instanceof Control)
 			return ((Control) widget).getShell();
-// RAP [rh] missing classes: Caret, DragSource, DropTarget
+// RAP [rh] missing classes: Caret
 //		if (widget instanceof Caret)
 //			return ((Caret) widget).getParent().getShell();
-//		if (widget instanceof DragSource)
-//			return ((DragSource) widget).getControl().getShell();
-//		if (widget instanceof DropTarget)
-//			return ((DropTarget) widget).getControl().getShell();
+		if (widget instanceof DragSource)
+			return ((DragSource) widget).getControl().getShell();
+		if (widget instanceof DropTarget)
+			return ((DropTarget) widget).getControl().getShell();
 		if (widget instanceof Menu)
 			return ((Menu) widget).getParent().getShell();
 		if (widget instanceof ScrollBar)

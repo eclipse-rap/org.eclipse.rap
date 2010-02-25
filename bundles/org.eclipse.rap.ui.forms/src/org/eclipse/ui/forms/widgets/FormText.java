@@ -27,7 +27,7 @@ import org.eclipse.swt.SWTException;
 //import org.eclipse.swt.accessibility.AccessibleControlEvent;
 //import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.custom.ScrolledComposite;
-// RAP [if] dnd not supported
+// RAP [if] Clipboard not supported
 //import org.eclipse.swt.dnd.Clipboard;
 //import org.eclipse.swt.dnd.TextTransfer;
 //import org.eclipse.swt.dnd.Transfer;

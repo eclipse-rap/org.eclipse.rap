@@ -23,9 +23,9 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-//import org.eclipse.swt.dnd.DragSourceListener;
-//import org.eclipse.swt.dnd.DropTargetListener;
-//import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 //import org.eclipse.swt.events.MouseEvent;
@@ -1087,16 +1087,15 @@ public class FormHeading extends Canvas {
 		return colors.containsKey(key);
 	}
 
-// RAP [rh] DnD missing
-//	public void addDragSupport(int operations, Transfer[] transferTypes,
-//			DragSourceListener listener) {
-//		titleRegion.addDragSupport(operations, transferTypes, listener);
-//	}
+	public void addDragSupport(int operations, Transfer[] transferTypes,
+			DragSourceListener listener) {
+		titleRegion.addDragSupport(operations, transferTypes, listener);
+	}
 
-//	public void addDropSupport(int operations, Transfer[] transferTypes,
-//			DropTargetListener listener) {
-//		titleRegion.addDropSupport(operations, transferTypes, listener);
-//	}
+	public void addDropSupport(int operations, Transfer[] transferTypes,
+			DropTargetListener listener) {
+		titleRegion.addDropSupport(operations, transferTypes, listener);
+	}
 
 	public IMessageToolTipManager getMessageToolTipManager() {
 		return messageToolTipManager;
