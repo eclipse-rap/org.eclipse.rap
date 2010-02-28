@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Martin Donnelly (m2a3@eircom.net) - patch (see Bugzilla #145997) 
+ *     Martin Donnelly (m2a3@eircom.net) - patch (see Bugzilla #145997)
  *******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
@@ -200,7 +200,7 @@ public class FormText extends Canvas {
 	// RAP [if] Need to instruct LCA to relayout the segments to the client
 	private boolean hasLayoutChanged = false;
 
-	// private fields	
+	// private fields
 	private static final boolean DEBUG_TEXT = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_TEXT));
 	private static final boolean DEBUG_TEXTSIZE = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_TEXTSIZE));
 
@@ -356,7 +356,7 @@ public class FormText extends Canvas {
 				loc.indent = p.getIndent();
 				loc.resetCaret();
 				loc.rowHeight = 0;
-				p.layout(gc, carea.width, loc, lineHeight, resourceTable,				
+				p.layout(gc, carea.width, loc, lineHeight, resourceTable,
 						selectedLink);
 			}
 			gc.dispose();
@@ -1090,7 +1090,7 @@ public class FormText extends Canvas {
 	 */
 	public void removeSelectionListener(SelectionListener listener) {
 	    checkWidget();
-// RAP [if]		
+// RAP [if]
 //		if (listener == null) {
 //			SWT.error(SWT.ERROR_NULL_ARGUMENT);
 //		}
@@ -1746,12 +1746,13 @@ public class FormText extends Canvas {
 		FormTextLayout layout = (FormTextLayout) getLayout();
 		if (wHint == SWT.DEFAULT || hHint == SWT.DEFAULT) {
 			size = layout.computeSize(this, wHint, hHint, changed);
+			// RAP [if] Last line of text is cutoff, increase the height with 2px
+	        // TODO: Find proper solution
+			size.y += 2;
 		} else {
 			size = new Point(wHint, hHint);
 		}
-		// RAP [if] Last line of text is cutoff - increase the height with 2px
-		// TODO: Find proper solution
-		Rectangle trim = computeTrim(0, 0, size.x, size.y + 2 );
+		Rectangle trim = computeTrim(0, 0, size.x, size.y );
 		if (DEBUG_TEXTSIZE)
 			System.out.println("FormText Computed size: "+trim); //$NON-NLS-1$
 		return new Point(trim.width, trim.height);

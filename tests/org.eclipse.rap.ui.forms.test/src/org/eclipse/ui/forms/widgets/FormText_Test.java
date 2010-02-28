@@ -57,7 +57,7 @@ public class FormText_Test extends TestCase {
       + "<p>Second paragraph</p>"
       + "</form>";
     formText.setText( text, true, false );
-    Point expected = new Point( 86, 90 );
+    Point expected = new Point( 86, 92 );
     assertEquals( expected, formText.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // fixed size
     expected = new Point( 50, 50 );
