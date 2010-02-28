@@ -103,10 +103,10 @@ public class Hyperlink_Test extends TestCase {
     Hyperlink hyperlink
       = toolkit.createHyperlink( form.getBody(), text, SWT.NONE );
     assertNotNull( hyperlink );
-    Point expected = new Point( 108, 15 );
+    Point expected = new Point( 108, 16 );
     assertEquals( expected, hyperlink.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // fixed size
-    expected = new Point( 50, 15 );
+    expected = new Point( 50, 16 );
     assertEquals( expected, hyperlink.computeSize( 50, 50 ) );
   }
 
