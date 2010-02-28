@@ -1,11 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ *  Copyright (c) 2000, 2008 IBM Corporation and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
+ *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ui.forms;
@@ -16,10 +16,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.internal.forms.widgets.*;
 /**
  * Manages color and underline mode settings for a group of hyperlinks. The
- * class is extended by HyperlinkGroup but is otwerwise not intended to be
+ * class is extended by HyperlinkGroup but is otherwise not intended to be
  * subclassed.
  *
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class HyperlinkSettings {
 	/**

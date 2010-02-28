@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.eclipse.rwt.Adaptable;
+import org.eclipse.ui.forms.internal.widgets.ITextSegmentAdapter;
+
 import org.eclipse.swt.SWT;
 // RAP [if] unnecessary
 //import org.eclipse.swt.graphics.Color;
@@ -23,7 +25,6 @@ import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.ui.forms.internal.widgets.ITextSegmentAdapter;
 
 import com.ibm.icu.text.BreakIterator;
 
@@ -252,9 +253,9 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 			if (isSelectable())
 				totalExtent+=1;
 
-			if (wHint != SWT.DEFAULT && totalExtent > wHint) {
+			if (wHint != SWT.DEFAULT && totalExtent + locator.marginWidth > wHint) {
 				// new line
-				locator.x = locator.indent;
+				locator.resetCaret();
 				locator.y += locator.rowHeight;
 				if (computeHeightOnly)
 					locator.collectHeights();
@@ -266,7 +267,7 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 			if (isSelectable())
 				width += 1;
 			locator.x += width;
-			locator.width = locator.indent + width;
+			locator.width = locator.x;
 			locator.rowHeight = Math.max(locator.rowHeight, extent.y);
 			// RAP [if] fm.getLeading() is missing
 //			locator.leading = Math.max(locator.leading, fm.getLeading());
@@ -286,7 +287,9 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 			if (isSelectable())
 				currentExtent += 1;
 
-			if (currentExtent + textFragment.length > wHint) {
+			// i != 0 || locator.x > locator.getStartX() + (isSelectable() ? 1 : 0) means:
+			// only wrap on the first fragment if we are not at the start of a line
+			if ((i != 0 || locator.x > locator.getStartX() + (isSelectable() ? 1 : 0)) && currentExtent + textFragment.length > wHint) {
 				// overflow
 				int lineWidth = currentExtent;
 				locator.rowHeight = Math.max(locator.rowHeight, lineExtent.y);
@@ -306,6 +309,7 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 			}
 			lineExtent.x += textFragment.length;
 			lineExtent.y = Math.max(lineHeight, lineExtent.y);
+			width = Math.max (width, locator.x + lineExtent.x);
 		}
 		int lineWidth = lineExtent.x;
 		if (isSelectable())
@@ -680,7 +684,9 @@ public class TextSegment extends ParagraphSegment implements Adaptable {
 				int breakLoc = fragment.index;
 				if (breakLoc == 0)
 					continue;
-				if (locator.x + lineExtent.x + fragment.length > rightEdge) {
+				// (i != 0 || locator.x > locator.getStartX() + (isSelectable() ? 1 : 0)) means:
+				// only wrap on the first fragment if we are not at the start of a line
+				if ((i != 0 || locator.x > locator.getStartX() + (isSelectable() ? 1 : 0)) && locator.x + lineExtent.x + fragment.length > rightEdge) {
 					// overflow
 					int lineWidth = locator.x + lineExtent.x;
 					if (isSelectable())

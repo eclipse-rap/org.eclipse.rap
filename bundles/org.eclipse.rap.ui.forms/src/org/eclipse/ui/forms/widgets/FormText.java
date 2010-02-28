@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Martin Donnelly (m2a3@eircom.net) - patch (see Bugzilla #145997) 
  *******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
@@ -16,6 +17,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.eclipse.core.runtime.ListenerList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 // RAP [if] accessibility not supported
@@ -94,7 +96,8 @@ import org.eclipse.ui.internal.forms.widgets.SelectionData;
  * on the fly.
  * <p>
  * When configured to use formatting XML, the control requires the root element
- * <code>form</code> to be used. The following tags can be children of the
+ * <code>form</code> to be used and requires any ampersand (&amp;) characters in the text to
+ * be replaced by the entity <b>&amp;amp;</b>. The following tags can be children of the
  * <code>form</code> element:
  * </p>
  * <ul>
@@ -197,8 +200,7 @@ public class FormText extends Canvas {
 	// RAP [if] Need to instruct LCA to relayout the segments to the client
 	private boolean hasLayoutChanged = false;
 
-	// private fields
-	//TODO We should remove the dependency on Platform
+	// private fields	
 	private static final boolean DEBUG_TEXT = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_TEXT));
 	private static final boolean DEBUG_TEXTSIZE = false;//"true".equalsIgnoreCase(Platform.getDebugOption(FormUtil.DEBUG_TEXTSIZE));
 
@@ -293,12 +295,11 @@ public class FormText extends Canvas {
 					int pwidth = 0;
 					for (int j = 0; j < segments.length; j++) {
 						ParagraphSegment segment = segments[j];
-						segment.advanceLocator(gc, wHint, loc, resourceTable,						
-								false);
+						segment.advanceLocator(gc, wHint, loc, resourceTable, false);
 						if (wHint != SWT.DEFAULT) {
 							width = Math.max(width, loc.width);
 						} else {
-							pwidth += loc.width;
+							pwidth = Math.max(pwidth, loc.width);
 						}
 						if (segment instanceof IFocusSelectable)
 							selectableInTheLastRow = true;
@@ -342,7 +343,6 @@ public class FormText extends Canvas {
 			Locator loc = new Locator();
 			loc.marginWidth = marginWidth;
 			loc.marginHeight = marginHeight;
-			loc.x = marginWidth;
 			loc.y = marginHeight;
 			FontMetrics fm = gc.getFontMetrics();
 			int lineHeight = fm.getHeight();
@@ -370,6 +370,9 @@ public class FormText extends Canvas {
 	/**
 	 * Contructs a new form text widget in the provided parent and using the
 	 * styles.
+	 * <p>
+	 * The only valid style bit for <code>FormText</code> is <code>SWT.NO_FOCUS</code>.
+	 * This will cause the widget to always refuse focus.
 	 *
 	 * @param parent
 	 *            form text parent control
@@ -1374,7 +1377,10 @@ public class FormText extends Canvas {
 		SelectionEvent selEvent = new SelectionEvent( event );
 		selEvent.processEvent();
 // RAP [if] accessibility not supported
-//		getAccessible().selectionChanged();
+//		// A listener could have caused the widget to be disposed
+//		if (!isDisposed()) {
+//		    getAccessible().selectionChanged();
+//		}
 	}
 
 // RAP [if] MouseMoveListener not supported
@@ -1403,9 +1409,7 @@ public class FormText extends Canvas {
 					setFocus();
 				}
 				model.selectLink(segmentUnder);
-// RAP [if] MouseEvent#stateMask not implemented
-//				enterLink(segmentUnder, e.stateMask);
-				enterLink(segmentUnder, SWT.NULL);
+				enterLink(segmentUnder, e.stateMask);
 // RAP [if]	paintFocusTransfer unnecessary
 //				paintFocusTransfer(oldLink, segmentUnder);
 			}
@@ -1418,12 +1422,11 @@ public class FormText extends Canvas {
 		} else {
 			if (e.button == 1) {
 				endSelection(e);
+				if (isDisposed()) return;
 				IHyperlinkSegment segmentUnder = model
 						.findHyperlinkAt(e.x, e.y);
 				if (segmentUnder != null && armed == segmentUnder && selData == null) {
-// RAP [if] MouseEvent#stateMask not implemented
-//					activateLink(segmentUnder, e.stateMask);
-				    activateLink(segmentUnder, SWT.NULL);
+					activateLink(segmentUnder, e.stateMask);
 					armed = null;
 				}
 			}
@@ -1554,21 +1557,21 @@ public class FormText extends Canvas {
 						break;
 					valid = setControlFocus(advance, selectable);
 				}
-				if (selectable == null)
-					setFocusToNextSibling(this, true);
-				else
+				if (selectable != null)
 					ensureVisible(selectable);
 				if (selectable instanceof IHyperlinkSegment) {
 					enterLink((IHyperlinkSegment) selectable, SWT.NULL);
-// RAP [if]
+// RAP [if] paint not supported
 //					paintFocusTransfer(null, (IHyperlinkSegment) selectable);
 				}
 			}
 		} else {
-// RAP [if]
+// RAP [if] paint not supported
 //			paintFocusTransfer(getSelectedLink(), null);
 			model.selectLink(null);
 		}
+		if (!model.hasFocusSegments())
+			redraw();
 	}
 
 	private void enterLink(IHyperlinkSegment link, int stateMask) {
@@ -1746,7 +1749,9 @@ public class FormText extends Canvas {
 		} else {
 			size = new Point(wHint, hHint);
 		}
-		Rectangle trim = computeTrim(0, 0, size.x, size.y);
+		// RAP [if] Last line of text is cutoff - increase the height with 2px
+		// TODO: Find proper solution
+		Rectangle trim = computeTrim(0, 0, size.x, size.y + 2 );
 		if (DEBUG_TEXTSIZE)
 			System.out.println("FormText Computed size: "+trim); //$NON-NLS-1$
 		return new Point(trim.width, trim.height);
@@ -1795,8 +1800,10 @@ public class FormText extends Canvas {
 	 * @see org.eclipse.swt.widgets.Control#setFocus()
 	 */
 	public boolean setFocus() {
+		mouseFocus = true;
 		FormUtil.setFocusScrollingEnabled(this, false);
 		boolean result = super.setFocus();
+		mouseFocus = false;
 		FormUtil.setFocusScrollingEnabled(this, true);
 		return result;
 	}

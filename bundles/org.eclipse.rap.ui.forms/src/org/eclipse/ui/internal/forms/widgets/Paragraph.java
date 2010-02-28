@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.ui.internal.forms.widgets;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -23,7 +24,7 @@ import org.eclipse.ui.forms.HyperlinkSettings;
  * @author
  */
 public class Paragraph {
-	public static final String HTTP = "http://"; //$NON-NLS-1$
+	public static final String[] PROTOCOLS = {"http://", "https://", "ftp://"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 	private Vector segments;
 
@@ -67,7 +68,7 @@ public class Paragraph {
 		if (text.length() == 0)
 			return;
 		if (expandURLs) {
-			int loc = text.indexOf(HTTP);
+			int loc = findUrl(text,0);
 
 			if (loc == -1)
 				addSegment(new TextSegment(text, fontId, colorId, wrapAllowed));
@@ -92,7 +93,7 @@ public class Paragraph {
 								fontId);
 						break;
 					}
-					loc = text.indexOf(HTTP, textLoc);
+					loc = findUrl(text,textLoc);
 				}
 				if (textLoc < text.length()) {
 					addSegment(new TextSegment(text.substring(textLoc), fontId,
@@ -102,6 +103,17 @@ public class Paragraph {
 		} else {
 			addSegment(new TextSegment(text, fontId, colorId, wrapAllowed));
 		}
+	}
+	
+	private int findUrl(String text, int startIndex) {
+		int[] locs = new int[PROTOCOLS.length];
+		for (int i = 0; i < PROTOCOLS.length; i++)
+			locs[i] = text.indexOf(PROTOCOLS[i], startIndex);
+		Arrays.sort(locs);
+		for (int i = 0; i < PROTOCOLS.length; i++)
+			if (locs[i] != -1)
+				return locs[i];
+		return -1;
 	}
 
 	private void addHyperlinkSegment(String text, HyperlinkSettings settings,
@@ -121,10 +133,9 @@ public class Paragraph {
 		ArrayList heights = new ArrayList();
 		hloc.heights = heights;
 		hloc.rowCounter = 0;
-		int innerWidth = width - loc.marginWidth*2;
 		for (int j = 0; j < segments.length; j++) {
 			ParagraphSegment segment = segments[j];
-			segment.advanceLocator(gc, innerWidth, hloc, resourceTable, true);
+			segment.advanceLocator(gc, width, hloc, resourceTable, true);
 		}
 		hloc.collectHeights();
 		loc.heights = heights;

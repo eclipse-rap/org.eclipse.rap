@@ -15,9 +15,9 @@ import java.util.Vector;
 
 // RAP [if] unnecessary
 //import org.eclipse.swt.graphics.Color;
-import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.ui.forms.internal.widgets.IAggregateHyperlinkSegmentAdapter;
 
 /**

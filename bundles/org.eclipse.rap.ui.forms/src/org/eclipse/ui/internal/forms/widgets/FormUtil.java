@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
-//import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -376,36 +376,38 @@ public class FormUtil {
 //		}
 	}
 
-// RAP [rh] FormUtil#processKey unnecessary
-//	public static void processKey(int keyCode, Control c) {
-//		ScrolledComposite scomp = FormUtil.getScrolledComposite(c);
-//		if (scomp != null) {
-//			if (c instanceof Combo)
-//				return;
-//			switch (keyCode) {
-//			case SWT.ARROW_DOWN:
-//				if (scomp.getData("novarrows") == null) //$NON-NLS-1$
-//					FormUtil.scrollVertical(scomp, false);
-//				break;
-//			case SWT.ARROW_UP:
-//				if (scomp.getData("novarrows") == null) //$NON-NLS-1$
-//					FormUtil.scrollVertical(scomp, true);
-//				break;
-//			case SWT.ARROW_LEFT:
-//				FormUtil.scrollHorizontal(scomp, true);
-//				break;
-//			case SWT.ARROW_RIGHT:
-//				FormUtil.scrollHorizontal(scomp, false);
-//				break;
-//			case SWT.PAGE_UP:
-//				FormUtil.scrollPage(scomp, true);
-//				break;
-//			case SWT.PAGE_DOWN:
-//				FormUtil.scrollPage(scomp, false);
-//				break;
-//			}
-//		}
-//	}
+	public static void processKey(int keyCode, Control c) {
+		if (c.isDisposed()) {
+			return;
+		}
+		ScrolledComposite scomp = FormUtil.getScrolledComposite(c);
+		if (scomp != null) {
+			if (c instanceof Combo)
+				return;
+			switch (keyCode) {
+			case SWT.ARROW_DOWN:
+				if (scomp.getData("novarrows") == null) //$NON-NLS-1$
+					FormUtil.scrollVertical(scomp, false);
+				break;
+			case SWT.ARROW_UP:
+				if (scomp.getData("novarrows") == null) //$NON-NLS-1$
+					FormUtil.scrollVertical(scomp, true);
+				break;
+			case SWT.ARROW_LEFT:
+				FormUtil.scrollHorizontal(scomp, true);
+				break;
+			case SWT.ARROW_RIGHT:
+				FormUtil.scrollHorizontal(scomp, false);
+				break;
+			case SWT.PAGE_UP:
+				FormUtil.scrollPage(scomp, true);
+				break;
+			case SWT.PAGE_DOWN:
+				FormUtil.scrollPage(scomp, false);
+				break;
+			}
+		}
+	}
 
 	public static boolean isWrapControl(Control c) {
 		if ((c.getStyle() & SWT.WRAP) != 0)

@@ -1,12 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ *  Copyright (c) 2000, 2009 IBM Corporation and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
+ *  Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Wojciech Galanciak - fix for Bug 294868 - [Forms] Problem with text
+ *     wrapping in SharedScrolledComposite:
  *******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
@@ -20,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-//import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.internal.forms.widgets.FormUtil;
 
 /**
@@ -48,7 +50,7 @@ public abstract class SharedScrolledComposite extends ScrolledComposite {
 
 	private boolean reflowPending = false;
 
-	private boolean delayedReflow = true;
+	private boolean delayedReflow = false;
 	
 	/**
 	 * Creates the new instance.
@@ -178,44 +180,44 @@ public abstract class SharedScrolledComposite extends ScrolledComposite {
 		Composite c = (Composite) getContent();
 		Rectangle clientArea = getClientArea();
 		if (c == null)
-			return;
+			return;	
+		if (clientArea.width == getSize().x) {
+			ScrollBar bar = getVerticalBar();
+			if (bar != null) {
+			    clientArea.width -= bar.getSize().x;
+			}
+		}
 
 		contentCache.setControl(c);
 		if (flushCache) {
 			contentCache.flush();
 		}
-		try {
-			setRedraw(false);
-			Point newSize = contentCache.computeSize(FormUtil.getWidthHint(
-					clientArea.width, c), FormUtil.getHeightHint(clientArea.height,
-					c));
+		Point newSize = contentCache.computeSize(FormUtil.getWidthHint(
+				clientArea.width, c), FormUtil.getHeightHint(clientArea.height,
+				c));
 	
-			// Point currentSize = c.getSize();
-			if (!(expandHorizontal && expandVertical)) {
-				c.setSize(newSize);
-			}
-	
-			setMinSize(newSize);
-			FormUtil.updatePageIncrement(this);
-			
-			// reduce vertical scroll increment if necessary
-// RAP [rh] Scrollbar#setIncrement() missing			
-//			ScrollBar vbar = getVerticalBar();
-//			if (vbar != null) {
-//				if (getClientArea().height - 5 < V_SCROLL_INCREMENT)
-//					getVerticalBar().setIncrement(getClientArea().height - 5);
-//				else 
-//					getVerticalBar().setIncrement(V_SCROLL_INCREMENT);
-//			}
-	
-			ignoreLayouts = false;
-			layout(flushCache);
-			ignoreLayouts = true;
-	
-			contentCache.layoutIfNecessary();
-		} finally {
-			setRedraw(true);
+		if (!(expandHorizontal && expandVertical)) {
+			c.setSize(newSize);
 		}
+	
+		setMinSize(newSize);
+		FormUtil.updatePageIncrement(this);
+			
+		// reduce vertical scroll increment if necessary
+// RAP [rh] Scrollbar#setIncrement() missing			
+//		ScrollBar vbar = getVerticalBar();
+//		if (vbar != null) {
+//			if (getClientArea().height - 5 < V_SCROLL_INCREMENT)
+//				getVerticalBar().setIncrement(getClientArea().height - 5);
+//			else 
+//				getVerticalBar().setIncrement(V_SCROLL_INCREMENT);
+//		}
+	
+		ignoreLayouts = false;
+		layout(flushCache);
+		ignoreLayouts = true;
+	
+		contentCache.layoutIfNecessary();
 	}
 
 	private void updateSizeWhilePending() {
@@ -230,14 +232,14 @@ public abstract class SharedScrolledComposite extends ScrolledComposite {
 				updateSizeWhilePending();
 				return;
 			}
+			reflowPending = true;
 			getDisplay().asyncExec(new Runnable() {
 				public void run() {
+					reflowPending = false;
 					if (!isDisposed())
 						reflow(flushCache);
-					reflowPending = false;
 				}
 			});
-			reflowPending = true;
 		} else
 			reflow(flushCache);
 	}
@@ -268,8 +270,8 @@ public abstract class SharedScrolledComposite extends ScrolledComposite {
 	 * Sets the delayed reflow feature. When used,
 	 * it will schedule a reflow on resize requests
 	 * and reject subsequent reflows until the
-	 * scheduled one is performed. This improves
-	 * performance by 
+	 * scheduled one is performed.
+	 *
 	 * @param delayedReflow
 	 *            The delayedReflow to set.
 	 */

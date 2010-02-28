@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ui.forms.widgets;
-//import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWT;
 //import org.eclipse.swt.accessibility.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
@@ -22,6 +22,11 @@ import org.eclipse.ui.forms.events.*;
  * This is an abstract class. Subclasses are responsible for rendering the
  * control using decoration and hover decoration color. Control should be
  * rendered based on the current expansion state.
+ * <p>
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>None</dd>
+ * </dl>
  * 
  * @since 1.0
  */
@@ -42,10 +47,10 @@ public abstract class ToggleHyperlink extends AbstractHyperlink {
 	 */
 	public ToggleHyperlink(Composite parent, int style) {
 		super(parent, style);
-// RAP [rh] Mouse and key events missing
-//		Listener listener = new Listener() {
-//			public void handleEvent(Event e) {
-//				switch (e.type) {
+// RAP [rh] Mouse events missing
+		Listener listener = new Listener() {
+			public void handleEvent(Event e) {
+				switch (e.type) {
 //					case SWT.MouseEnter:
 //						hover=true;
 //						redraw();
@@ -54,15 +59,15 @@ public abstract class ToggleHyperlink extends AbstractHyperlink {
 //						hover = false;
 //						redraw();
 //						break;
-//					case SWT.KeyDown:
-//						onKeyDown(e);
-//						break;
-//				}
-//			}
-//		};
+					case SWT.KeyDown:
+						onKeyDown(e);
+						break;
+				}
+			}
+		};
 //		addListener(SWT.MouseEnter, listener);
 //		addListener(SWT.MouseExit, listener);
-//		addListener(SWT.KeyDown, listener);
+		addListener(SWT.KeyDown, listener);
 		addHyperlinkListener(new HyperlinkAdapter() {
 			public void linkActivated(HyperlinkEvent e) {
 				setExpanded(!isExpanded());
@@ -157,8 +162,6 @@ public abstract class ToggleHyperlink extends AbstractHyperlink {
 	 */
 	public void setExpanded(boolean expanded) {
 		this.expanded = expanded;
-// RAP [rh] accessibility not implemented
-//		getAccessible().selectionChanged();
 		redraw();
 	}
 // RAP [rh] accessibility not implemented
@@ -224,22 +227,28 @@ public abstract class ToggleHyperlink extends AbstractHyperlink {
 //					}
 //				});
 //	}
-
-// RAP [rh] Key events missing
-//	private void onKeyDown(Event e) {
-//		if (e.keyCode==SWT.ARROW_RIGHT) {
-//			// expand if collapsed
-//			if (!isExpanded()) {
-//				handleActivate(e);
-//			}
-//			e.doit=false;
-//		}
-//		else if (e.keyCode==SWT.ARROW_LEFT) {
-//			// collapse if expanded
-//			if (isExpanded()) {
-//				handleActivate(e);
-//			}
-//			e.doit=false;
-//		}
+//	// set bogus childIDs on link activation to ensure state is read on expand/collapse
+//	void triggerAccessible() {
+//		getAccessible().setFocus(getAccessibleChildID());
 //	}
+//	private int getAccessibleChildID() {
+//		return ToggleHyperlink.this.isExpanded() ? 1 : 2;
+//	}
+
+	private void onKeyDown(Event e) {
+		if (e.keyCode==SWT.ARROW_RIGHT) {
+			// expand if collapsed
+			if (!isExpanded()) {
+				handleActivate(e);
+			}
+			e.doit=false;
+		}
+		else if (e.keyCode==SWT.ARROW_LEFT) {
+			// collapse if expanded
+			if (isExpanded()) {
+				handleActivate(e);
+			}
+			e.doit=false;
+		}
+	}
 }

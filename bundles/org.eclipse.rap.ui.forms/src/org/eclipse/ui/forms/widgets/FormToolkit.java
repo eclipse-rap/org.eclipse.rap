@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-// RAP [rh] Key events missing
-//import org.eclipse.swt.events.KeyAdapter;
-//import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 // RAP [rh] Paint events missing
@@ -98,13 +97,14 @@ public class FormToolkit {
 	private BoldFontHolder boldFontHolder;
 
 	private HyperlinkGroup hyperlinkGroup;
+	
+	private boolean isDisposed = false;
 
 	/* default */
 	VisibilityHandler visibilityHandler;
 
 	/* default */
-// RAP [rh] Key events missing
-//	KeyboardHandler keyboardHandler;
+	KeyboardHandler keyboardHandler;
 
 	// RAP [rh] Paint events missing
 //	private class BorderPainter implements PaintListener {
@@ -177,16 +177,15 @@ public class FormToolkit {
 		}
 	}
 
-	// RAP [rh] key events missing
-//	private static class KeyboardHandler extends KeyAdapter {
-//		public void keyPressed(KeyEvent e) {
-//			Widget w = e.widget;
-//			if (w instanceof Control) {
-//				if (e.doit)
-//					FormUtil.processKey(e.keyCode, (Control) w);
-//			}
-//		}
-//	}
+	private static class KeyboardHandler extends KeyAdapter {
+		public void keyPressed(KeyEvent e) {
+			Widget w = e.widget;
+			if (w instanceof Control) {
+				if (e.doit)
+					FormUtil.processKey(e.keyCode, (Control) w);
+			}
+		}
+	}
 
 	private class BoldFontHolder {
 		private Font normalFont;
@@ -222,6 +221,9 @@ public class FormToolkit {
 
 	/**
 	 * Creates a toolkit that is self-sufficient (will manage its own colors).
+	 * <p>
+	 * Clients that call this method must call {@link #dispose()} when they
+	 * are finished using the toolkit.
 	 *
 	 */
 	public FormToolkit(Display display) {
@@ -232,6 +234,9 @@ public class FormToolkit {
 	 * Creates a toolkit that will use the provided (shared) colors. The toolkit
 	 * will dispose the colors if and only if they are <b>not</b> marked as
 	 * shared via the <code>markShared()</code> method.
+	 * <p>
+	 * Clients that call this method must call {@link #dispose()} when they
+	 * are finished using the toolkit.
 	 *
 	 * @param colors
 	 *            the shared colors
@@ -366,8 +371,7 @@ public class FormToolkit {
 		if (text != null)
 			hyperlink.setText(text);
 		hyperlink.addFocusListener(visibilityHandler);
-// RAP [rh] Key events missing
-//		hyperlink.addKeyListener(keyboardHandler);
+		hyperlink.addKeyListener(keyboardHandler);
 		hyperlinkGroup.add(hyperlink);
 		return hyperlink;
 	}
@@ -386,8 +390,7 @@ public class FormToolkit {
 		ImageHyperlink hyperlink = new ImageHyperlink(parent, style
 				| orientation);
 		hyperlink.addFocusListener(visibilityHandler);
-// RAP [rh] Key events missing
-//		hyperlink.addKeyListener(keyboardHandler);
+		hyperlink.addKeyListener(keyboardHandler);
 		hyperlinkGroup.add(hyperlink);
 		return hyperlink;
 	}
@@ -443,24 +446,21 @@ public class FormToolkit {
 			if (ec.toggle != null) {
 				if (trackFocus)
 					ec.toggle.addFocusListener(visibilityHandler);
-// RAP [rh] Key events missing
-//				if (trackKeyboard)
-//					ec.toggle.addKeyListener(keyboardHandler);
+				if (trackKeyboard)
+					ec.toggle.addKeyListener(keyboardHandler);
 			}
 			if (ec.textLabel != null) {
 				if (trackFocus)
 					ec.textLabel.addFocusListener(visibilityHandler);
-// RAP [rh] Key events missing
-//				if (trackKeyboard)
-//					ec.textLabel.addKeyListener(keyboardHandler);
+				if (trackKeyboard)
+					ec.textLabel.addKeyListener(keyboardHandler);
 			}
 			return;
 		}
 		if (trackFocus)
 			control.addFocusListener(visibilityHandler);
-// RAP [rh] Key events missing
-//		if (trackKeyboard)
-//			control.addKeyListener(keyboardHandler);
+		if (trackKeyboard)
+			control.addKeyListener(keyboardHandler);
 	}
 
 	/**
@@ -476,7 +476,8 @@ public class FormToolkit {
 				((Control) e.widget).setFocus();
 			}
 		});
-		composite.setMenu(composite.getParent().getMenu());
+		if (composite.getParent() != null)
+			composite.setMenu(composite.getParent().getMenu());
 	}
 
 	/**
@@ -518,9 +519,10 @@ public class FormToolkit {
 			section.setTitleBarBackground(colors.getColor(IFormColors.TB_BG));
 			section.setTitleBarBorderColor(colors
 					.getColor(IFormColors.TB_BORDER));
-			section.setTitleBarForeground(colors
-					.getColor(IFormColors.TB_TOGGLE));
 		}
+		// call setTitleBarForeground regardless as it also sets the label color
+		section.setTitleBarForeground(colors
+				.getColor(IFormColors.TB_TOGGLE));
 		return section;
 	}
 
@@ -714,6 +716,10 @@ public class FormToolkit {
 	 * Disposes the toolkit.
 	 */
 	public void dispose() {
+		if (isDisposed) {
+			return;
+		}
+		isDisposed = true;
 		if (colors.isShared() == false) {
 			colors.dispose();
 			colors = null;
@@ -866,8 +872,7 @@ public class FormToolkit {
 		hyperlinkGroup = new HyperlinkGroup(colors.getDisplay());
 		hyperlinkGroup.setBackground(colors.getBackground());
 		visibilityHandler = new VisibilityHandler();
-// RAP [rh] Key events missing
-//		keyboardHandler = new KeyboardHandler();
+		keyboardHandler = new KeyboardHandler();
 		boldFontHolder = new BoldFontHolder();
 	}
 

@@ -12,6 +12,8 @@ package org.eclipse.ui.forms;
 
 import java.util.ArrayList;
 
+import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -19,7 +21,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
@@ -143,8 +144,8 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 		if (getHyperlinkUnderlineMode() == UNDERLINE_ALWAYS)
 			link.setUnderlined(true);
 		hook(link);
-    // RAP [rh] Provides information to handle hover effect on the client-side
-    updateHyperlinkSettings();
+    	// RAP [rh] Provides information to handle hover effect on the client-side
+    	updateHyperlinkSettings();
 	}
 
 	/**
@@ -157,8 +158,8 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 		super.setActiveBackground(newActiveBackground);
 // RAP [rh] Obsolete, as mouse events are missing
 //		isActiveBackgroundSet = true;
-    // RAP [rh] Provides information to handle hover effect on the client-side
-    updateHyperlinkSettings();
+    	// RAP [rh] Provides information to handle hover effect on the client-side
+    	updateHyperlinkSettings();
 	}
 
 	/**
@@ -171,8 +172,8 @@ public final class HyperlinkGroup extends HyperlinkSettings {
 		super.setActiveForeground(newActiveForeground);
 // RAP [rh] Obsolete, as mouse events are missing
 //		isActiveForegroundSet = true;
-    // RAP [rh] Provides information to handle hover effect on the client-side
-    updateHyperlinkSettings();
+    	// RAP [rh] Provides information to handle hover effect on the client-side
+    	updateHyperlinkSettings();
 	}
 
   // RAP [rh] Update information to handle hover effect on the client-side

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,15 @@ package org.eclipse.ui.forms.widgets;
 
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.forms.IMessage;
+import org.eclipse.ui.forms.IMessageManager;
 
 /**
  * ScrolledForm is a control that is capable of scrolling an instance of the
@@ -43,9 +46,12 @@ import org.eclipse.ui.forms.IMessage;
  * Although the class is not final, it is not expected to be be extended.
  * 
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class ScrolledForm extends SharedScrolledComposite {
 	private Form content;
+	
+	private boolean customMenu;
 
 	public ScrolledForm(Composite parent) {
 		this(parent, SWT.V_SCROLL | SWT.H_SCROLL);
@@ -63,6 +69,12 @@ public class ScrolledForm extends SharedScrolledComposite {
 		content = new Form(this, SWT.NULL);
 		super.setContent(content);
 		content.setMenu(getMenu());
+		addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				if (!customMenu)
+					setMenu(null);
+			}
+		});
 	}
 
 	/**
@@ -71,6 +83,7 @@ public class ScrolledForm extends SharedScrolledComposite {
 	 * @param menu
 	 */
 	public void setMenu(Menu menu) {
+		customMenu = true;
 		super.setMenu(menu);
 		if (content != null)
 			content.setMenu(menu);
@@ -253,11 +266,14 @@ public class ScrolledForm extends SharedScrolledComposite {
 		reflow(true);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Sets the form message.
 	 * 
-	 * @see org.eclipse.ui.forms.IMessageContainer#setMessage(java.lang.String,
-	 *      int)
+	 * @param newMessage
+	 *            the message text or <code>null</code> to reset.
+	 * @param newType
+	 *            as defined in
+	 *            {@link org.eclipse.jface.dialogs.IMessageProvider}.
 	 */
 	public void setMessage(String newMessage, int newType) {
 		this.setMessage(newMessage, newType, null);
@@ -279,5 +295,15 @@ public class ScrolledForm extends SharedScrolledComposite {
 	 */
 	public int getMessageType() {
 		return content.getMessageType();
+	}
+	
+	/**
+	 * Returns the message manager that will keep track of messages in this
+	 * form. 
+	 * 
+	 * @return the message manager instance
+	 */
+	public IMessageManager getMessageManager() {
+		return content.getMessageManager();
 	}
 }

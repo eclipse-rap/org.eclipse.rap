@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Kai Nacke - Fix for Bug 202382
+ *     Bryan Hunt - Fix for Bug 245457
  *******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
@@ -16,8 +17,8 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.events.FocusEvent;
 //import org.eclipse.swt.events.FocusListener;
-//import org.eclipse.swt.events.KeyAdapter;
-//import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 //import org.eclipse.swt.events.PaintEvent;
 //import org.eclipse.swt.events.PaintListener;
 //import org.eclipse.swt.events.TraverseEvent;
@@ -53,12 +54,10 @@ import org.eclipse.ui.internal.forms.widgets.FormsResources;
  * The widget can be instantiated as-is, or subclassed to modify some aspects of
  * it. *
  * <p>
- * <!-- RAP [rh] no key events
  * Since 3.1, left/right arrow keys can be used to control the expansion state.
  * If several expandable composites are created in the same parent, up/down
  * arrow keys can be used to traverse between them. Expandable text accepts
  * mnemonics and mnemonic activation will toggle the expansion state.
- * -->
  *
  * <p>
  * While expandable composite recognize that different styles can be used to
@@ -132,6 +131,13 @@ public class ExpandableComposite extends Canvas {
 	 * be positioned after the text control and vertically centered with it.
 	 */
 	public static final int LEFT_TEXT_CLIENT_ALIGNMENT = 1 << 13;
+	
+	/**
+	 * By default, a focus box is painted around the title when it receives focus.
+	 * If this style is used, the focus box will not be painted.  This style does
+	 * not apply when FOCUS_TITLE is used.
+	 */
+	public static final int NO_TITLE_FOCUS_BOX = 1 << 14;
 
 	/**
 	 * Width of the margin that will be added around the control (default is 0).
@@ -266,9 +272,11 @@ public class ExpandableComposite extends Canvas {
 					size = textLabelCache.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 					if (twidth < size.x + IGAP + tcsize.x) {
 						twidth -= IGAP;
-						if (textLabel instanceof Label)
-							size = FormUtil.computeWrapSize(new GC(textLabel), ((Label)textLabel).getText(), Math.round(twidth*(size.x/(float)(size.x+tcsize.x))));  						
-						else
+						if (textLabel instanceof Label) {
+							GC gc = new GC(textLabel);
+							size = FormUtil.computeWrapSize(gc, ((Label)textLabel).getText(), Math.round(twidth*(size.x/(float)(size.x+tcsize.x))));
+							gc.dispose();
+						} else
 							size = textLabelCache.computeSize(Math.round(twidth*(size.x/(float)(size.x+tcsize.x))), SWT.DEFAULT);
 						tcsize = textClientCache.computeSize(twidth-size.x, SWT.DEFAULT);
 					}
@@ -406,9 +414,11 @@ public class ExpandableComposite extends Canvas {
 					size = textLabelCache.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 					if (innertHint != SWT.DEFAULT && innertHint < size.x + IGAP + tcsize.x) {
 						innertHint -= IGAP;
-						if (textLabel instanceof Label)
-							size = FormUtil.computeWrapSize(new GC(textLabel), ((Label)textLabel).getText(), Math.round(innertHint*(size.x/(float)(size.x+tcsize.x))));  						
-						else
+						if (textLabel instanceof Label) {
+							GC gc = new GC(textLabel);
+							size = FormUtil.computeWrapSize(gc, ((Label)textLabel).getText(), Math.round(innertHint*(size.x/(float)(size.x+tcsize.x))));
+							gc.dispose();
+						} else
 							size = textLabelCache.computeSize(Math.round(innertHint*(size.x/(float)(size.x+tcsize.x))), SWT.DEFAULT);
 						tcsize = textClientCache.computeSize(innertHint-size.x, SWT.DEFAULT);
 					}
@@ -555,7 +565,7 @@ public class ExpandableComposite extends Canvas {
 					toggleState();
 				}
 			});
-// RAP [rh] missing paint and key events
+// RAP [rh] missing paint
 //			toggle.addPaintListener(new PaintListener() {
 //				public void paintControl(PaintEvent e) {
 //					if (textLabel instanceof Label && !isFixedStyle())
@@ -564,17 +574,17 @@ public class ExpandableComposite extends Canvas {
 //								: getTitleBarForeground());
 //				}
 //			});
-//			toggle.addKeyListener(new KeyAdapter() {
-//				public void keyPressed(KeyEvent e) {
-//					if (e.keyCode == SWT.ARROW_UP) {
-//						verticalMove(false);
-//						e.doit = false;
-//					} else if (e.keyCode == SWT.ARROW_DOWN) {
-//						verticalMove(true);
-//						e.doit = false;
-//					}
-//				}
-//			});
+			toggle.addKeyListener(new KeyAdapter() {
+				public void keyPressed(KeyEvent e) {
+					if (e.keyCode == SWT.ARROW_UP) {
+						verticalMove(false);
+						e.doit = false;
+					} else if (e.keyCode == SWT.ARROW_DOWN) {
+						verticalMove(true);
+						e.doit = false;
+					}
+				}
+			});
 // RAP [rh] Unnecessary to add focus listener, focus-border must be handled
 //		 on the client-side
 //			if ((getExpansionStyle()&FOCUS_TITLE)==0) {
@@ -1018,8 +1028,10 @@ public class ExpandableComposite extends Canvas {
 	 *            the title bar foreground
 	 */
 	public void setTitleBarForeground(Color color) {
-		titleBarForeground = color;
-		textLabel.setForeground(color);
+		if (hasTitleBar())
+			titleBarForeground = color;
+		if (textLabel != null)
+			textLabel.setForeground(color);
 	}
 
 	/**
@@ -1057,33 +1069,32 @@ public class ExpandableComposite extends Canvas {
 		}
 	}
 
-// RAP [rh] Obsolete, as there are no mouse events
-//	private void verticalMove(boolean down) {
-//		Composite parent = getParent();
-//		Control[] children = parent.getChildren();
-//		for (int i = 0; i < children.length; i++) {
-//			Control child = children[i];
-//			if (child == this) {
-//				ExpandableComposite sibling = getSibling(children, i, down);
-//				if (sibling != null && sibling.toggle != null) {
-//					sibling.setFocus();
-//				}
-//				break;
-//			}
-//		}
-//	}
-//
-//	private ExpandableComposite getSibling(Control[] children, int index,
-//			boolean down) {
-//		int loc = down ? index + 1 : index - 1;
-//		while (loc >= 0 && loc < children.length) {
-//			Control c = children[loc];
-//			if (c instanceof ExpandableComposite && c.isVisible())
-//				return (ExpandableComposite) c;
-//			loc = down ? loc + 1 : loc - 1;
-//		}
-//		return null;
-//	}
+	private void verticalMove(boolean down) {
+		Composite parent = getParent();
+		Control[] children = parent.getChildren();
+		for (int i = 0; i < children.length; i++) {
+			Control child = children[i];
+			if (child == this) {
+				ExpandableComposite sibling = getSibling(children, i, down);
+				if (sibling != null && sibling.toggle != null) {
+					sibling.setFocus();
+				}
+				break;
+			}
+		}
+	}
+
+	private ExpandableComposite getSibling(Control[] children, int index,
+			boolean down) {
+		int loc = down ? index + 1 : index - 1;
+		while (loc >= 0 && loc < children.length) {
+			Control c = children[loc];
+			if (c instanceof ExpandableComposite && c.isVisible())
+				return (ExpandableComposite) c;
+			loc = down ? loc + 1 : loc - 1;
+		}
+		return null;
+	}
 
 	private void programmaticToggleState() {
 		if (toggle != null)

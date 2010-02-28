@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,12 @@
 package org.eclipse.ui.forms.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 
@@ -42,6 +47,9 @@ public class ImageHyperlink extends Hyperlink {
 	private Image hoverImage;
 
 	private Image activeImage;
+	
+//  RAP [if] unused	
+//	private Image disabledImage;
 
 	private int state;
 
@@ -64,6 +72,13 @@ public class ImageHyperlink extends Hyperlink {
 	public ImageHyperlink(Composite parent, int style) {
 		super(parent, removeAlignment(style));
 		extractAlignment(style);
+// RAP [if] unused
+//		addDisposeListener(new DisposeListener() {
+//			public void widgetDisposed(DisposeEvent e) {
+//				if (disabledImage != null)
+//					disabledImage.dispose();
+//			}
+//		});
 	}
 
 //RAP [rh] Disabled because of disabled AbstractHyperlink#paintHyperlink()
@@ -234,6 +249,11 @@ public class ImageHyperlink extends Hyperlink {
 	 */
 	public void setImage(Image image) {
 		this.image = image;
+// RAP [if] unused
+//		if (disabledImage != null)
+//			disabledImage.dispose();
+//		if (!isEnabled() && image != null && !image.isDisposed())
+//			disabledImage = new Image(image.getDevice(), image, SWT.IMAGE_DISABLE);
 	}
 
 	private Point computeMaxImageSize() {
@@ -287,5 +307,17 @@ public class ImageHyperlink extends Hyperlink {
 		} else if ((style & SWT.RIGHT) != 0) {
 			horizontalAlignment = SWT.RIGHT;
 		}
+	}
+	
+	public void setEnabled(boolean enabled) {
+// RAP [if] unused
+//		if (!enabled && (disabledImage == null || disabledImage.isDisposed()) && image != null && !image.isDisposed()) {
+//			disabledImage = new Image(image.getDevice(), image, SWT.IMAGE_DISABLE);
+//		}
+		super.setEnabled(enabled);
+//		if (enabled && disabledImage != null) {
+//			disabledImage.dispose();
+//			disabledImage = null;
+//		}
 	}
 }

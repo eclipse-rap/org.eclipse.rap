@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,9 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IMessage;
+import org.eclipse.ui.forms.IMessageManager;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
+import org.eclipse.ui.internal.forms.MessageManager;
 import org.eclipse.ui.internal.forms.widgets.FormHeading;
 import org.eclipse.ui.internal.forms.widgets.FormUtil;
 
@@ -86,6 +88,9 @@ import org.eclipse.ui.internal.forms.widgets.FormUtil;
  * desired layout manager explicitly.
  * <p>
  * Although the class is not final, it should not be subclassed.
+ * 
+ * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class Form extends Composite {
 	private FormHeading head;
@@ -97,6 +102,8 @@ public class Form extends Composite {
 	private SizeCache headCache = new SizeCache();
 
 	private FormText selectionText;
+	
+	private MessageManager messageManager;
 
 	private class FormLayout extends Layout implements ILayoutExtension {
 		public int computeMinimumWidth(Composite composite, boolean flushCache) {
@@ -757,5 +764,17 @@ public class Form extends Composite {
 			selectionText.clearSelection();
 		}
 		this.selectionText = text;
+	}
+			
+	/**
+	 * Returns the message manager that will keep track of messages in this
+	 * form. 
+	 * 
+	 * @return the message manager instance
+	 */
+	public IMessageManager getMessageManager() {
+		if (messageManager == null)
+			messageManager = new MessageManager(this);
+		return messageManager;
 	}
 }

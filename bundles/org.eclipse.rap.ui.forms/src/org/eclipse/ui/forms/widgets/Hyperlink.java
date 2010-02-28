@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.accessibility.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Composite;
+//import org.eclipse.ui.forms.FormColors;
+import org.eclipse.ui.internal.forms.widgets.*;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
-//import org.eclipse.ui.internal.forms.widgets.*;
 
 /**
  * Hyperlink is a concrete implementation of the abstract base class that draws
@@ -25,6 +25,11 @@ import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
  * for all the hyperlinks that belong to it.
  * <p>
  * Hyperlink can be extended.
+ * <p>
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>SWT.WRAP</dd>
+ * </dl>
  *
  * @see org.eclipse.ui.forms.HyperlinkGroup
  */
@@ -306,20 +311,17 @@ public class Hyperlink extends AbstractHyperlink {
 //	}
 
 	protected Point computeTextSize(int wHint, int hHint) {
-// RAP [rh] Changed text size calculation due to missing GC
 		Point extent;
-//		GC gc = new GC(this);
-//		gc.setFont(getFont());
+		GC gc = new GC(this);
+		gc.setFont(getFont());
 		if ((getStyle() & SWT.WRAP) != 0 && wHint != SWT.DEFAULT) {
-//			extent = FormUtil.computeWrapSize(gc, getText(), wHint);
-			extent = Graphics.textExtent( getFont(), getText(), wHint );
+			extent = FormUtil.computeWrapSize(gc, getText(), wHint);
 		} else {
-//			extent = gc.textExtent(getText());
-			extent = Graphics.stringExtent( getFont(), getText() );
+			extent = gc.textExtent(getText());
 			if ((getStyle() & SWT.WRAP)==0 && wHint!=SWT.DEFAULT)
 				extent.x = wHint;
 		}
-//		gc.dispose();
+		gc.dispose();
 		return extent;
 	}
 }

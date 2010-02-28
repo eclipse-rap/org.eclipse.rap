@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.graphics.Graphics;
+
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -93,6 +96,8 @@ public class FormColors {
 	public static final String TB_TOGGLE_HOVER = IFormColors.TB_TOGGLE_HOVER;
 
 	protected Map colorRegistry = new HashMap(10);
+
+	private LocalResourceManager resources;
 
 	protected Color background;
 
@@ -206,7 +211,14 @@ public class FormColors {
 	 * @return the allocated color object
 	 */
 	public Color createColor(String key, RGB rgb) {
-		return createColor(key, rgb.red, rgb.green, rgb.blue);
+		// RAP [rh] changes due to missing Color constructor
+//		Color c = getResourceManager().createColor(rgb);
+//		Color prevC = (Color) colorRegistry.get(key);
+//		if (prevC != null && !prevC.isDisposed())
+//			getResourceManager().destroyColor(prevC.getRGB());
+	  	Color c = Graphics.getColor(rgb);
+		colorRegistry.put(key, c);	  
+		return c;
 	}
 
 	/**
@@ -249,17 +261,7 @@ public class FormColors {
 	 * @return the allocated color object
 	 */
 	public Color createColor(String key, int r, int g, int b) {
-// RAP [rh] changes due to missing Color constructor
-//	  Color c = new Color(display, r, g, b);
-//		Color prevC = (Color) colorRegistry.get(key);
-//		if (prevC != null)
-//			prevC.dispose();
-//		colorRegistry.put(key, c);
-
-	  Color c = Graphics.getColor(r, g, b);
-		colorRegistry.put(key, c);
-	  
-		return c;
+		return createColor(key, new RGB(r,g,b));
 	}
 
 	/**
@@ -365,10 +367,9 @@ public class FormColors {
 	 * Disposes all the colors in the registry.
 	 */
 	public void dispose() {
-	// RAP [rh] changes due to missing Color#dispose()
-//	  Iterator e = colorRegistry.values().iterator();
-//		while (e.hasNext())
-//			((Color) e.next()).dispose();
+		if (resources != null)
+			resources.dispose();
+		resources = null;
 		colorRegistry = null;
 	}
 
@@ -729,5 +730,11 @@ public class FormColors {
 		// H_DND_FULL
 		createColor(IFormColors.H_HOVER_LIGHT, light);
 		createColor(IFormColors.H_HOVER_FULL, full);
+	}
+	
+	private LocalResourceManager getResourceManager() {
+		if (resources == null)
+			resources = new LocalResourceManager(JFaceResources.getResources());
+		return resources;
 	}
 }

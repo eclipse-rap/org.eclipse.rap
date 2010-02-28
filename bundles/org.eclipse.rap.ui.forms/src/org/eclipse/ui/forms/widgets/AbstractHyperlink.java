@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Izzet Safer (isafer@ca.ibm.com) - patch (see Bugzilla #250505)
  *******************************************************************************/
 package org.eclipse.ui.forms.widgets;
 
@@ -31,6 +32,11 @@ import org.eclipse.ui.forms.events.IHyperlinkListener;
  * processing mouse and keyboard events, and converting them into unified
  * hyperlink events. Subclasses are responsible for rendering the hyperlink in
  * the client area.
+ * <p>
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>None</dd>
+ * </dl>
  *
  * @since 1.0
  */
@@ -227,8 +233,6 @@ public abstract class AbstractHyperlink extends Canvas {
 		// disarm link, back to normal state
 // RAP [rh] Unused code: was used by MouseUp/MouseDown listener code
 //		armed = false;
-// RAP [rh] missing accessibility support
-//		getAccessible().setFocus(ACC.CHILDID_SELF);
 		if (listeners == null)
 			return;
 		int size = listeners.size();
@@ -244,7 +248,14 @@ public abstract class AbstractHyperlink extends Canvas {
 // RAP [if] Cursor is managed on the client side
 //		if (!isDisposed())
 //			setCursor(FormsResources.getHandCursor());
+// RAP [if]	missing accessibility support
+//			triggerAccessible();
 	}
+
+// RAP [if]	missing accessibility support
+//	void triggerAccessible() {
+//		getAccessible().setFocus(ACC.CHILDID_SELF);
+//	}
 
 	/**
 	 * Sets the object associated with this hyperlink. Concrete implementation
@@ -349,7 +360,9 @@ public abstract class AbstractHyperlink extends Canvas {
 	 */
 
 	public void setEnabled (boolean enabled) {
+		boolean needsRedraw = enabled != getEnabled();
 		super.setEnabled(enabled);
-		redraw();
+		if (needsRedraw)
+			redraw();
 	}
 }

@@ -1,11 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ *  Copyright (c) 2000, 2009 IBM Corporation and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
+ *  Contributors:
  *     IBM Corporation - initial API and implementation
  *     Michael Williamson (eclipse-bugs@magnaworks.com) - patch (see Bugzilla #92545)
  *
@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.internal.forms.widgets.FormImages;
 //import org.eclipse.ui.internal.forms.widgets.FormUtil;
@@ -130,7 +131,7 @@ public class Section extends ExpandableComposite {
 		while (c != null) {
 			c.setRedraw(false);
 			c = c.getParent();
-			if (c instanceof SharedScrolledComposite) {
+			if (c instanceof SharedScrolledComposite || c instanceof Shell) {
 				break;
 			}
 		}
@@ -147,7 +148,7 @@ public class Section extends ExpandableComposite {
 		while (c != null) {
 			c.setRedraw(true);
 			c = c.getParent();
-			if (c instanceof SharedScrolledComposite) {
+			if (c instanceof SharedScrolledComposite || c instanceof Shell) {
 				break;
 			}
 		}

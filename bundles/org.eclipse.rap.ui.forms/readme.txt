@@ -1,1 +1,1 @@
-Based on code from dev.eclipse.org:/cvsroot/eclipse, Tag v20080407 
+Based on code from dev.eclipse.org:/cvsroot/eclipse, v20100226
