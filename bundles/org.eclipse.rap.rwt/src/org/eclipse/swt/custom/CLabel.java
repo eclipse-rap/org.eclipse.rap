@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.swt.custom;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
@@ -52,6 +51,10 @@ public class CLabel extends Canvas {
 //  private static final String ELLIPSIS = "..."; //$NON-NLS-1$ // could use the ellipsis glyph on some platforms "\u2026"
   /** the alignment. Either CENTER, RIGHT, LEFT. Default is LEFT */
   private int align = SWT.LEFT;
+  private int leftMargin;
+  private int topMargin;
+  private int rightMargin;
+  private int bottomMargin;
   /** the current text */
   private String text;
   /** the current icon */
@@ -115,6 +118,7 @@ public class CLabel extends Canvas {
         onDispose( event );
       }
     } );
+    initMargins();
 
   }
 
@@ -134,17 +138,16 @@ public class CLabel extends Canvas {
     checkWidget();
     CLabelThemeAdapter themeAdapter
       = ( CLabelThemeAdapter )getAdapter( IThemeAdapter.class );
-    Rectangle padding = themeAdapter.getPadding( this );
     int borderWidth = themeAdapter.getBorderWidth( this );
     Point e = getTotalSize( image, text );
     if ( wHint == SWT.DEFAULT ) {
-      e.x += padding.width;
+      e.x += leftMargin + rightMargin;
       e.x += 2 * borderWidth;
     } else {
       e.x = wHint;
     }
     if ( hHint == SWT.DEFAULT ) {
-      e.y += padding.height;
+      e.y += topMargin + bottomMargin;
       e.y += 2 * borderWidth;
     } else {
       e.y = hHint;
@@ -401,4 +404,164 @@ public class CLabel extends Canvas {
 //    } while (pos != -1);
 //    return lines;
 //}
+
+  /**
+   * Set the label's margins, in pixels.
+   *
+   * @param leftMargin the left margin.
+   * @param topMargin the top margin.
+   * @param rightMargin the right margin.
+   * @param bottomMargin the bottom margin.
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setMargins( final int leftMargin,
+                          final int topMargin,
+                          final int rightMargin,
+                          final int bottomMargin )
+  {
+    checkWidget();
+    this.leftMargin = Math.max( 0, leftMargin );
+    this.topMargin = Math.max( 0, topMargin );
+    this.rightMargin = Math.max( 0, rightMargin );
+    this.bottomMargin = Math.max( 0, bottomMargin );
+  }
+
+  /**
+   * Set the label's horizontal left margin, in pixels.
+   *
+   * @param leftMargin the left margin of the label, which must be equal to or greater than zero
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setLeftMargin( final int leftMargin ) {
+    checkWidget();
+    if( leftMargin >= 0 ) {
+      this.leftMargin = leftMargin;
+    }
+  }
+
+  /**
+   * Return the CLabel's left margin.
+   *
+   * @return the left margin of the label
+   *
+   * @since 1.3
+   */
+  public int getLeftMargin() {
+    //checkWidget();    // [if] Commented in SWT
+    return leftMargin;
+  }
+
+  /**
+   * Set the label's top margin, in pixels.
+   *
+   * @param topMargin the top margin of the label, which must be equal to or greater than zero
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setTopMargin( final int topMargin ) {
+    checkWidget();
+    if( topMargin >= 0 ) {
+      this.topMargin = topMargin;
+    }
+  }
+
+  /**
+   * Return the CLabel's top margin.
+   *
+   * @return the top margin of the label
+   *
+   * @since 1.3
+   */
+  public int getTopMargin() {
+    //checkWidget();    // [if] Commented in SWT
+    return topMargin;
+  }
+
+  /**
+   * Set the label's right margin, in pixels.
+   *
+   * @param rightMargin the right margin of the label, which must be equal to or greater than zero
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setRightMargin( final int rightMargin ) {
+    checkWidget();
+    if( rightMargin >= 0 ) {
+      this.rightMargin = rightMargin;
+    }
+  }
+
+  /**
+   * Return the CLabel's right margin.
+   *
+   * @return the right margin of the label
+   *
+   * @since 1.3
+   */
+  public int getRightMargin() {
+    //checkWidget();    // [if] Commented in SWT
+    return rightMargin;
+  }
+
+  /**
+   * Set the label's bottom margin, in pixels.
+   *
+   * @param bottomMargin the bottom margin of the label, which must be equal to or greater than zero
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setBottomMargin( final int bottomMargin ) {
+    checkWidget();
+    if( bottomMargin >= 0 ) {
+      this.bottomMargin = bottomMargin;
+    }
+  }
+
+  /**
+   * Return the CLabel's bottom margin.
+   *
+   * @return the bottom margin of the label
+   *
+   * @since 1.3
+   */
+  public int getBottomMargin() {
+    //checkWidget();    // [if] Commented in SWT
+    return bottomMargin;
+  }
+
+  private void initMargins() {
+    CLabelThemeAdapter themeAdapter
+      = ( CLabelThemeAdapter )getAdapter( IThemeAdapter.class );
+    Rectangle padding = themeAdapter.getPadding( this );
+    leftMargin = padding.x;
+    topMargin = padding.y;
+    rightMargin = padding.width - padding.x;
+    bottomMargin = padding.height - padding.y;
+  }
 }

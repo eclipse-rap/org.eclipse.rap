@@ -162,6 +162,7 @@ public final class JSConst {
   public static final String QX_FIELD_Z_INDEX = "zIndex";
   public static final String QX_FIELD_TAB_INDEX = "tabIndex";
   public static final String QX_FIELD_CURSOR = "cursor";
+  public static final String QX_FIELD_PADDING = "padding";
 
   // constants
   public static final JSVar QX_CONST_VERTICAL_ORIENTATION

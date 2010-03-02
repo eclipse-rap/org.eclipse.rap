@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,19 +14,25 @@ package org.eclipse.swt.internal.custom.clabelkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Widget;
 
 public final class CLabelLCA extends AbstractWidgetLCA {
 
-  private static final String PROP_TEXT = "text";
-  private static final String PROP_ALIGNMENT = "alignment";
-  private static final String PROP_IMAGE = "image";
+  static final String PROP_TEXT = "text";
+  static final String PROP_ALIGNMENT = "alignment";
+  static final String PROP_IMAGE = "image";
+  static final String PROP_LEFT_MARGIN = "leftMargin";
+  static final String PROP_TOP_MARGIN = "topMargin";
+  static final String PROP_RIGHT_MARGIN = "rightMargin";
+  static final String PROP_BOTTOM_MARGIN = "bottomMargin";
 
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
 
@@ -37,6 +43,12 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TEXT, label.getText() );
     adapter.preserve( PROP_IMAGE, label.getImage() );
     adapter.preserve( PROP_ALIGNMENT, new Integer( label.getAlignment() ) );
+    adapter.preserve( PROP_LEFT_MARGIN, new Integer( label.getLeftMargin() ) );
+    adapter.preserve( PROP_TOP_MARGIN, new Integer( label.getTopMargin() ) );
+    adapter.preserve( PROP_RIGHT_MARGIN,
+                      new Integer( label.getRightMargin() ) );
+    adapter.preserve( PROP_BOTTOM_MARGIN,
+                      new Integer( label.getBottomMargin() ) );
     WidgetLCAUtil.preserveCustomVariant( label );
   }
 
@@ -57,7 +69,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     } else if( ( widget.getStyle() & SWT.SHADOW_OUT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_SHADOW_OUT" } );
     }
-    ControlLCAUtil.writeStyleFlags( label );    
+    ControlLCAUtil.writeStyleFlags( label );
     Object[] args = { label };
     writer.callStatic( "org.eclipse.swt.CLabelUtil.initialize", args  );
   }
@@ -68,6 +80,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     writeText( label );
     writeImage( label );
     writeAlignment( label );
+    writeMargins( label );
     WidgetLCAUtil.writeCustomVariant( label );
   }
 
@@ -130,5 +143,45 @@ public final class CLabelLCA extends AbstractWidgetLCA {
       result = "left";
     }
     return result;
+  }
+
+  private static void writeMargins( final CLabel label ) throws IOException {
+    Integer leftMargin = new Integer( label.getLeftMargin() );
+    Integer topMargin = new Integer( label.getTopMargin() );
+    Integer rightMargin = new Integer( label.getRightMargin() );
+    Integer bottomMargin = new Integer( label.getBottomMargin() );
+    CLabelThemeAdapter themeAdapter
+      = ( CLabelThemeAdapter )label.getAdapter( IThemeAdapter.class );
+    Rectangle padding = themeAdapter.getPadding( label );
+    Integer defLeftMargin = new Integer( padding.x );
+    Integer defTopMargin = new Integer( padding.y );
+    Integer defRightMargin = new Integer( padding.width - padding.x );
+    Integer defBottomMargin = new Integer( padding.height - padding.y );
+    if(    WidgetLCAUtil.hasChanged( label,
+                                     PROP_LEFT_MARGIN,
+                                     leftMargin,
+                                     defLeftMargin )
+        || WidgetLCAUtil.hasChanged( label,
+                                     PROP_TOP_MARGIN,
+                                     topMargin,
+                                     defTopMargin )
+        || WidgetLCAUtil.hasChanged( label,
+                                     PROP_RIGHT_MARGIN,
+                                     rightMargin,
+                                     defRightMargin )
+        || WidgetLCAUtil.hasChanged( label,
+                                     PROP_BOTTOM_MARGIN,
+                                     bottomMargin,
+                                     defBottomMargin ) )
+    {
+      JSWriter writer = JSWriter.getWriterFor( label );
+      Object[] args = new Object[]{
+        topMargin,
+        rightMargin,
+        bottomMargin,
+        leftMargin
+      };
+      writer.set( JSConst.QX_FIELD_PADDING, args );
+    }
   }
 }
