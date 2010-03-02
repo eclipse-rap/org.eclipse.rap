@@ -315,7 +315,7 @@ public final class PropertyResolver {
   }
 
   static boolean isFontProperty( final String property ) {
-    return "font".equals( property );
+    return "font".equals( property ) || property.endsWith( "-fontlist" );
   }
 
   // The format of a URI value is 'url(' followed by optional whitespace
@@ -637,7 +637,7 @@ public final class PropertyResolver {
   static boolean isFloatProperty( final String property ) {
     return "opacity".equals( property );
   }
-  
+
   static QxFloat readFloat( final LexicalUnit unit ) {
     QxFloat result;
     if(    unit.getLexicalUnitType() == LexicalUnit.SAC_REAL
@@ -647,7 +647,7 @@ public final class PropertyResolver {
       if( unit.getLexicalUnitType() == LexicalUnit.SAC_INTEGER ) {
         value = unit.getIntegerValue();
       } else {
-        value = unit.getFloatValue();        
+        value = unit.getFloatValue();
       }
       if( value >= 0 && value <= 1 ) {
         result = QxFloat.create( value );
@@ -782,7 +782,7 @@ public final class PropertyResolver {
   }
 
   private static final class NamedColor {
-    
+
     public NamedColor( int red, int green, int blue ) {
       this.red = red;
       this.green = green;

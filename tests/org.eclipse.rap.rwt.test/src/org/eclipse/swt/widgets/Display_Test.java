@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,7 +84,7 @@ public class Display_Test extends TestCase {
     assertNull( displayFromBgThread[ 0 ] );
     assertNull( displayFromBgThreadWithFakeContext[ 0 ] );
   }
-  
+
   public void testGetDefault() throws InterruptedException {
     final Display[] backgroundDisplay = { null };
     final Display display = new Display();
@@ -110,7 +110,7 @@ public class Display_Test extends TestCase {
     threadWithContext.join();
     assertSame( display, backgroundDisplay[ 0 ] );
   }
-  
+
   public void testGetDefaultCreatesDisplay() throws InterruptedException {
     // getDefault must not create a Display if called from a background thread
     final Display[] backgroundDisplay = { null };
@@ -638,6 +638,19 @@ public class Display_Test extends TestCase {
     assertNotNull( systemFont );
   }
 
+  public void testFontList() {
+    Display display = new Display();
+    FontData[] fontList = display.getFontList( null, false );
+    assertEquals( 0, fontList.length );
+    fontList = display.getFontList( null, true );
+    assertTrue( fontList.length > 0 );
+    String firstFontName = fontList[ 0 ].getName();
+    fontList = display.getFontList( firstFontName, true );
+    assertEquals( 1, fontList.length );
+    fontList = display.getFontList( "not existing font", true );
+    assertEquals( 0, fontList.length );
+  }
+
   public void testSystemImage() {
     Display display = new Display();
     Image errorImage = display.getSystemImage( SWT.ICON_ERROR );
@@ -838,7 +851,7 @@ public class Display_Test extends TestCase {
     }
     // Further timerExec tests can be found in UICallbackManager_Test
   }
-  
+
   public void testTimerExecFromBackgroundThread() throws Exception {
     final Throwable[] throwable = { null };
     final Display display = new Display();
@@ -879,7 +892,7 @@ public class Display_Test extends TestCase {
     assertNotNull( monitor );
     // Further monitor tests can be found in Monitor_Test
   }
-  
+
   public void testDisposeExecWithNullArgument() {
     Display display = new Display();
     display.disposeExec( null );
@@ -954,7 +967,7 @@ public class Display_Test extends TestCase {
     display.dispose();
     assertTrue( display.isDisposed() );
   }
-  
+
   public void testSystemCursor() {
     Display display = new Display();
     Cursor arrow = display.getSystemCursor( SWT.CURSOR_ARROW );
@@ -1015,7 +1028,7 @@ public class Display_Test extends TestCase {
     display.close();
     assertFalse( display.isDisposed() );
   }
-  
+
   public void testCheckDevice() throws Exception {
     final Throwable[] throwable = { null };
     final Display display = new Display();

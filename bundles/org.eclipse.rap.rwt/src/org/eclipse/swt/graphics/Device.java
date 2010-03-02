@@ -133,6 +133,59 @@ public abstract class Device implements Drawable {
   }
 
   /**
+   * Returns <code>FontData</code> objects which describe
+   * the fonts that match the given arguments. If the
+   * <code>faceName</code> is null, all fonts will be returned.
+   *
+   * @param faceName the name of the font to look for, or null
+   * @param scalable if true only scalable fonts are returned, otherwise only non-scalable fonts are returned.
+   * @return the matching font data
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public FontData[] getFontList( final String faceName,
+                                 final boolean scalable )
+  {
+    checkDevice();
+    FontData[] result = new FontData[ 0 ];
+    if( scalable ) {
+      QxFont fontList
+        = ( QxFont )ThemeUtil.getCssValue( "Display",
+                                           "rwt-fontlist",
+                                           SimpleSelector.DEFAULT );
+      if( faceName == null ) {
+        result = new FontData[ fontList.family.length ];
+        for( int i = 0; i < result.length; i++ ) {
+          result[ i ] = new FontData( fontList.family[ i ],
+                                      0,
+                                      SWT.NORMAL );
+        }
+      } else {
+        int counter = 0;
+        for( int i = 0; i < fontList.family.length; i++ ) {
+          if( fontList.family[ i ].startsWith( faceName ) ) {
+            counter++;
+          }
+        }
+        result = new FontData[ counter ];
+        counter = 0;
+        for( int i = 0; i < fontList.family.length; i++ ) {
+          if( fontList.family[ i ].startsWith( faceName ) ) {
+            result[ counter++ ] = new FontData( fontList.family[ i ],
+                                                0,
+                                                SWT.NORMAL );
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
    * Returns a rectangle which describes the area of the receiver which is
    * capable of displaying data.
    *

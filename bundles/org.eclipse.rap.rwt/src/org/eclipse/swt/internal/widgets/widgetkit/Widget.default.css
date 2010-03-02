@@ -33,6 +33,8 @@ Display {
   rwt-question-image: url( resource/widget/rap/dialog/question.png );
   rwt-warning-image: url( resource/widget/rap/dialog/warning.png );
   
+  rwt-fontlist: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
+  
   background-image: url( resource/widget/rap/display/bg.gif );
   font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
 }

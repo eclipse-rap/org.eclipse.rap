@@ -21,7 +21,7 @@
   <element name="Display">
 
     <description>
-    Dummy element used to define certain SWT system colors.
+      Dummy element used to define certain SWT system colors.
     </description>
 
     <property name="rwt-shadow-color">
@@ -105,6 +105,12 @@
       <description>
         The image used for MessageBoxes with style SWT.ICON_WARNING.
         Also returned by Display#getSystemImage().
+      </description>
+    </property>
+    
+    <property name="rwt-fontlist">
+      <description>
+        The font list returned by Display#getFontList().
       </description>
     </property>
 
