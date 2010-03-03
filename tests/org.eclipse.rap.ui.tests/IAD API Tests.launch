@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.rap.ui.launch.RAPJUnitTestLauncher">
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="askclear" value="false"/>
@@ -26,8 +26,8 @@
 <listEntry value="2"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
-<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.eclipse.rap.ui.tests/IAD API Tests&lt;org.eclipse.rap.interactiondesign.tests"/>
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
@@ -45,15 +45,17 @@
 <booleanAttribute key="org.eclipse.rap.launch.openBrowser" value="true"/>
 <intAttribute key="org.eclipse.rap.launch.port" value="10080"/>
 <stringAttribute key="org.eclipse.rap.launch.servletName" value="iadtest"/>
+<intAttribute key="org.eclipse.rap.launch.sessionTimeout" value="0"/>
 <booleanAttribute key="org.eclipse.rap.launch.terminatePrevious" value="true"/>
 <booleanAttribute key="org.eclipse.rap.launch.useManualPort" value="true"/>
+<booleanAttribute key="org.eclipse.rap.launch.useSessionTimeout" value="false"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.sdk.ide"/>
 <booleanAttribute key="show_selected_only" value="false"/>
-<stringAttribute key="target_bundles" value="org.eclipse.osgi@:,org.apache.commons.logging@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.core.databinding.beans@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.core.databinding.observable@default:default,org.mortbay.jetty.server@default:default,org.eclipse.core.databinding@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.core.runtime@default:true,org.eclipse.core.filesystem@default:default,org.eclipse.equinox.app@default:default,org.eclipse.jdt.junit.runtime@default:default,org.eclipse.core.expressions@default:default,org.eclipse.osgi.services@default:default,org.eclipse.equinox.http.jetty@default:default,org.eclipse.equinox.common@default:default,com.ibm.icu.base@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.resources@default:default,org.junit@default:default,org.eclipse.equinox.http.registry@default:default,org.eclipse.core.databinding.property@default:default,org.eclipse.core.resources.compatibility@default:false,org.mortbay.jetty.util@default:default,javax.servlet@default:default,org.eclipse.core.commands@default:default"/>
+<stringAttribute key="target_bundles" value="org.eclipse.core.expressions@default:default,org.eclipse.core.databinding.beans@default:default,javax.servlet@default:default,org.eclipse.core.databinding.observable@default:default,org.mortbay.jetty.util@default:default,org.eclipse.osgi,org.eclipse.core.commands@default:default,org.eclipse.help@default:default,org.junit@default:default,org.eclipse.equinox.common@2:true,org.eclipse.core.databinding@default:default,org.eclipse.equinox.app@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.core.resources@default:default,org.mortbay.jetty.server@default:default,org.eclipse.core.jobs@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.core.runtime@default:true,org.eclipse.equinox.http.jetty@default:default,org.eclipse.osgi.services@default:default,org.eclipse.jdt.junit.runtime@default:default,org.eclipse.core.databinding.property@default:default,com.ibm.icu.base@default:default,org.eclipse.equinox.http.registry@default:default,org.eclipse.core.contenttype@default:default"/>
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useDefaultConfig" value="true"/>
 <booleanAttribute key="useDefaultConfigArea" value="false"/>
 <booleanAttribute key="useProduct" value="true"/>
-<stringAttribute key="workspace_bundles" value="org.eclipse.rap.junit.runtime@default:default,org.eclipse.rap.equinox.registry@default:false,org.eclipse.rap.ui.tests@default:default,org.eclipse.core.runtime.compatibility@default:default,org.eclipse.rap.rwt.q07@default:false,org.eclipse.rap.ui.forms@default:default,org.eclipse.rap.ui.tests.harness@default:default,org.eclipse.update.configurator@default:default,org.eclipse.rap.ui.views@default:default,org.eclipse.rap.jface.databinding@default:default,org.eclipse.rap.rwt@default:default,org.eclipse.rap.jface@default:default,org.eclipse.test.performance@default:default,org.eclipse.rap.ui.workbench@default:default,org.eclipse.rap.ui@default:default,org.eclipse.rap.junit@default:default,org.eclipse.core.tests.harness@default:default"/>
+<stringAttribute key="workspace_bundles" value="org.eclipse.test.performance@default:default,org.eclipse.rap.ui@default:default,org.eclipse.rap.rwt.q07@default:false,org.eclipse.rap.junit@default:default,org.eclipse.core.filesystem.macosx@default:false,org.eclipse.rap.rwt.test@default:false,org.eclipse.rap.ui.views@default:default,org.eclipse.rap.equinox.registry@default:false,org.eclipse.core.filesystem@default:default,org.eclipse.rap.ui.workbench@default:default,org.eclipse.rap.rwt.q07.test@default:false,org.eclipse.rap.rwt.test.mockup@default:false,org.eclipse.rap.jface@default:default,org.eclipse.rap.ui.tests.harness@default:default,org.eclipse.rap.ui.forms@default:default,org.eclipse.rap.ui.forms.test@default:false,org.eclipse.rap.ui.tests@default:default,org.eclipse.rap.rwt@default:default,org.eclipse.core.runtime.compatibility@default:default,org.eclipse.rap.rwt.testfixture@default:false,org.eclipse.rap.jface.databinding@default:default,org.eclipse.core.tests.harness@default:default,org.eclipse.rap.junit.runtime@default:default,org.eclipse.update.configurator@3:true"/>
 </launchConfiguration>
