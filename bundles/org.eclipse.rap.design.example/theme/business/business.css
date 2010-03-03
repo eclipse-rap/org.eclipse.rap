@@ -277,11 +277,11 @@ Button.perspective {
   background-image: none;
   border: none;
   color: rgb( 0, 80, 145 );
-  font: 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 Button.perspective:hover {
-  font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+  font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-image: none;
 }
 
@@ -298,7 +298,7 @@ Button.perspectiveActive {
   background-color: transparent;
   background-image: none;
   border: none;
-  font: bold 11px Arial, "Lucida Sans", Verdana, Helvetica, sans-serif;
+  font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 Button.perspectiveActive:pressed, Button.perspectiveActive:hover {
@@ -374,7 +374,6 @@ Shell {
 }
 
 Shell[BORDER], Shell[TITLE] {
-  color: #4a4a4a;
   background-color: white;
   border: 2px solid #005092;
   border-radius: 6px;
@@ -446,7 +445,6 @@ TreeItem:selected:unfocused {
 
 TreeColumn {
   background-image: url( "theme/business/icons/table-column.png" );
-  color: #666666;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom:none;
   padding: 1px 2px;
@@ -821,7 +819,7 @@ Combo-Button:pressed, CCombo-Button:pressed {
   );
 }
 
-Combo-List {
+Combo-List, CCombo-List {
   border: 1px solid #c1c1c1;
   border-radius: 0px 0px 2px 2px;
 }
@@ -901,16 +899,6 @@ DateTime {
   padding: 1px 2px;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-radius: 2px 2px 2px 2px;
-}
-
-DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:selected:hover {
-  background-color: #00569c;
-  color: white;
-}
-
-DateTime-Calendar-Day:otherMonth {
-  background-color: transparent;
-  color: #464a4e;
 }
 
 DateTime-Calendar-Day:hover {
@@ -1036,6 +1024,11 @@ DateTime-DropDownButton {
 DateTime-Field:selected, DateTime-Calendar-Day:selected {
   background-color: #D2D2D2;
   color: #4a4a4a;
+}
+
+DateTime-Calendar-Day:selected:hover {
+  background-color: #00569c;
+  color: white;
 }
 
 DateTime-Calendar-Day:otherMonth {
@@ -1450,13 +1443,12 @@ ToolItem.menuBar {
   border: none;
   color: #0059a5;
   padding: 0px 10px 0px 10px;
-  font: 13px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   spacing: 5px;
 }
 
 ToolItem.menuBar:hover {
   background-color: transparent;
-    background-image: gradient(
+  background-image: gradient(
     linear, left top, left bottom,
     from( #ffffff ),
     to( #f1f1f1 )
@@ -1465,7 +1457,6 @@ ToolItem.menuBar:hover {
   border-radius: 2px 2px 0px 0px;
   color: #0059a5;
   padding: 0px 10px 0px 10px;
-  font: 13px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 ToolItem-DropDownIcon.menuBar {
