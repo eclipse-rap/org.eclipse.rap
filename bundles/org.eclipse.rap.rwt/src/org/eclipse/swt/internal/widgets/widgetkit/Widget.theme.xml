@@ -21,34 +21,34 @@
   <element name="Display">
 
     <description>
-      Dummy element used to define certain SWT system colors.
+      This element holds system-wide settings for colors, fonts, etc.
     </description>
 
     <property name="rwt-shadow-color">
       <description>
         Color used to draw (outer) shadow line in 3d borders.
-        Defines the value of SWT.COLOR_WIDGET_NORMAL_SHADOW.
+        Defines the value of SWT#COLOR_WIDGET_NORMAL_SHADOW.
       </description>
     </property>
 
     <property name="rwt-highlight-color">
       <description>
         Color used to draw (outer) highlight line in 3d borders.
-        Defines the value of SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW.
+        Defines the value of SWT#COLOR_WIDGET_HIGHLIGHT_SHADOW.
       </description>
     </property>
 
     <property name="rwt-darkshadow-color">
       <description>
         Color used to draw (inner) shadow line in 3d borders.
-        Defines the value of SWT.COLOR_WIDGET_DARK_SHADOW.
+        Defines the value of SWT#COLOR_WIDGET_DARK_SHADOW.
       </description>
     </property>
 
     <property name="rwt-lightshadow-color">
       <description>
         Color used to draw (inner) highlight line in 3d borders.
-        Defines the value of SWT.COLOR_WIDGET_LIGHT_SHADOW.
+        Defines the value of SWT#COLOR_WIDGET_LIGHT_SHADOW.
       </description>
     </property>
 
@@ -56,7 +56,7 @@
       <description>
         Color for thin lines as shown by Group, TabFolder headers, Table headers,
         etc.
-        Defines the value of SWT.COLOR_WIDGET_BORDER.
+        Defines the value of SWT#COLOR_WIDGET_BORDER.
       </description>
     </property>
 
@@ -69,41 +69,41 @@
     <property name="rwt-infobackground-color">
       <description>
         Color used by PopupDialog for its background.
-        Defines the value of SWT.COLOR_INFO_BACKGROUND.
+        Defines the value of SWT#COLOR_INFO_BACKGROUND.
       </description>
     </property>
 
     <property name="rwt-error-image">
       <description>
-        The image used for MessageBoxes with style SWT.ICON_ERROR.
+        The image used for MessageBoxes with style SWT#ICON_ERROR.
         Also returned by Display#getSystemImage().
       </description>
     </property>
 
     <property name="rwt-information-image">
       <description>
-        The image used for MessageBoxes with style SWT.ICON_INFORMATION.
+        The image used for MessageBoxes with style SWT#ICON_INFORMATION.
         Also returned by Display#getSystemImage().
       </description>
     </property>
 
     <property name="rwt-working-image">
       <description>
-        The image used for MessageBoxes with style SWT.ICON_WORKING.
+        The image used for MessageBoxes with style SWT#ICON_WORKING.
         Also returned by Display#getSystemImage().
       </description>
     </property>
 
     <property name="rwt-question-image">
       <description>
-        The image used for MessageBoxes with style SWT.ICON_QUESTION.
+        The image used for MessageBoxes with style SWT#ICON_QUESTION.
         Also returned by Display#getSystemImage().
       </description>
     </property>
 
     <property name="rwt-warning-image">
       <description>
-        The image used for MessageBoxes with style SWT.ICON_WARNING.
+        The image used for MessageBoxes with style SWT#ICON_WARNING.
         Also returned by Display#getSystemImage().
       </description>
     </property>
