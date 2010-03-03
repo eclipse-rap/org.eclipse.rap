@@ -163,6 +163,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Decorator_Test.class );
     suite.addTestSuite( DragDetectEvent_Test.class );
     suite.addTestSuite( DragSource_Test.class );
+    suite.addTestSuite( DragSourceEffect_Test.class );
     suite.addTestSuite( Transfer_Test.class );
     suite.addTestSuite( ByteArrayTransfer_Test.class );
 
