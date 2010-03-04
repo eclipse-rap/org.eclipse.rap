@@ -113,7 +113,14 @@ class FileImageDescriptor extends ImageDescriptor {
       Image result = null;
       if( location != null ) {
         String path = location.getPackage().getName().replace( '.', '/' );
-        result = Graphics.getImage( path + "/" + name, getStream() ); //$NON-NLS-1$
+        InputStream is = getStream();
+        if( is != null ) {
+          result = Graphics.getImage( path + "/" + name, is ); //$NON-NLS-1$
+        } else if( returnMissingImageOnError ) {
+          path = "org/eclipse/jface/resource/images/missing_image.png"; //$NON-NLS-1$
+          ClassLoader loader = getClass().getClassLoader();
+          result = Graphics.getImage( path, loader.getResourceAsStream( path ) );
+        }
       }
       return result;
     }
