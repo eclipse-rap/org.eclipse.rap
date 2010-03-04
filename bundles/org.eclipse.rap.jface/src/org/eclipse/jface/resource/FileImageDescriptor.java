@@ -110,8 +110,12 @@ class FileImageDescriptor extends ImageDescriptor {
 
     // RAP [bm] alternative to ImageData for performance reasons
     public Image createImage(boolean returnMissingImageOnError, Device device) {
-      String path = location.getPackage().getName().replace( '.', '/' );
-      return Graphics.getImage( path + "/" + name, getStream() ); //$NON-NLS-1$
+      Image result = null;
+      if( location != null ) {
+        String path = location.getPackage().getName().replace( '.', '/' );
+        result = Graphics.getImage( path + "/" + name, getStream() ); //$NON-NLS-1$
+      }
+      return result;
     }
 
     /**
