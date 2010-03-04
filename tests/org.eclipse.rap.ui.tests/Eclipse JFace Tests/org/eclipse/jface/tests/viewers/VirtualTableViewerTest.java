@@ -36,20 +36,20 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/**
 	 * Create a new instance of the receiver.
-	 * 
+	 *
 	 * @param name
 	 */
 	public VirtualTableViewerTest(String name) {
 		super(name);
 	}
-	
+
 	protected int getShellStyle() {
 		return super.getShellStyle() | SWT.ON_TOP;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.TableViewerTest#createTableViewer(org.eclipse.swt.widgets.Composite)
 	 */
 	protected TableViewer createTableViewer(Composite parent) {
@@ -60,7 +60,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 		table.addListener(SWT.SetData, new Listener() {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 			 */
 			public void handleEvent(Event event) {
@@ -73,7 +73,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/**
 	 * Get the collection of currently visible table items.
-	 * 
+	 *
 	 * @return TableItem[]
 	 */
 	private TableItem[] getVisibleItems() {
@@ -93,7 +93,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.TableViewerTest#getItemCount()
 	 */
 	protected int getItemCount() {
@@ -102,7 +102,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testFilter()
 	 */
 	public void testFilter() {
@@ -110,12 +110,12 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 		visibleItems = new HashSet();
 		fViewer.addFilter(filter);
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		assertEquals("filtered count", 5, getItemCount());
 
 		visibleItems = new HashSet();
 		fViewer.removeFilter(filter);
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		assertEquals("unfiltered count", 10, getItemCount());
 	}
 
@@ -124,22 +124,22 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 		visibleItems = new HashSet();
 		fViewer.setFilters(new ViewerFilter[] { filter, new TestLabelFilter2() });
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		assertEquals("2 filters count",1, getItemCount());
 
 		visibleItems = new HashSet();
 		fViewer.setFilters(new ViewerFilter[] { filter });
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		assertEquals("1 filtered count",5, getItemCount());
 
 		visibleItems = new HashSet();
 		fViewer.setFilters(new ViewerFilter[0]);
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		assertEquals("unfiltered count",10, getItemCount());
 	}
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testInsertSibling()
 	 */
 	public void testInsertSibling() {
@@ -150,7 +150,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testInsertSiblingReveal()
 	 */
 	public void testInsertSiblingReveal() {
@@ -161,7 +161,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testInsertSiblings()
 	 */
 	public void testInsertSiblings() {
@@ -172,7 +172,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testInsertSiblingWithFilterFiltered()
 	 */
 	public void testInsertSiblingWithFilterFiltered() {
@@ -183,7 +183,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testInsertSiblingWithFilterNotFiltered()
 	 */
 	public void testInsertSiblingWithFilterNotFiltered() {
@@ -194,7 +194,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testInsertSiblingWithSorter()
 	 */
 	public void testInsertSiblingWithSorter() {
@@ -205,27 +205,27 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testRenameWithFilter()
 	 */
 	public void testRenameWithFilter() {
 		fViewer.addFilter(new TestLabelFilter());
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
         TestElement first = fRootElement.getFirstChild();
         first.setLabel("name-1111"); // should disappear
-//        ((TableViewer) fViewer).getControl().update();
+        ((TableViewer) fViewer).getControl().update();
         assertNull("changed sibling is not visible", fViewer
                 .testFindItem(first));
         first.setLabel("name-2222"); // should reappear
         fViewer.refresh();
-//        ((TableViewer) fViewer).getControl().update();
+        ((TableViewer) fViewer).getControl().update();
         assertNotNull("changed sibling is not visible", fViewer
                 .testFindItem(first));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testSetInput()
 	 */
 	public void testSetInput() {
@@ -236,18 +236,18 @@ public class VirtualTableViewerTest extends TableViewerTest {
 	public void testRenameWithSorter() {
 		// Call update to make sure the viewer is in a correct state
 		// At least on MacOSX I get failures without this call
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		fViewer.setSorter(new TestLabelSorter());
 		TestElement first = fRootElement.getFirstChild();
 		first.setLabel("name-9999");
 		String newElementLabel = first.toString();
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		assertEquals("sorted first", newElementLabel, getItemText(0));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testSorter()
 	 */
 	public void testSorter() {
@@ -257,21 +257,21 @@ public class VirtualTableViewerTest extends TableViewerTest {
 		String firstLabel = first.toString();
 		String lastLabel = last.toString();
 
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		assertEquals("unsorted", firstLabel, getItemText(0));
 		fViewer.setSorter(new TestLabelSorter());
 
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		assertEquals("reverse sorted", lastLabel, getItemText(0));
 
 		fViewer.setSorter(null);
-//		((TableViewer) fViewer).getControl().update();
+		((TableViewer) fViewer).getControl().update();
 		assertEquals("unsorted", firstLabel, getItemText(0));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testInsertSiblingSelectExpanded()
 	 */
 	public void testInsertSiblingSelectExpanded() {
@@ -282,7 +282,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testSomeChildrenChanged()
 	 */
 	public void testSomeChildrenChanged() {
@@ -293,7 +293,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testWorldChanged()
 	 */
 	public void testWorldChanged() {
@@ -301,7 +301,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 		// based on the assumption that all items
 		// are created.
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testDeleteSibling()
 	 */
@@ -310,7 +310,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 		((TableViewer) fViewer).getTable().getItem(0).getText();
 		super.testDeleteSibling();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.tests.viewers.StructuredViewerTest#testSetSelection()
 	 */
@@ -319,7 +319,7 @@ public class VirtualTableViewerTest extends TableViewerTest {
 		((TableViewer) fViewer).getTable().getItem(0).getText();
 		super.testSetSelection();
 	}
-	
+
 	/**
 	 * Test selecting all elements.
 	 */

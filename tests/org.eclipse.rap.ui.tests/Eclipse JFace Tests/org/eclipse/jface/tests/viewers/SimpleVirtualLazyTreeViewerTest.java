@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * Tests TreeViewer's VIRTUAL support with a lazy content provider.
- * 
+ *
  * @since 3.2
  */
 public class SimpleVirtualLazyTreeViewerTest extends ViewerTestCase {
@@ -39,7 +39,7 @@ public class SimpleVirtualLazyTreeViewerTest extends ViewerTestCase {
 
 	private class LazyTreeContentProvider implements ILazyTreeContentProvider {
 		/**
-		 * 
+		 *
 		 */
 		private Object input;
 
@@ -117,12 +117,12 @@ public class SimpleVirtualLazyTreeViewerTest extends ViewerTestCase {
 		Tree tree = getTreeViewer().getTree();
 		getTreeViewer().expandToLevel("R-0", 1);
 		// force redrawing the tree - this will trigger the SetData event
-//		tree.update();
+		tree.update();
 		assertEquals(NUM_CHILDREN, tree.getItem(0).getItemCount());
 		TreeItem treeItem = tree.getItem(0).getItem(3);
 		expandAndNotify(treeItem);
 		// force redrawing the tree - this will trigger the SetData event
-//		tree.update();
+		tree.update();
 		assertEquals(NUM_CHILDREN, treeItem.getItemCount());
 		assertEquals(NUM_CHILDREN, treeItem.getItems().length);
 		// interact();
@@ -143,22 +143,22 @@ public class SimpleVirtualLazyTreeViewerTest extends ViewerTestCase {
 			tree.setRedraw(true);
 		}
 	}
-	
+
 	public void testSetSorterOnNullInput() {
 		fViewer.setInput(null);
 		fViewer.setSorter(new ViewerSorter());
 	}
-	
+
 	public void testSetComparatorOnNullInput(){
 		fViewer.setInput(null);
-		fViewer.setComparator(new ViewerComparator());		
+		fViewer.setComparator(new ViewerComparator());
 	}
-	
-	/* test TreeViewer.remove(parent, index) */ 
+
+	/* test TreeViewer.remove(parent, index) */
 	public void testRemoveAt() {
 		TreeViewer treeViewer = (TreeViewer) fViewer;
 		// correct what the content provider is answering with
-//		treeViewer.getTree().update();
+		treeViewer.getTree().update();
 		offset = 1;
 		treeViewer.remove(treeViewer.getInput(), 3);
 		assertEquals(NUM_ROOTS - 1, treeViewer.getTree().getItemCount());
