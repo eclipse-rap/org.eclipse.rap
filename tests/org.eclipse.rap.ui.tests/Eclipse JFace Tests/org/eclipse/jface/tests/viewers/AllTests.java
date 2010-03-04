@@ -50,14 +50,13 @@ public class AllTests extends TestSuite {
 		addTestSuite(TableViewerComparatorTest.class);
 		addTestSuite(Bug138608Test.class);
 		addTestSuite(ComboViewerComparerTest.class);
-//		addTestSuite(ListViewerRefreshTest.class);
-		// RAP [bm]: CellEditors
-//		addTestSuite(Bug200558Test.class);
-//		addTestSuite(Bug201002TableViewerTest.class);
+		addTestSuite(ListViewerRefreshTest.class);
+		addTestSuite(Bug200558Test.class);
+		addTestSuite(Bug201002TableViewerTest.class);
 //		addTestSuite(Bug201002TreeViewerTest.class);
-//		addTestSuite(Bug200337TableViewerTest.class);
-//		addTestSuite(Bug180504TableViewerTest.class);
-//		addTestSuite(Bug180504TreeViewerTest.class);
+		addTestSuite(Bug200337TableViewerTest.class);
+		addTestSuite(Bug180504TableViewerTest.class);
+		addTestSuite(Bug180504TreeViewerTest.class);
 		addTestSuite(Bug203657TreeViewerTest.class);
 		addTestSuite(Bug203657TableViewerTest.class);
 		addTestSuite(Bug205700TreeViewerTest.class);
