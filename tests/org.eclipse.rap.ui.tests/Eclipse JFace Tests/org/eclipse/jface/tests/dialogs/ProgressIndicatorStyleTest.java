@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Test case to assert proper styles have been set for ProgressIndicator.
- * 
+ *
  * @since 3.4
- * 
+ *
  */
 public class ProgressIndicatorStyleTest extends TestCase {
 
@@ -41,18 +41,16 @@ public class ProgressIndicatorStyleTest extends TestCase {
 	 * Test the indicator styles.
 	 */
 	public void testProgressIndicator() {
-		// RAP [bm]: SMOOTH not supported
-//		style = SWT.SMOOTH;
-//		verifyIndicator();
-		// RAPEND: [bm] 
+		style = SWT.SMOOTH;
+		verifyIndicator();
 
 
 		style = SWT.VERTICAL;
-		verifyIndicator();		
+		verifyIndicator();
 
 		style = SWT.HORIZONTAL;
 		verifyIndicator();
-		
+
 	}
 
 	/**
