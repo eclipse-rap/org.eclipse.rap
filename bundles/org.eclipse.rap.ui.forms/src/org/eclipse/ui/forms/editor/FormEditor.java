@@ -30,6 +30,12 @@ import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
 
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.dialogs.IPageChangeProvider;
+import org.eclipse.jface.dialogs.IPageChangedListener;
+import org.eclipse.jface.dialogs.PageChangedEvent;
+import org.eclipse.jface.util.SafeRunnable;
+
 /**
  * This class forms a base of multi-page form editors that typically use one or
  * more pages with forms and one page for raw source of the editor input.
@@ -53,7 +59,12 @@ import org.eclipse.ui.part.MultiPageSelectionProvider;
  * 
  * @since 1.0
  */
-public abstract class FormEditor extends MultiPageEditorPart  {
+// RAP [if] As RAP is still using workbench 3.4, the implementation of
+// IPageChangeProvider is missing from MultiPageEditorPart. Remove this code
+// with the adoption of workbench > 3.5
+//public abstract class FormEditor extends MultiPageEditorPart  {
+public abstract class FormEditor extends MultiPageEditorPart implements
+        IPageChangeProvider {
 
 	/**
 	 * An array of pages currently in the editor. Page objects are not limited
@@ -485,6 +496,13 @@ public abstract class FormEditor extends MultiPageEditorPart  {
 			((IFormPage) pages.get(oldPageIndex)).setActive(false);
 		// Call super - this will cause pages to switch
 		super.pageChange(newPageIndex);
+// RAP [if] As RAP is still using workbench 3.4, the implementation of
+// IPageChangeProvider is missing from MultiPageEditorPart. Remove this code
+// with the adoption of workbench > 3.5
+		IFormPage newPage = getActivePageInstance();
+        if (newPage != null)
+            firePageChanged(new PageChangedEvent(this, newPage));
+// RAPEND [if]
 		this.currentPage = newPageIndex;
 	}
 
@@ -652,4 +670,40 @@ public abstract class FormEditor extends MultiPageEditorPart  {
 				fpage.init(getEditorSite(), getEditorInput());
 		}
 	}
+	
+// RAP [if] As RAP is still using workbench 3.4, the implementation of
+// IPageChangeProvider is missing from MultiPageEditorPart. Remove this code
+// with the adoption of workbench > 3.5
+	private ListenerList pageListeners = new ListenerList();
+	
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.IPageChangeProvider#addPageChangedListener(org.eclipse.jface.dialogs.IPageChangedListener)
+     */
+    public void addPageChangedListener(IPageChangedListener listener) {
+        pageListeners.add(listener);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.IPageChangeProvider#removePageChangedListener(org.eclipse.jface.dialogs.IPageChangedListener)
+     */
+    public void removePageChangedListener(IPageChangedListener listener) {
+        pageListeners.remove(listener);
+    }
+    
+	private void firePageChanged(final PageChangedEvent event) {
+        Object[] listeners = pageListeners.getListeners();
+        for (int i = 0; i < listeners.length; ++i) {
+            final IPageChangedListener l = (IPageChangedListener) listeners[i];
+            SafeRunnable.run(new SafeRunnable() {
+                public void run() {
+                    l.pageChanged(event);
+                }
+            });
+        }
+    }
+// RAPEND [if]
 }
