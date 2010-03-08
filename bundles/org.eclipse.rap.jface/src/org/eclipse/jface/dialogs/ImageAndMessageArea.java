@@ -15,7 +15,6 @@ import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.events.PaintEvent;
 //import org.eclipse.swt.events.PaintListener;
