@@ -58,6 +58,7 @@ public interface ILayoutSetConstants {
   public static final String COOLBAR_OVERFLOW_COLOR = "coolbar.overflow.color";
   public static final String COOLBAR_ARROW = "coolbar.arrow";
   public static final String COOLBAR_BUTTON_POS = "coolbar.layer.button.pos";
+  public static final String COOLBAR_SPACING = "colbar.layer.spacing";
   
   // CoolbarOverflowInitializer
   public static final String OVERFLOW_BG = "coolbar.layer.bg";

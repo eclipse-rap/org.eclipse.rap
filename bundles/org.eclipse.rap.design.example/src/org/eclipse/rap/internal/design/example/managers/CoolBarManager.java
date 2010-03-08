@@ -59,7 +59,6 @@ public class CoolBarManager extends CoolBarManager2 {
   private static final String ACTIVE = "toolbarOverflowActive";
   private static final String INACTIVE = "toolbarOverflowInactive";
   private static final int WAVE_SPACING = 20;
-  private static final int SPACING = 25;
   
   private Composite overflowParent;
   private Image preservedWave; 
@@ -362,9 +361,14 @@ public class CoolBarManager extends CoolBarManager2 {
    */
   private int getChildrenSize( final ToolBar toolbar ) {    
     int result = 0;
-    ToolItem[] items = toolbar.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      result += items[ i ].getWidth() + SPACING;
+    FormData spacing 
+      = dummyBuilder.getPosition( ILayoutSetConstants.COOLBAR_SPACING );
+    if( spacing != null ) {
+      ToolItem[] items = toolbar.getItems();
+      for( int i = 0; i < items.length; i++ ) {
+        
+        result += items[ i ].getWidth() + spacing.width;
+      }
     }
     return result;
   }

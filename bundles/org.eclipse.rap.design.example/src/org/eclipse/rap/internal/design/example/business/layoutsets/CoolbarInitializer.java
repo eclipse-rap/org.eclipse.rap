@@ -35,5 +35,8 @@ public class CoolbarInitializer implements ILayoutSetInitializer {
     fdButton.left = new FormAttachment( 10 );
     fdButton.top = new FormAttachment( 58 );
     layoutSet.addPosition( ILayoutSetConstants.COOLBAR_BUTTON_POS, fdButton );
+    FormData spacingData = new FormData();
+    spacingData.width = 25;
+    layoutSet.addPosition( ILayoutSetConstants.COOLBAR_SPACING, spacingData ); 
   }
 }
