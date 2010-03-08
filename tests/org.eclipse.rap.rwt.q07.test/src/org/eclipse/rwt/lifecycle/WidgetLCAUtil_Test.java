@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rwt.lifecycle;
@@ -176,6 +177,10 @@ public class WidgetLCAUtil_Test extends TestCase {
     // Backslashes not modified
     expected = "Test\\";
     assertEquals( expected, WidgetLCAUtil.escapeText( "Test\\", false ) );
+    // Escape unicode characters \u2028 and \u2029 - see bug 304364
+    expected = "abcabcabc";
+    assertEquals( expected,
+                  WidgetLCAUtil.escapeText( "abc\u2028abc\u2029abc", false ) );
   }
 
   public void testTruncateZeros() {
@@ -263,7 +268,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeFont( label, newFont );
     assertTrue( Fixture.getAllMarkup().endsWith( ", 42, false, false );" ) );
   }
-  
+
   public void testFontReset() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -276,7 +281,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     String expected = "var w = wm.findWidgetById( \"w2\" );w.resetFont();";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testForegroundReset() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -289,7 +294,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     String expected = "var w = wm.findWidgetById( \"w2\" );w.resetTextColor();";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
- 
+
   public void testWriteImage() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -298,18 +303,18 @@ public class WidgetLCAUtil_Test extends TestCase {
     // for an un-initialized control: no image -> no markup
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
-    WidgetLCAUtil.writeImage( item, 
-                              Props.IMAGE, 
-                              JSConst.QX_FIELD_ICON, 
+    WidgetLCAUtil.writeImage( item,
+                              Props.IMAGE,
+                              JSConst.QX_FIELD_ICON,
                               item.getImage() );
     assertEquals( "", Fixture.getAllMarkup() );
 
     // for an un-initialized control: render image, if any
     Fixture.fakeResponseWriter();
     item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    WidgetLCAUtil.writeImage( item, 
-                              Props.IMAGE, 
-                              JSConst.QX_FIELD_ICON, 
+    WidgetLCAUtil.writeImage( item,
+                              Props.IMAGE,
+                              JSConst.QX_FIELD_ICON,
                               item.getImage() );
     String expected = "w.setIcon( \""
                     + ResourceFactory.getImagePath( item.getImage() )
@@ -321,9 +326,9 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     item.setImage( null );
-    WidgetLCAUtil.writeImage( item, 
-                              Props.IMAGE, 
-                              JSConst.QX_FIELD_ICON, 
+    WidgetLCAUtil.writeImage( item,
+                              Props.IMAGE,
+                              JSConst.QX_FIELD_ICON,
                               item.getImage() );
     assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( null );" ) != -1 );
   }
@@ -360,7 +365,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeCustomVariant( control );
     String expected = "w.addState( \"variant_my_variant\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    
+
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveCustomVariant( control );
     control.setData( WidgetUtil.CUSTOM_VARIANT, "new_variant" );
@@ -413,18 +418,18 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeBackground( control, null, false );
     expected = "w.resetBackgroundColor();";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    
+
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, red, false );
     WidgetLCAUtil.writeBackground( control, red, false );
     assertEquals( "", Fixture.getAllMarkup() );
-    
+
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, null );
     WidgetLCAUtil.writeBackground( control, red );
     expected = "w.setBackgroundColor( \"#ff0000\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    
+
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, red );
     WidgetLCAUtil.writeBackground( control, red );
@@ -446,7 +451,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     label.setMenu( new Menu( label ) );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
-    String expected 
+    String expected
       =   "var w = wm.findWidgetById( \"w2\" );w.setContextMenu( "
         + "wm.findWidgetById( \"w3\" ) );w.addEventListener( "
         + "\"contextmenu\", org.eclipse.rwt.widgets.Menu.contextMenuHandler );";
@@ -458,7 +463,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     label.setMenu( null );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
-    expected 
+    expected
       =   "w.setContextMenu( null );w.removeEventListener( \"contextmenu\", "
         + "org.eclipse.rwt.widgets.Menu.contextMenuHandler );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -529,7 +534,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     lca.preserveValues( control );
     gfxAdapter.setBackgroundGradient( null, null );
     lca.renderChanges( control );
-    expected 
+    expected
       = "wm.setBackgroundGradient"
       + "( wm.findWidgetById( \"w2\" ), null, null );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -563,7 +568,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     lca.preserveValues( widget );
     graphicsAdapter.setRoundedBorder( 4, color, 5, 6, 7, 8 );
     lca.renderChanges( widget );
-    expected 
+    expected
       = "wm.setRoundedBorder"
       + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 6, 7, 8 );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -572,7 +577,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     lca.preserveValues( widget );
     graphicsAdapter.setRoundedBorder( 4, color, 5, 4, 7, 8 );
     lca.renderChanges( widget );
-    expected 
+    expected
       = "wm.setRoundedBorder"
       + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 4, 7, 8 );";
     assertEquals( expected, Fixture.getAllMarkup() );

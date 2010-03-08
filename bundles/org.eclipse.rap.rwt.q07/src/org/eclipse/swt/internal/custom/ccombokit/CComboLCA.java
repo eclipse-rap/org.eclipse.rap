@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -310,8 +310,12 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   private static void writeText( final CCombo ccombo ) throws IOException {
     if( isEditable( ccombo ) || ccombo.getSelectionIndex() == -1 ) {
+      String newValue = ccombo.getText();
       JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( PROP_TEXT, "value", ccombo.getText(), "" );
+      if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT, newValue, "" ) ) {
+        String value = EncodingUtil.escapeSpecialCharacters( newValue );
+        writer.set( "value", value );
+      }
     }
   }
 

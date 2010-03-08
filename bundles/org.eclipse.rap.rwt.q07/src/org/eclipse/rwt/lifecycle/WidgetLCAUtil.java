@@ -70,8 +70,6 @@ public final class WidgetLCAUtil {
   private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
   private static final String JS_FUNC_SET_ROUNDED_BORDER = "setRoundedBorder";
 
-  private static final Pattern HTML_ESCAPE_PATTERN
-    = Pattern.compile( "&|<|>|\\\"" );
   private static final Pattern FONT_NAME_FILTER_PATTERN
     = Pattern.compile( "\"|\\\\" );
 
@@ -1048,44 +1046,33 @@ public final class WidgetLCAUtil {
   //             we produce XHTML output.
   public static String escapeText( final String text, final boolean mnemonics )
   {
-//    int mnemonicPos = -1;
-    int offset = 0;
     boolean insertAmp = false;
     StringBuffer sb = new StringBuffer();
-    Matcher matcher = HTML_ESCAPE_PATTERN.matcher( text );
-    while( matcher.find() ) {
-      int index = matcher.start();
-      char ch = text.charAt( index );
+    int textLength = text.length();
+    for( int i = 0; i < textLength; i++ ) {
+      char ch = text.charAt( i );
       if( ch == '&' ) {
         if( !mnemonics || insertAmp ) {
           insertAmp = false;
-          matcher.appendReplacement( sb, "&amp;" );
-          offset += 4;
+          sb.append( "&amp;" );
         } else {
-          if( index + 1 < text.length() && text.charAt( index + 1 ) == '&' ) {
+          if( i + 1 < textLength && text.charAt( i + 1 ) == '&' ) {
             insertAmp = true;
-          } else {
-//            mnemonicPos = index + offset;
           }
-          matcher.appendReplacement( sb, "" );
-          offset -= 1;
         }
       } else if( ch == '<' ) {
-        matcher.appendReplacement( sb, "&lt;" );
-        offset += 3;
+        sb.append( "&lt;" );
       } else if( ch == '>' ) {
-        matcher.appendReplacement( sb, "&gt;" );
-        offset += 3;
+        sb.append( "&gt;" );
       } else if( ch == '"' ) {
-        matcher.appendReplacement( sb, "&quot;" );
-        offset += 5;
+        sb.append( "&quot;" );
+      // Escape unicode characters \u2028 and \u2029 - see bug 304364
+      } else if( ch == 0x2028 || ch == 0x2029 ) {
+        // do nothing
+      } else {
+        sb.append( ch );
       }
     }
-    matcher.appendTail( sb );
-//    if( mnemonics && underline && mnemonicPos != -1 ) {
-//      sb.insert( mnemonicPos + 1, "</u>" );
-//      sb.insert( mnemonicPos, "<u>" );
-//    }
     // truncate at zeros
     String result = sb.toString();
     int index = result.indexOf( 0 );

@@ -12,6 +12,7 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -114,6 +115,7 @@ final class TextLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( text );
     if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
       String value = WidgetLCAUtil.replaceNewLines( newValue, " " );
+      value = EncodingUtil.escapeSpecialCharacters( value );
       writer.set( JS_PROP_VALUE, value );
     }
   }
@@ -209,13 +211,13 @@ final class TextLCAUtil {
       }
     }
   }
-  
+
   static void preservePasswordMode( final Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     Boolean value = new Boolean( text.getEchoChar() != 0 );
     adapter.preserve( PROP_PASSWORD_MODE, value );
   }
-  
+
   static void writePasswordMode( final Text text ) throws IOException {
     Boolean newValue = new Boolean( text.getEchoChar() != 0 );
     String prop = PROP_PASSWORD_MODE;
