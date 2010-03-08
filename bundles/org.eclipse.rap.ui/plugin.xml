@@ -822,26 +822,27 @@
             description="%command.redo.description"
             categoryId="org.eclipse.ui.category.edit"
             id="org.eclipse.ui.edit.redo" />
-      <!-- RAP [bm]: clipboard
       <command
             name="%command.cut.name"
             description="%command.cut.description"
             categoryId="org.eclipse.ui.category.edit"
-            id="org.eclipse.ui.edit.cut"
-            defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:cut" />
+            id="org.eclipse.ui.edit.cut" />
+            <!-- [bm] omit default handler as we don't have clipboard support -->
+            <!-- defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:cut" /-->
       <command
             name="%command.copy.name"
             description="%command.copy.description"
             categoryId="org.eclipse.ui.category.edit"
-            id="org.eclipse.ui.edit.copy"
-            defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:copy" />
+            id="org.eclipse.ui.edit.copy" />
+            <!-- [bm] omit default handler as we don't have clipboard support -->
+            <!-- defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:copy" /-->
       <command
             name="%command.paste.name"
             description="%command.paste.description"
             categoryId="org.eclipse.ui.category.edit"
-            id="org.eclipse.ui.edit.paste"
-            defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:paste" />
-      -->
+            id="org.eclipse.ui.edit.paste" />
+            <!-- [bm] omit default handler as we don't have clipboard support -->
+            <!-- defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:paste" /-->
       <command
             name="%command.delete.name"
             description="%command.delete.description"
