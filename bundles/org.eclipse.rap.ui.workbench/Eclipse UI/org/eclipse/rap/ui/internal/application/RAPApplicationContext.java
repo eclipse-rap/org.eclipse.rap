@@ -19,7 +19,7 @@ import org.osgi.framework.Bundle;
 /*
  * Fake context for IApplications
  */
-class RAPApplicationContext implements IApplicationContext {
+final class RAPApplicationContext implements IApplicationContext {
 
   private final Map arguments = new HashMap(1);
   
@@ -33,7 +33,7 @@ class RAPApplicationContext implements IApplicationContext {
   }
 
   public Map getArguments() {
-	  return arguments;
+    return arguments;
   }
 
   public String getBrandingApplication() {

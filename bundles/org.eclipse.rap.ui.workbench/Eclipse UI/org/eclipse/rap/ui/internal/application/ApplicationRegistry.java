@@ -29,7 +29,7 @@ import org.osgi.framework.Bundle;
 /*
  * Registers all available applications as entrypoints.
  */
-public class ApplicationRegistry {
+public final class ApplicationRegistry {
 
   private static final String RUN
     = "run"; //$NON-NLS-1$
@@ -65,7 +65,6 @@ public class ApplicationRegistry {
     String applicationId = extension.getUniqueIdentifier();
     String applicationParameter = extension.getSimpleIdentifier();
     String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
-
     try {
       // ignore invisible applications
       if( isVisible == null || Boolean.valueOf( isVisible ).booleanValue() ) {

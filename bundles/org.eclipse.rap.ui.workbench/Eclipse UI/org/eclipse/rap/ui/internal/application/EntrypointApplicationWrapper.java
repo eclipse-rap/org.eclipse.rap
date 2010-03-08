@@ -13,7 +13,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
-public class EntrypointApplicationWrapper implements IEntryPoint {
+public final class EntrypointApplicationWrapper implements IEntryPoint {
 
   private static final IApplicationContext context
     = new RAPApplicationContext();
