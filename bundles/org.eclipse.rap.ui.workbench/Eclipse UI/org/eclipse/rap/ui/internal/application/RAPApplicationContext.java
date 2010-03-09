@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.Bundle;
 
@@ -21,11 +22,12 @@ import org.osgi.framework.Bundle;
  */
 final class RAPApplicationContext implements IApplicationContext {
 
-  private final Map arguments = new HashMap(1);
+  private final Map arguments;
   
   public RAPApplicationContext() {
-	  arguments.put( IApplicationContext.APPLICATION_ARGS,
-			  		 Platform.getApplicationArgs() );
+    arguments = new HashMap( 2 );
+	arguments.put( IApplicationContext.APPLICATION_ARGS,
+	               Platform.getApplicationArgs() );
   }
   
   public void applicationRunning() {
@@ -58,5 +60,9 @@ final class RAPApplicationContext implements IApplicationContext {
 
   public String getBrandingProperty( final String key ) {
     return null;
+  }
+  
+  public void setResult( final Object result, final IApplication application ) {
+	  // do nothing
   }
 }
