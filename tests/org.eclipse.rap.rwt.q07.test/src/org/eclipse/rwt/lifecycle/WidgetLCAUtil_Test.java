@@ -153,8 +153,6 @@ public class WidgetLCAUtil_Test extends TestCase {
     // Amp
     assertEquals( "&amp;&amp;&amp;File&quot;&gt;",
                   WidgetLCAUtil.escapeText( "&&&File\">", false ) );
-//    assertEquals( "&amp;<u>F</u>ile&quot;&gt;",
-//                  WidgetLCAUtil.escapeText( "&&&File\">", true ) );
     assertEquals( "Open &amp; Close",
                   WidgetLCAUtil.escapeText( "Open && Close", true ) );
     assertEquals( "E&lt;s&gt;ca'pe&quot; &amp; me",
@@ -164,21 +162,11 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( expected, WidgetLCAUtil.escapeText( "\"File\"", false ) );
     expected = "&quot;&quot;File";
     assertEquals( expected, WidgetLCAUtil.escapeText( "\"\"File", false ) );
-    // Mnemonics with underline
-//    assertEquals( "<u>F</u>ile", WidgetLCAUtil.escapeText( "&File", true ) );
-//    assertEquals( "Fil<u>e</u>", WidgetLCAUtil.escapeText( "Fil&e", true ) );
-//    assertEquals( "Open &amp; <u>C</u>lose",
-//                  WidgetLCAUtil.escapeText( "&Open && &Close", true ) );
-    // Wild combinations
-//    assertEquals( "&amp;<u>F</u>ile",
-//                  WidgetLCAUtil.escapeText( "&&&File", true ) );
-//    assertEquals( "&quot;File' &amp; &lt;b&gt; <u>N</u>ew",
-//                  WidgetLCAUtil.escapeText( "\"&File' && <b> &New", true ) );
     // Backslashes not modified
     expected = "Test\\";
     assertEquals( expected, WidgetLCAUtil.escapeText( "Test\\", false ) );
     // Escape unicode characters \u2028 and \u2029 - see bug 304364
-    expected = "abcabcabc";
+    expected = "abc&#8232;abc&#8233;abc";
     assertEquals( expected,
                   WidgetLCAUtil.escapeText( "abc\u2028abc\u2029abc", false ) );
   }

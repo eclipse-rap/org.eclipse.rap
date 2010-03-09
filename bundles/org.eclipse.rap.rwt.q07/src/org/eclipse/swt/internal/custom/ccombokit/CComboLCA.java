@@ -313,7 +313,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
       String newValue = ccombo.getText();
       JSWriter writer = JSWriter.getWriterFor( ccombo );
       if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT, newValue, "" ) ) {
-        String value = EncodingUtil.escapeSpecialCharacters( newValue );
+        String value = EncodingUtil.removeNonDisplayableChars( newValue );
         writer.set( "value", value );
       }
     }

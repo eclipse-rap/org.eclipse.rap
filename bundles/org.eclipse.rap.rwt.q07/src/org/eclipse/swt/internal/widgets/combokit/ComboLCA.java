@@ -309,7 +309,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       String newValue = combo.getText();
       JSWriter writer = JSWriter.getWriterFor( combo );
       if( WidgetLCAUtil.hasChanged( combo, PROP_TEXT, newValue, "" ) ) {
-        String value = EncodingUtil.escapeSpecialCharacters( newValue );
+        String value = EncodingUtil.removeNonDisplayableChars( newValue );
         writer.set( "value", value );
       }
     }

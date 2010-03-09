@@ -144,7 +144,7 @@ public class EncodingUtil_Test extends TestCase {
   public void testEscapeSpecialCharacters() {
     String stringToEscape = "abc\u2028abc\u2029abc";
     String expected = "abcabcabc";
-    String result = EncodingUtil.escapeSpecialCharacters( stringToEscape );
+    String result = EncodingUtil.removeNonDisplayableChars( stringToEscape );
     assertEquals( expected, result );
   }
 }

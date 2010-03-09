@@ -115,7 +115,7 @@ final class TextLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( text );
     if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
       String value = WidgetLCAUtil.replaceNewLines( newValue, " " );
-      value = EncodingUtil.escapeSpecialCharacters( value );
+      value = EncodingUtil.removeNonDisplayableChars( value );
       writer.set( JS_PROP_VALUE, value );
     }
   }

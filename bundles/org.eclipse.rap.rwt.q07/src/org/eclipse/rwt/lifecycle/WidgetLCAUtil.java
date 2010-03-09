@@ -1047,44 +1047,42 @@ public final class WidgetLCAUtil {
   public static String escapeText( final String text, final boolean mnemonics )
   {
     boolean insertAmp = false;
-    StringBuffer sb = new StringBuffer();
+    StringBuffer buffer = new StringBuffer();
     int textLength = text.length();
     for( int i = 0; i < textLength; i++ ) {
       char ch = text.charAt( i );
       if( ch == '&' ) {
         if( !mnemonics || insertAmp ) {
           insertAmp = false;
-          sb.append( "&amp;" );
+          buffer.append( "&amp;" );
         } else {
           if( i + 1 < textLength && text.charAt( i + 1 ) == '&' ) {
             insertAmp = true;
           }
         }
       } else if( ch == '<' ) {
-        sb.append( "&lt;" );
+        buffer.append( "&lt;" );
       } else if( ch == '>' ) {
-        sb.append( "&gt;" );
+        buffer.append( "&gt;" );
       } else if( ch == '"' ) {
-        sb.append( "&quot;" );
-      // Escape unicode characters \u2028 and \u2029 - see bug 304364
-      } else if( ch == 0x2028 || ch == 0x2029 ) {
-        // do nothing
+        buffer.append( "&quot;" );
+      } else if( EncodingUtil.isNonDisplayableChar( ch ) ) { 
+        // Escape \u2028 and \u2029 - see bug 304364
+        buffer.append( "&#" );
+        buffer.append( ( int )ch );
+        buffer.append( ";" );
       } else {
-        sb.append( ch );
+        buffer.append( ch );
       }
     }
     // truncate at zeros
-    String result = sb.toString();
+    String result = buffer.toString();
     int index = result.indexOf( 0 );
     if( index != -1 ) {
       result = result.substring( 0, index );
     }
     return result;
   }
-
-
-  /////////////////////////////////////
-  // deprecated pooling-related methods
 
   /**
    * Writes JavaScript code to the response that resets the bounds of a widget.

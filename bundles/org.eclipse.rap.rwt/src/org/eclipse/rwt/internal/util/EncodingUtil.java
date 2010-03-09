@@ -186,16 +186,19 @@ public final class EncodingUtil {
   }
 
   // Escape unicode characters \u2028 and \u2029 - see bug 304364
-  public static String escapeSpecialCharacters( final String text ) {
-    StringBuffer sb = new StringBuffer();
-    int textLength = text.length();
-    for( int i = 0; i < textLength; i++ ) {
+  public static String removeNonDisplayableChars( final String text ) {
+    StringBuffer buffer = new StringBuffer();
+    for( int i = 0; i < text.length(); i++ ) {
       char ch = text.charAt( i );
-      if( ch != 0x2028 && ch != 0x2029 ) {
-        sb.append( ch );
-      }
+      if( !isNonDisplayableChar( ch ) ) {
+        buffer.append( ch );
+      } 
     }
-    return sb.toString();
+    return buffer.toString();
+  }
+  
+  public static boolean isNonDisplayableChar( char ch ) {
+    return ch == 0x2028 || ch == 0x2029;
   }
 
   private EncodingUtil() {
