@@ -116,58 +116,61 @@ public class ModalContext {
 		 * (non-Javadoc) Method declared on Thread.
 		 */
 		public void run() {
-			try {
-				if (runnable != null) {
-					runnable.run(progressMonitor);
-				}
-			} catch (InvocationTargetException e) {
-				throwable = e;
-			} catch (InterruptedException e) {
-				throwable = e;
-			} catch (RuntimeException e) {
-				throwable = e;
-			} catch (ThreadDeath e) {
-				// Make sure to propagate ThreadDeath, or threads will never
-				// fully terminate
-				throw e;
-			} catch (Error e) {
-				throwable = e;
-			} finally {
-				// notify the operation of change of thread of control
-				if (runnable instanceof IThreadListener) {
-					Throwable exception = 
-						invokeThreadListener(((IThreadListener) runnable), callingThread);
-					
-					//Forward it if we don't already have one
-					if(exception != null && throwable == null)
-						throwable = exception;
-				}
+// RAP [rh] supply a fake-context for the entire execution of runnable and exception handling			
+			UICallBack.runNonUIThreadWithFakeContext(display, new Runnable() {
 
-				// Make sure that all events in the asynchronous event queue
-				// are dispatched.
-				display.syncExec(new Runnable() {
-					public void run() {
-						// do nothing
+				public void run() {
+					try {
+						if (runnable != null) {
+							runnable.run(progressMonitor);
+						}
+					} catch (InvocationTargetException e) {
+						throwable = e;
+					} catch (InterruptedException e) {
+						throwable = e;
+					} catch (RuntimeException e) {
+						throwable = e;
+					} catch (ThreadDeath e) {
+						// Make sure to propagate ThreadDeath, or threads will never
+						// fully terminate
+						throw e;
+					} catch (Error e) {
+						throwable = e;
+					} finally {
+						// notify the operation of change of thread of control
+						if (runnable instanceof IThreadListener) {
+							Throwable exception = 
+								invokeThreadListener(((IThreadListener) runnable), callingThread);
+							
+							//Forward it if we don't already have one
+							if(exception != null && throwable == null)
+								throwable = exception;
+						}
+						
+						// Make sure that all events in the asynchronous event queue
+						// are dispatched.
+						display.syncExec(new Runnable() {
+							public void run() {
+								// do nothing
+							}
+						});
+						
+						// Stop event dispatching
+						continueEventDispatching = false;
+						
+						// Force the event loop to return from sleep () so that
+						// it stops event dispatching.
+						display.asyncExec(null);
+						
+						// RAP [fappel]: deactivate UI-Callback for this thread
+						String key 
+						  = String.valueOf( ModalContextThread.this.hashCode() );
+						UICallBack.deactivate( key );
+						
 					}
-				});
-
-				// Stop event dispatching
-				continueEventDispatching = false;
-
-				// Force the event loop to return from sleep () so that
-				// it stops event dispatching.
-				display.asyncExec(null);
+				}
 				
-                // RAP [fappel]: deactivate UI-Callback for this thread
-				UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-                  public void run() {
-                    String key 
-                      = String.valueOf( ModalContextThread.this.hashCode() );
-                    UICallBack.deactivate( key );
-                  }
-				} );
-
-			}
+			} ); // RAP [rh] end of fake-context runnable
 		}
 
 		/**
