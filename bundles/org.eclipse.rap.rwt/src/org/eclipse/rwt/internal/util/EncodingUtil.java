@@ -192,12 +192,12 @@ public final class EncodingUtil {
       char ch = text.charAt( i );
       if( !isNonDisplayableChar( ch ) ) {
         buffer.append( ch );
-      } 
+      }
     }
     return buffer.toString();
   }
-  
-  public static boolean isNonDisplayableChar( char ch ) {
+
+  public static boolean isNonDisplayableChar( final char ch ) {
     return ch == 0x2028 || ch == 0x2029;
   }
 
