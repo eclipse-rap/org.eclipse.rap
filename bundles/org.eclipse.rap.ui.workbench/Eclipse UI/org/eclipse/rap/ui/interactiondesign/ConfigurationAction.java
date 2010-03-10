@@ -11,10 +11,16 @@ package org.eclipse.rap.ui.interactiondesign;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.rap.ui.interactiondesign.internal.ConfigurableStackProxy;
+import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.internal.LayoutPart;
 import org.eclipse.ui.internal.WorkbenchWindow;
@@ -64,6 +70,44 @@ public abstract class ConfigurationAction extends Action {
   private IStackPresentationSite site;
   private StackPresentation stackPresentation;
   private List configurationChangeListeners = new ArrayList();
+  
+  /**
+   * Helper method to check if all view contrib items are visible by default.
+   * @return true if all items are visible by default.
+   */
+  public static boolean allActionsVisible() {
+    boolean result = false;
+    AbstractBranding branding = BrandingUtil.findBranding();
+    if( branding != null ) {
+      String brandingId = branding.getId();
+      IExtensionRegistry registry = Platform.getExtensionRegistry();
+      final String id = "org.eclipse.rap.ui.branding";
+      IExtensionPoint brandingPoint = registry.getExtensionPoint( id );
+      if( brandingPoint != null ) {
+        IConfigurationElement[] elements 
+          = brandingPoint.getConfigurationElements();
+        boolean found = false;
+        for( int i = 0; i < elements.length && !found; i++ ) {
+          String tempId = elements[ i ].getAttribute( "id" );
+          if( tempId.equals( brandingId ) ) {
+            found = true;
+            IConfigurationElement[] factory 
+              = elements[ i ].getChildren( "presentationFactory" );
+            if( factory.length > 0 ) {
+              String visibility 
+                = factory[ 0 ].getAttribute( "viewActionsVisible" );              
+              if( visibility != null 
+                  && Boolean.valueOf( visibility ).booleanValue() ) 
+              {
+                result = true;
+              }
+            }
+          }
+        }
+      }
+    }
+    return result;
+  } 
 
   /**
    * Method to add a <code>{@link IConfigurationChangeListener}.
@@ -205,12 +249,14 @@ public abstract class ConfigurationAction extends Action {
    * @return the visibility of the part menu.
    */
   public boolean isPartMenuVisible() {
-    boolean result = false;
-    if( stackPresentation instanceof ConfigurableStack ) {
-      ConfigurableStack configStack = ( ConfigurableStack )stackPresentation;
-      String paneId = configStack.getPaneId( site );
-      String identifier = getPartMenuIdentifier( paneId );
-      result = loadPartmenuVisibility( identifier );
+    boolean result = true;
+    if( !allActionsVisible() ) {
+      if( stackPresentation instanceof ConfigurableStack ) {
+        ConfigurableStack configStack = ( ConfigurableStack )stackPresentation;
+        String paneId = configStack.getPaneId( site );
+        String identifier = getPartMenuIdentifier( paneId );
+        result = loadPartmenuVisibility( identifier );
+      }
     }
     return result;
   }
@@ -240,18 +286,18 @@ public abstract class ConfigurationAction extends Action {
    * @see Action
    * @see ScopedPreferenceStore
    */
-  public boolean isViewActionVisibile(
-    final String viewId, final String actionId )
+  public boolean isViewActionVisibile( final String viewId, 
+                                       final String actionId )
   {
-    boolean result = false;
-    String identifier = getActionIdentifier( viewId, actionId );
-
-    ScopedPreferenceStore prefStore
-      = ( ScopedPreferenceStore ) PrefUtil.getAPIPreferenceStore();
-    result = prefStore.getBoolean( identifier );
-
+    boolean result = true;
+    if( !allActionsVisible() ) {
+      String identifier = getActionIdentifier( viewId, actionId );  
+      ScopedPreferenceStore prefStore
+        = ( ScopedPreferenceStore ) PrefUtil.getAPIPreferenceStore();
+      result = prefStore.getBoolean( identifier );
+    }
     return result;
-  }
+  }  
 
   /**
    * Removes a <code>{@link IConfigurationChangeListener}</code> from this

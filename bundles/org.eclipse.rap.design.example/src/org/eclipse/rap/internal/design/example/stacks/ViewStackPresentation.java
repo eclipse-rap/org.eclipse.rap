@@ -343,7 +343,8 @@ public class ViewStackPresentation extends ConfigurableStack {
         IToolBarManager manager = getPartToolBarManager();
         boolean hasViewActions
           = manager != null && manager.getItems().length > 0;
-        if( hasViewActions || hasViewMenu ) {
+        if( ( hasViewActions || hasViewMenu ) 
+            && !ConfigAction.allActionsVisible() ) {
           if( confButton != null ) {
             // enable conf button
             confButton.setEnabled( true );

@@ -16,6 +16,7 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.rap.interactiondesign.tests.impl.ConfigurableStackImpl;
+import org.eclipse.rap.interactiondesign.tests.impl.ConfigurationActionImpl;
 import org.eclipse.rap.junit.RAPTestCase;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.ConfigurationAction;
@@ -140,6 +141,18 @@ public class ConfigurationActionTest extends RAPTestCase {
     assertFalse( visible );    
   }
   
+  public void testPartMenuVisibilityWithGlobalValue() {
+    boolean visible = configAction.isPartMenuVisible();
+    assertFalse( visible );
+    ConfigurationActionImpl action = ( ConfigurationActionImpl ) configAction;
+    action.setGlobalVisibilityAttribute( true );
+    visible = configAction.isPartMenuVisible();
+    assertTrue( visible );
+    action.setGlobalVisibilityAttribute( false );
+    visible = configAction.isPartMenuVisible();
+    assertFalse( visible ); 
+  }   
+  
   public void testActionVisibility() {
     String viewId = "org.eclipse.view";
     String actionId = "org.eclipse.action";
@@ -153,6 +166,19 @@ public class ConfigurationActionTest extends RAPTestCase {
     assertFalse( visible );
   }
   
+  public void testActionVisibilityWithGlobalValue() {
+    String viewId = "org.eclipse.view";
+    String actionId = "org.eclipse.action";
+    boolean visible = configAction.isViewActionVisibile( viewId, actionId );
+    assertFalse( visible );
+    ConfigurationActionImpl action = ( ConfigurationActionImpl ) configAction;
+    action.setGlobalVisibilityAttribute( true );
+    visible = configAction.isViewActionVisibile( viewId, actionId );
+    assertTrue( visible );
+    action.setGlobalVisibilityAttribute( false );
+    visible = configAction.isViewActionVisibile( viewId, actionId );
+    assertFalse( visible );
+  }  
 
   private ConfigurableStack getConfigurableStack() {
     ConfigurableStack result = null;

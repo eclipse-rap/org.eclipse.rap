@@ -3855,7 +3855,8 @@
          <presentationFactory
                defaultLayoutId="org.eclipse.rap.ui.interactiondesign.test.layout2"
                id="org.eclipse.rap.ui.interactiondesign.test.factory"
-               name="TestFactory">
+               name="TestFactory"
+               viewActionsVisible="false">
             <stackPresentation
                   id="org.eclipse.rap.ui.interactiondesign.test.stackPresentation"
                   name="TestStack"

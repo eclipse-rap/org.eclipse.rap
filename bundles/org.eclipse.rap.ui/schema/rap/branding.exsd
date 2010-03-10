@@ -300,6 +300,13 @@ This is not supported by every browser.
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="viewActionsVisible" type="boolean">
+            <annotation>
+               <documentation>
+                  Sets the default vibility for a view&apos;s contribution items (actions/commands). The default value is false. When set to true, all items are visible by default. Otherwise all items are invisible and can be configured via the configuration menu.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

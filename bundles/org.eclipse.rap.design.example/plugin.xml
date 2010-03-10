@@ -25,7 +25,8 @@
          <presentationFactory
                defaultLayoutId="org.eclipse.rap.design.example.business.layout"
                id="org.eclipse.rap.design.example.business.factory"
-               name="Business Presentation Factory">
+               name="Business Presentation Factory"
+               viewActionsVisible="false">
             <defaultStackPresentation
                   id="org.eclipse.rap.design.example.stack.view">
             </defaultStackPresentation>
@@ -40,7 +41,8 @@
          <presentationFactory
                defaultLayoutId="org.eclipse.rap.design.example.fancy.layout"
                id="org.eclipse.rap.design.example.fancy.factory"
-               name="Fancy Presentation Factory">
+               name="Fancy Presentation Factory"
+               viewActionsVisible="false">
             <defaultStackPresentation
                   id="org.eclipse.rap.design.example.stack.view">
             </defaultStackPresentation>
