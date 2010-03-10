@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.rap.rwt.themes.test
+Bundle-Version: 1.3.0.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Require-Bundle: org.junit,
+ org.eclipse.rap.design.example;bundle-version="1.3.0",
+ org.eclipse.rap.rwt;bundle-version="1.3.0"
+Bundle-Vendor: %Bundle-Vendor
+Export-Package: org.eclipse.rap.rwt.themes.test;x-internal:=true,
+ org.eclipse.rap.rwt.themes.test.business;x-internal:=true
