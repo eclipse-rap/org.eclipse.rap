@@ -23,6 +23,13 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.rap.rwt.themes.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.rap.rwt.q07.test"
@@ -50,14 +57,6 @@
 
    <plugin
          id="org.eclipse.rap.ui.forms.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-         
-   <plugin
-         id="org.eclipse.rap.rwt.themes.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
