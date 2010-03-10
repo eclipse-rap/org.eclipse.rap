@@ -39,6 +39,7 @@ plugin@org.eclipse.rap.ui.cheatsheets=HEAD,:pserver:anonymous@dev.eclipse.org:/c
 feature@org.eclipse.rap.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/runtime/test-feature
 feature@org.eclipse.rap.pretest=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/runtime/pretest-feature
 plugin@org.eclipse.rap.rwt.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.test
+plugin@org.eclipse.rap.rwt.themes.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.themes.test
 fragment@org.eclipse.rap.rwt.testfixture=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.testfixture
 fragment@org.eclipse.rap.rwt.test.mockup=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.test.mockup
 

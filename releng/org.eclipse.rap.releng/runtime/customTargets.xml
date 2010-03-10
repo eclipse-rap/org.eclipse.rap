@@ -97,12 +97,14 @@
     <property name="host.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
     <property name="fragment.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
     <property name="forms.tests" value="${buildDirectory}/plugins/org.eclipse.rap.ui.forms.test/@dot" />
+  	<property name="themes.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.themes.test/@dot" />
     <property name="reports.tests" value="${buildDirectory}/tests" />
     <mkdir dir="${reports.tests}" />
     <path id="cp">
       <pathelement location="${host.tests}" />
       <pathelement location="${fragment.tests}" />
       <pathelement location="${forms.tests}" />
+    	<pathelement location="${themes.tests}" />
       <fileset dir="${buildDirectory}/${buildLabel}/target/eclipse/plugins">
         <include name="**/*.jar"/>
       </fileset>
@@ -110,6 +112,7 @@
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
+    	<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.design.example/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
       <fileset dir="${baseLocation}/plugins">
           <include name="org.junit_3*/junit.jar"/>
@@ -131,6 +134,9 @@
         <fileset dir="${forms.tests}">
           <include name="**/*_Test.class" />
         </fileset>
+      	<fileset dir="${themes.tests}">
+      	          <include name="**/*_Test.class" />
+      	</fileset>
       </batchtest>
     </junit>
 
