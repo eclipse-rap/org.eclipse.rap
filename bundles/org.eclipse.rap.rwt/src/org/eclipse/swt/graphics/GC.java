@@ -119,7 +119,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void setFont( Font font ) {
+  public void setFont( final Font font ) {
     if( isDisposed() ) {
       SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
     }
