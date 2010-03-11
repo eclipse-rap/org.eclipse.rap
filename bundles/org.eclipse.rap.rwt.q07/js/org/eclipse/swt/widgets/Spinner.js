@@ -229,7 +229,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       if( digits > 0 ) {
         result = result * Math.pow( 10, digits );
       }
-      result = parseInt( result );
+      result = Math.round( result );
       if( result > this.getMax() ) {
         result = this.getMax();
       }
