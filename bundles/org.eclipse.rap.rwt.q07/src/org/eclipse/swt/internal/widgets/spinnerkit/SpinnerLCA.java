@@ -98,7 +98,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
     ControlLCAUtil.writeChanges( spinner );
-    writeDigits( spinner );
     writeValues( spinner );
     writeTextLimit( spinner );
     writeModifyListener( spinner );
@@ -115,12 +114,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
-  private static void writeDigits( final Spinner spinner ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( spinner );
-    Integer newValue = new Integer( spinner.getDigits() );
-    writer.set( PROP_DIGITS, "digits", newValue, DEFAULT_DIGITS );
-  }
-
   private static void writeValues( final Spinner spinner ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( spinner );
     writer.set( PROP_MINIMUM,
@@ -131,6 +124,10 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
                 "max",
                 new Integer( spinner.getMaximum() ),
                 DEFAULT_MAXIMUM );
+    writer.set( PROP_DIGITS,
+                "digits",
+                new Integer( spinner.getDigits() ),
+                DEFAULT_DIGITS );
     writer.set( PROP_INCREMENT,
                 "incrementAmount",
                 new Integer( spinner.getIncrement() ),
