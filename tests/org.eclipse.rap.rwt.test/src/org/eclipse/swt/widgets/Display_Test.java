@@ -1106,6 +1106,22 @@ public class Display_Test extends TestCase {
     assertSame( filterEvent, listenerEevent );
   }
 
+  public void testAppName() {
+    assertEquals( "RAP", Display.getAppName() );
+    Display.setAppName( "App name" );
+    assertEquals( "App name", Display.getAppName() );
+    Display.setAppName( null );
+    assertNull( Display.getAppName() );
+  }
+
+  public void testAppVersion() {
+    assertEquals( "", Display.getAppVersion() );
+    Display.setAppVersion( "v1.3" );
+    assertEquals( "v1.3", Display.getAppVersion() );
+    Display.setAppVersion( null );
+    assertNull( Display.getAppVersion() );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

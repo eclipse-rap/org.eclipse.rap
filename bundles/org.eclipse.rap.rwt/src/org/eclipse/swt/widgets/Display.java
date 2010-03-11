@@ -177,6 +177,9 @@ public class Display extends Device implements Adaptable {
       && Thread.currentThread() == RWTLifeCycle.getUIThreadHolder().getThread();
   }
 
+  private static String appName = "RAP";
+  private static String appVersion = "";
+
   private final List shells;
   private final Thread thread;
   private final ISessionStore session;
@@ -1328,7 +1331,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public int getDismissalAlignment() {
@@ -1350,7 +1353,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public boolean getHighContrast() {
@@ -1804,6 +1807,57 @@ public class Display extends Device implements Adaptable {
    */
   public void update() {
     checkDevice();
+  }
+
+  /**
+   * Returns the application name.
+   *
+   * @return the application name
+   *
+   * @see #setAppName(String)
+   *
+   * @since 1.3
+   */
+  public static String getAppName() {
+    return appName;
+  }
+
+  /**
+   * Returns the application version.
+   *
+   * @return the application version
+   *
+   * @see #setAppVersion(String)
+   *
+   * @since 1.3
+   */
+  public static String getAppVersion() {
+    return appVersion;
+  }
+
+  /**
+   * Sets the application name to the argument.
+   * <p>
+   * Specifying <code>null</code> for the name clears it.
+   * </p>
+   *
+   * @param name the new app name or <code>null</code>
+   *
+   * @since 1.3
+   */
+  public static void setAppName( final String name ) {
+    appName = name;
+  }
+
+  /**
+   * Sets the application version to the argument.
+   *
+   * @param version the new app version
+   *
+   * @since 1.3
+   */
+  public static void setAppVersion( final String version ) {
+    appVersion = version;
   }
 
   /////////////////////
