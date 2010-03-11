@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.Locale;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -150,6 +153,10 @@ public class Spinner_Test extends TestCase {
     expected = new Point( 54, 20 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
+    spinner.setDigits( 5 );
+    expected = new Point( 75, 20 );
+    assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
     expected = new Point( 117, 102 );
     assertEquals( expected, spinner.computeSize( 100, 100 ) );
   }
@@ -166,15 +173,22 @@ public class Spinner_Test extends TestCase {
     expected = new Rectangle( -1, -1, 117, 102 );
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
   }
-  
+
   public void testGetText() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
     spinner.setSelection( 5 );
     assertEquals( "5", spinner.getText() );
+
+    spinner.setDigits( 2 );
+    RWT.setLocale( Locale.US );
+    assertEquals( "0.05", spinner.getText() );
+
+    RWT.setLocale( Locale.GERMANY );
+    assertEquals( "0,05", spinner.getText() );
   }
-  
+
   public void testTextLimit() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -188,5 +202,74 @@ public class Spinner_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+  }
+
+  public void testDigits() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    assertEquals( 0, spinner.getDigits() );
+    spinner.setDigits( 1 );
+    assertEquals( 1, spinner.getDigits() );
+    try {
+      spinner.setDigits( -1 );
+      fail( "Must not allow negative values" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
+  public void testSetValues() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    assertEquals( 0, spinner.getSelection() );
+    assertEquals( 0, spinner.getMinimum() );
+    assertEquals( 100, spinner.getMaximum() );
+    assertEquals( 0, spinner.getDigits() );
+    assertEquals( 1, spinner.getIncrement() );
+    assertEquals( 10, spinner.getPageIncrement() );
+
+    // test valid values
+    spinner.setValues( 50, 40, 60, 2, 5, 10 );
+    assertEquals( 50, spinner.getSelection() );
+    assertEquals( 40, spinner.getMinimum() );
+    assertEquals( 60, spinner.getMaximum() );
+    assertEquals( 2, spinner.getDigits() );
+    assertEquals( 5, spinner.getIncrement() );
+    assertEquals( 10, spinner.getPageIncrement() );
+
+    // test invalid values
+    spinner.setValues( 5, 6, 4, 5, 1, 2 );
+    assertEquals( 50, spinner.getSelection() );
+    assertEquals( 40, spinner.getMinimum() );
+    assertEquals( 60, spinner.getMaximum() );
+    assertEquals( 2, spinner.getDigits() );
+    assertEquals( 5, spinner.getIncrement() );
+    assertEquals( 10, spinner.getPageIncrement() );
+
+    spinner.setValues( 5, 4, 6, -5, 1, 2 );
+    assertEquals( 50, spinner.getSelection() );
+    assertEquals( 40, spinner.getMinimum() );
+    assertEquals( 60, spinner.getMaximum() );
+    assertEquals( 2, spinner.getDigits() );
+    assertEquals( 5, spinner.getIncrement() );
+    assertEquals( 10, spinner.getPageIncrement() );
+
+    spinner.setValues( 5, 4, 6, 5, -1, 2 );
+    assertEquals( 50, spinner.getSelection() );
+    assertEquals( 40, spinner.getMinimum() );
+    assertEquals( 60, spinner.getMaximum() );
+    assertEquals( 2, spinner.getDigits() );
+    assertEquals( 5, spinner.getIncrement() );
+    assertEquals( 10, spinner.getPageIncrement() );
+
+    spinner.setValues( 5, 4, 6, 5, 1, -2 );
+    assertEquals( 50, spinner.getSelection() );
+    assertEquals( 40, spinner.getMinimum() );
+    assertEquals( 60, spinner.getMaximum() );
+    assertEquals( 2, spinner.getDigits() );
+    assertEquals( 5, spinner.getIncrement() );
+    assertEquals( 10, spinner.getPageIncrement() );
   }
 }

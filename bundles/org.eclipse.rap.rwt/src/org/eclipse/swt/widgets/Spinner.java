@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.text.NumberFormat;
+
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -50,13 +52,13 @@ public class Spinner extends Composite {
 
   private static final int UP_DOWN_MIN_HEIGHT = 18;
 
-  private int digits = 0;
-  private int increment = 1;
-  private int maximum = 100;
-  private int minimum = 0;
-  private int pageIncrement = 10;
-  private int selection = 0;
-  private int textLimit = LIMIT;
+  private int minimum;
+  private int maximum;
+  private int digits;
+  private int increment;
+  private int pageIncrement;
+  private int selection;
+  private int textLimit;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -89,6 +91,13 @@ public class Spinner extends Composite {
    */
   public Spinner( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
+    minimum = 0;
+    maximum = 100;
+    digits = 0;
+    increment = 1;
+    pageIncrement = 10;
+    selection = 0;
+    textLimit = LIMIT;
   }
 
   void initState() {
@@ -105,15 +114,40 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  // TODO [rh] the qooxdoo Spinner widget does not provide decimal places
-  public int getDigits () {
-    checkWidget ();
+  public int getDigits() {
+    checkWidget();
     return digits;
   }
 
-//  public void setDigits( final int value ) {
-//    checkWidget();
-//  }
+  /**
+   * Sets the number of decimal places used by the receiver.
+   * <p>
+   * The digit setting is used to allow for floating point values in the receiver.
+   * For example, to set the selection to a floating point value of 1.37 call setDigits() with
+   * a value of 2 and setSelection() with a value of 137. Similarly, if getDigits() has a value
+   * of 2 and getSelection() returns 137 this should be interpreted as 1.37. This applies to all
+   * numeric APIs.
+   * </p>
+   *
+   * @param value the new digits (must be greater than or equal to zero)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the value is less than zero</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void setDigits( final int value ) {
+    checkWidget();
+    if( value < 0 ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    digits = value;
+  }
 
   /////////////////////////////////////////
   // Methods to control range and increment
@@ -327,12 +361,19 @@ public class Spinner extends Composite {
                          final int increment,
                          final int pageIncrement )
   {
-    setMinimum( minimum );
-    setMaximum( maximum );
-    // setDigits( digits ) - ignore since we cannot (yet) handle digits
-    setIncrement( increment );
-    setPageIncrement( pageIncrement );
-    setSelection( selection );
+    checkWidget();
+    if(    maximum >= minimum
+        && digits >= 0
+        && increment >= 1
+        && pageIncrement >= 1 )
+    {
+      setMinimum( minimum );
+      setMaximum( maximum );
+      setDigits( digits );
+      setIncrement( increment );
+      setPageIncrement( pageIncrement );
+      setSelection( selection );
+    }
   }
 
   /**
@@ -351,7 +392,14 @@ public class Spinner extends Composite {
    */
   public String getText() {
     checkWidget();
-    return String.valueOf( selection );
+    String result = String.valueOf( selection );
+    if( digits > 0 ) {
+      NumberFormat nf = NumberFormat.getInstance( RWT.getLocale() );
+      nf.setMinimumFractionDigits( digits );
+      nf.setMaximumFractionDigits( digits );
+      result = nf.format( selection / Math.pow( 10, digits ) );
+    }
+    return result;
   }
 
   /**

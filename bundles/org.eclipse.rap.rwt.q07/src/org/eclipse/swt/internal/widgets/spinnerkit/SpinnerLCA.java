@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,9 @@
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
 import java.io.IOException;
+import java.text.DecimalFormatSymbols;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -24,18 +26,28 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Spinner";
 
-  private static final Integer DEFAULT_TEXT_LIMIT
-    = new Integer( Spinner.LIMIT );
-  
+  // Property names for preserveValues
   static final String PROP_SELECTION = "selection";
   static final String PROP_MAXIMUM = "maximum";
   static final String PROP_MINIMUM = "minimum";
+  static final String PROP_DIGITS = "digits";
   static final String PROP_INCREMENT = "increment";
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_MODIFY_LISTENER = "modifyListener";
   static final String PROP_SELECTION_LISTENER = "selectionListener";
   static final String PROP_TEXT_LIMIT = "textLimit";
+  static final String PROP_DECIMAL_SEPARATOR = "decimalSeparator";
 
+  // Default values
+  private static final Integer DEFAULT_SELECTION = new Integer( 0 );
+  private static final Integer DEFAULT_MAXIMUM = new Integer( 100 );
+  private static final Integer DEFAULT_MINIMUM = new Integer( 0 );
+  private static final Integer DEFAULT_DIGITS = new Integer( 0 );
+  private static final Integer DEFAULT_PAGE_INCREMENT = new Integer( 10 );
+  private static final Integer DEFAULT_INCREMENT = new Integer( 1 );
+  private static final Integer DEFAULT_TEXT_LIMIT
+    = new Integer( Spinner.LIMIT );
+  private static final String DEFAULT_DECIMAL_SEPARATOR = ".";
 
   public void preserveValues( final Widget widget ) {
     Spinner spinner = ( Spinner )widget;
@@ -44,6 +56,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION, new Integer( spinner.getSelection() ) );
     adapter.preserve( PROP_MINIMUM, new Integer( spinner.getMinimum() ) );
     adapter.preserve( PROP_MAXIMUM, new Integer( spinner.getMaximum() ) );
+    adapter.preserve( PROP_DIGITS, new Integer( spinner.getDigits() ) );
     adapter.preserve( PROP_INCREMENT, new Integer( spinner.getIncrement() ) );
     adapter.preserve( PROP_PAGE_INCREMENT,
                       new Integer( spinner.getPageIncrement() ) );
@@ -52,6 +65,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION_LISTENER,
                       Boolean.valueOf( SelectionEvent.hasListener( spinner ) ) );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( spinner.getTextLimit() ) );
+    adapter.preserve( PROP_DECIMAL_SEPARATOR, getDecimalSeparator() );
     WidgetLCAUtil.preserveCustomVariant( spinner );
   }
 
@@ -75,7 +89,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
     JSWriter writer = JSWriter.getWriterFor( spinner );
-    writer.newWidget( QX_TYPE );    
+    writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( spinner );
     writeReadOnly( spinner );
     writeWrap( spinner );
@@ -84,10 +98,12 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
     ControlLCAUtil.writeChanges( spinner );
+    writeDigits( spinner );
     writeValues( spinner );
     writeTextLimit( spinner );
     writeModifyListener( spinner );
     writeSelectionListener( spinner );
+    writeDecimalSeparator( spinner );
     WidgetLCAUtil.writeCustomVariant( spinner );
   }
 
@@ -99,31 +115,47 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
-  private static void writeValues( final Spinner spinner ) throws IOException {
+  private static void writeDigits( final Spinner spinner ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( spinner );
-    writeSetInt( writer, PROP_MINIMUM, "min", spinner.getMinimum(), 0 );
-    writeSetInt( writer, PROP_MAXIMUM, "max", spinner.getMaximum(), 100 );
-    writeSetInt( writer,
-                 PROP_INCREMENT,
-                 "incrementAmount",
-                 spinner.getIncrement(),
-                 1 );
-    writeSetInt( writer,
-                 PROP_PAGE_INCREMENT,
-                 "pageIncrementAmount",
-                 spinner.getPageIncrement(),
-                 10 );
-    writeSetInt( writer, PROP_SELECTION, "value", spinner.getSelection(), 0 );
+    Integer newValue = new Integer( spinner.getDigits() );
+    writer.set( PROP_DIGITS, "digits", newValue, DEFAULT_DIGITS );
   }
 
-  private static void writeTextLimit( final Spinner spinner ) throws IOException 
+  private static void writeValues( final Spinner spinner ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( spinner );
+    writer.set( PROP_MINIMUM,
+                "min",
+                new Integer( spinner.getMinimum() ),
+                DEFAULT_MINIMUM );
+    writer.set( PROP_MAXIMUM,
+                "max",
+                new Integer( spinner.getMaximum() ),
+                DEFAULT_MAXIMUM );
+    writer.set( PROP_INCREMENT,
+                "incrementAmount",
+                new Integer( spinner.getIncrement() ),
+                DEFAULT_INCREMENT );
+    writer.set( PROP_INCREMENT,
+                "wheelIncrementAmount",
+                new Integer( spinner.getIncrement() ),
+                DEFAULT_INCREMENT );
+    writer.set( PROP_PAGE_INCREMENT,
+                "pageIncrementAmount",
+                new Integer( spinner.getPageIncrement() ),
+                DEFAULT_PAGE_INCREMENT );
+    writer.set( PROP_SELECTION,
+                "value",
+                new Integer( spinner.getSelection() ),
+                DEFAULT_SELECTION );
+  }
+
+  private static void writeTextLimit( final Spinner spinner ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( spinner );
     Integer newValue = new Integer( spinner.getTextLimit() );
     Integer defValue = DEFAULT_TEXT_LIMIT;
     String prop = PROP_TEXT_LIMIT;
-    if( WidgetLCAUtil.hasChanged( spinner, prop, newValue, defValue ) )
-    {
+    if( WidgetLCAUtil.hasChanged( spinner, prop, newValue, defValue ) ) {
       // Negative values are treated as 'no limit' which is achieved by passing
       // null to the client-side maxLength property
       if( newValue.intValue() < 0 ) {
@@ -133,20 +165,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeSetInt( final JSWriter writer,
-                                   final String javaProperty,
-                                   final String jsProperty,
-                                   final int newValue,
-                                   final int defValue )
-    throws IOException
-  {
-    writer.set( javaProperty,
-                jsProperty,
-                new Integer( newValue ),
-                new Integer( defValue ) );
-  }
-
-  private static void writeReadOnly( final Spinner spinner ) throws IOException 
+  private static void writeReadOnly( final Spinner spinner ) throws IOException
   {
     boolean readOnly = ( spinner.getStyle() & SWT.READ_ONLY ) != 0;
     JSWriter writer = JSWriter.getWriterFor( spinner );
@@ -178,5 +197,20 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( spinner ) );
     Boolean defValue = Boolean.FALSE;
     writer.set( prop, "hasSelectionListener", newValue, defValue );
+  }
+
+  private static void writeDecimalSeparator( final Spinner spinner )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( spinner );
+    String prop = PROP_DECIMAL_SEPARATOR;
+    String newValue = getDecimalSeparator();
+    String defValue = DEFAULT_DECIMAL_SEPARATOR;
+    writer.set( prop, "decimalSeparator", newValue, defValue );
+  }
+
+  private static String getDecimalSeparator() {
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols( RWT.getLocale() );
+    return String.valueOf( symbols.getDecimalSeparator() );
   }
 }

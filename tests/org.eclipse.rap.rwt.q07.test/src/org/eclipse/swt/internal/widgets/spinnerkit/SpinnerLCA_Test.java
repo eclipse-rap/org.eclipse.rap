@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,8 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 0 ), minimum );
     Object maximum = adapter.getPreserved( SpinnerLCA.PROP_MAXIMUM );
     assertEquals( new Integer( 100 ), maximum );
+    Object digits = adapter.getPreserved( SpinnerLCA.PROP_DIGITS );
+    assertEquals( new Integer( 0 ), digits );
     Object increment = adapter.getPreserved( SpinnerLCA.PROP_INCREMENT );
     assertEquals( new Integer( 1 ), increment );
     Object pageIncrement
@@ -62,6 +64,7 @@ public class SpinnerLCA_Test extends TestCase {
     spinner.setSelection( 5 );
     spinner.setMinimum( 3 );
     spinner.setMaximum( 200 );
+    spinner.setDigits( 2 );
     spinner.setIncrement( 2 );
     spinner.setPageIncrement( 9 );
     spinner.setTextLimit( 10 );
@@ -76,12 +79,14 @@ public class SpinnerLCA_Test extends TestCase {
     selection = adapter.getPreserved( SpinnerLCA.PROP_SELECTION );
     minimum = adapter.getPreserved( SpinnerLCA.PROP_MINIMUM );
     maximum = adapter.getPreserved( SpinnerLCA.PROP_MAXIMUM );
+    digits = adapter.getPreserved( SpinnerLCA.PROP_DIGITS );
     increment = adapter.getPreserved( SpinnerLCA.PROP_INCREMENT );
     pageIncrement = adapter.getPreserved( SpinnerLCA.PROP_PAGE_INCREMENT );
     textLimit = adapter.getPreserved( SpinnerLCA.PROP_TEXT_LIMIT );
     assertEquals( new Integer( 5 ), selection );
     assertEquals( new Integer( 3 ), minimum );
     assertEquals( new Integer( 200 ), maximum );
+    assertEquals( new Integer( 2 ), digits );
     assertEquals( new Integer( 2 ), increment );
     assertEquals( new Integer( 9 ), pageIncrement );
     assertEquals( new Integer( 10 ), textLimit );

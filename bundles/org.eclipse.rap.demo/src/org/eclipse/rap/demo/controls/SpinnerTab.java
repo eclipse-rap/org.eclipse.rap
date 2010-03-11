@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,21 @@ public class SpinnerTab extends ExampleTab {
 
   private Spinner spinner;
   private Spinner modifySpinner;
+  private int minimum;
+  private int maximum;
+  private int digits;
+  private int increment;
+  private int pageIncrement;
+  private int selection;
 
   public SpinnerTab( final CTabFolder topFolder ) {
     super( topFolder, "Spinner" );
+    minimum = 0;
+    maximum = 100;
+    digits = 0;
+    increment = 1;
+    pageIncrement = 10;
+    selection = 0;
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -62,6 +74,7 @@ public class SpinnerTab extends ExampleTab {
         lblSpinnerValue.setText( value );
       }
     } );
+    updateSpinners();
     registerControl( spinner );
     registerControl( modifySpinner );
   }
@@ -71,18 +84,19 @@ public class SpinnerTab extends ExampleTab {
     group.setText( "Settings" );
     group.setLayout( new GridLayout( 2, false ) );
 
-    String minimum = String.valueOf( spinner.getMinimum() );
-    final Text txtMin = createLabeledText( group, "Minimum", minimum );
-    String maximum = String.valueOf( spinner.getMaximum() );
-    final Text txtMax = createLabeledText( group, "Maximum", maximum );
-    String inc = String.valueOf( spinner.getIncrement() );
-    final Text txtInc = createLabeledText( group, "Increment", inc );
-    String pageInc = String.valueOf( spinner.getIncrement() );
+    final Text txtMin
+      = createLabeledText( group, "Minimum", String.valueOf( minimum ) );
+    final Text txtMax
+      = createLabeledText( group, "Maximum", String.valueOf( maximum ) );
+    final Spinner spnDigits
+      = createLabeledSpinner( group, "Digits", digits );
+    final Text txtInc
+      = createLabeledText( group, "Increment", String.valueOf( increment ) );
     final Text txtPageInc = createLabeledText( group,
                                                "PageIncrement",
-                                               pageInc );
-    String sel = String.valueOf( spinner.getSelection() );
-    final Text txtSelection = createLabeledText( group, "Selection", sel );
+                                               String.valueOf( pageIncrement ) );
+    final Text txtSelection
+      = createLabeledText( group, "Selection", String.valueOf( selection ) );
     Button btnApply = new Button( group, SWT.PUSH );
     btnApply.setText( "Apply" );
     GridData btnApplyData = new GridData( GridData.HORIZONTAL_ALIGN_END );
@@ -91,17 +105,13 @@ public class SpinnerTab extends ExampleTab {
     btnApply.addSelectionListener( new SelectionAdapter() {
 
       public void widgetSelected( final SelectionEvent event ) {
-        spinner.setMinimum( Integer.parseInt( txtMin.getText() ) );
-        spinner.setMaximum( Integer.parseInt( txtMax.getText() ) );
-        spinner.setIncrement( Integer.parseInt( txtInc.getText() ) );
-        spinner.setPageIncrement( Integer.parseInt( txtPageInc.getText() ) );
-        spinner.setSelection( Integer.parseInt( txtSelection.getText() ) );
-
-        modifySpinner.setMinimum( Integer.parseInt( txtMin.getText() ) );
-        modifySpinner.setMaximum( Integer.parseInt( txtMax.getText() ) );
-        modifySpinner.setIncrement( Integer.parseInt( txtInc.getText() ) );
-        modifySpinner.setPageIncrement( Integer.parseInt( txtPageInc.getText() ) );
-        modifySpinner.setSelection( Integer.parseInt( txtSelection.getText() ) );
+        minimum = parseInt( txtMin, spinner.getMinimum() );
+        maximum = parseInt( txtMax, spinner.getMaximum() );
+        digits = spnDigits.getSelection();
+        increment = parseInt( txtInc, spinner.getIncrement() );
+        pageIncrement = parseInt( txtPageInc, spinner.getPageIncrement() );
+        selection = parseInt( txtSelection, spinner.getSelection() );
+        updateSpinners();
       }
     } );
   }
@@ -115,6 +125,44 @@ public class SpinnerTab extends ExampleTab {
     final Text result = new Text( parent, SWT.BORDER );
     result.setText( value );
     result.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    return result;
+  }
+
+  private Spinner createLabeledSpinner( final Composite parent,
+                                        final String text,
+                                        final int value )
+  {
+    final Label label = new Label( parent, SWT.NONE );
+    label.setText( text );
+    final Spinner result = new Spinner( parent, SWT.BORDER );
+    result.setSelection( value );
+    result.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    return result;
+  }
+
+  private void updateSpinners() {
+    spinner.setValues( selection,
+                       minimum,
+                       maximum,
+                       digits,
+                       increment,
+                       pageIncrement );
+    modifySpinner.setValues( selection,
+                             minimum,
+                             maximum,
+                             digits,
+                             increment,
+                             pageIncrement );
+  }
+
+  private int parseInt( final Text text, final int oldValue ) {
+    int result;
+    try {
+      result = Integer.parseInt( text.getText() );
+    } catch( NumberFormatException e ) {
+      text.setText( String.valueOf( oldValue ) );
+      result = oldValue;
+    }
     return result;
   }
 }
