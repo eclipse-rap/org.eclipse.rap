@@ -367,11 +367,11 @@ public class Spinner extends Composite {
         && increment >= 1
         && pageIncrement >= 1 )
     {
-      setMinimum( minimum );
-      setMaximum( maximum );
-      setDigits( digits );
-      setIncrement( increment );
-      setPageIncrement( pageIncrement );
+      this.minimum = minimum;
+      this.maximum = maximum;
+      this.digits = digits;
+      this.increment = increment;
+      this.pageIncrement = pageIncrement;
       setSelection( selection );
     }
   }

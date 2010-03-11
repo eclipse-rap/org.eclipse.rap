@@ -66,6 +66,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       this._textfield.setMaxLength( value );
     },
 
+    // [if] Spinner#setValues allows minimum, maximum and selection to be set in
+    // one hop. In case of not crossed ranges ( for example new min > old max ),
+    // a javascript error appears if we set them one by one.
+    setMinMaxSelection : function( min, max, value ) {
+      this.setMin( Math.min( min, this.getMin() ) );
+      this.setMax( Math.max( max, this.getMax() ) );
+      this.setValue( value );
+      this.setMin( min );
+      this.setMax( max );
+    },
+
     _applyCursor : function( value, old ) {
       this.base( arguments, value, old );
       if( value ) {

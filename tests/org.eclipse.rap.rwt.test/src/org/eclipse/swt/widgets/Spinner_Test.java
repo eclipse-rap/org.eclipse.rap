@@ -219,18 +219,11 @@ public class Spinner_Test extends TestCase {
     }
   }
 
-  public void testSetValues() {
+  public void testSetValuesValid() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    assertEquals( 0, spinner.getSelection() );
-    assertEquals( 0, spinner.getMinimum() );
-    assertEquals( 100, spinner.getMaximum() );
-    assertEquals( 0, spinner.getDigits() );
-    assertEquals( 1, spinner.getIncrement() );
-    assertEquals( 10, spinner.getPageIncrement() );
 
-    // test valid values
     spinner.setValues( 50, 40, 60, 2, 5, 10 );
     assertEquals( 50, spinner.getSelection() );
     assertEquals( 40, spinner.getMinimum() );
@@ -238,33 +231,60 @@ public class Spinner_Test extends TestCase {
     assertEquals( 2, spinner.getDigits() );
     assertEquals( 5, spinner.getIncrement() );
     assertEquals( 10, spinner.getPageIncrement() );
+  }
 
-    // test invalid values
+  public void testSetValuesInvalid() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+
     spinner.setValues( 5, 6, 4, 5, 1, 2 );
-    assertEquals( 50, spinner.getSelection() );
-    assertEquals( 40, spinner.getMinimum() );
-    assertEquals( 60, spinner.getMaximum() );
-    assertEquals( 2, spinner.getDigits() );
-    assertEquals( 5, spinner.getIncrement() );
+    assertEquals( 0, spinner.getSelection() );
+    assertEquals( 0, spinner.getMinimum() );
+    assertEquals( 100, spinner.getMaximum() );
+    assertEquals( 0, spinner.getDigits() );
+    assertEquals( 1, spinner.getIncrement() );
     assertEquals( 10, spinner.getPageIncrement() );
 
     spinner.setValues( 5, 4, 6, -5, 1, 2 );
-    assertEquals( 50, spinner.getSelection() );
-    assertEquals( 40, spinner.getMinimum() );
-    assertEquals( 60, spinner.getMaximum() );
-    assertEquals( 2, spinner.getDigits() );
-    assertEquals( 5, spinner.getIncrement() );
+    assertEquals( 0, spinner.getSelection() );
+    assertEquals( 0, spinner.getMinimum() );
+    assertEquals( 100, spinner.getMaximum() );
+    assertEquals( 0, spinner.getDigits() );
+    assertEquals( 1, spinner.getIncrement() );
     assertEquals( 10, spinner.getPageIncrement() );
 
     spinner.setValues( 5, 4, 6, 5, -1, 2 );
-    assertEquals( 50, spinner.getSelection() );
-    assertEquals( 40, spinner.getMinimum() );
-    assertEquals( 60, spinner.getMaximum() );
+    assertEquals( 0, spinner.getSelection() );
+    assertEquals( 0, spinner.getMinimum() );
+    assertEquals( 100, spinner.getMaximum() );
+    assertEquals( 0, spinner.getDigits() );
+    assertEquals( 1, spinner.getIncrement() );
+    assertEquals( 10, spinner.getPageIncrement() );
+
+    spinner.setValues( 5, 4, 6, 5, 1, -2 );
+    assertEquals( 0, spinner.getSelection() );
+    assertEquals( 0, spinner.getMinimum() );
+    assertEquals( 100, spinner.getMaximum() );
+    assertEquals( 0, spinner.getDigits() );
+    assertEquals( 1, spinner.getIncrement() );
+    assertEquals( 10, spinner.getPageIncrement() );
+  }
+
+  public void testSetValuesWithNonCrossedRanges() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+
+    spinner.setValues( 500, 400, 600, 2, 5, 10 );
+    assertEquals( 500, spinner.getSelection() );
+    assertEquals( 400, spinner.getMinimum() );
+    assertEquals( 600, spinner.getMaximum() );
     assertEquals( 2, spinner.getDigits() );
     assertEquals( 5, spinner.getIncrement() );
     assertEquals( 10, spinner.getPageIncrement() );
 
-    spinner.setValues( 5, 4, 6, 5, 1, -2 );
+    spinner.setValues( 50, 40, 60, 2, 5, 10 );
     assertEquals( 50, spinner.getSelection() );
     assertEquals( 40, spinner.getMinimum() );
     assertEquals( 60, spinner.getMaximum() );

@@ -98,6 +98,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
     ControlLCAUtil.writeChanges( spinner );
+    writeMinMaxSelection( spinner );
     writeValues( spinner );
     writeTextLimit( spinner );
     writeModifyListener( spinner );
@@ -116,14 +117,6 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
 
   private static void writeValues( final Spinner spinner ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( spinner );
-    writer.set( PROP_MINIMUM,
-                "min",
-                new Integer( spinner.getMinimum() ),
-                DEFAULT_MINIMUM );
-    writer.set( PROP_MAXIMUM,
-                "max",
-                new Integer( spinner.getMaximum() ),
-                DEFAULT_MAXIMUM );
     writer.set( PROP_DIGITS,
                 "digits",
                 new Integer( spinner.getDigits() ),
@@ -140,10 +133,36 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
                 "pageIncrementAmount",
                 new Integer( spinner.getPageIncrement() ),
                 DEFAULT_PAGE_INCREMENT );
-    writer.set( PROP_SELECTION,
-                "value",
-                new Integer( spinner.getSelection() ),
-                DEFAULT_SELECTION );
+  }
+
+  // [if] Spinner#setValues allows minimum, maximum and selection to be set in
+  // one hop. In case of not crossed ranges ( for example new min > old max ), a
+  // javascript error appears if we set them one by one.
+  private static void writeMinMaxSelection( final Spinner spinner )
+    throws IOException
+  {
+    Integer newMin = new Integer( spinner.getMinimum() );
+    Integer newMax = new Integer( spinner.getMaximum() );
+    Integer newSel = new Integer( spinner.getSelection() );
+    boolean minChanged = WidgetLCAUtil.hasChanged( spinner,
+                                                   PROP_MINIMUM,
+                                                   newMin,
+                                                   DEFAULT_MINIMUM );
+    boolean maxChanged = WidgetLCAUtil.hasChanged( spinner,
+                                                   PROP_MAXIMUM,
+                                                   newMax,
+                                                   DEFAULT_MAXIMUM );
+    boolean selChanged = WidgetLCAUtil.hasChanged( spinner,
+                                                   PROP_SELECTION,
+                                                   newSel,
+                                                   DEFAULT_SELECTION );
+    if( minChanged || maxChanged || selChanged ) {
+      JSWriter writer = JSWriter.getWriterFor( spinner );
+      Integer[] args = new Integer[] {
+        newMin, newMax, newSel
+      };
+      writer.call( "setMinMaxSelection", args );
+    }
   }
 
   private static void writeTextLimit( final Spinner spinner ) throws IOException
