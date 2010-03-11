@@ -25,7 +25,7 @@ import org.eclipse.rwt.internal.theme.css.*;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.swt.widgets.Widget;
-import org.w3c.css.sac.CSSException;
+
 
 /**
  * The ThemeManager maintains information about the themeable widgets and the
@@ -122,11 +122,8 @@ public final class ThemeManager {
   private static final String THEME_RESOURCE_DEST = "themes";
   static final String IMAGE_DEST_PATH = THEME_RESOURCE_DEST + "/images";
   static final String CURSOR_DEST_PATH = THEME_RESOURCE_DEST + "/cursors";
-
-  private static final String THEME_PREFIX = "org.eclipse.swt.theme.";
-
-  private static final String PREDEFINED_THEME_ID = THEME_PREFIX + "Default";
-  private static final String PREDEFINED_THEME_NAME = "RAP Default Theme";
+  static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
+  private static final String DEFAULT_HEME_NAME = "RAP Default Theme";
 
   private static final Class[] THEMEABLE_WIDGETS = new Class[]{
     org.eclipse.swt.widgets.Widget.class,
@@ -165,11 +162,10 @@ public final class ThemeManager {
   private final Map themes;
   private final Set registeredThemeFiles;
   private boolean initialized;
-  private Theme predefinedTheme;
+  private Theme defaultTheme;
   private ThemeableWidgetHolder themeableWidgets;
   private StyleSheetBuilder defaultStyleSheetBuilder;
-  private int themeCount;
-  private CssElementHolder registeredCssElements;
+  private final CssElementHolder registeredCssElements;
 
   private ThemeManager() {
     // prevent instantiation from outside
@@ -210,11 +206,11 @@ public final class ThemeManager {
       }
       // initialize predefined theme
       StyleSheet defaultStyleSheet = defaultStyleSheetBuilder.getStyleSheet();
-      predefinedTheme = new Theme( PREDEFINED_THEME_ID,
-                                   PREDEFINED_THEME_NAME,
-                                   defaultStyleSheet,
-                                   themeableWidgets.getAll() );
-      themes.put( PREDEFINED_THEME_ID, predefinedTheme );
+      defaultTheme = new Theme( DEFAULT_THEME_ID,
+                                   DEFAULT_HEME_NAME,
+                                   defaultStyleSheet );
+      defaultTheme.initialize( themeableWidgets.getAll() );
+      themes.put( DEFAULT_THEME_ID, defaultTheme );
       initialized = true;
     }
   }
@@ -232,7 +228,7 @@ public final class ThemeManager {
       themes.clear();
       registeredCssElements.clear();
       defaultStyleSheetBuilder = new StyleSheetBuilder();
-      predefinedTheme = null;
+      defaultTheme = null;
       initialized = false;
       log( "ThemeManager reset" );
     }
@@ -273,108 +269,25 @@ public final class ThemeManager {
   }
 
   /**
-   * Registers a theme from an input stream. Note that <code>initialize()</code>
-   * must be called first.
+   * Registers a theme. Note that <code>initialize()</code> must be called
+   * first.
    *
-   * @param id an id that identifies the theme in the Java code. Note that this
-   *          id is not valid on the client-side. To get the id that is used on
-   *          the client, see method <code>getJsThemeId</code>
-   * @param name a name that describes the theme. Currently not used.
-   * @param fileName the filename of the theme file
-   * @param loader a resource loader that will load theme resources by path
+   * @param theme the theme to register
    * @throws IllegalStateException if not initialized
-   * @throws NullPointerException if one of the parameters id, fileName, or
-   *           loader is <code>null</code>
-   * @throws IllegalArgumentException if parameter id is empty
-   * @throws IOException if an I/O error occurs while reading the theme file
-   * @throws ThemeManagerException if the CSS file cannot be parsed
+   * @throws IllegalArgumentException if a theme with the same id is already
+   *           registered
    */
-  public void registerTheme( final String id,
-                             final String name,
-                             final String fileName,
-                             final ResourceLoader loader )
-    throws IOException
-  {
+  public void registerTheme( final Theme theme ) {
     checkInitialized();
-    log( "Register theme " + id + " from " + fileName );
-    checkId( id );
-    if( fileName == null ) {
-      throw new NullPointerException( "fileName" );
-    }
-    if( loader == null ) {
-      throw new NullPointerException( "loader" );
-    }
+    String id = theme.getId();
     if( themes.containsKey( id ) ) {
       String pattern = "Theme with id ''{0}'' exists already";
-      Object[] arguments = new Object[] { id };
+      Object[] arguments = new Object[]{ id };
       String msg = MessageFormat.format( pattern, arguments );
       throw new IllegalArgumentException( msg );
     }
-    themeCount++;
-    String jsId = THEME_PREFIX + "Custom_" + themeCount;
-    InputStream inputStream = loader.getResourceAsStream( fileName );
-    if( inputStream == null ) {
-      throw new IllegalArgumentException(   "Could not open resource "
-                                          + fileName );
-    }
-    try {
-      CssFileReader reader = new CssFileReader();
-      StyleSheet styleSheet;
-      try {
-        styleSheet = reader.parse( inputStream, fileName, loader );
-      } catch( CSSException e ) {
-        throw new ThemeManagerException( "Failed parsing CSS file", e );
-      }
-      Theme theme = new Theme( jsId,
-                               name != null ? name : jsId,
-                               styleSheet,
-                               themeableWidgets.getAll() );
-      themes.put( id, theme );
-    } finally {
-      inputStream.close();
-    }
-  }
-
-  /**
-   * Returns a list of all registered themes.
-   *
-   * @return an array that contains the ids of all registered themes, never
-   *         <code>null</code>
-   * @throws IllegalStateException if not initialized
-   */
-  public String[] getRegisteredThemeIds() {
-    checkInitialized();
-    String[] result = new String[ themes.size() ];
-    return ( String[] )themes.keySet().toArray( result );
-  }
-
-  /**
-   * Returns the id of the default theme.
-   *
-   * @return the id of the default theme, never <code>null</code>
-   * @throws IllegalStateException if not initialized
-   */
-  public String getDefaultThemeId() {
-    checkInitialized();
-    return PREDEFINED_THEME_ID;
-  }
-
-  /**
-   * Generates and registers JavaScript code that installs the registered themes
-   * on the client.
-   *
-   * @throws IllegalStateException if not initialized
-   */
-  public void registerResources() {
-    checkInitialized();
-    log( "ThemeManager registers resources" );
-    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
-    boolean compress = !DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
-    Iterator iterator = themes.keySet().iterator();
-    while( iterator.hasNext() ) {
-      String themeId = ( String )iterator.next();
-      registerThemeFiles( themeId, compress );
-    }
+    theme.initialize( themeableWidgets.getAll() );
+    themes.put( id, theme );
   }
 
   /**
@@ -405,6 +318,48 @@ public final class ThemeManager {
       result = ( Theme )themes.get( themeId );
     }
     return result;
+  }
+
+  /**
+   * Returns a list of all registered themes.
+   *
+   * @return an array that contains the ids of all registered themes, never
+   *         <code>null</code>
+   * @throws IllegalStateException if not initialized
+   */
+  public String[] getRegisteredThemeIds() {
+    checkInitialized();
+    String[] result = new String[ themes.size() ];
+    return ( String[] )themes.keySet().toArray( result );
+  }
+
+  /**
+   * Returns the id of the default theme.
+   *
+   * @return the id of the default theme, never <code>null</code>
+   * @throws IllegalStateException if not initialized
+   */
+  public String getDefaultThemeId() {
+    checkInitialized();
+    return DEFAULT_THEME_ID;
+  }
+
+  /**
+   * Generates and registers JavaScript code that installs the registered themes
+   * on the client.
+   *
+   * @throws IllegalStateException if not initialized
+   */
+  public void registerResources() {
+    checkInitialized();
+    log( "ThemeManager registers resources" );
+    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
+    boolean compress = !DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
+    Iterator iterator = themes.keySet().iterator();
+    while( iterator.hasNext() ) {
+      String themeId = ( String )iterator.next();
+      registerThemeFiles( themeId, compress );
+    }
   }
 
   ThemeableWidget getThemeableWidget( final Class widget ) {
@@ -521,10 +476,9 @@ public final class ThemeManager {
     if( inStream != null ) {
       log( "Found default css file: " +  fileName );
       try {
-        CssFileReader reader = new CssFileReader();
         // TODO [rst] Check for illegal element names in selector list
         themeWidget.defaultStyleSheet
-          = reader.parse( inStream, fileName, resLoader );
+          = CssFileReader.readStyleSheet( inStream, fileName, resLoader );
         result = true;
       } finally {
         inStream.close();
@@ -555,7 +509,7 @@ public final class ThemeManager {
         // TODO [rst] Optimize: create only one ThemeStoreWriter for all themes
         IThemeCssElement[] elements = registeredCssElements.getAllElements();
         ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-        storeWriter.addTheme( theme, theme == predefinedTheme );
+        storeWriter.addTheme( theme, theme == defaultTheme );
         sb.append( storeWriter.createJs() );
         String themeCode = sb.toString();
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
@@ -732,7 +686,7 @@ public final class ThemeManager {
     String jsId = theme.getJsId();
     String base = null;
     if( type == QxTheme.BORDER ) {
-      base = THEME_PREFIX + "BordersBase";
+      base = "org.eclipse.swt.theme.BordersBase";
     } else if( type == QxTheme.APPEARANCE ) {
       base = "org.eclipse.swt.theme.AppearancesBase";
     }
@@ -772,15 +726,6 @@ public final class ThemeManager {
     int end = jsThemeId.length();
     String jsThemeName = jsThemeId.substring( start, end );
     return THEME_RESOURCE_DEST + "/" + jsThemeName + "/widgets";
-  }
-
-  private void checkId( final String id ) {
-    if( id == null ) {
-      throw new NullPointerException( "id" );
-    }
-    if( id.length() == 0 ) {
-      throw new IllegalArgumentException( "empty id" );
-    }
   }
 
   // TODO [rst] Replace with Logger calls

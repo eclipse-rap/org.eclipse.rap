@@ -16,24 +16,24 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
 public class ThemeUtil_Test extends TestCase {
 
-  private static final ResourceLoader LOADER
-    = ThemeTestUtil.createResourceLoader( ThemeUtil_Test.class );
-
   public void testSetCurrentThemeId() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
-    String validThemeId = "test.valid.theme";
-    String themeName = "Valid Test Theme";
-    String themeFile = "resources/theme/TestExample.css";
-    manager.registerTheme( validThemeId, themeName, themeFile, LOADER );
-    ThemeUtil.setCurrentThemeId( validThemeId );
-    assertEquals( validThemeId, ThemeUtil.getCurrentThemeId() );
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
+    Theme theme = new Theme( "custom.id", "Custom Theme", styleSheet );
+    manager.registerTheme( theme );
+    ThemeUtil.setCurrentThemeId( "custom.id" );
+    assertEquals( "custom.id", ThemeUtil.getCurrentThemeId() );
+  }
+
+  public void testSetCurrentThemeIdInvalid() throws Exception {
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
     try {
       ThemeUtil.setCurrentThemeId( "woo.doo.schick.schnack" );
       fail( "should throw IAE for invalid theme ids" );
@@ -42,36 +42,35 @@ public class ThemeUtil_Test extends TestCase {
     }
   }
 
+  public void testGetDefaultTheme() throws Exception {
+    ThemeManager themeManager = ThemeManager.getInstance();
+    themeManager.initialize();
+    assertNotNull( ThemeUtil.getDefaultTheme() );
+  }
+
   public void testGetTheme() throws Exception {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    Theme defTheme = ThemeUtil.getDefaultTheme();
-    assertNotNull( defTheme );
-    Theme currentTheme = ThemeUtil.getTheme();
-    assertNotNull( currentTheme );
-    assertSame( defTheme, currentTheme );
-    String validThemeId = "test.valid.theme";
-    String themeName = "Valid Test Theme";
-    String themeFile = "resources/theme/TestExample.css";
-    manager.registerTheme( validThemeId, themeName, themeFile, LOADER );
-    ThemeUtil.setCurrentThemeId( validThemeId );
-    assertSame( defTheme, ThemeUtil.getDefaultTheme() );
-    Theme customTheme = ThemeUtil.getTheme();
-    assertNotSame( defTheme, customTheme );
-    assertEquals( themeName, customTheme.getName() );
+    ThemeManager themeManager = ThemeManager.getInstance();
+    themeManager.initialize();
+    assertNotNull( ThemeUtil.getTheme() );
+    assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
+    Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
+    themeManager.registerTheme( customTheme );
+    ThemeUtil.setCurrentThemeId( "custom.id" );
+    assertNotSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
+    assertEquals( customTheme, ThemeUtil.getTheme() );
   }
 
   public void testGetCssValue() throws IOException {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
-    // register custom theme
-    String fileName = "resources/theme/TestExample.css";
-    themeManager.registerTheme( "customId", "Custom Theme", fileName, LOADER );
-    ThemeUtil.setCurrentThemeId( "customId" );
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
+    Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
+    themeManager.registerTheme( customTheme );
+    ThemeUtil.setCurrentThemeId( "custom.id" );
     SimpleSelector selector = new SimpleSelector( new String[] { ".special" } );
     QxType cssValue = ThemeUtil.getCssValue( "Button", "color", selector );
-    Color color = QxColor.createColor( ( QxColor )cssValue );
-    assertEquals( Graphics.getColor( 255, 0, 0 ), color );
+    assertEquals( "#ff0000", ( ( QxColor )cssValue ).toDefaultString() );
   }
 
   protected void setUp() throws Exception {

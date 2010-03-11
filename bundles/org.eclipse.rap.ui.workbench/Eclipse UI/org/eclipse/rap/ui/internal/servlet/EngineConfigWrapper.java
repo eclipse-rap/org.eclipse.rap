@@ -25,7 +25,10 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
+import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.css.CssFileReader;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.service.ISettingStoreFactory;
@@ -268,14 +271,6 @@ final class EngineConfigWrapper implements IEngineConfig {
                                     msg,
                                     e );
         WorkbenchPlugin.getDefault().getLog().log( status );
-        // Display startup error in stderr
-        String reason;
-        if( e instanceof ClassNotFoundException ) {
-          reason = "Class not found";
-        } else {
-          reason = e.getMessage();
-        }
-        System.err.println( "ERROR: " + msg + " Reason: " + reason );
       }
     }
   }
@@ -288,23 +283,14 @@ final class EngineConfigWrapper implements IEngineConfig {
     for( int i = 0; i < elements.length; i++ ) {
       String contributorName = elements[ i ].getContributor().getName();
       String themeId = elements[ i ].getAttribute( "id" );
-      String themeFile = elements[ i ].getAttribute( "file" );
       String themeName = elements[ i ].getAttribute( "name" );
+      String themeFile = elements[ i ].getAttribute( "file" );
       try {
-        final Bundle bundle = Platform.getBundle( contributorName );
-        ResourceLoader resLoader = new ResourceLoader() {
-
-          public InputStream getResourceAsStream( final String resourceName )
-            throws IOException
-          {
-            IPath file = new Path( resourceName );
-            return FileLocator.openStream( bundle, file, false );
-          }
-        };
-        ThemeManager.getInstance().registerTheme( themeId,
-                                                  themeName,
-                                                  themeFile,
-                                                  resLoader );
+        Bundle bundle = Platform.getBundle( contributorName );
+        ResourceLoader loader = createResourceLoader( bundle );
+        StyleSheet styleSheet = CssFileReader.readStyleSheet( themeFile, loader );
+        Theme theme = new Theme( themeId, themeName, styleSheet );
+        ThemeManager.getInstance().registerTheme( theme );
       } catch( final Exception e ) {
         String text =   "Could not register custom theme ''{0}'' "
                       + "from file ''{1}''.";
@@ -316,10 +302,21 @@ final class EngineConfigWrapper implements IEngineConfig {
                                     msg,
                                     e );
         WorkbenchPlugin.getDefault().getLog().log( status );
-        // Display startup error in stderr
-        System.err.println( "ERROR: " + msg + " Reason: " + e.getMessage() );
       }
     }
+  }
+
+  private static ResourceLoader createResourceLoader( final Bundle bundle ) {
+    ResourceLoader result = new ResourceLoader() {
+
+      public InputStream getResourceAsStream( final String resourceName )
+        throws IOException
+      {
+        IPath file = new Path( resourceName );
+        return FileLocator.openStream( bundle, file, false );
+      }
+    };
+    return result;
   }
 
   private static void registerRWTLifeCycle() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
@@ -23,8 +24,9 @@ import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.theme.ResourceLoader;
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.css.CssFileReader;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
@@ -316,7 +318,7 @@ public final class RWTServletContextListener implements ServletContextListener {
 
   ///////////////////////////////////////
   // Helping methods - theme registration
-  
+
   private static void registerThemes( final ServletContext context ) {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -340,7 +342,10 @@ public final class RWTServletContextListener implements ServletContextListener {
           String fileName = parts[ 1 ];
           try {
             String themeName = "Unnamed Theme: " + themeId;
-            manager.registerTheme( themeId, themeName, fileName, loader );
+            StyleSheet styleSheet
+              = CssFileReader.readStyleSheet( fileName, loader );
+            Theme theme = new Theme( themeId, themeName, styleSheet );
+            manager.registerTheme( theme );
           } catch( Exception e ) {
             String text = "Failed to register custom theme ''{0}'' "
                           + "from resource ''{1}''";

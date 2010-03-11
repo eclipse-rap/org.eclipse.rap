@@ -47,8 +47,7 @@ public final class ThemeTestUtil {
                                                             + fileName );
     if( inStream != null ) {
       try {
-        CssFileReader reader = new CssFileReader();
-        result = reader.parse( inStream, fileName, null );
+        result = CssFileReader.readStyleSheet( inStream, fileName, null );
       } finally {
         inStream.close();
       }
@@ -64,8 +63,7 @@ public final class ThemeTestUtil {
     InputStream inStream = new ByteArrayInputStream( bytes );
     if( inStream != null ) {
       try {
-        CssFileReader reader = new CssFileReader();
-        result = reader.parse( inStream, "css", null );
+        result = CssFileReader.readStyleSheet( inStream, "css", null );
       } finally {
         inStream.close();
       }
@@ -78,26 +76,14 @@ public final class ThemeTestUtil {
                                           final ResourceLoader loader )
     throws IOException
   {
-    final String cssFileName = themeId + ".css";
-    ResourceLoader wrappedLoader = new ResourceLoader() {
-
-      public InputStream getResourceAsStream( final String resourceName )
-        throws IOException
-      {
-        InputStream result = null;
-        if( cssFileName.equals( resourceName ) ) {
-          byte[] buf = cssCode.getBytes( "UTF-8" );
-          result = new ByteArrayInputStream( buf );
-        } else {
-          if( loader != null ) {
-            result = loader.getResourceAsStream( resourceName );
-          }
-        }
-        return result;
-      }
-    };
+    String cssFileName = themeId + ".css";
+    byte[] buf = cssCode.getBytes( "UTF-8" );
+    ByteArrayInputStream inStream = new ByteArrayInputStream( buf );
+    StyleSheet styleSheet
+      = CssFileReader.readStyleSheet( inStream, cssFileName, loader );
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
-    manager.registerTheme( themeId, "Custom Theme", cssFileName, wrappedLoader );
+    Theme theme = new Theme( themeId, "Custom Theme", styleSheet );
+    manager.registerTheme( theme );
   }
 }

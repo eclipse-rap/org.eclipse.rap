@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,30 +23,32 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
  */
 public final class ThemeCssValuesMap {
 
-  private final Map map;
+  private final Map valuesMap;
 
   public ThemeCssValuesMap( final StyleSheet styleSheet,
                             final ThemeableWidget[] themeableWidgets )
   {
-    map = new HashMap();
-    init( styleSheet, themeableWidgets );
+    valuesMap = new HashMap();
+    extractValues( styleSheet, themeableWidgets );
   }
 
   public ConditionalValue[] getValues( final String elementName,
                                        final String propertyName )
   {
-    ConditionalValue[] result
-      = ( ConditionalValue[] )map.get( new Key( elementName, propertyName ) );
+    ConditionalValue[] result;
+    PropertyKey propertyKey = new PropertyKey( elementName, propertyName );
+    result = ( ConditionalValue[] )valuesMap.get( propertyKey );
     // if element name is unknown, resort to * rules
     if( result == null ) {
-      result = ( ConditionalValue[] )map.get( new Key( "*", propertyName ) );
+      PropertyKey wildcardKey = new PropertyKey( "*", propertyName );
+      result = ( ConditionalValue[] )valuesMap.get( wildcardKey );
     }
     return result;
   }
 
   public QxType[] getAllValues() {
     Set resultSet = new HashSet();
-    Iterator iterator = map.values().iterator();
+    Iterator iterator = valuesMap.values().iterator();
     while( iterator.hasNext() ) {
       ConditionalValue[] condValues = ( ConditionalValue[] )iterator.next();
       for( int i = 0; i < condValues.length; i++ ) {
@@ -59,24 +61,31 @@ public final class ThemeCssValuesMap {
     return result;
   }
 
-  private void init( final StyleSheet styleSheet,
-                     final ThemeableWidget[] themeableWidgets )
+  private void extractValues( final StyleSheet styleSheet,
+                              final ThemeableWidget[] themeableWidgets )
   {
     for( int i = 0; i < themeableWidgets.length; i++ ) {
       ThemeableWidget themeableWidget = themeableWidgets[ i ];
-      IThemeCssElement[] elements = themeableWidget.elements;
-      if( elements != null ) {
-        for( int j = 0; j < elements.length; j++ ) {
-          IThemeCssElement element = elements[ j ];
-          String elementName = element.getName();
-          String[] properties = element.getProperties();
-          for( int k = 0; k < properties.length; k++ ) {
-            String propertyName = properties[ k ];
-            ConditionalValue[] values = styleSheet.getValues( elementName,
-                                                              propertyName );
-            ConditionalValue[] filteredValues = filterValues( values, element );
-            map.put( new Key( elementName, propertyName ), filteredValues );
-          }
+      extractValuesForWidget( styleSheet, themeableWidget );
+    }
+  }
+
+  private void extractValuesForWidget( final StyleSheet styleSheet,
+                                       final ThemeableWidget themeableWidget )
+  {
+    IThemeCssElement[] elements = themeableWidget.elements;
+    if( elements != null ) {
+      for( int i = 0; i < elements.length; i++ ) {
+        IThemeCssElement element = elements[ i ];
+        String elementName = element.getName();
+        String[] properties = element.getProperties();
+        for( int j = 0; j < properties.length; j++ ) {
+          String propertyName = properties[ j ];
+          PropertyKey key = new PropertyKey( elementName, propertyName );
+          ConditionalValue[] values = styleSheet.getValues( elementName,
+                                                            propertyName );
+          ConditionalValue[] filteredValues = filterValues( values, element );
+          valuesMap.put( key, filteredValues );
         }
       }
     }
@@ -130,7 +139,7 @@ public final class ThemeCssValuesMap {
     return result;
   }
 
-  private static class Key {
+  private static class PropertyKey {
 
     private final String element;
 
@@ -138,7 +147,7 @@ public final class ThemeCssValuesMap {
 
     private final int hashCode;
 
-    public Key( final String element, final String property ) {
+    public PropertyKey( final String element, final String property ) {
       this.element = element;
       this.property = property;
       hashCode = element.hashCode() ^ property.hashCode();
@@ -149,7 +158,7 @@ public final class ThemeCssValuesMap {
       if( obj == this ) {
         result = true;
       } else if( obj != null && obj.getClass() == getClass() ) {
-        Key other = ( Key )obj;
+        PropertyKey other = ( PropertyKey )obj;
         result =    element.equals( other.element )
                  && property.equals( other.property );
       } else {

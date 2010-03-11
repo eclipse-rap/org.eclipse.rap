@@ -14,15 +14,13 @@ package org.eclipse.rwt.internal.theme;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.*;
 
 
 public class AbstractThemeAdapter_Test extends TestCase {
-
-  private static final ResourceLoader LOADER
-    = ThemeTestUtil.createResourceLoader( AbstractThemeAdapter_Test.class );
 
   public void testGetPrimaryElement() {
     Display display = new Display();
@@ -40,9 +38,9 @@ public class AbstractThemeAdapter_Test extends TestCase {
     CustomWidget custom = new CustomWidget( shell, SWT.NONE );
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
-    // register custom theme
-    String fileName = "resources/theme/TestExample.css";
-    themeManager.registerTheme( "customId", "Custom Theme", fileName, LOADER );
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
+    Theme theme = new Theme( "customId", "Custom Theme", styleSheet );
+    themeManager.registerTheme( theme );
     AbstractThemeAdapter adapter = new AbstractThemeAdapter() {
 
       protected void configureMatcher( final WidgetMatcher matcher ) {
