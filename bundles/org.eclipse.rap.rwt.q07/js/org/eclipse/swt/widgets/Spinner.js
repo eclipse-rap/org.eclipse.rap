@@ -196,11 +196,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     // Digits support
 
     _applyDigits : function( value, old ) {
-      this._checkValue( true, false );
+      var spinnerValue = this.getManager().getValue();
+      if( this.getDigits() > 0 ) {
+        this._textfield.setValue( this._format( spinnerValue ) );
+      } else {
+        this._textfield.setValue( String( spinnerValue ) );
+      }
     },
 
     _applyDecimalSeparator : function( value, old ) {
-      this._checkValue( true, false );
+      var spinnerValue = this.getManager().getValue();
+      if( this.getDigits() > 0 ) {
+        this._textfield.setValue( this._format( spinnerValue ) );
+      }
     },
 
     _format : function( value ) {
