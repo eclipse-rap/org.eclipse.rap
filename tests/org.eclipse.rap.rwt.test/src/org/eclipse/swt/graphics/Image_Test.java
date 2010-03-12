@@ -36,10 +36,10 @@ public class Image_Test extends TestCase {
     assertFalse( manager.isRegistered( Fixture.IMAGE1 ) );
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
-    String contextPath 
-      = Fixture.CONTEXT_DIR.getPath() 
-      + "/" 
-      + ResourceManagerImpl.RESOURCES 
+    String contextPath
+      = Fixture.CONTEXT_DIR.getPath()
+      + "/"
+      + ResourceManagerImpl.RESOURCES
       + "/";
     assertTrue( new File( contextPath + Fixture.IMAGE1 ).exists() );
     Image image2 = Graphics.getImage( Fixture.IMAGE1 );
@@ -59,7 +59,7 @@ public class Image_Test extends TestCase {
   public void testImageFinderWithClassLoader() throws IOException {
     File testGif = new File( Fixture.CONTEXT_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE3, testGif );
-    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURL() };
+    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURI().toURL() };
     URLClassLoader classLoader = new URLClassLoader( urls, null );
 
     IResourceManager manager = ResourceManager.getInstance();
@@ -78,7 +78,7 @@ public class Image_Test extends TestCase {
     String imageName = "testIS.gif";
     File testGif = new File( Fixture.CONTEXT_DIR, imageName );
     Fixture.copyTestResource( Fixture.IMAGE3, testGif );
-    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURL() };
+    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURI().toURL() };
     URLClassLoader classLoader = new URLClassLoader( urls, null );
 
     IResourceManager manager = ResourceManager.getInstance();
@@ -128,7 +128,7 @@ public class Image_Test extends TestCase {
     assertTrue( manager.isRegistered( Fixture.IMAGE_50x100 ) );
     assertEquals( new Rectangle( 0, 0, 50, 100 ), image_50x100.getBounds() );
   }
-  
+
   public void testConstructor() {
     try {
       new Image( null, new ByteArrayInputStream( new byte[ 0 ] ) );
@@ -137,7 +137,7 @@ public class Image_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testConstructorWithNullDevice() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -150,7 +150,7 @@ public class Image_Test extends TestCase {
     assertSame( Display.getCurrent(), image.getDevice() );
     imageFile.delete();
   }
-  
+
   public void testStreamConstructor() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -159,7 +159,7 @@ public class Image_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
     stream.close();
   }
-  
+
   public void testStreamConstructorWithIllegalImage() {
     Display display = new Display();
     try {
@@ -169,7 +169,7 @@ public class Image_Test extends TestCase {
       assertEquals( SWT.ERROR_UNSUPPORTED_FORMAT, e.code );
     }
   }
-  
+
   public void testFileConstructor() throws IOException {
     File testImage = new File( Fixture.TEMP_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE1, testImage );
@@ -178,7 +178,7 @@ public class Image_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
     testImage.delete();
   }
-  
+
   public void testImageConstructor() throws Exception {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -190,7 +190,7 @@ public class Image_Test extends TestCase {
     image.dispose();
     assertFalse( copiedImage.isDisposed() );
   }
-  
+
   public void testImageConstructorWithIllegalArguments() throws Exception {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -209,7 +209,7 @@ public class Image_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testImageDataConstructorWithIllegalArguments() throws Exception {
     Display display = new Display();
     try {
@@ -219,7 +219,7 @@ public class Image_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testImageDataConstructor() throws Exception {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
@@ -230,7 +230,7 @@ public class Image_Test extends TestCase {
     assertEquals( 100, image.getBounds().width );
     assertEquals( 50, image.getBounds().height );
   }
-  
+
   public void testDispose() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -244,7 +244,7 @@ public class Image_Test extends TestCase {
       fail( "Unable to close input stream." );
     }
   }
-  
+
   public void testDisposeFactoryCreated() {
     Image color = Graphics.getImage( Fixture.IMAGE1 );
     try {
