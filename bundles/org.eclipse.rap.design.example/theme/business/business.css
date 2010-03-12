@@ -1488,7 +1488,7 @@ MenuItem.menuBar:hover {
 
 ToolBar.viewToolbar {
   background-color: transparent;
-  padding: 3px 2px;
+  padding: 1px 2px;
   spacing: 2px;
 }
 

@@ -539,9 +539,9 @@ public class ToolBarBusinessThemeCustomVariant_Test extends TestCase {
                                              "padding", 
                                              selector );
     QxBoxDimensions dim = ( QxBoxDimensions ) cssValue;
-    assertEquals( 3, dim.top );
+    assertEquals( 1, dim.top );
     assertEquals( 2, dim.right );
-    assertEquals( 3, dim.bottom );
+    assertEquals( 1, dim.bottom );
     assertEquals( 2, dim.left );
   }
   
