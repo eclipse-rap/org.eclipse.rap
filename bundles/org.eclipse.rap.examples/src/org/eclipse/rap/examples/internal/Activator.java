@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2008, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -18,14 +18,6 @@ public class Activator extends AbstractUIPlugin {
 
   public static final String PLUGIN_ID = "org.eclipse.rap.examples";
 
-  public static Activator getDefault() {
-    return plugin;
-  }
-
-  public static ImageDescriptor getImageDescriptor( final String path ) {
-    return imageDescriptorFromPlugin( PLUGIN_ID, path );
-  }
-
   private static Activator plugin;
 
   public void start( final BundleContext context ) throws Exception {
@@ -36,5 +28,13 @@ public class Activator extends AbstractUIPlugin {
   public void stop( final BundleContext context ) throws Exception {
     plugin = null;
     super.stop( context );
+  }
+
+  public static Activator getDefault() {
+    return plugin;
+  }
+
+  public static ImageDescriptor getImageDescriptor( final String path ) {
+    return imageDescriptorFromPlugin( PLUGIN_ID, path );
   }
 }
