@@ -19,10 +19,13 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.internal.theme.QxType;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rwt.internal.theme.css.CssFileReader;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Widget;
 
@@ -149,10 +152,10 @@ public class ThemesTestUtil {
       ResourceLoader resourceLoader 
         = ThemeTestUtil.createResourceLoader( ThemesTestUtil.class );
       try {
-        themeManager.registerTheme( themeId, 
-                                    themeName, 
-                                    themeFile, 
-                                    resourceLoader );
+        StyleSheet styleSheet
+          = CssFileReader.readStyleSheet( path, resourceLoader );        
+        Theme theme = new Theme( themeId, themeName, styleSheet );
+        themeManager.registerTheme( theme );
       } catch( IOException e ) {
         e.printStackTrace();
       }  
