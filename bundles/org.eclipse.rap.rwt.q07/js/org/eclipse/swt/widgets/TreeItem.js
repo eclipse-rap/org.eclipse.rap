@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@
 qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   extend : qx.ui.tree.TreeFolder,
 
-  construct : function( parentItem, tree ) {
+  construct : function( parentItem, tree, index ) {
     this._row = qx.ui.tree.TreeRowStructure.getInstance().newRow();
     // Indentation
     this._row.addIndent();
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this.addEventListener( "dblclick", this._onDblClick, this );
     this.addEventListener( "appear", this._onAppear, this );
     //this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
-    parentItem.add( this );
+    parentItem.addAt( this, index );
 
     this.getLabelObject().setMode( "html" );
 

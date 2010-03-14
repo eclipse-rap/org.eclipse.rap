@@ -103,13 +103,16 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     TreeItem treeItem = ( TreeItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     Object parent;
+    Integer index = null;
     if( treeItem.getParentItem() == null ) {
       parent = treeItem.getParent();
+      index  = new Integer( treeItem.getParent().indexOf( treeItem ) );
     } else {
       parent = treeItem.getParentItem();
+      index = new Integer( treeItem.getParentItem().indexOf( treeItem ) );
     }
     Object[] args = new Object[]{
-      WidgetUtil.getId( treeItem ), parent, treeItem.getParent()
+      WidgetUtil.getId( treeItem ), parent, treeItem.getParent(), index
     };
     writer.callStatic( "org.eclipse.swt.TreeItemUtil.createTreeItem", args );
   }

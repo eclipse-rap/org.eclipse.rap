@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
  
 /**
@@ -17,7 +18,7 @@ qx.Class.define( "org.eclipse.swt.TreeItemUtil", {
 
   statics : {
     
-    createTreeItem : function( widgetId, parent, tree ) {
+    createTreeItem : function( widgetId, parent, tree, index ) {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       
       var realParent = null;
@@ -27,7 +28,7 @@ qx.Class.define( "org.eclipse.swt.TreeItemUtil", {
         realParent = parent;
       }
       
-      var w = new org.eclipse.swt.widgets.TreeItem( realParent, tree );
+      var w = new org.eclipse.swt.widgets.TreeItem( realParent, tree, index );
       wm.add( w, widgetId, false );
       
       this.hijackTreeItemSelection( w );

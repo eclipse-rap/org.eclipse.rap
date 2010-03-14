@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -294,6 +294,68 @@ public class TreeItemLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
+  public void testInitialization() throws Exception {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE, 0 );
+    String item1Id = WidgetUtil.getId( item1 );
+    String item2Id = WidgetUtil.getId( item2 );
+    String treeId = WidgetUtil.getId( tree );
+    TreeItemLCA lca = new TreeItemLCA();
+    lca.renderInitialization( item1 );
+    lca.renderInitialization( item2 );
+    
+    String expected1 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
+                      + "\"" + item1Id + "\", "
+                      + "wm.findWidgetById( \"" + treeId + "\" ), "
+                      + "wm.findWidgetById( \"" + treeId + "\" ), "
+                      + "1 );";
+    String expected2 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
+                       + "\"" + item2Id + "\", "
+                       + "wm.findWidgetById( \"" + treeId + "\" ), "
+                       + "wm.findWidgetById( \"" + treeId + "\" ), "
+                       + "0 );";
+    assertEquals( expected1 + expected2, Fixture.getAllMarkup() );
+  }
+  
+  public void testInitializationSubItems() throws Exception {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem root = new TreeItem( tree, SWT.NONE );
+    TreeItem item1 = new TreeItem( root, SWT.NONE );
+    TreeItem item2 = new TreeItem( root, SWT.NONE );
+    String rootId = WidgetUtil.getId( root );
+    String item1Id = WidgetUtil.getId( item1 );
+    String item2Id = WidgetUtil.getId( item2 );
+    String treeId = WidgetUtil.getId( tree );
+    TreeItemLCA lca = new TreeItemLCA();
+    lca.renderInitialization( root );
+    lca.renderInitialization( item1 );
+    lca.renderInitialization( item2 );
+
+    String expected0 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
+                       + "\"" + rootId + "\", "
+                       + "wm.findWidgetById( \"" + treeId + "\" ), "
+                       + "wm.findWidgetById( \"" + treeId + "\" ), "
+                       + "0 );";
+    String expected1 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
+                      + "\"" + item1Id + "\", "
+                      + "wm.findWidgetById( \"" + rootId + "\" ), "
+                      + "wm.findWidgetById( \"" + treeId + "\" ), "
+                      + "0 );";
+    String expected2 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
+                      + "\"" + item2Id + "\", "
+                      + "wm.findWidgetById( \"" + rootId + "\" ), "
+                      + "wm.findWidgetById( \"" + treeId + "\" ), "
+                      + "1 );";
+    assertEquals( expected0 + expected1 + expected2, Fixture.getAllMarkup() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();

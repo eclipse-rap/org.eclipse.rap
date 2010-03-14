@@ -1017,6 +1017,53 @@ public class TreeItem_Test extends TestCase {
     assertFalse( emptyBounds.equals( subitem.getTextBounds( 0 ) ) );
   }
 
+  public void testNewItemWithIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    treeItem.setText( "1" );
+    TreeItem treeItem2 = new TreeItem( tree, SWT.NONE, 0 );
+    treeItem2.setText( "2" );
+    assertEquals( 1, tree.indexOf( treeItem ) );
+    assertEquals( 0, tree.indexOf( treeItem2 ) );
+    // Try to add an item with an index which is out of bounds
+    try {
+      new TreeItem( tree, SWT.NONE, tree.getItemCount() + 8 );
+      String msg
+        = "Index out of bounds expected when creating an item with "
+        + "index > itemCount";
+      fail( msg );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    // Try to add an item with a negative index
+    try {
+      new TreeItem( tree, SWT.NONE, -1 );
+      String msg
+        = "Index out of bounds expected when creating an item with "
+        + "index == -1";
+      fail( msg );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
+  public void testNewItemWithIndexAsChild() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem root = new TreeItem( tree, SWT.NONE );
+    root.setText( "root" );
+    TreeItem treeItem = new TreeItem( root, SWT.NONE );
+    treeItem.setText( "1" );
+    TreeItem treeItem2 = new TreeItem( root, SWT.NONE, 0 );
+    treeItem2.setText( "2" );
+    assertEquals( 0, tree.indexOf( root ) );
+    assertEquals( 1, root.indexOf( treeItem ) );
+    assertEquals( 0, root.indexOf( treeItem2 ) );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

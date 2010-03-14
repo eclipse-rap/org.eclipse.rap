@@ -1142,7 +1142,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     
     createTreeItem : function( itemNr, tree, parent ) {
       var nr = itemNr + 2;
-      org.eclipse.swt.TreeItemUtil.createTreeItem( "w" + nr, parent, tree );
+      org.eclipse.swt.TreeItemUtil.createTreeItem( "w" + nr, parent, tree, itemNr );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var item = wm.findWidgetById( "w" + nr );
       item.setTexts( [ "text" + nr ] );
