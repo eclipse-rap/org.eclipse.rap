@@ -627,9 +627,9 @@ public class ButtonFancyTheme_Test extends TestCase {
                                                "border", 
                                                "Button-FocusIndicator" );
     QxBorder border = ( QxBorder ) cssValue;
-    assertEquals( "solid", border.style );
+    assertEquals( "dotted", border.style );
     assertEquals( 1, border.width );
-    assertEquals( "#abe033", border.color );
+    assertEquals( "#b8b8b8", border.color );
   }
   
   public void testFocusIndicatorMarginForPush() {
@@ -642,10 +642,10 @@ public class ButtonFancyTheme_Test extends TestCase {
                                                "margin", 
                                                "Button-FocusIndicator" );
     QxBoxDimensions dim = ( QxBoxDimensions ) cssValue;
-    assertEquals( 1, dim.bottom );
-    assertEquals( 1, dim.left );
-    assertEquals( 1, dim.right );
-    assertEquals( 1, dim.top );
+    assertEquals( 2, dim.bottom );
+    assertEquals( 2, dim.left );
+    assertEquals( 2, dim.right );
+    assertEquals( 2, dim.top );
   }
   
   public void testFocusIndicatorPaddingForPush() {
@@ -700,9 +700,9 @@ public class ButtonFancyTheme_Test extends TestCase {
                                                "border", 
                                                "Button-FocusIndicator" );
     QxBorder border = ( QxBorder ) cssValue;
-    assertEquals( "solid", border.style );
+    assertEquals( "dotted", border.style );
     assertEquals( 1, border.width );
-    assertEquals( "#abe033", border.color );
+    assertEquals( "#b8b8b8", border.color );
   }
   
   public void testFocusIndicatorMarginForToggle() {
@@ -715,10 +715,10 @@ public class ButtonFancyTheme_Test extends TestCase {
                                                "margin", 
                                                "Button-FocusIndicator" );
     QxBoxDimensions dim = ( QxBoxDimensions ) cssValue;
-    assertEquals( 1, dim.bottom );
-    assertEquals( 1, dim.left );
-    assertEquals( 1, dim.right );
-    assertEquals( 1, dim.top );
+    assertEquals( 2, dim.bottom );
+    assertEquals( 2, dim.left );
+    assertEquals( 2, dim.right );
+    assertEquals( 2, dim.top );
   }
   
   public void testFocusIndicatorPaddingForToggle() {
@@ -773,9 +773,9 @@ public class ButtonFancyTheme_Test extends TestCase {
                                                "border", 
                                                "Button-FocusIndicator" );
     QxBorder border = ( QxBorder ) cssValue;
-    assertEquals( "solid", border.style );
+    assertEquals( "dotted", border.style );
     assertEquals( 1, border.width );
-    assertEquals( "#abe033", border.color );
+    assertEquals( "#b8b8b8", border.color );
   }
   
   public void testFocusIndicatorMarginForCheck() {
@@ -846,9 +846,9 @@ public class ButtonFancyTheme_Test extends TestCase {
                                                "border", 
                                                "Button-FocusIndicator" );
     QxBorder border = ( QxBorder ) cssValue;
-    assertEquals( "solid", border.style );
+    assertEquals( "dotted", border.style );
     assertEquals( 1, border.width );
-    assertEquals( "#abe033", border.color );
+    assertEquals( "#b8b8b8", border.color );
   }
   
   public void testFocusIndicatorMarginForRadio() {

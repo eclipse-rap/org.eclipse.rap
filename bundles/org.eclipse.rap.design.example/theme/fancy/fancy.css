@@ -95,15 +95,15 @@ Button[RADIO][BORDER] {
 
 Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
   background-color: transparent; 
-  border: 1px solid #abe033;
-  margin: 1px;
+  border: 1px dotted #b8b8b8;
+  margin: 2px;
   padding: 0px;
   opacity: 1;
 }
 
 Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
   background-color: transparent; 
-  border: 1px solid #abe033;
+  border: 1px dotted #b8b8b8;
   padding: 2px 2px 2px 1px;
   margin: 0px;
   opacity: 1;
