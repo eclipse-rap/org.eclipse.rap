@@ -183,6 +183,7 @@ public final class DNDSupport {
         = determineDataTypes( dragSource, dropTarget );
       TransferData dataType = validDataTypes[ 0 ];
       event.detail = operation;
+      event.operations = getOperations( dragSource, dropTarget );
       event.feedback = feedback;
       event.currentDataType = dataType;
       event.dataTypes = validDataTypes;
@@ -220,6 +221,7 @@ public final class DNDSupport {
         = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_OVER );
       event.detail = operation;
       event.feedback = feedback;
+      event.operations = getOperations( dragSource, dropTarget );
       event.currentDataType = dataType;
       event.dataTypes = determineDataTypes( dragSource, dropTarget );
       event.item = item;
@@ -266,6 +268,7 @@ public final class DNDSupport {
       event.feedback = feedback;
       event.currentDataType = dataType;
       event.dataTypes = determineDataTypes( dragSource, dropTarget );
+      event.operations = getOperations( dragSource, dropTarget );
       event.item = item;
       event.x = point.x;
       event.y = point.y;
@@ -313,6 +316,7 @@ public final class DNDSupport {
       // fire DROP_ACCEPT
       DropTargetEvent event
         = createDropAcceptEvent( dropTarget, operation, point, dataType, item );
+      event.operations = getOperations( dragSource, dropTarget );
       event.processEvent();
       operation = checkOperation( dragSource, dropTarget, event.detail );
       TransferData[] validDataTypes
@@ -329,6 +333,7 @@ public final class DNDSupport {
         DropTargetEvent dropEvent
           = new DropTargetEvent( dropTarget, DropTargetEvent.DROP );
         dropEvent.detail = operation;
+        dropEvent.operations = getOperations( dragSource, dropTarget );
         dropEvent.currentDataType = dataType;
         dropEvent.dataTypes = validDataTypes;
         dropEvent.item = item;
@@ -659,12 +664,18 @@ public final class DNDSupport {
     getDNDAdapter( dragSource ).setDataTypeChanged( control, value );
   }
   
+  private static int getOperations( final DragSource dragSource,
+                                    final DropTarget dropTarget )
+  {
+    return dragSource.getStyle() & dropTarget.getStyle();
+  }
+  
   private static int checkOperation( final DragSource dragSource,
                                      final DropTarget dropTarget,
                                      final int operation )
   {
     int result = DND.DROP_NONE;
-    int allowedOperations = dragSource.getStyle() & dropTarget.getStyle();
+    int allowedOperations = getOperations( dragSource, dropTarget );
     if( ( allowedOperations & operation ) != 0 ) {
       result = operation;
     }

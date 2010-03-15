@@ -1331,6 +1331,66 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( DropTargetEvent.DRAG_OVER, dragOver.getID() );
     assertSame( dropTarget, dragOver.widget );
   }
+  
+  public void testOperationsField() {
+    final java.util.List log = new ArrayList();
+    int operations = DND.DROP_MOVE | DND.DROP_LINK;
+    Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Control dragSourceCont = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( dragSourceCont, operations );
+    dragSource.setTransfer( types );
+    dragSource.addDragListener( new DragSourceAdapter(){
+      public void dragSetData( final DragSourceEvent event ) {
+        event.data = "text";
+      }
+    } );    
+    Control dropTargetCont = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( dropTargetCont, operations );
+    dropTarget.setTransfer( types );
+    dropTarget.addDropListener( new DropTargetAdapter() {
+      public void dragEnter( final DropTargetEvent event ) {
+        log.add( event );
+      }
+      public void dragOver( final DropTargetEvent event ) {
+        log.add( event );
+      }
+      public void dragOperationChanged( final DropTargetEvent event ) {
+        log.add( event );
+      }
+      public void dragLeave( final DropTargetEvent event ) {
+        log.add( event );
+      }
+      public void dropAccept( final DropTargetEvent event ) {
+        log.add( event );
+      }
+      public void drop( final DropTargetEvent event ) {
+        log.add( event );
+      }
+    } );
+    shell.open();
+    String displayId = DisplayUtil.getId( display );
+    // Simulate request that sends a drop event
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    createDropTargetEvent( dropTargetCont, dragSourceCont, "dragEnter", 2 );
+    createDropTargetEvent( dropTargetCont, dragSourceCont, "dragOver", 5 );
+    createDropTargetEvent( dropTargetCont, 
+                           dragSourceCont, 
+                           "dragOperationChanged", 
+                           7 );
+    createDropTargetEvent( dropTargetCont, dragSourceCont, "dropAccept", 8 );
+    // run life cycle
+    Fixture.executeLifeCycleFromServerThread();
+    assertEquals( 6, log.size() );
+    assertEquals( operations, ( ( DropTargetEvent )log.get( 0 ) ).operations );
+    assertEquals( operations, ( ( DropTargetEvent )log.get( 1 ) ).operations );
+    assertEquals( operations, ( ( DropTargetEvent )log.get( 2 ) ).operations );
+    assertEquals( 0, ( ( DropTargetEvent )log.get( 3 ) ).operations );
+    assertEquals( operations, ( ( DropTargetEvent )log.get( 4 ) ).operations );
+    assertEquals( operations, ( ( DropTargetEvent )log.get( 5 ) ).operations );
+  }
 
   // Mirrors _sendDragSourceEvent in DNDSupport.js
   private static void createDragSourceEvent( final Control control,
