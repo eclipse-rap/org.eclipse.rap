@@ -536,6 +536,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       }
     },
     
+    // Workaround for bug 306030
+    _maximize : function() {
+      this.base( arguments );
+      this.setRight( null );
+      this.setBottom( null );
+      this.setWidth( "100%" );
+      this.setHeight( "100%" );
+    },
+    
     setFullScreen : function( fullScreen ) {
       if( fullScreen ) {
         this._captionBar.setDisplay( false );
