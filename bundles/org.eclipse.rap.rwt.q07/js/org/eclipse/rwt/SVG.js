@@ -210,8 +210,8 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         }
         // the "-1" offset drastically reduces the white lines between
         // the tiles when zoomed in firefox.
-        patternNode.setAttribute( "width", width > 1 ? width - 1 : width );
-        patternNode.setAttribute( "height", height > 1 ? height - 1 : height );
+        patternNode.setAttribute( "width", width );
+        patternNode.setAttribute( "height", height );
         imageNode.setAttribute( "width", width );
         imageNode.setAttribute( "height", height );
         shape.node.setAttribute( "fill", "url(#" + patternId + ")" );
