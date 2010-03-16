@@ -827,21 +827,21 @@
             description="%command.cut.description"
             categoryId="org.eclipse.ui.category.edit"
             id="org.eclipse.ui.edit.cut" />
-            <!-- [bm] omit default handler as we don't have clipboard support -->
+            <!-- RAP [bm]: omit default handler as we don't have clipboard support -->
             <!-- defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:cut" /-->
       <command
             name="%command.copy.name"
             description="%command.copy.description"
             categoryId="org.eclipse.ui.category.edit"
             id="org.eclipse.ui.edit.copy" />
-            <!-- [bm] omit default handler as we don't have clipboard support -->
+            <!-- RAP [bm]: omit default handler as we don't have clipboard support -->
             <!-- defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:copy" /-->
       <command
             name="%command.paste.name"
             description="%command.paste.description"
             categoryId="org.eclipse.ui.category.edit"
             id="org.eclipse.ui.edit.paste" />
-            <!-- [bm] omit default handler as we don't have clipboard support -->
+            <!-- RAP [bm]: omit default handler as we don't have clipboard support -->
             <!-- defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:paste" /-->
       <command
             name="%command.delete.name"
@@ -870,14 +870,13 @@
             description="%command.rename.description"
             categoryId="org.eclipse.ui.category.file"
             id="org.eclipse.ui.edit.rename" />
-      <!-- RAP [bm]: not applicable at the moment
       <command
             name="%command.selectAll.name"
             description="%command.selectAll.description"
             categoryId="org.eclipse.ui.category.edit"
-            id="org.eclipse.ui.edit.selectAll"
-            defaultHandler="org.eclipse.ui.internal.handlers.SelectAllHandler" />
-      -->
+            id="org.eclipse.ui.edit.selectAll" />
+            <!-- RAP [bm]: omit default handler -->
+            <!-- defaultHandler="org.eclipse.ui.internal.handlers.SelectAllHandler" / -->
       <command
             name="%command.findReplace.name"
             description="%command.findReplace.description"
@@ -1184,7 +1183,6 @@
    
    <extension
          point="org.eclipse.ui.commandImages">
-      <!-- RAP [bm] clipboard
       <image
             commandId="org.eclipse.ui.edit.copy"
             icon="$nl$/icons/full/etool16/copy_edit.gif" />
@@ -1194,7 +1192,6 @@
       <image
             commandId="org.eclipse.ui.edit.paste"
             icon="$nl$/icons/full/etool16/paste_edit.gif" />
-      -->
       <image
             commandId="org.eclipse.ui.edit.delete"
             icon="$nl$/icons/full/etool16/delete_edit.gif" />
