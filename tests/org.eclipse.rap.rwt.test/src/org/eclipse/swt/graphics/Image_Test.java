@@ -36,12 +36,9 @@ public class Image_Test extends TestCase {
     assertFalse( manager.isRegistered( Fixture.IMAGE1 ) );
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
-    String contextPath
-      = Fixture.CONTEXT_DIR.getPath()
-      + "/"
-      + ResourceManagerImpl.RESOURCES
-      + "/";
-    assertTrue( new File( contextPath + Fixture.IMAGE1 ).exists() );
+    File contextDir = new File( Fixture.CONTEXT_DIR,
+                                ResourceManagerImpl.RESOURCES );
+    assertTrue( new File( contextDir, Fixture.IMAGE1 ).exists() );
     Image image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
     assertSame( image1, image2 );
@@ -50,7 +47,7 @@ public class Image_Test extends TestCase {
     // another picture
     Graphics.getImage( Fixture.IMAGE2 );
     assertTrue( manager.isRegistered( Fixture.IMAGE2 ) );
-    assertTrue( new File( contextPath + "/" + Fixture.IMAGE2 ).exists() );
+    assertTrue( new File( contextDir, Fixture.IMAGE2 ).exists() );
     // ... and do it again...
     image1 = Graphics.getImage( Fixture.IMAGE1 );
     assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
@@ -116,16 +113,9 @@ public class Image_Test extends TestCase {
   }
 
   public void testImageBounds() {
-    IResourceManager manager = ResourceManager.getInstance();
-    // 100 x 50
-    assertFalse( manager.isRegistered( Fixture.IMAGE_100x50 ) );
     Image image_100x50 = Graphics.getImage( Fixture.IMAGE_100x50 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE_100x50 ) );
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image_100x50.getBounds() );
-    // 50 x 100
-    assertFalse( manager.isRegistered( Fixture.IMAGE_50x100 ) );
     Image image_50x100 = Graphics.getImage( Fixture.IMAGE_50x100 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE_50x100 ) );
     assertEquals( new Rectangle( 0, 0, 50, 100 ), image_50x100.getBounds() );
   }
 
