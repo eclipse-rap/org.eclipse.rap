@@ -384,9 +384,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
             width = document.body.clientWidth;
           }
         }
-        if( !isNaN( height ) && !isNaN( width ) ) {
+        if( !isNaN( height ) ) {
           req.addParameter( id + ".bounds.height", height );
-          req.addParameter( id + ".bounds.width", width );          
+        }
+        if( !isNaN( width ) ) {
+          req.addParameter( id + ".bounds.width", width );
         }
         req.send();
       }
