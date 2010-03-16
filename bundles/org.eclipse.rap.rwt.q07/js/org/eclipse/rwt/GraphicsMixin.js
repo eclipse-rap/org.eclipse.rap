@@ -81,7 +81,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         }
       }
       var renderRadii;
-      if( width != null && radii != null ) { 
+      if( width != null && radii != null && max > 0 ) { 
         renderRadii = [];
         for( var i = 0; i < 4; i++ ) {
           var prev = i > 0 ? i - 1 : 3;

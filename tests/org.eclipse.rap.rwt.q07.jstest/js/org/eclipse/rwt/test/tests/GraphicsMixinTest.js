@@ -201,7 +201,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       testUtil.flush();     
     },
     
-    testGfxInvisibleCorners : function() {
+    testGfxRadiusInvisibleEdges : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] ); 
       widget.addToDocument();
@@ -217,6 +217,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertTrue( this.usesGfxBorder( widget ) );
       var radii = widget.getGfxProperty( "borderRadii", radii );
       assertEquals( [ 5, 0, 0, 0 ], radii );
+      widget.destroy();
+      testUtil.flush();      
+    },
+    
+    testGfxRadiusInvisibleBorder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] ); 
+      widget.addToDocument();
+      widget.setLocation( 0, 0 );
+      widget.setDimension( 100, 100 );
+      this.gfxBorder.setWidth( 0 );
+      this.gfxBorder.setRadius( 5 );
+      widget.setBorder( this.gfxBorder ); 
+      testUtil.flush();
+      assertTrue( this.usesGfxBorder( widget ) );
+      var radii = widget.getGfxProperty( "borderRadii", radii );
+      assertEquals( [ 5, 5, 5, 5 ], radii );
       widget.destroy();
       testUtil.flush();      
     },

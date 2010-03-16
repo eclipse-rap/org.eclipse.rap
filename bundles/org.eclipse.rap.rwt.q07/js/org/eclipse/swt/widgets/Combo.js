@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // Drop down button
     this._button = new qx.ui.form.Button();
     this._button.setTabIndex( null );
-    this._button.setAllowStretchY( true );
+    this._button.setHeight( "100%" );
     this.add( this._button );
     // List
     this._list = new qx.ui.form.List();
