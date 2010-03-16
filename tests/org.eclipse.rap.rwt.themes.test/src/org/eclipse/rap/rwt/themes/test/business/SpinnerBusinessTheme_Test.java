@@ -176,6 +176,21 @@ public class SpinnerBusinessTheme_Test extends TestCase {
     assertEquals( QxBorder.NONE, border );
   }
   
+  public void testSpinnerDownButtonBorderRadius() {
+    Spinner spinner = createSpinner( SWT.NONE );
+    SimpleSelector selector = SimpleSelector.DEFAULT;
+    QxType cssValue 
+      = ThemesTestUtil.getCssValueForElement( spinner, 
+                                               selector, 
+                                               "border-radius",
+                                               "Spinner-DownButton" );
+    QxBoxDimensions dim = ( QxBoxDimensions ) cssValue;
+    assertEquals( dim.top, 0 );
+    assertEquals( dim.right, 0 );
+    assertEquals( dim.bottom, 2 );
+    assertEquals( dim.left, 0 );
+  }
+  
   public void testSpinnerDownButtonBackgroundImagePressed() {
     Spinner spinner = createSpinner( SWT.NONE );
     SimpleSelector selector = new SimpleSelector( new String[] { ":pressed" } );
@@ -267,6 +282,21 @@ public class SpinnerBusinessTheme_Test extends TestCase {
                                                "Spinner-UpButton" );
     QxBorder border = ( QxBorder ) cssValue;
     assertEquals( QxBorder.NONE, border );
+  }
+  
+  public void testSpinnerUpButtonBorderRadius() {
+    Spinner spinner = createSpinner( SWT.NONE );
+    SimpleSelector selector = SimpleSelector.DEFAULT;
+    QxType cssValue 
+      = ThemesTestUtil.getCssValueForElement( spinner, 
+                                               selector, 
+                                               "border-radius",
+                                               "Spinner-UpButton" );
+    QxBoxDimensions dim = ( QxBoxDimensions ) cssValue;
+    assertEquals( dim.top, 0 );
+    assertEquals( dim.right, 2 );
+    assertEquals( dim.bottom, 0 );
+    assertEquals( dim.left, 0 );
   }
   
   public void testSpinnerUpButtonBackgroundImagePressed() {

@@ -812,6 +812,7 @@ Spinner-DownButton {
   );
   width: 18px;
   border: none;
+  border-radius: 0px 0px 2px 0px;
 }
 
 Spinner-DownButton:pressed {
@@ -840,6 +841,7 @@ Spinner-UpButton {
   );
   width: 18px;
   border: none;
+  border-radius: 0px 2px 0px 0px;
 }
 
 Spinner-UpButton:pressed {
@@ -921,6 +923,7 @@ DateTime-DownButton {
   );
   width: 18px;
   border: none;
+  border-radius: 0px 0px 2px 0px;
 }
 
 DateTime-DownButton:pressed {
@@ -949,6 +952,7 @@ DateTime-UpButton {
   );
   width: 18px;
   border: none;
+  border-radius: 0px 2px 0px 0px;
 }
 
 DateTime-UpButton:pressed {
