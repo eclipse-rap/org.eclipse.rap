@@ -117,6 +117,8 @@ qx.Class.define( "org.eclipse.swt.Application", {
       doc.addEventListener( "keypress",
                             org.eclipse.swt.Application._onKeyPress );
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+	      // Prevent url-dropping in FF as a whole (see bug 304651)
+	      doc.getElement().setAttribute( "ondrop", "event.preventDefault();" );
         // Fix for bug 193703:
         doc.getElement().style.position = "absolute";      
         doc.setSelectable( true );
