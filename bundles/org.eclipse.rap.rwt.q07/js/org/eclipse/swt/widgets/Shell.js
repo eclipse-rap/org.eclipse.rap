@@ -397,7 +397,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           req.addParameter( id + ".bounds.x", left );
           req.addParameter( id + ".bounds.y", top );
         }
-//      req.send();
+      req.send();
       }
     },
     
