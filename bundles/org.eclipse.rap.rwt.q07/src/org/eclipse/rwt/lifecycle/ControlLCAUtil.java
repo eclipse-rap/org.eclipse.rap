@@ -196,19 +196,7 @@ public class ControlLCAUtil {
    */
   public static void writeBounds( final Control control ) throws IOException {
     Composite parent = control.getParent();
-    // TODO [rst] Quick and dirty workaround for bug 306042
-    if( !isMaximizedShell( control ) ) {
-      WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
-    }
-  }
-
-  private static boolean isMaximizedShell( final Control control ) {
-    boolean result = false;
-    if( control instanceof Shell ) {
-      Shell shell = ( Shell )control;
-      result = shell.getMaximized() || shell.getFullScreen();
-    }
-    return result;
+    WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
   }
 
   /**

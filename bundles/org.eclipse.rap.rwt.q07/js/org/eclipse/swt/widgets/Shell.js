@@ -195,6 +195,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         parentShell.addEventListener( "close", listener, this );
       }
     },
+    
+    // Fix for bug 306042
+    setSpace : function( left, width, top, height ) {
+      if( !this._disableResize ) {
+        this.setLeft( left );
+        this.setWidth( width );
+        this.setTop( top );
+        this.setHeight( height );
+      }
+    },
 
     setHasShellListener : function( hasListener ) {
       this._hasShellListener = hasListener;
@@ -368,28 +378,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
-        // TODO: [fappel] replace this ugly hack that is used in case of
-        //                window maximizations
-        var height = evt.getTarget().getHeight();
-        if( height == null ) {
-          height = window.innerHeight;
-          if( isNaN( height ) ) {  // IE special
-            height = document.body.clientHeight;
-          }
-        }
-        var width = evt.getTarget().getWidth();
-        if( width == null ) {
-          width = window.innerWidth;
-          if( isNaN( width ) ) {  // IE special
-            width = document.body.clientWidth;
-          }
-        }
-        if( !isNaN( height ) ) {
-          req.addParameter( id + ".bounds.height", height );
-        }
-        if( !isNaN( width ) ) {
-          req.addParameter( id + ".bounds.width", width );
-        }
+        var height = evt.getTarget().getHeightValue();
+        var width = evt.getTarget().getWidthValue();
+        req.addParameter( id + ".bounds.height", height );
+        req.addParameter( id + ".bounds.width", width );
         req.send();
       }
     },
@@ -536,15 +528,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           this._blocker = null;
         }
       }
-    },
-    
-    // Workaround for bug 306030
-    _maximize : function() {
-      this.base( arguments );
-      this.setRight( null );
-      this.setBottom( null );
-      this.setWidth( "100%" );
-      this.setHeight( "100%" );
     },
     
     setFullScreen : function( fullScreen ) {
