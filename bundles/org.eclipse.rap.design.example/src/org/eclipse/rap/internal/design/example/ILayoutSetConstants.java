@@ -86,17 +86,6 @@ public interface ILayoutSetConstants {
   
   // MenuBarInitializer
   public static final String MENUBAR_ARROW = "menubar.arrow";
-  public static final String MENUBAR_POPUP = "menubar.popup";
-  public static final String MENUBAR_POPUP_BUTTON = "menubar.popup.button";
-  public static final String MENUBAR_TOP_BG = "menubar.popup.top";
-  public static final String MENUBAR_BOTTOM_BG = "menubar.popup.bottom";
-  public static final String MENUBAR_LEFT_BG = "menubar.popup.left";
-  public static final String MENUBAR_RIGHT_BG = "menubar.popup.right";
-  public static final String MENUBAR_CORNER_LEFT = "menubar.popup.corner.left";
-  public static final String MENUBAR_CORNER_RIGHT 
-    = "menubar.popup.corner.right";
-  public static final String MENUBAR_SECOND_LAYER_CHEFRON 
-    = "menubar.popup.secondlayer";
   public static final String MENUBAR_BG = "menubar.bg";
   
   // PerspectiveSwitcherInitializer

@@ -12,7 +12,6 @@ package org.eclipse.rap.internal.design.example.fancy.layoutsets;
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.ui.interactiondesign.layout.model.ILayoutSetInitializer;
 import org.eclipse.rap.ui.interactiondesign.layout.model.LayoutSet;
-import org.eclipse.rwt.graphics.Graphics;
 
 
 public class MenuBarInitializer implements ILayoutSetInitializer {
@@ -21,27 +20,7 @@ public class MenuBarInitializer implements ILayoutSetInitializer {
     String path = ILayoutSetConstants.IMAGE_PATH_FANCY;
     layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_ARROW, 
                             path + "menu_arrow.png" );
-    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_TOP_BG, 
-                            path + "popup_top_bg.png" );
-    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_BOTTOM_BG, 
-                            path + "popup_bottom_bg.png" );
-    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_LEFT_BG, 
-                            path + "popup_left_bg.png" );
-    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_RIGHT_BG, 
-                            path + "popup_right_bg.png" );
-    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_CORNER_LEFT, 
-                            path + "popup_corner_left.png" );
-    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_CORNER_RIGHT, 
-                            path + "popup_corner_right.png" );
-    layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_SECOND_LAYER_CHEFRON, 
-                            path + "popup_secondLayer.png" );
     layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_BG, 
                             path + "menubar_bg.png" );
-    
-    
-    layoutSet.addColor( ILayoutSetConstants.MENUBAR_POPUP, 
-                        Graphics.getColor( 244, 244, 244 ) );
-    layoutSet.addColor( ILayoutSetConstants.MENUBAR_POPUP_BUTTON, 
-                        Graphics.getColor( 91, 91, 91 ) );
   }
 }
