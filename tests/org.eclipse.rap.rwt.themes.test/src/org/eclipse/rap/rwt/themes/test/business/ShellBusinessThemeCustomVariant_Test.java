@@ -9,20 +9,18 @@
 *******************************************************************************/ 
 package org.eclipse.rap.rwt.themes.test.business;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.theme.QxBorder;
-import org.eclipse.rwt.internal.theme.QxBoxDimensions;
 import org.eclipse.rwt.internal.theme.QxColor;
-import org.eclipse.rwt.internal.theme.QxImage;
 import org.eclipse.rwt.internal.theme.QxType;
 import org.eclipse.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
-import junit.framework.TestCase;
 
 
 public class ShellBusinessThemeCustomVariant_Test extends TestCase {

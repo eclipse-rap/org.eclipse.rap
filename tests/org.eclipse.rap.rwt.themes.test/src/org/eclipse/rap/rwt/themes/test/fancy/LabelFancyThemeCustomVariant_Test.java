@@ -9,9 +9,10 @@
 *******************************************************************************/ 
 package org.eclipse.rap.rwt.themes.test.fancy;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.QxBorder;
 import org.eclipse.rwt.internal.theme.QxColor;
 import org.eclipse.rwt.internal.theme.QxFont;
@@ -19,12 +20,9 @@ import org.eclipse.rwt.internal.theme.QxType;
 import org.eclipse.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import junit.framework.TestCase;
 
 
 public class LabelFancyThemeCustomVariant_Test extends TestCase {

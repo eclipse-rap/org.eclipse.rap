@@ -9,6 +9,8 @@
 *******************************************************************************/ 
 package org.eclipse.rap.rwt.themes.test.fancy;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
@@ -25,8 +27,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
-import junit.framework.TestCase;
 
 
 public class ButtonFancyThemeCustomVariant_Test extends TestCase {

@@ -9,6 +9,8 @@
 *******************************************************************************/ 
 package org.eclipse.rap.rwt.themes.test.fancy;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
@@ -20,10 +22,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-
-import junit.framework.TestCase;
 
 
 public class ListFancyTheme_Test extends TestCase {

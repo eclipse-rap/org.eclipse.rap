@@ -18,7 +18,6 @@ import org.eclipse.rwt.internal.theme.QxBorder;
 import org.eclipse.rwt.internal.theme.QxBoxDimensions;
 import org.eclipse.rwt.internal.theme.QxColor;
 import org.eclipse.rwt.internal.theme.QxDimension;
-import org.eclipse.rwt.internal.theme.QxFont;
 import org.eclipse.rwt.internal.theme.QxImage;
 import org.eclipse.rwt.internal.theme.QxType;
 import org.eclipse.rwt.internal.theme.SimpleSelector;

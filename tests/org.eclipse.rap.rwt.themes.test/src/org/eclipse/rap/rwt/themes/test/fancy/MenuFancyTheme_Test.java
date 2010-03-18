@@ -20,12 +20,7 @@ import org.eclipse.rwt.internal.theme.QxColor;
 import org.eclipse.rwt.internal.theme.QxType;
 import org.eclipse.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 
 
 public class MenuFancyTheme_Test extends TestCase {

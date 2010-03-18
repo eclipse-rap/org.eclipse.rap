@@ -9,6 +9,8 @@
 *******************************************************************************/ 
 package org.eclipse.rap.rwt.themes.test.fancy;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
@@ -22,11 +24,8 @@ import org.eclipse.rwt.internal.theme.SimpleSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
-
-import junit.framework.TestCase;
 
 
 public class SpinnerFancyTheme_Test extends TestCase {

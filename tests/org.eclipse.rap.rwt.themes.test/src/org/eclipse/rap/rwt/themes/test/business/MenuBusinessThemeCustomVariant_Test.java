@@ -9,6 +9,8 @@
 *******************************************************************************/ 
 package org.eclipse.rap.rwt.themes.test.business;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
@@ -19,8 +21,6 @@ import org.eclipse.rwt.internal.theme.QxType;
 import org.eclipse.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.graphics.Color;
-
-import junit.framework.TestCase;
 
 
 public class MenuBusinessThemeCustomVariant_Test extends TestCase {

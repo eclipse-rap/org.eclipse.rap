@@ -1,0 +1,14 @@
+
+/* Test values for Business theme */
+
+Menu {
+  color: rgb( 0, 89, 165 );
+  background-color: rgb( 255, 255, 255 );
+  border: 1px solid rgb( 0, 89, 165);
+  border-radius: 2px;
+}
+
+MenuItem:hover {
+  color: #4a4a4a;
+  background-color: #dae9f7;
+}

@@ -20,20 +20,13 @@ import org.eclipse.rwt.internal.theme.QxColor;
 import org.eclipse.rwt.internal.theme.QxType;
 import org.eclipse.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 
 
 public class MenuBusinessTheme_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
-    ThemesTestUtil.activateTheme( ThemesTestUtil.BUSINESS_THEME_ID, 
-                                   ThemesTestUtil.BUSINESS_PATH );
   }
 
   protected void tearDown() throws Exception {

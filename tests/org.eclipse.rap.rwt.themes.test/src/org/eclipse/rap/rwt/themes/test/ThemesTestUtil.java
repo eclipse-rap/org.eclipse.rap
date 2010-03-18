@@ -15,12 +15,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.eclipse.rwt.internal.theme.AbstractThemeAdapter;
-import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.internal.theme.QxType;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rwt.internal.theme.Theme;
-import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
@@ -31,7 +29,10 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public class ThemesTestUtil {
-  
+
+  static final ResourceLoader RESOURCE_LOADER
+    = ThemeTestUtil.createResourceLoader( ThemesTestUtil.class );
+
   public static final String BUSINESS_THEME_ID 
     = "org.eclipse.rap.design.example.business.theme";
   public static final String BUSINESS_PATH = "theme/business/business.css";
@@ -108,14 +109,11 @@ public class ThemesTestUtil {
   /*
    * Little Helper Method to get a QxType for a widget's property
    */
-  public static QxType getCssValue( 
-    final Widget widget, 
-    final SimpleSelector selector, 
-    final String property ) 
+  public static QxType getCssValue( final Widget widget,
+                                    final SimpleSelector selector,
+                                    final String property )
   {
-    IThemeAdapter themeAdapter = ThemeAdapterUtil.getThemeAdapter( widget );
-    AbstractThemeAdapter adapter = ( AbstractThemeAdapter ) themeAdapter;
-    String primaryElement = adapter.getPrimaryElement( widget );
+    String primaryElement = AbstractThemeAdapter.getPrimaryElement( widget );
     QxType cssValue = ThemeUtil.getCssValue( primaryElement, 
                                              property, 
                                              selector );
@@ -125,41 +123,44 @@ public class ThemesTestUtil {
   /*
    * Little Helper Method to get a QxType for a widget's property
    */
-  public static QxType getCssValueForElement( 
-    final Widget widget, 
-    final SimpleSelector selector, 
-    final String property,
-    final String element ) 
+  public static QxType getCssValueForElement( final Widget widget,
+                                              final SimpleSelector selector,
+                                              final String property,
+                                              final String element )
   {
-    IThemeAdapter themeAdapter = ThemeAdapterUtil.getThemeAdapter( widget );
-    AbstractThemeAdapter adapter = ( AbstractThemeAdapter ) themeAdapter;
-    String primaryElement = element;
-    QxType cssValue = ThemeUtil.getCssValue( primaryElement, 
-                                             property, 
-                                             selector );
-    return cssValue;
+    return ThemeUtil.getCssValue( element, property, selector );
   }
   
   /*
-   * registers and active a given theme
+   * registers (if not already registered) and active a given theme
+   * TODO [rst] Rather use #createAndActivateTheme as this is more specific
    */
   public static void activateTheme( final String id, final String path ) {
     ThemeManager themeManager = ThemeManager.getInstance();
     if( themeManager.getTheme( id ) == null ) {
-      String themeId = id;
-      String themeName = "Theme";
-      String themeFile = path;
-      ResourceLoader resourceLoader 
-        = ThemeTestUtil.createResourceLoader( ThemesTestUtil.class );
       try {
         StyleSheet styleSheet
-          = CssFileReader.readStyleSheet( path, resourceLoader );        
-        Theme theme = new Theme( themeId, themeName, styleSheet );
+          = CssFileReader.readStyleSheet( path, RESOURCE_LOADER );
+        Theme theme = new Theme( id, "Test Theme", styleSheet );
         themeManager.registerTheme( theme );
       } catch( IOException e ) {
         e.printStackTrace();
       }  
     }
+    ThemeUtil.setCurrentThemeId( id );  
+  }
+
+  public static void createAndActivateTheme( final String path ) {
+    ThemeManager themeManager = ThemeManager.getInstance();
+    String id = "test.theme.id";
+    StyleSheet styleSheet;
+    try {
+      styleSheet = CssFileReader.readStyleSheet( path, RESOURCE_LOADER );
+    } catch( IOException e ) {
+      throw new RuntimeException( "Failed to read stylesheet from " + path, e );
+    }
+    Theme theme = new Theme( id, "Test Theme", styleSheet );
+    themeManager.registerTheme( theme );
     ThemeUtil.setCurrentThemeId( id );  
   }
   
