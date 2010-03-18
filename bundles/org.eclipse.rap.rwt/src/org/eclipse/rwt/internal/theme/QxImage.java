@@ -160,9 +160,25 @@ public final class QxImage implements QxType {
   }
 
   public String toString() {
-    return   "QxImage{ "
-           + ( none ? NONE_INPUT : path )
-           + " }";
+    StringBuffer result = new StringBuffer();
+    result.append( "QxImage{ " );
+    if( gradientColors != null && gradientPercents != null ) {
+      result.append( "gradient: " );
+      for( int i = 0; i < gradientColors.length; i++ ) {
+        if( i != 0 ) {
+          result.append( ", " );
+        }
+        result.append( gradientColors[ i ] );
+        if( i  < gradientPercents.length ) {
+          result.append( " " );
+          result.append( gradientPercents[ i ] );
+        }
+      }
+    } else {
+      result.append( none ? "none" : "path: " + path );
+    }
+    result.append( " }" );
+    return result.toString();
   }
 
   private static Point readImageSize( final String path,
