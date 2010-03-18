@@ -1449,7 +1449,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       if( !states.rwt_FLAT ) {
         // get the background color for selected items
-        var tv = new org.eclipse.swt.theme.ThemeValues( { "selected": true } );
+        var statesWithSelected = { "selected": true };
+        for( property in states ) {
+          statesWithSelected[ property ] = states[ property ];
+        }
+        var tv = new org.eclipse.swt.theme.ThemeValues( statesWithSelected );
         var color = tv.getCssColor( "CTabItem", "background-color" );
         result.border = new qx.ui.core.Border( 2, "solid", color );
       } else {
