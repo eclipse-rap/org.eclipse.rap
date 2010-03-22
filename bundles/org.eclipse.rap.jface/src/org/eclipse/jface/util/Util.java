@@ -460,13 +460,18 @@ public final class Util {
 	}
 	
 	/**
-	 * Foundation replacement for String.replaceAll(*).
-	 * 
-	 * @param src the starting string.
-	 * @param find the string to find.
-	 * @param replacement the string to replace.
-	 * @return The new string.
-	 */
+     * Foundation replacement for <code>String#replaceAll(String,
+     * String)</code>, but <strong>without support for regular
+     * expressions</strong>.
+     * 
+     * @param src the original string
+     * @param find the string to find
+     * @param replacement the replacement string
+     * @return the new string, with all occurrences of <code>find</code>
+     *         replaced by <code>replacement</code> (not using regular
+     *         expressions)
+     * @since 1.3
+     */
 	public static final String replaceAll(String src, String find, String replacement) {
 		final int len = src.length();
 		final int findLen = find.length();

@@ -54,7 +54,7 @@ class URLImageDescriptor extends ImageDescriptor {
         if (!(o instanceof URLImageDescriptor)) {
             return false;
         }
-        return ((URLImageDescriptor) o).url.equals(this.url);
+		return ((URLImageDescriptor) o).url.toExternalForm().equals(this.url.toExternalForm());
     }
 
 	/*
@@ -103,7 +103,7 @@ class URLImageDescriptor extends ImageDescriptor {
 	 * (non-Javadoc) Method declared on Object.
      */
     public int hashCode() {
-        return url.hashCode();
+        return url.toExternalForm().hashCode();
     }
 
 	/*
