@@ -410,6 +410,12 @@ Shell.toolbarLayer {
   border: none;
 }
 
+/* ToolBar */
+
+ToolBar {
+  background-color: #ffffff;
+}
+
 /* Tree */
 
 Tree {

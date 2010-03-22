@@ -17,9 +17,11 @@ import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 public class BusinessTheme_Test extends ThemeTestCase {
 
   public void testBusinessTheme() throws IOException {
-    ThemesTestUtil.createAndActivateTheme( ThemesTestUtil.BUSINESS_PATH );
+    ThemesTestUtil.createAndActivateTheme( ThemesTestUtil.BUSINESS_PATH, 
+                                           "test.business.id" );
     processCssTestFile( getClass(), "Menu.test.css" );
     processCssTestFile( getClass(), "Button.test.css" );
+    processCssTestFile( getClass(), "ToolBar.test.css" );
   }
 
 }

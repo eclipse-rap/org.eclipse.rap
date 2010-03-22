@@ -28,7 +28,7 @@ public class MenuBusinessTheme_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     ThemesTestUtil.activateTheme( ThemesTestUtil.BUSINESS_THEME_ID, 
-                                   ThemesTestUtil.BUSINESS_PATH );
+                                  ThemesTestUtil.BUSINESS_PATH );
   }
 
   protected void tearDown() throws Exception {

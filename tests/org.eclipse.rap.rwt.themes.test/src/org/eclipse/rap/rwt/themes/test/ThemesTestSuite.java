@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.themes.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.eclipse.rap.rwt.themes.test.business.BusinessTheme_Test;
 import org.eclipse.rap.rwt.themes.test.business.ButtonBusinessThemeCustomVariant_Test;
 import org.eclipse.rap.rwt.themes.test.business.ButtonBusinessTheme_Test;
 import org.eclipse.rap.rwt.themes.test.business.CComboBusinessTheme_Test;
@@ -53,6 +54,7 @@ import org.eclipse.rap.rwt.themes.test.fancy.CompositeFancyTheme_Test;
 import org.eclipse.rap.rwt.themes.test.fancy.DateTimeFancyTheme_Test;
 import org.eclipse.rap.rwt.themes.test.fancy.DisplayFancyTheme_Test;
 import org.eclipse.rap.rwt.themes.test.fancy.ExpandBarFancyTheme_Test;
+import org.eclipse.rap.rwt.themes.test.fancy.FancyTheme_Test;
 import org.eclipse.rap.rwt.themes.test.fancy.GroupFancyTheme_Test;
 import org.eclipse.rap.rwt.themes.test.fancy.LabelFancyThemeCustomVariant_Test;
 import org.eclipse.rap.rwt.themes.test.fancy.LabelFancyTheme_Test;
@@ -78,8 +80,16 @@ public class ThemesTestSuite {
   
   public static Test suite() {
     TestSuite designSuite = new TestSuite( "Tests for RWT Themes" );
+    TestSuite cssSuite = new TestSuite( "Tests again CSS files" );
+    designSuite.addTest( cssSuite );
+    // Add CSS Themes tests
+    cssSuite.addTest( new TestSuite( BusinessTheme_Test.class, 
+                                     "Business Theme" ) );
+    cssSuite.addTest( new TestSuite( FancyTheme_Test.class, 
+                                    "Fancy Theme" ) );
+    
     TestSuite businessSuite = new TestSuite( "Business Theme Tests" );    
-    designSuite.addTest( businessSuite );
+    designSuite.addTest( businessSuite );   
     
     TestSuite suite = businessSuite;    
     // Business design tests

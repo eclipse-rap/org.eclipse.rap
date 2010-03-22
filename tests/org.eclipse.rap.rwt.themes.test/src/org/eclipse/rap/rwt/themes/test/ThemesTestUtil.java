@@ -150,9 +150,11 @@ public class ThemesTestUtil {
     ThemeUtil.setCurrentThemeId( id );  
   }
 
-  public static void createAndActivateTheme( final String path ) {
+  public static void createAndActivateTheme( final String path, 
+                                             final String themeId ) 
+  {
     ThemeManager themeManager = ThemeManager.getInstance();
-    String id = "test.theme.id";
+    String id = themeId;
     StyleSheet styleSheet;
     try {
       styleSheet = CssFileReader.readStyleSheet( path, RESOURCE_LOADER );
