@@ -1,0 +1,9 @@
+/* ToolTip */
+
+ToolTip {
+  background-color: #dae9f7;
+  border: 1px solid #00589f;
+  border-radius: 2px 2px 2px 2px;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+}

@@ -20,8 +20,32 @@ public class BusinessTheme_Test extends ThemeTestCase {
     ThemesTestUtil.createAndActivateTheme( ThemesTestUtil.BUSINESS_PATH, 
                                            "test.business.id" );
     processCssTestFile( getClass(), "Menu.test.css" );
+    processCssTestFile( getClass(), "Menu.CustomVariant.test.css" );
     processCssTestFile( getClass(), "Button.test.css" );
+    processCssTestFile( getClass(), "Button.CustomVariant.test.css" );
+    processCssTestFile( getClass(), "Shell.test.css" );
+    processCssTestFile( getClass(), "Shell.CustomVariant.test.css" );
+    processCssTestFile( getClass(), "Tree.test.css" );
+    processCssTestFile( getClass(), "Table.test.css" );
+    processCssTestFile( getClass(), "List.test.css" );
+    processCssTestFile( getClass(), "List.CustomVariant.test.css" );
+    processCssTestFile( getClass(), "Link.test.css" );
+    processCssTestFile( getClass(), "Label.test.css" );
+    processCssTestFile( getClass(), "ExpandBar.test.css" );
+    processCssTestFile( getClass(), "Spinner.test.css" );
+    processCssTestFile( getClass(), "ExpandBar.test.css" );
+    processCssTestFile( getClass(), "DateTime.test.css" );
+    processCssTestFile( getClass(), "Text.test.css" );
+    processCssTestFile( getClass(), "Group.test.css" );
+    processCssTestFile( getClass(), "ProgressBar.test.css" );
+    processCssTestFile( getClass(), "Composite.test.css" );
+    processCssTestFile( getClass(), "Composite.CustomVariant.test.css" );
+    processCssTestFile( getClass(), "ToolTip.test.css" );
+    processCssTestFile( getClass(), "Slider.test.css" );
+    processCssTestFile( getClass(), "Display.test.css" );
+    processCssTestFile( getClass(), "TabFolder.test.css" );
     processCssTestFile( getClass(), "ToolBar.test.css" );
+    processCssTestFile( getClass(), "ToolBar.CustomVariant.test.css" );
   }
 
 }

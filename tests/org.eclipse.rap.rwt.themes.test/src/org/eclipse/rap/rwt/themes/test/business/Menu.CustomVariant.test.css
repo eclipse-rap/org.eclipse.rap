@@ -1,0 +1,51 @@
+Menu.header-toolbar {
+  color: #3b8fc2;
+  background-color: white;
+  border: 1px solid #005499;
+  border-radius: 0px 0px 2px 2px;
+}
+
+MenuItem.header-toolbar {
+  color: #004277;
+}
+
+MenuItem.header-toolbar:hover {
+  color: #0369bc;
+  background-color: transparent;
+}
+
+Menu.header-overflow {
+  color: #656565;
+  background-color: white;
+  border: 1px #005499;
+  border-radius: 2px;
+}
+
+MenuItem.header-overflow {
+  color: #004277;
+}
+
+MenuItem.header-overflow:hover {
+  color: #0369bc;
+  background-color: transparent;
+}
+
+/* MenuBar */
+
+
+Menu.menuBar {
+  color: #0059a5;
+  background-color: white;
+  border: 1px solid #cccccc;
+  border-radius: 0px 0px 2px 2px;
+}
+
+MenuItem.menuBar {
+  color: #004277;
+}
+
+MenuItem.menuBar:hover {
+  color: #0369bc;
+  background-color: transparent;
+}
+

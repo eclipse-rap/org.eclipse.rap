@@ -1,0 +1,15 @@
+
+Composite.tabActive {
+  border: 1px solid #00589f;
+  border-radius: 0px 7px 0px 0px;
+}
+
+Composite.tabInactive {
+  border: 1px solid #949494;
+  border-radius: 0px 7px 0px 0px;
+}
+
+Composite.inactiveButton {
+  background-color: transparent;
+  border: none;
+}

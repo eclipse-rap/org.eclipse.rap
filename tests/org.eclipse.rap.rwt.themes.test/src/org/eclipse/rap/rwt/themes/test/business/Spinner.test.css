@@ -1,0 +1,67 @@
+/* Spinner */
+
+Spinner {
+  border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
+  padding: 1px 2px;
+  color: #464a4e;
+  background-color: rgb( 252, 252, 252 );
+}
+
+Spinner-DownButton-Icon {
+  background-image: url( theme/business/icons/down.png );
+}
+
+Spinner-DownButton-Icon:hover {
+  background-image: url( theme/business/icons/down-hover.png );
+}
+
+Spinner-DownButton {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    to( #ffffff )
+  );
+  width: 18px;
+  border: none;
+  border-radius: 0px 0px 2px 0px;
+}
+
+Spinner-DownButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #b0b0b0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+}
+
+Spinner-UpButton-Icon {
+  background-image: url( theme/business/icons/up.png );
+}
+
+Spinner-UpButton-Icon:hover {
+  background-image: url( theme/business/icons/up-hover.png );
+}
+
+Spinner-UpButton {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    to( #e0e0e0 )
+  );
+  width: 18px;
+  border: none;
+  border-radius: 0px 2px 0px 0px;
+}
+
+Spinner-UpButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}

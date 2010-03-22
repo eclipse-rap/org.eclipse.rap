@@ -1,0 +1,50 @@
+/* Combo */
+
+/* Combo always shows a border, the BORDER style flag is ignored by SWT */
+
+Combo, CCombo {
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: rgb( 252, 252, 252 );
+  color: #464a4e;
+}
+
+Combo, CCombo[BORDER] {
+  border: 1px solid #c1c1c1;
+  border-radius: 2px;
+}
+
+Combo-Button-Icon, CCombo-Button-Icon {
+  background-image: url( theme/business/icons/down.png );
+}
+
+Combo-Button-Icon:hover, CCombo-Button-Icon:hover {
+  background-image: url( theme/business/icons/down-hover.png );
+}
+
+Combo-Button, CCombo-Button {
+  background-color: transparent;
+  border: none;
+  border-radius: 0px 2px 2px 0px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+  width: 18px;
+}
+
+Combo-Button:pressed, CCombo-Button:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Combo-List, CCombo-List {
+  border: 1px solid #c1c1c1;
+  border-radius: 0px 0px 2px 2px;
+}
