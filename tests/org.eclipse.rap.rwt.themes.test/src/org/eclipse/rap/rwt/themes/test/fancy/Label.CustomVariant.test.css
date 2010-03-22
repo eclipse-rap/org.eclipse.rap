@@ -1,0 +1,16 @@
+/* Label */
+
+Label.menuBorder {
+  background-color: rgb( 221, 221, 221 );
+}
+
+Label.stackBorder {
+  background-color: rgb( 235, 235, 235 );
+}
+
+Label.standaloneView {
+  background-color: transparent;
+  border: none;
+  color: rgb( 102, 102, 102 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}

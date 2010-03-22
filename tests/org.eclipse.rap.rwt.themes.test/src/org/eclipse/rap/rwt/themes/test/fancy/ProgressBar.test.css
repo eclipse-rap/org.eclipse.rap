@@ -1,0 +1,20 @@
+/* Progress Bar */
+
+ProgressBar {
+  background-color: #ffffff;
+  border: 1px solid #A4A4A4;
+  border-radius: 2px;
+}
+
+ProgressBar-Indicator {
+  background-color: #abe033;
+  background-image: url( theme/fancy/icons/progress.png );
+}
+
+ProgressBar-Indicator:paused {
+  background-color: #ebebeb;
+}
+
+ProgressBar-Indicator:error {
+  background-color: rgb( 203, 32, 32 );
+}

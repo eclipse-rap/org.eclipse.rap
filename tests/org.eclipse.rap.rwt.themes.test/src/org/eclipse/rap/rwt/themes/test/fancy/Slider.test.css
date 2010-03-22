@@ -1,0 +1,147 @@
+/* Slider */
+
+Slider {
+  background-color: #f3f3f4;
+}
+
+Slider-DownButton:horizontal {
+  background-color: transparent;
+  border: 1px solid #A4A4A4;
+  border-radius: 2px 0px 0px 2px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Slider-DownButton:horizontal:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Slider-DownButton-Icon:horizontal {
+  background-image: url( theme/fancy/icons/left.png );
+}
+
+Slider-DownButton-Icon:horizontal:hover {
+  background-image: url( theme/fancy/icons/left-hover.png );
+}
+
+Slider-UpButton:horizontal {
+  background-color: transparent;
+  border: 1px solid #A4A4A4;
+  border-radius: 0px 2px 2px 0px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Slider-UpButton:horizontal:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Slider-UpButton-Icon:horizontal {
+  background-image: url( theme/fancy/icons/right.png );
+}
+
+Slider-UpButton-Icon:horizontal:hover {
+  background-image: url( theme/fancy/icons/right-hover.png );
+}
+
+Slider-DownButton:vertical {
+  background-color: transparent;
+  border: 1px solid #A4A4A4;
+  border-radius: 2px 2px 0px 0px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Slider-DownButton:vertical:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Slider-DownButton-Icon:vertical {
+  background-image: url( theme/fancy/icons/up.png );
+}
+
+Slider-DownButton-Icon:vertical:hover {
+  background-image: url( theme/fancy/icons/up-hover.png );
+}
+
+Slider-UpButton:vertical {
+  background-color: transparent;
+  border: 1px solid #A4A4A4;
+  border-radius: 0px 0px 2px 2px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #cccccc ),
+    color-stop( 52%, #e0e0e0 ),
+    color-stop( 56%, #f0f0f0 ),    
+    to( #ffffff )
+  );
+}
+
+Slider-UpButton:vertical:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Slider-UpButton-Icon:vertical {
+  background-image: url( theme/fancy/icons/down.png );
+}
+
+Slider-UpButton-Icon:vertical:hover {
+  background-image: url( theme/fancy/icons/down-hover.png );
+}
+
+Slider-Thumb {
+  background-color: transparent;
+  border: 1px solid #A4A4A4;
+  border-radius: 2px 2px 2px 2px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Slider-Thumb:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}

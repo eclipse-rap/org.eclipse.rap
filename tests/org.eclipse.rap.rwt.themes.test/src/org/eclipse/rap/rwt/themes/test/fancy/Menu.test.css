@@ -1,0 +1,12 @@
+/* Menu */
+Menu {
+  color: rgb( 0, 89, 165 );
+  background-color: white;
+  border: 1px #abe033;
+  border-radius: 2px;
+}
+
+MenuItem:hover {
+  background-color: #e9f3d2;
+  color: #4a4a4a;
+}

@@ -1,0 +1,6 @@
+/* Display */
+
+Display {
+  background-image: url( theme/fancy/icons/browser_bg.png );
+  rwt-infobackground-color: rgb( 255, 255, 255 );
+}

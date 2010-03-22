@@ -1,0 +1,52 @@
+Menu.header-toolbar {
+  color: #3b8fc2;
+  background-color: white;
+  border: 1px solid #3b8fc2;
+  border-radius: 0px 0px 5px 5px;
+}
+
+MenuItem.header-toolbar {
+  color: #656565;
+}
+
+MenuItem.header-toolbar:hover {
+  color: #3b8fc2;
+  background-color: transparent;
+}
+
+
+
+
+Menu.header-overflow {
+  color: #656565;
+  background-color: white;
+  border: 1px #69b0df;
+  border-radius: 5px;
+}
+
+MenuItem.header-overflow {
+  color: #656565;
+}
+
+MenuItem.header-overflow:hover {
+  color: #3b8fc2;
+  background-color: transparent;
+}
+
+
+
+Menu.menuBar {
+  color: #656565;
+  background-color: #f1fbdb;
+  border: 1px solid #83a438;
+  border-radius: 0px 0px 3px 3px;
+}
+
+MenuItem.menuBar {
+  color: #656565;
+}
+
+MenuItem.menuBar:hover {
+  color: #8fbe29;
+  background-color: transparent;
+}

@@ -1,0 +1,227 @@
+Button.clearButton {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 2px;
+}
+
+Button-FocusIndicator.clearButton {
+  border: none;
+}
+
+Button.clearButton:hover, Button.clearButton:selected, Button.clearButton:pressed {
+  background-image: none;
+}
+
+Button.configMenuButton {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 1px;
+}
+
+Button.configMenuButton:hover, Button.configMenuButton:selected, Button.configMenuButton:pressed {
+  background-image: none;
+}
+
+Button-FocusIndicator.configMenuButton {
+  border: none;
+}
+
+Button.viewClose {
+  background-color: transparent;
+  background-image: url( img/fancy/stack_tab_active_close_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.viewClose:pressed {
+  background-image: url( img/fancy/stack_tab_active_close_active.png );
+}
+
+Button.viewClose:hover {
+  background-image: url( img/fancy/stack_tab_active_close_active_hover.png );
+}
+
+Button-FocusIndicator.viewClose {
+  border: none;
+}
+
+Button.viewCloseInactive {
+  background-color: transparent;
+  background-image: url( img/fancy/stack_tab_inactive_close_active.png );
+  border: none;
+}
+
+Button.viewCloseInactive:pressed {
+  background-image: url( img/fancy/stack_tab_inactive_close_active.png );
+}
+
+Button.viewCloseInactive:hover {
+  background-image: url( img/fancy/stack_tab_inactive_close_active_hover.png );
+}
+
+Button-FocusIndicator.viewCloseInactive {
+  border: none;
+}
+
+Button.toolbarOverflowInactive {
+  background-color: transparent;
+  background-image: url( img/fancy/toolbar_overflow.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowInactive:pressed {
+  background-image: url( img/fancy/toolbar_overflow.png );
+}
+
+Button.toolbarOverflowInactive:hover {
+  background-image: url( img/fancy/toolbar_overflow_hover.png );
+}
+
+Button-FocusIndicator.toolbarOverflowInactive {
+  border: none;
+}
+
+Button.toolbarOverflowActive {
+  background-color: transparent;
+  background-image: url( img/fancy/toolbar_overflow_active.png );
+  border: none;
+  padding: 2px;
+}
+
+Button.toolbarOverflowActive:pressed {
+  background-image: url( img/fancy/toolbar_overflow_active.png );
+}
+
+Button.toolbarOverflowActive:hover {
+  background-image: url( img/fancy/toolbar_overflow_hover_active.png );
+}
+
+Button-FocusIndicator.toolbarOverflowActive {
+  border: none;
+}
+
+Button.partActive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 62, 64, 66 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partActive:pressed, Button.partActive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.partActive {
+  border: none;
+}
+
+Button.partInActiveActive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 73, 95, 21 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partInActiveActive:pressed, Button.partInActiveActive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.partInActiveActive {
+  border: none;
+}
+
+Button.partInactive {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 255, 255, 255 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.partInactive:pressed, Button.partInactive:hover {
+  background-image: none;
+}
+
+Button-FocusIndicator.partInactive {
+  border: none;
+}
+
+Button.perspective {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: rgb( 204, 204, 204 );
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.perspective:hover {
+  font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-image: none;
+}
+
+Button.perspective:pressed {
+  background-image: none;
+}
+
+Button-FocusIndicator.perspective {
+  border: none;
+}
+
+Button.perspectiveActive {
+  color: rgb( 112, 198, 243 );
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Button.perspectiveActive:hover, Button.perspectiveActive:pressed, Button.perspectiveActive:selected {
+  background-image: none;
+}
+
+Button-FocusIndicator.perspectiveActive {
+  border: none;
+}
+
+Button.tabOverflowActive {
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( img/fancy/stack_tab_overflow_active.png );
+}
+
+Button.tabOverflowActive:pressed {
+  background-image: url( img/fancy/stack_tab_overflow_active.png );
+}
+
+Button.tabOverflowActive:hover {
+  background-image: url( img/fancy/stack_tab_overflow_active_hover.png );
+}
+
+Button-FocusIndicator.tabOverflowActive {
+  border: none;
+}
+
+Button.tabOverflowInactive {
+  background-color: transparent;
+  border: none;
+  padding: 2px;
+  background-image: url( img/fancy/stack_tab_overflow_inactive.png );
+}
+
+Button.tabOverflowInactive:pressed {
+  background-image: url( img/fancy/stack_tab_overflow_inactive.png );
+}
+
+Button.tabOverflowInactive:hover {
+  background-image: url( img/fancy/stack_tab_overflow_inactive_hover.png );
+}
+
+Button-FocusIndicator.tabOverflowInactive {
+  border: none;
+}

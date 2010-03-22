@@ -33,7 +33,6 @@ public class BusinessTheme_Test extends ThemeTestCase {
     processCssTestFile( getClass(), "Label.test.css" );
     processCssTestFile( getClass(), "ExpandBar.test.css" );
     processCssTestFile( getClass(), "Spinner.test.css" );
-    processCssTestFile( getClass(), "ExpandBar.test.css" );
     processCssTestFile( getClass(), "DateTime.test.css" );
     processCssTestFile( getClass(), "Text.test.css" );
     processCssTestFile( getClass(), "Group.test.css" );

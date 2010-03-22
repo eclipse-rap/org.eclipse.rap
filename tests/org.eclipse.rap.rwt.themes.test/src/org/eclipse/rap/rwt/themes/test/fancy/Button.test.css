@@ -1,0 +1,136 @@
+/* Button */
+
+Button {
+  color: #4a4a4a;
+  background-color: white;
+}
+
+Button[PUSH], Button[TOGGLE], Button[BORDER] {
+  border: 1px solid #A4A4A4;
+  border-radius: 3px;
+  padding: 2px 5px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+}
+
+Button[PUSH], Button[TOGGLE] {
+  cursor: pointer;
+}
+
+Button[PUSH]:disabled, Button[TOGGLE]:disabled {
+  cursor: default;
+}
+
+Button[TOGGLE]:selected {
+  /* background-color: #d3d3d3; */
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 30%, #f0f0f0 ),
+    color-stop( 70%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Button[TOGGLE]:selected:hover {
+  /* background-color: #d3d3d3; */
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Button[PUSH]:hover, Button[TOGGLE]:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Button[PUSH]:pressed, Button[TOGGLE]:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+  padding: 4px 5px 2px 7px;
+}
+
+Button[CHECK][BORDER] {
+  background-image: none;
+}
+
+Button[RADIO][BORDER] {
+  background-image: none;
+}
+
+Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
+  background-color: transparent; 
+  border: 1px dotted #b8b8b8;
+  margin: 2px;
+  padding: 0px;
+  opacity: 1;
+}
+
+Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
+  background-color: transparent; 
+  border: 1px dotted #b8b8b8;
+  padding: 2px 2px 2px 1px;
+  margin: 0px;
+  opacity: 1;
+}
+
+/* Check Buttons */
+
+Button-CheckIcon {
+  background-image: url( theme/fancy/icons/check-unselected.png );
+}
+
+Button-CheckIcon:selected {
+  background-image: url( theme/fancy/icons/check-selected.png );
+}
+
+Button-CheckIcon:hover {
+  background-image: url( theme/fancy/icons/check-unselected-hover.png );
+}
+
+Button-CheckIcon:selected:hover {
+  background-image: url( theme/fancy/icons/check-selected-hover.png );
+}
+
+Button-CheckIcon:selected:grayed {
+  background-image: url( theme/fancy/icons/check-grayed.png );
+}
+
+Button-CheckIcon:selected:grayed:hover {
+  background-image: url( theme/fancy/icons/check-grayed-hover.png );
+}
+
+/* Radio Buttons */
+
+Button-RadioIcon {
+  background-image: url( theme/fancy/icons/radio-unselected.png );
+}
+
+Button-RadioIcon:selected {
+  background-image: url( theme/fancy/icons/radio-selected.png );
+}
+
+Button-RadioIcon:hover {
+  background-image: url( theme/fancy/icons/radio-unselected-hover.png );
+}
+
+Button-RadioIcon:selected:hover {
+  background-image: url( theme/fancy/icons/radio-selected-hover.png );
+}

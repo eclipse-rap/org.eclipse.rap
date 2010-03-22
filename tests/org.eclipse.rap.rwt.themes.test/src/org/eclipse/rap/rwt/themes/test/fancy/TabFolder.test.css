@@ -1,0 +1,53 @@
+/* CTabFolder, TabFolder */
+
+TabItem {
+  background-color: white;
+  border-top-color: #abe033;
+  border-bottom-color: white;
+  background-image: none;
+}
+
+TabItem:selected {
+  background-color: white;
+  border-top-color: #abe033;
+  border-bottom-color: white;
+  background-image: none;
+}
+
+TabItem:hover {
+  background-color: #e9f3d2;
+  border-top-color: #abe033;
+  border-bottom-color: white;
+  background-image: none;
+}
+
+CTabFolder {
+  border-color: #A4A4A4;
+  border-radius: 2px;
+}
+
+CTabItem {
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: white;
+  background-image: none;
+  padding: 2px 4px;
+  spacing: 4px;
+}
+
+CTabItem:selected {
+  color: white;
+  background-color: #97c72c;
+}
+
+CTabItem:disabled {
+  color: #4a4a4a;
+}
+
+CTabFolder-DropDownButton-Icon {
+  background-image: url( theme/fancy/icons/ctabfolder-dropdown.png );
+}
+
+CTabFolder-DropDownButton-Icon:hover {
+  background-image: url( theme/fancy/icons/ctabfolder-dropdown-hover.png );
+}

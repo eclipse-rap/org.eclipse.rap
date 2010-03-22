@@ -1,0 +1,9 @@
+/* Link */
+
+Link-Hyperlink {
+  color: #93c12b;
+}
+
+Link-Hyperlink:disabled {
+  color: #959595;
+}

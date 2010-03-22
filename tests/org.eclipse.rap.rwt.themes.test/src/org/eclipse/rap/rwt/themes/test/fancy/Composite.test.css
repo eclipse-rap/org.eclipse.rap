@@ -1,0 +1,12 @@
+/* Composite */
+
+Composite {
+  background-color: #ffffff;
+  background-image: none;
+  border: none;
+}
+
+Composite[BORDER] {
+  background-color: white;
+  background-image: none;
+}

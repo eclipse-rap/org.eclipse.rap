@@ -1,0 +1,62 @@
+/* Shell */
+
+Shell-Titlebar {
+  color: white;
+  background-image: gradient( linear, left top, left bottom,
+                              from( #a8dd32 ), to( #87b127 ) );
+  padding: 2px 5px 2px;
+  margin: 0px;
+  height: 22px;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border: none;
+  border-radius: 3px 3px 0px 0px;
+}
+
+Shell-Titlebar:inactive {
+  color: #aaaaaa;
+  background-image: gradient( linear, left top, left bottom,
+                              from( #595959 ), to( #4b4b4b ) );
+}
+
+Shell {
+  background-color: white;
+}
+
+Shell[BORDER], Shell[TITLE] {
+  background-color: white;
+  border: 2px solid #99c92c;
+  border-radius: 6px;
+  padding: 5px;
+}
+
+Shell[BORDER]:inactive, Shell[TITLE]:inactive {
+  background-color: white;
+  border: 2px solid #4b4b4b;
+}
+
+Shell-CloseButton {
+  background-image: url( "theme/fancy/icons/shell-close.png" );
+  margin: 0px 5px 0px 0px;
+}
+
+Shell-MaxButton {
+  background-image: url( "theme/fancy/icons/shell-max.png" );
+  margin: 0px 6px 0px 0px;
+}
+
+Shell-MinButton {
+  background-image: url( "theme/fancy/icons/shell-min.png" );
+  margin: 0px 6px 0px 0px;
+}
+
+Shell-CloseButton:hover {
+  background-image: url( "theme/fancy/icons/shell-close-hover.png" );
+}
+
+Shell-MaxButton:hover {
+  background-image: url( "theme/fancy/icons/shell-max-hover.png" );
+}
+
+Shell-MinButton:hover {
+  background-image: url( "theme/fancy/icons/shell-min-hover.png" );
+}

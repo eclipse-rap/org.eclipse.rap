@@ -1,0 +1,11 @@
+* {
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+*:disabled {
+  color: #CFCFCF;
+}
+
+*[BORDER] {
+  border: 1px solid #C1C1C1;
+}

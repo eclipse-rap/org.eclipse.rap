@@ -1,0 +1,117 @@
+/* Header Toolbar */
+
+ToolBar.header-toolbar {
+  padding: 0px 0px 0px 25px;
+  color: white;
+  spacing: 25px;
+}
+
+ToolItem.header-toolbar {
+  color: white;
+  border: none;
+  padding: 5px 5px 5px 5px;
+  spacing: 10px;
+}
+
+ToolItem.header-toolbar:hover {
+  background-color: transparent;
+  color: white;
+  border: 1px solid #3b8fc2;
+  border-radius: 5px 5px 0px 0px;
+  padding: 5px 5px 5px 5px;
+}
+
+ToolItem-DropDownIcon.header-toolbar {
+  background-image: url( img/fancy/toolbar_arrow.png );
+  border: none;
+}
+
+ToolItem-DropDownIcon.header-toolbar:hover {
+  background-image: url( img/fancy/toolbar_arrow.png );
+  border: 1px solid #3b8fc2;
+}
+
+/* Header overflow toolbar */
+
+ToolItem.header-overflow {
+  color: #656565;
+  border: none;
+  padding: 0px 25px 0px 0px;
+}
+
+ToolItem.header-overflow:hover {
+  background-color: transparent;
+  color: #3b8fc2;
+  border: none;
+}
+
+ToolItem-DropDownIcon.header-overflow {
+  background-image: url( img/fancy/toolbar_overflow_arrow.png );
+}
+
+ToolItem-DropDownIcon.header-overflow:hover {
+  background-image: url( img/fancy/toolbar_overflow_arrow.png );
+  border: none;
+}
+
+/* MenuBar */
+
+ToolBar.menuBar {
+  background-color: transparent;
+  padding: 0px;
+  color: #656565;
+  spacing: 25px;
+}
+
+ToolItem.menuBar {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  color: #656565;
+  padding: 0px 10px 0px 10px;
+  spacing: 5px;
+}
+
+ToolItem.menuBar:hover {
+  background-color: transparent;
+    background-image: gradient(
+    linear, left top, left bottom,
+    from( #9acd2b ),
+    to( #8fbe29 )
+  );
+  border: 1px solid #83a438;
+  border-radius: 3px 3px 0px 0px;
+  color: white;
+  padding: 0px 10px 0px 10px;
+}
+
+ToolItem-DropDownIcon.menuBar {
+  background-image: url( img/fancy/menu_arrow.png );
+}
+
+ToolItem-DropDownIcon.menuBar:hover {
+  background-image: url( img/fancy/menu_arrow_hover.png );
+  border: 1px solid #83a438;
+}
+
+/* View ToolBar */
+
+ToolBar.viewToolbar {
+  background-color: transparent;
+  padding: 0px 2px;
+  spacing: 2px;
+}
+
+ToolItem.viewToolbar {
+  border: none;
+}
+
+ToolItem:selected.viewToolbar {
+  padding: 0px;
+  border: 1px solid #8fbe29;
+}
+
+ToolItem-DropDownIcon.viewToolbar {
+  background-image: url( img/fancy/viewMenu.png );
+  border: none;
+}
