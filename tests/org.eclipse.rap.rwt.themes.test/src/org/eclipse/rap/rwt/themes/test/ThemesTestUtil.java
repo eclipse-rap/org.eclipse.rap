@@ -31,46 +31,48 @@ public class ThemesTestUtil {
   public static final String BUSINESS_PATH = "theme/business/business.css";
 
   public static final String FANCY_PATH = "theme/fancy/fancy.css";
-  
-  static final ResourceLoader RESOURCE_LOADER = createResourceLoader();
+
+  static final ResourceLoader RESOURCE_LOADER
+    = ThemeTestUtil.createResourceLoader( ThemesTestUtil.class );
 
   private static final String BUNDLE_ID = "org.eclipse.rap.rwt.themes.test";
 
-  private static ResourceLoader createResourceLoader() {
-    final String designBundleUrl = findDesignBundleUrl();
-    ResourceLoader resourceLoader = new ResourceLoader() {
-
-      public InputStream getResourceAsStream( String resourceName )
-        throws IOException
-      {
-        URL url = new URL( designBundleUrl + "/" + resourceName );
-        InputStream inputStream = url.openStream();
-        return inputStream;
-      }
-    };
-    return resourceLoader;
-  }
-
-  private static String findDesignBundleUrl() {
-    String result = null;
+  /*
+   * add theme to class path
+   */
+  static {
     ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-    URLClassLoader classLoader = ( URLClassLoader ) systemClassLoader;
-    // get URLs and extract path for the design folder
-    URL[] urls = classLoader.getURLs();
-    for( int i = 0; i < urls.length && result == null; i++ ) {
-      String tempPath = urls[ i ].getPath();
-      if( tempPath.indexOf( "org.eclipse.rap.design.example" ) != -1 ) {
-        int indexOfBin = tempPath.indexOf( "/bin" );
-        if( indexOfBin != -1 ) {
-          String protocol = urls[ i ].getProtocol();
-          result = protocol + ":" + tempPath.substring( 0, indexOfBin );
+    if( systemClassLoader instanceof URLClassLoader ) {
+      URLClassLoader classLoader = ( URLClassLoader ) systemClassLoader;
+      // get URLs and extract path for the design folder
+      URL[] urls = classLoader.getURLs();
+      String path = null;
+      for( int i = 0; i < urls.length && path == null; i++ ) {
+        String tempPath = urls[ i ].getPath();    
+        if( tempPath.indexOf( "org.eclipse.rap.design.example" ) != -1
+            && tempPath.indexOf( BUNDLE_ID ) == -1 ) 
+        {
+          int indexOfBin = tempPath.indexOf( "bin" );
+          if( indexOfBin != -1 ) {            
+            String protocol = urls[ i ].getProtocol();
+            path = protocol + ":" + tempPath.substring( 0, indexOfBin );
+          }
         }
       }
+      // add design folder to classpath    
+      if( path != null ) {
+        Class clazz = URLClassLoader.class;
+        try {
+          Class[] params = new Class[] { URL.class };
+          Method method = clazz.getDeclaredMethod( "addURL", params );
+          method.setAccessible( true );
+          Object[] url = new Object[] { new URL( path ) };
+          method.invoke( classLoader, url );
+        } catch( final Throwable e ) {
+          e.printStackTrace();
+        } 
+      }
     }
-    if( result == null ) {
-      throw new RuntimeException( "Bundle not found" );
-    }
-    return result;
   }
 
   public static void createAndActivateTheme( final String path, 
