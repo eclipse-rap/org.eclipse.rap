@@ -37,15 +37,13 @@ public final class ThemeManager {
   private static final ResourceLoader STANDARD_RESOURCE_LOADER
     = new ResourceLoader()
   {
-
-      ClassLoader classLoader = getClass().getClassLoader();
-
-      public InputStream getResourceAsStream( final String resourceName )
-        throws IOException
-      {
-        return classLoader.getResourceAsStream( resourceName );
-      }
-    };
+    ClassLoader classLoader = getClass().getClassLoader();
+    public InputStream getResourceAsStream( final String resourceName )
+      throws IOException
+    {
+      return classLoader.getResourceAsStream( resourceName );
+    }
+  };
 
   /** Expected character set of JS files. */
   private static final String CHARSET = "UTF-8";
@@ -59,69 +57,10 @@ public final class ThemeManager {
     = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
-  /**
-   * This array contains all widget images needed by RAP that are not themeable.
-   * These images are registered by the ThemeManager once for every theme.
-   */
-  private static final String[] WIDGET_NOTHEME_RESOURCES = new String[]{
-    "arrows/down.gif",
-    "arrows/down_small.gif",
-    "arrows/down_tiny.gif",
-    "arrows/first.png",
-    "arrows/forward.gif",
-    "arrows/last.png",
-    "arrows/left.png",
-    "arrows/minimize.gif",
-    "arrows/next.gif",
-    "arrows/previous.gif",
-    "arrows/rewind.gif",
-    "arrows/right.png",
-    "arrows/up.gif",
-    "arrows/up_small.gif",
-    "arrows/up_tiny.gif",
-    "ctabfolder/maximize.gif",
-    "ctabfolder/minimize.gif",
-    "ctabfolder/restore.gif",
-    "ctabfolder/close.gif",
-    "ctabfolder/close_hover.gif",
-    "ctabfolder/chevron.gif",
-    "cursors/alias.gif",
-    "cursors/copy.gif",
-    "cursors/move.gif",
-    "cursors/nodrop.gif",
-    "cursors/up_arrow.cur",
-    "tree/cross.gif",
-    "tree/cross_minus.gif",
-    "tree/cross_plus.gif",
-    "tree/end.gif",
-    "tree/end_minus.gif",
-    "tree/end_plus.gif",
-    "tree/folder_open.gif",
-    "tree/folder_closed.gif",
-    "tree/line.gif",
-    "tree/minus.gif",
-    "tree/only_minus.gif",
-    "tree/only_plus.gif",
-    "tree/plus.gif",
-    "tree/start_minus.gif",
-    "tree/start_plus.gif",
-    "scale/h_line.gif",
-    "scale/v_line.gif",
-    "scale/h_thumb.gif",
-    "scale/v_thumb.gif",
-    "scale/h_marker_big.gif",
-    "scale/v_marker_big.gif",
-    "scale/h_marker_small.gif",
-    "scale/v_marker_small.gif",
-  };
+  private static final String WIDGET_THEME_PATH = "resource/widget/rap";
 
-  /** Where to load the default non-themeable images from */
-  private static final String WIDGET_RESOURCES_SRC = "resource/widget/rap/";
-
-  /** Destination path for theme resources */
-  private static final String THEME_RESOURCE_DEST = "themes";
-  static final String IMAGE_DEST_PATH = THEME_RESOURCE_DEST + "/images";
-  static final String CURSOR_DEST_PATH = THEME_RESOURCE_DEST + "/cursors";
+  static final String IMAGE_DEST_PATH = "themes/images";
+  static final String CURSOR_DEST_PATH = "themes/cursors";
   static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
   private static final String DEFAULT_HEME_NAME = "RAP Default Theme";
 
@@ -207,8 +146,8 @@ public final class ThemeManager {
       // initialize predefined theme
       StyleSheet defaultStyleSheet = defaultStyleSheetBuilder.getStyleSheet();
       defaultTheme = new Theme( DEFAULT_THEME_ID,
-                                   DEFAULT_HEME_NAME,
-                                   defaultStyleSheet );
+                                DEFAULT_HEME_NAME,
+                                defaultStyleSheet );
       defaultTheme.initialize( themeableWidgets.getAll() );
       themes.put( DEFAULT_THEME_ID, defaultTheme );
       initialized = true;
@@ -352,13 +291,11 @@ public final class ThemeManager {
    */
   public void registerResources() {
     checkInitialized();
-    log( "ThemeManager registers resources" );
-    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
-    boolean compress = !DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
     Iterator iterator = themes.keySet().iterator();
     while( iterator.hasNext() ) {
-      String themeId = ( String )iterator.next();
-      registerThemeFiles( themeId, compress );
+      String key = ( String )iterator.next();
+      Theme theme = ( Theme )themes.get( key );
+      registerThemeFiles( theme );
     }
   }
 
@@ -490,20 +427,15 @@ public final class ThemeManager {
   /**
    * Creates and registers all JavaScript theme files and images for a given
    * theme.
-   *
-   * @param themeId the theme id
-   * @param compress to compress or not the js code
    */
-  private void registerThemeFiles( final String themeId,
-                                   final boolean compress )
-  {
+  private void registerThemeFiles( final Theme theme ) {
+    boolean compress = !isDebugVariant();
     synchronized( registeredThemeFiles ) {
+      String themeId = theme.getId();
       if( !registeredThemeFiles.contains( themeId ) ) {
-        Theme theme = ( Theme )themes.get( themeId );
         String jsId = theme.getJsId();
-        registerNonThemeableWidgetImages( themeId );
-        registerThemeableWidgetImages( themeId );
-        registerThemeableWidgetCursors( themeId );
+        registerThemeableWidgetImages( theme );
+        registerThemeableWidgetCursors( theme );
         StringBuffer sb = new StringBuffer();
         sb.append( createQxThemes( theme ) );
         // TODO [rst] Optimize: create only one ThemeStoreWriter for all themes
@@ -522,71 +454,31 @@ public final class ThemeManager {
     }
   }
 
-  private void registerNonThemeableWidgetImages( final String themeId ) {
-    Theme theme = ( Theme )themes.get( themeId );
-    ClassLoader classLoader = ThemeManager.class.getClassLoader();
-    // non-themeable images
-    log( " == register non-themeable images for theme " + themeId );
-    for( int i = 0; i < WIDGET_NOTHEME_RESOURCES.length; i++ ) {
-      String imagePath = WIDGET_NOTHEME_RESOURCES[ i ];
-      String res = WIDGET_RESOURCES_SRC + imagePath;
-      InputStream inputStream = classLoader.getResourceAsStream( res );
-      if( inputStream == null ) {
-        String mesg = "Resource not found: " + res;
-        throw new IllegalArgumentException( mesg );
-      }
-      try {
-        String jsId = theme.getJsId();
-        String registerPath = getWidgetDestPath( jsId ) + "/" + imagePath;
-        IResourceManager resMgr = ResourceManager.getInstance();
-        resMgr.register( registerPath, inputStream );
-        String location = resMgr.getLocation( registerPath );
-        log( " notheme image registered @ " + location );
-      } finally {
-        try {
-          inputStream.close();
-        } catch( final IOException e ) {
-          throw new RuntimeException( e );
-        }
-      }
-    }
-  }
-
-  private void registerThemeableWidgetImages( final String themeId ) {
-    Theme theme = ( Theme )themes.get( themeId );
-    // themeable images
-    log( " == register themeable images for theme " + themeId );
+  private void registerThemeableWidgetImages( final Theme theme ) {
     QxType[] values = theme.getValuesMap().getAllValues();
     for( int i = 0; i < values.length; i++ ) {
       QxType value = values[ i ];
       if( value instanceof QxImage ) {
         QxImage image = ( QxImage )value;
-        String key = Theme.createCssKey( value );
-        String path = image.path;
-        log( " register theme image " + key + ", path=" + path );
-        InputStream inputStream;
         if( !image.none ) {
-          // TODO [rst] in case of a none image, overwrite potentially existing
-          //            image in the resource directory by registering a blank
+          InputStream inputStream;
           try {
-            inputStream = image.loader.getResourceAsStream( path );
+            inputStream = image.loader.getResourceAsStream( image.path );
           } catch( IOException e ) {
-            String message = "Failed to load resource " + path;
+            String message = "Failed to load resource " + image.path;
             throw new ThemeManagerException( message, e );
           }
           if( inputStream == null ) {
             String pattern = "Resource ''{0}'' not found for theme ''{1}''";
-            Object[] arguments = new Object[]{ path, theme.getName() };
+            Object[] arguments = new Object[]{ image.path, theme.getName() };
             String mesg = MessageFormat.format( pattern, arguments  );
             throw new IllegalArgumentException( mesg );
           }
           try {
-            String widgetDestPath = IMAGE_DEST_PATH;
-            String registerPath = widgetDestPath + "/" + key;
-            IResourceManager resMgr = ResourceManager.getInstance();
-            resMgr.register( registerPath, inputStream );
-            String location = resMgr.getLocation( registerPath );
-            log( " theme image registered @ " + location );
+            String key = Theme.createCssKey( value );
+            String registerPath = IMAGE_DEST_PATH + "/" + key;
+            IResourceManager resourceMgr = ResourceManager.getInstance();
+            resourceMgr.register( registerPath, inputStream );
           } finally {
             try {
               inputStream.close();
@@ -599,10 +491,7 @@ public final class ThemeManager {
     }
   }
 
-  private void registerThemeableWidgetCursors( final String themeId ) {
-    Theme theme = ( Theme )themes.get( themeId );
-    // themeable cursors
-    log( " == register themeable cursors for theme " + themeId );
+  private void registerThemeableWidgetCursors( final Theme theme ) {
     QxType[] values = theme.getValuesMap().getAllValues();
     for( int i = 0; i < values.length; i++ ) {
       QxType value = values[ i ];
@@ -693,10 +582,7 @@ public final class ThemeManager {
     QxTheme qxTheme = new QxTheme( jsId, theme.getName(), type, base );
     if( type == QxTheme.WIDGET || type == QxTheme.ICON ) {
       // TODO [rh] remove hard-coded resource-manager-path-prefix
-      String uri
-        = ResourceManagerImpl.RESOURCES
-        + "/"
-        + getWidgetDestPath( jsId );
+      String uri = ResourceManagerImpl.RESOURCES + "/" + WIDGET_THEME_PATH;
       qxTheme.appendUri( uri );
     } else if( type == QxTheme.APPEARANCE ) {
       Iterator iterator = customAppearances.iterator();
@@ -715,20 +601,11 @@ public final class ThemeManager {
     return qxTheme.getJsCode();
   }
 
-  /**
-   * Returns the client side widget path, i.e. the path to which qooxdoo icon
-   * resources starting with "widget/" are mapped.
-   *
-   * @param jsThemeId the theme id
-   */
-  private String getWidgetDestPath( final String jsThemeId ) {
-    int start = jsThemeId.lastIndexOf( '.' ) + 1;
-    int end = jsThemeId.length();
-    String jsThemeName = jsThemeId.substring( start, end );
-    return THEME_RESOURCE_DEST + "/" + jsThemeName + "/widgets";
+  private static boolean isDebugVariant() {
+    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
+    return DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
   }
 
-  // TODO [rst] Replace with Logger calls
   private static void log( final String mesg ) {
     if( DEBUG ) {
       System.out.println( mesg );

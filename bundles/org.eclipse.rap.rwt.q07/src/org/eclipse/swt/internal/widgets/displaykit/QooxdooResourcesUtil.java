@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
@@ -20,7 +23,6 @@ import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
-
 
 
 // TODO [rh] Should javaScript namespaces include widget and/or custom?
@@ -194,6 +196,45 @@ final class QooxdooResourcesUtil {
   private static final String TEXT_JS
     = "org/eclipse/rwt/widgets/Text.js";
 
+  private static final String[] WIDGET_IMAGES = new String[]{
+    "ctabfolder/maximize.gif",
+    "ctabfolder/minimize.gif",
+    "ctabfolder/restore.gif",
+    "ctabfolder/close.gif",
+    "ctabfolder/close_hover.gif",
+    "ctabfolder/chevron.gif",
+    "cursors/alias.gif",
+    "cursors/copy.gif",
+    "cursors/move.gif",
+    "cursors/nodrop.gif",
+    "cursors/up_arrow.cur",
+    "tree/cross.gif",
+    "tree/cross_minus.gif",
+    "tree/cross_plus.gif",
+    "tree/end.gif",
+    "tree/end_minus.gif",
+    "tree/end_plus.gif",
+    "tree/folder_open.gif",
+    "tree/folder_closed.gif",
+    "tree/line.gif",
+    "tree/minus.gif",
+    "tree/only_minus.gif",
+    "tree/only_plus.gif",
+    "tree/plus.gif",
+    "tree/start_minus.gif",
+    "tree/start_plus.gif",
+    "scale/h_line.gif",
+    "scale/v_line.gif",
+    "scale/h_thumb.gif",
+    "scale/v_thumb.gif",
+    "scale/h_marker_big.gif",
+    "scale/v_marker_big.gif",
+    "scale/h_marker_small.gif",
+    "scale/v_marker_small.gif",
+  };
+
+  private static final String WIDGET_IMAGES_PATH = "resource/widget/rap/";
+
   private QooxdooResourcesUtil() {
     // prevent intance creation
   }
@@ -204,8 +245,6 @@ final class QooxdooResourcesUtil {
     ClassLoader bufferedLoader = manager.getContextLoader();
     manager.setContextLoader( loader );
     try {
-      manager.register( "resource/static/history/historyHelper.html",
-                        HTML.CHARSET_NAME_ISO_8859_1 );
       manager.register( "resource/static/html/blank.html",
                         HTML.CHARSET_NAME_ISO_8859_1 );
       manager.register( "resource/static/image/blank.gif" );
@@ -306,6 +345,30 @@ final class QooxdooResourcesUtil {
       registerContributions();
     } finally {
       manager.setContextLoader( bufferedLoader );
+    }
+    registerWidgetImages();
+  }
+
+  private static void registerWidgetImages() {
+    ClassLoader classLoader = QooxdooResourcesUtil.class.getClassLoader();
+    for( int i = 0; i < WIDGET_IMAGES.length; i++ ) {
+      String imagePath = WIDGET_IMAGES[ i ];
+      String resourcePath = WIDGET_IMAGES_PATH + imagePath;
+      InputStream inputStream = classLoader.getResourceAsStream( resourcePath );
+      if( inputStream == null ) {
+        String mesg = "Resource not found: " + resourcePath;
+        throw new IllegalArgumentException( mesg );
+      }
+      try {
+        IResourceManager resMgr = ResourceManager.getInstance();
+        resMgr.register( resourcePath, inputStream );
+      } finally {
+        try {
+          inputStream.close();
+        } catch( final IOException e ) {
+          throw new RuntimeException( e );
+        }
+      }
     }
   }
 
