@@ -31,6 +31,7 @@ import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -65,6 +66,9 @@ final class EngineConfigWrapper implements IEngineConfig {
   //  extension point id for phase listener registration
   private static final String ID_PHASE_LISTENER
     = "org.eclipse.rap.ui.phaselistener";
+  //  extension point id for service handler registration
+  private static final String ID_SERVICE_HANDLER
+    = "org.eclipse.rap.ui.serviceHandler";
   //  extension point id for registration of resources (i.e. javascript)
   //  which needed to be loaded at page startup
   private static final String ID_RESOURCES
@@ -85,10 +89,12 @@ final class EngineConfigWrapper implements IEngineConfig {
     registerThemeableWidgets();
     registerThemes();
     registerFactories();
-    registerResources();
+    registerResources();    
     registerUICallBackServiceHandler();
     registerJSLibraryServiceHandler();
+    registerCustomServiceHandlers();
   }
+
 
   public File getClassDir() {
     return engineConfig.getClassDir();
@@ -383,5 +389,23 @@ final class EngineConfigWrapper implements IEngineConfig {
   private void registerJSLibraryServiceHandler() {
     ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID,
                                            new JSLibraryServiceHandler() );
+  }
+  
+  private void registerCustomServiceHandlers() {
+    IExtensionRegistry registry = Platform.getExtensionRegistry();
+    IExtensionPoint point = registry.getExtensionPoint( ID_SERVICE_HANDLER );
+    IConfigurationElement[] elements = point.getConfigurationElements();
+    for( int i = 0; i < elements.length; i++ ) {
+      try {
+        String id = elements[ i ].getAttribute( "id" );
+        if( id != null ) {
+          Object extObject = elements[ i ].createExecutableExtension( "class" );
+          IServiceHandler handler = ( IServiceHandler )extObject;
+          ServiceManager.registerServiceHandler( id, handler );
+        }
+      } catch( final CoreException ce ) {
+        WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
+      }
+    }
   }
 }

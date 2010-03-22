@@ -3949,5 +3949,16 @@
          </layoutSet>
       </layout>
    </extension>
+   <extension
+         point="org.eclipse.rap.ui.serviceHandler">
+      <serviceHandler
+            class="org.eclipse.rap.ui.tests.impl.ServiceHandler1"
+            id="myHandler1">
+      </serviceHandler>
+      <serviceHandler
+            class="org.eclipse.rap.ui.tests.impl.ServiceHandler2"
+            id="myHandler2">
+      </serviceHandler>
+   </extension>
    <!-- RAP IAD END -->
 </plugin>            

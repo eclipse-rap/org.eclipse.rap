@@ -14,6 +14,7 @@
    <extension-point id="themeableWidgets" name="%ExtPoint.rap.themeableWidgets" schema="schema/rap/themeableWidgets.exsd"/>
    <extension-point id="layouts" name="%ExtPoint.layouts" schema="schema/rap/layouts.exsd"/>
    <extension-point id="stackPresentations" name="%ExtPoint.configurableStackPresentation" schema="schema/rap/stackPresentations.exsd"/>
+   <extension-point id="serviceHandler" name="%ExtPoint.rap.serviceHandler" schema="schema/rap/serviceHandler.exsd"/>
         
 <!-- Workbench extension points -->
    <!-- RAP [bm] deprecated
@@ -68,7 +69,7 @@
    <extension-point id="org.eclipse.ui.views" name="%ExtPoint.views" schema="schema/views.exsd"/>
    <extension-point id="org.eclipse.ui.workingSets" name="%ExtPoint.workingSets" schema="schema/workingSets.exsd"/>
    <extension-point id="org.eclipse.ui.browserSupport" name="%ExtPoint.browserSupport" schema="schema/browserSupport.exsd"/>
-   <extension-point id="org.eclipse.ui.internalTweaklets" name="%ExtPoint.tweaklets" schema="schema/internalTweaklets.exsd"/>
+   <extension-point id="org.eclipse.ui.internalTweaklets" name="%ExtPoint.tweaklets" schema="schema/internalTweaklets.exsd"/>   
    
    <extension
          point="org.eclipse.ui.contexts">

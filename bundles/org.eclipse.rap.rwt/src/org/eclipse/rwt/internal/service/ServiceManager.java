@@ -118,6 +118,10 @@ public final class ServiceManager {
     return ( IServiceHandler )customHandlers.get( getCustomHandlerId() );
   }
   
+  public static IServiceHandler getCustomHandler( final String id ) {
+    return ( IServiceHandler )customHandlers.get( id );
+  }
+  
   //////////////////
   // helping methods
   

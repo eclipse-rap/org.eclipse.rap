@@ -25,3 +25,4 @@ Eclipse-AutoStart: true
 Plugin-Class: org.eclipse.ui.tests.TestPlugin
 Export-Package: org.eclipse.ui.tests.api
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Import-Package: javax.servlet
