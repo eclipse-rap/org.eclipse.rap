@@ -24,7 +24,8 @@ public class ThemesTestSuite {
     cssSuite.addTest( new TestSuite( BusinessTheme_Test.class, 
                                      "Business Theme" ) );
     cssSuite.addTest( new TestSuite( FancyTheme_Test.class, 
-                                    "Fancy Theme" ) );   
+                                     "Fancy Theme" ) );   
     return cssSuite;
   }
+  
 }
