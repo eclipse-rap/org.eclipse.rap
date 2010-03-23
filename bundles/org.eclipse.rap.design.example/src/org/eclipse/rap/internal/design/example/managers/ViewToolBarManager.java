@@ -24,8 +24,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 
-public class ViewToolBarManager extends ToolBarManager2
-{
+public class ViewToolBarManager extends ToolBarManager2 {
   
   private static final String STYLING_VARIANT = "viewToolbar";
   private ToolBar toolBar;
@@ -98,8 +97,7 @@ public class ViewToolBarManager extends ToolBarManager2
         // Do this before any modifications are made.
         // We assume each contribution item will contribute at least one
         // toolbar item.
-        boolean useRedraw 
-          = ( clean.size() - ( mi.length - toRemove.size() ) ) >= 3;
+        boolean useRedraw = clean.size() - ( mi.length - toRemove.size() ) >= 3;
         try {
           if( useRedraw ) {
             toolBar.setRedraw( false );
@@ -125,7 +123,7 @@ public class ViewToolBarManager extends ToolBarManager2
           int destIx = 0;         
           
           for( Iterator e = clean.iterator(); e.hasNext(); ) {
-            src = ( IContributionItem ) e.next();
+            src = ( IContributionItem )e.next();
 
             // get corresponding item in SWT widget
             if( srcIx < mi.length ) {
@@ -140,7 +138,7 @@ public class ViewToolBarManager extends ToolBarManager2
               continue;
             }
 
-            if( dest != null && dest.isSeparator()
+            if(    dest != null && dest.isSeparator()
                 && src.isSeparator() ) 
             {
               mi[ srcIx ].setData( src );
@@ -159,7 +157,7 @@ public class ViewToolBarManager extends ToolBarManager2
               tempToolBar = fakeToolbar;
             }
             // check necessary for bug 306741
-            if( destIx >= 0 && destIx < ( tempToolBar.getItemCount() - 1 ) ) {
+            if( destIx >= 0 && destIx < tempToolBar.getItemCount() - 1 ) {
               ToolItem toolItem = tempToolBar.getItem( destIx );
               toolItem.setData( src );
               toolItem.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );
@@ -180,9 +178,8 @@ public class ViewToolBarManager extends ToolBarManager2
           }
 
           setDirty( false );
-
-        // turn redraw back on if we turned it off above
         } finally {
+          // turn redraw back on if we turned it off above
           if( useRedraw ) {
             toolBar.setRedraw( true );
           }
