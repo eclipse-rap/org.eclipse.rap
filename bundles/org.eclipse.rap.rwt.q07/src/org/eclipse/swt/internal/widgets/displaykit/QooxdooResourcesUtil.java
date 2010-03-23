@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
@@ -20,8 +19,7 @@ import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.HTML;
-import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.resources.*;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
@@ -34,209 +32,135 @@ final class QooxdooResourcesUtil {
     = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
-  private static final String QX_JS
-    = "qx.js";
-  private static final String QX_DEBUG_JS
-    = "qx-debug.js";
+  private static final String QX_JS = "qx.js";
+  private static final String QX_DEBUG_JS = "qx-debug.js";
 
-  private static final String KEY_EVENT_HANDLER_PATCH
-    = "org/eclipse/rwt/KeyEventHandlerPatch.js";
-  private static final String DOM_EVENT_PATCH
-    = "org/eclipse/rwt/DomEventPatch.js";
-  private static final String SVG_JS
-    = "org/eclipse/rwt/SVG.js";
-  private static final String VML_JS
-    = "org/eclipse/rwt/VML.js";
-  private static final String GRAPHICS_UTIL_JS
-    = "org/eclipse/rwt/GraphicsUtil.js";
-  private static final String GRAPHICS_MIXIN_JS
-    = "org/eclipse/rwt/GraphicsMixin.js";
-  private static final String ROUNDED_BORDER_JS
-    = "org/eclipse/rwt/RoundedBorder.js";
-  private static final String APPLICATION_JS
-    = "org/eclipse/swt/Application.js";
-  private static final String REQUEST_JS
-    = "org/eclipse/swt/Request.js";
-  private static final String WIDGET_MANAGER_JS
-    = "org/eclipse/swt/WidgetManager.js";
-  private static final String EVENT_UTIL_JS
-    = "org/eclipse/swt/EventUtil.js";
-  private static final String KEY_EVENT_UTIL_JS
-    = "org/eclipse/rwt/KeyEventUtil.js";
-  private static final String ASYNC_KEY_EVENT_UTIL_JS
-    = "org/eclipse/rwt/AsyncKeyEventUtil.js";
-  private static final String SYNC_KEY_EVENT_UTIL_JS
-    = "org/eclipse/rwt/SyncKeyEventUtil.js";
-  private static final String TOOLTIP_JS
-    = "org/eclipse/rwt/widgets/ToolTip.js";
-  private static final String TAB_UTIL_JS
-    = "org/eclipse/swt/TabUtil.js";
-  private static final String WIDGET_UTIL_JS
-    = "org/eclipse/swt/WidgetUtil.js";
-  private static final String COMPOSITE_JS
-    = "org/eclipse/swt/widgets/Composite.js";
-  private static final String CTAB_FOLDER_JS
-    = "org/eclipse/swt/custom/CTabFolder.js";
-  private static final String CTAB_ITEM_JS
-    = "org/eclipse/swt/custom/CTabItem.js";
-  private static final String CLABEL_UTIL_JS
-    = "org/eclipse/swt/CLabelUtil.js";
-  private static final String SASH_JS
-    = "org/eclipse/swt/widgets/Sash.js";
-  private static final String COOL_ITEM_JS
-    = "org/eclipse/swt/widgets/CoolItem.js";
-  private static final String LIST_JS
-    = "org/eclipse/swt/widgets/List.js";
-  private static final String SHELL_JS
-    = "org/eclipse/swt/widgets/Shell.js";
-  private static final String TREE_JS
-    = "org/eclipse/swt/widgets/Tree.js";
-  private static final String TREE_ITEM_JS
-    = "org/eclipse/swt/widgets/TreeItem.js";
-  private static final String TREE_ITEM_UTIL_JS
-    = "org/eclipse/swt/TreeItemUtil.js";
-  private static final String TREE_COLUMN_JS
-    = "org/eclipse/swt/widgets/TreeColumn.js";
-  private static final String SCROLLED_COMPOSITE_JS
-    = "org/eclipse/swt/custom/ScrolledComposite.js";
-  private static final String SEPARATOR_JS
-    = "org/eclipse/swt/widgets/Separator.js";
-  private static final String LABEL_UTIL_JS
-    = "org/eclipse/swt/LabelUtil.js";
-  private static final String COMBO_JS
-    = "org/eclipse/swt/widgets/Combo.js";
-  private static final String GROUP_JS
-    = "org/eclipse/swt/widgets/Group.js";
-  private static final String TEXT_UTIL_JS
-    = "org/eclipse/swt/TextUtil.js";
-  private static final String SPINNER_JS
-    = "org/eclipse/swt/widgets/Spinner.js";
-  private static final String TABLE_JS
-    = "org/eclipse/swt/widgets/Table.js";
-  private static final String TABLE_COLUMN_JS
-    = "org/eclipse/swt/widgets/TableColumn.js";
-  private static final String TABLE_ITEM_JS
-    = "org/eclipse/swt/widgets/TableItem.js";
-  private static final String TABLE_ROW_JS
-    = "org/eclipse/swt/widgets/TableRow.js";
-  private static final String TABLE_CELL_TOOLTIP_JS
-    = "org/eclipse/swt/widgets/TableCellToolTip.js";
-  private static final String EXTERNALBROWSER_JS
-    = "org/eclipse/rwt/widgets/ExternalBrowser.js";
-  private static final String PROGRESS_BAR_JS
-    = "org/eclipse/swt/widgets/ProgressBar.js";
-  private static final String BROWSER_JS
-    = "org/eclipse/swt/browser/Browser.js";
-  private static final String FONT_SIZE_CALCULATION_JS
-    = "org/eclipse/swt/FontSizeCalculation.js";
-  private static final String QX_CONSTANT_CORE_JS
-    = "qx/constant/Core.js";
-  private static final String QX_CONSTANT_LAYOUT_JS
-    = "qx/constant/Layout.js";
-  private static final String QX_CONSTANT_STYLE_JS
-    = "qx/constant/Style.js";
-  private static final String SCALE_JS
-    = "org/eclipse/swt/widgets/Scale.js";
-  private static final String DATE_TIME_DATE_JS
-    = "org/eclipse/swt/widgets/DateTimeDate.js";
-  private static final String DATE_TIME_TIME_JS
-    = "org/eclipse/swt/widgets/DateTimeTime.js";
-  private static final String DATE_TIME_CALENDAR_JS
-    = "org/eclipse/swt/widgets/DateTimeCalendar.js";
-  private static final String CALENDAR_JS
-    = "org/eclipse/swt/widgets/Calendar.js";
-  private static final String EXPAND_BAR_JS
-    = "org/eclipse/swt/widgets/ExpandBar.js";
-  private static final String EXPAND_ITEM_JS
-    = "org/eclipse/swt/widgets/ExpandItem.js";
-  private static final String SLIDER_JS
-    = "org/eclipse/swt/widgets/Slider.js";
-  private static final String RADIOBUTTONUTIL_JS
-    = "org/eclipse/rwt/RadioButtonUtil.js";
-  private static final String LINK_JS
-    = "org/eclipse/swt/widgets/Link.js";
-  private static final String MULTICELLWIDGET
-    = "org/eclipse/rwt/widgets/MultiCellWidget.js";
-  private static final String BUTTON
-    = "org/eclipse/rwt/widgets/Button.js";
-  private static final String ABSTRACTBUTTON
-    = "org/eclipse/rwt/widgets/AbstractButton.js";
-  private static final String MENU
-    = "org/eclipse/rwt/widgets/Menu.js";
-  private static final String MENU_ITEM
-    = "org/eclipse/rwt/widgets/MenuItem.js";
-  private static final String TOOL_ITEM
-    = "org/eclipse/rwt/widgets/ToolItem.js";
-  private static final String TOOLSEPARATOR
-    = "org/eclipse/rwt/widgets/ToolSeparator.js";
-  private static final String TOOLBAR
-    = "org/eclipse/rwt/widgets/ToolBar.js";
-  private static final String MENUBAR
-    = "org/eclipse/rwt/widgets/MenuBar.js";
-  private static final String APPEARANCES_BASE
-    = "org/eclipse/swt/theme/AppearancesBase.js";
-  private static final String THEME_VALUES
-    = "org/eclipse/swt/theme/ThemeValues.js";
-  private static final String THEME_STORE
-    = "org/eclipse/swt/theme/ThemeStore.js";
-  private static final String THEME_BORDERS_BASE
-    = "org/eclipse/swt/theme/BordersBase.js";
-  private static final String FOCUS_INDICATOR
-    = "org/eclipse/rwt/FocusIndicator.js";
-  private static final String MENU_MANAGER
-    = "org/eclipse/rwt/MenuManager.js";
-  private static final String DND_SUPPORT
-    = "org/eclipse/rwt/DNDSupport.js";
-  private static final String TREE_DND_FEEDBACK
-    = "org/eclipse/rwt/TreeDNDFeedback.js";
-  private static final String TABLE_DND_FEEDBACK
-    = "org/eclipse/rwt/TableDNDFeedback.js";
-  private static final String CONTROL_DECORATOR_JS
-   = "org/eclipse/rwt/widgets/ControlDecorator.js";
-  private static final String TEXT_JS
-    = "org/eclipse/rwt/widgets/Text.js";
-
-  private static final String[] WIDGET_IMAGES = new String[]{
-    "ctabfolder/maximize.gif",
-    "ctabfolder/minimize.gif",
-    "ctabfolder/restore.gif",
-    "ctabfolder/close.gif",
-    "ctabfolder/close_hover.gif",
-    "ctabfolder/chevron.gif",
-    "cursors/alias.gif",
-    "cursors/copy.gif",
-    "cursors/move.gif",
-    "cursors/nodrop.gif",
-    "cursors/up_arrow.cur",
-    "tree/cross.gif",
-    "tree/cross_minus.gif",
-    "tree/cross_plus.gif",
-    "tree/end.gif",
-    "tree/end_minus.gif",
-    "tree/end_plus.gif",
-    "tree/folder_open.gif",
-    "tree/folder_closed.gif",
-    "tree/line.gif",
-    "tree/minus.gif",
-    "tree/only_minus.gif",
-    "tree/only_plus.gif",
-    "tree/plus.gif",
-    "tree/start_minus.gif",
-    "tree/start_plus.gif",
-    "scale/h_line.gif",
-    "scale/v_line.gif",
-    "scale/h_thumb.gif",
-    "scale/v_thumb.gif",
-    "scale/h_marker_big.gif",
-    "scale/v_marker_big.gif",
-    "scale/h_marker_small.gif",
-    "scale/v_marker_small.gif",
+  private static final String[] JAVASCRIPT_FILES = new String[]{
+    // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
+    // these three files are here to keep DefaultAppearanceTheme.js
+    // happy that makes heavy use of constants
+    "qx/constant/Core.js",
+    "qx/constant/Layout.js",
+    "qx/constant/Style.js",
+    
+    "org/eclipse/rwt/KeyEventHandlerPatch.js",
+    "org/eclipse/rwt/DomEventPatch.js",
+    "org/eclipse/rwt/SVG.js",
+    "org/eclipse/rwt/VML.js",
+    "org/eclipse/rwt/GraphicsUtil.js",
+    "org/eclipse/rwt/GraphicsMixin.js",
+    "org/eclipse/rwt/RoundedBorder.js",
+    "org/eclipse/swt/Application.js",
+    "org/eclipse/swt/Request.js",
+    "org/eclipse/swt/WidgetManager.js",
+    "org/eclipse/swt/EventUtil.js",
+    "org/eclipse/rwt/KeyEventUtil.js",
+    "org/eclipse/rwt/AsyncKeyEventUtil.js",
+    "org/eclipse/rwt/SyncKeyEventUtil.js",
+    "org/eclipse/rwt/widgets/ToolTip.js",
+    "org/eclipse/swt/WidgetUtil.js",
+    "org/eclipse/swt/widgets/Composite.js",
+    "org/eclipse/swt/widgets/Sash.js",
+    "org/eclipse/swt/TabUtil.js",
+    "org/eclipse/swt/custom/CTabItem.js",
+    "org/eclipse/swt/custom/CTabFolder.js",
+    "org/eclipse/swt/widgets/CoolItem.js",
+    "org/eclipse/swt/widgets/List.js",
+    "org/eclipse/swt/widgets/Shell.js",
+    "org/eclipse/swt/widgets/Tree.js",
+    "org/eclipse/swt/widgets/TreeItem.js",
+    "org/eclipse/swt/TreeItemUtil.js",
+    "org/eclipse/swt/widgets/TreeColumn.js",
+    "org/eclipse/swt/custom/ScrolledComposite.js",
+    "org/eclipse/swt/widgets/Separator.js",
+    "org/eclipse/swt/LabelUtil.js",
+    "org/eclipse/swt/widgets/Combo.js",
+    "org/eclipse/swt/widgets/Group.js",
+    "org/eclipse/swt/TextUtil.js",
+    "org/eclipse/swt/widgets/Spinner.js",
+    "org/eclipse/swt/widgets/Table.js",
+    "org/eclipse/swt/widgets/TableColumn.js",
+    "org/eclipse/swt/widgets/TableItem.js",
+    "org/eclipse/swt/widgets/TableRow.js",
+    "org/eclipse/swt/widgets/TableCellToolTip.js",
+    "org/eclipse/rwt/widgets/ExternalBrowser.js",
+    "org/eclipse/swt/browser/Browser.js",
+    "org/eclipse/swt/widgets/ProgressBar.js",
+    "org/eclipse/swt/FontSizeCalculation.js",
+    "org/eclipse/swt/CLabelUtil.js",
+    "org/eclipse/swt/widgets/Scale.js",
+    "org/eclipse/swt/widgets/DateTimeDate.js",
+    "org/eclipse/swt/widgets/DateTimeTime.js",
+    "org/eclipse/swt/widgets/DateTimeCalendar.js",
+    "org/eclipse/swt/widgets/Calendar.js",
+    "org/eclipse/swt/widgets/ExpandBar.js",
+    "org/eclipse/swt/widgets/ExpandItem.js",
+    "org/eclipse/swt/widgets/Slider.js",
+    "org/eclipse/rwt/RadioButtonUtil.js",
+    "org/eclipse/swt/widgets/Link.js",
+    "org/eclipse/rwt/widgets/MultiCellWidget.js",
+    "org/eclipse/rwt/widgets/AbstractButton.js",
+    "org/eclipse/rwt/widgets/Button.js",
+    "org/eclipse/rwt/widgets/Menu.js",
+    "org/eclipse/rwt/widgets/MenuItem.js",
+    "org/eclipse/rwt/widgets/ToolBar.js",
+    "org/eclipse/rwt/widgets/ToolItem.js",
+    "org/eclipse/rwt/widgets/ToolSeparator.js",
+    "org/eclipse/rwt/widgets/MenuBar.js",
+    "org/eclipse/swt/theme/AppearancesBase.js",
+    "org/eclipse/swt/theme/BordersBase.js",
+    "org/eclipse/swt/theme/ThemeStore.js",
+    "org/eclipse/swt/theme/ThemeValues.js",
+    "org/eclipse/rwt/FocusIndicator.js",
+    "org/eclipse/rwt/MenuManager.js",
+    "org/eclipse/rwt/DNDSupport.js",
+    "org/eclipse/rwt/TreeDNDFeedback.js",
+    "org/eclipse/rwt/TableDNDFeedback.js",
+    "org/eclipse/rwt/widgets/ControlDecorator.js",
+    "org/eclipse/rwt/widgets/Text.js"
   };
 
-  private static final String WIDGET_IMAGES_PATH = "resource/widget/rap/";
+  private static final String[] WIDGET_IMAGES = new String[]{
+    "resource/static/image/blank.gif",
+    "resource/static/image/dotted_white.gif",
+    "resource/widget/rap/ctabfolder/maximize.gif",
+    "resource/widget/rap/ctabfolder/minimize.gif",
+    "resource/widget/rap/ctabfolder/restore.gif",
+    "resource/widget/rap/ctabfolder/close.gif",
+    "resource/widget/rap/ctabfolder/close_hover.gif",
+    "resource/widget/rap/ctabfolder/chevron.gif",
+    "resource/widget/rap/cursors/alias.gif",
+    "resource/widget/rap/cursors/copy.gif",
+    "resource/widget/rap/cursors/move.gif",
+    "resource/widget/rap/cursors/nodrop.gif",
+    "resource/widget/rap/cursors/up_arrow.cur",
+    "resource/widget/rap/tree/cross.gif",
+    "resource/widget/rap/tree/cross_minus.gif",
+    "resource/widget/rap/tree/cross_plus.gif",
+    "resource/widget/rap/tree/end.gif",
+    "resource/widget/rap/tree/end_minus.gif",
+    "resource/widget/rap/tree/end_plus.gif",
+    "resource/widget/rap/tree/folder_open.gif",
+    "resource/widget/rap/tree/folder_closed.gif",
+    "resource/widget/rap/tree/line.gif",
+    "resource/widget/rap/tree/minus.gif",
+    "resource/widget/rap/tree/only_minus.gif",
+    "resource/widget/rap/tree/only_plus.gif",
+    "resource/widget/rap/tree/plus.gif",
+    "resource/widget/rap/tree/start_minus.gif",
+    "resource/widget/rap/tree/start_plus.gif",
+    "resource/widget/rap/scale/h_line.gif",
+    "resource/widget/rap/scale/v_line.gif",
+    "resource/widget/rap/scale/h_thumb.gif",
+    "resource/widget/rap/scale/v_thumb.gif",
+    "resource/widget/rap/scale/h_marker_big.gif",
+    "resource/widget/rap/scale/v_marker_big.gif",
+    "resource/widget/rap/scale/h_marker_small.gif",
+    "resource/widget/rap/scale/v_marker_small.gif",
+  };
 
   private QooxdooResourcesUtil() {
-    // prevent intance creation
+    // prevent instance creation
   }
 
   public static void registerResources() {
@@ -245,130 +169,41 @@ final class QooxdooResourcesUtil {
     ClassLoader bufferedLoader = manager.getContextLoader();
     manager.setContextLoader( loader );
     try {
+      // TODO [rst] Needed by qx.js - can we get rid of it?
       manager.register( "resource/static/html/blank.html",
                         HTML.CHARSET_NAME_ISO_8859_1 );
-      manager.register( "resource/static/image/blank.gif" );
-      manager.register( "resource/static/image/dotted_white.gif" );
-      String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
-      boolean isDebug = DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
-      if( isDebug ) {
-        register( QX_DEBUG_JS, false );
-      } else {
-        register( QX_JS, false );
-      }
-      boolean compress = !isDebug;
-
-      // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
-      //      these three files are here to keep DefaultAppearanceTheme.js
-      //      happy that makes heavy use of constants
-      register( QX_CONSTANT_CORE_JS, compress );
-      register( QX_CONSTANT_LAYOUT_JS, compress );
-      register( QX_CONSTANT_STYLE_JS, compress );
-
-      register( KEY_EVENT_HANDLER_PATCH, compress );
-      register( DOM_EVENT_PATCH, compress );
-      register( SVG_JS, compress );
-      register( VML_JS, compress );
-      register( GRAPHICS_UTIL_JS, compress );
-      register( GRAPHICS_MIXIN_JS, compress );
-      register( ROUNDED_BORDER_JS, compress );
-      register( APPLICATION_JS, compress );
-      register( REQUEST_JS, compress );
-      register( WIDGET_MANAGER_JS, compress );
-      register( EVENT_UTIL_JS, compress );
-      register( KEY_EVENT_UTIL_JS, compress );
-      register( ASYNC_KEY_EVENT_UTIL_JS, compress );
-      register( SYNC_KEY_EVENT_UTIL_JS, compress );
-      register( TOOLTIP_JS, compress );
-      register( WIDGET_UTIL_JS, compress );
-      register( COMPOSITE_JS, compress );
-      register( SASH_JS, compress );
-      register( TAB_UTIL_JS, compress );
-      register( CTAB_ITEM_JS, compress );
-      register( CTAB_FOLDER_JS, compress );
-      register( COOL_ITEM_JS, compress );
-      register( LIST_JS, compress );
-      register( SHELL_JS, compress );
-      register( TREE_JS, compress );
-      register( TREE_ITEM_JS, compress );
-      register( TREE_ITEM_UTIL_JS, compress );
-      register( TREE_COLUMN_JS, compress );
-      register( SCROLLED_COMPOSITE_JS, compress );
-      register( SEPARATOR_JS, compress );
-      register( LABEL_UTIL_JS, compress );
-      register( COMBO_JS, compress );
-      register( GROUP_JS, compress );
-      register( TEXT_UTIL_JS, compress );
-      register( SPINNER_JS, compress );
-      register( TABLE_JS, compress );
-      register( TABLE_COLUMN_JS, compress );
-      register( TABLE_ITEM_JS, compress );
-      register( TABLE_ROW_JS, compress );
-      register( TABLE_CELL_TOOLTIP_JS, compress );
-      register( EXTERNALBROWSER_JS, compress );
-      register( BROWSER_JS, compress );
-      register( PROGRESS_BAR_JS, compress );
-      register( FONT_SIZE_CALCULATION_JS, compress );
-      register( CLABEL_UTIL_JS, compress );
-      register( SCALE_JS, compress );
-      register( DATE_TIME_DATE_JS, compress );
-      register( DATE_TIME_TIME_JS, compress );
-      register( DATE_TIME_CALENDAR_JS, compress );
-      register( CALENDAR_JS, compress );
-      register( EXPAND_BAR_JS, compress );
-      register( EXPAND_ITEM_JS, compress );
-      register( SLIDER_JS, compress );
-      register( RADIOBUTTONUTIL_JS, compress );
-      register( LINK_JS, compress );
-      register( MULTICELLWIDGET, compress );
-      register( ABSTRACTBUTTON, compress );
-      register( BUTTON, compress );
-      register( MENU, compress );
-      register( MENU_ITEM, compress );
-      register( TOOLBAR, compress );
-      register( TOOL_ITEM, compress );
-      register( TOOLSEPARATOR, compress );
-      register( MENUBAR, compress );
-      register( APPEARANCES_BASE, compress );
-      register( THEME_BORDERS_BASE, compress );
-      register( THEME_STORE, compress );
-      register( THEME_VALUES, compress );
-      register( FOCUS_INDICATOR, compress );
-      register( MENU_MANAGER, compress );
-      register( DND_SUPPORT, compress );
-      register( TREE_DND_FEEDBACK, compress );
-      register( TABLE_DND_FEEDBACK, compress );
-      register( CONTROL_DECORATOR_JS, compress );
-      register( TEXT_JS, compress );
-
-      // register contributions
-      registerContributions();
+      registerJavascriptFiles();
     } finally {
       manager.setContextLoader( bufferedLoader );
     }
     registerWidgetImages();
+    registerContributions();
+  }
+
+  private static void registerJavascriptFiles() {
+    if( isDebug() ) {
+      register( QX_DEBUG_JS, false );
+    } else {
+      register( QX_JS, false );
+    }
+    boolean compress = !isDebug();
+    for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
+      String resource = JAVASCRIPT_FILES[ i ];
+      register( resource, compress );
+    }
   }
 
   private static void registerWidgetImages() {
+    IResourceManager manager = ResourceManager.getInstance();
     ClassLoader classLoader = QooxdooResourcesUtil.class.getClassLoader();
     for( int i = 0; i < WIDGET_IMAGES.length; i++ ) {
-      String imagePath = WIDGET_IMAGES[ i ];
-      String resourcePath = WIDGET_IMAGES_PATH + imagePath;
+      String resourcePath = WIDGET_IMAGES[ i ];
       InputStream inputStream = classLoader.getResourceAsStream( resourcePath );
       if( inputStream == null ) {
         String mesg = "Resource not found: " + resourcePath;
         throw new IllegalArgumentException( mesg );
       }
-      try {
-        IResourceManager resMgr = ResourceManager.getInstance();
-        resMgr.register( resourcePath, inputStream );
-      } finally {
-        try {
-          inputStream.close();
-        } catch( final IOException e ) {
-          throw new RuntimeException( e );
-        }
-      }
+      manager.register( resourcePath, inputStream );
     }
   }
 
@@ -414,5 +249,11 @@ final class QooxdooResourcesUtil {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
     responseWriter.useJSLibrary( libraryName );
+  }
+
+  private static boolean isDebug() {
+    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
+    boolean isDebug = DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
+    return isDebug;
   }
 }
