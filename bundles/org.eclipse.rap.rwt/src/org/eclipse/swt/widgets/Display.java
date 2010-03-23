@@ -1811,6 +1811,21 @@ public class Display extends Device implements Adaptable {
   }
 
   /**
+   * Causes the system hardware to emit a short sound
+   * (if it supports this capability).
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void beep() {
+    checkDevice();
+  }
+
+  /**
    * Returns the application name.
    *
    * @return the application name
