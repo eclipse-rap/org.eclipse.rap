@@ -129,33 +129,18 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
   private static void checkRequest() {
     if( isSessionRestart() ) {
-      clearSession( getRequest().getSession() );
+      clearSessionStore();
     }
   }
 
-  private static void clearSession( final HttpSession session ) {
-    Enumeration keys = session.getAttributeNames();
-    List keyBuffer = new ArrayList();
-    while( keys.hasMoreElements() ) {
-      keyBuffer.add( keys.nextElement() );
-    }
-    Object[] attributeNames = keyBuffer.toArray();
-    for( int i = 0; i < attributeNames.length; i++ ) {
-      // ensure that the session store instance lives as long as the
-      // underlying session to avoid problems with request synchronization
-      String idSessionStore = SessionStoreImpl.ID_SESSION_STORE;
-      if( !idSessionStore.equals( attributeNames[ i ] ) ) {
-        session.removeAttribute( ( String )attributeNames[ i ] );
-      } else {
-        // clear attributes of session store to enable new startup
-        SessionStoreImpl sessionStore
-          = ( SessionStoreImpl )session.getAttribute( idSessionStore );
-        sessionStore.valueUnbound( null );
-        // reinitialize session store state
-        sessionStore.valueBound( null );
-        sessionStore.setAttribute( SessionSingletonBase.LOCK, new Object() );
-      }
-    }
+  private static void clearSessionStore() {
+    SessionStoreImpl sessionStore
+      = ( SessionStoreImpl )ContextProvider.getSession();
+    // clear attributes of session store to enable new startup
+    sessionStore.valueUnbound( null );
+    // reinitialize session store state
+    sessionStore.valueBound( null );
+    sessionStore.setAttribute( SessionSingletonBase.LOCK, new Object() );
   }
 
   public static void writeOutput() throws IOException {

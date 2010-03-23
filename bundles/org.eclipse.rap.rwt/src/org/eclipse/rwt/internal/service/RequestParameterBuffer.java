@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
+import org.eclipse.rwt.service.ISessionStore;
 
 
 /**
@@ -37,8 +38,8 @@ final class RequestParameterBuffer {
     // Workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=265008
     if( getBufferedParameters() == null ) {
       Map buffer = new HashMap( parameters );
-      HttpSession session = ContextProvider.getRequest().getSession();
-      session.setAttribute( BUFFER, buffer );
+      ISessionStore sessionStore = ContextProvider.getSession();
+      sessionStore.setAttribute( BUFFER, buffer );
     }      
   }
 
@@ -52,7 +53,6 @@ final class RequestParameterBuffer {
    */
   static void merge() {
     HttpServletRequest request = ContextProvider.getRequest();
-    HttpSession session = request.getSession();
     Map bufferedParams = getBufferedParameters();
     if( bufferedParams != null ) {
       WrappedRequest wrappedRequest = new WrappedRequest( request, 
@@ -60,13 +60,11 @@ final class RequestParameterBuffer {
       ServiceContext context = ContextProvider.getContext();
       context.setRequest( wrappedRequest );
     }
-    session.removeAttribute( BUFFER );
+    ContextProvider.getSession().removeAttribute( BUFFER );
   }
   
   static Map getBufferedParameters() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    HttpSession session = request.getSession();
-    return ( Map )session.getAttribute( BUFFER );
+    return ( Map )ContextProvider.getSession().getAttribute( BUFFER );
   }
 
   private RequestParameterBuffer() {

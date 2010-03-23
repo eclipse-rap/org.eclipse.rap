@@ -472,14 +472,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     }
   }
 
-  public static ServiceContext getFakeContext( final HttpSession session ) {
-    String id = SessionStoreImpl.ID_SESSION_STORE;
-    ISessionStore sessionStore = ( ISessionStore )session.getAttribute( id );
-    return getFakeContext( sessionStore );
-  }
-
-  public static ServiceContext getFakeContext( final ISessionStore store )
-  {
+  public static ServiceContext getFakeContext( final ISessionStore store ) {
     DummyRequest request = new DummyRequest( store.getHttpSession() );
     DummyResponse response = new DummyResponse();
     return new ServiceContext( request, response, store );

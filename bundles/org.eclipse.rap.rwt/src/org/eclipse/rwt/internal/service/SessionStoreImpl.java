@@ -24,8 +24,7 @@ import org.eclipse.rwt.service.*;
 public final class SessionStoreImpl 
   implements ISessionStore, HttpSessionBindingListener 
 {
-  public static final String ID_SESSION_STORE
-    = SessionStoreImpl.class.getName();
+  static final String ID_SESSION_STORE = SessionStoreImpl.class.getName();
   
   private final Map attributes;
   private final Set listeners;
@@ -40,7 +39,7 @@ public final class SessionStoreImpl
     ParamCheck.notNull( session, "session" );
     attributes = new HashMap();
     listeners = new HashSet();
-    this.id = session.getId();
+    id = session.getId();
     this.session = session;
     this.session.setAttribute( ID_SESSION_STORE, this );
     bound = true;

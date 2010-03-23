@@ -102,7 +102,8 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     // set up session-store and http-session
     sessionStore.setAttribute( SESSION_STORE_ATTRIBUTE, new Object() );
     HttpSession httpSession = sessionStore.getHttpSession();
-    httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, new Object() );
+    Object httpSessionAttribute = new Object();
+    httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, httpSessionAttribute );
     // fake required environment settings
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
     Fixture.fakeResponseWriter();
@@ -113,9 +114,10 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     // run life cycle
     new LifeCycleServiceHandler().service();
     assertNull( sessionStore.getAttribute( SESSION_STORE_ATTRIBUTE ) );
-    assertNull( httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
+    assertSame( httpSessionAttribute,
+                httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
   }
-
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
