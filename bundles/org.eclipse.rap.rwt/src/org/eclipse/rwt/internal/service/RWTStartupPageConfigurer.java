@@ -225,10 +225,6 @@ public final class RWTStartupPageConfigurer
     BrandingUtil.replacePlaceholder( template,
                                      StartupPageTemplateHolder.VAR_STARTUP,
                                      encodedEntryPoint );
-    String script = BrandingUtil.exitMessageScript( branding );
-    BrandingUtil.replacePlaceholder( template,
-                                     StartupPageTemplateHolder.VAR_EXIT_CONFIRMATION,
-                                     script );
     String noScriptWarning = RWTMessages.getMessage( "RWT_NoScriptWarning" );
     BrandingUtil.replacePlaceholder( template, 
                                      StartupPageTemplateHolder.VAR_NO_SCRIPT_MESSAGE, 

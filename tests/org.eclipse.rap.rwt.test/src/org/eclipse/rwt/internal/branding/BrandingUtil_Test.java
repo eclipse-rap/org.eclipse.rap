@@ -136,22 +136,6 @@ public class BrandingUtil_Test extends TestCase {
       + "<meta name=\"value\" />\n";
   }
 
-  public void testExitMessageScript() {
-    String script;
-    TestBranding branding = new TestBranding();
-    assertEquals( "", BrandingUtil.exitMessageScript( branding ) );
-    branding.exitConfMessage = "";
-    assertEquals( "", BrandingUtil.exitMessageScript( branding ) );
-    branding.exitConfMessage = "want to exit?";
-    assertEquals( "", BrandingUtil.exitMessageScript( branding ) );
-    branding.showExitConf = true;
-    script = BrandingUtil.exitMessageScript( branding );
-    assertTrue( script.indexOf( "want to exit?" ) != -1 );
-    branding.exitConfMessage = "\"\n";
-    script = BrandingUtil.exitMessageScript( branding );
-    assertEquals( "app.setExitConfirmation( \"\\\"\\n\" );", script );
-  }
-
   public void testGetCurrentBrandingId1() {
     BrandingUtil.findBranding();
     String currentBrandingId =  BrandingUtil.getCurrentBrandingId();

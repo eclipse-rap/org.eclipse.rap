@@ -28,7 +28,6 @@ public final class StartupPageTemplateHolder {
   private final static String TOKEN_TITLE = "title";
   private final static String TOKEN_HEADERS = "headers";
   private final static String TOKEN_STARTUP = "startup";
-  private final static String TOKEN_EXIT_CONFIRMATION = "exitConfirmation";
   private final static String TOKEN_NO_SCRIPT_MESSAGE = "noScriptMessage";
 
   public final static Variable VAR_BACKGROUND_IMAGE
@@ -49,8 +48,6 @@ public final class StartupPageTemplateHolder {
     = new Variable( TOKEN_HEADERS );
   public final static Variable VAR_STARTUP
     = new Variable( TOKEN_STARTUP );
-  public final static Variable VAR_EXIT_CONFIRMATION
-    = new Variable( TOKEN_EXIT_CONFIRMATION );
   public final static Variable VAR_NO_SCRIPT_MESSAGE
     = new Variable( TOKEN_NO_SCRIPT_MESSAGE );
 
@@ -113,7 +110,6 @@ public final class StartupPageTemplateHolder {
            || nextToken.equals( TOKEN_TITLE.toString() )
            || nextToken.equals( TOKEN_HEADERS.toString() )
            || nextToken.equals( TOKEN_STARTUP.toString() )
-           || nextToken.equals( TOKEN_EXIT_CONFIRMATION.toString() )
            || nextToken.equals( TOKEN_NO_SCRIPT_MESSAGE.toString() );
   }
 

@@ -223,8 +223,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldExitConfirmation = adapter.getPreserved( PROP_EXIT_CONFIRMATION );
     boolean hasChanged = exitConfirmation == null
-                         ? oldExitConfirmation != null
-                         : !exitConfirmation.equals( oldExitConfirmation );
+                       ? oldExitConfirmation != null
+                       : !exitConfirmation.equals( oldExitConfirmation );
     if( hasChanged ) {
       String exitConfirmationStr = exitConfirmation == null
                                    ? "null"

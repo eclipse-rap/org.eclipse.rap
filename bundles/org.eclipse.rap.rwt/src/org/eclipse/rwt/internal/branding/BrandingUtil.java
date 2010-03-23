@@ -16,7 +16,6 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.URLHelper;
 
 
@@ -47,18 +46,6 @@ public final class BrandingUtil {
     return buffer.toString();
   }
   
-  public static String exitMessageScript( final AbstractBranding branding ) {
-    String result = "";
-    if( branding.showExitConfirmation() ) {
-      String exitMessage = branding.getExitConfirmationText();
-      if( exitMessage != null && exitMessage != "" ) {
-        exitMessage = escapeString( exitMessage );
-        result = "app.setExitConfirmation( \"" + exitMessage + "\" );";
-      }
-    }
-    return result;
-  }
-
   public static AbstractBranding findBranding() {
     HttpServletRequest request = ContextProvider.getRequest();
     String servletName = URLHelper.getSerlvetName();
@@ -122,11 +109,6 @@ public final class BrandingUtil {
     }
     buffer.append( "/>" );
     return buffer.toString();
-  }
-
-  private static String escapeString( final String input ) {
-    String result = EncodingUtil.escapeDoubleQuoted( input );
-    return EncodingUtil.replaceNewLines( result );
   }
 
   private BrandingUtil() {
