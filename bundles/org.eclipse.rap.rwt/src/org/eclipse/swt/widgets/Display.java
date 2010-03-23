@@ -124,6 +124,10 @@ public class Display extends Device implements Adaptable {
   private final static String AVAILABLE_HEIGHT = "w4t_height";
   private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
+  private static final String APP_NAME
+    = Display.class.getName() + "#appName";
+  private static final String APP_VERSION
+    = Display.class.getName() + "#appVersion";
 
 
   /* Package Name */
@@ -176,9 +180,6 @@ public class Display extends Device implements Adaptable {
       && RWTLifeCycle.getUIThreadHolder().getThread() != null
       && Thread.currentThread() == RWTLifeCycle.getUIThreadHolder().getThread();
   }
-
-  private static String appName = "RAP";
-  private static String appVersion = "";
 
   private final List shells;
   private final Thread thread;
@@ -1819,7 +1820,8 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static String getAppName() {
-    return appName;
+    ISessionStore session = ContextProvider.getSession();
+    return ( String )session.getAttribute( APP_NAME );
   }
 
   /**
@@ -1832,7 +1834,8 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static String getAppVersion() {
-    return appVersion;
+    ISessionStore session = ContextProvider.getSession();
+    return ( String )session.getAttribute( APP_VERSION );
   }
 
   /**
@@ -1846,7 +1849,8 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static void setAppName( final String name ) {
-    appName = name;
+    ISessionStore session = ContextProvider.getSession();
+    session.setAttribute( APP_NAME, name );
   }
 
   /**
@@ -1857,7 +1861,8 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static void setAppVersion( final String version ) {
-    appVersion = version;
+    ISessionStore session = ContextProvider.getSession();
+    session.setAttribute( APP_VERSION, version );
   }
 
   /////////////////////

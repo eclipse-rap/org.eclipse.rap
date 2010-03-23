@@ -1107,7 +1107,7 @@ public class Display_Test extends TestCase {
   }
 
   public void testAppName() {
-    assertEquals( "RAP", Display.getAppName() );
+    assertNull( Display.getAppName() );
     Display.setAppName( "App name" );
     assertEquals( "App name", Display.getAppName() );
     Display.setAppName( null );
@@ -1115,7 +1115,7 @@ public class Display_Test extends TestCase {
   }
 
   public void testAppVersion() {
-    assertEquals( "", Display.getAppVersion() );
+    assertNull( Display.getAppVersion() );
     Display.setAppVersion( "v1.3" );
     assertEquals( "v1.3", Display.getAppVersion() );
     Display.setAppVersion( null );
