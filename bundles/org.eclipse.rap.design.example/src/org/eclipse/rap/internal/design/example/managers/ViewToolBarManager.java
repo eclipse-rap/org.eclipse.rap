@@ -158,9 +158,12 @@ public class ViewToolBarManager extends ToolBarManager2
               src.fill( fakeToolbar, destIx );
               tempToolBar = fakeToolbar;
             }
-            ToolItem toolItem = tempToolBar.getItem( destIx );
-            toolItem.setData( src );
-            toolItem.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );  
+            // check necessary for bug 306741
+            if( destIx >= 0 && destIx < ( tempToolBar.getItemCount() - 1 ) ) {
+              ToolItem toolItem = tempToolBar.getItem( destIx );
+              toolItem.setData( src );
+              toolItem.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );
+            }
           }
 
           // remove any old tool items not accounted for
