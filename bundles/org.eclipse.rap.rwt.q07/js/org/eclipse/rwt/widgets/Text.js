@@ -93,15 +93,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
           var oldValue = this.getValue();
           // NOTE [tb] : When pasting strings, this might not always 
           //             behave like SWT. There is no reliable fix for that.
+          var position = this.getSelectionStart();
           if( oldValue.length == ( value.length - 1 ) ) {
             // The user added one character, undo.
-            var position = this.getSelectionStart();
             this._inputElement.value = oldValue;
             this.setSelectionStart( position - 1 );
             this.setSelectionLength( 0 );
           } else if( value.length >= oldValue.length && value != oldValue) {
             // The user pasted a string, shorten:
-            this._inputElement.value = value.slice( 0, this.getMaxLength() );
+            this._inputElement.value = value.slice( 0, this.getMaxLength() );            
+            this.setSelectionStart( Math.min( position, this.getMaxLength() ) );
+            this.setSelectionLength( 0 );
           }
           if( this._inputElement.value == oldValue ) {
             fireEvents = false;
@@ -139,6 +141,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this._firstInputFixApplied = false;
       this._applyElement( this.getElement(), null );
       this._afterAppear();
+      org.eclipse.swt.TextUtil._updateLineHeight( this );
       this._postApply();
       this._applyFocused( this.getFocused() );
       this.setSelectionStart( selectionStart );
