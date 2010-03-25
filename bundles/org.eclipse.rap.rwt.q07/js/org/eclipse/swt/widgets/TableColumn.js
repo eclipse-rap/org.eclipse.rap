@@ -182,7 +182,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
             || this.getLeft() > this._initialLeft + 1 ) 
         {
           this._wasResizeOrMoveEvent = true;
-          var pageLeft = this.getElement().getBoundingClientRect().left;
+          // Fix for bugzilla 306842
+          var pageLeft = Math.round( this.getElement().getBoundingClientRect().left );
           this._sendMoved( this.getLeft() + evt.getPageX() - pageLeft );
         } else {
           this.setLeft( this._initialLeft );
