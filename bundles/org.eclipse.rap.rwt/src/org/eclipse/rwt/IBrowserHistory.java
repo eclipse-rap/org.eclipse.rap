@@ -14,13 +14,16 @@ import org.eclipse.rwt.events.BrowserHistoryListener;
 
 /**
  * <p>
- * This interface rovides methods to use the browser's history for navigating
+ * This interface provides methods to use the browser's history for navigating
  * within the application. It is possible to create a history entry at the top
  * of the history stack and to handle a navigation change event.
  * </p>
  * <p>
  * Note that the browser history exists once per session, so using the
  * {@link IBrowserHistory} is only possible within the session context.
+ * </p>
+ * <p>
+ * This interface is not intended to be implemented by clients.
  * </p>
  *
  * @since 1.3
