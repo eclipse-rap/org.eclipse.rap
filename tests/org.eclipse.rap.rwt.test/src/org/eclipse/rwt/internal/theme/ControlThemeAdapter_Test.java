@@ -45,7 +45,6 @@ public class ControlThemeAdapter_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    ThemeManager.getInstance().reset();
     Fixture.tearDown();
   }
 }

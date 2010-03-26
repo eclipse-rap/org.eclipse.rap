@@ -105,8 +105,13 @@ public class Fixture {
     deregisterAdapterFactories();
     AdapterFactoryRegistry.clear();
   
-    // Keep the ThemeManager initialized to speed up the TestSuite
-  
+    // Keep the ThemeManager instance alive to speed up the TestSuite,
+    // but reset it if any custom themes have been registered
+    ThemeManager themeManager = ThemeManager.getInstance();
+    if( themeManager.getRegisteredThemeIds().length != 1 ) {
+      ThemeManager.resetInstance();
+    }
+
     // clear Graphics resources
     ResourceFactory.clear();
   

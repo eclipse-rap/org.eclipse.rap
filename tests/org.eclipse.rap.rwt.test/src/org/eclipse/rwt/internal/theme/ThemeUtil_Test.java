@@ -22,11 +22,12 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 public class ThemeUtil_Test extends TestCase {
 
   public void testSetCurrentThemeId() throws Exception {
+    ThemeManager.resetInstance();
     ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme theme = new Theme( "custom.id", "Custom Theme", styleSheet );
     manager.registerTheme( theme );
+    manager.initialize();
     ThemeUtil.setCurrentThemeId( "custom.id" );
     assertEquals( "custom.id", ThemeUtil.getCurrentThemeId() );
   }
@@ -49,24 +50,26 @@ public class ThemeUtil_Test extends TestCase {
   }
 
   public void testGetTheme() throws Exception {
+    ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
+    Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
+    themeManager.registerTheme( customTheme );
     themeManager.initialize();
     assertNotNull( ThemeUtil.getTheme() );
     assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
-    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
-    Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
-    themeManager.registerTheme( customTheme );
     ThemeUtil.setCurrentThemeId( "custom.id" );
     assertNotSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
-    assertEquals( customTheme, ThemeUtil.getTheme() );
+    assertSame( customTheme, ThemeUtil.getTheme() );
   }
 
   public void testGetCssValue() throws IOException {
+    ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
     themeManager.registerTheme( customTheme );
+    themeManager.initialize();
     ThemeUtil.setCurrentThemeId( "custom.id" );
     SimpleSelector selector = new SimpleSelector( new String[] { ".special" } );
     QxType cssValue = ThemeUtil.getCssValue( "Button", "color", selector );
@@ -79,7 +82,6 @@ public class ThemeUtil_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    ThemeManager.getInstance().reset();
     Fixture.tearDown();
   }
 }

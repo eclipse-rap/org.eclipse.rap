@@ -23,14 +23,11 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ShellThemeAdapter_Test extends TestCase {
 
-
   public void testPlainShell() {
     Color defFgColor = Graphics.getColor( 0, 0, 0 );
     Color defBgColor = Graphics.getColor( 248, 248, 255 );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
     ShellThemeAdapter themeAdapter
       = ( ShellThemeAdapter )shell.getAdapter( IThemeAdapter.class );
     assertEquals( 1, themeAdapter.getBorderWidth( shell ) );
@@ -56,7 +53,6 @@ public class ShellThemeAdapter_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    ThemeManager.getInstance().reset();
     Fixture.tearDown();
   }
 }

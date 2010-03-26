@@ -81,9 +81,10 @@ public final class ThemeTestUtil {
     ByteArrayInputStream inStream = new ByteArrayInputStream( buf );
     StyleSheet styleSheet
       = CssFileReader.readStyleSheet( inStream, cssFileName, loader );
+    ThemeManager.resetInstance();
     ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
     Theme theme = new Theme( themeId, "Custom Theme", styleSheet );
     manager.registerTheme( theme );
+    manager.initialize();
   }
 }

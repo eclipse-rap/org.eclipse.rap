@@ -36,11 +36,12 @@ public class AbstractThemeAdapter_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     CustomWidget custom = new CustomWidget( shell, SWT.NONE );
-    ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme theme = new Theme( "customId", "Custom Theme", styleSheet );
+    ThemeManager.resetInstance();
+    ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.registerTheme( theme );
+    themeManager.initialize();
     AbstractThemeAdapter adapter = new AbstractThemeAdapter() {
 
       protected void configureMatcher( final WidgetMatcher matcher ) {
@@ -64,6 +65,7 @@ public class AbstractThemeAdapter_Test extends TestCase {
     int customBorderWidth
       = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
     assertTrue( defaultBorderWidth == customBorderWidth );
+    ThemeManager.resetInstance();
   }
 
   protected void setUp() throws Exception {
@@ -72,7 +74,6 @@ public class AbstractThemeAdapter_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    ThemeManager.getInstance().reset();
     Fixture.tearDown();
   }
 }

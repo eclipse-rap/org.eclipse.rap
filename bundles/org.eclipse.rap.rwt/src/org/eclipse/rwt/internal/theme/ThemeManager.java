@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class ThemeManager {
 
-
   private static final ResourceLoader STANDARD_RESOURCE_LOADER
     = new ResourceLoader()
   {
@@ -62,7 +61,7 @@ public final class ThemeManager {
   static final String IMAGE_DEST_PATH = "themes/images";
   static final String CURSOR_DEST_PATH = "themes/cursors";
   static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
-  private static final String DEFAULT_HEME_NAME = "RAP Default Theme";
+  private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
 
   private static final Class[] THEMEABLE_WIDGETS = new Class[]{
     org.eclipse.swt.widgets.Widget.class,
@@ -101,17 +100,20 @@ public final class ThemeManager {
   private final Map themes;
   private final Set registeredThemeFiles;
   private boolean initialized;
+  private boolean widgetsInitialized;
   private Theme defaultTheme;
   private ThemeableWidgetHolder themeableWidgets;
   private StyleSheetBuilder defaultStyleSheetBuilder;
   private final CssElementHolder registeredCssElements;
 
+
   private ThemeManager() {
     // prevent instantiation from outside
     initialized = false;
+    widgetsInitialized = false;
     themeableWidgets = new ThemeableWidgetHolder();
     customAppearances = new HashSet();
-    themes = new LinkedHashMap();
+    themes = new HashMap();
     registeredThemeFiles = new HashSet();
     registeredCssElements = new CssElementHolder();
     defaultStyleSheetBuilder = new StyleSheetBuilder();
@@ -119,8 +121,6 @@ public final class ThemeManager {
 
   /**
    * Returns the sole instance of the ThemeManager.
-   *
-   * @return the ThemeManager instance
    */
   public static ThemeManager getInstance() {
     if( instance == null ) {
@@ -130,52 +130,47 @@ public final class ThemeManager {
   }
 
   /**
+   * Clears the current ThemeManager instance, forcing a subsequent getInstance
+   * call to create a new instance.
+   */
+  public static void resetInstance() {
+    instance = null;
+  }
+
+  /**
    * Initializes the ThemeManager. Theming-relevant files are loaded for all
    * themeable widgets, resources are registered. If the ThemeManager has
    * already been initialized, no action is taken.
    */
   public void initialize() {
-    log( "Start ThemeManager initialization" );
     if( !initialized ) {
-      addDefaultThemableWidgets();
-      // initialize themeable widgets
-      ThemeableWidget[] widgets = themeableWidgets.getAll();
-      for( int i = 0; i < widgets.length; i++ ) {
-        processThemeableWidget( widgets[ i ] );
+      initializeThemeableWidgets();
+      ensureDefaultTheme();
+      Collection allThemes = themes.values();
+      Iterator iterator = allThemes.iterator();
+      ThemeableWidget[] allThemeableWidgets = themeableWidgets.getAll();
+      while( iterator.hasNext() ) {
+        Theme theme = ( Theme )iterator.next();
+        theme.initialize( allThemeableWidgets );
       }
-      // initialize predefined theme
-      StyleSheet defaultStyleSheet = defaultStyleSheetBuilder.getStyleSheet();
-      defaultTheme = new Theme( DEFAULT_THEME_ID,
-                                DEFAULT_HEME_NAME,
-                                defaultStyleSheet );
-      defaultTheme.initialize( themeableWidgets.getAll() );
-      themes.put( DEFAULT_THEME_ID, defaultTheme );
       initialized = true;
     }
   }
 
-  /**
-   * Resets the ThemeManager. All registered themes and themeable widgets are
-   * de-registered. If the ThemeManager is not initialized, nothing happens.
-   * After this method has been called the ThemeManager is no longer
-   * initialized.
-   */
-  public void reset() {
-    if( initialized ) {
-      themeableWidgets = new ThemeableWidgetHolder();
-      customAppearances.clear();
-      themes.clear();
-      registeredCssElements.clear();
-      defaultStyleSheetBuilder = new StyleSheetBuilder();
-      defaultTheme = null;
-      initialized = false;
-      log( "ThemeManager reset" );
+  public void initializeThemeableWidgets() {
+    if( !widgetsInitialized ) {
+      addDefaultThemableWidgets();
+      ThemeableWidget[] widgets = themeableWidgets.getAll();
+      for( int i = 0; i < widgets.length; i++ ) {
+        processThemeableWidget( widgets[ i ] );
+      }
+      widgetsInitialized = true;
     }
   }
 
   /**
    * Adds a custom widget to the list of themeable widgets. Note that this
-   * method must be called <em>before</em> initializing the ThemeManager.
+   * method must be called before <code>initialize</code>.
    *
    * @param widget the themeable widget to add, must not be <code>null</code>
    * @param loader the resource loader used to load theme resources like theme
@@ -207,17 +202,28 @@ public final class ThemeManager {
     themeableWidgets.add( new ThemeableWidget( widget, loader ) );
   }
 
+  public void ensureDefaultTheme() {
+    if( defaultTheme == null ) {
+      StyleSheet defaultStyleSheet = defaultStyleSheetBuilder.getStyleSheet();
+      defaultTheme = new Theme( DEFAULT_THEME_ID,
+                                DEFAULT_THEME_NAME,
+                                defaultStyleSheet );
+      themes.put( DEFAULT_THEME_ID, defaultTheme );
+    }
+  }
+
   /**
-   * Registers a theme. Note that <code>initialize()</code> must be called
-   * first.
+   * Registers a theme. Must be called before <code>initialize()</code>.
    *
    * @param theme the theme to register
-   * @throws IllegalStateException if not initialized
+   * @throws IllegalStateException if already initialized
    * @throws IllegalArgumentException if a theme with the same id is already
    *           registered
    */
   public void registerTheme( final Theme theme ) {
-    checkInitialized();
+    if( initialized ) {
+      throw new IllegalStateException( "ThemeManager is already initialized" );
+    }
     String id = theme.getId();
     if( themes.containsKey( id ) ) {
       String pattern = "Theme with id ''{0}'' exists already";
@@ -225,7 +231,6 @@ public final class ThemeManager {
       String msg = MessageFormat.format( pattern, arguments );
       throw new IllegalArgumentException( msg );
     }
-    theme.initialize( themeableWidgets.getAll() );
     themes.put( id, theme );
   }
 
@@ -235,10 +240,8 @@ public final class ThemeManager {
    * @param themeId the id to check for
    * @return <code>true</code> if a theme has been registered with the given
    *         id
-   * @throws IllegalStateException if not initialized
    */
   public boolean hasTheme( final String themeId ) {
-    checkInitialized();
     return themes.containsKey( themeId );
   }
 
@@ -248,10 +251,8 @@ public final class ThemeManager {
    * @param themeId the id of the theme to retrieve
    * @return the theme registered with the given id or <code>null</code> if
    *         there is no theme registered with this id
-   * @throws IllegalStateException if not initialized
    */
   public Theme getTheme( final String themeId ) {
-    checkInitialized();
     Theme result = null;
     if( themes.containsKey( themeId ) ) {
       result = ( Theme )themes.get( themeId );
@@ -264,10 +265,8 @@ public final class ThemeManager {
    *
    * @return an array that contains the ids of all registered themes, never
    *         <code>null</code>
-   * @throws IllegalStateException if not initialized
    */
   public String[] getRegisteredThemeIds() {
-    checkInitialized();
     String[] result = new String[ themes.size() ];
     return ( String[] )themes.keySet().toArray( result );
   }
@@ -276,10 +275,8 @@ public final class ThemeManager {
    * Returns the id of the default theme.
    *
    * @return the id of the default theme, never <code>null</code>
-   * @throws IllegalStateException if not initialized
    */
   public String getDefaultThemeId() {
-    checkInitialized();
     return DEFAULT_THEME_ID;
   }
 
@@ -292,10 +289,14 @@ public final class ThemeManager {
   public void registerResources() {
     checkInitialized();
     Iterator iterator = themes.keySet().iterator();
+    // default theme must be rendered first
+    registerThemeFiles( defaultTheme );
     while( iterator.hasNext() ) {
       String key = ( String )iterator.next();
       Theme theme = ( Theme )themes.get( key );
-      registerThemeFiles( theme );
+      if( theme != defaultTheme ) {
+        registerThemeFiles( theme );
+      }
     }
   }
 
@@ -317,12 +318,9 @@ public final class ThemeManager {
 
   /**
    * Loads and processes all theme-relevant resources for a given widget.
-   *
-   * @param themeWidget the widget to process
    */
   private void processThemeableWidget( final ThemeableWidget themeWidget )
   {
-    log( "Processing widget: " + themeWidget.widget.getName() );
     String packageName = themeWidget.widget.getPackage().getName();
     String[] variants = LifeCycleAdapterUtil.getPackageVariants( packageName );
     String className
@@ -331,7 +329,6 @@ public final class ThemeManager {
     try {
       for( int i = 0; i < variants.length && !found ; i++ ) {
         String pkgName = variants[ i ] + "." + className.toLowerCase() + "kit";
-        log( "  looking through package " + pkgName );
         found |= loadThemeDef( themeWidget, pkgName, className );
         found |= loadAppearanceJs( themeWidget, pkgName, className );
         found |= loadDefaultCss( themeWidget, pkgName, className );
@@ -444,7 +441,7 @@ public final class ThemeManager {
         storeWriter.addTheme( theme, theme == defaultTheme );
         sb.append( storeWriter.createJs() );
         String themeCode = sb.toString();
-        log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
+        log( "-- REGISTERED THEME CODE FOR " + themeId + " ( " + themeCode.length() + " )--" );
         log( themeCode );
         log( "-- END REGISTERED THEME CODE --" );
         String name = jsId.replace( '.', '/' ) + ".js";

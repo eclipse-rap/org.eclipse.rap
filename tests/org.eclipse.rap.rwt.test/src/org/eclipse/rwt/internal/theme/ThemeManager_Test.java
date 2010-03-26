@@ -24,26 +24,17 @@ import org.eclipse.swt.widgets.Button;
 
 public class ThemeManager_Test extends TestCase {
 
-  public void testReset() {
+  public void testCreate() {
     ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    String id = manager.getDefaultThemeId();
-    assertEquals( "org.eclipse.rap.rwt.theme.Default", id );
-    Theme theme = manager.getTheme( id );
-    assertNotNull( theme );
-    assertEquals( "RAP Default Theme", theme.getName() );
-    manager.reset();
-    try {
-      manager.hasTheme( "foo" );
-      fail( "Theme manager de-initialized, should throw IllegalStateException" );
-    } catch( IllegalStateException e ) {
-      // expected
-    }
+    String defaultThemeId = manager.getDefaultThemeId();
+    assertEquals( "org.eclipse.rap.rwt.theme.Default", defaultThemeId );
+    Theme defaultTheme = manager.getTheme( defaultThemeId );
+    assertNotNull( defaultTheme );
+    assertEquals( "RAP Default Theme", defaultTheme.getName() );
   }
 
   public void testRegisterResources() {
     ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
     manager.registerResources();
     String[] themeIds = manager.getRegisteredThemeIds();
     assertNotNull( themeIds );
@@ -51,20 +42,21 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testRegisterTheme() throws Exception {
+    ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
     StyleSheet emptyStyleSheet = new StyleSheet( new StyleRule[ 0 ] );
     Theme customTheme = new Theme( "custom.id", "foo", emptyStyleSheet );
     themeManager.registerTheme( customTheme );
+    themeManager.initialize();
     assertTrue( themeManager.hasTheme( "custom.id" ) );
     List regThemeIds = Arrays.asList( themeManager.getRegisteredThemeIds() );
     assertTrue( regThemeIds.contains( "custom.id" ) );
-    assertEquals( customTheme, themeManager.getTheme( "custom.id" ) );
+    assertSame( customTheme, themeManager.getTheme( "custom.id" ) );
   }
 
   public void testRegisterThemeTwice() throws Exception {
+    ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
     StyleSheet emptyStyleSheet = new StyleSheet( new StyleRule[ 0 ] );
     Theme theme = new Theme( "id1", "foo", emptyStyleSheet );
     themeManager.registerTheme( theme );
@@ -78,7 +70,6 @@ public class ThemeManager_Test extends TestCase {
 
   public void testGetThemeableWidget() {
     ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
     ThemeableWidget themeableWidget = manager.getThemeableWidget( Button.class );
     assertNotNull( themeableWidget );
     assertNotNull( themeableWidget.loader );
@@ -88,21 +79,28 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testDefaultThemeInitialized() throws Exception {
+    ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
     String defaultThemeId = themeManager.getDefaultThemeId();
     Theme defaultTheme = themeManager.getTheme( defaultThemeId );
     assertNotNull( defaultTheme.getValuesMap() );
+    assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
   }
 
-  public void testCustomThemeInitialized() throws Exception {
+  public void testCustomAndDefaultThemeInitialized() throws Exception {
+    ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
     themeManager.registerTheme( customTheme );
-    ThemeCssValuesMap customValuesMap = customTheme.getValuesMap();
-    assertNotNull( customValuesMap );
+    themeManager.initialize();
+    String defaultThemeId = themeManager.getDefaultThemeId();
+    Theme defaultTheme = themeManager.getTheme( defaultThemeId );
+    assertNotNull( defaultTheme.getValuesMap() );
+    assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
+    assertNotNull( customTheme.getValuesMap() );
+    assertTrue( customTheme.getValuesMap().getAllValues().length > 0 );
   }
 
   protected void setUp() throws Exception {
@@ -111,7 +109,6 @@ public class ThemeManager_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    ThemeManager.getInstance().reset();
     Fixture.tearDown();
   }
 }

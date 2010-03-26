@@ -78,7 +78,6 @@ public class ThemesTestUtil {
   public static void createAndActivateTheme( final String path, 
                                              final String themeId ) 
   {
-    ThemeManager themeManager = ThemeManager.getInstance();
     StyleSheet styleSheet;
     try {
       styleSheet = CssFileReader.readStyleSheet( path, RESOURCE_LOADER );
@@ -86,7 +85,10 @@ public class ThemesTestUtil {
       throw new RuntimeException( "Failed to read stylesheet from " + path, e );
     }
     Theme theme = new Theme( themeId, "Test Theme", styleSheet );
+    ThemeManager.resetInstance();
+    ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.registerTheme( theme );
+    themeManager.initialize();
     ThemeUtil.setCurrentThemeId( themeId );  
   }
   

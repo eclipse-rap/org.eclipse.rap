@@ -3,11 +3,13 @@
 <schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.rap.ui" id="themes" name="RWT Themes"/>
+         <meta.schema plugin="org.eclipse.rap.ui" id="themeContributions" name="RWT Theme Contributions"/>
       </appInfo>
       <documentation>
-         This extension point is used to register custom RWT themes.
-An RWT theme is used to customize the look and feel of applications built with the Rich Ajax Platform. To create a custom theme, a CSS file must be provided. With this file the styling of one ore more widgets can be customized. A list of themeable widgets and properties can be found in the &quot;RAP Theming Reference&quot;.
+         This extension point is used to register contributions to existing RWT themes.
+A theme contribution contains CSS rules that extend an existing theme. To contribute to an existing theme, the id of the extended theme and a CSS file must be provided. The contents of this file are appended to the CSS rules of the extended theme.
+
+If more than one contributions are registered for the same theme, the order in which these contributions are appended is undefined. The user of this extension point must ensure that the rules specified in a theme contribution can not interfere with the rules in other theme contributions. Ideally, theme contributions contain only rules for custom variants.
       </documentation>
    </annotation>
 
@@ -19,7 +21,7 @@ An RWT theme is used to customize the look and feel of applications built with t
       </annotation>
       <complexType>
          <sequence>
-            <element ref="theme" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="themeContribution" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -48,31 +50,27 @@ An RWT theme is used to customize the look and feel of applications built with t
       </complexType>
    </element>
 
-   <element name="theme">
+   <element name="themeContribution">
       <annotation>
          <appInfo>
             <meta.element labelAttribute="name"/>
          </appInfo>
       </annotation>
       <complexType>
-         <attribute name="id" type="string" use="required">
+         <attribute name="themeId" type="string" use="required">
             <annotation>
                <documentation>
-                  a unique name that will be used to identify this theme
+                  the id of the theme this extension contributes to. Use org.eclipse.rap.rwt.theme.Default to contribute to the default theme.
                </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="name" type="string">
-            <annotation>
-               <documentation>
-                  an optional name for the theme (currently not used)
-               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.themes/theme/@id"/>
+               </appInfo>
             </annotation>
          </attribute>
          <attribute name="file" type="string" use="required">
             <annotation>
                <documentation>
-                  a relative path of a &lt;code&gt;.css&lt;/code&gt; file that contains the theme definitions
+                  a relative path of a &lt;code&gt;.css&lt;/code&gt; file that contains the additional rules to append to the theme
                </documentation>
                <appInfo>
                   <meta.attribute kind="resource"/>
@@ -87,7 +85,7 @@ An RWT theme is used to customize the look and feel of applications built with t
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         RAP 1.0
+         RAP 1.3
       </documentation>
    </annotation>
 
@@ -96,14 +94,13 @@ An RWT theme is used to customize the look and feel of applications built with t
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         The following is an example of a theme extension definition: 
+         The following is an example of a theme contribution definition: 
 &lt;p&gt;
 &lt;pre&gt;
-   &lt;extension point=&quot;org.eclipse.rap.ui.themes&quot;&gt;
+   &lt;extension point=&quot;org.eclipse.rap.ui.themeContributions&quot;&gt;
       &lt;theme
-            id=&quot;my.application.aquablue&quot;
-            name=&quot;Aqua Blue Theme&quot;
-            file=&quot;aqua-blue.css&quot; /&gt;
+            themeId=&quot;my.application.aquablue&quot;
+            file=&quot;aqua-blue-additions.css&quot; /&gt;
    &lt;/extension&gt;
 &lt;/pre&gt;
 &lt;/p&gt;
@@ -111,22 +108,13 @@ An RWT theme is used to customize the look and feel of applications built with t
    </annotation>
 
 
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         A template for valid theme files can be found in the &lt;code&gt;src/&lt;/code&gt; directory of the RWT plug-in (&lt;code&gt;org.eclipse.rap.rwt&lt;/code&gt;). The file is called &lt;code&gt;theme-template.properties&lt;/code&gt;.
-The RAP demo plugin &lt;code&gt;org.eclipse.rap.demo&lt;/code&gt; contains an example of a theme extension.
-      </documentation>
-   </annotation>
 
    <annotation>
       <appInfo>
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         Copyright (c) 2007 Innoopract Informationssysteme GmbH.&lt;br&gt;
+         Copyright (c) 2010 EclipseSource.&lt;br&gt;
 All rights reserved. This program and the accompanying materials are made
 available under the terms of the Eclipse Public License v1.0 which accompanies
 this distribution, and is available at &lt;a 

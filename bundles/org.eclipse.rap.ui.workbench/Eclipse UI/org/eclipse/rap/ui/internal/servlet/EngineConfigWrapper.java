@@ -60,6 +60,8 @@ final class EngineConfigWrapper implements IEngineConfig {
   //  extension point id for custom theme registration
   private static final String ID_THEMES
     = "org.eclipse.rap.ui.themes";
+  private static final String ID_THEME_CONTRIBUTIONS
+    = "org.eclipse.rap.ui.themeContributions";
   //  extension point id for custom themeable widget registration
   private static final String ID_THEMEABLE_WIDGETS
     = "org.eclipse.rap.ui.themeableWidgets";
@@ -88,6 +90,7 @@ final class EngineConfigWrapper implements IEngineConfig {
     registerWorkbenchEntryPoint();
     registerThemeableWidgets();
     registerThemes();
+    registerThemeContributions();
     registerFactories();
     registerResources();    
     registerUICallBackServiceHandler();
@@ -250,42 +253,26 @@ final class EngineConfigWrapper implements IEngineConfig {
       String widgetClass = widgetExts[ i ].getAttribute( "class" );
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
-        ResourceLoader resLoader = new ResourceLoader() {
-          public InputStream getResourceAsStream( final String resourceName )
-            throws IOException
-          {
-            InputStream result = null;
-            // We need to call getResource() here since resources must be loaded
-            // by the bundle classloader
-            URL url = bundle.getResource( resourceName );
-            if( url != null ) {
-              result = url.openStream();
-            }
-            return result;
-          }
-        };
-        Class widget;
-        widget = bundle.loadClass( widgetClass );
+        ResourceLoader resLoader = createResourceLoader( bundle );
+        Class widget = bundle.loadClass( widgetClass );
         ThemeManager.getInstance().addThemeableWidget( widget, resLoader );
-      } catch( final Throwable e ) {
+      } catch( final Throwable thr ) {
         String text = "Could not register themeable widget ''{0}''.";
         Object[] param = new Object[] { widgetClass };
-        String msg = MessageFormat.format( text, param );
-        Status status = new Status( IStatus.ERROR,
-                                    contributorName,
-                                    IStatus.OK,
-                                    msg,
-                                    e );
+        String message = MessageFormat.format( text, param );
+        IStatus status
+          = new Status( IStatus.ERROR, contributorName, message, thr );
         WorkbenchPlugin.getDefault().getLog().log( status );
       }
     }
+    ThemeManager.getInstance().initializeThemeableWidgets();
   }
+
 
   private static void registerThemes() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
-    ThemeManager.getInstance().initialize();
     for( int i = 0; i < elements.length; i++ ) {
       String contributorName = elements[ i ].getContributor().getName();
       String themeId = elements[ i ].getAttribute( "id" );
@@ -294,7 +281,8 @@ final class EngineConfigWrapper implements IEngineConfig {
       try {
         Bundle bundle = Platform.getBundle( contributorName );
         ResourceLoader loader = createResourceLoader( bundle );
-        StyleSheet styleSheet = CssFileReader.readStyleSheet( themeFile, loader );
+        StyleSheet styleSheet = CssFileReader.readStyleSheet( themeFile,
+                                                              loader );
         Theme theme = new Theme( themeId, themeName, styleSheet );
         ThemeManager.getInstance().registerTheme( theme );
       } catch( final Exception e ) {
@@ -302,14 +290,43 @@ final class EngineConfigWrapper implements IEngineConfig {
                       + "from file ''{1}''.";
         Object[] param = new Object[] { themeId, themeFile };
         String msg = MessageFormat.format( text, param );
-        Status status = new Status( IStatus.ERROR,
-                                    contributorName,
-                                    IStatus.OK,
-                                    msg,
-                                    e );
+        Status status
+          = new Status( IStatus.ERROR, contributorName, msg, e );
         WorkbenchPlugin.getDefault().getLog().log( status );
       }
     }
+  }
+
+  private static void registerThemeContributions() {
+    IExtensionRegistry registry = Platform.getExtensionRegistry();
+    IExtensionPoint ep = registry.getExtensionPoint( ID_THEME_CONTRIBUTIONS );
+    IConfigurationElement[] elements = ep.getConfigurationElements();
+    ThemeManager.getInstance().ensureDefaultTheme();
+    for( int i = 0; i < elements.length; i++ ) {
+      String contributorName = elements[ i ].getContributor().getName();
+      String themeId = elements[ i ].getAttribute( "themeId" );
+      String themeFile = elements[ i ].getAttribute( "file" );
+      try {
+        Bundle bundle = Platform.getBundle( contributorName );
+        ResourceLoader loader = createResourceLoader( bundle );
+        StyleSheet styleSheet = CssFileReader.readStyleSheet( themeFile,
+                                                              loader );
+        Theme theme = ThemeManager.getInstance().getTheme( themeId );
+        if( theme == null ) {
+          throw new IllegalArgumentException( "No such theme defined: "
+                                              + themeId );
+        }
+        theme.addStyleSheet( styleSheet );
+      } catch( final Exception e ) {
+        String text =   "Could not register theme contribution for theme ''{0}'' "
+                      + "from file ''{1}''.";
+        Object[] param = new Object[] { themeId, themeFile };
+        String msg = MessageFormat.format( text, param );
+        IStatus status = new Status( IStatus.ERROR, contributorName, msg, e );
+        WorkbenchPlugin.getDefault().getLog().log( status );
+      }
+    }
+    ThemeManager.getInstance().initialize();
   }
 
   private static ResourceLoader createResourceLoader( final Bundle bundle ) {
@@ -318,8 +335,13 @@ final class EngineConfigWrapper implements IEngineConfig {
       public InputStream getResourceAsStream( final String resourceName )
         throws IOException
       {
-        IPath file = new Path( resourceName );
-        return FileLocator.openStream( bundle, file, false );
+        InputStream result = null;
+        IPath path = new Path( resourceName );
+        URL url = FileLocator.find( bundle, path, null );
+        if( url != null ) {
+          result = url.openStream();
+        }
+        return result;
       }
     };
     return result;
@@ -408,4 +430,5 @@ final class EngineConfigWrapper implements IEngineConfig {
       }
     }
   }
+
 }

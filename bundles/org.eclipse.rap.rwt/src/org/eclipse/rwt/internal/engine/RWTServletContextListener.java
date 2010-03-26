@@ -321,7 +321,6 @@ public final class RWTServletContextListener implements ServletContextListener {
 
   private static void registerThemes( final ServletContext context ) {
     ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
     String value = context.getInitParameter( THEMES_PARAM );
     ResourceLoader loader = new ResourceLoader() {
       public InputStream getResourceAsStream( final String resourceName )
@@ -356,10 +355,11 @@ public final class RWTServletContextListener implements ServletContextListener {
         }
       }
     }
+    manager.initialize();
   }
 
   private static void deregisterThemes( final ServletContext servletContext ) {
-    ThemeManager.getInstance().reset();
+    ThemeManager.resetInstance();
   }
 
   ////////////////////////////////////////////////
