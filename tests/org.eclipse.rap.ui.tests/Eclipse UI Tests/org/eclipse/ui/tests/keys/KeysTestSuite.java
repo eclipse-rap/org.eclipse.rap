@@ -29,7 +29,7 @@ public class KeysTestSuite extends TestSuite {
      * Construct the test suite.
      */
     public KeysTestSuite() {
-//    	addTest(new TestSuite(BindingInteractionsTest.class));
+    	addTest(new TestSuite(BindingInteractionsTest.class));
 //    	addTest(new TestSuite(BindingManagerTest.class));
 //        addTest(new TestSuite(BindingPersistenceTest.class));
         // TODO This no longer works due to focus issues related to key bindings
@@ -44,9 +44,9 @@ public class KeysTestSuite extends TestSuite {
         //		addTest(new TestSuite(Bug42627Test.class));
 //        addTest(new TestSuite(Bug43168Test.class));
 //        addTest(new TestSuite(Bug43321Test.class));
-//        addTest(new TestSuite(Bug43538Test.class));
+        addTest(new TestSuite(Bug43538Test.class));
         addTest(new TestSuite(Bug43597Test.class));
-//        addTest(new TestSuite(Bug43610Test.class));
+        addTest(new TestSuite(Bug43610Test.class));
 //        addTest(new TestSuite(Bug43800Test.class));
         addTest(new TestSuite(KeysCsvTest.class));
         //		TODO disabled since it refers to the Java builder and nature,
@@ -56,6 +56,6 @@ public class KeysTestSuite extends TestSuite {
          * focus related?
          */
         //addTest(new TestSuite(Bug53489Test.class));
-//        addTest(new TestSuite(Bug189167Test.class));
+        addTest(new TestSuite(Bug189167Test.class));
     }
 }

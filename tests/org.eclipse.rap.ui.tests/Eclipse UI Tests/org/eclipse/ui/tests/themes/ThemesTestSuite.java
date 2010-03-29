@@ -23,7 +23,7 @@ public class ThemesTestSuite extends TestSuite {
     }
 
     public ThemesTestSuite() {
-//        addTest(new TestSuite(ThemeAPITest.class));
-//        addTest(new TestSuite(JFaceThemeTest.class));
+        addTest(new TestSuite(ThemeAPITest.class));
+        addTest(new TestSuite(JFaceThemeTest.class));
     }
 }

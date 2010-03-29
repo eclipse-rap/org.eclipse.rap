@@ -16,36 +16,36 @@ import junit.framework.TestSuite;
 import org.eclipse.ui.tests.activities.ActivitiesTestSuite;
 import org.eclipse.ui.tests.adaptable.AdaptableTestSuite;
 import org.eclipse.ui.tests.api.ApiTestSuite;
-//import org.eclipse.ui.tests.api.StartupTest;
+import org.eclipse.ui.tests.api.StartupTest;
 import org.eclipse.ui.tests.commands.CommandsTestSuite;
 import org.eclipse.ui.tests.concurrency.ConcurrencyTestSuite;
-//import org.eclipse.ui.tests.contexts.ContextsTestSuite;
+import org.eclipse.ui.tests.contexts.ContextsTestSuite;
 //import org.eclipse.ui.tests.datatransfer.DataTransferTestSuite;
 import org.eclipse.ui.tests.decorators.DecoratorsTestSuite;
 import org.eclipse.ui.tests.dialogs.UIAutomatedSuite;
 //import org.eclipse.ui.tests.dnd.DragTestSuite;
 import org.eclipse.ui.tests.dynamicplugins.DynamicPluginsTestSuite;
-//import org.eclipse.ui.tests.encoding.EncodingTestSuite;
+import org.eclipse.ui.tests.encoding.EncodingTestSuite;
 //import org.eclipse.ui.tests.fieldassist.FieldAssistTestSuite;
 import org.eclipse.ui.tests.filteredtree.FilteredTreeTests;
 //import org.eclipse.ui.tests.harness.util.TweakletCheckTest;
 import org.eclipse.ui.tests.internal.InternalTestSuite;
-//import org.eclipse.ui.tests.intro.IntroTestSuite;
+import org.eclipse.ui.tests.intro.IntroTestSuite;
 import org.eclipse.ui.tests.keys.KeysTestSuite;
 //import org.eclipse.ui.tests.leaks.LeakTests;
-//import org.eclipse.ui.tests.menus.MenusTestSuite;
+import org.eclipse.ui.tests.menus.MenusTestSuite;
 //import org.eclipse.ui.tests.multieditor.MultiEditorTestSuite;
 //import org.eclipse.ui.tests.multipageeditor.MultiPageEditorTestSuite;
 //import org.eclipse.ui.tests.navigator.NavigatorTestSuite;
 import org.eclipse.ui.tests.operations.OperationsTestSuite;
-//import org.eclipse.ui.tests.preferences.PreferencesTestSuite;
+import org.eclipse.ui.tests.preferences.PreferencesTestSuite;
 //import org.eclipse.ui.tests.presentations.PresentationsTestSuite;
 import org.eclipse.ui.tests.propertysheet.PropertySheetTestSuite;
 //import org.eclipse.ui.tests.quickaccess.QuickAccessTestSuite;
-//import org.eclipse.ui.tests.services.ServicesTestSuite;
-//import org.eclipse.ui.tests.statushandlers.StatusHandlingTestSuite;
+import org.eclipse.ui.tests.services.ServicesTestSuite;
+import org.eclipse.ui.tests.statushandlers.StatusHandlingTestSuite;
 //import org.eclipse.ui.tests.systeminplaceeditor.OpenSystemInPlaceEditorTest;
-//import org.eclipse.ui.tests.themes.ThemesTestSuite;
+import org.eclipse.ui.tests.themes.ThemesTestSuite;
 //import org.eclipse.ui.tests.zoom.ZoomTestSuite;
 
 /**
@@ -64,10 +64,10 @@ public class UiTestSuite extends TestSuite {
      * Construct the test suite.
      */
     public UiTestSuite() {
-    	// run the StartupTest first, since we need to check early that the tests 
+    	// run the StartupTest first, since we need to check early that the tests
     	// run only after early startup has completed (bug 93518).
 //    	addTest(new TweakletCheckTest());
-//    	addTest(new TestSuite(StartupTest.class));
+    	addTest(new TestSuite(StartupTest.class));
         addTest(new UIAutomatedSuite());
         addTest(new ApiTestSuite());
         addTest(new PropertySheetTestSuite());
@@ -78,18 +78,18 @@ public class UiTestSuite extends TestSuite {
         addTest(new AdaptableTestSuite());
 //        addTest(new ZoomTestSuite());
 //        addTest(new DataTransferTestSuite());
-//        addTest(new PreferencesTestSuite());
+        addTest(new PreferencesTestSuite());
         addTest(new DynamicPluginsTestSuite());
         addTest(new KeysTestSuite());
 //        addTest(new MultiPageEditorTestSuite());
         addTest(new ActivitiesTestSuite());
         addTest(new CommandsTestSuite());
-//        addTest(new ContextsTestSuite());
+        addTest(new ContextsTestSuite());
 //        addTest(new DragTestSuite());
-//        addTest(new ThemesTestSuite());
-//        addTest(new IntroTestSuite());
-//        addTest(new MenusTestSuite());
-//        addTest(new EncodingTestSuite());
+        addTest(new ThemesTestSuite());
+        addTest(new IntroTestSuite());
+        addTest(new MenusTestSuite());
+        addTest(new EncodingTestSuite());
 //        addTest(new PresentationsTestSuite());
 //        addTest(new TestSuite(LeakTests.class));
         addTest(new ConcurrencyTestSuite());
@@ -97,8 +97,8 @@ public class UiTestSuite extends TestSuite {
 //        addTest(new FieldAssistTestSuite());
 //        addTest(new MultiEditorTestSuite());
         addTest(new TestSuite(FilteredTreeTests.class));
-//        addTest(new ServicesTestSuite());
-//        addTest(new StatusHandlingTestSuite());
+        addTest(new ServicesTestSuite());
+        addTest(new StatusHandlingTestSuite());
 //        addTest(OpenSystemInPlaceEditorTest.suite());
     }
 }

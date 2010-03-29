@@ -23,11 +23,11 @@ public class IntroTestSuite extends TestSuite {
     }
 
     /**
-     * 
+     *
      */
     public IntroTestSuite() {
-//        addTest(new TestSuite(IntroPartTest.class));
-//        addTest(new TestSuite(NoIntroPartTest.class));
-//        addTest(new TestSuite(IntroTest.class));
+        addTest(new TestSuite(IntroPartTest.class));
+        addTest(new TestSuite(NoIntroPartTest.class));
+        addTest(new TestSuite(IntroTest.class));
     }
 }

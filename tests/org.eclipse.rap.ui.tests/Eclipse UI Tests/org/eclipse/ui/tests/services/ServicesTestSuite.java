@@ -30,7 +30,7 @@ public final class ServicesTestSuite extends TestSuite {
 	 * Construct the test suite.
 	 */
 	public ServicesTestSuite() {
-//		addTest(new TestSuite(EvaluationServiceTest.class));
+		addTest(new TestSuite(EvaluationServiceTest.class));
 //		addTest(new TestSuite(ContributedServiceTest.class));
 	}
 }

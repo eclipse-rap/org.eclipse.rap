@@ -49,6 +49,6 @@ public class InternalTestSuite extends TestSuite {
 //        addTest(new TestSuite(MarkerSupportRegistryTests.class));
         addTest(new TestSuite(MarkerViewTests.class));
 //        addTest(Bug99858Test.suite());
-//        addTest(new TestSuite(WorkbenchWindowSubordinateSourcesTests.class));
+        addTest(new TestSuite(WorkbenchWindowSubordinateSourcesTests.class));
     }
 }

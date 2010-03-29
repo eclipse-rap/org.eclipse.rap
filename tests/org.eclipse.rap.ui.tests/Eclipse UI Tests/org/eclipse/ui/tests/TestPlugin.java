@@ -19,7 +19,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
-//import org.eclipse.ui.IStartup;
+import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.tests.decorators.BackgroundColorDecorator;
 import org.eclipse.ui.tests.dynamicplugins.TestInstallUtil;
@@ -29,8 +29,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-//public class TestPlugin extends AbstractUIPlugin implements IStartup {
-public class TestPlugin extends AbstractUIPlugin {
+public class TestPlugin extends AbstractUIPlugin implements IStartup {
     //The shared instance.
     private static TestPlugin plugin;
 
@@ -40,8 +39,8 @@ public class TestPlugin extends AbstractUIPlugin {
     // This boolean should only be true if the earlyStartup() method
     // has been called.
     private static boolean earlyStartupCalled = false;
-    
-    public static final String PLUGIN_ID = "org.eclipse.ui.tests"; 
+
+    public static final String PLUGIN_ID = "org.eclipse.ui.tests";
 
     /**
      * The constructor.

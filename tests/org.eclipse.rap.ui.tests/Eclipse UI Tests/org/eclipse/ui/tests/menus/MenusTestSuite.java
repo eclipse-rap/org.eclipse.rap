@@ -32,8 +32,8 @@ public class MenusTestSuite extends TestSuite {
      */
     public MenusTestSuite() {
 //        addTest(new TestSuite(ObjectContributionTest.class));
-//        addTest(new TestSuite(MenuVisibilityTest.class));
-//        addTest(new TestSuite(MenuBaseTests.class));
-//        addTest(new TestSuite(MenuPopulationTest.class));
+        addTest(new TestSuite(MenuVisibilityTest.class));
+        addTest(new TestSuite(MenuBaseTests.class));
+        addTest(new TestSuite(MenuPopulationTest.class));
     }
 }

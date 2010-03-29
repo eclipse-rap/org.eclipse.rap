@@ -62,9 +62,9 @@ public class ApiTestSuite extends TestSuite {
 //        addTest(new TestSuite(IEditorActionBarContributorTest.class));
         addTest(new TestSuite(IPartServiceTest.class));
         addTest(new TestSuite(ISelectionServiceTest.class));
-//        addTest(new TestSuite(IWorkingSetTest.class));
-//        addTest(new TestSuite(IWorkingSetManagerTest.class));
-//        addTest(new TestSuite(MockWorkingSetTest.class));
+        addTest(new TestSuite(IWorkingSetTest.class));
+        addTest(new TestSuite(IWorkingSetManagerTest.class));
+        addTest(new TestSuite(MockWorkingSetTest.class));
         addTest(new TestSuite(Bug42616Test.class));
 //        addTest(new TestSuite(StickyViewTest.class));
         addTest(new TestSuite(EditorIconTest.class));
@@ -72,10 +72,10 @@ public class ApiTestSuite extends TestSuite {
         addTest(new TestSuite(ViewPartTitleTest.class));
         addTest(new TestSuite(OverriddenTitleTest.class));
         addTest(new TestSuite(UIJobTest.class));
-//        addTest(new TestSuite(Bug75118Test.class));
+        addTest(new TestSuite(Bug75118Test.class));
 //        addTest(new TestSuite(FileEditorInputTest.class));
 //        addTest(new TestSuite(IEditorMatchingStrategyTest.class));
-//        addTest(new TestSuite(XMLMementoTest.class));
+        addTest(new TestSuite(XMLMementoTest.class));
 //        addTest(new TestSuite(TrimLayoutTest.class));
 //        addTest(new TestSuite(IWorkbenchPartTestableTests.class));
         addTest(new TestSuite(ArbitraryPropertyTest.class));
