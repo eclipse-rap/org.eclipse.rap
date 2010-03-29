@@ -204,13 +204,11 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       var useGfx = ( this._gfxBorderEnabled || this._gfxBackgroundEnabled );
       if( useGfx != this._gfxEnabled ) {
         if( useGfx ) {
-          this.addEventListener( "create", this._gfxOnCreate, this );
           this.addEventListener( "changeElement",
                                  this._gfxOnElementChanged,
                                  this );
           this._gfxEnabled = true;
         } else {
-          this.removeEventListener( "create", this._gfxOnCreate, this );
           this.removeEventListener( "changeElement",
                                  this._gfxOnElementChanged,
                                  this );
@@ -555,18 +553,14 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
              || !qx.lang.Object.isEmpty( this._layoutChanges );
     },
 
-    //called after the element of the widget has been set
+    // called after the element of the widget has been set
     _gfxOnElementChanged : function( event ) {
-      if ( event.getValue() === null && this._gfxCanvasAppended ) {
+      if( event.getValue() == null && this._gfxCanvasAppended ) {
         this._removeCanvas();
       }
-    },
-
-    //called after the element has been applied 
-    _gfxOnCreate : function() {
-      if( this._isCanvasReady() ) {
+      if( event.getValue() != null && this._isCanvasReady() ) {
         this._renderGfxBackground();
-        //border is handled by widget queue
+        // border is handled by widget queue
       }
     },
 

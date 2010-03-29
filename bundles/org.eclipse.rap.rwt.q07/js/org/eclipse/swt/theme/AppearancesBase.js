@@ -639,6 +639,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "Text", "font" );
       result.textColor = tv.getCssColor( "Text", "color" );
       result.backgroundColor = tv.getCssColor( "Text", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Text", 
+                                               "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Text", 
+                                                     "background-image" );
       result.border = tv.getCssBorder( "Text", "border" );
       // [if] Do not apply top/bottom paddings on the client
       var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );

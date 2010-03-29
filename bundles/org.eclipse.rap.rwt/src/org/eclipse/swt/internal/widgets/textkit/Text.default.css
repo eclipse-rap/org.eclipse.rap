@@ -5,6 +5,7 @@ Text {
   background-color: white;
   color: black;
   padding: 2px 3px;
+  background-image: none;
 }
 
 Text[BORDER] {

@@ -35,6 +35,12 @@
       </description>
     </property>
 
+    <property name="background-image">
+      <description>
+        Background image or gradient for text widget.
+      </description>
+    </property>
+
     <property name="padding"
         description="Padding for single-line text fields. Also used for spinner." />
 
