@@ -12,3 +12,6 @@ Export-Package: org.eclipse.rap.internal.design.example.builder;x-internal:=true
  org.eclipse.rap.internal.design.example.business.layoutsets;x-internal:=true,
  org.eclipse.rap.internal.design.example.managers;x-internal:=true,
  org.eclipse.rap.internal.design.example.stacks;x-internal:=true
+Bundle-ClassPath: patch.jar,
+ .
+Eclipse-ExtensibleAPI: true
