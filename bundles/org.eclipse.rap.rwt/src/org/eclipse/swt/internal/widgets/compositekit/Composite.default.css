@@ -2,8 +2,6 @@
 
 Composite {
   border: none;
-  /* A background image is always needed for IE to handle 
-     the mouse events - see bug 299629 */	
-  background-image: url( resource/static/image/blank.gif );
+  background-image: none;
   padding: 0px;
 }

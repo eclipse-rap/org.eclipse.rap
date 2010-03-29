@@ -18,6 +18,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Composite", {
     this.setHideFocus( true ); 
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
+    if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+      // Alternate fix for 299629. This might not always work if the composite 
+      // is changed back and forth between rounded and normal border.   
+      this._fixBackgroundTransparency();
+      this.addEventListener( "changeBackgroundColor", 
+                             this._fixBackgroundTransparency, 
+                             this );
+      this.addEventListener( "changeBackgroundImage", 
+                             this._fixBackgroundTransparency, 
+                             this );
+    }
   },
   
   destruct : function() {
@@ -33,6 +44,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Composite", {
     
     _onMouseOut : function( evt ) {
       this.removeState( "over" );
+    },
+
+    _fixBackgroundTransparency : function() {
+      if(    this.getBackgroundColor() == null 
+          && this.getBackgroundImage() == null ) 
+      {
+        this._applyBackgroundImage( "static/image/blank.gif", null );
+      }
     }
     
   }
