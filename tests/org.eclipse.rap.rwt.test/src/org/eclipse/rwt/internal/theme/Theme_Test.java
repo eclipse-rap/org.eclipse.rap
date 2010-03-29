@@ -31,13 +31,14 @@ public class Theme_Test extends TestCase {
     }
   }
 
-  public void testCreateWithNullStyleSheet() throws Exception {
-    try {
-      new Theme( "some.id", "Test", null );
-      fail();
-    } catch( NullPointerException e ) {
-      assertTrue( e.getMessage().indexOf( "stylesheet" ) != -1 );
-    }
+  public void testCreateEmpty() throws Exception {
+    Theme theme = new Theme( "some.id", "Test", null );
+    assertEquals( "some.id", theme.getId() );
+    assertEquals( "Test", theme.getName() );
+    ThemeableWidget buttonWidget = createSimpleButtonWidget();
+    theme.initialize( new ThemeableWidget[] { buttonWidget } );
+    ThemeCssValuesMap valuesMap = theme.getValuesMap();
+    assertEquals( 0, valuesMap.getAllValues().length );
   }
 
   public void testCreate() throws Exception {

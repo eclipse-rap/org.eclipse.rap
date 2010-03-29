@@ -58,7 +58,7 @@ public final class ThemeUtil {
     }
     // 3) use default
     if( result == null ) {
-      result = manager.getDefaultThemeId();
+      result = ThemeManager.DEFAULT_THEME_ID;
     }
     return result;
   }
@@ -83,7 +83,7 @@ public final class ThemeUtil {
 
   public static Theme getDefaultTheme() {
     ThemeManager themeManager = ThemeManager.getInstance();
-    return themeManager.getTheme( themeManager.getDefaultThemeId() );
+    return themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID );
   }
 
   //////////////////////////////////////

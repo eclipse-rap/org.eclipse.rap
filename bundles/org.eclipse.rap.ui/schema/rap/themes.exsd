@@ -69,7 +69,7 @@ An RWT theme is used to customize the look and feel of applications built with t
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="file" type="string" use="required">
+         <attribute name="file" type="string">
             <annotation>
                <documentation>
                   a relative path of a &lt;code&gt;.css&lt;/code&gt; file that contains the theme definitions

@@ -33,6 +33,11 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class ThemeManager {
 
+  public static final String DEFAULT_THEME_ID
+    = "org.eclipse.rap.rwt.theme.Default";
+
+  private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
+
   private static final ResourceLoader STANDARD_RESOURCE_LOADER
     = new ResourceLoader()
   {
@@ -59,9 +64,7 @@ public final class ThemeManager {
   private static final String WIDGET_THEME_PATH = "resource/widget/rap";
 
   static final String IMAGE_DEST_PATH = "themes/images";
-  static final String CURSOR_DEST_PATH = "themes/cursors";
-  static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
-  private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
+  private static final String CURSOR_DEST_PATH = "themes/cursors";
 
   private static final Class[] THEMEABLE_WIDGETS = new Class[]{
     org.eclipse.swt.widgets.Widget.class,
@@ -103,7 +106,6 @@ public final class ThemeManager {
   private boolean widgetsInitialized;
   private Theme defaultTheme;
   private ThemeableWidgetHolder themeableWidgets;
-  private StyleSheetBuilder defaultStyleSheetBuilder;
   private final CssElementHolder registeredCssElements;
 
 
@@ -113,10 +115,11 @@ public final class ThemeManager {
     widgetsInitialized = false;
     themeableWidgets = new ThemeableWidgetHolder();
     customAppearances = new HashSet();
-    themes = new HashMap();
     registeredThemeFiles = new HashSet();
     registeredCssElements = new CssElementHolder();
-    defaultStyleSheetBuilder = new StyleSheetBuilder();
+    defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, null );
+    themes = new HashMap();
+    themes.put( DEFAULT_THEME_ID, defaultTheme );
   }
 
   /**
@@ -145,7 +148,6 @@ public final class ThemeManager {
   public void initialize() {
     if( !initialized ) {
       initializeThemeableWidgets();
-      ensureDefaultTheme();
       Collection allThemes = themes.values();
       Iterator iterator = allThemes.iterator();
       ThemeableWidget[] allThemeableWidgets = themeableWidgets.getAll();
@@ -200,16 +202,6 @@ public final class ThemeManager {
       throw new IllegalArgumentException( message );
     }
     themeableWidgets.add( new ThemeableWidget( widget, loader ) );
-  }
-
-  public void ensureDefaultTheme() {
-    if( defaultTheme == null ) {
-      StyleSheet defaultStyleSheet = defaultStyleSheetBuilder.getStyleSheet();
-      defaultTheme = new Theme( DEFAULT_THEME_ID,
-                                DEFAULT_THEME_NAME,
-                                defaultStyleSheet );
-      themes.put( DEFAULT_THEME_ID, defaultTheme );
-    }
   }
 
   /**
@@ -272,15 +264,6 @@ public final class ThemeManager {
   }
 
   /**
-   * Returns the id of the default theme.
-   *
-   * @return the id of the default theme, never <code>null</code>
-   */
-  public String getDefaultThemeId() {
-    return DEFAULT_THEME_ID;
-  }
-
-  /**
    * Generates and registers JavaScript code that installs the registered themes
    * on the client.
    *
@@ -338,7 +321,7 @@ public final class ThemeManager {
              + themeWidget.widget.getName() );
       }
       if( themeWidget.defaultStyleSheet != null ) {
-        defaultStyleSheetBuilder.addStyleSheet( themeWidget.defaultStyleSheet );
+        defaultTheme.addStyleSheet( themeWidget.defaultStyleSheet );
       }
     } catch( final IOException e ) {
       String message = "Failed to initialize themeable widget "

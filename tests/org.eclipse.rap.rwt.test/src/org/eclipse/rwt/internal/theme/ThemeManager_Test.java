@@ -26,9 +26,9 @@ public class ThemeManager_Test extends TestCase {
 
   public void testCreate() {
     ThemeManager manager = ThemeManager.getInstance();
-    String defaultThemeId = manager.getDefaultThemeId();
-    assertEquals( "org.eclipse.rap.rwt.theme.Default", defaultThemeId );
-    Theme defaultTheme = manager.getTheme( defaultThemeId );
+    assertEquals( "org.eclipse.rap.rwt.theme.Default",
+                  ThemeManager.DEFAULT_THEME_ID );
+    Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme );
     assertEquals( "RAP Default Theme", defaultTheme.getName() );
   }
@@ -82,8 +82,7 @@ public class ThemeManager_Test extends TestCase {
     ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
-    String defaultThemeId = themeManager.getDefaultThemeId();
-    Theme defaultTheme = themeManager.getTheme( defaultThemeId );
+    Theme defaultTheme = themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme.getValuesMap() );
     assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
   }
@@ -95,8 +94,7 @@ public class ThemeManager_Test extends TestCase {
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
     themeManager.registerTheme( customTheme );
     themeManager.initialize();
-    String defaultThemeId = themeManager.getDefaultThemeId();
-    Theme defaultTheme = themeManager.getTheme( defaultThemeId );
+    Theme defaultTheme = themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme.getValuesMap() );
     assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
     assertNotNull( customTheme.getValuesMap() );

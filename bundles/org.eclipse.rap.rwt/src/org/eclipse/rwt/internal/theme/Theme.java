@@ -28,15 +28,14 @@ public final class Theme {
     if( id == null ) {
       throw new NullPointerException( "id" );
     }
-    if( styleSheet == null ) {
-      throw new NullPointerException( "stylesheet" );
-    }
     this.id = id;
     this.name = name != null ? name : "Unnamed Theme";
     jsId = createUniqueJsId( id );
     valuesMap = null;
     styleSheetBuilder = new StyleSheetBuilder();
-    styleSheetBuilder.addStyleSheet( styleSheet );
+    if( styleSheet != null ) {
+      styleSheetBuilder.addStyleSheet( styleSheet );
+    }
   }
 
   public String getId() {
@@ -90,7 +89,7 @@ public final class Theme {
 
   private static String createUniqueJsId( String id ) {
     String result;
-    if( id.equals( ThemeManager.DEFAULT_THEME_ID ) ) {
+    if( ThemeManager.DEFAULT_THEME_ID.equals( id ) ) {
       result = JS_THEME_PREFIX + "Default";
     } else {
       String hash = Integer.toHexString( id.hashCode() );

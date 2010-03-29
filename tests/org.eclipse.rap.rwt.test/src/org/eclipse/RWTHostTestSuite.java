@@ -213,6 +213,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ControlThemeAdapter_Test.class );
     suite.addTestSuite( ShellThemeAdapter_Test.class );
     suite.addTestSuite( ToolBarThemeAdapter_Test.class );
+    suite.addTestSuite( StyleSheetBuilder_Test.class );
 
     // == SettingStore ==
     suite.addTestSuite( MemorySettingStore_Test.class );
