@@ -88,7 +88,7 @@ public class JFaceThemeTest extends ThemeTest {
 		assertNotNull(desc);
 		Color color = desc.createColor(getWorkbench().getDisplay());
 		assertNotNull(color);
-		color.dispose();
+//		color.dispose();
 
 		desc = getDefaultTheme().getColorRegistry().getColorDescriptor(
 				"somegarbage", null);
@@ -99,6 +99,6 @@ public class JFaceThemeTest extends ThemeTest {
 		assertNotNull(desc);
 		color = desc.createColor(getWorkbench().getDisplay());
 		assertNotNull(color);
-		color.dispose();
+//		color.dispose();
 	}
 }
