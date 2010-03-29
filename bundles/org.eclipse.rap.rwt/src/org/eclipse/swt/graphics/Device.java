@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import javax.servlet.http.HttpServletRequest;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
@@ -25,6 +27,11 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
 public abstract class Device implements Drawable {
 
   private boolean disposed;
+  private Point dpi;
+  
+  public Device() {
+    readDPI();
+  }
 
   /**
    * Returns the matching standard color for the given
@@ -202,6 +209,23 @@ public abstract class Device implements Drawable {
   }
 
   /**
+   * Returns a point whose x coordinate is the horizontal
+   * dots per inch of the display, and whose y coordinate
+   * is the vertical dots per inch of the display.
+   *
+   * @return the horizontal and vertical DPI
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * @since 1.3
+   */
+  public Point getDPI() {
+    checkDevice();
+    return new Point( dpi.x, dpi.y );
+  }
+
+  /**
    * Returns a rectangle describing the receiver's size and location.
    *
    * @return the bounding rectangle
@@ -314,5 +338,15 @@ public abstract class Device implements Drawable {
       SWT.error( SWT.ERROR_DEVICE_DISPOSED );
     }
   }
-
+  
+  private void readDPI() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    dpi = new Point( 0, 0 );
+    String dpiX = request.getParameter( "w1.dpi.x" );
+    String dpiY = request.getParameter( "w1.dpi.y" );
+    if( dpiX != null && dpiY != null ) {
+      dpi.x = Integer.parseInt( dpiX );
+      dpi.y = Integer.parseInt( dpiY );
+    }
+  }
 }

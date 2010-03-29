@@ -72,7 +72,28 @@ qx.Class.define( "org.eclipse.swt.Application", {
       var req = org.eclipse.swt.Request.getInstance();
       var id = req.getUIRootId();
       req.addParameter( id + ".scrollbar.size", String( size ) );
+    },
+
+    _appendSystemDPI : function() {
+      var dpi = [ 0, 0 ];
+      if( typeof screen.systemXDPI == "number" ) {
+        dpi[ 0 ] = parseInt( screen.systemXDPI );
+        dpi[ 1 ] = parseInt( screen.systemYDPI );
+      } else {
+        var testElement = document.createElement( "div" );
+        testElement.style.width = "1in";
+        testElement.style.height = "1in";
+        testElement.style.padding = 0;
+        document.body.appendChild( testElement );
+        dpi[ 0 ] = parseInt( testElement.offsetWidth );
+        dpi[ 1 ] = parseInt( testElement.offsetHeight );
+        document.body.removeChild( testElement );        
+      }
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addParameter( "w1.dpi.x", String( dpi[ 0 ] ) );
+      req.addParameter( "w1.dpi.y", String( dpi[ 1 ] ) );
     }
+
   },
 
   members : {
@@ -134,6 +155,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       org.eclipse.swt.Application._appendScrollBarSize();
+      org.eclipse.swt.Application._appendSystemDPI();
       var req = org.eclipse.swt.Request.getInstance();
       req.addEventListener( "send", this._onSend, this );
       req.send();
