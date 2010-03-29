@@ -32,7 +32,7 @@ public class AdaptableTestSuite extends TestSuite {
      */
     public AdaptableTestSuite() {
         addTest(new TestSuite(AdaptableDecoratorTestCase.class));
-        addTest(new TestSuite(MarkerImageProviderTest.class));
+//        addTest(new TestSuite(MarkerImageProviderTest.class));
 //        addTest(new TestSuite(WorkingSetTestCase.class));
         addTest(new TestSuite(SelectionAdapterTest.class));
     }
