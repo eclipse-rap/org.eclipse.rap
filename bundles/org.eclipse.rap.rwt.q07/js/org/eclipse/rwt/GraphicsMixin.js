@@ -61,13 +61,12 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       if( this._gfxBackgroundEnabled ) {
         this.setGfxProperty( "backgroundImage", value );
         if(    this.getGfxProperty( "fillType" ) == "image"
-            && this._isCanvasReady() ) 
+            && this._isCanvasReady() 
+            && value != null ) 
         {
-          if( value != null ) {
-            this._renderGfxBackground();
-          } else {
-            this._handleGfxBackground();
-          }
+          this._renderGfxBackground();
+        } else {
+          this._handleGfxBackground();
         }
       } else {
         this.base( arguments, value );

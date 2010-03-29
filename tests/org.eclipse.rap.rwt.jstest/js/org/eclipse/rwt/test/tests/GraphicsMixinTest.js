@@ -256,6 +256,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       qx.ui.core.Widget.flushGlobalQueues();
     },
     
+    testGfxBackgroundColorToImage : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var shell = this._createShell();
+      shell.setBackgroundColor( "green" );
+      shell.setBorder( this.gfxBorder );
+      testUtil.flush();
+      assertTrue( this.usesGfxBackground( shell ) );
+      var shape = shell._gfxData.currentShape;
+      assertEquals( "color", gfxUtil.getFillType( shape ) );
+      shell.setBackgroundImage( "bla.jpg" );
+      testUtil.flush();
+      assertTrue( gfxUtil.getFillType( shape ) == "pattern" );
+      shell.destroy();
+      testUtil.flush();
+    },
+    
     /////////
     // Helper
 
