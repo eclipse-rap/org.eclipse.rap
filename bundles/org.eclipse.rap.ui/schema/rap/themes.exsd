@@ -8,6 +8,9 @@
       <documentation>
          This extension point is used to register custom RWT themes.
 An RWT theme is used to customize the look and feel of applications built with the Rich Ajax Platform. To create a custom theme, a CSS file must be provided. With this file the styling of one ore more widgets can be customized. A list of themeable widgets and properties can be found in the &quot;RAP Theming Reference&quot;.
+
+It is also possible to register contributions to existing RWT themes.
+A theme contribution contains CSS rules that are appended to an existing theme. If more than one contributions are registered for the same theme, the order in which these contributions are appended is undefined. The user of this extension point must ensure that the rules specified in a theme contribution can not interfere with the rules in other theme contributions. Ideally, theme contributions contain only rules for custom variants.
       </documentation>
    </annotation>
 
@@ -19,7 +22,10 @@ An RWT theme is used to customize the look and feel of applications built with t
       </annotation>
       <complexType>
          <sequence>
-            <element ref="theme" minOccurs="1" maxOccurs="unbounded"/>
+            <choice minOccurs="1" maxOccurs="unbounded">
+               <element ref="theme"/>
+               <element ref="themeContribution"/>
+            </choice>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -53,6 +59,9 @@ An RWT theme is used to customize the look and feel of applications built with t
          <appInfo>
             <meta.element labelAttribute="name"/>
          </appInfo>
+         <documentation>
+            An RWT theme.
+         </documentation>
       </annotation>
       <complexType>
          <attribute name="id" type="string" use="required">
@@ -82,6 +91,39 @@ An RWT theme is used to customize the look and feel of applications built with t
       </complexType>
    </element>
 
+   <element name="themeContribution">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="name"/>
+         </appInfo>
+         <documentation>
+            A contribution to an existing theme. The contributed CSS rules are appended to the CSS rules of the extended theme.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="themeId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the id of the theme this extension contributes to. Use org.eclipse.rap.rwt.theme.Default to contribute to the default theme.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.themes/theme/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="file" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a relative path of a &lt;code&gt;.css&lt;/code&gt; file that contains the additional rules to append to the theme
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
    <annotation>
       <appInfo>
          <meta.section type="since"/>
@@ -96,7 +138,7 @@ An RWT theme is used to customize the look and feel of applications built with t
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         The following is an example of a theme extension definition: 
+         The following is an example of a theme extension with a new theme: 
 &lt;p&gt;
 &lt;pre&gt;
    &lt;extension point=&quot;org.eclipse.rap.ui.themes&quot;&gt;
@@ -104,6 +146,17 @@ An RWT theme is used to customize the look and feel of applications built with t
             id=&quot;my.application.aquablue&quot;
             name=&quot;Aqua Blue Theme&quot;
             file=&quot;aqua-blue.css&quot; /&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+
+The following is an example of a theme extension that defines a contribution to an existing theme:
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension point=&quot;org.eclipse.rap.ui.themes&quot;&gt;
+      &lt;themeContribution
+            themeId=&quot;my.application.aquablue&quot;
+            file=&quot;aqua-blue-additions.css&quot; /&gt;
    &lt;/extension&gt;
 &lt;/pre&gt;
 &lt;/p&gt;
@@ -116,8 +169,8 @@ An RWT theme is used to customize the look and feel of applications built with t
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         A template for valid theme files can be found in the &lt;code&gt;src/&lt;/code&gt; directory of the RWT plug-in (&lt;code&gt;org.eclipse.rap.rwt&lt;/code&gt;). The file is called &lt;code&gt;theme-template.properties&lt;/code&gt;.
-The RAP demo plugin &lt;code&gt;org.eclipse.rap.demo&lt;/code&gt; contains an example of a theme extension.
+         The RAP demo plugin &lt;code&gt;org.eclipse.rap.demo&lt;/code&gt; contains an example of a theme extension.
+
       </documentation>
    </annotation>
 
@@ -126,7 +179,7 @@ The RAP demo plugin &lt;code&gt;org.eclipse.rap.demo&lt;/code&gt; contains an ex
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         Copyright (c) 2007 Innoopract Informationssysteme GmbH.&lt;br&gt;
+         Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.&lt;br&gt;
 All rights reserved. This program and the accompanying materials are made
 available under the terms of the Eclipse Public License v1.0 which accompanies
 this distribution, and is available at &lt;a 

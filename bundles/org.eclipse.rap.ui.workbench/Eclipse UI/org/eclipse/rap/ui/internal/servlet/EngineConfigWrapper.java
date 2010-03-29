@@ -60,8 +60,8 @@ final class EngineConfigWrapper implements IEngineConfig {
   //  extension point id for custom theme registration
   private static final String ID_THEMES
     = "org.eclipse.rap.ui.themes";
-  private static final String ID_THEME_CONTRIBUTIONS
-    = "org.eclipse.rap.ui.themeContributions";
+  private static final String ELEMENT_THEME = "theme";
+  private static final String ELEMENT_THEME_CONTRIBUTION = "themeContribution";
   //  extension point id for custom themeable widget registration
   private static final String ID_THEMEABLE_WIDGETS
     = "org.eclipse.rap.ui.themeableWidgets";
@@ -274,27 +274,29 @@ final class EngineConfigWrapper implements IEngineConfig {
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
     for( int i = 0; i < elements.length; i++ ) {
-      String contributorName = elements[ i ].getContributor().getName();
-      String themeId = elements[ i ].getAttribute( "id" );
-      String themeName = elements[ i ].getAttribute( "name" );
-      String themeFile = elements[ i ].getAttribute( "file" );
-      if( !ThemeManager.DEFAULT_THEME_ID.equals( themeId ) ) {
-        try {
-          Bundle bundle = Platform.getBundle( contributorName );
-          ResourceLoader loader = createResourceLoader( bundle );
-          StyleSheet styleSheet = null;
-          if( themeFile != null ) {
-            styleSheet = CssFileReader.readStyleSheet( themeFile, loader );
+      if( ELEMENT_THEME.equals( elements[ i ].getName() ) ) {
+        String contributorName = elements[ i ].getContributor().getName();
+        String themeId = elements[ i ].getAttribute( "id" );
+        String themeName = elements[ i ].getAttribute( "name" );
+        String themeFile = elements[ i ].getAttribute( "file" );
+        if( !ThemeManager.DEFAULT_THEME_ID.equals( themeId ) ) {
+          try {
+            Bundle bundle = Platform.getBundle( contributorName );
+            ResourceLoader loader = createResourceLoader( bundle );
+            StyleSheet styleSheet = null;
+            if( themeFile != null ) {
+              styleSheet = CssFileReader.readStyleSheet( themeFile, loader );
+            }
+            Theme theme = new Theme( themeId, themeName, styleSheet );
+            ThemeManager.getInstance().registerTheme( theme );
+          } catch( final Exception e ) {
+            String text = "Could not register custom theme ''{0}'' "
+                          + "from file ''{1}''.";
+            Object[] param = new Object[]{ themeId, themeFile };
+            String msg = MessageFormat.format( text, param );
+            IStatus status = new Status( IStatus.ERROR, contributorName, msg, e );
+            WorkbenchPlugin.getDefault().getLog().log( status );
           }
-          Theme theme = new Theme( themeId, themeName, styleSheet );
-          ThemeManager.getInstance().registerTheme( theme );
-        } catch( final Exception e ) {
-          String text = "Could not register custom theme ''{0}'' "
-                        + "from file ''{1}''.";
-          Object[] param = new Object[]{ themeId, themeFile };
-          String msg = MessageFormat.format( text, param );
-          IStatus status = new Status( IStatus.ERROR, contributorName, msg, e );
-          WorkbenchPlugin.getDefault().getLog().log( status );
         }
       }
     }
@@ -302,30 +304,32 @@ final class EngineConfigWrapper implements IEngineConfig {
 
   private static void registerThemeContributions() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
-    IExtensionPoint ep = registry.getExtensionPoint( ID_THEME_CONTRIBUTIONS );
+    IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
     for( int i = 0; i < elements.length; i++ ) {
-      String contributorName = elements[ i ].getContributor().getName();
-      String themeId = elements[ i ].getAttribute( "themeId" );
-      String themeFile = elements[ i ].getAttribute( "file" );
-      try {
-        Bundle bundle = Platform.getBundle( contributorName );
-        ResourceLoader loader = createResourceLoader( bundle );
-        StyleSheet styleSheet = CssFileReader.readStyleSheet( themeFile,
-                                                              loader );
-        Theme theme = ThemeManager.getInstance().getTheme( themeId );
-        if( theme == null ) {
-          throw new IllegalArgumentException( "No such theme defined: "
-                                              + themeId );
+      if( ELEMENT_THEME_CONTRIBUTION.equals( elements[ i ].getName() ) ) {
+        String contributorName = elements[ i ].getContributor().getName();
+        String themeId = elements[ i ].getAttribute( "themeId" );
+        String themeFile = elements[ i ].getAttribute( "file" );
+        try {
+          Bundle bundle = Platform.getBundle( contributorName );
+          ResourceLoader loader = createResourceLoader( bundle );
+          StyleSheet styleSheet = CssFileReader.readStyleSheet( themeFile,
+                                                                loader );
+          Theme theme = ThemeManager.getInstance().getTheme( themeId );
+          if( theme == null ) {
+            throw new IllegalArgumentException( "No such theme defined: "
+                                                + themeId );
+          }
+          theme.addStyleSheet( styleSheet );
+        } catch( final Exception e ) {
+          String text = "Could not register theme contribution for theme ''{0}'' "
+                        + "from file ''{1}''.";
+          Object[] param = new Object[]{ themeId, themeFile };
+          String msg = MessageFormat.format( text, param );
+          IStatus status = new Status( IStatus.ERROR, contributorName, msg, e );
+          WorkbenchPlugin.getDefault().getLog().log( status );
         }
-        theme.addStyleSheet( styleSheet );
-      } catch( final Exception e ) {
-        String text =   "Could not register theme contribution for theme ''{0}'' "
-                      + "from file ''{1}''.";
-        Object[] param = new Object[] { themeId, themeFile };
-        String msg = MessageFormat.format( text, param );
-        IStatus status = new Status( IStatus.ERROR, contributorName, msg, e );
-        WorkbenchPlugin.getDefault().getLog().log( status );
       }
     }
     ThemeManager.getInstance().initialize();
