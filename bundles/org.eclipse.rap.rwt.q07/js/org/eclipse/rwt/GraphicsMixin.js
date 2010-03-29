@@ -61,8 +61,13 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       if( this._gfxBackgroundEnabled ) {
         this.setGfxProperty( "backgroundImage", value );
         if(    this.getGfxProperty( "fillType" ) == "image"
-            && this._isCanvasReady() ) {
-          this._renderGfxBackground();
+            && this._isCanvasReady() ) 
+        {
+          if( value != null ) {
+            this._renderGfxBackground();
+          } else {
+            this._handleGfxBackground();
+          }
         }
       } else {
         this.base( arguments, value );
@@ -185,6 +190,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
           this._gfxBackgroundEnabled = false;
           this._applyBackgroundColor( this.getBackgroundColor() );
           this.setGfxProperty( "backgroundColor", null );
+          this._applyBackgroundImage( this.getBackgroundImage() );
+          this.setGfxProperty( "backgroundImage", null );
         }
         this._handleGfxStatus();
      }
