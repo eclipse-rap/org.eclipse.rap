@@ -84,8 +84,8 @@ public class IntroPartTest extends IWorkbenchPartTest {
         assertNotNull(partImage);
         assertTrue(Arrays.equals(descImage.getImageData().data, partImage
                 .getImageData().data));
-        if (descImage != null)
-            descImage.dispose();
+//        if (descImage != null)
+//            descImage.dispose();
         closePart(fPage, part);
     }
 
