@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
           isTraverseKey = this._isTraverseKey( keyCode );
         }
         if( hasKeyListener || ( hasTraverseListener && isTraverseKey ) ) {
-          if( !this._isUntrustedKey( control, keyCode ) ) {
+          if( !this._isUntrustedKey( control, keyCode, domEvent ) ) {
             if( this._keyEventRequestRunning || this._bufferedEvents.length > 0 )
             {
               this._bufferedEvents.push( this._getEventInfo( domEvent ) );
@@ -158,10 +158,14 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       return result;
     },
 
-    _isUntrustedKey : function( control, keyCode ) {
+    _isUntrustedKey : function( control, keyCode, domEvent ) {
       var result = false;
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-        if( control instanceof qx.ui.form.TextField ) {
+      	if( domEvent.ctrlKey ) {
+      	  result = true;
+      	} else if(    control instanceof qx.ui.form.TextField
+                   || control instanceof org.eclipse.swt.widgets.Combo )
+        {
           for( var i = 0; !result && i < this._untrustedKeyCodes.length; i++ ) {
           	if( this._untrustedKeyCodes[ i ] === keyCode ) {
           	  result = true;
