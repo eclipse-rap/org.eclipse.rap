@@ -25,9 +25,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Composite", {
       this.addEventListener( "changeBackgroundColor", 
                              this._fixBackgroundTransparency, 
                              this );
-      this.addEventListener( "changeBackgroundImage", 
-                             this._fixBackgroundTransparency, 
-                             this );
     }
   },
   
@@ -45,6 +42,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Composite", {
     _onMouseOut : function( evt ) {
       this.removeState( "over" );
     },
+    
+    _applyBackgroundImage : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function( newValue, oldValue ) {
+        this.base( arguments, newValue, oldValue );
+        if( newValue == null ) {
+          this._fixBackgroundTransparency();
+        }
+      },
+      "default" : function( newValue, oldValue ) {
+        this.base( arguments, newValue, oldValue );
+      }
+    } ),
 
     _fixBackgroundTransparency : function() {
       if(    this.getBackgroundColor() == null 
