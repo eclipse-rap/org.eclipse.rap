@@ -93,10 +93,15 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
       var edges = [ "Left", "Top", "Bottom", "Right" ];
       for( var i = 0; i < 4; i++ ) {
         var edge = edges[ i ];
-        style[ "border" + edge + "Style" ] = border[ "getStyle" + edge ]();
-        style[ "border" + edge + "Color" ] = border[ "getColor" + edge ]();
-        style[ "border" + edge + "Width" ]
-          = border[ "getWidth" + edge ]() + "px";
+        var borderColor = border[ "getColor" + edge ]();
+        var borderStyle = border[ "getStyle" + edge ]();
+        var borderWidth = border[ "getWidth" + edge ]();
+        style[ "border" + edge + "Width" ] 
+          = borderWidth == null ? "0px" : borderWidth + "px";
+        style[ "border" + edge + "Style" ] 
+          = borderStyle == null ? "none" : borderStyle; 
+        style[ "border" + edge + "Color" ]
+          = borderColor == null ? "" : borderColor;          
       }
       style.backgroundColor = theme[ "backgroundColor" ];
       this._styleFocusIndiactorOpacity( theme[ "opacity" ] );      
