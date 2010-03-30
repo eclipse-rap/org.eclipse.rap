@@ -136,6 +136,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundGradient = tv.getCssGradient( "Label", "background-image" );
       result.border = tv.getCssBorder( "Label", "border" );
       result.cursor = tv.getCssCursor( "Label", "cursor" );
+      result.opacity = tv.getCssFloat( "Label", "opacity" );
       return result;
     }
   },
@@ -160,6 +161,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.cursor = tv.getCssCursor( "CLabel", "cursor" );
       result.padding = tv.getCssBoxDimensions( "CLabel", "padding" );
       result.spacing = tv.getCssDimension( "CLabel", "spacing" );
+      result.opacity = tv.getCssFloat( "CLabel", "opacity" );
       return result;
     }
   },
@@ -184,6 +186,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundColor = tv.getCssColor( "ToolTip", "background-color" );
       result.backgroundImage = tv.getCssImage( "ToolTip", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "ToolTip", "background-image" );
+      result.opacity = tv.getCssFloat( "ToolTip", "opacity" );
       return result;
     }
   },
@@ -282,7 +285,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textColor : tv.getCssColor( "ToolBar", "color" ),
         backgroundColor : tv.getCssColor( "ToolBar", "background-color" ),
         backgroundGradient : tv.getCssGradient( "ToolBar", "background-image" ),
-        backgroundImage : tv.getCssImage( "ToolBar", "background-image" )
+        backgroundImage : tv.getCssImage( "ToolBar", "background-image" ),
+        opacity : tv.getCssFloat( "ToolBar", "opacity" )
       };
     }
   },
@@ -327,6 +331,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.spacing = tv.getCssDimension( "ToolItem", "spacing" );
       result.textColor = tv.getCssColor( "ToolItem", "color" );
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
+      result.opacity = tv.getCssFloat( "ToolItem", "opacity" );
       // TODO [tb] no longer needed?
       result.backgroundImage = states.selected && !states.over
                              ? "static/image/dotted_white.gif"
@@ -369,6 +374,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "Shell", "border" );
       result.minWidth = states.rwt_TITLE ? 80 : 5;
       result.minHeight = states.rwt_TITLE ? 25 : 5;
+      result.opacity = tv.getCssFloat( "Shell", "opacity" );
       return result;
     }
   },
@@ -520,7 +526,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         font : tv.getCssFont( "Menu", "font" ),
         overflow : "hidden",
         border : tv.getCssBorder( "Menu", "border" ),
-        padding : tv.getCssBoxDimensions( "Menu", "padding" )
+        padding : tv.getCssBoxDimensions( "Menu", "padding" ),
+        opacity : tv.getCssFloat( "Menu", "opacity" )
       };
     }
   },
@@ -532,7 +539,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         spacing : 2,
         padding : [ 2, 4 ],        
         backgroundColor : tv.getCssColor( "MenuItem", "background-color" ),
-        height : states.bar ? "100%" : "auto"         
+        height : states.bar ? "100%" : "auto",
+        opacity : tv.getCssFloat( "MenuItem", "opacity" )
       };
       result.textColor = tv.getCssColor( "MenuItem", "color" );
       if( states.cascade ) {                
@@ -1604,6 +1612,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundGradient = tv.getCssGradient( "Composite",
                                                      "background-image" );
       result.border = tv.getCssBorder( "Composite", "border" );
+      result.opacity = tv.getCssFloat( "Composite", "opacity" );
       return result;
     }
   },
@@ -1747,6 +1756,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                                    "background-image" );
       result.indicatorGradient = tv.getCssGradient( "ProgressBar-Indicator",
                                                      "background-image" );
+      result.indicatorOpacity = tv.getCssFloat( "ProgressBar-Indicator",
+                                                "opacity" );
       return result;
     }
   },

@@ -49,6 +49,9 @@
     <property name="spacing"
         description="Space between text and image." />
 
+    <property name="opacity" 
+	    description="The opacity of the CLabel. A value between 0 and 1." />
+
     <style name="BORDER"
         description="Indicates that the widget should have a border." />
 

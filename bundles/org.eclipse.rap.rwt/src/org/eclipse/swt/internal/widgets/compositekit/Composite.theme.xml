@@ -49,6 +49,9 @@
       </description>
     </property>
 
+    <property name="opacity" 
+        description="The opacity of the composite. A value between 0 and 1." />
+
     <style name="BORDER"
         description="Style constant for bordered behavior." />
         

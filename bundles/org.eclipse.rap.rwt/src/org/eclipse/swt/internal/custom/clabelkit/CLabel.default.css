@@ -8,6 +8,7 @@ CLabel {
   padding: 3px;
   spacing: 5px;
   cursor: default;
+  opacity: 1;
 }
 
 CLabel[BORDER] {

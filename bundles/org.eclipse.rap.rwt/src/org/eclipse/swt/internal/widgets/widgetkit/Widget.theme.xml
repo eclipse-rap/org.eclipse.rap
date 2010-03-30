@@ -158,6 +158,9 @@
     <property name="font"
         description="Text font for tooltips." />
 
+    <property name="opacity" 
+        description="The opacity of the tooltip. A value between 0 and 1." />
+
   </element>
 
   <!-- TODO [rst] Eliminate when property support is gone. -->

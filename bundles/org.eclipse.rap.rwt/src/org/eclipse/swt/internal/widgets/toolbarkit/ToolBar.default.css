@@ -7,6 +7,7 @@ ToolBar {
   background-color: rgb( 248, 248, 255 );
   background-image: none;
   border: none;
+  opacity: 1;
 }
 
 ToolBar[BORDER] {
@@ -21,6 +22,7 @@ ToolItem {
   border-radius: 0px;
   padding: 2px 3px;
   spacing: 4px;
+  opacity: 1;
 }
 
 ToolItem[FLAT] {

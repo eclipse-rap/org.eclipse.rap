@@ -7,11 +7,13 @@ Menu {
   border: 2px outset;
   border-radius: 0px;
   padding: 1px;
+  opacity: 1;
 }
 
 MenuItem {
   color: black;
   background-color: transparent;
+  opacity: 1;
 }
 
 MenuItem:hover {

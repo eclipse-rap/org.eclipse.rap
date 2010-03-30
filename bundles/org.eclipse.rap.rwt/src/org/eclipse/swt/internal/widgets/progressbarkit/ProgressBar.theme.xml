@@ -53,11 +53,14 @@
       <property name="border"
           description="The separator-line at the right/top of the indicator. Supports only solid borders" />
       
+      <property name="opacity" 
+          description="The opacity of the indicator. A value between 0 and 1." />
+        
       <style name="VERTICAL"
 	     description="The indicator grows from bottom to top." />
 
-	  <style name="UNDETERMINED"
-	      description="Indicates that the state of progress is unkown." />
+      <style name="UNDETERMINED"
+         description="Indicates that the state of progress is unkown." />
         
       <state name="disabled"
           description="Applies to the progress indicator of a disabled progress bar." />

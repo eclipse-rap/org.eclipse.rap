@@ -285,6 +285,20 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       }
       return result; 
     },
+    
+    setOpacity : function( shape, opacity ) {
+      var filterStr = "";
+      var antiAlias = true;
+      if( opacity < 1 ) {
+        filterStr =   "progid:DXImageTransform.Microsoft.Alpha"
+                    + "(opacity="
+                    + Math.round( opacity * 100 )
+                    + ")";
+        antiAlias = false;
+      } 
+      shape.node.style.filter = filterStr;
+      this._setAntiAlias( shape, antiAlias );
+    },
 
     /////////
     // helper
@@ -368,6 +382,10 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         result = value;
       }      
       return  result;
+    },
+    
+    _setAntiAlias : function( shape, value ) {
+      shape.node.style.antialias = value;
     }
 
   }

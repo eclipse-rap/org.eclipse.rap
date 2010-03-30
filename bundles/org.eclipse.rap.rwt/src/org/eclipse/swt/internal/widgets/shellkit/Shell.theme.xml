@@ -35,6 +35,9 @@
     <property name="background-color"
         description="Background color for shells." />
 
+	<property name="opacity" 
+	    description="The opacity of the shell. A value between 0 and 1." />
+
     <style name="BORDER"
         description="Indicates that the shell should have a border." />
 

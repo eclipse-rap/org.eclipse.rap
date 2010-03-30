@@ -83,6 +83,13 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       themeable : true
     },
     
+    indicatorOpacity : {
+      nullable : true,
+      init : 1,
+      apply : "_applyIndicatorFill",
+      themeable : true
+    },
+    
     backgroundImageSized : {
       nullable : true,
       init : null,
@@ -360,6 +367,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       } else {
         gfxUtil.setFillColor( this._indicatorShape, this.getIndicatorColor() );
       }
+      gfxUtil.setOpacity( this._indicatorShape, this.getIndicatorOpacity() );
     },
 
     _styleBackgroundFill : function() {

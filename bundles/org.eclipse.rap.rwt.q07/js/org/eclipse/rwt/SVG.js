@@ -258,6 +258,10 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       // this assumes that only px can be set, which is true within this class
       return parseFloat( shape.node.getAttribute( "stroke-width" ) );
     },
+    
+    setOpacity : function( shape, opacity ) {
+      shape.node.setAttribute( "opacity", opacity );
+    },
 
     /////////
     // helper

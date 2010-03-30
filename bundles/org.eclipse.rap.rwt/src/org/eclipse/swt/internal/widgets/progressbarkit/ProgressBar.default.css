@@ -11,6 +11,7 @@ ProgressBar-Indicator {
   background-color: rgb( 0, 128, 192 );
   background-image: none;
   border: none;
+  opacity: 0.5;
 }
 
 ProgressBar-Indicator:paused {

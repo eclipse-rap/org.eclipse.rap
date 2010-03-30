@@ -47,6 +47,9 @@
     <property name="text-decoration"
         description="Decoration for label text." />
 
+    <property name="opacity" 
+        description="The opacity of the label. A value between 0 and 1." />
+
     <style name="BORDER"
         description="Indicates that the widget should have a border." />
 

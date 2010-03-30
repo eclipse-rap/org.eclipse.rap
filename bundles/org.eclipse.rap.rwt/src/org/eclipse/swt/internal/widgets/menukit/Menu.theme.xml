@@ -38,6 +38,9 @@
       </description>
     </property>
     
+    <property name="opacity" 
+        description="The opacity of the menu. A value between 0 and 1." />
+    
     <property name="padding"
         description="Space between border and text / image" />
 
@@ -52,6 +55,9 @@
 
       <property name="background-color"
           description="Background color" />
+
+      <property name="opacity" 
+          description="The opacity of the item. A value between 0 and 1." />
 
       <style name="PUSH"
           description="Style constant for push menu item behavior." />

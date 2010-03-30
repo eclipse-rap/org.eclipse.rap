@@ -207,8 +207,15 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
      */
     getStrokeWidth : function( shape ) {
       return this._renderClass.getStrokeWidth( shape );      
-    }
+    },
     
+    /**
+     * opaciy is a value between 0 and 1. 
+     */
+    setOpacity : function( shape, opacity ) {
+      this._renderClass.setOpacity( shape, opacity );
+    }
+
   }
 
 } );
