@@ -194,17 +194,6 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
           oldSelection = selection;
           oldFocusCell = focusCell;
         }
-
-        private Widget[] getSelectedItems() {
-          Control control = viewer.getControl();
-          Widget[] result = null;
-          if( control instanceof Table ) {
-            result = ( ( Table )control ).getSelection();
-          } else if( control instanceof Tree ) {
-            result = ( ( Tree )control ).getSelection();
-          }
-          return result;
-        }
       });
     }
 
@@ -314,13 +303,35 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //			oldCell.getControl().redraw(x, rect.y - 1, width, rect.height + 1,
 //					true);
 //		}
-    if( oldCell != null ) {
-      oldCell.setBackground( null );
-      oldCell.setForeground( null );
-      viewer.updateItem( oldCell.getItem(), oldCell.getElement() );
-    }
-    if( newCell != null ) {
-      markFocusedCell(null, newCell);
-    }
+        if( oldCell != null ) {
+          oldCell.setBackground( null );
+          oldCell.setForeground( null );
+          viewer.updateItem( oldCell.getItem(), oldCell.getElement() );
+        }
+        if( newCell != null && isItemSelected( newCell.getItem() ) ) {
+          markFocusedCell( null, newCell );
+        }
 	}
+
+// RAP [if] Helping methods
+    private Widget[] getSelectedItems() {
+      Control control = viewer.getControl();
+      Widget[] result = null;
+      if( control instanceof Table ) {
+        result = ( ( Table )control ).getSelection();
+      } else if( control instanceof Tree ) {
+        result = ( ( Tree )control ).getSelection();
+      }
+      return result;
+    }
+
+	private boolean isItemSelected( final Widget item ) {
+	  boolean result = false;
+      Widget[] selection = getSelectedItems();
+      for( int i = 0; i < selection.length && !result; i++ ) {
+        result = item == selection[ i ];
+      }
+	  return result;
+	}
+// RAPEND
 }
