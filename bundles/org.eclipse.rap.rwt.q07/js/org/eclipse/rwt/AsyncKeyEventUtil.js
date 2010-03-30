@@ -164,13 +164,12 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         // Check for CTRL key fixes bug 282837
         if( domEvent.ctrlKey ) {
           result = true;
-        } else {
-          if( control instanceof qx.ui.form.TextField ) {
-            for( var i = 0; !result && i < this._untrustedKeyCodes.length; i++ )
-            {
-              if( this._untrustedKeyCodes[ i ] === keyCode ) {
-                result = true;
-              }
+        } else if(    control instanceof qx.ui.form.TextField
+                   || control instanceof org.eclipse.swt.widgets.Combo )
+        {
+          for( var i = 0; !result && i < this._untrustedKeyCodes.length; i++ ) {
+            if( this._untrustedKeyCodes[ i ] === keyCode ) {
+              result = true;
             }
           }
         }
