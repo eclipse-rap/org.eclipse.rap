@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
           isTraverseKey = this._isTraverseKey( keyCode );
         }
         if( hasKeyListener || ( hasTraverseListener && isTraverseKey ) ) {
-          if( !this._isUntrustedKey( control, keyCode, domEvent ) ) {
+          if( !this._isUntrustedKey( keyCode, domEvent ) ) {
             if( this._keyEventRequestRunning || this._bufferedEvents.length > 0 )
             {
               this._bufferedEvents.push( this._getEventInfo( domEvent ) );
@@ -158,15 +158,14 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       return result;
     },
 
-    _isUntrustedKey : function( control, keyCode, domEvent  ) {
+    _isUntrustedKey : function( keyCode, domEvent  ) {
       var result = false;
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+        var tagName = domEvent.target.tagName.toLowerCase();
         // Check for CTRL key fixes bug 282837
         if( domEvent.ctrlKey ) {
           result = true;
-        } else if(    control instanceof qx.ui.form.TextField
-                   || control instanceof org.eclipse.swt.widgets.Combo )
-        {
+        } else if( tagName == "input" || tagName == "textarea" ) {
           for( var i = 0; !result && i < this._untrustedKeyCodes.length; i++ ) {
             if( this._untrustedKeyCodes[ i ] === keyCode ) {
               result = true;

@@ -237,6 +237,33 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       }
     },
     
+    fakeKeyEventDOM : function( node, eventType, stringOrKeyCode ) {
+      var charCode = null;
+      var keyCode = null;
+      var isChar = typeof stringOrKeyCode == "string";
+      if( isChar ) {
+        charCode = stringOrKeyCode.charCodeAt( 0 );
+      } else {
+        keyCode = stringOrKeyCode;
+      }
+      var domEvent = {
+        target : node,
+        type : eventType,
+        ctrlKey : false,
+        altKey :  false,
+        shiftKey : false,
+        keyCode : keyCode,
+        charCode : charCode,
+        isChar: isChar,
+        pageX: 0,
+        pageY: 0,        
+        preventDefault : function(){},
+        stopPropagation : function(){}
+      };
+      var handler = qx.event.handler.KeyEventHandler.getInstance();
+      handler._idealKeyHandler( keyCode, charCode, eventType, domEvent );
+    },
+    
     ////////////////
     // client-server
         
