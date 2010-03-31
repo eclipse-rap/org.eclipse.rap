@@ -96,6 +96,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.addEventListener( "keyinput", this._onKeyInput );
     // Specific events
     this._field.addEventListener( "blur", this._onTextBlur, this );
+    this._field.addEventListener( "input", this._onTextInput, this );
     this._list.addEventListener( "appear", this._onListAppear, this );
   },
 
@@ -123,6 +124,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.removeEventListener( "keypress", this._onKeyPress );
     this.removeEventListener( "keyinput", this._onKeyInput );
     this._field.removeEventListener( "blur", this._onTextBlur, this );
+    this._field.removeEventListener( "input", this._onTextInput, this );
     this._list.removeEventListener( "appear", this._onListAppear, this );
     // Solution taken from Qooxdoo implementation of ComboBox
     // in order to prevent memory leak and other problems.
@@ -590,24 +592,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
             this._setSelected( this._list.getChildren()[0] );
           }
           break;
-        default:
-          charCode = evt.getCharCode();
-          keyIdentifier = evt.getKeyIdentifier();
-          if( this._editable && (    charCode > 0 
-                                  || keyIdentifier == "Delete" 
-                                  || keyIdentifier == "Backspace" ) ) 
-          {
-            this._isModified = true;
-            this._selected = null;
-            this._resetListSelection();
-            if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-              var req = org.eclipse.swt.Request.getInstance();
-              req.addEventListener( "send", this._onSend, this );
-              if( this._hasVerifyModifyListener ) {
-                qx.client.Timer.once( this._sendModifyText, this, 500 );
-              }
-            }
-          }
       }
       if(    this._field.isCreated()
           && !org_eclipse_rap_rwt_EventUtil_suspend ) 
@@ -622,6 +606,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list._onkeyinput( evt );
         var selected = this._manager.getSelectedItem();
         this._setSelected( selected );
+      }
+    },
+
+    _onTextInput : function( evt ) {
+      if( this._editable ) {
+        this._isModified = true;
+        this._selected = null;
+        this._resetListSelection();
+        if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addEventListener( "send", this._onSend, this );
+          if( this._hasVerifyModifyListener ) {
+            qx.client.Timer.once( this._sendModifyText, this, 500 );
+          }
+        }
       }
     },
     

@@ -1514,19 +1514,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         radii[ 0 ] = 0;
         radii[ 1 ] = 0;
       }
-      // cut off right rounded corners of unselected tabs
-      if( !states.selected ) {
-        radii[ 1 ] = 0;
-        radii[ 2 ] = 0;
-      }
-      // cut off left rounded corners of unselected tabs except first
-      if( !states.selected && !( states.firstItem && states.rwt_BORDER ) ) {
-        radii[ 0 ] = 0;
-        radii[ 3 ] = 0;
-      }
       var rounded
          = radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0;
-      if( rounded ) {
+      if( rounded && states.selected ) {
         result.border = new org.eclipse.rwt.RoundedBorder( 0, color );
         result.border.setRadii( radii );
       } else {
