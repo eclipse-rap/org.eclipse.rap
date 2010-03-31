@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridLayout;
@@ -280,7 +281,7 @@ public class TableViewerTab extends ExampleTab {
       super( viewer );
       editor = new ComboBoxCellEditor( viewer.getTable(),
                                        LAST_NAMES,
-                                       SWT.READ_ONLY );
+                                       SWT.NONE );
     }
 
     protected boolean canEdit( final Object element ) {
@@ -305,7 +306,8 @@ public class TableViewerTab extends ExampleTab {
 
     protected void setValue( final Object element, final Object value ) {
       Person person = ( Person )element;
-      person.lastName = LAST_NAMES[ ( ( Integer )value ).intValue() ];
+      CCombo ccombo = ( CCombo )editor.getControl();
+      person.lastName = ccombo.getText();
       getViewer().update( element, null );
     }
   }
