@@ -41,3 +41,10 @@ CCombo-List {
 CCombo-Field {
   padding: 2px 3px;
 }
+
+CCombo-FocusIndicator {
+  background-color: transparent; 
+  border: 1px dotted #909090;
+  margin: 1px 16px 1px 1px;
+  opacity: 1;
+}

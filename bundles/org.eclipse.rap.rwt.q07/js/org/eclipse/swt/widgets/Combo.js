@@ -241,9 +241,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       if( this._field.isCreated() ) {
         this._field._visualizeFocus();
       }
-      if( !this._editable && !this._ccombo ) {
+      if( !this._editable ) {
         var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
-        focusIndicator.show( this, "Combo-FocusIndicator", null );
+        var cssSelector = this._ccombo
+                        ? "CCombo-FocusIndicator"
+                        : "Combo-FocusIndicator"
+        focusIndicator.show( this, cssSelector, null );
       }
     },
     
@@ -260,7 +263,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._field.setSelectionLength( 0 );
         this._field._visualizeBlur();
       }
-      if( !this._editable && !this._ccombo ) {
+      if( !this._editable ) {
         var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
         focusIndicator.hide( this );
       }

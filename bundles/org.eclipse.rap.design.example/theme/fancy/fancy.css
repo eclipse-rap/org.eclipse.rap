@@ -791,7 +791,7 @@ Combo-List, CCombo-List {
   border-radius: 0px 0px 2px 2px;
 }
 
-Combo-FocusIndicator {
+Combo-FocusIndicator, CCombo-FocusIndicator {
   background-color: transparent; 
   border: 1px dotted #b8b8b8;
   margin: 1px 19px 1px 1px;
