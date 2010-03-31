@@ -38,6 +38,9 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
       var hasValidBorder = border instanceof qx.ui.core.Border;
       var margin = tv.getCssBoxDimensions( cssSelector, "margin" );
       var padding = tv.getCssBoxDimensions( cssSelector, "padding" );
+      if( !padding ) {
+        padding = [ 0, 0, 0, 0 ];
+      }
       var paddingIsZero =    padding[ 0 ] == 0
                           && padding[ 1 ] == 0
                           && padding[ 2 ] == 0

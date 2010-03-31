@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -206,7 +206,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onChangeBackgroundColor : function( evt ) {
       var color = evt.getValue();
-      this._field.setBackgroundColor( color );
       // Ensure that the list is never transparent (see bug 282540)
       if( color != null ) {
         this._list.setBackgroundColor( color );
@@ -240,6 +239,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       if( this._field.isCreated() ) {
         this._field._visualizeFocus();
       }
+      if( !this._editable && !this._ccombo ) {
+        var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
+        focusIndicator.show( this, "Combo-FocusIndicator", null );
+      }
     },
     
     // Override of the _ontabfocus method from qx.ui.core.Widget
@@ -254,6 +257,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         // setting selection lenght to 0 needed for IE to deselect text
         this._field.setSelectionLength( 0 );
         this._field._visualizeBlur();
+      }
+      if( !this._editable && !this._ccombo ) {
+        var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
+        focusIndicator.hide( this );
       }
     },
     

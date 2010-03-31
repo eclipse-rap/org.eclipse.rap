@@ -29,3 +29,10 @@ Combo-List {
 Combo-Field {
   padding: 2px 3px;
 }
+
+Combo-FocusIndicator {
+  background-color: transparent; 
+  border: 1px dotted #909090;
+  margin: 1px 16px 1px 1px;
+  opacity: 1;
+}
