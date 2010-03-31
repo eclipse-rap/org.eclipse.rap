@@ -295,13 +295,9 @@ public class TableViewerTab extends ExampleTab {
 
     protected Object getValue( final Object element ) {
       Person person = ( Person )element;
-      Integer result = new Integer( 0 );
-      for( int i = 0; i < LAST_NAMES.length; i++ ) {
-        if( LAST_NAMES[ i ].equals( person.lastName ) ) {
-          result = new Integer( i );
-        }
-      }
-      return result;
+      CCombo ccombo = ( CCombo )editor.getControl();
+      ccombo.setText( person.lastName );
+      return new Integer( -2 );
     }
 
     protected void setValue( final Object element, final Object value ) {
