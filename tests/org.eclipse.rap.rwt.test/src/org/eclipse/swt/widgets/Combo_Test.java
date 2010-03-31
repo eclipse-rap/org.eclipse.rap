@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -304,6 +304,27 @@ public class Combo_Test extends TestCase {
     assertEquals( "", combo.getText() );
   }
 
+  public void testSelectWithInvalidIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 1 );
+    assertEquals( 1, combo.getSelectionIndex() );
+    assertEquals( "test1", combo.getText() );
+    combo.select( -2 );
+    assertEquals( 1, combo.getSelectionIndex() );
+    assertEquals( "test1", combo.getText() );
+    combo.select( 10 );
+    assertEquals( 1, combo.getSelectionIndex() );
+    assertEquals( "test1", combo.getText() );
+    combo.select( -1 );
+    assertEquals( 1, combo.getSelectionIndex() );
+    assertEquals( "test1", combo.getText() );
+  }
+
   public void testSetTextSelect() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -368,7 +389,7 @@ public class Combo_Test extends TestCase {
     combo.remove( 0 );
     assertEquals( "", combo.getText() );
   }
-  
+
   public void testRemoveOutOfRange() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -401,7 +422,7 @@ public class Combo_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testDispose() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -545,7 +566,7 @@ public class Combo_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testVerifyEvent() {
     VerifyListener verifyListener;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -616,7 +637,7 @@ public class Combo_Test extends TestCase {
     assertEquals( oldText.length(), verifyEvent.end );
     assertEquals( newText, verifyEvent.text );
     assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
-    
+
     // Ensure that VerifyEvent#text denotes the text to be set
     // and not the cut by textLimit one
     combo.setTextLimit( 5 );
@@ -680,7 +701,7 @@ public class Combo_Test extends TestCase {
     combo.setText( "test" );
     assertEquals( 2, combo.getSelectionIndex() );
   }
-  
+
   public void testListVisible() {
     Display display = new Display();
     Composite shell = new Shell( display );
@@ -690,7 +711,7 @@ public class Combo_Test extends TestCase {
     combo.setListVisible( false );
     assertFalse( combo.getListVisible() );
   }
-  
+
   public void testGetTextHeight() {
     Display display = new Display();
     Shell shell = new Shell( display );

@@ -129,7 +129,7 @@ public class CCombo_Test extends TestCase {
     combo.clearSelection();
     combo.setSelection( new Point( 5, 2 ) );
     assertEquals( new Point( 2, 5 ), combo.getSelection() );
-    
+
   }
 
   public void testIndexOf() {
@@ -336,6 +336,27 @@ public class CCombo_Test extends TestCase {
     assertEquals( "", combo.getText() );
   }
 
+  public void testSelectWithInvalidIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 1 );
+    assertEquals( 1, combo.getSelectionIndex() );
+    assertEquals( "test1", combo.getText() );
+    combo.select( -2 );
+    assertEquals( 1, combo.getSelectionIndex() );
+    assertEquals( "test1", combo.getText() );
+    combo.select( 10 );
+    assertEquals( 1, combo.getSelectionIndex() );
+    assertEquals( "test1", combo.getText() );
+    combo.select( -1 );
+    assertEquals( -1, combo.getSelectionIndex() );
+    assertEquals( "", combo.getText() );
+  }
+
   public void testSetTextSelect() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -435,7 +456,7 @@ public class CCombo_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testAddModifyListenerReadOnly() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -501,7 +522,7 @@ public class CCombo_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testVerifyEvent() {
     VerifyListener verifyListener;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -572,7 +593,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( oldText.length(), verifyEvent.end );
     assertEquals( newText, verifyEvent.text );
     assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
-    
+
     // Ensure that VerifyEvent#text denotes the text to be set
     // and not the cut by textLimit one
     combo.setTextLimit( 5 );
@@ -627,7 +648,7 @@ public class CCombo_Test extends TestCase {
     expected = new Point( 100, 100 );
     assertEquals( expected, combo.computeSize( 100, 100 ) );
   }
-  
+
   public void testSetTextAndSelection() throws Exception {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -644,7 +665,7 @@ public class CCombo_Test extends TestCase {
     combo.setText( "test" );
     assertEquals( 2, combo.getSelectionIndex() );
   }
-  
+
   public void testGetTextHeight() {
     Display display = new Display();
     Shell shell = new Shell( display );

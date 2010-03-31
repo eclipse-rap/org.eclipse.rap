@@ -154,8 +154,10 @@ public final class CCombo extends Composite {
    */
   public void select( final int index ) {
     checkWidget();
-    model.setSelection( index );
-    updateText();
+    if( -1 <= index && index < getItemCount() ) {
+      model.setSelection( index );
+      updateText();
+    }
   }
 
   /**

@@ -152,9 +152,10 @@ public class Combo extends Composite {
    */
   public void select( final int selectionIndex ) {
     checkWidget();
-    model.setSelection( selectionIndex );
-    // update text
-    updateText();
+    if( 0 <= selectionIndex && selectionIndex < getItemCount() ) {
+      model.setSelection( selectionIndex );
+      updateText();
+    }
   }
 
   /**
