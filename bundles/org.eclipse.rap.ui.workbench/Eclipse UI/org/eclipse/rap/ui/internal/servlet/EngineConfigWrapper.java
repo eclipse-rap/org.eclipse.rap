@@ -92,7 +92,7 @@ final class EngineConfigWrapper implements IEngineConfig {
     registerThemes();
     registerThemeContributions();
     registerFactories();
-    registerResources();    
+    registerResources();
     registerUICallBackServiceHandler();
     registerJSLibraryServiceHandler();
     registerCustomServiceHandlers();
@@ -253,7 +253,20 @@ final class EngineConfigWrapper implements IEngineConfig {
       String widgetClass = widgetExts[ i ].getAttribute( "class" );
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
-        ResourceLoader resLoader = createResourceLoader( bundle );
+        ResourceLoader resLoader = new ResourceLoader() {
+          public InputStream getResourceAsStream( final String resourceName )
+            throws IOException
+          {
+            InputStream result = null;
+            // We need to call getResource() here since resources must be loaded
+            // by the bundle classloader
+            URL url = bundle.getResource( resourceName );
+            if( url != null ) {
+              result = url.openStream();
+            }
+            return result;
+          }
+        };
         Class widget = bundle.loadClass( widgetClass );
         ThemeManager.getInstance().addThemeableWidget( widget, resLoader );
       } catch( final Throwable thr ) {
@@ -418,7 +431,7 @@ final class EngineConfigWrapper implements IEngineConfig {
     ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID,
                                            new JSLibraryServiceHandler() );
   }
-  
+
   private void registerCustomServiceHandlers() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_SERVICE_HANDLER );
