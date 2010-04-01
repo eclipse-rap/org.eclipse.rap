@@ -6970,11 +6970,11 @@ members){statics.__initApplyMethods(members);
 if(qx.core.Variant.isSet("qx.client",
 "mshtml")){members._renderRuntimeWidth=function(v){this._style.pixelWidth=(v==null)?0:v;
 if(this._innerStyle){var innerValue=this._usesComplexBorder&&v!=null?v-2:v;
-this._innerStyle.pixelWidth=innerValue==null?0:v;
+this._innerStyle.pixelWidth=innerValue==null?0:innerValue;
 }};
 members._renderRuntimeHeight=function(v){this._style.pixelHeight=(v==null)?0:v;
 if(this._innerStyle){var innerValue=this._usesComplexBorder&&v!=null?v-2:v;
-this._innerStyle.pixelHeight=innerValue==null?0:v;
+this._innerStyle.pixelHeight=innerValue==null?0:innerValue;
 }};
 members._resetRuntimeWidth=function(){this._style.width="";
 if(this._innerStyle){this._innerStyle.width="";
