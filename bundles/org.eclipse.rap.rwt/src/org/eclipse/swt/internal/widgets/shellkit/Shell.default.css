@@ -16,6 +16,12 @@ Shell:maximized {
   border: none;
 }
 
+Shell-DisplayOverlay {
+  background-image: none;
+  background-color: transparent;
+  opacity: 1;
+}
+
 /* Shell titlebar */
 
 Shell-Titlebar {

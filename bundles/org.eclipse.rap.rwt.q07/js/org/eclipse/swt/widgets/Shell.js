@@ -85,11 +85,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           }
         }
         if( upperModalShell != null ) {
+          this._copyStates( upperModalShell, vTop._getBlocker() );
           vTop._getBlocker().show();
           vTop._getBlocker().setZIndex( upperModalShell.getZIndex() - 1 );
         }
       }
       org.eclipse.swt.widgets.Shell._upperModalShell = upperModalShell;
+    },
+    
+    _copyStates : function( source, target ) {
+      target.__states = {};
+      for( var state in source.__states ) {
+        if( source._isRelevantState( state ) ) {
+          target.addState( state );
+        }
+      }
     },
 
     /*
@@ -225,34 +235,51 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     // TODO [rst] Find a generic solution for state inheritance
     addState : function( state ) {
       this.base( arguments, state );
-      if(    state == "active"
-          || state == "maximized"
-          || state == "minimized"
-          || state.substr( 0, 8 ) == "variant_"
-          || state.substr( 0, 4 ) == "rwt_" )
-      {
+      if( this._isRelevantState( state ) ) {
         this._captionBar.addState( state );
         this._minimizeButton.addState( state );
         this._maximizeButton.addState( state );
         this._restoreButton.addState( state );
         this._closeButton.addState( state );
+        var blocker = this._getClientDocumentBlocker();
+        if( blocker != null ) {
+          blocker.addState( state );
+        }
       }
     },
 
     removeState : function( state ) {
       this.base( arguments, state );
-      if(    state == "active"
-          || state == "maximized"
-          || state == "minimized"
-          || state.substr( 0, 8 ) == "variant_"
-          || state.substr( 0, 4 ) == "rwt_" )
-      {
+      if( this._isRelevantState( state ) ) {
         this._captionBar.removeState( state );
         this._minimizeButton.removeState( state );
         this._maximizeButton.removeState( state );
         this._restoreButton.removeState( state );
         this._closeButton.removeState( state );
+        var blocker = this._getClientDocumentBlocker();
+        if( blocker != null ) {
+          blocker.removeState( state );
+        }
       }
+    },
+    
+    _getClientDocumentBlocker : function() {
+      var result = null;
+      if(    this._appModal 
+          && org.eclipse.swt.widgets.Shell._upperModalShell == this ) 
+      {
+        result = this.getTopLevelWidget()._getBlocker();
+      }
+      return result;
+    },
+    
+    _isRelevantState : function( state ) {
+      var result =    state == "active"
+                   || state == "maximized"
+                   || state == "minimized"
+                   || state.substr( 0, 8 ) == "variant_"
+                   || state.substr( 0, 4 ) == "rwt_";
+      return result;
     },
 
     /**

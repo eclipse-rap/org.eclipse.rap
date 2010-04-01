@@ -2,3 +2,9 @@ Shell.toolbarLayer {
   background-color: rgb( 255, 255, 255 );
   border: none;
 }
+
+Shell-DisplayOverlay.confDialog {
+  background-image: none;
+  background-color: #FFFFFF;
+  opacity: 0.5;
+}

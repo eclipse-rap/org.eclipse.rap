@@ -77,13 +77,22 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "client-document-blocker" : {
     style : function( states ) {
-      // You could also use: "static/image/dotted_white.gif" for example as backgroundImage here
-      // (Visible) background tiles could be dramatically slow down mshtml!
-      // A background image or color is always needed for mshtml to block the events successfully.
-      return {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
         cursor : "default",
-        backgroundImage : "static/image/blank.gif"
+        backgroundColor : tv.getCssColor( "Shell-DisplayOverlay",
+                                          "background-color" ),
+        backgroundImage : tv.getCssImage( "Shell-DisplayOverlay",
+                                          "background-image" ),
+        opacity : tv.getCssFloat( "Shell-DisplayOverlay", "opacity" )
       };
+      if(    result.backgroundImage == null 
+          && result.backgroundColor == "undefined" ) {      
+        // A background image or color is always needed for mshtml to 
+        // block the events successfully.
+        result.backgroundImage = "static/image/blank.gif";
+      }
+      return result;
     }
   },
 

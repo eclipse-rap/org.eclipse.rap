@@ -179,6 +179,35 @@
 
     </element>
 
+    <element name="Shell-DisplayOverlay">
+      <description>
+        An overlay that stays between (regarding the z-order) the display area 
+        and a modal shell when it is open.
+      </description>
+      
+      <property name="background-color"
+          description="Background color for the overlay." />
+
+      <property name="background-image"
+          description="Background image for the overlay." />
+ 
+      <property name="opacity" 
+          description="The opacity of the overlay. A value between 0 and 1." />
+ 
+      <style name="BORDER"
+          description="Indicates that the modal shell has the BORDER style." /> 
+
+      <style name="TOOL" 
+          description="Indicates that the modal shell has the TOOL style." />
+
+      <style name="SHEET" 
+          description="Indicates that the modal shell has the SHEET style." />
+
+      <style name="TITLE" 
+          description="Indicates that the modal shell has the TITLE style." />
+
+    </element>
+    
   </element>
 
 </theme>

@@ -59,7 +59,6 @@ public class ConfigurationDialog extends PopupDialog {
   private boolean viewMenuVisChanged;
   private Label lastImageLabel;
   private Label description;
-  private Shell modalBackground;
 
   public ConfigurationDialog( final Shell parent,
                               final int shellStyle,
@@ -108,10 +107,6 @@ public class ConfigurationDialog extends PopupDialog {
   }
 
   public boolean close() {
-    if( !modalBackground.isDisposed() ) {
-      modalBackground.close();
-      modalBackground.dispose();
-    }    
     ConfigurableStack stackPresentation
       = ( ConfigurableStack ) action.getStackPresentation();
     IToolBarManager manager = stackPresentation.getPartToolBarManager();
@@ -165,7 +160,7 @@ public class ConfigurationDialog extends PopupDialog {
     fdOK.width = 90;
     ok.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        close( true );
+        close( true );       
       };
     } );
     ok.moveAbove( cancel );
@@ -263,17 +258,10 @@ public class ConfigurationDialog extends PopupDialog {
     }
   }
 
-  public int open() {
-    IWorkbench workbench = PlatformUI.getWorkbench();
-    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-    Rectangle bounds = window.getShell().getBounds();
-    modalBackground = new Shell( getParentShell(), SWT.NO_TRIM );
-    modalBackground.setAlpha( 80 );
-    modalBackground.setBounds( bounds );
-    modalBackground.open();
-
+  public int open() {    
     int result = super.open();
     Shell shell = getShell();
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, "confDialog" );
     shell.setBackgroundMode( SWT.INHERIT_NONE );
     shell.setText( "Configuration for " + site.getSelectedPart().getName() );
     String configDialogIcon = ILayoutSetConstants.CONFIG_DIALOG_ICON;
