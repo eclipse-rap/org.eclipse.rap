@@ -137,8 +137,7 @@ public class ShowInAction extends Action {
      * Generates a system beep.
      */
     private void beep() {
-// RAP [rh] Display#beep() missing        
-//        window.getShell().getDisplay().beep();
+        window.getShell().getDisplay().beep();
     }
 
 }

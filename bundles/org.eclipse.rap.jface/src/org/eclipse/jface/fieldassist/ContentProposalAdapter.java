@@ -1914,9 +1914,7 @@ public class ContentProposalAdapter {
 					});
 					notifyPopupOpened();
 				} else if (!autoActivated) {
-					// RAP [bm]: beep yourself!
-//					getControl().getDisplay().beep();
-					// RAPEND: [bm] 
+					getControl().getDisplay().beep();
 				}
 			}
 		}
