@@ -2138,6 +2138,15 @@ public class SWT {
   public static final int CURSOR_IBEAM = 19;
 
   /**
+   * System "not allowed" cursor (value is 20).
+   * 
+   * @see Graphics#getCursor(int)
+   * @since 1.3
+
+   */
+  public static final int CURSOR_NO = 20;
+
+  /**
    * System hand cursor (value is 21).
    *
    * @see Graphics#getCursor(int)
@@ -2145,6 +2154,7 @@ public class SWT {
    */
   public static final int CURSOR_HAND = 21;
 
+  
   // Predefined images
 
   /**

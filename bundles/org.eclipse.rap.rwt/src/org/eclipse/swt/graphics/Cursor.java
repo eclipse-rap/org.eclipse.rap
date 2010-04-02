@@ -174,6 +174,7 @@ public final class Cursor extends Resource {
       case SWT.CURSOR_IBEAM:
       case SWT.CURSOR_HAND:
       case SWT.CURSOR_UPARROW:
+      case SWT.CURSOR_NO:
         break;
       default:
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );

@@ -72,6 +72,7 @@ abstract class ExampleTab {
     "CURSOR_WAIT",
     "CURSOR_CROSS",
     "CURSOR_HELP",
+    "CURSOR_NO",
     "CURSOR_SIZEALL",
     "CURSOR_SIZENS",
     "CURSOR_SIZEWE",
@@ -636,6 +637,7 @@ abstract class ExampleTab {
         int cursorStyle = field.getInt( swtClass );
         cursor = Display.getCurrent().getSystemCursor( cursorStyle );
       } catch( Exception e ) {
+        e.printStackTrace();
       }
     }
     Iterator iter = controls.iterator();

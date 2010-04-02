@@ -1139,6 +1139,9 @@ public class ControlLCAUtil {
         case SWT.CURSOR_HAND:
           result = "pointer";
         break;
+        case SWT.CURSOR_NO:
+          result = "not-allowed";
+        break;
         case SWT.CURSOR_UPARROW:
           result = CURSOR_UPARROW;
         break;
