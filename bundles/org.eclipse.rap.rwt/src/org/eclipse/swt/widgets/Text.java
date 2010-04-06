@@ -793,6 +793,9 @@ public class Text extends Scrollable {
     // TextField.js to emulate IE hard-coded margin.
     // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
     height += 2;
+    // [rh] Fix for bug 306354: take into account that there is now 1px
+    // right padding on the client side (see Text.js#_applyElement)  
+    width += 1;
     Rectangle trim = computeTrim( 0, 0, width, height );
     return new Point( trim.width, trim.height );
   }

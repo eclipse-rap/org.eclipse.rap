@@ -363,33 +363,33 @@ public class Text_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
-    Point expected = new Point( 70, 17 );
+    Point expected = new Point( 71, 17 );
     assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     text.setText( "This is a long long text!" );
-    expected = new Point( 138, 19 );
+    expected = new Point( 139, 19 );
     assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     text.setMessage( "This is a message that is longer than the text!" );
-    expected = new Point( 254, 19 );
+    expected = new Point( 255, 19 );
     assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     text = new Text( shell, SWT.MULTI );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 138, 34 );
+    expected = new Point( 139, 34 );
     assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     text = new Text( shell, SWT.MULTI | SWT.WRAP );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 56, 116 );
+    expected = new Point( 57, 116 );
     assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
 
     text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 58, 118 );
     assertEquals( 1, text.getBorderWidth() );
+    expected = new Point( 59, 118 );
     assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
 
-    expected = new Point( 108, 108 );
+    expected = new Point( 109, 108 );
     assertEquals( expected, text.computeSize( 100, 100 ) );
   }
 

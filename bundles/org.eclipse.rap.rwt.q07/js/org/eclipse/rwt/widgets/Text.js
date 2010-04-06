@@ -47,6 +47,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       if( this._inputTag == "textarea" ) {
         this._styleWrap();
       }
+      // Fix for bug 306354
+      this._inputElement.style.paddingRight = "1px";
     },
 
     _applyWrap : function( value, oldValue ) {
