@@ -224,6 +224,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         partControl.getParent().setBackgroundMode( SWT.INHERIT_NONE );
         partControl.setData( WidgetUtil.CUSTOM_VARIANT, "partBorder" );
       }
+      tabBg.layout( true );
     } else {
       decorateStandaloneView( newPart );
     }
@@ -231,6 +232,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     IPropertyListener listener = new DirtyListener( newPart );
     dirtyListenerMap.put( newPart, listener );
     newPart.addPropertyListener( listener );
+    
   }
 
   private void decorateStandaloneView( final IPresentablePart newPart ) {
