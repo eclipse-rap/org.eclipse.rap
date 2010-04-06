@@ -297,6 +297,10 @@ Shell-CloseButton:hover {
   background-image: url( "/theme1/icons/close.over.png" );
 }
 
+Shell-DisplayOverlay {
+  opacity: 0.5;
+}
+
 /* Scale */
 Scale {
   background-color: rgb( 255, 255, 255 );  
