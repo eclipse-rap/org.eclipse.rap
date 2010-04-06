@@ -1094,6 +1094,9 @@ public class ControlLCAUtil {
         case SWT.CURSOR_WAIT:
           result = "wait";
         break;
+        case SWT.CURSOR_APPSTARTING:
+          result = "progress";
+          break;
         case SWT.CURSOR_CROSS:
           result = "crosshair";
         break;

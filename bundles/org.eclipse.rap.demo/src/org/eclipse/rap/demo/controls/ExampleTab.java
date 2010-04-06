@@ -70,6 +70,7 @@ abstract class ExampleTab {
     "null",
     "CURSOR_ARROW",
     "CURSOR_WAIT",
+    "CURSOR_APPSTARTING",
     "CURSOR_CROSS",
     "CURSOR_HELP",
     "CURSOR_NO",

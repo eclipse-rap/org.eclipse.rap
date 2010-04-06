@@ -2026,6 +2026,12 @@ public class SWT {
   public static final int CURSOR_CROSS = 2;
 
   /**
+   * System app startup cursor  (value is 3).
+   * @since 1.3
+   */
+  public static final int CURSOR_APPSTARTING = 3;
+
+  /**
    * System help cursor  (value is 4).
    *
    * @see Graphics#getCursor(int)

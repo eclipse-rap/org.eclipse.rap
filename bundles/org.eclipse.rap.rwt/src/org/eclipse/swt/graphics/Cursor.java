@@ -72,6 +72,7 @@ public final class Cursor extends Resource {
    *
    * @see SWT#CURSOR_ARROW
    * @see SWT#CURSOR_WAIT
+   * @see SWT#CURSOR_APPSTARTING
    * @see SWT#CURSOR_CROSS
    * @see SWT#CURSOR_APPSTARTING
    * @see SWT#CURSOR_HELP
@@ -158,6 +159,7 @@ public final class Cursor extends Resource {
     switch( style ) {
       case SWT.CURSOR_ARROW:
       case SWT.CURSOR_WAIT:
+      case SWT.CURSOR_APPSTARTING:
       case SWT.CURSOR_CROSS:
       case SWT.CURSOR_HELP:
       case SWT.CURSOR_SIZEALL:
