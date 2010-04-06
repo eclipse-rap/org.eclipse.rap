@@ -121,7 +121,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     
     //overwritten:
     _computeUsesComplexBorder : function() {
-      var result = this._gfxEnabled;
+      var result = this._gfxBorderEnabled;
       if( !result ) {
         result = this.base( arguments );
       }

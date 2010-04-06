@@ -145,7 +145,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertEquals ( [ 4, 0, 3, 0 ], this.getBorderCache( widget ) );      
       widget.setBackgroundGradient( this.gradient );
       widget.setBorder( null );
-      testUtil.flush();      
+      testUtil.flush();
       assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );      
       assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       widget.destroy();
@@ -325,7 +325,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var result = null;
       var inner = widget._getTargetNode().style;
       var outer = widget._style;
-      this.info( "fakePadding: " + inner.width + " " + inner.height );
       var isPx = true;
       isPx = ( inner.width.search( "%" ) == -1 ) ? isPx : false;
       isPx = ( inner.height.search( "%" ) == -1 ) ? isPx : false;
@@ -337,7 +336,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         var width = inner.width ? parseFloat( inner.width ) : 0; 
         var height = inner.height ? parseFloat( inner.height ) : 0;         
         var right = parseFloat( outer.width ) - left - width; 
-        var bottom = parseFloat( outer.width ) - top - height;         
+        var bottom = parseFloat( outer.height ) - top - height;         
         result = [ top, right, bottom, left ];
       }
       return result;
