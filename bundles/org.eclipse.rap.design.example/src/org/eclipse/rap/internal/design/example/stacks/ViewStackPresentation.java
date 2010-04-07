@@ -96,6 +96,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   private List overflowButtons = new ArrayList();
   private Map buttonPartMap = new HashMap();
   private IPresentablePart oldPart;
+  private boolean allActionsVisible;
 
   private class DirtyListener implements IPropertyListener {
 
@@ -149,6 +150,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   public ViewStackPresentation() {
     state = AS_INACTIVE;
     deactivated = false;
+    allActionsVisible = ConfigAction.allActionsVisible();
   }
 
   public void init() {
@@ -345,8 +347,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         IToolBarManager manager = getPartToolBarManager();
         boolean hasViewActions
           = manager != null && manager.getItems().length > 0;
-        if( ( hasViewActions || hasViewMenu ) 
-            && !ConfigAction.allActionsVisible() ) {
+        if( ( hasViewActions || hasViewMenu ) && !allActionsVisible ) {
           if( confButton != null ) {
             // enable conf button
             confButton.setEnabled( true );

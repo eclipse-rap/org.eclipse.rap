@@ -50,6 +50,11 @@ import org.eclipse.ui.presentations.StackPresentation;
  * @see ConfigurableStack
  */
 public abstract class ConfigurationAction extends Action {
+  
+  
+  public ConfigurationAction() {
+    allActionsVisible = allActionsVisible();
+  }
 
   /**
    * Extracts the id of an <code>{@link ActionContributionItem}</code> from a
@@ -70,6 +75,7 @@ public abstract class ConfigurationAction extends Action {
   private IStackPresentationSite site;
   private StackPresentation stackPresentation;
   private List configurationChangeListeners = new ArrayList();
+  private boolean allActionsVisible;
   
   /**
    * Helper method to check if all view contrib items are visible by default.
@@ -250,7 +256,7 @@ public abstract class ConfigurationAction extends Action {
    */
   public boolean isPartMenuVisible() {
     boolean result = true;
-    if( !allActionsVisible() ) {
+    if( !allActionsVisible) {
       if( stackPresentation instanceof ConfigurableStack ) {
         ConfigurableStack configStack = ( ConfigurableStack )stackPresentation;
         String paneId = configStack.getPaneId( site );
@@ -290,7 +296,7 @@ public abstract class ConfigurationAction extends Action {
                                        final String actionId )
   {
     boolean result = true;
-    if( !allActionsVisible() ) {
+    if( !allActionsVisible ) {
       String identifier = getActionIdentifier( viewId, actionId );  
       ScopedPreferenceStore prefStore
         = ( ScopedPreferenceStore ) PrefUtil.getAPIPreferenceStore();
@@ -379,4 +385,5 @@ public abstract class ConfigurationAction extends Action {
     prefStore.setValue( identifier, visibility );
 
   }
+ 
 }
