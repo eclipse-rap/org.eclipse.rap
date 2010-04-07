@@ -42,11 +42,12 @@ final class QooxdooResourcesUtil {
     "qx/constant/Core.js",
     "qx/constant/Layout.js",
     "qx/constant/Style.js",
-    
+
     "org/eclipse/rwt/KeyEventHandlerPatch.js",
     "org/eclipse/rwt/DomEventPatch.js",
     "org/eclipse/rwt/SVG.js",
     "org/eclipse/rwt/VML.js",
+    "org/eclipse/rwt/VMLCanvas.js",
     "org/eclipse/rwt/GraphicsUtil.js",
     "org/eclipse/rwt/GraphicsMixin.js",
     "org/eclipse/rwt/RoundedBorder.js",
@@ -117,7 +118,9 @@ final class QooxdooResourcesUtil {
     "org/eclipse/rwt/TreeDNDFeedback.js",
     "org/eclipse/rwt/TableDNDFeedback.js",
     "org/eclipse/rwt/widgets/ControlDecorator.js",
-    "org/eclipse/rwt/widgets/Text.js"
+    "org/eclipse/rwt/widgets/Text.js",
+    "org/eclipse/swt/widgets/Canvas.js",
+    "org/eclipse/swt/graphics/GC.js"
   };
 
   private static final String[] WIDGET_IMAGES = new String[]{

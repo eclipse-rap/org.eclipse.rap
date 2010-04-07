@@ -10,11 +10,11 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
+import org.eclipse.swt.*;
+import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.internal.graphics.GCOperation.*;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-
 
 /**
  * Class <code>GC</code> is provided to ease single-sourcing SWT and RWT code.
@@ -68,9 +68,14 @@ import org.eclipse.swt.widgets.Display;
  */
 public class GC extends Resource {
 
+  private final Control control;
   private Font font;
   private Color background;
   private Color foreground;
+  private int alpha;
+  private int lineWidth;
+  private int lineCap;
+  private int lineJoin;
 
   /**
    * Constructs a new instance of this class which has been
@@ -99,9 +104,17 @@ public class GC extends Resource {
     if( drawable == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
+    if( drawable instanceof Control ) {
+      control = ( Control )drawable;
+    } else {
+      control = null;
+    }
     font = determineFont( drawable );
     background = determineBackground( drawable );
     foreground = determineForeground( drawable );
+    alpha = 255;
+    lineCap = SWT.CAP_FLAT;
+    lineJoin = SWT.JOIN_MITER;
   }
 
   /**
@@ -126,7 +139,12 @@ public class GC extends Resource {
     if( font != null && font.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    this.font = font;
+    Font newFont = font != null ? font : getDevice().getSystemFont();
+    if( !newFont.equals( this.font ) ) {
+      this.font = newFont;
+      SetFont operation = new SetFont( this.font );
+      addGCOperation( operation );
+    }
   }
 
   /**
@@ -270,7 +288,12 @@ public class GC extends Resource {
     if( color.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    background = color;
+    if( !color.equals( background ) ) {
+      background = color;
+      SetProperty operation
+        = new SetProperty( SetProperty.BACKGROUND, background );
+      addGCOperation( operation );
+    }
   }
 
   /**
@@ -313,7 +336,12 @@ public class GC extends Resource {
     if( color.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    foreground = color;
+    if( !color.equals( foreground ) ) {
+      foreground = color;
+      SetProperty operation
+        = new SetProperty( SetProperty.FOREGROUND, foreground );
+      addGCOperation( operation );
+    }
   }
 
   /**
@@ -330,6 +358,1039 @@ public class GC extends Resource {
       SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
     }
     return foreground;
+  }
+
+  /**
+   * Sets the receiver's alpha value which must be
+   * between 0 (transparent) and 255 (opaque).
+   * <p>
+   * This operation requires the operating system's advanced
+   * graphics subsystem which may not be available on some
+   * platforms.
+   * </p>
+   * @param alpha the alpha value
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
+   * </ul>
+   */
+  public void setAlpha( final int alpha ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( alpha >= 0 && alpha <= 255 && this.alpha != alpha ) {
+      this.alpha = alpha;
+      SetProperty operation
+        = new SetProperty( SetProperty.ALPHA, new Integer( alpha ) );
+      addGCOperation( operation );
+    }
+  }
+
+  /**
+   * Returns the receiver's alpha value. The alpha value
+   * is between 0 (transparent) and 255 (opaque).
+   *
+   * @return the alpha value
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public int getAlpha() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    return alpha;
+  }
+
+  /**
+   * Sets the width that will be used when drawing lines
+   * for all of the figure drawing operations (that is,
+   * <code>drawLine</code>, <code>drawRectangle</code>,
+   * <code>drawPolyline</code>, and so forth.
+   *
+   * @param lineWidth the width of a line
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void setLineWidth( final int lineWidth ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( this.lineWidth != lineWidth ) {
+      this.lineWidth = lineWidth;
+      SetProperty operation
+        = new SetProperty( SetProperty.LINE_WIDTH, new Integer( lineWidth ) );
+      addGCOperation( operation );
+    }
+  }
+
+  /**
+   * Returns the width that will be used when drawing lines
+   * for all of the figure drawing operations (that is,
+   * <code>drawLine</code>, <code>drawRectangle</code>,
+   * <code>drawPolyline</code>, and so forth.
+   *
+   * @return the receiver's line width
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public int getLineWidth() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    return lineWidth;
+  }
+
+  /**
+   * Sets the receiver's line cap style to the argument, which must be one
+   * of the constants <code>SWT.CAP_FLAT</code>, <code>SWT.CAP_ROUND</code>,
+   * or <code>SWT.CAP_SQUARE</code>.
+   *
+   * @param lineCap the cap style to be used for drawing lines
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the style is not valid</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void setLineCap( final int lineCap ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( this.lineCap != lineCap ) {
+      switch( lineCap ) {
+        case SWT.CAP_ROUND:
+        case SWT.CAP_FLAT:
+        case SWT.CAP_SQUARE:
+          break;
+        default:
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      this.lineCap = lineCap;
+      SetProperty operation
+        = new SetProperty( SetProperty.LINE_CAP, new Integer( lineCap ) );
+      addGCOperation( operation );
+    }
+  }
+
+  /**
+   * Returns the receiver's line cap style, which will be one
+   * of the constants <code>SWT.CAP_FLAT</code>, <code>SWT.CAP_ROUND</code>,
+   * or <code>SWT.CAP_SQUARE</code>.
+   *
+   * @return the cap style used for drawing lines
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public int getLineCap() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    return lineCap;
+  }
+
+  /**
+   * Sets the receiver's line join style to the argument, which must be one
+   * of the constants <code>SWT.JOIN_MITER</code>, <code>SWT.JOIN_ROUND</code>,
+   * or <code>SWT.JOIN_BEVEL</code>.
+   *
+   * @param lineJoin the join style to be used for drawing lines
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the style is not valid</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void setLineJoin( final int lineJoin ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( this.lineJoin != lineJoin ) {
+      switch( lineJoin ) {
+        case SWT.JOIN_MITER:
+        case SWT.JOIN_ROUND:
+        case SWT.JOIN_BEVEL:
+          break;
+        default:
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      this.lineJoin = lineJoin;
+      SetProperty operation
+        = new SetProperty( SetProperty.LINE_JOIN, new Integer( lineJoin ) );
+      addGCOperation( operation );
+    }
+  }
+
+  /**
+   * Returns the receiver's line join style, which will be one
+   * of the constants <code>SWT.JOIN_MITER</code>, <code>SWT.JOIN_ROUND</code>,
+   * or <code>SWT.JOIN_BEVEL</code>.
+   *
+   * @return the join style used for drawing lines
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public int getLineJoin() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    return lineJoin;
+  }
+
+  /**
+   * Sets the receiver's line attributes.
+   * <p>
+   * This operation requires the operating system's advanced
+   * graphics subsystem which may not be available on some
+   * platforms.
+   * </p>
+   * @param attributes the line attributes
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the attributes is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if any of the line attributes is not valid</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
+   * </ul>
+   *
+   * @see LineAttributes
+   */
+  public void setLineAttributes( final LineAttributes attributes ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( attributes == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    setLineWidth( ( int )attributes.width );
+    setLineCap( attributes.cap );
+    setLineJoin( attributes.join );
+  }
+
+  /**
+   * Returns the receiver's line attributes.
+   *
+   * @return the line attributes used for drawing lines
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public LineAttributes getLineAttributes() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    return new LineAttributes( lineWidth, lineCap, lineJoin );
+  }
+
+  /**
+   * Draws a line, using the foreground color, between the points
+   * (<code>x1</code>, <code>y1</code>) and (<code>x2</code>, <code>y2</code>).
+   *
+   * @param x1 the first point's x coordinate
+   * @param y1 the first point's y coordinate
+   * @param x2 the second point's x coordinate
+   * @param y2 the second point's y coordinate
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawLine( final int x1, final int y1, final int x2, final int y2 )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawLine operation = new DrawLine( x1, y1, x2, y2 );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Draws the outline of the specified rectangle, using the receiver's
+   * foreground color. The left and right edges of the rectangle are at
+   * <code>rect.x</code> and <code>rect.x + rect.width</code>. The top
+   * and bottom edges are at <code>rect.y</code> and
+   * <code>rect.y + rect.height</code>.
+   *
+   * @param rect the rectangle to draw
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the rectangle is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawRectangle( final Rectangle rect ) {
+    if( rect == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    drawRectangle( rect.x, rect.y, rect.width, rect.height );
+  }
+
+  /**
+   * Draws the outline of the rectangle specified by the arguments,
+   * using the receiver's foreground color. The left and right edges
+   * of the rectangle are at <code>x</code> and <code>x + width</code>.
+   * The top and bottom edges are at <code>y</code> and <code>y + height</code>.
+   *
+   * @param x the x coordinate of the rectangle to be drawn
+   * @param y the y coordinate of the rectangle to be drawn
+   * @param width the width of the rectangle to be drawn
+   * @param height the height of the rectangle to be drawn
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawRectangle( final int x,
+                             final int y,
+                             final int width,
+                             final int height )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawRectangle operation = new DrawRectangle( x, y, width, height, false );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Draws a rectangle, based on the specified arguments, which has
+   * the appearance of the platform's <em>focus rectangle</em> if the
+   * platform supports such a notion, and otherwise draws a simple
+   * rectangle in the receiver's foreground color.
+   *
+   * @param x the x coordinate of the rectangle
+   * @param y the y coordinate of the rectangle
+   * @param width the width of the rectangle
+   * @param height the height of the rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #drawRectangle(int, int, int, int)
+   */
+  public void drawFocus( final int x,
+                         final int y,
+                         final int width,
+                         final int height )
+  {
+    drawRectangle( x, y, width, height );
+  }
+
+  /**
+   * Fills the interior of the specified rectangle, using the receiver's
+   * background color.
+   *
+   * @param rect the rectangle to be filled
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the rectangle is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #drawRectangle(int, int, int, int)
+   */
+  public void fillRectangle( final Rectangle rect ) {
+    if( rect == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    fillRectangle( rect.x, rect.y, rect.width, rect.height );
+  }
+
+  /**
+   * Fills the interior of the rectangle specified by the arguments,
+   * using the receiver's background color.
+   *
+   * @param x the x coordinate of the rectangle to be filled
+   * @param y the y coordinate of the rectangle to be filled
+   * @param width the width of the rectangle to be filled
+   * @param height the height of the rectangle to be filled
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #drawRectangle(int, int, int, int)
+   */
+  public void fillRectangle( final int x,
+                             final int y,
+                             final int width,
+                             final int height )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawRectangle operation = new DrawRectangle( x, y, width, height, true );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Fills the interior of the specified rectangle with a gradient
+   * sweeping from left to right or top to bottom progressing
+   * from the receiver's foreground color to its background color.
+   *
+   * @param x the x coordinate of the rectangle to be filled
+   * @param y the y coordinate of the rectangle to be filled
+   * @param width the width of the rectangle to be filled, may be negative
+   *        (inverts direction of gradient if horizontal)
+   * @param height the height of the rectangle to be filled, may be negative
+   *        (inverts direction of gradient if vertical)
+   * @param vertical if true sweeps from top to bottom, else
+   *        sweeps from left to right
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #drawRectangle(int, int, int, int)
+   */
+  public void fillGradientRectangle( final int x,
+                                     final int y,
+                                     final int width,
+                                     final int height,
+                                     final boolean vertical )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( background.equals( foreground  ) ) {
+      fillRectangle( x, y, width, height );
+    } else {
+      FillGradientRectangle operation
+        = new FillGradientRectangle( x, y, width, height, vertical );
+      addGCOperation( operation );
+    }
+  }
+
+  /**
+   * Draws the outline of the round-cornered rectangle specified by
+   * the arguments, using the receiver's foreground color. The left and
+   * right edges of the rectangle are at <code>x</code> and <code>x + width</code>.
+   * The top and bottom edges are at <code>y</code> and <code>y + height</code>.
+   * The <em>roundness</em> of the corners is specified by the
+   * <code>arcWidth</code> and <code>arcHeight</code> arguments, which
+   * are respectively the width and height of the ellipse used to draw
+   * the corners.
+   *
+   * @param x the x coordinate of the rectangle to be drawn
+   * @param y the y coordinate of the rectangle to be drawn
+   * @param width the width of the rectangle to be drawn
+   * @param height the height of the rectangle to be drawn
+   * @param arcWidth the width of the arc
+   * @param arcHeight the height of the arc
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawRoundRectangle( final int x,
+                                  final int y,
+                                  final int width,
+                                  final int height,
+                                  final int arcWidth,
+                                  final int arcHeight )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawRoundRectangle operation = new DrawRoundRectangle( x,
+                                                           y,
+                                                           width,
+                                                           height,
+                                                           arcWidth,
+                                                           arcHeight,
+                                                           false );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Fills the interior of the round-cornered rectangle specified by
+   * the arguments, using the receiver's background color.
+   *
+   * @param x the x coordinate of the rectangle to be filled
+   * @param y the y coordinate of the rectangle to be filled
+   * @param width the width of the rectangle to be filled
+   * @param height the height of the rectangle to be filled
+   * @param arcWidth the width of the arc
+   * @param arcHeight the height of the arc
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #drawRoundRectangle
+   */
+  public void fillRoundRectangle( final int x,
+                                  final int y,
+                                  final int width,
+                                  final int height,
+                                  final int arcWidth,
+                                  final int arcHeight )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawRoundRectangle operation = new DrawRoundRectangle( x,
+                                                           y,
+                                                           width,
+                                                           height,
+                                                           arcWidth,
+                                                           arcHeight,
+                                                           true );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Draws the outline of an oval, using the foreground color,
+   * within the specified rectangular area.
+   * <p>
+   * The result is a circle or ellipse that fits within the
+   * rectangle specified by the <code>x</code>, <code>y</code>,
+   * <code>width</code>, and <code>height</code> arguments.
+   * </p><p>
+   * The oval covers an area that is <code>width + 1</code>
+   * pixels wide and <code>height + 1</code> pixels tall.
+   * </p>
+   *
+   * @param x the x coordinate of the upper left corner of the oval to be drawn
+   * @param y the y coordinate of the upper left corner of the oval to be drawn
+   * @param width the width of the oval to be drawn
+   * @param height the height of the oval to be drawn
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawOval( final int x,
+                        final int y,
+                        final int width,
+                        final int height )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawArc operation = new DrawArc( x, y, width, height, 0, 360, false );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Fills the interior of an oval, within the specified
+   * rectangular area, with the receiver's background
+   * color.
+   *
+   * @param x the x coordinate of the upper left corner of the oval to be filled
+   * @param y the y coordinate of the upper left corner of the oval to be filled
+   * @param width the width of the oval to be filled
+   * @param height the height of the oval to be filled
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #drawOval
+   */
+  public void fillOval( final int x,
+                        final int y,
+                        final int width,
+                        final int height )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawArc operation = new DrawArc( x, y, width, height, 0, 360, true );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Draws the outline of a circular or elliptical arc
+   * within the specified rectangular area.
+   * <p>
+   * The resulting arc begins at <code>startAngle</code> and extends
+   * for <code>arcAngle</code> degrees, using the current color.
+   * Angles are interpreted such that 0 degrees is at the 3 o'clock
+   * position. A positive value indicates a counter-clockwise rotation
+   * while a negative value indicates a clockwise rotation.
+   * </p><p>
+   * The center of the arc is the center of the rectangle whose origin
+   * is (<code>x</code>, <code>y</code>) and whose size is specified by the
+   * <code>width</code> and <code>height</code> arguments.
+   * </p><p>
+   * The resulting arc covers an area <code>width + 1</code> pixels wide
+   * by <code>height + 1</code> pixels tall.
+   * </p>
+   *
+   * @param x the x coordinate of the upper-left corner of the arc to be drawn
+   * @param y the y coordinate of the upper-left corner of the arc to be drawn
+   * @param width the width of the arc to be drawn
+   * @param height the height of the arc to be drawn
+   * @param startAngle the beginning angle
+   * @param arcAngle the angular extent of the arc, relative to the start angle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawArc( final int x,
+                       final int y,
+                       final int width,
+                       final int height,
+                       final int startAngle,
+                       final int arcAngle )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawArc operation
+      = new DrawArc( x, y, width, height, startAngle, arcAngle, false );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Fills the interior of a circular or elliptical arc within
+   * the specified rectangular area, with the receiver's background
+   * color.
+   * <p>
+   * The resulting arc begins at <code>startAngle</code> and extends
+   * for <code>arcAngle</code> degrees, using the current color.
+   * Angles are interpreted such that 0 degrees is at the 3 o'clock
+   * position. A positive value indicates a counter-clockwise rotation
+   * while a negative value indicates a clockwise rotation.
+   * </p><p>
+   * The center of the arc is the center of the rectangle whose origin
+   * is (<code>x</code>, <code>y</code>) and whose size is specified by the
+   * <code>width</code> and <code>height</code> arguments.
+   * </p><p>
+   * The resulting arc covers an area <code>width + 1</code> pixels wide
+   * by <code>height + 1</code> pixels tall.
+   * </p>
+   *
+   * @param x the x coordinate of the upper-left corner of the arc to be filled
+   * @param y the y coordinate of the upper-left corner of the arc to be filled
+   * @param width the width of the arc to be filled
+   * @param height the height of the arc to be filled
+   * @param startAngle the beginning angle
+   * @param arcAngle the angular extent of the arc, relative to the start angle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #drawArc
+   */
+  public void fillArc( final int x,
+                       final int y,
+                       final int width,
+                       final int height,
+                       final int startAngle,
+                       final int arcAngle )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawArc operation
+      = new DrawArc( x, y, width, height, startAngle, arcAngle, true );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Draws the closed polygon which is defined by the specified array
+   * of integer coordinates, using the receiver's foreground color. The array
+   * contains alternating x and y values which are considered to represent
+   * points which are the vertices of the polygon. Lines are drawn between
+   * each consecutive pair, and between the first pair and last pair in the
+   * array.
+   *
+   * @param pointArray an array of alternating x and y values which are the vertices of the polygon
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT if pointArray is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawPolygon( final int[] pointArray ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawPolyline operation = new DrawPolyline( pointArray, true, false );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Fills the interior of the closed polygon which is defined by the
+   * specified array of integer coordinates, using the receiver's
+   * background color. The array contains alternating x and y values
+   * which are considered to represent points which are the vertices of
+   * the polygon. Lines are drawn between each consecutive pair, and
+   * between the first pair and last pair in the array.
+   *
+   * @param pointArray an array of alternating x and y values which are the vertices of the polygon
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT if pointArray is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #drawPolygon
+   */
+  public void fillPolygon( final int[] pointArray ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawPolyline operation = new DrawPolyline( pointArray, true, true );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Draws the polyline which is defined by the specified array
+   * of integer coordinates, using the receiver's foreground color. The array
+   * contains alternating x and y values which are considered to represent
+   * points which are the corners of the polyline. Lines are drawn between
+   * each consecutive pair, but not between the first pair and last pair in
+   * the array.
+   *
+   * @param pointArray an array of alternating x and y values which are the corners of the polyline
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point array is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawPolyline( final int[] pointArray ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawPolyline operation = new DrawPolyline( pointArray, false, false );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Draws a pixel, using the foreground color, at the specified
+   * point (<code>x</code>, <code>y</code>).
+   * <p>
+   * Note that the receiver's line attributes do not affect this
+   * operation.
+   * </p>
+   *
+   * @param x the point's x coordinate
+   * @param y the point's y coordinate
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawPoint( final int x, final int y ) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    DrawPoint operation = new DrawPoint( x, y );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Draws the given image in the receiver at the specified
+   * coordinates.
+   *
+   * @param image the image to draw
+   * @param x the x coordinate of where to draw
+   * @param y the y coordinate of where to draw
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the image is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the given coordinates are outside the bounds of the image</li>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * @exception SWTError <ul>
+   *    <li>ERROR_NO_HANDLES - if no handles are available to perform the operation</li>
+   * </ul>
+   */
+  public void drawImage( final Image image, final int x, final int y) {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( image == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( image.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    DrawImage operation
+      = new DrawImage( image, 0, 0, -1, -1, x, y, -1, -1, true );
+    addGCOperation( operation );
+  }
+
+  /**
+   * Copies a rectangular area from the source image into a (potentially
+   * different sized) rectangular area in the receiver. If the source
+   * and destination areas are of differing sizes, then the source
+   * area will be stretched or shrunk to fit the destination area
+   * as it is copied. The copy fails if any part of the source rectangle
+   * lies outside the bounds of the source image, or if any of the width
+   * or height arguments are negative.
+   *
+   * @param image the source image
+   * @param srcX the x coordinate in the source image to copy from
+   * @param srcY the y coordinate in the source image to copy from
+   * @param srcWidth the width in pixels to copy from the source
+   * @param srcHeight the height in pixels to copy from the source
+   * @param destX the x coordinate in the destination to copy to
+   * @param destY the y coordinate in the destination to copy to
+   * @param destWidth the width in pixels of the destination rectangle
+   * @param destHeight the height in pixels of the destination rectangle
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the image is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if any of the width or height arguments are negative.
+   *    <li>ERROR_INVALID_ARGUMENT - if the source rectangle is not contained within the bounds of the source image</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * @exception SWTError <ul>
+   *    <li>ERROR_NO_HANDLES - if no handles are available to perform the operation</li>
+   * </ul>
+   */
+  public void drawImage( final Image image,
+                         final int srcX,
+                         final int srcY,
+                         final int srcWidth,
+                         final int srcHeight,
+                         final int destX,
+                         final int destY,
+                         final int destWidth,
+                         final int destHeight )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( srcWidth != 0 && srcHeight != 0 && destWidth != 0 && destHeight != 0 ) {
+      if(    srcX < 0
+          || srcY < 0
+          || srcWidth < 0
+          || srcHeight < 0
+          || destWidth < 0
+          || destHeight < 0 )
+      {
+        SWT.error (SWT.ERROR_INVALID_ARGUMENT);
+      }
+      if( image == null ) {
+        SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      }
+      if( image.isDisposed() ) {
+        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      DrawImage operation = new DrawImage( image,
+                                           srcX,
+                                           srcY,
+                                           srcWidth,
+                                           srcHeight,
+                                           destX,
+                                           destY,
+                                           destWidth,
+                                           destHeight,
+                                           false );
+      addGCOperation( operation );
+    }
+  }
+
+  /**
+   * Draws the given string, using the receiver's current font and
+   * foreground color. No tab expansion or carriage return processing
+   * will be performed. The background of the rectangular area where
+   * the string is being drawn will be filled with the receiver's
+   * background color.
+   *
+   * @param string the string to be drawn
+   * @param x the x coordinate of the top left corner of the rectangular area where the string is to be drawn
+   * @param y the y coordinate of the top left corner of the rectangular area where the string is to be drawn
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawString( final String string, final int x, final int y ) {
+    drawString( string, x, y, false );
+  }
+
+  /**
+   * Draws the given string, using the receiver's current font and
+   * foreground color. No tab expansion or carriage return processing
+   * will be performed. If <code>isTransparent</code> is <code>true</code>,
+   * then the background of the rectangular area where the string is being
+   * drawn will not be modified, otherwise it will be filled with the
+   * receiver's background color.
+   *
+   * @param string the string to be drawn
+   * @param x the x coordinate of the top left corner of the rectangular area where the string is to be drawn
+   * @param y the y coordinate of the top left corner of the rectangular area where the string is to be drawn
+   * @param isTransparent if <code>true</code> the background will be transparent, otherwise it will be opaque
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawString( final String string,
+                          final int x,
+                          final int y,
+                          final boolean isTransparent )
+  {
+    int flags = isTransparent ? SWT.DRAW_TRANSPARENT : SWT.NONE;
+    drawText( string, x, y, flags );
+  }
+
+  /**
+   * Draws the given string, using the receiver's current font and
+   * foreground color. Tab expansion and carriage return processing
+   * are performed. The background of the rectangular area where
+   * the text is being drawn will be filled with the receiver's
+   * background color.
+   *
+   * @param string the string to be drawn
+   * @param x the x coordinate of the top left corner of the rectangular area where the text is to be drawn
+   * @param y the y coordinate of the top left corner of the rectangular area where the text is to be drawn
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawText( final String string, final int x, final int y ) {
+    drawText( string, x, y, SWT.DRAW_DELIMITER | SWT.DRAW_TAB );
+  }
+
+  /**
+   * Draws the given string, using the receiver's current font and
+   * foreground color. Tab expansion and carriage return processing
+   * are performed. If <code>isTransparent</code> is <code>true</code>,
+   * then the background of the rectangular area where the text is being
+   * drawn will not be modified, otherwise it will be filled with the
+   * receiver's background color.
+   *
+   * @param string the string to be drawn
+   * @param x the x coordinate of the top left corner of the rectangular area where the text is to be drawn
+   * @param y the y coordinate of the top left corner of the rectangular area where the text is to be drawn
+   * @param isTransparent if <code>true</code> the background will be transparent, otherwise it will be opaque
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawText( final String string,
+                        final int x,
+                        final int y,
+                        final boolean isTransparent )
+  {
+    int flags = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
+    if( isTransparent ) {
+      flags |= SWT.DRAW_TRANSPARENT;
+    }
+    drawText( string, x, y, flags );
+  }
+
+  /**
+   * Draws the given string, using the receiver's current font and
+   * foreground color. Tab expansion, line delimiter and mnemonic
+   * processing are performed according to the specified flags. If
+   * <code>flags</code> includes <code>DRAW_TRANSPARENT</code>,
+   * then the background of the rectangular area where the text is being
+   * drawn will not be modified, otherwise it will be filled with the
+   * receiver's background color.
+   * <p>
+   * The parameter <code>flags</code> may be a combination of:
+   * <dl>
+   * <dt><b>DRAW_DELIMITER</b></dt>
+   * <dd>draw multiple lines</dd>
+   * <dt><b>DRAW_TAB</b></dt>
+   * <dd>expand tabs</dd>
+   * <dt><b>DRAW_MNEMONIC</b></dt>
+   * <dd>underline the mnemonic character</dd>
+   * <dt><b>DRAW_TRANSPARENT</b></dt>
+   * <dd>transparent background</dd>
+   * </dl>
+   * </p>
+   *
+   * @param string the string to be drawn
+   * @param x the x coordinate of the top left corner of the rectangular area where the text is to be drawn
+   * @param y the y coordinate of the top left corner of the rectangular area where the text is to be drawn
+   * @param flags the flags specifying how to process the text
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public void drawText( final String string,
+                        final int x,
+                        final int y,
+                        final int flags )
+  {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    if( string == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( string.length() != 0 ) {
+      DrawText operation = new DrawText( string, x, y, flags );
+      addGCOperation( operation );
+    }
+  }
+
+  GCAdapter getGCAdapter() {
+    GCAdapter result = null;
+    if( control != null ) {
+      result = ( GCAdapter )control.getAdapter( IGCAdapter.class );
+    }
+    return result;
+  }
+
+  private void addGCOperation( final GCOperation operation ) {
+    GCAdapter adapter = getGCAdapter();
+    if( adapter != null ) {
+      adapter.addGCOperation( operation );
+    }
   }
 
   private static Device determineDevice( final Drawable drawable ) {
@@ -371,5 +1432,4 @@ public class GC extends Resource {
     }
     return result;
   }
-
 }

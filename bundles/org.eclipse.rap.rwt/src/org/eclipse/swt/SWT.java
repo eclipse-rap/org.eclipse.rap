@@ -437,7 +437,7 @@ public class SWT {
    */
   public static final int DRAG = 1;
 
-  
+
   /**
    * Event detail field that indicates a user-interface component
    * state is selected (value is 1&lt;&lt;1).
@@ -445,21 +445,21 @@ public class SWT {
    * @since 1.3
    */
   public static final int SELECTED = 1 << 1;
-  
+
   /**
    * Event detail field that indicates a user-interface component
    * state is focused (value is 1&lt;&lt;2).
    *
    * @since 1.3
-   */ 
+   */
   public static final int FOCUSED = 1 << 2;
-  
+
   /**
    * Event detail field that indicates a user-interface component
    * draws the background (value is 1&lt;&lt;3).
    */
   public static final int BACKGROUND = 1 << 3;
-  
+
   /**
    * Event detail field that indicates a user-interface component
    * draws the foreground (value is 1&lt;&lt;4).
@@ -467,7 +467,7 @@ public class SWT {
    * @since 1.2
    */
   public static final int FOREGROUND = 1 << 4;
-  
+
   /**
    * Event detail field that indicates a user-interface component
    * state is hot (value is 1&lt;&lt;5).
@@ -641,14 +641,14 @@ public class SWT {
 
   /**
    * Indicates that a property is off (value is 0).
-   * 
+   *
    * @since 1.3
    */
   public static final int OFF = 0;
-  
+
   /**
    * Indicates that a property is on (value is 1).
-   * 
+   *
    * @since 1.3
    */
   public static final int ON = 1;
@@ -1944,7 +1944,7 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Control</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.3
    */
   public static final int DOUBLE_BUFFERED = 1 << 29;
@@ -2145,7 +2145,7 @@ public class SWT {
 
   /**
    * System "not allowed" cursor (value is 20).
-   * 
+   *
    * @see Graphics#getCursor(int)
    * @since 1.3
 
@@ -2160,7 +2160,90 @@ public class SWT {
    */
   public static final int CURSOR_HAND = 21;
 
-  
+  /**
+   * Line drawing style for flat end caps (value is 1).
+   *
+   * @see org.eclipse.swt.graphics.GC#setLineCap(int)
+   * @see org.eclipse.swt.graphics.GC#getLineCap()
+   *
+   * @since 1.3
+   */
+  public static final int CAP_FLAT = 1;
+
+  /**
+   * Line drawing style for rounded end caps (value is 2).
+   *
+   * @see org.eclipse.swt.graphics.GC#setLineCap(int)
+   * @see org.eclipse.swt.graphics.GC#getLineCap()
+   *
+   * @since 1.3
+   */
+  public static final int CAP_ROUND = 2;
+
+  /**
+   * Line drawing style for square end caps (value is 3).
+   *
+   * @see org.eclipse.swt.graphics.GC#setLineCap(int)
+   * @see org.eclipse.swt.graphics.GC#getLineCap()
+   *
+   * @since 1.3
+   */
+  public static final int CAP_SQUARE = 3;
+
+  /**
+   * Line drawing style for miter joins (value is 1).
+   *
+   * @see org.eclipse.swt.graphics.GC#setLineJoin(int)
+   * @see org.eclipse.swt.graphics.GC#getLineJoin()
+   *
+   * @since 1.3
+   */
+  public static final int JOIN_MITER = 1;
+
+  /**
+   * Line drawing  style for rounded joins (value is 2).
+   *
+   * @see org.eclipse.swt.graphics.GC#setLineJoin(int)
+   * @see org.eclipse.swt.graphics.GC#getLineJoin()
+   *
+   * @since 1.3
+   */
+  public static final int JOIN_ROUND = 2;
+
+  /**
+   * Line drawing style for bevel joins (value is 3).
+   *
+   * @see org.eclipse.swt.graphics.GC#setLineJoin(int)
+   * @see org.eclipse.swt.graphics.GC#getLineJoin()
+   *
+   * @since 1.3
+   */
+  public static final int JOIN_BEVEL = 3;
+
+  /**
+   * Draw constant indicating whether the drawing operation
+   * should fill the background (value is 1&lt;&lt;0).
+   *
+   * @since 1.3
+   */
+  public static final int DRAW_TRANSPARENT = 1 << 0;
+
+  /**
+   * Draw constant indicating whether the string drawing operation
+   * should handle line-delimiters (value is 1&lt;&lt;1).
+   *
+   * @since 1.3
+   */
+  public static final int DRAW_DELIMITER = 1 << 1;
+
+  /**
+   * Draw constant indicating whether the string drawing operation
+   * should expand TAB characters (value is 1&lt;&lt;2).
+   *
+   * @since 1.3
+   */
+  public static final int DRAW_TAB = 1 << 2;
+
   // Predefined images
 
   /**

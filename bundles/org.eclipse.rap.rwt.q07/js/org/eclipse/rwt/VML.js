@@ -37,6 +37,13 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       this.setLayoutMode( result, "relative" );      
       return result;
     },
+    
+    clearCanvas : function( canvas ) {
+      for( var hash in canvas.children ) {
+        canvas.node.removeChild( canvas.children[ hash ].node );
+      }
+      canvas.children = {};
+    },
 
     setLayoutMode : function( canvas, mode ) {
       if( mode == "absolute" ) {
@@ -71,16 +78,21 @@ qx.Class.define( "org.eclipse.rwt.VML", {
           result = this._createRect();
         break;
         case "roundrect":
-          result = this._createRoundRect();
+        case "custom":
+          result = this._createCustomShape();
+        break;
+        case "image":
+          result = this._createImage();
         break;
         default: 
-          throw "invalid shape " + type;
+          throw "VML does not support shape " + type;
         break;
       }
       result.node.stroked = false;
+      // TODO [tb] : test if stroke-node conflicts with stroke-properties on 
+      // the element-node when moved in dom. 
       var fill = this._createNode( "fill" );
       fill.method = "sigma";
-      fill.angle = 180;
       result.node.appendChild( fill );
       result.fill = fill;
       this.setFillColor( result, null );
@@ -115,9 +127,28 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       node.style.left = this._convertNumeric( x, true );
       node.style.top = this._convertNumeric( y, true );
     },
-    
+
+    /**
+     * "crop" is an optional array [ top, right, bottom, left ]. The values have 
+     * to be between 0 and 1, representing percentage of the image-dimension.
+     */
+    setImageData : function( shape, src, x, y, width, height, crop ) {
+      var node = shape.node;
+      node.src = src;
+      if( typeof crop != "undefined" ) {
+        node.cropTop = crop[ 0 ];
+        node.cropRight = crop[ 1 ];
+        node.cropBottom =  crop[ 2 ];
+        node.cropLeft = crop[ 3 ];
+      } 
+      node.style.width = this._convertNumeric( width, false );
+      node.style.height = this._convertNumeric( height, false );
+      node.style.left = this._convertNumeric( x, false );
+      node.style.top = this._convertNumeric( y, false );
+    },
+
     setRoundRectLayout : function( shape, x, y, width, height, radii ) {
-      var quarter = this._VMLQCIRCEL;
+      var quarter = this._VMLDEGREE * 90;
       var radiusLeftTop = this._convertNumeric( radii[ 0 ], false );
       var radiusTopRight = this._convertNumeric( radii[ 1 ], false );
       var radiusRightBottom = this._convertNumeric( radii[ 2 ], false );
@@ -166,8 +197,38 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       }
 
       path.push( "X E" );
-      shape.node.path = path.join(" ");      
-    },   
+      shape.node.path = path.join( " " );      
+    },
+    
+    applyDrawingContext : function( shape, context, fill ) {
+      var opacity = context.globalAlpha;
+      if( opacity != 1 ) {
+        this.setOpacity( shape, opacity );
+      }
+      if( fill ) {
+        var fill = context.fillStyle;
+        if( fill instanceof Array ) {
+          this.setFillGradient( shape, context.fillStyle );
+        } else {
+          this.setFillColor( shape, context.fillStyle );
+        }
+        this.setStroke( shape, null, 0 );
+      } else {
+        this.setFillColor( shape, null );
+        this.setStroke( shape, context.strokeStyle, context.lineWidth );
+        var endCap = context.lineCap == "butt" ? "flat" : context.lineCap;
+        var joinStyle = context.lineJoin;
+        var miterLimit = context.miterLimit;
+        this._setStrokeStyle( shape, joinStyle, miterLimit, endCap );
+      }
+      shape.node.path = this._convertPath( context._currentPath );
+    },
+    
+    createShapeFromContext : function( context, fill ) {
+      var shape = this.createShape( "custom" );
+      this.applyDrawingContext( shape, context, fill );
+      return shape;
+    },
     
     setFillColor : function( shape, color ) {
       var fill = shape.fill;
@@ -203,6 +264,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         var startColor = gradient[ 0 ][ 1 ];
         //fill.color = startColor;
         fill.color2 = gradient[ gradient.length - 1 ][ 1 ];
+        fill.angle = gradient.horizonal ? 270 : 180;
         var transitionColors = "0% " + startColor;
         var lastColor = qx.util.ColorUtil.stringToRgb( startColor );
         var nextColor = null;
@@ -299,12 +361,13 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       shape.node.style.filter = filterStr;
       this._setAntiAlias( shape, antiAlias );
     },
-
+    
     /////////
     // helper
 
     _VMLFACTOR : 10,
-    _VMLQCIRCEL : -65535 * 90,
+    _VMLDEGREE : -65535, 
+    _VMLRAD : -65535 * ( 180 / Math.PI ),
         
     _createNode : function( type ) {
       return document.createElement( "v:" + type );
@@ -324,7 +387,16 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       return result;      
     },
     
-    _createRoundRect : function() {
+    _createImage : function() {
+      var result = {};
+      result.type = "vmlImage";
+      var node = this._createNode( "image" );
+      node.style.position = "absolute"
+      result.node = node;
+      return result;      
+    },
+    
+    _createCustomShape : function() {
       var result = {};
       var node = this._createNode( "shape" );
       node.coordsize="100,100";
@@ -336,10 +408,25 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       result.node = node;
       return result;      
     },
-    
+
     _setFillEnabled : function( shape, value ) {
       shape.fill.on = value;
       shape.restoreFill = value;
+    },
+
+    _ensureStrokeNode : function( shape ) {
+      if( !shape.stroke ) {
+        var stroke = this._createNode( "stroke" );
+        shape.node.appendChild( stroke );
+        shape.stroke = stroke;
+      }      
+    },
+
+    _setStrokeStyle : function( shape, joinStyle, miterLimit, endCap ) {
+      this._ensureStrokeNode( shape );
+      shape.stroke.joinstyle = joinStyle;
+      shape.stroke.miterlimit = miterLimit;
+      shape.stroke.endcap = endCap;
     },
 
     _transitionColors : function( color1, color2, start, stop, steps ) {
@@ -377,11 +464,64 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     _convertNumeric : function( value, fixOffset ) {
       var result;
       if( typeof value == "number" ) {
-        result = ( fixOffset ? value - 0.5 : value ) * this._VMLFACTOR;        
+        result = ( fixOffset ? value - 0.5 : value ) * this._VMLFACTOR;
+        result = Math.round( result );        
       } else {
         result = value;
       }      
       return  result;
+    },
+    
+    _convertPath : function( path ) {
+      var string = [];
+      for( var i = 0; i < path.length; i++ ) {
+        var item = path[ i ];
+        switch( item.type ) {
+          case "moveTo":
+            string.push( "M" )
+            string.push( this._convertNumeric( item.x, true ) );
+            string.push( this._convertNumeric( item.y, true ) );
+          break;
+          case "lineTo":
+            string.push( "L" );
+            string.push( this._convertNumeric( item.x, true ) );
+            string.push( this._convertNumeric( item.y, true ) );
+          break;
+          case "close":
+            string.push( "X" );
+            item = null;
+          break;
+          case "quadraticCurveTo":
+            string.push( "QB" );
+            string.push( this._convertNumeric( item.cp1x, true ) );
+            string.push( this._convertNumeric( item.cp1y, true ) );
+            string.push( "L" ); // a bug in VML requires this
+            string.push( this._convertNumeric( item.x, true ) );
+            string.push( this._convertNumeric( item.y, true ) );
+          break;
+          case "bezierCurveTo":
+            string.push( "C" );
+            string.push( this._convertNumeric( item.cp1x, true ) );
+            string.push( this._convertNumeric( item.cp1y, true ) );
+            string.push( this._convertNumeric( item.cp2x, true ) );
+            string.push( this._convertNumeric( item.cp2y, true ) );
+            string.push( this._convertNumeric( item.x, true ) );
+            string.push( this._convertNumeric( item.y, true ) );
+          break;
+          case "arc":
+            string.push( "AE" );
+            var startAngle = Math.round( item.startAngle * this._VMLRAD );
+            var endAngle = Math.round( item.endAngle * this._VMLRAD );
+            string.push( this._convertNumeric( item.centerX, true ) );
+            string.push( this._convertNumeric( item.centerY, true ) );
+            string.push( this._convertNumeric( item.radiusX, false ) );
+            string.push( this._convertNumeric( item.radiusY, false ) );
+            string.push( startAngle );
+            string.push( endAngle - startAngle );
+          break;
+        }
+      }
+      return string.join( " " );
     },
     
     _setAntiAlias : function( shape, value ) {

@@ -29,6 +29,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDeterminationHandler_Test;
 import org.eclipse.swt.internal.internal.widgets.controldecoratorkit.ControlDecoratorLCA_Test;
 import org.eclipse.swt.internal.widgets.WidgetAdapter_Test;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
+import org.eclipse.swt.internal.widgets.canvaskit.CanvasLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCA_Test;
 import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
@@ -140,6 +141,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ProgressBarLCA_Test.class );
     suite.addTestSuite( ControlDecoratorLCA_Test.class );
     suite.addTestSuite( DNDSupport_Test.class );
+    suite.addTestSuite( CanvasLCA_Test.class );
 
     return suite;
   }

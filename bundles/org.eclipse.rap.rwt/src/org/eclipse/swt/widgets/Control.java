@@ -1963,7 +1963,7 @@ public abstract class Control extends Widget implements Drawable {
     }
   }
 
-  private void internalSetRedraw( final boolean redraw ) {
+  void internalSetRedraw( final boolean redraw ) {
     RWTLifeCycle.fakeRedraw( this, redraw );
   }
 

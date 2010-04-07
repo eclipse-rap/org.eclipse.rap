@@ -647,6 +647,16 @@ public final class JSWriter {
   {
     write( "{0}.{1} = {2};", target, field, value );
   }
+  
+  public void varAssignment( final JSVar var, 
+                             final String method )
+    throws IOException
+  {
+    ensureWidgetManager();
+    ensureWidgetRef();
+    String value = WIDGET_REF + "." + method + "()";
+    writeVarAssignment( var, value );
+  }
 
   /**
    * Dispose is used to dispose of the widget of this {@link JSWriter} on the

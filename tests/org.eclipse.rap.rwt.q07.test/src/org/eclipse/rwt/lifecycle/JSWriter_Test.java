@@ -1083,6 +1083,19 @@ public class JSWriter_Test extends TestCase {
     assertEquals( "w.setHtml( \"\\n\\n\" );", Fixture.getAllMarkup() );
   }
   
+  public void testVarAssignment() throws IOException {
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    Fixture.fakeResponseWriter();
+    writer.varAssignment( new JSVar( "foo" ), "getFoo" );
+    String expected
+      = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w2\" );"
+    	+	"var foo = w.getFoo();";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
