@@ -16,8 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -35,14 +35,19 @@ public class DialogsTab extends ExampleTab {
   private Label messageDlgResLabel;
   private Label errorDlgResLabel;
   private Label messageBoxDlgResLabel;
-
-  private Button okButton, cancelButton;
-  private Button yesButton, noButton;
+  private Button okButton;
+  private Button cancelButton;
+  private Button yesButton;
+  private Button noButton;
   private Button retryButton;
-  private Button abortButton, ignoreButton;
-  private Button iconErrorButton, iconInformationButton, iconQuestionButton;
-  private Button iconWarningButton, iconWorkingButton, noIconButton;
-
+  private Button abortButton;
+  private Button ignoreButton;
+  private Button iconErrorButton;
+  private Button iconInformationButton;
+  private Button iconQuestionButton;
+  private Button iconWarningButton;
+  private Button iconWorkingButton;
+  private Button noIconButton;
   private Button showMessageBoxDlgButton;
   private Button showColorDlgButton;
 
@@ -76,8 +81,8 @@ public class DialogsTab extends ExampleTab {
     showProgressDlgButton.setText( "ProgressDialog" );
     showProgressDlgButton.setLayoutData( createGridDataFillBoth() );
     showProgressDlgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected(SelectionEvent e) {
-        showProgressDialog();  
+      public void widgetSelected(final SelectionEvent e) {
+        showProgressDialog();
       }
     } );
     insertSpaceLabels( group1, 1 );
@@ -183,11 +188,11 @@ public class DialogsTab extends ExampleTab {
       }
     } );
     showMessageBoxDlgButton.setLayoutData( createGridDataFillBoth() );
-    
+
     showColorDlgButton = new Button( group3, SWT.PUSH );
     showColorDlgButton.setText( "ColorDialog" );
     showColorDlgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         showColorDialog();
       }
     });
@@ -225,7 +230,7 @@ public class DialogsTab extends ExampleTab {
     dlg = new InputDialog( getShell(), title, mesg, def, val );
     int returnCode = dlg.open();
     String resultText = "Result: " + getReturnCodeText( returnCode );
-    if( returnCode == InputDialog.OK ) {
+    if( returnCode == Window.OK ) {
       resultText += ", value: " + dlg.getValue();
     }
     inputDlgResLabel.setText( resultText  );
@@ -317,7 +322,7 @@ public class DialogsTab extends ExampleTab {
       = new LoginDialog( getShell(), "Login", message, "john" );
     int returnCode = loginDialog.open();
     String resultText = "Result: " + getReturnCodeText( returnCode );
-    if( returnCode == Dialog.OK ) {
+    if( returnCode == Window.OK ) {
       String username = loginDialog.getUsername();
       String password = loginDialog.getPassword();
       String pwInfo = password == null ? "n/a" : password.length() + " chars";
@@ -329,9 +334,9 @@ public class DialogsTab extends ExampleTab {
 
   private String getReturnCodeText( final int code ) {
     String result;
-    if( code == Dialog.OK ) {
+    if( code == Window.OK ) {
       result = "OK";
-    } else if( code == Dialog.CANCEL ) {
+    } else if( code == Window.CANCEL ) {
         result = "CANCEL";
     } else {
       result = String.valueOf( code );
@@ -415,7 +420,7 @@ public class DialogsTab extends ExampleTab {
     messageBoxDlgResLabel.setText( "Result: " + strResult );
     messageBoxDlgResLabel.pack();
   }
-  
+
   private void showColorDialog() {
     ColorDialog dialog = new ColorDialog( getShell() );
     RGB result = dialog.open();
