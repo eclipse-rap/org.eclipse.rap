@@ -137,7 +137,6 @@ public class ColorDialog extends Dialog {
    */
   public ColorDialog( final Shell parent ) {
     this( parent, SWT.APPLICATION_MODAL );
-    setText( RWTMessages.getMessage( "RWT_ColorDialogTitle" ) );
   }
 
   /**
@@ -169,7 +168,8 @@ public class ColorDialog extends Dialog {
    * @see Widget#getStyle
    */
   public ColorDialog( final Shell parent, final int style ) {
-    super( parent, style );
+    super( parent, checkStyle( parent, style ) );
+    checkSubclass();
     setText( RWTMessages.getMessage( "RWT_ColorDialogTitle" ) );
   }
 
@@ -377,5 +377,20 @@ public class ColorDialog extends Dialog {
     rgb.red = selectedColor.red;
     updateColorDisplay();
     updateSpinners();
+  }
+  
+  private static int checkStyle( final Shell parent, final int style ) {
+    int mask = SWT.PRIMARY_MODAL | SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL;
+    int result = style;
+    if( ( result & SWT.SHEET ) != 0 ) {
+      result &= ~SWT.SHEET;
+      if( ( result & mask ) == 0 ) {
+        result |= parent == null ? SWT.APPLICATION_MODAL : SWT.PRIMARY_MODAL;
+      }
+    }
+    if( ( result & mask ) == 0 ) {
+      result |= SWT.APPLICATION_MODAL;
+    }
+    return Widget.checkBits( result, SWT.LEFT_TO_RIGHT, 0, 0, 0, 0, 0 );
   }
 }
