@@ -516,7 +516,15 @@ public class EditorSashContainer extends PartSashContainer {
     public void updateTabList() {
         Composite parent = getParent();
         if (parent != null) { // parent may be null on startup
-            EditorStack wb = getActiveWorkbook();
+// RAP [rh] fix for bug 301154: a new workbook is created as a side effect of 
+//     calling getActiveWorkbook() - which shouldn't happen in the first place. 
+//     This leads to a NPE when the interaction-design is used. The fix is to 
+//     avoid calling getActiveWorkbook when the workbench is about to be closed.
+//            EditorStack wb = getActiveWorkbook();
+            EditorStack wb = null;
+			if( !getPage().getWorkbenchWindow().getWorkbench().isClosing() ) {
+				wb = getActiveWorkbook();
+			}
             if (wb == null) {
                 parent.setTabList(new Control[0]);
             } else {
