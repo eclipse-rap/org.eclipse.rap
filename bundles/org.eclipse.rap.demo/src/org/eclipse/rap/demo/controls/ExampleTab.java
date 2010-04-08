@@ -466,11 +466,16 @@ abstract class ExampleTab {
     textWidth.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
     new Label( group, SWT.NONE ).setText( "Color" );
     final Button buttonColor = new Button( group, SWT.PUSH );
-    buttonColor.setLayoutData( new GridData( 20, SWT.DEFAULT ) );
+    buttonColor.setLayoutData( new GridData( 20, 20 ) );
     buttonColor.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         rbIndex = ( rbIndex + 1 ) % bgColors.length;
-        buttonColor.setBackground( bgColors[ rbIndex ] );
+        if( bgColors[ rbIndex ] == null ) {
+          buttonColor.setText( "" );
+        } else {
+          buttonColor.setText( "\u2588" );
+        }
+        buttonColor.setForeground( bgColors[ rbIndex ] );
       }
     } );
     new Label( group, SWT.NONE ).setText( "Radius " );
