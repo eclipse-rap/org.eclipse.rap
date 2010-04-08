@@ -28,9 +28,11 @@ public abstract class Device implements Drawable {
 
   private boolean disposed;
   private Point dpi;
+  private int depth;
   
   public Device() {
     readDPI();
+    readDepth();
   }
 
   /**
@@ -209,6 +211,24 @@ public abstract class Device implements Drawable {
   }
 
   /**
+   * Returns the bit depth of the screen, which is the number of
+   * bits it takes to represent the number of unique colors that
+   * the screen is currently capable of displaying. This number 
+   * will typically be one of 1, 8, 15, 16, 24 or 32.
+   *
+   * @return the depth of the screen
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * @since 1.3
+   */
+  public int getDepth() {
+    checkDevice();
+    return depth;
+  }
+
+  /**
    * Returns a point whose x coordinate is the horizontal
    * dots per inch of the display, and whose y coordinate
    * is the vertical dots per inch of the display.
@@ -347,6 +367,16 @@ public abstract class Device implements Drawable {
     if( dpiX != null && dpiY != null ) {
       dpi.x = Integer.parseInt( dpiX );
       dpi.y = Integer.parseInt( dpiY );
+    }
+  }
+
+  private void readDepth() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String parameter = request.getParameter( "w1.colorDepth" );
+    if( parameter != null ) {
+      depth = Integer.parseInt( parameter );
+    } else {
+      depth = 16;
     }
   }
 }

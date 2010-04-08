@@ -92,6 +92,19 @@ qx.Class.define( "org.eclipse.swt.Application", {
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( "w1.dpi.x", String( dpi[ 0 ] ) );
       req.addParameter( "w1.dpi.y", String( dpi[ 1 ] ) );
+    },
+
+    _appendColorDepth : function() {
+      var depth = 16;
+      if( typeof screen.colorDepth == "number" ) {
+        depth = parseInt( screen.colorDepth );
+      }
+      if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+        // Firefox detects 24bit and 32bit as 24bit, but 32bit is more likely
+        depth = depth == 24 ? 32 : depth;
+      }
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addParameter( "w1.colorDepth", String( depth ) );
     }
 
   },
@@ -155,7 +168,8 @@ qx.Class.define( "org.eclipse.swt.Application", {
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
       org.eclipse.swt.Application._appendScrollBarSize();
-      org.eclipse.swt.Application._appendSystemDPI();
+      org.eclipse.swt.Application._appendSystemDPI();      
+      org.eclipse.swt.Application._appendColorDepth();
       var req = org.eclipse.swt.Request.getInstance();
       req.addEventListener( "send", this._onSend, this );
       req.send();
