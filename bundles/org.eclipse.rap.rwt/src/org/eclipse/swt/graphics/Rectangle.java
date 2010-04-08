@@ -14,6 +14,7 @@ package org.eclipse.swt.graphics;
 
 //import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * Instances of this class represent rectangular areas in an
@@ -42,10 +43,11 @@ import org.eclipse.swt.SWT;
  * 
  * @since 1.0
  */
-//public final class Rectangle implements SerializableCompatibility {
-public final class Rectangle {
+public final class Rectangle implements SerializableCompatibility {
 	
-	/**
+	private static final long serialVersionUID = 1L;
+
+  /**
 	 * the x coordinate of the rectangle
 	 */
 	public int x;

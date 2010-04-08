@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.graphics;
 
+import org.eclipse.swt.internal.SerializableCompatibility;
+
 /**
  * Instances of this class represent places on the (x, y)
  * coordinate plane.
@@ -36,9 +38,11 @@ package org.eclipse.swt.graphics;
  * 
  * @since 1.0
  */
-public final class Point {
+public final class Point implements SerializableCompatibility {
   
-	/**
+	private static final long serialVersionUID = 1L;
+
+  /**
 	 * the x coordinate of the point
 	 */
 	public int x;

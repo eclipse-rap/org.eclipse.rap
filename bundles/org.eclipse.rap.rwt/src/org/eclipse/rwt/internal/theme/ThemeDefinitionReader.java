@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import javax.xml.parsers.*;
 
+import org.eclipse.rwt.internal.service.ServletLog;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -50,9 +51,7 @@ public final class ThemeDefinitionReader {
     = "http://www.w3.org/2001/XMLSchema";
 
   private final InputStream inputStream;
-
   private final String fileName;
-
   private final Collection cssElements;
 
   /**
@@ -177,36 +176,37 @@ public final class ThemeDefinitionReader {
     return result;
   }
 
-  // TODO: Logging instead of sysout
   private class ThemeDefinitionErrorHandler implements ErrorHandler {
     public void error( final SAXParseException spe ) throws SAXException {
-      System.err.println( "Error parsing theme definition "
-                          + getPosition( spe )
-                          + ":" );
-      System.err.println( spe.getMessage() );
+      String msg
+        = "Error parsing theme definition " + getPosition( spe ) + ":";
+      ServletLog.log( msg, null );
+      ServletLog.log( spe.getMessage(), null );
     }
 
     public void fatalError( final SAXParseException spe ) throws SAXException {
-      System.err.println( "Fatal error parsing theme definition "
-                          + getPosition( spe )
-                          + ":" );
-      System.err.println( spe.getMessage() );
+      String
+        msg = "Fatal error parsing theme definition " + getPosition( spe ) + ":";
+      ServletLog.log( msg, null );
+      ServletLog.log( spe.getMessage(), null );
     }
 
     public void warning( final SAXParseException spe ) throws SAXException {
-      System.err.println( "Warning parsing theme definition "
-                          + getPosition( spe )
-                          + ":" );
-      System.err.println( spe.getMessage() );
+      String msg
+        = "Warning parsing theme definition " + getPosition( spe ) + ":";
+      ServletLog.log( msg, null );
+      ServletLog.log( spe.getMessage(), null );
     }
 
     private String getPosition( final SAXParseException spe ) {
-      return "in file '"
-      + fileName
-      + "' at line "
-      + spe.getLineNumber()
-      + ", col "
-      + spe.getColumnNumber();
+      String result
+        = "in file '" 
+        + fileName 
+        + "' at line " 
+        + spe.getLineNumber() 
+        + ", col " 
+        + spe.getColumnNumber();
+      return result;
     }
   }
 }

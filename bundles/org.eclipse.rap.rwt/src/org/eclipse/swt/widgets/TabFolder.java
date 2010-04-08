@@ -371,7 +371,6 @@ public class TabFolder extends Composite {
   ///////////////////////////////
   // Layout and size computations
 
-  // TODO: [rh] review this!
   public void layout() {
     checkWidget();
     Control[] children = getChildren();

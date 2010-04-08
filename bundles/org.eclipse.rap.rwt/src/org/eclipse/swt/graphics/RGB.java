@@ -12,6 +12,7 @@ package org.eclipse.swt.graphics;
 
 // import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * Instances of this class are descriptions of colors in terms of the primary
@@ -34,9 +35,10 @@ import org.eclipse.swt.SWT;
  * 
  * @since 1.0
  */
-// TODO: ... implements SerializableCompatibility
-public final class RGB {
+public final class RGB implements SerializableCompatibility {
 
+  private static final long serialVersionUID = 1L;
+  
   /**
    * the red component of the RGB
    */
