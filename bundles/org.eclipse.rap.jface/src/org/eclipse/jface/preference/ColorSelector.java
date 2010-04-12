@@ -74,6 +74,9 @@ public class ColorSelector extends EventManager {
 //        gc.fillRectangle(0, 0, fExtent.x, fExtent.y);
 //        gc.dispose();
 //        fButton.setImage(fImage);
+        fButton.setForeground( fButton.getBackground() );
+        fButton.setText( "\u2588\u2588\u2588" ); //$NON-NLS-1$
+// RAPEND
         fButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent event) {
                 open();
@@ -208,7 +211,7 @@ public class ColorSelector extends EventManager {
 //        gc.fillRectangle(1, 3, fExtent.x - 2, fExtent.y - 5);
 //        gc.dispose();
 //        fButton.setImage(fImage);
-      fButton.setBackground( fColor );
+      fButton.setForeground( fColor );
     }
 
     /**
