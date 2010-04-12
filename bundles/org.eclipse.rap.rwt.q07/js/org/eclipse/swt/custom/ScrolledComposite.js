@@ -42,8 +42,10 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
   members : {
     
     _onAppear : function( evt ) {
-      this.setScrollTop( this._lastScrollTop );
-      this.setScrollLeft( this._lastScrollLeft );
+      if( this.isCreated() ) {
+        this.setScrollTop( this._lastScrollTop );
+        this.setScrollLeft( this._lastScrollLeft );
+      }
     },
     
     _onChangeParent : function( evt ) {
