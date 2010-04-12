@@ -5765,13 +5765,13 @@ _beforeRemoveDom:function(){this.createDispatchEvent("beforeRemoveDom");
 _afterRemoveDom:function(){this.createDispatchEvent("removeDom");
 },
 _applyVisibility:function(value,
-old){if(value){if(this._isDisplayable){this._beforeAppear();
+old){if(value){if(this._isDisplayable&&this._isCreated){this._beforeAppear();
 }this.removeStyleProperty("display");
-if(this._isDisplayable){this._afterAppear();
-}}else{if(this._isDisplayable){this._beforeDisappear();
+if(this._isDisplayable&&this._isCreated){this._afterAppear();
+}}else{if(this._isDisplayable&&this._isCreated){this._beforeDisappear();
 }this.setStyleProperty("display",
 "none");
-if(this._isDisplayable){this._afterDisappear();
+if(this._isDisplayable&&this._isCreated){this._afterDisappear();
 }}},
 show:function(){this.setVisibility(true);
 this.setDisplay(true);
