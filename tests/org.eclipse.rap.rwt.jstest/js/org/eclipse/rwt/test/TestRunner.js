@@ -14,6 +14,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
 
   construct : function() {
     this.base( arguments );
+    qx.log.Logger.ROOT_LOGGER.setMinLevel( qx.log.Logger.LEVEL_ERROR );
     this._testClasses = null;
     this._currentClass = null;
     this._currentFunction = null;

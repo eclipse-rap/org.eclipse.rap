@@ -357,6 +357,14 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       // this only works if the TestRunner-function"_disableAutoFlush" 
       // has been called previously. (Happens in TestRunner.run)
       qx.ui.core.Widget.__allowFlushs = !value;
+    },
+    
+    printStackTrace : function( qxObject ) {
+      // Note: this works, regardless of current log-level
+      var level = qx.log.Logger.ROOT_LOGGER._getDefaultFilter().getMinLevel();
+      qx.log.Logger.ROOT_LOGGER.setMinLevel( qx.log.Logger.LEVEL_DEBUG );
+      qxObject.printStackTrace();
+      qx.log.Logger.ROOT_LOGGER.setMinLevel( level );
     }
      
   }
