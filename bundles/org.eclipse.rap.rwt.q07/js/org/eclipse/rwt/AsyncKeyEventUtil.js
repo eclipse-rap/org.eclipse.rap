@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
   construct : function() {
     this.base( arguments );
     this._pendingEventInfo = null;
-    this._redispatching = false;
+    this._allowIntercept = true;
     this._bufferedEvents = new Array();
     this._keyEventRequestRunning = false;
     var req = org.eclipse.swt.Request.getInstance();
@@ -96,7 +96,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
 
     intercept : function( eventType, keyCode, charCode, domEvent ) {
       var result = false;
-      if( !this._redispatching ) {
+      if( this._allowIntercept ) {
         var control = this._getTargetControl();
         var hasKeyListener = this._hasKeyListener( control );
         var hasTraverseListener = this._hasTraverseListener( control );
@@ -106,8 +106,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         }
         if( hasKeyListener || ( hasTraverseListener && isTraverseKey ) ) {
           if( !this._isUntrustedKey( keyCode, domEvent ) ) {
-            if( this._keyEventRequestRunning || this._bufferedEvents.length > 0 )
-            {
+            if( this._keyEventRequestRunning ) {
               this._bufferedEvents.push( this._getEventInfo( domEvent ) );
               this._cancelDomEvent( domEvent );
               result = true;
@@ -133,7 +132,9 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         //       See https://bugs.eclipse.org/bugs/show_bug.cgi?id=261532
         var suspendBuffer = org_eclipse_rap_rwt_EventUtil_suspend;
         org_eclipse_rap_rwt_EventUtil_suspend = false;
+        this._allowIntercept = false;      
         this._redispatchKeyEvent( this._pendingEventInfo );
+        this._allowIntercept = true;      
         org_eclipse_rap_rwt_EventUtil_suspend = suspendBuffer;
       }
     },
@@ -270,7 +271,6 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
     },
 
     _redispatchKeyEvent : function( eventInfo ) {
-      this._redispatching = true;
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
         var newEvent = document.createEvent( "KeyboardEvent" );
         newEvent.initKeyEvent( eventInfo.type,
@@ -308,7 +308,6 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       } else {
         throw Error( "Redispatching key events not supported" );
       }
-      this._redispatching = false;
     }
 
 //    ,
