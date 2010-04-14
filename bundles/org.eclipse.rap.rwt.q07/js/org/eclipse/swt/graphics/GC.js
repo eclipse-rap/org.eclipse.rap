@@ -308,14 +308,10 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
                           simple )
     {
       var context = this._context;
-      var alpha = this._context.globalAlpha;
       var image = new Image();
-      image.onload = function() {
-        // [if] As drawImage is delayed by the onload event, we have to draw
-        // it with correct context parameters (alpha). 
-        // TODO [tb] : The z-order will be wrong in any case.
-        context.save();
-        context.globalAlpha = alpha;
+      image.src = imageSrc;
+      // On (native) canvas, only loaded images can be drawn: 
+      if( image.complete || qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
         if( simple ) {
           context.drawImage( image, destX, destY );
         } else {
@@ -329,9 +325,30 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
                              destWidth,
                              destHeight );
         }
-        context.restore();
-      };
-      image.src = imageSrc;
+      } else {
+	      var alpha = context.globalAlpha;
+        image.onload = function() {
+          // TODO [tb] : The z-order will be wrong in this case.
+          // [if] As drawImage is delayed by the onload event, we have to draw
+          // it with correct context parameters (alpha). 
+          context.save();
+          context.globalAlpha = alpha;
+          if( simple ) {
+            context.drawImage( image, destX, destY );
+          } else {
+            context.drawImage( image,
+                               srcX,
+                               srcY,
+                               srcWidth,
+                               srcHeight,
+                               destX,
+                               destY,
+                               destWidth,
+                               destHeight );
+          }
+          context.restore();
+        };
+      }
     },
 
     _stroke : function( fill ) {
