@@ -23,6 +23,7 @@ public final class CanvasExample implements IExamplePage {
 
   private static final int MODE_POLYFORM = 0;
   private static final int MODE_OVAL = 1;
+  private static final int MODE_STAMP = 2;
 
   private static final int SNAP_DISTANCE = 10;
   private static final int LINE_WIDTH = 2;
@@ -41,6 +42,13 @@ public final class CanvasExample implements IExamplePage {
     new RGB( 66,187,134 )
   };
 
+  private static final int[] IMAGES = new int[]{
+    SWT.ICON_QUESTION,
+    SWT.ICON_INFORMATION,
+    SWT.ICON_WARNING,
+    SWT.ICON_ERROR
+  };
+
   private Display display;
   private Canvas drawingArea;
   private int mode;
@@ -48,6 +56,7 @@ public final class CanvasExample implements IExamplePage {
   private int[] currentParam;
   private Point currentStart;
   private int currentColor;
+  private int currentImage;
   private int currentAlpha;
 
 
@@ -55,7 +64,6 @@ public final class CanvasExample implements IExamplePage {
     path = new ArrayList();
     currentAlpha = 255;
   }
-
 
   public void createControl( final Composite parent ) {
     display = parent.getDisplay();
@@ -100,6 +108,14 @@ public final class CanvasExample implements IExamplePage {
         mode = MODE_OVAL;
       }
     } );
+    Button stampButton = new Button( group, SWT.RADIO );
+    stampButton.setText( "Stamp" );
+    stampButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        newOperation();
+        mode = MODE_STAMP;
+      }
+    } );
     final Button transparencyButton = new Button( group, SWT.CHECK );
     transparencyButton.setText( "Transparency" );
     transparencyButton.addSelectionListener( new SelectionAdapter() {
@@ -134,29 +150,54 @@ public final class CanvasExample implements IExamplePage {
   }
 
   private void addOperationToPath() {
-    if( mode == MODE_OVAL ) {
-      int centerX = currentParam[ 0 ];
-      int centerY = currentParam[ 1 ];
-      int radiusX = Math.abs( centerX - currentParam[ 2 ] );
-      int radiusY = Math.abs( centerY - currentParam[ 3 ] );
-      currentParam = new int[]{
-        centerX - radiusX,
-        centerY - radiusY,
-        radiusX * 2,
-        radiusY * 2
-      };
+    Object fill = getCurrentFill();
+    switch( mode ) {
+      case MODE_OVAL: 
+        int centerX = currentParam[ 0 ];
+        int centerY = currentParam[ 1 ];
+        int radiusX = Math.abs( centerX - currentParam[ 2 ] );
+        int radiusY = Math.abs( centerY - currentParam[ 3 ] );
+        currentParam = new int[]{
+          centerX - radiusX,
+          centerY - radiusY,
+          radiusX * 2,
+          radiusY * 2
+        };
+      break;
+      case MODE_STAMP:
+        Image stamp = ( Image )fill;
+        currentParam[ 0 ] -= stamp.getBounds().width / 2;
+        currentParam[ 1 ] -= stamp.getBounds().height / 2;
+      break;
     }
     Object[] arg = new Object[] {
       new Integer( mode ),
       currentParam,
-      new Color( display, COLORS[ currentColor ] ),
+      fill,
       new Integer( currentAlpha )
     };
     path.add( arg );
-    currentColor++;
-    if( currentColor >= COLORS.length ) {
-      currentColor = 0;
+  }
+
+  private Object getCurrentFill() {
+    Object result;
+    switch( mode ) {
+      case MODE_STAMP:
+        result = display.getSystemImage( IMAGES[ currentImage ] );
+        currentImage++;
+        if( currentImage >= IMAGES.length ) {
+          currentImage = 0;
+        }
+      break;
+      default:
+        result = new Color( display, COLORS[ currentImage ] );
+        currentColor++;
+        if( currentColor >= COLORS.length ) {
+          currentColor = 0;
+        }
+      break;
     }
+    return result;
   }
 
   private void clear() {
@@ -187,7 +228,6 @@ public final class CanvasExample implements IExamplePage {
     gc.setBackground( display.getSystemColor( SWT.COLOR_WHITE ) );
     gc.fillOval( x, y, diameter, diameter );
     gc.drawOval( x, y, diameter, diameter );
-
   }
 
   private final class DrawingAreaPaintListener implements PaintListener {
@@ -198,18 +238,22 @@ public final class CanvasExample implements IExamplePage {
         Object[] operation = ( Object[] )path.get( i );
         int operationMode = ( ( Integer )operation[ 0 ] ).intValue();
         int[] param = ( int[] )operation[ 1 ];
-        gc.setBackground( ( Color ) operation[ 2 ] );
         gc.setAlpha( ( ( Integer )operation[ 3 ] ).intValue() );
         switch( operationMode ) {
           case MODE_POLYFORM:
+            gc.setBackground( ( Color )operation[ 2 ] );
             gc.fillPolygon( param );
             gc.setAlpha( 255 );
             gc.drawPolygon( param );
           break;
           case MODE_OVAL:
+            gc.setBackground( ( Color ) operation[ 2 ] );
             gc.fillOval( param[ 0 ], param[ 1 ], param[ 2 ], param[ 3 ] );
             gc.setAlpha( 255 );
             gc.drawOval( param[ 0 ], param[ 1 ], param[ 2 ], param[ 3 ] );
+          break;
+          case MODE_STAMP:
+            gc.drawImage( ( Image )operation[ 2 ], param[ 0 ], param[ 1 ] );
           break;
         }
       }
@@ -242,6 +286,11 @@ public final class CanvasExample implements IExamplePage {
             addOperationToPath();
             newOperation();
           }
+        break;
+        case MODE_STAMP:
+          addToCurrentParam( e.x, e.y );
+          addOperationToPath();
+          newOperation();
         break;
       }
       drawingArea.redraw();
