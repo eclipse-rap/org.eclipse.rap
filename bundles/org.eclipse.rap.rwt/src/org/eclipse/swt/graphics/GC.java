@@ -104,6 +104,7 @@ public class GC extends Resource {
     if( drawable == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
+    // Assume that Drawable is either a Control or a Device
     if( drawable instanceof Control ) {
       control = ( Control )drawable;
     } else {
@@ -133,9 +134,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void setFont( final Font font ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( font != null && font.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
@@ -158,9 +157,7 @@ public class GC extends Resource {
    * </ul>
    */
   public Font getFont() {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return font;
   }
 
@@ -181,9 +178,7 @@ public class GC extends Resource {
    * </ul>
    */
   public int getCharWidth( final char ch ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return Graphics.stringExtent( font, Character.toString( ch ) ).x;
   }
 
@@ -210,9 +205,7 @@ public class GC extends Resource {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return Graphics.stringExtent( font, string );
   }
 
@@ -239,9 +232,7 @@ public class GC extends Resource {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return Graphics.textExtent( font, string, 0 );
   }
 
@@ -257,9 +248,7 @@ public class GC extends Resource {
    * </ul>
    */
   public FontMetrics getFontMetrics() {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return new FontMetrics( font );
   }
 
@@ -279,9 +268,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void setBackground( final Color color ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( color == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -306,9 +293,7 @@ public class GC extends Resource {
    * </ul>
    */
   public Color getBackground() {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return background;
   }
 
@@ -327,9 +312,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void setForeground( final Color color ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( color == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -354,10 +337,31 @@ public class GC extends Resource {
    * </ul>
    */
   public Color getForeground() {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return foreground;
+  }
+  
+  /** 
+   * Returns the bounding rectangle of the receiver's clipping
+   * region. If no clipping region is set, the return value
+   * will be a rectangle which covers the entire bounds of the
+   * object the receiver is drawing on.
+   *
+   * @return the bounding rectangle of the clipping region
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public Rectangle getClipping() {
+    checkDisposed();
+    Rectangle result;
+    if( control != null ) {
+      result = control.getBounds();
+    } else {
+      result = device.getBounds();
+    }
+    return result;
   }
 
   /**
@@ -376,9 +380,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void setAlpha( final int alpha ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( alpha >= 0 && alpha <= 255 && this.alpha != alpha ) {
       this.alpha = alpha;
       SetProperty operation
@@ -398,9 +400,7 @@ public class GC extends Resource {
    * </ul>
    */
   public int getAlpha() {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return alpha;
   }
 
@@ -417,9 +417,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void setLineWidth( final int lineWidth ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( this.lineWidth != lineWidth ) {
       this.lineWidth = lineWidth;
       SetProperty operation
@@ -441,9 +439,7 @@ public class GC extends Resource {
    * </ul>
    */
   public int getLineWidth() {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return lineWidth;
   }
 
@@ -462,9 +458,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void setLineCap( final int lineCap ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( this.lineCap != lineCap ) {
       switch( lineCap ) {
         case SWT.CAP_ROUND:
@@ -493,9 +487,7 @@ public class GC extends Resource {
    * </ul>
    */
   public int getLineCap() {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return lineCap;
   }
 
@@ -514,9 +506,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void setLineJoin( final int lineJoin ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( this.lineJoin != lineJoin ) {
       switch( lineJoin ) {
         case SWT.JOIN_MITER:
@@ -545,9 +535,7 @@ public class GC extends Resource {
    * </ul>
    */
   public int getLineJoin() {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return lineJoin;
   }
 
@@ -572,9 +560,7 @@ public class GC extends Resource {
    * @see LineAttributes
    */
   public void setLineAttributes( final LineAttributes attributes ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( attributes == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -593,9 +579,7 @@ public class GC extends Resource {
    * </ul>
    */
   public LineAttributes getLineAttributes() {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     return new LineAttributes( lineWidth, lineCap, lineJoin );
   }
 
@@ -614,9 +598,7 @@ public class GC extends Resource {
    */
   public void drawLine( final int x1, final int y1, final int x2, final int y2 )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawLine operation = new DrawLine( x1, y1, x2, y2 );
     addGCOperation( operation );
   }
@@ -664,9 +646,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawRectangle operation = new DrawRectangle( x, y, width, height, false );
     addGCOperation( operation );
   }
@@ -738,9 +718,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawRectangle operation = new DrawRectangle( x, y, width, height, true );
     addGCOperation( operation );
   }
@@ -771,9 +749,7 @@ public class GC extends Resource {
                                      final int height,
                                      final boolean vertical )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( background.equals( foreground  ) ) {
       fillRectangle( x, y, width, height );
     } else {
@@ -811,9 +787,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawRoundRectangle operation = new DrawRoundRectangle( x,
                                                            y,
                                                            width,
@@ -848,9 +822,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawRoundRectangle operation = new DrawRoundRectangle( x,
                                                            y,
                                                            width,
@@ -887,9 +859,7 @@ public class GC extends Resource {
                         final int width,
                         final int height )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawArc operation = new DrawArc( x, y, width, height, 0, 360, false );
     addGCOperation( operation );
   }
@@ -915,9 +885,7 @@ public class GC extends Resource {
                         final int width,
                         final int height )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawArc operation = new DrawArc( x, y, width, height, 0, 360, true );
     addGCOperation( operation );
   }
@@ -958,9 +926,7 @@ public class GC extends Resource {
                        final int startAngle,
                        final int arcAngle )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawArc operation
       = new DrawArc( x, y, width, height, startAngle, arcAngle, false );
     addGCOperation( operation );
@@ -1005,9 +971,7 @@ public class GC extends Resource {
                        final int startAngle,
                        final int arcAngle )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawArc operation
       = new DrawArc( x, y, width, height, startAngle, arcAngle, true );
     addGCOperation( operation );
@@ -1031,9 +995,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void drawPolygon( final int[] pointArray ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawPolyline operation = new DrawPolyline( pointArray, true, false );
     addGCOperation( operation );
   }
@@ -1058,9 +1020,7 @@ public class GC extends Resource {
    * @see #drawPolygon
    */
   public void fillPolygon( final int[] pointArray ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawPolyline operation = new DrawPolyline( pointArray, true, true );
     addGCOperation( operation );
   }
@@ -1083,9 +1043,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void drawPolyline( final int[] pointArray ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawPolyline operation = new DrawPolyline( pointArray, false, false );
     addGCOperation( operation );
   }
@@ -1106,9 +1064,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void drawPoint( final int x, final int y ) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     DrawPoint operation = new DrawPoint( x, y );
     addGCOperation( operation );
   }
@@ -1133,9 +1089,7 @@ public class GC extends Resource {
    * </ul>
    */
   public void drawImage( final Image image, final int x, final int y) {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( image == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -1189,9 +1143,7 @@ public class GC extends Resource {
                          final int destWidth,
                          final int destHeight )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( srcWidth != 0 && srcHeight != 0 && destWidth != 0 && destHeight != 0 ) {
       if(    srcX < 0
           || srcY < 0
@@ -1366,15 +1318,19 @@ public class GC extends Resource {
                         final int y,
                         final int flags )
   {
-    if( isDisposed() ) {
-      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
-    }
+    checkDisposed();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( string.length() != 0 ) {
       DrawText operation = new DrawText( string, x, y, flags );
       addGCOperation( operation );
+    }
+  }
+
+  private void checkDisposed() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
     }
   }
 

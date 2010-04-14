@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public abstract class Resource {
 
-  private final Device device;
+  final Device device;
   private boolean disposed;
   
   Resource( final Device device ) {

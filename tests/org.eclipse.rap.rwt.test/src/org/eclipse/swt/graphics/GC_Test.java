@@ -925,7 +925,36 @@ public class GC_Test extends TestCase {
     assertEquals( 8, operation.destHeight );
     assertFalse( operation.simple );
   }
+  
+  public void testGetClippingForControl() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Canvas canvas = new Canvas( shell, SWT.NONE );
+    canvas.setSize( 100, 100 );
+    GC gc = new GC( canvas );
+    Rectangle clipping = gc.getClipping();
+    assertEquals( new Rectangle( 0, 0, 100, 100), clipping );
+  }
 
+  public void testGetClippingForDisplay() {
+    Display display = new Display();
+    GC gc = new GC( display );
+    Rectangle clipping = gc.getClipping();
+    assertEquals( display.getBounds(), clipping );
+  }
+  
+  public void testGetClippingOnDisposedGC() {
+    Display display = new Display();
+    GC gc = new GC( display );
+    gc.dispose();
+    try {
+      gc.getClipping();
+      fail( "getClipping must not return if GC was disposed" );
+    } catch( SWTException e ) {
+      // expected
+    }
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
