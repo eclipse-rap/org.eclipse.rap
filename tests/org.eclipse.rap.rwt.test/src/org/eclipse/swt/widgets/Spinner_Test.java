@@ -77,15 +77,11 @@ public class Spinner_Test extends TestCase {
     spinner.setMaximum( -200 );
     assertEquals( 100, spinner.getMaximum() );
 
-    // ignore negative min or max values (behave like SWT)
-    spinner.setMinimum( 1 );
-    spinner.setMaximum( 100 );
-    spinner.setMinimum( -1 );
-    assertEquals( 1, spinner.getMinimum() );
-    spinner.setMinimum( 1 );
-    spinner.setMaximum( 100 );
-    spinner.setMaximum( -1 );
-    assertEquals( 100, spinner.getMaximum() );
+    // it is allowed to set min and max to negative values
+    spinner.setMinimum( -100 );
+    spinner.setMaximum( -50 );
+    assertEquals( -100, spinner.getMinimum() );
+    assertEquals( -50, spinner.getMaximum() );
   }
 
   public void testIncrementAndPageIncrement() {
@@ -147,6 +143,11 @@ public class Spinner_Test extends TestCase {
 
     spinner.setMaximum( 1000000 );
     expected = new Point( 73, 18 );
+    assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+
+    spinner.setMinimum( -1000000 );
+    spinner.setMaximum( 100 );
+    expected = new Point( 78, 18 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner = new Spinner( shell, SWT.BORDER );

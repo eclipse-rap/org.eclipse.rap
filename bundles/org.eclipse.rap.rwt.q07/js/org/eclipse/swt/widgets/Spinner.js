@@ -257,9 +257,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     _onkeypress : function( evt ) {
       var identifier = evt.getKeyIdentifier();
       var separator = this.getDecimalSeparator();
-      if( identifier == '-' ) {
-        evt.preventDefault();
-      } else if( !( this.getDigits() > 0 && identifier == separator ) ) {
+      if( !( this.getDigits() > 0 && identifier == separator ) ) {
         this.base( arguments, evt );
       }
     },

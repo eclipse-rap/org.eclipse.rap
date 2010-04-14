@@ -204,11 +204,11 @@ public class Spinner extends Composite {
 
   /**
    * Sets the minimum value that the receiver will allow.  This new
-   * value will be ignored if it is negative or is not less than the receiver's
+   * value will be ignored if it is greater than the receiver's
    * current maximum value.  If the new minimum is applied then the receiver's
    * selection value will be adjusted if necessary to fall within its new range.
    *
-   * @param value the new minimum, which must be nonnegative and less than the current maximum
+   * @param value the new minimum, which must be less than or equals to the current maximum
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -217,7 +217,7 @@ public class Spinner extends Composite {
    */
   public void setMinimum( final int value ) {
     checkWidget();
-    if( value >= 0 && value <= maximum ) {
+    if( value <= maximum ) {
       minimum = value;
       if( selection < minimum ) {
         selection = minimum;
@@ -242,11 +242,11 @@ public class Spinner extends Composite {
 
   /**
    * Sets the maximum value that the receiver will allow.  This new
-   * value will be ignored if it is not greater than the receiver's current
+   * value will be ignored if it is less than the receiver's current
    * minimum value.  If the new maximum is applied then the receiver's
    * selection value will be adjusted if necessary to fall within its new range.
    *
-   * @param value the new maximum, which must be greater than the current minimum
+   * @param value the new maximum, which must be greater than or equals to the current minimum
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -255,7 +255,7 @@ public class Spinner extends Composite {
    */
   public void setMaximum( final int value ) {
     checkWidget();
-    if( value >= 0 && value >= minimum ) {
+    if( value >= minimum ) {
       maximum = value;
       if( selection > maximum ) {
         selection = maximum;
@@ -471,7 +471,8 @@ public class Spinner extends Composite {
     int width = 0;
     int height = 0;
     if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
-      String string = String.valueOf( maximum );
+      int maxValue = Math.max( Math.abs( maximum ), Math.abs( minimum ) );
+      String string = String.valueOf( maxValue );
       if( digits > 0 ) {
         StringBuffer buffer = new StringBuffer();
         buffer.append( string );
@@ -482,6 +483,9 @@ public class Spinner extends Composite {
           count--;
         }
         string = buffer.toString();
+      }
+      if( minimum < 0 || maximum < 0 ) {
+        string += "-";
       }
       Point textSize = Graphics.stringExtent( getFont(), string );
       Rectangle padding = getFieldPadding();
