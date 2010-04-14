@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.util.io;
+package org.eclipse.rwt.apache.batik.util.io;
 
 import java.io.*;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import java.util.Map;
  * bytes.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: StreamNormalizingReader.java,v 1.1 2008/12/03 15:25:53 rsternber Exp $
+ * @version $Id: StreamNormalizingReader.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
 public class StreamNormalizingReader extends NormalizingReader {
 

@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.css.parser;
+package org.eclipse.rwt.apache.batik.css.parser;
 
 /**
  * This class encapsulates a general parse error or warning.
@@ -27,7 +27,7 @@ package org.apache.batik.css.parser;
  * exceptions, it must wrap those exceptions in a ParseException.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: ParseException.java,v 1.1 2008/12/03 15:25:53 rsternber Exp $
+ * @version $Id: ParseException.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
 public class ParseException extends RuntimeException {
 

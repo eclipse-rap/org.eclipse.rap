@@ -15,8 +15,8 @@ import java.io.*;
 
 import junit.framework.TestCase;
 
-import org.apache.batik.css.parser.Parser;
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.apache.batik.css.parser.Parser;
 import org.eclipse.rwt.internal.theme.*;
 import org.w3c.css.sac.*;
 

@@ -15,22 +15,23 @@
    limitations under the License.
 
  */
-package org.apache.batik.css.parser;
+package org.eclipse.rwt.apache.batik.css.parser;
 
-import org.w3c.css.sac.SACMediaList;
+import org.w3c.css.sac.Selector;
+import org.w3c.css.sac.SelectorList;
 
 /**
- * This class implements the {@link SACMediaList} interface.
+ * This class implements the {@link SelectorList} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: CSSSACMediaList.java,v 1.1 2008/12/03 15:25:54 rsternber Exp $
+ * @version $Id: CSSSelectorList.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
-public class CSSSACMediaList implements SACMediaList {
+public class CSSSelectorList implements SelectorList {
 
     /**
      * The list.
      */
-    protected String[] list = new String[3];
+    protected Selector[] list = new Selector[3];
 
     /**
      * The list length.
@@ -48,7 +49,7 @@ public class CSSSACMediaList implements SACMediaList {
      * <b>SAC</b>: Returns the selector at the specified index, or
      * <code>null</code> if this is not a valid index.  
      */
-    public String item(int index) {
+    public Selector item(int index) {
         if (index < 0 || index >= length) {
             return null;
         }
@@ -58,10 +59,10 @@ public class CSSSACMediaList implements SACMediaList {
     /**
      * Appends an item to the list.
      */
-    public void append(String item) {
+    public void append(Selector item) {
         if (length == list.length) {
-            String[] tmp = list;
-            list = new String[list.length * 3 / 2];
+            Selector[] tmp = list;
+            list = new Selector[list.length * 3 / 2];
             for (int i = 0; i < tmp.length; i++) {
                 list[i] = tmp[i];
             }

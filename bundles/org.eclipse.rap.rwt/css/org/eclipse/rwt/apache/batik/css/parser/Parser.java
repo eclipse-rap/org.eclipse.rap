@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.css.parser;
+package org.eclipse.rwt.apache.batik.css.parser;
 
 import java.io.*;
 import java.text.MessageFormat;
@@ -27,7 +27,7 @@ import org.w3c.css.sac.*;
  * This class implements the {@link _org.w3c.css.sac.Parser} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: Parser.java,v 1.1 2008/12/03 15:25:53 rsternber Exp $
+ * @version $Id: Parser.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
 public class Parser implements org.w3c.css.sac.Parser {
 

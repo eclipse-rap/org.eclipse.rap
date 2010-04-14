@@ -15,22 +15,20 @@
    limitations under the License.
 
  */
-package org.apache.batik.css.parser;
+package org.eclipse.rwt.apache.batik.css.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import org.apache.batik.util.io.NormalizingReader;
-import org.apache.batik.util.io.StreamNormalizingReader;
-import org.apache.batik.util.io.StringNormalizingReader;
+import org.eclipse.rwt.apache.batik.util.io.*;
 
 /**
  * This class represents a CSS scanner - an object which decodes CSS lexical
  * units.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: Scanner.java,v 1.1 2008/12/03 15:25:53 rsternber Exp $
+ * @version $Id: Scanner.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
 public class Scanner {
 

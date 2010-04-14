@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.util.io;
+package org.eclipse.rwt.apache.batik.util.io;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
  * This class reads a string.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: StringDecoder.java,v 1.1 2008/12/03 15:25:52 rsternber Exp $
+ * @version $Id: StringDecoder.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
 public class StringDecoder implements CharDecoder {
 

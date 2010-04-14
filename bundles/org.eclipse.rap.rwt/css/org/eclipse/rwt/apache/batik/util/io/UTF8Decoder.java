@@ -16,7 +16,7 @@
 
 */
 
-package org.apache.batik.util.io;
+package org.eclipse.rwt.apache.batik.util.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +26,7 @@ import java.io.InputStream;
  * a stream of bytes.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: UTF8Decoder.java,v 1.1 2008/12/03 15:25:52 rsternber Exp $
+ * @version $Id: UTF8Decoder.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
 public class UTF8Decoder extends AbstractCharDecoder {
     

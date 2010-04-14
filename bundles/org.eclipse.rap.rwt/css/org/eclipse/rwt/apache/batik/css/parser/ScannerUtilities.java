@@ -16,13 +16,13 @@
 
 */
 
-package org.apache.batik.css.parser;
+package org.eclipse.rwt.apache.batik.css.parser;
 
 /**
  * A collection of utility functions for a CSS scanner.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: ScannerUtilities.java,v 1.1 2008/12/03 15:25:53 rsternber Exp $
+ * @version $Id: ScannerUtilities.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
 public class ScannerUtilities {
 

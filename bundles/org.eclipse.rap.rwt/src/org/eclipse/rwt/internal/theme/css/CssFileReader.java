@@ -16,7 +16,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.batik.css.parser.ParseException;
+import org.eclipse.rwt.apache.batik.css.parser.ParseException;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.ThemeManagerException;
 import org.w3c.css.sac.*;
@@ -29,7 +29,7 @@ public class CssFileReader {
 
   CssFileReader() {
     try {
-      parser = new org.apache.batik.css.parser.Parser();
+      parser = new org.eclipse.rwt.apache.batik.css.parser.Parser();
     } catch( Exception e ) {
       throw new RuntimeException( "Failed to instantiate CSS parser", e );
     }

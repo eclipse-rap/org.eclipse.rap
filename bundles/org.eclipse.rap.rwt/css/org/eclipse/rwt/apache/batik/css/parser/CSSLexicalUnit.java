@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.apache.batik.css.parser;
+package org.eclipse.rwt.apache.batik.css.parser;
 
 import org.w3c.css.sac.LexicalUnit;
 
@@ -23,7 +23,7 @@ import org.w3c.css.sac.LexicalUnit;
  * This class implements the {@link LexicalUnit} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: CSSLexicalUnit.java,v 1.1 2008/12/03 15:25:53 rsternber Exp $
+ * @version $Id: CSSLexicalUnit.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
 public abstract class CSSLexicalUnit implements LexicalUnit {
 

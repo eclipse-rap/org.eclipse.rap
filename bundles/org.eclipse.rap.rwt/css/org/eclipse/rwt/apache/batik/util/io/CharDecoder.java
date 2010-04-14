@@ -1,6 +1,6 @@
 /*
 
-   Copyright 2002-2003  The Apache Software Foundation 
+   Copyright 2002  The Apache Software Foundation 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,42 +15,32 @@
    limitations under the License.
 
  */
-package org.apache.batik.util.io;
+package org.eclipse.rwt.apache.batik.util.io;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
- * This class represents an object which decodes ASCII characters from
- * a stream of bytes.
+ * This interface represents an object which decodes characters from a
+ * stream of bytes.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: ASCIIDecoder.java,v 1.1 2008/12/03 15:25:52 rsternber Exp $
+ * @version $Id: CharDecoder.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
  */
-public class ASCIIDecoder extends AbstractCharDecoder {
+public interface CharDecoder {
     
     /**
-     * Creates a new ASCIIDecoder.
+     * This constant represents the end of stream character.
      */
-    public ASCIIDecoder(InputStream is) {
-        super(is);
-    }
+    int END_OF_STREAM = -1;
 
     /**
      * Reads the next character.
      * @return a character or END_OF_STREAM.
      */
-    public int readChar() throws IOException {
-        if (position == count) {
-            fillBuffer();
-        }
-        if (count == -1) {
-            return END_OF_STREAM;
-        }
-        int result = buffer[position++];
-        if (result < 0) {
-            charError("ASCII");
-        }
-        return result;
-    }
+    int readChar() throws IOException;
+
+    /**
+     * Disposes the associated resources.
+     */
+    void dispose() throws IOException;
 }
