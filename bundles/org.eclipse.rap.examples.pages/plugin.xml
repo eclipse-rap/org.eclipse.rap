@@ -70,6 +70,12 @@
             description="description/fillLayout.html"
             name="FillLayout">
       </page>
+      <page
+            category="basicWidgets"
+            class="org.eclipse.rap.examples.pages.CanvasExample"
+            description="description/canvas.html"
+            name="Canvas">
+      </page>
    </extension>
    <extension
          point="org.eclipse.equinox.http.registry.resources">

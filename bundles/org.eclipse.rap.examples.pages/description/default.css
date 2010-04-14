@@ -12,3 +12,7 @@ h1, h2, h3 {
 pre {
   font: 12px Courier, monospace;
 }
+
+dd {
+	margin-bottom: 7px;
+}
