@@ -351,8 +351,25 @@ public class FontRegistry extends ResourceRegistry {
 //				}
 //            }
 //        }
-    	ResourceBundle bundle = ResourceBundle.getBundle(location);
-    	readResourceBundle(bundle, location);
+
+        // add default fonts (see bug 280773)
+        Display display = Display.getCurrent();
+        FontData systemFont = display.getSystemFont().getFontData()[ 0 ];
+        String systemFontName = systemFont.getName();
+        int normalHeight = systemFont.getHeight();
+        int increasedHeight = ( int )( normalHeight * 1.3 );
+        String textFont = systemFontName + "-regular-" + normalHeight; //$NON-NLS-1$
+        String bannerFont = systemFontName + "-bold-" + normalHeight; //$NON-NLS-1$
+        String headerFont = systemFontName + "-bold-" + increasedHeight; //$NON-NLS-1$
+        stringToFontData.put( JFaceResources.TEXT_FONT,
+                              new FontData[] { makeFontData( textFont ) } );
+        stringToFontData.put( JFaceResources.BANNER_FONT,
+                              new FontData[] { makeFontData( bannerFont ) } );
+        stringToFontData.put( JFaceResources.HEADER_FONT,
+                              new FontData[] { makeFontData( headerFont ) } );
+
+        ResourceBundle bundle = ResourceBundle.getBundle(location);
+        readResourceBundle(bundle, location);
 
     	// RAPEND: [bm] 
 
