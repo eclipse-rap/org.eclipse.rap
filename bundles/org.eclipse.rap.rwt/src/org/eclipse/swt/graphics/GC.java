@@ -76,6 +76,7 @@ public class GC extends Resource {
   private int lineWidth;
   private int lineCap;
   private int lineJoin;
+  private int style;
 
   /**
    * Constructs a new instance of this class which has been
@@ -100,6 +101,35 @@ public class GC extends Resource {
    * </ul>
    */
   public GC( final Drawable drawable ) {
+    this( drawable, SWT.NONE );
+  }
+
+  /**
+   * Constructs a new instance of this class which has been
+   * configured to draw on the specified drawable. Sets the
+   * foreground color, background color and font in the GC
+   * to match those in the drawable.
+   * <p>
+   * You must dispose the graphics context when it is no longer required.
+   * </p>
+   *
+   * @param drawable the drawable to draw on
+   * @param style the style of GC to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the drawable is null</li>
+   *    <li>ERROR_NULL_ARGUMENT - if there is no current device</li>
+   *    <li>ERROR_INVALID_ARGUMENT
+   *          - if the drawable is an image that is not a bitmap or an icon
+   *          - if the drawable is an image or printer that is already selected
+   *            into another graphics context</li>
+   * </ul>
+   * @exception SWTError <ul>
+   *    <li>ERROR_NO_HANDLES if a handle could not be obtained for GC creation</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS if not called from the thread that created the drawable</li>
+   * </ul>
+   */
+  public GC( final Drawable drawable, final int style ) {
     super( determineDevice( drawable ) );
     if( drawable == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -110,6 +140,7 @@ public class GC extends Resource {
     } else {
       control = null;
     }
+    this.style = checkStyle( style );
     font = determineFont( drawable );
     background = determineBackground( drawable );
     foreground = determineForeground( drawable );
@@ -340,8 +371,8 @@ public class GC extends Resource {
     checkDisposed();
     return foreground;
   }
-  
-  /** 
+
+  /**
    * Returns the bounding rectangle of the receiver's clipping
    * region. If no clipping region is set, the return value
    * will be a rectangle which covers the entire bounds of the
@@ -1328,10 +1359,35 @@ public class GC extends Resource {
     }
   }
 
+  /**
+   * Returns the receiver's style information.
+   * <p>
+   * Note that the value which is returned by this method <em>may
+   * not match</em> the value which was provided to the constructor
+   * when the receiver was created. This can occur when the underlying
+   * operating system does not support a particular combination of
+   * requested styles.
+   * </p>
+   *
+   * @return the style bits
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public int getStyle() {
+    checkDisposed();
+    return style;
+  }
+
   private void checkDisposed() {
     if( isDisposed() ) {
       SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
     }
+  }
+
+  private static int checkStyle( final int style ) {
+    return SWT.LEFT_TO_RIGHT;
   }
 
   GCAdapter getGCAdapter() {

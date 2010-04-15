@@ -925,7 +925,7 @@ public class GC_Test extends TestCase {
     assertEquals( 8, operation.destHeight );
     assertFalse( operation.simple );
   }
-  
+
   public void testGetClippingForControl() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -942,7 +942,7 @@ public class GC_Test extends TestCase {
     Rectangle clipping = gc.getClipping();
     assertEquals( display.getBounds(), clipping );
   }
-  
+
   public void testGetClippingOnDisposedGC() {
     Display display = new Display();
     GC gc = new GC( display );
@@ -954,7 +954,18 @@ public class GC_Test extends TestCase {
       // expected
     }
   }
-  
+
+  public void testStyle() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    GC gc = new GC( shell, SWT.NONE );
+    assertEquals( SWT.LEFT_TO_RIGHT, gc.getStyle() );
+    gc = new GC( shell, SWT.LEFT_TO_RIGHT );
+    assertEquals( SWT.LEFT_TO_RIGHT, gc.getStyle() );
+    gc = new GC( shell, SWT.PUSH );
+    assertEquals( SWT.LEFT_TO_RIGHT, gc.getStyle() );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
