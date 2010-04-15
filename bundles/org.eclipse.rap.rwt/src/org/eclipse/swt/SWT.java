@@ -3362,7 +3362,6 @@ public class SWT {
    *
    * @since 1.1
    */
-   // TODO [bm]: Improve to support different fragments
   public static String getPlatform () {
   	return "rap"; //$NON-NLS-1$
   }
