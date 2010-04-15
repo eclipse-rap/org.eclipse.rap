@@ -896,7 +896,8 @@ public class FontRegistry extends ResourceRegistry {
                     elements = new FontData[8];
                     stringToFontData.put(name, elements);
                 }
-                if (i > elements.length) {
+                // RAP [rst] fix for bug 309357
+                if (i >= elements.length) {
                     FontData[] na = new FontData[i + 8];
                     System.arraycopy(elements, 0, na, 0, elements.length);
                     elements = na;
