@@ -46,8 +46,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private final static String PATTERN_APP_STARTUP
     =    "var req = org.eclipse.swt.Request.getInstance();"
-       + "req.setUrl( \"{0}\", \"{1}\" );"
-       + "req.setUIRootId( \"{2}\" );"
+       + "req.setUrl( \"{0}\" );"
+       + "req.setUIRootId( \"{1}\" );"
        + "var app = new org.eclipse.swt.Application();"
        + "qx.core.Init.getInstance().setApplication( app );";
   private final static String PATTERN_REQUEST_COUNTER
@@ -358,7 +358,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     HttpServletRequest request = ContextProvider.getRequest();
     String url = request.getServletPath().substring( 1 );
     Object[] param = new Object[] {
-      url,
       ContextProvider.getResponse().encodeURL( url ),
       displayId
     };

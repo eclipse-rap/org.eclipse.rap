@@ -52,12 +52,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
   },
 
   members : {
-    setUrl : function( url, encodedURL ) {
-      if( document.cookie ) {
-        this._url = url;
-      } else {
-        this._url = encodedURL;
-      }
+    setUrl : function( url ) {
+      this._url = url;
     },
 
     getUrl : function() {
