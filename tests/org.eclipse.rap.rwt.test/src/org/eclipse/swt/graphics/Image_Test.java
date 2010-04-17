@@ -119,7 +119,7 @@ public class Image_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 50, 100 ), image_50x100.getBounds() );
   }
 
-  public void testConstructor() {
+  public void testConstructorWithNullDevice() {
     try {
       new Image( null, new ByteArrayInputStream( new byte[ 0 ] ) );
       fail( "Must provide device for image constructor" );
@@ -128,7 +128,7 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testConstructorWithNullDevice() throws IOException {
+  public void testConstructorUsesDefaultDisplay() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     new Display();
@@ -287,7 +287,46 @@ public class Image_Test extends TestCase {
     assertEquals( 100, imageDataFromImage.width );
     assertEquals( 50, imageDataFromImage.height );
   }
+  
+  public void testSetBackgroundWhenDisposed() {
+    Display display = new Display();
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image = new Image( display, stream );
+    image.dispose();
+    try {
+      image.setBackground( new Color( display, 0, 0, 0 ) );
+      fail( "setBackground cannot be called on disposed image" );
+    } catch( SWTException expected ) {
+    }
+  }
 
+  public void testSetBackgroundWithDisposedColor() {
+    Display display = new Display();
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image = new Image( display, stream );
+    Color disposedColor = new Color( display, 0, 0, 0 );
+    disposedColor.dispose();
+    try {
+      image.setBackground( disposedColor );
+      fail( "setBackground must not accept disposed color" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testSetBackgroundWithNullColor() {
+    Display display = new Display();
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image = new Image( display, stream );
+    try {
+      image.setBackground( null );
+      fail( "setBackground must not accept null-color" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
   protected void setUp() throws Exception {
     // we do need the ressource manager for this test
     Fixture.setUpWithoutResourceManager();
