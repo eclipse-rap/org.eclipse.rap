@@ -1,5 +1,5 @@
 ///*******************************************************************************
-// * Copyright (c) 2007, 2008 IBM Corporation and others.
+// * Copyright (c) 2007, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 // *******************************************************************************/
 //package org.eclipse.jface.viewers;
 //
-//import org.eclipse.core.runtime.Assert;
-//import org.eclipse.jface.window.Window;
 //import org.eclipse.swt.SWT;
 //import org.eclipse.swt.custom.StyleRange;
 //import org.eclipse.swt.graphics.Color;
@@ -22,6 +20,11 @@
 //import org.eclipse.swt.graphics.TextLayout;
 //import org.eclipse.swt.widgets.Display;
 //import org.eclipse.swt.widgets.Event;
+//import org.eclipse.swt.widgets.Widget;
+//
+//import org.eclipse.core.runtime.Assert;
+//
+//import org.eclipse.jface.viewers.StyledString.Styler;
 //
 ///**
 // * A {@link StyledCellLabelProvider} supports styled labels by using owner
@@ -38,18 +41,12 @@
 // * {@link ViewerCell#setStyleRanges(StyleRange[])} to set style ranges
 // * on the label.
 // * </p>
-// * <p>
-// * The current version of the {@link StyledCellLabelProvider} will ignore all font settings on
-// * {@link StyleRange}. Different fonts would make labels wider, and the native
-// * selection drawing could not be reused.
-// * </p>
 // * 
-// * <p><strong>NOTE:</strong> This API is experimental and may be deleted or
-// * changed before 3.4 is released.</p>
-// * 
-// * @since 1.1
+// * @since 3.4
 // */
 //public abstract class StyledCellLabelProvider extends OwnerDrawLabelProvider {
+//
+//
 //
 //	/**
 //	 * Style constant for indicating that the styled colors are to be applied
@@ -72,13 +69,17 @@
 //	private int style;
 //
 //	// reused text layout
-//	private TextLayout cachedTextLayout; 
+//	private TextLayout cachedTextLayout;
 //	
 //	private ColumnViewer viewer;
 //	private ViewerColumn column;
+//	
+//	private Widget itemOfLastMeasure;
+//	private Object elementOfLastMeasure;
+//	private int deltaOfLastMeasure;
 //
 //	/**
-//	 * Creates a new StyledCellLabelProvider. By default, owner draw is enabled, focus is drawn and no 
+//	 * Creates a new StyledCellLabelProvider. By default, owner draw is enabled, focus is drawn and no
 //	 * colors are painted on selected elements.
 //	 */
 //	public StyledCellLabelProvider() {
@@ -100,11 +101,11 @@
 //	
 //	/**
 //	 * Returns <code>true</code> is the owner draw rendering is enabled for this label provider.
-//	 * By default owner draw rendering is enabled. If owner draw rendering is disabled, rending is 
+//	 * By default owner draw rendering is enabled. If owner draw rendering is disabled, rending is
 //	 * done by the viewer and no styled ranges (see {@link ViewerCell#getStyleRanges()})
 //	 * are drawn.
 //	 * 
-//	 * @return <code>true</code> is the rendering of styles is enabled. 
+//	 * @return <code>true</code> is the rendering of styles is enabled.
 //	 */
 //	public boolean isOwnerDrawEnabled() {
 //		return (this.style & OWNER_DRAW_ENABLED) != 0;
@@ -182,6 +183,8 @@
 //	
 //		this.viewer= null;
 //		this.column= null;
+//		this.itemOfLastMeasure = null;
+//		this.elementOfLastMeasure = null;
 //		
 //		super.dispose();
 //	}
@@ -198,10 +201,9 @@
 //
 //	private TextLayout getSharedTextLayout(Display display) {
 //		if (cachedTextLayout == null) {
+//			int orientation = viewer.getControl().getStyle() & (SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT);
 //			cachedTextLayout = new TextLayout(display);
-//			cachedTextLayout.setOrientation(Window.getDefaultOrientation());
-//		} else {
-//			cachedTextLayout.setText(""); // make sure no previous ranges are cleared //$NON-NLS-1$
+//			cachedTextLayout.setOrientation(orientation);
 //		}
 //		return cachedTextLayout;
 //	}
@@ -215,44 +217,13 @@
 //		return (event.detail & SWT.FOCUSED) != 0
 //				&& (this.style & NO_FOCUS) == 0;
 //	}
-//
-//	/**
-//	 * Returns a {@link TextLayout} instance for the given cell
-//	 * configured with the style ranges. The text layout instance is managed by
-//	 * the label provider. Caller of the method must not dispose the text
-//	 * layout.
-//	 * 
-//	 * @param diplay
-//	 *            the current display
-//	 * @param applyColors
-//	 *            if set, create colors in the result
-//	 * @param cell
-//	 *            the viewer cell
-//	 * @return a TextLayout instance
-//	 */
-//	private TextLayout getTextLayoutForInfo(Display display, ViewerCell cell, boolean applyColors) {
-//		TextLayout layout = getSharedTextLayout(display);
-//		
-//		layout.setText(cell.getText());
-//		layout.setFont(cell.getFont()); // set also if null to clear previous usages
-//		
-//		StyleRange[] styleRanges = cell.getStyleRanges();
-//		if (styleRanges != null) { // user didn't fill styled ranges
-//			for (int i = 0; i < styleRanges.length; i++) {
-//				StyleRange curr = prepareStyleRange(styleRanges[i], applyColors);
-//				layout.setStyle(curr, curr.start, curr.start + curr.length - 1);
-//			}
-//		}
-//
-//		return layout;
-//	}
 //	
 //	/**
 //	 * Prepares the given style range before it is applied to the label. This method makes sure that
 //	 * no colors are drawn when the element is selected.
 //	 * The current version of the {@link StyledCellLabelProvider} will also ignore all font settings on the
-//	 * style range. Clients can override. 
-//	 *  
+//	 * style range. Clients can override.
+//	 * 
 //	 * @param styleRange
 //	 *               the style range to prepare. the style range element must not be modified
 //	 * @param applyColors
@@ -263,10 +234,8 @@
 //	protected StyleRange prepareStyleRange(StyleRange styleRange, boolean applyColors) {
 //		// if no colors apply or font is set, create a clone and clear the
 //		// colors and font
-//		if (styleRange.font != null || !applyColors
-//				&& (styleRange.foreground != null || styleRange.background != null)) {
+//		if (!applyColors && (styleRange.foreground != null || styleRange.background != null)) {
 //			styleRange = (StyleRange) styleRange.clone();
-//			styleRange.font = null; // ignore font settings until bug 168807 is resolved
 //			if (!applyColors) {
 //				styleRange.foreground = null;
 //				styleRange.background = null;
@@ -305,7 +274,54 @@
 //	 *      java.lang.Object)
 //	 */
 //	protected void measure(Event event, Object element) {
-//		// use native measuring
+//		if (!isOwnerDrawEnabled())
+//			return;
+//		
+//		ViewerCell cell= getViewerCell(event, element);
+//		boolean applyColors = useColors(event); // returns false because of bug 228376
+//		
+//		TextLayout layout = getSharedTextLayout(event.display);
+//		
+//		int textWidthDelta = deltaOfLastMeasure = updateTextLayout(layout, cell, applyColors);
+//		/* remove-begin if bug 228695 fixed */
+//		itemOfLastMeasure = event.item;
+//		elementOfLastMeasure = event.item.getData();
+//		/* remove-end if bug 228695 fixed */
+//
+//		event.width += textWidthDelta;
+//	}
+//
+//	/**
+//	 * @param layout
+//	 * @param cell
+//	 * @param applyColors
+//	 * @return the text width delta (0 if the text layout contains no other font)
+//	 */
+//	private int updateTextLayout(TextLayout layout, ViewerCell cell,
+//			boolean applyColors) {
+//		layout.setText(""); //$NON-NLS-1$  //make sure all previous ranges are cleared (see bug 226090)
+//		
+//		layout.setText(cell.getText());
+//		layout.setFont(cell.getFont()); // set also if null to clear previous usages
+//		
+//		int originalTextWidth = layout.getBounds().width; // text width without any styles
+//		boolean containsOtherFont= false;
+//		
+//		StyleRange[] styleRanges = cell.getStyleRanges();
+//		if (styleRanges != null) { // user didn't fill styled ranges
+//			for (int i = 0; i < styleRanges.length; i++) {
+//				StyleRange curr = prepareStyleRange(styleRanges[i], applyColors);
+//				layout.setStyle(curr, curr.start, curr.start + curr.length - 1);
+//				if (curr.font != null) {
+//					containsOtherFont= true;
+//				}
+//			}
+//		}
+//		int textWidthDelta = 0;
+//		if (containsOtherFont) {
+//			textWidthDelta = layout.getBounds().width - originalTextWidth;
+//		}
+//		return textWidthDelta;
 //	}
 //	
 //	/*
@@ -320,7 +336,8 @@
 //		
 //		ViewerCell cell= getViewerCell(event, element);
 //
-//		boolean applyColors = useColors(event);
+//		boolean applyColors= useColors(event);
+//		
 //		GC gc = event.gc;
 //		// remember colors to restore the GC later
 //		Color oldForeground = gc.getForeground();
@@ -337,7 +354,6 @@
 //				gc.setBackground(background);
 //			}
 //		}
-//
 //		Image image = cell.getImage();
 //		if (image != null) {
 //			Rectangle imageBounds = cell.getImageBounds();
@@ -353,10 +369,32 @@
 //			}
 //		}
 //
-//		TextLayout textLayout = getTextLayoutForInfo(event.display, cell, applyColors);
-//
 //		Rectangle textBounds = cell.getTextBounds();
 //		if (textBounds != null) {
+//			TextLayout textLayout= getSharedTextLayout(event.display);
+//
+//			/* remove-begin if bug 228695 fixed */
+//			if (event.item != itemOfLastMeasure || event.item.getData() != elementOfLastMeasure) {
+//				// fLayout has not been configured in 'measure()'
+//				deltaOfLastMeasure = updateTextLayout(textLayout, cell, applyColors);
+//				itemOfLastMeasure = event.item;
+//				elementOfLastMeasure = event.item.getData();
+//			}
+//			/* remove-end if bug 228695 fixed */
+//			
+//			/* remove-begin if bug 228376 fixed */
+//			if (!applyColors) {
+//				// need to remove colors for selected elements: measure doesn't provide that information, see bug 228376
+//				StyleRange[] styleRanges= cell.getStyleRanges();
+//				if (styleRanges != null) {
+//					for (int i= 0; i < styleRanges.length; i++) {
+//						StyleRange curr = prepareStyleRange(styleRanges[i], applyColors);
+//						textLayout.setStyle(curr, curr.start, curr.start + curr.length - 1);
+//					}
+//				}
+//			}
+//			/* remove-end if bug 228376 fixed */
+//			
 //			Rectangle layoutBounds = textLayout.getBounds();
 //	
 //			int x = textBounds.x;
@@ -368,7 +406,7 @@
 //
 //		if (drawFocus(event)) {
 //			Rectangle focusBounds = cell.getViewerRow().getBounds();
-//			gc.drawFocus(focusBounds.x, focusBounds.y, focusBounds.width,
+//			gc.drawFocus(focusBounds.x, focusBounds.y, focusBounds.width + deltaOfLastMeasure,
 //					focusBounds.height);
 //		}
 //		
@@ -376,6 +414,44 @@
 //			gc.setForeground(oldForeground);
 //			gc.setBackground(oldBackground);
 //		}
+//	}
+//
+//	/**
+//	 * Applies decoration styles to the decorated string and adds the styles of the previously
+//	 * undecorated string.
+//	 * <p>
+//	 * If the <code>decoratedString</code> contains the <code>styledString</code>, then the result
+//	 * keeps the styles of the <code>styledString</code> and styles the decorations with the
+//	 * <code>decorationStyler</code>. Otherwise, the decorated string is returned without any
+//	 * styles.
+//	 * 
+//	 * @param decoratedString the decorated string
+//	 * @param decorationStyler the styler to use for the decoration or <code>null</code> for no
+//	 *            styles
+//	 * @param styledString the original styled string
+//	 * 
+//	 * @return the styled decorated string (can be the given <code>styledString</code>)
+//	 * @since 3.5
+//	 */
+//	public static StyledString styleDecoratedString(String decoratedString, Styler decorationStyler, StyledString styledString) {
+//		String label= styledString.getString();
+//		int originalStart= decoratedString.indexOf(label);
+//		if (originalStart == -1) {
+//			return new StyledString(decoratedString); // the decorator did something wild
+//		}
+//
+//		if (decoratedString.length() == label.length())
+//			return styledString;
+//
+//		if (originalStart > 0) {
+//			StyledString newString= new StyledString(decoratedString.substring(0, originalStart), decorationStyler);
+//			newString.append(styledString);
+//			styledString= newString;
+//		}
+//		if (decoratedString.length() > originalStart + label.length()) { // decorator appended something
+//			return styledString.append(decoratedString.substring(originalStart + label.length()), decorationStyler);
+//		}
+//		return styledString; // no change
 //	}
 //
 //}

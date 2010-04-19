@@ -8,8 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Chris Gross (schtoo@schtoo.com) - patch for bug 16179
- *     Eugene Ostroukhov <eugeneo@symbian.org> -  Bug 287887 [Wizards] [api] Cancel button has two distinct roles
- *******************************************************************************/
+ *     Eugene Ostroukhov <eugeneo@symbian.org> - Bug 287887 [Wizards] [api] Cancel button has two distinct roles
+ *     Paul Adams <padams@ittvis.com> - Bug 202534 - [Dialogs] SWT error in Wizard dialog when help is displayed and "Finish" is pressed *******************************************************************************/
 package org.eclipse.jface.wizard;
 
 import java.lang.reflect.InvocationTargetException;
@@ -864,6 +864,11 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 			// dispose code
 			createdWizard.setContainer(null);
 		}
+		// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=202534
+		// disposing the wizards could cause the image currently set in
+		// this dialog to be disposed.  A subsequent repaint event during
+		// close would then fail.  To prevent this case, we null out the image.
+		setTitleImage(null);		
 		return super.close();
 	}
 

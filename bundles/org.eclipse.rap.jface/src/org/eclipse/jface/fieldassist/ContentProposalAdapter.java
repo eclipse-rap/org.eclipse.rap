@@ -339,7 +339,8 @@ public class ContentProposalAdapter {
 //					// Modifier keys are explicitly checked and ignored because
 //					// they are not complete yet (no character).
 //					default:
-//						if (e.keyCode != SWT.CAPS_LOCK && e.keyCode != SWT.MOD1
+//						if (e.keyCode != SWT.CAPS_LOCK e.keyCode != SWT.NUM_LOCK 
+//								&& e.keyCode != SWT.MOD1
 //								&& e.keyCode != SWT.MOD2
 //								&& e.keyCode != SWT.MOD3
 //								&& e.keyCode != SWT.MOD4) {
