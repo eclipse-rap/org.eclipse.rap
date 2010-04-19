@@ -11,6 +11,6 @@ Label.stackBorder {
 Label.standaloneView {
   background-color: transparent;
   border: none;
-  color: rgb( 102, 102, 102 );
+  color: rgb( 255, 255, 255 );
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }

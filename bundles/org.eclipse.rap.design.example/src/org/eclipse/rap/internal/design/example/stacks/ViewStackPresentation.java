@@ -230,11 +230,10 @@ public class ViewStackPresentation extends ConfigurableStack {
     } else {
       decorateStandaloneView( newPart );
     }
-    // add the lsitener for the dirty state
+    // add the listener for the dirty state
     IPropertyListener listener = new DirtyListener( newPart );
     dirtyListenerMap.put( newPart, listener );
-    newPart.addPropertyListener( listener );
-    
+    newPart.addPropertyListener( listener );    
   }
 
   private void decorateStandaloneView( final IPresentablePart newPart ) {
@@ -1115,7 +1114,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         int height = topBorderImg.getBounds().height;
         FormData fdTopBorder = ( FormData ) topBorder.getLayoutData();
         fdTopBorder.height = height;
-        fdTopBorder.top = new FormAttachment( 0, 7 );
+        fdTopBorder.top = new FormAttachment( 0, 5 );
         FormData fdLeftBorder = ( FormData ) leftBorder.getLayoutData();
         FormData fdRightBorder = ( FormData ) rightBorder.getLayoutData();
         fdLeftBorder.top = new FormAttachment( 0, height + 6 );
