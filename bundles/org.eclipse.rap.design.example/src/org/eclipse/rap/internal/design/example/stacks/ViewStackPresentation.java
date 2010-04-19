@@ -949,10 +949,16 @@ public class ViewStackPresentation extends ConfigurableStack {
     }
     partButtonMap.remove( oldPart );
     buttonList.remove( object );
-    ( ( Composite ) object ).dispose();
+    handleButtonDispose( object );
     partList.remove( oldPart );
     oldPart.setVisible( false );
     tabBg.layout();
+  }
+
+  private void handleButtonDispose( final Object buttonArea ) {
+    if( buttonArea != null && !isStandalone() ) {
+      ( ( Composite ) buttonArea ).dispose();
+    }
   }
 
   public void selectPart( final IPresentablePart toSelect ) {
