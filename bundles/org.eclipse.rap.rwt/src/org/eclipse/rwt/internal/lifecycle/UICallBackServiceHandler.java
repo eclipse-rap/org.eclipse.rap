@@ -55,29 +55,31 @@ public class UICallBackServiceHandler implements IServiceHandler {
     }
     
     private final Set ids;
+    private final Object lock;
     
-    IdManager() {
+    private IdManager() {
       ids = new HashSet();
+      lock = new Object();
     }
     
-    Object getLock() {
-      return ids;
+    int add( final String id ) {
+      synchronized( lock ) {
+        ids.add( id );
+        return ids.size();
+      }
     }
-
-    void add( final String id ) {
-      ids.add( id );
-    }
-
-    void remove( final String id ) {
-      ids.remove( id );
+    
+    int remove( final String id ) {
+      synchronized( lock ) {
+        ids.remove( id );
+        return ids.size();
+      }
     }
     
     boolean isEmpty() {
-      return ids.isEmpty();
-    }
-    
-    int size() {
-      return ids.size();
+      synchronized( lock ) {
+        return ids.isEmpty();
+      }
     }
   }
 
@@ -482,11 +484,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    int size;
-    synchronized( IdManager.getInstance().getLock() ) {
-      IdManager.getInstance().add( id );
-      size = IdManager.getInstance().size();
-    }
+    int size = IdManager.getInstance().add( id );
     if( size == 1 ) {
       registerUICallBackActivator();
     }
@@ -503,12 +501,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     // release blocked callback handler request
-    boolean empty;
-    synchronized( IdManager.getInstance().getLock() ) {
-      IdManager.getInstance().remove( id );
-      empty = IdManager.getInstance().isEmpty();
-    }
-    if( empty ) {
+    int size = IdManager.getInstance().remove( id );
+    if( size == 0 ) {
       UICallBackManager instance = UICallBackManager.getInstance();
       instance.setActive( false );
       instance.sendUICallBack();
@@ -553,10 +547,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   static boolean isUICallBackActive() {
-    boolean result;
-    synchronized( IdManager.getInstance().getLock() ) {
-      result = !IdManager.getInstance().isEmpty();
-    }
+    boolean result = !IdManager.getInstance().isEmpty();
     if( !result ) {
       result = UICallBackManager.getInstance().hasRunnables();
     }
