@@ -3064,6 +3064,8 @@ public class SWT {
    */
   public static final String SKIN_ID = "org.eclipse.swt.skin.id";
 
+  private static final int RWT_VERSION = getVersion( 1, 300 );
+
   static {
     /*
     * These values represent bit masks that may need to
@@ -3355,6 +3357,20 @@ public class SWT {
   }
 
   /**
+   * Returns the SWT version number as an integer. Example: "SWT051" == 51
+   * <p>
+   * Note: In RWT, this method returns the RWT version number. Use in
+   * combination with <code>getPlatform()</code>.
+   * </p>
+   * 
+   * @return the SWT version number
+   * @since 1.3
+   */
+  public static int getVersion () {
+    return RWT_VERSION;
+  }
+
+  /**
    * Returns the SWT platform name.
    * Examples: "win32", "motif", "gtk", "photon", "carbon", "rap"
    *
@@ -3382,5 +3398,9 @@ public class SWT {
     }
     return RWTMessages.getMessage( key,
                                    "org.eclipse.swt.internal.SWTMessages" );
+  }
+
+  private static int getVersion( final int major, final int minor ) {
+      return major * 1000 + minor;
   }
 }
