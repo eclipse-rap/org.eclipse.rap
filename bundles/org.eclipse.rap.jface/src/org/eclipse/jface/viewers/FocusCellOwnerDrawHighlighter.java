@@ -306,7 +306,9 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
         if( oldCell != null ) {
           oldCell.setBackground( null );
           oldCell.setForeground( null );
-          viewer.updateItem( oldCell.getItem(), oldCell.getElement() );
+// [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=264226
+// When selected item is deleted, the oldCell item and element are out of sync
+//          viewer.updateItem( oldCell.getItem(), oldCell.getElement() );
         }
         if( newCell != null && isItemSelected( newCell.getItem() ) ) {
           markFocusedCell( null, newCell );
