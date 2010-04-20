@@ -36,7 +36,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
   public final static String HANDLER_ID
     = UICallBackServiceHandler.class.getName();
 
-  private static final String JS_SEND_CALLBACK_REQUEST
+  static final String JS_SEND_CALLBACK_REQUEST
     = "org.eclipse.swt.Request.getInstance().enableUICallBack();";
   private static final String JS_SEND_UI_REQUEST
     = "org.eclipse.swt.Request.getInstance().send();";
@@ -493,31 +493,9 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   private static void registerUICallBackActivator() {
-    final String id = ContextProvider.getSession().getId();
-    LifeCycleFactory.getLifeCycle().addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-
-      public void beforePhase( final PhaseEvent event ) {
-      }
-
-      public void afterPhase( final PhaseEvent event ) {
-        if( id.equals( ContextProvider.getSession().getId() ) ) {
-          LifeCycleFactory.getLifeCycle().removePhaseListener( this );
-          UICallBackManager.getInstance().setActive( true );
-          IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-          HtmlResponseWriter writer = stateInfo.getResponseWriter();
-          try {
-            writer.write( jsEnableUICallBack() );
-          } catch( IOException e ) {
-            ServletLog.log( "", e );
-          }
-        }
-      }
-
-      public PhaseId getPhaseId() {
-        return PhaseId.RENDER;
-      }
-    } );
+    ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
+    ISessionStore session = ContextProvider.getSession();
+    lifeCycle.addPhaseListener( new UICallBackActivator( session ) );
   }
 
   public static void deactivateUICallBacksFor( final String id ) {
@@ -531,7 +509,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
       empty = IdManager.getInstance().isEmpty();
     }
     if( empty ) {
-      final UICallBackManager instance = UICallBackManager.getInstance();
+      UICallBackManager instance = UICallBackManager.getInstance();
       instance.setActive( false );
       instance.sendUICallBack();
     }
@@ -574,19 +552,14 @@ public class UICallBackServiceHandler implements IServiceHandler {
     return result;
   }
 
-  public static String jsEnableUICallBack() {
-    String result = "";
-    if(    isUICallBackActive()
-        && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
-    {
-      result = JS_SEND_CALLBACK_REQUEST;
+  static boolean isUICallBackActive() {
+    boolean result;
+    synchronized( IdManager.getInstance().getLock() ) {
+      result = !IdManager.getInstance().isEmpty();
+    }
+    if( !result ) {
+      result = UICallBackManager.getInstance().hasRunnables();
     }
     return result;
-  }
-
-  private static boolean isUICallBackActive() {
-    synchronized( IdManager.getInstance().getLock() ) {
-      return !IdManager.getInstance().isEmpty();
-    }
   }
 }

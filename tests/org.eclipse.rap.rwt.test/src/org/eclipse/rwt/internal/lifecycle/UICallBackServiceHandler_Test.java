@@ -17,7 +17,10 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServiceStateInfo;
 import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.swt.widgets.Display;
 
 
 public class UICallBackServiceHandler_Test extends TestCase {
@@ -33,32 +36,58 @@ public class UICallBackServiceHandler_Test extends TestCase {
     Fixture.tearDown();
   }
   
-  public void testOnOffSwitch() throws InterruptedException {
-    assertEquals( "", UICallBackServiceHandler.jsEnableUICallBack() );
-    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
-    UICallBackServiceHandler.jsEnableUICallBack();
-    assertFalse( "".equals( UICallBackServiceHandler.jsEnableUICallBack() ) );
+  public void testOnOffSwitchFromDifferentSession() throws Exception {
+    final UICallBackActivator uiCallBackActivator
+      = new UICallBackActivator( ContextProvider.getSession() );
     // test that on/off switching is managed in session scope
     final String[] otherSession = new String[ 1 ];
     Thread thread = new Thread( new Runnable() {
       public void run() {
         Fixture.fakeContext();
-        otherSession[ 0 ] = UICallBackServiceHandler.jsEnableUICallBack();
+        ContextProvider.getContext().setStateInfo( new ServiceStateInfo() );
+        Fixture.fakeResponseWriter();
+        uiCallBackActivator.writeActivationJS();
+        otherSession[ 0 ] = Fixture.getAllMarkup();
       } 
     } );
     thread.start();
     thread.join();
     assertEquals( "", otherSession[ 0 ] );
+  }
+  
+  public void testOnOffSwitch() {
+    UICallBackActivator uiCallBackActivator
+      = new UICallBackActivator( ContextProvider.getSession() );
+    Fixture.fakeResponseWriter();
+    uiCallBackActivator.writeActivationJS();
+    assertEquals( "", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
+    uiCallBackActivator.writeActivationJS();
+    uiCallBackActivator.writeActivationJS();
+    assertFalse( "".equals( Fixture.getAllMarkup() ) );
+
+    Fixture.fakeResponseWriter();
     UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
-    assertEquals( "", UICallBackServiceHandler.jsEnableUICallBack() );
+    uiCallBackActivator.writeActivationJS();
+    assertEquals( "", Fixture.getAllMarkup() );
     
+    Fixture.fakeResponseWriter();
     UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
     UICallBackServiceHandler.activateUICallBacksFor( ID_2 );
-    assertFalse( "".equals( UICallBackServiceHandler.jsEnableUICallBack() ) );
+    uiCallBackActivator.writeActivationJS();
+    assertFalse( "".equals( Fixture.getAllMarkup() ) );
+    
+    Fixture.fakeResponseWriter();
     UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
-    assertFalse( "".equals( UICallBackServiceHandler.jsEnableUICallBack() ) );
+    uiCallBackActivator.writeActivationJS();
+    assertFalse( "".equals( Fixture.getAllMarkup() ) );
+    
+    Fixture.fakeResponseWriter();
     UICallBackServiceHandler.deactivateUICallBacksFor( ID_2 );
-    assertEquals( "", UICallBackServiceHandler.jsEnableUICallBack() );
+    uiCallBackActivator.writeActivationJS();
+    assertEquals( "", Fixture.getAllMarkup() );
   }
   
   public void testResponseContentType() throws IOException {
@@ -68,5 +97,19 @@ public class UICallBackServiceHandler_Test extends TestCase {
     UICallBackServiceHandler.writeResponse();
     assertEquals( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8, 
                   response.getHeader( "Content-Type" ) );
+  }
+  
+  public void testActivateDeactivateWithPendingRunnables() throws Exception {
+    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
+    UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().addAsync( new Display(), new Runnable() {
+      public void run() {
+      }
+    } );
+    Fixture.fakeResponseWriter();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    lifeCycle.afterPhaseExecution( PhaseId.RENDER );
+    assertEquals( "org.eclipse.swt.Request.getInstance().enableUICallBack();", 
+                  Fixture.getAllMarkup() );
   }
 }

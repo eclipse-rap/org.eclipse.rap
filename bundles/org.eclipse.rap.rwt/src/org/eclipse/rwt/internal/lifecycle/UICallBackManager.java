@@ -31,13 +31,14 @@ public final class UICallBackManager
   
   private static Timer sendTimer;
 
-  // List of RunnableBase or SyncRunnable objects as added by add(A)sync 
+  // List of objects as added by addAsync, addSync, addTimer 
+  // (derived from RunnableBase)
   List runnables;
   // synchronziation-object to control access to the runnables List
-  private final Object runnablesLock;
-  // locked contains a reference to the callback thread that is currently 
-  // blocked. 
-  private final Set locked;
+  final Object runnablesLock;
+  // contains a reference to the callback request thread that is currently 
+  // blocked.
+  private final Set blockedCallBackRequests;
   // Flag that indicates whether a request is processed. In that case no
   // notifications are sent to the client.
   private boolean uiThreadRunning;
@@ -52,7 +53,7 @@ public final class UICallBackManager
   private UICallBackManager() {
     runnables = new ArrayList();
     runnablesLock = new Object();
-    locked = new HashSet();
+    blockedCallBackRequests = new HashSet();
     uiThreadRunning = false;
     waitForUIThread = false;
     active = false;
@@ -60,7 +61,7 @@ public final class UICallBackManager
 
   boolean isCallBackRequestBlocked() {
     synchronized( runnablesLock ) {
-      return !locked.isEmpty();
+      return !blockedCallBackRequests.isEmpty();
     }
   }
   
@@ -147,7 +148,7 @@ public final class UICallBackManager
       boolean found = false;
       while( !found && iter.hasNext() ) {
         RunnableBase next = ( RunnableBase )iter.next();
-        if( next.equalsRunnable( runnable ) ) {
+        if( next.runnable == runnable ) {
           runnables.remove( next );
           found = true;
         }
@@ -156,16 +157,24 @@ public final class UICallBackManager
   }
 
   void notifyUIThreadStart() {
-    uiThreadRunning = true;
-    waitForUIThread = false;
+    synchronized( runnablesLock ) {
+      uiThreadRunning = true;
+      waitForUIThread = false;
+    }
   }
 
   void notifyUIThreadEnd() {
-    uiThreadRunning = false;
     synchronized( runnablesLock ) {
+      uiThreadRunning = false;
       if( !runnables.isEmpty() ) {
         sendUICallBack();
       }
+    }
+  }
+
+  boolean hasRunnables() {
+    synchronized( runnablesLock ) {
+      return !runnables.isEmpty();
     }
   }
 
@@ -205,7 +214,7 @@ public final class UICallBackManager
       };
       try {
         if( mustBlockCallBackRequest() ) {
-          locked.add( currentThread );
+          blockedCallBackRequests.add( currentThread );
           ISessionStore session = ContextProvider.getSession();
           session.addSessionStoreListener( listener );
           runnablesLock.wait();
@@ -214,7 +223,7 @@ public final class UICallBackManager
         result = true;
         Thread.interrupted(); // Reset interrupted state, see bug 300254
       } finally {
-        locked.remove( currentThread );
+        blockedCallBackRequests.remove( currentThread );
         if( !result ) {
           ContextProvider.getSession().removeSessionStoreListener( listener );
         }
@@ -225,8 +234,8 @@ public final class UICallBackManager
   }
 
   private boolean mustBlockCallBackRequest() {
-    return    active 
-           && locked.isEmpty()
+    return   active 
+           && blockedCallBackRequests.isEmpty()
            && (    waitForUIThread 
                 || uiThreadRunning 
                 || runnables.isEmpty() );
@@ -271,9 +280,6 @@ public final class UICallBackManager
       if( runnable != null ) {
         runnable.run();
       }
-    }
-    boolean equalsRunnable( final Runnable runnable ) {
-      return this.runnable == runnable;
     }
   }
   
