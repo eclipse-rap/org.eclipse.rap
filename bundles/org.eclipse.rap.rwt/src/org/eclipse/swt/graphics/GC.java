@@ -677,7 +677,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
-    drawRect( x, y, width, height, 0, 0, false );
+    drawRectangle( x, y, width, height, 0, 0, false );
   }
 
   /**
@@ -747,7 +747,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
-    drawRect( x, y, width, height, 0, 0, true );
+    drawRectangle( x, y, width, height, 0, 0, true );
   }
 
   /**
@@ -816,7 +816,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
-    drawRect( x, y, width, height, arcWidth, arcHeight, false );
+    drawRectangle( x, y, width, height, arcWidth, arcHeight, false );
   }
 
   /**
@@ -843,7 +843,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
-    drawRect( x, y, width, height, arcWidth, arcHeight, true );
+    drawRectangle( x, y, width, height, arcWidth, arcHeight, true );
   }
 
   /**
@@ -1374,13 +1374,13 @@ public class GC extends Resource {
     }
   }
 
-  private void drawRect( final int x,
-                         final int y,
-                         final int width,
-                         final int height,
-                         final int arcWidth,
-                         final int arcHeight,
-                         final boolean fill )
+  private void drawRectangle( final int x,
+                              final int y,
+                              final int width,
+                              final int height,
+                              final int arcWidth,
+                              final int arcHeight,
+                              final boolean fill )
   {
     checkDisposed();
     Rectangle bounds = checkBounds( x, y, width, height );
