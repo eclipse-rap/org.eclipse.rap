@@ -25,7 +25,6 @@ public class ProgressBarTab extends ExampleTab {
 
   private static final int COUNT = 20;
   private ProgressBar progressBar;
-//  private static final int COUNT = 2;
 
   public ProgressBarTab( final CTabFolder parent ) {
     this( parent, "ProgressBar" );
@@ -54,7 +53,6 @@ public class ProgressBarTab extends ExampleTab {
         Thread thread = new Thread( createRunnable( progressBar, button ) );
         thread.setDaemon( true );
         thread.start();
-
       }
     } );
     button.addControlListener( new ControlAdapter() {
@@ -89,7 +87,6 @@ public class ProgressBarTab extends ExampleTab {
     combo.setItems( new String[] { "SWT.NORMAL", "SWT.PAUSED", "SWT.ERROR" } );
     combo.select( 0 );
     combo.addSelectionListener( new SelectionAdapter() {
-
       public void widgetSelected( final SelectionEvent event ) {
         int index = combo.getSelectionIndex();
         if( index == 2 ) {
