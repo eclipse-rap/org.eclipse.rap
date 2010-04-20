@@ -152,7 +152,7 @@ public final class CanvasExample implements IExamplePage {
   private void addOperationToPath() {
     Object fill = getCurrentFill();
     switch( mode ) {
-      case MODE_OVAL: 
+      case MODE_OVAL:
         int centerX = currentParam[ 0 ];
         int centerY = currentParam[ 1 ];
         int radiusX = Math.abs( centerX - currentParam[ 2 ] );
@@ -190,7 +190,7 @@ public final class CanvasExample implements IExamplePage {
         }
       break;
       default:
-        result = new Color( display, COLORS[ currentImage ] );
+        result = new Color( display, COLORS[ currentColor ] );
         currentColor++;
         if( currentColor >= COLORS.length ) {
           currentColor = 0;
