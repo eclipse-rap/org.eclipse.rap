@@ -677,9 +677,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
-    checkDisposed();
-    DrawRectangle operation = new DrawRectangle( x, y, width, height, false );
-    addGCOperation( operation );
+    internalDrawRect( x, y, width, height, 0, 0, false );
   }
 
   /**
@@ -749,9 +747,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
-    checkDisposed();
-    DrawRectangle operation = new DrawRectangle( x, y, width, height, true );
-    addGCOperation( operation );
+    internalDrawRect( x, y, width, height, 0, 0, true );
   }
 
   /**
@@ -818,15 +814,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
-    checkDisposed();
-    DrawRoundRectangle operation = new DrawRoundRectangle( x,
-                                                           y,
-                                                           width,
-                                                           height,
-                                                           arcWidth,
-                                                           arcHeight,
-                                                           false );
-    addGCOperation( operation );
+    internalDrawRect( x, y, width, height, arcWidth, arcHeight, false );
   }
 
   /**
@@ -853,15 +841,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
-    checkDisposed();
-    DrawRoundRectangle operation = new DrawRoundRectangle( x,
-                                                           y,
-                                                           width,
-                                                           height,
-                                                           arcWidth,
-                                                           arcHeight,
-                                                           true );
-    addGCOperation( operation );
+    internalDrawRect( x, y, width, height, arcWidth, arcHeight, true );
   }
 
   /**
@@ -890,9 +870,7 @@ public class GC extends Resource {
                         final int width,
                         final int height )
   {
-    checkDisposed();
-    DrawArc operation = new DrawArc( x, y, width, height, 0, 360, false );
-    addGCOperation( operation );
+    internalDrawArc( x, y, width, height, 0, 360, false );
   }
 
   /**
@@ -916,9 +894,7 @@ public class GC extends Resource {
                         final int width,
                         final int height )
   {
-    checkDisposed();
-    DrawArc operation = new DrawArc( x, y, width, height, 0, 360, true );
-    addGCOperation( operation );
+    internalDrawArc( x, y, width, height, 0, 360, true );
   }
 
   /**
@@ -957,10 +933,7 @@ public class GC extends Resource {
                        final int startAngle,
                        final int arcAngle )
   {
-    checkDisposed();
-    DrawArc operation
-      = new DrawArc( x, y, width, height, startAngle, arcAngle, false );
-    addGCOperation( operation );
+    internalDrawArc( x, y, width, height, startAngle, arcAngle, false );
   }
 
   /**
@@ -1002,10 +975,7 @@ public class GC extends Resource {
                        final int startAngle,
                        final int arcAngle )
   {
-    checkDisposed();
-    DrawArc operation
-      = new DrawArc( x, y, width, height, startAngle, arcAngle, true );
-    addGCOperation( operation );
+    internalDrawArc( x, y, width, height, startAngle, arcAngle, true );
   }
 
   /**
@@ -1378,6 +1348,76 @@ public class GC extends Resource {
   public int getStyle() {
     checkDisposed();
     return style;
+  }
+
+  private void internalDrawArc( final int x,
+                                final int y,
+                                final int width,
+                                final int height,
+                                final int startAngle,
+                                final int arcAngle,
+                                final boolean fill )
+  {
+    checkDisposed();
+    Rectangle bounds = checkBounds( x, y, width, height );
+    if( bounds.width != 0 && bounds.height != 0 && arcAngle != 0 ) {
+      DrawArc operation = new DrawArc( bounds.x,
+                                       bounds.y,
+                                       bounds.width,
+                                       bounds.height,
+                                       startAngle,
+                                       arcAngle,
+                                       fill );
+      addGCOperation( operation );
+    }
+  }
+
+  private void internalDrawRect( final int x,
+                                 final int y,
+                                 final int width,
+                                 final int height,
+                                 final int arcWidth,
+                                 final int arcHeight,
+                                 final boolean fill )
+  {
+    checkDisposed();
+    Rectangle bounds = checkBounds( x, y, width, height );
+    if( bounds.width != 0 && bounds.height != 0 ) {
+      GCOperation operation;
+      if( arcWidth == 0 || arcHeight == 0 ) {
+        operation = new DrawRectangle( bounds.x,
+                                       bounds.y,
+                                       bounds.width,
+                                       bounds.height,
+                                       fill );
+      } else {
+        operation = new DrawRoundRectangle( bounds.x,
+                                            bounds.y,
+                                            bounds.width,
+                                            bounds.height,
+                                            Math.abs( arcWidth ),
+                                            Math.abs( arcHeight ),
+                                            fill );
+      }
+      addGCOperation( operation );
+    }
+  }
+
+  private static Rectangle checkBounds( final int x,
+                                        final int y,
+                                        final int width,
+                                        final int height )
+  {
+    Rectangle result = new Rectangle( x, y, width, height );
+    if( width < 0 ) {
+      result.x = x + width;
+      result.width = -width;
+    }
+    if( height < 0 ) {
+      result.y = y + height;
+      result.height = -height;
+    }
+    return result;
   }
 
   private void checkDisposed() {

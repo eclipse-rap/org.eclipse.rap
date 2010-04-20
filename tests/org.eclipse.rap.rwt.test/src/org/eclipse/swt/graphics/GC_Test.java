@@ -592,6 +592,17 @@ public class GC_Test extends TestCase {
     assertEquals( 3, operation.width );
     assertEquals( 4, operation.height );
     assertFalse( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.drawRectangle( 1, 2, -3, -4 );
+    gcOperations = adapter.getGCOperations();
+    operation = ( DrawRectangle )gcOperations[ 0 ];
+    assertEquals( -2, operation.x );
+    assertEquals( -2, operation.y );
+    assertEquals( 3, operation.width );
+    assertEquals( 4, operation.height );
+    assertFalse( operation.fill );
+
     try {
       gc.drawRectangle( null );
       fail( "null argument is not allowed on drawRectangle" );
@@ -628,6 +639,17 @@ public class GC_Test extends TestCase {
     assertEquals( 3, operation.width );
     assertEquals( 4, operation.height );
     assertTrue( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.fillRectangle( 1, 2, -3, -4 );
+    gcOperations = adapter.getGCOperations();
+    operation = ( DrawRectangle )gcOperations[ 0 ];
+    assertEquals( -2, operation.x );
+    assertEquals( -2, operation.y );
+    assertEquals( 3, operation.width );
+    assertEquals( 4, operation.height );
+    assertTrue( operation.fill );
+
     try {
       gc.fillRectangle( null );
       fail( "null argument is not allowed on fillRectangle" );
@@ -675,6 +697,38 @@ public class GC_Test extends TestCase {
     assertEquals( 5, operation.arcWidth );
     assertEquals( 6, operation.arcHeight );
     assertFalse( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.drawRoundRectangle( 1, 2, -3, -4, 5, 6 );
+    gcOperations = adapter.getGCOperations();
+    operation = ( DrawRoundRectangle )gcOperations[ 0 ];
+    assertEquals( -2, operation.x );
+    assertEquals( -2, operation.y );
+    assertEquals( 3, operation.width );
+    assertEquals( 4, operation.height );
+    assertEquals( 5, operation.arcWidth );
+    assertEquals( 6, operation.arcHeight );
+    assertFalse( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.drawRoundRectangle( 1, 2, 3, 4, 0, 6 );
+    gcOperations = adapter.getGCOperations();
+    DrawRectangle operation1 = ( DrawRectangle )gcOperations[ 0 ];
+    assertEquals( 1, operation1.x );
+    assertEquals( 2, operation1.y );
+    assertEquals( 3, operation1.width );
+    assertEquals( 4, operation1.height );
+    assertFalse( operation1.fill );
+    adapter.clearGCOperations();
+
+    gc.drawRoundRectangle( 1, 2, 3, 4, 5, 0 );
+    gcOperations = adapter.getGCOperations();
+    operation1 = ( DrawRectangle )gcOperations[ 0 ];
+    assertEquals( 1, operation1.x );
+    assertEquals( 2, operation1.y );
+    assertEquals( 3, operation1.width );
+    assertEquals( 4, operation1.height );
+    assertFalse( operation1.fill );
   }
 
   public void testFillRoundRectangle() {
@@ -692,6 +746,38 @@ public class GC_Test extends TestCase {
     assertEquals( 5, operation.arcWidth );
     assertEquals( 6, operation.arcHeight );
     assertTrue( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.fillRoundRectangle( 1, 2, -3, -4, 5, 6 );
+    gcOperations = adapter.getGCOperations();
+    operation = ( DrawRoundRectangle )gcOperations[ 0 ];
+    assertEquals( -2, operation.x );
+    assertEquals( -2, operation.y );
+    assertEquals( 3, operation.width );
+    assertEquals( 4, operation.height );
+    assertEquals( 5, operation.arcWidth );
+    assertEquals( 6, operation.arcHeight );
+    assertTrue( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.fillRoundRectangle( 1, 2, 3, 4, 0, 6 );
+    gcOperations = adapter.getGCOperations();
+    DrawRectangle operation1 = ( DrawRectangle )gcOperations[ 0 ];
+    assertEquals( 1, operation1.x );
+    assertEquals( 2, operation1.y );
+    assertEquals( 3, operation1.width );
+    assertEquals( 4, operation1.height );
+    assertTrue( operation1.fill );
+    adapter.clearGCOperations();
+
+    gc.fillRoundRectangle( 1, 2, 3, 4, 5, 0 );
+    gcOperations = adapter.getGCOperations();
+    operation1 = ( DrawRectangle )gcOperations[ 0 ];
+    assertEquals( 1, operation1.x );
+    assertEquals( 2, operation1.y );
+    assertEquals( 3, operation1.width );
+    assertEquals( 4, operation1.height );
+    assertTrue( operation1.fill );
   }
 
   public void testDrawArc() {
@@ -709,6 +795,31 @@ public class GC_Test extends TestCase {
     assertEquals( 5, operation.startAngle );
     assertEquals( 6, operation.arcAngle );
     assertFalse( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.drawArc( 1, 2, -3, -4, 5, 6 );
+    gcOperations = adapter.getGCOperations();
+    operation = ( DrawArc )gcOperations[ 0 ];
+    assertEquals( -2, operation.x );
+    assertEquals( -2, operation.y );
+    assertEquals( 3, operation.width );
+    assertEquals( 4, operation.height );
+    assertEquals( 5, operation.startAngle );
+    assertEquals( 6, operation.arcAngle );
+    assertFalse( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.drawArc( 1, 2, 0, 4, 5, 6 );
+    gcOperations = adapter.getGCOperations();
+    assertEquals( 0, gcOperations.length );
+
+    gc.drawArc( 1, 2, 3, 0, 5, 6 );
+    gcOperations = adapter.getGCOperations();
+    assertEquals( 0, gcOperations.length );
+
+    gc.drawArc( 1, 2, 3, 4, 5, 0 );
+    gcOperations = adapter.getGCOperations();
+    assertEquals( 0, gcOperations.length );
   }
 
   public void testFillArc() {
@@ -725,7 +836,31 @@ public class GC_Test extends TestCase {
     assertEquals( 4, operation.height );
     assertEquals( 5, operation.startAngle );
     assertEquals( 6, operation.arcAngle );
+    adapter.clearGCOperations();
+
+    gc.fillArc( 1, 2, -3, -4, 5, 6 );
+    gcOperations = adapter.getGCOperations();
+    operation = ( DrawArc )gcOperations[ 0 ];
+    assertEquals( -2, operation.x );
+    assertEquals( -2, operation.y );
+    assertEquals( 3, operation.width );
+    assertEquals( 4, operation.height );
+    assertEquals( 5, operation.startAngle );
+    assertEquals( 6, operation.arcAngle );
     assertTrue( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.fillArc( 1, 2, 0, 4, 5, 6 );
+    gcOperations = adapter.getGCOperations();
+    assertEquals( 0, gcOperations.length );
+
+    gc.fillArc( 1, 2, 3, 0, 5, 6 );
+    gcOperations = adapter.getGCOperations();
+    assertEquals( 0, gcOperations.length );
+
+    gc.fillArc( 1, 2, 3, 4, 5, 0 );
+    gcOperations = adapter.getGCOperations();
+    assertEquals( 0, gcOperations.length );
   }
 
   public void testDrawOval() {
@@ -743,6 +878,18 @@ public class GC_Test extends TestCase {
     assertEquals( 0, operation.startAngle );
     assertEquals( 360, operation.arcAngle );
     assertFalse( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.drawOval( 1, 2, -3, -4 );
+    gcOperations = adapter.getGCOperations();
+    operation = ( DrawArc )gcOperations[ 0 ];
+    assertEquals( -2, operation.x );
+    assertEquals( -2, operation.y );
+    assertEquals( 3, operation.width );
+    assertEquals( 4, operation.height );
+    assertEquals( 0, operation.startAngle );
+    assertEquals( 360, operation.arcAngle );
+    assertFalse( operation.fill );
   }
 
   public void testFillOval() {
@@ -755,6 +902,18 @@ public class GC_Test extends TestCase {
     DrawArc operation = ( DrawArc )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
     assertEquals( 2, operation.y );
+    assertEquals( 3, operation.width );
+    assertEquals( 4, operation.height );
+    assertEquals( 0, operation.startAngle );
+    assertEquals( 360, operation.arcAngle );
+    assertTrue( operation.fill );
+    adapter.clearGCOperations();
+
+    gc.fillOval( 1, 2, -3, -4 );
+    gcOperations = adapter.getGCOperations();
+    operation = ( DrawArc )gcOperations[ 0 ];
+    assertEquals( -2, operation.x );
+    assertEquals( -2, operation.y );
     assertEquals( 3, operation.width );
     assertEquals( 4, operation.height );
     assertEquals( 0, operation.startAngle );
