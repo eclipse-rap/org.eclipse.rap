@@ -1120,7 +1120,9 @@ public class TreeItem extends Item {
     if( parent.getColumnCount() == 0 ) {
       parent.updateScrollBars();
     }
-    // if((parent.style & SWT.VIRTUAL) != 0) cached = true;
+    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
+      cached = true;
+    }
   }
 
   /**
@@ -1137,7 +1139,6 @@ public class TreeItem extends Item {
   public void setText( final String text ) {
     checkWidget();
     setText( 0, text );
-    // if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
   /**
