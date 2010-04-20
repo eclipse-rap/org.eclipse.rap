@@ -179,6 +179,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       testUtil.flush();
     },
     
+    
+    testDrawArcSizeZero : function() {
+      // Test passes by not crashing
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var canvas = new org.eclipse.swt.widgets.Canvas();
+      canvas.setDimension( 300, 300 );
+      canvas.addToDocument();
+      testUtil.flush();
+      var gc = canvas.getGC();
+      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
+      gc.drawArc( 100, 100, 0, 0, 180, 180, true );
+      canvas.destroy();
+      testUtil.flush();
+    },
+    
     testDrawPolyline : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Canvas();

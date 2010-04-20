@@ -247,20 +247,22 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         this._context.restore();
       }, 
       "default" : function( x, y, width, height, startAngle, arcAngle, fill ) {
-        var halfWidth = width / 2;
-        var halfHeight = height / 2;
-        this._context.save();
-        this._context.beginPath();
-        this._context.translate( x + halfWidth, y + halfHeight );
-        this._context.scale( 1, height / width );
-        this._context.arc( 0,
-                           0,
-                           halfWidth,
-                           - startAngle * Math.PI / 180,
-                           - ( startAngle + arcAngle ) * Math.PI / 180,
-                           true );
-        this._stroke( fill );
-        this._context.restore();
+        if( width > 0 && height > 0 ) {
+          var halfWidth = width / 2;
+          var halfHeight = height / 2;
+          this._context.save();
+          this._context.beginPath();
+          this._context.translate( x + halfWidth, y + halfHeight );
+          this._context.scale( 1, height / width );
+          this._context.arc( 0,
+                             0,
+                             halfWidth,
+                             - startAngle * Math.PI / 180,
+                             - ( startAngle + arcAngle ) * Math.PI / 180,
+                             true );
+          this._stroke( fill );
+          this._context.restore();
+        }
       }
     } ),
 
