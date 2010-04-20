@@ -777,12 +777,14 @@ public class GC extends Resource {
                                      final boolean vertical )
   {
     checkDisposed();
-    if( background.equals( foreground  ) ) {
-      fillRectangle( x, y, width, height );
-    } else {
-      FillGradientRectangle operation
-        = new FillGradientRectangle( x, y, width, height, vertical );
-      addGCOperation( operation );
+    if( width != 0 && height != 0 ) {
+      if( background.equals( foreground  ) ) {
+        fillRectangle( x, y, width, height );
+      } else {
+        FillGradientRectangle operation
+          = new FillGradientRectangle( x, y, width, height, vertical );
+        addGCOperation( operation );
+      }
     }
   }
 
