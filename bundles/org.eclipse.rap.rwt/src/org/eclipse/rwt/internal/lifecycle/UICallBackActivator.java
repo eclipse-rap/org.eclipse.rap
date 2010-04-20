@@ -43,7 +43,7 @@ final class UICallBackActivator implements PhaseListener {
     UICallBackManager.getInstance().setActive( true );
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter writer = stateInfo.getResponseWriter();
-    if( needsUICallBackActivation() ) {
+    if( needsActivation() ) {
       try {
         writer.write( UICallBackServiceHandler.JS_SEND_CALLBACK_REQUEST );
       } catch( IOException e ) {
@@ -52,10 +52,8 @@ final class UICallBackActivator implements PhaseListener {
     }
   }
 
-  private boolean needsUICallBackActivation() {
-    UICallBackManager uiCallBackManager = UICallBackManager.getInstance();
-    boolean isActive =  UICallBackServiceHandler.isUICallBackActive();
-    boolean isCallBackBlocked = uiCallBackManager.isCallBackRequestBlocked();
-    return isActive && !isCallBackBlocked;
+  private boolean needsActivation() {
+    return    UICallBackServiceHandler.isUICallBackActive()
+           && !UICallBackManager.getInstance().isCallBackRequestBlocked();
   }
 }
