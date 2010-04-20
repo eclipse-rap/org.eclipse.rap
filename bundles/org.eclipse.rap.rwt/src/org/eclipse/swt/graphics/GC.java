@@ -677,7 +677,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
-    internalDrawRect( x, y, width, height, 0, 0, false );
+    drawRect( x, y, width, height, 0, 0, false );
   }
 
   /**
@@ -747,7 +747,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
-    internalDrawRect( x, y, width, height, 0, 0, true );
+    drawRect( x, y, width, height, 0, 0, true );
   }
 
   /**
@@ -816,7 +816,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
-    internalDrawRect( x, y, width, height, arcWidth, arcHeight, false );
+    drawRect( x, y, width, height, arcWidth, arcHeight, false );
   }
 
   /**
@@ -843,7 +843,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
-    internalDrawRect( x, y, width, height, arcWidth, arcHeight, true );
+    drawRect( x, y, width, height, arcWidth, arcHeight, true );
   }
 
   /**
@@ -872,7 +872,7 @@ public class GC extends Resource {
                         final int width,
                         final int height )
   {
-    internalDrawArc( x, y, width, height, 0, 360, false );
+    drawArc( x, y, width, height, 0, 360, false );
   }
 
   /**
@@ -896,7 +896,7 @@ public class GC extends Resource {
                         final int width,
                         final int height )
   {
-    internalDrawArc( x, y, width, height, 0, 360, true );
+    drawArc( x, y, width, height, 0, 360, true );
   }
 
   /**
@@ -935,7 +935,7 @@ public class GC extends Resource {
                        final int startAngle,
                        final int arcAngle )
   {
-    internalDrawArc( x, y, width, height, startAngle, arcAngle, false );
+    drawArc( x, y, width, height, startAngle, arcAngle, false );
   }
 
   /**
@@ -977,7 +977,7 @@ public class GC extends Resource {
                        final int startAngle,
                        final int arcAngle )
   {
-    internalDrawArc( x, y, width, height, startAngle, arcAngle, true );
+    drawArc( x, y, width, height, startAngle, arcAngle, true );
   }
 
   /**
@@ -1352,13 +1352,13 @@ public class GC extends Resource {
     return style;
   }
 
-  private void internalDrawArc( final int x,
-                                final int y,
-                                final int width,
-                                final int height,
-                                final int startAngle,
-                                final int arcAngle,
-                                final boolean fill )
+  private void drawArc( final int x,
+                        final int y,
+                        final int width,
+                        final int height,
+                        final int startAngle,
+                        final int arcAngle,
+                        final boolean fill )
   {
     checkDisposed();
     Rectangle bounds = checkBounds( x, y, width, height );
@@ -1374,13 +1374,13 @@ public class GC extends Resource {
     }
   }
 
-  private void internalDrawRect( final int x,
-                                 final int y,
-                                 final int width,
-                                 final int height,
-                                 final int arcWidth,
-                                 final int arcHeight,
-                                 final boolean fill )
+  private void drawRect( final int x,
+                         final int y,
+                         final int width,
+                         final int height,
+                         final int arcWidth,
+                         final int arcHeight,
+                         final boolean fill )
   {
     checkDisposed();
     Rectangle bounds = checkBounds( x, y, width, height );
