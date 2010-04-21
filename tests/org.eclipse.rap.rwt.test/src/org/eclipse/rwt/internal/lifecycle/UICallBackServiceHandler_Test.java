@@ -19,12 +19,12 @@ import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServiceStateInfo;
 import org.eclipse.rwt.internal.util.HTML;
-import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
 
 
 public class UICallBackServiceHandler_Test extends TestCase {
   
+  private static final String ENABLE_UI_CALL_BACK = "org.eclipse.swt.Request.getInstance().enableUICallBack();";
   private static final String ID_1 = "id_1";
   private static final String ID_2 = "id_2";
 
@@ -36,9 +36,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
     Fixture.tearDown();
   }
   
-  public void testOnOffSwitchFromDifferentSession() throws Exception {
-    final UICallBackActivator uiCallBackActivator
-      = new UICallBackActivator( ContextProvider.getSession() );
+  public void testWriteActivationFromDifferentSession() throws Exception {
     // test that on/off switching is managed in session scope
     final String[] otherSession = new String[ 1 ];
     Thread thread = new Thread( new Runnable() {
@@ -46,7 +44,10 @@ public class UICallBackServiceHandler_Test extends TestCase {
         Fixture.fakeContext();
         ContextProvider.getContext().setStateInfo( new ServiceStateInfo() );
         Fixture.fakeResponseWriter();
-        uiCallBackActivator.writeActivationJS();
+        try {
+          UICallBackServiceHandler.writeActivation();
+        } catch( IOException e ) {
+        }
         otherSession[ 0 ] = Fixture.getAllMarkup();
       } 
     } );
@@ -55,50 +56,53 @@ public class UICallBackServiceHandler_Test extends TestCase {
     assertEquals( "", otherSession[ 0 ] );
   }
   
-  public void testOnOffSwitch() {
-    UICallBackActivator uiCallBackActivator
-      = new UICallBackActivator( ContextProvider.getSession() );
+  public void testWriteActivationWithoutActivateCall() throws Exception {
     Fixture.fakeResponseWriter();
-    uiCallBackActivator.writeActivationJS();
+    UICallBackServiceHandler.writeActivation();
     assertEquals( "", Fixture.getAllMarkup() );
-
+  }
+  
+  public void testWriteActivationTwice() throws Exception {
     Fixture.fakeResponseWriter();
     UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
-    uiCallBackActivator.writeActivationJS();
-    uiCallBackActivator.writeActivationJS();
-    assertFalse( "".equals( Fixture.getAllMarkup() ) );
+    UICallBackServiceHandler.writeActivation();
+    UICallBackServiceHandler.writeActivation();
+    assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
+  }
 
+  public void testWriteActivationAfterDeactivate() throws Exception {
     Fixture.fakeResponseWriter();
     UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
-    uiCallBackActivator.writeActivationJS();
+    UICallBackServiceHandler.writeActivation();
     assertEquals( "", Fixture.getAllMarkup() );
-    
+  }
+  
+  public void testWriteActivationWithDifferentIds() throws Exception {
     Fixture.fakeResponseWriter();
     UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
     UICallBackServiceHandler.activateUICallBacksFor( ID_2 );
-    uiCallBackActivator.writeActivationJS();
-    assertFalse( "".equals( Fixture.getAllMarkup() ) );
-    
+    UICallBackServiceHandler.writeActivation();
+    assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
+  }
+  
+  public void testWriteActivationAfterActivateTwoDeactivateOne() throws Exception {
     Fixture.fakeResponseWriter();
+    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
+    UICallBackServiceHandler.activateUICallBacksFor( ID_2 );
     UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
-    uiCallBackActivator.writeActivationJS();
-    assertFalse( "".equals( Fixture.getAllMarkup() ) );
-    
-    Fixture.fakeResponseWriter();
-    UICallBackServiceHandler.deactivateUICallBacksFor( ID_2 );
-    uiCallBackActivator.writeActivationJS();
-    assertEquals( "", Fixture.getAllMarkup() );
+    UICallBackServiceHandler.writeActivation();
+    assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
   }
   
-  public void testResponseContentType() throws IOException {
+  public void testWriteActivateTwice() throws Exception {
+    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
+    UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
+    UICallBackServiceHandler.activateUICallBacksFor( ID_2 );
     Fixture.fakeResponseWriter();
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    response.setOutputStream( new TestServletOutputStream() );
-    UICallBackServiceHandler.writeResponse();
-    assertEquals( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8, 
-                  response.getHeader( "Content-Type" ) );
+    UICallBackServiceHandler.writeActivation();
+    assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
   }
-  
+
   public void testActivateDeactivateWithPendingRunnables() throws Exception {
     UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
     UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
@@ -107,9 +111,16 @@ public class UICallBackServiceHandler_Test extends TestCase {
       }
     } );
     Fixture.fakeResponseWriter();
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
-    lifeCycle.afterPhaseExecution( PhaseId.RENDER );
-    assertEquals( "org.eclipse.swt.Request.getInstance().enableUICallBack();", 
-                  Fixture.getAllMarkup() );
+    UICallBackServiceHandler.writeActivation();
+    assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
+  }
+
+  public void testResponseContentType() throws IOException {
+    Fixture.fakeResponseWriter();
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    response.setOutputStream( new TestServletOutputStream() );
+    UICallBackServiceHandler.writeResponse();
+    assertEquals( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8, 
+                  response.getHeader( "Content-Type" ) );
   }
 }

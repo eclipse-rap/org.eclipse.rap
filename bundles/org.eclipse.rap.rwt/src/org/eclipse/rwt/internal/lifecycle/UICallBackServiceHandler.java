@@ -22,7 +22,6 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.util.HTML;
-import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
@@ -44,6 +43,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
   private static final String BUFFERED_SEND_CALLBACK_REQUEST
     = UICallBackServiceHandler.class.getName() + "#jsUICallback";
 
+  private static final String NEED_UI_CALLBACK_ACTIVATOR
+    = UICallBackServiceHandler.class.getName() + "#needUICallBackActivator";
 
   ////////////////
   // inner classes
@@ -443,7 +444,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     //                Because of this the wasMapped variable is used to
     //                use the correct way to restore the buffered context.
     //                See whether this can be done more elegantly and supplement
-    //                the testcases...
+    //                the test cases...
     boolean wasMapped = false;
     if( useDifferentContext ) {
       contextBuffer = ContextProvider.getContext();
@@ -453,8 +454,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
     if( useFakeContext ) {
       IDisplayAdapter adapter = getDisplayAdapter( display );
       ISessionStore session = adapter.getSession();
-      DummyRequest request = new DummyRequest( session.getHttpSession() );
-      DummyResponse response = new DummyResponse();
+      HttpServletRequest request = new DummyRequest( session.getHttpSession() );
+      HttpServletResponse response = new DummyResponse();
       ServiceContext context = new ServiceContext( request, response, session );
       ContextProvider.setContext( context );
     }
@@ -491,9 +492,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   private static void registerUICallBackActivator() {
-    ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
     ISessionStore session = ContextProvider.getSession();
-    lifeCycle.addPhaseListener( new UICallBackActivator( session ) );
+    session.setAttribute( NEED_UI_CALLBACK_ACTIVATOR, Boolean.TRUE );
   }
 
   public static void deactivateUICallBacksFor( final String id ) {
@@ -507,6 +507,24 @@ public class UICallBackServiceHandler implements IServiceHandler {
       instance.setActive( false );
       instance.sendUICallBack();
     }
+  }
+
+  public static void writeActivation() throws IOException {
+    if( needsActivation() ) {
+      ISessionStore session = ContextProvider.getSession();
+      session.setAttribute( NEED_UI_CALLBACK_ACTIVATOR, Boolean.FALSE );
+      UICallBackManager.getInstance().setActive( true );
+      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+      HtmlResponseWriter writer = stateInfo.getResponseWriter();
+      writer.write( UICallBackServiceHandler.JS_SEND_CALLBACK_REQUEST );
+    }
+  }
+
+  private static boolean needsActivation() {
+    ISessionStore session = ContextProvider.getSession();
+    return    UICallBackServiceHandler.isUICallBackActive()
+           && Boolean.TRUE == session.getAttribute( NEED_UI_CALLBACK_ACTIVATOR )
+           && !UICallBackManager.getInstance().isCallBackRequestBlocked();
   }
 
   private static IDisplayAdapter getDisplayAdapter( final Display display ) {

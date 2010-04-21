@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.internal.progress.ProgressManager;
 import org.eclipse.ui.progress.UIJob;
 
-// RAP [fappel]:
 public class JobManagerAdapter
   extends ProgressProvider
   implements IJobChangeListener
@@ -67,7 +66,7 @@ public class JobManagerAdapter
   }
 
 
-  ///////////////////////////////
+  ///////////////////
   // ProgressProvider
 
   public IProgressMonitor createMonitor( final Job job ) {
