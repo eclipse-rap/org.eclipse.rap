@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 
 package org.eclipse.rwt.lifecycle;
 
+import org.eclipse.rwt.internal.lifecycle.FakeContextUtil;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.swt.widgets.Display;
 
@@ -41,10 +42,8 @@ public final class UICallBack {
   public static void runNonUIThreadWithFakeContext( final Display display,
                                                     final Runnable runnable )
   {
-    UICallBackServiceHandler.runNonUIThreadWithFakeContext( display,
-                                                            runnable );
+    FakeContextUtil.runNonUIThreadWithFakeContext( display, runnable );
   }
-  
 
   /**
    * To allow automatic UI-updates by server side background threads
