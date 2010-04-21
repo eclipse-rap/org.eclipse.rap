@@ -3850,8 +3850,8 @@
       <branding
             defaultEntrypointId="org.eclipse.rap.ui.interactiondesign.entrypoint1"
             id="org.eclipse.rap.ui.interactiondesign.test.branding"
-            servletName="iadtest"
-            title="IAD API Test">
+            servletName="rapuitests"
+            title="RAP UI Tests">
          <presentationFactory
                defaultLayoutId="org.eclipse.rap.ui.interactiondesign.test.layout2"
                id="org.eclipse.rap.ui.interactiondesign.test.factory"
