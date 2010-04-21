@@ -22,6 +22,7 @@ public class AllTests {
       // Eclipse JFace Tests
       suite.addTest( new org.eclipse.jface.tests.AllTests() );
       // Eclipse UI Tests
+// [if] Enable Eclipse UI tests when conflict with IAD tests is solved
 //      suite.addTest( new org.eclipse.ui.tests.UiTestSuite() );
       // IAD API Tests
       suite.addTestSuite( ConfigurableStackTest.class );
