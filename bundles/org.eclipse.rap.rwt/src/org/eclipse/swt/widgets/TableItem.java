@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,9 +85,9 @@ public class TableItem extends Item {
       }
       return result;
     }
-    
+
     public boolean isParentDisposed() {
-      return TableItem.this.parent.isDisposed();  
+      return TableItem.this.parent.isDisposed();
     }
   }
 
@@ -1003,7 +1003,7 @@ public class TableItem extends Item {
         imageWidth = parent.getItemImageSize().x;
         spacing = getSpacing( 0 );
       }
-      left =   getCheckWidth( 0 )
+      left =   getLeft( 0 )
              + cellPadding.x
              + imageWidth
              + spacing;
@@ -1016,8 +1016,7 @@ public class TableItem extends Item {
         imageWidth = parent.getItemImageSize().x;
       }
       int spacing = getSpacing( index );
-      left =   parent.getColumn( index ).getLeft()
-             + getCheckWidth( index )
+      left =   getLeft( index )
              + cellPadding.x
              + imageWidth
              + spacing;

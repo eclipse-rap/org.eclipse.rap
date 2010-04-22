@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,7 +95,7 @@ public class TableItem_Test extends TestCase {
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    
+
     // bounds for out-of-range item on table without columns
     assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getBounds( 123 ) );
 
@@ -127,13 +127,13 @@ public class TableItem_Test extends TestCase {
     // bounds for out-of-range item
     bounds = item.getBounds( table.getColumnCount() + 100 );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
-    
+
     // bounds for table with visible headers
     table.setHeaderVisible( true );
     bounds = item.getBounds();
     assertTrue( bounds.y >= table.getHeaderHeight() );
   }
-  
+
   public void testBoundsWithScroll() {
     final int tableWidth = 100;
     final int tableHeight = 100;
@@ -149,13 +149,13 @@ public class TableItem_Test extends TestCase {
     for( int i = 0; i < itemCount; i++ ) {
       new TableItem( table, SWT.NONE );
     }
-    
+
     Rectangle item0Bounds = table.getItem( 0 ).getBounds();
     // scroll item 0 out of view, now item 1 is on the same position as item 0
     // was before
     table.setTopIndex( 1 );
     assertEquals( item0Bounds, table.getItem( 1 ).getBounds() );
-    
+
     // ensure that horizontal scrolling is detected
     table.setTopIndex( 0 );
     Rectangle column0Bounds = table.getItem( 0 ).getBounds( 0 );
@@ -164,7 +164,7 @@ public class TableItem_Test extends TestCase {
     adapter.setLeftOffset( column0.getWidth() );
     assertEquals( column0Bounds.x, table.getItem( 0 ).getBounds( 1 ).x );
   }
-  
+
   public void testTextBounds() {
     // Test setup
     Display display = new Display();
@@ -177,12 +177,12 @@ public class TableItem_Test extends TestCase {
     column2.setWidth( 50 );
     item.setText( 0, "col1" );
     item.setText( 1, "col2" );
-    
+
     Rectangle textBounds1 = item.getTextBounds( 0 );
     Rectangle textBounds2 = item.getTextBounds( 1 );
     assertTrue( textBounds1.x + textBounds1.width <= textBounds2.x );
   }
-  
+
   public void testTextBoundsWithInvalidIndex() {
     // Test setup
     Display display = new Display();
@@ -196,7 +196,7 @@ public class TableItem_Test extends TestCase {
     new TableColumn( table, SWT.NONE );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getTextBounds( 123 ) );
   }
-  
+
   public void testTextBoundsWithImageAndColumns() {
     // Test setup
     Display display = new Display();
@@ -205,7 +205,7 @@ public class TableItem_Test extends TestCase {
     TableItem item = new TableItem( table, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 200 );
-    
+
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     item.setImage( 0, image );
     assertTrue( item.getTextBounds( 0 ).x > image.getBounds().width );
@@ -239,6 +239,24 @@ public class TableItem_Test extends TestCase {
     Rectangle textBounds = item.getTextBounds( 0 );
     // Item 0 must share the first column with the check box
     assertTrue( textBounds.width < 85 );
+  }
+
+  public void testTextBoundsWithScroll() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 100 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 100 );
+    item.setText( 0, " Item 0.0" );
+    item.setText( 1, " Item 0.1" );
+    Rectangle column0TextBounds = item.getTextBounds( 0 );
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( column0.getWidth() );
+    assertEquals( column0TextBounds.x, item.getTextBounds( 1 ).x );
   }
 
   public void testImageBoundsWithoutColumns() {
@@ -307,13 +325,30 @@ public class TableItem_Test extends TestCase {
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );
     assertEquals( 100, bounds.width );
-    
+
     // ImageBounds for item without an image
     column.setWidth( 20 );
     item.setImage( 0, null );
     bounds = item.getImageBounds( 0 );
     assertEquals( 50, bounds.height );
     assertEquals( 0, bounds.width );
+  }
+
+  public void testImageBoundsWithScroll() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 100 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 100 );
+    Rectangle column0ImageBounds = item.getImageBounds( 0 );
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( column0.getWidth() );
+    assertEquals( column0ImageBounds.x, item.getImageBounds( 1 ).x );
   }
 
   public void testBoundsWithCheckedTable() {
@@ -449,7 +484,7 @@ public class TableItem_Test extends TestCase {
       }
     }
   }
-  
+
   public void testSetImage() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -653,9 +688,9 @@ public class TableItem_Test extends TestCase {
     item.setForeground( null );
     assertEquals( table.getForeground(), item.getForeground() );
   }
-  
+
   /* Calling a setter like setImage, setBackground, ... on a virtual item
-   * that hasn't been 'touched' yet, marks the item as cached without firing 
+   * that hasn't been 'touched' yet, marks the item as cached without firing
    * a SetData event.
    * This may lead to items e.g. without proper text as no SetData event gets
    * fired when the item becomes visible. SWT (on Windows) behaves the same. */
@@ -685,7 +720,7 @@ public class TableItem_Test extends TestCase {
     item.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
     assertEquals( 0, eventLog.size() );
   }
-  
+
   public void testDisposeVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -709,7 +744,7 @@ public class TableItem_Test extends TestCase {
     }
     assertEquals( 0, table.getItemCount() );
   }
-  
+
   public void testSetItemCountDisposeOrder() {
     final java.util.List log = new ArrayList();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -817,7 +852,7 @@ public class TableItem_Test extends TestCase {
     fonts = tableItemAdapter.getCellFonts();
     assertSame( cellFont, fonts[ 0 ] );
   }
-  
+
   public void testSetBackground()
   {
     Display display = new Display();
@@ -838,9 +873,9 @@ public class TableItem_Test extends TestCase {
     catch (IllegalArgumentException e)
     {
       //Expected Exception
-    } 
+    }
   }
-  
+
   public void testSetBackgroundI() {
     Display display = new Display();
     Composite control = new Shell( display );
@@ -861,13 +896,13 @@ public class TableItem_Test extends TestCase {
       // Expected Exception
     }
   }
-  
+
   public void testSetFont() {
     Display display = new Display();
     Composite control = new Shell( display );
     Table table = new Table(control, SWT.NONE);
     TableItem tableItem = new TableItem(table, SWT.NONE);
-    
+
     Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
                                        15,
                                        SWT.BOLD );
@@ -879,7 +914,7 @@ public class TableItem_Test extends TestCase {
      assertSame( itemFont, tableItem.getFont() );
      tableItem.setFont( null );
      assertSame( tableFont, tableItem.getFont() );
-     
+
     // Test with images, that should appear on unselected tabs
     Font font = new Font(display, "Testfont", 10, SWT.BOLD);
     font.dispose();
@@ -892,13 +927,13 @@ public class TableItem_Test extends TestCase {
       //Expected Exception
     }
   }
-  
+
   public void testSetFontI() {
     Display display = new Display();
     Composite control = new Shell( display );
     Table table = new Table(control, SWT.NONE);
     TableItem tableItem = new TableItem(table, SWT.NONE);
-    
+
     Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
                                       15,
                                       SWT.BOLD );
@@ -929,13 +964,13 @@ public class TableItem_Test extends TestCase {
     Composite control = new Shell( display );
     Table table = new Table(control, SWT.NONE);
     TableItem tableItem = new TableItem(table, SWT.NONE);
-    
+
     Color color = display.getSystemColor( SWT.COLOR_RED );
     tableItem.setForeground( color );
     assertEquals( color, tableItem.getForeground(  ) );
     tableItem.setForeground( null );
     assertEquals( table.getForeground(), tableItem.getForeground() );
-    
+
     Color color2 = new Color(display, 255, 0, 0);
     color2.dispose();
     try{
@@ -947,7 +982,7 @@ public class TableItem_Test extends TestCase {
       //Expected Exception
     }
   }
-  
+
   public void testSetForegroundI() {
     Display display = new Display();
     Composite control = new Shell( display );
@@ -960,7 +995,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( table.getForeground(), tableItem.getForeground() );
     Color color2 = new Color(display, 255, 0, 0);
     color2.dispose();
-    
+
   //Test for the method TableItem#setForeground( int, Font)
     try{
       tableItem.setForeground(150, color2 );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,6 +132,7 @@ public final class TableLCAUtil {
     TableItem measureItem = tableAdapter.getMeasureItem();
     if( measureItem != null ) {
       int checkWidth = tableAdapter.getCheckWidth();
+      int leftOffset = tableAdapter.getLeftOffset();
       for( int i = 0; i < columnCount; i++ ) {
         Rectangle bounds = measureItem.getBounds( i );
         Rectangle imageBounds = measureItem.getImageBounds( i );
@@ -145,11 +146,11 @@ public final class TableLCAUtil {
             imageWidth = maxImageWidth;
           }
         }
-        result[ i ].left = bounds.x;
+        result[ i ].left = bounds.x + leftOffset;
         result[ i ].width = bounds.width;
-        result[ i ].imageLeft = imageBounds.x;
+        result[ i ].imageLeft = imageBounds.x + leftOffset;
         result[ i ].imageWidth = imageWidth;
-        result[ i ].textLeft = textBounds.x;
+        result[ i ].textLeft = textBounds.x + leftOffset;
         result[ i ].textWidth = textBounds.width;
       }
     }
@@ -192,7 +193,7 @@ public final class TableLCAUtil {
       }
       return result;
     }
-    
+
     public int hashCode() {
       String msg = "ItemMetrics#hashCode() not implemented";
       throw new UnsupportedOperationException( msg );

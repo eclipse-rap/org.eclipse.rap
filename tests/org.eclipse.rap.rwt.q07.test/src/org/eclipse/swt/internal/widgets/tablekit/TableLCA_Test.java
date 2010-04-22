@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -664,6 +664,18 @@ public class TableLCA_Test extends TestCase {
                    + defaultSpacing;
     assertEquals( expected, metrics[ 0 ].textLeft );
 
+    // left offset must be compensated
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 10 );
+    metrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 0, metrics[ 0 ].left );
+    assertEquals( defaultLeftPadding, metrics[ 0 ].imageLeft );
+    expected =   metrics[ 0 ].imageLeft
+               + metrics[ 0 ].imageWidth
+               + defaultSpacing;
+    assertEquals( expected, metrics[ 0 ].textLeft );
+
     // image must not exceed right column border
     column.setWidth( 12 );
     metrics = TableLCAUtil.getItemMetrics( table );
@@ -710,6 +722,18 @@ public class TableLCA_Test extends TestCase {
     int expected =   metrics[ 0 ].imageLeft
                    + metrics[ 0 ].imageWidth
                    + defaultSpacing;
+    assertEquals( expected, metrics[ 0 ].textLeft );
+
+    // left offset must be compensated
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 10 );
+    metrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 0, metrics[ 0 ].left );
+    assertEquals( defaultLeftPadding, metrics[ 0 ].imageLeft );
+    expected =   metrics[ 0 ].imageLeft
+               + metrics[ 0 ].imageWidth
+               + defaultSpacing;
     assertEquals( expected, metrics[ 0 ].textLeft );
 
     Fixture.preserveWidgets();
