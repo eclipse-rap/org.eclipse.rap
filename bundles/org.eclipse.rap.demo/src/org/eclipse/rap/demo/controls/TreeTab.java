@@ -87,6 +87,24 @@ public class TreeTab extends ExampleTab {
         tree.getItem( 1 ).setGrayed( itemGrayButton2.getSelection() );
       }
     } );
+    Button columnsAlignmentButton
+      = createPropertyButton( "Change columns alignment", SWT.PUSH );
+    columnsAlignmentButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        TreeColumn col1 = tree.getColumn( 1 );
+        if( col1.getAlignment() == SWT.RIGHT ) {
+          col1.setAlignment( SWT.LEFT );
+        } else {
+          col1.setAlignment( SWT.RIGHT );
+        }
+        TreeColumn col2 = tree.getColumn( 2 );
+        if( col2.getAlignment() == SWT.CENTER ) {
+          col2.setAlignment( SWT.LEFT );
+        } else {
+          col2.setAlignment( SWT.CENTER );
+        }
+      }
+    } );
   }
 
   protected void createExampleControls( final Composite parent ) {
