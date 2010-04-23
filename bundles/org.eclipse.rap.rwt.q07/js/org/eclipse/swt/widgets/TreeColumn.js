@@ -106,6 +106,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
     setMoveable : function( value ) {
       this._moveable = value;
     },
+    
+    setAlignment : function( value ) {
+      this.setHorizontalChildrenAlign( value );
+      this._tree.updateItems();
+    },
 
     /** This listener function is added and removed server-side */
     onClick : function( evt ) {

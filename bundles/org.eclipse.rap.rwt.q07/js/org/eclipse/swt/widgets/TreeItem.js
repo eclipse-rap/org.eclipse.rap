@@ -319,6 +319,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
         for( var c = 0; c < colCount; c++ ) {
           var col = colOrder[ c ];
           var text = this._texts[ col ] == "" ? " " : this._texts[ col ];
+          var textAlign
+            = this.getTree().getParent()._columns[ col ].getHorizontalChildrenAlign();
           if( text != null ) {
             if( c == 0 ) {
               this.setLabel( text );
@@ -331,6 +333,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
             } else {
               this._colLabels[ c - 1 ].setHeight( this.getIndentObject().getHeight() );
               this._colLabels[ c - 1 ].setLabel( text );
+              if( this._colLabels[ c - 1 ].getLabelObject() != null ) {
+                this._colLabels[ c - 1 ].getLabelObject().setTextAlign( textAlign );
+              }
               this._colLabels[ c - 1 ].setIcon( this._images[ col ] );
               // colors and fonts
               this._updateCellForeground( col, this._colLabels[ c - 1 ] );

@@ -436,18 +436,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     
     setColumnOrder : function ( order ) {
       this._columnOrder = order;
-      var items = this._tree.getItems( true, false );
-      if( items.length > 0 ) {
-        for( var i = 0; i < items.length; i++ ) {
-          if(items[ i ] instanceof org.eclipse.swt.widgets.TreeItem ) {
-            items[ i ].updateItem();
-          }
-        }
-      }
+      this.updateItems();
     },
     
     getColumnOrder : function() {
       return this._columnOrder;
+    },
+    
+    updateItems : function() {
+      var items = this._tree.getItems( true, false );
+      for( var i = 0; i < items.length; i++ ) {
+        if( items[ i ] instanceof org.eclipse.swt.widgets.TreeItem ) {
+          items[ i ].updateItem();
+        }
+      }
     },
     
     /////////////////

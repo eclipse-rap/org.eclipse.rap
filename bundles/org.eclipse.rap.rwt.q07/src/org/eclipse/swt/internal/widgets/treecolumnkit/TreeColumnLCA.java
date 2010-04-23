@@ -95,7 +95,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     TreeColumn column = ( TreeColumn )widget;
     JSWriter writer = JSWriter.getWriterFor( column );
     Object[] args = new Object[] { column.getParent() };
-    writer.newWidget( "org.eclipse.swt.widgets.TreeColumn", args );    
+    writer.newWidget( "org.eclipse.swt.widgets.TreeColumn", args );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -180,8 +180,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
       } else if( newValue.intValue() == SWT.RIGHT ) {
         alignment = JSConst.QX_CONST_ALIGN_RIGHT;
       }
-      writer.set( "horizontalChildrenAlign", new Object[] { alignment } );
-
+      writer.set( "alignment", new Object[] { alignment } );
     }
   }
 
