@@ -331,11 +331,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
             } else {
               this._colLabels[ c - 1 ].setHeight( this.getIndentObject().getHeight() );
               this._colLabels[ c - 1 ].setLabel( text );
-              if( this._colLabels[ c - 1 ].getLabelObject() != null ) {
-                var textAlign
-                  = this.getTree().getParent()._columns[ col ].getHorizontalChildrenAlign();
-                this._colLabels[ c - 1 ].getLabelObject().setTextAlign( textAlign );
-              }
+              this._updateTextAligment( col, this._colLabels[ c - 1 ].getLabelObject() );              
               this._colLabels[ c - 1 ].setIcon( this._images[ col ] );
               // colors and fonts
               this._updateCellForeground( col, this._colLabels[ c - 1 ] );
@@ -369,6 +365,14 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
         widget.setBackgroundColor( this._background );
       } else {
         widget.resetBackgroundColor();
+      }
+    },
+    
+    _updateTextAligment : function( col, widget ) {
+      if( widget != null ) {
+        var textAlign
+          = this.getTree().getParent()._columns[ col ].getHorizontalChildrenAlign();
+        widget.setTextAlign( textAlign );
       }
     },
 
