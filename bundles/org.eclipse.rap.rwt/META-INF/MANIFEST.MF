@@ -11,7 +11,6 @@ Bundle-Vendor: %Bundle-Vendor
 Import-Package: javax.servlet;version="[2.3.0,2.5.0]",
  javax.servlet.http;version="[2.3.0,2.5.0]",
  javax.xml.parsers,
- javax.imageio,
  org.w3c.dom,
  org.xml.sax
 Export-Package: org.eclipse.rwt,
