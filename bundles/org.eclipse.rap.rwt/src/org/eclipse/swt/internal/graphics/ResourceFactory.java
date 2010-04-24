@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,18 +11,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.text.MessageFormat;
-import java.util.*;
-
-import javax.imageio.ImageIO;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 
 
@@ -330,8 +329,9 @@ public final class ResourceFactory {
     bis.mark( Integer.MAX_VALUE );
     Point result = null;
     try {
-      result = readImageSize( bis );
-    } catch( IOException e ) {
+      ImageData data = new ImageData( bis );
+      result = new Point( data.width, data.height );
+    } catch( SWTException e ) {
       // ImageReader also throws IllegalArgumentExceptions for some files
       ServletLog.log( "Failed to determine size for image: " + name, e );
     }
@@ -344,33 +344,6 @@ public final class ResourceFactory {
     }
     IResourceManager manager = ResourceManager.getInstance();
     manager.register( name, bis );
-    return result;
-  }
-
-  public static Point readImageSize( final InputStream input )
-    throws IOException
-  {
-    Point result = null;
-    boolean cacheBuffer = ImageIO.getUseCache();
-    try {
-      // [fappel]: We don't use caching since it sometimes causes problems
-      //           if the application is deployed at a servlet container. This
-      //           does not have any memories or performance impacts, since
-      //           a image is a value object that is loaded only once in
-      //           an application.
-      ImageIO.setUseCache( false );
-      // TODO [fappel]: To use BufferedImage on Mac Os the following
-      //                system property has to be set: java.awt.headless=true.
-      //                Put this info in a general documentation
-      BufferedImage image = ImageIO.read( input );
-      if( image != null ) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        result = new Point( width, height );
-      }
-    } finally {
-      ImageIO.setUseCache( cacheBuffer );
-    }
     return result;
   }
 

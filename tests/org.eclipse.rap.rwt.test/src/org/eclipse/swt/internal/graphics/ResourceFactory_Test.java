@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
@@ -90,6 +93,25 @@ public class ResourceFactory_Test extends TestCase {
     } catch( NullPointerException e ) {
       // expected
     }
+  }
+
+  public void testRegisterImage() {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream inputStream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    String name = "testName";
+    Point size = ResourceFactory.registerImage( name, inputStream );
+    assertEquals( 100, size.x );
+    assertEquals( 50, size.y );
+    assertTrue( ResourceManager.getInstance().isRegistered( name ) );
+  }
+
+  public void testRegisterImageWithInvalidInput() {
+    ByteArrayInputStream inputStream = new ByteArrayInputStream( new byte[ 16 ] );
+    String name = "testName";
+    Point size = ResourceFactory.registerImage( name, inputStream );
+    assertNull( size );
+    // TODO [rst] Does it make sense to register invalid images?
+    assertTrue( ResourceManager.getInstance().isRegistered( name ) );
   }
 
   protected void setUp() throws Exception {

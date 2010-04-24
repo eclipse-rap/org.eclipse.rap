@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 public final class QxImage implements QxType {
 
@@ -189,7 +189,8 @@ public final class QxImage implements QxType {
     InputStream inputStream = loader.getResourceAsStream( path );
     if( inputStream != null ) {
       try {
-        result = ResourceFactory.readImageSize( inputStream );
+        ImageData data = new ImageData( inputStream );
+        result = new Point( data.width, data.height );
       } finally {
         inputStream.close();
       }
