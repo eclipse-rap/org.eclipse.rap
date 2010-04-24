@@ -112,33 +112,33 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testImageBounds() {
-    Image image_100x50 = Graphics.getImage( Fixture.IMAGE_100x50 );
-    assertEquals( new Rectangle( 0, 0, 100, 50 ), image_100x50.getBounds() );
-    Image image_50x100 = Graphics.getImage( Fixture.IMAGE_50x100 );
-    assertEquals( new Rectangle( 0, 0, 50, 100 ), image_50x100.getBounds() );
-  }
+  //////////////////////////
+  // InputStream constructor
 
-  public void testConstructorWithNullDevice() {
+  public void testStreamConstructorWithNullDevice() {
     try {
       new Image( null, new ByteArrayInputStream( new byte[ 0 ] ) );
-      fail( "Must provide device for image constructor" );
+      fail( "Must provide device for constructor" );
     } catch( IllegalArgumentException e ) {
-      // expected
+      assertEquals( "Argument cannot be null", e.getMessage() );
     }
   }
 
-  public void testConstructorUsesDefaultDisplay() throws IOException {
+  public void testStreamConstructorWithNullInputStream() {
+    try {
+      new Image( new Display(), (InputStream)null );
+      fail( "Must provide input stream for constructor" );
+    } catch( IllegalArgumentException e ) {
+      assertEquals( "Argument cannot be null", e.getMessage() );
+    }
+  }
+
+  public void testStreamConstructorUsesDefaultDisplay() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     new Display();
     Image image = new Image( null, stream );
     assertSame( Display.getCurrent(), image.getDevice() );
-    File imageFile = new File( Fixture.TEMP_DIR, "test.gif" );
-    Fixture.copyTestResource( Fixture.IMAGE1, imageFile );
-    image = new Image( null, imageFile.getAbsolutePath() );
-    assertSame( Display.getCurrent(), image.getDevice() );
-    imageFile.delete();
   }
 
   public void testStreamConstructor() throws IOException {
@@ -160,6 +160,36 @@ public class Image_Test extends TestCase {
     }
   }
 
+  ///////////////////////
+  // Filename constructor
+
+  public void testFileConstructorWithNullDevice() {
+    try {
+      new Image( null, "" );
+      fail( "Must provide device for constructor" );
+    } catch( IllegalArgumentException e ) {
+      assertEquals( "Argument cannot be null", e.getMessage() );
+    }
+  }
+
+  public void testFileConstructorWithNullFileName() {
+    try {
+      new Image( new Display(), (String)null );
+      fail( "Must provide filename for constructor" );
+    } catch( IllegalArgumentException e ) {
+      assertEquals( "Argument cannot be null", e.getMessage() );
+    }
+  }
+
+  public void testFileConstructorUsesDefaultDisplay() throws IOException {
+    new Display();
+    File imageFile = new File( Fixture.TEMP_DIR, "test.gif" );
+    Fixture.copyTestResource( Fixture.IMAGE1, imageFile );
+    Image image = new Image( null, imageFile.getAbsolutePath() );
+    assertSame( Display.getCurrent(), image.getDevice() );
+    imageFile.delete();
+  }
+
   public void testFileConstructor() throws IOException {
     File testImage = new File( Fixture.TEMP_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE1, testImage );
@@ -167,6 +197,42 @@ public class Image_Test extends TestCase {
     Image image = new Image( display, testImage.getAbsolutePath() );
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
     testImage.delete();
+  }
+
+  public void testFileConstructorWithMissingImage() {
+    Display display = new Display();
+    File missingImage = new File( Fixture.TEMP_DIR, "not-existing.gif" );
+    try {
+      new Image( display, missingImage.getAbsolutePath() );
+      fail( "Image file must exist" );
+    } catch( SWTException e ) {
+      assertEquals( SWT.ERROR_IO, e.code );
+    }
+  }
+
+  ////////////////////
+  // Image constructor
+
+  public void testImageConstructorWithNullImage() {
+    try {
+      new Image( new Display(), (Image)null, SWT.IMAGE_COPY );
+      fail( "Must provide image for constructor" );
+    } catch( IllegalArgumentException e ) {
+      assertEquals( "Argument cannot be null", e.getMessage() );
+    }
+  }
+
+  public void testImageConstructorWithIllegalFlag() throws Exception {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
+    Display display = new Display();
+    Image image = new Image( display, stream );
+    try {
+      new Image( display, image, SWT.PUSH );
+      fail( "Must not allow invalid flag" );
+    } catch( Exception e ) {
+      // expected
+    }
   }
 
   public void testImageConstructor() throws Exception {
@@ -181,44 +247,130 @@ public class Image_Test extends TestCase {
     assertFalse( copiedImage.isDisposed() );
   }
 
-  public void testImageConstructorWithIllegalArguments() throws Exception {
+  ////////////////////////
+  // ImageData constructor
+
+  public void testDataConstructorWithNullDevice() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Display display = new Display();
-    Image image = new Image( display, stream );
+    ImageData imageData = new ImageData( stream );
     try {
-      new Image( display, null, SWT.IMAGE_COPY );
-      fail( "Must not allow null-image" );
-    } catch( Exception e ) {
-      // expected
-    }
-    try {
-      new Image( display, image, SWT.PUSH );
-      fail( "Must not allow invalid flag" );
-    } catch( Exception e ) {
-      // expected
+      new Image( null, imageData );
+      fail( "Must provide device for constructor" );
+    } catch( IllegalArgumentException e ) {
+      assertEquals( "Argument cannot be null", e.getMessage() );
     }
   }
 
-  public void testImageDataConstructorWithIllegalArguments() throws Exception {
-    Display display = new Display();
+  public void testDataConstructorWithNullImageData() {
     try {
-      new Image( display, ( ImageData )null );
-      fail( "Must not allow null-image-data" );
-    } catch( Exception e ) {
-      // expected
+      new Image( new Display(), (ImageData)null );
+      fail( "Must provide image data for constructor" );
+    } catch( IllegalArgumentException e ) {
+      assertEquals( "Argument cannot be null", e.getMessage() );
     }
   }
 
   public void testImageDataConstructor() throws Exception {
+    Display display = new Display();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    ImageLoader imageLoader = new ImageLoader();
-    ImageData[] imageDatas = imageLoader.load( stream );
-    Display display = new Display();
-    Image image = new Image( display, imageDatas[ 0 ] );
+    ImageData imageData = new ImageData( stream );
+    Image image = new Image( display, imageData );
     assertEquals( 100, image.getBounds().width );
     assertEquals( 50, image.getBounds().height );
+  }
+
+  ////////////////
+  // Image methods
+
+  public void testGetBounds() {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    Display display = new Display();
+    InputStream stream1 = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image1 = new Image( display, stream1 );
+    assertEquals( new Rectangle( 0, 0, 100, 50 ), image1.getBounds() );
+    InputStream stream2 = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image2 = new Image( display, stream2 );
+    assertEquals( new Rectangle( 0, 0, 100, 50 ), image2.getBounds() );
+  }
+
+  public void testGetBoundsWhenDisposed() {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    Display display = new Display();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
+    Image image = new Image( display, stream );
+    image.dispose();
+    try {
+      image.getBounds();
+      fail();
+    } catch( SWTException e ) {
+      assertEquals( SWT.ERROR_GRAPHIC_DISPOSED, e.code );
+    }
+  }
+
+  public void testGetImageData() throws Exception {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    ImageData imageData = new ImageData( stream );
+    Device device = new Display();
+    Image image = new Image( device , imageData );
+    ImageData imageDataFromImage = image.getImageData();
+    assertEquals( 100, imageDataFromImage.width );
+    assertEquals( 50, imageDataFromImage.height );
+  }
+
+  public void testGetImageDataWhenDisposed() {
+    ClassLoader loader = Fixture.class.getClassLoader();
+    Display display = new Display();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
+    Image image = new Image( display, stream );
+    image.dispose();
+    try {
+      image.getImageData();
+      fail();
+    } catch( SWTException e ) {
+      assertEquals( SWT.ERROR_GRAPHIC_DISPOSED, e.code );
+    }
+  }
+
+  public void testSetBackgroundWhenDisposed() {
+    Display display = new Display();
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image = new Image( display, stream );
+    image.dispose();
+    try {
+      image.setBackground( new Color( display, 0, 0, 0 ) );
+      fail( "setBackground cannot be called on disposed image" );
+    } catch( SWTException expected ) {
+    }
+  }
+
+  public void testSetBackgroundWithDisposedColor() {
+    Display display = new Display();
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image = new Image( display, stream );
+    Color disposedColor = new Color( display, 0, 0, 0 );
+    disposedColor.dispose();
+    try {
+      image.setBackground( disposedColor );
+      fail( "setBackground must not accept disposed color" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testSetBackgroundWithNullColor() {
+    Display display = new Display();
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image = new Image( display, stream );
+    try {
+      image.setBackground( null );
+      fail( "setBackground must not accept null-color" );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
   public void testDispose() {
@@ -236,12 +388,12 @@ public class Image_Test extends TestCase {
   }
 
   public void testDisposeFactoryCreated() {
-    Image color = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
     try {
-      color.dispose();
+      image.dispose();
       fail( "It is not allowed to dispose of a factory-created image" );
     } catch( IllegalStateException e ) {
-      assertFalse( color.isDisposed() );
+      assertFalse( image.isDisposed() );
     }
   }
 
@@ -277,58 +429,8 @@ public class Image_Test extends TestCase {
     assertNotSame( image1, image2 );
   }
 
-  public void testGetImageData() throws Exception {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    ImageData imageData = new ImageData( stream );
-    Device device = new Display();
-    Image image = new Image( device , imageData );
-    ImageData imageDataFromImage = image.getImageData();
-    assertEquals( 100, imageDataFromImage.width );
-    assertEquals( 50, imageDataFromImage.height );
-  }
-  
-  public void testSetBackgroundWhenDisposed() {
-    Display display = new Display();
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( display, stream );
-    image.dispose();
-    try {
-      image.setBackground( new Color( display, 0, 0, 0 ) );
-      fail( "setBackground cannot be called on disposed image" );
-    } catch( SWTException expected ) {
-    }
-  }
-
-  public void testSetBackgroundWithDisposedColor() {
-    Display display = new Display();
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( display, stream );
-    Color disposedColor = new Color( display, 0, 0, 0 );
-    disposedColor.dispose();
-    try {
-      image.setBackground( disposedColor );
-      fail( "setBackground must not accept disposed color" );
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-  
-  public void testSetBackgroundWithNullColor() {
-    Display display = new Display();
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( display, stream );
-    try {
-      image.setBackground( null );
-      fail( "setBackground must not accept null-color" );
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-  
   protected void setUp() throws Exception {
-    // we do need the ressource manager for this test
+    // we do need the resource manager for this test
     Fixture.setUpWithoutResourceManager();
     Fixture.registerAdapterFactories();
     Fixture.createContext( false );
