@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -370,6 +370,28 @@ public class Image_Test extends TestCase {
       image.setBackground( null );
       fail( "setBackground must not accept null-color" );
     } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testGetBackground() {
+    Display display = new Display();
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image = new Image( display, stream );
+    assertNull( image.getBackground() );
+  }
+
+  public void testGetBackgroundWhenDisposed() {
+    Display display = new Display();
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image image = new Image( display, stream );
+    image.dispose();
+    try {
+      image.getBackground();
+      fail( "setBackground cannot be called on disposed image" );
+    } catch( SWTException expected ) {
+      assertEquals( SWT.ERROR_GRAPHIC_DISPOSED, expected.code );
     }
   }
 

@@ -28,11 +28,11 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
  * pixels are specified as being transparent when drawn. Examples
  * of file formats that support transparency are GIF and PNG.</p>
  *
- * <p><strong>Note:</strong> Even though constructors are provided here, it is 
- * recommended to create images by using one of the <code>getImage</code> 
- * methods in class <code>Graphics</code>. These factory methods share images 
+ * <p><strong>Note:</strong> Even though constructors are provided here, it is
+ * recommended to create images by using one of the <code>getImage</code>
+ * methods in class <code>Graphics</code>. These factory methods share images
  * among all sessions.
- * Creating images via constructors carelessly may lead to bad performance 
+ * Creating images via constructors carelessly may lead to bad performance
  * and/or unnecessary memory consumption.
  * </p>
  *
@@ -335,7 +335,7 @@ public final class Image extends Resource {
     }
     return ResourceFactory.getImageData( this );
   }
-  
+
   /**
    * Sets the color to which to map the transparent pixel.
    * <p>
@@ -383,7 +383,35 @@ public final class Image extends Resource {
     }
     // do nothing
   }
-  
+
+  /**
+   * Returns the color to which to map the transparent pixel, or null if
+   * the receiver has no transparent pixel.
+   * <p>
+   * There are certain uses of Images that do not support transparency
+   * (for example, setting an image into a button or label). In these cases,
+   * it may be desired to simulate transparency by using the background
+   * color of the widget to paint the transparent pixels of the image.
+   * Use this method to check which color will be used in these cases
+   * in place of transparency. This value may be set with setBackground().
+   * <p>
+   *
+   * @return the background color of the image, or null if there is no
+   *   transparency in the image
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * @since 1.3
+   */
+  public Color getBackground() {
+    if( isDisposed() ) {
+      SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
+    }
+    // do nothing
+    return null;
+  }
+
   ///////////
   // Disposal
 
