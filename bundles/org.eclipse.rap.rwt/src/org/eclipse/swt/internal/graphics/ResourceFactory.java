@@ -332,7 +332,6 @@ public final class ResourceFactory {
       ImageData data = new ImageData( bis );
       result = new Point( data.width, data.height );
     } catch( SWTException e ) {
-      // ImageReader also throws IllegalArgumentExceptions for some files
       ServletLog.log( "Failed to determine size for image: " + name, e );
     }
     try {
