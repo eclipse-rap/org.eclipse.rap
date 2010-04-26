@@ -18,12 +18,6 @@ qx.Class.define("org.eclipse.rwt.test.Presenter", {
     var content = document.createElement( "div" );
     content.style.zIndex = 1000000;
     content.style.position = "absolute";
-    content.style.left = "50%";
-    content.style.top = "50%";
-    content.style.marginLeft = "-35%";
-    content.style.marginTop = "-250px";
-    content.style.width = "70%";
-    content.style.height = "500px";
     content.style.border = "2px solid black";    
     content.style.backgroundColor = "white";
     document.body.appendChild( content );
@@ -34,7 +28,6 @@ qx.Class.define("org.eclipse.rwt.test.Presenter", {
     text.style.top = 0;
     text.style.left = 0;
     text.style.width = "100%";
-    text.style.height = "446px";
     text.style.fontFamily = "monospace";
     this._content.appendChild( text );
     this._text = text;
@@ -42,9 +35,7 @@ qx.Class.define("org.eclipse.rwt.test.Presenter", {
     var bar = document.createElement( "div" );    
     bar.style.position = "absolute";
     bar.style.left = 0;
-    bar.style.top = 446;
     bar.style.width = "100%";
-    bar.style.height = "50px";
     bar.style.borderTopWidth = "2px";
     bar.style.borderTopColor = "black";
     bar.style.borderTopStyle = "solid";        
@@ -75,12 +66,44 @@ qx.Class.define("org.eclipse.rwt.test.Presenter", {
         failed ? "#FA0000" : "#00F700";
     },
     
-    log : function( text ) {
+    setFullScreen : function( isFullScreen ) {
+      var content = this._content;
+      var text = this._text;
+      var bar = this._progressBar;
+      if( !isFullScreen ) {        
+        content.style.left = "50%";
+        content.style.top = "50%";
+        content.style.marginLeft = "-35%";
+        content.style.marginTop = "-250px";
+        content.style.width = "70%";
+        content.style.height = "500px";        
+        text.style.height = "446px";        
+        bar.style.top = 446;
+        bar.style.height = "50px";
+      } else {
+        content.style.left = "0%";
+        content.style.top = "0%";
+        content.style.marginLeft = "0%";
+        content.style.marginTop = "0px";
+        content.style.width = "100%";
+        content.style.height = "100%";
+        text.style.height = "90%";
+        bar.style.top = "90%";
+        bar.style.height = "10%";
+      }
+    },
+    
+    log : function( text, indent ) {
+      var span = document.createElement( "span" );
       var msg = document.createTextNode( text );
       var br = document.createElement( "br" );
-      this._text.appendChild( msg );
-      this._text.appendChild( br );
-      br.scrollIntoView();
+      span.appendChild( msg );
+      span.appendChild( br );
+      if( indent ) {
+        span.style.marginLeft = '30px';
+      }
+      this._text.appendChild( span );
+      span.scrollIntoView();
     }
   }
   

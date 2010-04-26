@@ -47,6 +47,9 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     this._FREEZEONFAIL = true;
     //temporarily setting this to true can help debugging in IE
     this._NOTRYCATCH = false;
+    // fullscreen toggle
+    this._FULLSCREEN = true;
+    this._presenter.setFullScreen( this._FULLSCREEN );
   },
 
   members : {
@@ -56,7 +59,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	  this._disableAutoFlush();
   	  // prevent actual dom-events
   	  qx.event.handler.EventHandler.getInstance().detachEvents();
-      this.info( "Starting tests..." );
+      this.info( "Starting tests...", false );
       if( this._NOTRYCATCH ) {
         this._run();
       } else {    
@@ -73,7 +76,8 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       for( this._currentClass in this._testClasses ) {
         this._presenter.setNumberTestsFinished( finished + 0.5 , 
                                                 this._testsTotal );
-        this.info( " -----===== " + this._currentClass + " =====-----");      	
+        this._presenter.log( '', false );
+        this.info( "+ " + this._currentClass, false );      	
       	var obj = null;
       	this._currentFunction = "construct";
       	// also stop on "this.error":
@@ -87,7 +91,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
           for ( this._currentFunction in testFunctions ){   
             this._asserts = 0;       	
             testFunctions[ this._currentFunction ].call( obj );
-            this.info( this._currentFunction + " - OK " );
+            this.info( this._currentFunction + " - OK ", true );
           }      	  
       	}  else {    	
           try {
@@ -96,15 +100,15 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
             for ( this._currentFunction in testFunctions ){   
               this._asserts = 0;       	
               testFunctions[ this._currentFunction ].call( obj );
-              this.info( this._currentFunction + " - OK " );
+              this.info( this._currentFunction + " - OK ", true );
             }
           } catch( e ) {
             // a test failed:          
             if( this._FREEZEONFAIL ) this._freezeQooxdoo();
             this._presenter.setFailed( true );
-            this.info( this._currentFunction + " failed:" );
-            this.info( e );          
-            this.info( this._asserts + " asserts succeeded." );          
+            this.info( this._currentFunction + " failed:", true );
+            this.info( e, false );          
+            this.info( this._asserts + " asserts succeeded.", false );          
             this._createFailLog( e, obj );
             this._checkFlushState();
             throw( "Tests aborted!" );
@@ -115,7 +119,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
         finished++;
         this._presenter.setNumberTestsFinished( finished, this._testsTotal );
       }
-      this.info( " -----===== Tests done! =====-----");
+      this.info( "Tests done!");
       this.info( "ALL TESTS SUCCEEDED!" );
   	},
   	
@@ -257,9 +261,9 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       return testFunctions;
     },
     
-    info : function( text ) {
+    info : function( text, indent ) {
       this.base( arguments, text );
-      this._presenter.log( text );
+      this._presenter.log( text, indent );
     }
     
   }
