@@ -1308,7 +1308,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                                      "background-image" );
       var border = new qx.ui.core.Border( 0 );
       if( !states.dummy ) {
-        border.setColorRight( tv.getCssColor( "Table-GridLine", "color" ) );
+        var verticalState = { "vertical" : true };
+        var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
+        var gridColor = tvGrid.getCssColor( "Table-GridLine", "color" );
+        gridColor = gridColor == "undefined" ? "transparent" : gridColor;
+        border.setColorRight( gridColor );        
         border.setWidthRight( 1 );
       }
       var borderBottom = tv.getCssBorder( "TableColumn", "border-bottom" );
@@ -1350,7 +1354,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         // TODO [rst] Optimize: this function might be called a few times,
         //            the border can be cached somewhere
         var border = new qx.ui.core.Border( 0 );
-        border.setColor( tv.getCssColor( "Table-GridLine", "color" ) );
+        var horizontalState = { "horizontal" : true };
+        var tvGrid = new org.eclipse.swt.theme.ThemeValues( horizontalState );
+        var gridColor = tvGrid.getCssColor( "Table-GridLine", "color" );
+        gridColor = gridColor == "undefined" ? "transparent" : gridColor;        
+        border.setColor( gridColor );
         border.setWidthBottom( 1 );
         result.border = border;
       } else {
@@ -1380,10 +1388,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "table-gridline-vertical" : {
     style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var verticalState = { "vertical" : true };
+      var tv = new org.eclipse.swt.theme.ThemeValues( verticalState );
+      var gridColor = tv.getCssColor( "Table-GridLine", "color" );
+      gridColor = gridColor == "undefined" ? "transparent" : gridColor;
       var result = {};
       var border = new qx.ui.core.Border( 0 );
-      border.setColor( tv.getCssColor( "Table-GridLine", "color" ) );
+      border.setColor( gridColor );      
       border.setWidthLeft( 1 );
       result.border = border;
       return result;
