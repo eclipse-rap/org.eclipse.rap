@@ -119,8 +119,8 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
         finished++;
         this._presenter.setNumberTestsFinished( finished, this._testsTotal );
       }
-      this.info( "Tests done!");
-      this.info( "ALL TESTS SUCCEEDED!" );
+      this.info( '', false );
+      this.info( "Tests done.", false );
   	},
   	
   	// called by Asserts.js
