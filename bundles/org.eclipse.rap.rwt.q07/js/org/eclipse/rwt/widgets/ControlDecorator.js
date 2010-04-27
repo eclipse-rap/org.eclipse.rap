@@ -20,10 +20,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.ControlDecorator", {
     this._text = null;
   },
 
-  destruct : function() {
-    this._disposeObjects( "_toolTip" );
-  },
-
   members : {
 
     setText : function( value ) {

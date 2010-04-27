@@ -936,7 +936,6 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
   destruct : function() {
     qx.locale.Manager.getInstance().removeEventListener("changeLocale", this._updateDatePane, this);
 
-    this._disposeObjects("_lastYearBtToolTip", "_lastMonthBtToolTip", "_nextMonthBtToolTip", "_nextYearBtToolTip");
     this._disposeObjects("_lastYearBt", "_lastMonthBt", "_nextMonthBt", "_nextYearBt", "_monthYearLabel");
 
     this._disposeObjectDeep("_weekdayLabelArr", 1);
