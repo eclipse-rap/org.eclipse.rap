@@ -100,6 +100,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ShellEvent_Test.class );
     suite.addTestSuite( TreeEvent_Test.class );
     suite.addTestSuite( UntypedEventAdapter_Test.class );
+    suite.addTestSuite( UICallBack_Test.class );
     suite.addTestSuite( UICallBackManager_Test.class );
     suite.addTestSuite( UICallBackServiceHandler_Test.class );
     suite.addTestSuite( JSLibraryServiceHandler_Test.class);

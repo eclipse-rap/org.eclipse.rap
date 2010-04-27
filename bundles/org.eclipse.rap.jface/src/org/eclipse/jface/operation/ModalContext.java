@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
+import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
@@ -165,7 +166,7 @@ public class ModalContext {
 						// RAP [fappel]: deactivate UI-Callback for this thread
 						String key 
 						  = String.valueOf( ModalContextThread.this.hashCode() );
-						UICallBack.deactivate( key );
+						UICallBackServiceHandler.deactivateUICallBacksFor( key );
 						
 					}
 				}
@@ -396,7 +397,8 @@ public class ModalContext {
 						listenerException = invokeThreadListener((IThreadListener) operation, t);
 					}
 					// RAP [fappel]: start UI-Callback to enable UI-updates
-					UICallBack.activate( String.valueOf( t.hashCode() ) );
+					String key = String.valueOf( t.hashCode() );
+					UICallBackServiceHandler.activateUICallBacksFor( key );
 					
 					if(listenerException == null){
 						t.start();

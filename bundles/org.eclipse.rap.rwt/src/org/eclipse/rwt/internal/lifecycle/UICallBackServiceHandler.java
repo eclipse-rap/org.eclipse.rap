@@ -92,9 +92,6 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   public static void activateUICallBacksFor( final String id ) {
-    if( id == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
     int size = IdManager.getInstance().add( id );
     if( size == 1 ) {
       registerUICallBackActivator();
@@ -107,9 +104,6 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   public static void deactivateUICallBacksFor( final String id ) {
-    if( id == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
     // release blocked callback handler request
     int size = IdManager.getInstance().remove( id );
     if( size == 0 ) {

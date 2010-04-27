@@ -11,8 +11,8 @@
 
 package org.eclipse.rwt.lifecycle;
 
-import org.eclipse.rwt.internal.lifecycle.FakeContextUtil;
-import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -56,7 +56,7 @@ public final class UICallBack {
    *          application.</p>
    * 
    * @param id A session unique identifier to trace the activation and
-   *           deactivation.
+   *           deactivation. Must not be <code>null</code>.
    *           
    * @see Display#syncExec
    * @see Display#asyncExec
@@ -64,6 +64,12 @@ public final class UICallBack {
    * @see Display#wake
    */
   public static void activate( final String id ) {
+    if( id == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( CurrentPhase.get() == null ) {
+      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    }
     UICallBackServiceHandler.activateUICallBacksFor( id );
   }
   
@@ -78,7 +84,7 @@ public final class UICallBack {
    *          application.</p>
    *          
    * @param id A session unique identifier to trace the activation and
-   *           deactivation.
+   *           deactivation. Must not be <code>null</code>
    *           
    * @see Display#syncExec
    * @see Display#asyncExec
@@ -86,6 +92,9 @@ public final class UICallBack {
    * @see Display#wake
    */
   public static void deactivate( final String id ) {
+    if( id == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     UICallBackServiceHandler.deactivateUICallBacksFor( id );
   }
   
