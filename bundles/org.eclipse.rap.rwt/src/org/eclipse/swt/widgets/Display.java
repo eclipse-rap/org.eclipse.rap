@@ -1921,10 +1921,14 @@ public class Display extends Device implements Adaptable {
   private void register() {
     synchronized( Device.class ) {
       boolean registered = false;
-      for( int i = 0; i < displays.length && !registered; i++ ) {
+      for( int i = 0; i < displays.length; i++ ) {
         if( canDisplayRefBeReplaced( displays[ i ] ) ) {
-          displays[ i ] = new WeakReference( this );
-          registered = true;
+          if( !registered ) {
+            displays[ i ] = new WeakReference( this );
+            registered = true;
+          } else {
+            displays[ i ] = null;
+          }
         }
       }
       if( !registered ) {
