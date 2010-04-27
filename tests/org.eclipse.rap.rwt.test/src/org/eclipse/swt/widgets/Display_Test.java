@@ -20,8 +20,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.*;
@@ -1017,6 +1016,11 @@ public class Display_Test extends TestCase {
       assertEquals( exceptionMessage, e.getMessage() );
     }
   }
+  
+  public void testGetDismissalAlignment() {
+    Display display = new Display();
+    assertEquals( SWT.LEFT, display.getDismissalAlignment() );
+  }
 
   public void testCloseWithVetoingListener() {
     Display display = new Display();
@@ -1120,6 +1124,48 @@ public class Display_Test extends TestCase {
     assertEquals( "v1.3", Display.getAppVersion() );
     Display.setAppVersion( null );
     assertNull( Display.getAppVersion() );
+  }
+
+  public void testFindDisplay() {
+    Display display = new Display();
+    assertSame( display, Display.findDisplay( display.getThread() ) );
+  }
+  
+  public void testFindDisplayWithNull() {
+    Display foundDisplay = Display.findDisplay( null );
+    assertNull( foundDisplay );
+  }
+  
+  public void testFindDisplayWithDisposedDisplay() {
+    Display display = new Display();
+    display.dispose();
+    Display foundDisplay = Display.findDisplay( display.getThread() );
+    assertNull( foundDisplay );
+  }
+
+  public void testFindDisplayFromDifferentSession() throws Exception {
+    final Display[] otherDisplay = new Display[ 1 ];
+    Thread otherThread = new Thread( new Runnable() {
+      public void run() {
+        Fixture.fakeContext();
+        ContextProvider.getContext().setStateInfo( new ServiceStateInfo() );
+        otherDisplay[ 0 ] = new Display();
+      }
+    } );
+    otherThread.start();
+    otherThread.join();
+    Display display = Display.findDisplay( otherThread );
+    assertNotNull( display );
+    assertSame( otherDisplay[ 0 ], display );
+  }
+  
+  public void testFindDisplayForReCreatedDisplay() {
+    Display display = new Display();
+    display.dispose();
+    Display reCreatedDisplay = new Display();
+    assertSame( reCreatedDisplay, 
+                Display.findDisplay( reCreatedDisplay.getThread() ) );
+    
   }
 
   protected void setUp() throws Exception {

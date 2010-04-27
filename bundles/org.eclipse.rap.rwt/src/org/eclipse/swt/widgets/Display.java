@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
@@ -129,7 +130,6 @@ public class Display extends Device implements Adaptable {
   private static final String APP_VERSION
     = Display.class.getName() + "#appVersion";
 
-
   /* Package Name */
   static final String PACKAGE_PREFIX = "org.eclipse.swt.widgets.";
 
@@ -181,10 +181,12 @@ public class Display extends Device implements Adaptable {
       && Thread.currentThread() == RWTLifeCycle.getUIThreadHolder().getThread();
   }
 
+  private static WeakReference[] displays = new WeakReference[ 4 ];
+
   private final List shells;
   private final Thread thread;
   private final ISessionStore session;
-  private Rectangle bounds;
+  private final Rectangle bounds;
   private final Point cursorLocation;
   private int scrollBarSize;
   private Shell activeShell;
@@ -204,8 +206,8 @@ public class Display extends Device implements Adaptable {
 
   /* Display Data */
   private Object data;
-  private String [] keys;
-  private Object [] values;
+  private String[] keys;
+  private Object[] values;
 
   /**
    * Constructs a new instance of this class.
@@ -227,17 +229,18 @@ public class Display extends Device implements Adaptable {
    * @see Shell
    */
   public Display() {
-    thread = Thread.currentThread();
-    session = ContextProvider.getSession();
     if( getCurrent() != null ) {
       SWT.error( SWT.ERROR_NOT_IMPLEMENTED, null, " [multiple displays]" );
     }
     RWTLifeCycle.setSessionDisplay( this );
+    thread = Thread.currentThread();
+    session = ContextProvider.getSession();
     shells = new ArrayList();
-    readInitialBounds();
-    readScrollBarSize();
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
+    bounds = readInitialBounds();
+    readScrollBarSize();
+    register();
   }
 
   /**
@@ -688,6 +691,10 @@ public class Display extends Device implements Adaptable {
     disposeShells();
     runDisposeExecs();
     // TODO [rh] zero fields
+  }
+
+  protected void destroy() {
+    deregister();
   }
 
   private void sendDisposeEvent() {
@@ -1880,6 +1887,79 @@ public class Display extends Device implements Adaptable {
     session.setAttribute( APP_VERSION, version );
   }
 
+  /**
+   * Returns the display which the given thread is the
+   * user-interface thread for, or null if the given thread
+   * is not a user-interface thread for any display.  Specifying
+   * <code>null</code> as the thread will return <code>null</code>
+   * for the display.
+   *
+   * @param thread the user-interface thread
+   * @return the display for the given thread
+   *
+   * @since 1.3
+   */
+  public static Display findDisplay( final Thread thread ) {
+    synchronized( Device.class ) {
+      Display result = null;
+      for( int i = 0; result == null && i < displays.length; i++ ) {
+        WeakReference current = displays[ i ];
+        if( current != null ) {
+          Display display = ( Display )current.get();
+          if(    display != null
+              && !display.isDisposed()
+              && display.thread == thread )
+          {
+            result = display;
+          }
+        }
+      }
+      return result;
+    }
+  }
+
+  private void register() {
+    synchronized( Device.class ) {
+      boolean registered = false;
+      for( int i = 0; i < displays.length && !registered; i++ ) {
+        if( canDisplayRefBeReplaced( displays[ i ] ) ) {
+          displays[ i ] = new WeakReference( this );
+          registered = true;
+        }
+      }
+      if( !registered ) {
+        WeakReference[] newDisplays = new WeakReference[ displays.length + 4 ];
+        System.arraycopy( displays, 0, newDisplays, 0, displays.length );
+        newDisplays[ displays.length ] = new WeakReference( this );
+        displays = newDisplays;
+      }
+    }
+  }
+  
+  private boolean canDisplayRefBeReplaced( WeakReference displayRef ) {
+    boolean result = false;
+    if( displayRef == null ) {
+      result = true;
+    } else {
+      Display display = ( Display )displayRef.get();
+      if( display == null || display.thread == thread ) {
+        result = true;
+      }      
+    }
+    return result;
+  }
+
+  private void deregister() {
+    synchronized( Device.class ) {
+      for( int i = 0; i < displays.length; i++ ) {
+        WeakReference current = displays[ i ];
+        if( current != null && this == current.get() ) {
+          displays[ i ] = null;
+        }
+      }
+    }
+  }
+
   /////////////////////
   // Consistency checks
 
@@ -1902,7 +1982,7 @@ public class Display extends Device implements Adaptable {
   //////////////////
   // Helping methods
 
-  private void readInitialBounds() {
+  private Rectangle readInitialBounds() {
     HttpServletRequest request = ContextProvider.getRequest();
     String widthVal = request.getParameter( Display.AVAILABLE_WIDTH );
     int width = 1024;
@@ -1914,7 +1994,7 @@ public class Display extends Device implements Adaptable {
     if( heightVal != null ) {
       height = Integer.parseInt( heightVal );
     }
-    bounds = new Rectangle( 0, 0, width, height );
+    return new Rectangle( 0, 0, width, height );
   }
 
   private void readScrollBarSize() {
@@ -1962,11 +2042,10 @@ public class Display extends Device implements Adaptable {
     }
 
     public void setBounds( final Rectangle bounds ) {
-      if( bounds == null ) {
-        SWT.error( SWT.ERROR_NULL_ARGUMENT );
-      }
-      Display.this.bounds
-        = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
+      Display.this.bounds.x = bounds.x;
+      Display.this.bounds.y = bounds.y;
+      Display.this.bounds.width = bounds.width;
+      Display.this.bounds.height = bounds.height;
     }
 
     public void setCursorLocation( final int x, final int y ) {
