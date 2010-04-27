@@ -62,14 +62,14 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     var nextMonthBt = new qx.ui.form.Button;
     var nextYearBt = new qx.ui.form.Button;
 
-    this._lastYearBtToolTip = new qx.ui.popup.ToolTip(this.tr("Previous year"));
-    this._lastMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Previous month"));
-    this._nextMonthBtToolTip = new qx.ui.popup.ToolTip(this.tr("Next month"));
-    this._nextYearBtToolTip = new qx.ui.popup.ToolTip(this.tr("Next year"));
+    var wm = org.eclipse.swt.WidgetManager.getInstance();
+    wm.setToolTip( lastYearBt, this.tr( "Previous year" ) );
+    wm.setToolTip( lastMonthBt, this.tr( "Previous month" ) );
+    wm.setToolTip( nextMonthBt, this.tr( "Next month" ) );
+    wm.setToolTip( nextYearBt, this.tr( "Next year" ) );
 
     lastYearBt.set({
       show    : 'icon',
-      toolTip : this._lastYearBtToolTip,
       spacing : 0,
       tabIndex: null
     });
@@ -77,21 +77,18 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
 
     lastMonthBt.set({
       show    : 'icon',
-      toolTip : this._lastMonthBtToolTip,
       tabIndex: null
     });
     lastMonthBt.setUserData( "calendar-button", true );
 
     nextMonthBt.set({
       show    : 'icon',
-      toolTip : this._nextMonthBtToolTip,
       tabIndex: null
     });
     nextMonthBt.setUserData( "calendar-button", true );
 
     nextYearBt.set({
       show    : 'icon',
-      toolTip : this._nextYearBtToolTip,
       tabIndex: null
     });
     nextYearBt.setUserData( "calendar-button", true );

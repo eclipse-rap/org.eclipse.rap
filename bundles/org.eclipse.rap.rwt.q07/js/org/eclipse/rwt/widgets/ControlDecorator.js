@@ -18,8 +18,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.ControlDecorator", {
     this.setZIndex( 1000 );
     this._showHover = true;
     this._text = null;
-    this._toolTip = new qx.ui.popup.ToolTip();
-    this._toolTip.setShowInterval( 200 );
   },
 
   destruct : function() {
@@ -39,13 +37,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.ControlDecorator", {
     },
 
     _updateToolTip : function() {
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
       if( this._text === null || this._text === "" || !this._showHover ) {
-        this.setToolTip( null );
+        wm.setToolTip( w, null );
       } else {
-        this._toolTip.getAtom().setLabel( this._text );
-        if( this.getToolTip() == null ) {
-          this.setToolTip( this._toolTip );
-        }
+        wm.setToolTip( w, this._text );
       }
     },
 
