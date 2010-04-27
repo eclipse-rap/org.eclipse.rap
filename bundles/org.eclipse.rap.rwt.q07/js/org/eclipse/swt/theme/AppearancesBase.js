@@ -2321,10 +2321,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "slider-min-button" : {
-    include : "button",
+    include : "atom",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
+      result.font = tv.getCssFont( "Button", "font" );
+      result.textColor = tv.getCssColor( "Button", "color" );
+      result.spacing = tv.getCssDimension( "Button", "spacing" );
+      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-DownButton", "background-color" );
       result.icon = tv.getCssImage( "Slider-DownButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
@@ -2347,10 +2351,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "slider-max-button" : {
-    include : "button",
+    include : "atom",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
+      result.font = tv.getCssFont( "Button", "font" );
+      result.textColor = tv.getCssColor( "Button", "color" );
+      result.spacing = tv.getCssDimension( "Button", "spacing" );
+      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-UpButton", "background-color" );
       result.icon = tv.getCssImage( "Slider-UpButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
