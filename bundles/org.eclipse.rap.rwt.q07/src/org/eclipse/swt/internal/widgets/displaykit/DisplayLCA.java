@@ -144,7 +144,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       renderShells( display );
       writeActiveControls( display );
       writeFocus( display );
-      writeUICallBackActivation();
+      writeUICallBackActivation( display );
       markInitialized( display );
     }
   }
@@ -453,8 +453,12 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static void writeUICallBackActivation() throws IOException {
-    UICallBackServiceHandler.writeActivation();
+  private static void writeUICallBackActivation( final Display display ) 
+    throws IOException
+  {
+    if( !display.isDisposed() ) {
+      UICallBackServiceHandler.writeActivation();
+    }
   }
 
   // TODO [rh] writing activeControl should be handled by the ShellLCA itself

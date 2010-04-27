@@ -517,7 +517,8 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testReadAndDispatch() {
-    boolean returnValue = RWTLifeCycle.readAndDispatch();
+    Display display = new Display();
+    boolean returnValue = Display.getCurrent().readAndDispatch();
     assertFalse( returnValue );
 
     Fixture.fakePhase( PhaseId.READ_DATA );
@@ -528,18 +529,17 @@ public class RWTLifeCycle_Test extends TestCase {
     } );
 
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    returnValue = RWTLifeCycle.readAndDispatch();
+    returnValue = Display.getCurrent().readAndDispatch();
     assertTrue( returnValue );
     assertEquals( "executed", log.toString() );
 
     log.setLength( 0 );
-    returnValue = RWTLifeCycle.readAndDispatch();
+    returnValue = Display.getCurrent().readAndDispatch();
     assertFalse( returnValue );
     assertEquals( "", log.toString() );
 
     Fixture.fakePhase( PhaseId.READ_DATA );
     log.setLength( 0 );
-    Display display = new Display();
     Shell widget = new Shell( display ) {
       public boolean getVisible() {
         return true;
@@ -558,7 +558,7 @@ public class RWTLifeCycle_Test extends TestCase {
     event.processEvent();
     log.setLength( 0 );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    returnValue = RWTLifeCycle.readAndDispatch();
+    returnValue = Display.getCurrent().readAndDispatch();
     assertTrue( returnValue );
     assertEquals( "eventExecuted", log.toString() );
   }
@@ -621,8 +621,10 @@ public class RWTLifeCycle_Test extends TestCase {
           log.append( "executedInUIThread" );
           try {
             uiThread.switchThread();
-          } catch( InterruptedException e ) {
-            error[ 0 ] = e;
+          } catch( Throwable e ) {
+            synchronized( error ) {
+              error[ 0 ] = e;
+            }
           }
         }
       }
@@ -630,8 +632,10 @@ public class RWTLifeCycle_Test extends TestCase {
     lifeCycle.uiRunnable = runnable;
     // simulates first request
     lifeCycle.executeUIThread();
-    if( error[ 0 ] != null ) {
-      throw error[ 0 ];
+    synchronized( error ) {
+      if( error[ 0 ] != null ) {
+        throw error[ 0 ];
+      }
     }
     assertSame( originContext, uiContext[ 0 ] );
     assertEquals( "executedInUIThread", log.toString() );
@@ -643,8 +647,10 @@ public class RWTLifeCycle_Test extends TestCase {
     ContextProvider.releaseContextHolder();
     ContextProvider.setContext( secondContext );
     lifeCycle.executeUIThread();
-    if( error[ 0 ] != null ) {
-      throw error[ 0 ];
+    synchronized( error ) {
+      if( error[ 0 ] != null ) {
+        throw error[ 0 ];
+      }
     }
     assertSame( secondContext, uiContext[ 0 ] );
     assertEquals( "executedInUIThread", log.toString() );
@@ -653,8 +659,10 @@ public class RWTLifeCycle_Test extends TestCase {
     UIThread endingUIThread = getUIThread();
     continueLoop[ 0 ] = false;
     lifeCycle.executeUIThread();
-    if( error[ 0 ] != null ) {
-      throw error[ 0 ];
+    synchronized( error ) {
+      if( error[ 0 ] != null ) {
+        throw error[ 0 ];
+      }
     }
     assertFalse( endingUIThread.isAlive() );
     assertNull( getUIThread() );
@@ -953,6 +961,33 @@ public class RWTLifeCycle_Test extends TestCase {
     lifeCycle.execute();
     invalidateSession( session );
     assertEquals( "disposeEvent, beforeDestroy", log.toString() );
+  }
+  
+  public void testSwitchThreadCannotBeInterrupted() throws Exception {
+    final Throwable[] errorInUIThread = { new Exception( "did not run" ) };
+    final UIThread[] uiThread =  { null };
+    uiThread[ 0 ] = new UIThread( new Runnable() {
+      public void run() {
+        try {
+          synchronized( errorInUIThread ) {
+            errorInUIThread[ 0 ] = null;
+          }
+          uiThread[ 0 ].switchThread();
+        } catch( Throwable t ) {
+          synchronized( errorInUIThread ) {
+            errorInUIThread[ 0 ] = t;
+          }
+        }
+      }
+    } );
+    uiThread[ 0 ].start();
+    Thread.sleep( 100 );
+    uiThread[ 0 ].interrupt();
+    synchronized( errorInUIThread ) {
+      assertNull( "switchThread must not unblock when thread is interrupted",
+                  errorInUIThread[ 0 ] );
+    }
+    uiThread[ 0 ].switchThread();
   }
   
   private static void invalidateSession( final ISessionStore session )

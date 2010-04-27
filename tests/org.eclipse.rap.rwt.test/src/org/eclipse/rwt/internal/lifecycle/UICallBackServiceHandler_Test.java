@@ -24,12 +24,16 @@ import org.eclipse.swt.widgets.Display;
 
 public class UICallBackServiceHandler_Test extends TestCase {
   
-  private static final String ENABLE_UI_CALL_BACK = "org.eclipse.swt.Request.getInstance().enableUICallBack();";
+  private static final String ENABLE_UI_CALL_BACK
+    = "org.eclipse.swt.Request.getInstance().enableUICallBack();";
   private static final String ID_1 = "id_1";
   private static final String ID_2 = "id_2";
+  
+  private Display display;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
   }
   
   protected void tearDown() throws Exception {
@@ -38,11 +42,13 @@ public class UICallBackServiceHandler_Test extends TestCase {
   
   public void testWriteActivationFromDifferentSession() throws Exception {
     // test that on/off switching is managed in session scope
+    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
     final String[] otherSession = new String[ 1 ];
     Thread thread = new Thread( new Runnable() {
       public void run() {
         Fixture.fakeContext();
         ContextProvider.getContext().setStateInfo( new ServiceStateInfo() );
+        new Display();
         Fixture.fakeResponseWriter();
         try {
           UICallBackServiceHandler.writeActivation();
@@ -106,7 +112,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   public void testActivateDeactivateWithPendingRunnables() throws Exception {
     UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
     UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
-    UICallBackManager.getInstance().addAsync( new Display(), new Runnable() {
+    display.asyncExec( new Runnable() {
       public void run() {
       }
     } );

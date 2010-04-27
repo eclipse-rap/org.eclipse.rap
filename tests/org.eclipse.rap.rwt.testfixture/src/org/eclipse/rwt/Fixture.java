@@ -403,10 +403,14 @@ public class Fixture {
   
       public void setServiceContext( ServiceContext serviceContext ) {
       }
-      public void switchThread() throws InterruptedException {
+      public void switchThread() {
         synchronized( getLock() ) {
           notifyAll();
-          wait();
+          try {
+            wait();
+          } catch( InterruptedException e ) {
+            throw new RuntimeException( e );
+          }
         }
       }
       public void updateServiceContext() {

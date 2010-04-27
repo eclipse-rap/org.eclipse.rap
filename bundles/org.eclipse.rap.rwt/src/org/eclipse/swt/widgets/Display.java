@@ -27,13 +27,11 @@ import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -148,7 +146,7 @@ public class Display extends Device implements Adaptable {
   public static Display getCurrent() {
     Display result = RWTLifeCycle.getSessionDisplay();
     if(    result != null ) {
-      if( result.getThread() != Thread.currentThread() || result.isDisposed() )
+      if( result.isDisposed() || result.getThread() != Thread.currentThread() )
       {
         result = null;
       }
@@ -209,6 +207,9 @@ public class Display extends Device implements Adaptable {
   private String[] keys;
   private Object[] values;
 
+  private Synchronizer synchronizer;
+  private TimerExecScheduler scheduler;
+
   /**
    * Constructs a new instance of this class.
    * <p>
@@ -241,6 +242,8 @@ public class Display extends Device implements Adaptable {
     bounds = readInitialBounds();
     readScrollBarSize();
     register();
+    synchronizer = new Synchronizer( this );
+    scheduler = new TimerExecScheduler( this );
   }
 
   /**
@@ -690,7 +693,8 @@ public class Display extends Device implements Adaptable {
     sendDisposeEvent();
     disposeShells();
     runDisposeExecs();
-    // TODO [rh] zero fields
+    synchronizer.releaseSynchronizer();
+    scheduler.dispose();
   }
 
   protected void destroy() {
@@ -866,7 +870,87 @@ public class Display extends Device implements Adaptable {
    * </ul>
    */
   public Thread getThread() {
-    return thread;
+    synchronized( deviceLock ) {
+      if( isDisposed() ) {
+        error( SWT.ERROR_DEVICE_DISPOSED );
+      }
+      return thread;
+    }
+  }
+
+  /**
+   * Sets the synchronizer used by the display to be
+   * the argument, which can not be null.
+   *
+   * @param synchronizer the new synchronizer for the display (must not be null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the synchronizer is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_FAILED_EXEC - if an exception occurred while running an inter-thread message</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  // verbatim copy of SWT code
+  public void setSynchronizer (Synchronizer synchronizer) {
+    checkDevice ();
+    if (synchronizer == null) error (SWT.ERROR_NULL_ARGUMENT);
+    if (synchronizer == this.synchronizer) return;
+    Synchronizer oldSynchronizer;
+    synchronized (deviceLock) {
+      oldSynchronizer = this.synchronizer;
+      this.synchronizer = synchronizer;
+    }
+    if (oldSynchronizer != null) {
+      oldSynchronizer.runAsyncMessages(true);
+    }
+  }
+
+  /**
+   * Gets the synchronizer used by the display.
+   *
+   * @return the receiver's synchronizer
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public Synchronizer getSynchronizer() {
+    checkDevice ();
+    return synchronizer;
+  }
+
+  /**
+   * Returns the thread that has invoked <code>syncExec</code>
+   * or null if no such runnable is currently being invoked by
+   * the user-interface thread.
+   * <p>
+   * Note: If a runnable invoked by asyncExec is currently
+   * running, this method will return null.
+   * </p>
+   *
+   * @return the receiver's sync-interface thread
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public Thread getSyncThread () {
+    synchronized( deviceLock ) {
+      if( isDisposed() ) {
+        error( SWT.ERROR_DEVICE_DISPOSED );
+      }
+      return synchronizer.syncThread;
+    }
   }
 
   /**
@@ -893,16 +977,12 @@ public class Display extends Device implements Adaptable {
    * @see #syncExec
    */
   public void asyncExec( final Runnable runnable ) {
-    // TODO [rh] there might be cases where the display is disposed between
-    //      this check and adding the runnable to the execution list
-    if( isDisposed() ) {
-      error( SWT.ERROR_DEVICE_DISPOSED );
-    }
-    UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
-      public void run() {
-        UICallBackManager.getInstance().addAsync( Display.this, runnable );
+    synchronized( deviceLock ) {
+      if( isDisposed() ) {
+        error( SWT.ERROR_DEVICE_DISPOSED );
       }
-    } );
+      synchronizer.asyncExec( runnable );
+    }
   }
 
   /**
@@ -929,16 +1009,14 @@ public class Display extends Device implements Adaptable {
    * @see #asyncExec
    */
   public void syncExec( final Runnable runnable ) {
-    // TODO [rh] there might be cases where the display is disposed between
-    //      this check and adding the runnable to the execution list
-    if( isDisposed() ) {
-      error( SWT.ERROR_DEVICE_DISPOSED );
-    }
-    UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
-      public void run() {
-        UICallBackManager.getInstance().addSync( Display.this, runnable );
+    Synchronizer synchronizer;
+    synchronized( deviceLock ) {
+      if( isDisposed() ) {
+        error( SWT.ERROR_DEVICE_DISPOSED );
       }
-    } );
+      synchronizer = this.synchronizer;
+    }
+    synchronizer.syncExec( runnable );
   }
 
   /**
@@ -972,13 +1050,11 @@ public class Display extends Device implements Adaptable {
     if( runnable == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    final long time = System.currentTimeMillis() + milliseconds;
-    UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
-      public void run() {
-        UICallBackManager callBackManager = UICallBackManager.getInstance();
-        callBackManager.addTimer( Display.this, runnable, time );
-      }
-    } );
+    if( milliseconds < 0 ) {
+      scheduler.cancel( runnable );
+    } else {
+      scheduler.schedule( milliseconds, runnable );
+    }
   }
 
   /**
@@ -1011,7 +1087,23 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     runSkin();
     runDeferredLayouts();
-    return RWTLifeCycle.readAndDispatch();
+    return runPendingMessages();
+  }
+
+  private boolean runPendingMessages() {
+    boolean result = false;
+    if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() )
+        || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) )
+    {
+      result = ProcessActionRunner.executeNext();
+      if( !result ) {
+        result = TypedEvent.executeNext();
+      }
+      if( !result ) {
+        result = synchronizer.runAsyncMessages( false );
+      }
+    }
+    return result;
   }
 
   /**
@@ -1053,18 +1145,28 @@ public class Display extends Device implements Adaptable {
    *
    */
   public void wake() {
-    if( isDisposed() ) {
-      error( SWT.ERROR_DEVICE_DISPOSED );
-    }
-    if( getThread() != Thread.currentThread() ) {
-      UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
-        public void run() {
-          UICallBackManager.getInstance().sendUICallBack();
-        }
-      } );
+    synchronized( deviceLock ) {
+      if( isDisposed() ) {
+        error( SWT.ERROR_DEVICE_DISPOSED );
+      }
+      if( thread != Thread.currentThread() ) {
+        wakeThread();
+      }
     }
   }
 
+  void wakeThread() {
+    UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
+      public void run() {
+        UICallBackManager.getInstance().sendUICallBack();
+      }
+    } );
+  }
+
+  Object getDeviceLock() {
+    return deviceLock;  
+  }
+  
   //////////////////////
   // Information methods
 
@@ -1921,14 +2023,10 @@ public class Display extends Device implements Adaptable {
   private void register() {
     synchronized( Device.class ) {
       boolean registered = false;
-      for( int i = 0; i < displays.length; i++ ) {
+      for( int i = 0; i < displays.length && !registered; i++ ) {
         if( canDisplayRefBeReplaced( displays[ i ] ) ) {
-          if( !registered ) {
-            displays[ i ] = new WeakReference( this );
-            registered = true;
-          } else {
-            displays[ i ] = null;
-          }
+          displays[ i ] = new WeakReference( this );
+          registered = true;
         }
       }
       if( !registered ) {
@@ -1939,7 +2037,7 @@ public class Display extends Device implements Adaptable {
       }
     }
   }
-
+  
   private boolean canDisplayRefBeReplaced( final WeakReference displayRef ) {
     boolean result = false;
     if( displayRef == null ) {
@@ -1948,7 +2046,7 @@ public class Display extends Device implements Adaptable {
       Display display = ( Display )displayRef.get();
       if( display == null || display.thread == thread ) {
         result = true;
-      }
+      }      
     }
     return result;
   }
@@ -1974,8 +2072,12 @@ public class Display extends Device implements Adaptable {
     return true;
   }
 
+  boolean isValidThread () {
+    return thread == Thread.currentThread ();
+  }
+
   protected void checkDevice() {
-    if( thread != Thread.currentThread() ) {
+    if( !isValidThread() ) {
       error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }
     if( isDisposed() ) {
@@ -2095,6 +2197,18 @@ public class Display extends Device implements Adaptable {
 
     public int getScrollBarSize() {
       return Display.this.scrollBarSize;
+    }
+    
+    public int getAsyncRunnablesCount() {
+      return Display.this.synchronizer.getMessageCount();
+    }
+    
+    public void runAsyncRunnables() {
+      Display.this.synchronizer.runAsyncMessages( true );
+    }
+    
+    public Object getDeviceLock() {
+      return Display.this.deviceLock;
     }
   }
 }

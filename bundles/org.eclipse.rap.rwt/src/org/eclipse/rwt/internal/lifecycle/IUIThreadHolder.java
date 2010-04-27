@@ -18,7 +18,7 @@ public interface IUIThreadHolder {
 
   void updateServiceContext();
 
-  void switchThread() throws InterruptedException;
+  void switchThread();
 
   void terminateThread();
   

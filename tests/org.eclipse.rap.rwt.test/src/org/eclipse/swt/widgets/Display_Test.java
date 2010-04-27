@@ -127,7 +127,7 @@ public class Display_Test extends TestCase {
       }
       public void terminateThread() {
       }
-      public void switchThread() throws InterruptedException {
+      public void switchThread() {
       }
       public void setServiceContext( ServiceContext serviceContext ) {
       }
@@ -1138,8 +1138,9 @@ public class Display_Test extends TestCase {
   
   public void testFindDisplayWithDisposedDisplay() {
     Display display = new Display();
+    Thread disposedDisplayThread = display.getThread();
     display.dispose();
-    Display foundDisplay = Display.findDisplay( display.getThread() );
+    Display foundDisplay = Display.findDisplay( disposedDisplayThread );
     assertNull( foundDisplay );
   }
 

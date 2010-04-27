@@ -37,4 +37,8 @@ public interface IDisplayAdapter {
 
   int getScrollBarSize();
   void setScrollBarSize( int size );
+  
+  int getAsyncRunnablesCount();
+  void runAsyncRunnables();
+  Object getDeviceLock();
 }

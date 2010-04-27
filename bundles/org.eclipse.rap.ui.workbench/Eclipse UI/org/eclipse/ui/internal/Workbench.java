@@ -2206,32 +2206,30 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
     private int runUI() {
         UIStats.start(UIStats.START_WORKBENCH, "Workbench"); //$NON-NLS-1$
 
-        // RAP [fappel][bm]: review please
+      // deadlock code
+      boolean avoidDeadlock = true;
 
-//      // deadlock code
-//      boolean avoidDeadlock = true;
-//
-//      String[] commandLineArgs = Platform.getCommandLineArgs();
-//      for (int i = 0; i < commandLineArgs.length; i++) {
-//          if (commandLineArgs[i].equalsIgnoreCase("-allowDeadlock")) { //$NON-NLS-1$
-//              avoidDeadlock = false;
-//          }
-//      }
-//
-//      final UISynchronizer synchronizer;
-//      
-//      if (avoidDeadlock) {
-//          UILockListener uiLockListener = new UILockListener(display);
-//          Job.getJobManager().setLockListener(uiLockListener);
-//          synchronizer = new UISynchronizer(display, uiLockListener);
-//          display
-//                  .setSynchronizer(synchronizer);
-//          // declare the main thread to be a startup thread.
-//          UISynchronizer.startupThread.set(Boolean.TRUE);
-//      }
-//      else 
-//          synchronizer = null;
-//      
+      String[] commandLineArgs = Platform.getCommandLineArgs();
+      for (int i = 0; i < commandLineArgs.length; i++) {
+          if (commandLineArgs[i].equalsIgnoreCase("-allowDeadlock")) { //$NON-NLS-1$
+              avoidDeadlock = false;
+          }
+      }
+
+      final UISynchronizer synchronizer;
+      
+      if (avoidDeadlock) {
+          UILockListener uiLockListener = new UILockListener(display);
+          Job.getJobManager().setLockListener(uiLockListener);
+          synchronizer = new UISynchronizer(display, uiLockListener);
+          display
+                  .setSynchronizer(synchronizer);
+          // declare the main thread to be a startup thread.
+          UISynchronizer.startupThread.set(Boolean.TRUE);
+      }
+      else 
+          synchronizer = null;
+      
 //      // prime the splash nice and early
 //      if (createSplash)
 //          createSplashWrapper();
@@ -2346,18 +2344,14 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
                 ModalContext.setAllowReadAndDispatch(true);
                 isStarting = false;
 
-                // RAP [bm]: synchronizer
-//              if (synchronizer != null)
-//                  synchronizer.started();
-                // RAPEND: [bm] 
+              if (synchronizer != null)
+                  synchronizer.started();
 
                 // the event loop
                 runEventLoop(handler, display);
             }
 
         } catch (final Exception e) {
-            // RAP [bm]: DELETE!!
-            e.printStackTrace();
             if (!display.isDisposed()) {
                 handler.handleException(e);
             } else {

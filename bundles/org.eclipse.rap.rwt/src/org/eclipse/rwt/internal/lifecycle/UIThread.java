@@ -22,10 +22,14 @@ final class UIThread
   implements IUIThreadHolder, ISessionShutdownAdapter
 {
 
+  static final class UIThreadTerminatedError extends ThreadDeath {
+    private static final long serialVersionUID = 1L;
+  }
+
   private ServiceContext serviceContext;
   private ISessionStore sessionStore;
   private Runnable shutdownCallback;
-  private boolean uiThreadTerminating;
+  private volatile boolean uiThreadTerminating;
 
   public UIThread( final Runnable runnable ) {
     super( runnable );
@@ -45,33 +49,51 @@ final class UIThread
     ContextProvider.setContext( serviceContext );
   }
 
-  public void switchThread() throws InterruptedException {
+  public void switchThread() {
     Object lock = getLock();
     synchronized( lock ) {
-      // [rh] While working on bug 284202, there was the suspicion that a
-      // request thread might wait infinitley on an already terminated UIThread.
-      // To investigate this problem, we print to sys-err if this happens.
-      if( !getThread().isAlive() ) {
-        String msg
-          = "Thread '"
-          + Thread.currentThread()
-          + "' is waiting for already terminated UIThread";
-        Exception e = new RuntimeException( msg );
-        ServletLog.log( "", e );
-      }
+      checkAndReportTerminatedUIThread();
       lock.notifyAll();
-      try {
-        lock.wait();
-      } catch( InterruptedException e ) {
-        if( uiThreadTerminating ) {
-          // Equip the UI thread that is continuing its execution with a 
-          // service context and the proper phase (see terminateThread).
-          updateServiceContext();
-          CurrentPhase.set( PhaseId.PROCESS_ACTION );
-          uiThreadTerminating = false;
+      boolean done = false;
+      while( !done ) {
+        try {
+          lock.wait();
+          done = true;
+        } catch( InterruptedException e ) {
+          handleInterruptInSwitchThread( e );
         }
-        throw e;
       }
+    }
+  }
+
+  private void checkAndReportTerminatedUIThread() {
+    // [rh] While working on bug 284202, there was the suspicion that a
+    // request thread might wait infinitely on an already terminated UIThread.
+    // To investigate this problem, we print to sys-err if this happens.
+    if( !getThread().isAlive() ) {
+      String msg
+        = "Thread '"
+        + Thread.currentThread()
+        + "' is waiting for already terminated UIThread";
+      ServletLog.log( "", new RuntimeException( msg ) );
+    }
+  }
+
+  private void handleInterruptInSwitchThread( final InterruptedException e )
+    throws UIThreadTerminatedError
+  {
+    Thread.interrupted();
+    if( uiThreadTerminating ) {
+      // Equip the UI thread that is continuing its execution with a 
+      // service context and the proper phase (see terminateThread).
+      updateServiceContext();
+      CurrentPhase.set( PhaseId.PROCESS_ACTION );
+      uiThreadTerminating = false;
+      throw new UIThreadTerminatedError();
+    }
+    if( Thread.currentThread() != getThread() ) {
+      String msg = "Received InterruptedException on request thread";
+      ServletLog.log( msg, e );
     }
   }
 

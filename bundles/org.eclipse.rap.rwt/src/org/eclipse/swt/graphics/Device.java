@@ -26,11 +26,17 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
  */
 public abstract class Device implements Drawable {
 
+  // SWT code uses Device.class as the synchronization lock. This synchronize 
+  // access from all over the application. In RWT we need a way to synchronize
+  // access from within a session. Therefore Device.class was replaced by the 
+  // 'deviceLock'.
+  protected final Object deviceLock;
   private boolean disposed;
   private Point dpi;
   private int depth;
   
   public Device() {
+    deviceLock = new Object();
     readDPI();
     readDepth();
   }
@@ -270,10 +276,13 @@ public abstract class Device implements Drawable {
    * @see #checkDevice
    */
   public void dispose() {
-    if( !isDisposed() ) {
-      release();
-      destroy();
-      disposed = true;
+    synchronized( deviceLock ) {
+      if( !isDisposed() ) {
+        checkDevice();
+        release();
+        destroy();
+        disposed = true;
+      }
     }
   }
 
@@ -288,7 +297,9 @@ public abstract class Device implements Drawable {
    * @return <code>true</code> when the device is disposed and <code>false</code> otherwise
    */
   public boolean isDisposed() {
-    return disposed;
+    synchronized( deviceLock ) {
+      return disposed;
+    }
   }
 
   /**
