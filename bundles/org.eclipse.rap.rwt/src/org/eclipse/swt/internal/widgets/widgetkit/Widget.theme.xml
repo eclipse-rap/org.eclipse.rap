@@ -161,6 +161,12 @@
     <property name="opacity" 
         description="The opacity of the tooltip. A value between 0 and 1." />
 
+    <property name="animation">
+      <description>
+        Supports animations-types "fadeIn" and "fadeOut". Others are ignored.
+      </description>
+    </property>
+
   </element>
 
   <!-- TODO [rst] Eliminate when property support is gone. -->

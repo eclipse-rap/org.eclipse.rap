@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.apache.batik.css.parser.Parser;
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.QxAnimation.Animation;
 import org.w3c.css.sac.*;
 
 public class PropertyResolver_Test extends TestCase {
@@ -484,6 +485,65 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( expected, res3 );
   }
 
+  public void testAnimation() throws Exception {
+    String input = "slideIn 2s ease-in";
+    QxAnimation result
+      = PropertyResolver.readAnimation( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.animations.length );
+    Animation animation = result.animations[ 0 ];
+    assertEquals( "slideIn", animation.name );
+    assertEquals( 2000, animation.duration );
+    assertEquals( "ease-in", animation.timingFunction );
+
+    input = "slideIn 2s ease-in, slideOut 200ms ease-out";
+    result = PropertyResolver.readAnimation( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 2, result.animations.length );
+    animation = result.animations[ 0 ];
+    assertEquals( "slideIn", animation.name );
+    assertEquals( 2000, animation.duration );
+    assertEquals( "ease-in", animation.timingFunction );
+    animation = result.animations[ 1 ];
+    assertEquals( "slideOut", animation.name );
+    assertEquals( 200, animation.duration );
+    assertEquals( "ease-out", animation.timingFunction );
+
+    input = "none";
+    result = PropertyResolver.readAnimation( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 0, result.animations.length );
+
+    input = "slideIn";
+    try {
+      result = PropertyResolver.readAnimation( parseProperty( input ) );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    input = "slideIn 2s";
+    try {
+      result = PropertyResolver.readAnimation( parseProperty( input ) );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    input = "slideIn abc ease-in";
+    try {
+      result = PropertyResolver.readAnimation( parseProperty( input ) );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    input = "slideIn 3s ease-in, slideOut";
+    try {
+      result = PropertyResolver.readAnimation( parseProperty( input ) );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
   public void testIsColorProperty() throws Exception {
     assertFalse( PropertyResolver.isColorProperty( "border" ) );
     assertTrue( PropertyResolver.isColorProperty( "color" ) );
@@ -511,6 +571,10 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testIsCursorProperty() throws Exception {
     assertTrue( PropertyResolver.isCursorProperty( "cursor" ) );
+  }
+
+  public void testIsAnimationProperty() throws Exception {
+    assertTrue( PropertyResolver.isAnimationProperty( "animation" ) );
   }
 
   public void testResolveProperty() throws Exception {

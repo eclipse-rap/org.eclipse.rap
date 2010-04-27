@@ -117,6 +117,8 @@ public final class PropertyResolver {
       result = readCursor( unit, loader );
     } else if( isFloatProperty( name ) ) {
       result = readFloat( unit );
+    } else if( isAnimationProperty( name ) ) {
+      result = readAnimation( unit );
     } else {
       throw new IllegalArgumentException( "Unknown property " + name );
     }
@@ -519,7 +521,7 @@ public final class PropertyResolver {
                      + y2value;
         throw new IllegalArgumentException( msg );
       }
-    } else if( x2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER
+    } else if(    x2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER
                && y2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER ) {
       String msg = "Invalid value for background-image gradient: "
                    + Integer.toString( x2.getIntegerValue() )
@@ -593,7 +595,7 @@ public final class PropertyResolver {
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
       String value = unit.getStringValue();
-      if( "underline".equals( value )
+      if(    "underline".equals( value )
           || "overline".equals( value )
           || "line-through".equals( value )
           || "none".equals( value ) )
@@ -657,6 +659,75 @@ public final class PropertyResolver {
     } else {
       String msg = "Failed to parse float " + toString( unit );
       throw new IllegalArgumentException( msg );
+    }
+    return result;
+  }
+
+  static boolean isAnimationProperty( final String property ) {
+    return "animation".equals( property );
+  }
+
+  static QxAnimation readAnimation( final LexicalUnit unit ) {
+    QxAnimation result = new QxAnimation();
+    LexicalUnit nextUnit = unit;
+    short type = nextUnit.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_IDENT ) {
+      String value = nextUnit.getStringValue();
+      if( "none".equals( value ) ) {
+        nextUnit = null;
+      }
+    }
+    while( nextUnit != null ) {
+      String name;
+      int duration;
+      String timingFunction;
+      type = nextUnit.getLexicalUnitType();
+      if( type == LexicalUnit.SAC_IDENT ) {
+        name = nextUnit.getStringValue();
+      } else {
+        String msg = "Invalid value for animation name: "
+                      + toString( nextUnit );
+        throw new IllegalArgumentException( msg );
+      }
+      nextUnit = nextUnit.getNextLexicalUnit();
+      if( nextUnit == null ) {
+        String msg = "Missing value for animation duration.";
+        throw new IllegalArgumentException( msg );
+      }
+      type = nextUnit.getLexicalUnitType();
+      if( type == LexicalUnit.SAC_SECOND ) {
+        duration =  Math.round( nextUnit.getFloatValue() * 1000 );
+      } else if( type == LexicalUnit.SAC_MILLISECOND ) {
+        duration = Math.round( nextUnit.getFloatValue() );
+      } else {
+        String msg = "Invalid value for animation duration: "
+                     + toString( nextUnit );
+        throw new IllegalArgumentException( msg );
+      }
+      nextUnit = nextUnit.getNextLexicalUnit();
+      if( nextUnit == null ) {
+        String msg = "Missing value for animation timing function.";
+        throw new IllegalArgumentException( msg );
+      }
+      type = nextUnit.getLexicalUnitType();
+      if( type == LexicalUnit.SAC_IDENT ) {
+        timingFunction = nextUnit.getStringValue();
+      } else {
+        String msg = "Invalid value for animation timing function: "
+                     + toString( nextUnit );
+        throw new IllegalArgumentException( msg );
+      }
+      result.addAnimation( name, duration, timingFunction );
+      nextUnit = nextUnit.getNextLexicalUnit();
+      if( nextUnit != null ) {
+        type = nextUnit.getLexicalUnitType();
+        if( type == LexicalUnit.SAC_OPERATOR_COMMA ) {
+          nextUnit = nextUnit.getNextLexicalUnit();
+        } else {
+          String msg = "Failed to parse animation " + toString( nextUnit );
+          throw new IllegalArgumentException( msg );
+        }
+      }
     }
     return result;
   }

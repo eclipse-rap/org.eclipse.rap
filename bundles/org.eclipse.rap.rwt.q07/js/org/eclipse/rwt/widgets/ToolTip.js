@@ -12,6 +12,7 @@
 qx.Class.define( "org.eclipse.rwt.widgets.ToolTip", {
   type : "singleton",
   extend : qx.ui.popup.ToolTip,
+  include : org.eclipse.rwt.FadeAnimationMixin,
   
   construct : function() {
     this.base( arguments );

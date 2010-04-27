@@ -34,6 +34,7 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
+  animation: hoverIn 100ms ease-in, hoverOut 500ms ease-out;
 }
 
 Button[PUSH], Button[TOGGLE] {
@@ -411,6 +412,7 @@ Shell.toolbarLayer {
 }
 
 Shell-DisplayOverlay.confDialog {
+  animation: fadeIn 400ms linear, fadeOut 1000ms ease-out;
   background-image: none;
   background-color: #FFFFFF;
   opacity: 0.5;
@@ -1119,6 +1121,7 @@ ToolTip {
   border-radius: 2px 2px 2px 2px;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
+  animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
 }
 
 /* Slider */
@@ -1464,6 +1467,7 @@ Menu.menuBar {
   background-color: #f1fbdb;
   border: 1px solid #83a438;
   border-radius: 0px 0px 3px 3px;
+  animation: slideIn 250ms ease-out, slideOut 50ms ease-out;
 }
 
 MenuItem.menuBar {

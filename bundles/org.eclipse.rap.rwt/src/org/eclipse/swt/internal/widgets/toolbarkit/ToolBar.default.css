@@ -23,6 +23,7 @@ ToolItem {
   padding: 2px 3px;
   spacing: 4px;
   opacity: 1;
+  animation: none;
 }
 
 ToolItem[FLAT] {

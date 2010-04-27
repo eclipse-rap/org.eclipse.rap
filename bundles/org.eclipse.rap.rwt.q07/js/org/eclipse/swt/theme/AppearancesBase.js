@@ -80,6 +80,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         cursor : "default",
+        animation : tv.getCssAnimation( "Shell-DisplayOverlay", "animation" ),
         backgroundColor : tv.getCssColor( "Shell-DisplayOverlay",
                                           "background-color" ),
         backgroundImage : tv.getCssImage( "Shell-DisplayOverlay",
@@ -189,6 +190,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "ToolTip", "border" );
+      result.animation = tv.getCssAnimation( "ToolTip", "animation" ),
       result.padding = tv.getCssBoxDimensions( "ToolTip", "padding" );
       result.textColor = tv.getCssColor( "ToolTip", "color" );
       result.font = tv.getCssFont( "ToolTip", "font" );
@@ -220,6 +222,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.animation = tv.getCssAnimation( "Button", "animation" );
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
@@ -338,6 +341,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         verticalChildrenAlign : "middle"
       };
       result.spacing = tv.getCssDimension( "ToolItem", "spacing" );
+      result.animation = tv.getCssAnimation( "ToolItem", "animation" );
       result.textColor = tv.getCssColor( "ToolItem", "color" );
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
       result.opacity = tv.getCssFloat( "ToolItem", "opacity" );
@@ -532,6 +536,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         textColor : tv.getCssColor( "Menu", "color" ),
         backgroundColor : tv.getCssColor( "Menu", "background-color" ),
         backgroundImage : tv.getCssImage( "Menu", "background-image" ),
+        animation : tv.getCssAnimation( "Menu", "animation" ),
         font : tv.getCssFont( "Menu", "font" ),
         overflow : "hidden",
         border : tv.getCssBorder( "Menu", "border" ),

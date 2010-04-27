@@ -6,6 +6,7 @@ Button {
   padding: 4px 5px;
   spacing: 2px;
   cursor: default;
+  animation: none;
 }
 
 Button[PUSH], Button[TOGGLE] {
@@ -31,6 +32,7 @@ Button[PUSH]:hover, Button[TOGGLE]:hover {
 Button[PUSH]:pressed, Button[TOGGLE]:pressed, Button[TOGGLE]:selected {
   border: 1px inset;
   padding: 4px 3px 2px 5px;
+  animation: none;
 }
 
 Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {

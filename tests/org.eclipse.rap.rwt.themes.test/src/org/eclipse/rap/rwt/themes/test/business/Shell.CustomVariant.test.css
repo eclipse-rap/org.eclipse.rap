@@ -9,4 +9,5 @@ Shell-DisplayOverlay.confDialog {
   background-image: none;
   background-color: #FFFFFF;
   opacity: 0.5;
+  animation: fadeIn 400ms linear, fadeOut 1000ms ease-out;
 }

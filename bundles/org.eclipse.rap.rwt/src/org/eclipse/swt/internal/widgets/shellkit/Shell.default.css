@@ -20,6 +20,7 @@ Shell-DisplayOverlay {
   background-image: none;
   background-color: transparent;
   opacity: 1;
+  animation: none;
 }
 
 /* Shell titlebar */

@@ -55,11 +55,11 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
   }
 
   void renderChanges( final Menu menu ) throws IOException {
+    WidgetLCAUtil.writeCustomVariant( menu );
     // TODO [tb] : why no "writeShow"?
     MenuLCAUtil.writeEnabled( menu );
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
-    WidgetLCAUtil.writeCustomVariant( menu );
     WidgetLCAUtil.writeHelpListener( menu );
   }
 

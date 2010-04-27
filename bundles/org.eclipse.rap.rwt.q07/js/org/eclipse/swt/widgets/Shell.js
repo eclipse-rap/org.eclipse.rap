@@ -22,6 +22,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this._activeControl = null;
     this._activateListenerWidgets = new Array();
     this._parentShell = null;
+    this._renderZIndex = true;
     // TODO [rh] check whether these listeners must be removed upon disposal
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeActive", this._onChangeActive );
@@ -100,6 +101,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           target.addState( state );
         }
       }
+      target._renderAppearance();
+      qx.ui.core.Widget.removeFromGlobalLayoutQueue( target );
     },
 
     /*
@@ -517,9 +520,25 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       while( targetShell._parentShell != null ) {
         targetShell = targetShell._parentShell;
       }
+      this._setRenderZIndex( false );
       this.setZIndex( org.eclipse.swt.widgets.Shell.MAX_ZINDEX + 1 );
       targetShell.setZIndex( org.eclipse.swt.widgets.Shell.MAX_ZINDEX + 1 );
       org.eclipse.swt.widgets.Shell.reorderShells( this.getWindowManager() );
+      this._setRenderZIndex( true );
+    },
+    
+    _applyZIndex : function( newValue, oldValue ) {
+      if( this._renderZIndex ) {
+        this.base( arguments, newValue, oldValue );
+      }
+    },
+    
+    _setRenderZIndex : function( value ) {
+       // Needed to prevent flickering during display-overlay animations.
+      this._renderZIndex = value;
+      if( value ) {
+        this._applyZIndex( this.getZIndex() );
+      }
     },
 
     /*
@@ -530,9 +549,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       while( targetShell._parentShell != null ) {
         targetShell = targetShell._parentShell;
       }
+      this._setRenderZIndex( false );
       this.setZIndex( org.eclipse.swt.widgets.Shell.MIN_ZINDEX - 1 );
       targetShell.setZIndex( org.eclipse.swt.widgets.Shell.MIN_ZINDEX - 1 );
       org.eclipse.swt.widgets.Shell.reorderShells( this.getWindowManager() );
+      this._setRenderZIndex( true );
     },
 
     /*

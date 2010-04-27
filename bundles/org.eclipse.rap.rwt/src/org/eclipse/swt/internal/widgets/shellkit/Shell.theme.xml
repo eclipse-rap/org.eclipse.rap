@@ -190,6 +190,12 @@
 
       <property name="background-image"
           description="Background image for the overlay." />
+
+	  <property name="animation">
+	    <description>
+	      Supports animations-types "fadeIn" and "fadeOut". Others are ignored.
+	    </description>
+	  </property>
  
       <property name="opacity" 
           description="The opacity of the overlay. A value between 0 and 1." />

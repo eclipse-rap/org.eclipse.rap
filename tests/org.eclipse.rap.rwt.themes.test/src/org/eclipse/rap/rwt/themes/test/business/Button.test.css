@@ -16,6 +16,7 @@ Button[PUSH] {
     to( #ffffff )
   );
   cursor: pointer;
+  animation: hoverOut 500ms ease-out;
 }
 
 Button[TOGGLE] {
@@ -29,6 +30,7 @@ Button[TOGGLE] {
     to( #ffffff )
   );
   cursor: pointer;
+  animation: hoverOut 500ms ease-out;
 }
 
 Button[BORDER] {
@@ -41,6 +43,7 @@ Button[BORDER] {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
+  animation: hoverOut 500ms ease-out;
 }
 
 Button[TOGGLE]:selected {

@@ -124,6 +124,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
+    WidgetLCAUtil.writeCustomVariant( shell ); // Order matters for animation
     writeImage( shell );
     writeText( shell );
     writeAlpha( shell );
@@ -139,7 +140,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writeMinimumSize( shell );
     writeDefaultButton( shell );
     ControlLCAUtil.writeChanges( shell );
-    WidgetLCAUtil.writeCustomVariant( shell );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

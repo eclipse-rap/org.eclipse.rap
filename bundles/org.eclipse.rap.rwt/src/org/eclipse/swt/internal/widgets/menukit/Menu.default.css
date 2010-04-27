@@ -8,6 +8,7 @@ Menu {
   border-radius: 0px;
   padding: 1px;
   opacity: 1;
+  animation: none;
 }
 
 MenuItem {

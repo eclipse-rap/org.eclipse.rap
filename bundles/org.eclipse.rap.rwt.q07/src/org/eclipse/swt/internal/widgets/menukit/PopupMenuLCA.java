@@ -44,12 +44,12 @@ final class PopupMenuLCA extends MenuDelegateLCA {
   }
 
   void renderChanges( final Menu menu ) throws IOException {
+    WidgetLCAUtil.writeCustomVariant( menu );
     writeShow( menu );
     MenuLCAUtil.writeEnabled( menu );
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
     //MenuLCAUtil.writeWidth( menu );
-    WidgetLCAUtil.writeCustomVariant( menu );
     WidgetLCAUtil.writeHelpListener( menu );
   }
 

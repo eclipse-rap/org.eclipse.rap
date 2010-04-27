@@ -24,6 +24,8 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
       qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GraphicsMixin );
       qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,
                       org.eclipse.rwt.GraphicsMixin );
+      qx.Class.patch( qx.ui.core.ClientDocumentBlocker,
+                      org.eclipse.rwt.FadeAnimationMixin );                      
       org.eclipse.rwt.GraphicsUtil.init();
       var eventHandler = qx.event.handler.EventHandler.getInstance();
       eventHandler.setAllowContextMenu(

@@ -6,4 +6,5 @@ ToolTip {
   border-radius: 2px 2px 2px 2px;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
+  animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
 }

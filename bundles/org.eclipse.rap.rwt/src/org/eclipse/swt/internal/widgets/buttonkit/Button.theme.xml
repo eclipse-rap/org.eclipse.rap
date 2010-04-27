@@ -37,6 +37,12 @@
       </description>
     </property>
     
+    <property name="animation">
+      <description>
+        Supports animations-types "hoverIn" and "hoverOut". Others are ignored.
+      </description>
+    </property>
+
     <property name="cursor"
         description="Control's cursor." />
 

@@ -17,6 +17,7 @@ ToolTip {
   color: black;
   background-color: rgb( 255, 255, 225 );
   opacity: 1;
+  animation: none;
 }
 
 Display {

@@ -64,7 +64,13 @@
 	        like "inset" or "outset" is used.
 	      </description>
 	    </property>
-    
+
+	    <property name="animation">
+	      <description>
+	        Supports animations-types "hoverIn" and "hoverOut". Others are ignored.
+	      </description>
+	    </property>
+
       <property name="spacing"
           description="Spacing between the text and icon" />
 

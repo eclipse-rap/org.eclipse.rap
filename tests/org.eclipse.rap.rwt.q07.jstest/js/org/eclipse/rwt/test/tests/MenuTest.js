@@ -824,6 +824,56 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       barItem2.destroy();
       this.disposeMenuBar();            
     },
+    
+    testDisposeWithAnimaton : function() {
+      this.createSimpleMenu( "push" );
+      var menu = this.menu;
+      this.testUtil.flush();
+      menu.setAnimation( {
+        "slideIn" : [ 100, "easeIn" ]
+      } );
+      menu.setHasMenuListener( true );
+      assertNotNull( menu._animation );
+      var animation = menu._animation;
+      var renderer = menu._animation.getDefaultRenderer();
+      assertTrue( menu._hasParent );
+      menu.destroy();
+      this.testUtil.flush();
+      assertTrue( menu.isDisposed() );
+      assertNull( menu._animation );
+      assertTrue( animation.isDisposed() );
+      assertTrue( renderer.isDisposed() );
+      this.menu = null;
+      this.menuItem = null;
+    },
+        
+    testDisposeWithRunningAnimaton : function() {
+      this.createSimpleMenu( "push" );
+      var menu = this.menu;
+      menu.hide();
+      this.testUtil.flush();
+      menu.setAnimation( {
+        "slideIn" : [ 100, "easeIn" ]
+      } );
+      menu.setHasMenuListener( true );
+      assertNotNull( menu._animation );
+      var animation = menu._animation;
+      var renderer = menu._animation.getDefaultRenderer();
+      menu.show();
+      org.eclipse.rwt.Animation._mainLoop();
+      assertTrue( menu._animation.isRunning() );
+      menu.unhideItems();
+      org.eclipse.rwt.Animation._mainLoop();
+      menu.destroy();
+      this.testUtil.flush();
+      org.eclipse.rwt.Animation._mainLoop();
+      assertTrue( menu.isDisposed() );
+      assertNull( menu._animation );
+      assertTrue( animation.isDisposed() );
+      assertTrue( renderer.isDisposed() );
+      this.menu = null;
+      this.menuItem = null;
+    },
         
     /************************* Helper *****************************/
         

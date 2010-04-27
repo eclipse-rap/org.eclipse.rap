@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -50,6 +50,33 @@ public class ThemeStoreWriter_Test extends TestCase {
     // conditional background-images
     expected = "\"background-image\": "
                + "[ [ [ \"[BORDER\" ], \"cd56ce7d\" ], [ [], \"ffffffff\" ] ]";
+    assertTrue( output.indexOf( expected ) != -1 );
+  }
+
+  public void testWriteAnimations() throws Exception {
+    ThemeCssElement element1 = new ThemeCssElement( "Menu" );
+    element1.addProperty( "animation" );
+    IThemeCssElement[] elements = new IThemeCssElement[] { element1 };
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
+    String themeId = "myTheme";
+    String cssCode
+      = "Menu { animation: slideIn 2s ease-in, slideOut 2s ease-out; }\n";
+    ResourceLoader loader
+      = ThemeTestUtil.createResourceLoader( Fixture.class );
+    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
+    Theme theme = ThemeManager.getInstance().getTheme( themeId );
+    storeWriter.addTheme( theme, true );
+    String output = storeWriter.createJs();
+    String expected = "\"animations\": {\n"
+                      + "\"2e5f3d63\": {\n"
+                      + "\"slideIn\": [ 2000, \"easeIn\" ],\n"
+                      + "\"slideOut\": [ 2000, \"easeOut\" ]\n"
+                      + "}\n"
+                      + "}\n";
+    assertTrue( output.indexOf( expected ) != -1 );
+    expected = "\"Menu\": {\n"
+               + "\"animation\": [ [ [], \"2e5f3d63\" ] ]\n"
+               + "}";
     assertTrue( output.indexOf( expected ) != -1 );
   }
 

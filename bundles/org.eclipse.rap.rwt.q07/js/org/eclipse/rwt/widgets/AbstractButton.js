@@ -50,11 +50,26 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
 
   },
 
+  destruct : function() {
+    if( this._animation != null ) {
+      this._animation.dispose();
+    }
+    this._animation = null;
+  },
+
   properties : {
 
     selectionIndicator : {
       apply : "_applySelectionIndicator",
       nullable : true,
+      themeable : true
+    },
+
+    animation : {
+      check : "Object",
+      nullable : false,
+      init : null,
+      apply : "_applyAnimation",
       themeable : true
     }
     
@@ -236,7 +251,72 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
           event.preventDefault();
           event.stopPropagation();
       }
-    }
+    },
+    
+    ////////////
+    // Animation
+
+    _applyAnimation : function( newValue, oldValue ) {
+      if( newValue[ "hoverIn" ] || newValue[ "hoverOut" ] ) {
+        if( this._animation == null ) {
+          this._animation = new org.eclipse.rwt.Animation();
+          this._animation.addEventListener( "init", 
+                                            this._initAnimation,
+                                            this );          
+        }
+        this.addEventListener( "mouseover", 
+                               this._animation.activateRendererOnce,
+                               this._animation );
+        this.addEventListener( "mouseout", 
+                               this._animation.activateRendererOnce,
+                               this._animation );
+        this.addEventListener( "changeBackgroundGradient", 
+                               this._configureRenderer,
+                               this );
+        this._configureRenderer();
+      } else if( this._animation != null ) {
+        this.removeEventListener( "mouseover", 
+                                  this._animation.activateRendererOnce,
+                                  this._animation );
+        this.removeEventListener( "mouseout", 
+                                  this._animation.activateRendererOnce,
+                                  this._animation );
+        this.removeEventListener( "changeBackgroundGradient", 
+                                  this._configureRenderer,
+                                  this );
+      }
+    },
+    
+    _configureRenderer : function( event ) {
+      if( !event || event.getValue() == null || event.getOldValue() == null ) {
+        this._animation.skip();
+        var renderer = this._animation.getDefaultRenderer( false );
+        var renderType =   this.getBackgroundGradient() != null 
+                         ? "backgroundGradient"
+                         : "backgroundColor";
+        var animationType = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE; 
+        renderer.animate( this, renderType, animationType );
+      }
+    },
+    
+    _initAnimation : function( event ) {
+      var animation = this.getAnimation();
+      if( this.hasState( "over" ) && animation[ "hoverIn" ] ) {
+        this._animation.setProperties( animation[ "hoverIn" ] );
+      } else if( !this.hasState( "over" ) && animation[ "hoverOut" ] ) {
+        this._animation.setProperties( animation[ "hoverOut" ] );
+      } else {
+        this._animation.cancel();
+      }
+    },
+    
+    _renderAppearance : function() {
+      this.base( arguments );
+      // TODO [tb] : Find a more elegant and generic way to do this. 
+      if( this._animation != null && !this._animation.isStarted() ) {
+        this._animation.getDefaultRenderer().cancelActivateOnce();
+      }
+    }    
     
   }
 });

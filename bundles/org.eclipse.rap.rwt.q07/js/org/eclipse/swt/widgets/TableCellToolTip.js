@@ -10,6 +10,7 @@
 
 qx.Class.define( "org.eclipse.swt.widgets.TableCellToolTip", {
   extend : qx.ui.popup.ToolTip,
+  include : org.eclipse.rwt.FadeAnimationMixin,
 
   construct : function() {
     this.base( arguments );

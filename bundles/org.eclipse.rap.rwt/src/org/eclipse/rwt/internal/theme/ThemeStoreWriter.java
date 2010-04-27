@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -11,6 +11,7 @@ package org.eclipse.rwt.internal.theme;
 
 import java.util.*;
 
+import org.eclipse.rwt.internal.theme.QxAnimation.Animation;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 
 
@@ -52,6 +53,7 @@ public final class ThemeStoreWriter {
     JsonObject fontMap = new JsonObject();
     JsonObject borderMap = new JsonObject();
     JsonObject cursorMap = new JsonObject();
+    JsonObject animationMap = new JsonObject();
     QxType[] values = new QxType[ valueSet.size() ];
     valueSet.toArray( values );
     for( int i = 0; i < values.length; i++ ) {
@@ -120,6 +122,20 @@ public final class ThemeStoreWriter {
         } else {
           cursorMap.append( key, cursor.value );
         }
+      } else if( value instanceof QxAnimation ) {
+        QxAnimation animation = ( QxAnimation )value;
+        JsonObject animationObject = new JsonObject();
+        for( int j = 0; j < animation.animations.length; j++ ) {
+          Animation currentAnimation = animation.animations[ j ];
+          JsonArray currentAnimationArray = new JsonArray();
+          currentAnimationArray.append( currentAnimation.duration );
+          String timingFunction
+            = QxAnimation.toCamelCaseString( currentAnimation.timingFunction );
+          currentAnimationArray.append( timingFunction );
+          animationObject.append( currentAnimation.name,
+                                  currentAnimationArray );
+        }
+        animationMap.append( key, animationObject );
       }
     }
     JsonObject valuesMap = new JsonObject();
@@ -131,6 +147,7 @@ public final class ThemeStoreWriter {
     valuesMap.append( "fonts", fontMap );
     valuesMap.append( "borders", borderMap );
     valuesMap.append( "cursors", cursorMap );
+    valuesMap.append( "animations", animationMap );
     return valuesMap;
   }
 

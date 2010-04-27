@@ -44,6 +44,12 @@
     <property name="padding"
         description="Space between border and text / image" />
 
+    <property name="animation">
+      <description>
+        Supports animations-types "slideIn" and "slideOut". Others are ignored.
+      </description>
+    </property>
+
     <state name="disabled"
         description="Applies to disabled menus." />
 

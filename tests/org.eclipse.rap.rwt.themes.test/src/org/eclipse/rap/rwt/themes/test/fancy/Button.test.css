@@ -16,6 +16,7 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
+  animation: hoverIn 100ms ease-in, hoverOut 500ms ease-out;
 }
 
 Button[PUSH], Button[TOGGLE] {

@@ -17,6 +17,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       nullable : true,
       init : null,
       apply : "_applyBackgroundGradient",
+      event : "changeBackgroundGradient",      
       themeable : true
     }
 

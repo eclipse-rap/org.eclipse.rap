@@ -23,6 +23,8 @@ qx.Class.define( "org.eclipse.swt.Application", {
     qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GraphicsMixin );
     qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,
                     org.eclipse.rwt.GraphicsMixin );
+    qx.Class.patch( qx.ui.core.ClientDocumentBlocker,
+                    org.eclipse.rwt.FadeAnimationMixin );
     qx.Class.patch( qx.event.type.DomEvent,
                     org.eclipse.rwt.DomEventPatch );              
     org.eclipse.rwt.GraphicsUtil.init();

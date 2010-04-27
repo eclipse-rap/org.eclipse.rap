@@ -200,6 +200,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( QxFont_Test.class );
     suite.addTestSuite( QxImage_Test.class );
     suite.addTestSuite( QxCursor_Test.class );
+    suite.addTestSuite( QxAnimation_Test.class );
     suite.addTestSuite( CssFileReader_Test.class );
     suite.addTestSuite( PropertyResolver_Test.class );
     suite.addTestSuite( JsonArray_Test.class );
