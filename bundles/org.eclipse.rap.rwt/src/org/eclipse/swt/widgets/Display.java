@@ -1935,8 +1935,8 @@ public class Display extends Device implements Adaptable {
       }
     }
   }
-  
-  private boolean canDisplayRefBeReplaced( WeakReference displayRef ) {
+
+  private boolean canDisplayRefBeReplaced( final WeakReference displayRef ) {
     boolean result = false;
     if( displayRef == null ) {
       result = true;
@@ -1944,7 +1944,7 @@ public class Display extends Device implements Adaptable {
       Display display = ( Display )displayRef.get();
       if( display == null || display.thread == thread ) {
         result = true;
-      }      
+      }
     }
     return result;
   }
