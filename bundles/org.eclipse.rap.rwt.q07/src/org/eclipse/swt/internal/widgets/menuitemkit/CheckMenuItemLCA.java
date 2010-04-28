@@ -38,9 +38,9 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void readData( final MenuItem menuItem ) {
-    String paramValue = WidgetLCAUtil.readPropertyValue( menuItem, "selection" );
-    if( paramValue != null ) {
-      menuItem.setSelection( Boolean.valueOf( paramValue ).booleanValue() );
+    String value = WidgetLCAUtil.readPropertyValue( menuItem, "selection" );
+    if( value != null ) {
+      menuItem.setSelection( Boolean.valueOf( value ).booleanValue() );
     }
     ControlLCAUtil.processSelection( menuItem, null, false );
     WidgetLCAUtil.processHelp( menuItem );

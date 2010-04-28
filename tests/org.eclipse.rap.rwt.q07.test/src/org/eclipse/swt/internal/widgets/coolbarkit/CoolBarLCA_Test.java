@@ -38,12 +38,13 @@ public final class CoolBarLCA_Test extends TestCase {
     AbstractWidgetLCA lca = WidgetUtil.getLCA( bar );
     lca.preserveValues( bar );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.LOCKED ) );
+    assertEquals( Boolean.FALSE,
+                  adapter.getPreserved( CoolBarLCA.PROP_LOCKED ) );
     Fixture.clearPreserved();
     bar.setLocked( true );
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.LOCKED ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( CoolBarLCA.PROP_LOCKED ) );
     Fixture.clearPreserved();
     // control: enabled
     lca.preserveValues( bar );
@@ -142,31 +143,6 @@ public final class CoolBarLCA_Test extends TestCase {
     display.dispose();
   }
 
-  public void testItemPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    CoolBar bar = new CoolBar( shell, SWT.FLAT );
-    CoolItem item = new CoolItem( bar, SWT.NONE );
-    Button button = new Button( bar, SWT.NONE );
-    Fixture.markInitialized( item );
-    item.setControl( button );
-    item.setSize( 30, 20 );
-    Rectangle rectangle = new Rectangle( 0,
-                                         0,
-                                         item.getSize().x,
-                                         item.getSize().y );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( item );
-    lca.preserveValues( item );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    assertEquals( button, adapter.getPreserved( Props.CONTROL ) );
-    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
-    item.setControl( null );
-    lca.preserveValues( item );
-    assertNull( adapter.getPreserved( Props.CONTROL ) );
-    Fixture.clearPreserved();
-    display.dispose();
-  }
-
   public void testRenderControl() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -181,14 +157,6 @@ public final class CoolBarLCA_Test extends TestCase {
     displayLCA.render( display );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setControl" ) != -1);
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   public void testItemReordering1() {
@@ -351,5 +319,13 @@ public final class CoolBarLCA_Test extends TestCase {
     = "var w = wm.findWidgetById( \"" + item0Id + "\" );"
     + "w.setSpace(";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
   }
 }

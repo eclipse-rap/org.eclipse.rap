@@ -20,8 +20,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
@@ -33,18 +32,18 @@ public class ToolItemLCA_Test extends TestCase {
   public void testCheckPreserveValues() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
-    ToolBar tb = new ToolBar( shell, SWT.FLAT );
-    ToolItem item = new ToolItem( tb, SWT.CHECK );
+    ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
+    ToolItem item = new ToolItem( toolBar, SWT.CHECK );
     Fixture.markInitialized( display );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( Props.SELECTION_INDICES ) );
+                  adapter.getPreserved( ToolItemLCAUtil.PROP_SELECTION ) );
     Fixture.clearPreserved();
     item.setSelection( true );
     Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( Props.SELECTION_INDICES ) );
+                  adapter.getPreserved( ToolItemLCAUtil.PROP_SELECTION ) );
     testPreserveValues( display, item );
     display.dispose();
   }
@@ -78,25 +77,14 @@ public class ToolItemLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( Props.SELECTION_INDICES ) );
+                  adapter.getPreserved( ToolItemLCAUtil.PROP_SELECTION ) );
     Fixture.clearPreserved();
     item.setSelection( true );
     Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( Props.SELECTION_INDICES ) );
+                  adapter.getPreserved( ToolItemLCAUtil.PROP_SELECTION ) );
     testPreserveValues( display, item );
     display.dispose();
-  }
-
-  public void testSeparatorPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    ToolBar tb = new ToolBar( shell, SWT.FLAT );
-    ToolItem item = new ToolItem( tb, SWT.SEPARATOR );
-    Fixture.markInitialized( display );
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    assertEquals( null, adapter.getPreserved( Props.CONTROL ) );
   }
 
   public void testCheckItemSelected() {
@@ -225,7 +213,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    assertEquals( "", adapter.getPreserved( Props.TOOLTIP ) );
+    assertEquals( "", adapter.getPreserved( "toolTip" ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
     Fixture.clearPreserved();
@@ -245,7 +233,7 @@ public class ToolItemLCA_Test extends TestCase {
       assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
     }
     assertEquals( Boolean.TRUE, hasListeners );
-    assertEquals( "tooltip text", adapter.getPreserved( Props.TOOLTIP ) );
+    assertEquals( "tooltip text", adapter.getPreserved( "toolTip" ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     assertEquals( contextMenu, adapter.getPreserved( Props.MENU ) );
   }

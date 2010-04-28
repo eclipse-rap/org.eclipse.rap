@@ -22,13 +22,14 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA;
 import org.eclipse.swt.widgets.*;
 
 
 public class CoolItemLCA extends AbstractWidgetLCA {
 
   private static final String SET_CONTROL = "setControl";
-  private static final String PROP_CONTROL = "control";
+  static final String PROP_CONTROL = "control";
   
   /* (intentionally not JavaDoc'ed)
    * Unnecesary to call ItemLCAUtil.preserve, CoolItem does neither use text
@@ -37,7 +38,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   public void preserveValues( final Widget widget ) {
     CoolItem coolItem = ( CoolItem )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
-    adapter.preserve( Props.CONTROL, coolItem.getControl() );
+    adapter.preserve( PROP_CONTROL, coolItem.getControl() );
     adapter.preserve( Props.BOUNDS, coolItem.getBounds() );
     WidgetLCAUtil.preserveCustomVariant( coolItem );
   }
@@ -98,9 +99,10 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( coolItem );
     CoolBar parent = coolItem.getParent();
+    String prop = CoolBarLCA.PROP_LOCKED;
     Boolean oldValue = Boolean.valueOf( parent.getLocked() );
     Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( parent, Props.LOCKED, oldValue, defValue ) )
+    if( WidgetLCAUtil.hasChanged( parent, prop, oldValue, defValue ) )
     {
       writer.set( "locked", parent.getLocked() );
     }

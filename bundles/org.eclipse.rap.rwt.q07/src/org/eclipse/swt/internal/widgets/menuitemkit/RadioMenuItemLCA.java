@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.MenuItem;
 final class RadioMenuItemLCA extends MenuItemDelegateLCA {
 
   private static final String ITEM_TYPE_RADIO = "radio";
-  private static final String PROP_SELECTION = "selection";
-  private static final String PARAM_SELECTION = "selection";
 
   void preserveValues( final MenuItem menuItem ) {
     ItemLCAUtil.preserve( menuItem );
@@ -35,7 +33,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     boolean hasListener = SelectionEvent.hasListener( menuItem );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
-    adapter.preserve( PROP_SELECTION,
+    adapter.preserve( MenuItemLCAUtil.PROP_SELECTION,
                       Boolean.valueOf( menuItem.getSelection() ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
     WidgetLCAUtil.preserveCustomVariant( menuItem );
@@ -71,7 +69,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
   // Helping methods to select radio menu items
 
   private boolean readSelection( final MenuItem item ) {
-    String value = WidgetLCAUtil.readPropertyValue( item, PARAM_SELECTION );
+    String value = WidgetLCAUtil.readPropertyValue( item, "selection" );
     if( value != null ) {
       item.setSelection( Boolean.valueOf( value ).booleanValue() );
     }

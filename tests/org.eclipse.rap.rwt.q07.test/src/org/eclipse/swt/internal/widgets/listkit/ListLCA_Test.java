@@ -78,7 +78,7 @@ public class ListLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ), focusIndex );
     Object topIndex = adapter.getPreserved( ListLCA.PROP_TOP_INDEX );
     assertEquals( new Integer( list.getTopIndex() ), topIndex );
-    Object selection = adapter.getPreserved( Props.SELECTION_INDICES );
+    Object selection = adapter.getPreserved( ListLCA.PROP_SELECTION );
     assertEquals( new Integer( 2 ), selection );
     Fixture.clearPreserved();
     // scroll bars

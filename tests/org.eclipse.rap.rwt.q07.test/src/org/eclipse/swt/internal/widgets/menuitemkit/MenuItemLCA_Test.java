@@ -88,7 +88,8 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     assertEquals( Boolean.TRUE, Boolean.valueOf( menuItem.getSelection() ) );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.SELECTION_INDICES ) );
+    assertEquals( Boolean.TRUE, 
+                  adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
     Fixture.clearPreserved();
     display.dispose();
   }
@@ -111,7 +112,8 @@ public class MenuItemLCA_Test extends TestCase {
     menuItem.setSelection( true );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.SELECTION_INDICES ) );
+    assertEquals( Boolean.TRUE, 
+                  adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
     Fixture.clearPreserved();
     display.dispose();
   }

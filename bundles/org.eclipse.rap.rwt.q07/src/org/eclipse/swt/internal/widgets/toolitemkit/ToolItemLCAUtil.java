@@ -30,8 +30,8 @@ final class ToolItemLCAUtil {
   private static final String PROP_VISIBLE = "visible";
   private static final String PROP_IMAGE = "image";
   private static final String PROP_HOT_IMAGE = "hotImage";
-  private static final String PROP_SELECTION = "selection";
-  private static final String JS_PROP_SELECTION = "selection";
+  static final String PROP_SELECTION = "selection";
+
   private static final String QX_TYPE = "org.eclipse.rwt.widgets.ToolItem";
 
   private ToolItemLCAUtil() {
@@ -109,7 +109,7 @@ final class ToolItemLCAUtil {
   static void writeSelection( final ToolItem toolItem ) throws IOException {
     Boolean newValue = Boolean.valueOf( toolItem.getSelection() );
     JSWriter writer = JSWriter.getWriterFor( toolItem );
-    writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
+    writer.set( PROP_SELECTION, "selection", newValue, Boolean.FALSE );
   }
 
   static void processSelection( final ToolItem toolItem ) {

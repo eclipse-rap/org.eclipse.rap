@@ -26,7 +26,7 @@ public class ListLCA extends AbstractWidgetLCA {
   private static final String QX_TYPE = "org.eclipse.swt.widgets.List";
 
   // Property names, used when preserving values
-  private static final String PROP_SELECTION = "selection";
+  static final String PROP_SELECTION = "selection";
   static final String PROP_ITEMS = "items";
   static final String PROP_FOCUS_INDEX = "focusIndex";
   static final String PROP_TOP_INDEX = "topIndex";

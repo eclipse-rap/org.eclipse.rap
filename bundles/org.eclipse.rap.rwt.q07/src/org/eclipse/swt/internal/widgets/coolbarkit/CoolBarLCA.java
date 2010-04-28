@@ -15,17 +15,18 @@ import java.io.IOException;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 
 public class CoolBarLCA extends AbstractWidgetLCA {
 
+  public static final String PROP_LOCKED = "locked";
+
   public void preserveValues( final Widget widget ) {
     CoolBar coolBar = ( CoolBar )widget;
     ControlLCAUtil.preserveValues( coolBar );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( coolBar );
-    adapter.preserve( Props.LOCKED, Boolean.valueOf( coolBar.getLocked() ) );
+    adapter.preserve( PROP_LOCKED, Boolean.valueOf( coolBar.getLocked() ) );
     WidgetLCAUtil.preserveCustomVariant( coolBar );
   }
 

@@ -33,6 +33,7 @@ import org.eclipse.swt.internal.widgets.canvaskit.CanvasLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCA_Test;
 import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
+import org.eclipse.swt.internal.widgets.coolitemkit.CoolItemLCA_Test;
 import org.eclipse.swt.internal.widgets.datetimekit.DateTimeLCA_Test;
 import org.eclipse.swt.internal.widgets.displaykit.*;
 import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarLCA_Test;
@@ -122,6 +123,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( TableItemLCA_Test.class );
     suite.addTestSuite( CTabFolderLCA_Test.class );
     suite.addTestSuite( CoolBarLCA_Test.class );
+    suite.addTestSuite( CoolItemLCA_Test.class );
     suite.addTestSuite( LinkLCA_Test.class );
     suite.addTestSuite( ListLCA_Test.class );
     suite.addTestSuite( SpinnerLCA_Test.class );
