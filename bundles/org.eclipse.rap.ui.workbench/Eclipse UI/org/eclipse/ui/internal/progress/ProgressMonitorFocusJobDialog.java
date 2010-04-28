@@ -426,30 +426,32 @@ class ProgressMonitorFocusJobDialog extends ProgressMonitorJobsDialog {
 		  //               this is still under investigation
           final ISessionStore session = RWT.getSessionStore();
           final JobChangeAdapter doneListener[] = new JobChangeAdapter[ 1 ];
-          final HttpSessionBindingListener invalidateHandler
+          final boolean[] isSessionAlive = { false };
+          final HttpSessionBindingListener watchDog
             = new HttpSessionBindingListener()
           {
             public void valueBound( final HttpSessionBindingEvent event ) {
             }
             public void valueUnbound( final HttpSessionBindingEvent event ) {
-              job.removeJobChangeListener( listener );
-              if( doneListener[ 0 ] != null ) {
-                job.removeJobChangeListener( doneListener[ 0 ] );
+              if( !isSessionAlive[ 0 ] ) {
+            	  job.removeJobChangeListener( listener );
+            	  job.removeJobChangeListener( doneListener[ 0 ] );
+            	  job.cancel();
+            	  job.addJobChangeListener( new JobCanceler() );
               }
-              job.cancel();
-              job.addJobChangeListener( new JobCanceler() );
             }
           };
-          final String watchDogKey = String.valueOf( job.hashCode() );
-          if( session.getAttribute( watchDogKey ) == null ) {
-            session.setAttribute( watchDogKey, invalidateHandler );
-          }
+          final String watchDogKey = String.valueOf( watchDog.hashCode() );
           doneListener[ 0 ] = new JobChangeAdapter() {
-            public void done( IJobChangeEvent event ) {
+            public void done( final IJobChangeEvent event ) {
               job.removeJobChangeListener( this );
+              isSessionAlive[ 0 ] = true;
               session.removeAttribute( watchDogKey );
             }
           };
+          if( session.getAttribute( watchDogKey ) == null ) {
+        	  session.setAttribute( watchDogKey, watchDog );
+          }
           job.addJobChangeListener( doneListener[ 0 ] );
         }
 
