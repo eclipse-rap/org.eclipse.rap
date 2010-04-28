@@ -178,10 +178,12 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
     },
 
     _getTargetControl : function() {
-      var result = qx.event.handler.EventHandler.getInstance().getCaptureWidget();
+      var result
+        = qx.event.handler.EventHandler.getInstance().getCaptureWidget();
       if( !result ) {
-        var focusRoot = qx.event.handler.EventHandler.getInstance().getFocusRoot();
-        result = focusRoot == null ? null : focusRoot.getActiveChild();
+        var focusRoot
+          = qx.event.handler.EventHandler.getInstance().getFocusRoot();
+        result = focusRoot === null ? null : focusRoot.getActiveChild();
       }
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       while( result !== null && !widgetManager.isControl( result ) ) {
@@ -195,7 +197,9 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
     },
 
     _hasTraverseListener : function( widget ) {
-      return widget !== null && widget.getUserData( "traverseListener" ) === true;
+      return
+           widget !== null 
+        && widget.getUserData( "traverseListener" ) === true;
     },
 
     _isTraverseKey : function( keyCode ) {
@@ -218,7 +222,8 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
 
     _sendKeyDown : function( widget, keyCode, charCode, domEvent ) {
       var req = org.eclipse.swt.Request.getInstance();
-      var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
+      var id
+        = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       req.addEvent( "org.eclipse.swt.events.keyDown", id );
       req.addParameter( "org.eclipse.swt.events.keyDown.keyCode", keyCode );
       req.addParameter( "org.eclipse.swt.events.keyDown.charCode", charCode );
@@ -263,7 +268,8 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
     },
 
     _checkBufferedEvents : function() {
-      while( this._bufferedEvents.length > 0 && !this._keyEventRequestRunning ) {
+      while( this._bufferedEvents.length > 0 && !this._keyEventRequestRunning )
+      {
         var size = this._bufferedEvents.length;
         var oldEvent = this._bufferedEvents.shift();
         this._redispatchKeyEvent( oldEvent );
@@ -306,7 +312,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         newEvent.keyCode = eventInfo.keyCode;
         eventInfo.srcElement.fireEvent( newEvent );
       } else {
-        throw Error( "Redispatching key events not supported" );
+        throw new Error( "Redispatching key events not supported" );
       }
     }
 
