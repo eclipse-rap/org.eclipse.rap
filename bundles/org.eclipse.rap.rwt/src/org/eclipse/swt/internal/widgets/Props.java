@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,6 @@ public final class Props {
   public static final String ENABLED = "enabled";
   public static final String CONTROL_LISTENERS = "hasControlListeners";
   
-  // Scrollable
-  public static final String CLIENT_AREA = "clientArea";
-
   // Button properties
   public static final String SELECTION_LISTENERS = "selectionListeners";
   public static final String ACTIVATE_LISTENER = "activateListener";

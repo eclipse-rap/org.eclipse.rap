@@ -30,7 +30,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.*;
 
 
 public class Display_Test extends TestCase {
@@ -83,7 +83,7 @@ public class Display_Test extends TestCase {
     assertNull( displayFromBgThread[ 0 ] );
     assertNull( displayFromBgThreadWithFakeContext[ 0 ] );
   }
-
+  
   public void testGetDefault() throws InterruptedException {
     final Display[] backgroundDisplay = { null };
     final Display display = new Display();
@@ -109,7 +109,7 @@ public class Display_Test extends TestCase {
     threadWithContext.join();
     assertSame( display, backgroundDisplay[ 0 ] );
   }
-
+  
   public void testGetDefaultCreatesDisplay() throws InterruptedException {
     // getDefault must not create a Display if called from a background thread
     final Display[] backgroundDisplay = { null };
@@ -850,7 +850,7 @@ public class Display_Test extends TestCase {
     }
     // Further timerExec tests can be found in UICallbackManager_Test
   }
-
+  
   public void testTimerExecFromBackgroundThread() throws Exception {
     final Throwable[] throwable = { null };
     final Display display = new Display();
@@ -891,7 +891,7 @@ public class Display_Test extends TestCase {
     assertNotNull( monitor );
     // Further monitor tests can be found in Monitor_Test
   }
-
+  
   public void testDisposeExecWithNullArgument() {
     Display display = new Display();
     display.disposeExec( null );
@@ -966,7 +966,7 @@ public class Display_Test extends TestCase {
     display.dispose();
     assertTrue( display.isDisposed() );
   }
-
+  
   public void testSystemCursor() {
     Display display = new Display();
     Cursor arrow = display.getSystemCursor( SWT.CURSOR_ARROW );
@@ -1032,7 +1032,7 @@ public class Display_Test extends TestCase {
     display.close();
     assertFalse( display.isDisposed() );
   }
-
+  
   public void testCheckDevice() throws Exception {
     final Throwable[] throwable = { null };
     final Display display = new Display();
@@ -1109,7 +1109,125 @@ public class Display_Test extends TestCase {
     Event listenerEevent = ( Event )events.get( 1 );
     assertSame( filterEvent, listenerEevent );
   }
+  
+  public void testGetCursorControlWithNoControl() {
+    Display display = new Display() {
+      public Point getCursorLocation() {
+        return new Point( 234, 345 );
+      }
+    };
+    assertNull( display.getCursorControl() );
+  }
+  
+  public void testGetCursorControlWithVisibleControl() {
+    Display display = new Display() {
+      public Point getCursorLocation() {
+        return new Point( 234, 345 );
+      }
+    };
+    Control control = new Shell( display );
+    control.setBounds( 100, 100, 500, 500 );
+    control.setVisible( true );
+    assertSame( control, display.getCursorControl() );
+  }
+  
+  public void testGetCursorControlWithNestedControl() {
+    Display display = new Display() {
+      public Point getCursorLocation() {
+        return new Point( 234, 345 );
+      }
+    };
+    Shell shell = new Shell( display );
+    shell.setBounds( 100, 100, 500, 500 );
+    shell.setVisible( true );
+    Control control = new Composite( shell, SWT.NONE );
+    control.setBounds( 0, 0, 500, 500 );
+    assertSame( control, display.getCursorControl() );
+  }
+  
+  public void testGetCursorControlWithTwiceNestedControl() {
+    Display display = new Display() {
+      public Point getCursorLocation() {
+        return new Point( 234, 345 );
+      }
+    };
+    Shell shell = new Shell( display );
+    shell.setBounds( 100, 100, 500, 500 );
+    shell.setVisible( true );
+    Composite composite = new Composite( shell, SWT.NONE );
+    composite.setBounds( 0, 0, 500, 500 );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setBounds( 130, 240, 10, 10 );
+    assertSame( button, display.getCursorControl() );
+  }
 
+  public void testGetCursorControlWithInvisibleNestedControl() {
+    Display display = new Display() {
+      public Point getCursorLocation() {
+        return new Point( 234, 345 );
+      }
+    };
+    Shell shell = new Shell( display );
+    shell.setBounds( 100, 100, 500, 500 );
+    shell.setVisible( true );
+    Composite composite = new Composite( shell, SWT.NONE );
+    composite.setBounds( 0, 0, 500, 500 );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setBounds( 130, 240, 10, 10 );
+    button.setVisible( false );
+    assertSame( composite, display.getCursorControl() );
+  }
+
+  public void testGetCursorControlWithOverlappingControls() {
+    Display display = new Display() {
+      public Point getCursorLocation() {
+        return new Point( 234, 345 );
+      }
+    };
+    Shell shell = new Shell( display );
+    shell.setBounds( 100, 100, 500, 500 );
+    shell.setVisible( true );
+    Composite composite = new Composite( shell, SWT.NONE );
+    composite.setBounds( 0, 0, 500, 500 );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setBounds( 130, 240, 10, 10 );
+    Button overlappingButton = new Button( composite, SWT.PUSH );
+    overlappingButton.setBounds( 130, 240, 10, 10 );
+    assertSame( button, display.getCursorControl() );
+  }
+  
+  public void testGetCursorControlWithOverlappingAndHiddenControls() {
+    Display display = new Display() {
+      public Point getCursorLocation() {
+        return new Point( 234, 345 );
+      }
+    };
+    Shell shell = new Shell( display );
+    shell.setBounds( 100, 100, 500, 500 );
+    shell.setVisible( true );
+    Composite composite = new Composite( shell, SWT.NONE );
+    composite.setBounds( 0, 0, 500, 500 );
+    Button hiddenButton = new Button( composite, SWT.PUSH );
+    hiddenButton.setBounds( 130, 240, 10, 10 );
+    hiddenButton.setVisible( false );
+    Button overlappingButton = new Button( composite, SWT.PUSH );
+    overlappingButton.setBounds( 130, 240, 10, 10 );
+    assertSame( overlappingButton, display.getCursorControl() );
+  }
+  
+  public void testGetCursorControlWithDisposedControl() {
+    Display display = new Display() {
+      public Point getCursorLocation() {
+        return new Point( 234, 345 );
+      }
+    };
+    Shell shell = new Shell( display );
+    shell.setBounds( 100, 100, 500, 500 );
+    shell.setVisible( true );
+    shell.dispose();
+    assertNull( display.getCursorControl() );
+  }
+  
   public void testAppName() {
     assertNull( Display.getAppName() );
     Display.setAppName( "App name" );

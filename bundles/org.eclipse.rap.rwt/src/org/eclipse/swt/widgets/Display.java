@@ -34,9 +34,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
 
 /**
@@ -1426,6 +1426,26 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     return DOUBLE_CLICK_TIME;
   }
+  
+  /**
+   * Returns the control which the on-screen pointer is currently
+   * over top of, or null if it is not currently over one of the
+   * controls built by the currently running application.
+   *
+   * @return the control under the cursor
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.3
+   */
+  public Control getCursorControl () {
+    checkDevice();
+    ControlFinder finder = new ControlFinder( this, getCursorLocation() );
+    return finder.getControl();
+  }
 
   /**
    * Returns the button dismissal alignment, one of <code>LEFT</code> or <code>RIGHT</code>.
@@ -2138,6 +2158,62 @@ public class Display extends Device implements Adaptable {
 
   /////////////////
   // Inner classes
+
+  private static final class ControlFinder {
+
+    private final Display display;
+    private final Point location;
+    private final Set foundComponentInParent;
+    private Control control;
+
+    ControlFinder( final Display display, final Point location ) {
+      this.display = display;
+      this.location = new Point( location.x, location.y );
+      foundComponentInParent = new HashSet();
+      find();
+    }
+
+    Control getControl() {
+      return control;
+    }
+    
+    private void find() {
+      Shell[] shells = display.getShells();
+      for( int i = 0; control == null && i < shells.length; i++ ) {
+        WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+          public boolean doVisit( Widget widget ) {
+            boolean result = true;
+            if( widget instanceof Control ) {
+              result = visitControl( ( Control )widget );
+            }
+            return result;
+          }
+        } );
+      }
+    }
+
+    private boolean visitControl( final Control control ) {
+      Rectangle bounds = getAbsoluteBounds( control );
+      boolean result = false;
+      if( control.isVisible() && bounds.contains( location ) ) {
+        /*
+         * only assign control to cursor location if there was no other control
+         * already assigned within the same composite
+         */
+        result = foundComponentInParent.add( control.getParent() );
+        if( result ) {
+          this.control = control;
+        }
+      }
+      return result;
+    }
+
+    private Rectangle getAbsoluteBounds( final Control control ) {
+      Rectangle bounds = control.getBounds();
+      Point origin = getAbsoluteOrigin( control );
+      return new Rectangle( origin.x, origin.y, bounds.width, bounds.height );
+    }
+  }
 
   private final class DisplayAdapter implements IDisplayAdapter {
 
