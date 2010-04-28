@@ -126,7 +126,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
       
       private static final class ShutdownHandler implements Listener {
         public void handleEvent( Event event ){
-          if( Workbench.getInstance().started ) {
+          if( Workbench.getInstance().started && Platform.isRunning() ) {
             Workbench.getInstance().sessionInvalidated = true;
             Workbench.getInstance().close();
           }
