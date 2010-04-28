@@ -81,6 +81,33 @@ public class UICallBackManager_Test extends TestCase {
     Thread.sleep( SLEEP_TIME );
     assertFalse( thread.isAlive() );
   }
+  
+  public void testWaitOnUIThread() throws Exception {
+    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
+    ServiceContext context = ContextProvider.getContext();
+    simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
+    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    display.wake();
+    assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
+    UICallBackManager.getInstance().sendImmediately();
+  }
+  
+  public void testWaitOnBackgroundThread() throws Exception {
+    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
+    ServiceContext context = ContextProvider.getContext();
+    simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
+    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        display.wake();
+      }
+    } );
+    thread.start();
+    thread.join();
+    Thread.sleep( SLEEP_TIME );
+    assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
+  }
 
   public void testAsyncExecWhileLifeCycleIsRunning() {
     fakeRequestParam( display );
