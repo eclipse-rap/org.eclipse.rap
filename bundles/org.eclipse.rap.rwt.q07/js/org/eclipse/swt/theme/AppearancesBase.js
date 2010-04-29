@@ -215,14 +215,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     BUTTON
   ---------------------------------------------------------------------------
   */
-
+  
   "button" : {
     include : "atom",
 
     style : function( states ) {
+      // [tb] exists for compatibility with the original qooxdoo button  
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result.animation = tv.getCssAnimation( "Button", "animation" );
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
       result.backgroundColor = tv.getCssColor( "Button", "background-color" );
@@ -232,6 +232,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.cursor = tv.getCssCursor( "Button", "cursor" );
+      return result;
+    }
+  },
+
+  "push-button" : {
+    include : "button",
+
+    style : function( states ) {
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.animation = tv.getCssAnimation( "Button", "animation" );
       return result;
     }
   },

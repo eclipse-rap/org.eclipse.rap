@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
     switch( buttonType ) {
      case "push" :
      case "toggle":
-      this.setAppearance( "button" );
+      this.setAppearance( "push-button" );
      break;
      case "check":
       this.setAppearance( "check-box" );
