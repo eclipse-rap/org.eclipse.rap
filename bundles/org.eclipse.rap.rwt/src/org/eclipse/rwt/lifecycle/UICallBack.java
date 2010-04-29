@@ -42,6 +42,9 @@ public final class UICallBack {
   public static void runNonUIThreadWithFakeContext( final Display display,
                                                     final Runnable runnable )
   {
+    if( display == null || runnable == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     FakeContextUtil.runNonUIThreadWithFakeContext( display, runnable );
   }
 

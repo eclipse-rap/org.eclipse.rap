@@ -30,10 +30,8 @@ public class UICallBack_Test extends TestCase {
     final Display display = new Display();
     final Throwable[] exception = { null };
     Thread bgThread = new Thread( new Runnable() {
-      
       public void run() {
         UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-
           public void run() {
             try {
               UICallBack.activate( "id" );
@@ -62,6 +60,22 @@ public class UICallBack_Test extends TestCase {
     try {
       UICallBack.deactivate( null );
       fail( "Must not allow null-id" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testRunNonUIThreadWithFakeContextWithNullArguments() {
+    try {
+      UICallBack.runNonUIThreadWithFakeContext( null, new Runnable() {
+        public void run() {
+        }
+      } );
+      fail( "must not accept null-argument" );
+    } catch( IllegalArgumentException expected ) {
+    }
+    try {
+      UICallBack.runNonUIThreadWithFakeContext( new Display(), null );
+      fail( "must not accept null-argument" );
     } catch( IllegalArgumentException expected ) {
     }
   }
