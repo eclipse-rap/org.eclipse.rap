@@ -15,20 +15,33 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   construct : function() {
     this.base( arguments );
     qx.log.Logger.ROOT_LOGGER.setMinLevel( qx.log.Logger.LEVEL_ERROR );
+    this._FREEZEONFAIL = true; 
+    this._NOTRYCATCH = false; // set to true for better debugging in IE
+    this._FULLSCREEN = true;
+    this._presenter = org.eclipse.rwt.test.Presenter.getInstance();
+    this._presenter.setFullScreen( this._FULLSCREEN );    
     this._testClasses = null;
     this._currentClass = null;
     this._currentFunction = null;
     this._log = null;
-    this._presenter = null;
     this._testsTotal = 0;
     this._asserts = 0;
     var classes = qx.Class.__registry;
     this._testClasses = {};
+    var testScripts = this._getTestScripts();
     var engine = qx.core.Client.getEngine();
     var skip;
+    var shortName;
     for( var clazz in classes) {
       if( clazz.substr( clazz.length - 4 ) == "Test" ) {
-        skip = false;        
+        shortName = this._getShortClassName( clazz );
+        if( testScripts[ shortName ] ) {
+          delete testScripts[ shortName ];
+        } else {
+          var msg = "TestClass " + clazz + " does not match filename.";
+          this._criticalFail( msg );
+        }
+        skip = false;       
         if( classes[ clazz ].prototype.TARGETENGINE instanceof Array ) {
           var targetEngine = classes[ clazz ].prototype.TARGETENGINE;
           skip = targetEngine.indexOf( engine ) == -1;
@@ -39,17 +52,14 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
         }
       }
     }    
-    this._presenter = org.eclipse.rwt.test.Presenter.getInstance();    
+    for( var script in testScripts ) {
+      this._criticalFail( "File " + script + ".js could not be parsed. " +
+      		                "Probably the file contains corrupted JavaScript." );
+    }
     // helper for debugging
     getLog = function() {
       return org.eclipse.rwt.test.TestRunner.getInstance().getLog();
     }
-    this._FREEZEONFAIL = true;
-    //temporarily setting this to true can help debugging in IE
-    this._NOTRYCATCH = false;
-    // fullscreen toggle
-    this._FULLSCREEN = true;
-    this._presenter.setFullScreen( this._FULLSCREEN );
   },
 
   members : {
@@ -63,7 +73,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       if( this._NOTRYCATCH ) {
         this._run();
       } else {    
-    	  try {  	    
+    	  try {
       	  this._run();
     	  } catch( e ) { 
     	    this.info( e );      
@@ -153,6 +163,14 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       } else {
         this._asserts++;
       }
+  	},
+  	
+  	_criticalFail : function( msg ) {
+  	  this._presenter.log( "Critical error: " + msg, false );
+  	  this._presenter.log( "Testrunner aborted." , false );
+  	  this._presenter.setFailed( true );
+  	  this._presenter.setNumberTestsFinished( 0, 0 );
+  	  throw msg;
   	},
   	
   	_createFailLog : function( e, testInstance ) {
@@ -261,6 +279,36 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       return testFunctions;
     },
     
+    _getTestScripts : function() {
+      var result = {};
+      var head = document.documentElement.firstChild;
+      if( head.tagName.toLowerCase() != "head" ) {
+        throw "could not find <head>";
+      }
+      for( var i = 0; i < head.childNodes.length; i++ ) {
+        var node = head.childNodes[ i ];
+        if( node.nodeName.toLowerCase() == "script" ) {
+          var src = node.getAttribute( "src" );
+          if( src && src.indexOf( "Test.js" ) == ( src.length - 7) ) {
+            result[ this._getShortClassName( src ) ] = true;
+          } 
+        }
+      }
+      return result;
+    },
+    
+    _getShortClassName : function( src ) {
+      var result = src;
+      var separator = ".";
+      if( result.toLowerCase().slice( -3 ) == ".js" ) {
+        result = result.substr( 0, result.length - 3 );
+        separator = "/";
+      }
+      var splitted = result.split( separator );
+      result = splitted.pop();
+      return result;
+   },
+   
     info : function( text, indent ) {
       this.base( arguments, text );
       this._presenter.log( text, indent );

@@ -30,7 +30,9 @@ qx.Class.define("org.eclipse.rwt.test.Application", {
     // after the application is completely loaded:
     _postloaderDone : function() {
       this.base( arguments );
-      this.runner.run();
+      if( this.runner ) {
+        this.runner.run();
+      }
     }
   }
 });

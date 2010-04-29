@@ -57,7 +57,12 @@ qx.Class.define("org.eclipse.rwt.test.Presenter", {
   members : {
     
     setNumberTestsFinished : function( finished, total ) {      
-      var pos = Math.round( ( 100 / total ) * finished );
+      var pos;
+      if( finished == total ) {
+        pos = 100;
+      } else {
+        pos = Math.round( ( 100 / total ) * finished );
+      }
       this._progressIndicator.style.width = pos + "%";
     },
     
