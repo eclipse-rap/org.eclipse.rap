@@ -14,15 +14,13 @@ package org.eclipse.swt.internal.widgets.menukit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IMenuAdapter;
 import org.eclipse.swt.widgets.Menu;
 
 final class PopupMenuLCA extends MenuDelegateLCA {
-
-//  private static final String SHOW_MENU
-//    = "org.eclipse.swt.MenuUtil.showMenu";
 
   void preserveValues( final Menu menu ) {
     MenuLCAUtil.preserveEnabled( menu );
@@ -40,7 +38,6 @@ final class PopupMenuLCA extends MenuDelegateLCA {
   void renderInitialization( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
     writer.newWidget( "org.eclipse.rwt.widgets.Menu" );
-    //writer.call( "addToDocument", null ); // TODO [tb] : do in constructor ?
   }
 
   void renderChanges( final Menu menu ) throws IOException {
@@ -49,7 +46,6 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.writeEnabled( menu );
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
-    //MenuLCAUtil.writeWidth( menu );
     WidgetLCAUtil.writeHelpListener( menu );
   }
 

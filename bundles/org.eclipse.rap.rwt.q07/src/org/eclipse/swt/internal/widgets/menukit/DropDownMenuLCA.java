@@ -25,9 +25,6 @@ import org.eclipse.swt.widgets.*;
 
 final class DropDownMenuLCA extends MenuDelegateLCA {
 
-//  private static final String INITIALIZE
-//    = "org.eclipse.swt.MenuUtil.initialize";
-
   void preserveValues( final Menu menu ) {
     MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
@@ -47,7 +44,6 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     //      assign a Menu to more than one MenuItem
     //      [rst] It's allowed in SWT but not in qooxdoo - we have a problem here
     writer.newWidget( "org.eclipse.rwt.widgets.Menu" );
-    //writer.call( "addToDocument", null );
     MenuItem[] menuItems = findReferringMenuItems( menu );
     for( int i = 0; i < menuItems.length; i++ ) {
       writer.call( menuItems[ i ], "setMenu", new Object[] { menu } );
@@ -56,7 +52,6 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
 
   void renderChanges( final Menu menu ) throws IOException {
     WidgetLCAUtil.writeCustomVariant( menu );
-    // TODO [tb] : why no "writeShow"?
     MenuLCAUtil.writeEnabled( menu );
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
