@@ -519,11 +519,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
 
     _onItemCollapsed : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var treeItemId = wm.findIdByWidget( evt.getData() );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.treeCollapsed", treeItemId );
-        req.send();
+        var item = evt.getData();
+        if( item.hasContent() ) {
+          var wm = org.eclipse.swt.WidgetManager.getInstance();
+          var treeItemId = wm.findIdByWidget( item );
+          var req = org.eclipse.swt.Request.getInstance();        
+          req.addEvent( "org.eclipse.swt.events.treeCollapsed", treeItemId );
+          req.send();
+        }
       }
     },
 
