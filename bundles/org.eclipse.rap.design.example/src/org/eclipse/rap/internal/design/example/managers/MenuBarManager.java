@@ -86,50 +86,64 @@ public class MenuBarManager extends MenuManager {
     }    
     if( tempItem != null && tempItem instanceof MenuManager ) {
       final MenuManager manager = ( MenuManager ) tempItem;
-      int style = SWT.NONE;
-      if( manager.getItems() != null && manager.getItems().length > 0 ) {
-        style = SWT.DROP_DOWN;
-      }
+      int style = extractStyle( manager );
       final ToolItem toolItem = new ToolItem( toolbar, style );
       toolItem.setText( manager.getMenuText() );
       toolItem.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
-      // create the menu
-      final Menu menu = new Menu( menuParent );
-      toolItem.setData( menu );
-      menu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );      
-      toolItem.addSelectionListener( new SelectionAdapter() {
-        public void widgetSelected( final SelectionEvent e ) {
-          // cleanup the menu
-          MenuItem[] menuItems = menu.getItems();
-          for( int i = 0; i < menuItems.length; i++ ) {
-            menuItems[ i ].dispose();
-          }
-          // hook menu to toolitem.          
-          IContributionItem[] contribItems = manager.getItems();
-          if( contribItems != null && contribItems.length > 0 ) {
-            for( int i = 0; i < contribItems.length; i++ ) {
-              contribItems[ i ].fill( menu, -1 );
-            }
-          }
-          // set the menu position
-          Display display = toolItem.getDisplay();       
-          Rectangle bounds = toolItem.getBounds();
-          int leftIndent = bounds.x;
-          int topIndent = bounds.y + bounds.height;
-          Point indent = new Point( leftIndent, topIndent );
-          Point menuLocation 
-            = display.map( toolbar, toolbar.getShell(), indent );
-          menu.setLocation( menuLocation );
-          // style the menuitems and show the menu
-          menu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
-          styleMenuItems( menu );
-          menu.setVisible( true );
-        };
-      } );
-      
+      createMenu( manager, toolItem );      
       // needed to clear all controls in case of an update
       toolItemList.add( toolItem );
     } 
+  }
+
+  private int extractStyle( final MenuManager manager ) {
+    int style = SWT.NONE;
+    if( manager.getItems() != null && manager.getItems().length > 0 ) {
+      style = SWT.DROP_DOWN;
+    }
+    return style;
+  }
+
+  private void createMenu( final MenuManager manager, final ToolItem toolItem )
+  {
+    final Menu menu = new Menu( menuParent );
+    toolItem.setData( menu );
+    menu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );      
+    toolItem.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        // cleanup the menu
+        MenuItem[] menuItems = menu.getItems();
+        for( int i = 0; i < menuItems.length; i++ ) {
+          menuItems[ i ].dispose();
+        }
+        hookMenuToToolItem( manager, menu );
+        // set the menu position
+        Display display = toolItem.getDisplay();       
+        Rectangle bounds = toolItem.getBounds();
+        int leftIndent = bounds.x;
+        int topIndent = bounds.y + bounds.height;
+        Point indent = new Point( leftIndent, topIndent );
+        Point menuLocation 
+          = display.map( toolbar, toolbar.getShell(), indent );
+        menu.setLocation( menuLocation );
+        // style the menuitems and show the menu
+        menu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+        styleMenuItems( menu );
+        menu.setVisible( true );
+      }
+
+      private void hookMenuToToolItem( final MenuManager manager,
+                                       final Menu menu )
+      {
+        IContributionItem[] contribItems = manager.getItems();
+        if( contribItems != null && contribItems.length > 0 ) {
+          for( int i = 0; i < contribItems.length; i++ ) {
+            contribItems[ i ].fill( menu, -1 );
+          }
+        }
+      };
+      
+    } );
   }
 
   private void styleMenuItems( final Menu menu ) {
@@ -137,6 +151,11 @@ public class MenuBarManager extends MenuManager {
     if( items != null && items.length > 0 ) {
       for( int i = 0; i < items.length; i++ ) {
         items[ i ].setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+        Menu subMenu = items[ i ].getMenu();
+        if( subMenu != null ) {
+          subMenu.setData( WidgetUtil.CUSTOM_VARIANT, MENU_BAR_VARIANT );
+          styleMenuItems( subMenu );
+        }
       }
     }
   }
