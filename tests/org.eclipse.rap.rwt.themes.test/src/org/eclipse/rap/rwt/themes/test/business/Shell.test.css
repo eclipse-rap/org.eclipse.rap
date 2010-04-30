@@ -22,6 +22,13 @@ Shell {
   background-color: white;
 }
 
+Shell-DisplayOverlay {
+  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
+  background-image: none;
+  background-color: #FFFFFF;
+  opacity: 0.5;
+}
+
 Shell[BORDER], Shell[TITLE] {
   background-color: white;
   border: 2px solid #005092;

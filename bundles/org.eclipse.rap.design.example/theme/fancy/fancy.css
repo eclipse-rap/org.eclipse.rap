@@ -363,6 +363,13 @@ Shell {
   color: #4a4a4a;
 }
 
+Shell-DisplayOverlay {
+  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
+  background-image: none;
+  background-color: #FFFFFF;
+  opacity: 0.5;
+}
+
 Shell[BORDER], Shell[TITLE] {
   background-color: white;
   border: 2px solid #99c92c;
@@ -412,9 +419,9 @@ Shell.toolbarLayer {
 }
 
 Shell-DisplayOverlay.confDialog {
-  animation: fadeIn 400ms linear, fadeOut 1000ms ease-out;
+  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
   background-image: none;
-  background-color: #FFFFFF;
+  background-color: #999999;
   opacity: 0.5;
 }
 

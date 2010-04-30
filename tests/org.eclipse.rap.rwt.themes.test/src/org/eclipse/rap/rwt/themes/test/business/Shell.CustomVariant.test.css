@@ -6,8 +6,8 @@ Shell.toolbarLayer {
 }
 
 Shell-DisplayOverlay.confDialog {
+  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
   background-image: none;
-  background-color: #FFFFFF;
+  background-color: #999999;
   opacity: 0.5;
-  animation: fadeIn 400ms linear, fadeOut 1000ms ease-out;
 }
