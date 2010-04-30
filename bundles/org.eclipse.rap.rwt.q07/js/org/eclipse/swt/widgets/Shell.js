@@ -20,11 +20,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     //      is a 'protected' field on class Window
     this._captionTitle.setMode( "html" );
     this._activeControl = null;
+    this._focusControl = null;
     this._activateListenerWidgets = new Array();
     this._parentShell = null;
     this._renderZIndex = true;
     // TODO [rh] check whether these listeners must be removed upon disposal
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
+    this.addEventListener( "changeFocusedChild", this._onChangeFocusedChild );
     this.addEventListener( "changeActive", this._onChangeActive );
     this.addEventListener( "changeMode", this._onChangeMode );
     this.addEventListener( "changeLeft", this._onChangeLocation );
@@ -150,6 +152,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   destruct : function() {
     this.setParentShell( null );
     this.removeEventListener( "changeActiveChild", this._onChangeActiveChild );
+    this.removeEventListener( "changeFocusedChild", this._onChangeFocusedChild );
     this.removeEventListener( "changeActive", this._onChangeActive );
     this.removeEventListener( "changeMode", this._onChangeMode );
     this.removeEventListener( "changeLeft", this._onChangeLocation );
@@ -365,6 +368,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         }
       }
     },
+    
+    _onChangeFocusedChild : function( evt ) {
+      if( org_eclipse_rap_rwt_EventUtil_suspend ) {
+        this._focusControl = this.getFocusedChild();
+      }
+    },
 
     _onChangeActive : function( evt ) {
       // TODO [rst] This hack is a workaround for bug 345 in qooxdoo, remove this
@@ -450,13 +459,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     _onSend : function( evt ) {
       if( this.getActive() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var focusedChildId = null;
-        if( this.getFocusedChild() != null ) {
-          focusedChildId = widgetManager.findIdByWidget( this.getFocusedChild() );
+        var focusedChild = this.getFocusedChild();
+        if( focusedChild != null && focusedChild != this._focusControl ) {
+          this._focusControl = focusedChild;
+          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var focusedChildId = widgetManager.findIdByWidget( focusedChild );
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addParameter( req.getUIRootId() + ".focusControl", focusedChildId );    
         }
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( req.getUIRootId() + ".focusControl", focusedChildId );
       }
     },
 
