@@ -630,26 +630,6 @@ List-Item:even:selected:unfocused {
   color: #ffffff;
 }
 
-/* List in ExpandBar, used in
-   org.eclipse.rap.examples.internal NavigationView#createCategoryItem() */
-List-Item.EXAMPLES:even {
-  background-color: #ffffff;
-}
-
-List-Item.EXAMPLES:even:hover {
-  background-color: #dae9f7;
-}
-
-List-Item.EXAMPLES:even:selected {
-  background-color: #00589f;
-  color: #ffffff;
-}
-
-List-Item.EXAMPLES:selected:unfocused {
-  background-color: #959595;
-  color: #ffffff;
-}
-
 /* Link */
 
 Link-Hyperlink {

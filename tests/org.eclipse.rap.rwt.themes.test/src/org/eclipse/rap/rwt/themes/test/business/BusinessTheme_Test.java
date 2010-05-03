@@ -28,7 +28,6 @@ public class BusinessTheme_Test extends ThemeTestCase {
     processCssTestFile( getClass(), "Tree.test.css" );
     processCssTestFile( getClass(), "Table.test.css" );
     processCssTestFile( getClass(), "List.test.css" );
-    processCssTestFile( getClass(), "List.CustomVariant.test.css" );
     processCssTestFile( getClass(), "Link.test.css" );
     processCssTestFile( getClass(), "Label.test.css" );
     processCssTestFile( getClass(), "ExpandBar.test.css" );

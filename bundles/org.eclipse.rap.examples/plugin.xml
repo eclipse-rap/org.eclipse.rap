@@ -99,5 +99,12 @@
             class="org.eclipse.rap.examples.internal.RedirectServlet">
       </servlet>
    </extension>
+   <extension
+         point="org.eclipse.rap.ui.themes">
+      <themeContribution
+            file="theme/examples.business.css"
+            themeId="org.eclipse.rap.design.example.business.theme">
+      </themeContribution>
+   </extension>
 
 </plugin>
