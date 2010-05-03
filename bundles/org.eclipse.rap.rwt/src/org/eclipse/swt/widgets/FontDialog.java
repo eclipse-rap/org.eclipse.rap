@@ -341,7 +341,7 @@ public class FontDialog extends Dialog {
     result.setText( RWTMessages.getMessage( "RWT_FontDialogFontColorTitle" ) );
     result.setLayout( new GridLayout( 2, false ) );
     colorLabel = new Label( result, SWT.BORDER );
-    colorLabel.setLayoutData( new GridData( 25, 25 ) );
+    colorLabel.setLayoutData( new GridData( 20, 20 ) );
     Button changeColorButton = new Button( result, SWT.PUSH );
     String text = RWTMessages.getMessage( "RWT_FontDialogFontColorSelect" );
     changeColorButton.setText( text );
