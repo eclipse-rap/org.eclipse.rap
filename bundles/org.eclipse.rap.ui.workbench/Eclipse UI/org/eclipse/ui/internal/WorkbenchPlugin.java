@@ -1344,11 +1344,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     		bundleListener = null;
     	}
     	
-    	// RAP [bm]: 
-        httpServiceTracker.close();
-        httpServiceTracker = null;
+    	// RAP [rh]: clean up RAP-specific resouces
+    	if( httpServiceTracker != null ) {
+    		httpServiceTracker.close();
+    		httpServiceTracker = null;
+    	}
         EntryPointExtension.unbindAll();
-        // RAPEND: [bm] 
+        // RAPEND 
 
         // RAP [rh] unregister multi-session-aware LocaleProvider service
         localeProviderService.unregister();
