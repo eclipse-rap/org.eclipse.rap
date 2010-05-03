@@ -23,10 +23,10 @@ Shell {
 }
 
 Shell-DisplayOverlay {
-  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
+  animation: fadeIn 200ms linear, fadeOut 400ms ease-out;
   background-image: none;
-  background-color: #FFFFFF;
-  opacity: 0.5;
+  background-color: #808080;
+  opacity: 0.2;
 }
 
 Shell[BORDER], Shell[TITLE] {
