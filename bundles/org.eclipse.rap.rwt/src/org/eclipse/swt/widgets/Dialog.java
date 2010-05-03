@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,10 +7,13 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 
 /**
  * This class is the abstract superclass of the classes
@@ -48,6 +51,8 @@ import org.eclipse.swt.SWT;
  */
 public abstract class Dialog {
 
+  private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
+
   int style;
   Shell parent;
   String title;
@@ -66,7 +71,7 @@ public abstract class Dialog {
    * </ul>
    */
   public Dialog( final Shell parent ) {
-    this( parent, SWT.APPLICATION_MODAL );
+    this( parent, SWT.PRIMARY_MODAL );
   }
 
   /**
@@ -190,5 +195,36 @@ public abstract class Dialog {
 
   void error( final int code ) {
     SWT.error( code );
+  }
+
+  static int checkStyle( final Shell parent, final int style ) {
+    int result = style;
+    int mask = SWT.PRIMARY_MODAL | SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL;
+    if( ( result & SWT.SHEET ) != 0 ) {
+      result &= ~SWT.SHEET;
+      if( ( result & mask ) == 0 ) {
+        result |= parent == null ? SWT.APPLICATION_MODAL : SWT.PRIMARY_MODAL;
+      }
+    }
+    if( ( result & mask ) == 0 ) {
+      result |= SWT.APPLICATION_MODAL;
+    }
+    if( ( result & ( SWT.LEFT_TO_RIGHT ) ) == 0 ) {
+      if( parent != null ) {
+        if( ( parent.style & SWT.LEFT_TO_RIGHT ) != 0 ) {
+          result |= SWT.LEFT_TO_RIGHT;
+        }
+      }
+    }
+    return result;
+  }
+
+  static int convertHorizontalDLUsToPixels( final Control control,
+                                            final int dlus )
+  {
+    Font dialogFont = control.getFont();
+    float charWidth = Graphics.getAvgCharWidth( dialogFont );
+    float width = charWidth * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2;
+    return ( int )( width / HORIZONTAL_DIALOG_UNIT_PER_CHAR );
   }
 }

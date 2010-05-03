@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -49,7 +49,8 @@ public class DialogsTab extends ExampleTab {
   private Button iconWorkingButton;
   private Button noIconButton;
   private Button showMessageBoxDlgButton;
-  private Button showColorDlgButton;
+  private Button showColorDialogButton;
+  private Button showFontDialogButton;
 
   public DialogsTab( final CTabFolder topFolder ) {
     super( topFolder, "Dialogs" );
@@ -175,12 +176,12 @@ public class DialogsTab extends ExampleTab {
     loginDlgResLabel = new Label( group2, SWT.WRAP );
     loginDlgResLabel.setText( "Result:" );
 
-    Group group3 = new Group( parent, SWT.NONE );
-    group3.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-    group3.setText( "SWT Dialogs" );
-    group3.setLayout( new GridLayout( 3, true ) );
+    Group swtDialogsGroup = new Group( parent, SWT.NONE );
+    swtDialogsGroup.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    swtDialogsGroup.setText( "SWT Dialogs" );
+    swtDialogsGroup.setLayout( new GridLayout( 3, true ) );
 
-    showMessageBoxDlgButton = new Button( group3, SWT.PUSH );
+    showMessageBoxDlgButton = new Button( swtDialogsGroup, SWT.PUSH );
     showMessageBoxDlgButton.setText( "MessageBox Dialog" );
     showMessageBoxDlgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -189,18 +190,28 @@ public class DialogsTab extends ExampleTab {
     } );
     showMessageBoxDlgButton.setLayoutData( createGridDataFillBoth() );
 
-    showColorDlgButton = new Button( group3, SWT.PUSH );
-    showColorDlgButton.setText( "ColorDialog" );
-    showColorDlgButton.addSelectionListener( new SelectionAdapter() {
+    showColorDialogButton = new Button( swtDialogsGroup, SWT.PUSH );
+    showColorDialogButton.setText( "ColorDialog" );
+    showColorDialogButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         showColorDialog();
       }
     });
-    showColorDlgButton.setLayoutData( createGridDataFillBoth() );
-    insertSpaceLabels( group3, 1 );
-
-    messageBoxDlgResLabel = new Label( group3, SWT.WRAP );
+    showColorDialogButton.setLayoutData( createGridDataFillBoth() );
+    showFontDialogButton = new Button( swtDialogsGroup, SWT.PUSH );
+    showFontDialogButton.setText( "FontDialog" );
+    showFontDialogButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        showFontDialog();
+      }
+    });
+    showFontDialogButton.setLayoutData( createGridDataFillBoth() );
+    
+    messageBoxDlgResLabel = new Label( swtDialogsGroup, SWT.WRAP );
     messageBoxDlgResLabel.setText( "Result:" );
+    GridData gdMessageBoxDlgResLabel = new GridData();
+    gdMessageBoxDlgResLabel.horizontalSpan = 3;
+    messageBoxDlgResLabel.setLayoutData( gdMessageBoxDlgResLabel );
   }
 
   private GridData createGridDataFillBoth() {
@@ -428,47 +439,61 @@ public class DialogsTab extends ExampleTab {
     messageBoxDlgResLabel.pack();
   }
 
+  protected void showFontDialog() {
+    FontDialog dialog = new FontDialog( getShell(), SWT.SHELL_TRIM );
+    FontData result = dialog.open();
+    messageBoxDlgResLabel.setText( "Result: "
+                                   + result
+                                   + " / "
+                                   + dialog.getRGB() );
+    messageBoxDlgResLabel.pack();
+  }
+
   private void createMessageBoxStyleControls( final Composite parent ) {
-    Group buttonStyleGroup = new Group( parent, SWT.NONE );
-    buttonStyleGroup.setLayout( new GridLayout() );
-    buttonStyleGroup.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_FILL
-                                                  | GridData.VERTICAL_ALIGN_FILL ) );
-    buttonStyleGroup.setText( "SWT MessageBox Styles" );
+    createButtonStyleGroup( parent );
+    createIconStyleGroup( parent );
+  }
 
-    okButton = new Button( buttonStyleGroup, SWT.CHECK );
+  private void createButtonStyleGroup( final Composite parent ) {
+    Group group = new Group( parent, SWT.NONE );
+    group.setLayout( new GridLayout() );
+    GridData layoutData = new GridData( SWT.FILL, SWT.FILL, false, false );
+    group.setLayoutData( layoutData );
+    group.setText( "SWT MessageBox Styles" );
+    okButton = new Button( group, SWT.CHECK );
     okButton.setText( "SWT.OK" );
-    cancelButton = new Button( buttonStyleGroup, SWT.CHECK );
+    cancelButton = new Button( group, SWT.CHECK );
     cancelButton.setText( "SWT.CANCEL" );
-    yesButton = new Button( buttonStyleGroup, SWT.CHECK );
+    yesButton = new Button( group, SWT.CHECK );
     yesButton.setText( "SWT.YES" );
-    noButton = new Button( buttonStyleGroup, SWT.CHECK );
+    noButton = new Button( group, SWT.CHECK );
     noButton.setText( "SWT.NO" );
-    retryButton = new Button( buttonStyleGroup, SWT.CHECK );
+    retryButton = new Button( group, SWT.CHECK );
     retryButton.setText( "SWT.RETRY" );
-    abortButton = new Button( buttonStyleGroup, SWT.CHECK );
+    abortButton = new Button( group, SWT.CHECK );
     abortButton.setText( "SWT.ABORT" );
-    ignoreButton = new Button( buttonStyleGroup, SWT.CHECK );
+    ignoreButton = new Button( group, SWT.CHECK );
     ignoreButton.setText( "SWT.IGNORE" );
+  }
 
-    Group iconStyleGroup = new Group( parent, SWT.NONE );
-    iconStyleGroup.setLayout( new GridLayout() );
-    iconStyleGroup.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_FILL
-                                                | GridData.VERTICAL_ALIGN_FILL ) );
-    iconStyleGroup.setText( "SWT MessageBox Icon Styles" );
-
-    iconErrorButton = new Button( iconStyleGroup, SWT.RADIO );
+  private void createIconStyleGroup( final Composite parent ) {
+    Group group = new Group( parent, SWT.NONE );
+    group.setLayout( new GridLayout() );
+    GridData iconGroupData = new GridData( SWT.FILL, SWT.FILL, false, false );
+    group.setLayoutData( iconGroupData );
+    group.setText( "SWT MessageBox Icon Styles" );
+    iconErrorButton = new Button( group, SWT.RADIO );
     iconErrorButton.setText( "SWT.ICON_ERROR" );
-    iconInformationButton = new Button( iconStyleGroup, SWT.RADIO );
+    iconInformationButton = new Button( group, SWT.RADIO );
     iconInformationButton.setText( "SWT.ICON_INFORMATION" );
-    iconQuestionButton = new Button( iconStyleGroup, SWT.RADIO );
+    iconQuestionButton = new Button( group, SWT.RADIO );
     iconQuestionButton.setText( "SWT.ICON_QUESTION" );
-    iconWarningButton = new Button( iconStyleGroup, SWT.RADIO );
+    iconWarningButton = new Button( group, SWT.RADIO );
     iconWarningButton.setText( "SWT.ICON_WARNING" );
-    iconWorkingButton = new Button( iconStyleGroup, SWT.RADIO );
+    iconWorkingButton = new Button( group, SWT.RADIO );
     iconWorkingButton.setText( "SWT.ICON_WORKING" );
-    noIconButton = new Button( iconStyleGroup, SWT.RADIO );
+    noIconButton = new Button( group, SWT.RADIO );
     noIconButton.setText( "No Icon" );
-
     noIconButton.setSelection( true );
   }
 }

@@ -1,5 +1,5 @@
 /******************************************************************************* 
- * Copyright (c) 2009 EclipseSource and others. All rights reserved. This
+ * Copyright (c) 2010 EclipseSource and others. All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -66,7 +66,6 @@ public class ColorDialog extends Dialog {
   
   // Layout
   private static final int BUTTON_WIDTH = 60;
-  private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
   private static final int PALETTE_BOX_SIZE = 12;
   private static final int PALETTE_BOXES_IN_ROW = 14;
   private static final int COLOR_DISPLAY_BOX_SIZE = 76;
@@ -330,7 +329,7 @@ public class ColorDialog extends Dialog {
     Button result = new Button( parent, SWT.PUSH );
     // Set button layout data
     GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
-    int widthHint = convertHorizontalDLUsToPixels( BUTTON_WIDTH );
+    int widthHint = convertHorizontalDLUsToPixels( shell, BUTTON_WIDTH );
     Point minSize = result.computeSize( SWT.DEFAULT, SWT.DEFAULT, true );
     data.widthHint = Math.max( widthHint, minSize.x );
     result.setLayoutData( data );
@@ -345,13 +344,6 @@ public class ColorDialog extends Dialog {
       }
     } );
     return result;
-  }
-
-  private int convertHorizontalDLUsToPixels( final int dlus ) {
-    Font dialogFont = shell.getFont();
-    float charWidth = Graphics.getAvgCharWidth( dialogFont );
-    float width = charWidth * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2;
-    return ( int )( width / HORIZONTAL_DIALOG_UNIT_PER_CHAR );
   }
 
   private void setColorFomSpinner( final int colorIndex, final int value ) {
@@ -377,20 +369,5 @@ public class ColorDialog extends Dialog {
     rgb.red = selectedColor.red;
     updateColorDisplay();
     updateSpinners();
-  }
-  
-  private static int checkStyle( final Shell parent, final int style ) {
-    int mask = SWT.PRIMARY_MODAL | SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL;
-    int result = style;
-    if( ( result & SWT.SHEET ) != 0 ) {
-      result &= ~SWT.SHEET;
-      if( ( result & mask ) == 0 ) {
-        result |= parent == null ? SWT.APPLICATION_MODAL : SWT.PRIMARY_MODAL;
-      }
-    }
-    if( ( result & mask ) == 0 ) {
-      result |= SWT.APPLICATION_MODAL;
-    }
-    return Widget.checkBits( result, SWT.LEFT_TO_RIGHT, 0, 0, 0, 0, 0 );
   }
 }

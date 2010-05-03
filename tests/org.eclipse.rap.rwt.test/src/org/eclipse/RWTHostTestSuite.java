@@ -158,6 +158,8 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ExpandBar_Test.class );
     suite.addTestSuite( ExpandItem_Test.class );
     suite.addTestSuite( Slider_Test.class );
+    suite.addTestSuite( Dialog_Test.class );
+    suite.addTestSuite( FontDialog_Test.class );
     suite.addTestSuite( ColorDialog_Test.class );
     suite.addTestSuite( Scrollable_Test.class );
     suite.addTestSuite( Decorations_Test.class );
