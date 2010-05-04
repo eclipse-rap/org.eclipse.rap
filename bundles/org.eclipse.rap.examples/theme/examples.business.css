@@ -28,3 +28,197 @@ List-Item.EXAMPLES:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
 }
+
+/* Theming-expamles page */
+
+Button[PUSH].simple, Button[PUSH].simpleAnimated {
+  background-image: none;
+  color: black;
+  background-color: rgb( 247, 247, 251 );
+  border: 1px outset;
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  padding: 5px 6px;
+  animation: none;
+}
+
+Button[PUSH].simpleAnimated {
+	animation: hoverOut 300ms linear;
+}
+
+Button[PUSH].simple:hover, Button[PUSH].simpleAnimated:hover {
+  background-color: rgb( 194, 214, 235 );
+}
+
+Button[PUSH].simple:pressed, Button[PUSH].simpleAnimated:pressed { 
+  border: 1px inset;
+  padding: 4px 3px 2px 5px;
+}
+
+Button[PUSH].pretty, Button[PUSH].prettyAnimated {
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: black;
+  border: 1px solid #AAAAAA;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( rgb( 247, 247, 251 ) ),
+    to( rgb( 207, 207, 211 ) )
+  );  
+  border-radius: 2px;
+  padding: 5px 6px;
+  animation: none;
+}
+
+Button[PUSH].prettyAnimated {
+  animation: hoverIn 250ms ease-out, hoverOut 400ms ease-in;
+}
+
+Button[PUSH].pretty:hover, Button[PUSH].prettyAnimated:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( rgb( 247, 247, 251 ) ),
+    to( rgb( 255, 217, 118 ) )
+  );    
+}
+
+Button[PUSH].pretty:pressed, Button[PUSH].prettyAnimated:pressed {
+  border: 1px solid #666666; 
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( rgb( 167, 167, 171 ) ),
+    to( rgb( 207, 207, 211 ) )
+  );  
+  padding: 5px 6px 2px 6px;
+}
+
+Button[PUSH].fancy, Button[PUSH].fancyAnimated {
+  color: #062f61;
+  border: 1px solid #899dc5;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e5f0fd ),
+    color-stop( 46%, #deecfc ),
+    color-stop( 56%, #c4dcf6 ),
+    to( #e5f0fd )
+  );  
+  border-radius: 6px;
+  font: italic 16px 'Arial', sans-serif;
+  padding: 5px 6px;
+  animation: none;
+}
+
+Button[PUSH].fancyAnimated {
+  animation: hoverIn 350ms ease, hoverOut 600ms ease;
+}
+
+Button[PUSH].fancy:hover, Button[PUSH].fancyAnimated:hover{
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e5f0fd ),
+    color-stop( 46%, #deecfc ),
+    color-stop( 56%, #c4dcf6 ),
+    to( #a5c0ff )
+  );  
+}
+
+Button[PUSH].fancy:pressed, Button[PUSH].fancyAnimated:pressed { 
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #c4dcf6 ),
+    color-stop( 52%, #d4ecf6 ),
+    to( #b5d0ff )
+  );
+  padding: 5px 6px 0px 6px;
+}
+
+ToolBar.themingDemo {
+  color: black;
+  padding: 0px 0px 0px 20px;
+  spacing: 50px;
+  background-color: rgb( 248, 248, 255 );
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( rgb( 247, 247, 251 ) ),
+    to( rgb( 217, 217, 221 ) )
+  );  
+  border: 1px outset;
+  opacity: 1;
+}
+
+ToolItem.themingDemo {
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  border-radius: 0px;
+  padding: 2px 3px;
+  spacing: 4px;
+  opacity: 1;
+  animation: none;
+}
+
+ToolItem.themingDemo:hover {
+	border: 1px outset;
+}
+
+ToolItem.themingDemo:pressed {
+	border: 1px inset;
+}
+
+Menu.simple {
+  color: black;
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  border: 2px outset;
+  border-radius: 0px;
+  padding: 1px;
+  opacity: 1;
+  animation: none;
+}
+
+MenuItem.simple {
+  color: black;
+  background-color: transparent;
+  opacity: 1;
+}
+
+MenuItem.simple:hover {
+  color: white;
+  background-color: rgb( 49, 106, 197 );
+}
+
+Menu.pretty {
+  color: #0059a5;
+  background-color: rgb( 247, 247, 251 );
+  border: 1px solid #cccccc;
+  border-radius: 0px 0px 2px 2px;
+  animation: slideIn 50ms ease-out, slideOut 250ms ease-out;
+}
+
+MenuItem.pretty {
+  color: #004277;
+}
+
+MenuItem.pretty:hover {
+  color: #0369bc;
+  background-color: transparent;
+}
+
+Menu.fancy {
+  color: #656565;
+  background-color: #dbf1fb;
+  border: 2px solid #3883a4;
+  border-radius: 0px 0px 5px 5px;
+  animation: slideOut 400ms ease-in, slideIn 200ms ease-out;
+  font: 14px 'Arial', sans-serif;
+  padding: 0px 0px 3px 0px;
+}
+
+MenuItem.fancy {
+  color: #656565;
+}
+
+MenuItem.fancy:hover {
+  color: white;
+  background-color: #0369bc;
+}
+

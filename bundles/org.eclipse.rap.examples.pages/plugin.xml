@@ -16,6 +16,10 @@
             id="layouts"
             name="Layouts"> 
       </category>
+      <category
+            id="design"
+            name="Graphics &amp; Design">
+      </category>
       <page
             category="lists"
             class="org.eclipse.rap.examples.pages.ListExample"
@@ -71,10 +75,16 @@
             name="FillLayout">
       </page>
       <page
-            category="basicWidgets"
+            category="design"
             class="org.eclipse.rap.examples.pages.CanvasExample"
             description="description/canvas.html"
             name="Canvas">
+      </page>
+      <page
+            category="design"
+            class="org.eclipse.rap.examples.pages.ThemingExample"
+            description="description/theming.html"
+            name="Theming">
       </page>
    </extension>
    <extension
