@@ -105,6 +105,7 @@ public class TableViewerExample implements IExamplePage {
       }
     } );
     viewer.getTable().setHeaderVisible( true );
+    viewer.getTable().setLinesVisible( true );
     GridData tableData = new GridData( SWT.FILL, SWT.FILL, true, true );
     tableData.horizontalSpan = 2;
     viewer.getTable().setLayoutData( tableData );
