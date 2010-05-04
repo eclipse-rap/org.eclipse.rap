@@ -126,6 +126,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 
     setChecked : function( value ) {
       if( this._checkBox != null ) {
+        this._checked = value;
         if( value ) {
           this._checkBox.addState( "checked" );
         } else {
