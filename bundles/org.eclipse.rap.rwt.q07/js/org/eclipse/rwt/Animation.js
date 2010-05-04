@@ -115,11 +115,13 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     },
     
     restart : function() {
+      var result = false;
       if( this.isStarted() ) {
         var config = this._config;
         this.cancel();
-        this.start( config );
+        result = this.start( config );
       }
+      return result;
     },
 
     cancel : function() {

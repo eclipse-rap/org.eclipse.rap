@@ -78,6 +78,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
 
     renderValue : function( value ) {
       this._renderFunction.call( this._context, value );
+      this._lastValue = value;
     },
 
     setStartValue : function( value ) {
@@ -184,10 +185,10 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
                            ? this._cloneFrom.getLastValue()
                            : transitionValue; 
         try { 
-          this._lastValue = this._converterFunction( convertValue, 
-                                                     this._startValue, 
-                                                     this._endValue );
-          this.renderValue( this._lastValue );
+          var value = this._converterFunction( convertValue, 
+                                               this._startValue, 
+                                               this._endValue );
+          this.renderValue( value );
         } catch( e ) {
           throw "AnimationRenderer failed: " + e;
         }
@@ -471,7 +472,9 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
           if( this._animation.isRunning() ) {
             this.setStartValue( this.getLastValue() );
           }
-          this._animation.restart();
+          if( !this._animation.restart() ) {
+            this.renderValue( value );
+          }
         }
       } else {
         var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
