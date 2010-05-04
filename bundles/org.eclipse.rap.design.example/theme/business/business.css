@@ -553,6 +553,10 @@ Table-GridLine {
   color: #dedede;
 }
 
+Table-GridLine:horizontal {
+  color: transparent;
+}
+
 Table-Checkbox {
   width: 21px;
   background-image: url( theme/business/icons/check-unselected.png );
