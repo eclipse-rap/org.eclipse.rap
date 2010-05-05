@@ -758,6 +758,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       var widget = this._createWidget();
       var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "height", typeChange );
+      renderer.activateOnce();
+      assertTrue( renderer._activeOnce );
+      assertTrue( renderer._active );
       widget.setHeight( 300 );
       testUtil.flush();
       assertTrue( animation.isStarted() );
@@ -776,6 +779,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       assertEquals( 350, renderer.getLastValue() );
       assertEquals( 350, parseInt( widget._style.height ) );
       assertFalse( animation.isStarted() );
+      assertFalse( renderer._activeOnce );
+      assertFalse( renderer._active );      
       this._cleanUp( animation );
     },
     

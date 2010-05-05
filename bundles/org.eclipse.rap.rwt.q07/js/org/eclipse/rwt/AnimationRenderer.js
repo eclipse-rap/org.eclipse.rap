@@ -474,6 +474,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
           }
           if( !this._animation.restart() ) {
             this.renderValue( value );
+            this.cancelActivateOnce();
           }
         }
       } else {

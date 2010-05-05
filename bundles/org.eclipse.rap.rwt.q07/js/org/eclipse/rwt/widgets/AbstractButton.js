@@ -57,6 +57,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
     this._animation = null;
   },
 
+  events: {
+    "stateOverChanged" : "qx.event.type.Event", 
+  },
+
   properties : {
 
     selectionIndicator : {
@@ -165,13 +169,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
     },
     
     _onMouseOver : function( event ) {
-      if ( event.getTarget() == this ) {
+      // [tb] Firefox can sometimes fire false "over" events.
+      if ( event.getTarget() == this && !this.hasState( "over" ) ) {
         if( this.hasState( "abandoned" ) ) {
           this.removeState( "abandoned" );
           this.addState( "pressed" );
         }
         this.addState( "over" );
         this._updateButtonImage();
+        this.createDispatchEvent( "stateOverChanged" );
       }
     },
 
@@ -184,6 +190,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
           this.removeState( "pressed" );
           this.addState( "abandoned" );
         }
+        this.createDispatchEvent( "stateOverChanged" );
       }
     },
 
@@ -264,10 +271,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
                                             this._initAnimation,
                                             this );          
         }
-        this.addEventListener( "mouseover", 
-                               this._animation.activateRendererOnce,
-                               this._animation );
-        this.addEventListener( "mouseout", 
+        this.addEventListener( "stateOverChanged", 
                                this._animation.activateRendererOnce,
                                this._animation );
         this.addEventListener( "changeBackgroundGradient", 
@@ -275,10 +279,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
                                this );
         this._configureRenderer();
       } else if( this._animation != null ) {
-        this.removeEventListener( "mouseover", 
-                                  this._animation.activateRendererOnce,
-                                  this._animation );
-        this.removeEventListener( "mouseout", 
+        this.removeEventListener( "stateOverChanged", 
                                   this._animation.activateRendererOnce,
                                   this._animation );
         this.removeEventListener( "changeBackgroundGradient", 
@@ -300,13 +301,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
     },
     
     _initAnimation : function( event ) {
-      var animation = this.getAnimation();
-      if( this.hasState( "over" ) && animation[ "hoverIn" ] ) {
-        this._animation.setProperties( animation[ "hoverIn" ] );
-      } else if( !this.hasState( "over" ) && animation[ "hoverOut" ] ) {
-        this._animation.setProperties( animation[ "hoverOut" ] );
-      } else {
+      if( this.hasState( "pressed" ) ) {
         this._animation.cancel();
+      } else {
+        var animation = this.getAnimation();
+        if( this.hasState( "over" ) && animation[ "hoverIn" ] ) {
+          this._animation.setProperties( animation[ "hoverIn" ] );
+        } else if( !this.hasState( "over" ) && animation[ "hoverOut" ] ) {
+          this._animation.setProperties( animation[ "hoverOut" ] );
+        } else {
+          this._animation.cancel();
+        }
       }
     },
     
