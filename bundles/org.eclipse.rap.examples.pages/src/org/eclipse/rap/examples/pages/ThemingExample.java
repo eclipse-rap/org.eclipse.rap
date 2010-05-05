@@ -75,7 +75,7 @@ public class ThemingExample implements IExamplePage {
     item.setData( WidgetUtil.CUSTOM_VARIANT, "themingDemo" );
     item.setText( "Fancy" );
     addMenu( item, "fancy" );
-    bar.pack ();
+    bar.pack();
   }
 
   private void addMenu( final ToolItem toolItem, final String variant ) {
