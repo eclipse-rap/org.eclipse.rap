@@ -58,7 +58,7 @@ public class ThemingExample implements IExamplePage {
 
   private void createMenusArea( final Composite parent ) {
     Group group = createGroup( parent, "Menus", 1 );
-    group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
+    group.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     GridData layoutData = new GridData( SWT.FILL, SWT.TOP, true, false );
     ToolBar bar = new ToolBar( group, SWT.BORDER );
     bar.setData( WidgetUtil.CUSTOM_VARIANT, "themingDemo" );
