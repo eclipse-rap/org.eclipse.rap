@@ -58,15 +58,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
 
     testDuration : function() {
       var animation = new org.eclipse.rwt.Animation();
-      animation.setDuration( 2 );
+      animation.setDuration( 2000 );
       animation.start();
-      var end = new Date().getTime() + 2001;
       org.eclipse.rwt.Animation._mainLoop();
+      var end = new Date().getTime() + 2001;
       assertTrue( animation.isRunning() );
       animation._loop( end );
       assertFalse( animation.isStarted() );
       assertFalse( animation.isRunning() );
       org.eclipse.rwt.Animation._mainLoop();
+      assertNull( org.eclipse.rwt.Animation._interval );
+      animation.dispose();
+    },
+    
+    testStartTime : function() {
+      var animation = new org.eclipse.rwt.Animation();
+      animation.setDuration( 2 );
+      var start = new Date().getTime();
+      animation.start();
+      assertNull( animation._startOn );
+      org.eclipse.rwt.Animation._mainLoop();
+      assertTrue( animation.isRunning() );
+      assertTrue( animation._startOn >= start );
+      animation.cancel();
       assertNull( org.eclipse.rwt.Animation._interval );
       animation.dispose();
     },

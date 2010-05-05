@@ -181,20 +181,21 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
 
     _init : function() {
       this.createDispatchDataEvent( "init", this._config );
-      this._startOn = new Date().getTime();
-      this._finishOn = this._startOn + ( this._duration );
-      this._totalTime = this._finishOn - this._startOn;
+      this._startOn = null;
       this._numberRenderer = this._renderer.length;
     },
 
     _loop : function( time ) {
-      if ( time >= this._startOn ) {
-        if ( time >= this._finishOn ) {
-          this._finish();
-        } else {
-          var position = ( time - this._startOn ) / this._totalTime;  
-          this._render( position );
-        }
+      if( this._startOn == null ) {
+        this._startOn = new Date().getTime();
+        this._finishOn = this._startOn + ( this._duration );
+        this._totalTime = this._duration;
+      }
+      if ( time >= this._finishOn ) {
+        this._finish();
+      } else {
+        var position = ( time - this._startOn ) / this._totalTime;  
+        this._render( position );
       }
     },
 
