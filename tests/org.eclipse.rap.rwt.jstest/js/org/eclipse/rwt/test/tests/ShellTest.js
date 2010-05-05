@@ -97,6 +97,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     
     testDisplayOverlayMultipleShells : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
+      var visibilityChanges = 0;
+      overlay.addEventListener( "changeVisibility", function( event) {
+        visibilityChanges++;
+      } );
       var shell = new org.eclipse.swt.widgets.Shell();
       shell.addToDocument();
       shell.addState( "rwt_APPLICATION_MODAL" );
@@ -118,7 +123,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       testUtil.flush();
       shell.addState( "rwt_myTest1" );
       shell2.addState( "rwt_myTest2b" );
-      var overlay = qx.ui.core.ClientDocument.getInstance()._getBlocker();
       // check for Z-index and states for shell2
       assertTrue( overlay.isSeeable() );
       assertTrue( overlay.getZIndex() > shell.getZIndex() );
@@ -138,6 +142,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertFalse( overlay.hasState( "rwt_myTest2b" ) );
       shell.doClose();
       overlay.hide(); // not done by doClose because this is the only shell
+      assertEquals( 2, visibilityChanges ); // to prevent unwanted animations
       testUtil.flush();
       shell.destroy();
       testUtil.flush();            

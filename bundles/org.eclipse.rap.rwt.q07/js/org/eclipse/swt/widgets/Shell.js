@@ -79,7 +79,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       if( vLength > 0 ) {
         var vTop = shells[ 0 ].getTopLevelWidget();
         var vZIndex = org.eclipse.swt.widgets.Shell.MIN_ZINDEX;
-        vTop._getBlocker().hide();
         for( var i = 0; i < vLength; i++ ) {
           vZIndex += 10;
           shells[ i ].setZIndex( vZIndex );
@@ -91,6 +90,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           this._copyStates( upperModalShell, vTop._getBlocker() );
           vTop._getBlocker().show();
           vTop._getBlocker().setZIndex( upperModalShell.getZIndex() - 1 );
+        } else {
+          vTop._getBlocker().hide();
         }
       }
       org.eclipse.swt.widgets.Shell._upperModalShell = upperModalShell;
