@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
   },
 
   events: {
-    "stateOverChanged" : "qx.event.type.Event", 
+    "stateOverChanged" : "qx.event.type.Event"
   },
 
   properties : {
