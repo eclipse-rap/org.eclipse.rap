@@ -16,7 +16,7 @@ import junit.framework.TestSuite;
 import org.eclipse.ui.tests.activities.ActivitiesTestSuite;
 import org.eclipse.ui.tests.adaptable.AdaptableTestSuite;
 import org.eclipse.ui.tests.api.ApiTestSuite;
-import org.eclipse.ui.tests.api.StartupTest;
+//import org.eclipse.ui.tests.api.StartupTest;
 import org.eclipse.ui.tests.commands.CommandsTestSuite;
 import org.eclipse.ui.tests.concurrency.ConcurrencyTestSuite;
 import org.eclipse.ui.tests.contexts.ContextsTestSuite;
@@ -43,7 +43,7 @@ import org.eclipse.ui.tests.preferences.PreferencesTestSuite;
 import org.eclipse.ui.tests.propertysheet.PropertySheetTestSuite;
 //import org.eclipse.ui.tests.quickaccess.QuickAccessTestSuite;
 import org.eclipse.ui.tests.services.ServicesTestSuite;
-import org.eclipse.ui.tests.statushandlers.StatusHandlingTestSuite;
+//import org.eclipse.ui.tests.statushandlers.StatusHandlingTestSuite;
 //import org.eclipse.ui.tests.systeminplaceeditor.OpenSystemInPlaceEditorTest;
 import org.eclipse.ui.tests.themes.ThemesTestSuite;
 //import org.eclipse.ui.tests.zoom.ZoomTestSuite;
@@ -67,7 +67,7 @@ public class UiTestSuite extends TestSuite {
     	// run the StartupTest first, since we need to check early that the tests
     	// run only after early startup has completed (bug 93518).
 //    	addTest(new TweakletCheckTest());
-    	addTest(new TestSuite(StartupTest.class));
+//    	addTest(new TestSuite(StartupTest.class));
         addTest(new UIAutomatedSuite());
         addTest(new ApiTestSuite());
         addTest(new PropertySheetTestSuite());
@@ -101,7 +101,7 @@ public class UiTestSuite extends TestSuite {
 //        addTest(new MultiEditorTestSuite());
         addTest(new TestSuite(FilteredTreeTests.class));
         addTest(new ServicesTestSuite());
-        addTest(new StatusHandlingTestSuite());
+//        addTest(new StatusHandlingTestSuite());
 //        addTest(OpenSystemInPlaceEditorTest.suite());
     }
 }
