@@ -50,7 +50,7 @@ import org.eclipse.ui.tests.harness.util.UITestCase;
  */
 public class MenuVisibilityTest extends UITestCase {
 
-	private static final String EXTENSION_ID = "org.eclipse.ui.tests.menusX1";
+	private static final String EXTENSION_ID = "org.eclipse.rap.ui.tests.menusX1";
 	private static final String LOCATION = "menu:foo";
 	private static final String COMMAND_ID = "org.eclipse.ui.tests.commandEnabledVisibility";
 
