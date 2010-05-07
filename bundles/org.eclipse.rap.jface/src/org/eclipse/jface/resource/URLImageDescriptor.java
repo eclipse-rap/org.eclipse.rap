@@ -136,16 +136,22 @@ class URLImageDescriptor extends ImageDescriptor {
     if( pos != -1 ) {
       path = path.substring( pos + schema.length() );
     }
-    Image image;
+    Image image = null;
     InputStream stream = getStream();
-    try {
-      image = Graphics.getImage( path, stream );
-    } finally {
+    if( stream != null ) {
       try {
-        stream.close();
-      } catch( IOException e ) {
-        // do nothing
+        image = Graphics.getImage( path, stream );
+      } finally {
+        try {
+          stream.close();
+        } catch( IOException e ) {
+          // do nothing
+        }
       }
+    } else if( returnMissingImageOnError ) {
+      path = "org/eclipse/jface/resource/images/missing_image.png"; //$NON-NLS-1$
+      ClassLoader loader = getClass().getClassLoader();
+      image = Graphics.getImage( path, loader.getResourceAsStream( path ) );
     }
     return image;
   }
