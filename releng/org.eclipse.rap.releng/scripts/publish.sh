@@ -296,13 +296,24 @@ function generateMetadata() {
   fi
   # remove exiting metadata
   rm -f "$inputDir/artifacts.jar" && rm -f "$inputDir/content.jar" || return 1
+  # choose repo name
+  local inputFile=`basename "$INPUT_ARCHIVE"`
+  if [ "${inputFile:0:12}" == "rap-tooling-" ]; then
+    repoName="RAP Tooling Repository"
+  elif [ "${inputFile:0:12}" == "rap-runtime-" ]; then
+    repoName="RAP Runtime Repository"
+  else
+    echo "Cannot figure out repository name"
+    return 1
+  fi
+  echo "using repo name '$repoName'"
   # create new metadata
   $JAVA_HOME/bin/java -cp $ECLIPSE_LAUNCHER org.eclipse.core.launcher.Main \
     -consolelog -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher \
     -metadataRepository file:$inputDir \
     -artifactRepository file:$inputDir \
-    -metadataRepositoryName "RAP Runtime SDK Repository" \
-    -artifactRepositoryName "RAP Runtime SDK Repository" \
+    -metadataRepositoryName "$repoName" \
+    -artifactRepositoryName "$repoName" \
     -source $inputDir \
     -configs gtk.linux.x86 \
     -reusePackedFiles \
