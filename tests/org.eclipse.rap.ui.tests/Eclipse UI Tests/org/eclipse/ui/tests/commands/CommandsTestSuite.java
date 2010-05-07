@@ -31,7 +31,7 @@ public final class CommandsTestSuite extends TestSuite {
 	public CommandsTestSuite() {
 //		addTest(new TestSuite(Bug66182Test.class));
 //		addTest(new TestSuite(Bug70503Test.class));
-		addTest(new TestSuite(Bug73756Test.class));
+//		addTest(new TestSuite(Bug73756Test.class));
 //		addTest(new TestSuite(Bug74982Test.class));
 //		addTest(new TestSuite(Bug74990Test.class));
 //		addTest(new TestSuite(Bug87856Test.class));
@@ -45,6 +45,6 @@ public final class CommandsTestSuite extends TestSuite {
 		addTest(new TestSuite(CommandCallbackTest.class));
 		addTest(new TestSuite(CommandEnablementTest.class));
 		addTest(new TestSuite(CommandActionTest.class));
-		addTest(new TestSuite(ActionDelegateProxyTest.class));
+//		addTest(new TestSuite(ActionDelegateProxyTest.class));
 	}
 }

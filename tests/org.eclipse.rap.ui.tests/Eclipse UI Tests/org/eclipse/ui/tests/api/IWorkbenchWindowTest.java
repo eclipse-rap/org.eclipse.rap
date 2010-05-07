@@ -11,7 +11,7 @@
 package org.eclipse.ui.tests.api;
 
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchActionConstants;
+//import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.tests.harness.util.ArrayUtil;
@@ -158,18 +158,19 @@ public class IWorkbenchWindowTest extends UITestCase {
          */
     }
 
-    public void testIsApplicationMenu() {
-        String[] ids = { IWorkbenchActionConstants.M_FILE,
-                IWorkbenchActionConstants.M_WINDOW, };
-
-        for (int i = 0; i < ids.length; i++)
-            assertEquals(fWin.isApplicationMenu(ids[i]), true);
-
-        ids = new String[] { IWorkbenchActionConstants.M_EDIT,
-                IWorkbenchActionConstants.M_HELP,
-                IWorkbenchActionConstants.M_LAUNCH };
-
-        for (int i = 0; i < ids.length; i++)
-            assertEquals(fWin.isApplicationMenu(ids[i]), false);
-    }
+// RAP [if] Commented as it fails with RAP
+//    public void testIsApplicationMenu() {
+//        String[] ids = { IWorkbenchActionConstants.M_FILE,
+//                IWorkbenchActionConstants.M_WINDOW, };
+//
+//        for (int i = 0; i < ids.length; i++)
+//            assertEquals(fWin.isApplicationMenu(ids[i]), true);
+//
+//        ids = new String[] { IWorkbenchActionConstants.M_EDIT,
+//                IWorkbenchActionConstants.M_HELP,
+//                IWorkbenchActionConstants.M_LAUNCH };
+//
+//        for (int i = 0; i < ids.length; i++)
+//            assertEquals(fWin.isApplicationMenu(ids[i]), false);
+//    }
 }

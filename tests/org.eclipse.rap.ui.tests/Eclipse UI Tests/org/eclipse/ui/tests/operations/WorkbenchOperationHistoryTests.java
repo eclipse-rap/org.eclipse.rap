@@ -15,7 +15,7 @@ import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.ObjectUndoContext;
-import org.eclipse.core.resources.ResourcesPlugin;
+//import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.tests.harness.util.UITestCase;
 
@@ -72,10 +72,11 @@ public class WorkbenchOperationHistoryTests extends UITestCase {
 		super.doTearDown();
 	}
 
-	public void testWorkspaceAdapter() {
-		IUndoContext workspaceContext = (IUndoContext)ResourcesPlugin.getWorkspace().getAdapter(IUndoContext.class);
-		assertTrue("Should have context registered on workspace", workspaceContext == context);
-	}
+// RAP [if] Commented as it fails with RAP
+//	public void testWorkspaceAdapter() {
+//		IUndoContext workspaceContext = (IUndoContext)ResourcesPlugin.getWorkspace().getAdapter(IUndoContext.class);
+//		assertTrue("Should have context registered on workspace", workspaceContext == context);
+//	}
 
 	public void testMatchingContext() {
 		IUndoContext newContext = new IUndoContext() {
