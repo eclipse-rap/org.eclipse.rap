@@ -7,9 +7,9 @@
 * Contributors:
 *   EclipseSource - initial API and implementation
 *******************************************************************************/
-package org.eclipse.rap.ui.tests;
+package org.eclipse.rap.interactiondesign.tests;
 
-import org.eclipse.jface.tests.viewers.Bug264226TableViewerTest;
+import org.eclipse.rap.ui.tests.Cleanup;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -17,15 +17,14 @@ import junit.framework.TestSuite;
 public class AllTests {
 
     public static Test suite() {
-      TestSuite suite = new TestSuite( "Test for org.eclipse.rap.ui" );      
-      // Eclipse UI Tests
-      suite.addTest( new org.eclipse.ui.tests.UiTestSuite() );
-      // Eclipse JFace Tests
-      suite.addTest( new org.eclipse.jface.tests.AllTests() );
-      // RAP UI Tests
-      suite.addTestSuite( ServiceHandlerExtensionTest.class );
-      // RAP JFace Tests
-      suite.addTestSuite( Bug264226TableViewerTest.class );
+      TestSuite suite = new TestSuite( "Test for RAP IAD API" );      
+      // IAD API Tests
+      suite.addTestSuite( ConfigurableStackTest.class );
+      suite.addTestSuite( ConfigurationActionTest.class );
+      suite.addTestSuite( ElementBuilderTest.class );
+      suite.addTestSuite( LayoutModelTest.class );
+      suite.addTestSuite( LayoutRegistryTest.class );
+      suite.addTestSuite( PresentationFactoryTest.class );      
       // Cleanup
       suite.addTestSuite( Cleanup.class );
       return suite;
