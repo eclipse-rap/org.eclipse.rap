@@ -344,17 +344,6 @@ public class RWTLifeCycle extends LifeCycle {
     sessionStoreImpl.setShutdownAdapter( adapter );
   }
 
-  PhaseId executePhase( final PhaseId current ) throws IOException {
-    PhaseId next = null;
-    beforePhaseExecution( current );
-    try {
-      next = PHASES[ current.getOrdinal() - 1 ].execute();
-    } finally {
-      afterPhaseExecution( current );
-    }
-    return next;
-  }
-
   private void beforePhaseExecution( final PhaseId current ) {
     PhaseListener[] phaseListeners = getPhaseListeners();
     PhaseEvent evt = new PhaseEvent( this, current );
