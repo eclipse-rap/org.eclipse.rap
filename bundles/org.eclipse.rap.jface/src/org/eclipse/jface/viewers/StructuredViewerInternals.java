@@ -26,7 +26,6 @@ public class StructuredViewerInternals {
 	/**
 	 * Nothing to see here.
 	 * 
-	 * @since 1.3
 	 * @noextend This interface is not intended to be extended by clients.
 	 * @noimplement This interface is not intended to be implemented by clients.
 	 */
@@ -46,6 +45,13 @@ public class StructuredViewerInternals {
 		 * @param item
 		 */
 		void disassociate(Item item);
+		
+		/**
+		 * Called when an element has been filtered out.
+		 * 
+		 * @param element 
+		 */
+		void filteredOut(Object element);
 	}
 
 	/**
