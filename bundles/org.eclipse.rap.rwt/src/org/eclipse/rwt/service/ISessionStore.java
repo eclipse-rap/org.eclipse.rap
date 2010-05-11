@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.service;
 
@@ -20,9 +21,9 @@ import javax.servlet.http.HttpSession;
  * with session scope. The session store itself is stored in the servlet
  * container's session. Different than the <code>HttpSession</code> it is
  * possible to register programmatically a listener that is notified before
- * the session store will be destroyed (HttpSessionListeners don't work with
- * RAP). This gives the possibility for cleanup on session shutdown with
- * the session singleton based infrastructure intact.
+ * the session store will be destroyed (<code>HttpSessionListener</code>s 
+ * don't work with * RAP). This gives the possibility to cleanup on session 
+ * shutdown with the session singleton infrastructure intact.
  *
  * <p>This interface is not intended to be implemented by clients.</p>
  *
