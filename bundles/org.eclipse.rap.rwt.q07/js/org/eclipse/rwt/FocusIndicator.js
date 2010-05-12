@@ -143,16 +143,23 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
                       + padding[ 0 ];
       } else {
         var margin = theme[ "margin" ];
+        // Fix for bug 312544
+        widget._invalidateBoxWidth();
+        widget._invalidateBoxHeight();
         var parentWidth =   widget.getBoxWidth()
                           - widget._cachedBorderLeft
                           - widget._cachedBorderRight;
         var parentHeight =   widget.getBoxHeight()
                            - widget._cachedBorderTop
                            - widget._cachedBorderBottom;
+        widget._invalidateBoxWidth();
+        widget._invalidateBoxHeight();
         bounds[ 0 ] = margin[ 3 ];
         bounds[ 1 ] = margin[ 0 ];
         bounds[ 2 ] = parentWidth - ( margin[ 3 ] + margin[ 1 ] );
         bounds[ 3 ] = parentHeight - ( margin[ 0 ] + margin[ 2 ] );
+        bounds[ 2 ] = Math.max( 0, bounds[ 2 ] );
+        bounds[ 3 ] = Math.max( 0, bounds[ 3 ] );
       }
       this._frame.style.left = bounds[ 0 ] + "px";
       this._frame.style.top = bounds[ 1 ] + "px";
