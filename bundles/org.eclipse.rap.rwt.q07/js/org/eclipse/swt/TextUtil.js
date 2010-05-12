@@ -40,6 +40,9 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text._ontabfocus = function() {
         text.setSelectionLength( 0 );
       };
+      // [if] Workaround for bug 312215
+      text.setUserData( "selectionStart", 0 );
+      text.setUserData( "selectionLength", 0 );
     },
 
     /*
