@@ -226,22 +226,25 @@ public class JobManagerAdapter
     return result;
   }
 
-  private void bindToSession( final Object keyToRemove ) {
-    ISessionStore session = RWT.getSessionStore();
-    HttpSessionBindingListener watchDog = new HttpSessionBindingListener() {
+  private void bindToSession( final Job job ) {
+    final boolean[] jobDone = { false };
+	final ISessionStore session = RWT.getSessionStore();
+    final HttpSessionBindingListener watchDog = new HttpSessionBindingListener() {
       public void valueBound( final HttpSessionBindingEvent event ) {
       }
       public void valueUnbound( final HttpSessionBindingEvent event ) {
-        try {
-          handleWatchDog( keyToRemove );
-        } finally {
-          synchronized( lock ) {
-            jobs.remove( keyToRemove );
-          }
+        if( !jobDone[ 0 ] ) {
+       	  try {
+       		handleWatchDog( job );
+       	  } finally {
+       		synchronized( lock ) {
+       		  jobs.remove( job );
+       		}
+       	  }
         }
       }
 
-      private void handleWatchDog( final Object keyToRemove ) {
+      private void handleWatchDog( final Job jobToRemove ) {
         // ////////////////////////////////////////////////////////////////////
         // TODO [fappel]: Very ugly hack to avoid a memory leak.
         // As a job can not be removed from the
@@ -249,44 +252,48 @@ public class JobManagerAdapter
         // can be catched in the set on session timeouts.
         // Don't know a proper solution yet.
         // Note that this is still under investigation.
-        if( keyToRemove instanceof Job ) {
-          final Job jobToRemove = ( Job )keyToRemove;
-          Display display = ( Display )jobs.get( jobToRemove );
-          if( display != null ) {
-            UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-              public void run() {
-                jobToRemove.cancel();
-                jobToRemove.addJobChangeListener( new JobCanceler() );
-              }
-            } );
-          }
-          try {
-            IJobManager jobManager = Job.getJobManager();
-            Class clazz = jobManager.getClass();
-            Field running = clazz.getDeclaredField( "running" );
-            running.setAccessible( true );
-            Set set = ( Set )running.get( jobManager );
-            synchronized( lock ) {
-              set.remove( keyToRemove );
-              // still sometimes job get catched - use the job marker adapter
-              // to check whether they can be eliminated
-              Object[] runningJobs = set.toArray();
-              for( int i = 0; i < runningJobs.length; i++ ) {
-                Job toCheck = ( Job )runningJobs[ i ];
-                IJobMarker marker
-                  = ( IJobMarker )toCheck.getAdapter( IJobMarker.class );
-                if( marker != null && marker.canBeRemoved() ) {
-                  set.remove( toCheck );
-                }
-              }
-            }
-          } catch( final Throwable thr ) {
-            // TODO [fappel]: exception handling
-            thr.printStackTrace();
-          }
-        }
+	    Display display = ( Display )jobs.get( jobToRemove );
+	    if( display != null ) {
+	      UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+	        public void run() {
+	          jobToRemove.cancel();
+	          jobToRemove.addJobChangeListener( new JobCanceler() );
+	        }
+	      } );
+	    }
+	    try {
+	      IJobManager jobManager = Job.getJobManager();
+	      Class clazz = jobManager.getClass();
+	      Field running = clazz.getDeclaredField( "running" );
+	      running.setAccessible( true );
+	      Set set = ( Set )running.get( jobManager );
+	      synchronized( lock ) {
+	        set.remove( job );
+	        // still sometimes job get catched - use the job marker adapter
+	        // to check whether they can be eliminated
+	        Object[] runningJobs = set.toArray();
+	        for( int i = 0; i < runningJobs.length; i++ ) {
+	          Job toCheck = ( Job )runningJobs[ i ];
+	          IJobMarker marker
+	            = ( IJobMarker )toCheck.getAdapter( IJobMarker.class );
+	          if( marker != null && marker.canBeRemoved() ) {
+	            set.remove( toCheck );
+	          }
+	        }
+	      }
+	    } catch( final Throwable thr ) {
+	      // TODO [fappel]: exception handling
+	      thr.printStackTrace();
+  	    }
       }
     };
-    session.setAttribute( String.valueOf( watchDog.hashCode() ), watchDog );
+    final String watchDogHashCode = String.valueOf( watchDog.hashCode() );
+	session.setAttribute( watchDogHashCode, watchDog );
+    job.addJobChangeListener( new JobChangeAdapter() {
+      public void done( final IJobChangeEvent event ) {
+        jobDone[ 0 ] = true;
+        session.removeAttribute( watchDogHashCode );
+      }
+    } );
   }
 }
