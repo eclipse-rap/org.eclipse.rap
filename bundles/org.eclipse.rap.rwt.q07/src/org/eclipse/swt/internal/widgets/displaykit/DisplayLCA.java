@@ -373,7 +373,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
       Widget toDispose = disposedWidgets[ i ];
       if( toDispose instanceof DragSource || toDispose instanceof DropTarget ) {
-        AbstractWidgetLCA lca = WidgetUtil. getLCA( toDispose );
+        AbstractWidgetLCA lca = WidgetUtil.getLCA( toDispose );
         lca.renderDispose( toDispose );
       }
     }
