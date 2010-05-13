@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.rap.jettycustomizer
+Bundle-Version: 1.3.0.qualifier
+Fragment-Host: org.eclipse.equinox.http.jetty;bundle-version="[2.0.0,2.9.9)"
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-Vendor: %Bundle-Vendor
+Export-Package: org.eclipse.rap.jettycustomizer.internal;x-internal:=true
+Bundle-Localization: plugin
