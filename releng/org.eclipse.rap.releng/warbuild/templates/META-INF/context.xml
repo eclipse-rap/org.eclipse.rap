@@ -1,6 +1,6 @@
 <Context cookies="false">
   <!-- 
-    cookies=false causes Tomcat to not use of cookies for session identifier 
+    cookies=false causes Tomcat to not use cookies for session identifier 
     communication, and rely only on URL rewriting (JSESSIONID).
   -->
 </Context>
