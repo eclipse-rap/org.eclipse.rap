@@ -88,6 +88,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   private List buttonList = new ArrayList();
   private Composite toolbarBg;
   private Shell toolBarLayer;
+  private int activeState;
   private int state;
   protected boolean deactivated;
   private Button viewMenuButton;
@@ -148,7 +149,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   };
 
   public ViewStackPresentation() {
-    state = AS_INACTIVE;
+    activeState = AS_INACTIVE;
     deactivated = false;
     allActionsVisible = ConfigAction.allActionsVisible();
   }
@@ -173,12 +174,10 @@ public class ViewStackPresentation extends ConfigurableStack {
     registry.addViewPartPresentation( this );
   }
 
-
   void catchToolbarChange() {
     layoutToolBar();
     setBounds( presentationControl.getBounds() );
   }
-
 
   private void createToolBarBg() {
     Composite tabBar = getTabBar();
@@ -204,7 +203,6 @@ public class ViewStackPresentation extends ConfigurableStack {
         setBounds( parent.getBounds() );
       };
     } );
-
     parent.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" );
     String setID = ILayoutSetConstants.SET_ID_STACKPRESENTATION;
     stackBuilder = new StackPresentationBuider( parent, setID );
@@ -230,7 +228,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     } else {
       decorateStandaloneView( newPart );
     }
-    // add the listener for the dirty state
+    // add the listener for the dirty activeState
     IPropertyListener listener = new DirtyListener( newPart );
     dirtyListenerMap.put( newPart, listener );
     newPart.addPropertyListener( listener );    
@@ -312,7 +310,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           getToolBarLayer();
           if( toolBarLayer != null ) {
             toolBarLayer.setVisible( false );
-            if( state != AS_ACTIVE_FOCUS ) {
+            if( activeState != AS_ACTIVE_FOCUS ) {
               Display display = toolBarLayer.getDisplay();
               Point newLocation = display.map( toolbarBg, null, 0, 0 );
               toolBarLayer.setBounds( newLocation.x,
@@ -401,7 +399,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     fdPartButton.top = new FormAttachment( 0, 4 );
     fdPartButton.bottom = new FormAttachment( 100 );
     partButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         if( !currentPart.equals( part ) ) {
           selectPart( part );
         }
@@ -418,22 +416,8 @@ public class ViewStackPresentation extends ConfigurableStack {
       };
     } );
     partButton.addListener( SWT.MouseDoubleClick, new Listener() {
-      public void handleEvent( Event event ) {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
-        page.toggleZoom( getReference( part ) );
-        if( toolBarLayer != null ) {
-          toolBarLayer.setVisible( false );
-        }
-        if( currentPart != null ) {
-          currentPart.getControl().moveAbove( null );
-          Control toolBar = currentPart.getToolBar();
-          if( toolBar != null ) {
-            toolBar.moveAbove( null );
-          }
-        }
-
+      public void handleEvent( final Event event ) {
+        handleToggleZoom( part );        
       }
     } );
     Composite corner = new Composite( buttonArea, SWT.NONE );
@@ -453,6 +437,43 @@ public class ViewStackPresentation extends ConfigurableStack {
     partButtonMap.put( part, buttonArea );
     buttonPartMap.put( buttonArea, part );
     buttonList.add( buttonArea );
+  }
+  
+  private void handleToggleZoom( final IPresentablePart part ) {
+    IWorkbench workbench = PlatformUI.getWorkbench();
+    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+    IWorkbenchPage page = window.getActivePage();
+    page.toggleZoom( getReference( part ) );
+    handleToolbarsOnToggleZoom();       
+  }
+
+  private void handleToolbarsOnToggleZoom() {
+    ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();
+    if( state == IStackPresentationSite.STATE_MAXIMIZED ) {
+      registry.moveAllToolbarsBellow( null );
+    } else if( state == IStackPresentationSite.STATE_RESTORED ) {
+      registry.fireToolBarChanged();
+    }
+    if( toolBarLayer != null ) {
+      toolBarLayer.setVisible( false );
+    }
+    if( currentPart != null ) {
+      currentPart.getControl().moveAbove( null );
+      Control toolBar = currentPart.getToolBar();
+      if( toolBar != null ) {
+        toolBar.moveAbove( null );
+      }
+    }
+  }
+
+  public void hideAllToolBars( final Control control ) {
+    for( int i = 0; i < partList.size(); i++ ) {
+      IPresentablePart part = ( IPresentablePart )partList.get( i );
+      Control toolBar = part.getToolBar();
+      if( toolBar != null ) {
+        toolBar.moveBelow( control );
+      }
+    }
   }
 
   protected void activatePart( final IPresentablePart part ) {
@@ -695,7 +716,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       fdOverflowButton.height = icon.getBounds().height;
       fdOverflowButton.width = icon.getBounds().width;
       String variant = "tabOverflowInactive";
-      if( state == AS_ACTIVE_FOCUS ) {
+      if( activeState == AS_ACTIVE_FOCUS ) {
         variant = "tabOverflowActive";
       }
       overflowButton.setData( WidgetUtil.CUSTOM_VARIANT, variant );
@@ -997,7 +1018,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   public void setActive( final int newState ) {
-    state = newState;
+    activeState = newState;
     Image confBg = null;
     Image cornerImage = null;
     Image confImage = null;
@@ -1240,6 +1261,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   public void setState( final int state ) {
+    this.state = state;
   }
 
   public void setVisible( final boolean isVisible ) {
@@ -1313,4 +1335,5 @@ public class ViewStackPresentation extends ConfigurableStack {
     }
     return result + WIDTH_SPACING;
   }
+  
 }

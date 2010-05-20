@@ -13,13 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * This class acts as a registry for ViewStackPresentations. This is necessary
  * because the same view can be in different parts. If a toolbar for one part 
  * change the others should be notified.
  */
-public class ViewToolBarRegistry extends SessionSingletonBase {
+public class ViewToolBarRegistry {
   
   private List presentationList = new ArrayList();
   
@@ -28,7 +29,9 @@ public class ViewToolBarRegistry extends SessionSingletonBase {
   }
   
   public static ViewToolBarRegistry getInstance() {
-    return ( ViewToolBarRegistry ) getInstance( ViewToolBarRegistry.class );
+    Object instance 
+      = SessionSingletonBase.getInstance( ViewToolBarRegistry.class );
+    return ( ViewToolBarRegistry )instance;
   }
   
   public void addViewPartPresentation( 
@@ -48,6 +51,16 @@ public class ViewToolBarRegistry extends SessionSingletonBase {
         ViewStackPresentation presentation 
           = ( ViewStackPresentation ) presentationList.get( i );
         presentation.catchToolbarChange();
+      }
+    }
+  }
+  
+  public void moveAllToolbarsBellow( final Control control ) {
+    for( int i = 0; i < presentationList.size(); i++ ) {
+      if( presentationList.get( i ) != null ) {
+        ViewStackPresentation presentation 
+          = ( ViewStackPresentation ) presentationList.get( i );
+        presentation.hideAllToolBars( control );
       }
     }
   }
