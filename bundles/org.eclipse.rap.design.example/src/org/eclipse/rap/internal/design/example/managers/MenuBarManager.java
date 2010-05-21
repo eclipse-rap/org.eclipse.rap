@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.SubContributionItem;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -138,7 +139,9 @@ public class MenuBarManager extends MenuManager {
         IContributionItem[] contribItems = manager.getItems();
         if( contribItems != null && contribItems.length > 0 ) {
           for( int i = 0; i < contribItems.length; i++ ) {
-            contribItems[ i ].fill( menu, -1 );
+            if( i > 0 || !( contribItems[ i ] instanceof Separator ) ) {
+              contribItems[ i ].fill( menu, -1 );
+            }
           }
         }
       };
