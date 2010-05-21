@@ -6,6 +6,10 @@ Tree {
   color: #4a4a4a;
 }
 
+Tree[BORDER] {
+  border: 1px solid #C1C1C1;
+}
+
 TreeItem {
   background-color: rgb( 255, 255, 255 );
   color: #4a4a4a;

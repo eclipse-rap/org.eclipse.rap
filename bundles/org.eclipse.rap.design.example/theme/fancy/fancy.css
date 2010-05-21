@@ -16,6 +16,10 @@
   color: #CFCFCF;
 }
 
+*[BORDER] {
+  border: 1px solid #C1C1C1;
+}
+
 /* Button */
 
 Button {
