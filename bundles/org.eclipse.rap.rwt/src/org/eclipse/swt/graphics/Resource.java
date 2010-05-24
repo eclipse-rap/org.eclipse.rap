@@ -71,6 +71,7 @@ public abstract class Resource {
   /**
    * Disposes of the resource. Applications must dispose of all resources
    * which they allocate.
+   * This method does nothing if the resource is already disposed.
    * 
    * @since 1.3
    */
@@ -92,7 +93,7 @@ public abstract class Resource {
    * <p>
    * This method gets the dispose state for the resource.
    * When a resource has been disposed, it is an error to
-   * invoke any other method using the resource.
+   * invoke any other method (except {@link #dispose()}) using the resource.
    *
    * @return <code>true</code> when the resource is disposed and <code>false</code> otherwise
    * 
