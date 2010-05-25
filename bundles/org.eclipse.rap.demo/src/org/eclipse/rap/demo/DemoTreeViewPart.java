@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -250,7 +251,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
   }
 
   public void createPartControl( final Composite parent ) {
-    viewer = new TreeViewer( parent );
+    viewer = new TreeViewer( parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL );
     viewer.setContentProvider( new TreeViewerContentProvider() );
     ILabelDecorator labelDecorator
       = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
