@@ -21,7 +21,6 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.WorkbenchMessages;
-//import org.eclipse.ui.internal.views.navigator.ResourceNavigatorMessages;
 import org.eclipse.ui.tests.harness.util.DialogCheck;
 
 public class UIMessageDialogsAuto extends TestCase {
@@ -156,6 +155,7 @@ public class UIMessageDialogsAuto extends TestCase {
 //                WorkbenchMessages.get().ErrorClosingNoArg);
 //        DialogCheck.assertDialogTexts(dialog, this);
 //    }
+    
     public void testFileExtensionEmpty() {
         Dialog dialog = getInformationDialog(
                 "Empty",

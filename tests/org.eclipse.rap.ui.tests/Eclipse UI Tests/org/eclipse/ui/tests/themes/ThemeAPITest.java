@@ -217,7 +217,9 @@ public class ThemeAPITest extends ThemeTest {
         fManager.removePropertyChangeListener(managerListener);
         currentTheme.removePropertyChangeListener(themeListener);
     }
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] fails because a color called FACTORYCOLOR is not registered. Maybe
+// this color comes from an ide bundle
 //    public void testColorFactory() {
 //        ITheme defaultTheme = getDefaultTheme();
 //        assertEquals(TestColorFactory.RGB, defaultTheme.getColorRegistry()

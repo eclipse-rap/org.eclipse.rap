@@ -14,7 +14,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveRegistry;
-//import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.tests.harness.util.ArrayUtil;
 
@@ -80,7 +79,8 @@ public class IPerspectiveRegistryTest extends TestCase {
             assertNotNull(pers[i]);
     }
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] fails because the workbench page is null    
 //    public void testDeleteClonedPerspective() {
 //		IWorkbenchPage page = PlatformUI.getWorkbench()
 //				.getActiveWorkbenchWindow().getActivePage();

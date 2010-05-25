@@ -19,7 +19,6 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-//import org.eclipse.ui.tests.harness.util.ActionUtil;
 import org.eclipse.ui.tests.harness.util.UITestCase;
 
 /**
@@ -119,7 +118,8 @@ public class IActionBarsTest extends UITestCase {
                 .getGlobalActionHandler(IWorkbenchActionConstants.UNDO));
     }
     
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] Fails because the EDIT menu is filled by the IDE bundle    
 //    public void testSetGlobalActionHandler() throws Throwable {
 //        // From Javadoc: "Returns the global action handler for 
 //        // the action with the given id.  

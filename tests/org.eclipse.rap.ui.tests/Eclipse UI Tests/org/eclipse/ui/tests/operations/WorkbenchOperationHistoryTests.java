@@ -11,11 +11,10 @@
 
 package org.eclipse.ui.tests.operations;
 
+import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
-import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.ObjectUndoContext;
-//import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.tests.harness.util.UITestCase;
 
@@ -72,7 +71,8 @@ public class WorkbenchOperationHistoryTests extends UITestCase {
 		super.doTearDown();
 	}
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] Workspaces are contributed via the ide	
 //	public void testWorkspaceAdapter() {
 //		IUndoContext workspaceContext = (IUndoContext)ResourcesPlugin.getWorkspace().getAdapter(IUndoContext.class);
 //		assertTrue("Should have context registered on workspace", workspaceContext == context);

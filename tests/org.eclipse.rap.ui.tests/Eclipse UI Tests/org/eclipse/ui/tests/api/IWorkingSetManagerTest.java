@@ -20,7 +20,6 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
-//import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.dialogs.WorkingSetConfigurationBlock;
 import org.eclipse.ui.tests.harness.util.ArrayUtil;
@@ -191,7 +190,8 @@ public class IWorkingSetManagerTest extends UITestCase {
                 .getElements()));
     }
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] fails because working sets come form the IDE    
 //    public void testCreateWorkingSetFromMemento() throws Throwable {
 //        IWorkingSet workingSet2 = fWorkingSetManager.createWorkingSet(
 //                WORKING_SET_NAME_2, new IAdaptable[] { fWorkspace.getRoot() });

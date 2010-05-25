@@ -11,7 +11,6 @@
 package org.eclipse.ui.tests.api;
 
 import org.eclipse.swt.widgets.Shell;
-//import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.tests.harness.util.ArrayUtil;
@@ -158,7 +157,8 @@ public class IWorkbenchWindowTest extends UITestCase {
          */
     }
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] Fails because the EDIT menu is filled by the IDE bundle    
 //    public void testIsApplicationMenu() {
 //        String[] ids = { IWorkbenchActionConstants.M_FILE,
 //                IWorkbenchActionConstants.M_WINDOW, };

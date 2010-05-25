@@ -89,7 +89,8 @@ public class FontPreferenceTestCase extends UITestCase {
 //        assertEquals(bestFont[0].getHeight(), currentTextFonts[0].getHeight());
 //    }
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] Test fails because RAP has a fixed fonts list
 //    /**
 //     * Test that if the first font in the list is bad that the 
 //     * second one comes back as valid.

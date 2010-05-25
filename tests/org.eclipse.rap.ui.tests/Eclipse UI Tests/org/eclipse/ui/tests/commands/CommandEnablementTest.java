@@ -21,7 +21,6 @@ import org.eclipse.core.commands.ICommandListener;
 import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.ExpressionConverter;
-//import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.internal.expressions.CountExpression;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -506,7 +505,9 @@ public class CommandEnablementTest extends UITestCase {
 		assertTrue(listener.lastChange);
 	}
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] the reason why this test fails is because 
+//	org.eclipse.ui.resourcePerspective is contributed via the ide
 //	public void testEnablementForLocalContext() throws Exception {
 //		openTestWindow("org.eclipse.ui.resourcePerspective");
 //		activation1 = handlerService.activateHandler(CMD1_ID, contextHandler,

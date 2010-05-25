@@ -53,7 +53,9 @@ public class IntroTest extends UITestCase {
     	testClose(EmptyPerspective.PERSP_ID);
 	}
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] the reason why this test fails is because 
+// org.eclipse.ui.resourcePerspective is contributed via the ide    
 //    public void testCloseInNonEmptyPerspective() {
 //    	testClose("org.eclipse.ui.resourcePerspective");
 //    }

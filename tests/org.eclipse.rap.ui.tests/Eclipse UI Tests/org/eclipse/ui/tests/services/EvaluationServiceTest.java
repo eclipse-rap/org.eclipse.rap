@@ -250,7 +250,9 @@ public class EvaluationServiceTest extends UITestCase {
 		processEvents();
 
 		assertTrue(contextService.getActiveContextIds().contains(CONTEXT_ID1));
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] propertyChanged[0] is changed during a event which is probably
+// fired in a wrong way during window2.close		
 //		assertFalse(propertyChanged[0]);
 //		assertTrue(propertyShouldChange[0]);
 	}

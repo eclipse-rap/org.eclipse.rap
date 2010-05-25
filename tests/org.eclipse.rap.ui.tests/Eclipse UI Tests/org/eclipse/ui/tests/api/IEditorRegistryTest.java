@@ -22,8 +22,6 @@ import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IFileEditorMapping;
 import org.eclipse.ui.PlatformUI;
-//import org.eclipse.ui.ide.IDE;
-//import org.eclipse.ui.internal.misc.ExternalProgramImageDescriptor;
 import org.eclipse.ui.internal.registry.EditorRegistry;
 import org.eclipse.ui.internal.registry.FileEditorMapping;
 import org.eclipse.ui.tests.TestPlugin;
@@ -328,7 +326,8 @@ public class IEditorRegistryTest extends TestCase {
 				descriptor.getId());
 	}
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] fails because it uses stuff from org.eclipse.core.runtime.content	
 //	/**
 //	 * Assert that in the absence of content type, choose the content type
 //	 * editor based on content type guess.

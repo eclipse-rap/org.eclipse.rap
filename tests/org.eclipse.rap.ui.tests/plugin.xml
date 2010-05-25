@@ -1211,7 +1211,7 @@
             <enablement>
                <pluginState
                      value="installed"
-                     id="org.eclipse.ui">
+                     id="org.eclipse.rap.ui">
                </pluginState>
             </enablement>
          </action>
@@ -1235,7 +1235,7 @@
             <enablement>
                <pluginState
                      value="activated"
-                     id="org.eclipse.ui">
+                     id="org.eclipse.rap.ui">
                </pluginState>
             </enablement>
          </action>
@@ -1459,7 +1459,7 @@
          <visibility>
             <pluginState
                   value="installed"
-                  id="org.eclipse.ui">
+                  id="org.eclipse.rap.ui">
             </pluginState>
          </visibility>
          <action
@@ -1489,7 +1489,7 @@
          <visibility>
             <pluginState
                   value="activated"
-                  id="org.eclipse.ui">
+                  id="org.eclipse.rap.ui">
             </pluginState>
          </visibility>
          <action
@@ -2088,11 +2088,11 @@
             id="org.eclipse.activityNonRegExp"
             name="Activity NonRegExp">
       </activity>
-      <!--activityPatternBinding
+      <activityPatternBinding
             activityId="org.eclipse.activityNonRegExp"
             isEqualityPattern="true"
             pattern="org.eclipse.ui.tests.activity{No{Reg(Exp[^d]">
-      </activityPatternBinding-->
+      </activityPatternBinding>
    </extension>
 
   <extension

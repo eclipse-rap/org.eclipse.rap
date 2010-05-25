@@ -37,7 +37,8 @@ public class ExtensionTestCase extends UITestCase {
         super(testName);
     }
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] RAP doesn't provide an ext point called org.eclipse.ui.acceleratorScopes    
 //    /**
 //     * Tests that the "org.eclipse.ui.acceleratorScopes" extension point can be
 //     * read in by Eclipse. This extension point is currently deprecated.

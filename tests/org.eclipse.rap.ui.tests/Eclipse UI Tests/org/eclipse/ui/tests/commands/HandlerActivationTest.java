@@ -22,14 +22,10 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
-//import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.commands.contexts.Context;
-//import org.eclipse.core.expressions.IEvaluationContext;
-//import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.IWorkbenchPart;
-//import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.contexts.IContextActivation;
@@ -412,7 +408,9 @@ public class HandlerActivationTest extends UITestCase {
 		assertTrue("Will still be handled", cmd.isHandled());
 	}
 
-// RAP [if] Commented as it fails with RAP
+// RAP [if] Commented as it fails with RAP X
+// RAP [hs] the reason why this test fails is because 
+// org.eclipse.ui.resourcePerspective is contributed via the ide
 //	public void testLocalContext() throws Exception {
 //		IWorkbenchWindow window = openTestWindow("org.eclipse.ui.resourcePerspective");
 //		OutlineOnlyHandler handler = new OutlineOnlyHandler();
