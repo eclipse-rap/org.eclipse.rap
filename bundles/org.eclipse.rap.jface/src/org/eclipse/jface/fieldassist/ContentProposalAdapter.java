@@ -2204,8 +2204,8 @@ public class ContentProposalAdapter {
 	}
 	
 	/**
-	 * Sets focus to the proposal popup.  If the proposal popup is not opened,
-	 * this method is ignored.  If the secondary popup has focus, focus is returned
+	 * Sets focus to the proposal popup. If the proposal popup is not opened,
+	 * this method is ignored. If the secondary popup has focus, focus is returned
 	 * to the main proposal popup.
 	 * 
 	 * @since 1.3

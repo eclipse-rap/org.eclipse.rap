@@ -36,8 +36,9 @@ public class StatusLineContributionItem extends ContributionItem {
 	private final static int DEFAULT_CHAR_WIDTH = 40;
 	
 	/**
-	 * constant indicating that the contribution should compute its actual size
-	 * depending on the text. It will grab all space necessary to display the whole text.
+	 * A constant indicating that the contribution should compute its actual 
+	 * size depending on the text. It will grab all space necessary to display 
+	 * the whole text.
 	 *
 	 * @since 1.3
 	 */
