@@ -52,12 +52,10 @@ public final class Cursor extends Resource {
    * <p>
    * You must dispose the cursor when it is no longer required.
    * </p>
-   *
-   * <p><strong>Note</strong>, this constructor is provided for convenience when
-   * single-sourcing code with SWT. For RWT, the recommended way to create cursors
-   * is to use one of the <code>getSystemCursor</code> method from class
-   * <code>Display</code>.
-   * </p>
+   * NOTE:
+   * It is recommended to use {@link org.eclipse.swt.widgets.Display#getSystemCursor(int)}
+   * instead of using this constructor. This way you can avoid the 
+   * overhead of disposing the Cursor resource.
    *
    * @param device the device on which to allocate the cursor
    * @param style the style of cursor to allocate
