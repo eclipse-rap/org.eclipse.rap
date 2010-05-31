@@ -142,7 +142,7 @@ public class StackPresentationBuider extends ElementBuilder {
     left.setBackgroundImage( borderLeft );
     FormData fdLeft = new FormData();
     left.setLayoutData( fdLeft );
-    fdLeft.top = new FormAttachment( 0, borderTop.getBounds().height - 1 );
+    fdLeft.top = new FormAttachment( 0, borderTop.getBounds().height );
     fdLeft.bottom 
       = new FormAttachment( 100, - borderBottom.getBounds().height + 1 );
     fdLeft.left = new FormAttachment( 0 );
@@ -154,7 +154,7 @@ public class StackPresentationBuider extends ElementBuilder {
     right.setBackgroundImage( borderRight );
     FormData fdRight = new FormData();
     right.setLayoutData( fdRight );
-    fdRight.top = new FormAttachment( 0, borderTop.getBounds().height - 1 );
+    fdRight.top = new FormAttachment( 0, borderTop.getBounds().height );
     fdRight.bottom 
       = new FormAttachment( 100, - borderBottom.getBounds().height + 1 );
     fdRight.right = new FormAttachment( 100 );

@@ -96,7 +96,7 @@ public class FancyWindowComposer implements IWindowComposer {
     FormData fdPage = new FormData();
     page.setLayoutData( fdPage );
     fdPage.left = new FormAttachment( 0, 7 );
-    fdPage.top = new FormAttachment( 0, -7 );
+    fdPage.top = new FormAttachment( 0, -5 );
     fdPage.right = new FormAttachment( 100, -7 );
         
     // create Footer and attach the page

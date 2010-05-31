@@ -242,15 +242,22 @@ public class ViewStackPresentation extends ConfigurableStack {
       Label title = new Label( tabBg, SWT.NONE );
       title.setData( WidgetUtil.CUSTOM_VARIANT, "standaloneView" );
       title.setText( newPart.getName() );
+      hideFrameLabel( StackPresentationBuider.TOP_BORDER );      
     } else {
       getTabBar().setVisible( false );
-      Object labelMap = stackBuilder.getAdapter( Map.class );
-      if( labelMap != null && ( labelMap instanceof Map )  ) {
-        Map map = ( Map ) labelMap;
-        Label left = ( Label ) map.get( StackPresentationBuider.LEFT );
-        Label right = ( Label ) map.get( StackPresentationBuider.RIGHT );
-        left.setVisible( false );
-        right.setVisible( false );
+      hideFrameLabel( StackPresentationBuider.LEFT );
+      hideFrameLabel( StackPresentationBuider.RIGHT );
+    }
+  }
+  
+  private void hideFrameLabel( final String id ) {
+    Object labelMap = stackBuilder.getAdapter( Map.class );
+    if( labelMap != null && ( labelMap instanceof Map )  ) {
+      Map map = ( Map ) labelMap;
+      Object object = map.get( id );
+      if( object != null ) {
+        Label frameLabel = ( Label)object;
+        frameLabel.setVisible( false );
       }
     }
   }
@@ -1143,7 +1150,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         int height = topBorderImg.getBounds().height;
         FormData fdTopBorder = ( FormData ) topBorder.getLayoutData();
         fdTopBorder.height = height;
-        fdTopBorder.top = new FormAttachment( 0, 5 );
+        fdTopBorder.top = new FormAttachment( 0, 7 );
         FormData fdLeftBorder = ( FormData ) leftBorder.getLayoutData();
         FormData fdRightBorder = ( FormData ) rightBorder.getLayoutData();
         fdLeftBorder.top = new FormAttachment( 0, height + 6 );
