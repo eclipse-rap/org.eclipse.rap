@@ -849,7 +849,11 @@ public class Shell extends Decorations {
   // TODO [rst] move to class Decorations as soon as it exists
   public Button getDefaultButton() {
     checkWidget();
-    return defaultButton;
+    Button result = null;
+    if( defaultButton != null && !defaultButton.isDisposed() ) {
+      result = defaultButton;
+    }
+    return result;
   }
 
   /**

@@ -336,6 +336,15 @@ public class Shell_Test extends TestCase {
     assertEquals( null, shell.getDefaultButton() );
   }
 
+  public void testDefaultButtonDisposed() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Button defaultButton = new Button( shell, SWT.PUSH );
+    shell.setDefaultButton( defaultButton );
+    defaultButton.dispose();
+    assertNull( shell.getDefaultButton() );
+  }
+
   public void testForceActive() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display );
