@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
 import org.eclipse.jface.preference.PreferenceNode;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.internal.ObjectContributorManager;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.PropertyPagesRegistryReader;
@@ -34,7 +35,8 @@ import org.eclipse.ui.internal.registry.PropertyPagesRegistryReader;
  */
 
 public class PropertyPageContributorManager extends ObjectContributorManager {
-	private static PropertyPageContributorManager sharedInstance = null;
+// RAP [rst]
+//    private static PropertyPageContributorManager sharedInstance = null;
 
 	private class CategorizedPageNode {
 		RegistryPageContributor contributor;
@@ -180,10 +182,14 @@ public class PropertyPageContributorManager extends ObjectContributorManager {
 	 * @return PropertyPageContributorManager
 	 */
 	public static PropertyPageContributorManager getManager() {
-		if (sharedInstance == null) {
-			sharedInstance = new PropertyPageContributorManager();
-		}
-		return sharedInstance;
+// RAP [rst] singleton
+//        if (sharedInstance == null) {
+//            sharedInstance = new PropertyPageContributorManager();
+//        }
+//        return sharedInstance;
+      Class type = PropertyPageContributorManager.class;
+      Object instance = SessionSingletonBase.getInstance( type );
+      return ( PropertyPageContributorManager )instance;
 	}
 
 	/**

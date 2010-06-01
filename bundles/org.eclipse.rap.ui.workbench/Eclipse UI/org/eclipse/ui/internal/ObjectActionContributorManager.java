@@ -21,6 +21,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
@@ -28,7 +29,8 @@ import org.eclipse.ui.IWorkbenchPart;
  * for a given type.
  */
 public class ObjectActionContributorManager extends ObjectContributorManager {
-    private static ObjectActionContributorManager sharedInstance;
+// RAP [rst]
+//    private static ObjectActionContributorManager sharedInstance;
 
     /**
      * PopupMenuManager constructor.
@@ -106,10 +108,14 @@ public class ObjectActionContributorManager extends ObjectContributorManager {
      * @return the shared instance of this manager
      */
     public static ObjectActionContributorManager getManager() {
-        if (sharedInstance == null) {
-            sharedInstance = new ObjectActionContributorManager();
-        }
-        return sharedInstance;
+// RAP [rst] singleton
+//        if (sharedInstance == null) {
+//            sharedInstance = new ObjectActionContributorManager();
+//        }
+//        return sharedInstance;
+      Class type = ObjectActionContributorManager.class;
+      Object instance = SessionSingletonBase.getInstance( type );
+      return ( ObjectActionContributorManager )instance;
     }
 
     /**
