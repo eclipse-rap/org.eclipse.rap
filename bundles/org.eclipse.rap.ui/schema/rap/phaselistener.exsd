@@ -1,16 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.rap.ui">
+<schema targetNamespace="org.eclipse.rap.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.rap.ui" id="phaselistener" name="PhaseListener"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         The extension point is used to register an &lt;code&gt;PhaseListener&lt;/code&gt; implementation. PhaseListeners are objects that wish to be notified at the beginning and ending of processing for each standard phase of the request processing lifecycle (see &lt;code&gt;ILifeCycle&lt;/code&gt;). The extension should provide a class that implements &lt;code&gt;org.eclipse.rwt.lifecycle.PhaseListener&lt;/code&gt;.
       </documentation>
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="listener" minOccurs="1" maxOccurs="unbounded"/>
@@ -62,7 +67,7 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         RAP 1.0
       </documentation>
    </annotation>
 
@@ -71,7 +76,15 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;pre&gt;
+&lt;extension
+    id=&quot;org.eclipse.rap.demo.phaselistenerextension&quot;
+    point=&quot;org.eclipse.rap.ui.phaselistener&quot;&gt;
+  &lt;entrypoint
+     id=&quot;org.eclipse.rap.demo.phaselistener&quot;
+        class=&quot;org.eclipse.rap.demo.DemoPhaseListener&quot; /&gt;
+  &lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -80,25 +93,45 @@
          <meta.section type="apiInfo"/>
       </appInfo>
       <documentation>
-         [Enter API information here.]
+         RWT divides the life cycle of an HTTP request into different phases that are executed sequentially. Each phase has its special purpose and creates the prerequisites needed by the following phases for proper execution. Each PhaseListener has to implement the &lt;code&gt;org.eclipse.rwt.lifecycle.PhaseListener&lt;/code&gt; interface. 
+
+&lt;pre&gt;
+import org.eclipse.rwt.lifecycle.*;
+
+public class DemoPhaseListener implements PhaseListener {
+
+  public void beforePhase( final PhaseEvent event ) {
+    // ...
+    RWT.getLifeCycle().removePhaseListener( this );
+  }
+  
+  public void afterPhase( final PhaseEvent event ) {
+    // ...
+  }
+  
+  public PhaseId getPhaseId() {
+    return RENDER;
+  }
+}
+&lt;/pre&gt;
+
+As &lt;code&gt;PhaseListener&lt;/code&gt;s are attached to the RWT lifecycle and thus available globally, you need to make sure to remove them properly if you do not need them anymore (see &lt;code&gt;RWT.getLifeCycle().removePhaseListener&lt;/code&gt;.
+
+The the case that the PhaseListener needs to touch any UI-related objects (eg. widgets), you have to make sure that you compare the current display with the one attached to the current session.
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         [Enter information about supplied implementation of this extension point.]
-      </documentation>
-   </annotation>
 
    <annotation>
       <appInfo>
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         
+         Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
+All rights reserved. This program and the accompanying materials are made
+available under the terms of the Eclipse Public License v1.0 which accompanies
+this distribution, and is available at &lt;a 
+href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
       </documentation>
    </annotation>
 

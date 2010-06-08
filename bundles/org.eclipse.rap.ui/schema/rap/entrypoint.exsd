@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.rap.ui" id="entrypoint" name="EntryPoint"/>
       </appInfo>
       <documentation>
-         A major difference between RCP and RAP is the way an application is started. With regular SWT applications you would use the &lt;code&gt;main(String[] args)&lt;/code&gt; method, in RCP an implementation of &lt;code&gt;IApplication&lt;/code&gt;. AS RAP uses a life cycle to control the application startup the application needs an &lt;code&gt;IEntrypoint&lt;/code&gt; implementation which does mostly the same as &lt;code&gt;IApplication&lt;/code&gt;. The difference is that we need to do not dispose the display but return it to RAP in the &lt;code&gt;createUI&lt;/code&gt; method. There can be several entrypoints for the same application which are distinguished by a paramter in the URI for this application like &lt;code&gt;&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/rap?startup=&amp;lt;entrypointname&amp;gt;&lt;/code&gt;.
+         A major difference between RCP and RAP is the way an application is started. With regular SWT applications you would use the &lt;code&gt;main(String[] args)&lt;/code&gt; method, in RCP an implementation of &lt;code&gt;IApplication&lt;/code&gt;. As RAP uses a life cycle to control the application startup the application needs an &lt;code&gt;IEntrypoint&lt;/code&gt; implementation which does mostly the same as &lt;code&gt;IApplication&lt;/code&gt;. The difference is that we need to do not dispose the display but return it to RAP in the &lt;code&gt;createUI&lt;/code&gt; method. There can be several entrypoints for the same application which are distinguished by a paramter in the URI for this application like &lt;code&gt;&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/rap?startup=&amp;lt;entrypointname&amp;gt;&lt;/code&gt;.
       </documentation>
    </annotation>
 
@@ -95,7 +95,7 @@
     id=&quot;org.eclipse.rap.demo.demoentrypoint&quot;
     point=&quot;org.eclipse.rap.ui.entrypoint&quot;&gt;
   &lt;entrypoint
-  			id=&quot;org.eclipse.rap.demo.entrypoint&quot;
+     id=&quot;org.eclipse.rap.demo.entrypoint&quot;
         class=&quot;org.eclipse.rap.demo.MyAppEntrypoint&quot;
         parameter=&quot;myapp&quot;/&gt;
   &lt;/extension&gt;
@@ -113,24 +113,16 @@
 &lt;pre&gt;
 public class MyAppEntrypoint implements IEntryPoint {
 
-	public Display createUI() {
-		Display display = PlatformUI.createDisplay();
-		PlatformUI.createAndRunWorkbench( display, new ApplicationWorkbenchAdvisor() );
-		return display;
-	}
+ public Display createUI() {
+  Display display = PlatformUI.createDisplay();
+  PlatformUI.createAndRunWorkbench( display, new ApplicationWorkbenchAdvisor() );
+  return display;
+ }
 }
 &lt;/pre&gt;
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
    <annotation>
       <appInfo>
