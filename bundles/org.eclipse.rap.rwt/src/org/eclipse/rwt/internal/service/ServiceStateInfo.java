@@ -26,7 +26,6 @@ public final class ServiceStateInfo implements IServiceStateInfo {
   private HtmlResponseWriter responseWriter;
   private final Map attributes;
   
-  
   public ServiceStateInfo() {
     attributes = new HashMap();
   }
