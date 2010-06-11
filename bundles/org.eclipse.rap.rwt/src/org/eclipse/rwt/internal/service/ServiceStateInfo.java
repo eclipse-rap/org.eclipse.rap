@@ -24,7 +24,6 @@ import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 public final class ServiceStateInfo implements IServiceStateInfo {
 
   private HtmlResponseWriter responseWriter;
-  
   private final Map attributes = new HashMap();
   
   /** <p>Sets the given <code>responseWriter</code> for the current request.

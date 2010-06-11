@@ -270,9 +270,7 @@ public class RWTLifeCycle extends LifeCycle {
     handleUIThreadException();
   }
 
-  private static void handleUIThreadException()
-    throws IOException
-  {
+  private static void handleUIThreadException() throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Throwable throwable
       = ( Throwable )stateInfo.getAttribute( UI_THREAD_THROWABLE );
