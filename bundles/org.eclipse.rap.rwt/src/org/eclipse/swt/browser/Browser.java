@@ -223,7 +223,7 @@ public class Browser extends Composite {
    * The given <code>script</code> is executed in an <code>IFRAME</code>
    * inside the document that represents the client-side application.
    * Since the execution context of an <code>IFRAME</code> is not fully
-   * isolated from the surrounding documument it may break the client-side
+   * isolated from the surrounding document it may break the client-side
    * application.</p>
    * <!-- End RAP specific -->
    *
