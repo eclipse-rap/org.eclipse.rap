@@ -393,6 +393,7 @@ if [ -n "$ZIP_DOWNLOAD_PATH" ]; then
   echo check local file before uploading: upload-$INPUT_ARCHIVE_NAME
   echo -n "press Return to upload "
   read c
+  # avoid -t, timestamps may confuse mirroring on dev.eclipse.org
   rsync -v --progress \
     upload-$INPUT_ARCHIVE_NAME \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$ZIP_DOWNLOAD_PATH/$INPUT_ARCHIVE_NAME
@@ -408,7 +409,7 @@ if [ -n "$REPOSITORY_PATH" ]; then
   echo "update local copy of repository..."
   mkdir -p mirror
   localCopy=mirror/${REPOSITORY_PATH/\//_}
-  rsync -av --delete --progress \
+  rsync -r -v --delete --progress \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ \
     $localCopy/ || return 1
   echo "downloaded old repository to $localCopy"
@@ -431,7 +432,8 @@ if [ -n "$REPOSITORY_PATH" ]; then
   echo check local repository before uploading: $localCopy
   echo -n "press Return to upload "
   read c
-  rsync -av --delete --progress \
+  # avoid -t, timestamps may confuse mirroring on dev.eclipse.org
+  rsync -r -v --delete --progress \
     $localCopy/ \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ || exit 1
 fi
