@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
 
@@ -183,6 +184,31 @@ public class DateTimeLCA_Test extends TestCase {
     // Time
     dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
     testSelectionEvent( dateTime );
+  }
+  
+  // 315950: [DateTime] method getDay() return wrong day in particular
+  // circumstances
+  public void testDateTimeDate_Bug315950() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    DateTime dateTime = new DateTime( shell, SWT.DATE
+                                           | SWT.MEDIUM
+                                           | SWT.DROP_DOWN );
+    dateTime.setDay( 15 );
+    dateTime.setMonth( 5 );
+    dateTime.setYear( 2010 );
+    Fixture.markInitialized( display );
+    // Test preserved day, month, year
+    Fixture.preserveWidgets();
+    String dateTimeId = WidgetUtil.getId( dateTime );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, dateTimeId );
+    Fixture.fakeRequestParam( dateTimeId + ".day", "31" );
+    Fixture.fakeRequestParam( dateTimeId + ".month", "4" );
+    Fixture.fakeRequestParam( dateTimeId + ".year", "2010" );
+    Fixture.readDataAndProcessAction( dateTime );
+    assertEquals( 31, dateTime.getDay() );
+    assertEquals( 4, dateTime.getMonth() );
+    assertEquals( 2010, dateTime.getYear() );
   }
 
   private void testPreserveControlProperties( final DateTime dateTime ) {
