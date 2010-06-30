@@ -152,6 +152,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this.addEventListener( "appear", this._onAppear, this );
       this.addEventListener( "changeVisibility", this._onChangeVisibility, this );
       this.addEventListener( "mousedown", this._onMouseDown, this );
+      this.addEventListener( "click", this._onMouseClick, this );
       this.addEventListener( "mouseover", this._onMouseOver, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
       this._dropDownButton = new qx.ui.form.Button();
@@ -207,6 +208,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this.removeEventListener( "appear", this._onAppear, this );
       this.removeEventListener( "changeVisibility", this._onChangeVisibility, this );
       this.removeEventListener( "mousedown", this._onMouseDown, this );
+      this.removeEventListener( "click", this._onMouseClick, this );
       this.removeEventListener( "mouseover", this._onMouseOver, this );
       this.removeEventListener( "mouseout", this._onMouseOut, this );
       this._dropDownButton.dispose();
@@ -811,8 +813,19 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         this._toggleCalendarVisibility();
       }
     },
-
+    
     _onMouseDown : function( evt ) {
+      var target = evt.getTarget();
+      if( target.getUserData( "calendar-day" ) ) {
+        evt.stopPropagation();
+      } else if( target.getUserData( "calendar-button" ) ) {
+        evt.stopPropagation();
+      } else if( this._dropped && target !== this._dropDownButton ) {
+        this._toggleCalendarVisibility();
+      }  
+    },  
+
+    _onMouseClick : function( evt ) {
       if( evt.isLeftButtonPressed() ) {
         var target = evt.getTarget();
         if( target.getUserData( "calendar-day" ) ) {
@@ -826,13 +839,9 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             // Send changes
             qx.client.Timer.once( this._sendChanges, this, 500 );
           }
-          evt.stopPropagation();
         } else if( target.getUserData( "calendar-button" ) ) {
           this._calendar._onNavButtonClicked( evt );
-          evt.stopPropagation();
         } else if( target === this._dropDownButton ) {
-          this._toggleCalendarVisibility();
-        } else if( this._dropped ) {
           this._toggleCalendarVisibility();
         }
       }
