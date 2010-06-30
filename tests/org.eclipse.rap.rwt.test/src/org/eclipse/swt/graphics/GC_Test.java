@@ -1084,6 +1084,27 @@ public class GC_Test extends TestCase {
     assertEquals( 8, operation.destHeight );
     assertFalse( operation.simple );
   }
+  
+  public void testDrawImageWithInvalidSourceRegion() {
+    Display display = new Display();
+    Control control = new Shell( display );
+    GC gc = new GC( control );
+    Image image = display.getSystemImage( SWT.ICON_INFORMATION );
+    assertTrue( image.getBounds().width < 40 );
+    assertTrue( image.getBounds().height < 40 );
+    try {
+      gc.drawImage( image, 10, 0, 50, 16, 0, 0, 100, 100 );
+      fail( "srcWidth larger than srcX + image.width is not allowed" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      gc.drawImage( image, 0, 10, 16, 50, 0, 0, 100, 100 );
+      fail( "srcHeight larger than srcY + image.height is not allowed" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
 
   public void testGetClippingForControl() {
     Display display = new Display();

@@ -1163,6 +1163,11 @@ public class GC extends Resource {
       if( image.isDisposed() ) {
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );
       }
+      int imgWidth = image.getBounds().width;
+      int imgHeight = image.getBounds().height;
+      if( srcX + srcWidth > imgWidth || srcY + srcHeight > imgHeight ) {
+        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      }
       DrawImage operation = new DrawImage( image,
                                            srcX,
                                            srcY,
