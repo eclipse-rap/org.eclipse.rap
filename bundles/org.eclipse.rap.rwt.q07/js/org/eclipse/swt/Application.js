@@ -150,8 +150,12 @@ qx.Class.define( "org.eclipse.swt.Application", {
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.addEventListener( "windowresize",
                             org.eclipse.swt.Application._onResize );
+      // Install key-listener to prevent certain keys from being processed
       doc.addEventListener( "keypress",
                             org.eclipse.swt.Application._onKeyPress );
+      // Disable spell-checking in general
+      doc.getElement().setAttribute( "spellcheck", "false" );
+      // Gecko-specific settings
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
 	      // Prevent url-dropping in FF as a whole (see bug 304651)
 	      doc.getElement().setAttribute( "ondrop", "event.preventDefault();" );

@@ -21,7 +21,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this._inputOverflow = "auto";
       this.setAppearance( "text-area" );
       this.setAllowStretchY( true );
-      this.setSpellCheck( true );
       this.__oninput = 
         qx.lang.Function.bindEvent( this._oninputDomTextarea, this );
     }
