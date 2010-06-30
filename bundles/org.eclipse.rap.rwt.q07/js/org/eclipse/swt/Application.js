@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
+ *     Rüdiger Herrmann - bug 314453: Disable spell checking in Chrome
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.Application", {
