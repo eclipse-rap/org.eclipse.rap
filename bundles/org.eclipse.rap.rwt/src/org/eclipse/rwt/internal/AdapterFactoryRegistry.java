@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,19 +7,17 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     Rüdiger Herrmann - bug 316961: Exception handling may fail in AdapterFactoryRegistry
  ******************************************************************************/
-
 package org.eclipse.rwt.internal;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
@@ -86,11 +84,10 @@ public final class AdapterFactoryRegistry {
         AdapterFactory factory = ( AdapterFactory )clazz.newInstance();
         AdapterManager manager = AdapterManagerImpl.getInstance();
         manager.registerAdapters( factory, entries[ i ].adaptableClass );
-      } catch( final Throwable thr ) {
+      } catch( Throwable thr ) {
         String text = "Could not create an instance of ''{0}''.";
         String msg = MessageFormat.format( text, new Object[] { clazz } );
-        HttpServletRequest request = ContextProvider.getRequest();
-        request.getSession().getServletContext().log( msg, thr );
+        ServletLog.log( msg, thr );
       }
     }
   }
