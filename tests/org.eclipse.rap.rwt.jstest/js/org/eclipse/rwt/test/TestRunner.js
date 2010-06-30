@@ -16,7 +16,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     this.base( arguments );
     qx.log.Logger.ROOT_LOGGER.setMinLevel( qx.log.Logger.LEVEL_ERROR );
     this._FREEZEONFAIL = true; 
-    this._NOTRYCATCH = false; // set to true for better debugging in IE
+    this._NOTRYCATCH = false; 
     this._FULLSCREEN = true;
     this._presenter = org.eclipse.rwt.test.Presenter.getInstance();
     this._presenter.setFullScreen( this._FULLSCREEN );    
@@ -101,6 +101,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
           for ( this._currentFunction in testFunctions ){   
             this._asserts = 0;       	
             testFunctions[ this._currentFunction ].call( obj );
+            this._cleanUp();
             this.info( this._currentFunction + " - OK ", true );
           }      	  
       	}  else {    	
@@ -110,6 +111,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
             for ( this._currentFunction in testFunctions ){   
               this._asserts = 0;       	
               testFunctions[ this._currentFunction ].call( obj );
+              this._cleanUp();
               this.info( this._currentFunction + " - OK ", true );
             }
           } catch( e ) {
@@ -133,6 +135,13 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       this.info( "Tests done.", false );
   	},
   	
+  	_cleanUp : function() {
+  	  org.eclipse.rwt.test.fixture.TestUtil.clearRequestLog();
+  	  org.eclipse.rwt.test.fixture.TestUtil.clearTimerOnceLog();
+  	  org.eclipse.rwt.test.fixture.TestUtil.restoreAppearance();
+  	  qx.ui.core.Widget.flushGlobalQueues();
+  	},
+  	
   	// called by Asserts.js
   	processAssert : function( assertType, expected, value, isFailed, message ) {  	  
       if( isFailed ) {
@@ -141,11 +150,11 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
         var errorMessage =   'Assert "' 
                            + ( message ? message : this._asserts + 1 )
                            + '", type "' 
-                           + assertType                
+                           + assertType
                            + '" failed : Expected "'
-                           + expected
+                           + this._getObjectSummary( expected )
                            + '" but found "'
-                           + value
+                           + this._getObjectSummary( value )
                            + '"';
         var error = {
           "assert" : true,
@@ -163,6 +172,22 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       } else {
         this._asserts++;
       }
+  	},
+  	
+  	_getObjectSummary : function( value ) {
+  	  var result = value;
+  	  if( value instanceof Array ) {
+  	    result = value.join();
+  	  } else if(    value instanceof Object 
+  	             && !( value instanceof qx.core.Object ) )
+  	  {
+  	    var arr = [];
+  	    for( var key in value ) {
+  	      arr.push( " " + key + " : " + value[ key ] ); 
+  	    }
+  	    result = "{" + arr.join() + " }";
+  	  }
+  	  return result;
   	},
   	
   	_criticalFail : function( msg ) {

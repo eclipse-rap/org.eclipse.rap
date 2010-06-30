@@ -18,33 +18,51 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     
    getElementBounds : function( node ) {
       var style = node.style;
-      if( style.cssText.indexOf( "%" ) != -1 ) {
-        throw( "getElementBounds does not support '%'!" );
-      }
       var result = {
-        top : parseInt( style.top ),
-        left : parseInt( style.left ),
-        width : parseInt( style.width ),
-        height : parseInt( style.height )        
+        top : this._parseLength( style.top ),
+        left : this._parseLength( style.left ),
+        width : this._parseLength( style.width ),
+        height : this._parseLength( style.height )        
       };
       try {
         var ps = node.parentNode.style;
-        if( ps.cssText.indexOf( "%" ) != -1 ) {
-          throw( "getElementBounds does not support '%'!" );
-        }
-        result.right =   parseInt( ps.width ) 
-                       - parseInt( ps.borderLeftWidth || 0 ) 
-                       - parseInt( ps.borderRightWidth || 0 ) 
+        result.right =   this._parseLength( ps.width ) 
+                       - this._parseLength( ps.borderLeftWidth || 0 ) 
+                       - this._parseLength( ps.borderRightWidth || 0 ) 
                        - ( result.left + result.width )
-        result.bottom =   parseInt( ps.height ) 
-                        - parseInt( ps.borderTopWidth || 0 ) 
-                        - parseInt( ps.borderBottomWidth || 0 ) 
+        result.bottom =   this._parseLength( ps.height ) 
+                        - this._parseLength( ps.borderTopWidth || 0 ) 
+                        - this._parseLength( ps.borderBottomWidth || 0 ) 
                         - ( result.top + result.height );
       } catch( e ) {
-        this.printStackTrace();
-        throw( " could not get bounds: no parentNode!" );
+        throw( "Could not get bounds: no parentNode!" );
       }
       return result;
+    },
+    
+    _parseLength : function( value ) {
+      var result = value ? parseInt( value ) : 0;
+      if(    result != 0 
+          && typeof value == "string" 
+          && value.indexOf( "px" ) == -1 ) 
+      {
+        throw "getElementBounds only supports \"px\" but found " + value;
+      }
+      return result;
+    },
+    
+    getElementFont : function( element ) {
+      var font = element.style.font;
+      if( font == "" || typeof font != "string" ) {
+        var fontData = [ 
+          element.style.fontSize, 
+          element.style.fontStyle,
+          element.style.fontWeight,
+          element.style.fontFamily
+        ];
+        font = fontData.join( " " );
+      }
+      return font;
     },
     
     hasElementOpacity : function( node ) {
@@ -61,11 +79,15 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       } else if(   node.style.backgroundImage 
                 && node.style.backgroundImage.indexOf( 'url(' ) != -1 ) 
       {
-        result = node.style.backgroundImage.slice( 4, -1 );              
-      }
+        result = node.style.backgroundImage.slice( 4, -1 );           
+     }
       // Webkit re-writes the url in certain situations: 
       if( result.length > 0 && result == document.URL ) {
         result = "";
+      }
+      // Firefox writes quotation-marks into the URL
+      if( result[ 0 ] == "\"" && result[ result.length -1 ] == "\"" ) {
+        result = result.slice( 1, -1 );
       }
       return result;
     },
@@ -100,10 +122,6 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     /////////////////////////////
     // Event handling - DOM layer
     
-    click : function( widget ) {
-      this.clickDOM( widget._getTargetNode() );      
-    },
-    
     clickDOM : function( node ) {
       var left = qx.event.type.MouseEvent.buttons.left;
       this.fakeMouseEventDOM( node, "mousedown", left );
@@ -111,16 +129,23 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       this.fakeMouseEventDOM( node, "click", left );
     },
       
-    rightClick : function( widget ) {
-      var right = qx.event.type.MouseEvent.buttons.right;
-      var node = widget._getTargetNode();
-      this.fakeMouseEventDOM( node, "mousedown", right );
-      this.fakeMouseEventDOM( node, "mouseup", right );
-      this.fakeMouseEventDOM( node, "click", right );
-      this.fakeMouseEventDOM( node, "contextmenu", right );      
+    shiftClickDOM : function( node ) {
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var mod = qx.event.type.DomEvent.SHIFT_MASK;
+      this.fakeMouseEventDOM( node, "mousedown", left, 0, 0, mod );
+      this.fakeMouseEventDOM( node, "mouseup", left, 0, 0, mod );
+      this.fakeMouseEventDOM( node, "click", left, 0, 0, mod );
     },
-
-    fakeMouseEventDOM : function( node, type, button, left, top ) {
+      
+    ctrlClickDOM : function( node ) {
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var mod = qx.event.type.DomEvent.CTRL_MASK;
+      this.fakeMouseEventDOM( node, "mousedown", left, 0, 0, mod );
+      this.fakeMouseEventDOM( node, "mouseup", left, 0, 0, mod );
+      this.fakeMouseEventDOM( node, "click", left, 0, 0, mod );
+    },
+      
+    fakeMouseEventDOM : function( node, type, button, left, top, mod ) {
       if( typeof node == "undefined" ) {
         throw( "Error in fakeMouseEventDOM: node not defined! " );
       }
@@ -130,6 +155,9 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       if( typeof top == "undefined" ) {
         top = 0;
       }
+      if( typeof mod == "undefined" ) {
+        mod = 0;
+      }
       var clientX = left;
       var clientY = top;
       if( qx.core.Client.getEngine() == "mshtml" ) {
@@ -137,48 +165,122 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         clientY -= qx.bom.Viewport.getScrollTop(window);
       }
       var domEvent = {
+        "preventDefault" : function(){}, 
         "type" : type,
         "target" : node,
+        "which" : 1,
         "button" : button,
         "pageX" : left,
         "pageY" : top,
         "clientX" : clientX,
         "clientY" : clientY,
         "screenX" : left,
-        "screenY" : top
+        "screenY" : top,
+        "ctrlKey" : ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0,
+        "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
+        "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0
       } 
       qx.event.handler.EventHandler.getInstance().__onmouseevent( domEvent );
     },
 
+    fakeKeyEventDOM : function( node, eventType, stringOrKeyCode ) {
+      var charCode = null;
+      var keyCode = null;
+      var isChar = typeof stringOrKeyCode == "string";
+      if( isChar ) {
+        charCode = stringOrKeyCode.charCodeAt( 0 );
+      } else {
+        keyCode = stringOrKeyCode;
+      }
+      var domEvent = {
+        target : node,
+        type : eventType,
+        ctrlKey : false,
+        altKey :  false,
+        shiftKey : false,
+        keyCode : keyCode,
+        charCode : charCode,
+        isChar: isChar,
+        pageX: 0,
+        pageY: 0,
+        preventDefault : function(){},
+        stopPropagation : function(){}
+      };
+      var handler = qx.event.handler.KeyEventHandler.getInstance();
+      handler._idealKeyHandler( keyCode, charCode, eventType, domEvent );
+    },
+    
     /////////////////////////////
     // Event handling - Qooxdoo
-        
+    click : function( widget ) {
+      this.clickDOM( widget._getTargetNode() );      
+    },
+    
+    doubleClick : function( widget ) {
+      var node = widget._getTargetNode();
+      this.clickDOM( node );
+      this.clickDOM( node );
+      var left = qx.event.type.MouseEvent.buttons.left;
+      this.fakeMouseEventDOM( node, "dblclick", left );
+    },
+    
+    shiftClick : function( widget ) {
+      var node = widget._getTargetNode();
+      this.shiftClickDOM( node );
+    },
+    
+    ctrlClick : function( widget ) {
+      var node = widget._getTargetNode();
+      this.ctrlClickDOM( node );
+    },
+    
+    rightClick : function( widget ) {
+      var right = qx.event.type.MouseEvent.buttons.right;
+      var node = widget._getTargetNode();
+      this.fakeMouseEventDOM( node, "mousedown", right );
+      this.fakeMouseEventDOM( node, "mouseup", right );
+      this.fakeMouseEventDOM( node, "click", right );
+      this.fakeMouseEventDOM( node, "contextmenu", right );      
+    },
+
     mouseOver : function( widget ) {
       this.fakeMouseEvent( widget, "mouseover" );
     },
-    
+
     mouseMove : function( widget ) {
       this.fakeMouseEvent( widget, "mousemove" );
     },
-    
+
     mouseOut : function( widget ) {
       this.fakeMouseEvent( widget, "mouseout" );
     },
-    
+
     mouseFromTo : function( from, to ) {
       this.mouseMove( from );
       this.mouseOut( from );
       this.mouseOver( to );      
       this.mouseMove( to );
     },
-    
+
     fakeMouseClick : function( widget, left, top ) {
       this.fakeMouseEvent( widget, "mousedown", left, top );
       this.fakeMouseEvent( widget, "mouseup", left, top );
       this.fakeMouseEvent( widget, "click", left, top );
     },
-    
+
+    fakeWheel : function( widget, value ) {
+      var ev = this._createQxMouseEvent( widget, "mousewheel" );
+      ev.getWheelDelta = function(){ return value; };
+      widget.dispatchEvent( ev );      
+    },
+
     fakeMouseEvent : function( widget, type, left, top ) {
+      var ev = this._createQxMouseEvent( widget, type, left, top );
+      ev.setButton( qx.event.type.MouseEvent.C_BUTTON_LEFT ); 
+      widget.dispatchEvent( ev );
+    },
+
+    _createQxMouseEvent : function( widget, type, left, top ) {
       if( !widget._isCreated ) {
         throw( "Error in testUtil.fakeMouseEvent: widget is not created" );
       }
@@ -191,7 +293,9 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         clientX : left,
         clientY : top,
         pageX : left,
-        pageY : top
+        pageY : top,
+        preventDefault : function(){},
+        stopPropagation : function(){}        
       };
       var ev = new qx.event.type.MouseEvent(
         type, 
@@ -202,16 +306,16 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         null
       );
       ev.setButton( qx.event.type.MouseEvent.C_BUTTON_LEFT ); 
-      widget.dispatchEvent( ev );
+      return ev;
     },
-    
+
     press : function( widget, key, checkActive ) {
       this.fakeKeyEvent( widget, "keydown", key, checkActive );
       this.fakeKeyEvent( widget, "keypress", key, checkActive );
       this.fakeKeyEvent( widget, "keyinput", key, checkActive );
       this.fakeKeyEvent( widget, "keyup", key, checkActive );
     },    
-    
+
     fakeKeyEvent : function( widget, type, key, checkActive  ) {
       if( !widget._isCreated ) {
         throw( "Error in fakeKeyEvent: " + widget + " is not created" );
@@ -236,34 +340,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         widget.warn( type + " not possible: " + widget.__dbKey + " not focused!" );
       }
     },
-    
-    fakeKeyEventDOM : function( node, eventType, stringOrKeyCode ) {
-      var charCode = null;
-      var keyCode = null;
-      var isChar = typeof stringOrKeyCode == "string";
-      if( isChar ) {
-        charCode = stringOrKeyCode.charCodeAt( 0 );
-      } else {
-        keyCode = stringOrKeyCode;
-      }
-      var domEvent = {
-        target : node,
-        type : eventType,
-        ctrlKey : false,
-        altKey :  false,
-        shiftKey : false,
-        keyCode : keyCode,
-        charCode : charCode,
-        isChar: isChar,
-        pageX: 0,
-        pageY: 0,        
-        preventDefault : function(){},
-        stopPropagation : function(){}
-      };
-      var handler = qx.event.handler.KeyEventHandler.getInstance();
-      handler._idealKeyHandler( keyCode, charCode, eventType, domEvent );
-    },
-    
+
     ////////////////
     // client-server
         
@@ -275,15 +352,15 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         return "";
       } );
     },
-    
+
     getRequestLog : function() {
       return this._requestLog;
     },
-    
+
     getRequestsSend : function() {
       return this._requestLog.length;
     },
-    
+
     clearRequestLog : function() {
       org.eclipse.swt.Request.getInstance().send();        
       this._requestLog = [];
@@ -332,6 +409,47 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       }
       // this only works if the timer is enabled:
       timer._oninterval();
+    },
+    
+    //////////
+    // Theming
+    
+    // assumes that the set appearance-theme does never change during tests     
+    fakeAppearance : function( appearanceId, value ) {
+      var manager = qx.theme.manager.Appearance.getInstance();
+      var themeName = manager.getAppearanceTheme().name;
+      var base = manager.getAppearanceTheme().appearances;
+      if( typeof this._appearanceBackups[ appearanceId ] == "undefined" ) {
+        if( base[ appearanceId ] ) {
+          this._appearanceBackups[ appearanceId ] = base[ appearanceId ];
+        }  else {
+          this._appearanceBackups[ appearanceId ] = false;
+        }
+      }
+      base[ appearanceId ] = value;
+      this._clearAppearanceCache();
+    },
+    
+    restoreAppearance : function() {
+      var manager = qx.theme.manager.Appearance.getInstance();
+      var base = manager.getAppearanceTheme().appearances;
+      for( var appearanceId in this._appearanceBackups ) {
+        var value = this._appearanceBackups[ appearanceId ];
+        if( value === false ) {
+          delete base[ appearanceId ];
+        } else {
+          base[ appearanceId ] = value;          
+        }
+      }
+      this._appearanceBackups = {};
+      this._clearAppearanceCache();
+    },
+    
+    _appearanceBackups : {},
+    
+    _clearAppearanceCache : function() {
+      var manager = qx.theme.manager.Appearance.getInstance()
+      manager.__cache[ manager.getAppearanceTheme().name ] = {};
     },
     
     ////////
