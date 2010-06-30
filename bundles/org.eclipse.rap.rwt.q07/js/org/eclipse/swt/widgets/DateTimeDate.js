@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,7 +80,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     } else {
       this._monthTextField.setText( this._monthname[ this._monthInt - 1 ] );
     }
-    this._monthTextField.addEventListener( "mousedown",  this._onMouseDown, this );
+    this._monthTextField.addEventListener( "mousedown",  this._onTextFieldMouseDown, this );
     this.add( this._monthTextField );
     // Separator
     this._separator1 = new qx.ui.basic.Label( dateSeparator );
@@ -95,7 +95,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     this._dayTextField.set({
       textAlign: "right"
     });
-    this._dayTextField.addEventListener( "mousedown",  this._onMouseDown, this );
+    this._dayTextField.addEventListener( "mousedown",  this._onTextFieldMouseDown, this );
     if( !this._short ) {
       this.add( this._dayTextField );
     }
@@ -115,7 +115,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     });
     // Last valid year
     this._lastValidYear = 1970;
-    this._yearTextField.addEventListener( "mousedown",  this._onMouseDown, this );
+    this._yearTextField.addEventListener( "mousedown",  this._onTextFieldMouseDown, this );
     this.add( this._yearTextField );
     // Spinner
     this._spinner = new qx.ui.form.Spinner();
@@ -151,7 +151,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       cDocument.addEventListener( "windowblur", this._onWindowBlur, this );
       this.addEventListener( "appear", this._onAppear, this );
       this.addEventListener( "changeVisibility", this._onChangeVisibility, this );
-      this.addEventListener( "click", this._onMouseClick, this );
+      this.addEventListener( "mousedown", this._onMouseDown, this );
       this.addEventListener( "mouseover", this._onMouseOver, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
       this._dropDownButton = new qx.ui.form.Button();
@@ -188,9 +188,9 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "focus", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onFocusOut, this );
-    this._monthTextField.removeEventListener( "mousedown",  this._onMouseDown, this );
-    this._dayTextField.removeEventListener( "mousedown",  this._onMouseDown, this );
-    this._yearTextField.removeEventListener( "mousedown",  this._onMouseDown, this );
+    this._monthTextField.removeEventListener( "mousedown",  this._onTextFieldMouseDown, this );
+    this._dayTextField.removeEventListener( "mousedown",  this._onTextFieldMouseDown, this );
+    this._yearTextField.removeEventListener( "mousedown",  this._onTextFieldMouseDown, this );
     this._spinner.removeEventListener( "change",  this._onSpinnerChange, this );
     this._disposeObjects( "_weekdayTextField",
                           "_monthTextField",
@@ -206,7 +206,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       cDocument.removeEventListener( "windowblur", this._onWindowBlur, this );
       this.removeEventListener( "appear", this._onAppear, this );
       this.removeEventListener( "changeVisibility", this._onChangeVisibility, this );
-      this.removeEventListener( "click", this._onMouseClick, this );
+      this.removeEventListener( "mousedown", this._onMouseDown, this );
       this.removeEventListener( "mouseover", this._onMouseOver, this );
       this.removeEventListener( "mouseout", this._onMouseOut, this );
       this._dropDownButton.dispose();
@@ -304,7 +304,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       this._focusedTextField.removeState( "selected" );
     },
 
-    _onMouseDown : function( evt ) {
+    _onTextFieldMouseDown : function( evt ) {
       if( this._focusedTextField === this._yearTextField ) {
         this._checkAndApplyYearValue();
       }
@@ -812,7 +812,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       }
     },
 
-    _onMouseClick : function( evt ) {
+    _onMouseDown : function( evt ) {
       if( evt.isLeftButtonPressed() ) {
         var target = evt.getTarget();
         if( target.getUserData( "calendar-day" ) ) {
@@ -826,8 +826,10 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             // Send changes
             qx.client.Timer.once( this._sendChanges, this, 500 );
           }
+          evt.stopPropagation();
         } else if( target.getUserData( "calendar-button" ) ) {
           this._calendar._onNavButtonClicked( evt );
+          evt.stopPropagation();
         } else if( target === this._dropDownButton ) {
           this._toggleCalendarVisibility();
         } else if( this._dropped ) {
