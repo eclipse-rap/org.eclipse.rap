@@ -72,6 +72,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
       this._requestCounter = requestCounter;
     },
 
+    getRequestCounter : function() {
+      return this._requestCounter;
+    },
+
     setTimeoutPage : function( content ) {
       this._timeoutPage = content;
     },

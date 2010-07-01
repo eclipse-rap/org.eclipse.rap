@@ -50,7 +50,10 @@ qx.Class.define( "org.eclipse.swt.Application", {
     _onResize : function( evt ) {
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
-      req.send();
+      // Fix for bug 315230
+      if( req.getRequestCounter() != null ) {
+        req.send();
+      }
     },
 
     _onKeyPress : function( evt ) {
