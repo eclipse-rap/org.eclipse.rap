@@ -20,14 +20,16 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     this._FULLSCREEN = true;
     this._presenter = org.eclipse.rwt.test.Presenter.getInstance();
     this._presenter.setFullScreen( this._FULLSCREEN );    
-    this._testClasses = null;
-    this._currentClass = null;
-    this._currentFunction = null;
+    this._testClasses = [];
+    this._testFunctions = [];
+    this._currentClass = 0;
+    this._currentInstance = null;
+    this._currentFunction = 0;
+    this._failed = false;
     this._log = null;
-    this._testsTotal = 0;
     this._asserts = 0;
+    this._loopWrapper = null;
     var classes = qx.Class.__registry;
-    this._testClasses = {};
     var testScripts = this._getTestScripts();
     var engine = qx.core.Client.getEngine();
     var skip;
@@ -47,8 +49,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
           skip = targetEngine.indexOf( engine ) == -1;
         }
         if( !skip ) {
-          this._testClasses[clazz] = classes[clazz];
-          this._testsTotal++;
+          this._testClasses.push( classes[clazz] );
         }
       }
     }    
@@ -60,81 +61,125 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     getLog = function() {
       return org.eclipse.rwt.test.TestRunner.getInstance().getLog();
     }
+    // also stop on "this.error":
+    qx.core.Object.prototype.error = function( msg, exc ) {
+      this.getLogger().error(msg, this.toHashCode(), exc);
+      throw msg; 
+    };
   },
 
   members : {
   	
   	run : function() {
-  	  // prevent flush by timer
-  	  this._disableAutoFlush();
-  	  // prevent actual dom-events
-  	  qx.event.handler.EventHandler.getInstance().detachEvents();
-      this.info( "Starting tests...", false );
-      if( this._NOTRYCATCH ) {
-        this._run();
-      } else {    
-    	  try {
-      	  this._run();
-    	  } catch( e ) { 
-    	    this.info( e );      
-    	  }
-      }
+  	  this._prepare();
+  	  this._initTest();
+      this._loopWrapper();
   	},
 
-  	_run : function() {
-  		var finished = 0;
-      for( this._currentClass in this._testClasses ) {
-        this._presenter.setNumberTestsFinished( finished + 0.5 , 
-                                                this._testsTotal );
-        this._presenter.log( '', false );
-        this.info( "+ " + this._currentClass, false );      	
-      	var obj = null;
-      	this._currentFunction = "construct";
-      	// also stop on "this.error":
-      	qx.core.Object.prototype.error = function( msg, exc ) {
-          this.getLogger().error(msg, this.toHashCode(), exc);
-      	  throw msg; 
-      	};
-      	if( this._NOTRYCATCH ) {
-          obj = new this._testClasses[ this._currentClass ]();
-          var testFunctions = this._getTestFunctions( obj );      
-          for ( this._currentFunction in testFunctions ){   
-            this._asserts = 0;       	
-            testFunctions[ this._currentFunction ].call( obj );
-            this._cleanUp();
-            this.info( this._currentFunction + " - OK ", true );
-          }      	  
-      	}  else {    	
-          try {
-            obj = new this._testClasses[ this._currentClass ]();
-            var testFunctions = this._getTestFunctions( obj );      
-            for ( this._currentFunction in testFunctions ){   
-              this._asserts = 0;       	
-              testFunctions[ this._currentFunction ].call( obj );
-              this._cleanUp();
-              this.info( this._currentFunction + " - OK ", true );
-            }
-          } catch( e ) {
-            // a test failed:          
-            if( this._FREEZEONFAIL ) this._freezeQooxdoo();
-            this._presenter.setFailed( true );
-            this.info( this._currentFunction + " failed:", true );
-            this.info( e, false );          
-            this.info( this._asserts + " asserts succeeded.", false );          
-            this._createFailLog( e, obj );
-            this._checkFlushState();
-            throw( "Tests aborted!" );
-          }
-      	}          
-        qx.ui.core.ClientDocument.getInstance().removeAll();
-        obj.dispose();
-        finished++;
-        this._presenter.setNumberTestsFinished( finished, this._testsTotal );
-      }
-      this.info( '', false );
-      this.info( "Tests done.", false );
+  	_loop : function() {
+      this._executeTestFunction();
+    	if( this._iterate() ) {
+    	  window.setTimeout( this._loopWrapper, 5 );
+    	}                  
   	},
   	
+  	_iterate : function() {
+  	  var result = true;
+  	  if( this._failed ) {
+  	    result = false;
+  	  } else {
+    	  this._currentFunction++;
+    	  if( this._currentFunction == this._testFunctions.length ) {
+    	    this._currentClass++;
+    	    this._testFinished();
+    	    if( this._currentClass == this._testClasses.length ) {
+    	      this._allFinished();
+    	      result = false;
+    	    } else {
+    	      this._initTest();
+    	    }
+    	  }
+  	  }
+  	  return result;
+  	},
+  	
+  	_prepare : function() {
+      // prevent flush by timer
+      this._disableAutoFlush();
+      // prevent actual dom-events
+      qx.event.handler.EventHandler.getInstance().detachEvents();
+      var that = this;
+      this._loopWrapper = function(){ that._loop(); };
+      this.info( "Found " + this._testClasses.length + " Tests.", false );
+      this.info( "Starting tests...", false );
+  	},
+
+  	_initTest : function() {
+      this._presenter.setNumberTestsFinished( this._currentClass + 0.5 , 
+                                              this._testClasses.length );
+      var className = this._testClasses[ this._currentClass ].classname;
+      this._presenter.log( '', false );
+      this.info( "+ " + className, false );       
+      this._currentInstance = null;
+      this._createTestInstance();
+      this._testFunctions = this._getTestFunctions( this._currentInstance );      
+      this._currentFunction = 0;
+  	},
+  	
+  	_testFinished : function() {
+        this._currentInstance.dispose();
+        this._presenter.setNumberTestsFinished( this._currentClass, 
+                                                this._testClasses.length );  	
+    },
+    
+    _allFinished : function() {
+      this.info( '', false );
+      this.info( "Tests done.", false );      
+    },
+  	
+  	_executeTestFunction : function() {
+      this._asserts = 0;
+      var functionName = this._testFunctions[ this._currentFunction ];
+      if( this._NOTRYCATCH ) {
+        this._currentInstance[ functionName ]();
+        this._cleanUp();
+        this.info( functionName + " - OK ", true );  	  
+      } else {
+        try {
+          this._currentInstance[ functionName ]();
+          this._cleanUp();
+          this.info( functionName + " - OK ", true );  	  
+        } catch( e ) {
+          this._handleException( e );
+        }
+      }    
+  	},
+  	
+  	_createTestInstance : function() {
+      if( this._NOTRYCATCH ) {
+        this._currentInstance = new this._testClasses[ this._currentClass ]();
+      } else {
+        try {
+          this._currentInstance = new this._testClasses[ this._currentClass ]();
+        } catch( e ) {
+          this._handleException( e );
+        }          
+      }  	  
+  	},
+  	
+  	_handleException : function( e ) {
+      if( this._FREEZEONFAIL ) this._freezeQooxdoo();
+      this._presenter.setFailed( true );
+      this._failed = true;
+      var classname = this._testFunctions[ this._currentFunction ];
+      this.info( classname + " failed:", true );
+      this.info( e, false );          
+      this.info( this._asserts + " asserts succeeded.", false );          
+      this._createFailLog( e, this._currentInstance );
+      this._checkFlushState();
+      this.info( "Tests aborted!", false );
+  	},
+
   	_cleanUp : function() {
   	  org.eclipse.rwt.test.fixture.TestUtil.clearRequestLog();
   	  org.eclipse.rwt.test.fixture.TestUtil.clearTimerOnceLog();
@@ -158,7 +203,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
                            + '"';
         var error = {
           "assert" : true,
-          "testClass" : this._currentClass, 
+          "testClass" : this._testClasses[ this._currentClass ].classname, 
           "testFunction" : this._currentFunction, 
           "trace" : trace,
           "expected" : expected,
@@ -293,12 +338,12 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     },
     
     _getTestFunctions : function( obj ){
-      var testFunctions = {};
+      var testFunctions = [];
       for ( var fun in obj ) {
         if(    fun.substr( 0, 4 ) == "test" 
             && typeof obj[ fun ] == "function") 
          {
-          testFunctions[ fun ] = obj[ fun ];
+          testFunctions.push( fun );
         }
       }
       return testFunctions;
