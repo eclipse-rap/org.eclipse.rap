@@ -15,11 +15,12 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 
 
 public class Graphics_Test extends TestCase {
 
-  public void testTextExtentNull() throws Exception {
+  public void testTextExtentNull() {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
     try {
       Graphics.textExtent( font , null, 0 );
@@ -35,7 +36,7 @@ public class Graphics_Test extends TestCase {
     }
   }
 
-  public void testStringExtentNull() throws Exception {
+  public void testStringExtentNull() {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
     try {
       Graphics.stringExtent( font , null );
@@ -60,6 +61,12 @@ public class Graphics_Test extends TestCase {
     }
   }
   
+  public void testGetAvgCharWidth() {
+    Display display = new Display();
+    float result = Graphics.getAvgCharWidth( display.getSystemFont() );
+    assertTrue( result > 0 );
+  }
+
   public void testGetAvgCharWidthNull() {
     try {
       Graphics.getAvgCharWidth( null );
@@ -69,6 +76,12 @@ public class Graphics_Test extends TestCase {
     }
   }
   
+  public void testGetCursor() {
+    Display display = new Display();
+    Cursor cursor = Graphics.getCursor( SWT.CURSOR_ARROW );
+    assertSame( display.getSystemCursor( SWT.CURSOR_ARROW ), cursor );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
