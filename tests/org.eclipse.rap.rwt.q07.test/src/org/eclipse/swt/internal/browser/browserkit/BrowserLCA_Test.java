@@ -231,6 +231,10 @@ public class BrowserLCA_Test extends TestCase {
     result = BrowserLCA.toJson( input, true );
     expected = "[3,true,null,[\"a string\",false],\"hi\",2.0]";
     assertEquals( expected, result );
+    input = new String( "\"RAP\"" );
+    result = BrowserLCA.toJson( input, true );
+    expected = "\"\\\"RAP\\\"\"";
+    assertEquals( expected, result );
   }
 
   protected void setUp() throws Exception {

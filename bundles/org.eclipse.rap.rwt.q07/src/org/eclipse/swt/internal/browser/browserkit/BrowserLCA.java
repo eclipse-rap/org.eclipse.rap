@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -340,7 +341,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       result.append( "," );
     } else if( object instanceof String ) {
       result.append( "\"" );
-      result.append( ( String )object );
+      result.append( EncodingUtil.escapeDoubleQuoted( ( String )object ) );
       result.append( "\"" );
       result.append( "," );
     } else if( object instanceof Boolean ) {
