@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
  
 /**
@@ -22,7 +23,6 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     APPEARANCE : "label-wrapper",
     
     initialize : function( widget ) {
-
       widget.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
       widget.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_TOP );
       widget.setAppearance( org.eclipse.swt.LabelUtil.APPEARANCE );
@@ -38,25 +38,10 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
       widget.setLabel( "" );
       // end workaround
       widget.setHideFocus( true );
-      // track DOM insertion state
-      widget.addEventListener( "beforeRemoveDom",
-                               org.eclipse.swt.LabelUtil._onRemoveDom );
-      widget.addEventListener( "insertDom",
-                               org.eclipse.swt.LabelUtil._onInsertDom );
       widget.addEventListener( "mouseover",
                                org.eclipse.swt.LabelUtil._onMouseOver );
       widget.addEventListener( "mouseout",
                                org.eclipse.swt.LabelUtil._onMouseOut );
-    },
-    
-    _onRemoveDom : function( evt ) {
-      var widget = evt.getTarget();
-      widget._isInDOM = false;
-    },
-    
-    _onInsertDom : function( evt ) {
-      var widget = evt.getTarget();
-      widget._isInDOM = true;
     },
     
     setWrap : function( widget, wrap ) {
