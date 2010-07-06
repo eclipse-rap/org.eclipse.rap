@@ -371,40 +371,54 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 2, res4.gradientPercents.length );
     assertEquals( 0f, res4.gradientPercents[ 0 ], 0 );
     assertEquals( 100f, res4.gradientPercents[ 1 ], 0 );
-    String input5 = "gradient( radial, left top, left bottom, "
-                  + "from( #0000FF ), "
-                  + "to( #00FF00 ) )";
+  }
+
+  public void testGradient_InvalidValues() throws Exception {
+    String input = "gradient( radial, left top, left bottom, "
+                 + "from( #0000FF ), "
+                 + "to( #00FF00 ) )";
     try {
-      PropertyResolver.readBackgroundImage( parseProperty( input5 ),
+      PropertyResolver.readBackgroundImage( parseProperty( input ),
                                             RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    String input6 = "gradient( linear, 10 10, left bottom, "
-                  + "from( #0000FF ), "
-                  + "to( #00FF00 ) )";
+    input = "gradient( linear, 10 10, left bottom, "
+          + "from( #0000FF ), "
+          + "to( #00FF00 ) )";
     try {
-      PropertyResolver.readBackgroundImage( parseProperty( input6 ),
+      PropertyResolver.readBackgroundImage( parseProperty( input ),
                                             RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    String input7 = "gradient( linear, left top, 10 10, "
-                  + "from( #0000FF ), "
-                  + "to( #00FF00 ) )";
+    input = "gradient( linear, left top, 10 10, "
+          + "from( #0000FF ), "
+          + "to( #00FF00 ) )";
     try {
-      PropertyResolver.readBackgroundImage( parseProperty( input7 ),
+      PropertyResolver.readBackgroundImage( parseProperty( input ),
                                             RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    String input8 = "gradient( linear, left top, left bottom )";
+    input = "gradient( linear, left top, left bottom )";
     try {
-      PropertyResolver.readBackgroundImage( parseProperty( input8 ),
+      PropertyResolver.readBackgroundImage( parseProperty( input ),
                                             RESOURCE_LOADER );
+      fail( "Must throw IAE" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    input = "gradient( linear, left, right, "
+          + "from( blue ), "
+          + "to( white ) )";
+    try {
+      PropertyResolver.readBackgroundImage( parseProperty( input ),
+                                            RESOURCE_LOADER );
+      fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
     }

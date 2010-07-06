@@ -474,78 +474,110 @@ public final class PropertyResolver {
 
   static QxImage readGradient( final LexicalUnit unit ) {
     QxImage result = null;
-    TreeMap gradient = new TreeMap();
-    LexicalUnit parameters = unit.getParameters();
-    short type = parameters.getLexicalUnitType();
-    if( type == LexicalUnit.SAC_IDENT ) {
-      String value = parameters.getStringValue();
-      if( !"linear".equals( value ) ) {
-        String msg = "Invalid value for background-image gradient: " + value;
-        throw new IllegalArgumentException( msg );
-      }
-    }
-    LexicalUnit x1 = parameters.getNextLexicalUnit().getNextLexicalUnit();
-    LexicalUnit y1 = x1.getNextLexicalUnit();
-    if(    x1.getLexicalUnitType() == LexicalUnit.SAC_IDENT
-        && y1.getLexicalUnitType() == LexicalUnit.SAC_IDENT )
-    {
-      String x1value = x1.getStringValue();
-      String y1value = y1.getStringValue();
-      if( !( "left".equals( x1value ) && "top".equals( y1value ) ) ) {
-        String msg = "Invalid value for background-image gradient: "
-                     + x1value
-                     + " "
-                     + y1value;
-        throw new IllegalArgumentException( msg );
-      }
-    } else if(    x1.getLexicalUnitType() == LexicalUnit.SAC_INTEGER
-               && y1.getLexicalUnitType() == LexicalUnit.SAC_INTEGER )
-    {
-      String msg = "Invalid value for background-image gradient: "
-                   + Integer.toString( x1.getIntegerValue() )
-                   + " "
-                   + Integer.toString( y1.getIntegerValue() );
+    LexicalUnit nextUnit = unit.getParameters();
+    String gradientType = readGradientType( nextUnit );
+    if( !"linear".equals( gradientType ) ) {
+      String msg = "Invalid value for background-image gradient type: "
+                 + gradientType;
       throw new IllegalArgumentException( msg );
     }
-    LexicalUnit x2 = y1.getNextLexicalUnit().getNextLexicalUnit();
-    LexicalUnit y2 = x2.getNextLexicalUnit();
-    if(    x2.getLexicalUnitType() == LexicalUnit.SAC_IDENT
-        && y2.getLexicalUnitType() == LexicalUnit.SAC_IDENT )
-    {
-      String x2value = x2.getStringValue();
-      String y2value = y2.getStringValue();
-      if( !( "left".equals( x2value ) && "bottom".equals( y2value ) ) ) {
-        String msg = "Invalid value for background-image gradient: "
-                     + x2value
-                     + " "
-                     + y2value;
-        throw new IllegalArgumentException( msg );
-      }
-    } else if(    x2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER
-               && y2.getLexicalUnitType() == LexicalUnit.SAC_INTEGER ) {
-      String msg = "Invalid value for background-image gradient: "
-                   + Integer.toString( x2.getIntegerValue() )
-                   + " "
-                   + Integer.toString( y2.getIntegerValue() );
+    nextUnit = nextUnit.getNextLexicalUnit();
+    if( !checkComma( nextUnit) ) {
+      String msg = "Failed to parse background-image gradient.";
       throw new IllegalArgumentException( msg );
     }
-    LexicalUnit nextUnit = y2.getNextLexicalUnit();
+    nextUnit = nextUnit.getNextLexicalUnit();
+    String[] startPoint = readGradientPoint( nextUnit );
+    if( !(    "left".equals( startPoint[ 0 ] )
+           && "top".equals( startPoint[ 1 ] ) ) )
+    {
+      String msg = "Invalid value for background-image gradient start point: "
+                   + startPoint[ 0 ]
+                   + " "
+                   + startPoint[ 1 ];
+      throw new IllegalArgumentException( msg );
+    }
+    nextUnit = nextUnit.getNextLexicalUnit();
+    nextUnit = nextUnit.getNextLexicalUnit();
+    if( !checkComma( nextUnit) ) {
+      String msg = "Failed to parse background-image gradient.";
+      throw new IllegalArgumentException( msg );
+    }
+    nextUnit = nextUnit.getNextLexicalUnit();
+    String[] endPoint = readGradientPoint( nextUnit );
+    if( !(    "left".equals( endPoint[ 0 ] )
+           && "bottom".equals( endPoint[ 1 ] ) ) )
+    {
+      String msg = "Invalid value for background-image gradient end point: "
+                   + endPoint[ 0 ]
+                   + " "
+                   + endPoint[ 1 ];
+      throw new IllegalArgumentException( msg );
+    }
+    nextUnit = nextUnit.getNextLexicalUnit();
+    nextUnit = nextUnit.getNextLexicalUnit();
+    TreeMap gradient = readGradientColorsPercents( nextUnit );
+    if( gradient.size() > 0 ) {
+      gradient = normalizeGradientValue( gradient );
+      String[] gradientColors = getGradientColors( gradient );
+      float[] gradientPercents = getGradientPercents( gradient );
+      result = QxImage.createGradient( gradientColors, gradientPercents );
+    }
+    return result;
+  }
+
+  static String readGradientType( final LexicalUnit unit ) {
+    String result = null;
+    if( unit != null && unit.getLexicalUnitType() == LexicalUnit.SAC_IDENT ) {
+      result = unit.getStringValue();
+    }
+    return result;
+  }
+
+  static String[] readGradientPoint( final LexicalUnit unit ) {
+    String[] result = new String[ 2 ];
+    LexicalUnit x = unit;
+    LexicalUnit y = null;
+    if( unit != null ) {
+      y = unit.getNextLexicalUnit();
+    }
+    if( x != null && y != null ) {
+      short xType = x.getLexicalUnitType();
+      short yType = y.getLexicalUnitType();
+      if( xType == LexicalUnit.SAC_IDENT && yType == LexicalUnit.SAC_IDENT ) {
+        result[ 0 ] = x.getStringValue();
+        result[ 1 ] = y.getStringValue();
+      } else if(    xType == LexicalUnit.SAC_INTEGER
+                 && yType == LexicalUnit.SAC_INTEGER )
+      {
+        result[ 0 ] = Integer.toString( x.getIntegerValue() );
+        result[ 1 ] = Integer.toString( y.getIntegerValue() );
+      }
+    }
+    return result;
+  }
+
+  static TreeMap readGradientColorsPercents( final LexicalUnit unit ) {
+    TreeMap result = new TreeMap();
+    LexicalUnit nextUnit = unit;
     while( nextUnit != null ) {
       Float percent = null;
       String color = null;
-      LexicalUnit colorFunction = nextUnit.getNextLexicalUnit();
-      if( colorFunction.getLexicalUnitType() == LexicalUnit.SAC_FUNCTION ) {
-        String function = colorFunction.getFunctionName();
+      nextUnit = nextUnit.getNextLexicalUnit();
+      if(    nextUnit != null
+          && nextUnit.getLexicalUnitType() == LexicalUnit.SAC_FUNCTION )
+      {
+        String function = nextUnit.getFunctionName();
         if( "from".equals( function ) ) {
           percent = new Float( 0f );
-          LexicalUnit colorUnit = colorFunction.getParameters();
+          LexicalUnit colorUnit = nextUnit.getParameters();
           color = readGradientColor( colorUnit );
         } else if( "to".equals( function ) ) {
           percent = new Float( 100f );
-          LexicalUnit colorUnit = colorFunction.getParameters();
+          LexicalUnit colorUnit = nextUnit.getParameters();
           color = readGradientColor( colorUnit );
         } else if( "color-stop".equals( function ) ) {
-          LexicalUnit percentUnit = colorFunction.getParameters();
+          LexicalUnit percentUnit = nextUnit.getParameters();
           percent = readGradientPercent( percentUnit );
           LexicalUnit colorUnit
             = percentUnit.getNextLexicalUnit().getNextLexicalUnit();
@@ -555,17 +587,11 @@ public final class PropertyResolver {
                        + function;
           throw new IllegalArgumentException( msg );
         }
+        nextUnit = nextUnit.getNextLexicalUnit();
       }
       if( percent != null && color != null ) {
-        gradient.put( percent, color );
+        result.put( percent, color );
       }
-      nextUnit = colorFunction.getNextLexicalUnit();
-    }
-    if( gradient.size() > 0 ) {
-      gradient = normalizeGradientValue( gradient );
-      String[] gradientColors = getGradientColors( gradient );
-      float[] gradientPercents = getGradientPercents( gradient );
-      result = QxImage.createGradient( gradientColors, gradientPercents );
     }
     return result;
   }
@@ -792,6 +818,16 @@ public final class PropertyResolver {
     float[] result = new float[ keys.length ];
     for( int i = 0; i < keys.length; i++ ) {
       result[ i ] = ( ( Float )keys[ i ] ).floatValue();
+    }
+    return result;
+  }
+
+  static boolean checkComma( final LexicalUnit unit ) {
+    boolean result = false;
+    if(    unit != null
+        && unit.getLexicalUnitType() == LexicalUnit.SAC_OPERATOR_COMMA )
+    {
+      result = true;
     }
     return result;
   }
