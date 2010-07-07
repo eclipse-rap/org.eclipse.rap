@@ -380,7 +380,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
         result = (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED
                    || statusCode === 12029    // ERROR_INTERNET_CANNOT_CONNECT
                    || statusCode === 12030    // ERROR_INTERNET_CONNECTION_ABORTED
-                   || statusCode === 12031 ); // ERROR_INTERNET_CONNECTION_RESET
+                   || statusCode === 12031    // ERROR_INTERNET_CONNECTION_RESET
+                   || statusCode === 12152 ); // ERROR_HTTP_INVALID_SERVER_RESPONSE
       } else if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
         // Firefox 3 reports other statusCode than oder versions (bug #249814)
         // Check if Gecko > 1.9 is running (used in FF 3)
