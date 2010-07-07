@@ -58,11 +58,11 @@ public class ControlLCAUtil {
     = new JSListenerInfo( "mouseup",
                           "org.eclipse.swt.EventUtil.mouseUp",
                           JSListenerType.ACTION );
-  private static final JSListenerInfo MENU_DETECT_LISTENER_INFO_MOUSE
+  private static final JSListenerInfo MENU_DETECT_LISTENER_INFO_KEY
     = new JSListenerInfo( "keydown",
                           "org.eclipse.swt.EventUtil.menuDetectedByKey",
                           JSListenerType.ACTION );
-  private static final JSListenerInfo MENU_DETECT_LISTENER_INFO_KEY
+  private static final JSListenerInfo MENU_DETECT_LISTENER_INFO_MOUSE
     = new JSListenerInfo( "mouseup",
                           "org.eclipse.swt.EventUtil.menuDetectedByMouse",
                           JSListenerType.ACTION );
