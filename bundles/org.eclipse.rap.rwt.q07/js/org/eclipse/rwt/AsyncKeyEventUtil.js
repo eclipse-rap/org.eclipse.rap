@@ -197,9 +197,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
     },
 
     _hasTraverseListener : function( widget ) {
-      return
-           widget !== null 
-        && widget.getUserData( "traverseListener" ) === true;
+      return widget !== null && widget.getUserData( "traverseListener" ) === true;
     },
 
     _isTraverseKey : function( keyCode ) {
