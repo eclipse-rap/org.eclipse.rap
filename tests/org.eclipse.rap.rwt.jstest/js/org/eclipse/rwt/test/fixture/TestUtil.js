@@ -308,21 +308,51 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       ev.setButton( qx.event.type.MouseEvent.C_BUTTON_LEFT ); 
       return ev;
     },
-
+    
     press : function( widget, key, checkActive ) {
       this.fakeKeyEvent( widget, "keydown", key, checkActive );
       this.fakeKeyEvent( widget, "keypress", key, checkActive );
       this.fakeKeyEvent( widget, "keyinput", key, checkActive );
       this.fakeKeyEvent( widget, "keyup", key, checkActive );
+    },
+    
+    shiftPress : function( widget, key, checkActive ) {
+      var mod = qx.event.type.DomEvent.SHIFT_MASK;
+      this.fakeKeyEvent( widget, "keydown", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keypress", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keyinput", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keyup", key, checkActive, mod );
+    },    
+    
+    ctrlPress : function( widget, key, checkActive ) {
+      var mod = qx.event.type.DomEvent.CTRL_MASK;
+      this.fakeKeyEvent( widget, "keydown", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keypress", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keyinput", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keyup", key, checkActive, mod );
+    },    
+    
+    altPress : function( widget, key, checkActive ) {
+      var mod = qx.event.type.DomEvent.ALT_MASK;
+      this.fakeKeyEvent( widget, "keydown", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keypress", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keyinput", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keyup", key, checkActive, mod );
     },    
 
-    fakeKeyEvent : function( widget, type, key, checkActive  ) {
+    fakeKeyEvent : function( widget, type, key, checkActive, mod ) {
       if( !widget._isCreated ) {
         throw( "Error in fakeKeyEvent: " + widget + " is not created" );
       }
       if( !checkActive || this.isActive( widget ) ) {
+        if( typeof mod == "undefined" ) {
+          mod = 0;
+        }
         var domEv = {
           "type" : type,
+          "ctrlKey" : ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0,
+          "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
+          "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0,          
           preventDefault : function(){}
         };
         var ev = new qx.event.type.KeyEvent(

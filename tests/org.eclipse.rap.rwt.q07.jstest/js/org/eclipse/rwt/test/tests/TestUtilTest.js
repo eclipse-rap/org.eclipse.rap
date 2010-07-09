@@ -312,6 +312,110 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       testUtil.doubleClick( widget );
       assertEquals( [ "click", "click", "dblclick" ], log );
       widget.destroy();
+    },
+    
+    testPress : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var log = [];
+      widget.addEventListener( "keydown" , function( event ) { 
+        log.push( "keydown" ); 
+        log.push( event.getKeyIdentifier() );
+      } );
+      widget.addEventListener( "keypress" , function( event ) { 
+        log.push( "keypress" );
+        log.push( event.getKeyIdentifier() );
+      } );
+      widget.addEventListener( "keyinput" , function( event ) { 
+        log.push( "keyinput" ); 
+        log.push( event.getKeyIdentifier() );
+      } );
+      widget.addEventListener( "keyup" , function( event ) { 
+        log.push( "keyup" );
+        log.push( event.getKeyIdentifier() );
+      } );
+      testUtil.press( widget, "x" );
+      var expected 
+        = [ "keydown", "x", "keypress", "x", "keyinput", "x", "keyup", "x", ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+    
+    testShiftPress : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var log = [];
+      widget.addEventListener( "keydown" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      widget.addEventListener( "keypress" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      widget.addEventListener( "keyinput" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      widget.addEventListener( "keyup" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      testUtil.shiftPress( widget, "x" );
+      var shift = qx.event.type.DomEvent.SHIFT_MASK;
+      var expected = [ shift, shift, shift, shift ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+    
+    testCtrlPress : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var log = [];
+      widget.addEventListener( "keydown" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      widget.addEventListener( "keypress" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      widget.addEventListener( "keyinput" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      widget.addEventListener( "keyup" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      testUtil.ctrlPress( widget, "x" );
+      var ctrl = qx.event.type.DomEvent.CTRL_MASK;
+      var expected = [ ctrl, ctrl, ctrl, ctrl ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+    
+    testAltPress : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var log = [];
+      widget.addEventListener( "keydown" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      widget.addEventListener( "keypress" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      widget.addEventListener( "keyinput" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      widget.addEventListener( "keyup" , function( event ) { 
+        log.push( event.getModifiers() );
+      } );
+      testUtil.altPress( widget, "x" );
+      var alt = qx.event.type.DomEvent.ALT_MASK;
+      var expected = [ alt, alt, alt, alt ];
+      assertEquals( expected, log );
+      widget.destroy();
     }
 
   }
