@@ -22,16 +22,22 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
   
   members : {
     intercept : function( eventType, keyCode, charCode, domEvent ) {
-      var relevantEvent = this._isRelevantEvent( eventType, keyCode );
+      // [if] Fix for bug 319159
+      var realKeyCode = this._getRealKeyCode( keyCode, domEvent );
+      var relevantEvent = this._isRelevantEvent( eventType, realKeyCode );
       if( !org_eclipse_rap_rwt_EventUtil_suspend && relevantEvent ) {
         var control = this._getTargetControl();
         var hasKeyListener = this._hasKeyListener( control );
         var hasTraverseListener = this._hasTraverseListener( control );
-        if( hasKeyListener || ( hasTraverseListener && this._isTraverseKey( keyCode ) ) ) {
+        var isTraverseKey = false;
+        if( hasTraverseListener ) {
+          isTraverseKey = this._isTraverseKey( realKeyCode );
+        }
+        if( hasKeyListener || ( hasTraverseListener && isTraverseKey ) ) {
           // [if] Don't keep and modify the pending event object outside the
           // "intercept" method. Such approach does not work in IE.
           this._cancelEvent = false;
-          this._sendKeyDown( control, keyCode, charCode, domEvent );
+          this._sendKeyDown( control, realKeyCode, charCode, domEvent );
           if( this._cancelEvent ) {
             this._cancelDomEvent( domEvent );
           }
@@ -67,7 +73,15 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
       }
       return result;      
     },
-    
+
+    _getRealKeyCode : function( keyCode, domEvent ) {
+      var result = keyCode;
+      if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {
+        result = domEvent.keyCode;
+      }
+      return result;
+    },
+
     _getTargetControl : function() {
       var result = qx.event.handler.EventHandler.getInstance().getCaptureWidget();
       if( !result ) {
