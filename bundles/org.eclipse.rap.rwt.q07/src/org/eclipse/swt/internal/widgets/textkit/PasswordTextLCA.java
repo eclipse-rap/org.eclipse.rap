@@ -43,8 +43,9 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "org.eclipse.rwt.widgets.Text",
                       new Object[]{ Boolean.FALSE } );
-    TextLCAUtil.writeInitialize( text );    
+    TextLCAUtil.writeInitialize( text );
     ControlLCAUtil.writeStyleFlags( text );
+    TextLCAUtil.writeAlignment( text );
   }
 
   void renderChanges( final Text text ) throws IOException {
