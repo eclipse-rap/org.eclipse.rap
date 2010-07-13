@@ -309,35 +309,26 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       return ev;
     },
     
-    press : function( widget, key, checkActive ) {
-      this.fakeKeyEvent( widget, "keydown", key, checkActive );
-      this.fakeKeyEvent( widget, "keypress", key, checkActive );
-      this.fakeKeyEvent( widget, "keyinput", key, checkActive );
-      this.fakeKeyEvent( widget, "keyup", key, checkActive );
+    press : function( widget, key, checkActive, mod ) {
+      this.fakeKeyEvent( widget, "keydown", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keypress", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keyinput", key, checkActive, mod );
+      this.fakeKeyEvent( widget, "keyup", key, checkActive, mod );
     },
     
     shiftPress : function( widget, key, checkActive ) {
       var mod = qx.event.type.DomEvent.SHIFT_MASK;
-      this.fakeKeyEvent( widget, "keydown", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keypress", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keyinput", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keyup", key, checkActive, mod );
+      this.press( widget, key, checkActive, mod );
     },    
     
     ctrlPress : function( widget, key, checkActive ) {
       var mod = qx.event.type.DomEvent.CTRL_MASK;
-      this.fakeKeyEvent( widget, "keydown", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keypress", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keyinput", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keyup", key, checkActive, mod );
+      this.press( widget, key, checkActive, mod );
     },    
     
     altPress : function( widget, key, checkActive ) {
       var mod = qx.event.type.DomEvent.ALT_MASK;
-      this.fakeKeyEvent( widget, "keydown", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keypress", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keyinput", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keyup", key, checkActive, mod );
+      this.press( widget, key, checkActive, mod );
     },    
 
     fakeKeyEvent : function( widget, type, key, checkActive, mod ) {
