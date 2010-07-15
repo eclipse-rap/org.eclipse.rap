@@ -37,8 +37,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
     requestQueue.setMaxConcurrentRequests( 1 );
     // References the currently running request or null if no request is active
     this._currentRequest = null;
-    // References the last running transport
-    this._lastTransport = null;
     this._timeoutPage = "";
   },
 
@@ -219,12 +217,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
     },
 
     _sendStandalone : function( request ) {
-      // [if] Dispose the last transport before creating the new one
-      // see bug 301261
-      if( this._lastTransport != null ) {
-        this._lastTransport.getRequest().dispose();
-        this._lastTransport.dispose();
-      }
       // TODO [rh] WORKAROUND
       //      we would need two requestQueues (one for 'normal' requests that
       //      is limited to 1 concurrent request and one for the 'independant'
@@ -242,7 +234,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
       vTransport.addEventListener("timeout", vRequest._ontimeout, vRequest);
       vTransport.addEventListener("failed", vRequest._onfailed, vRequest);
       vTransport._start = (new Date).valueOf();
-      this._lastTransport = vTransport;
       vTransport.send();
       // END WORKAROUND
     },
@@ -269,7 +260,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         this._hideWaitHint();
         var content;
         var text = null;
-        var request = evt.getTarget().getImplementation().getRequest();
+        var request = exchange.getImplementation().getRequest();
         // [if] typeof(..) == "unknown" is IE specific. Used to prevent error:
         // "The data  necessary to complete this operation is not yet available"
         if( typeof( request.responseText ) != "unknown" ) {
@@ -287,10 +278,13 @@ qx.Class.define( "org.eclipse.swt.Request", {
         }
         this._writeErrorPage( content );
       }
+      // [if] Dispose the only finished transport - see bug 301261, 317616
+      exchange.dispose();
     },
 
     _handleCompleted : function( evt ) {
-      var text = evt.getTarget().getImplementation().getRequest().responseText;
+      var exchange = evt.getTarget();
+      var text = exchange.getImplementation().getRequest().responseText;
       if( text && text.indexOf( "<!DOCTYPE" ) === 0 ) {
         // Handle request to timed out session: write info page and offer
         // link to restart application. This way was chosen for two reasons:
@@ -328,6 +322,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
           this._dispatchReceivedEvent();
         }
       }
+      // [if] Dispose the only finished transport - see bug 301261, 317616
+      exchange.dispose();
     },
 
     ///////////////////////////////
