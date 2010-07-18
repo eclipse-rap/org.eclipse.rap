@@ -17,6 +17,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 
@@ -24,9 +25,10 @@ import org.eclipse.swt.graphics.ImageData;
 public class ImageDataFactory_Test extends TestCase {
 
   public void testFindImageData() {
-    ClassLoader classLoader = InternalImageFactory_Test.class.getClassLoader();
+    ClassLoader classLoader = ImageDataFactory_Test.class.getClassLoader();
     Image image = Graphics.getImage( Fixture.IMAGE_50x100, classLoader );
-    assertTrue( ResourceManager.getInstance().isRegistered( image.internalImage.getResourceName() ) );
+    IResourceManager resMgr = ResourceManager.getInstance();
+    assertTrue( resMgr.isRegistered( image.internalImage.getResourceName() ) );
     ImageData imageData = ImageDataFactory.findImageData( image.internalImage );
     assertNotNull( imageData );
     assertEquals( 50, imageData.width );
@@ -38,7 +40,7 @@ public class ImageDataFactory_Test extends TestCase {
   }
 
   public void testFindImageDataWithBlankImage() {
-    ClassLoader classLoader = InternalImageFactory_Test.class.getClassLoader();
+    ClassLoader classLoader = ImageDataFactory_Test.class.getClassLoader();
     Image blankImage = Graphics.getImage( "resources/images/blank.gif",
                                           classLoader );
     ImageData blankData
