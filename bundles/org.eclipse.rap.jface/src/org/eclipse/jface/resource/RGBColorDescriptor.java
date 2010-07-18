@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.RGB;
@@ -76,17 +75,14 @@ class RGBColorDescriptor extends ColorDescriptor {
     public Color createColor(Device device) {
         // If this descriptor is wrapping an existing color, then we can return the original color
         // if this is the same device.
-    	// RAP [bm]: always same "device"
-//        if (originalColor != null) {
-//            // If we're allocating on the same device as the original color, return the original.
-//            if (originalColor.getDevice() == device) {
-//                return originalColor;
-//            }            
-//        }
-//        
-//        return new Color(device, color);
-        return Graphics.getColor(color);
-        // RAPEND: [bm] 
+        if (originalColor != null) {
+            // If we're allocating on the same device as the original color, return the original.
+            if (originalColor.getDevice() == device) {
+                return originalColor;
+            }            
+        }
+        
+        return new Color(device, color);
     }
 
     /* (non-Javadoc)
@@ -97,8 +93,6 @@ class RGBColorDescriptor extends ColorDescriptor {
             return;
         }
         
-        // RAP [bm]: Color#dispose
-//        toDestroy.dispose();
+        toDestroy.dispose();
     }
-
 }
