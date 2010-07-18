@@ -12,105 +12,19 @@
 package org.eclipse.swt.graphics;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
+import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.widgets.Display;
 
 
 public class Image_Test extends TestCase {
-
-  public void testImageFinder() {
-    IResourceManager manager = ResourceManager.getInstance();
-    // only if you comment initial registration in
-    // org.eclipse.swt.internal.widgets.displaykit.QooxdooResourcesUtil
-    assertFalse( manager.isRegistered( Fixture.IMAGE1 ) );
-    Image image1 = Graphics.getImage( Fixture.IMAGE1 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
-    File contextDir = new File( Fixture.CONTEXT_DIR,
-                                ResourceManagerImpl.RESOURCES );
-    assertTrue( new File( contextDir, Fixture.IMAGE1 ).exists() );
-    Image image2 = Graphics.getImage( Fixture.IMAGE1 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
-    assertSame( image1, image2 );
-    assertEquals( ResourceFactory.getImagePath( image1 ),
-                  ResourceFactory.getImagePath( image2 ) );
-    // another picture
-    Graphics.getImage( Fixture.IMAGE2 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE2 ) );
-    assertTrue( new File( contextDir, Fixture.IMAGE2 ).exists() );
-    // ... and do it again...
-    image1 = Graphics.getImage( Fixture.IMAGE1 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
-  }
-
-  public void testImageFinderWithClassLoader() throws IOException {
-    File testGif = new File( Fixture.CONTEXT_DIR, "test.gif" );
-    Fixture.copyTestResource( Fixture.IMAGE3, testGif );
-    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURI().toURL() };
-    URLClassLoader classLoader = new URLClassLoader( urls, null );
-
-    IResourceManager manager = ResourceManager.getInstance();
-    assertFalse( manager.isRegistered( Fixture.IMAGE3 ) );
-    try {
-      Graphics.getImage( "test.gif" );
-      fail( "Image not available on the classpath." );
-    } catch( final IllegalArgumentException iae ) {
-      // expected
-    }
-    Image image = Graphics.getImage( "test.gif", classLoader );
-    assertNotNull( image );
-  }
-
-  public void testImageFinderWithInputStream() throws IOException {
-    String imageName = "testIS.gif";
-    File testGif = new File( Fixture.CONTEXT_DIR, imageName );
-    Fixture.copyTestResource( Fixture.IMAGE3, testGif );
-    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURI().toURL() };
-    URLClassLoader classLoader = new URLClassLoader( urls, null );
-
-    IResourceManager manager = ResourceManager.getInstance();
-    assertFalse( manager.isRegistered( Fixture.IMAGE3 ) );
-    try {
-      Graphics.getImage( imageName );
-      fail( "Image not available on the classpath." );
-    } catch( final IllegalArgumentException iae ) {
-      // expected
-    }
-    InputStream is = classLoader.getResourceAsStream( imageName );
-    Image image = Graphics.getImage( "test.gif", is );
-    assertNotNull( image );
-  }
-
-  public void testFindWithIllegalArguments() {
-    try {
-      Graphics.getImage( null );
-      fail( "Image#find must not allow null-argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      Graphics.getImage( "" );
-      fail( "Image#find must not allow empty string argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      Graphics.getImage( "", new ByteArrayInputStream( new byte[ 1 ] ) );
-      fail( "Image#find must not allow empty string argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-  }
 
   //////////////////////////
   // InputStream constructor
@@ -222,7 +136,7 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testImageConstructorWithIllegalFlag() throws Exception {
+  public void testImageConstructorWithIllegalFlag() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Display display = new Display();
@@ -230,19 +144,19 @@ public class Image_Test extends TestCase {
     try {
       new Image( display, image, SWT.PUSH );
       fail( "Must not allow invalid flag" );
-    } catch( Exception e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }
 
-  public void testImageConstructor() throws Exception {
+  public void testImageConstructor() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Display display = new Display();
     Image image = new Image( display, stream );
     Image copiedImage = new Image( display, image, SWT.IMAGE_COPY );
     assertEquals( image.getBounds(), copiedImage.getBounds() );
-    assertFalse( image.resourceName.equals( copiedImage.resourceName ) );
+    assertSame( image.internalImage, copiedImage.internalImage );
     image.dispose();
     assertFalse( copiedImage.isDisposed() );
   }
@@ -271,7 +185,7 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testImageDataConstructor() throws Exception {
+  public void testImageDataConstructor() {
     Display display = new Display();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
@@ -309,7 +223,7 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testGetImageData() throws Exception {
+  public void testGetImageData() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
@@ -372,7 +286,7 @@ public class Image_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testGetBackground() {
     Display display = new Display();
     ClassLoader loader = Fixture.class.getClassLoader();

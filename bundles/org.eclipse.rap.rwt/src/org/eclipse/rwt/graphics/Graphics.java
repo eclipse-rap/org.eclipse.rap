@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,9 @@ package org.eclipse.rwt.graphics;
 import java.io.InputStream;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.graphics.*;
 
 
 /**
@@ -103,47 +103,95 @@ public final class Graphics {
   }
 
   /**
-   * Returns an instance of {@link Image} based on the specified
-   * image path. The image has to be on the applications class-path.
-   *
+   * Returns an instance of {@link Image} based on the specified image path. The
+   * image has to be on the applications class-path.
+   * 
    * @param path the path to the image
-   *
    * @return the image
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the path is null</li>
+   *    <li>ERROR_ILLEGAL_ARGUMENT - if the path is invalid</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_IO - if an IO error occurs while reading from the stream</li>
+   *    <li>ERROR_INVALID_IMAGE - if the image stream contains invalid data</li>
+   *    <li>ERROR_UNSUPPORTED_FORMAT - if the image stream contains an unrecognized format</li>
+   * </ul>
    */
   public static Image getImage( final String path ) {
-    return ResourceFactory.findImage( path );
+    if( path == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( "".equals( path ) ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    return ImageFactory.findImage( path );
   }
 
   /**
-   * Returns an instance of {@link Image} based on the specified
-   * image path. The image has to be on the applications class-path.
-   * Uses the specified classloader to load the image.
-   *
+   * Returns an instance of {@link Image} based on the specified image path. The
+   * image has to be on the applications class-path. Uses the specified
+   * classloader to load the image.
+   * 
    * @param path the path to the image
    * @param imageLoader the classloader to use
-   *
    * @return the image
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the path is null</li>
+   *    <li>ERROR_ILLEGAL_ARGUMENT - if the path is invalid</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_IO - if an IO error occurs while reading from the stream</li>
+   *    <li>ERROR_INVALID_IMAGE - if the image stream contains invalid data</li>
+   *    <li>ERROR_UNSUPPORTED_FORMAT - if the image stream contains an unrecognized format</li>
+   * </ul>
    */
   public static Image getImage( final String path,
                                 final ClassLoader imageLoader )
   {
-    return ResourceFactory.findImage( path, imageLoader );
+    if( path == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( "".equals( path ) ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    return ImageFactory.findImage( path, imageLoader );
   }
 
-
   /**
-   * Returns an instance of {@link Image} based on the specified
-   * image path. The image will be read from the provided InputStream.
-   *
-   * @param path the path to the image
+   * Returns an instance of {@link Image} based on the specified image path. The
+   * image will be read from the provided InputStream.
+   * 
+   * @param path the path the image resource is registered at
    * @param inputStream the input stream for the image
-   *
    * @return the image
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the path is null</li>
+   *    <li>ERROR_NULL_ARGUMENT - if the inputStream is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the path is invalid</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_IO - if an IO error occurs while reading from the stream</li>
+   *    <li>ERROR_INVALID_IMAGE - if the image stream contains invalid data</li>
+   *    <li>ERROR_UNSUPPORTED_FORMAT - if the image stream contains an unrecognized format</li>
+   * </ul>
    */
   public static Image getImage( final String path,
                                 final InputStream inputStream )
   {
-    return ResourceFactory.findImage( path, inputStream );
+    if( path == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( inputStream == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( "".equals( path ) ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    return ImageFactory.findImage( path, inputStream );
   }
 
   /**

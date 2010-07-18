@@ -11,12 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import java.io.*;
+import java.io.InputStream;
 
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.*;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.graphics.InternalImage;
+import org.eclipse.swt.internal.graphics.InternalImageFactory;
 
 /**
  * Instances of this class are graphics which have been prepared
@@ -43,23 +42,23 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
 public final class Image extends Resource {
 
   /**
+   * The internal resource.
+   * (Warning: This field is platform dependent)
+   * <p>
    * <b>IMPORTANT:</b> This field is <em>not</em> part of the SWT
    * public API. It is marked public only so that it can be shared
    * within the packages provided by SWT. It is not available on all
    * platforms and should never be accessed from application code.
+   * </p>
+   *
+   * @noreference This field is not intended to be referenced by clients.
    */
-  public String resourceName;
+  public final InternalImage internalImage;
 
-  private int width;
-  private int height;
-
-  /* This constructor is called by ResourceFactory#createImage() */
-  private Image( final String resourceName, final int width, final int height )
-  {
-    super( null );
-    this.resourceName = resourceName;
-    this.width = width;
-    this.height = height;
+  /* This constructor is called by ImageFactory#createImageInstance() */
+  private Image( final Device device, final InternalImage internalImage ) {
+    super( device );
+    this.internalImage = internalImage;
   }
 
   /**
@@ -124,7 +123,7 @@ public final class Image extends Resource {
     if( stream == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    init( stream );
+    internalImage = InternalImageFactory.findInternalImage( stream );
   }
 
   /**
@@ -168,7 +167,7 @@ public final class Image extends Resource {
     if( fileName == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    init( fileName );
+    internalImage = InternalImageFactory.findInternalImage( fileName );
   }
 
   /**
@@ -213,12 +212,10 @@ public final class Image extends Resource {
     }
     switch( flag ) {
       case SWT.IMAGE_COPY:
-        IResourceManager resourceManager = RWT.getResourceManager();
-        InputStream content
-          = resourceManager.getRegisteredContent( srcImage.resourceName );
-        init( content );
+        internalImage = srcImage.internalImage;
       break;
       default:
+        internalImage = null;
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );
       break;
     }
@@ -246,47 +243,8 @@ public final class Image extends Resource {
     if( imageData == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    init( imageData );
+    internalImage = InternalImageFactory.findInternalImage( imageData );
   }
-
-  private void init( final String fileName ) {
-    try {
-      FileInputStream stream = new FileInputStream( fileName );
-      try {
-        init( stream );
-      } finally {
-        stream.close();
-      }
-    } catch( IOException e ) {
-      throw new SWTException( SWT.ERROR_IO, e.getMessage() );
-    }
-  }
-
-  private void init( final InputStream stream ) {
-    resourceName = "image-" + String.valueOf( hashCode() );
-    Point size = ResourceFactory.registerImage( resourceName, stream );
-    if( size == null ) {
-      throw new SWTException( SWT.ERROR_UNSUPPORTED_FORMAT );
-    }
-    width = size.x;
-    height = size.y;
-  }
-
-  private void init( final ImageData imageData ) {
-    resourceName = "image-" + String.valueOf( hashCode() );
-    ImageLoader imageLoader = new ImageLoader();
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    imageLoader.data = new ImageData[] { imageData };
-    imageLoader.save( outputStream, imageData.type );
-    byte[] bytes = outputStream.toByteArray();
-    InputStream inputStream = new ByteArrayInputStream( bytes );
-    Point size = ResourceFactory.registerImage( resourceName, inputStream );
-    width = size.x;
-    height = size.y;
-  }
-
-  ///////////////////////
-  // Public Image methods
 
   /**
    * Returns the bounds of the receiver. The rectangle will always
@@ -301,17 +259,10 @@ public final class Image extends Resource {
    * </ul>
    */
   public Rectangle getBounds() {
-    Rectangle result = null;
     if( isDisposed() ) {
       SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
     }
-    if( width != -1 && height != -1 ) {
-      result = new Rectangle( 0, 0, width, height );
-    } else {
-      // TODO [rst] check types
-      SWT.error( SWT.ERROR_INVALID_IMAGE );
-    }
-    return result;
+    return internalImage.getBounds();
   }
 
   /**
@@ -333,9 +284,9 @@ public final class Image extends Resource {
     if( isDisposed() ) {
       SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
     }
-    return ResourceFactory.getImageData( this );
+    return internalImage.getImageData();
   }
-
+  
   /**
    * Sets the color to which to map the transparent pixel.
    * <p>
@@ -410,12 +361,5 @@ public final class Image extends Resource {
     }
     // do nothing
     return null;
-  }
-
-  ///////////
-  // Disposal
-
-  void destroy() {
-    RWT.getResourceManager().unregister( resourceName );
   }
 }

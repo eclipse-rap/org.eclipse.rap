@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * Abstract base class for image descriptors that synthesize an image from other
@@ -176,12 +178,6 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 			imageData.alphaData = null;
 		}
 		return imageData;
-	}
-
-	 // RAP [bm] alternative to ImageData for performance reasons
-	public Image createImage( final boolean returnMissingImageOnError,
-	                          final Device device ) {
-	  return ResourceFactory.findImage( getImageData() );
 	}
 
 	/**

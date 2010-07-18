@@ -18,12 +18,12 @@ import java.net.URL;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 
 /**
  * An ImageDescriptor that gets its information from a URL. This class is not
@@ -136,23 +136,28 @@ class URLImageDescriptor extends ImageDescriptor {
     if( pos != -1 ) {
       path = path.substring( pos + schema.length() );
     }
-    Image image = null;
+    Image result = null;
     InputStream stream = getStream();
     if( stream != null ) {
       try {
-        image = Graphics.getImage( path, stream );
+        result = ImageFactory.createImage( device, path, stream );
       } finally {
         try {
           stream.close();
         } catch( IOException e ) {
-          // do nothing
+          Policy.getLog().log( new Status( IStatus.ERROR,
+                                           Policy.JFACE,
+                                           e.getMessage(),
+                                           e ) );
         }
       }
     } else if( returnMissingImageOnError ) {
-      path = "org/eclipse/jface/resource/images/missing_image.png"; //$NON-NLS-1$
-      ClassLoader loader = getClass().getClassLoader();
-      image = Graphics.getImage( path, loader.getResourceAsStream( path ) );
+      try {
+        result = new Image( device, DEFAULT_IMAGE_DATA );
+      } catch ( SWTException nextException ) {
+        result = null;
+      }
     }
-    return image;
+    return result;
   }
 }

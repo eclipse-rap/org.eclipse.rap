@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.jface.resource;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
  * @since 1.0
@@ -46,9 +45,6 @@ class ImageDataImageDescriptor extends ImageDescriptor {
 
     ImageDataImageDescriptor(ImageData data) {
         this.data = data;
-        // RAP [bm] we need to create the image anyway
-        this.originalImage = ResourceFactory.findImage(data);
-        // ENDRAP
     }
     
     /* (non-Javadoc)
@@ -67,7 +63,7 @@ class ImageDataImageDescriptor extends ImageDescriptor {
         
         return super.createResource(device);
     }
-	
+    
     /* (non-Javadoc)
      * @see org.eclipse.jface.resource.DeviceResourceDescriptor#destroy(java.lang.Object)
      */
@@ -90,10 +86,10 @@ class ImageDataImageDescriptor extends ImageDescriptor {
      * @see Object#hashCode
      */
     public int hashCode() {
-    	 if (originalImage != null) {
+         if (originalImage != null) {
              return System.identityHashCode(originalImage);
          }
-        return data.hashCode();
+         return data.hashCode();
     }
 
     /* (non-Javadoc)
@@ -101,11 +97,11 @@ class ImageDataImageDescriptor extends ImageDescriptor {
      */
     public boolean equals(Object obj) {
         if (!(obj instanceof ImageDataImageDescriptor)) {
-			return false;
-		} 
+            return false;
+        } 
         
         ImageDataImageDescriptor imgWrap = (ImageDataImageDescriptor) obj;
-       
+        
         //Intentionally using == instead of equals() as Image.hashCode() changes
         //when the image is disposed and so leaks may occur with equals()
        
@@ -114,11 +110,6 @@ class ImageDataImageDescriptor extends ImageDescriptor {
         }
         
         return (imgWrap.originalImage == null && data.equals(imgWrap.data));
-    }
-    
-    // RAP [bm] alternative to ImageData for performance reasons
-    public Image createImage(boolean returnMissingImageOnError, Device device) {
-      return originalImage;
     }
     
 }

@@ -18,7 +18,6 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 
 public class Transfer_Test extends TestCase {
@@ -79,7 +78,7 @@ public class Transfer_Test extends TestCase {
     TransferData data = transfer.getSupportedTypes()[ 0 ];
     Image image = Graphics.getImage( Fixture.IMAGE1, 
                                      Fixture.class.getClassLoader() );
-    ImageData imageData = ResourceFactory.getImageData( image );
+    ImageData imageData = image.getImageData();
     transfer.javaToNative( imageData, data );
     assertEquals( 1, data.result );
     Object java = transfer.nativeToJava( data );

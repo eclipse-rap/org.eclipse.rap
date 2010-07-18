@@ -16,12 +16,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.util.Policy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 
 /**
  * An image descriptor that loads its image information from a file.
@@ -112,14 +115,29 @@ class FileImageDescriptor extends ImageDescriptor {
     public Image createImage(boolean returnMissingImageOnError, Device device) {
       Image result = null;
       if( location != null ) {
-        String path = location.getPackage().getName().replace( '.', '/' );
-        InputStream is = getStream();
-        if( is != null ) {
-          result = Graphics.getImage( path + "/" + name, is ); //$NON-NLS-1$
+        String path = location.getPackage().getName().replace( '.', '/' )
+                    + "/" //$NON-NLS-1$
+                    + name;
+        InputStream inputStream = getStream();
+        if( inputStream != null ) {
+          try {
+            result = ImageFactory.createImage( device, path, inputStream );
+          } finally {
+            try {
+              inputStream.close();
+            } catch( IOException e ) {
+              Policy.getLog().log( new Status( IStatus.ERROR,
+                                               Policy.JFACE,
+                                               e.getMessage(),
+                                               e ) );
+            }
+          }
         } else if( returnMissingImageOnError ) {
-          path = "org/eclipse/jface/resource/images/missing_image.png"; //$NON-NLS-1$
-          ClassLoader loader = getClass().getClassLoader();
-          result = Graphics.getImage( path, loader.getResourceAsStream( path ) );
+          try {
+            result = new Image( device, DEFAULT_IMAGE_DATA );
+          } catch ( SWTException nextException ) {
+            result = null;
+          }
         }
       }
       return result;

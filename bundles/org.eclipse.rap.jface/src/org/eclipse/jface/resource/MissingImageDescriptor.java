@@ -10,23 +10,18 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
-import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-
 
 /**
  * The image descriptor for a missing image.
  * <p>
  * Use <code>MissingImageDescriptor.getInstance</code> to
  * access the singleton instance maintained in an
- * internal state variable.
+ * internal state variable. 
  * </p>
  */
 class MissingImageDescriptor extends ImageDescriptor {
     private static MissingImageDescriptor instance;
-    private Image image;
 
     /**
      * Constructs a new missing image descriptor.
@@ -52,17 +47,5 @@ class MissingImageDescriptor extends ImageDescriptor {
             instance = new MissingImageDescriptor();
         }
         return instance;
-    }
-
-    // RAP [bm] alternative to ImageData for performance reasons
-    public Image createImage( final boolean returnMissingImageOnError,
-                              final Device device )
-    {
-      if( image == null ) {
-        String path = "org/eclipse/jface/resource/images/missing_image.png"; //$NON-NLS-1$
-        ClassLoader loader = getClass().getClassLoader();
-        image = Graphics.getImage( path, loader.getResourceAsStream( path ) );
-      }
-      return image;
     }
 }

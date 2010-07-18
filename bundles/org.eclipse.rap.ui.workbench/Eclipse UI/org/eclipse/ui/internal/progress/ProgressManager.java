@@ -30,7 +30,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
@@ -956,10 +955,10 @@ public class ProgressManager extends ProgressProvider implements
 	 * @return Image
 	 */
 	Image getImage(ImageData source) {
-// RAP [fappel]: constructing image from ImageData not supported
+// RAP [rst]: constructing image with transparency mask not supported
 //		ImageData mask = source.getTransparencyMask();
 //		return new Image(null, source, mask);
-	  return ResourceFactory.findImage( source );
+	  return new Image( null, source );
 	}
 
 	/**

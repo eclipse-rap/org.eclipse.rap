@@ -1,0 +1,192 @@
+/*******************************************************************************
+ * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   EclipseSource - initial API and implementation
+ ******************************************************************************/
+package org.eclipse.swt.internal.graphics;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
+
+/**
+ * This class creates, caches and provides access to shared instances of
+ * InternalImage.
+ */
+public final class InternalImageFactory {
+
+  private static final Map internalImagesCache = new HashMap();
+  private static final Object internalImagesCacheLock = new Object();
+
+  public static InternalImage findInternalImage( final String fileName ) {
+    InternalImage internalImage;
+    synchronized( internalImagesCacheLock ) {
+      internalImage = ( InternalImage )internalImagesCache.get( fileName );
+      if( internalImage == null ) {
+        internalImage = createInternalImage( fileName );
+        internalImagesCache.put( fileName, internalImage );
+      }
+    }
+    return internalImage;
+  }
+
+  public static InternalImage findInternalImage( final InputStream stream ) {
+    InternalImage internalImage;
+    BufferedInputStream bufferedStream = new BufferedInputStream( stream );
+    ImageData imageData = readImageData( bufferedStream );
+    String path = createGeneratedImagePath( imageData );
+    synchronized( internalImagesCacheLock ) {
+      internalImage = ( InternalImage )internalImagesCache.get( path );
+      if( internalImage == null ) {
+        internalImage = createInternalImage( path, bufferedStream, imageData );
+        internalImagesCache.put( path, internalImage );
+      }
+    }
+    return internalImage;
+  }
+
+  public static InternalImage findInternalImage( final ImageData imageData ) {
+    InternalImage internalImage;
+    String path = createGeneratedImagePath( imageData );
+    synchronized( internalImagesCacheLock ) {
+      internalImage = ( InternalImage )internalImagesCache.get( path );
+      if( internalImage == null ) {
+        InputStream stream = createInputStream( imageData );
+        internalImage = createInternalImage( path, stream, imageData );
+        internalImagesCache.put( path, internalImage );
+      }
+    }
+    return internalImage;
+  }
+
+  public static InternalImage findInternalImage( final String path,
+                                                 final InputStream inputStream )
+  {
+    InternalImage internalImage;
+    synchronized( internalImagesCacheLock ) {
+      internalImage = ( InternalImage )internalImagesCache.get( path );
+      if( internalImage == null ) {
+        BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
+        ImageData imageData = readImageData( bufferedStream );
+        internalImage = createInternalImage( path, bufferedStream, imageData );
+        internalImagesCache.put( path, internalImage );
+      }
+    }
+    return internalImage;
+  }
+
+  private static InternalImage createInternalImage( final String fileName ) {
+    InternalImage result;
+    try {
+      FileInputStream stream = new FileInputStream( fileName );
+      try {
+        result = createInternalImage( stream );
+      } finally {
+        stream.close();
+      }
+    } catch( IOException e ) {
+      throw new SWTException( SWT.ERROR_IO, e.getMessage() );
+    }
+    return result;
+  }
+
+  private static InternalImage createInternalImage( final InputStream stream ) {
+    BufferedInputStream bufferedStream = new BufferedInputStream( stream );
+    ImageData imageData = readImageData( bufferedStream );
+    String path = createGeneratedImagePath( imageData );
+    return createInternalImage( path, bufferedStream, imageData );
+  }
+
+  private static InternalImage createInternalImage( final String path,
+                                                    final InputStream stream,
+                                                    final ImageData imageData )
+  {
+    registerResource( path, stream );
+    return new InternalImage( path, imageData.width, imageData.height );
+  }
+
+  static void registerResource( final String path, final InputStream stream ) {
+    IResourceManager manager = ResourceManager.getInstance();
+    manager.register( path, stream );
+  }
+
+  static ImageData readImageData( final BufferedInputStream stream )
+    throws SWTException
+  {
+    ////////////////////////////////////////////////////////////////////////////
+    // TODO: [fappel] Image size calculation and resource registration both
+    //                read the input stream. Because of this I use a workaround
+    //                with a BufferedInputStream. Resetting it after reading the
+    //                image size enables the ResourceManager to reuse it for
+    //                registration. Note that the order is crucial here, since
+    //                the ResourceManager seems to close the stream (shrug).
+    //                It would be nice to find a solution without reading the
+    //                stream twice.
+    stream.mark( Integer.MAX_VALUE );
+    ImageData data = new ImageData( stream );
+    try {
+      stream.reset();
+    } catch( final IOException shouldNotHappen ) {
+      String msg = "Could not reset input stream after reading image";
+      throw new RuntimeException( msg, shouldNotHappen );
+    }
+    return data;
+  }
+
+  static InputStream createInputStream( final ImageData imageData ) {
+    ImageLoader imageLoader = new ImageLoader();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    imageLoader.data = new ImageData[] { imageData };
+    imageLoader.save( outputStream, getOutputFormat( imageData ) );
+    byte[] bytes = outputStream.toByteArray();
+    InputStream inputStream = new ByteArrayInputStream( bytes );
+    return inputStream;
+  }
+
+  private static int getOutputFormat( final ImageData imageData ) {
+    int result = imageData.type;
+    if( imageData.type == SWT.IMAGE_UNDEFINED ) {
+      result = SWT.IMAGE_PNG;
+    }
+    return result;
+  }
+
+  private static String createGeneratedImagePath( final ImageData data ) {
+    int hashCode = getHashCode( data );
+    return "generated/" + Integer.toHexString( hashCode );
+  }
+
+  private static int getHashCode( final ImageData imageData ) {
+    int result;
+    if( imageData.data  == null ) {
+      result = 0;
+    } else {
+      result = 1;
+      for( int i = 0; i < imageData.data.length; i++ ) {
+        result = 31 * result + imageData.data[ i ];
+      }
+    }
+    return result;
+  }
+
+  static void clear() {
+    synchronized( internalImagesCacheLock ) {
+      internalImagesCache.clear();
+    }
+  }
+
+  private InternalImageFactory() {
+    // prevent instantiation
+  }
+}
