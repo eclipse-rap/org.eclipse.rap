@@ -174,6 +174,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor  {
      * @see org.eclipse.jface.resource.DeviceResourceDescriptor#destroyResource(Object)
      */
     public void destroyResource(Object previouslyCreatedObject) {
+//      TODO [rst] This line is still disabled because of 320201
 //        ((Image)previouslyCreatedObject).dispose();
     }
     
