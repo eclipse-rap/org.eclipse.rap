@@ -16,7 +16,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     this.base( arguments );
     qx.log.Logger.ROOT_LOGGER.setMinLevel( qx.log.Logger.LEVEL_ERROR );
     this._FREEZEONFAIL = true; 
-    this._NOTRYCATCH = false; 
+    this._NOTRYCATCH = this._getURLParam( "notry" ) !== null; 
     this._FULLSCREEN = true;
     this._presenter = org.eclipse.rwt.test.Presenter.getInstance();
     this._presenter.setFullScreen( this._FULLSCREEN );    
@@ -29,12 +29,11 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     this._log = null;
     this._asserts = 0;
     this._loopWrapper = null;
-    var classes = qx.Class.__registry;
     var testScripts = this._getTestScripts();
-    var engine = qx.core.Client.getEngine();
-    var skip;
+    var classes = qx.Class.__registry;
+    var filter = this._createTestClassFilter();
     var shortName;
-    for( var clazz in classes) {
+    for( var clazz in classes ) {
       if( clazz.substr( clazz.length - 4 ) == "Test" ) {
         shortName = this._getShortClassName( clazz );
         if( testScripts[ shortName ] ) {
@@ -42,14 +41,9 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
         } else {
           var msg = "TestClass " + clazz + " does not match filename.";
           this._criticalFail( msg );
-        }
-        skip = false;       
-        if( classes[ clazz ].prototype.TARGETENGINE instanceof Array ) {
-          var targetEngine = classes[ clazz ].prototype.TARGETENGINE;
-          skip = targetEngine.indexOf( engine ) == -1;
-        }
-        if( !skip ) {
-          this._testClasses.push( classes[clazz] );
+        }       
+        if( filter( clazz ) ) {
+          this._testClasses.push( classes[ clazz ] );
         }
       }
     }    
@@ -377,7 +371,53 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       var splitted = result.split( separator );
       result = splitted.pop();
       return result;
-   },
+    },
+   
+    _createTestClassFilter : function() {
+      var classes = qx.Class.__registry;
+      var engine = qx.core.Client.getEngine();
+      var param = this._getFilterParam();
+      var filter = function( clazz ) {
+        var result = true;
+        if( classes[ clazz ].prototype.TARGETENGINE instanceof Array ) {
+          var targetEngine = classes[ clazz ].prototype.TARGETENGINE;
+          result = targetEngine.indexOf( engine ) != -1;
+        }
+        if( result && param != null ) {
+          var found = false;
+          for( var i = 0; i < param.length; i++ ) {
+            if( clazz.indexOf( param[ i ] ) != -1 ) {
+              found = true;
+            }
+          }
+          result = found;
+        }
+        return result;
+      }
+      return filter;
+    },
+    
+    _getURLParam : function( name ) {
+      var result = null;
+      var href = window.location.href;
+      var hashes = href.slice( href.indexOf( "?" ) + 1).split( "&" );
+      for( var i = 0; i < hashes.length; i++ ) {
+        var hash = hashes[ i ].split( "=" );
+        if( hash[ 0 ] === name ) {
+          result = hash[ 1 ];
+        }
+      }
+      return result;
+    },
+    
+    _getFilterParam : function() {
+      var result = null;
+      var param = this._getURLParam( "filter" );
+      if( param != null ) {
+        result = param.split( "," );
+      }
+      return result;
+    },
    
     info : function( text, indent ) {
       this.base( arguments, text );
