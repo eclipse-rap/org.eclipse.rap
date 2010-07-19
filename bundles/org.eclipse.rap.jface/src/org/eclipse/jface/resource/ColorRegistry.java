@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -86,6 +85,8 @@ public class ColorRegistry extends ResourceRegistry {
         }
     };
 
+	private final boolean cleanOnDisplayDisposal;
+
     /**
      * Create a new instance of the receiver that is hooked to the current 
      * display.
@@ -115,8 +116,9 @@ public class ColorRegistry extends ResourceRegistry {
      * @since 3.1
      */
     public ColorRegistry(Display display, boolean cleanOnDisplayDisposal) {
-        Assert.isNotNull(display);
+		Assert.isNotNull(display);
         this.display = display;
+        this.cleanOnDisplayDisposal = cleanOnDisplayDisposal;
         if (cleanOnDisplayDisposal) {
 			hookDisplayDispose();
 		}
@@ -131,10 +133,17 @@ public class ColorRegistry extends ResourceRegistry {
      * @since 1.0
      */
     private Color createColor(RGB rgb) {
-    	// RAP [bm]: 
-//        return new Color(display, rgb);
-    	return Graphics.getColor(rgb);
-    	// RAPEND: [bm] 
+    	if (this.display == null) {
+    		Display display = Display.getCurrent();
+    		if (display == null) {
+    			throw new IllegalStateException();
+    		}
+    		this.display = display;
+    		if (cleanOnDisplayDisposal) {
+    			hookDisplayDispose();
+    		}
+    	}
+        return new Color(display, rgb);
     }
 
     /**
@@ -143,13 +152,10 @@ public class ColorRegistry extends ResourceRegistry {
      * @param iterator over <code>Collection</code> of <code>Color</code>
      */
     private void disposeColors(Iterator iterator) {
-    	// RAP [bm]: Color#dispose
-//        while (iterator.hasNext()) {
-//            Object next = iterator.next();
-//            ((Color) next).dispose();
-//        }
-    	// RAPEND: [bm] 
-
+        while (iterator.hasNext()) {
+            Object next = iterator.next();
+            ((Color) next).dispose();
+        }
     }
 
     /**
@@ -245,6 +251,7 @@ public class ColorRegistry extends ResourceRegistry {
         disposeColors(staleColors.iterator());
         stringToColor.clear();
         staleColors.clear();
+        display = null;
     }
 
     /* (non-Javadoc)
@@ -258,8 +265,7 @@ public class ColorRegistry extends ResourceRegistry {
      * Hook a dispose listener on the SWT display.
      */
     private void hookDisplayDispose() {
-// RAP [rh] Display#disposeExec missing
-//        display.disposeExec(displayRunnable);
+        display.disposeExec(displayRunnable);
     }
 
     /**

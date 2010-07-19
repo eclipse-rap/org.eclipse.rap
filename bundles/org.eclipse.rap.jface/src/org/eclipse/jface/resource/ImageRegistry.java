@@ -97,8 +97,7 @@ public class ImageRegistry {
             if (original == toDispose) {
                 refCount--;
                 if (refCount == 0) {
-                	// RAP [bm]: Image#dispose
-//                    original.dispose();
+                    original.dispose();
                     original = null;
                 }
             } else {

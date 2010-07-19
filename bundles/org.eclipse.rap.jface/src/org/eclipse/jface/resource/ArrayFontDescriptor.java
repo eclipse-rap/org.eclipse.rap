@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -25,7 +24,6 @@ final class ArrayFontDescriptor extends FontDescriptor {
     private FontData[] data;
     private Font originalFont = null;
     
-    // RAP [bm]: 
     /**
      * Creates a font descriptor for a font with the given name, height,
      * and style. These arguments are passed directly to the constructor
@@ -33,9 +31,7 @@ final class ArrayFontDescriptor extends FontDescriptor {
      * 
      * @param data FontData describing the font to create
      * 
-     * <!--@see org.eclipse.swt.graphics.Font#Font(org.eclipse.swt.graphics.Device, org.eclipse.swt.graphics.FontData)-->
-     * @see org.eclipse.rwt.graphics.Graphics#getFont(org.eclipse.swt.graphics.FontData)
-     * 
+     * @see org.eclipse.swt.graphics.Font#Font(org.eclipse.swt.graphics.Device, org.eclipse.swt.graphics.FontData)
      * @since 1.0
      */
     public ArrayFontDescriptor(FontData[] data) {
@@ -59,8 +55,8 @@ final class ArrayFontDescriptor extends FontDescriptor {
      * @see org.eclipse.jface.resource.FontDescriptor#getFontData()
      */
     public FontData[] getFontData() {
-    	// Copy the original array to ensure that callers will not modify it
-    	return copy(data);
+        // Copy the original array to ensure that callers will not modify it
+        return copy(data);
     }
     
     
@@ -73,18 +69,12 @@ final class ArrayFontDescriptor extends FontDescriptor {
         // if this is the same device.
         if (originalFont != null) {         
             // If we're allocating on the same device as the original font, return the original.
-        	// RAP [bm]: 
-//            if (originalFont.getDevice() == device) {
-//                return originalFont;
-//            }
-        	return originalFont;
-        	// RAPEND: [bm] 
+            if (originalFont.getDevice() == device) {
+                return originalFont;
+            }
         }
         
-        // RAP [bm]: 
-//        return new Font(device, data);
-        return Graphics.getFont(data[0]);
-        // RAPEND: [bm] 
+        return new Font(device, data);
     }
 
     /* (non-Javadoc)
@@ -145,8 +135,7 @@ final class ArrayFontDescriptor extends FontDescriptor {
         if (previouslyCreatedFont == originalFont) {
             return;
         }
-        // RAP [bm]: Font#dispose
-//        previouslyCreatedFont.dispose();
+        previouslyCreatedFont.dispose();
     }
 
 }

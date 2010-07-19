@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.Policy;
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
@@ -87,15 +87,13 @@ public class FontRegistry extends ResourceRegistry {
          * Dispose any of the fonts created for this record.
          */
         void dispose() {
-        	// RAP [bm]: Font#dispose
-//            baseFont.dispose();
-//            if (boldFont != null) {
-//				boldFont.dispose();
-//			}
-//            if (italicFont != null) {
-//				italicFont.dispose();
-//			}
-        	// RAPEND: [bm] 
+            baseFont.dispose();
+            if (boldFont != null) {
+				boldFont.dispose();
+			}
+            if (italicFont != null) {
+				italicFont.dispose();
+			}
         }
 
         /**
@@ -117,11 +115,7 @@ public class FontRegistry extends ResourceRegistry {
 			}
 
             FontData[] boldData = getModifiedFontData(SWT.BOLD);
-            // RAP [bm]: 
-//            boldFont = new Font(Display.getCurrent(), boldData);
-            boldFont = Graphics.getFont(boldData[0]);
-            // RAPEND: [bm] 
-
+            boldFont = new Font(Display.getCurrent(), boldData);
             return boldFont;
         }
 
@@ -157,10 +151,7 @@ public class FontRegistry extends ResourceRegistry {
 			}
 
             FontData[] italicData = getModifiedFontData(SWT.ITALIC);
-            // RAP [bm]: 
-//            italicFont = new Font(Display.getCurrent(), italicData);
-            italicFont = Graphics.getFont(italicData[0]);
-            // RAPEND: [bm] 
+            italicFont = new Font(Display.getCurrent(), italicData);
             return italicFont;
         }
 
@@ -214,6 +205,10 @@ public class FontRegistry extends ResourceRegistry {
             clearCaches();
         }
     };
+
+	private boolean displayDisposeHooked;
+
+	private final boolean cleanOnDisplayDisposal;
 
     /**
      * Creates an empty font registry.
@@ -290,6 +285,7 @@ public class FontRegistry extends ResourceRegistry {
         //readResourceBundle(location, loader);
         readResourceBundle(location);
 
+        cleanOnDisplayDisposal = true;
         hookDisplayDispose(display);
     }
 
@@ -396,6 +392,7 @@ public class FontRegistry extends ResourceRegistry {
 	 */
 	public FontRegistry(Display display, boolean cleanOnDisplayDisposal) {
 		Assert.isNotNull(display);
+		this.cleanOnDisplayDisposal = cleanOnDisplayDisposal;
 		if (cleanOnDisplayDisposal) {
 			hookDisplayDispose(display);
 		}
@@ -520,8 +517,11 @@ public class FontRegistry extends ResourceRegistry {
     private FontRecord createFont(String symbolicName, FontData[] fonts) {
         Display display = Display.getCurrent();
         if (display == null) {
-			return null;
-		}
+        	return null;
+        }
+        if (cleanOnDisplayDisposal && !displayDisposeHooked) {
+        	hookDisplayDispose(display);
+        }
 
         FontData[] validData = filterData(fonts, display);
         if (validData.length == 0) {
@@ -531,12 +531,7 @@ public class FontRegistry extends ResourceRegistry {
 
         //Do not fire the update from creation as it is not a property change
         put(symbolicName, validData, false);
-        
-        // RAP [bm]: 
-//        Font newFont = new Font(display, validData);
-        Font newFont = Graphics.getFont(validData[0]);
-        // RAPEND: [bm] 
-
+        Font newFont = new Font(display, validData);
         return new FontRecord(newFont, validData);
     }
 
@@ -545,18 +540,10 @@ public class FontRegistry extends ResourceRegistry {
      * This method creates a font that must be disposed.
      */
     Font calculateDefaultFont() {
-    	// RAP [bm]: just return our default font
-    	return Display.getCurrent().getSystemFont();
-//        Display current = Display.getCurrent();
-//        if (current == null) {
-//            Shell shell = new Shell();
-//            Font font = new Font(null, shell.getFont().getFontData());
-//            shell.dispose();
-//            return font;
-//        }
-//		return new Font(current, current.getSystemFont().getFontData());
-    	// RAPEND: [bm] 
-
+        Display current = Display.getCurrent();
+        if (current == null) // can't do much without Display
+        	SWT.error(SWT.ERROR_THREAD_INVALID_ACCESS);
+		return new Font(current, current.getSystemFont().getFontData());
     }
 
     /**
@@ -602,11 +589,7 @@ public class FontRegistry extends ResourceRegistry {
             Font defaultFont = calculateDefaultFont();
             record = createFont(JFaceResources.DEFAULT_FONT, defaultFont
                     .getFontData());
-            
-            // RAP [bm]: Font#dispose
-//            defaultFont.dispose();
-            // RAPEND: [bm] 
-
+            defaultFont.dispose();
             stringToFontRecord.put(JFaceResources.DEFAULT_FONT, record);
         }
         return record;
@@ -761,6 +744,8 @@ public class FontRegistry extends ResourceRegistry {
         disposeFonts(staleFonts.iterator());
         stringToFontRecord.clear();
         staleFonts.clear();
+        
+        displayDisposeHooked = false;
     }
 
     /**
@@ -768,20 +753,18 @@ public class FontRegistry extends ResourceRegistry {
      * @param iterator over Collection of Font
      */
     private void disposeFonts(Iterator iterator) {
-    	// RAP [bm]: Font#dispose
-//        while (iterator.hasNext()) {
-//            Object next = iterator.next();
-//            ((Font) next).dispose();
-//        }
-    	// RAPEND: [bm] 
+        while (iterator.hasNext()) {
+            Object next = iterator.next();
+            ((Font) next).dispose();
+        }
     }
 
     /**
      * Hook a dispose listener on the SWT display.
      */
-    private void hookDisplayDispose(final Display display) {
-// TODO [rh] Display#disposeExec missing     
-//        display.disposeExec(displayRunnable);
+    private void hookDisplayDispose(Display display) {
+    	displayDisposeHooked = true;
+    	display.disposeExec(displayRunnable);
     }
     
     // RAP [bm]: 
