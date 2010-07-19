@@ -11,19 +11,21 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.SWT;
 
 
 public class UICallBackServiceHandler implements IServiceHandler {
