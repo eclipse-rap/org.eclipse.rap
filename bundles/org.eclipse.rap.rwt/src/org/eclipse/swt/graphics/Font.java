@@ -12,7 +12,9 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.graphics.FontDataFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
+
 
 /**
  * Instances of this class manage resources that define how text looks when it
@@ -31,12 +33,12 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
  */
 public final class Font extends Resource {
 
-  private final FontData[] fontData;
+  private final FontData internalFontData;
 
   // used by ResourceFactory#getFont()
-  private Font( final FontData data ) {
+  private Font( final FontData fontData ) {
     super( null );
-    this.fontData = new FontData[] { data };
+    this.internalFontData = FontDataFactory.findFontData( fontData );
   }
 
   /**
@@ -111,8 +113,7 @@ public final class Font extends Resource {
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );
       }
     }
-    this.fontData = new FontData[ fontData.length ];
-    System.arraycopy( fontData, 0, this.fontData, 0, fontData.length );
+    this.internalFontData = FontDataFactory.findFontData( fontData[ 0 ] );
   }
 
   /**
@@ -142,9 +143,10 @@ public final class Font extends Resource {
                final int height,
                final int style )
   {
-    this( device, new FontData( name, 
-                                height, 
-                                ResourceFactory.checkFontStyle( style ) ) );
+    this( device,
+          FontDataFactory.findFontData( name, 
+                                        height, 
+                                        ResourceFactory.checkFontStyle( style ) ) );
   }
 
   /**
@@ -165,9 +167,10 @@ public final class Font extends Resource {
     if( isDisposed() ) {
       SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
     }
-    // We support only fontData arrays with one element, so we use this
-    // knowledge to create the defensive copy a little faster
-    return new FontData[] { fontData[ 0 ] };
+    FontData fontData = new FontData( internalFontData.getName(),
+                                      internalFontData.getHeight(),
+                                      internalFontData.getStyle() );
+    return new FontData[] { fontData };
   }
 
   public boolean equals( final Object object ) {
@@ -176,7 +179,7 @@ public final class Font extends Resource {
       result = true;
     } else if( object instanceof Font ) {
       Font font = ( Font )object;
-      result = font.fontData[ 0 ].equals( fontData[ 0 ] );
+      result = font.internalFontData.equals( internalFontData );
     } else {
       result = false;
     }
@@ -184,7 +187,7 @@ public final class Font extends Resource {
   }
 
   public int hashCode() {
-    return fontData[ 0 ].hashCode();
+    return internalFontData.hashCode() * 7;
   }
 
   /**
@@ -196,24 +199,22 @@ public final class Font extends Resource {
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     buffer.append( "Font {" );
-    if( fontData.length > 0 ) {
-      buffer.append( fontData[ 0 ].getName() );
-      buffer.append( "," );
-      buffer.append( fontData[ 0 ].getHeight() );
-      buffer.append( "," );
-      int style = fontData[ 0 ].getStyle();
-      String styleName;
-      if( ( style & SWT.BOLD ) != 0 && ( style & SWT.ITALIC ) != 0 ) {
-        styleName = "BOLD|ITALIC";
-      } else if( ( style & SWT.BOLD ) != 0 ) {
-        styleName = "BOLD";
-      } else if( ( style & SWT.ITALIC ) != 0 ) {
-        styleName = "ITALIC";
-      } else {
-        styleName = "NORMAL";
-      }
-      buffer.append( styleName );
+    buffer.append( internalFontData.getName() );
+    buffer.append( "," );
+    buffer.append( internalFontData.getHeight() );
+    buffer.append( "," );
+    int style = internalFontData.getStyle();
+    String styleName;
+    if( ( style & SWT.BOLD ) != 0 && ( style & SWT.ITALIC ) != 0 ) {
+      styleName = "BOLD|ITALIC";
+    } else if( ( style & SWT.BOLD ) != 0 ) {
+      styleName = "BOLD";
+    } else if( ( style & SWT.ITALIC ) != 0 ) {
+      styleName = "ITALIC";
+    } else {
+      styleName = "NORMAL";
     }
+    buffer.append( styleName );
     buffer.append( "}" );
     return buffer.toString();
   }

@@ -67,7 +67,6 @@ public final class ResourceFactory {
     return result;
   }
 
-
   ////////
   // Fonts
 
@@ -135,6 +134,7 @@ public final class ResourceFactory {
     ImageFactory.clear();
     InternalImageFactory.clear();
     ImageDataFactory.clear();
+    FontDataFactory.clear();
   }
 
   static int colorsCount() {
@@ -148,7 +148,6 @@ public final class ResourceFactory {
   static int cursorsCount() {
     return cursors.size();
   }
-
 
   //////////////////
   // Helping methods

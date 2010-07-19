@@ -173,6 +173,59 @@ public class Graphics_Test extends TestCase {
     }
   }
 
+  public void testGetFont() {
+    Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
+    assertEquals( "roman", font.getFontData()[ 0 ].getName() );
+    assertEquals( 1, font.getFontData()[ 0 ].getHeight() );
+    assertEquals( SWT.NORMAL, font.getFontData()[ 0 ].getStyle() );
+    Font sameFont = Graphics.getFont( "roman", 1, SWT.NORMAL );
+    assertSame( font, sameFont );
+    Font otherFont = Graphics.getFont( "arial", 2, SWT.NORMAL );
+    assertNotSame( otherFont, font );
+    Font boldFont = Graphics.getFont( "arial", 11, SWT.BOLD );
+    assertEquals( SWT.BOLD, boldFont.getFontData()[ 0 ].getStyle() );
+    Font italicFont = Graphics.getFont( "arial", 11, SWT.ITALIC );
+    assertEquals( SWT.ITALIC, italicFont.getFontData()[ 0 ].getStyle() );
+    sameFont = Graphics.getFont( new FontData( "roman", 1, SWT.NORMAL ) );
+    assertSame( font, sameFont );
+    Font arial13Normal = Graphics.getFont( "arial", 13, SWT.NORMAL );
+    Font arial12Bold = Graphics.getFont( "arial", 12, SWT.BOLD );
+    assertNotSame( arial13Normal, arial12Bold );
+  }
+
+  public void testGetFontReturnsCurrentDisplay() {
+    new Display();
+    Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
+    assertSame( Display.getCurrent(), font.getDevice() );
+  }
+
+  public void testGetFontWithIllegalArguments() {
+    try {
+      Graphics.getFont( null, 1, SWT.NONE );
+      fail( "The font name must not be null" );
+    } catch( IllegalArgumentException e ) {
+      // Expected
+    }
+    try {
+      Graphics.getFont( "abc", -1, SWT.NONE );
+      fail( "The font size must not be negative" );
+    } catch( IllegalArgumentException e ) {
+      // Expected
+    }
+    Font font = Graphics.getFont( "roman", 1, 1 << 3 );
+    assertEquals( SWT.NORMAL, font.getFontData()[ 0 ].getStyle() );
+  }
+
+  public void testDisposeFactoryCreated() {
+    Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
+    try {
+      font.dispose();
+      fail( "It is not allowed to dispose of a factory-created color" );
+    } catch( IllegalStateException e ) {
+      assertFalse( font.isDisposed() );
+    }
+  }
+
   protected void setUp() throws Exception {
     // we do need the resource manager for this test
     Fixture.setUpWithoutResourceManager();

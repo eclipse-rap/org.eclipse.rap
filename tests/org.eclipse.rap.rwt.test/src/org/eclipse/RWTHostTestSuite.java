@@ -191,6 +191,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ImageFactory_Test.class );
     suite.addTestSuite( InternalImageFactory_Test.class );
     suite.addTestSuite( WidgetGraphicsAdapter_Test.class );
+    suite.addTestSuite( FontDataFactory_Test.class );
 
     // == Theming ==
     suite.addTestSuite( Theme_Test.class );

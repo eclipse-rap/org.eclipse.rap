@@ -35,7 +35,7 @@ public class TextSizeDetermination_Test extends TestCase {
     assertEquals( 0, items.length );
 
     Font font = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    Point calculated = TextSizeDetermination.stringExtent( font , TEST_STRING );
+    Point calculated = TextSizeDetermination.stringExtent( font, TEST_STRING );
     Point estimated = TextSizeEstimation.stringExtent( font, TEST_STRING );
     assertEquals( estimated, calculated );
 
@@ -52,7 +52,7 @@ public class TextSizeDetermination_Test extends TestCase {
     Point storedSize = new Point( 100, 10 );
     IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 1, probeRequests.length );
-    assertSame( font.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
+    assertEquals( font.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
     TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     probeStore.createProbeResult( probeRequests[ 0 ], new Point( 10, 10 ) );
@@ -112,7 +112,7 @@ public class TextSizeDetermination_Test extends TestCase {
 
     probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 1, probeRequests.length );
-    assertSame( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
+    assertEquals( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
     TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     Point probeSize = new Point( 10, 13 );
@@ -132,7 +132,7 @@ public class TextSizeDetermination_Test extends TestCase {
 
     probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 1, probeRequests.length );
-    assertSame( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
+    assertEquals( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
     TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     Point probeSize = new Point( TextSizeProbeStore.DEFAULT_PROBE.length() * 4, 10 );
