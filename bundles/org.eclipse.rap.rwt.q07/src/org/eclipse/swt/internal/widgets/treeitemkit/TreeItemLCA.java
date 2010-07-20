@@ -50,6 +50,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     IWidgetFontAdapter fontAdapter
       = ( IWidgetFontAdapter )treeItem.getAdapter( IWidgetFontAdapter.class );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
+    boolean selection = isSelected( treeItem );
+    adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
     if( treeAdapter.isCached( treeItem ) ) {
       preserveFont( treeItem );
       adapter.preserve( PROP_CHECKED,
@@ -58,8 +60,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
                         Boolean.valueOf( treeItem.getExpanded() ) );
       adapter.preserve( PROP_TEXTS, getTexts( treeItem ) );
       adapter.preserve( PROP_IMAGES, getImages( treeItem ) );
-      boolean selection = isSelected( treeItem );
-      adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
       adapter.preserve( PROP_BACKGROUND, colorAdapter.getUserBackgound() );
       adapter.preserve( PROP_FOREGROUND, colorAdapter.getUserForegound() );
       adapter.preserve( PROP_FONT, fontAdapter.getUserFont() );
@@ -82,6 +82,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       treeItem.setChecked( Boolean.valueOf( value ).booleanValue() );
     }
     if( WidgetLCAUtil.wasEventSent( treeItem, JSConst.EVENT_TREE_EXPANDED ) ) {
+      // The event is fired before the setter is called. Order like in SWT.
       processTreeExpandedEvent( treeItem );
       ProcessActionRunner.add( new Runnable() {
         public void run() {          
@@ -103,7 +104,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     TreeItem treeItem = ( TreeItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     Object parent;
-    Integer index = null;
+    Integer index;
     if( treeItem.getParentItem() == null ) {
       parent = treeItem.getParent();
       index  = new Integer( treeItem.getParent().indexOf( treeItem ) );
@@ -111,15 +112,13 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       parent = treeItem.getParentItem();
       index = new Integer( treeItem.getParentItem().indexOf( treeItem ) );
     }
-    Object[] args = new Object[]{
-      WidgetUtil.getId( treeItem ), parent, treeItem.getParent(), index
-    };
-    writer.callStatic( "org.eclipse.swt.TreeItemUtil.createTreeItem", args );
+    writer.newWidget( "org.eclipse.rwt.widgets.TreeItem", new Object[]{
+      parent, index
+    } );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
-    // [bm] order is important, images needs to be written before texts
     Tree tree = treeItem.getParent();
     ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     if( adapter.isCached( treeItem ) ) {
@@ -135,44 +134,18 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       writeExpanded( treeItem );
       writeChecked( treeItem );
       writeGrayed( treeItem );
-      writeShowItem( treeItem );
     }
-    writeMaterialized( treeItem );
     WidgetLCAUtil.writeCustomVariant( treeItem );
   }
 
-  private void writeMaterialized( final TreeItem treeItem ) throws IOException {
-    final Tree tree = treeItem.getParent();
-    if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( treeItem );
-      ITreeAdapter adapter
-        = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-      writer.set( PROP_MATERIALIZED,
-                  "materialized",
-                  Boolean.valueOf( adapter.isCached( treeItem ) ) );
-    }
-  }
-
   public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    // safely remove tree item from tree
-    writer.call( "destroy", null );
-    writer.dispose();
-  }
-
-  ////////////////////////////////////
-  // Helping methods to write changes
-  private void writeShowItem( final TreeItem item ) throws IOException {
-    Tree tree = item.getParent();
-    ITreeAdapter adapter
-      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-    Item showItem = adapter.getShowItem();
-    if( showItem != null && showItem == item ) {
-      JSWriter writer = JSWriter.getWriterFor( tree );
-      writer.call( tree, "showItem", new Object[]{
-        showItem
-      } );
-      adapter.clearShowItem();
+    TreeItem item = ( TreeItem )widget;
+    ITreeItemAdapter itemAdapter
+      = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
+    if( !itemAdapter.isParentDisposed() ) {
+      // The tree disposes the items itself on the client (faster)
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.call( "dispose", null );
     }
   }
 
@@ -180,14 +153,11 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( item );
     // TODO [rh] optimize when !isInitialized: for all images != null: setImg
     Image[] images = getImages( item );
-    Integer[] imageWidths = new Integer[ images.length ];
     if( WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images ) ) {
       String[] imagePaths = new String[ images.length ];
       for( int i = 0; i < imagePaths.length; i++ ) {
         imagePaths[ i ] = ResourceFactory.getImagePath( images[ i ] );
-        imageWidths[ i ] = new Integer( item.getImageBounds( i ).width );
       }
-      // writer.set( "images", new Object[] { imagePaths, imageWidths } );
       writer.set( "images", new Object[]{
         imagePaths
       } );
@@ -204,7 +174,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   private static void writeExpanded( final TreeItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( item.getExpanded() );
-    writer.set( PROP_EXPANDED, "open", newValue, Boolean.FALSE );
+    writer.set( PROP_EXPANDED, "expanded", newValue, Boolean.FALSE );
   }
 
   private static void writeChecked( final TreeItem item ) throws IOException {
@@ -217,11 +187,12 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     Boolean newValue = Boolean.valueOf( isSelected( item ) );
     Boolean defValue = Boolean.FALSE;
     if( WidgetLCAUtil.hasChanged( item, PROP_SELECTION, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      Boolean focused = Boolean.valueOf( isFocused( item ) );
-      writer.set( "selection", new Object[]{
-        newValue, focused
-      } );
+      JSWriter writer = JSWriter.getWriterFor( item.getParent() );
+      String jsFunction = isSelected( item ) ? "selectItem" : "deselectItem";
+      writer.call( jsFunction, new Object[]{ item } );
+      if( isFocused( item ) ) {
+        writer.set( "focusItem", new Object[]{ item } );
+      }
     }
   }
 
@@ -247,7 +218,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
           css[ i ] = toCss( fonts[ i ] );
         }
       }
-      writer.set( "fonts", new Object[]{ css } );
+      writer.set( "cellFonts", new Object[]{ css } );
     }
   }
 
@@ -257,7 +228,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
     Color background = colorAdapter.getUserBackgound();
     if( WidgetLCAUtil.hasChanged( item, PROP_BACKGROUND, background, null ) ) {
-      WidgetLCAUtil.writeBackground( item, background );
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( "background", background );
     }
   }
 
@@ -267,7 +239,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
     Color foreground = colorAdapter.getUserForegound();
     if( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND, foreground, null ) ) {
-      WidgetLCAUtil.writeForeground( item, foreground );
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( "foreground", foreground );
     }
   }
 
@@ -278,7 +251,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
     Color[] backgrounds = itemAdapter.getCellBackgrounds();
     JSWriter writer = JSWriter.getWriterFor( item );
-    writer.set( PROP_CELL_BACKGROUNDS, "backgrounds", backgrounds, null );
+    writer.set( PROP_CELL_BACKGROUNDS, "cellBackgrounds", backgrounds, null );
   }
 
   private static void writeCellForegrounds( final TreeItem item )
@@ -288,7 +261,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
     Color[] foregrounds = itemAdapter.getCellForegrounds();
     JSWriter writer = JSWriter.getWriterFor( item );
-    writer.set( PROP_CELL_FOREGROUNDS, "foregrounds", foregrounds, null );
+    writer.set( PROP_CELL_FOREGROUNDS, "cellForegrounds", foregrounds, null );
   }
 
   private static void writeTexts( final TreeItem item ) throws IOException {

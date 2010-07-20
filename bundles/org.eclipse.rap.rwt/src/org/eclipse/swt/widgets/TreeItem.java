@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
@@ -35,7 +34,11 @@ public class TreeItem extends Item {
   private final class TreeItemAdapter
     implements ITreeItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
   {
-
+    
+    public boolean isParentDisposed() {
+      return TreeItem.this.parent.isDisposed();
+    }
+    
     public Color getUserBackgound() {
       return background;
     }
@@ -71,10 +74,8 @@ public class TreeItem extends Item {
       }
       return fonts;
     }
-  }
 
-  private static final int IMAGE_TEXT_GAP = 2;
-  private static final int INDENT_WIDTH = 19;
+  }
 
   private final TreeItem parentItem;
   private final Tree parent;
@@ -91,8 +92,8 @@ public class TreeItem extends Item {
   Font[] cellFonts;
   int depth;
   private final int index;
-  /* package */boolean cached;
-  /* package */int flatIndex;
+  private boolean cached;
+  int flatIndex;
 
   /**
    * Constructs a new instance of this class given its parent (which must be a
@@ -257,7 +258,7 @@ public class TreeItem extends Item {
     int numberOfItems;
         // if there is a parent item, get the next index of parentItem
         if( parentItem != null ) {
-          numberOfItems = parentItem.getItemCount();
+          numberOfItems = parentItem.getItemCount( false );
         }
         // If there is no parent item, get the next index of the tree
         else {
@@ -352,10 +353,12 @@ public class TreeItem extends Item {
    */
   public void setExpanded( final boolean expanded ) {
     checkWidget();
+    markCached();
     if( !expanded || getItemCount() > 0 ) {
       this.expanded = expanded;
       parent.updateFlatIndices();
       parent.updateScrollBars();
+      Tree.checkAllData( parent );
     }
   }
 
@@ -410,34 +413,10 @@ public class TreeItem extends Item {
 
   Rectangle getBounds( final int columnIndex, final boolean checkData ) {
     checkWidget();
-    Rectangle result;
-    int columnCount = parent.getColumnCount();
-    if( columnIndex < 0 || ( columnIndex > columnCount ) ) {
-      result = new Rectangle( 0, 0, 0, 0 );
-    } else if( getParentItem() != null && !getParentItem().getExpanded() ) {
-      result = new Rectangle( 0, 0, 0, 0 );
-    } else {
-      Rectangle imageBounds = getImageBounds( columnIndex );
-      String text = getText( 0, checkData );
-      Point textWidth = Graphics.stringExtent( getFont(), text );
-      int width;
-      if( columnIndex == 0 && columnCount == 0 ) {
-        int gap = getImageGap( columnIndex );
-        width = 2 + imageBounds.width + gap + textWidth.x;
-      } else {
-        width = parent.getColumn( columnIndex ).getWidth();
-        if( columnIndex == 0 ) {
-          width -= ( depth + 1 ) * INDENT_WIDTH;
-        }
-      }
-      // no support for bigger text/images due to qx bug
-      // int height = Math.max( textWidth.y, imageBounds.height ) + 2;
-      int left;
-      if( columnIndex == 0 ) {
-        left = imageBounds.x;
-      } else {
-        left = getItemLeft( columnIndex );
-      }
+    Rectangle result = new Rectangle( 0, 0, 0, 0 );
+    if( isVisible() && isValidColumn( columnIndex ) ) {
+      int left = parent.getVisualCellLeft( columnIndex, this );
+      int width = parent.getVisualCellWidth( columnIndex, this, checkData );
       result = new Rectangle( left,
                               getItemTop(),
                               width,
@@ -445,30 +424,21 @@ public class TreeItem extends Item {
     }
     return result;
   }
-
-  private int getItemLeft( final int columnIndex ) {
-    int result = 0;
-    TreeColumn[] cols = parent.getColumns();
-    for( int i = 0; i < columnIndex; i++ ) {
-      TreeColumn col = cols[ i ];
-      result += col.getWidth();
-    }
-    return result;
+  
+  private boolean isValidColumn( final int index ) {
+    int columnCount = parent.getColumnCount();
+    return    ( columnCount == 0 && index == 0 ) 
+           || ( index >= 0 && index < columnCount );
   }
-
-  private int getItemTop() {
+  
+  private boolean isVisible() {
+    return getParentItem() == null || getParentItem().getExpanded();    
+  }
+  
+  int getItemTop() {
     int headerHeight = parent.getHeaderHeight();
     int itemHeight = parent.getItemHeight();
-    return headerHeight + flatIndex * itemHeight - parent.scrollTop;
-  }
-
-  private int getImageGap( final int index ) {
-    int result = 0;
-    Image image = getImage( index );
-    if( image != null ) {
-      result = IMAGE_TEXT_GAP;
-    }
-    return result;
+    return headerHeight + ( flatIndex - parent.getTopIndex() ) * itemHeight;
   }
 
   /**
@@ -523,6 +493,9 @@ public class TreeItem extends Item {
     }
     if( cellFonts == null || cellFonts[ columnIndex ] == null ) {
       return getFont( checkData );
+    }
+    if( checkData ) {
+      materialize();
     }
     return cellFonts[ columnIndex ];
   }
@@ -599,9 +572,7 @@ public class TreeItem extends Item {
       return;
     }
     cellBackgrounds[ columnIndex ] = value;
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = true;
-    }
+    markCached();
   }
 
   /**
@@ -650,9 +621,7 @@ public class TreeItem extends Item {
       return;
     }
     cellFonts[ columnIndex ] = value;
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = true;
-    }
+    markCached();
   }
 
   /**
@@ -702,7 +671,7 @@ public class TreeItem extends Item {
       return;
     }
     cellForegrounds[ columnIndex ] = value;
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
+    if( parent.isVirtual() ) {
       cached = true;
     }
   }
@@ -730,9 +699,7 @@ public class TreeItem extends Item {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
     this.font = font;
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = true;
-    }
+    markCached();
   }
 
   /**
@@ -749,18 +716,13 @@ public class TreeItem extends Item {
    */
   public Font getFont() {
     checkWidget();
-    Font result;
-    if( font == null ) {
-      result = getParent().getFont();
-    } else {
-      result = font;
-    }
-    return result;
+    return getFont( true );
   }
 
   Font getFont( final boolean checkData ) {
-    // if( checkData && !parent.checkData( this, true ) )
-    // error( SWT.ERROR_WIDGET_DISPOSED );
+    if( checkData ) {
+      materialize();
+    }
     if( font != null ) {
       return font;
     }
@@ -796,9 +758,7 @@ public class TreeItem extends Item {
       return;
     }
     background = value;
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = true;
-    }
+    markCached();
   }
 
   /**
@@ -817,6 +777,7 @@ public class TreeItem extends Item {
     if( isDisposed() ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
+    materialize();
     if( background != null ) {
       return background;
     }
@@ -839,6 +800,7 @@ public class TreeItem extends Item {
     if( isDisposed() ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
+    materialize();
     if( foreground != null ) {
       return foreground;
     }
@@ -868,15 +830,11 @@ public class TreeItem extends Item {
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( foreground == value ) {
-      return;
-    }
-    if( foreground != null && foreground.equals( value ) ) {
-      return;
-    }
-    foreground = value;
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = true;
+    if( foreground != value ) {
+      if( foreground == null || !foreground.equals( value ) ) {
+        foreground = value;
+        markCached();
+      }
     }
   }
 
@@ -894,10 +852,10 @@ public class TreeItem extends Item {
   public void setChecked( final boolean checked ) {
     checkWidget();
     if( ( parent.getStyle() & SWT.CHECK ) != 0 ) {
-      this.checked = checked;
-    }
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = true;
+      if( checked != this.checked ) {
+        this.checked = checked;
+        markCached();
+      }
     }
   }
 
@@ -914,6 +872,7 @@ public class TreeItem extends Item {
    */
   public boolean getChecked() {
     checkWidget();
+    materialize();
     return checked;
   }
 
@@ -929,15 +888,11 @@ public class TreeItem extends Item {
    */
   public void setGrayed( final boolean value ) {
     checkWidget();
-    if( ( parent.getStyle() & SWT.CHECK ) == 0 ) {
-      return;
-    }
-    if( grayed == value ) {
-      return;
-    }
-    grayed = value;
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = true;
+    if( ( parent.getStyle() & SWT.CHECK ) != 0 ) {
+      if( grayed != value ) {
+        grayed = value;
+        markCached();
+      }
     }
   }
 
@@ -954,7 +909,7 @@ public class TreeItem extends Item {
    */
   public boolean getGrayed() {
     checkWidget();
-    // if ( !parent.checkData( this, true ) )
+    materialize();
     // error( SWT.ERROR_WIDGET_DISPOSED );
     return grayed;
   }
@@ -988,9 +943,7 @@ public class TreeItem extends Item {
    */
   public String getText() {
     checkWidget();
-    if( !isCached() ) {
-      parent.checkData( this, this.index );
-    }
+    materialize();
     return super.getText();
   }
 
@@ -1028,39 +981,16 @@ public class TreeItem extends Item {
    */
   public Rectangle getTextBounds( final int index ) {
     checkWidget();
-    int left = 0;
-    int top = 0;
-    int width = 0;
-    int height = 0;
-    int columnCount = parent.getColumnCount();
-    if( parentItem == null || parentItem.getExpanded() ) {
-      int indent = index == 0 ? ( depth + 1 ) * INDENT_WIDTH : 0;
-      if( index == 0 && columnCount == 0 ) {
-        left =   indent
-               + getCheckWidth( 0 )
-               + getImageBounds( 0 ).width
-               + getImageGap( 0 );
-        width = Graphics.stringExtent( getFont(), getText( 0 ) ).x;
-        top = getItemTop();
-        height = parent.getItemHeight();
-      } else if( index >= 0 && index < columnCount ) {
-        left =   parent.getColumn( index ).getLeft()
-               + indent
-               + getCheckWidth( index )
-               + getImageBounds( index ).width
-               + getImageGap( index );
-        width =   parent.getColumn( index ).getWidth()
-                - indent
-                - getCheckWidth( index )
-                - getImageBounds( index ).width
-                - getImageGap( index );
-        width = Math.max( 0, width );
-        top = getItemTop();
-        height = parent.getItemHeight();
-      }
+    Rectangle result = new Rectangle( 0, 0, 0, 0 );    
+    if( isVisible() && isValidColumn( index ) ) {
+      result.x = parent.getVisualTextLeft( index, this );
+      result.y = getItemTop();
+      result.width = parent.getVisualTextWidth( index, this );
+      result.height = parent.getItemHeight();
     }
-    return new Rectangle( left, top, width, height );
+    return result;
   }
+
 
   /**
    * Sets the text for multiple columns in the tree.
@@ -1079,7 +1009,6 @@ public class TreeItem extends Item {
     if( value == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    // TODO make a smarter implementation of this
     for( int i = 0; i < value.length; i++ ) {
       if( value[ i ] != null ) {
         setText( i, value[ i ] );
@@ -1120,9 +1049,7 @@ public class TreeItem extends Item {
     if( parent.getColumnCount() == 0 ) {
       parent.updateScrollBars();
     }
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = true;
-    }
+    markCached();
   }
 
   /**
@@ -1159,6 +1086,22 @@ public class TreeItem extends Item {
   }
 
   /**
+   * Returns the receiver's image if it has one, or null
+   * if it does not.
+   *
+   * @return the receiver's image
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.4
+   */
+  public Image getImage() {
+    return getImage( 0 );
+  }
+
+  /**
    * Returns a rectangle describing the size and location relative to its parent
    * of an image at a column in the tree.
    *
@@ -1175,17 +1118,14 @@ public class TreeItem extends Item {
     Rectangle result = null;
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
     if( ( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      Image image = getImage( index );
-      if( image != null ) {
-        result = image.getBounds();
-      } else {
-        result = new Rectangle( 0, 0, 0, 0 );
-      }
-      int indent = ( depth + 1 ) * INDENT_WIDTH;
-      if( columnIndex > 0 ) {
-        result.x += getItemLeft( columnIndex );
-      } else {
-        result.x = indent;
+      result = new Rectangle( 0, 0, 0, 0 );
+      Point size = parent.getItemImageSize( columnIndex );
+      result.width = size.x;
+      result.height = size.y;
+      result.x = parent.getCellLeft( columnIndex ); 
+      result.x += parent.getImageOffset( columnIndex );
+      if( parent.isTreeColumn( columnIndex ) ) {
+        result.x += parent.getIndentionOffset( this );
       }
       // SWT behavior on windows gives the correct y value
       // On Gtk the y value is always the same (eg. 1)
@@ -1203,6 +1143,9 @@ public class TreeItem extends Item {
     if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
       return null;
     }
+    if( checkData ) {
+      materialize();
+    }
     if( columnIndex == 0 ) {
       return super.getImage(); /* super is intentional here */
     }
@@ -1213,39 +1156,15 @@ public class TreeItem extends Item {
    * Returns the receiver's ideal width for the specified columnIndex.
    */
   int getPreferredWidth( final int columnIndex, final boolean checkData ) {
-    int width = 0;
-    width += Graphics.stringExtent( parent.getFont(),
-                                    getText( columnIndex,
-                                             checkData ) ).x;
-    int orderedIndex = 0;
-    if( parent.columnHolder.size() > 0 ) {
-      TreeColumn column = ( TreeColumn )parent.columnHolder.getItem( columnIndex );
-      orderedIndex = column.getOrderIndex();
-    }
-    if( orderedIndex == 0 ) {
-      width += 19; // TODO find proper solution
-      width += 3; // Tree.MARGIN_IMAGE;
-      // Image image = getImage (columnIndex, false);
-      Image image = getImage();
-      if( image != null ) {
-        width += image.getBounds().width;
-        width += 3; // Tree.MARGIN_IMAGE;
-      }
-    }
-    width += getCheckWidth( columnIndex );
-    return width;
+    return parent.getPreferredCellWidth( this, columnIndex, checkData );
   }
 
   void clear() {
-    // TODO: [bm] revisit when columns are available
-    checked = grayed = false;
+    checked = false;
+    grayed = false;
     texts = null;
-    // textWidths = new int[ 1 ];
-    // fontHeight = 0;
-    // fontHeights = null;
     images = null;
     foreground = background = null;
-    // displayTexts = null;
     cellForegrounds = cellBackgrounds = null;
     font = null;
     cellFonts = null;
@@ -1256,13 +1175,10 @@ public class TreeItem extends Item {
       // displayTexts = new String[ columnCount ];
       if( columnCount > 1 ) {
         texts = new String[ columnCount ];
-        // textWidths = new int[ columnCount ];
         images = new Image[ columnCount ];
       }
     }
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = false;
-    }
+    clearCached();
     parent.updateScrollBars();
   }
 
@@ -1386,15 +1302,14 @@ public class TreeItem extends Item {
     if( value != null && value.equals( image ) ) {
       return;
     }
+    parent.updateColumnImageCount(  columnIndex, image, value );
+    parent.updateItemImageSize( value );
     if( columnIndex == 0 ) {
       super.setImage( value );
     } else {
       images[ columnIndex ] = value;
     }
-    parent.updateItemImageSize( value );
-    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-      cached = true;
-    }
+    markCached();
     if( parent.getColumnCount() == 0 ) {
       parent.updateScrollBars();
     }
@@ -1426,7 +1341,6 @@ public class TreeItem extends Item {
         error( SWT.ERROR_INVALID_ARGUMENT );
       }
     }
-    // TODO make a smarter implementation of this
     for( int i = 0; i < value.length; i++ ) {
       if( value[ i ] != null ) {
         setImage( i, value[ i ] );
@@ -1529,10 +1443,17 @@ public class TreeItem extends Item {
    *              </ul>
    */
   public int getItemCount() {
-    checkWidget();
-    return itemHolder.size();
+    return getItemCount( true );
   }
 
+  int getItemCount( final boolean checkData ) {
+    checkWidget();
+    if( checkData ) {
+      materialize();
+    }
+    return itemHolder.size();
+  }
+  
   /**
    * Searches the receiver's list starting at the first item (index 0) until an
    * item is found that is equal to the argument, and returns the index of that
@@ -1598,14 +1519,6 @@ public class TreeItem extends Item {
     parent.setItemCount( count, this );
   }
 
-  /* package */boolean isCached() {
-    boolean result = true;
-    if( ( parent.getStyle() & SWT.VIRTUAL ) != 0 ) {
-      result = cached;
-    }
-    return result;
-  }
-
   // ///////////////////////////////
   // Methods to dispose of the item
   final void releaseChildren() {
@@ -1629,8 +1542,8 @@ public class TreeItem extends Item {
   // ////////////////
   // helping methods
 
-  /* package */int getInnerHeight() {
-    int innerHeight = getItemCount() * 16;
+  int getInnerHeight() {
+    int innerHeight = getItemCount() * parent.getItemHeight();
     for( int i = 0; i < getItemCount(); i++ ) {
       TreeItem item = getItem( i );
       if( item.getExpanded() ) {
@@ -1640,31 +1553,30 @@ public class TreeItem extends Item {
     return innerHeight;
   }
 
-  /* package */int getMaxInnerWidth( final TreeItem[] items, final int level ) {
-    int maxInnerWidth = 0;
-    for( int i = 0; i < items.length; i++ ) {
-      if( items[ i ] != null && items[ i ].isCached() ) {
-        int itemWidth = items[ i ].getPreferredWidth( 0, false ) + level * 19;
-        maxInnerWidth = Math.max( maxInnerWidth, itemWidth );
-        if( items[ i ].getExpanded() ) {
-          int innerWidth = getMaxInnerWidth( items[ i ].getItems(), level + 1 );
-          maxInnerWidth = Math.max( maxInnerWidth, innerWidth );
-        }
-      }
+  private void materialize() {
+    if( !isCached() ) {
+      parent.checkData( this, this.index );
     }
-    return maxInnerWidth;
   }
 
-  final int getCheckWidth( final int index ) {
-    int result = 0;
-    if( index == 0 && parent.getColumnCount() == 0 ) {
-      result = parent.getCheckWidth();
-    } else {
-      int[] columnOrder = parent.getColumnOrder();
-      if( columnOrder[ 0 ] == index ) {
-        result = parent.getCheckWidth();
-      }
+  void markCached() {
+    if( parent.isVirtual() ) {
+      cached = true;
+    }
+  }
+
+  private void clearCached() {
+    if( parent.isVirtual() ) {
+      cached = false;
+    }
+  }
+
+  boolean isCached() {
+    boolean result = true;
+    if( parent.isVirtual() ) {
+      result = cached;
     }
     return result;
   }
+
 }

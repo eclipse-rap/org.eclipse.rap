@@ -95,7 +95,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     TreeColumn column = ( TreeColumn )widget;
     JSWriter writer = JSWriter.getWriterFor( column );
     Object[] args = new Object[] { column.getParent() };
-    writer.newWidget( "org.eclipse.swt.widgets.TreeColumn", args );
+    writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -169,7 +169,6 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   private static void writeAlignment( final TreeColumn column )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( column );
     Integer newValue = new Integer( column.getAlignment() );
     Integer defValue = DEFAULT_ALIGNMENT;
     if( WidgetLCAUtil.hasChanged( column, PROP_ALIGNMENT, newValue, defValue ) )
@@ -180,7 +179,9 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
       } else if( newValue.intValue() == SWT.RIGHT ) {
         alignment = JSConst.QX_CONST_ALIGN_RIGHT;
       }
-      writer.set( "alignment", new Object[] { alignment } );
+      Integer index = new Integer( column.getParent().indexOf( column ) );
+      JSWriter writer = JSWriter.getWriterFor( column );
+      writer.set( "alignment", new Object[] { index, alignment } );
     }
   }
 
@@ -199,25 +200,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
 //  // Helping methods to obtain calculated properties
 
   static int getLeft( final TreeColumn column ) {
-////    Object adapter = column.getParent().getAdapter( ITableAdapter.class );
-////    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-////    return tableAdapter.getColumnLeft( column );
-//    TreeColumn[] cols = column.getParent().getColumns();
-// // int index = getOrderIndex ();
-// // int result = -parent.horizontalOffset;
-//     int newValue = 0;
-// // for (int i = 0; i < index; i++) {
-// // result += orderedColumns [i].width;
-// // }
-//     TreeColumn current = cols[0];
-//     int i = 1;
-//     while( current != column ) {
-//       newValue += current.getWidth();
-//       i++;
-//       current = cols[i-1];
-//     }
-//     return newValue;
-      Tree parent = column.getParent();
+    Tree parent = column.getParent();
     int result = 0;
     TreeColumn[] columns = parent.getColumns();
     int[] columnOrder = parent.getColumnOrder();

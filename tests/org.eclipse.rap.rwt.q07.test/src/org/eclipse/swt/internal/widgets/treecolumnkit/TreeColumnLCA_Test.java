@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -22,6 +24,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.treeitemkit.TreeItemLCA;
 import org.eclipse.swt.widgets.*;
 
 public class TreeColumnLCA_Test extends TestCase {
@@ -298,4 +301,26 @@ public class TreeColumnLCA_Test extends TestCase {
     assertEquals( 0, columnOrder[ 1 ] );
     assertEquals( 2, columnOrder[ 2 ] );
   }
+
+  public void testRenderAlignment() throws IOException {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    shell.open();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( tree );
+    Fixture.markInitialized( column );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    TreeColumnLCA lca = new TreeColumnLCA();
+    column.setAlignment(  SWT.RIGHT );
+    lca.renderChanges( column );
+    String expected = "w.setAlignment( 1, qx.constant.Layout.ALIGN_RIGHT )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
 }

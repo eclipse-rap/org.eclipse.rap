@@ -1,4 +1,4 @@
-/*******************************************************************************
+/******************************************************************************
  * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,11 +13,14 @@ package org.eclipse.swt.widgets;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -124,9 +127,9 @@ public class TreeItem_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    assertEquals( false, treeItem.getExpanded() );
-    // there must be at least one subitem before you can set the treeitem
-    // expanded
+    treeItem.setExpanded( true );
+    assertFalse( treeItem.getExpanded() );
+    // there must be at least one subitem before you can set expanded true
     new TreeItem( treeItem, 0 );
     treeItem.setExpanded( true );
     assertTrue( treeItem.getExpanded() );
@@ -165,20 +168,51 @@ public class TreeItem_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    assertEquals( "", item.getText() );
-    assertEquals( null, item.getImage() );
-    assertEquals( Boolean.FALSE, Boolean.valueOf( item.getChecked() ) );
-    item.setText( "foo" );
-    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    item.setChecked( true );
-    assertEquals( "foo", item.getText() );
-    assertEquals( Graphics.getImage( Fixture.IMAGE1 ), item.getImage() );
-    assertEquals( Boolean.TRUE, Boolean.valueOf( item.getChecked() ) );
-    item.clear();
-    assertEquals( "", item.getText() );
-    assertEquals( null, item.getImage() );
-    assertEquals( Boolean.FALSE, Boolean.valueOf( item.getChecked() ) );
-    tree = new Tree( shell, SWT.SINGLE | SWT.VIRTUAL );
+    TreeItem subItem = new TreeItem( item, SWT.NONE );
+    Color defaultForeground = subItem.getForeground();
+    Color defaultBackground = subItem.getBackground();
+    Font defaultFont = subItem.getFont();
+    subItem.setBackground( display.getSystemColor( SWT.COLOR_CYAN ) );
+    subItem.setForeground( display.getSystemColor( SWT.COLOR_CYAN ) );
+    subItem.setFont( new Font( display, "Arial", 22, SWT.NORMAL ) );
+    subItem.setText( "foo" );
+    subItem.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    subItem.setChecked( true );
+    item.clear( 0, false );
+    assertEquals( "", subItem.getText() );
+    assertEquals( null, subItem.getImage() );
+    assertEquals( defaultForeground, subItem.getForeground() );
+    assertEquals( defaultBackground, subItem.getBackground() );
+    assertEquals( defaultFont, subItem.getFont() );
+    assertFalse( subItem.getChecked() );
+  }
+
+  public void testClearRecursive() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeItem subItem = new TreeItem( item, SWT.NONE );
+    TreeItem subSubItem = new TreeItem( subItem, SWT.NONE );
+    subItem.setText( "foo" );
+    subSubItem.setText( "bar" );
+    item.clear( 0, true );
+    assertEquals( "", subItem.getText() );
+    assertEquals( "", subSubItem.getText() );
+  }
+
+  public void testClearNonRecursive() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeItem subItem = new TreeItem( item, SWT.NONE );
+    TreeItem subSubItem = new TreeItem( subItem, SWT.NONE );
+    subItem.setText( "foo" );
+    subSubItem.setText( "bar" );
+    item.clear( 0, false );
+    assertEquals( "", subItem.getText() );
+    assertEquals( "bar", subSubItem.getText() );
   }
 
   public void testClearAll() {
@@ -198,44 +232,14 @@ public class TreeItem_Test extends TestCase {
         }
       }
     }
-    for( int i = 0; i < 2; i++ ) {
-      TreeItem item0 = root.getItem( i );
-      assertEquals( "Item " + i, item0.getText() );
-      for( int j = 0; j < 2; j++ ) {
-        TreeItem item1 = item0.getItem( j );
-        assertEquals( "Item " + i + " " + j, item1.getText() );
-        for( int k = 0; k < 2; k++ ) {
-          TreeItem item2 = item1.getItem( k );
-          assertEquals( "Item " + i + " " + j + " " + k, item2.getText() );
-        }
-      }
-    }
     root.clearAll( false );
-    for( int i = 0; i < 2; i++ ) {
-      TreeItem item0 = root.getItem( i );
-      assertEquals( "", item0.getText() );
-      for( int j = 0; j < 2; j++ ) {
-        TreeItem item1 = item0.getItem( j );
-        assertEquals( "Item " + i + " " + j, item1.getText() );
-        for( int k = 0; k < 2; k++ ) {
-          TreeItem item2 = item1.getItem( k );
-          assertEquals( "Item " + i + " " + j + " " + k, item2.getText() );
-        }
-      }
-    }
+    assertEquals( "", root.getItem( 0 ).getText() );
+    assertEquals( "", root.getItem( 1 ).getText() );
+    assertEquals( "Item 0 0", root.getItem( 0 ).getItem( 0 ).getText() );
+    assertEquals( "Item 1 1", root.getItem( 1 ).getItem( 1 ).getText() );
     root.clearAll( true );
-    for( int i = 0; i < 2; i++ ) {
-      TreeItem item0 = root.getItem( i );
-      assertEquals( "", item0.getText() );
-      for( int j = 0; j < 2; j++ ) {
-        TreeItem item1 = item0.getItem( j );
-        assertEquals( "", item1.getText() );
-        for( int k = 0; k < 2; k++ ) {
-          TreeItem item2 = item1.getItem( k );
-          assertEquals( "", item2.getText() );
-        }
-      }
-    }
+    assertEquals( "", root.getItem( 0 ).getItem( 0 ).getText() );
+    assertEquals( "", root.getItem( 1 ).getItem( 1 ).getText() );
   }
 
   public void testSetGrayed() {
@@ -683,7 +687,7 @@ public class TreeItem_Test extends TestCase {
     subItem.setText( string );
     bounds = subItem.getBounds( 0 );
     bounds2 = treeItem.getBounds( 0 );
-    assertTrue( ":1g:", bounds.x > bounds2.x
+    assertTrue( ":1g:",    bounds.x > bounds2.x
                         && bounds.y >= bounds2.y + bounds2.height
                         && bounds.height > stringExtent.y
                         && bounds.width > stringExtent.x );
@@ -753,7 +757,7 @@ public class TreeItem_Test extends TestCase {
     Fixture.fakeNewRequest();
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
-    Fixture.fakeRequestParam( treeId + ".scrollTop", "32" );
+    Fixture.fakeRequestParam( treeId + ".topItemIndex", "2" );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( -32, rootItem.getBounds().y );
     assertEquals( -16, rootItem2.getBounds().y );
@@ -799,7 +803,6 @@ public class TreeItem_Test extends TestCase {
     assertTrue( bounds.y >= tree.getHeaderHeight() );
   }
 
-  // TODO [bm]: hardcoded values - possible due to qooxdoo limitations
   public void testBoundsSubItemBug219374() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -809,16 +812,16 @@ public class TreeItem_Test extends TestCase {
     TreeItem sub1 = new TreeItem( root, SWT.NONE );
     TreeItem sub2 = new TreeItem( root2, SWT.NONE );
     root2.setExpanded( true );
-    // height is always 16
+    // default height is 16
     assertEquals( 0, root.getBounds().y );
     assertEquals( 0, sub1.getBounds().y ); // not expanded
     assertEquals( 16, root2.getBounds().y );
     assertEquals( 32, sub2.getBounds().y );
-    // indent for each level needs 19
-    assertEquals( 19, root.getBounds().x );
+    // default indent for each level is 16
+    assertEquals( 16, root.getBounds().x );
     assertEquals( 0, sub1.getBounds().x ); // not expanded
-    assertEquals( 19, root2.getBounds().x );
-    assertEquals( 38, sub2.getBounds().x );
+    assertEquals( 16, root2.getBounds().x );
+    assertEquals( 32, sub2.getBounds().x );
   }
 
   public void testTreeItemAdapter() throws Exception {
@@ -884,8 +887,60 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, col2Bounds.width );
     // but x and y have to be set correctly
     assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
-    assertEquals( 100, col1Bounds.x );
-    assertEquals( 200, col2Bounds.x );
+    assertEquals( 102, col1Bounds.x );
+    assertEquals( 202, col2Bounds.x );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    item.setImage( 0, image );
+    item.setImage( 1, image );
+    item.setImage( 2, image );
+    Rectangle imageBounds = image.getBounds();
+    col0Bounds = item.getImageBounds( 0 );
+    col1Bounds = item.getImageBounds( 1 );
+    col2Bounds = item.getImageBounds( 2 );
+    assertEquals( imageBounds.height, col0Bounds.height );
+    assertEquals( imageBounds.width, col0Bounds.width );
+    assertEquals( imageBounds.height, col1Bounds.height );
+    assertEquals( imageBounds.width, col1Bounds.width );
+    assertEquals( imageBounds.height, col2Bounds.height );
+    assertEquals( imageBounds.width, col2Bounds.width );
+    assertTrue( col1Bounds.x > col0Bounds.x );
+    assertTrue( col2Bounds.x > col1Bounds.x );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    item2.setImage( 0, image );
+    assertTrue( col0Bounds.y < item2.getImageBounds( 0 ).y );
+  }
+  
+  public void testGetImageBoundsIndexOutOfBoundsBug() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeColumn c1 = new TreeColumn( tree, SWT.NONE );
+    c1.setWidth( 100 );
+    TreeColumn c2 = new TreeColumn( tree, SWT.NONE );
+    c2.setWidth( 100 );
+    TreeColumn c3 = new TreeColumn( tree, SWT.NONE );
+    c3.setWidth( 100 );
+    item.setText( new String[]{
+      "foo", "bar", "baz"
+    } );
+    Rectangle col0Bounds = item.getImageBounds( 0 );
+    Rectangle col1Bounds = item.getImageBounds( 1 );
+    Rectangle col2Bounds = item.getImageBounds( 2 );
+    // without images, width and height should be 0
+    assertEquals( 0, col0Bounds.height );
+    assertEquals( 0, col0Bounds.width );
+    assertEquals( 0, col1Bounds.height );
+    assertEquals( 0, col1Bounds.width );
+    assertEquals( 0, col2Bounds.height );
+    assertEquals( 0, col2Bounds.width );
+    // but x and y have to be set correctly
+    assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
+    assertEquals( 102, col1Bounds.x );
+    assertEquals( 202, col2Bounds.x );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     item.setImage( 0, image );
     item.setImage( 1, image );
@@ -997,7 +1052,7 @@ public class TreeItem_Test extends TestCase {
     item.setText( "rama rama ding dong" );
     Rectangle textBounds = item.getTextBounds( 0 );
     // Item 0 must share the first column with the check box
-    assertTrue( textBounds.width < 65 );
+    assertTrue( textBounds.width < 84 );
   }
 
   public void testTextBoundsWithCollapsedParentItem() {
@@ -1063,7 +1118,273 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 1, root.indexOf( treeItem ) );
     assertEquals( 0, root.indexOf( treeItem2 ) );
   }
+  
+  //////////
+  // VIRTUAL
 
+  public void testVirtualGetItemOutOfBounds() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setItemCount( 10 );
+    try {
+      item.getItem( 10 );
+      fail();
+    } catch( IllegalArgumentException ex ) {
+      // expected
+    }
+  }
+  
+  public void testVirtualGetItemDoesNotFireSetDataEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final LoggingListener log = new LoggingListener();
+    final Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+    tree.addListener( SWT.SetData, log );
+    tree.getItem( 99 );
+    assertEquals( 0, log.size() );
+  }
+
+  public void testVirtualGetters() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+    final Color color = tree.getDisplay().getSystemColor( SWT.COLOR_RED );
+    final Font font = new Font( display, new FontData( "serif", 10, 0 ) );
+    final Image image = display.getSystemImage( SWT.ICON_ERROR );
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        TreeItem item = ( ( TreeItem )event.item );
+        item.setBackground( color );
+        item.setText( "foo" );
+        item.setChecked( true );
+        item.setFont( font );
+        item.setForeground( color );
+        item.setGrayed( true );
+        item.setImage( image );
+      }
+    } ); 
+    assertTrue( tree.getItem( 93 ).getGrayed() );
+    assertTrue( tree.getItem( 94 ).getChecked() );
+    assertEquals( font, tree.getItem( 96 ).getFont() ); 
+    assertEquals( color, tree.getItem( 97 ).getForeground() );
+    assertEquals( "foo", tree.getItem( 98 ).getText() );
+    assertEquals( color, tree.getItem( 99 ).getBackground() );
+    assertEquals( image, tree.getItem( 95 ).getImage() );
+  }
+
+  public void testGetterFireSetDataOnlyOnce() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final LoggingListener log = new LoggingListener();
+    final Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree1 = new Tree( shell, SWT.VIRTUAL );
+    tree1.setItemCount( 100 );
+    tree1.setSize( 100, 100 );
+    tree1.addListener( SWT.SetData, log );
+    Tree tree = tree1;
+    TreeItem item = tree.getItem( 99 );
+    item.getBackground();
+    item.getBackground();
+    item.getForeground();
+    item.getForeground();
+    assertEquals( 1, log.size() );
+  }
+
+  public void testVirtualSetExpanded() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL );
+    final LoggingListener log = new LoggingListener();
+    tree.addListener( SWT.SetData, log );
+    tree.setItemCount( 100 );
+    shell.open();
+    tree.setSize( 100, 100 );
+    log.clear();
+    // Windows does not materialize the item on setExpanded, GTK and RAP do
+    tree.getItem( 99 ).setExpanded( true );
+    assertEquals( 0, log.size() );
+    assertTrue( tree.getItem( 99 ).isCached() );
+  }
+  
+  public void testVirtualSetter() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Color color = display.getSystemColor( SWT.COLOR_RED );
+    Font font = new Font( display, new FontData( "serif", 10, 0 ) );
+    Image image = display.getSystemImage( SWT.ICON_ERROR );    
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
+    final LoggingListener log = new LoggingListener();
+    tree.addListener( SWT.SetData, log );
+    tree.setItemCount( 100 );
+    shell.open();
+    tree.setSize( 100, 100 );
+    log.clear();
+
+    tree.getItem( 92 ).setForeground( 0, color ); 
+    assertTrue( tree.getItem( 92 ).isCached() );
+    assertEquals( color, tree.getItem( 92 ).getForeground( 0 ) );
+
+    tree.getItem( 93 ).setGrayed( true ); 
+    assertTrue( tree.getItem( 93 ).isCached() );
+    assertTrue( tree.getItem( 93 ).getGrayed() );
+    
+    tree.getItem( 94 ).setChecked( true );
+    assertTrue( tree.getItem( 94 ).isCached() );
+    assertTrue( tree.getItem( 94 ).getChecked() );
+    
+    tree.getItem( 95 ).setImage( image );
+    assertTrue( tree.getItem( 95 ).isCached() );
+    assertEquals( image, tree.getItem( 95 ).getImage() );
+    
+    tree.getItem( 96 ).setFont( font );
+    assertTrue( tree.getItem( 96 ).isCached() );
+    assertEquals( font, tree.getItem( 96 ).getFont() ); 
+    
+    tree.getItem( 97 ).setForeground( color ); 
+    assertTrue( tree.getItem( 97 ).isCached() );
+    assertEquals( color, tree.getItem( 97 ).getForeground() );
+    
+    tree.getItem( 98 ).setText( "foo" );
+    assertTrue( tree.getItem( 98 ).isCached() );
+    assertEquals( "foo", tree.getItem( 98 ).getText() );
+    
+    tree.getItem( 99 ).setBackground( color );
+    assertTrue( tree.getItem( 99 ).isCached() );
+    assertEquals( color, tree.getItem( 99 ).getBackground() );
+    
+    assertEquals( 0, log.size() );
+  }
+  
+  public void testVirtualNonCheckTreeSetter() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    shell.open();
+    tree.setSize( 100, 100 );
+    tree.getItem( 93 ).setGrayed( true );
+    assertFalse( tree.getItem( 93 ).isCached() );
+    tree.getItem( 94 ).setChecked( true );
+    assertFalse( tree.getItem( 94 ).isCached() );    
+  }
+
+  public void testVirtualCheckTreeSetter() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
+    tree.setItemCount( 100 );
+    shell.open();
+    tree.setSize( 100, 100 );
+    tree.getItem( 93 ).setGrayed( false );
+    assertFalse( tree.getItem( 93 ).isCached() );
+    tree.getItem( 94 ).setChecked( false );
+    assertFalse( tree.getItem( 94 ).isCached() );    
+  }
+  
+  public void testVirtualSetItemCount() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    LoggingListener log = new LoggingListener();
+    tree.addListener( SWT.SetData, log );
+    tree.setItemCount( 100 );
+    shell.open();
+    tree.setSize( 100, 100 );
+    log.clear();
+    tree.getItem( 93 ).setItemCount( 22 );
+    assertFalse( tree.getItem( 93 ).isCached() );
+    assertEquals( 0, log.size() );
+    assertEquals( 22, tree.getItem( 93 ).getItemCount() );
+    assertTrue( tree.getItem( 93 ).isCached() );
+    assertEquals( 1, log.size() );
+  }
+
+  public void testVirtualSetExpandedWithSetItemCount() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    LoggingListener log = new LoggingListener();
+    tree.addListener( SWT.SetData, log );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+    shell.open();
+    log.clear();
+    tree.getItem( 99 ).setItemCount( 1 );
+    assertFalse( tree.getItem( 99 ).isCached() );
+    tree.getItem( 99 ).setExpanded( true );
+    assertEquals( 0, log.size() );
+    assertTrue( tree.getItem( 99 ).isCached() );
+    assertTrue( tree.getItem( 99 ).getExpanded() );
+  }
+
+  public void testVirtualSetExpandedWithoutSetItemCount() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.VIRTUAL );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    treeItem.setExpanded( true );
+    assertFalse( treeItem.getExpanded() );
+    treeItem.setItemCount( 3 );
+    treeItem.setExpanded( true );
+    assertTrue( treeItem.getExpanded() );
+  }
+
+  public void testVirtualSetItemCountNegative() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( -100 );
+    assertEquals( 0, tree.getItemCount() );
+  }
+
+  public void testVirtualClear() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    TreeItem parentItem = new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( parentItem, SWT.NONE );
+    item.getText();
+    assertTrue( item.isCached() );
+    parentItem.clear( 0, false );
+    assertFalse( item.isCached() );
+  }
+  
+  public void testVirtualSetDataEventsOnSetExpand() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL );
+    final List log = new ArrayList();
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    } );
+    tree.setItemCount( 1 );
+    TreeItem item = tree.getItem( 0 );
+    item.setItemCount( 10 );
+    tree.setSize( 100, 160 );
+    assertEquals( 1, log.size() );
+    log.clear();
+    item.setExpanded( true );
+    assertEquals( 10, log.size() );
+  }
+
+  /////////
+  // Helper
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

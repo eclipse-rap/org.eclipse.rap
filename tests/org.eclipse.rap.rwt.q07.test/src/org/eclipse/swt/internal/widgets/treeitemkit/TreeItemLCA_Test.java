@@ -26,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -174,6 +175,21 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.clearPreserved();
     display.dispose();
   }
+  
+  public void testLcaDoesNotMaterializeItem() {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+    TreeItem treeItem = tree.getItem( 99 );
+    shell.open();
+    Fixture.executeLifeCycleFromServerThread();
+    ITreeAdapter adapter 
+      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );    
+    assertFalse( adapter.isCached( treeItem ) );
+  }
 
   public void testTreeEvent() {
     Display display = new Display();
@@ -267,15 +283,123 @@ public class TreeItemLCA_Test extends TestCase {
     treeItem.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
     tiLCA.renderChanges( treeItem );
     String expected;
-    expected = "w.setBackgroundColor( \"#ff0000\" );";
+    expected = "w.setBackground( \"#ff0000\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
     treeItem.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     tiLCA.renderChanges( treeItem );
-    expected = "w.setTextColor( \"#00ff00\" );";
+    expected = "w.setForeground( \"#00ff00\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+  
+  public void testRenderSelection() throws IOException {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    String treeRef = "wm.findWidgetById( \"" + WidgetUtil.getId( tree ) +"\" )";
+    String treeItemRef 
+      = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem ) +"\" )";
+    shell.open();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( tree );
+    Fixture.markInitialized( treeItem );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    TreeItemLCA tiLCA = new TreeItemLCA();
+    tiLCA.renderChanges( treeItem );
+    assertTrue( Fixture.getAllMarkup().indexOf( "select" ) == -1 );
+    Fixture.fakeResponseWriter();
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    tree.select( treeItem );
+    tiLCA.renderChanges( treeItem );
+    String expectedSelect = treeRef + ";w.selectItem( " + treeItemRef + " );";
+    String expectedFocus = ";w.setFocusItem( " + treeItemRef + " );";
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( expectedSelect ) != -1 );
+    assertTrue( markup.indexOf( expectedFocus ) != -1 );
+  }
+  
+  public void testRenderDeselection() throws IOException {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    tree.setSelection( treeItem );
+    String treeRef = "wm.findWidgetById( \"" + WidgetUtil.getId( tree ) +"\" )";
+    String treeItemRef 
+      = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem ) +"\" )";
+    shell.open();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( tree );
+    Fixture.markInitialized( treeItem );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    TreeItemLCA tiLCA = new TreeItemLCA();
+    tree.deselect( treeItem );
+    tiLCA.renderChanges( treeItem );
+    String expected = treeRef + ";w.deselectItem( " + treeItemRef + " );";
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+  
+  public void testDontRenderDeselectionOnMaterialize() throws IOException {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    shell.open();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( tree );
+    Fixture.markInitialized( treeItem );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    treeItem.getBackground(); // Materialize
+    TreeItemLCA tiLCA = new TreeItemLCA();
+    tiLCA.renderChanges( treeItem );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "deselectItem" ) == -1 );
+  }
+
+  public void testRenderMultiSelection() throws IOException {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.MULTI );
+    TreeItem treeItem1 = new TreeItem( tree, SWT.NONE );
+    TreeItem treeItem2 = new TreeItem( tree, SWT.NONE );
+    String treeItem1Ref 
+      = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem1 ) +"\" )";
+    String treeItem2Ref 
+      = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem2 ) +"\" )";
+    shell.open();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( tree );
+    Fixture.markInitialized( treeItem1 );
+    Fixture.markInitialized( treeItem2 );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    TreeItemLCA tiLCA = new TreeItemLCA();
+    tree.selectAll();
+    tiLCA.renderChanges( treeItem1 );
+    tiLCA.renderChanges( treeItem2 );
+    String expectedSelect1 = "w.selectItem( " + treeItem1Ref + " );";
+    String expectedSelect2 = "w.selectItem( " + treeItem2Ref + " );";
+    String expectedFocus = "w.setFocusItem( " + treeItem1Ref + " );";
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( expectedSelect1 ) != -1 );
+    assertTrue( markup.indexOf( expectedFocus ) != -1 );
+    assertTrue( markup.indexOf( expectedSelect2 ) != -1 );
   }
 
   public void testTextEscape() throws Exception {
@@ -300,60 +424,24 @@ public class TreeItemLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    TreeItem item2 = new TreeItem( tree, SWT.NONE, 0 );
+    TreeItem item2 = new TreeItem( item1, SWT.NONE  );
+    TreeItem item3 = new TreeItem( item1, SWT.NONE );
     String item1Id = WidgetUtil.getId( item1 );
-    String item2Id = WidgetUtil.getId( item2 );
     String treeId = WidgetUtil.getId( tree );
     TreeItemLCA lca = new TreeItemLCA();
     lca.renderInitialization( item1 );
     lca.renderInitialization( item2 );
-    
-    String expected1 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
-                      + "\"" + item1Id + "\", "
-                      + "wm.findWidgetById( \"" + treeId + "\" ), "
-                      + "wm.findWidgetById( \"" + treeId + "\" ), "
-                      + "1 );";
-    String expected2 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
-                       + "\"" + item2Id + "\", "
-                       + "wm.findWidgetById( \"" + treeId + "\" ), "
-                       + "wm.findWidgetById( \"" + treeId + "\" ), "
-                       + "0 );";
-    assertEquals( expected1 + expected2, Fixture.getAllMarkup() );
-  }
-  
-  public void testInitializationSubItems() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem root = new TreeItem( tree, SWT.NONE );
-    TreeItem item1 = new TreeItem( root, SWT.NONE );
-    TreeItem item2 = new TreeItem( root, SWT.NONE );
-    String rootId = WidgetUtil.getId( root );
-    String item1Id = WidgetUtil.getId( item1 );
-    String item2Id = WidgetUtil.getId( item2 );
-    String treeId = WidgetUtil.getId( tree );
-    TreeItemLCA lca = new TreeItemLCA();
-    lca.renderInitialization( root );
-    lca.renderInitialization( item1 );
-    lca.renderInitialization( item2 );
-
-    String expected0 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
-                       + "\"" + rootId + "\", "
-                       + "wm.findWidgetById( \"" + treeId + "\" ), "
-                       + "wm.findWidgetById( \"" + treeId + "\" ), "
-                       + "0 );";
-    String expected1 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
-                      + "\"" + item1Id + "\", "
-                      + "wm.findWidgetById( \"" + rootId + "\" ), "
-                      + "wm.findWidgetById( \"" + treeId + "\" ), "
-                      + "0 );";
-    String expected2 = "org.eclipse.swt.TreeItemUtil.createTreeItem( "
-                      + "\"" + item2Id + "\", "
-                      + "wm.findWidgetById( \"" + rootId + "\" ), "
-                      + "wm.findWidgetById( \"" + treeId + "\" ), "
-                      + "1 );";
-    assertEquals( expected0 + expected1 + expected2, Fixture.getAllMarkup() );
+    lca.renderInitialization( item3 );
+    String expected1 = "new org.eclipse.rwt.widgets.TreeItem( "
+                     + "wm.findWidgetById( \"" + treeId + "\" ), 0 );";
+    String expected2 = "new org.eclipse.rwt.widgets.TreeItem( "
+                     + "wm.findWidgetById( \"" + item1Id + "\" ), 0 );";
+    String expected3 = "new org.eclipse.rwt.widgets.TreeItem( "
+                     + "wm.findWidgetById( \"" + item1Id + "\" ), 1 );";
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( expected1 ) != -1 );
+    assertTrue( markup.indexOf( expected2 ) != -1 );
+    assertTrue( markup.indexOf( expected3 ) != -1 );
   }
   
   protected void setUp() throws Exception {

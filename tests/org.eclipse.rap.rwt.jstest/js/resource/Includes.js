@@ -25,8 +25,9 @@ document.write('\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/widgets/CoolItem.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/widgets/List.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/widgets/Shell.js" type="text/javascript"></script>\
-<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/widgets/Tree.js" type="text/javascript"></script>\
-<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/widgets/TreeItem.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/TreeRow.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/TreeItem.js" type="text/javascript"></script>\
+<script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/rwt/widgets/Tree.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/TreeItemUtil.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/widgets/TreeColumn.js" type="text/javascript"></script>\
 <script src="../org.eclipse.rap.rwt.q07/js/org/eclipse/swt/custom/ScrolledComposite.js" type="text/javascript"></script>\

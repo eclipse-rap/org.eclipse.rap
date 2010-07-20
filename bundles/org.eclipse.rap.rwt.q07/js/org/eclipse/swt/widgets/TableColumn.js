@@ -19,7 +19,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
 
   construct : function( parent ) {
     this.base( arguments );
-    this.setAppearance( "table-column" );
+    this._parentIsTree = parent instanceof org.eclipse.rwt.widgets.Tree;
+    this.setAppearance( this._parentIsTree ? "tree-column" : "table-column" );
     this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT ); 
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     // Getter/setter variables
@@ -57,7 +58,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     // Create sort image
     this._sortImage = new qx.ui.basic.Image();
     this._sortImage.setAnonymous( true );
-    this._sortImage.setAppearance( "table-column-sort-indicator" );
+    if( this._parentIsTree ) {
+      this._sortImage.setAppearance( "tree-column-sort-indicator" );
+    } else {
+      this._sortImage.setAppearance( "table-column-sort-indicator" );
+    }
     this.add( this._sortImage );
   },
 
@@ -74,7 +79,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     // on browser refresh. See bug:
     // 272686: [Table] Javascript error during table disposal
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=272686
-    if( !this._table.getDisposed() && !qx.core.Object.inGlobalDispose() ) {
+    if( !this._parentIsTree 
+        && !this._table.getDisposed() 
+        && !qx.core.Object.inGlobalDispose() ) {
       this._table._removeColumn( this );
     }
   },
@@ -92,7 +99,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
   },
    
   members : {
-    
+
     setSortDirection : function( value ) {
       if( value == "up" ) {
         this._sortImage.addState( "up" );
@@ -109,7 +116,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     setResizable : function( value ) {
       this._resizable = value;
     },
-    
+
     setMoveable : function( value ) {
       this._moveable = value;
     },
@@ -127,6 +134,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       if( !this._inMove && !this._inResize ) {
         this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOUSE_OVER );
       }
+    },
+    
+    setAlignment : function( index, value ) {
+      this._table.setAlignment( index, value );
+      this.setHorizontalChildrenAlign( value );
     },
 
     /////////////////////////////
@@ -149,7 +161,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
           this.setCapture( true );
           this._bufferedZIndex = this.getZIndex();
           this.setZIndex( 1e8 );
-          this._table._unhookColumnMove( this );
+          if( !this._parentIsTree ) {
+            this._table._unhookColumnMove( this );
+          }
           this._offsetX = evt.getPageX() - this.getLeft();
           this._initialLeft = this.getLeft();
           evt.stopPropagation();
@@ -176,7 +190,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._inMove = false;
         this.setCapture( false );
         this.setZIndex( this._bufferedZIndex );
-        this._table._hookColumnMove( this );
+        if( !this._parentIsTree ) {
+          this._table._hookColumnMove( this );
+        }
         this.removeState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
         if(    this.getLeft() < this._initialLeft - 1 
             || this.getLeft() > this._initialLeft + 1 ) 

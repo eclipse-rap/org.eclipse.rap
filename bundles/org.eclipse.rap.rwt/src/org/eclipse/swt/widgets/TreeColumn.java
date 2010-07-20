@@ -47,6 +47,7 @@ public class TreeColumn extends Item {
   boolean moveable, resizable = true;
   int sort = SWT.NONE;
   String toolTipText;
+  int itemImageCount = 0;
   static final int SORT_INDICATOR_WIDTH = 10;
   static final int MARGIN_IMAGE = 3;
 
@@ -277,19 +278,6 @@ public class TreeColumn extends Item {
     return moveable;
   }
 
-  int getOrderIndex() {
-    TreeColumn[] orderedColumns = parent.getOrderedColumns();
-    if( orderedColumns == null ) {
-      return getIndex();
-    }
-    for( int i = 0; i < orderedColumns.length; i++ ) {
-      if( orderedColumns[ i ] == this ) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   /**
    * Returns the receiver's parent, which must be a <code>Tree</code>.
    *
@@ -381,6 +369,7 @@ public class TreeColumn extends Item {
    *              </ul>
    */
   public void pack() {
+    // TODO: [if] does not respect inner items width if expanded
     checkWidget();
     TreeItem[] availableItems = parent.getItems();
     int index = getIndex();

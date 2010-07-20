@@ -92,24 +92,26 @@ public class Tree extends Composite {
 
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
   // This values must be kept in sync with appearance of list items
-  private static final int CHECK_HEIGHT = 13;
-  private static final int VERTICAL_ITEM_MARGIN = 3;
-  private static final int ITEM_HEIGHT = 16;
+  private static final int MIN_ITEM_HEIGHT = 16;
+
+  private static final Rectangle CELL_PADDING = new Rectangle( 2, 0, 4, 0 ); 
+  private static final Rectangle TEXT_MARGIN = new Rectangle( 3, 0, 8, 0 ); 
+  private static int IMAGE_TEXT_SPACING = 3; 
+  private static final Rectangle CHECKBOX_MARGIN = new Rectangle( 0, 0, 2, 0 );
 
   /* package */final ItemHolder itemHolder;
   /* package */final ItemHolder columnHolder;
   private TreeItem[] selection;
   private boolean linesVisible;
   private int[] columnOrder;
+  private int itemImageCount = 0;
   private TreeColumn sortColumn;
   private int sortDirection = SWT.NONE;
   private boolean headerVisible = false;
-  private TreeItem showItem;
   private final ResizeListener resizeListener;
-  private final TreeListener expandListener;
-  private TreeItem currentItem;
   private final ITreeAdapter treeAdapter;
-  /* package */int scrollTop, scrollLeft;
+  private int scrollLeft = 0;
+  private int topItemIndex = 0;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
   private Point itemImageSize;
@@ -151,24 +153,8 @@ public class Tree extends Composite {
   }
   private final class InternalTreeAdapter implements ITreeAdapter {
 
-    public TreeItem getShowItem() {
-      return Tree.this.showItem;
-    }
-
-    public void clearShowItem() {
-      Tree.this.showItem = null;
-    }
-
     public void setScrollLeft( final int left ) {
       Tree.this.scrollLeft = left;
-    }
-
-    public void setScrollTop( final int top ) {
-      Tree.this.scrollTop = top;
-    }
-
-    public int getScrollTop() {
-      return Tree.this.scrollTop;
     }
 
     public int getScrollLeft() {
@@ -190,31 +176,64 @@ public class Tree extends Composite {
     public boolean hasVScrollBar() {
       return Tree.this.hasVScrollBar();
     }
-  }
 
+    public Point getItemImageSize( final int index ) {
+      return Tree.this.getItemImageSize( index );
+    }
+
+    public int getCellLeft( final int index ) {
+      return Tree.this.getCellLeft( index );
+    }
+
+    public int getCellWidth( final int index ) {
+      return Tree.this.getCellWidth( index );
+    }
+
+    public int getTextOffset( final int index ) {
+      return Tree.this.getTextOffset( index );
+    }
+
+    public int getTextMaxWidth( final int index ) {
+      return Tree.this.getTextWidth( index );
+    }
+
+    public int getCheckWidth() {
+      return Tree.this.getCheckImageSize().x;
+    }
+
+    public int getImageOffset( final int index ) {
+      return Tree.this.getImageOffset( index );
+    }
+
+    public int getIndentionWidth() {
+      return Tree.this.getIndentionWidth();
+    }
+
+    public int getCheckLeft() {
+      return CHECKBOX_MARGIN.x;
+    }
+
+    public Rectangle getTextMargin() {
+      return TEXT_MARGIN;
+    }
+
+    public int getTopItemIndex() {
+      return Tree.this.getTopIndex();
+    }
+
+    public void setTopItemIndex( final int index ) {
+      Tree.this.setTopItemIndex( index );
+    }
+
+  }
+  
   private static final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
       Tree tree = ( Tree )event.widget;
-      if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {
+      if( tree.isVirtual() ) {
         checkAllData( tree );
       }
       tree.updateScrollBars();
-    }
-  }
-
-  private static final class ExpandListener extends TreeAdapter {
-
-    public void treeExpanded( final TreeEvent event ) {
-      Tree tree = ( Tree )event.widget;
-      tree.updateFlatIndices();
-      // TreeItem item = ( TreeItem )event.item;
-      // TODO: [bm] only update this subtree
-      checkAllData( tree );
-    }
-
-    public void treeCollapsed( final TreeEvent event ) {
-      Tree tree = ( Tree )event.widget;
-      tree.updateFlatIndices();
     }
   }
 
@@ -245,6 +264,7 @@ public class Tree extends Composite {
    * @see SWT#SINGLE
    * @see SWT#MULTI
    * @see SWT#CHECK
+   * @see SWT#FULL_SELECTION
    * @see SWT#NO_SCROLL
    * @see Widget#checkSubclass
    * @see Widget#getStyle
@@ -257,12 +277,6 @@ public class Tree extends Composite {
     selection = EMPTY_SELECTION;
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
-    if( ( this.style & SWT.VIRTUAL ) != 0 ) {
-      expandListener = new ExpandListener();
-      addTreeListener( expandListener );
-    } else {
-      expandListener = null;
-    }
   }
 
   void initState() {
@@ -304,7 +318,7 @@ public class Tree extends Composite {
     if( parent == null ) {
       oldItemCount = getItemCount();
     } else {
-      oldItemCount = parent.getItemCount();
+      oldItemCount = parent.getItemCount( false );
     }
     int newItemCount = Math.max( 0, itemCount );
     if( newItemCount != oldItemCount ) {
@@ -488,9 +502,28 @@ public class Tree extends Composite {
       parent.setExpanded( true );
       parent = parent.getParentItem();
     }
-    showItem = item;
+    if( item.flatIndex <= topItemIndex ) {
+      setTopItemIndex( item.flatIndex );
+    } else {
+      int rows 
+        = ( int )Math.floor( getClientArea().height / this.getItemHeight() ); 
+      if( item.flatIndex >= topItemIndex + rows ) {
+        setTopItemIndex( item.flatIndex - rows + 1 );
+      }
+    }
   }
-
+  
+  private void setTopItemIndex( final int index ) {
+    if( index != topItemIndex ) {
+      topItemIndex = index;
+      checkAllData( this );
+    }
+  }
+  
+  int getTopIndex() {
+    return topItemIndex;
+  }
+  
   /**
    * Shows the column.  If the column is already showing in the receiver,
    * this method simply returns.  Otherwise, the columns are scrolled until
@@ -885,7 +918,7 @@ public class Tree extends Composite {
     if( recursive ) {
       item.clearAll( true, false );
     }
-    if( ( style & SWT.VIRTUAL ) == 0 ) {
+    if( !isVirtual() ) {
       checkData( item, index );
     }
   }
@@ -918,16 +951,13 @@ public class Tree extends Composite {
     if( point == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    int index = ( point.y - getHeaderHeight() + scrollTop ) / getItemHeight();
+    int index = ( point.y - getHeaderHeight() ) / getItemHeight() + topItemIndex;
     // collect all visible items
     List visibleItems = collectVisibleItems( null );
     if( !( 0 <= index && index < visibleItems.size() ) ) {
       return null; /* below the last item */
     }
     TreeItem result = ( TreeItem )visibleItems.get( index );
-    // TODO [bm] consider the x value and columns
-    // if (!result.getHitBounds ().contains (point)) return null; /* considers
-    // the x value */
     return result;
   }
 
@@ -965,15 +995,13 @@ public class Tree extends Composite {
   public int getItemHeight() {
     checkWidget();
     int textHeight = Graphics.getCharHeight( getFont() );
-    textHeight += VERTICAL_ITEM_MARGIN;
-    int itemImageHeight = getItemImageSize().y + VERTICAL_ITEM_MARGIN;
+    textHeight += TEXT_MARGIN.height + CELL_PADDING.height;
+    int itemImageHeight = getItemImageSize().y + CELL_PADDING.height;
     int result = Math.max( itemImageHeight, textHeight );
-    if( ( style & SWT.CHECK ) != 0 ) {
-      result = Math.max( CHECK_HEIGHT, result );
+    if( hasCheckBoxes( 0 )) {
+      result = Math.max( getCheckImageOuterSize().y, result );
     }
-    // TODO [if] qx tree item height is hard coded to 16. Height bigger than 16
-    // leads to broken tree layout. Remove, when it is fixed.
-    result = ITEM_HEIGHT;
+    result = Math.max( result, MIN_ITEM_HEIGHT );
     return result;
   }
 
@@ -1005,7 +1033,7 @@ public class Tree extends Composite {
         ( ( TreeItem )itemHolder.getItem( i ) ).clearAll( true, false );
       }
     }
-    if( ( style & SWT.VIRTUAL ) != 0 ) {
+    if( isVirtual() ) {
       checkAllData( this );
     }
   }
@@ -1190,11 +1218,6 @@ public class Tree extends Composite {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
     return columnHolder.indexOf( column );
-  }
-
-  TreeColumn[] getOrderedColumns() {
-    // TODO [bm] proper implementation
-    return getColumns();
   }
 
   /**
@@ -1596,11 +1619,10 @@ public class Tree extends Composite {
                             final boolean changed )
   {
     checkWidget();
-    int width = 0, height = 0;
+    int width = 0;
+    int height = 0;
     if( getColumnCount() > 0 ) {
       for( int i = 0; i < getColumnCount(); i++ ) {
-        // TODO: [if] TreeColumn#pack() does not respect
-        // inner items width if expanded
         width += getColumn( i ).getWidth();
       }
     } else {
@@ -1610,7 +1632,7 @@ public class Tree extends Composite {
           int itemWidth = item.getPreferredWidth( 0, false );
           width = Math.max( width, itemWidth );
           if( item.getExpanded() ) {
-            int innerWidth = item.getMaxInnerWidth( item.getItems(), 1 );
+            int innerWidth = getMaxInnerWidth( item.getItems(), 1 );
             width = Math.max( width, innerWidth );
           }
         }
@@ -1647,61 +1669,247 @@ public class Tree extends Composite {
     }
     return new Point( width, height );
   }
+  
+  /////////////////////
+  // item layout helper
+  
+  private int getMaxInnerWidth( final TreeItem[] items, final int level ) {
+    int maxInnerWidth = 0;
+    for( int i = 0; i < items.length; i++ ) {
+      if( items[ i ] != null && items[ i ].isCached() ) {
+        int indention = level * getIndentionWidth(); // TODO [tb] : test
+        int itemWidth = items[ i ].getPreferredWidth( 0, false ) + indention;
+        maxInnerWidth = Math.max( maxInnerWidth, itemWidth );
+        if( items[ i ].getExpanded() ) {
+          int innerWidth = getMaxInnerWidth( items[ i ].getItems(), level + 1 );
+          maxInnerWidth = Math.max( maxInnerWidth, innerWidth );
+        }
+      }
+    }
+    return maxInnerWidth;
+  }
 
-  ///////////////////
-  // Helping methods
-
-  final int getCheckWidth() {
-    int result = 0;
-    if( ( style & SWT.CHECK ) != 0 ) {
-      result = CHECK_HEIGHT + 4;
+  int getCellLeft( final int index ) {
+    return getColumnCount() == 0 ? 0 : getColumn( index ).getLeft();
+  }
+  
+  private int getCellWidth( final int index ) {
+    return   getColumnCount() == 0 && index == 0
+           ? getClientArea().width 
+           : getColumn( index ).getWidth();
+  }
+  
+  int getImageOffset( final int index ) {
+    // Note: The left cell-padding is visually ignored for the tree-column
+    int result = isTreeColumn( index ) ? 0 : CELL_PADDING.x;
+    if( hasCheckBoxes( index ) ) {
+      result += getCheckImageOuterSize().x;
+    }
+    return result;
+  }
+   
+  private int getTextOffset( final int index ) {
+    int result = getImageOffset( index );
+    result += getItemImageOuterWidth( index );
+    result += TEXT_MARGIN.x;
+    return result;
+  }
+  
+  int getTextWidth( final int index ) {
+    return   getCellWidth( index ) 
+           - getTextOffset( index ) 
+           - ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+  }
+  
+  int getIndentionOffset( final TreeItem item ) {
+    return this.getIndentionWidth() * ( item.depth + 1);
+  }
+  
+  int getVisualCellLeft( final int index, final TreeItem item ) {
+    int result = getCellLeft( index );
+    if( isTreeColumn( index ) ) {
+      result += getIndentionOffset( item );
+    }
+    if( hasCheckBoxes( index ) ) {
+      result += getCheckImageOuterSize().x;
     }
     return result;
   }
 
-  final void updateItemImageSize( final Image image ) {
+  int getVisualCellWidth( final int index, 
+                          final TreeItem item, 
+                          final boolean checkData ) 
+  {
+    int result;
+    if( getColumnCount() == 0 && index == 0 ) {
+      String text = item.getText( 0, checkData );    
+      int textWidth 
+        = Graphics.stringExtent( item.getFont( checkData ), text ).x;
+      result =   CELL_PADDING.width
+               + getItemImageOuterWidth( index )
+               + textWidth
+               + TEXT_MARGIN.width;
+    } else {
+      result = getColumn( index ).getWidth();
+      if( isTreeColumn( index ) ) {
+        result -= getIndentionOffset( item );
+      }
+      if( hasCheckBoxes( index ) ) {
+        result -= getCheckImageOuterSize().x;          
+      }
+      result = Math.max( 0, result );
+    }
+    return result;
+  }
+
+  int getVisualTextLeft( final int index, final TreeItem item ) {
+    return    getVisualCellLeft( index, item )
+            + CELL_PADDING.x
+            + getItemImageOuterWidth( index );    
+  }
+
+  int getVisualTextWidth( final int index, final TreeItem item ) {
+    int result = 0;
+    if( index == 0 && getColumnCount() == 0 ) {
+      result = Graphics.stringExtent( item.getFont(), item.getText( 0 ) ).x;
+      result += TEXT_MARGIN.width;
+    } else if( index >= 0 && index < getColumnCount() ) {
+      result = getTextWidth( index ) - getIndentionOffset( item ); 
+      result = Math.max( 0, result );
+    }
+    return result;
+  }
+
+  int getPreferredCellWidth( final TreeItem item, 
+                             final int columnIndex, 
+                             final boolean checkData ) 
+  {
+    int result = getTextOffset( columnIndex ) ;
+    result += Graphics.stringExtent( getFont(),
+                                     item.getText( columnIndex, checkData ) ).x;
+    result += ( CELL_PADDING.width - CELL_PADDING.x );
+    result += ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+    return result;
+  }
+
+  boolean isTreeColumn( final int index ) {
+    return    ( index == 0 && getColumnCount() == 0 ) 
+           || getColumnCount() > 0 && getColumnOrder()[ 0 ] == index;
+  }
+  
+  private boolean hasCheckBoxes( final int index ) {
+    return ( style & SWT.CHECK ) != 0 && isTreeColumn( index );
+  }  
+
+  private boolean hasColumnImages( final int columnIndex ) {
+    int count = columnIndex == 0 
+              ? itemImageCount 
+              : getColumn( columnIndex ).itemImageCount;
+    return count > 0;
+  }
+
+  void updateColumnImageCount( final int columnIndex,
+                               final Image oldImage,
+                               final Image newImage )
+  {
+    int delta = 0;
+    if( oldImage == null && newImage != null ) {
+      delta = +1;
+    } else if( oldImage != null && newImage == null ) {
+      delta = -1;
+    }
+    if( delta != 0 ) {
+      if( columnIndex == 0 ) {
+        itemImageCount += delta;
+      } else {
+        TreeColumn column = getColumn( columnIndex );
+        column.itemImageCount += delta;
+      }
+    }
+  }
+
+  void updateItemImageSize( final Image image ) {
     if( image != null && itemImageSize == null ) {
       Rectangle imageBounds = image.getBounds();
       itemImageSize = new Point( imageBounds.width, imageBounds.height );
     }
   }
+  
+  Point getItemImageSize( final int index ) {
+    return hasColumnImages( index ) ? getItemImageSize() : new Point( 0, 0 );
+  }  
 
-  final Point getItemImageSize() {
+  private int getItemImageOuterWidth( final int index ) {
+    int result = 0;
+    if( hasColumnImages( index ) ) {
+      result += getItemImageSize().x;
+      result += IMAGE_TEXT_SPACING;
+    }
+    return result;
+  }  
+  
+  private Point getItemImageSize() {
     return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
   }
+  
+  private Point getCheckImageSize() { 
+    TreeThemeAdapter themeAdapter
+      = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getCheckBoxImageSize( this );
+  }
+  
+  private Point getCheckImageOuterSize() { 
+    Point result = getCheckImageSize();
+    result.x += CHECKBOX_MARGIN.width;
+    result.y += CHECKBOX_MARGIN.height;
+    return result;
+  }
+  
+  private int getIndentionWidth() { 
+    TreeThemeAdapter themeAdapter
+      = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getIndentionWidth( this );
+  }
+  
+  ///////////////////
+  // Helping methods
 
+  
   static void checkAllData( final Tree tree ) {
-    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-
-      int flatIndex = 0;
-
-      public boolean doVisit( final Widget widget ) {
-        boolean result = true;
-        if( widget instanceof TreeItem ) { // ignore tree
-          TreeItem item = ( TreeItem )widget;
-          result = item.getExpanded();
-          int index;
-          TreeItem parentItem = item.getParentItem();
-          if( parentItem != null ) {
-            index = parentItem.indexOf( item );
-          } else {
-            index = tree.indexOf( item );
+    // TODO [tb] : call only in doRedrawFake?
+    ProcessActionRunner.add( new Runnable() {      
+      public void run() {
+        WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+          int flatIndex = 0;
+          public boolean doVisit( final Widget widget ) {
+            boolean result = true;
+            if( widget instanceof TreeItem ) { // ignore tree
+              TreeItem item = ( TreeItem )widget;
+              result = item.getExpanded();
+              int index;
+              TreeItem parentItem = item.getParentItem();
+              if( parentItem != null ) {
+                index = parentItem.indexOf( item );
+              } else {
+                index = tree.indexOf( item );
+              }
+              item.flatIndex = flatIndex;
+              flatIndex++;
+              if( !item.isCached() && tree.isItemVisible( item ) ) {
+                tree.checkData( item, index );
+              }
+            }
+            return result;
           }
-          item.flatIndex = flatIndex;
-          flatIndex++;
-          if( !item.isCached() && tree.isItemVisible( item ) ) {
-            tree.checkData( item, index );
-          }
-        }
-        return result;
+        };
+        WidgetTreeVisitor.accept( tree, visitor );
       }
-    };
-    WidgetTreeVisitor.accept( tree, visitor );
+    } );
   }
 
   private boolean isItemVisible( final TreeItem item ) {
     boolean result = false;
-    int itemPosition = item.getBounds( 0, false ).y;
+    int itemPosition = item.getItemTop();
     if( itemPosition >= 0 && itemPosition <= getSize().y ) {
       TreeItem parentItem = item.getParentItem();
       if( parentItem != null ) {
@@ -1718,6 +1926,7 @@ public class Tree extends Composite {
   // TODO [bm]: performance impact - replace this with logic to only partly
   // update the flat indices when there are changes in the visibility hierarchy
   // like new items, removed items, expand/
+  // TODO [tb] : alternative: Only index when needed.
   /* package */void updateFlatIndices() {
     int flatIndex = 0;
     TreeItem[] uItems = this.getItems();
@@ -1729,7 +1938,7 @@ public class Tree extends Composite {
     }
   }
 
-  /* package */int updateFlatIndicesSub( final TreeItem item,
+  private int updateFlatIndicesSub( final TreeItem item,
                                          final int flatIndex )
   {
     int newFlatIndex = flatIndex;
@@ -1746,28 +1955,13 @@ public class Tree extends Composite {
   }
 
   final void checkData( final TreeItem item, final int index ) {
-    if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
-      if( currentItem == null ) {
-        currentItem = item;
-      }
-      try {
-        if( currentItem == item || item.getParentItem() == currentItem ) {
-          ProcessActionRunner.add( new Runnable() {
-            public void run() {
-              item.cached = true;
-              SetDataEvent event = new SetDataEvent( Tree.this, item, index );
-              event.processEvent();
-              // widget could be disposed at this point
-              if( isDisposed() || item.isDisposed() ) {
-                SWT.error( SWT.ERROR_WIDGET_DISPOSED );
-              }
-            }
-          } );
-        }
-      } finally {
-        if( currentItem == item ) {
-          currentItem = null;
-        }
+    if( isVirtual() && !item.isCached() ) {
+      item.markCached();
+      SetDataEvent event = new SetDataEvent( Tree.this, item, index );
+      event.processEvent();
+      // widget could be disposed at this point
+      if( isDisposed() || item.isDisposed() ) {
+        SWT.error( SWT.ERROR_WIDGET_DISPOSED );
       }
     }
   }
@@ -1839,7 +2033,7 @@ public class Tree extends Composite {
           int itemWidth = item.getPreferredWidth( 0, false );
           maxWidth = Math.max( maxWidth, itemWidth );
           if( item.getExpanded() ) {
-            int innerWidth = item.getMaxInnerWidth( item.getItems(), 1 );
+            int innerWidth = getMaxInnerWidth( item.getItems(), 1 );
             maxWidth = Math.max( maxWidth, innerWidth );
           }
         }
@@ -1889,5 +2083,9 @@ public class Tree extends Composite {
       }
     }
     super.reskinChildren( flags );
+  }
+
+  boolean isVirtual() {
+    return ( style & SWT.VIRTUAL ) != 0;
   }
 }

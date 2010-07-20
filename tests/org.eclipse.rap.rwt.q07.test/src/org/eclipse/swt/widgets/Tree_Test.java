@@ -19,10 +19,8 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.TreeEvent;
-import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
@@ -170,16 +168,15 @@ public class Tree_Test extends TestCase {
   }
 
   public void testExpandCollapse() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     tree.addTreeListener( new TreeListener() {
-
       public void treeCollapsed( final TreeEvent e ) {
         log.append( "collapsed" );
       }
-
       public void treeExpanded( final TreeEvent e ) {
         log.append( "expanded" );
       }
@@ -199,7 +196,7 @@ public class Tree_Test extends TestCase {
     item.setExpanded( true );
     subItem.dispose();
     assertEquals( true, item.getExpanded() );
-    // ensure that calling setExpanded does not rase any events
+    // ensure that calling setExpanded does not raise any events
     assertEquals( "", log.toString() );
   }
 
@@ -484,44 +481,28 @@ public class Tree_Test extends TestCase {
     assertEquals( true, subTreeItem.isDisposed() );
   }
 
-  public void testShowItem() {
+  public void testInitialGetTopItemIndex() throws Exception {
     Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
     ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-    try {
-      tree.showItem( null );
-      fail( "No exception thrown for item == null" );
+    assertEquals( 0, adapter.getTopItemIndex() );
+    display.dispose();
+  }
+  
+  public void testShowItemFlat() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setBounds( 0, 0, 200, 200 );
+    for( int i = 0; i < 100; i++ ) {
+      new TreeItem( tree, SWT.None );
     }
-    // catch (IllegalArgumentException e) {
-    catch( IllegalArgumentException iae ) {
-    }
-    assertEquals( null, adapter.getShowItem() );
-    int number = 20;
-    TreeItem[] items = new TreeItem[ number ];
-    for( int i = 0; i < number; i++ ) {
-      items[ i ] = new TreeItem( tree, 0 );
-    }
-    for( int i = 0; i < number; i++ ) {
-      tree.showItem( items[ i ] );
-      assertEquals( items[ i ], adapter.getShowItem() );
-    }
-    tree.removeAll();
-    tree = new Tree( shell, SWT.MULTI );
-    // showing somebody else's items
-    items = new TreeItem[ number ];
-    for( int i = 0; i < number; i++ ) {
-      items[ i ] = new TreeItem( tree, 0 );
-    }
-    Tree tree2 = new Tree( shell, 0 );
-    TreeItem[] items2 = new TreeItem[ number ];
-    for( int i = 0; i < number; i++ ) {
-      items2[ i ] = new TreeItem( tree2, 0 );
-    }
-    for( int i = 0; i < number; i++ ) {
-      tree.showItem( items2[ i ] );
-    }
-    tree.removeAll();
+    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    assertEquals( 0, adapter.getTopItemIndex() );
+    tree.showItem( tree.getItem( 70 ) );
+    assertEquals( 59, adapter.getTopItemIndex() );
+    display.dispose();
   }
 
   public void testGetParentItem() {
@@ -674,268 +655,20 @@ public class Tree_Test extends TestCase {
     tree.showSelection();
   }
 
-  // TODO[bm] enable test case again to materialize on code
-  // public void testSmokeVirtual() {
-  // Display display = new Display();
-  // final Shell shell = new Shell( display );
-  // final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
-  // tree.addListener( SWT.SetData, new Listener() {
-  //
-  // public void handleEvent( Event event ) {
-  // TreeItem item = ( TreeItem )event.item;
-  // TreeItem parentItem = item.getParentItem();
-  // String text = null;
-  // if( parentItem == null ) {
-  // text = "node " + tree.indexOf( item );
-  // } else {
-  // fail( "Too much items materialized" );
-  // }
-  // item.setText( text );
-  // item.setItemCount( 10 );
-  // }
-  // } );
-  // RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-  // tree.setItemCount( 20 );
-  // assertEquals( "node 0", tree.getItem( 0 ).getText() );
-  // }
-  public void testVirtualScroll() {
+  public void testResizeListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     final Shell shell = new Shell( display );
     final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
     final List log = new ArrayList();
-    tree.setSize( 100, 160 );
-    tree.addListener( SWT.SetData, new Listener() {
-
-      public void handleEvent( final Event event ) {
-        TreeItem item = ( TreeItem )event.item;
-        String text = null;
-        TreeItem parentItem = item.getParentItem();
-        if( parentItem == null ) {
-          text = "node " + tree.indexOf( item );
-        } else {
-          text = parentItem.getText() + " - " + parentItem.indexOf( item );
-        }
-        item.setText( text );
-        item.setItemCount( 10 );
-        log.add( item );
+    tree.addControlListener( new ControlAdapter() {
+      
+      public void controlResized( ControlEvent event ) {
+        log.add( event );
       }
     } );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    tree.setItemCount( 20 );
-    Fixture.readDataAndProcessAction( tree );
-    assertTrue( log.size() < 20 );
-    assertTrue( log.size() > 0 );
-    // scroll to bottom
-    Fixture.fakeNewRequest();
-    String treeId = WidgetUtil.getId( tree );
-    Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
-    Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( 16, log.size() );
-    // open a tree node should only materialize visible items
-    log.clear();
-    // reset scroll position
-    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-    adapter.setScrollTop( 0 );
-    tree.setSize( 100, 32 ); // only space for 2 items
-    Fixture.fakeNewRequest();
-    String aItemId = WidgetUtil.getId( tree.getItem( 0 ) );
-    Fixture.fakeRequestParam( aItemId + ".state", "expanded" );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.treeExpanded", aItemId );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( 2, log.size() );
-    // scrolling should materialize the now visible subitems
-    log.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
-    Fixture.fakeRequestParam( treeId + ".scrollTop", "16" );
-    Fixture.executeLifeCycleFromServerThread();
+    tree.setSize( 100, 160 );
     assertEquals( 1, log.size() );
-  }
-
-  public void testClearVirtual() {
-    Display display = new Display();
-    final Shell shell = new Shell( display );
-    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
-    tree.setSize( 100, 160 );
-    tree.addListener( SWT.SetData, new Listener() {
-
-      public void handleEvent( final Event event ) {
-        TreeItem item = ( TreeItem )event.item;
-        String text = null;
-        TreeItem parentItem = item.getParentItem();
-        if( parentItem == null ) {
-          text = "node " + tree.indexOf( item );
-        } else {
-          text = parentItem.getText() + " - " + parentItem.indexOf( item );
-        }
-        item.setText( text );
-        item.setItemCount( 10 );
-      }
-    } );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    tree.setItemCount( 1 );
-    Fixture.readDataAndProcessAction( tree );
-    assertEquals( "node 0", tree.getItem( 0 ).getText() );
-    tree.clearAll( true );
-    assertEquals( "node 0", tree.getItem( 0 ).getText() );
-    tree.clear( 0, false );
-    assertEquals( "node 0", tree.getItem( 0 ).getText() );
-    TreeItem root = tree.getItem( 0 );
-    root.clear( 0, false );
-    assertEquals( "node 0 - 0", root.getItem( 0 ).getText() );
-    root.clearAll( true );
-    assertEquals( "node 0 - 0", root.getItem( 0 ).getText() );
-    assertEquals( "node 0 - 1", root.getItem( 1 ).getText() );
-  }
-
-  public void testComputeSizeNonVirtual() throws Exception {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
-    Point expected = new Point( 80, 80 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    for( int i = 0; i < 10; i++ ) {
-      new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
-    }
-    new TreeItem( tree, SWT.NONE ).setText( "Long long item 100" );
-    expected = new Point( 133, 192 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    tree = new Tree( shell, SWT.BORDER );
-    for( int i = 0; i < 10; i++ ) {
-      new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
-    }
-    new TreeItem( tree, SWT.NONE ).setText( "Long long item 100" );
-    expected = new Point( 137, 196 );
-    assertEquals( 2, tree.getBorderWidth() );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    tree.setHeaderVisible( true );
-    assertEquals( 15, tree.getHeaderHeight() );
-    expected = new Point( 137, 211 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
-    col1.setText( "Col 1" );
-    TreeColumn col2 = new TreeColumn( tree, SWT.NONE );
-    col2.setText( "Column 2" );
-    TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
-    col3.setText( "Wider Column" );
-    expected = new Point( 84, 211 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    col1.pack();
-    col2.pack();
-    col3.pack();
-    expected = new Point( 250, 211 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    col1.setWidth( 10 );
-    col2.setWidth( 10 );
-    assertEquals( 67, col3.getWidth() );
-    expected = new Point( 107, 211 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    tree = new Tree( shell, SWT.CHECK );
-    for( int i = 0; i < 10; i++ ) {
-      new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
-    }
-    TreeItem item = new TreeItem( tree, SWT.NONE );
-    item.setText( "Long long item 100" );
-    TreeItem subitem = new TreeItem( item, SWT.NONE );
-    subitem.setText( "Subitem 1" );
-    expected = new Point( 150, 192 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    item.setExpanded( true );
-    expected = new Point( 150, 208 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    expected = new Point( 316, 316 );
-    assertEquals( expected, tree.computeSize( 300, 300 ) );
-  }
-
-  public void testComputeSizeVirtual() throws Exception {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.BORDER | SWT.VIRTUAL );
-    tree.setItemCount( 10 );
-    tree.addListener( SWT.SetData, new Listener() {
-
-      public void handleEvent( final Event event ) {
-        TreeItem item = ( TreeItem )event.item;
-        int treeIndex = item.getParent().indexOf( item );
-        item.setText( "Item " + treeIndex );
-      }
-    } );
-    // DEFAULT_WIDTH + srollbar (16) + 2 * border (2)
-    Point expected = new Point( 84, 180 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    tree.setHeaderVisible( true );
-    assertEquals( 15, tree.getHeaderHeight() );
-    expected = new Point( 84, 195 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
-    col1.setText( "Col 1" );
-    TreeColumn col2 = new TreeColumn( tree, SWT.NONE );
-    col2.setText( "Column 2" );
-    TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
-    col3.setText( "Wider Column" );
-    expected = new Point( 84, 195 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    col1.pack();
-    col2.pack();
-    col3.pack();
-    expected = new Point( 163, 195 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    col1.setWidth( 10 );
-    col2.setWidth( 10 );
-    assertEquals( 67, col3.getWidth() );
-    expected = new Point( 107, 195 );
-    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    expected = new Point( 320, 320 );
-    assertEquals( expected, tree.computeSize( 300, 300 ) );
-  }
-
-  public void testShowColumn() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    shell.setSize( 800, 600 );
-    Tree tree = new Tree( shell, SWT.NONE );
-    tree.setSize( 300, 100 );
-    for( int i = 0; i < 10; i++ ) {
-      TreeColumn column = new TreeColumn( tree, SWT.NONE );
-      column.setWidth( 50 );
-    }
-    for( int i = 0; i < 10; i++ ) {
-      new TreeItem( tree, SWT.NONE );
-    }
-    ITreeAdapter adapter
-      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-    assertEquals( 0, adapter.getScrollLeft() );
-    tree.showColumn( tree.getColumn( 8 ) );
-    assertEquals( 166, adapter.getScrollLeft() );
-    tree.showColumn( tree.getColumn( 1 ) );
-    assertEquals( 50, adapter.getScrollLeft() );
-    tree.showColumn( tree.getColumn( 3 ) );
-    assertEquals( 50, adapter.getScrollLeft() );
-    try {
-      tree.showColumn( null );
-      fail( "Null argument not allowed" );
-    } catch( IllegalArgumentException e ) {
-    }
-    TreeColumn column = tree.getColumn( 3 );
-    column.dispose();
-    try {
-      tree.showColumn( column );
-      fail( "Disposed column not allowed as argument" );
-    } catch( IllegalArgumentException e ) {
-    }
-    Tree tree1 = new Tree( shell, SWT.NONE );
-    column = new TreeColumn( tree1, SWT.NONE );
-    tree.showColumn( column );
-    assertEquals( 50, adapter.getScrollLeft() );
-    tree.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
-    tree.showColumn( tree.getColumn( 8 ) );
-    assertEquals( 0, adapter.getScrollLeft() );
-    tree.showColumn( tree.getColumn( 5 ) );
-    assertEquals( 116, adapter.getScrollLeft() );
   }
 
   public void testUpdateScrollBarOnColumnChange() {
@@ -1101,6 +834,311 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.hasHScrollBar() );
     assertTrue( tree.hasVScrollBar() );
   }
+  
+  public void testComputeSizeWithColumns() throws Exception {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    Point expected = new Point( 80, 80 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    for( int i = 0; i < 10; i++ ) {
+      new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
+    }
+    new TreeItem( tree, SWT.NONE ).setText( "Long long item 100" );
+    expected = new Point( 121, 192 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    tree = new Tree( shell, SWT.BORDER );
+    for( int i = 0; i < 10; i++ ) {
+      new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
+    }
+    new TreeItem( tree, SWT.NONE ).setText( "Long long item 100" );
+    expected = new Point( 125, 196 );
+    assertEquals( 2, tree.getBorderWidth() );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    tree.setHeaderVisible( true );
+    assertEquals( 15, tree.getHeaderHeight() );
+    expected = new Point( 125, 211 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
+    col1.setText( "Col 1" );
+    TreeColumn col2 = new TreeColumn( tree, SWT.NONE );
+    col2.setText( "Column 2" );
+    TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
+    col3.setText( "Wider Column" );
+    expected = new Point( 84, 211 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    col1.pack();
+    col2.pack();
+    col3.pack();
+    expected = new Point( 238, 211 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    col1.setWidth( 10 );
+    col2.setWidth( 10 );
+    assertEquals( 67, col3.getWidth() );
+    expected = new Point( 107, 211 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    tree = new Tree( shell, SWT.CHECK );
+    for( int i = 0; i < 10; i++ ) {
+      new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
+    }
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "Long long item 100" );
+    TreeItem subitem = new TreeItem( item, SWT.NONE );
+    subitem.setText( "Subitem 1" );
+    expected = new Point( 136, 192 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    item.setExpanded( true );
+    expected = new Point( 136, 208 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    expected = new Point( 316, 316 );
+    assertEquals( expected, tree.computeSize( 300, 300 ) );
+  }
+
+  public void testComputeSizeWithIndention() throws Exception {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    Point expected = new Point( 80, 80 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    TreeItem item2 = new TreeItem( item1, SWT.NONE );
+    TreeItem item3 = new TreeItem( item2, SWT.NONE );
+    TreeItem item4 = new TreeItem( item3, SWT.NONE );
+    item1.setText( "Item 1" );
+    item2.setText( "Item 2" );
+    item3.setText( "Item 3" );
+    item4.setText( "Item 4" );
+    item1.setExpanded( true );
+    item2.setExpanded( true );
+    item3.setExpanded( true );
+    expected = new Point( 106, 80 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+  }
+  
+  public void testShowColumn() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 800, 600 );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 300, 100 );
+    for( int i = 0; i < 10; i++ ) {
+      TreeColumn column = new TreeColumn( tree, SWT.NONE );
+      column.setWidth( 50 );
+    }
+    for( int i = 0; i < 10; i++ ) {
+      new TreeItem( tree, SWT.NONE );
+    }
+    ITreeAdapter adapter
+      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    assertEquals( 0, adapter.getScrollLeft() );
+    tree.showColumn( tree.getColumn( 8 ) );
+    assertEquals( 166, adapter.getScrollLeft() );
+    tree.showColumn( tree.getColumn( 1 ) );
+    assertEquals( 50, adapter.getScrollLeft() );
+    tree.showColumn( tree.getColumn( 3 ) );
+    assertEquals( 50, adapter.getScrollLeft() );
+    try {
+      tree.showColumn( null );
+      fail( "Null argument not allowed" );
+    } catch( IllegalArgumentException e ) {
+    }
+    TreeColumn column = tree.getColumn( 3 );
+    column.dispose();
+    try {
+      tree.showColumn( column );
+      fail( "Disposed column not allowed as argument" );
+    } catch( IllegalArgumentException e ) {
+    }
+    Tree tree1 = new Tree( shell, SWT.NONE );
+    column = new TreeColumn( tree1, SWT.NONE );
+    tree.showColumn( column );
+    assertEquals( 50, adapter.getScrollLeft() );
+    tree.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
+    tree.showColumn( tree.getColumn( 8 ) );
+    assertEquals( 0, adapter.getScrollLeft() );
+    tree.showColumn( tree.getColumn( 5 ) );
+    assertEquals( 116, adapter.getScrollLeft() );
+  }  
+  
+  //////////
+  // VIRTUAL
+
+  public void testVirtualGetItemOutOfBounds() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 10 );
+    try {
+      tree.getItem( 10 );
+      fail();
+    } catch( IllegalArgumentException ex ) {
+      // expected
+    }
+  }
+  
+  public void testVirtualInitalSetDataEvents() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
+    final List log = new ArrayList();
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( final Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        String text = null;
+        TreeItem parentItem = item.getParentItem();
+        if( parentItem == null ) {
+          text = "node " + tree.indexOf( item );
+        } else {
+          text = parentItem.getText() + " - " + parentItem.indexOf( item );
+        }
+        item.setText( text );
+        item.setItemCount( 10 );
+        log.add( item );
+      }
+    } );
+    tree.setItemCount( 20 );
+    assertEquals( 0, log.size() );
+    // TODO [tb] : doesn't work if called before setItemCount. Use fakeRedraw?
+    tree.setSize( 100, 160 ); 
+    assertTrue( log.contains( tree.getItem( 0 ) ) );
+    assertTrue( log.contains( tree.getItem( 1 ) ) );
+    assertFalse( log.contains( tree.getItem( 19 ) ) );
+  }
+  
+  public void testVirtualNoSetDataEventForCollapsedItems() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL );
+    final List log = new ArrayList();
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    } );
+    tree.setItemCount( 1 );
+    TreeItem item = tree.getItem( 0 );
+    item.setItemCount( 10 );
+    tree.setSize( 100, 160 ); 
+    assertFalse( item.getItems()[ 0 ].isCached() );
+    assertEquals( 1, log.size() );
+  }
+  
+  public void testVirtualClear() {
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
+    tree.setSize( 100, 160 );
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( final Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        String text = null;
+        TreeItem parentItem = item.getParentItem();
+        if( parentItem == null ) {
+          text = "node " + tree.indexOf( item );
+        } else {
+          text = parentItem.getText() + " - " + parentItem.indexOf( item );
+        }
+        item.setText( text );
+        item.setItemCount( 10 );
+      }
+    } );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    tree.setItemCount( 1 );
+    Fixture.readDataAndProcessAction( tree );
+    assertEquals( "node 0", tree.getItem( 0 ).getText() );
+    tree.clearAll( true );
+    assertEquals( "node 0", tree.getItem( 0 ).getText() );
+    tree.clear( 0, false );
+    assertEquals( "node 0", tree.getItem( 0 ).getText() );
+    TreeItem root = tree.getItem( 0 );
+    root.clear( 0, false );
+    assertEquals( "node 0 - 0", root.getItem( 0 ).getText() );
+    root.clearAll( true );
+    assertEquals( "node 0 - 0", root.getItem( 0 ).getText() );
+    assertEquals( "node 0 - 1", root.getItem( 1 ).getText() );
+  }
+  
+  public void testVirtualComputeSize() throws Exception {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.BORDER | SWT.VIRTUAL );
+    tree.setItemCount( 10 );
+    tree.addListener( SWT.SetData, new Listener() {
+
+      public void handleEvent( final Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        int treeIndex = item.getParent().indexOf( item );
+        item.setText( "Item " + treeIndex );
+      }
+    } );
+    // DEFAULT_WIDTH + scrollbar (16) + 2 * border (2)
+    Point expected = new Point( 84, 180 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    tree.setHeaderVisible( true );
+    assertEquals( 15, tree.getHeaderHeight() );
+    expected = new Point( 84, 195 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
+    col1.setText( "Col 1" );
+    TreeColumn col2 = new TreeColumn( tree, SWT.NONE );
+    col2.setText( "Column 2" );
+    TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
+    col3.setText( "Wider Column" );
+    expected = new Point( 84, 195 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    col1.pack();
+    col2.pack();
+    col3.pack();
+    expected = new Point( 163, 195 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    col1.setWidth( 10 );
+    col2.setWidth( 10 );
+    assertEquals( 67, col3.getWidth() );
+    expected = new Point( 107, 195 );
+    assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    expected = new Point( 320, 320 );
+    assertEquals( expected, tree.computeSize( 300, 300 ) );
+  }
+  
+  public void testVirtualScrollThrowsSetData() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final LoggingListener log = new LoggingListener();
+    final Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+    tree.addListener( SWT.SetData, log );
+    log.clear();
+    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    adapter.setTopItemIndex( 30 );
+    assertSame( tree.getItem( 30 ), log.get( 0 ).item );
+    assertSame( tree.getItem( 31 ), log.get( 1 ).item );
+  }
+  
+  public void testVirtualShowItemThrowsSetData() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final LoggingListener log = new LoggingListener();
+    final Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+    tree.addListener( SWT.SetData, log );
+    log.clear();
+    tree.showItem( tree.getItem( 30 ) );
+    assertTrue( log.getItems().contains( tree.getItem( 30 ) ) );
+  }
+
+  
+  /////////
+  // HELPER
 
   private static boolean contains( final TreeItem[] items, final TreeItem item )
   {

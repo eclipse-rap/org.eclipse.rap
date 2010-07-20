@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 <!--
- Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -103,6 +103,45 @@
       <state name="hover"
         description="Applies while the user hovers over a tree check box." />
 
+    </element>
+
+    <element name="Tree-Indent" 
+        description="The area freed by indenting an item for one level." >
+        
+      <property name="width">
+        <description>
+           The indention-width of one level. This property can not be 
+           influenced by the states of the element.
+        </description>
+      </property>
+
+      <property name="background-image">
+        <description>
+          Background image for the indention. It is centered within 
+          the available area, defined by the "width"-property and the height
+          of the item. The overflow is not visible. 
+        </description>
+      </property>
+
+      <state name="line">
+        <description>
+          Indicates that the level continues after this item. Never used for 
+          the final level and therefore never combined with the other states. 
+        </description>
+      </state>  
+      
+      <state name="first"
+        description="Used for the final level if the item has no previous sibling." />
+    
+      <state name="last"
+        description="Used for the final level if the item has no next sibling." />
+    
+      <state name="collapsed"
+        description="Used for the final level if the item has children." />
+    
+      <state name="expanded"
+        description="Used for the final level if the item is expanded" />
+    
     </element>
 
   </element>

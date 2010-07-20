@@ -288,6 +288,9 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         var table = this._currentDropTarget;
         var index = target.getItemIndex()
         result = table._items[ index ];
+      } if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
+        var tree = this._currentDropTarget;
+        result = tree._findItemByRow( target );
       } else {
         result = target;
       }
@@ -362,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
      */
     _createFeedback : function( widget ) {
       if( this._dropFeedbackRenderer == null ) {
-        if( widget instanceof org.eclipse.swt.widgets.Tree ) {
+        if( widget instanceof org.eclipse.rwt.widgets.Tree ) {
           this._dropFeedbackRenderer 
             = new org.eclipse.rwt.TreeDNDFeedback( widget );
         } else if( widget instanceof org.eclipse.swt.widgets.Table ) {
@@ -372,7 +375,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       }
     },
 
-    _renderFeedback : function( target ) {
+    _renderFeedback : function() {
       if( this._dropFeedbackRenderer != null ) {
         var target = this._getCurrentFeedbackTarget()
         this._dropFeedbackRenderer.renderFeedback( target );
@@ -382,19 +385,10 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _getCurrentFeedbackTarget : function() {
       var result = null;
       var widget = this._currentTargetWidget;
-      if( widget instanceof org.eclipse.swt.widgets.TableRow ) {
+      if(    widget instanceof org.eclipse.swt.widgets.TableRow
+          || widget instanceof org.eclipse.rwt.widgets.TreeRow ) 
+      {
         result = widget;
-      } else {
-        while(    widget != null
-               && result == null 
-               && widget != this._currentDropTarget ) 
-        {
-          if( widget instanceof org.eclipse.swt.widgets.TreeItem ) {
-            result = widget;
-          } else {
-            widget = widget.getParent();
-          }
-        }
       }
       return result;
     },
@@ -411,9 +405,9 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         this._dragFeedbackWidget.setPadding( 2 );
       }
       while( !success && item != control ) {
-        if( item instanceof org.eclipse.swt.widgets.TreeItem ) {
+        if( item instanceof org.eclipse.rwt.widgets.TreeRow ) {
           success = true;
-          this._configureTreeItemFeedback( item );
+          this._configureTreeRowFeedback( item );
         } else if( item instanceof org.eclipse.swt.widgets.TableRow ) {
           success = true;
           this.configureTableRowFeedback( item );
@@ -425,21 +419,24 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       return success ? this._dragFeedbackWidget : null;
     },
 
-    _configureTreeItemFeedback : function( item ) {
+    // TODO [tb] : could this be merged with tableRowFeedback?
+    _configureTreeRowFeedback : function( row ) {
       var widget = this._dragFeedbackWidget;
-      if( item.getIcon() != null ) {
-        var iconObject = item.getIconObject();
-        widget.setCellContent( 0, item.getIcon() );
-        widget.setCellDimension( 0, 
-                                 iconObject.getPreferredInnerWidth(),
-                                 iconObject.getPreferredInnerHeight() );
-      } else {
-        var backgroundColor = item.getLabelObject().getBackgroundColor();
-        var textColor = item.getLabelObject().getTextColor();
+      var tree = this._currentDragSource;
+      var item = tree._findItemByRow( row );
+      if( item != null ) {
+        var image = item.getImage( tree._treeColumn );
+        if( image != null ) {
+          widget.setCellContent( 0, image );
+          var imageWidth = tree.getItemImageWidth( item, tree._treeColumn );
+          widget.setCellDimension( 0, imageWidth, tree.getItemHeight() );
+        } 
+        var backgroundColor = item.getCellBackground( tree._treeColumn );
+        var textColor = item.getCellForeground( tree._treeColumn );
         widget.setBackgroundColor( backgroundColor );
         widget.setTextColor( textColor );
-        widget.setCellContent( 1, item.getLabel() );
-        widget.setFont( item.getLabelObject().getFont() );
+        widget.setCellContent( 1, item.getText( tree._treeColumn ) );
+        widget.setFont( tree.getFont() );
       }
     },
     

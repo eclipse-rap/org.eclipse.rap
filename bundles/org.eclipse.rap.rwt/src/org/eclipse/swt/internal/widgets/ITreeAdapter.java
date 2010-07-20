@@ -11,22 +11,32 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 public interface ITreeAdapter {
 
-  TreeItem getShowItem();
-  void clearShowItem();
-
-  void setScrollTop( final int top );
   void setScrollLeft( final int left );
-  int getScrollTop();
   int getScrollLeft();
+
+  void setTopItemIndex( final int topItemIndex );
+  int getTopItemIndex();
 
   boolean hasHScrollBar();
   boolean hasVScrollBar();
 
   boolean isCached( final TreeItem item );
   void checkAllData( Tree tree );
+  Point getItemImageSize( final int index );
+  int getCellLeft( final int index );
+  int getCellWidth( final int index );
+  int getTextOffset( final int index );
+  int getTextMaxWidth( final int index );
+  int getCheckWidth();
+  int getImageOffset( final int index );
+  int getIndentionWidth();
+  int getCheckLeft();
+  Rectangle getTextMargin();
 }

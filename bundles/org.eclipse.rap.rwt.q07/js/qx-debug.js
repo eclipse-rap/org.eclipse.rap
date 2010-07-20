@@ -5,7 +5,6 @@ if(qxsettings["qx.version"]==undefined)qxsettings["qx.version"]="0.7.4 (r16878) 
 if(qxsettings["qx.isSource"]==undefined)qxsettings["qx.isSource"]=false;
 if(!window.qxvariants)qxvariants={};
 qxvariants["qx.compatibility"]="off";
-qxvariants["qx.aspects"]="off";
 qxvariants["qx.debug"]="on";
 
 
@@ -988,7 +987,8 @@ extend,
 statics,
 construct,
 destruct){var clazz;
-if(!extend&&true){clazz=statics||{};
+if(!extend&&qx.core.Variant.isSet("qx.aspects",
+"off")){clazz=statics||{};
 }else{clazz={};
 if(extend){if(!construct){construct=this.__createDefaultConstructor();
 }clazz=this.__wrapConstructor(construct,
@@ -998,10 +998,14 @@ type);
 for(var i=0,
 a=qx.lang.Object.getKeys(statics),
 l=a.length;i<l;i++){key=a[i];
-{clazz[key]=statics[key];
-};
-var staticValue;
-}}}var basename=this.createNamespace(name,
+if(qx.core.Variant.isSet("qx.aspects",
+"on")){var staticValue=statics[key];
+if(staticValue instanceof Function){staticValue=qx.core.Aspect.wrap(name+"."+key,
+staticValue,
+"static");
+}clazz[key]=staticValue;
+}else{clazz[key]=statics[key];
+}}}}var basename=this.createNamespace(name,
 clazz,
 false);
 clazz.name=clazz.classname=name;
@@ -1017,8 +1021,11 @@ proto.name=proto.classname=name;
 proto.basename=basename;
 construct.base=clazz.superclass=extend;
 construct.self=clazz.constructor=proto.constructor=clazz;
-if(destruct){{};
-clazz.$$destructor=destruct;
+if(destruct){if(qx.core.Variant.isSet("qx.aspects",
+"on")){destruct=qx.core.Aspect.wrap(name,
+destruct,
+"destructor");
+}clazz.$$destructor=destruct;
 }}{};
 this.__registry[name]=clazz;
 return clazz;
@@ -1122,8 +1129,12 @@ if(base!==false&&member instanceof Function){if(wrap==true){member=this.__mixinM
 proto[key]);
 }else{if(proto[key]){member.base=proto[key];
 }member.self=clazz;
-}{};
-}proto[key]=member;
+}
+if(qx.core.Variant.isSet("qx.aspects",
+"on")){member=qx.core.Aspect.wrap(clazz.classname+"."+key,
+member,
+"member");
+}}proto[key]=member;
 }},
 __mixinMemberWrapper:function(member,
 base){if(base){return function(){var oldBase=member.base;
@@ -1187,29 +1198,47 @@ __createEmptyFunction:function(){return function(){};
 },
 __wrapConstructor:function(construct,
 name,
-type){var wrapper=function(){var clazz=arguments.callee.constructor;
-{if(!(this instanceof clazz))throw new Error("Please initialize "+name+" objects using the new keyword!");
-if(type==="abstract"){if(this.classname===name)throw new Error("The class "+name+" is abstract! It is not possible to instantiate it.");
-}else if(type==="singleton"){if(!clazz.$$allowconstruct)throw new Error("The class "+name+" is a singleton! It is not possible to instantiate it directly. Use the static getInstance() method instead.");
+type){var code=[];
+code.push('var clazz=arguments.callee.constructor;');
+{code.push('if(!(this instanceof clazz))throw new Error("Please initialize ',
+name,
+' objects using the new keyword!");');
+if(type==="abstract"){code.push('if(this.classname===',
+name,
+'.classname)throw new Error("The class ',
+name,
+' is abstract! It is not possible to instantiate it.");');
+}else if(type==="singleton"){code.push('if(!clazz.$$allowconstruct)throw new Error("The class ',
+name,
+' is a singleton! It is not possible to instantiate it directly. Use the static getInstance() method instead.");');
 }};
-if(!clazz.$$propertiesAttached)qx.core.Property.attach(clazz);
-var retval=clazz.$$original.apply(this,
-arguments);
-if(clazz.$$includes){var mixins=clazz.$$flatIncludes;
-for(var i=0,
-l=mixins.length;i<l;i++){if(mixins[i].$$constructor){mixins[i].$$constructor.apply(this,
-arguments);
-}}}if(this.classname===', name, '.classname)this.$$initialized=true;
-return retval;
-};
-var aspectWrapper;
-if(type==="singleton"){wrapper.getInstance=this.getInstance;
+code.push('if(!clazz.$$propertiesAttached)qx.core.Property.attach(clazz);');
+code.push('var retval=clazz.$$original.apply(this,arguments);');
+code.push('if(clazz.$$includes){var mixins=clazz.$$flatIncludes;');
+code.push('for(var i=0,l=mixins.length;i<l;i++){');
+code.push('if(mixins[i].$$constructor){mixins[i].$$constructor.apply(this,arguments);}}}');
+code.push('if(this.classname===',
+name,
+'.classname)this.$$initialized=true;');
+code.push('return retval;');
+var wrapper=new Function(code.join(""));
+if(qx.core.Variant.isSet("qx.aspects",
+"on")){var aspectWrapper=qx.core.Aspect.wrap(name,
+wrapper,
+"constructor");
+wrapper.$$original=construct;
+wrapper.constructor=aspectWrapper;
+wrapper=aspectWrapper;
+}if(type==="singleton"){wrapper.getInstance=this.getInstance;
 }wrapper.$$original=construct;
 construct.wrapper=wrapper;
 return wrapper;
 }},
-defer:function(statics){var key;
-}});
+defer:function(statics){if(qx.core.Variant.isSet("qx.aspects",
+"on")){for(var key in statics){if(statics[key] instanceof Function){statics[key]=qx.core.Aspect.wrap("qx.Class."+key,
+statics[key],
+"static");
+}}}}});
 
 
 
@@ -1930,8 +1959,11 @@ args){var store=this.$$method[variant][name];
 code.join(""));
 }catch(ex){alert("Malformed generated code to unwrap method: "+this.$$method[variant][name]+"\n"+code.join(""));
 }};
-{};
-if(args===undefined){return instance[store]();
+if(qx.core.Variant.isSet("qx.aspects",
+"on")){members[store]=qx.core.Aspect.wrap(instance.classname+"."+store,
+members[store],
+"property");
+}if(args===undefined){return instance[store]();
 }else{return instance[store].apply(instance,
 args);
 }},
@@ -4803,7 +4835,6 @@ construct:function(){this.base(arguments);
 this._layoutChanges={};
 if(qx.core.Setting.get("qx.widgetDebugId")){this._generateHtmlId();
 }this.initHideFocus();
-this._usesComplexBorder=false;
 },
 events:{"beforeAppear":"qx.event.type.Event",
 "appear":"qx.event.type.Event",
@@ -4844,18 +4875,9 @@ return new clazz;
 },
 SCROLLBAR_SIZE:null,
 _autoFlushTimeout:null,
-_flushGlobalQueuesPhase:0,
-_FLUSH_PHASE_IDLE:0,
-_FLUSH_PHASE_WIDGET:1,
-_FLUSH_PHASE_STATE:2,
-_FLUSH_PHASE_ELEMENT:3,
-_FLUSH_PHASE_JOB:4,
-_FLUSH_PHASE_LAYOUT:5,
-_FLUSH_PHASE_DISPLAY:6,
-_FLUSH_PHASE_DISPOSE:7,
-_initAutoFlush:function(phase){if(qx.ui.core.Widget._autoFlushTimeout==null){if(!qx.ui.core.Widget._inFlushGlobalQueues||phase<qx.ui.core.Widget._flushGlobalQueuesPhase){qx.ui.core.Widget._autoFlushTimeout=window.setTimeout(qx.ui.core.Widget._autoFlushHelper,
+_initAutoFlush:function(){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._autoFlushTimeout=window.setTimeout(qx.ui.core.Widget._autoFlushHelper,
 0);
-}}},
+}},
 _removeAutoFlush:function(){if(qx.ui.core.Widget._autoFlushTimeout!=null){window.clearTimeout(qx.ui.core.Widget._autoFlushTimeout);
 qx.ui.core.Widget._autoFlushTimeout=null;
 }},
@@ -4875,11 +4897,10 @@ qx.ui.core.Widget.flushGlobalJobQueue();
 qx.ui.core.Widget.flushGlobalLayoutQueue();
 qx.ui.core.Widget.flushGlobalDisplayQueue();
 qx.ui.core.Widget.flushGlobalDisposeQueue();
-qx.ui.core.Widget._flushGlobalQueuesPhase=qx.ui.core.Widget._FLUSH_PHASE_IDLE;
 delete qx.ui.core.Widget._inFlushGlobalQueues;
 },
 _globalWidgetQueue:[],
-addToGlobalWidgetQueue:function(vWidget){if(!vWidget._isInGlobalWidgetQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush(qx.ui.core.Widget._FLUSH_PHASE_WIDGET);
+addToGlobalWidgetQueue:function(vWidget){if(!vWidget._isInGlobalWidgetQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush();
 }qx.ui.core.Widget._globalWidgetQueue.push(vWidget);
 vWidget._isInGlobalWidgetQueue=true;
 }},
@@ -4887,8 +4908,7 @@ removeFromGlobalWidgetQueue:function(vWidget){if(vWidget._isInGlobalWidgetQueue)
 vWidget);
 delete vWidget._isInGlobalWidgetQueue;
 }},
-flushGlobalWidgetQueue:function(){qx.ui.core.Widget._flushGlobalQueuesPhase=qx.ui.core.Widget._FLUSH_PHASE_WIDGET;
-var vQueue=qx.ui.core.Widget._globalWidgetQueue,
+flushGlobalWidgetQueue:function(){var vQueue=qx.ui.core.Widget._globalWidgetQueue,
 vLength,
 vWidget;
 while((vLength=vQueue.length)>0){for(var i=0;i<vLength;i++){vWidget=vQueue[i];
@@ -4899,7 +4919,7 @@ vLength);
 }qx.ui.core.Widget._globalWidgetQueue=[];
 },
 _globalElementQueue:[],
-addToGlobalElementQueue:function(vWidget){if(!vWidget._isInGlobalElementQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush(qx.ui.core.Widget._FLUSH_PHASE_ELEMENT);
+addToGlobalElementQueue:function(vWidget){if(!vWidget._isInGlobalElementQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush();
 }qx.ui.core.Widget._globalElementQueue.push(vWidget);
 vWidget._isInGlobalElementQueue=true;
 }},
@@ -4907,8 +4927,7 @@ removeFromGlobalElementQueue:function(vWidget){if(vWidget._isInGlobalElementQueu
 vWidget);
 delete vWidget._isInGlobalElementQueue;
 }},
-flushGlobalElementQueue:function(){qx.ui.core.Widget._flushGlobalQueuesPhase=qx.ui.core.Widget._FLUSH_PHASE_ELEMENT;
-var vQueue=qx.ui.core.Widget._globalElementQueue,
+flushGlobalElementQueue:function(){var vQueue=qx.ui.core.Widget._globalElementQueue,
 vLength,
 vWidget;
 while((vLength=vQueue.length)>0){for(var i=0;i<vLength;i++){vWidget=vQueue[i];
@@ -4919,7 +4938,7 @@ vLength);
 }qx.ui.core.Widget._globalElementQueue=[];
 },
 _globalStateQueue:[],
-addToGlobalStateQueue:function(vWidget){if(!vWidget._isInGlobalStateQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush(qx.ui.core.Widget._FLUSH_PHASE_STATE);
+addToGlobalStateQueue:function(vWidget){if(!vWidget._isInGlobalStateQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush();
 }qx.ui.core.Widget._globalStateQueue.push(vWidget);
 vWidget._isInGlobalStateQueue=true;
 }},
@@ -4927,8 +4946,7 @@ removeFromGlobalStateQueue:function(vWidget){if(vWidget._isInGlobalStateQueue){q
 vWidget);
 delete vWidget._isInGlobalStateQueue;
 }},
-flushGlobalStateQueue:function(){qx.ui.core.Widget._flushGlobalQueuesPhase=qx.ui.core.Widget._FLUSH_PHASE_STATE;
-var Widget=qx.ui.core.Widget;
+flushGlobalStateQueue:function(){var Widget=qx.ui.core.Widget;
 while(Widget._globalStateQueue.length>0){var queue=qx.lang.Array.copy(Widget._globalStateQueue);
 Widget._globalStateQueue=[];
 for(var i=0,
@@ -4937,7 +4955,7 @@ if(widget._isInGlobalStateQueue){widget._renderAppearance();
 delete widget._isInGlobalStateQueue;
 }}}},
 _globalJobQueue:[],
-addToGlobalJobQueue:function(vWidget){if(!vWidget._isInGlobalJobQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush(qx.ui.core.Widget._FLUSH_PHASE_JOB);
+addToGlobalJobQueue:function(vWidget){if(!vWidget._isInGlobalJobQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush();
 }qx.ui.core.Widget._globalJobQueue.push(vWidget);
 vWidget._isInGlobalJobQueue=true;
 }},
@@ -4945,8 +4963,7 @@ removeFromGlobalJobQueue:function(vWidget){if(vWidget._isInGlobalJobQueue){qx.la
 vWidget);
 delete vWidget._isInGlobalJobQueue;
 }},
-flushGlobalJobQueue:function(){qx.ui.core.Widget._flushGlobalQueuesPhase=qx.ui.core.Widget._FLUSH_PHASE_JOB;
-var vQueue=qx.ui.core.Widget._globalJobQueue,
+flushGlobalJobQueue:function(){var vQueue=qx.ui.core.Widget._globalJobQueue,
 vLength,
 vWidget;
 while((vLength=vQueue.length)>0){for(var i=0;i<vLength;i++){vWidget=vQueue[i];
@@ -4957,7 +4974,7 @@ vLength);
 }qx.ui.core.Widget._globalJobQueue=[];
 },
 _globalLayoutQueue:[],
-addToGlobalLayoutQueue:function(vParent){if(!vParent._isInGlobalLayoutQueue&&vParent._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush(qx.ui.core.Widget._FLUSH_PHASE_LAYOUT);
+addToGlobalLayoutQueue:function(vParent){if(!vParent._isInGlobalLayoutQueue&&vParent._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush();
 }qx.ui.core.Widget._globalLayoutQueue.push(vParent);
 vParent._isInGlobalLayoutQueue=true;
 }},
@@ -4965,8 +4982,7 @@ removeFromGlobalLayoutQueue:function(vParent){if(vParent._isInGlobalLayoutQueue)
 vParent);
 delete vParent._isInGlobalLayoutQueue;
 }},
-flushGlobalLayoutQueue:function(){qx.ui.core.Widget._flushGlobalQueuesPhase=qx.ui.core.Widget._FLUSH_PHASE_LAYOUT;
-var vQueue=qx.ui.core.Widget._globalLayoutQueue,
+flushGlobalLayoutQueue:function(){var vQueue=qx.ui.core.Widget._globalLayoutQueue,
 vLength,
 vParent;
 while((vLength=vQueue.length)>0){for(var i=0;i<vLength;i++){vParent=vQueue[i];
@@ -4978,7 +4994,7 @@ vLength);
 },
 _fastGlobalDisplayQueue:[],
 _lazyGlobalDisplayQueues:{},
-addToGlobalDisplayQueue:function(vWidget){if(!vWidget._isInGlobalDisplayQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush(qx.ui.core.Widget._FLUSH_PHASE_DISPLAY);
+addToGlobalDisplayQueue:function(vWidget){if(!vWidget._isInGlobalDisplayQueue&&vWidget._isDisplayable){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush();
 }var vParent=vWidget.getParent();
 if(vParent.isSeeable()){var vKey=vParent.toHashCode();
 if(qx.ui.core.Widget._lazyGlobalDisplayQueues[vKey]){qx.ui.core.Widget._lazyGlobalDisplayQueues[vKey].push(vWidget);
@@ -4987,8 +5003,7 @@ if(qx.ui.core.Widget._lazyGlobalDisplayQueues[vKey]){qx.ui.core.Widget._lazyGlob
 }vWidget._isInGlobalDisplayQueue=true;
 }},
 removeFromGlobalDisplayQueue:function(vWidget){},
-flushGlobalDisplayQueue:function(){qx.ui.core.Widget._flushGlobalQueuesPhase=qx.ui.core.Widget._FLUSH_PHASE_DISPLAY;
-var vKey,
+flushGlobalDisplayQueue:function(){var vKey,
 vLazyQueue,
 vWidget,
 vFragment;
@@ -5036,7 +5051,7 @@ l=vFastQueue.length;i<l;i++){delete vFastQueue[i]._isInGlobalDisplayQueue;
 }qx.ui.core.Widget._fastGlobalDisplayQueue=[];
 },
 _globalDisposeQueue:[],
-addToGlobalDisposeQueue:function(vWidget){if(!vWidget._isInGlobalDisposeQueue&&!vWidget.isDisposed()){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush(qx.ui.core.Widget._FLUSH_PHASE_DISPOSE);
+addToGlobalDisposeQueue:function(vWidget){if(!vWidget._isInGlobalDisposeQueue&&!vWidget.isDisposed()){if(qx.ui.core.Widget._autoFlushTimeout==null){qx.ui.core.Widget._initAutoFlush();
 }qx.ui.core.Widget._globalDisposeQueue.push(vWidget);
 vWidget._isInGlobalDisposeQueue=true;
 }},
@@ -5044,8 +5059,7 @@ removeFromGlobalDisposeQueue:function(vWidget){if(vWidget._isInGlobalDisposeQueu
 vWidget);
 delete vWidget._isInGlobalDisposeQueue;
 }},
-flushGlobalDisposeQueue:function(){qx.ui.core.Widget._flushGlobalQueuesPhase=qx.ui.core.Widget._FLUSH_PHASE_DISPOSE;
-var vQueue=qx.ui.core.Widget._globalDisposeQueue,
+flushGlobalDisposeQueue:function(){var vQueue=qx.ui.core.Widget._globalDisposeQueue,
 vLength,
 vWidget;
 while((vLength=vQueue.length)>0){for(var i=0;i<vLength;i++){vWidget=vQueue[i];
@@ -5765,13 +5779,13 @@ _beforeRemoveDom:function(){this.createDispatchEvent("beforeRemoveDom");
 _afterRemoveDom:function(){this.createDispatchEvent("removeDom");
 },
 _applyVisibility:function(value,
-old){if(value){if(this._isDisplayable&&this._isCreated){this._beforeAppear();
+old){if(value){if(this._isDisplayable){this._beforeAppear();
 }this.removeStyleProperty("display");
-if(this._isDisplayable&&this._isCreated){this._afterAppear();
-}}else{if(this._isDisplayable&&this._isCreated){this._beforeDisappear();
+if(this._isDisplayable){this._afterAppear();
+}}else{if(this._isDisplayable){this._beforeDisappear();
 }this.setStyleProperty("display",
 "none");
-if(this._isDisplayable&&this._isCreated){this._afterDisappear();
+if(this._isDisplayable){this._afterDisappear();
 }}},
 show:function(){this.setVisibility(true);
 this.setDisplay(true);
@@ -6851,10 +6865,7 @@ if(changes.borderRight){border.resetRight(this);
 if(changes.borderBottom){border.resetBottom(this);
 }
 if(changes.borderLeft){border.resetLeft(this);
-}}this._usesComplexBorder=this._computeUsesComplexBorder();
-},
-_computeUsesComplexBorder:function(){return this.__borderObject&&this.__borderObject.__complexTop;
-},
+}}},
 prepareEnhancedBorder:qx.core.Variant.select("qx.client",
 {"gecko":qx.lang.Function.returnTrue,
 "default":function(){var elem=this.getElement();
@@ -6969,12 +6980,10 @@ defer:function(statics,
 members){statics.__initApplyMethods(members);
 if(qx.core.Variant.isSet("qx.client",
 "mshtml")){members._renderRuntimeWidth=function(v){this._style.pixelWidth=(v==null)?0:v;
-if(this._innerStyle){var innerValue=this._usesComplexBorder&&v!=null?v-2:v;
-this._innerStyle.pixelWidth=innerValue==null?0:innerValue;
+if(this._innerStyle){this._innerStyle.pixelWidth=(v==null)?0:v-2;
 }};
 members._renderRuntimeHeight=function(v){this._style.pixelHeight=(v==null)?0:v;
-if(this._innerStyle){var innerValue=this._usesComplexBorder&&v!=null?v-2:v;
-this._innerStyle.pixelHeight=innerValue==null?0:innerValue;
+if(this._innerStyle){this._innerStyle.pixelHeight=(v==null)?0:v-2;
 }};
 members._resetRuntimeWidth=function(){this._style.width="";
 if(this._innerStyle){this._innerStyle.width="";
@@ -12573,10 +12582,12 @@ this._previousRight=this.getRight();
 this._previousTop=this.getTop();
 this._previousHeight=this.getHeight();
 this._previousBottom=this.getBottom();
+this.setWidth(null);
 this.setLeft(0);
+this.setRight(0);
+this.setHeight(null);
 this.setTop(0);
-this.setWidth("100%");
-this.setHeight("100%");
+this.setBottom(0);
 this.addState("maximized");
 if(this.getShowMaximize()){var cb=this._captionBar;
 var v=cb.indexOf(this._maximizeButton);
@@ -13493,6 +13504,9 @@ return preloader?preloader.getWidth():0;
 _computePreferredInnerHeight:function(){var preloader=this.getPreloader();
 return preloader?preloader.getHeight():0;
 },
+_renderContent:function(){this.base(arguments);
+qx.ui.core.Widget.flushGlobalQueues();
+},
 _postApplyDimensions:qx.core.Variant.select("qx.client",
 {"mshtml":function(){try{var vImageStyle=this._image.style;
 if(this.getResizeToInner()){vImageStyle.pixelWidth=this.getInnerWidth();
@@ -13945,118 +13959,6 @@ destruct:function(){this._disposeFields("_frame");
 
 
 
-/* ID: qx.ui.tree.TreeRowStructure */
-qx.Class.define("qx.ui.tree.TreeRowStructure",
-{type:"singleton",
-extend:qx.core.Object,
-construct:function(){this.base(arguments);
-},
-members:{newRow:function(){this._indentObject=new qx.ui.embed.HtmlEmbed;
-this._iconObject=new qx.ui.basic.Image;
-this._labelObject=new qx.ui.basic.Label;
-this._fields=new Array;
-this._icons=new Object;
-this._fields.push(this._indentObject);
-this._indentAdded=false;
-this._iconAdded=false;
-this._labelAdded=false;
-return this;
-},
-standard:function(vLabel,
-vIcon,
-vIconSelected){this.newRow();
-this.addIcon(vIcon,
-vIconSelected);
-this.addLabel(vLabel);
-return this;
-},
-addIndent:function(){if(!this._indentAdded){this._fields.shift();
-this._indentAdded=true;
-}else{throw new Error("Indent object added more than once.");
-}this._fields.push(this._indentObject);
-},
-addIcon:function(vIcon,
-vIconSelected){if(!this._iconAdded){this._iconAdded=true;
-}else{throw new Error("Icon object added more than once.");
-}if(vIcon!==undefined){this._icons.unselected=vIcon;
-}
-if(vIconSelected!==undefined){this._icons.selected=vIconSelected;
-}this._fields.push(this._iconObject);
-},
-addLabel:function(vLabel){if(!this._labelAdded){this._labelAdded=true;
-}else{throw new Error("Label added more than once.");
-}this._label=vLabel;
-this._fields.push(this._labelObject);
-},
-addObject:function(vObj,
-vAnonymous){if(typeof vAnonymous=="boolean"){vObj.setAnonymous(vAnonymous);
-}this._fields.push(vObj);
-},
-getLabelObject:function(){return this._labelObject;
-},
-getIconObject:function(){return this._iconObject;
-}},
-destruct:function(){this._disposeFields("_icons");
-this._disposeObjects('_indentObject',
-'_iconObject',
-'_labelObject');
-this._disposeObjectDeep("_fields",
-1);
-}});
-
-
-
-
-/* ID: qx.ui.embed.HtmlEmbed */
-qx.Class.define("qx.ui.embed.HtmlEmbed",
-{extend:qx.ui.basic.Terminator,
-construct:function(vHtml){this.base(arguments);
-if(vHtml!=null){this.setHtml(vHtml);
-}},
-properties:{html:{check:"String",
-init:"",
-apply:"_applyHtml",
-event:"changeHtml"},
-textAlign:{check:["left",
-"center",
-"right",
-"justify"],
-nullable:true,
-themeable:true,
-apply:"_applyTextAlign"},
-font:{refine:true,
-init:null},
-textColor:{refine:true,
-init:null}},
-members:{_applyHtml:function(){if(this._isCreated){this._syncHtml();
-}},
-_applyTextAlign:function(value,
-old){value===null?this.removeStyleProperty("textAlign"):this.setStyleProperty("textAlign",
-value);
-},
-_applyFont:function(value,
-old){qx.theme.manager.Font.getInstance().connect(this._styleFont,
-this,
-value);
-},
-_styleFont:function(value){value?value.render(this):qx.ui.core.Font.reset(this);
-},
-_applyTextColor:function(value,
-old){qx.theme.manager.Color.getInstance().connect(this._styleTextColor,
-this,
-value);
-},
-_styleTextColor:function(value){value?this.setStyleProperty("color",
-value):this.removeStyleProperty("color");
-},
-_applyElementData:function(){this._syncHtml();
-},
-_syncHtml:function(){this._getTargetNode().innerHTML=this.getHtml();
-}}});
-
-
-
-
 /* ID: qx.ui.tree.AbstractTreeElement */
 qx.Class.define("qx.ui.tree.AbstractTreeElement",
 {type:"abstract",
@@ -14263,6 +14165,118 @@ destruct:function(){this._disposeObjects("_indentObject",
 "_labelObject");
 this._disposeFields("_previousParentFolder");
 }});
+
+
+
+
+/* ID: qx.ui.tree.TreeRowStructure */
+qx.Class.define("qx.ui.tree.TreeRowStructure",
+{type:"singleton",
+extend:qx.core.Object,
+construct:function(){this.base(arguments);
+},
+members:{newRow:function(){this._indentObject=new qx.ui.embed.HtmlEmbed;
+this._iconObject=new qx.ui.basic.Image;
+this._labelObject=new qx.ui.basic.Label;
+this._fields=new Array;
+this._icons=new Object;
+this._fields.push(this._indentObject);
+this._indentAdded=false;
+this._iconAdded=false;
+this._labelAdded=false;
+return this;
+},
+standard:function(vLabel,
+vIcon,
+vIconSelected){this.newRow();
+this.addIcon(vIcon,
+vIconSelected);
+this.addLabel(vLabel);
+return this;
+},
+addIndent:function(){if(!this._indentAdded){this._fields.shift();
+this._indentAdded=true;
+}else{throw new Error("Indent object added more than once.");
+}this._fields.push(this._indentObject);
+},
+addIcon:function(vIcon,
+vIconSelected){if(!this._iconAdded){this._iconAdded=true;
+}else{throw new Error("Icon object added more than once.");
+}if(vIcon!==undefined){this._icons.unselected=vIcon;
+}
+if(vIconSelected!==undefined){this._icons.selected=vIconSelected;
+}this._fields.push(this._iconObject);
+},
+addLabel:function(vLabel){if(!this._labelAdded){this._labelAdded=true;
+}else{throw new Error("Label added more than once.");
+}this._label=vLabel;
+this._fields.push(this._labelObject);
+},
+addObject:function(vObj,
+vAnonymous){if(typeof vAnonymous=="boolean"){vObj.setAnonymous(vAnonymous);
+}this._fields.push(vObj);
+},
+getLabelObject:function(){return this._labelObject;
+},
+getIconObject:function(){return this._iconObject;
+}},
+destruct:function(){this._disposeFields("_icons");
+this._disposeObjects('_indentObject',
+'_iconObject',
+'_labelObject');
+this._disposeObjectDeep("_fields",
+1);
+}});
+
+
+
+
+/* ID: qx.ui.embed.HtmlEmbed */
+qx.Class.define("qx.ui.embed.HtmlEmbed",
+{extend:qx.ui.basic.Terminator,
+construct:function(vHtml){this.base(arguments);
+if(vHtml!=null){this.setHtml(vHtml);
+}},
+properties:{html:{check:"String",
+init:"",
+apply:"_applyHtml",
+event:"changeHtml"},
+textAlign:{check:["left",
+"center",
+"right",
+"justify"],
+nullable:true,
+themeable:true,
+apply:"_applyTextAlign"},
+font:{refine:true,
+init:null},
+textColor:{refine:true,
+init:null}},
+members:{_applyHtml:function(){if(this._isCreated){this._syncHtml();
+}},
+_applyTextAlign:function(value,
+old){value===null?this.removeStyleProperty("textAlign"):this.setStyleProperty("textAlign",
+value);
+},
+_applyFont:function(value,
+old){qx.theme.manager.Font.getInstance().connect(this._styleFont,
+this,
+value);
+},
+_styleFont:function(value){value?value.render(this):qx.ui.core.Font.reset(this);
+},
+_applyTextColor:function(value,
+old){qx.theme.manager.Color.getInstance().connect(this._styleTextColor,
+this,
+value);
+},
+_styleTextColor:function(value){value?this.setStyleProperty("color",
+value):this.removeStyleProperty("color");
+},
+_applyElementData:function(){this._syncHtml();
+},
+_syncHtml:function(){this._getTargetNode().innerHTML=this.getHtml();
+}}});
 
 
 
@@ -15500,60 +15514,6 @@ if(vToolTip&&vToolTip==vTarget.getToolTip()){this.setCurrentToolTip(null);
 
 
 
-/* ID: qx.ui.pageview.AbstractPageView */
-qx.Class.define("qx.ui.pageview.AbstractPageView",
-{type:"abstract",
-extend:qx.ui.layout.BoxLayout,
-construct:function(vBarClass,
-vPaneClass){this.base(arguments);
-this._bar=new vBarClass;
-this._pane=new vPaneClass;
-this.add(this._bar,
-this._pane);
-},
-members:{getPane:function(){return this._pane;
-},
-getBar:function(){return this._bar;
-}},
-destruct:function(){this._disposeObjects("_bar",
-"_pane");
-}});
-
-
-
-
-/* ID: qx.ui.pageview.tabview.TabView */
-qx.Class.define("qx.ui.pageview.tabview.TabView",
-{extend:qx.ui.pageview.AbstractPageView,
-construct:function(){this.base(arguments,
-qx.ui.pageview.tabview.Bar,
-qx.ui.pageview.tabview.Pane);
-},
-properties:{appearance:{refine:true,
-init:"tab-view"},
-orientation:{refine:true,
-init:"vertical"},
-alignTabsToLeft:{check:"Boolean",
-init:true,
-apply:"_applyAlignTabsToLeft"},
-placeBarOnTop:{check:"Boolean",
-init:true,
-apply:"_applyPlaceBarOnTop"}},
-members:{_applyAlignTabsToLeft:function(value,
-old){var vBar=this._bar;
-vBar.setHorizontalChildrenAlign(value?"left":"right");
-vBar._addChildrenToStateQueue();
-},
-_applyPlaceBarOnTop:function(value,
-old){var vBar=this._bar;
-if(value){vBar.moveSelfToBegin();
-}else{vBar.moveSelfToEnd();
-}vBar._addChildrenToStateQueue();
-}}});
-
-
-
-
 /* ID: qx.ui.pageview.AbstractBar */
 qx.Class.define("qx.ui.pageview.AbstractBar",
 {type:"abstract",
@@ -15686,31 +15646,6 @@ zIndex:{refine:true,
 init:2},
 height:{refine:true,
 init:"auto"}}});
-
-
-
-
-/* ID: qx.ui.pageview.AbstractPane */
-qx.Class.define("qx.ui.pageview.AbstractPane",
-{type:"abstract",
-extend:qx.ui.layout.CanvasLayout});
-
-
-
-
-/* ID: qx.ui.pageview.tabview.Pane */
-qx.Class.define("qx.ui.pageview.tabview.Pane",
-{extend:qx.ui.pageview.AbstractPane,
-construct:function(){this.base(arguments);
-this.initZIndex();
-this.initHeight();
-},
-properties:{appearance:{refine:true,
-init:"tab-view-pane"},
-zIndex:{refine:true,
-init:1},
-height:{refine:true,
-init:"1*"}}});
 
 
 
@@ -15908,43 +15843,218 @@ init:"tab-view-page"}}});
 
 
 
-/* ID: qx.ui.groupbox.GroupBox */
-qx.Class.define("qx.ui.groupbox.GroupBox",
-{extend:qx.ui.layout.CanvasLayout,
-construct:function(vLegend,
-vIcon){this.base(arguments);
-this._createFrameObject();
-this._createLegendObject();
-this.setLegend(vLegend||"");
-if(vIcon!=null){this.setIcon(vIcon);
-}this.remapChildrenHandlingTo(this._frameObject);
+/* ID: qx.ui.pageview.AbstractPane */
+qx.Class.define("qx.ui.pageview.AbstractPane",
+{type:"abstract",
+extend:qx.ui.layout.CanvasLayout});
+
+
+
+
+/* ID: qx.ui.pageview.tabview.Pane */
+qx.Class.define("qx.ui.pageview.tabview.Pane",
+{extend:qx.ui.pageview.AbstractPane,
+construct:function(){this.base(arguments);
+this.initZIndex();
+this.initHeight();
 },
 properties:{appearance:{refine:true,
-init:"group-box"}},
-members:{_createLegendObject:function(){this._legendObject=new qx.ui.basic.Atom;
-this._legendObject.setAppearance("group-box-legend");
-this.add(this._legendObject);
+init:"tab-view-pane"},
+zIndex:{refine:true,
+init:1},
+height:{refine:true,
+init:"1*"}}});
+
+
+
+
+/* ID: qx.ui.pageview.AbstractPageView */
+qx.Class.define("qx.ui.pageview.AbstractPageView",
+{type:"abstract",
+extend:qx.ui.layout.BoxLayout,
+construct:function(vBarClass,
+vPaneClass){this.base(arguments);
+this._bar=new vBarClass;
+this._pane=new vPaneClass;
+this.add(this._bar,
+this._pane);
 },
-_createFrameObject:function(){this._frameObject=new qx.ui.layout.CanvasLayout;
-this._frameObject.setAppearance("group-box-frame");
-this.add(this._frameObject);
+members:{getPane:function(){return this._pane;
 },
-getFrameObject:function(){return this._frameObject;
-},
-getLegendObject:function(){return this._legendObject;
-},
-setLegend:function(vLegend){if(vLegend!==""&&vLegend!==null){this._legendObject.setLabel(vLegend);
-this._legendObject.setDisplay(true);
-}else{this._legendObject.setDisplay(false);
+getBar:function(){return this._bar;
 }},
-getLegend:function(){return this._legendObject.getLabel();
+destruct:function(){this._disposeObjects("_bar",
+"_pane");
+}});
+
+
+
+
+/* ID: qx.ui.pageview.tabview.TabView */
+qx.Class.define("qx.ui.pageview.tabview.TabView",
+{extend:qx.ui.pageview.AbstractPageView,
+construct:function(){this.base(arguments,
+qx.ui.pageview.tabview.Bar,
+qx.ui.pageview.tabview.Pane);
 },
-setIcon:function(vIcon){this._legendObject.setIcon(vIcon);
+properties:{appearance:{refine:true,
+init:"tab-view"},
+orientation:{refine:true,
+init:"vertical"},
+alignTabsToLeft:{check:"Boolean",
+init:true,
+apply:"_applyAlignTabsToLeft"},
+placeBarOnTop:{check:"Boolean",
+init:true,
+apply:"_applyPlaceBarOnTop"}},
+members:{_applyAlignTabsToLeft:function(value,
+old){var vBar=this._bar;
+vBar.setHorizontalChildrenAlign(value?"left":"right");
+vBar._addChildrenToStateQueue();
 },
-getIcon:function(){this._legendObject.getIcon();
+_applyPlaceBarOnTop:function(value,
+old){var vBar=this._bar;
+if(value){vBar.moveSelfToBegin();
+}else{vBar.moveSelfToEnd();
+}vBar._addChildrenToStateQueue();
+}}});
+
+
+
+
+/* ID: qx.ui.form.CheckBox */
+qx.Class.define("qx.ui.form.CheckBox",
+{extend:qx.ui.basic.Atom,
+construct:function(vText,
+vValue,
+vName,
+vChecked){this.base(arguments,
+vText);
+this.initTabIndex();
+this._createIcon();
+if(vValue!=null){this.setValue(vValue);
+}
+if(vName!=null){this.setName(vName);
+}
+if(vChecked!=null){this.setChecked(vChecked);
+}else{this.initChecked();
+}this.addEventListener("click",
+this._onclick);
+this.addEventListener("keydown",
+this._onkeydown);
+this.addEventListener("keyup",
+this._onkeyup);
+},
+properties:{appearance:{refine:true,
+init:"check-box"},
+tabIndex:{refine:true,
+init:1},
+name:{check:"String",
+event:"changeName"},
+value:{check:"String",
+event:"changeValue"},
+checked:{check:"Boolean",
+apply:"_applyChecked",
+init:false,
+event:"changeChecked"}},
+members:{INPUT_TYPE:"checkbox",
+_createIcon:function(){var i=this._iconObject=new qx.ui.form.InputCheckSymbol;
+i.setType(this.INPUT_TYPE);
+i.setChecked(this.getChecked());
+i.setAnonymous(true);
+this.addAtBegin(i);
+},
+_applyChecked:function(value,
+old){if(this._iconObject){this._iconObject.setChecked(value);
 }},
-destruct:function(){this._disposeObjects("_legendObject",
-"_frameObject");
+_applyIcon:null,
+_applyDisabledIcon:null,
+_handleIcon:function(){switch(this.getShow()){case "icon":case "both":this._iconIsVisible=true;
+break;
+default:this._iconIsVisible=false;
+}
+if(this._iconIsVisible){this._iconObject?this._iconObject.setDisplay(true):this._createIcon();
+}else if(this._iconObject){this._iconObject.setDisplay(false);
+}},
+_onclick:function(e){this.toggleChecked();
+},
+_onkeydown:function(e){if(e.getKeyIdentifier()=="Enter"&&!e.isAltPressed()){this.toggleChecked();
+}},
+_onkeyup:function(e){if(e.getKeyIdentifier()=="Space"){this.toggleChecked();
+}}}});
+
+
+
+
+/* ID: qx.ui.form.InputCheckSymbol */
+qx.Class.define("qx.ui.form.InputCheckSymbol",
+{extend:qx.ui.basic.Terminator,
+construct:function(){this.base(arguments);
+this.setSelectable(false);
+if(qx.core.Variant.isSet("qx.client",
+"mshtml")){this.setWidth(13);
+this.setHeight(13);
+}else if(qx.core.Variant.isSet("qx.client",
+"gecko")){this.setMargin(0);
+}this.initTabIndex();
+this.setChecked(false);
+},
+properties:{tabIndex:{refine:true,
+init:-1},
+name:{check:"String",
+init:null,
+nullable:true,
+apply:"_applyName"},
+value:{init:null,
+nullable:true,
+apply:"_applyValue"},
+type:{init:null,
+nullable:true,
+apply:"_applyType"},
+checked:{check:"Boolean",
+init:false,
+apply:"_applyChecked"}},
+members:{_createElementImpl:function(){this.setElement(this.getTopLevelWidget().getDocumentElement().createElement("input"));
+},
+_applyName:function(value,
+old){return this.setHtmlProperty("name",
+value);
+},
+_applyValue:function(value,
+old){return this.setHtmlProperty("value",
+value);
+},
+_applyType:function(value,
+old){return this.setHtmlProperty("type",
+value);
+},
+_applyChecked:function(value,
+old){return this.setHtmlProperty("checked",
+value);
+},
+getPreferredBoxWidth:function(){return 13;
+},
+getPreferredBoxHeight:function(){return 13;
+},
+_afterAppear:qx.core.Variant.select("qx.client",
+{"mshtml":function(){this.base(arguments);
+var vElement=this.getElement();
+vElement.checked=this.getChecked();
+if(this.getEnabled()===false){vElement.disabled=true;
+}},
+"default":qx.lang.Function.returnTrue}),
+_applyEnabled:function(value,
+old){value===false?this.setHtmlProperty("disabled",
+"disabled"):this.removeHtmlProperty("disabled");
+return this.base(arguments,
+value,
+old);
+}},
+defer:function(statics,
+members){members.getBoxWidth=members.getPreferredBoxWidth;
+members.getBoxHeight=members.getPreferredBoxHeight;
+members.getInnerWidth=members.getPreferredBoxWidth;
+members.getInnerHeight=members.getPreferredBoxHeight;
 }});
 
 
@@ -16100,76 +16210,533 @@ destruct:function(){this._disposeObjects("_manager");
 
 
 
-/* ID: qx.ui.form.InputCheckSymbol */
-qx.Class.define("qx.ui.form.InputCheckSymbol",
-{extend:qx.ui.basic.Terminator,
-construct:function(){this.base(arguments);
-this.setSelectable(false);
-if(qx.core.Variant.isSet("qx.client",
-"mshtml")){this.setWidth(13);
-this.setHeight(13);
-}else if(qx.core.Variant.isSet("qx.client",
-"gecko")){this.setMargin(0);
-}this.initTabIndex();
-this.setChecked(false);
+/* ID: qx.ui.form.ListItem */
+qx.Class.define("qx.ui.form.ListItem",
+{extend:qx.ui.basic.Atom,
+construct:function(vText,
+vIcon,
+vValue){this.base(arguments,
+vText,
+vIcon);
+if(vValue!=null){this.setValue(vValue);
+}this.addEventListener("dblclick",
+this._ondblclick);
+this.initMinWidth();
 },
-properties:{tabIndex:{refine:true,
-init:-1},
-name:{check:"String",
-init:null,
-nullable:true,
-apply:"_applyName"},
-value:{init:null,
-nullable:true,
-apply:"_applyValue"},
-type:{init:null,
-nullable:true,
-apply:"_applyType"},
-checked:{check:"Boolean",
-init:false,
-apply:"_applyChecked"}},
-members:{_createElementImpl:function(){this.setElement(this.getTopLevelWidget().getDocumentElement().createElement("input"));
-},
-_applyName:function(value,
-old){return this.setHtmlProperty("name",
-value);
-},
-_applyValue:function(value,
-old){return this.setHtmlProperty("value",
-value);
-},
-_applyType:function(value,
-old){return this.setHtmlProperty("type",
-value);
-},
-_applyChecked:function(value,
-old){return this.setHtmlProperty("checked",
-value);
-},
-getPreferredBoxWidth:function(){return 13;
-},
-getPreferredBoxHeight:function(){return 13;
-},
-_afterAppear:qx.core.Variant.select("qx.client",
-{"mshtml":function(){this.base(arguments);
-var vElement=this.getElement();
-vElement.checked=this.getChecked();
-if(this.getEnabled()===false){vElement.disabled=true;
+events:{"action":"qx.event.type.Event"},
+properties:{appearance:{refine:true,
+init:"list-item"},
+minWidth:{refine:true,
+init:"auto"},
+width:{refine:true,
+init:null},
+allowStretchX:{refine:true,
+init:true},
+value:{check:"String",
+event:"changeValue"}},
+members:{handleStateChange:function(){if(this.hasState("lead")){this.setStyleProperty("outline",
+"1px dotted");
+}else{this.setStyleProperty("outline",
+"0px none");
 }},
-"default":qx.lang.Function.returnTrue}),
-_applyEnabled:function(value,
-old){value===false?this.setHtmlProperty("disabled",
-"disabled"):this.removeHtmlProperty("disabled");
-return this.base(arguments,
+_applyStateStyleFocus:function(vStates){},
+matchesString:function(vText){vText=String(vText);
+return vText!=""&&this.getLabel().toString().toLowerCase().indexOf(vText.toLowerCase())==0;
+},
+matchesStringExact:function(vText){vText=String(vText);
+return vText!=""&&this.getLabel().toString().toLowerCase()==String(vText).toLowerCase();
+},
+matchesValue:function(vText){vText=String(vText);
+return vText!=""&&this.getValue().toLowerCase().indexOf(vText.toLowerCase())==0;
+},
+matchesValueExact:function(vText){vText=String(vText);
+return vText!=""&&this.getValue().toLowerCase()==String(vText).toLowerCase();
+},
+_ondblclick:function(e){var vCommand=this.getCommand();
+if(vCommand){vCommand.execute();
+}}}});
+
+
+
+
+/* ID: qx.ui.form.TextField */
+qx.Class.define("qx.ui.form.TextField",
+{extend:qx.ui.basic.Terminator,
+construct:function(value){this.base(arguments);
+if(value!=null){this.setValue(value);
+}this.initHideFocus();
+this.initWidth();
+this.initHeight();
+this.initTabIndex();
+this.initSpellCheck();
+this.__oninput=qx.lang.Function.bindEvent(this._oninputDom,
+this);
+this.addEventListener("blur",
+this._onblur);
+this.addEventListener("focus",
+this._onfocus);
+this.addEventListener("input",
+this._oninput);
+this.addEventListener("keydown",
+this._onkeydown);
+},
+statics:{createRegExpValidator:function(vRegExp){return function(s){return vRegExp.test(s);
+};
+}},
+events:{"input":"qx.event.type.DataEvent"},
+properties:{allowStretchX:{refine:true,
+init:true},
+allowStretchY:{refine:true,
+init:false},
+appearance:{refine:true,
+init:"text-field"},
+tabIndex:{refine:true,
+init:1},
+hideFocus:{refine:true,
+init:true},
+width:{refine:true,
+init:"auto"},
+height:{refine:true,
+init:"auto"},
+selectable:{refine:true,
+init:true},
+value:{init:"",
+nullable:true,
+event:"changeValue",
+apply:"_applyValue",
+dispose:true},
+textAlign:{check:["left",
+"center",
+"right",
+"justify"],
+nullable:true,
+themeable:true,
+apply:"_applyTextAlign"},
+spellCheck:{check:"Boolean",
+init:false,
+apply:"_applySpellCheck"},
+liveUpdate:{check:"Boolean",
+init:false},
+maxLength:{check:"Integer",
+apply:"_applyMaxLength",
+nullable:true},
+readOnly:{check:"Boolean",
+apply:"_applyReadOnly",
+init:false},
+validator:{check:"Function",
+event:"changeValidator",
+nullable:true}},
+members:{_inputTag:"input",
+_inputType:"text",
+_inputOverflow:"hidden",
+_applyElement:function(value,
+old){this.base(arguments,
 value,
 old);
+if(value){var inp=this._inputElement=document.createElement(this._inputTag);
+if(this._inputType){inp.type=this._inputType;
+}inp.autoComplete="off";
+inp.setAttribute("autoComplete",
+"off");
+inp.disabled=this.getEnabled()===false;
+inp.readOnly=this.getReadOnly();
+inp.value=this.getValue()!=null?this.getValue().toString():"";
+if(this.getMaxLength()!=null){inp.maxLength=this.getMaxLength();
+}var istyle=inp.style;
+istyle.padding=istyle.margin=0;
+istyle.border="0 none";
+istyle.background="transparent";
+istyle.overflow=this._inputOverflow;
+istyle.outline="none";
+istyle.resize="none";
+istyle.WebkitAppearance="none";
+istyle.MozAppearance="none";
+if(qx.core.Variant.isSet("qx.client",
+"gecko|opera|webkit")){istyle.margin="1px 0";
+}this._renderFont();
+this._renderTextColor();
+this._renderTextAlign();
+this._renderCursor();
+this._renderSpellCheck();
+if(qx.core.Variant.isSet("qx.client",
+"mshtml")){inp.onpropertychange=this.__oninput;
+}else{inp.addEventListener("input",
+this.__oninput,
+false);
+}value.appendChild(inp);
 }},
-defer:function(statics,
-members){members.getBoxWidth=members.getPreferredBoxWidth;
-members.getBoxHeight=members.getPreferredBoxHeight;
-members.getInnerWidth=members.getPreferredBoxWidth;
-members.getInnerHeight=members.getPreferredBoxHeight;
+_postApply:function(){this._syncFieldWidth();
+this._syncFieldHeight();
+},
+_changeInnerWidth:function(value,
+old){this._syncFieldWidth();
+},
+_changeInnerHeight:function(value,
+old){this._syncFieldHeight();
+this._centerFieldVertically();
+},
+_syncFieldWidth:function(){this._inputElement.style.width=this.getInnerWidth()+"px";
+},
+_syncFieldHeight:function(){if(this._inputTag!=="input"){this._inputElement.style.height=(this.getInnerHeight()-2)+"px";
+}},
+_applyCursor:function(value,
+old){if(this._inputElement){this._renderCursor();
+}},
+_renderCursor:function(){var style=this._inputElement.style;
+var value=this.getCursor();
+if(value){if(value=="pointer"&&qx.core.Client.getInstance().isMshtml()){style.cursor="hand";
+}else{style.cursor=value;
+}}else{style.cursor="";
+}},
+_applyTextAlign:function(value,
+old){if(this._inputElement){this._renderTextAlign();
+}},
+_renderTextAlign:function(){this._inputElement.style.textAlign=this.getTextAlign()||"";
+},
+_applySpellCheck:function(value,
+old){if(this._inputElement){this._renderSpellCheck();
+}},
+_renderSpellCheck:function(){this._inputElement.spellcheck=this.getSpellCheck();
+},
+_applyEnabled:function(value,
+old){if(this._inputElement){this._inputElement.disabled=value===false;
+}return this.base(arguments,
+value,
+old);
+},
+_applyValue:function(value,
+old){this._inValueProperty=true;
+if(this._inputElement){if(value===null){value="";
+}
+if(this._inputElement.value!==value){this._inputElement.value=value;
+}}delete this._inValueProperty;
+},
+_applyMaxLength:function(value,
+old){if(this._inputElement){this._inputElement.maxLength=value==null?"":value;
+}},
+_applyReadOnly:function(value,
+old){if(this._inputElement){this._inputElement.readOnly=value;
+}
+if(value){this.addState("readonly");
+}else{this.removeState("readonly");
+}},
+_applyTextColor:function(value,
+old){qx.theme.manager.Color.getInstance().connect(this._styleTextColor,
+this,
+value);
+},
+_styleTextColor:function(value){this.__textColor=value;
+this._renderTextColor();
+},
+_renderTextColor:function(){var inp=this._inputElement;
+if(inp){inp.style.color=this.__textColor||"";
+}},
+_applyFont:function(value,
+old){qx.theme.manager.Font.getInstance().connect(this._styleFont,
+this,
+value);
+},
+_styleFont:function(value){this.__font=value;
+this._renderFont();
+},
+_renderFont:function(){var inp=this._inputElement;
+if(inp){var value=this.__font;
+value?value.renderElement(inp):qx.ui.core.Font.resetElement(inp);
+}},
+_visualizeFocus:function(){this.base(arguments);
+var isIE=qx.core.Variant.isSet("qx.client",
+"mshtml");
+if((!qx.event.handler.FocusHandler.mouseFocus||isIE)&&this.getEnableElementFocus()){try{this._inputElement.focus();
+}catch(ex){}}},
+_visualizeBlur:function(){this.base(arguments);
+try{this._inputElement.blur();
+}catch(ex){}},
+getComputedValue:function(){if(this._inputElement){return this._inputElement.value;
+}return this.getValue();
+},
+getInputElement:function(){return this._inputElement||null;
+},
+isValid:function(){var vValidator=this.getValidator();
+return !vValidator||vValidator(this.getValue());
+},
+isComputedValid:function(){var vValidator=this.getValidator();
+return !vValidator||vValidator(this.getComputedValue());
+},
+_computePreferredInnerWidth:function(){return 120;
+},
+_computePreferredInnerHeight:function(){return 16;
+},
+_ieFirstInputFix:qx.core.Variant.select("qx.client",
+{"mshtml":function(){this._inValueProperty=true;
+this._inputElement.value=this.getValue()===null?"":this.getValue().toString();
+this._firstInputFixApplied=true;
+delete this._inValueProperty;
+},
+"default":null}),
+_afterAppear:qx.core.Variant.select("qx.client",
+{"mshtml":function(){this.base(arguments);
+if(!this._firstInputFixApplied&&this._inputElement){qx.client.Timer.once(this._ieFirstInputFix,
+this,
+1);
+}this._centerFieldVertically();
+},
+"default":function(){this.base(arguments);
+this._centerFieldVertically();
+}}),
+_centerFieldVertically:function(){if(this._inputTag==="input"&&this._inputElement){var innerHeight=this.getInnerHeight();
+var inputElementHeight=qx.html.Dimension.getBoxHeight(this._inputElement);
+if(inputElementHeight!=0){if(qx.core.Variant.isSet("qx.client",
+"mshtml")){inputElementHeight-=2;
+}var top=(innerHeight-inputElementHeight)/2-1;
+if(top<0){top=0;
+}top=Math.floor(top);
+this.setStyleProperty("paddingTop",
+top+"px");
+}}},
+_firstInputFixApplied:false,
+_textOnFocus:null,
+_oninputDom:qx.core.Variant.select("qx.client",
+{"mshtml":function(e){if(!this._inValueProperty&&e.propertyName==="value"){this.createDispatchDataEvent("input",
+this.getComputedValue());
+}},
+"default":function(e){this.createDispatchDataEvent("input",
+this.getComputedValue());
+}}),
+_ontabfocus:function(){this.selectAll();
+},
+_onfocus:function(){this._textOnFocus=this.getComputedValue();
+},
+_onblur:function(){var vValue=this.getComputedValue().toString();
+if(this._textOnFocus!=vValue){this.setValue(vValue);
+}if(this.getParent()!=null){this.setSelectionLength(0);
+}},
+_oninput:function(){if(!this.isLiveUpdate()){return;
+}var vValue=this.getComputedValue().toString();
+this.setValue(vValue);
+},
+_onkeydown:function(e){if(e.getKeyIdentifier()=="Backspace"&&this.getReadOnly()){e.preventDefault();
+}},
+__getRange:qx.core.Variant.select("qx.client",
+{"mshtml":function(){this._visualPropertyCheck();
+return this._inputElement.createTextRange();
+},
+"default":null}),
+__getSelectionRange:qx.core.Variant.select("qx.client",
+{"mshtml":function(){this._visualPropertyCheck();
+return window.document.selection.createRange();
+},
+"default":null}),
+setSelectionStart:qx.core.Variant.select("qx.client",
+{"mshtml":function(vStart){this._visualPropertyCheck();
+var vText=this._inputElement.value;
+var i=0;
+while(i<vStart){i=vText.indexOf("\r\n",
+i);
+if(i==-1){break;
+}vStart--;
+i++;
+}var vRange=this.__getRange();
+vRange.collapse();
+vRange.move("character",
+vStart);
+vRange.select();
+},
+"gecko":function(vStart){this._visualPropertyCheck();
+try{this._inputElement.selectionStart=vStart;
+}catch(ex){}},
+"default":function(vStart){this._visualPropertyCheck();
+this._inputElement.selectionStart=vStart;
+}}),
+getSelectionStart:qx.core.Variant.select("qx.client",
+{"mshtml":function(){this._visualPropertyCheck();
+var vSelectionRange=this.__getSelectionRange();
+if(!this._inputElement.contains(vSelectionRange.parentElement())){return -1;
+}var vRange=this.__getRange();
+var len=this._inputElement.value.length;
+vRange.moveToBookmark(vSelectionRange.getBookmark());
+vRange.moveEnd('character',
+len);
+return len-vRange.text.length;
+},
+"gecko":function(){this._visualPropertyCheck();
+var el=this._inputElement;
+try{if(qx.util.Validation.isValidString(el.value)){return el.selectionStart;
+}}catch(ex){return 0;
+}},
+"default":function(){this._visualPropertyCheck();
+return this._inputElement.selectionStart;
+}}),
+setSelectionLength:qx.core.Variant.select("qx.client",
+{"mshtml":function(vLength){this._visualPropertyCheck();
+var vSelectionRange=this.__getSelectionRange();
+if(!this._inputElement.contains(vSelectionRange.parentElement())){return;
+}vSelectionRange.collapse();
+vSelectionRange.moveEnd("character",
+vLength);
+vSelectionRange.select();
+},
+"gecko":function(vLength){this._visualPropertyCheck();
+var el=this._inputElement;
+try{if(qx.util.Validation.isValidString(el.value)){el.selectionEnd=el.selectionStart+vLength;
+}}catch(ex){}},
+"default":function(vLength){this._visualPropertyCheck();
+var el=this._inputElement;
+if(qx.util.Validation.isValidString(el.value)){el.selectionEnd=el.selectionStart+vLength;
+}}}),
+getSelectionLength:qx.core.Variant.select("qx.client",
+{"mshtml":function(){this._visualPropertyCheck();
+var vSelectionRange=this.__getSelectionRange();
+if(!this._inputElement.contains(vSelectionRange.parentElement())){return 0;
+}return vSelectionRange.text.length;
+},
+"gecko":function(){this._visualPropertyCheck();
+var el=this._inputElement;
+try{return el.selectionEnd-el.selectionStart;
+}catch(ex){}},
+"default":function(){this._visualPropertyCheck();
+var el=this._inputElement;
+return el.selectionEnd-el.selectionStart;
+}}),
+setSelectionText:qx.core.Variant.select("qx.client",
+{"mshtml":function(vText){this._visualPropertyCheck();
+var vStart=this.getSelectionStart();
+var vSelectionRange=this.__getSelectionRange();
+if(!this._inputElement.contains(vSelectionRange.parentElement())){return;
+}vSelectionRange.text=vText;
+this.setValue(this._inputElement.value);
+this.setSelectionStart(vStart);
+this.setSelectionLength(vText.length);
+},
+"gecko":function(vText){this._visualPropertyCheck();
+var el=this._inputElement;
+try{if(qx.util.Validation.isValidString(el.value)){var vOldText=el.value;
+var vStart=el.selectionStart;
+var vOldTextBefore=vOldText.substr(0,
+vStart);
+var vOldTextAfter=vOldText.substr(el.selectionEnd);
+var vValue=el.value=vOldTextBefore+vText+vOldTextAfter;
+el.selectionStart=vStart;
+el.selectionEnd=vStart+vText.length;
+this.setValue(vValue);
+}}catch(ex){}},
+"default":function(vText){this._visualPropertyCheck();
+var el=this._inputElement;
+var vOldText=el.value;
+var vStart=el.selectionStart;
+var vOldTextBefore=vOldText.substr(0,
+vStart);
+var vOldTextAfter=vOldText.substr(el.selectionEnd);
+var vValue=el.value=vOldTextBefore+vText+vOldTextAfter;
+el.selectionStart=vStart;
+el.selectionEnd=vStart+vText.length;
+this.setValue(vValue);
+}}),
+getSelectionText:qx.core.Variant.select("qx.client",
+{"mshtml":function(){this._visualPropertyCheck();
+var vSelectionRange=this.__getSelectionRange();
+if(!this._inputElement.contains(vSelectionRange.parentElement())){return "";
+}return vSelectionRange.text;
+},
+"default":function(){this._visualPropertyCheck();
+return this._inputElement.value.substr(this.getSelectionStart(),
+this.getSelectionLength());
+}}),
+selectAll:function(){this._visualPropertyCheck();
+if(this.getValue()!=null){this.setSelectionStart(0);
+this.setSelectionLength(this._inputElement.value.length);
+}this._inputElement.select();
+if(this.isEnabled()&&this.isSeeable()){this._inputElement.focus();
+}},
+selectFromTo:qx.core.Variant.select("qx.client",
+{"mshtml":function(vStart,
+vEnd){this._visualPropertyCheck();
+this.setSelectionStart(vStart);
+this.setSelectionLength(vEnd-vStart);
+},
+"gecko":function(vStart,
+vEnd){this._visualPropertyCheck();
+var el=this._inputElement;
+try{el.selectionStart=vStart;
+el.selectionEnd=vEnd;
+}catch(ex){}},
+"default":function(vStart,
+vEnd){this._visualPropertyCheck();
+var el=this._inputElement;
+el.selectionStart=vStart;
+el.selectionEnd=vEnd;
+}})},
+destruct:function(){if(this._inputElement){if(qx.core.Variant.isSet("qx.client",
+"mshtml")){this._inputElement.onpropertychange=null;
+}else{this._inputElement.removeEventListener("input",
+this.__oninput,
+false);
+}}this._disposeFields("_inputElement",
+"__font",
+"__oninput");
 }});
+
+
+
+
+/* ID: qx.ui.form.PasswordField */
+qx.Class.define("qx.ui.form.PasswordField",
+{extend:qx.ui.form.TextField,
+members:{_inputType:"password"}});
+
+
+
+
+/* ID: qx.ui.form.RadioButton */
+qx.Class.define("qx.ui.form.RadioButton",
+{extend:qx.ui.form.CheckBox,
+construct:function(vText,
+vValue,
+vName,
+vChecked){this.base(arguments,
+vText,
+vValue,
+vName,
+vChecked);
+this.addEventListener("keypress",
+this._onkeypress);
+},
+properties:{appearance:{refine:true,
+init:"radio-button"},
+manager:{check:"qx.ui.selection.RadioManager",
+nullable:true,
+apply:"_applyManager"}},
+members:{INPUT_TYPE:"radio",
+_applyChecked:function(value,
+old){if(this._iconObject){this._iconObject.setChecked(value);
+}var vManager=this.getManager();
+if(vManager){vManager.handleItemChecked(this,
+value);
+}},
+_applyManager:function(value,
+old){if(old){old.remove(this);
+}
+if(value){value.add(this);
+}},
+_applyName:function(value,
+old){if(this._iconObject){this._iconObject.setName(value);
+}
+if(this.getManager()){this.getManager().setName(value);
+}},
+_applyValue:function(value,
+old){if(this.isCreated()&&this._iconObject){this._iconObject.setValue(value);
+}},
+_onkeydown:function(e){if(e.getKeyIdentifier()=="Enter"&&!e.isAltPressed()){this.setChecked(true);
+}},
+_onkeypress:function(e){switch(e.getKeyIdentifier()){case "Left":case "Up":qx.event.handler.FocusHandler.mouseFocus=false;
+qx.event.handler.FocusHandler.mouseFocus=false;
+return this.getManager()?this.getManager().selectPrevious(this):true;
+case "Right":case "Down":qx.event.handler.FocusHandler.mouseFocus=false;
+return this.getManager()?this.getManager().selectNext(this):true;
+}},
+_onclick:function(e){this.setChecked(true);
+},
+_onkeyup:function(e){if(e.getKeyIdentifier()=="Space"){this.setChecked(true);
+}}}});
 
 
 
@@ -16498,427 +17065,6 @@ if(mgr){mgr.dispose();
 
 
 
-/* ID: qx.ui.form.TextField */
-qx.Class.define("qx.ui.form.TextField",
-{extend:qx.ui.basic.Terminator,
-construct:function(value){this.base(arguments);
-if(value!=null){this.setValue(value);
-}this.initHideFocus();
-this.initWidth();
-this.initHeight();
-this.initTabIndex();
-this.initSpellCheck();
-this.__oninput=qx.lang.Function.bindEvent(this._oninputDom,
-this);
-this.addEventListener("blur",
-this._onblur);
-this.addEventListener("focus",
-this._onfocus);
-this.addEventListener("input",
-this._oninput);
-this.addEventListener("keydown",
-this._onkeydown);
-},
-statics:{createRegExpValidator:function(vRegExp){return function(s){return vRegExp.test(s);
-};
-}},
-events:{"input":"qx.event.type.DataEvent"},
-properties:{allowStretchX:{refine:true,
-init:true},
-allowStretchY:{refine:true,
-init:false},
-appearance:{refine:true,
-init:"text-field"},
-tabIndex:{refine:true,
-init:1},
-hideFocus:{refine:true,
-init:true},
-width:{refine:true,
-init:"auto"},
-height:{refine:true,
-init:"auto"},
-selectable:{refine:true,
-init:true},
-value:{init:"",
-nullable:true,
-event:"changeValue",
-apply:"_applyValue",
-dispose:true},
-textAlign:{check:["left",
-"center",
-"right",
-"justify"],
-nullable:true,
-themeable:true,
-apply:"_applyTextAlign"},
-spellCheck:{check:"Boolean",
-init:false,
-apply:"_applySpellCheck"},
-liveUpdate:{check:"Boolean",
-init:false},
-maxLength:{check:"Integer",
-apply:"_applyMaxLength",
-nullable:true},
-readOnly:{check:"Boolean",
-apply:"_applyReadOnly",
-init:false},
-validator:{check:"Function",
-event:"changeValidator",
-nullable:true}},
-members:{_inputTag:"input",
-_inputType:"text",
-_inputOverflow:"hidden",
-_applyElement:function(value,
-old){this.base(arguments,
-value,
-old);
-if(value){var inp=this._inputElement=document.createElement(this._inputTag);
-if(this._inputType){inp.type=this._inputType;
-}inp.autoComplete="off";
-inp.setAttribute("autoComplete",
-"off");
-inp.disabled=this.getEnabled()===false;
-inp.readOnly=this.getReadOnly();
-inp.value=this.getValue()!=null?this.getValue().toString():"";
-if(this.getMaxLength()!=null){inp.maxLength=this.getMaxLength();
-}var istyle=inp.style;
-istyle.padding=istyle.margin=0;
-istyle.border="0 none";
-istyle.background="transparent";
-istyle.overflow=this._inputOverflow;
-istyle.outline="none";
-istyle.resize="none";
-istyle.WebkitAppearance="none";
-istyle.MozAppearance="none";
-if(qx.core.Variant.isSet("qx.client",
-"gecko|opera|webkit")){istyle.margin="1px 0";
-}this._renderFont();
-this._renderTextColor();
-this._renderTextAlign();
-this._renderCursor();
-this._renderSpellCheck();
-if(qx.core.Variant.isSet("qx.client",
-"mshtml")){inp.onpropertychange=this.__oninput;
-}else{inp.addEventListener("input",
-this.__oninput,
-false);
-}value.appendChild(inp);
-}},
-_postApply:function(){this._syncFieldWidth();
-this._syncFieldHeight();
-},
-_changeInnerWidth:function(value,
-old){this._syncFieldWidth();
-},
-_changeInnerHeight:function(value,
-old){this._syncFieldHeight();
-this._centerFieldVertically();
-},
-_syncFieldWidth:function(){this._inputElement.style.width=this.getInnerWidth()+"px";
-},
-_syncFieldHeight:function(){if(this._inputTag!=="input"){this._inputElement.style.height=(this.getInnerHeight()-2)+"px";
-}},
-_applyCursor:function(value,
-old){if(this._inputElement){this._renderCursor();
-}},
-_renderCursor:function(){var style=this._inputElement.style;
-var value=this.getCursor();
-if(value){if(value=="pointer"&&qx.core.Client.getInstance().isMshtml()){style.cursor="hand";
-}else{style.cursor=value;
-}}else{style.cursor="";
-}},
-_applyTextAlign:function(value,
-old){if(this._inputElement){this._renderTextAlign();
-}},
-_renderTextAlign:function(){this._inputElement.style.textAlign=this.getTextAlign()||"";
-},
-_applySpellCheck:function(value,
-old){if(this._inputElement){this._renderSpellCheck();
-}},
-_renderSpellCheck:function(){this._inputElement.spellcheck=this.getSpellCheck();
-},
-_applyEnabled:function(value,
-old){if(this._inputElement){this._inputElement.disabled=value===false;
-}return this.base(arguments,
-value,
-old);
-},
-_applyValue:function(value,
-old){this._inValueProperty=true;
-if(this._inputElement){if(value===null){value="";
-}
-if(this._inputElement.value!==value){this._inputElement.value=value;
-}}delete this._inValueProperty;
-},
-_applyMaxLength:function(value,
-old){if(this._inputElement){this._inputElement.maxLength=value==null?"":value;
-}},
-_applyReadOnly:function(value,
-old){if(this._inputElement){this._inputElement.readOnly=value;
-}
-if(value){this.addState("readonly");
-}else{this.removeState("readonly");
-}},
-_applyTextColor:function(value,
-old){qx.theme.manager.Color.getInstance().connect(this._styleTextColor,
-this,
-value);
-},
-_styleTextColor:function(value){this.__textColor=value;
-this._renderTextColor();
-},
-_renderTextColor:function(){var inp=this._inputElement;
-if(inp){inp.style.color=this.__textColor||"";
-}},
-_applyFont:function(value,
-old){qx.theme.manager.Font.getInstance().connect(this._styleFont,
-this,
-value);
-},
-_styleFont:function(value){this.__font=value;
-this._renderFont();
-},
-_renderFont:function(){var inp=this._inputElement;
-if(inp){var value=this.__font;
-value?value.renderElement(inp):qx.ui.core.Font.resetElement(inp);
-}},
-_visualizeFocus:function(){this.base(arguments);
-if(this.getEnableElementFocus()){try{this._inputElement.focus();
-}catch(ex){}
-if(qx.core.Variant.isSet("qx.client",
-"webkit")){if(this.getSelectionLength()>0){this.setSelectionStart(this.getSelectionLength());
-this.setSelectionLength(0);
-}}}},
-_visualizeBlur:function(){this.base(arguments);
-try{this._inputElement.blur();
-}catch(ex){}},
-getComputedValue:function(){if(this._inputElement){return this._inputElement.value;
-}return this.getValue();
-},
-getInputElement:function(){return this._inputElement||null;
-},
-isValid:function(){var vValidator=this.getValidator();
-return !vValidator||vValidator(this.getValue());
-},
-isComputedValid:function(){var vValidator=this.getValidator();
-return !vValidator||vValidator(this.getComputedValue());
-},
-_computePreferredInnerWidth:function(){return 120;
-},
-_computePreferredInnerHeight:function(){return 16;
-},
-_ieFirstInputFix:qx.core.Variant.select("qx.client",
-{"mshtml":function(){this._inValueProperty=true;
-this._inputElement.value=this.getValue()===null?"":this.getValue().toString();
-this._firstInputFixApplied=true;
-delete this._inValueProperty;
-},
-"default":null}),
-_afterAppear:qx.core.Variant.select("qx.client",
-{"mshtml":function(){this.base(arguments);
-if(!this._firstInputFixApplied&&this._inputElement){qx.client.Timer.once(this._ieFirstInputFix,
-this,
-1);
-}this._centerFieldVertically();
-},
-"default":function(){this.base(arguments);
-this._centerFieldVertically();
-}}),
-_centerFieldVertically:function(){if(this._inputTag==="input"&&this._inputElement){var innerHeight=this.getInnerHeight();
-var inputElementHeight=qx.html.Dimension.getBoxHeight(this._inputElement);
-if(inputElementHeight!=0){if(qx.core.Variant.isSet("qx.client",
-"mshtml")){inputElementHeight-=2;
-}var top=(innerHeight-inputElementHeight)/2-1;
-if(top<0){top=0;
-}top=Math.floor(top);
-this.setStyleProperty("paddingTop",
-top+"px");
-}}},
-_firstInputFixApplied:false,
-_textOnFocus:null,
-_oninputDom:qx.core.Variant.select("qx.client",
-{"mshtml":function(e){if(!this._inValueProperty&&e.propertyName==="value"){this.createDispatchDataEvent("input",
-this.getComputedValue());
-}},
-"default":function(e){this.createDispatchDataEvent("input",
-this.getComputedValue());
-}}),
-_ontabfocus:function(){this.selectAll();
-},
-_onfocus:function(){this._textOnFocus=this.getComputedValue();
-},
-_onblur:function(){var vValue=this.getComputedValue().toString();
-if(this._textOnFocus!=vValue){this.setValue(vValue);
-}if(this.getParent()!=null){this.setSelectionLength(0);
-}},
-_oninput:function(){if(!this.isLiveUpdate()){return;
-}var vValue=this.getComputedValue().toString();
-this.setValue(vValue);
-},
-_onkeydown:function(e){if(e.getKeyIdentifier()=="Backspace"&&this.getReadOnly()){e.preventDefault();
-}},
-__getRange:qx.core.Variant.select("qx.client",
-{"mshtml":function(){this._visualPropertyCheck();
-return this._inputElement.createTextRange();
-},
-"default":null}),
-__getSelectionRange:qx.core.Variant.select("qx.client",
-{"mshtml":function(){this._visualPropertyCheck();
-return window.document.selection.createRange();
-},
-"default":null}),
-setSelectionStart:qx.core.Variant.select("qx.client",
-{"mshtml":function(vStart){this._visualPropertyCheck();
-var vText=this._inputElement.value;
-var i=0;
-while(i<vStart){i=vText.indexOf("\r\n",
-i);
-if(i==-1){break;
-}vStart--;
-i++;
-}var vRange=this.__getRange();
-vRange.collapse();
-vRange.move("character",
-vStart);
-vRange.select();
-},
-"gecko":function(vStart){this._visualPropertyCheck();
-try{this._inputElement.selectionStart=vStart;
-}catch(ex){}},
-"default":function(vStart){this._visualPropertyCheck();
-this._inputElement.selectionStart=vStart;
-}}),
-getSelectionStart:qx.core.Variant.select("qx.client",
-{"mshtml":function(){this._visualPropertyCheck();
-var vSelectionRange=this.__getSelectionRange();
-if(!this._inputElement.contains(vSelectionRange.parentElement())){return -1;
-}var vRange=this.__getRange();
-var len=this._inputElement.value.length;
-vRange.moveToBookmark(vSelectionRange.getBookmark());
-vRange.moveEnd('character',
-len);
-return len-vRange.text.length;
-},
-"gecko":function(){this._visualPropertyCheck();
-var el=this._inputElement;
-try{if(qx.util.Validation.isValidString(el.value)){return el.selectionStart;
-}}catch(ex){return 0;
-}},
-"default":function(){this._visualPropertyCheck();
-return this._inputElement.selectionStart;
-}}),
-setSelectionLength:qx.core.Variant.select("qx.client",
-{"mshtml":function(vLength){this._visualPropertyCheck();
-var vSelectionRange=this.__getSelectionRange();
-if(!this._inputElement.contains(vSelectionRange.parentElement())){return;
-}vSelectionRange.collapse();
-vSelectionRange.moveEnd("character",
-vLength);
-vSelectionRange.select();
-},
-"gecko":function(vLength){this._visualPropertyCheck();
-var el=this._inputElement;
-try{if(qx.util.Validation.isValidString(el.value)){el.selectionEnd=el.selectionStart+vLength;
-}}catch(ex){}},
-"default":function(vLength){this._visualPropertyCheck();
-var el=this._inputElement;
-if(qx.util.Validation.isValidString(el.value)){el.selectionEnd=el.selectionStart+vLength;
-}}}),
-getSelectionLength:qx.core.Variant.select("qx.client",
-{"mshtml":function(){this._visualPropertyCheck();
-var vSelectionRange=this.__getSelectionRange();
-if(!this._inputElement.contains(vSelectionRange.parentElement())){return 0;
-}return vSelectionRange.text.length;
-},
-"gecko":function(){this._visualPropertyCheck();
-var el=this._inputElement;
-try{return el.selectionEnd-el.selectionStart;
-}catch(ex){}},
-"default":function(){this._visualPropertyCheck();
-var el=this._inputElement;
-return el.selectionEnd-el.selectionStart;
-}}),
-setSelectionText:qx.core.Variant.select("qx.client",
-{"mshtml":function(vText){this._visualPropertyCheck();
-var vStart=this.getSelectionStart();
-var vSelectionRange=this.__getSelectionRange();
-if(!this._inputElement.contains(vSelectionRange.parentElement())){return;
-}vSelectionRange.text=vText;
-this.setValue(this._inputElement.value);
-this.setSelectionStart(vStart);
-this.setSelectionLength(vText.length);
-},
-"gecko":function(vText){this._visualPropertyCheck();
-var el=this._inputElement;
-try{if(qx.util.Validation.isValidString(el.value)){var vOldText=el.value;
-var vStart=el.selectionStart;
-var vOldTextBefore=vOldText.substr(0,
-vStart);
-var vOldTextAfter=vOldText.substr(el.selectionEnd);
-var vValue=el.value=vOldTextBefore+vText+vOldTextAfter;
-el.selectionStart=vStart;
-el.selectionEnd=vStart+vText.length;
-this.setValue(vValue);
-}}catch(ex){}},
-"default":function(vText){this._visualPropertyCheck();
-var el=this._inputElement;
-var vOldText=el.value;
-var vStart=el.selectionStart;
-var vOldTextBefore=vOldText.substr(0,
-vStart);
-var vOldTextAfter=vOldText.substr(el.selectionEnd);
-var vValue=el.value=vOldTextBefore+vText+vOldTextAfter;
-el.selectionStart=vStart;
-el.selectionEnd=vStart+vText.length;
-this.setValue(vValue);
-}}),
-getSelectionText:qx.core.Variant.select("qx.client",
-{"mshtml":function(){this._visualPropertyCheck();
-var vSelectionRange=this.__getSelectionRange();
-if(!this._inputElement.contains(vSelectionRange.parentElement())){return "";
-}return vSelectionRange.text;
-},
-"default":function(){this._visualPropertyCheck();
-return this._inputElement.value.substr(this.getSelectionStart(),
-this.getSelectionLength());
-}}),
-selectAll:function(){this._visualPropertyCheck();
-if(this.getValue()!=null){this.setSelectionStart(0);
-this.setSelectionLength(this._inputElement.value.length);
-}this._inputElement.select();
-if(this.isEnabled()&&this.isSeeable()){this._inputElement.focus();
-}},
-selectFromTo:qx.core.Variant.select("qx.client",
-{"mshtml":function(vStart,
-vEnd){this._visualPropertyCheck();
-this.setSelectionStart(vStart);
-this.setSelectionLength(vEnd-vStart);
-},
-"gecko":function(vStart,
-vEnd){this._visualPropertyCheck();
-var el=this._inputElement;
-try{el.selectionStart=vStart;
-el.selectionEnd=vEnd;
-}catch(ex){}},
-"default":function(vStart,
-vEnd){this._visualPropertyCheck();
-var el=this._inputElement;
-el.selectionStart=vStart;
-el.selectionEnd=vEnd;
-}})},
-destruct:function(){if(this._inputElement){if(qx.core.Variant.isSet("qx.client",
-"mshtml")){this._inputElement.onpropertychange=null;
-}else{this._inputElement.removeEventListener("input",
-this.__oninput,
-false);
-}}this._disposeFields("_inputElement",
-"__font",
-"__oninput");
-}});
-
-
-
-
 /* ID: qx.util.range.IRange */
 qx.Interface.define("qx.util.range.IRange",
 {properties:{value:{},
@@ -16982,170 +17128,87 @@ if(precision!=null){return Math.round(value*mover)/mover;
 
 
 
-/* ID: qx.ui.form.CheckBox */
-qx.Class.define("qx.ui.form.CheckBox",
-{extend:qx.ui.basic.Atom,
-construct:function(vText,
-vValue,
-vName,
-vChecked){this.base(arguments,
-vText);
-this.initTabIndex();
-this._createIcon();
-if(vValue!=null){this.setValue(vValue);
-}
-if(vName!=null){this.setName(vName);
-}
-if(vChecked!=null){this.setChecked(vChecked);
-}else{this.initChecked();
-}this.addEventListener("click",
-this._onclick);
-this.addEventListener("keydown",
-this._onkeydown);
-this.addEventListener("keyup",
-this._onkeyup);
-},
+/* ID: qx.ui.form.TextArea */
+qx.Class.define("qx.ui.form.TextArea",
+{extend:qx.ui.form.TextField,
 properties:{appearance:{refine:true,
-init:"check-box"},
-tabIndex:{refine:true,
-init:1},
-name:{check:"String",
-event:"changeName"},
-value:{check:"String",
-event:"changeValue"},
-checked:{check:"Boolean",
-apply:"_applyChecked",
-init:false,
-event:"changeChecked"}},
-members:{INPUT_TYPE:"checkbox",
-_createIcon:function(){var i=this._iconObject=new qx.ui.form.InputCheckSymbol;
-i.setType(this.INPUT_TYPE);
-i.setChecked(this.getChecked());
-i.setAnonymous(true);
-this.addAtBegin(i);
-},
-_applyChecked:function(value,
-old){if(this._iconObject){this._iconObject.setChecked(value);
-}},
-_applyIcon:null,
-_applyDisabledIcon:null,
-_handleIcon:function(){switch(this.getShow()){case "icon":case "both":this._iconIsVisible=true;
-break;
-default:this._iconIsVisible=false;
-}
-if(this._iconIsVisible){this._iconObject?this._iconObject.setDisplay(true):this._createIcon();
-}else if(this._iconObject){this._iconObject.setDisplay(false);
-}},
-_onclick:function(e){this.toggleChecked();
-},
-_onkeydown:function(e){if(e.getKeyIdentifier()=="Enter"&&!e.isAltPressed()){this.toggleChecked();
-}},
-_onkeyup:function(e){if(e.getKeyIdentifier()=="Space"){this.toggleChecked();
-}}}});
-
-
-
-
-/* ID: qx.ui.form.RadioButton */
-qx.Class.define("qx.ui.form.RadioButton",
-{extend:qx.ui.form.CheckBox,
-construct:function(vText,
-vValue,
-vName,
-vChecked){this.base(arguments,
-vText,
-vValue,
-vName,
-vChecked);
-this.addEventListener("keypress",
-this._onkeypress);
-},
-properties:{appearance:{refine:true,
-init:"radio-button"},
-manager:{check:"qx.ui.selection.RadioManager",
-nullable:true,
-apply:"_applyManager"}},
-members:{INPUT_TYPE:"radio",
-_applyChecked:function(value,
-old){if(this._iconObject){this._iconObject.setChecked(value);
-}var vManager=this.getManager();
-if(vManager){vManager.handleItemChecked(this,
-value);
-}},
-_applyManager:function(value,
-old){if(old){old.remove(this);
-}
-if(value){value.add(this);
-}},
-_applyName:function(value,
-old){if(this._iconObject){this._iconObject.setName(value);
-}
-if(this.getManager()){this.getManager().setName(value);
-}},
-_applyValue:function(value,
-old){if(this.isCreated()&&this._iconObject){this._iconObject.setValue(value);
-}},
-_onkeydown:function(e){if(e.getKeyIdentifier()=="Enter"&&!e.isAltPressed()){this.setChecked(true);
-}},
-_onkeypress:function(e){switch(e.getKeyIdentifier()){case "Left":case "Up":qx.event.handler.FocusHandler.mouseFocus=false;
-qx.event.handler.FocusHandler.mouseFocus=false;
-return this.getManager()?this.getManager().selectPrevious(this):true;
-case "Right":case "Down":qx.event.handler.FocusHandler.mouseFocus=false;
-return this.getManager()?this.getManager().selectNext(this):true;
-}},
-_onclick:function(e){this.setChecked(true);
-},
-_onkeyup:function(e){if(e.getKeyIdentifier()=="Space"){this.setChecked(true);
-}}}});
-
-
-
-
-/* ID: qx.ui.form.ListItem */
-qx.Class.define("qx.ui.form.ListItem",
-{extend:qx.ui.basic.Atom,
-construct:function(vText,
-vIcon,
-vValue){this.base(arguments,
-vText,
-vIcon);
-if(vValue!=null){this.setValue(vValue);
-}this.addEventListener("dblclick",
-this._ondblclick);
-this.initMinWidth();
-},
-events:{"action":"qx.event.type.Event"},
-properties:{appearance:{refine:true,
-init:"list-item"},
-minWidth:{refine:true,
-init:"auto"},
-width:{refine:true,
-init:null},
-allowStretchX:{refine:true,
+init:"text-area"},
+allowStretchY:{refine:true,
 init:true},
-value:{check:"String",
-event:"changeValue"}},
-members:{handleStateChange:function(){if(this.hasState("lead")){this.setStyleProperty("outline",
-"1px dotted");
-}else{this.setStyleProperty("outline",
-"0px none");
+spellCheck:{refine:true,
+init:true},
+wrap:{check:"Boolean",
+init:true,
+apply:"_applyWrap"}},
+members:{_inputTag:"textarea",
+_inputType:null,
+_inputOverflow:"auto",
+_applyElement:function(value,
+old){this.base(arguments,
+value,
+old);
+this._styleWrap();
+},
+_applyWrap:function(value,
+old){this._styleWrap();
+},
+_styleWrap:qx.core.Variant.select("qx.client",
+{"mshtml":function(){if(this._inputElement){this._inputElement.wrap=this.getWrap()?"soft":"off";
 }},
-_applyStateStyleFocus:function(vStates){},
-matchesString:function(vText){vText=String(vText);
-return vText!=""&&this.getLabel().toString().toLowerCase().indexOf(vText.toLowerCase())==0;
+"gecko":function(){if(this._inputElement){var wrapValue=this.getWrap()?"soft":"off";
+var styleValue=this.getWrap()?"":"auto";
+this._inputElement.setAttribute('wrap',
+wrapValue);
+this._inputElement.style.overflow=styleValue;
+}},
+"default":function(){if(this._inputElement){var wrapValue=this.getWrap()?"soft":"off";
+this._inputElement.setAttribute('wrap',
+wrapValue);
+}}}),
+_computePreferredInnerHeight:function(){return 60;
+}}});
+
+
+
+
+/* ID: qx.ui.groupbox.GroupBox */
+qx.Class.define("qx.ui.groupbox.GroupBox",
+{extend:qx.ui.layout.CanvasLayout,
+construct:function(vLegend,
+vIcon){this.base(arguments);
+this._createFrameObject();
+this._createLegendObject();
+this.setLegend(vLegend||"");
+if(vIcon!=null){this.setIcon(vIcon);
+}this.remapChildrenHandlingTo(this._frameObject);
 },
-matchesStringExact:function(vText){vText=String(vText);
-return vText!=""&&this.getLabel().toString().toLowerCase()==String(vText).toLowerCase();
+properties:{appearance:{refine:true,
+init:"group-box"}},
+members:{_createLegendObject:function(){this._legendObject=new qx.ui.basic.Atom;
+this._legendObject.setAppearance("group-box-legend");
+this.add(this._legendObject);
 },
-matchesValue:function(vText){vText=String(vText);
-return vText!=""&&this.getValue().toLowerCase().indexOf(vText.toLowerCase())==0;
+_createFrameObject:function(){this._frameObject=new qx.ui.layout.CanvasLayout;
+this._frameObject.setAppearance("group-box-frame");
+this.add(this._frameObject);
 },
-matchesValueExact:function(vText){vText=String(vText);
-return vText!=""&&this.getValue().toLowerCase()==String(vText).toLowerCase();
+getFrameObject:function(){return this._frameObject;
 },
-_ondblclick:function(e){var vCommand=this.getCommand();
-if(vCommand){vCommand.execute();
-}}}});
+getLegendObject:function(){return this._legendObject;
+},
+setLegend:function(vLegend){if(vLegend!==""&&vLegend!==null){this._legendObject.setLabel(vLegend);
+this._legendObject.setDisplay(true);
+}else{this._legendObject.setDisplay(false);
+}},
+getLegend:function(){return this._legendObject.getLabel();
+},
+setIcon:function(vIcon){this._legendObject.setIcon(vIcon);
+},
+getIcon:function(){this._legendObject.getIcon();
+}},
+destruct:function(){this._disposeObjects("_legendObject",
+"_frameObject");
+}});
 
 
 
@@ -18366,136 +18429,6 @@ if(this._form){document.body.removeChild(this._form);
 
 
 
-/* ID: qx.io.remote.RequestQueue */
-qx.Class.define("qx.io.remote.RequestQueue",
-{type:"singleton",
-extend:qx.core.Target,
-construct:function(){this.base(arguments);
-this._queue=[];
-this._active=[];
-this._totalRequests=0;
-this._timer=new qx.client.Timer(500);
-this._timer.addEventListener("interval",
-this._oninterval,
-this);
-},
-properties:{enabled:{init:true,
-check:"Boolean",
-apply:"_applyEnabled"},
-maxTotalRequests:{check:"Integer",
-nullable:true},
-maxConcurrentRequests:{check:"Integer",
-init:3},
-defaultTimeout:{check:"Integer",
-init:5000}},
-members:{_debug:function(){{if(qx.core.Setting.get("qx.ioRemoteDebug")){var vText=this._active.length+"/"+(this._queue.length+this._active.length);
-this.debug("Progress: "+vText);
-window.status="Request-Queue Progress: "+vText;
-}};
-},
-_check:function(){this._debug();
-if(this._active.length==0&&this._queue.length==0){this._timer.stop();
-}if(!this.getEnabled()){return;
-}if(this._active.length>=this.getMaxConcurrentRequests()||this._queue.length==0){return;
-}if(this.getMaxTotalRequests()!=null&&this._totalRequests>=this.getMaxTotalRequests()){return;
-}var vRequest=this._queue.shift();
-var vTransport=new qx.io.remote.Exchange(vRequest);
-this._totalRequests++;
-this._active.push(vTransport);
-this._debug();
-vTransport.addEventListener("sending",
-this._onsending,
-this);
-vTransport.addEventListener("receiving",
-this._onreceiving,
-this);
-vTransport.addEventListener("completed",
-this._oncompleted,
-this);
-vTransport.addEventListener("aborted",
-this._oncompleted,
-this);
-vTransport.addEventListener("timeout",
-this._oncompleted,
-this);
-vTransport.addEventListener("failed",
-this._oncompleted,
-this);
-var returnValue=true;
-try{returnValue=vTransport.send();
-}catch(exc){returnValue=exc;
-}if(returnValue!==true){var response=new qx.io.remote.Response('failed');
-response.setContent(returnValue);
-vTransport.dispatchEvent(response);
-}else{vTransport._start=(new Date()).valueOf();
-}if(this._queue.length>0){this._check();
-}},
-_remove:function(vTransport){qx.lang.Array.remove(this._active,
-vTransport);
-this._check();
-},
-_activeCount:0,
-_onsending:function(e){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this._activeCount++;
-e.getTarget()._counted=true;
-this.debug("ActiveCount: "+this._activeCount);
-}};
-var vTransport=e.getTarget();
-vTransport.getRequest()._onsending(e);
-},
-_onreceiving:function(e){e.getTarget().getRequest()._onreceiving(e);
-},
-_oncompleted:function(e){{if(qx.core.Setting.get("qx.ioRemoteDebug")){if(e.getTarget()._counted){this._activeCount--;
-this.debug("ActiveCount: "+this._activeCount);
-}}};
-var vTransport=e.getTarget();
-this._remove(vTransport);
-var vRequest=vTransport.getRequest();
-if(vRequest['_on'+e.getType()]){vRequest['_on'+e.getType()](e);
-}vTransport.dispose();
-},
-_oninterval:function(e){var vActive=this._active;
-if(vActive.length==0){this._timer.stop();
-return;
-}var vTransport;
-var vRequest;
-var vDefaultTimeout=this.getDefaultTimeout();
-var vTimeout;
-var vTime;
-for(var i=vActive.length-1;i>=0;i--){vTransport=vActive[i];
-vRequest=vTransport.getRequest();
-if(vRequest.isAsynchronous()){vTimeout=vRequest.getTimeout();
-if(vTimeout==0||vTransport._start==null){continue;
-}
-if(vTimeout==null){vTimeout=vDefaultTimeout;
-}vTime=(new Date).valueOf()-vTransport._start;
-if(vTime>vTimeout){this.warn("Timeout: transport "+vTransport.toHashCode());
-this.warn(vTime+"ms > "+vTimeout+"ms");
-vTransport.timeout();
-}}}},
-_applyEnabled:function(value,
-old){if(value){this._check();
-}this._timer.setEnabled(value);
-},
-add:function(vRequest){vRequest.setState("queued");
-this._queue.push(vRequest);
-this._check();
-if(this.getEnabled()){this._timer.start();
-}},
-abort:function(vRequest){var vTransport=vRequest.getTransport();
-if(vTransport){vTransport.abort();
-}else if(qx.lang.Array.contains(this._queue,
-vRequest)){qx.lang.Array.remove(this._queue,
-vRequest);
-}}},
-destruct:function(){this._disposeObjectDeep("_active",
-1);
-this._disposeObjects("_timer");
-this._disposeFields("_queue");
-}});
-
-
-
-
 /* ID: qx.net.Http */
 qx.Class.define("qx.net.Http",
 {statics:{METHOD_GET:"GET",
@@ -18691,6 +18624,136 @@ destruct:function(){this.setTransport(null);
 this._disposeFields("_requestHeaders",
 "_parameters",
 "_formFields");
+}});
+
+
+
+
+/* ID: qx.io.remote.RequestQueue */
+qx.Class.define("qx.io.remote.RequestQueue",
+{type:"singleton",
+extend:qx.core.Target,
+construct:function(){this.base(arguments);
+this._queue=[];
+this._active=[];
+this._totalRequests=0;
+this._timer=new qx.client.Timer(500);
+this._timer.addEventListener("interval",
+this._oninterval,
+this);
+},
+properties:{enabled:{init:true,
+check:"Boolean",
+apply:"_applyEnabled"},
+maxTotalRequests:{check:"Integer",
+nullable:true},
+maxConcurrentRequests:{check:"Integer",
+init:3},
+defaultTimeout:{check:"Integer",
+init:5000}},
+members:{_debug:function(){{if(qx.core.Setting.get("qx.ioRemoteDebug")){var vText=this._active.length+"/"+(this._queue.length+this._active.length);
+this.debug("Progress: "+vText);
+window.status="Request-Queue Progress: "+vText;
+}};
+},
+_check:function(){this._debug();
+if(this._active.length==0&&this._queue.length==0){this._timer.stop();
+}if(!this.getEnabled()){return;
+}if(this._active.length>=this.getMaxConcurrentRequests()||this._queue.length==0){return;
+}if(this.getMaxTotalRequests()!=null&&this._totalRequests>=this.getMaxTotalRequests()){return;
+}var vRequest=this._queue.shift();
+var vTransport=new qx.io.remote.Exchange(vRequest);
+this._totalRequests++;
+this._active.push(vTransport);
+this._debug();
+vTransport.addEventListener("sending",
+this._onsending,
+this);
+vTransport.addEventListener("receiving",
+this._onreceiving,
+this);
+vTransport.addEventListener("completed",
+this._oncompleted,
+this);
+vTransport.addEventListener("aborted",
+this._oncompleted,
+this);
+vTransport.addEventListener("timeout",
+this._oncompleted,
+this);
+vTransport.addEventListener("failed",
+this._oncompleted,
+this);
+var returnValue=true;
+try{returnValue=vTransport.send();
+}catch(exc){returnValue=exc;
+}if(returnValue!==true){var response=new qx.io.remote.Response('failed');
+response.setContent(returnValue);
+vTransport.dispatchEvent(response);
+}else{vTransport._start=(new Date()).valueOf();
+}if(this._queue.length>0){this._check();
+}},
+_remove:function(vTransport){qx.lang.Array.remove(this._active,
+vTransport);
+this._check();
+},
+_activeCount:0,
+_onsending:function(e){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this._activeCount++;
+e.getTarget()._counted=true;
+this.debug("ActiveCount: "+this._activeCount);
+}};
+var vTransport=e.getTarget();
+vTransport.getRequest()._onsending(e);
+},
+_onreceiving:function(e){e.getTarget().getRequest()._onreceiving(e);
+},
+_oncompleted:function(e){{if(qx.core.Setting.get("qx.ioRemoteDebug")){if(e.getTarget()._counted){this._activeCount--;
+this.debug("ActiveCount: "+this._activeCount);
+}}};
+var vTransport=e.getTarget();
+this._remove(vTransport);
+var vRequest=vTransport.getRequest();
+if(vRequest['_on'+e.getType()]){vRequest['_on'+e.getType()](e);
+}vTransport.dispose();
+},
+_oninterval:function(e){var vActive=this._active;
+if(vActive.length==0){this._timer.stop();
+return;
+}var vTransport;
+var vRequest;
+var vDefaultTimeout=this.getDefaultTimeout();
+var vTimeout;
+var vTime;
+for(var i=vActive.length-1;i>=0;i--){vTransport=vActive[i];
+vRequest=vTransport.getRequest();
+if(vRequest.isAsynchronous()){vTimeout=vRequest.getTimeout();
+if(vTimeout==0||vTransport._start==null){continue;
+}
+if(vTimeout==null){vTimeout=vDefaultTimeout;
+}vTime=(new Date).valueOf()-vTransport._start;
+if(vTime>vTimeout){this.warn("Timeout: transport "+vTransport.toHashCode());
+this.warn(vTime+"ms > "+vTimeout+"ms");
+vTransport.timeout();
+}}}},
+_applyEnabled:function(value,
+old){if(value){this._check();
+}this._timer.setEnabled(value);
+},
+add:function(vRequest){vRequest.setState("queued");
+this._queue.push(vRequest);
+this._check();
+if(this.getEnabled()){this._timer.start();
+}},
+abort:function(vRequest){var vTransport=vRequest.getTransport();
+if(vTransport){vTransport.abort();
+}else if(qx.lang.Array.contains(this._queue,
+vRequest)){qx.lang.Array.remove(this._queue,
+vRequest);
+}}},
+destruct:function(){this._disposeObjectDeep("_active",
+1);
+this._disposeObjects("_timer");
+this._disposeFields("_queue");
 }});
 
 
@@ -18932,14 +18995,6 @@ if(qx.core.Variant.isSet("qx.client",
 this.setOverflow("hidden");
 this._scrollBar.setWidth(this._getScrollBarWidth()+1);
 this._scrollBar.setLeft(-1);
-}}if(qx.core.Variant.isSet("qx.client",
-"mshtml")||qx.core.Variant.isSet("qx.client",
-"opera")){if(this._horizontal){this.addEventListener("changeWidth",
-this._onresize,
-this);
-}else{this.addEventListener("changeHeight",
-this._onresize,
-this);
 }}this.add(this._scrollBar);
 this._blocker=new qx.ui.basic.Terminator();
 this._blocker.set({left:0,
@@ -19017,13 +19072,6 @@ qx.ui.basic.ScrollBar.EVENT_DELAY);
 this.setValue(value);
 this._internalValueChange=false;
 qx.ui.core.Widget.flushGlobalQueues();
-}},
-_onresize:function(evt){var currentValue=this.getValue();
-var maxValue=0;
-if(this._horizontal){maxValue=this.getMaximum()-this.getWidth();
-}else{maxValue=this.getMaximum()-this.getHeight();
-}
-if(currentValue>maxValue){this.setValue(maxValue);
 }},
 _positionKnob:function(value){if(this.isCreated()){if(this._horizontal){this._scrollBar.setScrollLeft(value);
 }else{this._scrollBar.setScrollTop(value);

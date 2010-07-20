@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -16,8 +17,8 @@ import org.eclipse.swt.widgets.Control;
 
 public final class TreeThemeAdapter extends ControlThemeAdapter {
 
-  public int getCheckBoxWidth( final Control control ) {
-    return getCssDimension( "Tree-Checkbox", "width", control );
+  public Point getCheckBoxImageSize( final Control control ) {
+    return getCssImageDimension( "Tree-Checkbox", "background-image", control );
   }
 
   public int getHeaderBorderBottomWidth( final Control control ) {
@@ -26,5 +27,9 @@ public final class TreeThemeAdapter extends ControlThemeAdapter {
 
   public Rectangle getHeaderPadding( final Control control ) {
     return getCssBoxDimensions( "TreeColumn", "padding", control );
+  }
+
+  public int getIndentionWidth( Control control ) {
+    return getCssDimension( "Tree-Indent", "width", control );
   }
 }

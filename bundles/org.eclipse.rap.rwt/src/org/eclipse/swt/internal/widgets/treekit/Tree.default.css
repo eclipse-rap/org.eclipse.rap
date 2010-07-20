@@ -66,3 +66,56 @@ Tree-Checkbox:checked:grayed {
 Tree-Checkbox:checked:grayed:hover {
   background-image: url( resource/widget/rap/button/check-grayed-hover.png );
 }
+
+Tree-Indent {
+  width: 16px;
+  background-image: url( resource/widget/rap/tree/cross.gif );
+}
+
+Tree-Indent:collapsed {
+  background-image: url( resource/widget/rap/tree/cross_plus.gif );
+}
+
+Tree-Indent:expanded {
+  background-image: url( resource/widget/rap/tree/cross_minus.gif );
+}
+
+Tree-Indent:line {
+  background-image: url( resource/widget/rap/tree/line.gif );
+}
+
+Tree-Indent:first {
+  background-image: url( resource/widget/rap/tree/start.gif );
+}
+
+Tree-Indent:first:collapsed {
+  background-image: url( resource/widget/rap/tree/start_plus.gif );
+}
+
+Tree-Indent:first:expanded {
+  background-image: url( resource/widget/rap/tree/start_minus.gif );
+}
+
+Tree-Indent:last {
+  background-image: url( resource/widget/rap/tree/end.gif );
+}
+
+Tree-Indent:last:collapsed {
+  background-image: url( resource/widget/rap/tree/end_plus.gif );
+}
+
+Tree-Indent:last:expanded {
+  background-image: url( resource/widget/rap/tree/end_minus.gif );
+}
+
+Tree-Indent:first:last {
+  background-image: url( resource/widget/rap/tree/single.gif );
+}
+
+Tree-Indent:first:last:collapsed {
+  background-image: url( resource/widget/rap/tree/single_plus.gif );
+}
+
+Tree-Indent:first:last:expanded {
+  background-image: url( resource/widget/rap/tree/single_minus.gif );
+}

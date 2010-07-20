@@ -14,16 +14,16 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
 
   construct : function( tree ) {
     this.base( arguments );
-    this._tree = tree._tree;
+    this._tree = tree;
     this._feedback = null;
-    this._currentItem = null;
+    this._currentRow = null;
     this._insertIndicator = null;
     this._expandTimer = null;      
     this._scrollTimer = null;      
   },
 
   destruct : function() {
-    this._renderFeedback( this._currentItem, false );
+    this._renderFeedback( this._currentRow, false );
     if( this._expandTimer != null ) {
       this._expandTimer.dispose();
       this._expandTimer = null;
@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     this._tree = null;
     this._feedback = null;
     this._insertIndicator = null;
-    this._currentItem = null;
+    this._currentRow = null;
   },
 
   members : {
@@ -44,15 +44,15 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     // Public
 
     setFeedback : function( feedbackMap ) {
-      this._renderFeedback( this._currentItem, false );
+      this._renderFeedback( this._currentRow, false );
       this._feedback = feedbackMap;
-      this._renderFeedback( this._currentItem, true );
+      this._renderFeedback( this._currentRow, true );
     },
 
     renderFeedback : function( target ) {
-      this._renderFeedback( this._currentItem, false );
+      this._renderFeedback( this._currentRow, false );
       this._renderFeedback( target, true );
-      this._currentItem = target;
+      this._currentRow = target;
     },
 
     isFeedbackNode : function( node ) {
@@ -66,47 +66,34 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     ////////////
     // Internals
 
-    _renderFeedback : function( item, value ) {
-      if( this._feedback != null && item != null ) {
+    _renderFeedback : function( row, value ) {
+      if( this._feedback != null && row != null ) {
         if( this._feedback[ "select" ] ) {
-          this._renderFeedbackSelect( item, value );
+          this._renderFeedbackSelect( row, value );
         } else if( this._feedback[ "before" ] ) {
-          this._renderFeedbackBefore( item, value );
+          this._renderFeedbackBefore( row, value );
         } else if( this._feedback[ "after" ] ) {
-          this._renderFeedbackAfter( item, value );
+          this._renderFeedbackAfter( row, value );
         }
         if( this._feedback[ "expand" ] ) {
-          this._renderFeedbackExpand( item, value );
+          this._renderFeedbackExpand( row, value );
         }
         if( this._feedback[ "scroll" ] ) {
-          this._renderFeedbackScroll( item, value );
+          this._renderFeedbackScroll( row, value );
         }
       }
     },
     
-    _renderFeedbackSelect : function( item, value ) {
-      var labelObject = item.getLabelObject();      
-      if( value ) {
-        item.addState( "selected" );
-        labelObject.addState( "selected" );
-        labelObject.removeState( "parent_unfocused" );
-      } else {
-        if( item.getSelected() ) {              
-          if( !this._tree._hasFocus ) {
-            labelObject.addState( "parent_unfocused" );
-          }
-        } else {
-          item.removeState( "selected" );
-          labelObject.removeState( "selected" );
-        }
-      }
+    _renderFeedbackSelect : function( row, value ) {
+      row._setState( "dnd_selected", value );
+      var item = this._tree._findItemByRow( row );
+      this._tree._renderItem( item );
     },
 
-    _renderFeedbackBefore : function( item, value ) {
+    _renderFeedbackBefore : function( row, value ) {
       if( value ) {
-        var labelObject = item.getLabelObject();
-        // draw insert-indicator above item (1px heigher)
-        var location = this._getItemLocation( labelObject );
+        // draw insert-indicator above row (1px heigher)
+        var location = this._getRowLocation( row );
         location.y--;
         this._showInsertIndicator( location.x, location.y );
       } else {
@@ -114,12 +101,11 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
       }
     },
 
-    _renderFeedbackAfter : function( item, value ) {
+    _renderFeedbackAfter : function( row, value ) {
       if( value ) {
-        var labelObject = item.getLabelObject();
-        // draw insert-indicator below item (1px heigher)  
-        var location = this._getItemLocation( labelObject );
-        var height = labelObject.getHeightValue();
+        // draw insert-indicator below row (1px heigher)  
+        var location = this._getRowLocation( row );
+        var height = row.getHeightValue();
         location.y = location.y + ( height - 1 );
         this._showInsertIndicator( location.x, location.y );
       } else {
@@ -127,15 +113,18 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
       }
     },
 
-    _renderFeedbackExpand : function( item, value ) {
-      if( value && item.getOpen() == false ) {
-        this._startExpandTimer();
-      } else {
-        this._stopExpandTimer();
+    _renderFeedbackExpand : function( row, value ) {
+      var item = this._tree._findItemByRow( row );
+      if( item != null && item.hasChildren() ) {
+        if( value && !item.isExpanded() ) {
+          this._startExpandTimer();
+        } else {
+          this._stopExpandTimer();
+        }
       }
     },
     
-    _renderFeedbackScroll : function( item, value ) {
+    _renderFeedbackScroll : function( row, value ) {
       if( value ) {
         this._startScrollTimer();
       } else {
@@ -143,13 +132,13 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
       }      
     },
 
-    _getItemLocation : function( item ) {
+    _getRowLocation : function( row ) {
       var location = { x : 0, y : 0 };
-      var node = item.getElement();
+      var node = row.getElement();
       var treeNode = this._tree._getTargetNode();
       while( node != treeNode ) {
-        location.x += parseInt( node.style.left );
-        location.y += parseInt( node.style.top );
+        location.x += parseInt( node.style.left || 0 );
+        location.y += parseInt( node.style.top || 0 );
         node = node.parentNode;
       }
       return location;
@@ -200,7 +189,8 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
 
     _onExpandTimer : function( event ) {
       this._stopExpandTimer();
-      this._currentItem.open();
+      var item = this._tree._findItemByRow( this._currentRow );
+      item.setExpanded( true );
     },
 
     _startScrollTimer : function() {
@@ -218,65 +208,44 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
         this._scrollTimer.stop();
       }
     },
-    
-    _getScrollItem : function( item ) { 
-      var result = null; 
-      if( !this._isScrolledIntoView( item ) ) {
-        result = item;
-      } else {
-        var manager = this._tree.getManager();      
-        var next = manager.getNext( item );
-        if(    typeof next != "undefined"
-            && next != item 
-            && !this._isScrolledIntoView( next ) ) 
-        {
-          result = next;
-        } else {
-          var previous = manager.getPrevious( item );
-          if(    typeof previous != "undefined"
-              && previous != item 
-              && !this._isScrolledIntoView( previous ) ) 
-          {
-            result = previous;
-          }
-        }
+
+    _getScrollDirection : function( index ) {
+      var result = 0;
+      var topItemIndex = this._tree._topItemIndex;
+      if( index === topItemIndex ) {
+        result = -1;
+      } else if( index >= ( topItemIndex + this._tree._rows.length - 2 ) ) {
+        result = 1;
       }
       return result;
     },
 
-    _isScrolledIntoView : function( item ) {
-      var itemTop = this._getItemLocation( item.getLabelObject() ).y;
-      var scrollTop = this._tree.getScrollTop();
-      var itemTopRelative = itemTop - scrollTop;
-      var containerHeight = this._tree.getInnerHeight();
-      var itemHeight = item.getLabelObject().getHeightValue();
-      var above = itemTopRelative < 0;
-      var below = ( itemTopRelative + itemHeight ) > containerHeight;
-      return below == above; 
-    },
-
     _onScrollTimer : function( event ) {
       this._stopScrollTimer();
-      var item = this._getScrollItem( this._currentItem );
-      if( item != null ) {
-        item.getLabelObject().scrollIntoViewY();
-        var oldItem = this._currentItem;
-        var wrapper = function() {
-          this._targetUpdateCheck( oldItem, item );
-        };
-        qx.client.Timer.once( wrapper, this, 1 );
+      var item = this._tree._findItemByRow( this._currentRow );
+      var index = this._tree._findIndexByItem( item );
+      var offset = this._getScrollDirection( index );
+      if( offset != 0 ) {
+        var newIndex = index + offset;
+        var newItem = this._tree._findItemByIndex( newIndex );
+        if( newItem != null ) {
+          var newTopIndex = this._tree._topItemIndex + offset;
+          this._tree.setTopItemIndex( newTopIndex );
+          var newRow = this._tree._findRowByItem( newItem );
+          var oldRow = this._currentRow;
+          var wrapper = function() {
+            this._targetUpdateCheck( oldRow, newRow );
+          };
+          qx.client.Timer.once( wrapper, this, 1 );
+        }
       }
     },
-
-    _targetUpdateCheck : function( oldItem, newItem ) {
+    
+    _targetUpdateCheck : function( oldRow, newRow ) {
       if( !this.isDisposed() ) {
-        if(    newItem != this._currentItem
-            && oldItem == this._currentItem
-            || oldItem == newItem ) 
-        {
-          // NOTE : oldItem == newItem: the item was only partly in view
-          var dndSupport = org.eclipse.rwt.DNDSupport.getInstance()
-          dndSupport.setCurrentTargetWidget( newItem );
+        if( newRow != this._currentRow && oldRow == this._currentRow ) {
+          var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+          dndSupport.setCurrentTargetWidget( newRow );
         }
       }
     }

@@ -20,4 +20,5 @@ public interface ITreeItemAdapter {
   Color[] getCellBackgrounds();
   Color[] getCellForegrounds();
   Font[] getCellFonts();
+  boolean isParentDisposed();
 }
