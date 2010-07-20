@@ -103,7 +103,7 @@ public class Composite_Test extends TestCase {
     assertTrue( adapter.getBackgroundTransparency() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.BORDER );

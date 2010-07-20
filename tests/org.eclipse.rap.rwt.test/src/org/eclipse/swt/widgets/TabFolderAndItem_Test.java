@@ -288,7 +288,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 2, folder.getItemCount() );
   }
 
-  public void testToolTip() throws Exception {
+  public void testToolTip() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );

@@ -2370,7 +2370,7 @@ public class Table_Test extends TestCase {
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
   }
   
-  public void testRemoveArrayDuplicates() throws Exception {
+  public void testRemoveArrayDuplicates() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );

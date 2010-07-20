@@ -118,7 +118,7 @@ public class Label_Test extends TestCase {
     assertNull( label.getImage() );
   }
 
-  public void testSize() throws Exception {
+  public void testSize() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Label labelWrap = new Label( shell, SWT.WRAP );
@@ -143,7 +143,7 @@ public class Label_Test extends TestCase {
     assertTrue( extentWrap.y > 0 );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );

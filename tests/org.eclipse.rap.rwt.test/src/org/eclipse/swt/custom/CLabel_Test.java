@@ -73,7 +73,7 @@ public class CLabel_Test extends TestCase {
     assertEquals( label.getText(), "bar" );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.SHELL_TRIM );

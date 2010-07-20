@@ -1114,7 +1114,7 @@ public class List_Test extends TestCase {
     assertTrue( list.isDisposed() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -1153,7 +1153,7 @@ public class List_Test extends TestCase {
     assertEquals( expected, list.computeSize( 100, 100 ) );
   }
 
-  public void testShowSelectionEmptyList() throws Exception {
+  public void testShowSelectionEmptyList() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -1170,7 +1170,7 @@ public class List_Test extends TestCase {
     list.showSelection();
   }
 
-  public void testShowSelectionBottom() throws Exception {
+  public void testShowSelectionBottom() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -1186,7 +1186,7 @@ public class List_Test extends TestCase {
     list.removeAll();
   }
 
-  public void testShowSelectionTop() throws Exception {
+  public void testShowSelectionTop() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );

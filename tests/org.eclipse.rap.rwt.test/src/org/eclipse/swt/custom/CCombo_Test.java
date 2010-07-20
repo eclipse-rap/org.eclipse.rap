@@ -622,7 +622,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( 3, combo.getVisibleItemCount() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -649,7 +649,7 @@ public class CCombo_Test extends TestCase {
     assertEquals( expected, combo.computeSize( 100, 100 ) );
   }
 
-  public void testSetTextAndSelection() throws Exception {
+  public void testSetTextAndSelection() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

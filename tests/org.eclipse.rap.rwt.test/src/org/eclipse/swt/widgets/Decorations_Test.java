@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Image;
 
 public class Decorations_Test extends TestCase {
 
-  public void testSetImages() throws Exception {
+  public void testSetImages() {
     Display display = new Display();
     Decorations shell = new Shell( display );
     try {
@@ -36,7 +36,7 @@ public class Decorations_Test extends TestCase {
     }
   }
 
-  public void testGetImages() throws Exception {
+  public void testGetImages() {
     Display display = new Display();
     Decorations shell = new Shell( display );
     assertNotNull( shell.getImages() );
@@ -50,7 +50,7 @@ public class Decorations_Test extends TestCase {
     assertEquals( image2, images[1] );
   }
 
-  public void testSetImage() throws Exception {
+  public void testSetImage() {
     Display display = new Display();
     Decorations shell = new Shell( display );
     assertNull( shell.getImage() );

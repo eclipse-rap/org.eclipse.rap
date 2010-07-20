@@ -239,7 +239,7 @@ public class Control_Test extends TestCase {
     assertSame( display.getSystemFont(), label.getFont() );
   }
 
-  public void testForeground() throws Exception {
+  public void testForeground() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Composite comp = new Composite( shell, SWT.NONE );
@@ -265,7 +265,7 @@ public class Control_Test extends TestCase {
                 control.getForeground() );
   }
 
-  public void testBackground() throws Exception {
+  public void testBackground() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Composite comp = new Composite( shell, SWT.NONE );
@@ -291,7 +291,7 @@ public class Control_Test extends TestCase {
                 control.getBackground() );
   }
 
-  public void testBackgroundMode() throws Exception {
+  public void testBackgroundMode() {
     Display display = new Display();
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
@@ -326,7 +326,7 @@ public class Control_Test extends TestCase {
     assertEquals( blue, control.getBackground() );
   }
 
-  public void testBackgroundModeMultiLevel() throws Exception {
+  public void testBackgroundModeMultiLevel() {
     Display display = new Display();
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
@@ -345,7 +345,7 @@ public class Control_Test extends TestCase {
     assertEquals( blue, label.getBackground() );
   }
 
-  public void testBackgroundTransparency() throws Exception {
+  public void testBackgroundTransparency() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Composite comp = new Composite( shell, SWT.NONE );
@@ -413,7 +413,7 @@ public class Control_Test extends TestCase {
     assertEquals( false, control.isEnabled() );
   }
 
-  public void testUserForeground() throws Exception {
+  public void testUserForeground() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Composite composite = new Composite( shell, SWT.NONE );
@@ -817,7 +817,7 @@ public class Control_Test extends TestCase {
     assertNull( control.getCursor() );
   }
 
-  public void testGetMonitor() throws Exception {
+  public void testGetMonitor() {
     Display display = new Display();
     Control control = new Shell( display );
     Monitor monitor = control.getMonitor();

@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Point;
 
 public class TextSizeEstimation_Test extends TestCase {
 
-  public void testAvgCharWidth() throws Exception {
+  public void testAvgCharWidth() {
     Font font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     float avgCharWidth = TextSizeEstimation.getAvgCharWidth( font10 );
     assertTrue( avgCharWidth > 3 );
@@ -35,7 +35,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( charHeight < 13 );
   }
   
-  public void testStringExtent() throws Exception {
+  public void testStringExtent() {
     Font font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     String string = "TestString";
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
@@ -59,7 +59,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( extent.y < charHeight * 1.5 * 5 );
   }
   
-  public void testTextExtent() throws Exception {
+  public void testTextExtent() {
     Font font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     assertTrue( charHeight > 9 );

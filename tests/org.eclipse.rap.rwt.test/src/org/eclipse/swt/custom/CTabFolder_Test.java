@@ -328,7 +328,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=279592
-  public void testTabHeightImage() throws Exception {
+  public void testTabHeightImage() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
@@ -537,7 +537,7 @@ public class CTabFolder_Test extends TestCase {
     item2.dispose();
   }
 
-  public void testComputeTrim() throws Exception {
+  public void testComputeTrim() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -564,7 +564,7 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
   }
 
-  public void testClientArea() throws Exception {
+  public void testClientArea() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -592,7 +592,7 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( expected, folder.getClientArea() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
