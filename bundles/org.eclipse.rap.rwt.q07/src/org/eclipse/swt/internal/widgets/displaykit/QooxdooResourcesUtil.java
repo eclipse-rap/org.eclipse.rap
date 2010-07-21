@@ -74,7 +74,6 @@ final class QooxdooResourcesUtil {
     "org/eclipse/rwt/widgets/TreeItem.js",
     "org/eclipse/rwt/widgets/TreeRow.js",
     "org/eclipse/rwt/widgets/Tree.js",
-    "org/eclipse/swt/TreeItemUtil.js",
     "org/eclipse/swt/custom/ScrolledComposite.js",
     "org/eclipse/swt/widgets/Separator.js",
     "org/eclipse/swt/LabelUtil.js",
