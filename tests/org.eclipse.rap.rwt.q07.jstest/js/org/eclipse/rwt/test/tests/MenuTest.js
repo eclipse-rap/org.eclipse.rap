@@ -874,6 +874,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menu = null;
       this.menuItem = null;
     },
+
+    testOpenContextmenuByClickOnSubwidget : function() {
+      this.menu = new this._menuClass();
+      this.menuItem = new this._menuItemClass( "push" );
+      this.menuItem.setText( "bla" ); 
+      this.menu.addMenuItemAt( this.menuItem, 0 );
+      var widget = new qx.ui.basic.Atom( "bla" );
+      var parent = new qx.ui.layout.CanvasLayout();
+      parent.add( widget );
+      parent.addToDocument();
+      parent.setLocation( 10, 10 );
+      parent.setDimension( 10, 10 );
+      parent.setContextMenu( this.menu );
+      parent.addEventListener( 
+        "contextmenu", 
+        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      this.testUtil.flush();
+      assertTrue( widget.isSeeable() );
+      assertFalse( this.menu.isSeeable() );
+      this.testUtil.rightClick( widget );
+      this.testUtil.flush();
+      assertTrue( this.menu.isSeeable() );
+      this.testUtil.click( this.testUtil.getDocument() );
+      this.testUtil.flush();
+      assertFalse( this.menu.isSeeable() );
+      widget.setContextMenu( null );
+      widget.removeEventListener( 
+        "contextmenu", 
+        org.eclipse.rwt.widgets.Menu.contextMenuHandler
+      );  
+      widget.setParent( null );
+      widget.dispose();
+      this.disposeMenu();            
+    },
         
     /************************* Helper *****************************/
         

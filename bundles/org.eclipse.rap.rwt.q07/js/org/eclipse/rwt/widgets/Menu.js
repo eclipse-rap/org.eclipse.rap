@@ -65,7 +65,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
   statics : {
     
     contextMenuHandler : function( event ) {
-      var widget = event.getTarget();
+      var widget = event.getCurrentTarget();
       var contextMenu = widget.getContextMenu();
       if( contextMenu != null ) {
         contextMenu.setLocation( event.getPageX(), event.getPageY() );
