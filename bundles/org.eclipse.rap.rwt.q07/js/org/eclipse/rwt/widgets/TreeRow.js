@@ -191,7 +191,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         var height = this._tree.getItemHeight(); 
         var width = nextLevelOffset - offset;
         var element = this._getNextElement( 3 );
-        this._setImage( element, source );
+        this._setImage( element, source, true );
         this._setBounds( element, offset, 0, width, height );
         result = element;
       }
@@ -202,7 +202,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _renderCheckBox : function( item ) {
       if( this._tree.getHasCheckBoxes() && this._styleMap.checkBox != null ) {
         var element = this._getNextElement( 3 );
-        this._setImage( element, this._styleMap.checkBox );
+        this._setImage( element, this._styleMap.checkBox, true );
         var left = this._tree.getCheckBoxLeft( item );
         var width = this._tree.getCheckBoxWidth( item );
         var height = this._tree.getItemHeight();
@@ -276,7 +276,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var element = null;
       if( source !== null ) {
         element = this._getNextElement( 3 );
-        this._setImage( element, source );
+        this._setImage( element, source, false );
         var left = this._tree.getItemImageLeft( item, cell );
         var width = this._tree.getItemImageWidth( item, cell );
         this._setBounds( element, left, 0, width, this._tree.getItemHeight() );
@@ -386,10 +386,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       element.style.color = color != null ? color : "";
     },
 
-    _setImage : function( element, src ) {
+    _setImage : function( element, src, center ) {
       element.style.backgroundImage = "url( " + src + ")";
       element.style.backgroundRepeat = "no-repeat";
-      element.style.backgroundPosition = "center";
+      element.style.backgroundPosition = center ? "center" : "";
     },
         
     _getNextElement : function( zIndex ) {
