@@ -85,7 +85,7 @@ public final class Graphics {
     if( data == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return getFont( data.getName(), data.getHeight(), data.getStyle() );
+    return ResourceFactory.getFont( data );
   }
 
   /**
@@ -111,13 +111,7 @@ public final class Graphics {
                               final int height,
                               final int style )
   {
-    if( name == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    if( height < 0 ) {
-      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
-    }
-    return ResourceFactory.getFont( name, height, style );
+    return ResourceFactory.getFont( new FontData( name, height, style ) );
   }
 
   /**

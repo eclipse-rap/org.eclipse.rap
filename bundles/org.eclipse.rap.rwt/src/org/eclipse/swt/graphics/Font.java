@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.graphics.FontDataFactory;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.swt.*;
+import org.eclipse.swt.internal.graphics.*;
 
 
 /**
@@ -38,7 +38,7 @@ public final class Font extends Resource {
   // used by ResourceFactory#getFont()
   private Font( final FontData fontData ) {
     super( null );
-    this.internalFontData = FontDataFactory.findFontData( fontData );
+    internalFontData = FontDataFactory.findFontData( fontData );
   }
 
   /**
@@ -68,7 +68,11 @@ public final class Font extends Resource {
    * @since 1.3
    */
   public Font( final Device device, final FontData fontData ) {
-    this( device, new FontData[] { fontData } );
+    super( checkDevice( device ) );
+    if( fontData == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    internalFontData = FontDataFactory.findFontData( fontData );
   }
 
   /**
@@ -113,7 +117,7 @@ public final class Font extends Resource {
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );
       }
     }
-    this.internalFontData = FontDataFactory.findFontData( fontData[ 0 ] );
+    internalFontData = FontDataFactory.findFontData( fontData[ 0 ] );
   }
 
   /**
@@ -150,8 +154,8 @@ public final class Font extends Resource {
     if( height < 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    int checkedStyle = ResourceFactory.checkFontStyle( style );
-    internalFontData = FontDataFactory.findFontData( name, height, checkedStyle );
+    FontData fontData = new FontData( name, height, style );
+    internalFontData = FontDataFactory.findFontData( fontData );
   }
 
   /**

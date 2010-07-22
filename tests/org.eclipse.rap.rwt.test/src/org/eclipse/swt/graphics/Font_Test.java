@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Display;
 
 public class Font_Test extends TestCase {
 
-  
   public void testConstructor() {
     Device device = new Display();
     Font font = new Font( device, "roman", 1, SWT.NORMAL );
@@ -29,14 +28,15 @@ public class Font_Test extends TestCase {
     assertEquals( "roman", fontData.getName() );
     assertEquals( 1, fontData.getHeight() );
     assertEquals( SWT.NORMAL, fontData.getStyle() );
+    assertEquals( "", fontData.getLocale() );
   }
-
+  
   public void testConstructorWithNullDevice() {
     try {
       new Font( null, "roman", 1, SWT.NONE );
       fail( "The device must not be null" );
     } catch( IllegalArgumentException e ) {
-      // Expected
+      // expected
     }
   }
 
@@ -46,7 +46,7 @@ public class Font_Test extends TestCase {
       new Font( device, null, 1, SWT.NONE );
       fail( "The font name must not be null" );
     } catch( IllegalArgumentException e ) {
-      // Expected
+      // expected
     }
   }
 
@@ -121,21 +121,26 @@ public class Font_Test extends TestCase {
   public void testConstructorCreatesSafeCopy() {
     Device device = new Display();
     FontData fontData = new FontData( "roman", 1, SWT.NORMAL );
-    FontData[] fontDatas = new FontData[] { fontData };
-    Font font = new Font( device, fontDatas );
-    fontDatas[ 0 ] = null;
-    assertNotSame( fontDatas, font.getFontData() );
-    assertNotSame( fontData, font.getFontData()[ 0 ] );
+    Font font = new Font( device, fontData );
+    fontData.setHeight( 23 );
+    assertEquals( 1, font.getFontData()[ 0 ].getHeight() );
   }
 
   public void testGetFontData() {
     Display display = new Display();
-    Font regularFont = new Font( display, "roman", 13, SWT.ITALIC );
-    FontData[] fontDatas = regularFont.getFontData();
+    Font font = new Font( display, "roman", 13, SWT.ITALIC );
+    FontData[] fontDatas = font.getFontData();
     assertEquals( 1, fontDatas.length );
     assertEquals( "roman", fontDatas[ 0 ].getName() );
     assertEquals( 13, fontDatas[ 0 ].getHeight() );
     assertEquals( SWT.ITALIC, fontDatas[ 0 ].getStyle() );
+  }
+
+  public void testGetFontDataCreatesSafeCopy() {
+    Display display = new Display();
+    Font font = new Font( display, "foo", 13, SWT.ITALIC );
+    font.getFontData()[ 0 ].setName( "bar" );
+    assertEquals( "foo", font.getFontData()[ 0 ].getName() );
   }
 
   public void testGetFontDataAfterDispose() {

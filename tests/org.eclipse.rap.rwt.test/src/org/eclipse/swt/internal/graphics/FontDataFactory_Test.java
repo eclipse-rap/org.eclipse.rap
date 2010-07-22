@@ -20,30 +20,30 @@ import org.eclipse.swt.graphics.FontData;
 
 public class FontDataFactory_Test extends TestCase {
 
-  public void testFindFontData() {
-    FontData fontData = FontDataFactory.findFontData( "Times", 18, SWT.NORMAL );
-    assertNotNull( fontData );
-    assertEquals( "Times", fontData.getName() );
-    assertEquals( 18, fontData.getHeight() );
-    assertEquals( SWT.NORMAL, fontData.getStyle() );
+  public void testFind() {
+    FontData fontData = new FontData( "Times", 18, SWT.NORMAL );
+    FontData result = FontDataFactory.findFontData( fontData );
+    assertNotNull( result );
+    assertNotSame( fontData, result );
+    assertEquals( "Times", result.getName() );
+    assertEquals( 18, result.getHeight() );
+    assertEquals( SWT.NORMAL, result.getStyle() );
   }
 
-  public void testFindFontDataFromFontData() {
-    FontData origFontData = new FontData( "Times", 18, SWT.NORMAL );
-    FontData fontData = FontDataFactory.findFontData( origFontData );
-    assertNotNull( fontData );
-    assertNotSame( origFontData, fontData );
-    assertEquals( "Times", fontData.getName() );
-    assertEquals( 18, fontData.getHeight() );
-    assertEquals( SWT.NORMAL, fontData.getStyle() );
+  public void testSafeCopy() {
+    FontData fontData = new FontData( "Times", 18, SWT.NORMAL );
+    FontData result = FontDataFactory.findFontData( fontData );
+    assertNotSame( fontData, result );
+    fontData.setHeight( 23 );
+    assertEquals( 18, result.getHeight() );
   }
 
-  public void testSameFontData() {
-    FontData fontData1 = FontDataFactory.findFontData( "Times", 18, SWT.NORMAL );
-    assertNotNull( fontData1 );
-    FontData fontData2 = FontDataFactory.findFontData( "Times", 18, SWT.NORMAL );
-    assertNotNull( fontData2 );
-    assertSame( fontData1, fontData2 );
+  public void testShared() {
+    FontData fontData1 = new FontData( "Times", 18, SWT.NORMAL );
+    FontData result1 = FontDataFactory.findFontData( fontData1 );
+    FontData fontData2 = new FontData( "Times", 18, SWT.NORMAL );
+    FontData result2 = FontDataFactory.findFontData( fontData2 );
+    assertSame( result1, result2 );
   }
 
   protected void setUp() throws Exception {

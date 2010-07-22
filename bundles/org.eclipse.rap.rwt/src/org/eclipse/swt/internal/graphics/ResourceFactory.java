@@ -70,38 +70,15 @@ public final class ResourceFactory {
   ////////
   // Fonts
 
-  public static Font getFont( final String name,
-                              final int height,
-                              final int style )
-  {
-    int checkedStyle = checkFontStyle( style );
+  public static Font getFont( final FontData fontData ) {
     Font result;
-    Integer key = new Integer( fontHashCode( name, height, checkedStyle ) );
+    Integer key = new Integer( fontData.hashCode() );
     synchronized( fonts ) {
       result = ( Font )fonts.get( key );
       if( result == null ) {
-        FontData fontData = new FontData( name, height, checkedStyle );
         result = createFontInstance( fontData );
         fonts.put( key, result );
       }
-    }
-    return result;
-  }
-
-  public static int fontHashCode( final String name,
-                                  final int height,
-                                  final int style )
-  {
-    return name.hashCode() ^ height << 2 ^ style;
-  }
-
-  public static int checkFontStyle( final int style ) {
-    int result = SWT.NORMAL;
-    if( ( style & SWT.BOLD ) != 0 ) {
-      result |= SWT.BOLD;
-    }
-    if( ( style & SWT.ITALIC ) != 0 ) {
-      result |= SWT.ITALIC;
     }
     return result;
   }

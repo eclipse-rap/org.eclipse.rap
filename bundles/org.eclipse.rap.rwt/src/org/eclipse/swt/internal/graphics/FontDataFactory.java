@@ -16,40 +16,29 @@ import org.eclipse.swt.graphics.FontData;
 
 
 /**
- * This class provides shared FontData.
+ * This class creates and provides shared FontData instances for internal use.
  */
 public final class FontDataFactory {
 
-  private static final Map fontDataCache = new Hashtable();
+  private static final Map cache = new Hashtable();
 
-  public static FontData findFontData( final String name,
-                                       final int height,
-                                       final int style )
-  {
-    FontData fontData;
+  public static FontData findFontData( final FontData fontData ) {
     // Note [rst]: We don't need to synchronize get and put here. Since the
     //             creation of FontData is deterministic, concurrent access
     //             can at worst lead to one FontData instance overwriting the
-    //             other. In this rare case, two equal instances would be in use
-    //             in the system.
-    int hashCode = ResourceFactory.fontHashCode( name, height, style );
-    Object key = new Integer( hashCode );
-    fontData = ( FontData )fontDataCache.get( key );
-    if( fontData == null ) {
-      fontData = new FontData( name, height, style );
-      fontDataCache.put( key, fontData );
+    //             other. In this rare case, two equal internal FontData
+    //             instances would be in use in the system, which is harmless.
+    Object key = new Integer( fontData.hashCode() );
+    FontData result = ( FontData )cache.get( key );
+    if( result == null ) {
+      result = new FontData( fontData.getName(), fontData.getHeight(), fontData.getStyle() );
+      cache.put( key, result );
     }
-    return fontData;
-  }
-
-  public static FontData findFontData( final FontData fontData ) {
-    return findFontData( fontData.getName(),
-                         fontData.getHeight(),
-                         fontData.getStyle() );
+    return result;
   }
 
   static void clear() {
-    fontDataCache.clear();
+    cache.clear();
   }
 
   private FontDataFactory() {
