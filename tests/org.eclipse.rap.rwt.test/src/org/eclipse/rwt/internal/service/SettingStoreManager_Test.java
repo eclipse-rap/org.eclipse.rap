@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,7 @@ public class SettingStoreManager_Test extends TestCase {
     assertEquals( "value", newStore.getAttribute( "key" ) );
   }
 
-  public void testGetStoreSetsCookie() throws Exception {
+  public void testGetStoreSetsCookie() {
     SettingStoreManager.getStore();
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     Cookie cookie = response.getCookie( "settingStore" );
@@ -82,7 +82,7 @@ public class SettingStoreManager_Test extends TestCase {
     assertTrue( Pattern.matches( "[0-9]*_[0-9]*", cookie.getValue() ) );
   }
 
-  public void testGetStoreReadsCookie() throws Exception {
+  public void testGetStoreReadsCookie() {
     String storeId = "123_456";
     Cookie cookie = new Cookie( "settingStore", storeId );
     cookie.setMaxAge( 3600 );
@@ -92,7 +92,7 @@ public class SettingStoreManager_Test extends TestCase {
     assertEquals( storeId, store.getId() );
   }
 
-  public void testValidateCookieValue() throws Exception {
+  public void testValidateCookieValue() {
     assertFalse( SettingStoreManager.isValidCookieValue( "" ) );
     assertFalse( SettingStoreManager.isValidCookieValue( "_" ) );
     assertFalse( SettingStoreManager.isValidCookieValue( "ABC_DEF" ) );

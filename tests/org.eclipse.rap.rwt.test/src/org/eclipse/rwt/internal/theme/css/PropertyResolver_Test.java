@@ -21,6 +21,7 @@ import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.QxAnimation.Animation;
 import org.w3c.css.sac.*;
 
+
 public class PropertyResolver_Test extends TestCase {
 
   private static Parser parser = new Parser();
@@ -558,7 +559,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
-  public void testIsColorProperty() throws Exception {
+  public void testIsColorProperty() {
     assertFalse( PropertyResolver.isColorProperty( "border" ) );
     assertTrue( PropertyResolver.isColorProperty( "color" ) );
     assertTrue( PropertyResolver.isColorProperty( "background-color" ) );
@@ -566,28 +567,28 @@ public class PropertyResolver_Test extends TestCase {
     assertTrue( PropertyResolver.isColorProperty( "rwt-selectionmarker-color" ) );
   }
 
-  public void testIsBorderProperty() throws Exception {
+  public void testIsBorderProperty() {
     assertTrue( PropertyResolver.isBorderProperty( "border" ) );
   }
 
-  public void testIsFontProperty() throws Exception {
+  public void testIsFontProperty() {
     assertTrue( PropertyResolver.isFontProperty( "font" ) );
   }
 
-  public void testIsBoxDimProperty() throws Exception {
+  public void testIsBoxDimProperty() {
     assertTrue( PropertyResolver.isBoxDimensionProperty( "padding" ) );
     assertTrue( PropertyResolver.isBoxDimensionProperty( "margin" ) );
   }
 
-  public void testIsImageProperty() throws Exception {
+  public void testIsImageProperty() {
     assertTrue( PropertyResolver.isImageProperty( "background-image" ) );
   }
 
-  public void testIsCursorProperty() throws Exception {
+  public void testIsCursorProperty() {
     assertTrue( PropertyResolver.isCursorProperty( "cursor" ) );
   }
 
-  public void testIsAnimationProperty() throws Exception {
+  public void testIsAnimationProperty() {
     assertTrue( PropertyResolver.isAnimationProperty( "animation" ) );
   }
 

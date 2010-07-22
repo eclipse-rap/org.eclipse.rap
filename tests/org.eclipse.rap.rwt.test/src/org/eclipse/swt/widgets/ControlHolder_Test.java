@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,14 +7,15 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
+
 
 public class ControlHolder_Test extends TestCase {
 
@@ -87,7 +88,7 @@ public class ControlHolder_Test extends TestCase {
     }
   }
 
-  public void testAddAtIndex() throws Exception {
+  public void testAddAtIndex() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Button button1 = new Button( shell, SWT.PUSH );

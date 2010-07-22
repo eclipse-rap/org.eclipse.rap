@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.layout.FillLayout;
+
 
 public class Shell_Test extends TestCase {
 
@@ -345,7 +345,7 @@ public class Shell_Test extends TestCase {
     assertNull( shell.getDefaultButton() );
   }
 
-  public void testForceActive() throws Exception {
+  public void testForceActive() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Shell secondShell = new Shell( display );
@@ -559,7 +559,7 @@ public class Shell_Test extends TestCase {
     assertEquals( bounds, shell.getBounds() );
   }
 
-  public void testModified() throws Exception {
+  public void testModified() {
     Display display = new Display();
     Shell shell = new Shell( display );
     assertFalse( shell.getModified() );

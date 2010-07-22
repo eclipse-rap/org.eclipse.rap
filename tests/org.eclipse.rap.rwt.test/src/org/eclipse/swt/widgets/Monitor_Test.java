@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -17,7 +17,7 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 public class Monitor_Test extends TestCase {
 
-  public void testBounds() throws Exception {
+  public void testBounds() {
     Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
@@ -34,7 +34,7 @@ public class Monitor_Test extends TestCase {
     assertEquals( new Rectangle( 100, 200, 300, 400 ), newMonitorBounds );
   }
 
-  public void testClientArea() throws Exception {
+  public void testClientArea() {
     Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;

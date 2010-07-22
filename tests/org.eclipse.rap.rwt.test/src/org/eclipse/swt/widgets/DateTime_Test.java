@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,7 +122,7 @@ public class DateTime_Test extends TestCase {
     assertEquals( 2008, dateTime.getYear() );
   }
 
-  public void testSetTime() throws Exception {
+  public void testSetTime() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     DateTime dateTime = new DateTime( shell, SWT.NONE );
@@ -211,7 +211,7 @@ public class DateTime_Test extends TestCase {
     assertTrue( dateTime.isDisposed() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );

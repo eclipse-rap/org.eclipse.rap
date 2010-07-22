@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -17,6 +17,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+
 
 public class Scale_Test extends TestCase {
 
@@ -110,7 +111,7 @@ public class Scale_Test extends TestCase {
     assertTrue( scale.isDisposed() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );

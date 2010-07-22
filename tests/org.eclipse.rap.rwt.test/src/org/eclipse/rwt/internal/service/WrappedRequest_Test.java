@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -22,7 +23,6 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 
 
-
 public class WrappedRequest_Test extends TestCase {
   
   public static final class DefaultEntryPoint implements IEntryPoint {
@@ -35,7 +35,7 @@ public class WrappedRequest_Test extends TestCase {
     }
   }
 
-  public void testAdditionalParameters() throws Exception {
+  public void testAdditionalParameters() {
     TestRequest original = new TestRequest();
     String p0 = "p0";
     String v0 = "v0";

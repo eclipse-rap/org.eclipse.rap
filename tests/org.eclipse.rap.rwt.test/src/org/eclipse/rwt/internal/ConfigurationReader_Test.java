@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal;
 
 import java.io.File;
@@ -49,7 +49,7 @@ public class ConfigurationReader_Test extends TestCase {
     ConfigurationReader.setConfigurationFile( null );
   }
   
-  public void testConfigurationReading() throws Exception {
+  public void testConfigurationReading() {
     IConfiguration application = ConfigurationReader.getConfiguration();
     
     // initialization

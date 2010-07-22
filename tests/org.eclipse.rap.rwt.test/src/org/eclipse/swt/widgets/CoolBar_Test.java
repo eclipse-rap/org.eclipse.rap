@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class CoolBar_Test extends TestCase {
     assertEquals( -1, bar.indexOf( anotherItem ) );
   }
 
-  public void testIndexOnCreation() throws Exception {
+  public void testIndexOnCreation() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CoolBar coolBar = new CoolBar( shell, SWT.NONE );
@@ -212,7 +211,7 @@ public class CoolBar_Test extends TestCase {
     }
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );

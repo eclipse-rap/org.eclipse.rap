@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 
 
-
 public class AdapterManager_Test extends TestCase {
 
   protected void setUp() throws Exception {
@@ -27,7 +26,7 @@ public class AdapterManager_Test extends TestCase {
     Fixture.tearDown();
   }
   
-  public void testAdapterManager() throws Exception {
+  public void testAdapterManager() {
     AdapterFactory adapterFactory = new AdapterFactory() {
       public Object getAdapter( final Object adaptable, 
                                 final Class adapter ) {

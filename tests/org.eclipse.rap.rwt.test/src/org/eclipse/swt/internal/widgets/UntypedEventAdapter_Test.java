@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import java.util.HashSet;
@@ -22,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
 import org.eclipse.swt.widgets.*;
+
 
 public class UntypedEventAdapter_Test extends TestCase {
 
@@ -39,7 +39,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testListenerTypes() throws Exception {
+  public void testListenerTypes() {
     Display display = new Display();
     Control widget = new Shell( display );
     UntypedEventAdapter adapter = new UntypedEventAdapter();
@@ -119,7 +119,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( SWT.Arm, eventType );
   }
 
-  public void testAdditionAndRemovalOfListener() throws Exception {
+  public void testAdditionAndRemovalOfListener() {
     Display display = new Display();
     Control widget = new Shell( display );
     UntypedEventAdapter adapter = new UntypedEventAdapter();
@@ -157,7 +157,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     assertEquals( 0, eventBuffer.size() );
   }
 
-  public void testExecutionOrder() throws Exception {
+  public void testExecutionOrder() {
     Display display = new Display();
     Control widget = new Shell( display );
     UntypedEventAdapter adapter = new UntypedEventAdapter();

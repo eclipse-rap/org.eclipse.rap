@@ -25,7 +25,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 
 
-
 public class Widget_Test extends TestCase {
 
   protected void setUp() throws Exception {
@@ -206,7 +205,7 @@ public class Widget_Test extends TestCase {
     }
   }
 
-  public void testDisposeWithException() throws Exception {
+  public void testDisposeWithException() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Widget widget = new Shell( display );
@@ -236,7 +235,7 @@ public class Widget_Test extends TestCase {
     } );
   }
 
-  public void testNotifyListeners() throws Exception {
+  public void testNotifyListeners() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Widget widget = new Shell( display );
@@ -250,7 +249,7 @@ public class Widget_Test extends TestCase {
     assertEquals( "untyped", log.toString() );
   }
 
-  public void testNotifyListenersTyped() throws Exception {
+  public void testNotifyListenersTyped() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -264,7 +263,7 @@ public class Widget_Test extends TestCase {
     assertEquals( "typed", log.toString() );
   }
 
-  public void testNotifyListenersDisplayFilter() throws Exception {
+  public void testNotifyListenersDisplayFilter() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -279,7 +278,7 @@ public class Widget_Test extends TestCase {
   }
 
   // SWT always overrides e.type, e.display and e.widget
-  public void testNotifyListenersEventFields() throws Exception {
+  public void testNotifyListenersEventFields() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     final Shell shell = new Shell( display );
@@ -318,7 +317,7 @@ public class Widget_Test extends TestCase {
     assertEquals( "filter", log.toString() );
   }
 
-  public void testNotifyListenersSetData() throws Exception {
+  public void testNotifyListenersSetData() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     final Widget widget = new Shell( display );
@@ -339,7 +338,7 @@ public class Widget_Test extends TestCase {
     assertEquals( "setdata", log.toString() );
   }
 
-  public void testNotifyListenersNullEvent() throws Exception {
+  public void testNotifyListenersNullEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Display display = new Display();
     final Control control = new Shell( display );
@@ -364,7 +363,7 @@ public class Widget_Test extends TestCase {
     // ignored
   }
 
-  public void testGetListeners() throws Exception {
+  public void testGetListeners() {
     final Display display = new Display();
     final Widget widget = new Shell( display );
     Listener[] listeners = widget.getListeners( 0 );
@@ -386,7 +385,7 @@ public class Widget_Test extends TestCase {
     assertEquals( 2, widget.getListeners( SWT.Resize ).length );
   }
 
-  public void testIsListening() throws Exception {
+  public void testIsListening() {
     final Display display = new Display();
     final Widget widget = new Shell( display );
     final Listener dummyListener = new Listener() {

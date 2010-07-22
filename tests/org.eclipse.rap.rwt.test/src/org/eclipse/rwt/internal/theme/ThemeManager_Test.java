@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( themeIds.length > 0 );
   }
 
-  public void testRegisterTheme() throws Exception {
+  public void testRegisterTheme() {
     ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
     StyleSheet emptyStyleSheet = new StyleSheet( new StyleRule[ 0 ] );
@@ -54,7 +54,7 @@ public class ThemeManager_Test extends TestCase {
     assertSame( customTheme, themeManager.getTheme( "custom.id" ) );
   }
 
-  public void testRegisterThemeTwice() throws Exception {
+  public void testRegisterThemeTwice() {
     ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
     StyleSheet emptyStyleSheet = new StyleSheet( new StyleRule[ 0 ] );
@@ -78,7 +78,7 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( themeableWidget.elements.length > 0 );
   }
 
-  public void testDefaultThemeInitialized() throws Exception {
+  public void testDefaultThemeInitialized() {
     ThemeManager.resetInstance();
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();

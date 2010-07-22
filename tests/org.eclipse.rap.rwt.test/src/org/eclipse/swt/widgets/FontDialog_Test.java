@@ -96,7 +96,7 @@ public class FontDialog_Test extends TestCase {
     assertSame( fontList[ 0 ], fontDialog.getFontList()[ 0 ] );
   }
 
-  public void testFontData() throws Exception {
+  public void testFontData() {
     String result;
     result = FontDialog.getFirstFontName( "" );
     assertEquals( "", result );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -46,7 +46,7 @@ public class Group_Test extends TestCase {
     }
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -73,7 +73,7 @@ public class Group_Test extends TestCase {
     assertEquals( expected, group.computeSize( 100, 100 ) );
   }
 
-  public void testComputeTrim() throws Exception {
+  public void testComputeTrim() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -86,7 +86,7 @@ public class Group_Test extends TestCase {
     assertEquals( expected, group.computeTrim( 20, 20, 100, 100 ) );
   }
 
-  public void testClientArea() throws Exception {
+  public void testClientArea() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );

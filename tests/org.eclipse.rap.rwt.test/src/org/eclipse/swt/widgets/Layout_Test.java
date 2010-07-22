@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -66,7 +66,7 @@ public class Layout_Test extends TestCase {
     assertEquals( expected, control.getBounds() );
   }
 
-  public void testClientArea() throws Exception {
+  public void testClientArea() {
     Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -80,7 +80,7 @@ public class Layout_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 46, 96 ), comp2.getClientArea() );
   }
 
-  public void testComputeSize() throws Exception {
+  public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

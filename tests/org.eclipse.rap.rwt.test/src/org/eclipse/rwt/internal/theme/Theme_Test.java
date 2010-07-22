@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ public class Theme_Test extends TestCase {
 
   private static final String TEST_SYNTAX_CSS = "TestExample.css";
 
-  public void testCreateWithNullId() throws Exception {
+  public void testCreateWithNullId() {
     try {
       new Theme( null, "Test", null );
       fail();
@@ -31,7 +31,7 @@ public class Theme_Test extends TestCase {
     }
   }
 
-  public void testCreateEmpty() throws Exception {
+  public void testCreateEmpty() {
     Theme theme = new Theme( "some.id", "Test", null );
     assertEquals( "some.id", theme.getId() );
     assertEquals( "Test", theme.getName() );
