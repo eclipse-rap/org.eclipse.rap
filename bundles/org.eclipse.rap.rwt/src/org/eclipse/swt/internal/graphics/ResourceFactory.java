@@ -92,8 +92,7 @@ public final class ResourceFactory {
                                   final int height,
                                   final int style )
   {
-    int nameHashCode = name == null ? 0 : name.hashCode();
-    return nameHashCode ^ height << 2 ^ style;
+    return name.hashCode() ^ height << 2 ^ style;
   }
 
   public static int checkFontStyle( final int style ) {

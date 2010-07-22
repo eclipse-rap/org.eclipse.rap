@@ -50,6 +50,18 @@ public class Font_Test extends TestCase {
     }
   }
 
+  public void testConstructorWithNullNameHashcodeClash() {
+    // see http://bugs.eclipse.org/320282
+    Device device = new Display();
+    new Font( device, "", 1, SWT.NONE );
+    try {
+      new Font( device, null, 1, SWT.NONE );
+      fail( "The font name must not be null" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
   public void testConstructorWithNullFontData() {
     Device device = new Display();
     try {

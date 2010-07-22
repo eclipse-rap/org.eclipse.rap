@@ -59,7 +59,7 @@ public final class Font extends Resource {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
-   *    <li>ERROR_NULL_ARGUMENT - if the fd argument is null</li>
+   *    <li>ERROR_NULL_ARGUMENT - if the fontData argument is null</li>
    * </ul>
    * @exception SWTError <ul>
    *    <li>ERROR_NO_HANDLES - if a font could not be created from the given font data</li>
@@ -90,9 +90,9 @@ public final class Font extends Resource {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
-   *    <li>ERROR_NULL_ARGUMENT - if the fds argument is null</li>
-   *    <li>ERROR_INVALID_ARGUMENT - if the length of fds is zero</li>
-   *    <li>ERROR_NULL_ARGUMENT - if any fd in the array is null</li>
+   *    <li>ERROR_NULL_ARGUMENT - if the fontData argument is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the length of fontData is zero</li>
+   *    <li>ERROR_NULL_ARGUMENT - if any font data in the array is null</li>
    * </ul>
    * @exception SWTError <ul>
    *    <li>ERROR_NO_HANDLES - if a font could not be created from the given font data</li>
@@ -143,10 +143,15 @@ public final class Font extends Resource {
                final int height,
                final int style )
   {
-    this( device,
-          FontDataFactory.findFontData( name, 
-                                        height, 
-                                        ResourceFactory.checkFontStyle( style ) ) );
+    super( checkDevice( device ) );
+    if( name == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( height < 0 ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    int checkedStyle = ResourceFactory.checkFontStyle( style );
+    internalFontData = FontDataFactory.findFontData( name, height, checkedStyle );
   }
 
   /**
