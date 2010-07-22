@@ -10,8 +10,8 @@ Bundle-Activator: org.eclipse.ui.internal.UIPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %Plugin.providerName
 Bundle-Localization: plugin
-Import-Package: javax.servlet;version="[2.3.0,2.5.0]",
- javax.servlet.http;version="[2.3.0,2.5.0]"
+Import-Package: javax.servlet;version="[2.3.0,3.0.0]",
+ javax.servlet.http;version="[2.3.0,3.0.0]"
 Export-Package: org.eclipse.ui.internal;x-friends:="org.eclipse.rap.ui"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.6.0,4.0.0)",
  org.eclipse.rap.rwt;bundle-version="[1.3.0,2.0.0)";visibility:=reexport,

@@ -107,8 +107,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.6.0,4.0.0)";visibili
  org.eclipse.equinox.http.registry,
  org.eclipse.osgi.services
 Import-Package: com.ibm.icu.text;version="[3.4.0,4.3.0)",
- javax.servlet;version="[2.3.0,2.5.0]",
- javax.servlet.http;version="[2.3.0,2.5.0]",
+ javax.servlet;version="[2.3.0,3.0.0]",
+ javax.servlet.http;version="[2.3.0,3.0.0]",
  javax.xml.parsers,
  org.w3c.dom,
  org.xml.sax
