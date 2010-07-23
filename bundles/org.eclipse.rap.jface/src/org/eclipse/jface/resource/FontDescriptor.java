@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -80,8 +79,7 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
     /**
      * Creates a new FontDescriptor given an OS-specific font name, height, and style.
      * 
-     * <!-- @see Font#Font(org.eclipse.swt.graphics.Device, java.lang.String, int, int) -->
-     * @see Graphics#getFont( java.lang.String, int, int)
+     * @see Font#Font(org.eclipse.swt.graphics.Device, java.lang.String, int, int)
      *
      * @param name os-specific font name
      * @param height height (pixels)
@@ -131,8 +129,7 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
 	 */
 	public static FontData copy(FontData next) {
 		FontData result = new FontData(next.getName(), next.getHeight(), next.getStyle());
-		// RAP [bm]: 
-//		result.setLocale(next.getLocale());
+		result.setLocale(next.getLocale());
 		return result;
 	}
 
@@ -151,11 +148,9 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
     	FontData[] data = getFontData();
     	
     	for (int i = 0; i < data.length; i++) {
-    		FontData next = data[i];
-    		// RAP [bm]: replace with new immutable font data
-//			next.setStyle(style);
-			data[i]= new FontData(next.getName(), next.getHeight(), style);
-			// ENDRAP
+			FontData next = data[i];
+			
+			next.setStyle(style);
 		}
 
     	// Optimization: avoid holding onto extra instances by returning the reciever if
@@ -183,12 +178,8 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
     	
     	for (int i = 0; i < data.length; i++) {
 			FontData next = data[i];
-	    	// RAP [bm]: replace with new immutable font data
-//			next.setStyle(style);
-			data[i] = new FontData(next.getName(),
-									  next.getHeight(),
-									  next.getStyle() | style);
-			// ENDRAP
+			
+			next.setStyle(next.getStyle() | style);
 		}
     	
     	// Optimization: avoid allocating extra instances by returning the reciever if
@@ -217,10 +208,7 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
     	for (int i = 0; i < data.length; i++) {
 			FontData next = data[i];
 			
-	    	// RAP [bm]: replace with new immutable font data
-//			next.setHeight(height);
-			data[i] = new FontData(next.getName(), height, next.getStyle());
-			// ENDRAP
+			next.setHeight(height);
 		}
     	
     	// Optimization: avoid holding onto extra instances by returning the reciever if
@@ -254,12 +242,7 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
     	for (int i = 0; i < data.length; i++) {
 			FontData next = data[i];
 			
-	    	// RAP [bm]: replace with new immutable font datas
-//			next.setHeight(next.getHeight() + heightDelta);
-			data[i] = new FontData(next.getName(),
-								   next.getHeight() + heightDelta,
-								   next.getStyle());
-			// ENDRAP
+			next.setHeight(next.getHeight() + heightDelta);
 		}
     	
     	return new ArrayFontDescriptor(data);    	

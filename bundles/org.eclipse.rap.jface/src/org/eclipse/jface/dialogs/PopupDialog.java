@@ -1433,9 +1433,7 @@ public class PopupDialog extends Window {
 			Font font = titleLabel.getFont();
 			FontData[] fontDatas = font.getFontData();
 			for (int i = 0; i < fontDatas.length; i++) {
-// RAP [rh] FontData#setStyle()				
-//				fontDatas[i].setStyle(SWT.BOLD);
-				fontDatas[i] = new FontData( fontDatas[i].getName(), fontDatas[i].getHeight(),SWT.BOLD);
+				fontDatas[i].setStyle(SWT.BOLD);
 			}
 			titleFont = new Font(titleLabel.getDisplay(), fontDatas);
 			titleLabel.setFont(titleFont);
@@ -1445,9 +1443,7 @@ public class PopupDialog extends Window {
 			Font font = infoLabel.getFont();
 			FontData[] fontDatas = font.getFontData();
 			for (int i = 0; i < fontDatas.length; i++) {
-// RAP [rh] FontData#setHeight()
-//				fontDatas[i].setHeight(fontDatas[i].getHeight() * 9 / 10);
-				fontDatas[i] = new FontData( fontDatas[i].getName(), fontDatas[i].getHeight() * 9 / 10, fontDatas[i].getStyle());
+				fontDatas[i].setHeight(fontDatas[i].getHeight() * 9 / 10);
 			}
 			infoFont = new Font(infoLabel.getDisplay(), fontDatas);
 			infoLabel.setFont(infoFont);
