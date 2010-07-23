@@ -435,6 +435,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _addColumn : function( column ) {
       // TODO [tb] : Always have dummy column filling the right gap
+      column.setHeight( "100%" );
       this._columnArea.add( column );
     },
 

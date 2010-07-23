@@ -1681,6 +1681,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       assertEquals( tree._columnArea, column.getParent() );
       assertEquals( "tree-column", column.getAppearance() );
+      assertEquals( "100%", column.getHeight() );
       tree.destroy();
     },
 
