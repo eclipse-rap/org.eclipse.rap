@@ -28,6 +28,7 @@ public final class FontData {
   private String name;
   private int height;
   private int style;
+  private String locale;
 
   /**
    * Constructs a new uninitialized font data.
@@ -61,6 +62,7 @@ public final class FontData {
     this.name = name;
     this.height = height;
     this.style = checkFontStyle( style );
+    this.locale = "";
   }
 
   /**
@@ -134,6 +136,7 @@ public final class FontData {
     this.name = name;
     this.height = height;
     this.style = style;
+    this.locale = "";
   }
 
   /**
@@ -203,8 +206,8 @@ public final class FontData {
    * @return the <code>String</code> representing a Locale object
    * @since 1.3
    */
-  public String getLocale() {
-    return "";
+  public String getLocale () {
+    return locale;
   }
 
   /**
@@ -259,6 +262,45 @@ public final class FontData {
    */
   public void setStyle( final int style ) {
     this.style = style;
+  }
+
+  /**
+   * Sets the locale of the receiver.
+   * <p>
+   * The locale determines which platform character set this
+   * font is going to use. Widgets and graphics operations that
+   * use this font will convert UNICODE strings to the platform
+   * character set of the specified locale.
+   * </p>
+   * <p>
+   * On platforms where there are multiple character sets for a
+   * given language/country locale, the variant portion of the
+   * locale will determine the character set.
+   * </p>
+   * 
+   * @param locale the <code>String</code> representing a Locale object
+   * @see java.util.Locale#toString
+   * @since 1.4
+   */
+  public void setLocale( final String locale ) {
+    String result = "";
+    if( locale != null ) {
+      int length = locale.length();
+      if( length > 0 ) {
+        char sep = '_';
+        result = locale;
+        for( int i = 0; i < 2; i++ ) {
+          if( length > 0 && result.charAt( 0 ) == sep ) {
+            result = result.substring( 1 );
+            length -= 1;
+          }
+        }
+        if( length > 0 && result.charAt( length - 1 ) == sep ) {
+          result = result.substring( 0, length - 1 );
+        }
+      }
+    }
+    this.locale = result;
   }
 
   /**

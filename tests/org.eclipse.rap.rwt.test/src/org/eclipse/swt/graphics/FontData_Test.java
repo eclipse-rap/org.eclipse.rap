@@ -65,6 +65,33 @@ public class FontData_Test extends TestCase {
     assertEquals( SWT.BOLD, fontData.getStyle() );
   }
 
+  public void testSetLocale() {
+    assertEquals( "", setAndGetLocale( "" ) );
+    assertEquals( " ", setAndGetLocale( " " ) );
+    assertEquals( "  ", setAndGetLocale( "  " ) );
+    assertEquals( "", setAndGetLocale( "_" ) );
+    assertEquals( "", setAndGetLocale( "__" ) );
+    assertEquals( "", setAndGetLocale( "___" ) );
+    assertEquals( "_", setAndGetLocale( "____" ) );
+    assertEquals( " ", setAndGetLocale( "_ _" ) );
+    assertEquals( " _ ", setAndGetLocale( " _ " ) );
+    assertEquals( "a", setAndGetLocale( "a" ) );
+    assertEquals( "a", setAndGetLocale( "_a_" ) );
+    assertEquals( "a_b", setAndGetLocale( "_a_b" ) );
+    assertEquals( "a_b", setAndGetLocale( "_a_b_" ) );
+    assertEquals( " _a_b_ ", setAndGetLocale( " _a_b_ " ) );
+    assertEquals( "a_b_", setAndGetLocale( "__a_b__" ) );
+    assertEquals( "a_b_c_d_e", setAndGetLocale( "_a_b_c_d_e_" ) );
+    assertEquals( "foo_bar_baz", setAndGetLocale( "foo_bar_baz" ) );
+  }
+
+  public void testSetLocaleToNull() {
+    FontData fontData = new FontData();
+    fontData.setLocale( "foo" );
+    fontData.setLocale( null );
+    assertEquals( "", fontData.getLocale() );
+  }
+
   public void testEquals() {
     FontData fontData1 = new FontData( "roman", 1, SWT.NORMAL );
     assertFalse( fontData1.equals( null ) );
@@ -90,5 +117,11 @@ public class FontData_Test extends TestCase {
     FontData arial13Normal = new FontData( "arial", 13, SWT.NORMAL );
     FontData arial12Bold = new FontData( "arial", 12, SWT.BOLD );
     assertFalse( arial13Normal.hashCode() == arial12Bold.hashCode() );
+  }
+
+  private static String setAndGetLocale( final String locale ) {
+    FontData fontData = new FontData();
+    fontData.setLocale( locale );
+    return fontData.getLocale();
   }
 }
