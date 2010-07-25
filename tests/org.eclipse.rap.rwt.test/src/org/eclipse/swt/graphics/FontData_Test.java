@@ -126,7 +126,23 @@ public class FontData_Test extends TestCase {
     FontData arial12Bold = new FontData( "arial", 12, SWT.BOLD );
     assertFalse( arial13Normal.hashCode() == arial12Bold.hashCode() );
   }
-
+  
+  public void testHashCodeWithLocale() {
+    FontData localeDe = new FontData( "", 1, SWT.NORMAL );
+    localeDe.setLocale( "de" );
+    FontData localeEn = new FontData( "", 1, SWT.NORMAL );
+    localeEn.setLocale( "en" );
+    assertEquals( localeDe.hashCode(), localeEn.hashCode() );
+  }
+  
+  public void testEqualsWithLocale() {
+    FontData localeDe = new FontData( "", 1, SWT.NORMAL );
+    localeDe.setLocale( "de" );
+    FontData localeEn = new FontData( "", 1, SWT.NORMAL );
+    localeEn.setLocale( "en" );
+    assertTrue( localeDe.equals( localeEn ) );
+  }
+  
   private static String setAndGetLocale( final String locale ) {
     FontData fontData = new FontData();
     fontData.setLocale( locale );
