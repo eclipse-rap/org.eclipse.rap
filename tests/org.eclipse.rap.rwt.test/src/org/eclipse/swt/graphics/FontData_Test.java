@@ -17,7 +17,15 @@ import org.eclipse.swt.SWT;
 
 public class FontData_Test extends TestCase {
 
-  public void testFontData() {
+  public void testDefaultConstructor() {
+    FontData fontData = new FontData();
+    assertEquals( "", fontData.getName() );
+    assertEquals( "", fontData.getLocale() );
+    assertEquals( 12, fontData.getHeight() );
+    assertEquals( SWT.NORMAL, fontData.getStyle() );
+  }
+  
+  public void testConstructor() {
     FontData fontData = new FontData( "roman", 1, SWT.NORMAL );
     assertEquals( "roman", fontData.getName() );
     assertEquals( "", fontData.getLocale() );
