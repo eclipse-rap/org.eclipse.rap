@@ -31,7 +31,7 @@ public final class FontDataFactory {
     Object key = new Integer( fontData.hashCode() );
     FontData result = ( FontData )cache.get( key );
     if( result == null ) {
-      result = new FontData( fontData.getName(), fontData.getHeight(), fontData.getStyle() );
+      result = cloneFontData( fontData );
       cache.put( key, result );
     }
     return result;
@@ -41,6 +41,13 @@ public final class FontDataFactory {
     cache.clear();
   }
 
+  private static FontData cloneFontData( final FontData fontData ) {
+    String name = fontData.getName();
+    int height = fontData.getHeight();
+    int style = fontData.getStyle();
+    return new FontData( name, height, style );
+  }
+  
   private FontDataFactory() {
     // prevent instantiation
   }
