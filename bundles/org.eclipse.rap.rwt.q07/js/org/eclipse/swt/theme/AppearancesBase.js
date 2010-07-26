@@ -885,7 +885,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundColor : tv.getCssColor( "Tree", "background-color" ),
         textColor : tv.getCssColor( "Tree", "color" ),
         font : tv.getCssFont( "*", "font" ),
-        border : tv.getCssBorder( "*", "border" )
+        border : tv.getCssBorder( "Tree", "border" )
       };
     }
   },

@@ -21,6 +21,12 @@
     <property name="background-color"
         description="Background color for trees." />
 
+    <property name="border"
+        description="The border around the tree including header." />
+
+    <style name="BORDER"
+        description="Indicates that the tree should have a border." />
+
     <state name="disabled"
         description="Applies to disabled trees." />
 

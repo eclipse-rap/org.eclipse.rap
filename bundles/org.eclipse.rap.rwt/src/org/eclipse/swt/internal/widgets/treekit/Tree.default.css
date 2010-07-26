@@ -3,6 +3,11 @@
 Tree {
   color: black;
   background-color: white;
+  border: none;
+}
+
+Tree[BORDER] {
+  border: 2px inset;
 }
 
 TreeItem {
