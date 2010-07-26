@@ -1679,12 +1679,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var vertical 
         = testUtil.getElementBounds( tree._vertScrollBar.getElement() );      
       var headerNode = tree._columnArea.getElement();
-      assertEquals( 600 - vertical.width, parseInt( headerNode.style.width ) );
+      assertEquals( 600, parseInt( headerNode.style.width ) );
       var areaNode = tree._clientArea.getElement();
       var areaHeight = 470 - horizontal.height;
       assertEquals( areaHeight, parseInt( areaNode.style.height ) );
-      assertEquals( 500 - horizontal.height, vertical.height );
-      assertEquals( 0, vertical.top );
+      assertEquals( areaHeight, vertical.height );
+      assertEquals( 30, vertical.top );
       assertEquals( areaHeight + 30, horizontal.top );
       tree.destroy();
     },
@@ -1729,8 +1729,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       var dummy = tree._dummyColumn;
       assertEquals( tree._columnArea, dummy.getParent() );
-      assertFalse( dummy.getVisibility() );
+      assertEquals( 0, dummy.getWidth() );
       assertTrue( dummy.hasState( "dummy" ) );
+      tree.destroy();
+    },
+
+    testShowMinimalDummyColumn : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setScrollBarsVisible( true, true );
+      var column = new org.eclipse.swt.widgets.TableColumn( tree );
+      column.setLeft( 0 );
+      column.setWidth( 500 );
+      tree.setHeaderVisible( true );
+      tree.setWidth( 450 );
+      testUtil.flush();
+      var barWidth = tree._vertScrollBar.getWidth();
+      var dummy = tree._dummyColumn;
+      assertTrue( dummy.getVisibility() );
+      assertEquals( 500, dummy.getLeft() );
+      assertEquals( barWidth, dummy.getWidth() );
       tree.destroy();
     },
 
@@ -1738,6 +1756,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       tree.setHeaderVisible( true );
+      tree.setScrollBarsVisible( true, true );
       testUtil.flush();
       var dummy = tree._dummyColumn;
       assertTrue( dummy.getVisibility() );

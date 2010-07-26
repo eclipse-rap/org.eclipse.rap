@@ -136,7 +136,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._horzScrollBar.setHeight( preferredHeight );
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
       this._vertScrollBar.setVisibility( false );
-      this._vertScrollBar.setTop( 0 );
       this._vertScrollBar.setWidth( preferredWidth );
       this._vertScrollBar.setMergeEvents( false );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
@@ -805,9 +804,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _updateScrollHeight : function() {
       var itemCount = this.getRootItem().getVisibleChildrenCount();
       var height = ( itemCount + 1 ) * this._itemHeight;
-      if( this._columnArea.getVisibility() ) {
-        height += this._headerHeight;
-      }
       // recalculating topItem can be expensive, therefore this simple check:
       if( this._vertScrollBar.getMaximum() != height ) {
         // Without the check, it may cause an error in FF when unloading doc
@@ -846,13 +842,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _renderDummyColumn : function() {
       var dummyLeft = this._getDummyColumnLeft();
       var areaWidth = this._columnArea.getWidth()
-      if( dummyLeft < areaWidth ) {
-        this._dummyColumn.setVisibility( true );
-        this._dummyColumn.setLeft( dummyLeft );
-        this._dummyColumn.setWidth( areaWidth - dummyLeft );
-      } else {
-        this._dummyColumn.setVisibility( false );
+      var dummyWidth = Math.max( 0, areaWidth - dummyLeft );
+      if( this._vertScrollBar.getVisibility() ) {
+        dummyWidth = Math.max( dummyWidth, this._vertScrollBar.getWidth() );
       }
+      this._dummyColumn.setLeft( dummyLeft );
+      this._dummyColumn.setWidth( dummyWidth );
     },
     
     _getDummyColumnLeft : function() {
@@ -1204,14 +1199,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _layoutX : function() {
       var width = this.getWidth() - this.getFrameWidth();
+      if( this._columnArea.getVisibility() ) {
+        this._columnArea.setWidth( width );
+      }
       if( this._vertScrollBar.getVisibility() ) {
         width -= this._vertScrollBar.getWidth();
         this._vertScrollBar.setLeft( width );
       }
       this._horzScrollBar.setWidth( width );
-      if( this._columnArea.getVisibility() ) {
-        this._columnArea.setWidth( width );
-      }
       this._clientArea.setWidth( width );
       this._updateScrollWidth();
       this._renderGridVertical(); // TODO [tb] : optimize calls
@@ -1230,8 +1225,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._horzScrollBar.setTop( top + height );
       }
       height = Math.max( 0, height );
-      // TODO [tb] : position scrollbar like table (i.e. respect header)
-      this._vertScrollBar.setHeight( top + height );
+      this._vertScrollBar.setHeight( height );
+      this._vertScrollBar.setTop( top );
       this._clientArea.setTop( top );
       this._clientArea.setHeight( height );
       this._renderGridVertical();
