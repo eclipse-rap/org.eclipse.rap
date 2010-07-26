@@ -32,14 +32,6 @@ public class FontData_Test extends TestCase {
     assertEquals( 1, fontData.getHeight() );
     assertEquals( SWT.NORMAL, fontData.getStyle() );
   }
-
-  public void testEmptyFontData() {
-    FontData fontData = new FontData();
-    assertEquals( "", fontData.getName() );
-    assertEquals( "", fontData.getLocale() );
-    assertEquals( 12, fontData.getHeight() );
-    assertEquals( SWT.NORMAL, fontData.getStyle() );
-  }
   
   public void testFontDataFromString() {
     FontData fontData = new FontData( "1|roman|1|0|" );
