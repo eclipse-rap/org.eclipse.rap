@@ -990,7 +990,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       this._setItemBackground( "green" );
       tree.selectItem( item );
       row.renderItem( item );
-      assertNull( row.getBackgroundColor() );
+      assertEquals( "green", row.getBackgroundColor() );
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var selNode = row._getTargetNode().childNodes[ 2 ];
       assertEquals( "", selNode.innerHTML );
@@ -1016,7 +1016,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       this._setItemBackground( "green" );
       tree.selectItem( item );
       row.renderItem( item );
-      assertNull( row.getBackgroundColor() );
+      assertEquals( "green", row.getBackgroundColor() );
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var selNode = row._getTargetNode().childNodes[ 2 ];
       assertEquals( "", selNode.innerHTML );
@@ -1030,7 +1030,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
     
-    testRenderItemBackgroundSelectedBeforeInDOM: function() {
+    testRenderItemBackgroundSelectedBeforeInDOM : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
       tree.setItemMetrics( 1, 50, 40, 50, 12, 65, 12 );
@@ -1043,7 +1043,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       this._setItemBackground( "green" );
       tree.selectItem( item );
       row.renderItem( item );
-      assertNull( row.getBackgroundColor() );
+      assertEquals( "green", row.getBackgroundColor() );
       assertEquals( 4, row._getTargetNode().childNodes.length );
       var selNode = row._getTargetNode().childNodes[ 2 ];
       var width = parseInt( selNode.style.width );

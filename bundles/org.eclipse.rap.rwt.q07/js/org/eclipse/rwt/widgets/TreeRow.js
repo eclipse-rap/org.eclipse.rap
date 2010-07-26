@@ -44,7 +44,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     renderItem : function( item ) {
       this._usedNodes = 0;
       if( item != null ) {
-        this._renderStates( item, true );
+        this._renderStates( item, this._tree.getHasFullSelection() );
         this._renderBackground( item );
         this._renderIndention( item );
         this._renderCheckBox( item );
@@ -122,12 +122,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       this.setBackgroundColor( color != "undefined" ? color : null );
     },
     
-    // TODO [tb] : refactor (See Bug 314421)
     _getRenderThemingBackground : function( item ) {
-      var selected = this._renderAsSelected( item );
-      return    item == null 
-             || ( !selected  && item.getBackground() == null )
-             || ( selected  && this._tree.getHasFullSelection() );
+      var renderFullSelection =    this._renderAsSelected( item ) 
+                                && this._tree.getHasFullSelection();
+      var hasItemBackground = item !== null && item.getBackground() !== null                    
+      return renderFullSelection || !hasItemBackground;
     },
 
     _renderIndention : function( item ) {
@@ -239,9 +238,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
     
     _renderSelectionBackground : function( item, cell ) {
-      if(    !this._getRenderThemingBackground( item ) 
-          && this._styleMap.itemBackground !== null )
-      {
+      if( this._styleMap.itemBackground !== null ) {
         var element = this._getNextElement( 2 );
         element.style.backgroundColor = this._styleMap.itemBackground;
         var padding = this._tree.getSelectionPadding();
