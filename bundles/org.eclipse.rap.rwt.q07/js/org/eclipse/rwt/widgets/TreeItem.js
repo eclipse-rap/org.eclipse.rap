@@ -152,14 +152,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       } else {
         this._children.splice( index, 0, item );
       }
-      this._update( "add" );
+      this._update( "add", item );
     },
 
     _remove : function( item ) {
       var children = this._children;
       var index = children.indexOf( item );
       this._children.splice( index, 1 );
-      this._update( "remove" );
+      this._update( "remove", item );
     },
 
     hasChildren : function() {
@@ -245,11 +245,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       return true;
     },
 
-    _update : function( msg ) {
+    _update : function( msg, related ) {
       var event = new qx.event.type.DataEvent( "update" );
       event.setData( typeof msg != "undefined" ? msg : null );
       event.setBubbles( true );
       event.setPropagationStopped( false );
+      if( related ) {
+        event.setRelatedTarget( related );
+      }
       this.dispatchEvent( event, true );
     },
     

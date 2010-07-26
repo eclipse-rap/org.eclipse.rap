@@ -2774,6 +2774,32 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
 
+    testRemoveDisposedItemFromState : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var tree = this._createDefaultTree();
+      tree.setHasMultiSelection( true );
+      var child0 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      child0.setTexts( [ "C0" ] );
+      tree.setFocusItem( child0 );
+      tree.setTopItemIndex( 0 );
+      testUtil.flush();      
+      testUtil.mouseOver( tree._rows[ 0 ] );
+      testUtil.shiftClick( tree._rows[ 0 ] );
+      assertEquals( child0, tree._topItem )
+      assertEquals( child0, tree._focusItem )
+      assertEquals( child0, tree._leadItem )
+      assertEquals( child0, tree._hoverItem )
+      assertEquals( [ child0 ], tree._selection );
+      child0.dispose();
+      assertNull( tree._topItem )
+      assertNull( tree._focusItem )
+      assertNull( tree._leadItem )
+      assertNull( tree._hoverItem )
+      assertEquals( [], tree._selection );
+      tree.destroy();
+    },
+
     /////////
     // helper
 

@@ -498,6 +498,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           this.setFocusItem( item );
         }
       }
+      if( event.getData() === "remove" ) {
+        var oldItem = event.getRelatedTarget();
+        this._deselectItem( oldItem, false );
+        if( this._topItem === oldItem ) {
+          this._topItem = null;
+        }
+        if( this._leadItem === oldItem ) {
+          this._leadItem = null;
+        }
+        if( this._focusItem === oldItem ) {
+          this._focusItem = null;
+        }
+        if( this._hoverItem === oldItem ) {
+          this._hoverItem = null;
+        }
+      }
       this._sendItemChange( item, event );
       this._renderItemChange( item, event );
     },
