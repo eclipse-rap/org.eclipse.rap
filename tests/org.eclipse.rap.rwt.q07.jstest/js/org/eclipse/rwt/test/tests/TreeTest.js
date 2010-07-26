@@ -255,6 +255,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
     
+    testTreeRowSmallerClientArea : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setWidth( 600 );
+      tree.setScrollBarsVisible( true, true );
+      testUtil.flush();
+      var row = tree._rows[ 0 ];
+      var expected = 600 - tree._vertScrollBar.getWidth();
+      assertEquals( expected, row.getWidth() );
+      tree.destroy();
+    },
+
     testChangeTreeRowBounds : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -694,7 +706,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       org_eclipse_rap_rwt_EventUtil_suspend = false;
       testUtil.flush();
       var itemNode = tree._clientArea._getTargetNode().firstChild;
-      assertEquals( "Test77", itemNode.firstChild.innerHTML );
+      assertEquals( "Test78", itemNode.firstChild.innerHTML );
       tree.destroy();
     },
     
@@ -823,6 +835,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree._shiftSelectItem( item );
       var row = tree._rows[ 0 ];
       var area = tree._clientArea;
+      var dummy = tree._dummyColumn;
       var hscroll = tree._horzScrollBar;
       var vscroll = tree._vertScrollBar;
       var resize = tree._resizeLine;
@@ -850,7 +863,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( rootItem.isDisposed() );
       assertTrue( mergeTimer.isDisposed() );
       assertTrue( requestTimer.isDisposed() );
+      assertTrue( dummy.isDisposed() );
       assertNull( tree._rootItem );
+      assertNull( tree._dummyColumn );
       assertNull( tree._focusItem );
       assertNull( tree._leadItem );
       assertNull( tree._rows );
@@ -1685,6 +1700,74 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
 
+    testShowDummyColumn : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      var column = new org.eclipse.swt.widgets.TableColumn( tree );
+      column.setLeft( 0 );
+      column.setWidth( 500 );
+      tree.setWidth( 600 );
+      tree.setHeaderVisible( true );
+      testUtil.flush();
+      var dummy = tree._dummyColumn;
+      assertEquals( tree._columnArea, column.getParent() );
+      assertTrue( dummy.getVisibility() );
+      assertTrue( dummy.hasState( "dummy" ) );
+      assertEquals( 500, dummy.getLeft() );
+      assertEquals( 100, dummy.getWidth() );
+      tree.destroy();
+    },
+
+    testDontShowDummyColumn : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      var column = new org.eclipse.swt.widgets.TableColumn( tree );
+      column.setLeft( 0 );
+      column.setWidth( 500 );
+      tree.setHeaderVisible( true );
+      tree.setWidth( 490 );
+      testUtil.flush();
+      var dummy = tree._dummyColumn;
+      assertEquals( tree._columnArea, dummy.getParent() );
+      assertFalse( dummy.getVisibility() );
+      assertTrue( dummy.hasState( "dummy" ) );
+      tree.destroy();
+    },
+
+    testOnlyShowDummyColumn : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setHeaderVisible( true );
+      testUtil.flush();
+      var dummy = tree._dummyColumn;
+      assertTrue( dummy.getVisibility() );
+      assertEquals( 0, dummy.getLeft() );
+      assertEquals( 500, dummy.getWidth() );
+      assertTrue( dummy.hasState( "dummy" ) );
+      tree.destroy();
+    },
+
+    testReLayoutDummyColumn : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      var column = new org.eclipse.swt.widgets.TableColumn( tree );
+      column.setLeft( 0 );
+      column.setWidth( 500 );
+      tree.setWidth( 600 );
+      tree.setHeaderVisible( true );
+      testUtil.flush();
+      var dummy = tree._dummyColumn;
+      assertEquals( 500, dummy.getLeft() );
+      assertEquals( 100, dummy.getWidth() );
+      column.setWidth( 400 );
+      assertEquals( 400, dummy.getLeft() );
+      assertEquals( 200, dummy.getWidth() );
+      column.setLeft( 50 );
+      assertEquals( 450, dummy.getLeft() );
+      assertEquals( 150, dummy.getWidth() );
+      tree.destroy();
+    },
+
     testScrollHeaderHorizontal : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -1741,7 +1824,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var column = new org.eclipse.swt.widgets.TableColumn( tree );
       testUtil.flush();
       column.destroy();
-      assertEquals( [], tree._columnArea.getChildren() );
+      assertEquals( 1, tree._columnArea.getChildren().length );
       tree.destroy();
     },
     

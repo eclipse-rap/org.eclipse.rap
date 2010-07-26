@@ -59,6 +59,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // Subwidgets
     this._clientArea = new qx.ui.layout.VerticalBoxLayout();
     this._columnArea = new qx.ui.layout.CanvasLayout();
+    this._dummyColumn = new qx.ui.basic.Atom();
     this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
     this._vertScrollBar = new qx.ui.basic.ScrollBar( false );
     this._rows = this._clientArea.getChildren();
@@ -86,6 +87,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     }
     this._mergeEventsTimer.dispose();
     this._mergeEventsTimer = null;
+    this._dummyColumn = null;
     this._clientArea = null;
     this._columnArea = null;
     this._horzScrollBar = null;
@@ -149,6 +151,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       // TODO [tb] : Find a cleaner solution to block drag-events
       var dragBlocker = function( event ) { event.stopPropagation(); };
       this._columnArea.addEventListener( "dragstart", dragBlocker );
+      this._dummyColumn.setAppearance( "tree-column" );
+      this._dummyColumn.setHeight( "100%" );
+      this._dummyColumn.addState( "dummy" );
+      this._columnArea.add( this._dummyColumn );
     },
     
     /////////////////////////////////
@@ -434,9 +440,32 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // API for TableColumn
     
     _addColumn : function( column ) {
-      // TODO [tb] : Always have dummy column filling the right gap
       column.setHeight( "100%" );
+      column.addEventListener( "changeWidth", this._updateScrollWidth, this );
+      this._hookColumnMove( column );
       this._columnArea.add( column );
+    },
+    
+    _hookColumnMove : function( column ) {
+      column.addEventListener( "changeLeft", this._updateScrollWidth, this );
+    },
+
+    _unhookColumnMove : function( column ) {
+      column.removeEventListener( "changeLeft", this._updateScrollWidth, this );
+    },
+
+    _removeColumn : function( column ) {
+      this._unhookColumnMove( column );
+      column.removeEventListener( "changeWidth", 
+                                  this._updateScrollWidth, 
+                                  this );
+      this._columnArea.remove( column );
+      this._updateScrollWidth();
+      this._updateRows();
+    },
+
+    _onColumnChangeSize : function( evt ) {
+      this._updateScrollWidth();
     },
 
     _showResizeLine : function( x ) {
@@ -709,10 +738,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _updateRowCount : function() {
       var height = this._clientArea.getHeight()
       var rowsNeeded = Math.ceil( height / this._itemHeight );
+      var rowWidth = this._getRowWidth();
       while( this._rows.length < rowsNeeded ) {
         var row = new org.eclipse.rwt.widgets.TreeRow( this );
         row.setHeight( this._itemHeight );
-        row.setWidth( this._getItemWidth() );
+        row.setWidth( rowWidth );
         this._clientArea.add( row );
       }
       while( this._rows.length > rowsNeeded ) {
@@ -775,7 +805,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _updateScrollHeight : function() {
       var itemCount = this.getRootItem().getVisibleChildrenCount();
       var height = ( itemCount + 1 ) * this._itemHeight;
-      if( this._headerVisible ) {
+      if( this._columnArea.getVisibility() ) {
         height += this._headerHeight;
       }
       // recalculating topItem can be expensive, therefore this simple check:
@@ -801,14 +831,42 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _updateScrollWidth : function() {
       var width = this._getItemWidth();
+      var rowWidth = this._getRowWidth();
       for( var i = 0; i < this._rows.length; i++ ) {
-        this._rows[ i ].setWidth( width );
+        this._rows[ i ].setWidth( rowWidth );
       }
       if( !this._horzScrollBar.getDisposed() ) {
         this._horzScrollBar.setMaximum( width );
       }
+      if( this._columnArea.getVisibility() ) {
+        this._renderDummyColumn();
+      }
+    },
+
+    _renderDummyColumn : function() {
+      var dummyLeft = this._getDummyColumnLeft();
+      var areaWidth = this._columnArea.getWidth()
+      if( dummyLeft < areaWidth ) {
+        this._dummyColumn.setVisibility( true );
+        this._dummyColumn.setLeft( dummyLeft );
+        this._dummyColumn.setWidth( areaWidth - dummyLeft );
+      } else {
+        this._dummyColumn.setVisibility( false );
+      }
     },
     
+    _getDummyColumnLeft : function() {
+      var columns = this._columnArea.getChildren();
+      var result = 0;
+      for( var i = 0; i < columns.length; i++ ) {
+        if( columns[ i ] !== this._dummyColumn ) {
+          var left = columns[ i ].getLeft() + columns[ i ].getWidth();
+          result = Math.max( result, left );
+        }
+      }
+      return result;
+   },
+
     _scrollIntoView : function( item ) {
       var result = false;
       var index = this._findIndexByItem( item );
@@ -1155,6 +1213,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._columnArea.setWidth( width );
       }
       this._clientArea.setWidth( width );
+      this._updateScrollWidth();
       this._renderGridVertical(); // TODO [tb] : optimize calls
     },
     
@@ -1181,12 +1240,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _getItemWidth : function() {
       var result = 0;
-      for( var i = 0; i < this.getColumnCount(); i++ ) {
-        result = Math.max( result, this._itemLeft[ i ] + this._itemWidth[ i ] );
+      if( this._itemLeft.length > 0 ) {
+        for( var i = 0; i < this.getColumnCount(); i++ ) {
+          result = Math.max( result, this._itemLeft[ i ] + this._itemWidth[ i ] );
+        }
       }
       return result;
     },
 
+    _getRowWidth : function() {
+      var width = this._clientArea.getWidth()
+      var result = Math.max( this._getItemWidth(), width );
+      return result;
+    },
+        
     ///////////////
     // model-helper
     
