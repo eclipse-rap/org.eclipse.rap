@@ -743,7 +743,7 @@ public class TreeItem_Test extends TestCase {
                                            + subItem.getBounds().height );
   }
 
-  public void testGetBoundsWithScrolling() throws Exception {
+  public void testGetBoundsWithScrolling() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -824,7 +824,7 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 32, sub2.getBounds().x );
   }
 
-  public void testTreeItemAdapter() throws Exception {
+  public void testTreeItemAdapter() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );

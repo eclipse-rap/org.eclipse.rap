@@ -170,6 +170,8 @@ public class RWTHostTestSuite {
     suite.addTestSuite( DragSourceEffect_Test.class );
     suite.addTestSuite( Transfer_Test.class );
     suite.addTestSuite( ByteArrayTransfer_Test.class );
+    suite.addTestSuite( Tree_Test.class );
+    suite.addTestSuite( TreeItem_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );

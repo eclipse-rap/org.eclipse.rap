@@ -481,7 +481,7 @@ public class Tree_Test extends TestCase {
     assertEquals( true, subTreeItem.isDisposed() );
   }
 
-  public void testInitialGetTopItemIndex() throws Exception {
+  public void testInitialGetTopItemIndex() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -490,7 +490,7 @@ public class Tree_Test extends TestCase {
     display.dispose();
   }
   
-  public void testShowItemFlat() throws Exception {
+  public void testShowItemFlat() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -835,7 +835,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.hasVScrollBar() );
   }
   
-  public void testComputeSizeWithColumns() throws Exception {
+  public void testComputeSizeWithColumns() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -895,7 +895,7 @@ public class Tree_Test extends TestCase {
     assertEquals( expected, tree.computeSize( 300, 300 ) );
   }
 
-  public void testComputeSizeWithIndention() throws Exception {
+  public void testComputeSizeWithIndention() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -1063,7 +1063,7 @@ public class Tree_Test extends TestCase {
     assertEquals( "node 0 - 1", root.getItem( 1 ).getText() );
   }
   
-  public void testVirtualComputeSize() throws Exception {
+  public void testVirtualComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );

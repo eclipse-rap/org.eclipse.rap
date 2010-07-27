@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,9 +59,6 @@ import org.eclipse.swt.internal.widgets.toolitemkit.ToolItemLCA_Test;
 import org.eclipse.swt.internal.widgets.treecolumnkit.TreeColumnLCA_Test;
 import org.eclipse.swt.internal.widgets.treeitemkit.TreeItemLCA_Test;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA_Test;
-import org.eclipse.swt.widgets.TreeItem_Test;
-import org.eclipse.swt.widgets.Tree_Test;
-
 
 
 public class RWTQ07TestSuite {
@@ -82,8 +79,6 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( FocusEvent_Test.class );
     suite.addTestSuite( TypedEvent_Test.class );
     suite.addTestSuite( UntypedEvents_Test.class );
-    suite.addTestSuite( Tree_Test.class );
-    suite.addTestSuite( TreeItem_Test.class );
 
     // TODO [fappel]: Check also which parts of the following tests belong
     //                to the host bundle testsuite
