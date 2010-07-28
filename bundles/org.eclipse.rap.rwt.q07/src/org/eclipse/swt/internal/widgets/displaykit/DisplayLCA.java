@@ -296,7 +296,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   public static void writeLibraries() throws IOException {
     QooxdooResourcesUtil.registerResources();
     ThemeManager.getInstance().registerResources();
-    writeScrollBarStyle();
     writeJSLibraries();
   }
 
@@ -403,29 +402,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.writeAttribute( HTML.SRC, library, null );
     out.writeAttribute( HTML.CHARSET, HTML.CHARSET_NAME_UTF_8, null );
     out.endElement( HTML.SCRIPT );
-  }
-
-  private static void writeScrollBarStyle() throws IOException {
-	  // TODO [bm] this could be part of the themeing or?
-    HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
-    // Changing the scrollbar style is only supported by IE
-    out.write( "<!--[if IE]>" );
-    out.startElement( "style", out );
-    out.writeAttribute( "type", "text/css", null );
-    StringBuffer css = new StringBuffer();
-    css.append( "html, body, iframe { " );
-    css.append( "scrollbar-base-color:#c0c0c0;" );
-    css.append( "scrollbar-3d-light-color:#f8f8ff;" );
-    css.append( "scrollbar-arrow-color:#0080c0;" );
-    css.append( "scrollbar-darkshadow-color:#f0f0f8;" );
-    css.append( "scrollbar-face-color:#f8f8ff;" );
-    css.append( "scrollbar-highlight-color:white;" );
-    css.append( "scrollbar-shadow-color:gray;" );
-    css.append( "scrollbar-track-color:#f0f0f8;" );
-    css.append( "}" );
-    out.write( css.toString() );
-    out.endElement( "style" );
-    out.write( "<![endif]-->" );
   }
 
   private static void writeFocus( final Display display ) throws IOException {
