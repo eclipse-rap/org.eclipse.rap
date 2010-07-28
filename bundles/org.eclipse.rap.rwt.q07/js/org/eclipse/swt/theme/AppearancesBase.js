@@ -732,7 +732,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     include : "list",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-   	  var result = {};
+      var result = {};
       result.border = tv.getCssBorder( "Combo-List", "border" );
       result.height = "auto";
       result.overflow = "scrollY";

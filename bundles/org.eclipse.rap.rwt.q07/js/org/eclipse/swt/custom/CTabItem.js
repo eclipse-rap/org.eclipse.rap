@@ -114,9 +114,9 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       var result = null;
       var children = this._parent.getChildren();
       for( var i = 0; i < children.length && children[ i ] != this; i++ ) {
-      	if( children[ i ].classname === "org.eclipse.swt.custom.CTabItem" ) {
-      	  result = children[ i ];
-      	}
+        if( children[ i ].classname === "org.eclipse.swt.custom.CTabItem" ) {
+          result = children[ i ];
+        }
       }
       return result;
     },

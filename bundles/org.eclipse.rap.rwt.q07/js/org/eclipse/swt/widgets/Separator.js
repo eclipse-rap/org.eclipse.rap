@@ -36,9 +36,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
   },
   
   destruct : function() {
-  	this._line.dispose();
-  	this._line = null;
-//    this._disposeObjects( "_line" );
+    this._line.dispose();
+    this._line = null;
   },
   
   members : {

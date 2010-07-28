@@ -242,8 +242,8 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
   */
 
   statics : {
-  	CELL_WIDTH : 24,
-  	CELL_HEIGHT : 16,
+    CELL_WIDTH : 24,
+    CELL_HEIGHT : 16,
     MONTH_NAMES : [],
     WEEKDAY_NAMES : []
   },
@@ -430,10 +430,10 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      * @return {void}
      */
     _onDayClicked : function(evt) {
-    	if( evt.isLeftButtonPressed() ) {
+      if( evt.isLeftButtonPressed() ) {
         var time = evt.getTarget().dateTime;
         this.setDate(new Date(time));
-    	}
+      }
     },
 
     /**

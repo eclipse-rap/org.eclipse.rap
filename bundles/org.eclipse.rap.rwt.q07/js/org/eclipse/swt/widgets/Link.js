@@ -73,38 +73,38 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       }
     },
     
-  	_onAppear : function( evt ) {
+    _onAppear : function( evt ) {
       this._link.setTabIndex( null );
       this._link.setHideFocus( true );
       this._applyHyperlinksStyleProperties();
       this._addEventListeners();
-  	},
-  	
-  	_onChangeHtml : function( evt ) {
+    },
+    
+    _onChangeHtml : function( evt ) {
       this._applyHyperlinksStyleProperties();
       this._addEventListeners();
-  	},
-  	
-  	_applyTextColor : function( value, old ) {
+    },
+    
+    _applyTextColor : function( value, old ) {
       this.base( arguments, value, old );
       var themeValues 
         = new org.eclipse.swt.theme.ThemeValues( this._getStates() );
       this._linkColor = themeValues.getCssColor( "Link-Hyperlink", "color" );
       themeValues.dispose();
       this._applyHyperlinksStyleProperties();
-  	},
-  	
-  	_onChangeEnabled : function( evt ) {      
+    },
+    
+    _onChangeEnabled : function( evt ) {      
       this._applyHyperlinksStyleProperties();
       this._changeHyperlinksTabIndexProperty();
-  	},
-  	
-  	_getStates : function() {
+    },
+
+    _getStates : function() {
       if( !this.__states ) {
         this.__states = {};
       }
       return this.__states;
-  	},
+    },
     
     addState : function( state ) {
       this.base( arguments, state );
@@ -158,16 +158,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
         for( i = 0; i < hyperlinks.length; i++ ) {
           if( this._linkColor ) {
             if( this.isEnabled() ) {
-      	      hyperlinks[ i ].style.color = this._linkColor;
+              hyperlinks[ i ].style.color = this._linkColor;
             } else {
               hyperlinks[ i ].style.color = "";
             }  
-      	  }
-      	  if( this.isEnabled() ) {
-      	  	hyperlinks[ i ].style.cursor = "pointer";
-      	  } else {
-      	  	hyperlinks[ i ].style.cursor = "default";
-      	  }
+          }
+          if( this.isEnabled() ) {
+            hyperlinks[ i ].style.cursor = "pointer";
+          } else {
+            hyperlinks[ i ].style.cursor = "default";
+          }
         }
       }
     },

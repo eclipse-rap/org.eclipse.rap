@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       if( state.substr( 0, 8 ) == "variant_" ) {
         var items = this.getManager().getItems();
         for( var i = 0; i < items.length; i++ ) {
-        	items[ i ].addState( state );
+          items[ i ].addState( state );
         }
       }
     },

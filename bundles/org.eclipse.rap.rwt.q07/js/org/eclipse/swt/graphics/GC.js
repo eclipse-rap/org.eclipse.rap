@@ -328,7 +328,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
                              destHeight );
         }
       } else {
-	      var alpha = context.globalAlpha;
+        var alpha = context.globalAlpha;
         image.onload = function() {
           // TODO [tb] : The z-order will be wrong in this case.
           // [if] As drawImage is delayed by the onload event, we have to draw

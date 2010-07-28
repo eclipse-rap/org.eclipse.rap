@@ -116,7 +116,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     setTabPosition : function( tabPosition ) {
       this._tabPosition = tabPosition;
       this._mapItems( function( item ) {
-      	item.setTabPosition( tabPosition );
+        item.setTabPosition( tabPosition );
       } );
       if( tabPosition == "top" ) {
         this._body.addState( "barTop" );
@@ -226,9 +226,9 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     _mapItems : function( func ) {
       var children = this.getChildren();
       for( var i = 0; i < children.length; i++ ) {
-      	if( children[ i ].classname === "org.eclipse.swt.custom.CTabItem" ) {
-      	  func( children[ i ] );
-      	}
+        if( children[ i ].classname === "org.eclipse.swt.custom.CTabItem" ) {
+          func( children[ i ] );
+        }
       }
     },
 

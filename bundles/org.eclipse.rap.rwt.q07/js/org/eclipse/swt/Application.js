@@ -161,8 +161,8 @@ qx.Class.define( "org.eclipse.swt.Application", {
       doc.getElement().setAttribute( "spellcheck", "false" );
       // Gecko-specific settings
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-	      // Prevent url-dropping in FF as a whole (see bug 304651)
-	      doc.getElement().setAttribute( "ondrop", "event.preventDefault();" );
+        // Prevent url-dropping in FF as a whole (see bug 304651)
+        doc.getElement().setAttribute( "ondrop", "event.preventDefault();" );
         // Fix for bug 193703:
         doc.getElement().style.position = "absolute";      
         doc.setSelectable( true );

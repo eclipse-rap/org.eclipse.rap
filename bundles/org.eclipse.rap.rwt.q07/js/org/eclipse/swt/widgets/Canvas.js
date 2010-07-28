@@ -26,10 +26,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Canvas", {
   members : {
     
     getGC : function() {
-    	if( this._gc == null ) {
-    		this._gc = new org.eclipse.swt.graphics.GC( this );
-    	}
-    	return this._gc;
+      if( this._gc == null ) {
+        this._gc = new org.eclipse.swt.graphics.GC( this );
+      }
+      return this._gc;
     }
     
   }
