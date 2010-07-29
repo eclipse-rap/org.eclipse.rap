@@ -336,7 +336,7 @@ public final class FontData {
    * @see #equals
    */
   public int hashCode() {
-    return name.hashCode() ^ height << 2 ^ style;
+    return name.hashCode() ^ height << 8 ^ style;
   }
 
   private static int checkFontStyle( final int style ) {
