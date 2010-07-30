@@ -1325,38 +1325,57 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _findItemByIndex : function( index, startItem, startIndex ) {
-      // TODO [tb] : simplify 
-      var item = startItem ? startItem : this.getRootItem().getChild( 0 );
-      var i = startIndex ? startIndex : 0;
-      var forwards = index >= i;
-      if( forwards ) {
-        while( i != index && item != null ) {
-          var nextSiblingIndex = i + item.getVisibleChildrenCount() + 1;
-          if( nextSiblingIndex <= index ) {
-            i = nextSiblingIndex;
-            item = this._getNextItem( item, true );
-          } else {
-            item = this._getNextItem( item, false );
-            i++;
-          } 
-        }
+      var result;
+      var computedStartItem = startItem
+                            ? startItem
+                            : this.getRootItem().getChild( 0 );
+      var computedStartIndex = startIndex ? startIndex : 0;
+      if( index >= computedStartIndex ) {
+        result = this._findItemByIndexForwards( index,
+                                                computedStartItem, 
+                                                computedStartIndex );
       } else {
-        while( i != index && item != null ) {
-          if( item.hasPreviousSibling() ) {
-            var previous = item.getPreviousSibling();
-            var prevSiblingIndex = i - ( previous.getVisibleChildrenCount() + 1 );
-            if( prevSiblingIndex >= index ) {
-              i = prevSiblingIndex;
-              item = previous;              
-            } else {
-              item = this._getPreviousItem( item );
-              i--;
-            }
+        result = this._findItemByIndexBackwards( index, 
+                                                 computedStartItem, 
+                                                 computedStartIndex );
+      }
+      return result;
+    },
+
+    _findItemByIndexForwards : function( index, startItem, startIndex ) {
+      var i = startIndex;
+      var item = startItem;
+      while( i != index && item != null ) {
+        var siblingIndex = i + item.getVisibleChildrenCount() + 1;
+        if( siblingIndex <= index ) {
+          i = siblingIndex;
+          item = this._getNextItem( item, true );
+        } else {
+          item = this._getNextItem( item, false );
+          i++;
+        } 
+      }
+      return item;
+    },
+    
+    _findItemByIndexBackwards : function( index, startItem, startIndex ) {
+      var i = startIndex;
+      var item = startItem;
+      while( i != index && item != null ) {
+        if( item.hasPreviousSibling() ) {
+          var previous = item.getPreviousSibling();
+          var prevSiblingIndex = i - ( previous.getVisibleChildrenCount() + 1 );
+          if( prevSiblingIndex >= index ) {
+            i = prevSiblingIndex;
+            item = previous;              
           } else {
             item = this._getPreviousItem( item );
             i--;
           }
-        }        
+        } else {
+          item = this._getPreviousItem( item );
+          i--;
+        }
       }
       return item;
     },
