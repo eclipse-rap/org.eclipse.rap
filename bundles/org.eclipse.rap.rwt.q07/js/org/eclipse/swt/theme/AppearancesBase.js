@@ -190,7 +190,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "ToolTip", "border" );
-      result.animation = tv.getCssAnimation( "ToolTip", "animation" ),
+      result.animation = tv.getCssAnimation( "ToolTip", "animation" );
       result.padding = tv.getCssBoxDimensions( "ToolTip", "padding" );
       result.textColor = tv.getCssColor( "ToolTip", "color" );
       result.font = tv.getCssFont( "ToolTip", "font" );
@@ -1052,7 +1052,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
           }
         }
       } else {
-        result.zIndex = 0, // TODO [rst] Doesn't this interfere with our z-order?
+        result.zIndex = 0; // TODO [rst] Doesn't this interfere with our z-order?
         result.padding = [ 2, 6, 2, 5 ];
         result.marginRight = 1;
         result.marginLeft = 0;
