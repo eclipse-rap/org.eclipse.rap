@@ -624,69 +624,127 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // TODO [tb] : scrolling via keypress can continue for a while after release
     _onKeyPress : function( event ) {
       if( this._focusItem != null ) {
-        var item = null;
-        var multiSelect = this._hasMultiSelection;
         switch( event.getKeyIdentifier() ) {
           case "Enter":
-            this._sendSelectionEvent( this._focusItem, true );
+            this._handleKeyEnter( event );
           break;
           case "Space":
-            item = this._focusItem;
+            this._handleKeySpace( event );
           break;
           case "Up":
-            item = this._getPreviousItem( this._focusItem );
+            this._handleKeyUp( event );
           break;
           case "Down":
-            item = this._getNextItem( this._focusItem );
+            this._handleKeyDown( event );
           break;
           case "PageUp":
-            var oldIndex = this._findIndexByItem( this._focusItem );
-            var offset = this._rows.length - 2;
-            var newIndex = Math.max( 0, oldIndex - offset );
-            item = this._findItemByIndex( newIndex );
+            this._handleKeyPageUp( event );
           break;
           case "PageDown":
-            var oldIndex = this._findIndexByItem( this._focusItem );
-            var offset = this._rows.length - 2;
-            var max = this.getRootItem().getVisibleChildrenCount() - 1;
-            var newIndex = Math.min( max, oldIndex + offset );
-            item = this._findItemByIndex( newIndex, 
-                                          this._topItem, 
-                                          this._topItemIndex );
+            this._handleKeyPageDown( event );
           break;
           case "Home":
-            item = this.getRootItem().getChild( 0 );
+            this._handleKeyHome( event );
           break;
           case "End":
-            item = this.getRootItem().getLastChild();
+            this._handleKeyEnd( event );
           break;
           case "Left":
-            if( this._focusItem.isExpanded() ) {
-              this._focusItem.setExpanded( false );
-            } else if( !this._focusItem.getParent().isRootItem() ) {
-              item = this._focusItem.getParent();
-              multiSelect = false;
-            }
+            this._handleKeyLeft( event );
           break;
           case "Right":
-            if( this._focusItem.hasChildren() ) {
-              if( !this._focusItem.isExpanded() ) {
-                this._focusItem.setExpanded( true );
-              } else {
-                item = this._focusItem.getChild( 0 )
-              }
-              multiSelect = false;
-            }
+            this._handleKeyRight( event );
           break;
         }
-        if( item != null ) {
-          this._scrollIntoView( item );
-          if( multiSelect ) {
-            this._multiSelectItem( event, item );
-          } else {
-            this._singleSelectItem( item );            
-          } 
+      }
+    },
+    
+    _handleKeyEnter : function( event ) {
+      this._sendSelectionEvent( this._focusItem, true );
+    },
+    
+    _handleKeySpace : function( event ) {
+      var itemIndex = this._findIndexByItem( this._focusItem );
+      this._handleKeyboardSelect( event, this._focusItem, itemIndex );
+    },
+    
+    _handleKeyUp : function( event ) {
+      var item = this._getPreviousItem( this._focusItem );
+      if( item != null ) {
+        var itemIndex = this._findIndexByItem( item );
+        this._handleKeyboardSelect( event, item, itemIndex );
+      }
+    },
+    
+    _handleKeyDown : function( event ) {
+      var item = this._getNextItem( this._focusItem );
+      if( item != null ) {
+        var itemIndex = this._findIndexByItem( item );
+        this._handleKeyboardSelect( event, item, itemIndex );
+      }
+    },
+    
+    _handleKeyPageUp : function( event ) {
+      var oldIndex = this._findIndexByItem( this._focusItem );
+      var offset = this._rows.length - 2;
+      var newIndex = Math.max( 0, oldIndex - offset );
+      var item = this._findItemByIndex( newIndex );
+      var itemIndex = this._findIndexByItem( item );
+      this._handleKeyboardSelect( event, item, itemIndex );
+    },
+    
+    _handleKeyPageDown : function( event ) {
+      var oldIndex = this._findIndexByItem( this._focusItem );
+      var offset = this._rows.length - 2;
+      var max = this.getRootItem().getVisibleChildrenCount() - 1;
+      var newIndex = Math.min( max, oldIndex + offset );
+      var item = this._findItemByIndex( newIndex, 
+                                    this._topItem, 
+                                    this._topItemIndex );
+      var itemIndex = this._findIndexByItem( item );
+      this._handleKeyboardSelect( event, item, itemIndex );
+    },
+    
+    _handleKeyHome : function( event ) {
+      var item = this.getRootItem().getChild( 0 );
+      this._handleKeyboardSelect( event, item, 0 );
+    },
+    
+    _handleKeyEnd : function( event ) {
+      var item = this.getRootItem().getLastChild();
+      var itemIndex = this.getRootItem().getVisibleChildrenCount() - 1;
+      this._handleKeyboardSelect( event, item, itemIndex );
+    },
+
+    _handleKeyLeft : function( event ) {
+      if( this._focusItem.isExpanded() ) {
+        this._focusItem.setExpanded( false );
+      } else if( !this._focusItem.getParent().isRootItem() ) {
+        var item = this._focusItem.getParent();
+        var itemIndex = this._findIndexByItem( item );
+        this._handleKeyboardSelect( event, item, itemIndex, true );
+      }
+    },
+    
+    _handleKeyRight : function( event ) {
+      if( this._focusItem.hasChildren() ) {
+        if( !this._focusItem.isExpanded() ) {
+          this._focusItem.setExpanded( true );
+        } else {
+          var item = this._focusItem.getChild( 0 )
+          var itemIndex = this._findIndexByItem( item );
+          this._handleKeyboardSelect( event, item, itemIndex, true );
         }
+      }
+    },
+    
+    _handleKeyboardSelect : function( event, item, itemIndex, suppressMulti )
+    { 
+      this._scrollIntoView( itemIndex );
+      if( this._hasMultiSelection && !suppressMulti ) {
+        this._multiSelectItem( event, item );
+      } else {
+        this._singleSelectItem( item );            
       }
     },
 
@@ -878,17 +936,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return result;
    },
 
-    _scrollIntoView : function( item ) {
-      var result = false;
-      var index = this._findIndexByItem( item );
+    _scrollIntoView : function( index ) {
       if( index < this._topItemIndex ) {
         this.setTopItemIndex( index );
-        result = true;
       } else if( index > ( this._topItemIndex + this._rows.length - 2 ) ) {
         this.setTopItemIndex( index - this._rows.length + 2 );
-        result = true;
       }
-      return result;
     },
     
     _scrollContentVertical : function( oldTopItemIndex ) {
@@ -1380,16 +1433,31 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return item;
     },
     
-    _findIndexByItem : function( targetItem ) {
-      // TODO [tb] : optimize for IE6 (can produce "abort script" prompt 
-      //             and jerky keyboard-navigation)
-      var index = 0;
-      var item = this.getRootItem().getChild( 0 );
-      while( item != null && item != targetItem ) {
-        item = this._getNextItem( item );
-        index++;
+    _findIndexByItem : function( item ) {
+      var forwardsItem = this._getTopItem();
+      var backwardsItem = this._getTopItem();
+      var forwardsIndex = this._topItemIndex;
+      var backwardsIndex = this._topItemIndex;
+      while( forwardsItem !== item && backwardsItem !== item ) {
+        if( forwardsItem != null ) {
+          forwardsItem = this._getNextItem( forwardsItem );
+          forwardsIndex++;
+        }
+        if( backwardsItem != null ) {
+          backwardsItem = this._getPreviousItem( backwardsItem );
+          backwardsIndex--;
+        }
+        if( backwardsItem === null && forwardsItem === null ) {
+          throw "Tree._findIndexByItem failed!";
+        }
       }
-      return index;
+      var result;
+      if( forwardsItem === item ) {
+        result = forwardsIndex;
+      } else {
+        result = backwardsIndex;
+      }
+      return result;
     },
     
     _isChildOf : function( child, parent ) {
