@@ -621,7 +621,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._vertScrollBar.setValue( this._vertScrollBar.getValue() - change );
     },
 
-    // TODO [tb] : scrolling via keypress can continue for a while after release
     _onKeyPress : function( event ) {
       if( this._focusItem != null ) {
         switch( event.getKeyIdentifier() ) {
@@ -738,8 +737,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
     
-    _handleKeyboardSelect : function( event, item, itemIndex, suppressMulti )
-    { 
+    _handleKeyboardSelect : function( event, item, itemIndex, suppressMulti ) { 
       this._scrollIntoView( itemIndex );
       if( this._hasMultiSelection && !suppressMulti ) {
         this._multiSelectItem( event, item );
