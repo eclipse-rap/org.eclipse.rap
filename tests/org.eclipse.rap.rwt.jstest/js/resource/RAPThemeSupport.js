@@ -1,3 +1,16 @@
+// How to generate the content of RAPThemeSupport.js:
+// - Start an RAP-application (non-debug for client-side)
+// - Open the application in an Firefox with Firebug 
+// - In Firebug, go to "Html"
+// - In the document, go to <body> -> <script>
+// - Copy all calls that start with "qx.Theme.define("org.eclipse.swt.theme.Default..."
+// - There should be 7 (there are several per row, maybe all in one)
+// - Also copy the calls after that, "ts=org.eclipse.swt.theme.ThemeStore.getInstance();ts.defineValues..."
+// - be careful not to copy line-numbers with the code
+// - add the following lines: (without the "//")
+//  qx.io.Alias.getInstance().add( "static", "../org.eclipse.rap.rwt.q07/js/resource/static" );
+//  qx.io.Alias.getInstance().add( "org.eclipse.swt", "../org.eclipse.rap.rwt.q07/js/resource" );
+
 qx.Theme.define("org.eclipse.swt.theme.DefaultColors",{title:"RAP Default Theme",colors:{}});
 qx.Theme.define("org.eclipse.swt.theme.DefaultBorders",{title:"RAP Default Theme",extend:org.eclipse.swt.theme.BordersBase,borders:{}});
 qx.Theme.define("org.eclipse.swt.theme.DefaultFonts",{title:"RAP Default Theme",fonts:{}});
