@@ -1,6 +1,6 @@
 ( function(){
 
-  qxsettings={};
+  qxsettings = {};
   qxsettings[ "qx.application" ] = "org.eclipse.rwt.test.Application";
   qxsettings[ "qx.minLogLevel" ] = 200;
   qxsettings[ "qx.logAppender" ] = "qx.log.appender.Native";
