@@ -22,10 +22,10 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -545,9 +545,10 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     ControlLCAUtil.preserveBackgroundImage( control );
     Fixture.markInitialized( control );
-    control.setBackgroundImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    control.setBackgroundImage( image );
     ControlLCAUtil.writeBackgroundImage( control );
-    String imageLocation = "rwt-resources/" + Fixture.IMAGE1;
+    String imageLocation = ResourceFactory.getImagePath( image );
     String expected =   "var w = wm.findWidgetById( \"w2\" );"
                       + "w.setUserData( \"backgroundImageSize\", [58,12 ] );"
                       + "w.setBackgroundImage( \""

@@ -91,16 +91,17 @@ public class InternalImageFactory_Test extends TestCase {
   public void testFindInternalImageWithPath() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream1 = loader.getResourceAsStream( Fixture.IMAGE1 );
-    String path = "testpath";
+    String key = "testkey";
     InternalImage internalImage1
-      = InternalImageFactory.findInternalImage( path, stream1 );
+      = InternalImageFactory.findInternalImage( key, stream1 );
     assertNotNull( internalImage1 );
-    InputStream stream2 = loader.getResourceAsStream( Fixture.IMAGE2 );
+    // second stream is not read
+    InputStream stream2 = new ByteArrayInputStream( new byte[ 0 ] );
     InternalImage internalImage2
-      = InternalImageFactory.findInternalImage( path, stream2 );
+      = InternalImageFactory.findInternalImage( key, stream2 );
     assertSame( internalImage1, internalImage2 );
   }
-  
+
   protected void setUp() throws Exception {
     Fixture.setUpWithoutResourceManager();
     Fixture.createContext( false );

@@ -16,8 +16,7 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -28,8 +27,8 @@ public class ImageFactory_Test extends TestCase {
     ClassLoader classLoader = ImageFactory_Test.class.getClassLoader();
     String path = Fixture.IMAGE1;
     Image image1 = ImageFactory.findImage( path, classLoader );
-    assertEquals( path, image1.internalImage.getResourceName() );
-    assertTrue( ResourceManager.getInstance().isRegistered( path ) );
+    String registerPath = getRegisterPath( image1 );
+    assertTrue( ResourceManager.getInstance().isRegistered( registerPath ) );
   }
 
   public void testFindImageByPath_returnsSharedImage() {
@@ -57,6 +56,12 @@ public class ImageFactory_Test extends TestCase {
     assertSame( image1.internalImage, image2.internalImage );
     // image must be disposable, i.e. dispose must not throw an ISE
     image1.dispose();
+  }
+
+  private static String getRegisterPath( final Image image ) {
+    String imagePath = ResourceFactory.getImagePath( image );
+    int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
+    return imagePath.substring( prefixLength );
   }
 
   protected void setUp() throws Exception {

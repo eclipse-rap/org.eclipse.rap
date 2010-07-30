@@ -26,16 +26,20 @@ import org.eclipse.swt.graphics.ImageLoader;
  */
 public final class InternalImageFactory {
 
-  private static final Map internalImagesCache = new HashMap();
-  private static final Object internalImagesCacheLock = new Object();
+  private static final Map cache = new HashMap();
+  private static final Object cacheLock = new Object();
+
+  // TODO [rst] If we do not rely on the fact that there is only one
+  //            InternalImage instance, we could loose synchronization as in
+  //            ImageDataFactory.
 
   public static InternalImage findInternalImage( final String fileName ) {
     InternalImage internalImage;
-    synchronized( internalImagesCacheLock ) {
-      internalImage = ( InternalImage )internalImagesCache.get( fileName );
+    synchronized( cacheLock ) {
+      internalImage = ( InternalImage )cache.get( fileName );
       if( internalImage == null ) {
         internalImage = createInternalImage( fileName );
-        internalImagesCache.put( fileName, internalImage );
+        cache.put( fileName, internalImage );
       }
     }
     return internalImage;
@@ -46,11 +50,11 @@ public final class InternalImageFactory {
     BufferedInputStream bufferedStream = new BufferedInputStream( stream );
     ImageData imageData = readImageData( bufferedStream );
     String path = createGeneratedImagePath( imageData );
-    synchronized( internalImagesCacheLock ) {
-      internalImage = ( InternalImage )internalImagesCache.get( path );
+    synchronized( cacheLock ) {
+      internalImage = ( InternalImage )cache.get( path );
       if( internalImage == null ) {
         internalImage = createInternalImage( path, bufferedStream, imageData );
-        internalImagesCache.put( path, internalImage );
+        cache.put( path, internalImage );
       }
     }
     return internalImage;
@@ -59,28 +63,29 @@ public final class InternalImageFactory {
   public static InternalImage findInternalImage( final ImageData imageData ) {
     InternalImage internalImage;
     String path = createGeneratedImagePath( imageData );
-    synchronized( internalImagesCacheLock ) {
-      internalImage = ( InternalImage )internalImagesCache.get( path );
+    synchronized( cacheLock ) {
+      internalImage = ( InternalImage )cache.get( path );
       if( internalImage == null ) {
         InputStream stream = createInputStream( imageData );
         internalImage = createInternalImage( path, stream, imageData );
-        internalImagesCache.put( path, internalImage );
+        cache.put( path, internalImage );
       }
     }
     return internalImage;
   }
 
-  public static InternalImage findInternalImage( final String path,
+  public static InternalImage findInternalImage( final String key,
                                                  final InputStream inputStream )
   {
     InternalImage internalImage;
-    synchronized( internalImagesCacheLock ) {
-      internalImage = ( InternalImage )internalImagesCache.get( path );
+    synchronized( cacheLock ) {
+      internalImage = ( InternalImage )cache.get( key );
       if( internalImage == null ) {
         BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
         ImageData imageData = readImageData( bufferedStream );
+        String path = createGeneratedImagePath( imageData );
         internalImage = createInternalImage( path, bufferedStream, imageData );
-        internalImagesCache.put( path, internalImage );
+        cache.put( key, internalImage );
       }
     }
     return internalImage;
@@ -177,12 +182,15 @@ public final class InternalImageFactory {
         result = 31 * result + imageData.data[ i ];
       }
     }
+    result = result * 31 + imageData.alpha;
+    result = result * 31 + imageData.transparentPixel;
+    result = result * 31 + imageData.type;
     return result;
   }
 
   static void clear() {
-    synchronized( internalImagesCacheLock ) {
-      internalImagesCache.clear();
+    synchronized( cacheLock ) {
+      cache.clear();
     }
   }
 

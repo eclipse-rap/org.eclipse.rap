@@ -98,22 +98,21 @@ public class Graphics_Test extends TestCase {
     // org.eclipse.swt.internal.widgets.displaykit.QooxdooResourcesUtil
     assertFalse( manager.isRegistered( Fixture.IMAGE1 ) );
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
+    String registerPath = getRegisterPath( image1 );
+    assertTrue( manager.isRegistered( registerPath ) );
     File contextDir = new File( Fixture.CONTEXT_DIR,
                                 ResourceManagerImpl.RESOURCES );
-    assertTrue( new File( contextDir, Fixture.IMAGE1 ).exists() );
-    Image image2 = Graphics.getImage( Fixture.IMAGE1 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
-    assertSame( image1, image2 );
-    assertEquals( ResourceFactory.getImagePath( image1 ),
-                  ResourceFactory.getImagePath( image2 ) );
+    assertTrue( new File( contextDir, registerPath ).exists() );
+    Image image1a = Graphics.getImage( Fixture.IMAGE1 );
+    assertSame( image1, image1a );
     // another picture
-    Graphics.getImage( Fixture.IMAGE2 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE2 ) );
-    assertTrue( new File( contextDir, Fixture.IMAGE2 ).exists() );
+    Image image2 = Graphics.getImage( Fixture.IMAGE2 );
+    String image2Path = getRegisterPath( image2 );
+    assertTrue( manager.isRegistered( image2Path ) );
+    assertTrue( new File( contextDir, image2Path ).exists() );
     // ... and do it again...
-    image1 = Graphics.getImage( Fixture.IMAGE1 );
-    assertTrue( manager.isRegistered( Fixture.IMAGE1 ) );
+    Graphics.getImage( Fixture.IMAGE1 );
+    assertTrue( manager.isRegistered( registerPath ) );
   }
 
   public void testGetImageWithClassLoader() throws IOException {
@@ -224,6 +223,12 @@ public class Graphics_Test extends TestCase {
     } catch( IllegalStateException e ) {
       assertFalse( font.isDisposed() );
     }
+  }
+
+  private static String getRegisterPath( final Image image ) {
+    String imagePath = ResourceFactory.getImagePath( image );
+    int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
+    return imagePath.substring( prefixLength );
   }
 
   protected void setUp() throws Exception {

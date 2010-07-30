@@ -26,6 +26,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -493,7 +494,8 @@ public class ButtonLCA_Test extends TestCase {
     Shell shell = new Shell( display );
     Button button = new Button( shell, SWT.PUSH );
     button.setText( "Test" );
-    button.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    button.setImage( image );
     Fixture.markInitialized( button );
     Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
@@ -501,7 +503,7 @@ public class ButtonLCA_Test extends TestCase {
     lca.renderChanges( button );
     String allMarkup = Fixture.getAllMarkup();
     assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
-    String imageLocation = "rwt-resources/" + Fixture.IMAGE1;
+    String imageLocation = ResourceFactory.getImagePath( image );
     String expected = "w.setImage( \"" + imageLocation + "\", 58, 12 );";
     assertTrue( allMarkup.indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();

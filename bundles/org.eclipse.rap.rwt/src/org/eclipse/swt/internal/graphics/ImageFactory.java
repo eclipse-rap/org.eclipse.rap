@@ -25,8 +25,8 @@ import org.eclipse.swt.graphics.Image;
  */
 public final class ImageFactory {
 
-  private static final Map imagesCache = new HashMap();
-  private static final Object imagesCacheLock = new Object();
+  private static final Map cache = new HashMap();
+  private static final Object cacheLock = new Object();
 
   public static Image findImage( final String path ) {
     IResourceManager manager = ResourceManager.getInstance();
@@ -37,11 +37,11 @@ public final class ImageFactory {
                                  final ClassLoader imageLoader )
   {
     Image image;
-    synchronized( imagesCacheLock ) {
-      image = ( Image )imagesCache.get( path );
+    synchronized( cacheLock ) {
+      image = ( Image )cache.get( path );
       if( image == null ) {
         image = createImage( path, imageLoader );
-        imagesCache.put( path, image );
+        cache.put( path, image );
       }
     }
     return image;
@@ -51,22 +51,22 @@ public final class ImageFactory {
                                  final InputStream inputStream )
   {
     Image image;
-    synchronized( imagesCacheLock ) {
-      image = ( Image )imagesCache.get( path );
+    synchronized( cacheLock ) {
+      image = ( Image )cache.get( path );
       if( image == null ) {
         image = createImage( null, path, inputStream );
-        imagesCache.put( path, image );
+        cache.put( path, image );
       }
     }
     return image;
   }
 
   public static Image createImage( final Device device,
-                                   final String path,
+                                   final String key,
                                    final InputStream inputStream )
   {
     InternalImage internalImage
-      = InternalImageFactory.findInternalImage( path, inputStream );
+      = InternalImageFactory.findInternalImage( key, inputStream );
     return createImageInstance( device, internalImage );
   }
 
@@ -121,8 +121,8 @@ public final class ImageFactory {
   }
 
   static void clear() {
-    synchronized( imagesCacheLock ) {
-      imagesCache.clear();
+    synchronized( cacheLock ) {
+      cache.clear();
     }
   }
 
