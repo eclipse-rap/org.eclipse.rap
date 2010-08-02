@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,10 +30,10 @@ import org.eclipse.swt.widgets.*;
 public final class TableLCA extends AbstractWidgetLCA {
 
   // Request cell tooltip text event
-  static final String EVENT_CELL_TOOLTIP_TEXT_REQUESTED
+  static final String EVENT_CELL_TOOLTIP_REQUESTED
     = "org.eclipse.swt.events.cellToolTipTextRequested";
   // Parameter names that specify further event details
-  static final String EVENT_CELL_TOOLTIP_TEXT_REQUESTED_CELL
+  static final String EVENT_CELL_TOOLTIP_DETAILS
     = "org.eclipse.swt.events.cellToolTipTextRequested.cell";
 
   // Property names to preserve values
@@ -308,17 +308,22 @@ public final class TableLCA extends AbstractWidgetLCA {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     tableAdapter.setToolTipText( null );
-    String event = EVENT_CELL_TOOLTIP_TEXT_REQUESTED;
+    String event = EVENT_CELL_TOOLTIP_REQUESTED;
     if( WidgetLCAUtil.wasEventSent( table, event ) ) {
-      HttpServletRequest request = ContextProvider.getRequest();
-      String cell
-        = request.getParameter( EVENT_CELL_TOOLTIP_TEXT_REQUESTED_CELL );
-      String[] indices = cell.split( "," );
-      int itemIndex = Integer.parseInt( indices[ 0 ] );
-      int columnIndex = Integer.parseInt( indices[ 1 ] );
       ICellToolTipProvider provider = tableAdapter.getCellToolTipProvider();
       if( provider != null ) {
-        provider.getToolTipText( itemIndex, columnIndex );
+        HttpServletRequest request = ContextProvider.getRequest();
+        String cell = request.getParameter( EVENT_CELL_TOOLTIP_DETAILS );
+        String[] indices = cell.split( "," );
+        int itemIndex = Integer.parseInt( indices[ 0 ] );
+        int columnIndex = Integer.parseInt( indices[ 1 ] );
+        // Bug 321119: Sometimes the client can request tooltips for already
+        //             disposed cells.
+        if(    itemIndex < table.getItemCount()
+            && ( columnIndex == 0 || columnIndex < table.getColumnCount() ) )
+        {
+          provider.getToolTipText( itemIndex, columnIndex );
+        }
       }
     }
   }

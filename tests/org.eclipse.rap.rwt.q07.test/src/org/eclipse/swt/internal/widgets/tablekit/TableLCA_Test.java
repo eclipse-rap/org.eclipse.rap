@@ -846,9 +846,7 @@ public class TableLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
-    for( int i = 0; i < 5; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
+    createTableItems( table, 5 );
     Object adapter = table.getAdapter( ITableAdapter.class );
     final ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
@@ -859,23 +857,47 @@ public class TableLCA_Test extends TestCase {
         tableAdapter.setToolTipText( text );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
-    String tableId = WidgetUtil.getId( table );
     Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String expected = "w.setCellToolTipText(";
     assertTrue( markup.indexOf( expected ) == -1 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_TEXT_REQUESTED,
-                              tableId );
-    Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_TEXT_REQUESTED_CELL,
-                              "1,2" );
-    Fixture.executeLifeCycleFromServerThread();
+    processCellToolTipRequest( table, 2, 0 );
     markup = Fixture.getAllMarkup();
-    expected = "w.setCellToolTipText( \"[1,2]\" );";
+    expected = "w.setCellToolTipText( \"[2,0]\" );";
     assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
+  public void testCellTooltipRequestForMissingCells() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    createTableItems( table, 3 );
+    final StringBuffer log = new StringBuffer();
+    final ITableAdapter tableAdapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
+
+      public void getToolTipText( final int itemIndex, final int columnIndex ) {
+        log.append( "[" + itemIndex + "," + columnIndex + "]" );
+      }
+    } );
+    processCellToolTipRequest( table, 0, 0 );
+    assertEquals( "[0,0]", log.toString() );
+    log.setLength( 0 );
+    processCellToolTipRequest( table, 2, 0 );
+    assertEquals( "[2,0]", log.toString() );
+    log.setLength( 0 );
+    processCellToolTipRequest( table, 3, 0 );
+    assertEquals( "", log.toString() );
+    processCellToolTipRequest( table, 2, 1 );
+    assertEquals( "", log.toString() );
+    createTableColumns( table, 2 );
+    processCellToolTipRequest( table, 2, 1 );
+    assertEquals( "[2,1]", log.toString() );
+    log.setLength( 0 );
+    processCellToolTipRequest( table, 2, 2 );
+    assertEquals( "", log.toString() );
   }
 
   public void testScrollbarsSelectionEvent() {
@@ -913,6 +935,32 @@ public class TableLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private static void createTableColumns( final Table table, final int count ) {
+    for( int i = 0; i < count; i++ ) {
+      new TableColumn( table, SWT.NONE );
+    }
+  }
+  
+  private static void createTableItems( final Table table, final int count ) {
+    for( int i = 0; i < count; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+  }
+
+  private static void processCellToolTipRequest( final Table table,
+                                                 final int item,
+                                                 final int column )
+  {
+    Fixture.fakeNewRequest();
+    String displayId = DisplayUtil.getId( table.getDisplay() );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    String tableId = WidgetUtil.getId( table );
+    Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_REQUESTED, tableId );
+    String cellString = item + "," + column;
+    Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_DETAILS, cellString );
+    Fixture.executeLifeCycleFromServerThread();
   }
 
   private static boolean isItemVirtual( final Table table, final int index ) {
