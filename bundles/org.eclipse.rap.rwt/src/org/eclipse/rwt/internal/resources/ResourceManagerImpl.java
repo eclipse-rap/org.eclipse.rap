@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,14 +23,18 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.resources.IResourceManager;
 
-
-/** <p>The resource manager is responsible for registering resources
- *  like images, css files etc. which are available on the applications
- *  classpath. The registered files will be read out from their libraries
- *  and delivered if requested. Usually resources are stored in libraries
- *  in the WEB-INF/lib directory of a web-application</p>
- *  <p>Implementation as Singleton.</p>
- *  <p>This class is not intended to be used by clients.</p>
+/**
+ * The resource manager is responsible for registering resources like images,
+ * CSS files etc. which are available on the application's classpath. The
+ * registered files will be read out from their libraries and delivered if
+ * requested. Usually resources are stored in libraries in the WEB-INF/lib
+ * directory of a web-application
+ * <p>
+ * Implementation as singleton.
+ * </p>
+ * <p>
+ * This class is not intended to be used by clients.
+ * </p>
  */
 public class ResourceManagerImpl
   extends ResourceBase
@@ -42,7 +46,7 @@ public class ResourceManagerImpl
   final static String RESOURCE = "w4t_resource";
   final static String RESOURCE_VERSION = "w4t_res_version";
 
-  /** <p>The singleton instance of ResourceManager.</p> */
+  /** the singleton instance of IResourceManager */
   private static IResourceManager _instance;
 
   private final String webAppRoot;
@@ -53,13 +57,14 @@ public class ResourceManagerImpl
   private JsConcatenator jsConcatenator;
 
   private static final class Resource {
+
     /** the 'raw' content of the resource. In case of a text resource (charset
      * was given) the content is UTF-8 encoded. */
     private final int[] content;
-    /** the charset in which the resource was encoded before red or null for
+    /** the charset in which the resource was encoded before read or null for
      * binary resources. */
     private final String charset;
-    /** the reources' version or null for 'no version' */
+    /** the resource's version or null for 'no version' */
     private final Integer version;
 
     public Resource( final int[] content,
@@ -91,7 +96,9 @@ public class ResourceManagerImpl
     contextLoader = new ThreadLocal();
   }
 
-  /** <p>Returns the singleton instance of ResourceManager.</p> */
+  /**
+   * Returns the singleton instance of ResourceManager.
+   */
   public static synchronized IResourceManager createInstance(
     final String webAppRoot,
     final String mode )
@@ -103,15 +110,18 @@ public class ResourceManagerImpl
     return _instance;
   }
 
-  /** <p>Retruns the singleton instance of <code>IResourceManager</code>.</p> */
+  /**
+   * Returns the singleton instance of <code>IResourceManager</code>.
+   */
   public static IResourceManager getInstance() {
     return _instance;
   }
 
   /**
-   * <p>Loads the given <code>resource</code> from the class path.</p>
-   * @param resource the name of the resource to be loaded. Must not be
-   * <code>null</code>
+   * Loads the given <code>resource</code> from the class path.
+   * 
+   * @param resource the name of the resource to be loaded, must not be
+   *          <code>null</code>
    */
   public static String load( final String resource ) {
     ParamCheck.notNull( resource, "resource" );
@@ -119,14 +129,14 @@ public class ResourceManagerImpl
   }
 
   /**
-   * <p>Returns the content of the resource denoted by <code>name</code>.</p>
-   * @param name the name of the resource to find, must not be
-   * <code>null</code>.
-   * @param version the version (can be obtained by {@link #findVersion(String)}
-   * <code>findVersion(String)</code>) of the resource or <code>null</code>
-   * if the resource is unversioned.
+   * Returns the content of the resource denoted by <code>name</code>.
+   * 
+   * @param name the name of the resource to find, must not be <code>null</code>
+   * @param version the version (can be obtained by
+   *          <code>findVersion(String)</code>) of the resource or
+   *          <code>null</code> if the resource is unversioned.
    * @return the content of the resource or <code>null</code> if no resource
-   * with the given <code>name</code> and <code>version</code> exists.
+   *         with the given <code>name</code> and <code>version</code> exists.
    */
   public static int[] findResource( final String name, final Integer version ) {
     ParamCheck.notNull( name, "name" );
@@ -144,12 +154,13 @@ public class ResourceManagerImpl
   }
 
   /**
-   * <p>Returns the version number for the previously {@link
-   * #register(String, String, RegisterOptions) registered} resource.</p>
+   * Returns the version number for the previously
+   * {@link #register(String, String, RegisterOptions) registered} resource.
+   * 
    * @param name the name of the resource for which the version number should be
-   * obtained. Must not be <code>null</code>.
+   *          obtained. Must not be <code>null</code>.
    * @return the version number or <code>null</code> if either no such resource
-   * was registered or the resource does not have a version number.
+   *         was registered or the resource does not have a version number.
    * @throws NullPointerException when <<code>name</code> is <code>null</code>.
    */
   public static Integer findVersion( final String name ) {
@@ -163,17 +174,18 @@ public class ResourceManagerImpl
     return result;
   }
 
-
   //////////////////////
   // interface Adaptable
 
   public Object getAdapter( final Class adapter ) {
     Object result = null;
-    if( adapter == JsConcatenator.class ){
+    if( adapter == JsConcatenator.class ) {
       if( jsConcatenator == null ) {
         jsConcatenator = new JsConcatenator() {
+
           private String content;
           private boolean registered = false;
+
           public String getLocation() {
             String concatedName = "rap.js";
             if( !registered ) {
@@ -190,6 +202,7 @@ public class ResourceManagerImpl
           public void startJsConcatenation() {
             ResourceUtil.startJsConcatenation();
           }
+
           public String getContent() {
             if( content == null ) {
               content = ResourceUtil.getJsConcatenationContentAsString();
@@ -203,7 +216,6 @@ public class ResourceManagerImpl
     return result;
   }
 
-
   /////////////////////////////
   // interface IResourceManager
 
@@ -212,8 +224,7 @@ public class ResourceManagerImpl
     doRegister( name, null, RegisterOptions.NONE );
   }
 
-  public void register( final String name, final String charset )
-  {
+  public void register( final String name, final String charset ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( charset, "charset" );
     doRegister( name, charset, RegisterOptions.NONE );
@@ -459,8 +470,8 @@ public class ResourceManagerImpl
 
   private static void createFile( final File fileToWrite ) throws IOException {
     File dir = new File( fileToWrite.getParent() );
-    if( !dir.exists() ) {
-      if( !dir.mkdirs() ) {
+    if( !dir.mkdirs() ) {
+      if( !dir.exists() ) {
         throw new IOException( "Could not create directory structure: " + dir );
       }
     }
