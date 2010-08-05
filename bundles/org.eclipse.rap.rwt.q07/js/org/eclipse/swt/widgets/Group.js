@@ -25,7 +25,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     themeValues.dispose();
     // Make sure that the 'labelObject' is created
     var labelObject = this.getLegendObject().getLabelObject();
-    if ( labelObject == null ) {
+    if( labelObject == null ) {
       this.setLegend( "(empty)" );
       this.setLegend( "" );
     }
@@ -61,6 +61,22 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
   },
 
   members : {
+
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._legendObject.addState( state );
+        this._frameObject.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._legendObject.removeState( state );
+        this._frameObject.removeState( state );
+      }
+    },
 
     _onChangeBackgroundColor : function( evt ) {
       var newColor = evt.getValue();
