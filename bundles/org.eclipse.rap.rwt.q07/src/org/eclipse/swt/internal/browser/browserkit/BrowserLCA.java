@@ -356,6 +356,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       for( int i = 0; i < array.length; i++ ) {
         result.append( toJson( array[ i ], false ) );
       }
+      if( array.length == 0 ) {
+        result.append( "," );
+      }
       result.insert( result.length() - 1, "]" );
     }
     if( deleteLastChar ) {
