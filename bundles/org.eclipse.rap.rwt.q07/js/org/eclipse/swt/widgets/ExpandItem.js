@@ -64,6 +64,22 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
   },
 
   members : {      
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._header.addState( state );
+        this._chevron.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._header.removeState( state );
+        this._chevron.removeState( state );
+      }
+    },
+
     setExpanded : function( expanded ) {
       this._expanded = expanded;
       if( expanded ) { 
