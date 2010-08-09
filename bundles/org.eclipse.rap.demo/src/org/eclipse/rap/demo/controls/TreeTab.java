@@ -34,6 +34,7 @@ public class TreeTab extends ExampleTab {
   private Tree tree;
   private boolean showImages;
   private final Image treeImage;
+  private boolean addMouseListener;
 
   public TreeTab( final CTabFolder topFolder ) {
     super( topFolder, "Tree" );
@@ -112,6 +113,15 @@ public class TreeTab extends ExampleTab {
         }
       }
     } );
+    Button cbAddMouseListener = new Button( parent, SWT.CHECK );
+    cbAddMouseListener.setText( "Attach MouseListener" );
+    cbAddMouseListener.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        addMouseListener = !addMouseListener;
+        createNew();
+      }
+    } );
+    cbAddMouseListener.setSelection( addMouseListener );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -198,6 +208,20 @@ public class TreeTab extends ExampleTab {
     } );
     tree.setSelection( tree.getItem( 0 ) );
     tree.setHeaderVisible( true );
+    if( addMouseListener ) {
+      MouseListener listener = new MouseListener(  ) {
+        public void mouseDoubleClick( MouseEvent e ) {
+          log( "mouseDoubleClick: " + e );
+        }
+        public void mouseDown( MouseEvent e ) {
+          log( "mouseDown: " + e );
+        }
+        public void mouseUp( MouseEvent e ) {
+          log( "mouseUp: " + e );
+        }
+      };
+      tree.addMouseListener( listener );
+    }
 
     registerControl( tree );
   }
