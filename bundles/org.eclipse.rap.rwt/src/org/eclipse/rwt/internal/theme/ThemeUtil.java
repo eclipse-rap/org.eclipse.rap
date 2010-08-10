@@ -23,8 +23,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class ThemeUtil {
 
-  private static final String THEME_URL_PARM = "theme";
-
   private static final String CURR_THEME_ATTR
     = "org.eclipse.rap.theme.current";
 
@@ -43,20 +41,8 @@ public final class ThemeUtil {
    * @return the id of the current theme, never <code>null</code>
    */
   public static String getCurrentThemeId() {
-    ThemeManager manager = ThemeManager.getInstance();
     ISessionStore session = ContextProvider.getSession();
-    // 1) try URL parameter
-    String result = ContextProvider.getRequest().getParameter( THEME_URL_PARM );
-    if( result != null && manager.hasTheme( result ) ) {
-      // TODO [rh] a method named get... should be constant, i.e. shouldn't
-      //      have side-effects like altering session attributes
-      session.setAttribute( CURR_THEME_ATTR, result );
-    }
-    // 2) try session attribute
-    else {
-      result = ( String )session.getAttribute( CURR_THEME_ATTR );
-    }
-    // 3) use default
+    String result = ( String )session.getAttribute( CURR_THEME_ATTR );
     if( result == null ) {
       result = ThemeManager.DEFAULT_THEME_ID;
     }
