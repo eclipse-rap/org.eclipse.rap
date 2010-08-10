@@ -228,9 +228,14 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     Object adapter = item.getAdapter( ITableItemAdapter.class );
     ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
     Font font = tableItemAdapter.getUserFont();
-    JSWriter writer = JSWriter.getWriterFor( item );
-    String fontCss = font != null ? toCss( font ) : null;
-    return writer.set( PROP_FONT, "font", fontCss, null );
+    boolean result
+      = WidgetLCAUtil.hasChanged( item, PROP_FONT, font, null );
+    if( result ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      String fontCss = font != null ? toCss( font ) : null;
+      writer.set( "font", fontCss );
+    }
+    return result;
   }
 
   private static boolean writeCellBackgrounds( final TableItem item )
@@ -472,7 +477,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       = ( WidgetAdapter )item.getAdapter( IWidgetAdapter.class );
     adapter.setInitialized( initialized );
   }
-  
+
   private boolean isParentDisposed( final TableItem item ) {
     ITableItemAdapter adapter
       = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
