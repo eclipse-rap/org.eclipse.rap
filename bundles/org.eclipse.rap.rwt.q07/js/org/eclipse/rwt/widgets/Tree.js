@@ -567,6 +567,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           item.setExpanded( expanded );
         } else if( row.isCheckBoxClick( event ) ) {
           item.setChecked( !item.isChecked() );
+          this._sendItemCheckedChange( item );
         } else if( row.isSelectionClick( event ) ) {
           this._onSelectionClick( event, item );
         }
@@ -579,7 +580,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var doubleClick = this._isDoubleClicked( item );
       if( doubleClick ) {
         this._selectionTimestamp = null;
-        this._sendSelectionEvent( item, true );
+        this._sendSelectionEvent( item, true, null );
       } else {
         this._selectionTimestamp = new Date();
         if( this._hasMultiSelection ) {
@@ -659,7 +660,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _handleKeyEnter : function( event ) {
-      this._sendSelectionEvent( this._focusItem, true );
+      this._sendSelectionEvent( this._focusItem, true, null );
     },
     
     _handleKeySpace : function( event ) {
@@ -980,10 +981,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var id = wm.findIdByWidget( this );
         var selection = this._getSelectionIndices();        
         req.addParameter( id + ".selection", selection );
-        this._sendSelectionEvent( item, false );
+        this._sendSelectionEvent( item, false, null );
       }
     },
-    
+
+    _sendItemCheckedChange : function( item ) {
+      if( !this._inServerResponse() ) {
+        var req = org.eclipse.swt.Request.getInstance();
+        var wm = org.eclipse.swt.WidgetManager.getInstance();   
+        var itemId = wm.findIdByWidget( item );
+        req.addParameter( itemId + ".checked", item.isChecked() );
+        this._sendSelectionEvent( item, false, "check" );
+      }
+    },
+
     _sendTopItemIndexChange : function() {
       var req = org.eclipse.swt.Request.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -1028,7 +1039,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       req.send();
     },
     
-    _sendSelectionEvent : function( item, defaultSelected ) {
+    _sendSelectionEvent : function( item, defaultSelected, detail ) {
       if( this._hasSelectionListeners ) {
         var req = org.eclipse.swt.Request.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -1039,6 +1050,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         req.addEvent( eventName, id );
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.addParameter( eventName + ".item", itemId );
+        if( detail != null ) {
+          req.addParameter( eventName + ".detail", detail );
+        }
         req.send();
       }      
     },
