@@ -26,8 +26,8 @@ final class RAPApplicationContext implements IApplicationContext {
   
   public RAPApplicationContext() {
     arguments = new HashMap( 2 );
-	arguments.put( IApplicationContext.APPLICATION_ARGS,
-	               Platform.getApplicationArgs() );
+    arguments.put( IApplicationContext.APPLICATION_ARGS,
+                   Platform.getApplicationArgs() );
   }
   
   public void applicationRunning() {
@@ -63,6 +63,6 @@ final class RAPApplicationContext implements IApplicationContext {
   }
   
   public void setResult( final Object result, final IApplication application ) {
-	  // do nothing
+    // do nothing
   }
 }
