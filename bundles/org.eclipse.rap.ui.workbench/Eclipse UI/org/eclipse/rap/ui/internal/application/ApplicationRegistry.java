@@ -39,7 +39,7 @@ public final class ApplicationRegistry {
     = "applications"; //$NON-NLS-1$
   private static final String PT_APP_VISIBLE
     = "visible"; //$NON-NLS-1$
-  
+
   private static Map appEntrypointMapping = new HashMap();
 
   public static IApplication getApplication() {
@@ -63,7 +63,8 @@ public final class ApplicationRegistry {
     IConfigurationElement[] runElement = configElement.getChildren( RUN );
     String className = runElement[ 0 ].getAttribute( "class" ); //$NON-NLS-1$
     String applicationId = extension.getUniqueIdentifier();
-    String applicationParameter = extension.getSimpleIdentifier();
+    // [if] Use full qualified applicationParameter, see bug 321360
+    String applicationParameter = extension.getUniqueIdentifier();
     String isVisible = configElement.getAttribute( PT_APP_VISIBLE );
     try {
       // ignore invisible applications
@@ -104,5 +105,5 @@ public final class ApplicationRegistry {
   private ApplicationRegistry() {
     // prevent instantiation
   }
-  
+
 }
