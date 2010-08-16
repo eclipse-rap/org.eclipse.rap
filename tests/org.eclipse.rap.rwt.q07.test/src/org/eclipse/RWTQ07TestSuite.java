@@ -23,6 +23,7 @@ import org.eclipse.swt.internal.custom.ccombokit.CComboLCA_Test;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelLCA_Test;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA_Test;
+import org.eclipse.swt.internal.dnd.dragsourcekit.DragSourceLCA_Test;
 import org.eclipse.swt.internal.events.ActivateEvent_Test;
 import org.eclipse.swt.internal.events.EventLCAUtil_Test;
 import org.eclipse.swt.internal.graphics.TextSizeDeterminationHandler_Test;
@@ -95,6 +96,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( RWTLifeCycle2_Test.class );
     suite.addTestSuite( ThemeAdapter_Test.class );
     suite.addTestSuite( TextSizeDeterminationHandler_Test.class );
+    suite.addTestSuite( DragSourceLCA_Test.class );
 
     // == Service ==
     suite.addTestSuite( StartupPage_Test.class );

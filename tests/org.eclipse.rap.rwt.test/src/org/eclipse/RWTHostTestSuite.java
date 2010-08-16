@@ -80,6 +80,8 @@ public class RWTHostTestSuite {
     suite.addTestSuite( RequestParameterBuffer_Test.class );
     suite.addTestSuite( ConfigurationReader_Test.class );
     suite.addTestSuite( ContextProvider_Test.class );
+    suite.addTestSuite( ServletLog_Test.class );
+    suite.addTestSuite( RWT_Test.class );
 
     // RWT Tests
     suite.addTestSuite( EntryPointManager_Test.class );
@@ -225,6 +227,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ShellThemeAdapter_Test.class );
     suite.addTestSuite( ToolBarThemeAdapter_Test.class );
     suite.addTestSuite( StyleSheetBuilder_Test.class );
+    suite.addTestSuite( ThemeStoreWriter_Test.class );
 
     // == SettingStore ==
     suite.addTestSuite( MemorySettingStore_Test.class );
