@@ -630,131 +630,86 @@ qx.Class.define( "qx.event.handler.EventHandler", {
     /** 
      * This is the crossbrowser post handler for all mouse events.
      */
-    _onmouseevent_post : function(vDomEvent, vType, vDomTarget) {
-      var vEventObject, vCaptureTarget, vDispatchTarget, vTarget, vOriginalTarget, vRelatedTarget, vFixClick, vTargetIsEnabled;
-
-      // Check for capturing, if enabled the target is the captured widget.
-      vCaptureTarget = this.getCaptureWidget();
-
-      // Event Target Object
-      vOriginalTarget = qx.event.handler.EventHandler.getOriginalTargetObject(vDomTarget);
-
-      // If capturing isn't active search for a valid target object
-      if (!vCaptureTarget)
-      {
-        // Get Target Object
-        vDispatchTarget = vTarget = qx.event.handler.EventHandler.getTargetObject(null, vOriginalTarget, true);
-      }
-      else
-      {
-        vDispatchTarget = vCaptureTarget;
-        vTarget = qx.event.handler.EventHandler.getTargetObject(null, vOriginalTarget, true);
-      }
-
-      // If there is no target, we have nothing to do
+    _onmouseevent_post : function( vDomEvent, vType, vDomTarget ) {
+      var vCaptureTarget = this.getCaptureWidget();
+      var vOriginalTarget 
+        = qx.event.handler.EventHandler.getOriginalTargetObject( vDomTarget );
+      var vTarget = qx.event.handler.EventHandler.getTargetObject( null, vOriginalTarget, true );
       if (!vTarget) {
         return;
       }
-
-      vTargetIsEnabled = vTarget.getEnabled();
-
-      // Fix click event (gecko bug work around)
-      if (qx.core.Variant.isSet("qx.client", "gecko")) {
-        vFixClick = this._onmouseevent_click_fix(vDomTarget, vType, vDispatchTarget);
+      var vDispatchTarget = vCaptureTarget ? vCaptureTarget : vTarget;
+      var vFixClick = false;
+      if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+        vFixClick 
+          = this._onmouseevent_click_fix( vDomTarget, vType, vDispatchTarget );
       }
-
       // Prevent the browser's native context menu
-      if (vType == "contextmenu" && !this._allowContextMenu(vOriginalTarget, vDomTarget)) {
-        qx.event.handler.EventHandler.stopDomEvent(vDomEvent);
+      if(    vType == "contextmenu" 
+          && !this._allowContextMenu( vOriginalTarget, vDomTarget ) ) {
+        qx.event.handler.EventHandler.stopDomEvent( vDomEvent );
       }
-
       // Update focus
-      if (vTargetIsEnabled && vType == "mousedown")
-      {
+      if( vTarget.getEnabled() && vType == "mousedown" ) {
         qx.event.handler.FocusHandler.mouseFocus = true;
-
         var vRoot = vTarget.getFocusRoot();
-
-        if (vRoot)
-        {
-          this.setFocusRoot(vRoot);
-
-          // Active focus on element (if possible, else search up the parent tree)
+        if( vRoot ) {
+          this.setFocusRoot( vRoot );
           var vFocusTarget = vTarget;
-
-          while (!vFocusTarget.isFocusable() && vFocusTarget != vRoot) {
+          while( !vFocusTarget.isFocusable() && vFocusTarget != vRoot ) {
             vFocusTarget = vFocusTarget.getParent();
           }
-
-          vRoot.setFocusedChild(vFocusTarget);
-
           // We need to focus first and active afterwards.
           // Otherwise the focus will activate another widget if the
           // active one is not tabable.
-          vRoot.setActiveChild(vTarget);
+          vRoot.setFocusedChild( vFocusTarget );
+          vRoot.setActiveChild( vTarget );
         }
       }
-
-      // Find related target object
-      switch(vType)
-      {
-        case "mouseover":
-        case "mouseout":
-          vRelatedTarget = qx.event.handler.EventHandler.getRelatedTargetObjectFromEvent(vDomEvent);
-
-          // Ignore events where the related target and
-          // the real target are equal - from our sight
-          if (vRelatedTarget == vTarget) {
-            return;
-          }
+      // handle related target object
+      if( vType == "mouseover" || vType == "mouseout" ) {
+	      var vRelatedTarget = qx.event.handler.EventHandler.getRelatedTargetObjectFromEvent( vDomEvent );
+	      // Ignore events where the related target and
+	      // the real target are equal - from our sight
+	      if( vRelatedTarget == vTarget ) {
+	        return;
+	      }
       }
-
-      // Create Mouse Event Object
-      vEventObject = new qx.event.type.MouseEvent(vType, vDomEvent, vDomTarget, vTarget, vOriginalTarget, vRelatedTarget);
-
-      // Store last Event in MouseEvent Constructor
-      // Needed for Tooltips, ...
-      qx.event.type.MouseEvent.storeEventState(vEventObject);
-
-      if (vDispatchTarget.getEnabled())
-      {
-        // Dispatch Event through target (eventtarget-)object
-        var vEventWasProcessed = false;
-
-        vEventWasProcessed = vDispatchTarget ? vDispatchTarget.dispatchEvent(vEventObject) : true;
-
-        // Handle Special Post Events
-        this._onmouseevent_special_post(vType, vTarget, vOriginalTarget, vDispatchTarget, vEventWasProcessed, vEventObject, vDomEvent);
-      }
-      else
-      {
-        // target is disabled -> Pass the event only to the ToolTipManager
-        if (vType == "mouseover")
-        {
-          if (qx.Class.isDefined("qx.ui.popup.ToolTipManager")) {
-            qx.ui.popup.ToolTipManager.getInstance().handleMouseOver(vEventObject);
-          }
+      var vEventObject = new qx.event.type.MouseEvent( vType, 
+                                                       vDomEvent, 
+                                                       vDomTarget, 
+                                                       vTarget, 
+                                                       vOriginalTarget, 
+                                                       vRelatedTarget );
+      // Store last Event in MouseEvent Constructor. Needed for Tooltips, ...
+      qx.event.type.MouseEvent.storeEventState( vEventObject );
+      if( vDispatchTarget.getEnabled() ) {
+        vDispatchTarget.dispatchEvent( vEventObject );
+        this._onmouseevent_special_post( vType, 
+                                         vTarget, 
+                                         vOriginalTarget, 
+                                         vDispatchTarget, 
+                                         vEventObject, 
+                                         vDomEvent );
+      } else if( vType == "mouseover" ) {
+        if( qx.Class.isDefined( "qx.ui.popup.ToolTipManager" ) ) {
+        	var toolTipManager = qx.ui.popup.ToolTipManager.getInstance();
+          toolTipManager.handleMouseOver( vEventObject );
         }
       }
-
-      // Dispose Event Object
       vEventObject.dispose();
-      vEventObject = null;
-
-      // Flush Queues
       qx.ui.core.Widget.flushGlobalQueues();
-
       // Fix Click (Gecko Bug, see above)
-      if (vFixClick)
-      {
-        this._onmouseevent_post(vDomEvent, "click", this._lastMouseDownDomTarget);
-
+      if( vFixClick ) {
+        this._onmouseevent_post( vDomEvent, 
+                                 "click", 
+                                 this._lastMouseDownDomTarget );
         this._lastMouseDownDomTarget = null;
         this._lastMouseDownDispatchTarget = null;
       }
     },
 
-    _onmouseevent_special_post : function(vType, vTarget, vOriginalTarget, vDispatchTarget, vEventWasProcessed, vEventObject, vDomEvent)
+    _onmouseevent_special_post : function(vType, vTarget, vOriginalTarget, vDispatchTarget, vEventObject, vDomEvent)
     {
       switch(vType)
       {
