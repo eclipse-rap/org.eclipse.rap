@@ -1822,6 +1822,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( tree._columnArea, column.getParent() );
       assertTrue( dummy.getVisibility() );
       assertTrue( dummy.hasState( "dummy" ) );
+      // Fix for IEs DIV-height bug (322802):
+      assertEquals( "&nbsp;", dummy.getLabel() );
       assertEquals( 500, dummy.getLeft() );
       assertEquals( 100, dummy.getWidth() );
       tree.destroy();

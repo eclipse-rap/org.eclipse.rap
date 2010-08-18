@@ -157,6 +157,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._columnArea.addEventListener( "dragstart", dragBlocker );
       this._dummyColumn.setAppearance( "tree-column" );
       this._dummyColumn.setHeight( "100%" );
+      this._dummyColumn.setLabel( "&nbsp;" );
       this._dummyColumn.addState( "dummy" );
       this._columnArea.add( this._dummyColumn );
     },
