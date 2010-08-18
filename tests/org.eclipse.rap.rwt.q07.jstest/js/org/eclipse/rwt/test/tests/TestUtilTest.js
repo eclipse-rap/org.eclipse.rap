@@ -416,6 +416,38 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       var expected = [ alt, alt, alt, alt ];
       assertEquals( expected, log );
       widget.destroy();
+    },
+    
+    testHoverFromTo : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget1 = new qx.ui.basic.Terminator();
+      var widget2 = new qx.ui.basic.Terminator();
+      widget1.addToDocument();
+      widget2.addToDocument();
+      testUtil.flush();
+      var node1 = widget1._getTargetNode(); 
+      var node2 = widget2._getTargetNode(); 
+      var log = [];
+      var handler = function( event ) {
+        log.push( event.getType() );
+        log.push( event.getTarget(), event.getRelatedTarget() );
+      };
+      widget1.addEventListener( "mouseover", handler );
+      widget1.addEventListener( "mouseout", handler );
+      widget2.addEventListener( "mouseover", handler );
+      widget2.addEventListener( "mouseout", handler );
+      testUtil.hoverFromTo( node1, node2 );
+      var expected = [
+        "mouseout",
+        widget1,
+        widget2,
+        "mouseover",
+        widget2,
+        widget1
+      ];
+      assertEquals( expected, log );
+      widget1.destroy();
+      widget2.destroy();
     }
 
   }

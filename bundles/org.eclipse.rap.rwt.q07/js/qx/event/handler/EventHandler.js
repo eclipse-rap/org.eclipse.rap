@@ -668,12 +668,20 @@ qx.Class.define( "qx.event.handler.EventHandler", {
       }
       // handle related target object
       if( vType == "mouseover" || vType == "mouseout" ) {
-	      var vRelatedTarget = qx.event.handler.EventHandler.getRelatedTargetObjectFromEvent( vDomEvent );
-	      // Ignore events where the related target and
-	      // the real target are equal - from our sight
-	      if( vRelatedTarget == vTarget ) {
-	        return;
-	      }
+        var vRelatedTarget = qx.event.handler.EventHandler.getRelatedTargetObjectFromEvent( vDomEvent );
+        var elementEventType = vType == "mouseover" ? "elementOver" : "elementOut";
+        this._fireElementHoverEvents( elementEventType,
+                                      vDomEvent,
+                                      vDomTarget, 
+                                      vTarget,
+                                      vOriginalTarget, 
+                                      vRelatedTarget,
+                                      vDispatchTarget );
+        // Ignore events where the related target and
+        // the real target are equal - from our sight
+        if( vRelatedTarget == vTarget ) {
+          return;
+        }
       }
       var vEventObject = new qx.event.type.MouseEvent( vType, 
                                                        vDomEvent, 
@@ -693,7 +701,7 @@ qx.Class.define( "qx.event.handler.EventHandler", {
                                          vDomEvent );
       } else if( vType == "mouseover" ) {
         if( qx.Class.isDefined( "qx.ui.popup.ToolTipManager" ) ) {
-        	var toolTipManager = qx.ui.popup.ToolTipManager.getInstance();
+          var toolTipManager = qx.ui.popup.ToolTipManager.getInstance();
           toolTipManager.handleMouseOver( vEventObject );
         }
       }
@@ -706,6 +714,25 @@ qx.Class.define( "qx.event.handler.EventHandler", {
                                  this._lastMouseDownDomTarget );
         this._lastMouseDownDomTarget = null;
         this._lastMouseDownDispatchTarget = null;
+      }
+    },
+    
+    _fireElementHoverEvents : function( type,
+                                        domEvent,
+                                        domTarget, 
+                                        target,
+                                        originalTarget, 
+                                        relatedTarget,
+                                        dispatchTarget )
+    {
+      if( dispatchTarget.getEnabled() ) {
+        var eventObject = new qx.event.type.MouseEvent( type, 
+                                                        domEvent, 
+                                                        domTarget, 
+                                                        target, 
+                                                        originalTarget, 
+                                                        relatedTarget );
+        dispatchTarget.dispatchEvent( eventObject );
       }
     },
 

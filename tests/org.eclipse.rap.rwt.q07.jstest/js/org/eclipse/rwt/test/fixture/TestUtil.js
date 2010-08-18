@@ -144,11 +144,29 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       this.fakeMouseEventDOM( node, "mouseup", left, 0, 0, mod );
       this.fakeMouseEventDOM( node, "click", left, 0, 0, mod );
     },
+    
+    hoverFromTo : function( fromNode, toNode ) {
+      var outEvent = this.createfakeMouseEventDOM( "mouseout", 0 );
+      outEvent.target = fromNode;
+      outEvent.relatedTarget = toNode;
+      this.fireFakeMouseEventDOM( outEvent );
+      var overEvent = this.createfakeMouseEventDOM( "mouseover", 0 );
+      overEvent.target = toNode;
+      overEvent.relatedTarget = fromNode;
+      this.fireFakeMouseEventDOM( overEvent );
+    },
       
     fakeMouseEventDOM : function( node, type, button, left, top, mod ) {
       if( typeof node == "undefined" ) {
         throw( "Error in fakeMouseEventDOM: node not defined! " );
       }
+      var domEvent 
+        = this.createfakeMouseEventDOM( type, button, left, top, mod );
+      domEvent.target = node;
+      this.fireFakeMouseEventDOM( domEvent);
+    },
+
+    createfakeMouseEventDOM : function( type, button, left, top, mod ) {
       if( typeof left == "undefined" ) {
         left = 0;
       }
@@ -167,7 +185,8 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       var domEvent = {
         "preventDefault" : function(){}, 
         "type" : type,
-        "target" : node,
+        "target" : null,
+        "relatedTarget" : null,
         "which" : 1,
         "button" : button,
         "pageX" : left,
@@ -179,7 +198,11 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         "ctrlKey" : ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0,
         "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
         "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0
-      } 
+      }
+      return domEvent; 
+    },
+
+    fireFakeMouseEventDOM : function( domEvent ) {
       qx.event.handler.EventHandler.getInstance().__onmouseevent( domEvent );
     },
 
@@ -212,6 +235,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     
     /////////////////////////////
     // Event handling - Qooxdoo
+
     click : function( widget ) {
       this.clickDOM( widget._getTargetNode() );      
     },
