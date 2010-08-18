@@ -268,7 +268,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       var enabled = this._parent.getEnabled();
       var selected = this._parent._isItemSelected( this._getIndex() );
       var hovered = this._parent._isItemHovered( this._getIndex() );
-      return enabled && ( this._parent._hideSelection || !selected ) && !hovered;
+      return    enabled 
+             && ( this._parent.shouldHideSelection() || !selected )
+             && !hovered;
     },
 
     _renderBackground : function( node, left, width, height, background ) {

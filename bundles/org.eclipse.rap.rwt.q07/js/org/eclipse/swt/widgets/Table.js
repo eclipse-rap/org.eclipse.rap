@@ -32,7 +32,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // click-events while double-clicking
     this._suspendClicksOnRow = null;
     // Should the selected item be hightlighted?
-    this._hideSelection = false;
+    this._alwaysHideSelection = false;
+    this._hideSelection = qx.lang.String.contains( style, "hideSelection" );
     // Draw grid lines?
     this._linesVisible = false;
     this._borderWidth = 0;
@@ -404,8 +405,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       return this._itemHeight;
     },
 
-    setHideSelection : function( value ) {
-      this._hideSelection = value;
+    setAlwaysHideSelection : function( value ) {
+      this._alwaysHideSelection = value;
+    },
+    
+    shouldHideSelection : function() {
+       return    this._alwaysHideSelection
+              || ( this._hideSelection && !this.getFocused() );
     },
 
     setItemMetrics : function( columnIndex, left, width, imageLeft, imageWidth, textLeft, textWidth ) {
@@ -1323,7 +1329,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           // Re-calculate the position and size for each row
           this._updateRowBounds();
           this._updateRowTop();
-          this._updateFocusState();
+          this._updateRowsState();
           result = true;
         }
       }
@@ -1456,6 +1462,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         row.addEventListener( "create", listener );
       }
     },
+    
+    _updateRowsState : function() {
+      for( var i = 0; i < this._rows.length; i++ ) {
+        this._updateRowState( i, this._getItemIndexFromRowIndex( i ) );
+      }
+    },
 
     _updateRowState : function( rowIndex, itemIndex ) {
       var row = this._rows[ rowIndex ];
@@ -1466,10 +1478,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this._checkBoxes[ rowIndex ].setVisibility( false );
         }
       } else {
-        if( this._isItemSelected( itemIndex ) ) {
-          if( !this._hideSelection ) {
-            row.addState( "selected" );
-          }
+        if( this._isItemSelected( itemIndex ) && !this.shouldHideSelection() ) {
+          row.addState( "selected" );
         } else {
           row.removeState( "selected" );
         }
@@ -1498,16 +1508,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           }
         }
       }
-    },
-
-    _updateFocusState : function() {
-      var focused = this.getFocused();
-      for( var i = 0; i < this._rows.length; i++ ) {
-        if( focused ) {
-          this._rows[ i ].removeState( "parent_unfocused" );
-        } else {
-          this._rows[ i ].addState( "parent_unfocused" );
-        }
+      if( this.getFocused() ) {
+        row.removeState( "parent_unfocused" );
+      } else {
+        row.addState( "parent_unfocused" );
       }
     },
 
@@ -1619,11 +1623,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // Focus tracking - may change appearance of selected row
 
     _onFocusIn : function( evt ) {
-      this._updateFocusState();
+      this._updateRowsState();
     },
 
     _onFocusOut : function( evt ) {
-      this._updateFocusState();
+      this._updateRowsState();
     },
 
     ////////////////////////////////////////////////////////////

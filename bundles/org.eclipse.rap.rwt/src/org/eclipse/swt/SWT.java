@@ -1909,6 +1909,17 @@ public class SWT {
   public static final int SHADOW_NONE = 1 << 5;
 
   /**
+   * Style constant for selection hiding behavior when the widget loses focus (value is 1&lt;&lt;15).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Table</code></li>
+   * </ul></p>
+   *
+   * @since 1.4
+   */
+  public static final int HIDE_SELECTION = 1 << 15;
+
+  /**
    * Style constant for full row selection behavior and
    * selection constant indicating that a full line should be
    * drawn. (value is 1&lt;&lt;16).
@@ -3362,7 +3373,7 @@ public class SWT {
    * Note: In RWT, this method returns the RWT version number. Use in
    * combination with <code>getPlatform()</code>.
    * </p>
-   * 
+   *
    * @return the SWT version number
    * @since 1.3
    */

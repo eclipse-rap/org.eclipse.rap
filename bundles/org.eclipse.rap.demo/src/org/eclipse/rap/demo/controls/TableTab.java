@@ -57,6 +57,7 @@ public class TableTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "NO_SCROLL", SWT.NO_SCROLL );
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
+    createStyleButton( "HIDE_SELECTION", SWT.HIDE_SELECTION );
     createVisibilityButton();
     createEnablementButton();
     createHeaderVisibleButton();

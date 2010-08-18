@@ -57,7 +57,7 @@ import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
  * </p><p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>SINGLE, MULTI, CHECK, FULL_SELECTION<!--, HIDE_SELECTION-->, VIRTUAL</dd>
+ * <dd>SINGLE, MULTI, CHECK, FULL_SELECTION, HIDE_SELECTION, VIRTUAL</dd>
  * <dt><b>Events:</b></dt>
  * <dd>Selection, DefaultSelection, SetData<!--, MeasureItem, EraseItem, PaintItem--></dd>
  * </dl>
@@ -240,8 +240,8 @@ public class Table extends Composite {
    * within the packages provided by SWT. It should never be accessed from
    * application code.
    */
-  public static final String HIDE_SELECTION
-    = Table.class.getName() + "#hideSelection";
+  public static final String ALWAYS_HIDE_SELECTION
+    = Table.class.getName() + "#alwaysHideSelection";
 
   /**
    * <strong>IMPORTANT:</strong> This field is <em>not</em> part of the SWT
@@ -308,7 +308,7 @@ public class Table extends Composite {
    * @see SWT#MULTI
    * @see SWT#CHECK
    * @see SWT#FULL_SELECTION
-   * <!--@see SWT#HIDE_SELECTION-->
+   * @see SWT#HIDE_SELECTION
    * @see SWT#VIRTUAL
    * @see Widget#checkSubclass
    * @see Widget#getStyle
@@ -2313,7 +2313,7 @@ public class Table extends Composite {
   final Point getItemImageSize() {
     return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
   }
-  
+
   final void clearItemImageSize() {
     itemImageSize = null;
   }

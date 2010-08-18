@@ -52,7 +52,9 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 		super(viewer);
 		this.viewer = viewer;
 		hookListener(viewer);
-    viewer.getControl().setData( Table.HIDE_SELECTION, Boolean.TRUE );
+		// RAP [if]
+        viewer.getControl().setData( Table.ALWAYS_HIDE_SELECTION,
+                                     Boolean.TRUE );
 	}
 
 	private void markFocusedCell(Event event, ViewerCell cell) {

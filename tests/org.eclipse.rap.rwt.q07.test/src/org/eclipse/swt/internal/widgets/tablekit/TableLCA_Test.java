@@ -75,7 +75,7 @@ public class TableLCA_Test extends TestCase {
     int textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
     assertEquals( textWidth1, itemMetrics[ 0 ].textWidth );
     assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( TableLCA.PROP_HIDE_SELECTION ) );
+                  adapter.getPreserved( TableLCA.PROP_ALWAYS_HIDE_SELECTION ) );
     assertEquals( new Integer( 0 ),
                   adapter.getPreserved( TableLCA.PROP_LEFT_OFFSET ) );
     Fixture.clearPreserved();
@@ -742,15 +742,15 @@ public class TableLCA_Test extends TestCase {
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
   }
 
-  public void testHideSelection() {
+  public void testAlwaysHideSelection() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
-    assertEquals( Boolean.FALSE, TableLCA.hideSelection( table ) );
-    table.setData( Table.HIDE_SELECTION, Boolean.TRUE );
-    assertEquals( Boolean.TRUE, TableLCA.hideSelection( table ) );
-    table.setData( Table.HIDE_SELECTION, "true" );
-    assertEquals( Boolean.FALSE, TableLCA.hideSelection( table ) );
+    assertEquals( Boolean.FALSE, TableLCA.alwaysHideSelection( table ) );
+    table.setData( Table.ALWAYS_HIDE_SELECTION, Boolean.TRUE );
+    assertEquals( Boolean.TRUE, TableLCA.alwaysHideSelection( table ) );
+    table.setData( Table.ALWAYS_HIDE_SELECTION, "true" );
+    assertEquals( Boolean.FALSE, TableLCA.alwaysHideSelection( table ) );
   }
 
   public void testWriteScrollbarsVisible() throws IOException {
@@ -942,7 +942,7 @@ public class TableLCA_Test extends TestCase {
       new TableColumn( table, SWT.NONE );
     }
   }
-  
+
   private static void createTableItems( final Table table, final int count ) {
     for( int i = 0; i < count; i++ ) {
       new TableItem( table, SWT.NONE );

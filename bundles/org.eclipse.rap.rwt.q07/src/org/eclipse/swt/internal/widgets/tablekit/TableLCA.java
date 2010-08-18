@@ -45,7 +45,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   static final String PROP_SELECTION_LISTENERS = "selectionListeners";
   static final String PROP_DEFAULT_COLUMN_WIDTH = "defaultColumnWidth";
   static final String PROP_ITEM_COUNT = "itemCount";
-  static final String PROP_HIDE_SELECTION = "hideSelection";
+  static final String PROP_ALWAYS_HIDE_SELECTION = "alwaysHideSelection";
   static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
   static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
   static final String PROP_LEFT_OFFSET = "leftOffset";
@@ -93,7 +93,8 @@ public final class TableLCA extends AbstractWidgetLCA {
                       new Integer( getDefaultColumnWidth( table ) ) );
     TableLCAUtil.preserveFocusIndex( table );
     WidgetLCAUtil.preserveCustomVariant( table );
-    adapter.preserve( PROP_HIDE_SELECTION, hideSelection( table ) );
+    adapter.preserve( PROP_ALWAYS_HIDE_SELECTION,
+                      alwaysHideSelection( table ) );
     adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( table ) );
     adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( table ) );
     adapter.preserve( PROP_LEFT_OFFSET, getLeftOffset( table ) );
@@ -129,6 +130,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( Boolean.TRUE.equals( table.getData( Table.ENABLE_CELL_TOOLTIP ) ) ) {
       style += "|enableCellToolTip";
     }
+    if( ( table.getStyle() & SWT.HIDE_SELECTION ) != 0 ) {
+      style += "|hideSelection";
+    }
     Object[] args = new Object[] { WidgetUtil.getId( table ), style };
     writer.newWidget( "org.eclipse.swt.widgets.Table", args );
     ControlLCAUtil.writeStyleFlags( table );
@@ -149,7 +153,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeSelectionListener( table );
     writeScrollBarsSelectionListener( table );
     writeDefaultColumnWidth( table );
-    writeHideSelection( table );
+    writeAlwaysHideSelection( table );
     writeScrollBarsVisible( table );
     writeLeftOffset( table );
     writeCellToolTipText( table );
@@ -424,11 +428,12 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( prop, "defaultColumnWidth", newValue, defValue );
   }
 
-  private void writeHideSelection( final Table table ) throws IOException {
+  private void writeAlwaysHideSelection( final Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
-    Boolean newValue = hideSelection( table );
+    Boolean newValue = alwaysHideSelection( table );
     Boolean defValue = Boolean.FALSE;
-    writer.set( PROP_HIDE_SELECTION, "hideSelection", newValue, defValue );
+    String prop = PROP_ALWAYS_HIDE_SELECTION;
+    writer.set( prop, "alwaysHideSelection", newValue, defValue );
   }
 
   private void writeScrollBarsVisible( final Table table ) throws IOException {
@@ -527,9 +532,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  static Boolean hideSelection( final Table table ) {
+  static Boolean alwaysHideSelection( final Table table ) {
     Boolean result = Boolean.FALSE;
-    Object data = table.getData( Table.HIDE_SELECTION );
+    Object data = table.getData( Table.ALWAYS_HIDE_SELECTION );
     if( Boolean.TRUE.equals( data ) ) {
       result = Boolean.TRUE;
     }
