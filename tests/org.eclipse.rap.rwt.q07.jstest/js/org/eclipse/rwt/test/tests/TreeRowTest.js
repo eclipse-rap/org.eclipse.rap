@@ -810,7 +810,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setTexts( [ "Test" ] );
       row.renderItem( item );
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.isExpandClick( event ) );
+        log.push( row.isExpandSymbolTarget( event ) );
       } );
       testUtil.clickDOM( row._getTargetNode().childNodes[ 0 ] );
       testUtil.clickDOM( row._getTargetNode().childNodes[ 1 ] );
@@ -828,6 +828,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var item = this._createItem( tree, false, false );
       item.setTexts( [ "Test" ] );
       tree.setHasCheckBoxes( true );
+      tree.setCheckBoxMetrics( 5, 20 );
       this._addToDom( row );
       row.renderItem( item );
       assertNotNull( row._expandImage );
@@ -898,7 +899,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setTexts( [ "Test" ] );
       row.renderItem( item );
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.isCheckBoxClick( event ) );
+        log.push( row.isCheckBoxTarget( event ) );
       } );
       testUtil.clickDOM( row._getTargetNode().childNodes[ 0 ] );
       testUtil.clickDOM( row._getTargetNode().childNodes[ 1 ] );
@@ -1242,40 +1243,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
-    testIsSelectionClickFullSelectionAndChildren : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
-      tree.setItemMetrics( 1, 50, 40, 50, 12, 65, 12 );
-      tree.setColumnCount( 2 );
-      tree.setHasCheckBoxes( true );
-      tree.setHasFullSelection( true );
-      tree.setCheckBoxMetrics( 5, 20 );
-      var row = new org.eclipse.rwt.widgets.TreeRow( tree );
-      this._addToDom( row );
-      var parent = this._createItem( tree, false, true  );
-      var item = this._createItem( parent );
-      this._createItem( item );
-      item.setTexts( [ "Test", "Test2" ] );
-      item.setImages( [ "bla.jpg" ] );
-      this._setCheckBox( "mycheckbox.gif" );
-      row.renderItem( item );
-      var log = [];
-      row.addEventListener( "mousedown", function( event ) {
-        log.push( row.isSelectionClick( event ) );
-      } );
-      var nodes = row._getTargetNode().childNodes;
-      testUtil.clickDOM( nodes[ 0 ] ); // expandimage
-      testUtil.clickDOM( nodes[ 1 ] ); // treeline
-      testUtil.clickDOM( nodes[ 2 ] ); // checkbox
-      testUtil.clickDOM( nodes[ 3 ] ); // image
-      testUtil.clickDOM( nodes[ 4 ] ); // label
-      testUtil.clickDOM( nodes[ 5 ] ); // label
-      testUtil.clickDOM( row._getTargetNode() );
-      assertEquals( [ false, true, false, true, true, true, true ], log );
-      tree.destroy();
-      row.destroy();
-    },
-
     testInheritItemForeground : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
@@ -1423,12 +1390,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     
     _setCheckBox : function( value ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.fakeAppearance( "tree-row",  {
+      testUtil.fakeAppearance( "tree-check-box",  {
         style : function( states ) {
           return {
-            "itemBackground" : "undefined",
-            "itemForeground" : "undefined",
-            "checkBox" : value
+            "backgroundImage" : states.over ? "over.gif" : value
           }
         }
       } );

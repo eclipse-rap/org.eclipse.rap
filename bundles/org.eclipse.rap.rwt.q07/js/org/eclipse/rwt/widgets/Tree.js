@@ -30,6 +30,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._selection = [];
     this._focusItem = null;
     this._hoverItem = null;
+    this._hoverElement = null;
     this._renderQueue = {};
     this._resizeLine = null;
     this._linesVisible = false;
@@ -96,6 +97,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._topItem = null;
     this._leadItem = null;
     this._focusItem = null;
+    this._hoverItem = null;
+    this._hoverElement = null;
     this._resizeLine = null;
   },
 
@@ -111,6 +114,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this.addEventListener( "mousedown", this._onMouseDown, this );
       this.addEventListener( "mouseover", this._onMouseOver, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
+      this.addEventListener( "elementOver", this._onElementChange, this );
+      this.addEventListener( "elementOut", this._onElementChange, this );
       this.addEventListener( "keypress", this._onKeyPress, this );
       this._clientArea.addEventListener( "mousewheel", 
                                          this._onClientAreaMouseWheel, 
@@ -416,6 +421,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return this._hoverItem === item;
     },
 
+    isHoverElement : function( element ) {
+      return element !== null && this._hoverElement === element;
+    },
+
     isItemSelected : function( item ) {
       return this._selection.indexOf( item ) != -1;
     },
@@ -559,13 +568,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _onRowMouseDown : function( row, event ) {
       var item = this._findItemByRow( row );
       if( item != null ) {
-        if( row.isExpandClick( event ) && item.hasChildren() ) {
+        if( row.isExpandSymbolTarget( event ) && item.hasChildren() ) {
           var expanded = !item.isExpanded();
           if( !expanded ) {
             this._deselectVisibleChildren( item );
           }
           item.setExpanded( expanded );
-        } else if( row.isCheckBoxClick( event ) ) {
+        } else if( row.isCheckBoxTarget( event ) ) {
           item.setChecked( !item.isChecked() );
           this._sendItemCheckedChange( item );
         } else if( row.isSelectionClick( event ) ) {
@@ -604,6 +613,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
         this._onRowOver( null );
       }      
+    },
+
+    _onElementChange : function( event ) {
+    	var isOver = event.getType() === "elementOver";
+    	this._hoverElement = isOver ? event.getDomTarget() : null;
+    	var row = event.getTarget();
+    	var internal = row === event.getRelatedTarget();
+    	if( internal && row instanceof org.eclipse.rwt.widgets.TreeRow ) {
+    	  var hoverable =    row.isCheckBoxTarget( event )
+    	                  || row.isExpandSymbolTarget( event );
+    	  if( this._hoverItem !== null && hoverable ) { 
+    	    row.renderItem( this._hoverItem );
+    	  }
+    	}
     },
 
     _onRowOver : function( row ) {

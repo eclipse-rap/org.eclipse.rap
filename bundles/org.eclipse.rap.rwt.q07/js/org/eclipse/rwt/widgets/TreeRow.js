@@ -55,12 +55,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       this._hideRemainingElements();
     },
 
-    isExpandClick : function( event ) {
+    isExpandSymbolTarget : function( event ) {
       var node = event.getDomTarget();
       return this._expandElement !== null && this._expandElement === node;
     },
     
-    isCheckBoxClick : function( event ) {
+    isCheckBoxTarget : function( event ) {
       var node = event.getDomTarget();
       return this._checkBoxElement !== null && this._checkBoxElement === node;      
     },
@@ -69,7 +69,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var result;
       var node = event.getDomTarget();
       if( this._tree.getHasFullSelection() ) {
-        result = this._checkBoxElement !== node && this._expandElement !== node;
+        result = this._checkBoxElement !== node;
       } else {
         result = this._selectionElements.indexOf( node ) != -1;
       }
@@ -82,12 +82,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _renderStates : function( item, selection ) {
       this._setState( "checked", item.isChecked() );      
       this._setState( "grayed", item.isGrayed() );
-      this._setState( "over", this._tree.isHoverItem( item ) );
       this._setState( "parent_unfocused", this._renderAsUnfocused() );
       this._setState( "selected", selection && this._renderAsSelected( item ) );
+      this._renderOverState( item );
       this._styleMap = this._getStyleMap();
     },
     
+    _renderOverState : function( item ) {
+      this._setState( "over", this._tree.isHoverItem( item ) );
+    },
+
     _setState : function( state, value ) {
       if( !this.__states ) {
         this.__states = {};
@@ -130,13 +134,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _renderIndention : function( item ) {
-      this._expandElement = null;
       var expandSymbol = this._getExpandSymbol( item );
+      this._expandElement = null;
       if( expandSymbol != null ) {
         var element =  this._addIndentSymbol( item.getLevel(), expandSymbol );
-        if( item.hasChildren() ) {
-          this._expandElement = element;
-        }
+        this._expandElement = element;
       }
       var lineSymbol = this._getLineSymbol( item );
       if( lineSymbol != null ) {
@@ -165,6 +167,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           states.collapsed = true;
         } 
       }
+      if( this._tree.isHoverElement( this._expandElement ) ) {
+        states.over = true;
+      } 
       return this._getImageFromAppearance( "tree-indent", states );
     },
 
@@ -197,16 +202,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       return result;
     },
 
-    // TODO [tb] : fix hover after fixing 316735
     _renderCheckBox : function( item ) {
-      if( this._tree.getHasCheckBoxes() && this._styleMap.checkBox != null ) {
+      if( this._tree.getHasCheckBoxes() ) {
+        var oldCheckBox = this._checkBoxElement;
+        var states = this.__states;
+        this._setState( "over", this._tree.isHoverElement( oldCheckBox ) );
+        var image = this._getImageFromAppearance( "tree-check-box", states );
+        this._renderOverState( item );
         var element = this._getNextElement( 3 );
-        this._setImage( element, this._styleMap.checkBox, true );
+        this._setImage( element, image, true );
         var left = this._tree.getCheckBoxLeft( item );
         var width = this._tree.getCheckBoxWidth( item );
         var height = this._tree.getItemHeight();
         this._setBounds( element, left, 0, width, height );
-        this._checkBoxElement = element; 
+        this._checkBoxElement = element;
       }
     },
 
@@ -384,7 +393,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _setImage : function( element, src, center ) {
-      element.style.backgroundImage = "url( " + src + ")";
+      if( src !== null ) {
+        element.style.backgroundImage = "url( " + src + ")";
+      } else {
+        element.style.backgroundImage = "";
+      }
       element.style.backgroundRepeat = "no-repeat";
       element.style.backgroundPosition = center ? "center" : "";
     },

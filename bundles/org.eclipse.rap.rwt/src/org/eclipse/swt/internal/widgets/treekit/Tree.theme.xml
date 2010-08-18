@@ -47,6 +47,9 @@
 
       <state name="disabled"
           description="Applies to the items of a disabled tree." />
+          
+      <state name="hover"
+          description="Mouse over state." />
 
     </element>
 
@@ -147,7 +150,10 @@
     
       <state name="expanded"
         description="Used for the final level if the item is expanded" />
-    
+
+      <state name="hover"
+          description="Mouse over state. Can not be used together with line." />
+
     </element>
 
   </element>

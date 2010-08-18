@@ -895,10 +895,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.checkBox = tv.getCssImage( "Tree-Checkbox", "background-image" );
       result.itemBackground = tv.getCssColor( "TreeItem", "background-color" );
       result.itemForeground = tv.getCssColor( "TreeItem", "color" );
       return result; 
+    }
+  },
+
+  "tree-check-box" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        backgroundImage : tv.getCssImage( "Tree-Checkbox", "background-image" )
+      } 
     }
   },
 

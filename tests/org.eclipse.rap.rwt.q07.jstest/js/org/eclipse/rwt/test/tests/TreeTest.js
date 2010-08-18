@@ -833,7 +833,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       tree.setFocusItem( item );
       tree._shiftSelectItem( item );
-      var row = tree._rows[ 0 ];
+      var row = tree._rows[ 0 ]
+      testUtil.hoverFromTo( document.body, row._getTargetNode() );
       var area = tree._clientArea;
       var dummy = tree._dummyColumn;
       var hscroll = tree._horzScrollBar;
@@ -849,6 +850,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertNotNull( tree._focusItem );
       assertNotNull( tree._leadItem );
       assertNotNull( tree._topItem );
+      assertNotNull( tree._hoverItem );
+      assertNotNull( tree._hoverElement );
       tree.destroy();
       testUtil.flush();
       assertTrue( element.parentNode !== document.body );
@@ -870,6 +873,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertNull( tree._leadItem );
       assertNull( tree._rows );
       assertNull( tree._topItem );
+      assertNull( tree._hoverItem );
+      assertNull( tree._hoverElement );
       assertNull( tree._mergeEventsTimer );
       assertNull( tree._sendRequestTimer );
       assertNull( tree._clientArea );
@@ -1575,6 +1580,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
 
+    testIsHoverElement : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree );
+      item.setTexts( [ "bla" ] );
+      item.setImages( [ "bla.jpg" ] );
+      assertFalse( tree.isHoverElement( null ) );
+      testUtil.flush();
+      var rowNode = tree._rows[ 0 ]._getTargetNode();
+      testUtil.hoverFromTo( document.body, rowNode );
+      assertFalse( tree.isHoverElement( rowNode.firstChild ) );
+      assertFalse( tree.isHoverElement( rowNode.lastChild ) );
+      testUtil.hoverFromTo( rowNode, rowNode.firstChild );
+      assertTrue( tree.isHoverElement( rowNode.firstChild ) );
+      assertFalse( tree.isHoverElement( rowNode.lastChild ) );
+      tree.destroy();
+    },
+
     testRenderOnItemHover : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -1593,6 +1616,92 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "red", style.backgroundColor );
       testUtil.mouseOut( tree._rows[ 0 ] );
       assertEquals( "green", style.backgroundColor );
+      tree.destroy();
+    },
+
+    testRenderOnCheckBoxHover : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setHasCheckBoxes( true );
+      tree.setCheckBoxMetrics( 5, 5 );
+      testUtil.fakeAppearance( "tree-check-box",  {
+        style : function( states ) {
+          return {
+            "backgroundImage" : states.over ? "over.gif" : "normal.gif"
+          }
+        }
+      } );
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree );
+      testUtil.flush()
+      var rowNode = tree._rows[ 0 ]._getTargetNode();
+      testUtil.hoverFromTo( document.body, rowNode );
+      var normal = testUtil.getCssBackgroundImage( rowNode.firstChild );
+      testUtil.hoverFromTo( rowNode, rowNode.firstChild );
+      var over = testUtil.getCssBackgroundImage( rowNode.firstChild );
+      testUtil.hoverFromTo( rowNode.firstChild, rowNode );
+      var normalAgain = testUtil.getCssBackgroundImage( rowNode.firstChild );
+      assertTrue( normal.indexOf( "normal.gif" ) != -1 );
+      assertTrue( over.indexOf( "over.gif" ) != -1 );
+      assertTrue( normalAgain.indexOf( "normal.gif" ) != -1 );
+      tree.destroy();
+    },
+
+    testRenderOnCheckBoxHoverSkip : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setHasCheckBoxes( true );
+      tree.setCheckBoxMetrics( 5, 5 );
+      testUtil.fakeAppearance( "tree-check-box",  {
+        style : function( states ) {
+          return {
+            "backgroundImage" : states.over ? "over.gif" : "normal.gif"
+          }
+        }
+      } );
+      var item1 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      var item2 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      testUtil.flush()
+      var rowNode1 = tree._rows[ 0 ]._getTargetNode();
+      var rowNode2 = tree._rows[ 1 ]._getTargetNode();
+      testUtil.hoverFromTo( document.body, rowNode1.firstChild );
+      var check1 = testUtil.getCssBackgroundImage( rowNode1.firstChild );
+      var check2 = testUtil.getCssBackgroundImage( rowNode2.firstChild );
+      assertTrue( check1.indexOf( "over.gif" ) != -1 );
+      assertTrue( check2.indexOf( "normal.gif" ) != -1 );
+      testUtil.hoverFromTo( rowNode1.firstChild, rowNode2.firstChild );
+      check1 = testUtil.getCssBackgroundImage( rowNode1.firstChild );
+      check2 = testUtil.getCssBackgroundImage( rowNode2.firstChild );
+      assertTrue( check1.indexOf( "normal.gif" ) != -1 );
+      assertTrue( check2.indexOf( "over.gif" ) != -1 );
+      tree.destroy();
+    },
+
+    testRenderOnExpandSymbolHover : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      testUtil.fakeAppearance( "tree-indent",  {
+        style : function( states ) {
+        	var result = null;
+        	if( !states.line ) {
+        		result = states.over ? "over.gif" : "normal.gif";
+        	}
+          return {
+            "backgroundImage" : result
+          }
+        }
+      } );
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree );
+      testUtil.flush()
+      var rowNode = tree._rows[ 0 ]._getTargetNode();
+      testUtil.hoverFromTo( document.body, rowNode );
+      var normal = testUtil.getCssBackgroundImage( rowNode.firstChild );
+      testUtil.hoverFromTo( rowNode, rowNode.firstChild );
+      var over = testUtil.getCssBackgroundImage( rowNode.firstChild );
+      testUtil.hoverFromTo( rowNode.firstChild, rowNode );
+      var normalAgain = testUtil.getCssBackgroundImage( rowNode.firstChild );
+      assertTrue( normal.indexOf( "normal.gif" ) != -1 );
+      assertTrue( over.indexOf( "over.gif" ) != -1 );
+      assertTrue( normalAgain.indexOf( "normal.gif" ) != -1 );
       tree.destroy();
     },
 
@@ -1974,11 +2083,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree();
       tree.setHasCheckBoxes( true );
       tree.setCheckBoxMetrics( 5, 5 );
-      testUtil.fakeAppearance( "tree-row",  {
+      testUtil.fakeAppearance( "tree-check-box",  {
         style : function( states ) {
           return {
-            "itemBackground" : null, 
-            "checkBox" : states.grayed ? "grayed.gif" : "normal.gif"
+            "backgroundImage" : states.grayed ? "grayed.gif" : "normal.gif"
           }
         }
       } );
@@ -2833,7 +2941,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           return {
             "itemBackground" : "undefined",
             "itemForeground" : "undefined",
-            "checkBox" : null,
             "backgroundImage" : null
           }
         }
@@ -2844,12 +2951,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     
     _addCheckBoxes : function( tree ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.fakeAppearance( "tree-row", {
+      testUtil.fakeAppearance( "tree-check-box", {
         style : function( states ) {
           var result = {
-            "itemBackground" : null,
-            "itemForeground" : null,
-            "checkBox" : "check.png"
+            "backgroundImage" : "check.png"
           };
           return result;
         }
