@@ -182,6 +182,7 @@ qx.Class.define("qx.core.Client",
       var vPlatformMacintosh = false;
       var vPlatformUnix = false;
       var vPlatformIphone = false;
+      var vPlatformIpad = false;
       var vPlatformOther = false;
 
       if (vBrowserPlatform.indexOf("Windows") != -1 || vBrowserPlatform.indexOf("Win32") != -1 || vBrowserPlatform.indexOf("Win64") != -1)
@@ -198,6 +199,11 @@ qx.Class.define("qx.core.Client",
       {
         vPlatformUnix = true;
         vPlatform = "unix";
+      }
+      else if( vBrowserPlatform.indexOf( "iPad" ) != -1 )
+      {
+        vPlatformIpad = true;
+        vPlatform = "ipad";
       }
       else if (vBrowserPlatform.indexOf("iPhone") != -1 || vBrowserPlatform.indexOf("iPod") != -1)
       {
@@ -256,6 +262,7 @@ qx.Class.define("qx.core.Client",
       this._browserPlatformMacintosh = vPlatformMacintosh;
       this._browserPlatformUnix = vPlatformUnix;
       this._browserPlatformIphone = vPlatformIphone;
+      this._browserPlatformIpad = vPlatformIpad;
       this._browserPlatformOther = vPlatformOther;
       this._browserLocale = vBrowserLocale;
       this._browserLocaleVariant = vBrowserLocaleVariant;
@@ -558,6 +565,11 @@ qx.Class.define("qx.core.Client",
      */
     runsOnIphone : function() {
       return this._browserPlatformIphone;
+    },
+
+
+    runsOnIpad : function() {
+      return this._browserPlatformIpad;
     },
 
 
