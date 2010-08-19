@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
@@ -73,6 +74,35 @@ public class CanvasLCA_Test extends TestCase {
       + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+
+  // see bug 323080
+  public void testMultipleGC_SetFont() throws IOException {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Canvas canvas = new Canvas( shell, SWT.NONE );
+    canvas.setSize( 50, 50 );
+    canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( canvas );
+    Fixture.preserveWidgets();
+    GC gc = new GC( canvas );
+    gc.setFont( new Font( display, "Tahoma", 16, SWT.BOLD ) );
+    gc.dispose();
+    gc = new GC( canvas );
+    gc.setFont( new Font( display, "Tahoma", 16, SWT.BOLD ) );
+    gc.dispose();
+    gc = new GC( canvas );
+    gc.setFont( new Font( display, "Tahoma", 16, SWT.BOLD ) );
+    gc.dispose();
+    new CanvasLCA().renderChanges( canvas );
+    String expected
+      = "var w = wm.findWidgetById( \"w2\" );"
+      + "var gc = w.getGC();"
+      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.setProperty( \"font\", \"bold 16px Tahoma\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 }
