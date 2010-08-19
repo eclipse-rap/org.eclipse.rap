@@ -254,7 +254,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         var left = this._tree.getItemTextLeft( item, cell, true );
         left -= padding[ 0 ];
         var width = this._tree.getItemTextWidth( item, cell, true );
-        width += padding[ 0 ];
+        width += width > 0 ? padding[ 0 ] : 0;
         var visualWidth  = this._getVisualTextWidth( item, cell );
         visualWidth  += padding[ 0 ] + padding[ 1 ];
         width = Math.min( width, visualWidth );
