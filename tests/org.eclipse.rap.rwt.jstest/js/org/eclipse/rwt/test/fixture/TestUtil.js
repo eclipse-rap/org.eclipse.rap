@@ -499,7 +499,14 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     
     ////////
     // Misc
-    
+
+    isMobileWebkit : function() {
+      var platform = qx.core.Client.getPlatform();
+      var engine = qx.core.Client.getEngine();
+      var isMobile = platform === "ipad" || platform === "iphone";
+      return isMobile && engine === "webkit"; 
+    },
+
     isFocused : function( widget ) {
       return widget == qx.event.handler.EventHandler.getInstance().getFocusRoot().getFocusedChild(); 
     },

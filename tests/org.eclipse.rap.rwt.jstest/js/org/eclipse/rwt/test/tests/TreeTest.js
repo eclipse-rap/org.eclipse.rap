@@ -2221,10 +2221,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setHeaderHeight( 20 );
       tree.setHeaderVisible( true );
       assertEquals( 20, line.getTop() );
-      assertEquals( 480, line.getHeight() );      
-      tree.setScrollBarsVisible( true, true );
-      assertEquals( 20, line.getTop() );
-      assertTrue( line.getHeight() < 480 );      
+      assertEquals( 480, line.getHeight() );
+      if( !testUtil.isMobileWebkit() ) {
+	      tree.setScrollBarsVisible( true, true );
+	      assertEquals( 20, line.getTop() );
+	      assertTrue( line.getHeight() < 480 );
+      }      
       tree.destroy();
     },
     
@@ -2264,14 +2266,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       tree.setScrollBarsVisible( true, true );
-      tree.setColumnCount( 3 );
       tree.setLinesVisible( true );
       tree.setItemMetrics( 0, 0, 202, 0, 0, 0, 400 );
       tree.setItemMetrics( 1, 205, 100, 0, 0, 0, 400 );
       tree.setItemMetrics( 2, 310, 50, 0, 0, 0, 400 );
+      tree.setItemMetrics( 3, 360, 11, 0, 0, 0, 400 );
+      tree.setColumnCount( 4 );
       tree.setWidth( 370 );
       testUtil.flush();
-      assertEquals( 6, tree.getChildren().length );
+      var expected = 6;
+      if( testUtil.isMobileWebkit() ) {
+      	expected += 1; // No scrollbars => bigger client-area
+      }
+      assertEquals( expected, tree.getChildren().length );
       tree.destroy();
     },
     
