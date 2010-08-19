@@ -264,7 +264,8 @@
     "org/eclipse/rwt/KeyEventUtil.js",
     "org/eclipse/swt/widgets/Separator.js",
     "org/eclipse/swt/theme/AppearancesBase.js",
-    "org/eclipse/rwt/widgets/ControlDecorator.js"
+    "org/eclipse/rwt/widgets/ControlDecorator.js",
+    "org/eclipse/rwt/MobileWebkitSupport.js"
   ];
   
   var testRunnerClasses = [
