@@ -14,7 +14,13 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.internal.graphics.*;
@@ -148,5 +154,66 @@ public class CanvasLCA_Test extends TestCase {
     new CanvasLCA().renderChanges( canvas );
     assertEquals( "", Fixture.getAllMarkup() );
     assertEquals( 0, adapter.getGCOperations().length );
+  }
+
+  public void testRenderOperations_Resize() throws IOException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Canvas canvas = new Canvas( shell, SWT.NONE );
+    canvas.setSize( 50, 50 );
+    canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( canvas );
+    Fixture.preserveWidgets();
+    canvas.addPaintListener( new PaintListener() {
+      public void paintControl( final PaintEvent event ) {
+        event.gc.drawLine( 1, 2, 3, 4 );
+        event.gc.drawLine( 5, 6, 7, 8 );
+      }
+    } );
+    Fixture.fakeResponseWriter();
+    new CanvasLCA().renderChanges( canvas );
+    assertEquals( "", Fixture.getAllMarkup() );
+    canvas.setSize( 150, 150 );
+    new CanvasLCA().renderChanges( canvas );
+    String expected
+      = "var w = wm.findWidgetById( \"w2\" );"
+      + "w.setSpace( 0, 150, 0, 150 );"
+      + "var gc = w.getGC();"
+      + "gc.init( 150, 150, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.drawLine( 1, 2, 3, 4 );"
+      + "gc.drawLine( 5, 6, 7, 8 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testRenderOperations_Redraw() throws IOException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Canvas canvas = new Canvas( shell, SWT.NONE );
+    canvas.setSize( 50, 50 );
+    canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( canvas );
+    Fixture.preserveWidgets();
+    canvas.addPaintListener( new PaintListener() {
+      public void paintControl( final PaintEvent event ) {
+        event.gc.drawLine( 1, 2, 3, 4 );
+        event.gc.drawLine( 5, 6, 7, 8 );
+      }
+    } );
+    Fixture.fakeResponseWriter();
+    new CanvasLCA().renderChanges( canvas );
+    assertEquals( "", Fixture.getAllMarkup() );
+    canvas.redraw();
+    new CanvasLCA().renderChanges( canvas );
+    String expected
+      = "var w = wm.findWidgetById( \"w2\" );"
+      + "var gc = w.getGC();"
+      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.drawLine( 1, 2, 3, 4 );"
+      + "gc.drawLine( 5, 6, 7, 8 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 }
