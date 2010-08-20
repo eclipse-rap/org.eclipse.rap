@@ -12,8 +12,7 @@ package org.eclipse.swt.internal.widgets.canvaskit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.internal.graphics.GCOperation;
-import org.eclipse.swt.internal.graphics.IGCAdapter;
+import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.widgets.*;
 
 public final class CanvasLCA extends AbstractWidgetLCA {
@@ -55,12 +54,13 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     throws IOException
   {
     IGCAdapter adapter = ( IGCAdapter )canvas.getAdapter( IGCAdapter.class );
-    GCOperation[] operations = adapter.getGCOperations();
-    if( operations.length > 0 ) {
+    GCOperation[] operations = adapter.getTrimmedGCOperations();
+    if( adapter.hasDrawOperation() ) {
       GCOperationWriter operationWriter = new GCOperationWriter( canvas );
       for( int i = 0; i < operations.length; i++ ) {
         operationWriter.write( operations[ i ] );
       }
     }
+    adapter.clearGCOperations();
   }
 }

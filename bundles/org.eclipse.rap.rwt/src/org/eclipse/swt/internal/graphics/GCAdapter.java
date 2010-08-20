@@ -12,31 +12,19 @@ package org.eclipse.swt.internal.graphics;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.graphics.GCOperation.SetFont;
-
+import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 
 public final class GCAdapter implements IGCAdapter {
 
   private final List gcOperations;
-  private Font lastFont = null;
 
   public GCAdapter() {
     gcOperations = new LinkedList();
   }
 
   public void addGCOperation( final GCOperation operation ) {
-    // [if] Filter sequential equals SetFont operations as result of multiple GC
-    // instances see bug 323080
-    if( operation instanceof SetFont ) {
-      Font font = ( ( SetFont )operation ).font;
-      if( !font.equals( lastFont ) ) {
-        lastFont = font;
-        gcOperations.add( operation );
-      }
-    } else {
-      gcOperations.add( operation );
-    }
+    gcOperations.add( operation );
   }
 
   public GCOperation[] getGCOperations() {
@@ -46,7 +34,36 @@ public final class GCAdapter implements IGCAdapter {
   }
 
   public void clearGCOperations() {
-    lastFont = null;
     gcOperations.clear();
+  }
+
+  public GCOperation[] getTrimmedGCOperations() {
+    int counter = 0;
+    boolean stop = false;
+    GCOperation[] operations = getGCOperations();
+    for( int i = operations.length - 1; i >= 0 && !stop; i-- ) {
+      if( isDrawOperation( operations[ i ] ) ) {
+        stop = true;
+      } else {
+        counter++;
+      }
+    }
+    GCOperation[] result = new GCOperation[ operations.length - counter ];
+    System.arraycopy( operations, 0, result, 0, result.length );
+    return result;
+  }
+
+  public boolean hasDrawOperation() {
+    boolean result = false;
+    for( int i = 0; i < gcOperations.size() && !result; i++ ) {
+      GCOperation operation = ( GCOperation )gcOperations.get( i );
+      result = isDrawOperation( operation );
+    }
+    return result;
+  }
+
+  private static boolean isDrawOperation( final GCOperation operation ) {
+    return !(    operation instanceof SetProperty
+              || operation instanceof SetFont );
   }
 }
