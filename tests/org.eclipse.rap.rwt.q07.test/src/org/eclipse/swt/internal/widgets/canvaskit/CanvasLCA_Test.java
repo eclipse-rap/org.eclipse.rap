@@ -126,6 +126,7 @@ public class CanvasLCA_Test extends TestCase {
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
     assertEquals( expected, Fixture.getAllMarkup() );
+    assertEquals( 0, adapter.getGCOperations().length );
   }
 
   public void testNoDrawOperations() throws IOException {
@@ -146,5 +147,6 @@ public class CanvasLCA_Test extends TestCase {
     adapter.addGCOperation( operation );
     new CanvasLCA().renderChanges( canvas );
     assertEquals( "", Fixture.getAllMarkup() );
+    assertEquals( 0, adapter.getGCOperations().length );
   }
 }
