@@ -15,5 +15,4 @@ public interface IGCAdapter {
   GCOperation[] getGCOperations();
   GCOperation[] getTrimmedGCOperations();
   void clearGCOperations();
-  boolean hasDrawOperation();
 }

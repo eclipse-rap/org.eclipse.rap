@@ -53,15 +53,6 @@ public final class GCAdapter implements IGCAdapter {
     return result;
   }
 
-  public boolean hasDrawOperation() {
-    boolean result = false;
-    for( int i = 0; i < gcOperations.size() && !result; i++ ) {
-      GCOperation operation = ( GCOperation )gcOperations.get( i );
-      result = isDrawOperation( operation );
-    }
-    return result;
-  }
-
   private static boolean isDrawOperation( final GCOperation operation ) {
     return !(    operation instanceof SetProperty
               || operation instanceof SetFont );

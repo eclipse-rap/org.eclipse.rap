@@ -55,7 +55,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
   {
     IGCAdapter adapter = ( IGCAdapter )canvas.getAdapter( IGCAdapter.class );
     GCOperation[] operations = adapter.getTrimmedGCOperations();
-    if( adapter.hasDrawOperation() ) {
+    if( operations.length > 0 ) {
       GCOperationWriter operationWriter = new GCOperationWriter( canvas );
       for( int i = 0; i < operations.length; i++ ) {
         operationWriter.write( operations[ i ] );
