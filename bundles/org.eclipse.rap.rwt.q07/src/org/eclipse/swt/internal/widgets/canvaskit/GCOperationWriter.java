@@ -246,7 +246,7 @@ final class GCOperationWriter {
     return result.toString();
   }
 
-  private void initialize() throws IOException {
+  public void initialize() throws IOException {
     if( !initialized ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       writer.varAssignment( GC_VAR, "getGC" );

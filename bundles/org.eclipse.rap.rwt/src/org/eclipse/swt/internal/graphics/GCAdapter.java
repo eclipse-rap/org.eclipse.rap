@@ -18,6 +18,7 @@ import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 public final class GCAdapter implements IGCAdapter {
 
   private final List gcOperations;
+  private boolean forceRedraw;
 
   public GCAdapter() {
     gcOperations = new LinkedList();
@@ -51,6 +52,14 @@ public final class GCAdapter implements IGCAdapter {
     GCOperation[] result = new GCOperation[ operations.length - counter ];
     System.arraycopy( operations, 0, result, 0, result.length );
     return result;
+  }
+
+  public void setForceRedraw( final boolean forceRedraw ) {
+    this.forceRedraw = forceRedraw;
+  }
+
+  public boolean getForceRedraw() {
+    return forceRedraw;
   }
 
   private static boolean isDrawOperation( final GCOperation operation ) {

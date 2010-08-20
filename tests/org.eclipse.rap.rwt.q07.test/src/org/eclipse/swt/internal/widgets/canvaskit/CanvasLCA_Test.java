@@ -212,4 +212,29 @@ public class CanvasLCA_Test extends TestCase {
       + "gc.drawLine( 5, 6, 7, 8 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
+
+  public void testClearDrawing() throws IOException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Canvas canvas = new Canvas( shell, SWT.NONE );
+    canvas.setSize( 50, 50 );
+    canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
+    canvas.getAdapter( IGCAdapter.class );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( canvas );
+    Fixture.preserveWidgets();
+    canvas.addPaintListener( new PaintListener() {
+      public void paintControl( final PaintEvent event ) {
+      }
+    } );
+    Fixture.fakeResponseWriter();
+    canvas.redraw();
+    new CanvasLCA().renderChanges( canvas );
+    String expected
+      = "var w = wm.findWidgetById( \"w2\" );"
+      + "var gc = w.getGC();"
+      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
 }

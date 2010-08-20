@@ -15,4 +15,6 @@ public interface IGCAdapter {
   GCOperation[] getGCOperations();
   GCOperation[] getTrimmedGCOperations();
   void clearGCOperations();
+  void setForceRedraw( boolean forceRedraw );
+  boolean getForceRedraw();
 }
