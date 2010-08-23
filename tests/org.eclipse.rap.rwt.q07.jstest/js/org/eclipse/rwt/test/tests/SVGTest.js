@@ -25,7 +25,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       testUtil.flush();
       var parentNode = parent._getTargetNode();
       var canvas = gfxUtil.createCanvas();
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       var shape = gfxUtil.createShape( "rect" );
       gfxUtil.addToCanvas( canvas, shape );
       parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
@@ -90,7 +89,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       var shape = gfxUtil.createShape( "roundrect" );
       gfxUtil.setRoundRectLayout( shape, 10, 10, 20, 20, [ 0, 4, 3, 2 ] );
       gfxUtil.setStroke( shape, "black", 2 );
@@ -108,7 +106,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       var shape = gfxUtil.createShape( "roundrect" );
       gfxUtil.setRoundRectLayout( shape, 10, 10, 20, 20, [ 20, 0, 0, 0] );
       gfxUtil.setStroke( shape, "black", 2 );
@@ -127,7 +124,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       var shape = gfxUtil.createShape( "roundrect" );
       gfxUtil.setRoundRectLayout( shape, 10, 10, 20, 20, [ 21, 0, 0, 0] );
       gfxUtil.setStroke( shape, "black", 2 );
@@ -150,7 +146,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       testUtil.flush();
       var parentNode = parent._getTargetNode();
       var canvas = gfxUtil.createCanvas();
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       var shape = gfxUtil.createShape( "rect" );
       gfxUtil.addToCanvas( canvas, shape );
       gfxUtil.setDisplay( shape, false );
@@ -169,7 +164,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
       var url = "./js/resource/tex.jpg";
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       var shape = gfxUtil.createShape( "rect" );
       gfxUtil.setRectBounds( shape, 10, 10, 100, 100 );
       gfxUtil.setStroke( shape, "black", 2 );

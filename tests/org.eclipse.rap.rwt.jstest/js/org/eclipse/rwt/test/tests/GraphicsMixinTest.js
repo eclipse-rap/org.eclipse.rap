@@ -273,6 +273,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       testUtil.flush();
     },
     
+    testOnCanvasAppear : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var shell = this._createShell();
+      var widget1 = new qx.ui.basic.Terminator();
+      var widget2 = new qx.ui.basic.Terminator();
+      var log = [];
+      widget1.setParent( shell );
+      widget2.setParent( shell );
+      widget2.setVisibility( false );
+      widget1._gfxCanvasAppended = true;
+      widget2._gfxCanvasAppended = true;
+      widget1._onCanvasAppear = function(){ log.push( "widget1" ); };
+      widget2._onCanvasAppear = function(){ log.push( "widget2" ); };
+      testUtil.flush();
+      shell.setBackgroundColor( "green" );
+      shell.setBorder( this.gfxBorder );
+      testUtil.flush();
+      assertEquals( [ "widget1" ], log );
+      shell.destroy();
+      testUtil.flush();
+    },
+    
     /////////
     // Helper
 

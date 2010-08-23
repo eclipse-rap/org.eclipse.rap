@@ -15,7 +15,6 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
   construct : function( canvas ) {
     this._autoDispose = false;
     this.base( arguments );
-    org.eclipse.rwt.VML.setLayoutMode( canvas, "absolute" );
     this._canvas = canvas;
     this._stateStack = [];
     this._currentPath = [];

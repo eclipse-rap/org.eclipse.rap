@@ -105,7 +105,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       canvas.destroy();
       testUtil.flush();
     },
-    
 
     testDrawPoint : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -227,14 +226,55 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
                                         [ 0.1, 0.2, 0.3, 0.4 ] );
       org.eclipse.rwt.VML.addToCanvas( vmlCanvas, shape );
       assertEquals( "test.jpg", shape.node.src );
-      assertEquals( 400, parseInt( shape.node.style.left ) );
-      assertEquals( 500, parseInt( shape.node.style.top ) );
-      assertEquals( 1000, parseInt( shape.node.style.width ) );
-      assertEquals( 2000, parseInt( shape.node.style.height ) );
+      assertEquals( 40, parseInt( shape.node.style.left ) );
+      assertEquals( 50, parseInt( shape.node.style.top ) );
+      assertEquals( 100, parseInt( shape.node.style.width ) );
+      assertEquals( 200, parseInt( shape.node.style.height ) );
       assertEquals( 1, Math.round( shape.node.cropTop * 10 ) );
       assertEquals( 2, Math.round( shape.node.cropRight * 10 ) );
       assertEquals( 3, Math.round( shape.node.cropBottom * 10 ) );
       assertEquals( 4, Math.round( shape.node.cropLeft * 10 ) );
+      canvas.destroy();
+      testUtil.flush();
+    },
+
+    testRestoreColorsOnDomInsert : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var canvas = new org.eclipse.swt.widgets.Canvas();
+      canvas.setDimension( 300, 300 );
+      canvas.addToDocument();
+      testUtil.flush();
+      var gc = canvas.getGC();
+      var vmlCanvas = gc._context._canvas;
+      gc._initFields( "10px Arial", "#657890", "#a1a2a3" );
+      gc.drawRectangle( 10, 10, 20, 20, true )
+      gc.drawRectangle( 10, 10, 20, 20, false );
+      var node1 = vmlCanvas.node.childNodes[ 0 ];
+      var node2 = vmlCanvas.node.childNodes[ 1 ];
+      assertEquals( "#657890", node1.fill.color.value );
+      assertEquals( "#a1a2a3", node2.stroke.color.value );
+      canvas.setBackgroundGradient( [ [ 0, "red" ], [ 1, "green" ] ] );
+      assertEquals( "#657890", node1.fill.color.value );
+      assertEquals( "#a1a2a3", node2.stroke.color.value );
+      canvas.destroy();
+      testUtil.flush();
+    },
+
+    testRestoreStrokeWeightOnDomInsert : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var canvas = new org.eclipse.swt.widgets.Canvas();
+      canvas.setDimension( 300, 300 );
+      canvas.addToDocument();
+      testUtil.flush();
+      var gc = canvas.getGC();
+      var vmlCanvas = gc._context._canvas;
+      gc._initFields( "10px Arial", "#657890", "#a1a2a3" );
+      gc.setProperty( "lineWidth", 4 ); 
+      gc.drawRectangle( 10, 10, 20, 20, false );
+      var node = vmlCanvas.node.childNodes[ 0 ];
+      assertEquals( 3, node.stroke.weight ); // returns value in "pt"
+      canvas.setBackgroundGradient( [ [ 0, "red" ], [ 1, "green" ] ] );
+      assertEquals( 3, node.stroke.weight );
       canvas.destroy();
       testUtil.flush();
     },

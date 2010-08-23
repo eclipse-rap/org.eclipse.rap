@@ -333,7 +333,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         // reset. Therefore, this widget also no longer has the ability to 
         // show overflow:
         es.overflow = "hidden";
-        for( var i in this._htmlProperties) {
+        for( var i in this._htmlProperties ) {
           switch( i ) {
             case "unselectable":
               cl.unselectable = this._htmlProperties[i];
@@ -345,10 +345,10 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         elem.appendChild( cl );
         if( this instanceof qx.ui.core.Parent ) {
           org.eclipse.swt.WidgetUtil.forAllChildren( this, function() {
-          if( this._gfxCanvasAppended ) {
-            this._onCanvasAppear();
-          }
-        } );
+            if( this._onCanvasAppear && this.isSeeable() ) {
+              this._onCanvasAppear();
+            }
+          } );
         }
       } else {
         if( this._innerStyleHidden ) {
@@ -535,8 +535,6 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     _enableGfxLayout : function( value ) {
       this._gfxLayoutEnabled = value;
-      var util = org.eclipse.rwt.GraphicsUtil;
-      util.setLayoutMode( this._gfxCanvas, value ?  "absolute" : "relative" );
     },
     
     ////////////////////////////////////
@@ -575,7 +573,9 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     },
 
     _onCanvasAppear : function() {
-      org.eclipse.rwt.GraphicsUtil.handleAppear( this._gfxCanvas );
+      if( this._gfxCanvasAppended ) { 
+        org.eclipse.rwt.GraphicsUtil.handleAppear( this._gfxCanvas );
+      }
     },
 
     //overwritten:

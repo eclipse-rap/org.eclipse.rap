@@ -19,10 +19,11 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     this.base( arguments );
     this._control = control;
     this._control.addEventListener( "create", this._onControlCreate, this );
+    this._vmlCanvas = null;
     if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-      var canvas = org.eclipse.rwt.VML.createCanvas();
-      this._canvas = org.eclipse.rwt.VML.getCanvasNode( canvas );
-      this._context = new org.eclipse.rwt.VMLCanvas( canvas );
+      this._vmlCanvas = org.eclipse.rwt.VML.createCanvas();
+      this._canvas = org.eclipse.rwt.VML.getCanvasNode( this._vmlCanvas );
+      this._context = new org.eclipse.rwt.VMLCanvas( this._vmlCanvas );
     } else {
       this._canvas = document.createElement( "canvas" );
       this._context = this._canvas.getContext( "2d" );

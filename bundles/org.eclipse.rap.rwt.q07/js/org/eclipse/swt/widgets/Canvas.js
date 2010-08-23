@@ -30,6 +30,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Canvas", {
         this._gc = new org.eclipse.swt.graphics.GC( this );
       }
       return this._gc;
+    },
+
+    _onCanvasAppear : function() {
+      var graphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      if( this._gfxCanvasAppended ) {
+        graphicsUtil.handleAppear( this._gfxCanvas );
+      }
+      if( this._gc != null && this._gc._vmlCanvas ) {
+        graphicsUtil.handleAppear( this._gc._vmlCanvas );
+      }
     }
     
   }

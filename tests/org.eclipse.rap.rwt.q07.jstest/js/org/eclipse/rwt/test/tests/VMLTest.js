@@ -25,31 +25,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       testUtil.flush();
       var parentNode = parent._getTargetNode();
       var canvas = gfxUtil.createCanvas();
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       var shape = gfxUtil.createShape( "rect" );
       gfxUtil.addToCanvas( canvas, shape );
       parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );      
       var canvasNode = parentNode.firstChild;
-      assertEquals( "group", canvasNode.tagName );
+      assertEquals( "DIV", canvasNode.tagName );
       assertEquals( "rect", canvasNode.firstChild.tagName );
       assertEquals( null, gfxUtil.getFillType( shape ) );
       assertTrue( gfxUtil.getDisplay( shape ) );
       parent.destroy();
       testUtil.flush();
-    },
-
-    testLayoutMode : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
-      var canvas = gfxUtil.createCanvas();
-      assertEquals( "100%", canvas.node.style.width );
-      assertEquals( "100%", canvas.node.style.height );
-      assertEquals( "1000, 1000", canvas.node.getAttribute( "coordsize") );
-      gfxUtil.setLayoutMode( canvas, "absolute" );
-      assertEquals( "100px", canvas.node.style.width );
-      assertEquals( "100px", canvas.node.style.height );
-      assertEquals( "1000, 1000", canvas.node.getAttribute( "coordsize") );
     },
 
     testFillColor : function() {
@@ -60,8 +46,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
       gfxUtil.addToCanvas( canvas, shape );
-      gfxUtil.handleAppear( canvas );
       parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
       gfxUtil.setFillColor( shape, null);
       assertEquals( null, gfxUtil.getFillType( shape ) );
       assertEquals( null, gfxUtil.getFillColor( shape ) );
@@ -103,8 +89,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       var canvas = gfxUtil.createCanvas();
       var shape = gfxUtil.createShape( "rect" );
       gfxUtil.addToCanvas( canvas, shape );
-      gfxUtil.handleAppear( canvas );
       parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
       gfxUtil.setFillGradient( shape, [ [ 0, "red" ], [ 1, "yellow" ] ] );
       assertTrue( shape.fill.on );
       assertEquals( "gradient", shape.fill.type );      
@@ -120,7 +106,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       shape = gfxUtil.createShape( "roundrect" );
       gfxUtil.setRoundRectLayout( shape, 10, 10, 20, 20, [ 0, 4, 3, 2 ] );
       gfxUtil.setStroke( shape, "black", 2 );
@@ -139,7 +124,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       shape = gfxUtil.createShape( "roundrect" );
       gfxUtil.setRoundRectLayout( shape, 10, 10, 20, 20, [ 20, 0, 0, 0] );
       gfxUtil.setStroke( shape, "black", 2 );
@@ -158,7 +142,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
       var canvas = gfxUtil.createCanvas();
       var parent = document.body;
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       shape = gfxUtil.createShape( "roundrect" );
       gfxUtil.setRoundRectLayout( shape, 10, 10, 20, 20, [ 21, 0, 0, 0] );
       gfxUtil.setStroke( shape, "black", 2 );
@@ -181,7 +164,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       testUtil.flush();
       var parentNode = parent._getTargetNode();
       var canvas = gfxUtil.createCanvas();
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       var shape = gfxUtil.createShape( "rect" );
       gfxUtil.addToCanvas( canvas, shape );
       gfxUtil.setDisplay( shape, false );
@@ -199,7 +181,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var parentNode = document.body
       var canvas = gfxUtil.createCanvas();
-      gfxUtil.setLayoutMode( canvas, "absolute" );
       shape = gfxUtil.createShape( "rect" );
       gfxUtil.setRectBounds( shape, 10, 10, 100, 100 );
       gfxUtil.setStroke( shape, "black", 2 );
@@ -214,7 +195,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       assertEquals( "./js/resource/tex.jpg", shape.fill.src );
       assertEquals( "pattern", gfxUtil.getFillType( shape ) );
       parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );
-    }    
+    },
+    
+    testOpacity : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      gfxUtil.setOpacity( shape, 0.5 );
+      assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) != -1 );
+      assertTrue( shape.node.style.filter.indexOf( "opacity=50" ) != -1 );
+      gfxUtil.setOpacity( shape, 1 );
+      // It is important for some issues that filter is completely removed:
+      assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) == -1 );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    }
+
 
   }
   

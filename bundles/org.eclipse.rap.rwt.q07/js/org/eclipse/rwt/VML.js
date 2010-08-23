@@ -26,7 +26,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     createCanvas : function() {
       var result = {};
       result.type = "vmlCanvas";
-      var node = this._createNode( "group" );
+      var node = document.createElement( "div" );
       node.style.position = "absolute"
       node.style.width = "100%";
       node.style.height = "100%";
@@ -34,7 +34,6 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       node.style.left = "0";
       result.node = node;
       result.children = {};
-      this.setLayoutMode( result, "relative" );      
       return result;
     },
     
@@ -45,21 +44,6 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       canvas.children = {};
     },
 
-    setLayoutMode : function( canvas, mode ) {
-      if( mode == "absolute" ) {
-        var node = canvas.node;
-        node.style.width = 100 + "px";
-        node.style.height = 100 + "px";
-        var coordsize = 100 * this._VMLFACTOR + ", " + 100 * this._VMLFACTOR;
-        node.setAttribute( "coordsize", coordsize );
-      } else if( mode == "relative" ) {
-        var node = canvas.node;
-        node.style.width = "100%";
-        node.style.height = "100%";
-        node.setAttribute( "coordsize", "1000, 1000" );
-      }
-    },
-
     getCanvasNode : function( canvas ) {
       return canvas.node;
     },
@@ -67,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     handleAppear : function( canvas ) {
       var children = canvas.children;
       for( var hash in children ) {
-        this._handleAppearShape( children[ hash ] );
+       this._handleAppearShape( children[ hash ] );
       }
     },
     
@@ -88,6 +72,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
           throw "VML does not support shape " + type;
         break;
       }
+      result.restoreData = { "fill" : {} };
       result.node.stroked = false;
       // TODO [tb] : test if stroke-node conflicts with stroke-properties on 
       // the element-node when moved in dom. 
@@ -141,10 +126,10 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         node.cropBottom =  crop[ 2 ];
         node.cropLeft = crop[ 3 ];
       } 
-      node.style.width = this._convertNumeric( width, false );
-      node.style.height = this._convertNumeric( height, false );
-      node.style.left = this._convertNumeric( x, false );
-      node.style.top = this._convertNumeric( y, false );
+      node.style.width = width;
+      node.style.height = height;
+      node.style.left = x;
+      node.style.top = y;
     },
 
     setRoundRectLayout : function( shape, x, y, width, height, radii ) {
@@ -236,17 +221,17 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       if( color != null ) {
         this._setFillEnabled( shape, true );
         fill.color = color;
-        shape.restoreColor = color;
+        shape.restoreData.fill.color = color;
       } else {
         this._setFillEnabled( shape, false );
-        delete shape.restoreColor;
+        delete shape.restoreData.fill.color;
       }
     },
     
     getFillColor : function( shape ) {
       var result = null;
       if( this.getFillType( shape ) == "color" ) {
-        result = shape.restoreColor;
+        result = shape.restoreData.fill.color;
       }
       return result;
     },
@@ -256,7 +241,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       if( gradient != null ) {
         shape.node.removeChild( shape.fill );
         this._setFillEnabled( shape, true );
-        delete shape.restoreColor;
+        delete shape.restoreData.fill.color;
         fill.type = "gradient";
         //the "color" attribute of fill is lost when the node
         //is removed from the dom. However, it can be overwritten
@@ -327,11 +312,13 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         shape.node.stroked = true;
         shape.node.strokecolor = color;
         shape.node.strokeweight = width + "px";
-        // TODO [tb] : joinstyle (currently not implemented because it would
-        // need the subelement "stroke" and create conflict with the other
-        // stroke-attributes - IE "forgets" them if the element is moved in DOM)
+        shape.restoreData.strokecolor = color;
+        shape.restoreData.strokeweight = width + "px";
+        // TODO [tb] : joinstyle 
       } else {
         shape.node.stroked = false;
+        delete shape.restoreData.strokecolor;
+        delete shape.restoreData.strokeweight;
       }
     },
     
@@ -349,16 +336,17 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     },
     
     setOpacity : function( shape, opacity ) {
-      var filterStr = "";
       var antiAlias = true;
       if( opacity < 1 ) {
-        filterStr =   "progid:DXImageTransform.Microsoft.Alpha"
-                    + "(opacity="
-                    + Math.round( opacity * 100 )
-                    + ")";
+        var filterStr =   "progid:DXImageTransform.Microsoft.Alpha"
+                        + "(opacity="
+                        + Math.round( opacity * 100 )
+                        + ")";
         antiAlias = false;
-      } 
-      shape.node.style.filter = filterStr;
+        shape.node.style.filter = filterStr;
+      } else {
+        this._removeFilter( shape );
+      }
       this._setAntiAlias( shape, antiAlias );
     },
     
@@ -399,8 +387,10 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     _createCustomShape : function() {
       var result = {};
       var node = this._createNode( "shape" );
-      node.coordsize="100,100";
-      node.coordorigin="0 0";
+      var coordsize = 100 * this._VMLFACTOR + ", " + 100 * this._VMLFACTOR;
+      node.coordsize = coordsize;
+      node.coordorigin = "0 0";
+      node.style.position = "absolute";
       node.style.width = 100;
       node.style.height = 100;
       node.style.top = 0;
@@ -411,7 +401,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
 
     _setFillEnabled : function( shape, value ) {
       shape.fill.on = value;
-      shape.restoreFill = value;
+      shape.restoreData.fill.on = value;
     },
 
     _ensureStrokeNode : function( shape ) {
@@ -447,13 +437,22 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       return str.join(" ,");
     },
     
-    _handleAppearShape: function( shape ) {
-      shape.fill.on = shape.restoreFill;
-      if(   typeof shape.restoreColor != "undefined" 
-         && shape.restoreColor != null ) 
-      {
-        shape.fill.color = shape.restoreColor;
+    _copyData : function( source, target ) {
+      if( !source || !target ) {
+        throw "VML._copyData: source or target missing!";
       }
+      for( var key in source ) {
+        var value = source[ key ];
+        if( typeof value === "object" ) {
+          this._copyData( value, target[ key ] );
+        } else {
+          target[ key ] = value;
+        }
+      }
+    },
+
+    _handleAppearShape : function( shape ) {
+      this._copyData( shape.restoreData, shape.node );
     },
 
     _transitionColorPart : function( color1, color2, pos ) {
@@ -526,6 +525,19 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     
     _setAntiAlias : function( shape, value ) {
       shape.node.style.antialias = value;
+    },
+    
+    _removeFilter : function( shape ) {
+      var str = shape.node.style.cssText;
+      var start = str.indexOf( "FILTER:" );
+      if( start != -1 ) {
+        var end = str.indexOf( ";", start ) + 1;
+        var newStr = str.slice( 0, start );
+        if( end !== -1 ) {
+           newStr += str.slice( end );
+        }
+        shape.node.style.cssText = newStr;
+      }
     }
 
   }

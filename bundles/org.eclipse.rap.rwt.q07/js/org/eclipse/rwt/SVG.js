@@ -33,10 +33,6 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       return result;
     },
     
-    setLayoutMode : function( canvas, mode ) {
-      // nothing to do
-    },
-    
     getCanvasNode : function( canvas ) {
       return canvas.node;
     },

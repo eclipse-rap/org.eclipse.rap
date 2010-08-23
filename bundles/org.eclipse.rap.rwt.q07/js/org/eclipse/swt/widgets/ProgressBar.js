@@ -265,7 +265,6 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     _createCanvas : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       this._canvas = gfxUtil.createCanvas();
-      gfxUtil.setLayoutMode( this._canvas, "absolute" );
       this._getTargetNode().appendChild( gfxUtil.getCanvasNode( this._canvas ) );
       this._gfxCanvasAppended = true;
       this.addEventListener( "appear", this._onCanvasAppear );

@@ -47,15 +47,6 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
       result = this._renderClass.createCanvas();
       return result;
     },
-    
-    /**
-     * Set mode to "relative" for use with layout-values using "%".
-     * This the initial state of canvas.
-     * Set mode to "absolute" for use with layout-values representing pixels.       
-     */
-    setLayoutMode : function( canvas, mode ) {
-      this._renderClass.setLayoutMode( canvas, mode );
-    },
 
     /**
      * Returns the DOM-node for the given canvas to be added to or removed from
