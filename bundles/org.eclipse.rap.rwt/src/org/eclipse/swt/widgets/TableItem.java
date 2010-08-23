@@ -1111,7 +1111,7 @@ public class TableItem extends Item {
   // Clear item data (texts, images, etc)
 
   final void removeData( final int index ) {
-    if( data != null && parent.getColumnCount() > 1 ) {
+    if( data != null && data.length > index && parent.getColumnCount() > 1 ) {
       Data[] newData = new Data[ data.length - 1 ];
       System.arraycopy( data, 0, newData, 0, index );
       int offSet = data.length - index - 1;

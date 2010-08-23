@@ -299,4 +299,24 @@ public class TableColumn_Test extends TestCase {
     assertEquals( 1, table.getItemCount() );
     assertEquals( "itemText for column 0", item.getText() );
   }
+
+  // 323179: Creating and disposing a TableColumn (without updating the
+  // TableItems) results in an ArrayIndexOutOfBoundsException
+  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=323179
+  public void testCreateDisposeColumnWithoutDataUpdate() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setText( "First Column" );
+    int number = 5;
+    TableItem[] items = new TableItem[ number ];
+    for( int i = 0; i < number; i++ ) {
+      items[ i ] = new TableItem( table, SWT.NONE );
+      items[ i ].setText( 0, "x1" );
+    }
+    TableColumn column2 = new TableColumn( table, SWT.NONE );
+    column2.setText( "Second Column" );
+    column2.dispose();
+  }
 }
