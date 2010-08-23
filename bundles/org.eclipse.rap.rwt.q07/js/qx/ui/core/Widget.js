@@ -121,6 +121,12 @@ qx.Class.define("qx.ui.core.Widget",
 
     /** (Fired by {@link qx.event.handler.EventHandler}) */
     "contextmenu"     : "qx.event.type.MouseEvent",
+    
+    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    "elementOver"     : "qx.event.type.MouseEvent",
+
+    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    "elementOut"      : "qx.event.type.MouseEvent",
 
     /** (Fired by {@link qx.event.handler.EventHandler}) */
     "keydown"         : "qx.event.type.KeyEvent",
