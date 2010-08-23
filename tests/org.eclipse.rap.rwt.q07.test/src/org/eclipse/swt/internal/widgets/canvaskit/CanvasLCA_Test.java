@@ -237,4 +237,34 @@ public class CanvasLCA_Test extends TestCase {
       + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
+
+  public void testRenderOperations_DisposedFont() throws IOException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Canvas canvas = new Canvas( shell, SWT.NONE );
+    canvas.setSize( 50, 50 );
+    canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( canvas );
+    Fixture.preserveWidgets();
+    canvas.addPaintListener( new PaintListener() {
+      public void paintControl( final PaintEvent event ) {
+        Font font = new Font( display, "Verdana", 18, SWT.BOLD );
+        event.gc.setFont( font );
+        event.gc.drawLine( 1, 2, 3, 4 );
+        font.dispose();
+      }
+    } );
+    Fixture.fakeResponseWriter();
+    canvas.redraw();
+    new CanvasLCA().renderChanges( canvas );
+    String expected
+      = "var w = wm.findWidgetById( \"w2\" );"
+      + "var gc = w.getGC();"
+      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.setProperty( \"font\", \"bold 18px Verdana\" );"
+      + "gc.drawLine( 1, 2, 3, 4 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
 }

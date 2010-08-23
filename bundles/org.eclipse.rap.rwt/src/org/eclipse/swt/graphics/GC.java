@@ -171,7 +171,7 @@ public class GC extends Resource {
     }
     Font newFont = font != null ? font : getDevice().getSystemFont();
     if( !newFont.equals( this.font ) ) {
-      this.font = newFont;
+      this.font = new Font( getDevice(), newFont.getFontData() );
       SetFont operation = new SetFont( this.font );
       addGCOperation( operation );
     }
