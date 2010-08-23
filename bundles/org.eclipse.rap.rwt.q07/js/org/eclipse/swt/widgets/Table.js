@@ -1705,10 +1705,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         var columnIndex = -1;
         var columns = this.getColumns();
         for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
-          var element = columns[ i ].getElement();
-          var pageLeft = qx.bom.element.Location.getLeft( element );
+          var element = this._clientArea.getElement();
+          var pageLeft = qx.bom.element.Location.getLeft( element )
+                       + this._itemLeft[ i ];
           if(    pageX >= pageLeft
-              && pageX < pageLeft + columns[ i ].getWidth() )
+              && pageX < pageLeft + this._itemWidth[ i ] )
           {
             columnIndex = i;
           }
