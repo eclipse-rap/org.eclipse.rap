@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _lastMouseClickTarget : null,
     _lastMouseClickTime : null,
     _mouseEnabled : true,
+    _fullscreen : window.navigator.standalone,
     
     init : function() {
       if( this._isMobileWebkit() ) {
@@ -79,6 +80,11 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     
     _onTouchEvent : function( domEvent ) {
       var type = domEvent.type;
+      if( this._fullscreen ) {
+        // Zoom is disabled in Fullscreen (by webkit), therefore no 
+        // swipe/scrolling is needed:
+        domEvent.preventDefault();
+      }
       if( this._mouseEnabled ) {
         switch( type ) {
           case "touchstart":

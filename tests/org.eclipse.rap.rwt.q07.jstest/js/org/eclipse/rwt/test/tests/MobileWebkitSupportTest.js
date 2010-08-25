@@ -212,7 +212,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       testUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
       assertEquals( 0, counter );
       widget.destroy();
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testTouchStartCreatesMouseDown : function() {
@@ -229,7 +229,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touch( node, "touchstart" );
       assertEquals( [ "mousedown" ], log );
       widget.destroy();
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testTouchEndCreatesMouseUp : function() {
@@ -247,7 +247,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touch( node, "touchend" );
       assertEquals( [ "mouseup" ], log );
       widget.destroy();
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testMouseOver : function() {
@@ -268,11 +268,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touch( node, "touchend" );
       assertEquals( [ "mouseover" ], log );
       widget.destroy();
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testMouseOut : function() {
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
@@ -289,7 +289,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touch( document.body, "touchstart" );
       assertEquals( [ "mouseout" ], log );
       widget.destroy();
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testCoordinatesMouseDownUp : function() {
@@ -308,7 +308,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touchAt( node, "touchend", 3, 4 );
       assertEquals( [ 1, 2, 3, 4 ], log );
       widget.destroy();
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testPreventTapZoom : function() {
@@ -321,13 +321,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         prevented = event.getDomEvent().originalEvent.prevented === true;
       } );
       var node = widget._getTargetNode();
-      console.log( "tapzoom" );
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
       this.touch( node, "touchstart" );
       this.touch( node, "touchend" );
       assertTrue( prevented );
       widget.destroy();
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
 
     testClick : function() {
@@ -347,7 +346,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touch( node, "touchend" );
       assertEquals( [ "mousedown", "mouseup", "click"], log );
       widget.destroy();          
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testNoClickOnDifferentTargets : function() {
@@ -367,7 +366,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touch( node, "touchend" );
       assertEquals( [ "mouseup" ], log );
       widget.destroy();      
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
 
     testCancelOnGesture : function() {
@@ -405,7 +404,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       assertEquals( widgetExpected, widgetLog );
       assertEquals( docExpected, docLog );
       widget.destroy();
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testCancelOnSwipe : function() {
@@ -452,7 +451,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       assertEquals( widgetExpected, widgetLog );
       assertEquals( docExpected, docLog );
       widget.destroy();
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testDoubleClick : function() {
@@ -484,7 +483,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       ];
       assertEquals( expected, log );
       widget.destroy();                
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
     
     testNoDoubeClickDifferentTarget : function() {
@@ -512,7 +511,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       ];
       assertEquals( expected, log );
       widget.destroy();      
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
     },
 
     testNoDoubeClickTooSlow : function() {
@@ -544,7 +543,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       ];
       assertEquals( expected, log );
       widget.destroy();      
-      this.clearEventStatus();
+      this.resetMobileWebkitSupport();
+    },
+    
+    testPreventDefaultAtFullscreen : function() {
+      this.fakeFullscreen();
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var log = [];
+      var logger = function( event ) {
+        log.push( event.getDomEvent().originalEvent.prevented );
+      }
+      widget.addEventListener( "mousedown", logger );
+      widget.addEventListener( "mouseup", logger );
+      widget.addEventListener( "mouseout", logger );
+      var node = widget._getTargetNode();
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      this.touchAt( node, "touchstart", 10, 10 );
+      this.touchAt( node, "touchmove", 19, 19 );
+      var expected = [ true, true, true, true ];
+      assertEquals( expected, log );
+      widget.destroy();
+      this.resetMobileWebkitSupport();
     },
 
     /////////
@@ -679,7 +702,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       };
       var event = {
         "preventDefault" : function(){ this.prevented = true; },
-        "prevent" : false,
+        "prevented" : false,
         "touches" : touchList,
         "target" : node,
         "type" : type
@@ -687,7 +710,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       org.eclipse.rwt.MobileWebkitSupport.__onTouchEvent( event );
     },
     
-    clearEventStatus : function() {
+    fakeFullscreen : function() {
+      org.eclipse.rwt.MobileWebkitSupport._fullscreen = true;
+    },
+    
+    resetMobileWebkitSupport : function() {
       var mobile = org.eclipse.rwt.MobileWebkitSupport;
       mobile._lastMouseOverTarget = null;
       mobile._lastMouseDownTarget = null;
@@ -695,6 +722,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       mobile._lastMouseClickTarget = null;
       mobile._lastMouseClickTime = null;
       mobile._mouseEnabled = true;
+      mobile._fullscreen = window.navigator.standalone;
     }
 
   }
