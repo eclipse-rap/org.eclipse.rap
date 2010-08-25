@@ -156,17 +156,17 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       this.fireFakeMouseEventDOM( overEvent );
     },
       
-    fakeMouseEventDOM : function( node, type, button, left, top, mod ) {
+    fakeMouseEventDOM : function( node, type, button, left, top, mod, filter ) {
       if( typeof node == "undefined" ) {
         throw( "Error in fakeMouseEventDOM: node not defined! " );
       }
       var domEvent 
-        = this.createfakeMouseEventDOM( type, button, left, top, mod );
+        = this.createfakeMouseEventDOM( type, button, left, top, mod, filter );
       domEvent.target = node;
       this.fireFakeMouseEventDOM( domEvent);
     },
 
-    createfakeMouseEventDOM : function( type, button, left, top, mod ) {
+    createfakeMouseEventDOM : function( type, button, left, top, mod, filter ) {
       if( typeof left == "undefined" ) {
         left = 0;
       }
@@ -175,6 +175,9 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       }
       if( typeof mod == "undefined" ) {
         mod = 0;
+      }
+      if( typeof filter == "undefined" ) {
+        filter = false;
       }
       var clientX = left;
       var clientY = top;
@@ -198,6 +201,9 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         "ctrlKey" : ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0,
         "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
         "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0
+      }
+      if( !filter && this.isMobileWebkit() ) {
+        domEvent.originalEvent = {};
       }
       return domEvent; 
     },

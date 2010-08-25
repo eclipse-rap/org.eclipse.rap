@@ -30,14 +30,15 @@ qx.Class.define( "qx.event.handler.EventHandler", {
   extend : qx.core.Target,
 
   construct : function() {
-    this.base(arguments);
-    this.__onmouseevent = qx.lang.Function.bind(this._onmouseevent, this);
-    this.__ondragevent = qx.lang.Function.bind(this._ondragevent, this);
-    this.__onselectevent = qx.lang.Function.bind(this._onselectevent, this);
-    this.__onwindowblur = qx.lang.Function.bind(this._onwindowblur, this);
-    this.__onwindowfocus = qx.lang.Function.bind(this._onwindowfocus, this);
-    this.__onwindowresize = qx.lang.Function.bind(this._onwindowresize, this);
+    this.base( arguments );
+    this.__onmouseevent = qx.lang.Function.bind( this._onmouseevent, this );
+    this.__ondragevent = qx.lang.Function.bind( this._ondragevent, this );
+    this.__onselectevent = qx.lang.Function.bind( this._onselectevent, this );
+    this.__onwindowblur = qx.lang.Function.bind( this._onwindowblur, this );
+    this.__onwindowfocus = qx.lang.Function.bind( this._onwindowfocus, this );
+    this.__onwindowresize = qx.lang.Function.bind( this._onwindowresize, this );
     this._commands = {};
+    this._filter = {};
   },
 
   events : {
@@ -494,6 +495,10 @@ qx.Class.define( "qx.event.handler.EventHandler", {
     ///////////////
     // MOUSE EVENTS
 
+    setMouseEventFilter : function( filter, context ) {
+      this._filter[ "mouseevent" ] = [ filter, context ];
+    },
+
     /** 
      * This one handle all mouse events
      *
@@ -509,8 +514,19 @@ qx.Class.define( "qx.event.handler.EventHandler", {
      *  7. dblclick
      *
      */
+     
+     _onmouseevent : function( event ) {
+       var process = true;
+       if( typeof this._filter[ "mouseevent" ] !== "undefined" ) {
+         var context = this._filter[ "mouseevent" ][ 1 ];
+         process = this._filter[ "mouseevent" ][ 0 ].call( context, event );
+       }
+       if( process ) {
+         this._processMouseEvent( event ); 
+       }
+     },
 
-    _onmouseevent : qx.core.Variant.select("qx.client",  {
+    _processMouseEvent : qx.core.Variant.select("qx.client",  {
       "mshtml" : function(vDomEvent)
       {
         if (!vDomEvent) {

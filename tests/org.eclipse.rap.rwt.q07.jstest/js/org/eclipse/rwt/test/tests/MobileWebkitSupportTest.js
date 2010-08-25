@@ -9,19 +9,26 @@
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
+
   extend : qx.core.Object,
+
+  construct : function() {
+    // Eventlistener are detached by TestRunner to prevent user-interference,
+    // but we need them here...
+    qx.event.handler.EventHandler.getInstance().attachEvents();
+  },
+  
+  destruct : function() {
+    qx.event.handler.EventHandler.getInstance().detachEvents();
+  },
 
   members : {
 
     TARGETENGINE : [ "webkit" ],
     TARGETPLATFORM : [ "iphone", "ipad" ],
     
-    testTabHighlightHidden : function() {
-      var head = document.childNodes[ 0 ].childNodes[ 0 ];
-      var headertext = head.innerHTML;
-      var expected = "* { -webkit-tap-highlight-color: rgba(0,0,0,0); }";
-      assertTrue( headertext.indexOf( expected ) != -1 );
-    },
+    ///////////////
+    // Test helpers
     
     testFakeTouchEvents : function() {
       var div = document.createElement( "div" );
@@ -67,9 +74,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var div = document.createElement( "div" );
       var touch = this.createTouch( div, 3, 6 );
       assertTrue( touch instanceof Touch );
-      assertEquals( 3, touch.screenX );
-      assertEquals( 6, touch.screenY );
-      assertIdentical( div, touch.target );
+      // Does not work due to browser:
+      //assertEquals( 3, touch.screenX );
+      //assertEquals( 6, touch.screenY );
+      //assertIdentical( div, touch.target );
     },
 
     testCreateTouchList : function() {
@@ -99,18 +107,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       div.ontouchmove = logger;
       div.ontouchend = logger;
       div.ontouchcancel = logger;
-      this.touch( div, "touchstart" );
-      this.touch( div, "touchmove", 0 );
+      this.touch( div, "touchstart", 1 );
+      this.touch( div, "touchmove", 1 );
       this.touch( div, "touchend", 3 );
       this.touch( div, "touchcancel",4  );
-      var expected = [ 1, 0, 3, 4 ];
+      var expected = [ 1, 1, 3, 4 ];
       assertEquals( expected, log );
       document.body.removeChild( div );
     },
 
     testFakeTouchEventsTouchList : function() {
       var div = document.createElement( "div" );
-      var touches = [ new Touch(), new Touch() ];
+      var touches = [ 
+        this.createTouch( div, 1, 1 ), 
+        this.createTouch( div, 1, 1 )
+      ]; 
       document.body.appendChild( div );
       var log = [];
       var logger = function( event ) {
@@ -122,8 +133,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       div.ontouchcancel = logger;
       this.touch( div, "touchstart", touches );
       assertEquals( 2, log[ 0 ].length );
-      assertEquals( touches[ 0 ], log[ 0 ].item( 0 ) );
-      assertEquals( touches[ 1 ], log[ 0 ].item( 1 ) );
+      assertIdentical( touches[ 0 ], log[ 0 ].item( 0 ) );
+      assertIdentical( touches[ 1 ], log[ 0 ].item( 1 ) );
       document.body.removeChild( div );
     },
 
@@ -176,18 +187,372 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       assertEquals( expected, log );
       document.body.removeChild( div );
     },
+    
+    //////////
+    // Visuals
+    
+    testTabHighlightHidden : function() {
+      var head = document.childNodes[ 0 ].childNodes[ 0 ];
+      var headertext = head.innerHTML;
+      var expected = "* { -webkit-tap-highlight-color: rgba(0,0,0,0); }";
+      assertTrue( headertext.indexOf( expected ) != -1 );
+    },
+    
+    /////////
+    // Events
+    
+    testPreventNativeMouseEvents : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var counter = 0;
+      widget.addEventListener( "mousedown", function(){ counter++; } );
+      var node = widget._getTargetNode();
+      testUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
+      assertEquals( 0, counter );
+      widget.destroy();
+      this.clearEventStatus();
+    },
+    
+    testTouchStartCreatesMouseDown : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mousedown", logger );
+      var node = widget._getTargetNode();
+      this.touch( node, "touchstart" );
+      assertEquals( [ "mousedown" ], log );
+      widget.destroy();
+      this.clearEventStatus();
+    },
+    
+    testTouchEndCreatesMouseUp : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mouseup", logger );
+      var node = widget._getTargetNode();
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      assertEquals( [ "mouseup" ], log );
+      widget.destroy();
+      this.clearEventStatus();
+    },
+    
+    testMouseOver : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mouseover", logger );
+      widget.addEventListener( "mouseout", logger );
+      var node = widget._getTargetNode();
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      assertEquals( [ "mouseover" ], log );
+      widget.destroy();
+      this.clearEventStatus();
+    },
+    
+    testMouseOut : function() {
+      this.clearEventStatus();
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mouseout", logger );
+      var node = widget._getTargetNode();
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      assertEquals( [], log );
+      this.touch( document.body, "touchstart" );
+      assertEquals( [ "mouseout" ], log );
+      widget.destroy();
+      this.clearEventStatus();
+    },
+    
+    testCoordinatesMouseDownUp : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getPageX(), event.getPageY() ); 
+      };
+      widget.addEventListener( "mousedown", logger );
+      widget.addEventListener( "mouseup", logger );
+      var node = widget._getTargetNode(); 
+      this.touchAt( node, "touchstart", 1, 2 );
+      this.touchAt( node, "touchend", 3, 4 );
+      assertEquals( [ 1, 2, 3, 4 ], log );
+      widget.destroy();
+      this.clearEventStatus();
+    },
+    
+    testPreventTapZoom : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var prevented = false; 
+      widget.addEventListener( "mouseup", function( event ) {
+        prevented = event.getDomEvent().originalEvent.prevented === true;
+      } );
+      var node = widget._getTargetNode();
+      console.log( "tapzoom" );
+      this.clearEventStatus();
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      assertTrue( prevented );
+      widget.destroy();
+      this.clearEventStatus();
+    },
+
+    testClick : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mousedown", logger );
+      widget.addEventListener( "mouseup", logger );
+      widget.addEventListener( "click", logger );
+      var node = widget._getTargetNode();
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      assertEquals( [ "mousedown", "mouseup", "click"], log );
+      widget.destroy();          
+      this.clearEventStatus();
+    },
+    
+    testNoClickOnDifferentTargets : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mousedown", logger );
+      widget.addEventListener( "mouseup", logger );
+      widget.addEventListener( "click", logger );
+      var node = widget._getTargetNode();
+      this.touch( document.body, "touchstart" );
+      this.touch( node, "touchend" );
+      assertEquals( [ "mouseup" ], log );
+      widget.destroy();      
+      this.clearEventStatus();
+    },
+
+    testCancelOnGesture : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var doc = qx.ui.core.ClientDocument.getInstance();
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var widgetLog = [];
+      var widgetLogger = function( event ){ 
+        widgetLog.push( event.getType() );
+        event.stopPropagation(); 
+      };
+      var docLog = [];
+      var docLogger = function( event ){ 
+        docLog.push( event.getType() ); 
+      };
+      widget.addEventListener( "mouseover", widgetLogger );
+      widget.addEventListener( "mouseout", widgetLogger );
+      widget.addEventListener( "mousedown", widgetLogger );
+      widget.addEventListener( "mouseup", widgetLogger );
+      widget.addEventListener( "click", widgetLogger );
+      doc.addEventListener( "mouseover", docLogger );
+      doc.addEventListener( "mouseout", docLogger );
+      doc.addEventListener( "mousedown", docLogger );
+      doc.addEventListener( "mouseup", docLogger );
+      doc.addEventListener( "click", docLogger );
+      var node = widget._getTargetNode();
+      this.gesture( node, "gesturestart" );
+      this.touch( node, "touchstart", 3 );
+      this.touch( node, "touchend", 2 );
+      this.gesture( node, "gestureend" );
+      var widgetExpected = [ "mouseover", "mousedown", "mouseout" ];
+      var docExpected = [ "mouseover", "mouseup" ];      
+      assertEquals( widgetExpected, widgetLog );
+      assertEquals( docExpected, docLog );
+      widget.destroy();
+      this.clearEventStatus();
+    },
+    
+    testCancelOnSwipe : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var doc = qx.ui.core.ClientDocument.getInstance();
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var widgetLog = [];
+      var widgetLogger = function( event ){ 
+        widgetLog.push( event.getType() );
+        event.stopPropagation(); 
+      };
+      var docLog = [];
+      var docLogger = function( event ){ 
+        docLog.push( event.getType() ); 
+      };
+      widget.addEventListener( "mouseover", widgetLogger );
+      widget.addEventListener( "mouseout", widgetLogger );
+      widget.addEventListener( "mousedown", widgetLogger );
+      widget.addEventListener( "mouseup", widgetLogger );
+      widget.addEventListener( "click", widgetLogger );
+      doc.addEventListener( "mouseover", docLogger );
+      doc.addEventListener( "mouseout", docLogger );
+      doc.addEventListener( "mousedown", docLogger );
+      doc.addEventListener( "mouseup", docLogger );
+      doc.addEventListener( "click", docLogger );
+      var node = widget._getTargetNode();
+      this.touchAt( node, "touchstart", 10, 10 );
+      assertEquals( 2, widgetLog.length );
+      this.touchAt( node, "touchmove", 18, 18 );
+      assertEquals( 2, widgetLog.length );
+      this.touchAt( node, "touchmove", 19, 19 );
+      this.touch( node, "touchend" );
+      var widgetExpected = [ "mouseover", "mousedown", "mouseout" ];
+      var docExpected = [ "mouseover", "mouseup" ];      
+      assertEquals( widgetExpected, widgetLog );
+      assertEquals( docExpected, docLog );
+      var widgetLog = [];
+      var docLog = [];
+      this.touch( node, "touchstart" );
+      var widgetExpected = [ "mouseover", "mousedown" ];
+      var docExpected = [ "mouseout" ];      
+      assertEquals( widgetExpected, widgetLog );
+      assertEquals( docExpected, docLog );
+      widget.destroy();
+      this.clearEventStatus();
+    },
+    
+    testDoubleClick : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mousedown", logger );
+      widget.addEventListener( "mouseup", logger );
+      widget.addEventListener( "click", logger );
+      widget.addEventListener( "dblclick", logger );
+      var node = widget._getTargetNode();
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      var expected = [
+        "mousedown", 
+        "mouseup", 
+        "click",
+        "mousedown", 
+        "mouseup", 
+        "click",
+        "dblclick"
+      ];
+      assertEquals( expected, log );
+      widget.destroy();                
+      this.clearEventStatus();
+    },
+    
+    testNoDoubeClickDifferentTarget : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mousedown", logger );
+      widget.addEventListener( "mouseup", logger );
+      widget.addEventListener( "click", logger );
+      widget.addEventListener( "dblclick", logger );
+      var node = widget._getTargetNode();
+      this.touch( document.body, "touchstart" );
+      this.touch( document.body, "touchend" );
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      var expected = [
+        "mousedown", 
+        "mouseup", 
+        "click",
+      ];
+      assertEquals( expected, log );
+      widget.destroy();      
+      this.clearEventStatus();
+    },
+
+    testNoDoubeClickTooSlow : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();      
+      var log = [];
+      var logger = function( event ){ 
+        log.push( event.getType() ); 
+      };
+      widget.addEventListener( "mousedown", logger );
+      widget.addEventListener( "mouseup", logger );
+      widget.addEventListener( "click", logger );
+      widget.addEventListener( "dblclick", logger );
+      var node = widget._getTargetNode();
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      org.eclipse.rwt.MobileWebkitSupport._lastMouseClickTime -= 1000;
+      this.touch( node, "touchstart" );
+      this.touch( node, "touchend" );
+      var expected = [
+        "mousedown", 
+        "mouseup", 
+        "click",
+        "mousedown", 
+        "mouseup", 
+        "click"
+      ];
+      assertEquals( expected, log );
+      widget.destroy();      
+      this.clearEventStatus();
+    },
 
     /////////
     // Helper
     
     createTouch : function( target, x, y ) {
-      var constr = function() {
-        this.screenX = x;
-        this.screenY = y;
-        this.target = target;
-      };
-      constr.prototype = Touch.prototype;
-      return new constr();
+      // Can not overwrite fields of a touch-instance:
+      return new Touch();
     },
     
     createTouchList : function( touches ) {
@@ -196,7 +561,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       for( var i = 0; i < touches.length; i++ ) {
         args.push( "touches[ " + i + "]" );
       }
-      return eval( "new TouchList(" + args.join() + ")" ); 
+      return eval( "new TouchList(" + args.join() + ")" );
     },
     
     createTouchEvent : function( type, touchList ) {
@@ -222,6 +587,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         0, //scale
         0 //rotation
       );
+      result.touches = touchList;
+      // So we can test if preventDefault has been called:
+      result.preventDefault = function() {
+        this.prevented = true;
+      };
+      result.prevented = false;      
       return result;
     },
 
@@ -250,7 +621,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     },
     
     touch : function( node, type, touchesNumberOrArray ) {
-      //var rect = node.getBoundingClientRect();
       var touches;
       if( touchesNumberOrArray instanceof Array ) {
         touches = touchesNumberOrArray;
@@ -291,6 +661,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       // NOTE: there should actually be two "touchend" (unless the user
       // raises both finger exactly at once), but due to a bug webkit always
       // reports all touches to have ended, even if only one of several ended.
+    },
+    
+    // This is needed since the fields of "real" touches can't be overwritten.
+    // Functionality of this fake is limited, therefore use only when needed.
+    touchAt : function( node, type, x, y ) {
+      var touch = {
+        "target" : node,
+        "clientX" : x,
+        "clientY" : y
+      };
+      var touchList = {
+        "item" : function( i ){
+          return i === 0 ? touch : null;
+        },
+        "length" : 1
+      };
+      var event = {
+        "preventDefault" : function(){ this.prevented = true; },
+        "prevent" : false,
+        "touches" : touchList,
+        "target" : node,
+        "type" : type
+      };
+      org.eclipse.rwt.MobileWebkitSupport.__onTouchEvent( event );
+    },
+    
+    clearEventStatus : function() {
+      var mobile = org.eclipse.rwt.MobileWebkitSupport;
+      mobile._lastMouseOverTarget = null;
+      mobile._lastMouseDownTarget = null;
+      mobile._lastMouseDownPosition = null;
+      mobile._lastMouseClickTarget = null;
+      mobile._lastMouseClickTime = null;
+      mobile._mouseEnabled = true;
     }
 
   }
