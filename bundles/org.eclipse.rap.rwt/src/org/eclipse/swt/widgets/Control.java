@@ -748,7 +748,7 @@ public abstract class Control extends Widget implements Drawable {
     // if (display.focusEvent == SWT.FocusOut) return false;
     Shell shell = getShell(); // was: Decorations shell = menuShell();
     shell.setSavedFocus( this );
-    if( !isEnabled() || !isVisible() /* || !isActive() */) {
+    if( !isEnabled() || !isVisible() || !isActive() ) {
       return false;
     }
     if( isFocusControl() ) {
@@ -1865,7 +1865,7 @@ public abstract class Control extends Widget implements Drawable {
     checkWidget();
     MenuDetectEvent.removeListener( this, listener );
   }
-  
+
   ////////////////
   // drawing (Note that we can't really force a redraw. This is just a
   // fake for event notifications that come on OS systems with redraws)
@@ -2180,6 +2180,23 @@ public abstract class Control extends Widget implements Drawable {
       return false;
     }
     return forceFocus ();
+  }
+
+  boolean isActive() {
+    Shell shell = getShell();
+    boolean result = shell.getEnabled();
+    Shell[] allShells = getDisplay().getShells();
+    int bits = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL;
+    int shellIndex = allShells.length;
+    for( int i = 0; i < allShells.length && result; i++ ) {
+      if( allShells[ i ] == shell ) {
+        shellIndex = i;
+      }
+      if( ( allShells[ i ].style & bits ) != 0 && shellIndex < i ) {
+        result = false;
+      }
+    }
+    return result;
   }
 
   ///////////////////////////////////////////////////////

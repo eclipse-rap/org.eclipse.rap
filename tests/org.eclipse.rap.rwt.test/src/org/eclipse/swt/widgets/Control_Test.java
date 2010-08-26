@@ -424,7 +424,7 @@ public class Control_Test extends TestCase {
     assertNull( adapter.getUserForeground() );
     Color themeColor = control.getForeground();
     // enabled state:
-    control.setForeground( blue );    
+    control.setForeground( blue );
     assertEquals( blue, adapter.getUserForeground() );
     assertEquals( blue, control.getForeground() );
     // disabled directly
@@ -436,7 +436,7 @@ public class Control_Test extends TestCase {
     composite.setEnabled( false );
     assertEquals( null, adapter.getUserForeground() );
     assertEquals( blue, control.getForeground() );
-    // re-enabled 
+    // re-enabled
     composite.setEnabled( true );
     assertEquals( blue, adapter.getUserForeground() );
     assertEquals( blue, control.getForeground() );
@@ -445,7 +445,7 @@ public class Control_Test extends TestCase {
     assertEquals( null, adapter.getUserForeground() );
     assertEquals( themeColor, control.getForeground() );
   }
-  
+
   public void testVisible() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -679,6 +679,21 @@ public class Control_Test extends TestCase {
     assertEquals( "", log.toString() );
   }
 
+  // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=323570
+  public void testFocusOnBlockedShell() {
+    Display display = new Display();
+    Shell shell1 = new Shell( display, SWT.NONE );
+    Control button1 = new Button( shell1, SWT.PUSH );
+    Shell shell2 = new Shell( shell1, SWT.APPLICATION_MODAL );
+    shell1.open();
+    assertEquals( button1, display.getFocusControl() );
+    assertEquals( shell1, display.getActiveShell() );
+    shell2.open();
+    button1.setFocus();
+    assertEquals( shell2, display.getFocusControl() );
+    assertEquals( shell2, display.getActiveShell() );
+  }
+
   public void testToControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -824,10 +839,10 @@ public class Control_Test extends TestCase {
     assertNotNull( monitor );
     assertEquals( display.getPrimaryMonitor(), monitor );
   }
-  
-  
+
+
   public void testUntypedHelpListener() {
-    final Event[] untypedHelpEvent = { null }; 
+    final Event[] untypedHelpEvent = { null };
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Control control = new Shell( display );
@@ -839,14 +854,14 @@ public class Control_Test extends TestCase {
     control.notifyListeners( SWT.Help, new Event() );
     assertNotNull( untypedHelpEvent[ 0 ] );
   }
-  
+
   public void testRedraw() {
     Display display = new Display();
     Composite control = new Shell( display );
     control.redraw();
     assertTrue( RWTLifeCycle.needsFakeRedraw( control ) );
   }
-  
+
   public void testSetBackground() {
     Display display = new Display();
     Composite control = new Shell( display );
@@ -866,7 +881,7 @@ public class Control_Test extends TestCase {
       // Expected Exception
     }
   }
-  
+
   public void testSetBackgroundImage() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -889,7 +904,7 @@ public class Control_Test extends TestCase {
       }
     }
   }
-  
+
   public void testSetCursor() {
     Display display = new Display();
     Composite control = new Shell( display );
@@ -906,7 +921,7 @@ public class Control_Test extends TestCase {
       // Expected Exception
     }
   }
-  
+
   public void testSetFont() {
     Display display = new Display();
     Composite control = new Shell( display );
@@ -932,7 +947,7 @@ public class Control_Test extends TestCase {
       // Expected Exception
     }
   }
-  
+
   public void testSetForeground() {
     Display display = new Display();
     Composite control = new Shell( display );
