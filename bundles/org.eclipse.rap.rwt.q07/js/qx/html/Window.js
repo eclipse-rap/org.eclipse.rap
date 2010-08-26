@@ -42,7 +42,7 @@ qx.Class.define("qx.html.Window",
      */
     getInnerWidth  : qx.core.Variant.select("qx.client",
     {
-      "mshtml" : function(vWindow)
+      "mshtml|webkit" : function(vWindow)
       {
         if (vWindow.document.documentElement && vWindow.document.documentElement.clientWidth) {
           return vWindow.document.documentElement.clientWidth;
@@ -69,7 +69,7 @@ qx.Class.define("qx.html.Window",
      */
     getInnerHeight : qx.core.Variant.select("qx.client",
     {
-      "mshtml" : function(vWindow)
+      "mshtml|webkit" : function(vWindow)
       {
         if (vWindow.document.documentElement && vWindow.document.documentElement.clientHeight) {
           return vWindow.document.documentElement.clientHeight;

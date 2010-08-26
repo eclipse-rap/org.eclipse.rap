@@ -4,6 +4,7 @@
     <title>${title}</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name = "viewport" content = "initial-scale = 1.0, minimum-scale = 1.0" >
     ${headers}
   </head>
 
@@ -50,7 +51,10 @@
           width: 1024,
           height: 768
         };
-        if( document.layers || ( document.getElementById && !document.all ) ) {
+        if( window.Touch ) {
+          result.width = document.documentElement.clientWidth;
+          result.height = document.documentElement.clientHeight;        
+        } else if( document.layers || ( document.getElementById && !document.all ) ) {
           result.width = window.innerWidth;
           result.height = window.innerHeight;
         } else if( document.all ) {
