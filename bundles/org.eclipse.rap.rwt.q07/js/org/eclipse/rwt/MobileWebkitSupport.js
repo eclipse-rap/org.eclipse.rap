@@ -38,6 +38,12 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       return isMobile && engine === "webkit"; 
     },
     
+    _isZoomed : function() {
+      var vertical = window.orientation % 180 === 0;
+      var width = vertical ? screen.width : screen.height;
+      return window.innerWidth !== width;
+    },
+    
     _hideTabHighlight : function() {
       qx.html.StyleSheet.createElement( 
         " * { -webkit-tap-highlight-color: rgba(0,0,0,0); }"
@@ -120,6 +126,9 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
         
     _handleTouchMove : function( domEvent ) {
+      if( !this._isZoomed() ) {
+        domEvent.preventDefault();
+      }
       if( this._lastMouseDownPosition !== null ) {
         var oldPos = this._lastMouseDownPosition;
         var touch = this._getTouch( domEvent );

@@ -569,6 +569,44 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.destroy();
       this.resetMobileWebkitSupport();
     },
+    
+    testNotZoomedPreventDefaultOnSwipe : function() {
+      this.fakeZoom( false );
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var log = [];
+      var logger = function( event ) {
+        log.push( event.getDomEvent().originalEvent );
+      }
+      widget.addEventListener( "mouseout", logger );
+      var node = widget._getTargetNode();
+      this.touchAt( node, "touchstart", 0, 0  );
+      this.touchAt( node, "touchmove", 19, 19 );
+      assertTrue( log[ 0 ].prevented );
+      widget.destroy();
+      this.resetMobileWebkitSupport();
+    },
+    
+    testZoomedNotPreventDefaultOnSwipe : function() {
+      this.fakeZoom( true );
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var log = [];
+      var logger = function( event ) {
+        log.push( event.getDomEvent().originalEvent );
+      }
+      widget.addEventListener( "mouseout", logger );
+      var node = widget._getTargetNode();
+      this.touchAt( node, "touchstart", 0, 0  );
+      this.touchAt( node, "touchmove", 19, 19 );
+      assertFalse( log[ 0 ].prevented );
+      widget.destroy();
+      this.resetMobileWebkitSupport();
+    },
 
     /////////
     // Helper
@@ -712,6 +750,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     
     fakeFullscreen : function() {
       org.eclipse.rwt.MobileWebkitSupport._fullscreen = true;
+    },
+    
+    fakeZoom : function( value ) {
+      org.eclipse.rwt.MobileWebkitSupport._isZoomed = function(){
+        return value;
+      };
     },
     
     resetMobileWebkitSupport : function() {
