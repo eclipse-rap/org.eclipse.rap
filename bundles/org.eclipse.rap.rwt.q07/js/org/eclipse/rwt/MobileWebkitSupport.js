@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _fullscreen : window.navigator.standalone,
     
     init : function() {
-      if( this._isMobileWebkit() ) {
+      if( this.isMobileWebkit() ) {
         this._hideTabHighlight();
         this._bindListeners();
         this._registerListeners();
@@ -31,11 +31,11 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       } 
     },
  
-    _isMobileWebkit : function() {
+    isMobileWebkit : function() {
       var platform = qx.core.Client.getPlatform();
       var engine = qx.core.Client.getEngine();
       var isMobile = platform === "ipad" || platform === "iphone";
-      return isMobile && engine === "webkit"; 
+      return isMobile && engine === "webkit";
     },
     
     _isZoomed : function() {

@@ -106,7 +106,15 @@ qx.Class.define("qx.ui.embed.Iframe",
       } else {
         throw new Error("Could not find iframe which was loaded [B]!");
       }
+    },
+
+    _useAlternateLayouting : function() {
+      var platform = qx.core.Client.getPlatform();
+      var engine = qx.core.Client.getEngine();
+      var isMobile = platform === "ipad" || platform === "iphone";
+      return isMobile && engine === "webkit";      
     }
+
   },
 
 
@@ -440,8 +448,10 @@ qx.Class.define("qx.ui.embed.Iframe",
       frameEl.marginWidth = "0";
       frameEl.marginHeight = "0";
 
-      frameEl.width = "100%";
-      frameEl.height = "100%";
+      if( !qx.ui.embed.Iframe._useAlternateLayouting() ) {
+        frameEl.width = "100%";
+        frameEl.height = "100%";
+      }
 
       frameEl.hspace = "0";
       frameEl.vspace = "0";
@@ -688,7 +698,35 @@ qx.Class.define("qx.ui.embed.Iframe",
   },
 
 
-
+  defer : function( statics, members ) {
+    if( qx.ui.embed.Iframe._useAlternateLayouting() ) {
+      var originalRenderWidth = members._renderRuntimeWidth;
+      var originalRenderHeight = members._renderRuntimeHeight;
+      var originalResetWidth = members._resetRuntimeWidth;
+      var originalResetHeight = members._resetRuntimeHeight;
+      members._renderRuntimeWidth = function( value ) {
+        originalRenderWidth.call( this, value );
+        this._iframeNode.style.minWidth = value + "px";
+        this._iframeNode.style.maxWidth = value + "px";
+      };
+      var org = members._renderRuntimeHeight
+      members._renderRuntimeHeight = function( value ) {
+        originalRenderHeight.call( this, value );
+        this._iframeNode.style.minHeight = value + "px";
+        this._iframeNode.style.maxHeight = value + "px";
+      };
+      members._resetRuntimeWidth = function( value ) {
+        originalResetWidth.call( this, value );
+        this._iframeNode.style.minWidth = "";
+        this._iframeNode.style.maxWidth = "";
+      };
+      members._resetRuntimeHeight = function( value ) {
+        originalResetHeight.call( this, value );
+        this._iframeNode.style.minHeight = "";
+        this._iframeNode.style.maxHeight = "";
+      };
+    }
+  },
 
   /*
   *****************************************************************************

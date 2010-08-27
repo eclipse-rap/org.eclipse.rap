@@ -198,6 +198,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       assertTrue( headertext.indexOf( expected ) != -1 );
     },
     
+    // See Bug 323803 -  [ipad] Browser-widget/iframe broken  
+    testIFrameDimensionBug : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var iframe = new qx.ui.embed.Iframe();
+      iframe.addToDocument();
+      iframe.setWidth( 300 );
+      iframe.setHeight( 400 );
+      testUtil.flush();
+      var node = iframe.getIframeNode();
+      var widgetNode = iframe.getElement();
+      assertEquals( 300, parseInt( widgetNode.style.width ) );
+      assertEquals( 400, parseInt( widgetNode.style.height ) );
+      assertEquals( "", node.width );
+      assertEquals( "", node.height );
+      assertEquals( "", node.style.width );
+      assertEquals( "", node.style.height );
+      assertEquals( "300px", node.style.minWidth );
+      assertEquals( "400px", node.style.minHeight );
+      assertEquals( "300px", node.style.maxWidth );
+      assertEquals( "400px", node.style.maxHeight );
+    },
+
     /////////
     // Events
     
