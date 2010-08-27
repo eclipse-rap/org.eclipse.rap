@@ -892,7 +892,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_FAILED_EXEC - if an exception occurred while running an inter-thread message</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   // verbatim copy of SWT code
@@ -914,12 +914,12 @@ public class Display extends Device implements Adaptable {
    * Gets the synchronizer used by the display.
    *
    * @return the receiver's synchronizer
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public Synchronizer getSynchronizer() {
@@ -937,11 +937,11 @@ public class Display extends Device implements Adaptable {
    * </p>
    *
    * @return the receiver's sync-interface thread
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public Thread getSyncThread () {
@@ -1164,9 +1164,9 @@ public class Display extends Device implements Adaptable {
   }
 
   Object getDeviceLock() {
-    return deviceLock;  
+    return deviceLock;
   }
-  
+
   //////////////////////
   // Information methods
 
@@ -1426,7 +1426,7 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     return DOUBLE_CLICK_TIME;
   }
-  
+
   /**
    * Returns the control which the on-screen pointer is currently
    * over top of, or null if it is not currently over one of the
@@ -1438,7 +1438,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.3
    */
   public Control getCursorControl () {
@@ -2057,7 +2057,7 @@ public class Display extends Device implements Adaptable {
       }
     }
   }
-  
+
   private boolean canDisplayRefBeReplaced( final WeakReference displayRef ) {
     boolean result = false;
     if( displayRef == null ) {
@@ -2066,7 +2066,7 @@ public class Display extends Device implements Adaptable {
       Display display = ( Display )displayRef.get();
       if( display == null || display.thread == thread ) {
         result = true;
-      }      
+      }
     }
     return result;
   }
@@ -2176,7 +2176,7 @@ public class Display extends Device implements Adaptable {
     Control getControl() {
       return control;
     }
-    
+
     private void find() {
       Shell[] shells = display.getShells();
       for( int i = 0; control == null && i < shells.length; i++ ) {
@@ -2274,17 +2274,32 @@ public class Display extends Device implements Adaptable {
     public int getScrollBarSize() {
       return Display.this.scrollBarSize;
     }
-    
+
     public int getAsyncRunnablesCount() {
       return Display.this.synchronizer.getMessageCount();
     }
-    
+
     public void runAsyncRunnables() {
       Display.this.synchronizer.runAsyncMessages( true );
     }
-    
+
     public Object getDeviceLock() {
       return Display.this.deviceLock;
     }
+  }
+
+  /**
+   * Returns the single instance of the system tray or null when there is no
+   * system tray available for the platform.
+   *
+   * @return the system tray or <code>null</code>
+   * @exception SWTException <ul>
+   *              <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   *              </ul>
+   * @since 1.4
+   */
+  public Tray getSystemTray() {
+    checkDevice();
+    return null;
   }
 }

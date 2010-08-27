@@ -1287,6 +1287,11 @@ public class Display_Test extends TestCase {
     
   }
 
+  public void testGetSystemTray() {
+    Display display = new Display();
+    assertNull( display.getSystemTray() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
