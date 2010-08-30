@@ -149,6 +149,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       this._removeEventListeners();
       this._text = "";
       this._linksCount = 0;
+      this._currentFocusedLink = -1;
     },
 
     _applyHyperlinksStyleProperties : function() {
