@@ -935,7 +935,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.padding = tv.getCssBoxDimensions( "TreeColumn", "padding" );
       var border = new qx.ui.core.Border( 0 );
       if( !states.dummy ) {
-        border.setColorRight( tv.getCssColor( "Table-GridLine", "color" ) );
+        var verticalState = { "vertical" : true };
+        var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
+        var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
+        gridColor = gridColor == "undefined" ? "transparent" : gridColor;
+        border.setColorRight( gridColor );
         border.setWidthRight( 1 );
       }
       var borderBottom = tv.getCssBorder( "TreeColumn", "border-bottom" );

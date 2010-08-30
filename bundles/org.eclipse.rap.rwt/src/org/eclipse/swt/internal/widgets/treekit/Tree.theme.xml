@@ -92,6 +92,20 @@
       </element>
 
     </element>
+    
+    <element name="Tree-GridLine"
+        description="Grid lines in Tree controls">
+
+      <property name="color"
+          description="Grid line color when linesVisible is true" />
+
+      <state name="vertical"
+          description="Applies for vertical grid lines." />
+
+      <state name="horizontal"
+          description="Applies for horizontal grid lines." />
+
+    </element>
 
     <element name="Tree-Checkbox"
         description="Checkboxes in Tree controls">

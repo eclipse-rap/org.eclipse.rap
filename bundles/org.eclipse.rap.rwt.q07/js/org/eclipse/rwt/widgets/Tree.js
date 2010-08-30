@@ -1283,23 +1283,31 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _getHorizontalGridBorder : function() {
-      if( this._horzGridBorder === null ) {
-        var border = new qx.ui.core.Border( 0 );
-        border.setColor( "#d0d0d0" );
-        border.setWidthBottom( 1 );
-        this._horzGridBorder = border; // TODO [tb] : make static or themeable
+      if( this._horzGridBorder === null ) { 
+        this._horzGridBorder = this._getGridBorder( { "horizontal" : true } );
       }
       return this._horzGridBorder;
     },
     
     _getVerticalGridBorder : function() {
       if( this._vertGridBorder === null ) {
-        var border = new qx.ui.core.Border( 0 );
-        border.setColor( "#d0d0d0" );
-        border.setWidthRight( 1 );
-        this._vertGridBorder = border; // TODO [tb] : make static or themeable
+        this._vertGridBorder = this._getGridBorder( { "vertical" : true } );
       }
       return this._vertGridBorder;
+    },
+    
+    _getGridBorder : function( state ) {
+      var border = new qx.ui.core.Border( 0 );
+      var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
+      var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
+      tvGrid.dispose();
+      border.setColor( gridColor );
+      if( state.horizontal ) {
+        border.setWidthBottom( 1 );
+      } else if( state.vertical ) {
+        border.setWidthRight( 1 );
+      }
+      return border;
     },
     
     _layoutX : function() {
