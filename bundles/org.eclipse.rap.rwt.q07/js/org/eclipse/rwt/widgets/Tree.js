@@ -137,12 +137,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var preferredHeight = this._horzScrollBar.getPreferredBoxHeight();
       this._horzScrollBar.setVisibility( false );
       this._horzScrollBar.setLeft( 0 );
-      this._horzScrollBar.setMergeEvents( true );
+      this._horzScrollBar.setMergeEvents( false );
       this._horzScrollBar.setHeight( preferredHeight );
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
       this._vertScrollBar.setVisibility( false );
       this._vertScrollBar.setWidth( preferredWidth );
-      this._vertScrollBar.setMergeEvents( true );
+      this._vertScrollBar.setMergeEvents( false );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
     },
     
@@ -979,7 +979,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var delta = this._topItemIndex - oldTopItemIndex;
       var forwards = delta > 0;
       delta = Math.abs( delta );
-      if( delta >= this._rows.length || delta % 2 !== 0 ) {
+      if( delta >= this._rows.length ) {
         this._updateRowsEvenState();
         this._updateAllRows();
       } else {
