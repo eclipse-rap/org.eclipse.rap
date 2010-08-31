@@ -16,6 +16,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   construct : function() {
     this.base( arguments );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    // Note: This prevents a laoyut-glitch on the ipad:
+    this.setRestrictToPageOnOpen( false );
     // TODO [rh] HACK to set mode on Label that shows the caption, _captionTitle
     //      is a 'protected' field on class Window
     this._captionTitle.setMode( "html" );
