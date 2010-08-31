@@ -198,6 +198,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       assertTrue( headertext.indexOf( expected ) != -1 );
     },
     
+    //////////
+    // Widgets
+    
     // See Bug 323803 -  [ipad] Browser-widget/iframe broken  
     testIFrameDimensionBug : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -219,6 +222,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       assertEquals( "300px", node.style.maxWidth );
       assertEquals( "400px", node.style.maxHeight );
     },
+    
+    testTextFocus : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new org.eclipse.rwt.widgets.Text( false );
+      org.eclipse.swt.TextUtil.initialize( text );
+      text.addToDocument();
+      testUtil.flush();
+      assertFalse( text.isFocused() );
+      var node = text._inputElement;
+      this.touch( node, "touchstart" );
+      var over = false;
+      text.addEventListener( "mouseover", function(){
+        over = true;
+      } );
+      testUtil.fakeMouseEventDOM( node, "mouseover", 1, 0, 0, 0, true );
+      if( !over ) {
+        // the ipad will only send a mousedown if mouseover is not processed
+        testUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
+      }
+      assertTrue( text.isFocused() );
+    },
+    
 
     /////////
     // Events
@@ -629,7 +654,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.destroy();
       this.resetMobileWebkitSupport();
     },
-
+    
     /////////
     // Helper
     
@@ -703,6 +728,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       return result;
     },
     
+    // Some nodes "swallow" (non-fake) touch-events;
+    _isValidTouchTarget : function( node ) {
+      var tag = node.tagName;
+      return tag != "INPUT" && tag != "TEXTAREA";
+    },
+    
     touch : function( node, type, touchesNumberOrArray ) {
       var touches;
       if( touchesNumberOrArray instanceof Array ) {
@@ -719,7 +750,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       }
       var touchList = this.createTouchList( touches );
       var event = this.createTouchEvent( type, touchList );
-      node.dispatchEvent( event );
+      if( this._isValidTouchTarget( node ) ) {
+        node.dispatchEvent( event );
+      }
     },
     
     gesture : function( node, type ) {
@@ -767,7 +800,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
         "target" : node,
         "type" : type
       };
-      org.eclipse.rwt.MobileWebkitSupport.__onTouchEvent( event );
+      if( this._isValidTouchTarget( node ) ) {
+        org.eclipse.rwt.MobileWebkitSupport.__onTouchEvent( event );
+      }
     },
     
     fakeFullscreen : function() {
