@@ -96,6 +96,17 @@
 
     </element>
     
+    <element name="Tree-Cell"
+        description="A single cell in a multi-column Tree">
+
+      <property name="padding"
+          description="Defines the padding (i.e. the inner distance between border and content) for a tree cell." />
+
+      <property name="spacing"
+          description="Defines the spacing between image and text within a tree cell." />
+
+    </element>
+    
     <element name="Tree-GridLine"
         description="Grid lines in Tree controls">
 
