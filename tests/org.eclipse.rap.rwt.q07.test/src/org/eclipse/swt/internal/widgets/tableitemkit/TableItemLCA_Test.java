@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import java.io.IOException;
@@ -181,6 +180,23 @@ public class TableItemLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( item2 );
     assertSame( image, adapter.getPreserved( Props.IMAGE ) );
     Fixture.clearPreserved();
+    display.dispose();
+  }
+
+  public void testFontIsEffectivelyPreserved() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.BORDER );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( item );
+    Fixture.fakeResponseWriter();
+    item.setFont( new Font( display, "Times", 12, SWT.BOLD ) );
+    TableItemLCA lca = new TableItemLCA();
+    lca.preserveValues( item );
+    lca.renderChanges( item );
+    String expected = "w.setFont(";
+    String markup = Fixture.getAllMarkup();
+    assertFalse( markup.indexOf( expected ) != -1 );
     display.dispose();
   }
 
