@@ -22,16 +22,20 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _mouseEnabled : true,
     _fullscreen : window.navigator.standalone,
     
-    _allowedMouseTargets : {
-      "INPUT" : true,
-      "TEXTAREA" : true
+    _allowedMouseEvents : {
+      "INPUT" : {
+        "mousedown" : true,
+        "mouseup" : true
+      },
+      "TEXTAREA" : {
+        "mousedown" : true,
+        "mouseup" : true
+      },
+      "*" : {
+        "mousewheel" : true
+      }
     },
-    
-    _allowedMouseEvents: {
-      "mousedown" : true,
-      "mouseup" : true
-    },
-    
+
     init : function() {
       if( this.isMobileWebkit() ) {
         this._hideTabHighlight();
@@ -86,10 +90,14 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
     
     _filterMouseEvents : function( event ) {
-      var isFake = typeof event.originalEvent === "object";
-      var isValidTarget = this._allowedMouseTargets[ event.target.tagName ];
-      var isValidEvent = this._allowedMouseEvents[ event.type ];
-      var result = isFake || ( isValidTarget && isValidEvent );
+      var allowedMap = this._allowedMouseEvents;
+      var result = typeof event.originalEvent === "object";
+      if( !result ) {
+        result = allowedMap[ "*" ][ event.type ] === true;
+      } 
+      if( !result && typeof allowedMap[ event.target.tagName ] === "object" ) {
+        result = allowedMap[ event.target.tagName ][ event.type ] === true;
+      } 
       if( !result ) {
         event.preventDefault();
         event.returnValue = false;

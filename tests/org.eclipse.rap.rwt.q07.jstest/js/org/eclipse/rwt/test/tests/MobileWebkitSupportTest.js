@@ -187,10 +187,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       assertEquals( expected, log );
       document.body.removeChild( div );
     },
-    
+
     //////////
     // Visuals
-    
+
     testTabHighlightHidden : function() {
       var head = document.childNodes[ 0 ].childNodes[ 0 ];
       var headertext = head.innerHTML;
@@ -258,6 +258,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var node = widget._getTargetNode();
       testUtil.fakeMouseEventDOM( node, "mousedown", 1, 0, 0, 0, true );
       assertEquals( 0, counter );
+      widget.destroy();
+      this.resetMobileWebkitSupport();
+    },
+    
+    testAllowNativeMouseWheelEvents : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var counter = 0;
+      widget.addEventListener( "mousewheel", function(){ counter++; } );
+      var node = widget._getTargetNode();
+      testUtil.fakeMouseEventDOM( node, "mousewheel", 1, 0, 0, 0, true );
+      assertEquals( 1, counter );
       widget.destroy();
       this.resetMobileWebkitSupport();
     },
