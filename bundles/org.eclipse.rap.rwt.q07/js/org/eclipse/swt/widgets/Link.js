@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -149,6 +149,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       this._removeEventListeners();
       this._text = "";
       this._linksCount = 0;
+      this._currentFocusedLink = -1;
     },
     
     _applyHyperlinksStyleProperties : function() {
@@ -304,14 +305,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       var linkElement = this.getElement();
       if( linkElement ) {
         var hyperlinks = linkElement.getElementsByTagName( "span" );
-        if( this._currentFocusedLink >= 0 ) {
+        if( this._currentFocusedLink >= 0 && this._currentFocusedLink < hyperlinks.length ) {
           hyperlinks[ this._currentFocusedLink ].blur();
           if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
             hyperlinks[ this._currentFocusedLink ].style.outline = "none";
           }
         }
         this._currentFocusedLink = id;
-        if( this._currentFocusedLink >= 0 ) {
+        if( this._currentFocusedLink >= 0 && this._currentFocusedLink < hyperlinks.length ) {
           hyperlinks[ this._currentFocusedLink ].focus();
           if( qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
             hyperlinks[ this._currentFocusedLink ].style.outline = "1px dotted";
