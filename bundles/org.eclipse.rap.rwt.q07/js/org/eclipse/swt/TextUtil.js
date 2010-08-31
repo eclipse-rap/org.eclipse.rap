@@ -35,7 +35,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
                                org.eclipse.swt.TextUtil._onAppearInitialize );
       }
       text.setLiveUpdate( true );
-      text.setSpellCheck( false );
       // [if] Prevent selection of all text on tab focus
       text._ontabfocus = function() {
         text.setSelectionLength( 0 );
