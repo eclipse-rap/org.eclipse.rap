@@ -75,6 +75,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       return result;
     },
+    
+    updateEvenState : function( index ) {
+      this._setState( "even", index % 2 == 0 );
+    },
 
     ////////////
     // internals

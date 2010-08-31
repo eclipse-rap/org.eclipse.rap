@@ -137,12 +137,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var preferredHeight = this._horzScrollBar.getPreferredBoxHeight();
       this._horzScrollBar.setVisibility( false );
       this._horzScrollBar.setLeft( 0 );
-      this._horzScrollBar.setMergeEvents( false );
+      this._horzScrollBar.setMergeEvents( true );
       this._horzScrollBar.setHeight( preferredHeight );
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
       this._vertScrollBar.setVisibility( false );
       this._vertScrollBar.setWidth( preferredWidth );
-      this._vertScrollBar.setMergeEvents( false );
+      this._vertScrollBar.setMergeEvents( true );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
     },
     
@@ -545,10 +545,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._topItemIndex = Math.ceil( scrollTop / this._itemHeight );
       this._updateTopItem( oldIndex );
       if( this._inServerResponse() ) {
+        this._updateRowsEvenState();
         this._scheduleUpdate();
       } else {
         this._sendTopItemIndexChange();
         this._scrollContentVertical( oldIndex );
+      }
+    },
+    
+    _updateRowsEvenState: function() {
+      for( var i = 0; i < this._rows.length; i++ ) {
+        this._rows[ i ].updateEvenState( this._topItemIndex + i );
       }
     },
 
@@ -845,6 +852,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._rows[ this._rows.length - 1 ].destroy();
       }
       this._renderGridHorizontal();
+      this._updateRowsEvenState();
     },
 
     _updateAllRows : function() {
@@ -971,13 +979,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var delta = this._topItemIndex - oldTopItemIndex;
       var forwards = delta > 0;
       delta = Math.abs( delta );
-      if( delta >= this._rows.length ) { 
+      if( delta >= this._rows.length || delta % 2 !== 0 ) {
+        this._updateRowsEvenState();
         this._updateAllRows();
       } else {
         var numberOfShiftingRows = this._rows.length - delta;
         var updateFromRow = forwards ? numberOfShiftingRows : 0;
         var newFirstRow = forwards ? delta : numberOfShiftingRows;
         this._switchRows( newFirstRow );
+        this._updateRowsEvenState();
         this._updateRows( updateFromRow, delta );
       }
     },

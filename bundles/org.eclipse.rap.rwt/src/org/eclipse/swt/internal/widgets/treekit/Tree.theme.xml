@@ -45,6 +45,9 @@
       <state name="unfocused"
           description="When the focus is not on the tree" />
 
+      <state name="even"
+          description="Applies when the tree item has an even visible index" />
+          
       <state name="disabled"
           description="Applies to the items of a disabled tree." />
           

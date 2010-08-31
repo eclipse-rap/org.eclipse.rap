@@ -39,7 +39,7 @@ List, Tree, Table, Text, Spinner, Combo, DateTime {
   background-color: #fff1a1;
 }
 
-List-Item, TableItem {
+List-Item, TableItem, TreeItem {
   /* let List/Table colors shine through */
   color: inherit;
   background-color: transparent;
@@ -387,13 +387,13 @@ Table-Cell {
   padding: 4px;
 }
 
-Table-GridLine {
+Table-GridLine, Tree-GridLine {
   color: #aca899;
 }
 
 /* Alternating row colors */
 
-List-Item:even, TableItem:even {
+List-Item:even, TableItem:even, TreeItem:even {
   background-color: #ebe3b3;
 }
 
