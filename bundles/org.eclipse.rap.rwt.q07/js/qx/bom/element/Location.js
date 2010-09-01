@@ -95,12 +95,13 @@ qx.Class.define("qx.bom.element.Location",
         // Find window
         var win = qx.dom.Node.getWindow(elem);
 
-        // Reduce by viewport scrolling.
-        // Hint: getBoundingClientRect returns the location of the
-        // element in relation to the viewport which includes
-        // the scrolling
-        left -= qx.bom.Viewport.getScrollLeft(win);
-        top -= qx.bom.Viewport.getScrollTop(win);
+        // Reduce by viewport scrolling. getBoundingClientRect returns the 
+        // location of the element in relation to the viewport which includes
+        // its scrolling, except in mobile webkit 
+        if( !org.eclipse.rwt.MobileWebkitSupport.isMobileWebkit() ) {
+          left -= qx.bom.Viewport.getScrollLeft(win);
+          top -= qx.bom.Viewport.getScrollTop(win);
+        }
       }
       else
       {
