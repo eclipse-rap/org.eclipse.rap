@@ -123,6 +123,9 @@
 
     <element name="Tree-Checkbox"
         description="Checkboxes in Tree controls">
+        
+      <property name="width"
+          description="Width of check boxes" />
 
       <property name="background-image">
         <description>

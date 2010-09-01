@@ -17,6 +17,10 @@ import org.eclipse.swt.widgets.Control;
 
 public final class TreeThemeAdapter extends ControlThemeAdapter {
 
+  public int getCheckBoxWidth( final Control control ) {
+    return getCssDimension( "Tree-Checkbox", "width", control );
+  }
+
   public Point getCheckBoxImageSize( final Control control ) {
     return getCssImageDimension( "Tree-Checkbox", "background-image", control );
   }

@@ -95,7 +95,7 @@ public class Tree extends Composite {
   private static final int MIN_ITEM_HEIGHT = 16;
 
   private static final Rectangle TEXT_MARGIN = new Rectangle( 3, 0, 8, 0 );
-  private static final Rectangle CHECKBOX_MARGIN = new Rectangle( 0, 0, 2, 0 );
+  private static final Rectangle CHECKBOX_MARGIN = new Rectangle( 0, 0, 0, 0 );
 
   /* package */final ItemHolder itemHolder;
   /* package */final ItemHolder columnHolder;
@@ -1862,7 +1862,10 @@ public class Tree extends Composite {
 
   private Point getCheckImageOuterSize() {
     Point result = getCheckImageSize();
-    result.x += CHECKBOX_MARGIN.width;
+    TreeThemeAdapter themeAdapter
+      = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
+    int width = themeAdapter.getCheckBoxWidth( this );
+    result.x = Math.max( result.x, width ) + CHECKBOX_MARGIN.width;
     result.y += CHECKBOX_MARGIN.height;
     return result;
   }
