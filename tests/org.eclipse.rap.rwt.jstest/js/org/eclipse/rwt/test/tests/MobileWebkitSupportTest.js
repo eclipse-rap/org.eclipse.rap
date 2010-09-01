@@ -793,8 +793,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       // reports all touches to have ended, even if only one of several ended.
     },
     
-    // This is needed since the fields of "real" touches can't be overwritten.
-    // Functionality of this fake is limited, therefore use only when needed.
+    // TODO [tb] : use "real" touch-objects as ducmented in the 
+    // Safari DOM Additions Reference 
     touchAt : function( node, type, x, y ) {
       var touch = {
         "target" : node,
