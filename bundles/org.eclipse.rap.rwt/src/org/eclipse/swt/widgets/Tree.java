@@ -95,7 +95,6 @@ public class Tree extends Composite {
   private static final int MIN_ITEM_HEIGHT = 16;
 
   private static final Rectangle TEXT_MARGIN = new Rectangle( 3, 0, 8, 0 );
-  private static final Rectangle CHECKBOX_MARGIN = new Rectangle( 0, 0, 0, 0 );
 
   /* package */final ItemHolder itemHolder;
   /* package */final ItemHolder columnHolder;
@@ -115,6 +114,7 @@ public class Tree extends Composite {
   private Point itemImageSize;
   private Rectangle bufferedCellPadding = null;
   private int bufferedCellSpacing = -1;
+  private Rectangle bufferedCheckBoxMargin = null;
 
   private final class CompositeItemHolder implements IItemHolderAdapter {
 
@@ -210,7 +210,7 @@ public class Tree extends Composite {
     }
 
     public int getCheckLeft() {
-      return CHECKBOX_MARGIN.x;
+      return getCheckBoxMargin().x;
     }
 
     public Rectangle getTextMargin() {
@@ -1862,12 +1862,19 @@ public class Tree extends Composite {
 
   private Point getCheckImageOuterSize() {
     Point result = getCheckImageSize();
-    TreeThemeAdapter themeAdapter
-      = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
-    int width = themeAdapter.getCheckBoxWidth( this );
-    result.x = Math.max( result.x, width ) + CHECKBOX_MARGIN.width;
-    result.y += CHECKBOX_MARGIN.height;
+    Rectangle margin = getCheckBoxMargin();
+    result.x += margin.width;
+    result.y += margin.height;
     return result;
+  }
+
+  private Rectangle getCheckBoxMargin() {
+    if( bufferedCheckBoxMargin == null ) {
+      TreeThemeAdapter themeAdapter
+        = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
+      bufferedCheckBoxMargin = themeAdapter.getCheckBoxMargin( this );
+    }
+    return bufferedCheckBoxMargin;
   }
 
   private int getIndentionWidth() {

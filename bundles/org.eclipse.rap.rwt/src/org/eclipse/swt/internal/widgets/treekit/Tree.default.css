@@ -58,7 +58,7 @@ Tree-GridLine {
 }
 
 Tree-Checkbox {
-  width: 15px;
+  margin: 0px 2px 0px 0px;
   background-image: url( resource/widget/rap/button/check-unselected.png );
 }
 
