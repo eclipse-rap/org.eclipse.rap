@@ -122,6 +122,27 @@ public class TreeTab extends ExampleTab {
       }
     } );
     cbAddMouseListener.setSelection( addMouseListener );
+    Button getTopItemButton
+      = createPropertyButton( "Query topItem", SWT.PUSH );
+    getTopItemButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        TreeItem item = tree.getTopItem();
+        String message = "Current topItem: " + item.toString();
+        MessageDialog.openInformation( tree.getShell(),
+                                       "Information",
+                                       message );
+      }
+    } );
+    Button setTopItemButton
+      = createPropertyButton( "Set selection as topItem", SWT.PUSH );
+    setTopItemButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        TreeItem[] item = tree.getSelection();
+        if( item.length > 0 ) {
+          tree.setTopItem( item[ 0 ] );
+        }
+      }
+    } );
   }
 
   protected void createExampleControls( final Composite parent ) {

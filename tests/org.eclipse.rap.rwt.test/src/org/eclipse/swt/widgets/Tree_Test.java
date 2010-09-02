@@ -489,7 +489,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, adapter.getTopItemIndex() );
     display.dispose();
   }
-  
+
   public void testShowItemFlat() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -662,7 +662,7 @@ public class Tree_Test extends TestCase {
     final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
     final List log = new ArrayList();
     tree.addControlListener( new ControlAdapter() {
-      
+
       public void controlResized( ControlEvent event ) {
         log.add( event );
       }
@@ -834,7 +834,7 @@ public class Tree_Test extends TestCase {
     assertTrue( tree.hasHScrollBar() );
     assertTrue( tree.hasVScrollBar() );
   }
-  
+
   public void testComputeSizeWithColumns() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -916,7 +916,7 @@ public class Tree_Test extends TestCase {
     expected = new Point( 106, 80 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
-  
+
   public void testShowColumn() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -961,8 +961,8 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, adapter.getScrollLeft() );
     tree.showColumn( tree.getColumn( 5 ) );
     assertEquals( 116, adapter.getScrollLeft() );
-  }  
-  
+  }
+
   //////////
   // VIRTUAL
 
@@ -978,7 +978,7 @@ public class Tree_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testVirtualInitalSetDataEvents() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1003,12 +1003,12 @@ public class Tree_Test extends TestCase {
     tree.setItemCount( 20 );
     assertEquals( 0, log.size() );
     // TODO [tb] : doesn't work if called before setItemCount. Use fakeRedraw?
-    tree.setSize( 100, 160 ); 
+    tree.setSize( 100, 160 );
     assertTrue( log.contains( tree.getItem( 0 ) ) );
     assertTrue( log.contains( tree.getItem( 1 ) ) );
     assertFalse( log.contains( tree.getItem( 19 ) ) );
   }
-  
+
   public void testVirtualNoSetDataEventForCollapsedItems() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1023,11 +1023,11 @@ public class Tree_Test extends TestCase {
     tree.setItemCount( 1 );
     TreeItem item = tree.getItem( 0 );
     item.setItemCount( 10 );
-    tree.setSize( 100, 160 ); 
+    tree.setSize( 100, 160 );
     assertFalse( item.getItems()[ 0 ].isCached() );
     assertEquals( 1, log.size() );
   }
-  
+
   public void testVirtualClear() {
     Display display = new Display();
     final Shell shell = new Shell( display );
@@ -1062,7 +1062,7 @@ public class Tree_Test extends TestCase {
     assertEquals( "node 0 - 0", root.getItem( 0 ).getText() );
     assertEquals( "node 0 - 1", root.getItem( 1 ).getText() );
   }
-  
+
   public void testVirtualComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1105,7 +1105,7 @@ public class Tree_Test extends TestCase {
     expected = new Point( 320, 320 );
     assertEquals( expected, tree.computeSize( 300, 300 ) );
   }
-  
+
   public void testVirtualScrollThrowsSetData() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final LoggingListener log = new LoggingListener();
@@ -1121,7 +1121,7 @@ public class Tree_Test extends TestCase {
     assertSame( tree.getItem( 30 ), log.get( 0 ).item );
     assertSame( tree.getItem( 31 ), log.get( 1 ).item );
   }
-  
+
   public void testVirtualShowItemThrowsSetData() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final LoggingListener log = new LoggingListener();
@@ -1136,7 +1136,36 @@ public class Tree_Test extends TestCase {
     assertTrue( log.getItems().contains( tree.getItem( 30 ) ) );
   }
 
-  
+  public void testTopItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 300, 85 );
+    TreeItem[] items = new TreeItem[ 60 ];
+    int counter = 0;
+    for( int i = 0; i < 10; i++ ) {
+      TreeItem item = new TreeItem( tree, SWT.NONE );
+      items[ counter++ ] = item;
+      for( int j = 0; j < 5; j++ ) {
+        TreeItem subitem = new TreeItem( item, SWT.NONE );
+        items[ counter++ ] = subitem;
+      }
+    }
+    assertEquals( items[ 0 ], tree.getTopItem() );
+    tree.setTopItem( items[ 4 ] );
+    assertEquals( items[ 4 ], tree.getTopItem() );
+    assertTrue( items[ 0 ].getExpanded() );
+    tree.setTopItem( items[ 20 ] );
+    assertEquals( items[ 20 ], tree.getTopItem() );
+    assertTrue( items[ 18 ].getExpanded() );
+    tree.setTopItem( items[ 1 ] );
+    assertEquals( items[ 1 ], tree.getTopItem() );
+    tree.setTopItem( items[ 58 ] );
+    assertEquals( items[ 55 ], tree.getTopItem() );
+    assertTrue( items[ 54 ].getExpanded() );
+  }
+
+
   /////////
   // HELPER
 

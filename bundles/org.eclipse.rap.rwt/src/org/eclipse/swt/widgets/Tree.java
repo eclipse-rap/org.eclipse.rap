@@ -18,7 +18,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
@@ -505,12 +504,84 @@ public class Tree extends Composite {
     if( item.flatIndex <= topItemIndex ) {
       setTopItemIndex( item.flatIndex );
     } else {
-      int rows
-        = ( int )Math.floor( getClientArea().height / this.getItemHeight() );
+      int itemsAreaHeight = getClientArea().height - getHeaderHeight();
+      int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
       if( item.flatIndex >= topItemIndex + rows ) {
         setTopItemIndex( item.flatIndex - rows + 1 );
       }
     }
+  }
+
+  /**
+   * Sets the item which is currently at the top of the receiver.
+   * This item can change when items are expanded, collapsed, scrolled
+   * or new items are added or removed.
+   *
+   * @param item the item to be shown
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the item is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the item has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Tree#getTopItem()
+   *
+   * @since 1.4
+   */
+  public void setTopItem( final TreeItem item ) {
+    checkWidget();
+    if( item == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( item.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( item.getParent() == this ) {
+      TreeItem parent = item.getParentItem();
+      while( parent != null ) {
+        parent.setExpanded( true );
+        parent = parent.getParentItem();
+      }
+      int visibleItemsCount = collectVisibleItems( null ).size();
+      int itemsAreaHeight = getClientArea().height - getHeaderHeight();
+      int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
+      if(    item.flatIndex <= topItemIndex
+          || item.flatIndex + rows <= visibleItemsCount )
+      {
+        setTopItemIndex( item.flatIndex );
+      } else {
+        int index = Math.max( 0, visibleItemsCount - rows );
+        setTopItemIndex( index );
+      }
+    }
+  }
+
+  /**
+   * Returns the item which is currently at the top of the receiver.
+   * This item can change when items are expanded, collapsed, scrolled
+   * or new items are added or removed.
+   *
+   * @return the item at the top of the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.4
+   */
+  public TreeItem getTopItem() {
+    checkWidget();
+    TreeItem result = null;
+    if( getItemCount() > 0 ) {
+      List visibleItems = collectVisibleItems( null );
+      result = ( TreeItem )visibleItems.get( topItemIndex );
+    }
+    return result;
   }
 
   private void setTopItemIndex( final int index ) {
