@@ -121,7 +121,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       var type = domEvent.type;
       if( this._fullscreen ) {
         // Zoom is disabled in Fullscreen (by webkit), therefore
-        // swipe or pinch gestures can be disabled completely:
+        // wipe or pinch gestures can be disabled completely:
         domEvent.preventDefault();
       }
       if( this._mouseEnabled ) {
@@ -164,7 +164,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         
     _handleTouchMove : function( domEvent ) {
       if( !this._isZoomed() ) {
-        // Prevents swipe/scrolling when it's not useful:
+        // Prevents wipe/scrolling when it's not useful:
         domEvent.preventDefault();
       }
       if( this._lastMouseDownPosition !== null ) {
