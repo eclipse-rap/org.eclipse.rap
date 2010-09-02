@@ -21,6 +21,8 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _lastMouseClickTime : null,
     _mouseEnabled : true,
     _fullscreen : window.navigator.standalone,
+    _touchListener : null,
+    _gestureListener : null,
     
     _allowedMouseEvents : {
       "INPUT" : {
@@ -50,6 +52,16 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       var engine = qx.core.Client.getEngine();
       var isMobile = platform === "ipad" || platform === "iphone";
       return isMobile && engine === "webkit";
+    },
+
+    // Experimental API for custom-widget
+    setTouchListener : function( func, context ) {
+      this._touchListener = [ func, context ];
+    },
+    
+    // Experimental API for custom-widget
+    setGestureListener : function( func, context ) {
+      this._gestureListener = [ func, context ];
     },
     
     _isZoomed : function() {
@@ -123,6 +135,10 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
           case "touchmove":
             this._handleTouchMove( domEvent );
           break;
+        }
+      } else {
+        if( this._touchListener !== null ) {
+          this._touchListener[ 0 ].call( this._touchListener[ 1 ], domEvent );
         }
       }
     },
@@ -200,6 +216,9 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
 
     _onGestureEvent : function( domEvent ) {
       var type = domEvent.type;
+      if( this._gestureListener !== null ) {
+        this._gestureListener[ 0 ].call( this._gestureListener[ 1 ], domEvent );
+      }
       switch( type ) {
         case "gesturestart":
           this._disableMouse( domEvent );
