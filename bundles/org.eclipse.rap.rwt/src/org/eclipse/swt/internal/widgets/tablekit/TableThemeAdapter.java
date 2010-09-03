@@ -19,6 +19,10 @@ import org.eclipse.swt.widgets.Control;
 
 public final class TableThemeAdapter extends ControlThemeAdapter {
 
+  public Rectangle getCheckBoxMargin( final Control control ) {
+    return getCssBoxDimensions( "Table-Checkbox", "margin", control );
+  }
+
   public int getCheckBoxWidth( final Control control ) {
     return getCssDimension( "Table-Checkbox", "width", control );
   }

@@ -53,7 +53,12 @@ Table-GridLine {
 }
 
 Table-Checkbox {
+  /* 
+  For backward compatibility we have to keep the width property.
+  Deprecated, use "margin" instead.
+  */
   width: 21px;
+  margin: 0px;
   background-image: url( resource/widget/rap/button/check-unselected.png );
 }
 

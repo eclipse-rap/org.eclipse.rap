@@ -1078,7 +1078,7 @@ public class TableItem extends Item {
   }
 
   final int getCheckWidth( final int index ) {
-    return parent.getCheckWidth( index );
+    return parent.getCheckSize( index ).x;
   }
 
   private int getImageWidth( final int index ) {

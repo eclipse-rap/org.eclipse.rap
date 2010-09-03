@@ -125,7 +125,10 @@
         description="Checkboxes in Table controls">
 
       <property name="width"
-          description="Width of check boxes" />
+          description="Width of check boxes (deprecated, use margin instead)" />
+          
+      <property name="margin"
+          description="Space around the check boxes" />
 
       <property name="background-image">
         <description>

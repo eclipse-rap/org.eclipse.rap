@@ -260,7 +260,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       themeable : true
     },
     
-    checkImageHeight : {
+    checkHeight : {
       check : "Integer",
       init : 13,
       themeable : true
@@ -1353,7 +1353,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _updateRowTop : function() {
-      var checkBoxOffset = this._itemHeight / 2 - this.getCheckImageHeight() / 2;
+      var checkBoxOffset = this._itemHeight / 2 - this.getCheckHeight() / 2;
       var top = 0;
       for( var i = 0; i < this._rows.length; i++ ) {
         if( this._checkBoxes !== null ) {
@@ -1366,16 +1366,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _updateRowBounds : function() {
       var left = 0 - this._horzScrollBar.getValue();
-      var checkImageHeight = 0;
-      var checkBoxWidth = 0;
+      var checkHeight = 0;
+      var checkWidth = 0;
       if( this._checkBoxes !== null ) {
-        checkBoxWidth = this.getCheckWidth();
-        checkImageHeight = this.getCheckImageHeight();
+        checkWidth = this.getCheckWidth();
+        checkHeight = this.getCheckHeight();
       }
       var width;
       if( this.getColumnCount() === 0 ) {
         // see bug 290565 and bug 290879
-        width = this.getDefaultColumnWidth() + checkBoxWidth;
+        width = this.getDefaultColumnWidth() + checkWidth;
       } else {
         width = this.getColumnsWidth();
       }
@@ -1386,8 +1386,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if( this._checkBoxes !== null ) {
           var checkBox = this._checkBoxes[ i ];
           checkBox.setLeft( left );
-          checkBox.setWidth( checkBoxWidth );
-          checkBox.setHeight( checkImageHeight );
+          checkBox.setWidth( checkWidth );
+          checkBox.setHeight( checkHeight );
         }
         var row = this._rows[ i ];
         row.setLeft( left );

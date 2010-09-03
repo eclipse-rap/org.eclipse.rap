@@ -1238,13 +1238,19 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "table" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var checkWidth = tv.getCssDimension( "Table-Checkbox", "width" );
+      var checkImage = tv.getCssSizedImage( "Table-Checkbox", "background-image" );
+      var checkMargin =  tv.getCssBoxDimensions( "Table-Checkbox", "margin" );
+      if( checkMargin.join() !== "0,0,0,0" ) {
+        checkWidth = checkImage[ 1 ] + checkMargin[ 1 ] + checkMargin[ 3 ];
+      }
+      var checkHeight = checkImage[ 2 ] + checkMargin[ 0 ] + checkMargin[ 2 ];
       return {
         textColor : tv.getCssColor( "Table", "color" ),
         font : tv.getCssFont( "*", "font" ),
         border : tv.getCssBorder( "*", "border" ),
-        checkWidth : tv.getCssDimension( "Table-Checkbox", "width" ),
-        checkImageHeight : tv.getCssSizedImage( "Table-Checkbox", 
-                                                "background-image" )[2]
+        checkWidth : checkWidth,
+        checkHeight : checkHeight
       };
     }
   },
@@ -1350,7 +1356,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var checkWidth = tv.getCssDimension( "Table-Checkbox", "width" );
       var checkImage = tv.getCssSizedImage( "Table-Checkbox", "background-image" );
-      result.paddingLeft = Math.max( 0, ( checkWidth - checkImage[ 1 ] ) / 2 );
+      var checkMargin =  tv.getCssBoxDimensions( "Table-Checkbox", "margin" );
+      if( checkMargin.join() !== "0,0,0,0" ) {
+        result.paddingLeft = checkMargin[ 3 ];
+      } else {
+        result.paddingLeft = Math.max( 0, ( checkWidth - checkImage[ 1 ] ) / 2 );
+      }
+      result.paddingTop = checkMargin[ 0 ]
       result.source = checkImage[ 0 ];
       return result;
     }
