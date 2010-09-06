@@ -593,8 +593,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       target.destroy();
       testUtil.flush();
     },
- 
-    
+
     testMouseupOutOfDocument : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -1278,6 +1277,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
+      dndHandler.__dragCache = null;
       var leftButton = qx.event.type.MouseEvent.buttons.left;
       // request uses SWT-like event-names: 
       var dragStart = "org.eclipse.swt.dnd.dragStart";

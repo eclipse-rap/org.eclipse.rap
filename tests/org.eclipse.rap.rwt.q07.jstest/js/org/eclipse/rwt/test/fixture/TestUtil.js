@@ -122,6 +122,22 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     /////////////////////////////
     // Event handling - DOM layer
     
+    _createFakeDomEvent : function( target, type, mod ) {
+      var result = {
+        "preventDefault" : function(){},
+        "stopPropagation" : function(){},
+        "pageX" : 0,
+        "pageY" : 0,
+        "type" : type,
+        "target" : target,
+        "relatedTarget" : null,
+        "ctrlKey" : ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0,
+        "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
+        "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0
+      };
+      return result;       
+    },
+    
     clickDOM : function( node ) {
       var left = qx.event.type.MouseEvent.buttons.left;
       this.fakeMouseEventDOM( node, "mousedown", left );
@@ -146,63 +162,62 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     },
     
     hoverFromTo : function( fromNode, toNode ) {
-      var outEvent = this.createfakeMouseEventDOM( "mouseout", 0 );
-      outEvent.target = fromNode;
+      var outEvent = this._createFakeMouseEventDOM( fromNode, "mouseout", 0 );
       outEvent.relatedTarget = toNode;
       this.fireFakeMouseEventDOM( outEvent );
-      var overEvent = this.createfakeMouseEventDOM( "mouseover", 0 );
-      overEvent.target = toNode;
+      var overEvent = this._createFakeMouseEventDOM( toNode, "mouseover", 0 );
       overEvent.relatedTarget = fromNode;
       this.fireFakeMouseEventDOM( overEvent );
     },
       
-    fakeMouseEventDOM : function( node, type, button, left, top, mod, filter ) {
-      if( typeof node == "undefined" ) {
-        throw( "Error in fakeMouseEventDOM: node not defined! " );
+    fakeMouseEventDOM : function( target, type, button, left, top, mod, filter ) {
+      if( typeof target === "undefined" ) {
+        throw( "Error in fakeMouseEventDOM: target not defined! " );
       }
       var domEvent 
-        = this.createfakeMouseEventDOM( type, button, left, top, mod, filter );
-      domEvent.target = node;
-      this.fireFakeMouseEventDOM( domEvent);
+        = this._createFakeMouseEventDOM( target, type, button, left, top, mod );
+      if( filter === true && this.isMobileWebkit() ) {
+        delete domEvent.originalEvent;
+      }
+      this.fireFakeMouseEventDOM( domEvent );
     },
 
-    createfakeMouseEventDOM : function( type, button, left, top, mod, filter ) {
-      if( typeof left == "undefined" ) {
+    _createFakeMouseEventDOM : function( target, type, button, left, top, mod ) 
+    {
+      if( typeof left === "undefined" ) {
         left = 0;
       }
-      if( typeof top == "undefined" ) {
+      if( typeof button === "undefined" ) {
+        button = qx.event.type.MouseEvent.buttons.left;
+      }
+      if( typeof top === "undefined" ) {
         top = 0;
       }
-      if( typeof mod == "undefined" ) {
+      if( typeof mod === "undefined" ) {
         mod = 0;
       }
-      if( typeof filter == "undefined" ) {
+      if( typeof filter === "undefined" ) {
         filter = false;
       }
       var clientX = left;
       var clientY = top;
       if( qx.core.Client.getEngine() == "mshtml" ) {
-        clientX -= qx.bom.Viewport.getScrollLeft(window);
-        clientY -= qx.bom.Viewport.getScrollTop(window);
+        clientX -= qx.bom.Viewport.getScrollLeft( window );
+        clientY -= qx.bom.Viewport.getScrollTop( window );
       }
-      var domEvent = {
-        "preventDefault" : function(){}, 
-        "type" : type,
-        "target" : null,
-        "relatedTarget" : null,
-        "which" : 1,
-        "button" : button,
-        "pageX" : left,
-        "pageY" : top,
-        "clientX" : clientX,
-        "clientY" : clientY,
-        "screenX" : left,
-        "screenY" : top,
-        "ctrlKey" : ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0,
-        "altKey" :  ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0,
-        "shiftKey" : ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0
-      }
-      if( !filter && this.isMobileWebkit() ) {
+      var domEvent = this._createFakeDomEvent( target, type, mod );
+      domEvent.which = 1;
+      domEvent.button = button;
+      domEvent.pageX = left;
+      domEvent.pageY = top;
+      domEvent.clientX = clientX;
+      domEvent.clientY = clientY;
+      domEvent.screenX = left;
+      domEvent.screenY = top;
+      domEvent.ctrlKey = ( qx.event.type.DomEvent.CTRL_MASK & mod ) != 0;
+      domEvent.altKey = ( qx.event.type.DomEvent.ALT_MASK  & mod ) != 0;
+      domEvent.shiftKey = ( qx.event.type.DomEvent.SHIFT_MASK  & mod ) != 0;
+      if( this.isMobileWebkit() ) {
         domEvent.originalEvent = {};
       }
       return domEvent; 
@@ -212,31 +227,21 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       qx.event.handler.EventHandler.getInstance().__onmouseevent( domEvent );
     },
 
-    fakeKeyEventDOM : function( node, eventType, stringOrKeyCode ) {
+    fakeKeyEventDOM : function( target, type, stringOrKeyCode, mod ) {
       var charCode = null;
       var keyCode = null;
-      var isChar = typeof stringOrKeyCode == "string";
+      var isChar = typeof stringOrKeyCode === "string";
       if( isChar ) {
         charCode = stringOrKeyCode.charCodeAt( 0 );
       } else {
         keyCode = stringOrKeyCode;
       }
-      var domEvent = {
-        target : node,
-        type : eventType,
-        ctrlKey : false,
-        altKey :  false,
-        shiftKey : false,
-        keyCode : keyCode,
-        charCode : charCode,
-        isChar: isChar,
-        pageX: 0,
-        pageY: 0,
-        preventDefault : function(){},
-        stopPropagation : function(){}
-      };
+      var domEvent = this._createFakeDomEvent( target, type, mod );
+      domEvent.keyCode = keyCode;
+      domEvent.charCode = charCode;
+      domEvent.isChar = isChar;
       var handler = qx.event.handler.KeyEventHandler.getInstance();
-      handler._idealKeyHandler( keyCode, charCode, eventType, domEvent );
+      handler._idealKeyHandler( keyCode, charCode, type, domEvent );
     },
     
     /////////////////////////////
@@ -299,46 +304,34 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     },
 
     fakeWheel : function( widget, value ) {
-      var ev = this._createQxMouseEvent( widget, "mousewheel" );
-      ev.getWheelDelta = function(){ return value; };
-      widget.dispatchEvent( ev );      
-    },
-
-    fakeMouseEvent : function( widget, type, left, top ) {
-      var ev = this._createQxMouseEvent( widget, type, left, top );
-      ev.setButton( qx.event.type.MouseEvent.C_BUTTON_LEFT ); 
-      widget.dispatchEvent( ev );
-    },
-
-    _createQxMouseEvent : function( widget, type, left, top ) {
       if( !widget._isCreated ) {
         throw( "Error in testUtil.fakeMouseEvent: widget is not created" );
       }
-      var left = left ? left : 0;
-      var top = top ? top : 0; 
-      var domEv = {
-        "type" : type,
-        screenX : left,
-        screenY : top,
-        clientX : left,
-        clientY : top,
-        pageX : left,
-        pageY : top,
-        preventDefault : function(){},
-        stopPropagation : function(){}        
-      };
-      var ev = new qx.event.type.MouseEvent(
-        type, 
-        domEv,
-        widget._getTargetNode(), 
-        widget, 
-        widget, 
-        null
-      );
-      ev.setButton( qx.event.type.MouseEvent.C_BUTTON_LEFT ); 
-      return ev;
+      var target = widget._getTargetNode();
+      var domEvent = 
+        this._createFakeMouseEventDOM( target, "mousewheel", 0, 0, 0, 0 );
+      this._addWheelDelta( domEvent, value );
+      this.fireFakeMouseEventDOM( domEvent );
     },
     
+    _addWheelDelta : qx.core.Variant.select("qx.client", {
+      "default" : function( event, value ) {
+        event.wheelDelta = value * 120;
+      },
+      "gecko" : function( event, value ) {
+        event.detail = value * -3;
+      }
+    } ),
+
+    fakeMouseEvent : function( widget, type, left, top ) {
+      if( !widget._isCreated ) {
+        throw( "Error in testUtil.fakeMouseEvent: widget is not created" );
+      }
+      var button = qx.event.type.MouseEvent.buttons.left;
+      var target = widget._getTargetNode();
+      this.fakeMouseEventDOM( target, type, button, left, top, 0 );
+    },
+
     press : function( widget, key, checkActive, mod ) {
       this.fakeKeyEvent( widget, "keydown", key, checkActive, mod );
       this.fakeKeyEvent( widget, "keypress", key, checkActive, mod );
@@ -541,6 +534,10 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       qx.log.Logger.ROOT_LOGGER.setMinLevel( qx.log.Logger.LEVEL_DEBUG );
       qxObject.printStackTrace();
       qx.log.Logger.ROOT_LOGGER.setMinLevel( level );
+    },
+    
+    emptyDragCache : function() {
+      qx.event.handler.DragAndDropHandler.__dragCache = null;
     }
      
   }
