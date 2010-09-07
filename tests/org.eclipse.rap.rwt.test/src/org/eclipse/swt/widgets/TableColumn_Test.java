@@ -280,6 +280,42 @@ public class TableColumn_Test extends TestCase {
     assertEquals( column, event.getSource() );
   }
 
+  public void testMoveEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    final TableColumn column = new TableColumn( table, SWT.NONE );
+    column.addControlListener( new ControlListener() {
+      public void controlMoved( final ControlEvent event ) {
+        fail( "unexpected event: controlMoved" );
+      }
+      public void controlResized( final ControlEvent event ) {
+        log.add( event );
+      }
+    } );
+    final TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.addControlListener( new ControlListener() {
+      public void controlMoved( final ControlEvent event ) {
+        log.add( event );
+      }
+      public void controlResized( final ControlEvent event ) {
+        fail( "unexpected event: controlResized" );
+      }
+    } );
+    ControlEvent event;
+    // Changing column width leads to resize event and move event of the next
+    // columns
+    log.clear();
+    column.setWidth( column.getWidth() + 1 );
+    assertEquals( 2, log.size() );
+    event = ( ControlEvent )log.get( 0 );
+    assertSame( column, event.getSource() );
+    event = ( ControlEvent )log.get( 1 );
+    assertSame( column1, event.getSource() );
+  }
+
   public void testDisposeLast() {
     Display display = new Display();
     Shell shell = new Shell( display );

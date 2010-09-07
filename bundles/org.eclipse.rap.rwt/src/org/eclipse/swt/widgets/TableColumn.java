@@ -249,9 +249,9 @@ public class TableColumn extends Item {
       int eventId = ControlEvent.CONTROL_RESIZED;
       ControlEvent event = new ControlEvent( this, eventId );
       event.processEvent();
+      processNextColumnsMoveEvent();
     }
   }
-
 
   /**
    * Causes the receiver to be resized to its preferred size.
@@ -529,5 +529,20 @@ public class TableColumn extends Item {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return table;
+  }
+
+  private void processNextColumnsMoveEvent() {
+    int[] columnsOrder = parent.getColumnOrder();
+    boolean found = false;
+    for( int i = 0; i < columnsOrder.length; i++ ) {
+      TableColumn column = parent.getColumn( columnsOrder[ i ] );
+      if( column == this ) {
+        found = true;
+      } else if( found ) {
+        int eventId = ControlEvent.CONTROL_MOVED;
+        ControlEvent event = new ControlEvent( column, eventId );
+        event.processEvent();
+      }
+    }
   }
 }
