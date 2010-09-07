@@ -525,6 +525,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     setLinesVisible : function( value ) {
       this._linesVisible = value;
+      if( value ) {
+        this.addState( "linesvisible" );
+      } else {
+        this.removeState( "linesvisible" );
+      }
       for( var i = 0; i < this._rows.length; i++ ) {
         this._rows[ i ].setLinesVisible( value );
       }

@@ -79,6 +79,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     updateEvenState : function( index ) {
       this._setState( "even", index % 2 == 0 );
     },
+    
+    updateGridlinesState : function( value ) {
+      this._setState( "linesvisible", value );
+    },
 
     ////////////
     // internals

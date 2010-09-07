@@ -298,6 +298,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     setLinesVisible : function( value ) {
       this._linesVisible = value;
+      if( value ) {
+        this.addState( "linesvisible" );
+      } else {
+        this.removeState( "linesvisible" );
+      }
+      for( var i = 0; i < this._rows.length; i++ ) {
+        this._rows[ i ].updateGridlinesState( value );
+      }
+      this._scheduleUpdate();
       this._renderGridHorizontal();
       this._renderGridVertical();
     },
@@ -846,6 +855,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var row = new org.eclipse.rwt.widgets.TreeRow( this );
         row.setHeight( this._itemHeight );
         row.setWidth( rowWidth );
+        row.updateGridlinesState( this._linesVisible );
         this._clientArea.add( row );
       }
       while( this._rows.length > rowsNeeded ) {

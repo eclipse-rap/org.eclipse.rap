@@ -575,7 +575,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     testVerticalScrollBarLayout : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      tree = this._createDefaultTree();
+      var tree = this._createDefaultTree();
       tree.setScrollBarsVisible( false, true );
       testUtil.flush();
       var area = testUtil.getElementBounds( tree._clientArea.getElement() )
@@ -591,7 +591,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     testHorizontalScrollBarLayout : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      tree = this._createDefaultTree();
+      var tree = this._createDefaultTree();
       tree.setScrollBarsVisible( true, false );
       testUtil.flush();
       var area = testUtil.getElementBounds( tree._clientArea.getElement() )
@@ -607,7 +607,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     testBothScrollBarsLayout : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      tree = this._createDefaultTree();
+      var tree = this._createDefaultTree();
       tree.setScrollBarsVisible( true, true );
       testUtil.flush();
       var area = testUtil.getElementBounds( tree._clientArea.getElement() )
@@ -689,7 +689,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     
     testScrollHeightWithHeaderBug : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      tree = this._createDefaultTree();
+      var tree = this._createDefaultTree();
       tree.setHeaderHeight( 20 );
       tree.setHeaderVisible( true );
       tree.setHeight( 490 );
@@ -783,7 +783,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     
     testScrollBugExpanded : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      tree = this._createDefaultTree();
+      var tree = this._createDefaultTree();
       var i = 0;
       while( i < 100 ) {
         var item = new org.eclipse.rwt.widgets.TreeItem( tree );
@@ -824,7 +824,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     
     testDestroy : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      tree = this._createDefaultTree();
+      var tree = this._createDefaultTree();
       var item = new org.eclipse.rwt.widgets.TreeItem( tree );
       tree._showResizeLine( 0 );
       tree.setIsVirtual( true );
@@ -2117,6 +2117,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var copy = tree.getStatesCopy();
       assertTrue( copy.bla );
       assertTrue( copy.blub );
+      tree.destroy();
+    },
+    
+    testGridLinesState : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( true );
+      tree.setLinesVisible( true );
+      testUtil.flush();
+      var row = tree._rows[ 0 ];
+      assertTrue( tree.hasState( "linesvisible" ) );
+      assertTrue( row.hasState( "linesvisible" ) );
+      tree.setLinesVisible( false );
+      assertFalse( tree.hasState( "linesvisible" ) );
+      assertFalse( row.hasState( "linesvisible" ) );
       tree.destroy();
     },
     

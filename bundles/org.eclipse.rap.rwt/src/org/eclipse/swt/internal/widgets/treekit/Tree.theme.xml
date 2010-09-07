@@ -30,6 +30,9 @@
     <state name="disabled"
         description="Applies to disabled trees." />
 
+    <state name="linesvisible"
+        description="Applies to trees with gridlines." />
+
     <element name="TreeItem"
         description="Item elements of tree controls">
 
@@ -50,6 +53,9 @@
           
       <state name="disabled"
           description="Applies to the items of a disabled tree." />
+
+      <state name="linesvisible"
+          description="Applies to items of a tree with gridlines." />
           
       <state name="hover"
           description="Mouse over state." />

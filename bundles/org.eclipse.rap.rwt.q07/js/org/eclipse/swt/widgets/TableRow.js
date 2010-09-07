@@ -47,9 +47,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
 
     setLinesVisible : function( value ) {
       if( value ) {
-        this.addState( "lines" );
+        this.addState( "linesvisible" );
       } else {
-        this.removeState( "lines" );
+        this.removeState( "linesvisible" );
       }
     },
 

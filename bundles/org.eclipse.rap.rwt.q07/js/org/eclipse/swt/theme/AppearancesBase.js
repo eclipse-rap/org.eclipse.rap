@@ -1326,7 +1326,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {
         cursor : "default"
       };
-      if( states.lines ) {
+      if( states.linesvisible ) {
         // TODO [rst] Optimize: this function might be called a few times,
         //            the border can be cached somewhere
         var border = new qx.ui.core.Border( 0 );
