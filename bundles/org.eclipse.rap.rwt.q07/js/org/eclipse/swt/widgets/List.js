@@ -217,7 +217,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     },
     
     _onSendRequest : function( evt ) {
-      var topIndex = this._getTopIndex();
+      var topIndex = this._isCreated ? this._getTopIndex() : 0;
       if( this._topIndex != topIndex ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
