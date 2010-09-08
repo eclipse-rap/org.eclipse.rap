@@ -137,8 +137,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _getRenderThemingBackground : function( item ) {
       var renderFullSelection =    this._renderAsSelected( item ) 
                                 && this._tree.getHasFullSelection();
-      var hasItemBackground = item !== null && item.getBackground() !== null                    
-      return renderFullSelection || !hasItemBackground;
+      var hasItemBackground = item !== null && item.getBackground() !== null;
+      var result =    !hasItemBackground 
+                   || renderFullSelection 
+                   || this._hasHoverBackground(); 
+      return result;
+    },
+    
+    _hasHoverBackground : function() {
+      // TODO [tb] : This detection is not prefect; Should the item be hovered,
+      // but a hover-independent theming-background be set, this returns true.
+      var result =    this.hasState( "over" ) 
+                   && this._styleMap.itemBackground !== "undefined"; 
+      return result;
     },
 
     _renderIndention : function( item ) {
@@ -272,8 +283,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _renderCellBackground : function( item, cell ) {
-      var background = item.getCellBackground( cell );
-      if( background != "undefined" 
+      var background = this._getCellBackground( item, cell );
+      if(    background != "undefined" 
           && background != this._styleMap.backgroundColor ) 
       {
         var element = this._getNextElement( 1 );
@@ -324,9 +335,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       return element;
     },
     
+    _getCellBackground : function( item, cell ) {
+      var result;
+      if(    this.hasState( "selected" ) 
+          || this._hasHoverBackground() 
+      ) {
+        result = "undefined";
+      } else {
+        result = item.getCellBackground( cell );
+      }
+      return result;
+    },
+    
     _getCellColor : function( item, cell ) {
       var result = item.getCellForeground( cell )
-      if( result === null || result === "" ) {
+      if(    result === null 
+          || result === "" 
+          || this.hasState( "selected" ) 
+          || this._hasHoverBackground()
+      ) {
         result = this._styleMap.itemForeground;
         if( result === "undefined" ) { 
           result = this._tree.getTextColor();

@@ -1085,6 +1085,113 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },  
 
+    testFullSelectionOverwritesTheming : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree();
+      testUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          if( states.selected ) {
+            result.itemBackground = "blue";
+            result.itemForeground = "white";
+          } else {
+            result.itemBackground = "#888888";
+            result.itemForeground = "black"
+          }
+          return result;
+        }
+      } );  
+      tree.setHasFullSelection( true );
+      var row = new org.eclipse.rwt.widgets.TreeRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+      item.setCellBackgrounds( [ "red" ] );
+      item.setCellForegrounds( [ "yellow" ] );
+      row.renderItem( item );
+      var children = row._getTargetNode().childNodes;
+      assertEquals( "#888888", row.getBackgroundColor() );
+      assertEquals( "red", children[ 1 ].style.backgroundColor );
+      assertEquals( "yellow", children[ 2 ].style.color );
+      tree.selectItem( item );
+      row.renderItem( item );
+      assertEquals( "blue", row.getBackgroundColor() );
+      assertEquals( "", children[ 1 ].style.backgroundColor );
+      assertEquals( "white", children[ 1 ].style.color );
+      row.renderItem( item );
+      tree.destroy();
+      row.destroy();
+    },  
+
+   testHoverColorsOverwritesTheming : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree();
+      testUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          if( states.over ) {
+            result.itemBackground = "blue";
+            result.itemForeground = "white";
+          } else {
+            result.itemBackground = "#888888";
+            result.itemForeground = "black"
+          }
+          return result;
+        }
+      } );  
+      tree.setHasFullSelection( false );
+      var row = new org.eclipse.rwt.widgets.TreeRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+      item.setCellBackgrounds( [ "red" ] );
+      item.setBackground( "black" );
+      item.setCellForegrounds( [ "yellow" ] );
+      row.renderItem( item );
+      var children = row._getTargetNode().childNodes;
+      assertEquals( "black", row.getBackgroundColor() );
+      assertEquals( "red", children[ 1 ].style.backgroundColor );
+      assertEquals( "yellow", children[ 2 ].style.color );
+      tree._hoverItem = item;
+      row.renderItem( item );
+      assertEquals( "blue", row.getBackgroundColor() );
+      assertEquals( "", children[ 1 ].style.backgroundColor );
+      assertEquals( "white", children[ 1 ].style.color );
+      row.renderItem( item );
+      tree.destroy();
+      row.destroy();
+    },  
+
+   testHoverWithoutColorDoesNotOverwriteTheming : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree();
+      tree.setHasFullSelection( false );
+      var row = new org.eclipse.rwt.widgets.TreeRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+      item.setCellBackgrounds( [ "red" ] );
+      item.setBackground( "black" );
+      item.setCellForegrounds( [ "yellow" ] );
+      row.renderItem( item );
+      var children = row._getTargetNode().childNodes;
+      assertEquals( "black", row.getBackgroundColor() );
+      assertEquals( "red", children[ 1 ].style.backgroundColor );
+      assertEquals( "yellow", children[ 2 ].style.color );
+      tree._hoverItem = item;
+      row.renderItem( item );
+      assertEquals( "black", row.getBackgroundColor() );
+      assertEquals( "red", children[ 1 ].style.backgroundColor );
+      assertEquals( "yellow", children[ 2 ].style.color );
+      row.renderItem( item );
+      tree.destroy();
+      row.destroy();
+    },  
+
+
     testRenderThemingItemForeground : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
