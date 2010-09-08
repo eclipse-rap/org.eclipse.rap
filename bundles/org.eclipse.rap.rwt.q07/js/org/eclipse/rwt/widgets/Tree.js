@@ -1272,11 +1272,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         left -= this._horzScrollBar.getValue(); 
         if( left < clientWidth ) {
           result = true;
+          var line = this._getVerticalGridline( lineNr );
           if( left > 0 ) {
-            var line = this._getVerticalGridline( lineNr );
             line.setLeft( left );
             line.setTop( this._clientArea.getTop() );
             line.setHeight( this._clientArea.getHeight() );
+            line.setVisibility( true );
+          } else {
+            line.setVisibility( false );
           }
         }
       }
