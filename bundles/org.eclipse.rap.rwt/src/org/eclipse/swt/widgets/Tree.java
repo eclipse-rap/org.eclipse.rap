@@ -224,6 +224,11 @@ public class Tree extends Composite {
       Tree.this.setTopItemIndex( index );
     }
 
+    public int getColumnLeft( final TreeColumn column ) {
+      int index = Tree.this.indexOf( column );
+      return Tree.this.getColumn( index ).getLeft();
+    }
+
   }
 
   private static final class ResizeListener extends ControlAdapter {
