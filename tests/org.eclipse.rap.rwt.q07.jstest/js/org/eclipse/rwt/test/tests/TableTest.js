@@ -48,8 +48,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var result = new org.eclipse.swt.widgets.Table( "w3", "" );
       result.setWidth( 100 );
-      result.setHeight( 100 );
+      result.setHeight( 90 );
       result.setItemHeight( 20 );
+      result.setItemMetrics( 0, 0, 100, 2, 10, 15, 70 );
       result.addToDocument();
       if( noflush !== false ) {
         testUtil.flush();
