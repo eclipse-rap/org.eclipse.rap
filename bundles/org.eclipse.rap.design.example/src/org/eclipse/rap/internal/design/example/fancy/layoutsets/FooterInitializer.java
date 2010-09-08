@@ -19,10 +19,10 @@ public class FooterInitializer implements ILayoutSetInitializer {
   public void initializeLayoutSet( final LayoutSet layoutSet ) {
     String path = ILayoutSetConstants.IMAGE_PATH_FANCY;
     layoutSet.addImagePath( ILayoutSetConstants.FOOTER_LEFT, 
-                            path + "footer_left.png" );
+                            path + "footer_left.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.FOOTER_BG, 
-                            path + "footer_bg.png" );
+                            path + "footer_bg.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.FOOTER_RIGHT, 
-                            path + "footer_right.png" );
+                            path + "footer_right.png" ); //$NON-NLS-1$
   }
 }

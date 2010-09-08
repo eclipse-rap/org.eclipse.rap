@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 public class ViewToolBarManager extends ToolBarManager2 {
   
-  private static final String STYLING_VARIANT = "viewToolbar";
+  private static final String STYLING_VARIANT = "viewToolbar"; //$NON-NLS-1$
   private ToolBar toolBar;
   private ToolBar fakeToolbar;
 

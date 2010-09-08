@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 public class MenuBarManager extends MenuManager {
 
-  private static final String MENU_BAR_VARIANT = "menuBar";
+  private static final String MENU_BAR_VARIANT = "menuBar"; //$NON-NLS-1$
   private Composite menuParent;
   private List toolItemList = new ArrayList();
   private ToolBar toolbar;

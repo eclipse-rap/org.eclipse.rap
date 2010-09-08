@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
+import org.eclipse.rap.internal.design.example.Messages;
 import org.eclipse.rap.internal.design.example.builder.StackPresentationBuider;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.ConfigurationAction;
@@ -66,13 +67,13 @@ import org.eclipse.ui.presentations.StackDropResult;
 
 public class ViewStackPresentation extends ConfigurableStack {
 
-  private static final String VARIANT_PART_INACTIVE = "partInactive";
-  private static final String VARIANT_PART_ACTIVE = "partActive";
+  private static final String VARIANT_PART_INACTIVE = "partInactive"; //$NON-NLS-1$
+  private static final String VARIANT_PART_ACTIVE = "partActive"; //$NON-NLS-1$
   private static final String VARIANT_PART_INACTIVE_ACTIVE 
-    = "partInActiveActive";
+    = "partInActiveActive"; //$NON-NLS-1$
   private static final int BUTTON_SPACING = 6;
-  private static final String ID_CLOSE = "close";
-  private static final String BUTTON_ID = "buttonId";
+  private static final String ID_CLOSE = "close"; //$NON-NLS-1$
+  private static final String BUTTON_ID = "buttonId"; //$NON-NLS-1$
   private static final int WIDTH_SPACING = 65;
   private static final int HEIGHT_SPACING = 15;
   
@@ -116,7 +117,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           if( part.isDirty() ) {
             // mark the part as dirty
             if( lastCharacter != '*') {
-              text = text + "*";
+              text = text + "*"; //$NON-NLS-1$
             }
           } else {
             // mark the part as clean
@@ -196,14 +197,14 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   private Control createStyledControl() {
-    getParent().setData( WidgetUtil.CUSTOM_VARIANT, "compGray" );
+    getParent().setData( WidgetUtil.CUSTOM_VARIANT, "compGray" ); //$NON-NLS-1$
     final Composite parent = new Composite( getParent(), SWT.NONE );
     parent.addControlListener( new ControlAdapter() {
       public void controlResized( ControlEvent e ) {
         setBounds( parent.getBounds() );
       };
     } );
-    parent.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" );
+    parent.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" ); //$NON-NLS-1$
     String setID = ILayoutSetConstants.SET_ID_STACKPRESENTATION;
     stackBuilder = new StackPresentationBuider( parent, setID );
     stackBuilder.build();
@@ -222,7 +223,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       Control partControl = newPart.getControl();
       if( partControl != null ) {
         partControl.getParent().setBackgroundMode( SWT.INHERIT_NONE );
-        partControl.setData( WidgetUtil.CUSTOM_VARIANT, "partBorder" );
+        partControl.setData( WidgetUtil.CUSTOM_VARIANT, "partBorder" ); //$NON-NLS-1$
       }
       tabBg.layout( true );
     } else {
@@ -240,7 +241,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       getTabBar().setVisible( true );
       tabBg.setVisible( true );
       Label title = new Label( tabBg, SWT.NONE );
-      title.setData( WidgetUtil.CUSTOM_VARIANT, "standaloneView" );
+      title.setData( WidgetUtil.CUSTOM_VARIANT, "standaloneView" ); //$NON-NLS-1$
       title.setText( newPart.getName() );
       hideFrameLabel( StackPresentationBuider.TOP_BORDER );      
     } else {
@@ -273,7 +274,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       if( viewMenu != null ) {
         if( viewMenuButton == null ) {
           viewMenuButton = new Button( toolbarBg, SWT.PUSH );
-          viewMenuButton.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" );
+          viewMenuButton.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" ); //$NON-NLS-1$
           Image icon
             = stackBuilder.getImage( ILayoutSetConstants.STACK_VIEW_MENU_ICON );
           viewMenuButton.setImage( icon );
@@ -355,16 +356,18 @@ public class ViewStackPresentation extends ConfigurableStack {
           if( confButton != null ) {
             // enable conf button
             confButton.setEnabled( true );
-            String toolTip = "Configure the actions and viewmenu from "
-              + currentPart.getName();
+            String buttonTooltip 
+              = Messages.get().ViewStackPresentation_ConfButtonToolTipEnabled;
+            String toolTip = buttonTooltip + currentPart.getName();
             confButton.setToolTipText( toolTip );
           }
         } else {
           if( confButton != null ) {
             // disable conf button
             confButton.setEnabled( false );
-            String toolTip =  currentPart.getName() +
-                    " has no actions or viewmenu to configure";
+            String buttonToolTip 
+              = Messages.get().ViewStackPresentation_ConfButtonToolTipDisabled;
+            String toolTip =  currentPart.getName() + buttonToolTip;
             confButton.setToolTipText( toolTip );
           }
         }
@@ -375,7 +378,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   private void createPartButton( final IPresentablePart part ) {
     Composite buttonArea = new Composite( tabBg, SWT.NONE );
     buttonArea.setData( WidgetUtil.CUSTOM_VARIANT,
-                        "inactiveButton" );
+                        "inactiveButton" ); //$NON-NLS-1$
     buttonArea.setLayout( new FormLayout() );
 
     final Button partButton = new Button( buttonArea, SWT.PUSH );
@@ -428,7 +431,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       }
     } );
     Composite corner = new Composite( buttonArea, SWT.NONE );
-    corner.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
+    corner.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" ); //$NON-NLS-1$
     corner.setLayout( new FormLayout() );
     String separatorActive
       = ILayoutSetConstants.STACK_TAB_INACTIVE_SEPARATOR_ACTIVE;
@@ -513,7 +516,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Object object = partButtonMap.get( part );
     if( object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
-      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "tabInactive" );
+      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "tabInactive" ); //$NON-NLS-1$
       checkHideSeparator( buttonArea );
       Color bg
         = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE );
@@ -545,7 +548,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           if( part.isCloseable() ) {
             Button close = new Button( buttonArea, SWT.PUSH );
             close.setData( BUTTON_ID, ID_CLOSE );
-            close.setData( WidgetUtil.CUSTOM_VARIANT, "viewCloseInactive" );
+            close.setData( WidgetUtil.CUSTOM_VARIANT, "viewCloseInactive" ); //$NON-NLS-1$
             close.addSelectionListener( new SelectionAdapter() {
               public void widgetSelected( SelectionEvent e ) {
                 IStackPresentationSite site = getSite();
@@ -600,7 +603,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Object object = partButtonMap.get( part );
     if( object instanceof Composite ) {
       Composite buttonArea = ( Composite ) object;
-      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "inactiveButton" );
+      buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "inactiveButton" ); //$NON-NLS-1$
       buttonArea.setBackground( null );
       Control[] children = buttonArea.getChildren();
       for( int i = 0; i < children.length; i++ ) {
@@ -644,7 +647,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Composite tabBar = getTabBar();
     if( tabBg == null && tabBar != null ) {
       tabBg = new Composite( tabBar, SWT.NONE );
-      tabBg.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
+      tabBg.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" ); //$NON-NLS-1$
       FormData fdTabBg = new FormData();
       tabBg.setLayoutData( fdTabBg );
       fdTabBg.left = new FormAttachment( 0 );
@@ -722,9 +725,9 @@ public class ViewStackPresentation extends ConfigurableStack {
       Image icon = stackBuilder.getImage( stackTabOverflowActive );
       fdOverflowButton.height = icon.getBounds().height;
       fdOverflowButton.width = icon.getBounds().width;
-      String variant = "tabOverflowInactive";
+      String variant = "tabOverflowInactive"; //$NON-NLS-1$
       if( activeState == AS_ACTIVE_FOCUS ) {
-        variant = "tabOverflowActive";
+        variant = "tabOverflowActive"; //$NON-NLS-1$
       }
       overflowButton.setData( WidgetUtil.CUSTOM_VARIANT, variant );
       overflowButton.moveAbove( tabBg );
@@ -925,7 +928,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       Image confImage
         = stackBuilder.getImage( ILayoutSetConstants.STACK_CONF_INACTIVE );
       confButton.setImage( confImage );
-      confButton.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" );
+      confButton.setData( WidgetUtil.CUSTOM_VARIANT, "clearButton" ); //$NON-NLS-1$
       FormData fdConfButton
         = stackBuilder.getPosition( ILayoutSetConstants.STACK_CONF_POSITION );
       confButton.setLayoutData( fdConfButton );
@@ -1030,7 +1033,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     Image cornerImage = null;
     Image confImage = null;
     Image tabBgImage = null;
-    String tabOverflow = "tabOverflowInactive";
+    String tabOverflow = "tabOverflowInactive"; //$NON-NLS-1$
     // create the necessary images
     if( newState == AS_ACTIVE_FOCUS ) {
       if( !isStandalone() ) {
@@ -1043,7 +1046,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         = stackBuilder.getImage( rightActive );
       confImage
         = stackBuilder.getImage( ILayoutSetConstants.STACK_CONF_ACTIVE );
-      tabOverflow = "tabOverflowActive";
+      tabOverflow = "tabOverflowActive"; //$NON-NLS-1$
       tabBgImage
         = stackBuilder.getImage( ILayoutSetConstants.STACK_TAB_BG_ACTIVE );
       changeStack( true );
@@ -1170,22 +1173,22 @@ public class ViewStackPresentation extends ConfigurableStack {
   }
 
   private void changeSelectedActiveButton( final boolean selected ) {
-    String close = "";
+    String close = ""; //$NON-NLS-1$
     Color buttonAreaBg;
-    String font = "";
-    String tab = "";
+    String font = ""; //$NON-NLS-1$
+    String tab = ""; //$NON-NLS-1$
     if( selected ) {
       buttonAreaBg
         = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_ACTIVE );
-      close = "viewClose";
-      font = "partInActiveActive";
-      tab = "tabActive";
+      close = "viewClose"; //$NON-NLS-1$
+      font = "partInActiveActive"; //$NON-NLS-1$
+      tab = "tabActive"; //$NON-NLS-1$
     } else {
       buttonAreaBg
         = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE );
-      close = "viewCloseInactive";
-      font ="partActive";
-      tab = "tabInactive";
+      close = "viewCloseInactive"; //$NON-NLS-1$
+      font ="partActive"; //$NON-NLS-1$
+      tab = "tabInactive"; //$NON-NLS-1$
     }
     Object object = partButtonMap.get( currentPart );
     if( object != null && object instanceof Composite ) {
@@ -1246,7 +1249,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   private Shell getToolBarLayer() {
     if( toolBarLayer == null && toolbarBg != null ) {
       toolBarLayer = new Shell( toolbarBg.getShell(), SWT.NO_TRIM );
-      toolBarLayer.setData( WidgetUtil.CUSTOM_VARIANT, "toolbarLayer" );
+      toolBarLayer.setData( WidgetUtil.CUSTOM_VARIANT, "toolbarLayer" ); //$NON-NLS-1$
       toolBarLayer.setAlpha( 200 );
       toolBarLayer.addListener( SWT.MouseDown, new Listener() {
         public void handleEvent( final Event event ) {

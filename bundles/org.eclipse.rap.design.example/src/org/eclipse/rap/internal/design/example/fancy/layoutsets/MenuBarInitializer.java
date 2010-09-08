@@ -19,8 +19,8 @@ public class MenuBarInitializer implements ILayoutSetInitializer {
   public void initializeLayoutSet( final LayoutSet layoutSet ) {
     String path = ILayoutSetConstants.IMAGE_PATH_FANCY;
     layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_ARROW, 
-                            path + "menu_arrow.png" );
+                            path + "menu_arrow.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.MENUBAR_BG, 
-                            path + "menubar_bg.png" );
+                            path + "menubar_bg.png" ); //$NON-NLS-1$
   }
 }

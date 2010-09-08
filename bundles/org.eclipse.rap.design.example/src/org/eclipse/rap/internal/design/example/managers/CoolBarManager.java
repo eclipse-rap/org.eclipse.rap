@@ -54,10 +54,10 @@ import org.eclipse.ui.menus.CommandContributionItem;
 
 public class CoolBarManager extends CoolBarManager2 {
   
-  private static final String HEADER_TOOLBAR_VARIANT = "header-toolbar";
-  private static final String HEADER_OVERFLOW_VARIANT = "header-overflow";
-  private static final String ACTIVE = "toolbarOverflowActive";
-  private static final String INACTIVE = "toolbarOverflowInactive";
+  private static final String HEADER_TOOLBAR_VARIANT = "header-toolbar"; //$NON-NLS-1$
+  private static final String HEADER_OVERFLOW_VARIANT = "header-overflow"; //$NON-NLS-1$
+  private static final String ACTIVE = "toolbarOverflowActive"; //$NON-NLS-1$
+  private static final String INACTIVE = "toolbarOverflowInactive"; //$NON-NLS-1$
   private static final int WAVE_SPACING = 20;
   
   private Composite overflowParent;
@@ -563,7 +563,7 @@ public class CoolBarManager extends CoolBarManager2 {
       for( int i = 0; i < items.length; i++ ) {
         ToolItem toolItem = items[ i ];
         final IContributionItem item = ( IContributionItem ) toolItem.getData();
-        if( toolItem.getText() == "" ) {
+        if( toolItem.getText() == "" ) { //$NON-NLS-1$
           modifyModeForceText( item );
         }                      
         toolItem.setData( WidgetUtil.CUSTOM_VARIANT, HEADER_TOOLBAR_VARIANT );

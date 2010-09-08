@@ -24,8 +24,8 @@ public class ConfigDialogInitializer implements ILayoutSetInitializer {
                         Graphics.getColor( 255, 255, 255 ) );
     String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
     layoutSet.addImagePath( ILayoutSetConstants.CONFIG_DIALOG_CLOSE, 
-                            path + "close.png" );
+                            path + "close.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.CONFIG_DIALOG_ICON, 
-                            path + "conf_dialog_icon.png" );
+                            path + "conf_dialog_icon.png" ); //$NON-NLS-1$
   }
 }

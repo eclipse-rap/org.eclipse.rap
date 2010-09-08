@@ -32,12 +32,12 @@ import org.eclipse.swt.widgets.Label;
 public class StackPresentationBuider extends ElementBuilder {
 
 
-  public static final String BOTTOM_BORDER = "bottomBorder";
-  public static final String RIGHT_BORDER = "rightBorder";
-  public static final String LEFT_BORDER = "leftBorder";
-  public static final String TOP_BORDER = "topBorder";
-  public static final String RIGHT = "right";
-  public static final String LEFT = "left";
+  public static final String BOTTOM_BORDER = "bottomBorder"; //$NON-NLS-1$
+  public static final String RIGHT_BORDER = "rightBorder"; //$NON-NLS-1$
+  public static final String LEFT_BORDER = "leftBorder"; //$NON-NLS-1$
+  public static final String TOP_BORDER = "topBorder"; //$NON-NLS-1$
+  public static final String RIGHT = "right"; //$NON-NLS-1$
+  public static final String LEFT = "left"; //$NON-NLS-1$
   private Image tabInactiveBgActive;
   private Composite content;
   private Image borderBottom;
@@ -133,12 +133,12 @@ public class StackPresentationBuider extends ElementBuilder {
 
   private Composite createFrame() {
     Composite frameComp = new Composite( getParent(), SWT.NONE );
-    frameComp.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" );
+    frameComp.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" ); //$NON-NLS-1$
     frameComp.setLayout( new FormLayout() );
     frameComp.setBackgroundMode( SWT.INHERIT_FORCE );
     
     Label left = new Label( frameComp, SWT.NONE );
-    left.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" );
+    left.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" ); //$NON-NLS-1$
     left.setBackgroundImage( borderLeft );
     FormData fdLeft = new FormData();
     left.setLayoutData( fdLeft );
@@ -150,7 +150,7 @@ public class StackPresentationBuider extends ElementBuilder {
     labelMap.put( LEFT_BORDER, left );
     
     Label right = new Label( frameComp, SWT.NONE );
-    right.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" );
+    right.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" ); //$NON-NLS-1$
     right.setBackgroundImage( borderRight );
     FormData fdRight = new FormData();
     right.setLayoutData( fdRight );
@@ -162,7 +162,7 @@ public class StackPresentationBuider extends ElementBuilder {
     labelMap.put( RIGHT_BORDER, right );
     
     Label top = new Label( frameComp, SWT.NONE );
-    top.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" );
+    top.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" ); //$NON-NLS-1$
     top.setBackgroundImage( borderTop );
     FormData fdTop = new FormData();
     top.setLayoutData( fdTop );
@@ -173,7 +173,7 @@ public class StackPresentationBuider extends ElementBuilder {
     labelMap.put( TOP_BORDER, top );
     
     Label bottom = new Label( frameComp, SWT.NONE );
-    bottom.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" );
+    bottom.setData( WidgetUtil.CUSTOM_VARIANT, "stackBorder" ); //$NON-NLS-1$
     bottom.setBackgroundImage( borderBottom );
     FormData fdBottom = new FormData();
     bottom.setLayoutData( fdBottom );
@@ -184,7 +184,7 @@ public class StackPresentationBuider extends ElementBuilder {
     labelMap.put( BOTTOM_BORDER, bottom );
     
     Composite result = new Composite( frameComp, SWT.NONE );
-    result.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" );
+    result.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" ); //$NON-NLS-1$
     FormData fdResult = new FormData();
     result.setLayoutData( fdResult );
     fdResult.top = new FormAttachment( top );

@@ -20,14 +20,14 @@ public class HeaderInitializer implements ILayoutSetInitializer {
     // images
     String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
     layoutSet.addImagePath( ILayoutSetConstants.HEADER_LEFT, 
-                            path + "header_left.png" ); 
+                            path + "header_left.png" );  //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.HEADER_LEFT_BG, 
-                            path + "header_left_bg.png" );
+                            path + "header_left_bg.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.HEADER_WAVE, 
-                            path + "header_wave.png" );
+                            path + "header_wave.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.HEADER_RIGHT_BG, 
-                            path + "header_right_bg.png" );
+                            path + "header_right_bg.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.HEADER_RIGHT, 
-                            path + "header_right.png" );
+                            path + "header_right.png" ); //$NON-NLS-1$
   }
 }

@@ -22,13 +22,13 @@ public class CoolbarInitializer implements ILayoutSetInitializer {
   public void initializeLayoutSet( final LayoutSet layoutSet ) {
     String path = ILayoutSetConstants.IMAGE_PATH_FANCY;
     layoutSet.addImagePath( ILayoutSetConstants.COOLBAR_OVERFLOW_INACTIVE, 
-                            path + "toolbar_overflow_hover.png" );
+                            path + "toolbar_overflow_hover.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.COOLBAR_OVERFLOW_ACTIVE, 
-                            path + "toolbar_overflow_hover_active.png" );
+                            path + "toolbar_overflow_hover_active.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.COOLBAR_BUTTON_BG, 
-                            path + "toolbarButtonBg.png" );
+                            path + "toolbarButtonBg.png" ); //$NON-NLS-1$
     layoutSet.addImagePath( ILayoutSetConstants.COOLBAR_ARROW, 
-                            path + "toolbar_arrow.png" );
+                            path + "toolbar_arrow.png" ); //$NON-NLS-1$
     layoutSet.addColor( ILayoutSetConstants.COOLBAR_OVERFLOW_COLOR, 
                         Graphics.getColor( 39, 157, 219 ) );
     FormData fdButton = new FormData();

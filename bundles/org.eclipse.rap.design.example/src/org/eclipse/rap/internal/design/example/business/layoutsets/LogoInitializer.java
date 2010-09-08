@@ -20,7 +20,7 @@ public class LogoInitializer implements ILayoutSetInitializer {
 
   public void initializeLayoutSet( final LayoutSet layoutSet ) {
     String path = ILayoutSetConstants.IMAGE_PATH_BUSINESS;
-    layoutSet.addImagePath( ILayoutSetConstants.LOGO, path + "logo.png" );
+    layoutSet.addImagePath( ILayoutSetConstants.LOGO, path + "logo.png" ); //$NON-NLS-1$
     
     // positions
     FormData fdLogo = new FormData();

@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
+import org.eclipse.rap.internal.design.example.Messages;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
 import org.eclipse.rap.ui.internal.preferences.SessionScope;
 import org.eclipse.rwt.graphics.Graphics;
@@ -51,7 +52,7 @@ import org.osgi.service.prefs.Preferences;
 
 public class PerspectiveSwitcherBuilder extends ElementBuilder {
   
-  private static final String RAP_PERSPECTIVES = "RAP_PERSPECTIVES";
+  private static final String RAP_PERSPECTIVES = "RAP_PERSPECTIVES"; //$NON-NLS-1$
   
   private Composite background;
   private Map perspectiveButtonMap;
@@ -89,7 +90,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
   {
     super( parent, subSetId );
     background = new Composite( parent, SWT.NONE );
-    background.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
+    background.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" ); //$NON-NLS-1$
     RowLayout layout = new RowLayout();
     background.setLayout( layout );
     layout.spacing = 3;
@@ -146,8 +147,8 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
     FormData buttonPos 
       = getLayoutSet().getPosition( ILayoutSetConstants.PERSP_BUTTON_POS );
     fdOther.top = buttonPos.top;
-    otherButton.setData( WidgetUtil.CUSTOM_VARIANT, "perspective" );
-    otherButton.setText( "other..." );   
+    otherButton.setData( WidgetUtil.CUSTOM_VARIANT, "perspective" ); //$NON-NLS-1$
+    otherButton.setText( Messages.get().PerspectiveSwitcherBuilder_Other );   
     IWorkbenchWindow activeWindow = workbench.getActiveWorkbenchWindow();
     final IWorkbenchAction perspectiveAction 
       = ActionFactory.OPEN_PERSPECTIVE_DIALOG.create( activeWindow );
@@ -174,13 +175,13 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
           }
         }
         parent.setBackgroundImage( bg );
-        button.setData( WidgetUtil.CUSTOM_VARIANT, "perspective" );
+        button.setData( WidgetUtil.CUSTOM_VARIANT, "perspective" ); //$NON-NLS-1$
       } else {
         for( int j = 0; j < children.length; j++ ) {
           children[ j ].setVisible( true );
         }
         parent.setBackgroundImage( bgActive );
-        button.setData( WidgetUtil.CUSTOM_VARIANT, "perspectiveActive" );
+        button.setData( WidgetUtil.CUSTOM_VARIANT, "perspectiveActive" ); //$NON-NLS-1$
       }
       parent.layout( true );
     }
@@ -234,7 +235,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
       fdRightBg.width = right.getBounds().width;
       
       final Button perspButton = new Button( buttonBg, SWT.PUSH | SWT.FLAT );
-      perspButton.setData( WidgetUtil.CUSTOM_VARIANT, "perspective" );
+      perspButton.setData( WidgetUtil.CUSTOM_VARIANT, "perspective" ); //$NON-NLS-1$
       FormData fdButton = new FormData();
       perspButton.setLayoutData( fdButton );
       fdButton.left = new FormAttachment( leftBg );      
@@ -258,7 +259,7 @@ public class PerspectiveSwitcherBuilder extends ElementBuilder {
       
       Menu menu = new Menu( perspButton );
       MenuItem item = new MenuItem( menu, SWT.PUSH );
-      item.setText( "close" );
+      item.setText( Messages.get().PerspectiveSwitcherBuilder_Close );
       item.setImage( getImage( ILayoutSetConstants.PERSP_CLOSE ) );
       item.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( SelectionEvent e ) {

@@ -57,7 +57,7 @@ public class CoolbarLayerBuilder extends ElementBuilder {
     }
     Composite layerParent = new Composite( parent, SWT.NONE );
     layerParent.setBackgroundMode( SWT.INHERIT_FORCE );
-    layerParent.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" );
+    layerParent.setData( WidgetUtil.CUSTOM_VARIANT, "compTrans" ); //$NON-NLS-1$
     layerParent.setLayout( new FormLayout() );
     FormData fdLayerParent = new FormData();
     layerParent.setLayoutData( fdLayerParent );

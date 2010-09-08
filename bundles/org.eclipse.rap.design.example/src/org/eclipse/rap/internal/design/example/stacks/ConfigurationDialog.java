@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
+import org.eclipse.rap.internal.design.example.Messages;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
 import org.eclipse.rap.internal.design.example.managers.ViewToolBarManager;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
@@ -139,7 +140,7 @@ public class ConfigurationDialog extends PopupDialog {
 
     // OK / Cancel buttons
     Button cancel = new Button( configComposite, SWT.PUSH );
-    cancel.setText( "Cancel" );
+    cancel.setText( Messages.get().ConfigurationDialog_Cancel );
     FormData fdCancel = new FormData();
     cancel.setLayoutData( fdCancel );
     fdCancel.bottom = new FormAttachment( 100, 0 );
@@ -152,7 +153,7 @@ public class ConfigurationDialog extends PopupDialog {
     } );
 
     Button ok = new Button( configComposite, SWT.PUSH );
-    ok.setText( "OK" );
+    ok.setText( Messages.get().ConfigurationDialog_Ok );
     FormData fdOK = new FormData();
     ok.setLayoutData( fdOK );
     fdOK.right = new FormAttachment( cancel, -OFFSET );
@@ -177,7 +178,7 @@ public class ConfigurationDialog extends PopupDialog {
       viewMenuVisChanged = viewMenuBox.getSelection();
       FormData fdViewMenuBox = new FormData();
       viewMenuBox.setLayoutData( fdViewMenuBox );
-      viewMenuBox.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" );
+      viewMenuBox.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" ); //$NON-NLS-1$
       if( lastImageLabel != null ) {
         fdViewMenuBox.top = new FormAttachment( lastImageLabel, OFFSET );
         fdViewMenuBox.left = new FormAttachment( lastImageLabel, OFFSET + 5 );
@@ -185,7 +186,7 @@ public class ConfigurationDialog extends PopupDialog {
         fdViewMenuBox.top = new FormAttachment( description, OFFSET );
         fdViewMenuBox.left = new FormAttachment( 0, OFFSET + 5 );
       }
-      viewMenuBox.setText( "viewmenu" );
+      viewMenuBox.setText( Messages.get().ConfigurationDialog_ViewMenu );
     }
   }
 
@@ -195,7 +196,7 @@ public class ConfigurationDialog extends PopupDialog {
     IToolBarManager manager = stackPresentation.getPartToolBarManager();
     description = null;
     description = new Label( container, SWT.NONE );
-    description.setText( "Visible actions" );
+    description.setText( Messages.get().ConfigurationDialog_VisibleActions );
     FormData fdActionDesc = new FormData();
     description.setLayoutData( fdActionDesc );
     if( viewMenuBox != null ) {
@@ -217,8 +218,8 @@ public class ConfigurationDialog extends PopupDialog {
               = ( IContributionItem ) item.getData();
             String itemId = contribItem.getId();
             Image icon = item.getImage();
-            String text = "";
-            if( item.getText() != null && !item.getText().equals( "" ) ) {
+            String text = ""; //$NON-NLS-1$
+            if( item.getText() != null && !item.getText().equals( "" ) ) { //$NON-NLS-1$
               text = item.getText();
             } else {
               text = item.getToolTipText();
@@ -248,7 +249,7 @@ public class ConfigurationDialog extends PopupDialog {
             fdCheck.left = new FormAttachment( imageLabel, OFFSET + 5 );
             fdCheck.top = fdImageLabel.top;
             check.setSelection( selected );
-            check.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" );
+            check.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" ); //$NON-NLS-1$
             actionButtonMap.put( itemId, check );
             actionList.add( itemId );
             lastImageLabel = imageLabel;
@@ -261,9 +262,10 @@ public class ConfigurationDialog extends PopupDialog {
   public int open() {    
     int result = super.open();
     Shell shell = getShell();
-    shell.setData( WidgetUtil.CUSTOM_VARIANT, "confDialog" );
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, "confDialog" ); //$NON-NLS-1$
     shell.setBackgroundMode( SWT.INHERIT_NONE );
-    shell.setText( "Configuration for " + site.getSelectedPart().getName() );
+    shell.setText( Messages.get().ConfigurationDialog_ConfigurationFor 
+                   + site.getSelectedPart().getName() );
     String configDialogIcon = ILayoutSetConstants.CONFIG_DIALOG_ICON;
     shell.setImage( builder.getImage( configDialogIcon ) );
     shell.setActive();
@@ -277,7 +279,6 @@ public class ConfigurationDialog extends PopupDialog {
     ConfigurableStack stackPresentation
       = ( ConfigurableStack ) action.getStackPresentation();
     String paneId = stackPresentation.getPaneId( site );
-
     for( int i = 0; i < actionList.size(); i++ ) {
       String actionId = ( String ) actionList.get( i );
       Button check = ( Button ) actionButtonMap.get( actionId );
