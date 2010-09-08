@@ -215,7 +215,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     setHeaderHeight : function( value ) {
-      this._headerHeight = value; 
+      this._headerHeight = value;
+      this._layoutX();
+      this._layoutY();
       this._scheduleUpdate( true );
     },
 
