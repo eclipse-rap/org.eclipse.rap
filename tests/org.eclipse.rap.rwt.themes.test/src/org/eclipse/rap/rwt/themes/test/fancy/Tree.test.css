@@ -15,6 +15,10 @@ TreeItem {
   color: #4a4a4a;
 }
 
+TreeItem:hover {
+  background-color: #e9f3d2;
+}
+
 TreeItem:selected {
   background-color: #abe033;
   color: #ffffff;
@@ -34,7 +38,7 @@ TreeColumn {
 
 TreeColumn:hover {
   background-image: url( "theme/fancy/icons/table-column-hover.png" );
-  border-bottom:none;
+  border-bottom: none;
 }
 
 TreeColumn-SortIndicator {
@@ -47,4 +51,89 @@ TreeColumn-SortIndicator:up {
 
 TreeColumn-SortIndicator:down {
   background-image: url( theme/fancy/icons/sort-indicator-down.png );
+}
+
+Tree-Indent {
+  width: 16px;
+  background-image: none;
+}
+
+Tree-Indent:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Tree-Indent:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Tree-Indent:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Tree-Indent:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+Tree-Indent:line {
+  background-image: none;
+}
+
+Tree-Indent:first {
+  background-image: none;
+}
+
+Tree-Indent:first:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Tree-Indent:first:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Tree-Indent:first:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Tree-Indent:first:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+Tree-Indent:last {
+  background-image: none;
+}
+
+Tree-Indent:last:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Tree-Indent:last:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Tree-Indent:last:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Tree-Indent:last:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
+}
+
+Tree-Indent:first:last {
+  background-image: none;
+}
+
+Tree-Indent:first:last:collapsed {
+  background-image: url( theme/fancy/icons/tree-collapsed.png );
+}
+
+Tree-Indent:first:last:expanded {
+  background-image: url( theme/fancy/icons/tree-expanded.png );
+}
+
+Tree-Indent:first:last:collapsed:hover {
+  background-image: url( theme/fancy/icons/tree-collapsed-hover.png );
+}
+
+Tree-Indent:first:last:expanded:hover {
+  background-image: url( theme/fancy/icons/tree-expanded-hover.png );
 }
