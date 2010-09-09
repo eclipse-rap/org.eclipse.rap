@@ -74,10 +74,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var div = document.createElement( "div" );
       var touch = this.createTouch( div, 3, 6 );
       assertTrue( touch instanceof Touch );
-      // Does not work due to browser:
-      //assertEquals( 3, touch.screenX );
-      //assertEquals( 6, touch.screenY );
-      //assertIdentical( div, touch.target );
+      assertEquals( 3, touch.screenX );
+      assertEquals( 6, touch.screenY );
+      assertIdentical( div, touch.target );
     },
 
     testCreateTouchList : function() {
@@ -673,17 +672,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
     // Helper
     
     createTouch : function( target, x, y ) {
-      // Can not overwrite fields of a touch-instance:
-      return new Touch();
+      // TODO [tb] : identifier, page vs. screen
+      var result = document.createTouch( window, //view
+                                         target,
+                                         1, //identifier
+                                         x, //pageX,
+                                         y, //pageY,
+                                         x, //screenX,
+                                         y //screenY
+      );
+      return result;
     },
     
     createTouchList : function( touches ) {
-      // Note: "TouchList.prototype.constructor.apply" does NOT work. 
       var args = [];
       for( var i = 0; i < touches.length; i++ ) {
         args.push( "touches[ " + i + "]" );
       }
-      return eval( "new TouchList(" + args.join() + ")" );
+      return eval( "document.createTouchList(" + args.join() + ")" );
     },
     
     createTouchEvent : function( type, touchList ) {
@@ -759,7 +765,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
           number = touchesNumberOrArray;
         }
         while( touches.length < number ) { 
-          touches.push( new Touch() );
+          touches.push( this.createTouch( node, 0, 0 ) );
         }
       }
       var touchList = this.createTouchList( touches );
@@ -793,30 +799,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       // reports all touches to have ended, even if only one of several ended.
     },
     
-    // TODO [tb] : use "real" touch-objects as ducmented in the 
-    // Safari DOM Additions Reference 
     touchAt : function( node, type, x, y ) {
-      var touch = {
-        "target" : node,
-        "clientX" : x,
-        "clientY" : y
-      };
-      var touchList = {
-        "item" : function( i ){
-          return i === 0 ? touch : null;
-        },
-        "length" : 1
-      };
-      var event = {
-        "preventDefault" : function(){ this.prevented = true; },
-        "prevented" : false,
-        "touches" : touchList,
-        "target" : node,
-        "type" : type
-      };
-      if( this._isValidTouchTarget( node ) ) {
-        org.eclipse.rwt.MobileWebkitSupport.__onTouchEvent( event );
-      }
+      this.touch( node, type, [ this.createTouch( node, x, y ) ] );
     },
     
     fakeFullscreen : function() {
