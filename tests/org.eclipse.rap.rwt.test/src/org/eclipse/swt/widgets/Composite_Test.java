@@ -17,6 +17,8 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
@@ -116,5 +118,23 @@ public class Composite_Test extends TestCase {
     Point preferredSize = composite.computeSize( SWT.DEFAULT, SWT.DEFAULT );
     assertEquals( 304, preferredSize.x ); // 3 * 100 + border
     assertEquals( 54, preferredSize.y ); // 50 + border
+  }
+
+  public void testSetFocus() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.setVisible( true );
+    Composite composite = new Composite( shell, SWT.BORDER );
+    Text text = new Text( composite, SWT.SINGLE );
+    final StringBuffer log = new StringBuffer();
+    text.addFocusListener( new FocusAdapter() {
+      public void focusGained( FocusEvent event ) {
+        log.append( "focusGained" );
+      }
+    } );
+    assertEquals( "", log.toString() );
+    composite.setFocus();
+    assertEquals( "focusGained", log.toString() );
   }
 }
