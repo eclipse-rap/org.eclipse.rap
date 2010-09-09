@@ -2285,9 +2285,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setItemMetrics( 0, 0, 30, 0, 0, 0, 400 );
       testUtil.flush();
       tree.setScrollLeft( 40 );
-      var line1 = tree.getChildren()[ 4 ];
       testUtil.flush();
-      assertFalse( line1.getVisibility() );
+      assertEquals( 4, tree.getChildren().length );
+      tree.destroy();
+    },
+    
+    testGridLinesScrolledOutChangedColumnOrder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setWidth( 170 );
+      tree.setColumnCount( 3 );
+      tree.setLinesVisible( true );
+      tree.setItemMetrics( 0, 0, 30, 0, 0, 0, 400 );
+      tree.setItemMetrics( 1, 200, 30, 0, 0, 0, 400 );
+      tree.setItemMetrics( 2, 40, 30, 0, 0, 0, 400 );
+      testUtil.flush();
+      var line1 = tree.getChildren()[ 4 ];
+      var line2 = tree.getChildren()[ 5 ];
+      assertEquals( 29, line1.getLeft() )
+      assertEquals( 69, line2.getLeft() )
+      testUtil.flush();
       tree.destroy();
     },
     

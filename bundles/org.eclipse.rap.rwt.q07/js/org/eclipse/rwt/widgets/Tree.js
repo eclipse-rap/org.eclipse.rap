@@ -1269,12 +1269,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._layoutX();
       this._layoutY();
     },
-    
+
     _renderGridVertical : function() {
       var lineNr = 0;
       if( this._linesVisible ) {
-        while( this._renderVerticalGridline( lineNr ) ) {
-          lineNr++;
+        for( var columnNr = 0; columnNr < this._columnCount; columnNr++ ) {
+          lineNr = this._renderVerticalGridline( columnNr, lineNr );          
         }
       }
       while( this._vertGridLines.length > lineNr ) {
@@ -1282,26 +1282,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
     
-    _renderVerticalGridline : function( lineNr ) {
-      var result = false;
-      if( lineNr < this._columnCount ) {
-        var clientWidth = this._clientArea.getWidth();
-        var left = this._itemLeft[ lineNr ] + this._itemWidth[ lineNr ] - 1;
-        left -= this._horzScrollBar.getValue(); 
-        if( left < clientWidth ) {
-          result = true;
-          var line = this._getVerticalGridline( lineNr );
-          if( left > 0 ) {
-            line.setLeft( left );
-            line.setTop( this._clientArea.getTop() );
-            line.setHeight( this._clientArea.getHeight() );
-            line.setVisibility( true );
-          } else {
-            line.setVisibility( false );
-          }
-        }
+    _renderVerticalGridline : function( columnNr, lineNr ) {
+      var newLineNr = lineNr;
+      var clientWidth = this._clientArea.getWidth();
+      var left = this._itemLeft[ columnNr ] + this._itemWidth[ columnNr ] - 1;
+      left -= this._horzScrollBar.getValue(); 
+      if( left > 0 && left < clientWidth ) {
+        var line = this._getVerticalGridline( lineNr );
+        line.setLeft( left );
+        line.setTop( this._clientArea.getTop() );
+        line.setHeight( this._clientArea.getHeight() );
+        newLineNr++
       }
-      return result;
+      return newLineNr;
     },
     
     _getVerticalGridline : function( number ) {
