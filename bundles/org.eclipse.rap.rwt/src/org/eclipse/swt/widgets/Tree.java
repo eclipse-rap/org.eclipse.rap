@@ -1803,7 +1803,7 @@ public class Tree extends Composite {
   }
 
   int getVisualCellLeft( final int index, final TreeItem item ) {
-    int result = getCellLeft( index );
+    int result = getCellLeft( index ) - scrollLeft;
     if( isTreeColumn( index ) ) {
       result += getIndentionOffset( item );
     }

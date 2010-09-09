@@ -34,11 +34,11 @@ public class TreeItem extends Item {
   private final class TreeItemAdapter
     implements ITreeItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
   {
-    
+
     public boolean isParentDisposed() {
       return TreeItem.this.parent.isDisposed();
     }
-    
+
     public Color getUserBackgound() {
       return background;
     }
@@ -408,11 +408,11 @@ public class TreeItem extends Item {
    * @since 1.0
    */
   public Rectangle getBounds( final int columnIndex ) {
+    checkWidget();
     return getBounds( columnIndex, true );
   }
 
   Rectangle getBounds( final int columnIndex, final boolean checkData ) {
-    checkWidget();
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     if( isVisible() && isValidColumn( columnIndex ) ) {
       int left = parent.getVisualCellLeft( columnIndex, this );
@@ -424,17 +424,17 @@ public class TreeItem extends Item {
     }
     return result;
   }
-  
+
   private boolean isValidColumn( final int index ) {
     int columnCount = parent.getColumnCount();
-    return    ( columnCount == 0 && index == 0 ) 
+    return    ( columnCount == 0 && index == 0 )
            || ( index >= 0 && index < columnCount );
   }
-  
+
   private boolean isVisible() {
-    return getParentItem() == null || getParentItem().getExpanded();    
+    return getParentItem() == null || getParentItem().getExpanded();
   }
-  
+
   int getItemTop() {
     int headerHeight = parent.getHeaderHeight();
     int itemHeight = parent.getItemHeight();
@@ -981,7 +981,7 @@ public class TreeItem extends Item {
    */
   public Rectangle getTextBounds( final int index ) {
     checkWidget();
-    Rectangle result = new Rectangle( 0, 0, 0, 0 );    
+    Rectangle result = new Rectangle( 0, 0, 0, 0 );
     if( isVisible() && isValidColumn( index ) ) {
       result.x = parent.getVisualTextLeft( index, this );
       result.y = getItemTop();
@@ -1122,11 +1122,8 @@ public class TreeItem extends Item {
       Point size = parent.getItemImageSize( columnIndex );
       result.width = size.x;
       result.height = size.y;
-      result.x = parent.getCellLeft( columnIndex ); 
+      result.x = parent.getVisualCellLeft( columnIndex, this );
       result.x += parent.getImageOffset( columnIndex );
-      if( parent.isTreeColumn( columnIndex ) ) {
-        result.x += parent.getIndentionOffset( this );
-      }
       // SWT behavior on windows gives the correct y value
       // On Gtk the y value is always the same (eg. 1)
       // we emulate the default windows behavior here
@@ -1453,7 +1450,7 @@ public class TreeItem extends Item {
     }
     return itemHolder.size();
   }
-  
+
   /**
    * Searches the receiver's list starting at the first item (index 0) until an
    * item is found that is equal to the argument, and returns the index of that

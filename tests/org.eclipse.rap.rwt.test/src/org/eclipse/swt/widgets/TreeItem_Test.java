@@ -824,6 +824,32 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 32, sub2.getBounds().x );
   }
 
+  public void testGetBoundsWithColumnsAndScrolling() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 150, 200 );
+    TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
+    column1.setText( "foo" );
+    column1.setWidth( 100 );
+    TreeColumn column2 = new TreeColumn( tree, SWT.NONE );
+    column2.setText( "foo" );
+    column2.setWidth( 100 );
+    TreeColumn column3 = new TreeColumn( tree, SWT.NONE );
+    column3.setText( "foo" );
+    column3.setWidth( 100 );
+    TreeItem rootItem = new TreeItem( tree, 0 );
+    TreeItem subItem = new TreeItem( rootItem, 0 );
+    rootItem.setExpanded( true );
+    tree.showColumn( column3 );
+    assertEquals( -134, rootItem.getBounds( 0 ).x );
+    assertEquals( -50, rootItem.getBounds( 1 ).x );
+    assertEquals( 50, rootItem.getBounds( 2 ).x );
+    assertEquals( -118, subItem.getBounds( 0 ).x );
+    assertEquals( -50, subItem.getBounds( 1 ).x );
+    assertEquals( 50, subItem.getBounds( 2 ).x );
+  }
+
   public void testTreeItemAdapter() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -909,7 +935,7 @@ public class TreeItem_Test extends TestCase {
     item2.setImage( 0, image );
     assertTrue( col0Bounds.y < item2.getImageBounds( 0 ).y );
   }
-  
+
   public void testGetImageBoundsIndexOutOfBoundsBug() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -1118,7 +1144,7 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 1, root.indexOf( treeItem ) );
     assertEquals( 0, root.indexOf( treeItem2 ) );
   }
-  
+
   //////////
   // VIRTUAL
 
@@ -1135,7 +1161,7 @@ public class TreeItem_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testVirtualGetItemDoesNotFireSetDataEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final LoggingListener log = new LoggingListener();
@@ -1170,10 +1196,10 @@ public class TreeItem_Test extends TestCase {
         item.setGrayed( true );
         item.setImage( image );
       }
-    } ); 
+    } );
     assertTrue( tree.getItem( 93 ).getGrayed() );
     assertTrue( tree.getItem( 94 ).getChecked() );
-    assertEquals( font, tree.getItem( 96 ).getFont() ); 
+    assertEquals( font, tree.getItem( 96 ).getFont() );
     assertEquals( color, tree.getItem( 97 ).getForeground() );
     assertEquals( "foo", tree.getItem( 98 ).getText() );
     assertEquals( color, tree.getItem( 99 ).getBackground() );
@@ -1214,13 +1240,13 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, log.size() );
     assertTrue( tree.getItem( 99 ).isCached() );
   }
-  
+
   public void testVirtualSetter() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Color color = display.getSystemColor( SWT.COLOR_RED );
     Font font = new Font( display, new FontData( "serif", 10, 0 ) );
-    Image image = display.getSystemImage( SWT.ICON_ERROR );    
+    Image image = display.getSystemImage( SWT.ICON_ERROR );
     final Shell shell = new Shell( display );
     final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     final LoggingListener log = new LoggingListener();
@@ -1230,41 +1256,41 @@ public class TreeItem_Test extends TestCase {
     tree.setSize( 100, 100 );
     log.clear();
 
-    tree.getItem( 92 ).setForeground( 0, color ); 
+    tree.getItem( 92 ).setForeground( 0, color );
     assertTrue( tree.getItem( 92 ).isCached() );
     assertEquals( color, tree.getItem( 92 ).getForeground( 0 ) );
 
-    tree.getItem( 93 ).setGrayed( true ); 
+    tree.getItem( 93 ).setGrayed( true );
     assertTrue( tree.getItem( 93 ).isCached() );
     assertTrue( tree.getItem( 93 ).getGrayed() );
-    
+
     tree.getItem( 94 ).setChecked( true );
     assertTrue( tree.getItem( 94 ).isCached() );
     assertTrue( tree.getItem( 94 ).getChecked() );
-    
+
     tree.getItem( 95 ).setImage( image );
     assertTrue( tree.getItem( 95 ).isCached() );
     assertEquals( image, tree.getItem( 95 ).getImage() );
-    
+
     tree.getItem( 96 ).setFont( font );
     assertTrue( tree.getItem( 96 ).isCached() );
-    assertEquals( font, tree.getItem( 96 ).getFont() ); 
-    
-    tree.getItem( 97 ).setForeground( color ); 
+    assertEquals( font, tree.getItem( 96 ).getFont() );
+
+    tree.getItem( 97 ).setForeground( color );
     assertTrue( tree.getItem( 97 ).isCached() );
     assertEquals( color, tree.getItem( 97 ).getForeground() );
-    
+
     tree.getItem( 98 ).setText( "foo" );
     assertTrue( tree.getItem( 98 ).isCached() );
     assertEquals( "foo", tree.getItem( 98 ).getText() );
-    
+
     tree.getItem( 99 ).setBackground( color );
     assertTrue( tree.getItem( 99 ).isCached() );
     assertEquals( color, tree.getItem( 99 ).getBackground() );
-    
+
     assertEquals( 0, log.size() );
   }
-  
+
   public void testVirtualNonCheckTreeSetter() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1275,7 +1301,7 @@ public class TreeItem_Test extends TestCase {
     tree.getItem( 93 ).setGrayed( true );
     assertFalse( tree.getItem( 93 ).isCached() );
     tree.getItem( 94 ).setChecked( true );
-    assertFalse( tree.getItem( 94 ).isCached() );    
+    assertFalse( tree.getItem( 94 ).isCached() );
   }
 
   public void testVirtualCheckTreeSetter() {
@@ -1288,9 +1314,9 @@ public class TreeItem_Test extends TestCase {
     tree.getItem( 93 ).setGrayed( false );
     assertFalse( tree.getItem( 93 ).isCached() );
     tree.getItem( 94 ).setChecked( false );
-    assertFalse( tree.getItem( 94 ).isCached() );    
+    assertFalse( tree.getItem( 94 ).isCached() );
   }
-  
+
   public void testVirtualSetItemCount() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1360,7 +1386,7 @@ public class TreeItem_Test extends TestCase {
     parentItem.clear( 0, false );
     assertFalse( item.isCached() );
   }
-  
+
   public void testVirtualSetDataEventsOnSetExpand() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1384,7 +1410,7 @@ public class TreeItem_Test extends TestCase {
 
   /////////
   // Helper
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

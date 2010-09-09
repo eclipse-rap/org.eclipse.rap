@@ -32,24 +32,24 @@ import org.eclipse.swt.widgets.*;
  * 			subItem.setText("item " + i + " " + j);
  * 		}
  * 	}
- * 	
+ *
  * 	final TreeEditor editor = new TreeEditor(tree);
  * 	//The editor must have the same size as the cell and must
  * 	//not be any smaller than 50 pixels.
  * 	editor.horizontalAlignment = SWT.LEFT;
  * 	editor.grabHorizontal = true;
  * 	editor.minimumWidth = 50;
- * 	
+ *
  * 	tree.addSelectionListener(new SelectionAdapter() {
  * 		public void widgetSelected(SelectionEvent e) {
  * 			// Clean up any previous editor control
  * 			Control oldEditor = editor.getEditor();
  * 			if (oldEditor != null) oldEditor.dispose();
- * 	
+ *
  * 			// Identify the selected row
  * 			TreeItem item = (TreeItem)e.item;
  * 			if (item == null) return;
- * 	
+ *
  * 			// The control that will be the editor must be a child of the Tree
  * 			Text newEditor = new Text(tree, SWT.NONE);
  * 			newEditor.setText(item.getText());
@@ -65,7 +65,7 @@ import org.eclipse.swt.widgets.*;
  * 		}
  * 	});
  * </pre></code>
- * 
+ *
  * @since 1.0
  */
 public class TreeEditor extends ControlEditor {
@@ -80,7 +80,7 @@ public class TreeEditor extends ControlEditor {
 
   /**
    * Creates a TreeEditor for the specified Tree.
-   * 
+   *
    * @param tree the Tree Control above which this editor will be displayed
    */
   public TreeEditor( Tree tree ) {
@@ -141,8 +141,12 @@ public class TreeEditor extends ControlEditor {
       return new Rectangle( 0, 0, 0, 0 );
     Rectangle cell = item.getBounds( column );
     Rectangle rect = item.getImageBounds( column );
-    cell.x = rect.x + rect.width;
-    cell.width -= rect.width;
+    // [if] Fix cell editor position when cell padding is set on the tree.
+    // See TableEditor and bug 269065
+    if( rect.width > 0 ) {
+      cell.width -= rect.width + rect.x - cell.x;
+      cell.x = rect.x + rect.width;
+    }
     Rectangle area = tree.getClientArea();
     if( cell.x < area.x + area.width ) {
       if( cell.x + cell.width > area.x + area.width ) {
@@ -209,7 +213,7 @@ public class TreeEditor extends ControlEditor {
   /**
    * Returns the zero based index of the column of the cell being tracked by
    * this editor.
-   * 
+   *
    * @return the zero based index of the column of the cell being tracked by
    *         this editor
    */
@@ -219,7 +223,7 @@ public class TreeEditor extends ControlEditor {
 
   /**
    * Returns the TreeItem for the row of the cell being tracked by this editor.
-   * 
+   *
    * @return the TreeItem for the row of the cell being tracked by this editor
    */
   public TreeItem getItem() {
@@ -243,7 +247,7 @@ public class TreeEditor extends ControlEditor {
   /**
    * Sets the zero based index of the column of the cell being tracked by this
    * editor.
-   * 
+   *
    * @param column the zero based index of the column of the cell being tracked
    *          by this editor
    */
@@ -282,7 +286,7 @@ public class TreeEditor extends ControlEditor {
    * <p>
    * Note: The Control provided as the editor <b>must</b> be created with its
    * parent being the Tree control specified in the TreeEditor constructor.
-   * 
+   *
    * @param editor the Control that is displayed above the cell being edited
    * @param item the TreeItem for the row of the cell being tracked by this
    *          editor
@@ -306,7 +310,7 @@ public class TreeEditor extends ControlEditor {
    * <p>
    * Note: The Control provided as the editor <b>must</b> be created with its
    * parent being the Tree control specified in the TreeEditor constructor.
-   * 
+   *
    * @param editor the Control that is displayed above the cell being edited
    * @param item the TreeItem for the row of the cell being tracked by this
    *          editor
