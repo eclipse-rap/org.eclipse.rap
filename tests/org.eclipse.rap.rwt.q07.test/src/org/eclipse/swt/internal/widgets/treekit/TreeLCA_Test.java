@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -18,8 +21,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -95,7 +97,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.clearPreserved();
     display.dispose();
   }
-  
+
   public void testRenderColumnCount() throws Exception {
     Fixture.fakeResponseWriter();
     Display display = new Display();
@@ -167,7 +169,7 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "setLinesVisible( true )" ) == -1 );
     display.dispose();
   }
-  
+
   public void testRenderHorizontalScrollBar() throws Exception {
     Fixture.fakeResponseWriter();
     Display display = new Display();
@@ -214,7 +216,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.clearPreserved();
     display.dispose();
   }
-  
+
   public void testGetItemMetricsImageWidth() {
     Display display = new Display();
     Image image1 = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -340,7 +342,7 @@ public class TreeLCA_Test extends TestCase {
     assertEquals( 205, metrics[ 1 ].textLeft );
     item1.setImage( 1, image );
     metrics = TreeLCA.getItemMetrics( tree );
-    assertEquals( 308, metrics[ 1 ].textLeft );    
+    assertEquals( 308, metrics[ 1 ].textLeft );
   }
 
   public void testGetItemMetricsTextLeftWithCheckbox() {
@@ -359,7 +361,7 @@ public class TreeLCA_Test extends TestCase {
     item1.setImage( image );
     int expected = 121;
     ItemMetrics[] metrics = TreeLCA.getItemMetrics( tree );
-    assertEquals( expected, metrics[ 0 ].textLeft );    
+    assertEquals( expected, metrics[ 0 ].textLeft );
   }
 
   public void testGetItemMetricsTextWidthWithCheckbox() {
@@ -378,7 +380,7 @@ public class TreeLCA_Test extends TestCase {
     item1.setImage( image );
     int expected = 74;
     ItemMetrics[] metrics = TreeLCA.getItemMetrics( tree );
-    assertEquals( expected, metrics[ 0 ].textWidth );    
+    assertEquals( expected, metrics[ 0 ].textWidth );
   }
 
   public void testPreserveValues() {
@@ -422,7 +424,7 @@ public class TreeLCA_Test extends TestCase {
     child2.setText( "child2" );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
-    Integer columnCount 
+    Integer columnCount
       = ( Integer )adapter.getPreserved( TreeLCA.PROP_COLUMN_COUNT );
     assertEquals( new Integer( 2 ), columnCount );
     Fixture.clearPreserved();
@@ -430,7 +432,7 @@ public class TreeLCA_Test extends TestCase {
     child1.setWidth( 150 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
-    ItemMetrics[] metrics 
+    ItemMetrics[] metrics
       = ( ItemMetrics[] )adapter.getPreserved( TreeLCA.PROP_ITEM_METRICS );
     assertEquals( 150, metrics[ 1 ].left );
     Fixture.clearPreserved();
@@ -439,7 +441,7 @@ public class TreeLCA_Test extends TestCase {
     item.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
-    Integer itemHeight 
+    Integer itemHeight
       = ( Integer )adapter.getPreserved( TreeLCA.PROP_ITEM_HEIGHT );
     assertEquals( new Integer( 50 ) , itemHeight );
     Fixture.clearPreserved();
@@ -683,7 +685,51 @@ public class TreeLCA_Test extends TestCase {
     //assertEquals( 80, adapter.getScrollTop() );
     assertEquals( 0, adapter.getScrollLeft() );
   }
-  
+
+  public void testScrollbarsSelectionEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final ArrayList log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    SelectionListener listener = new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        log.add( "scrollbarSelected" );
+      }
+    };
+    tree.getHorizontalBar().addSelectionListener( listener );
+    Fixture.fakeNewRequest();
+    String tableId = WidgetUtil.getId( tree );
+    Fixture.fakeRequestParam( tableId + ".scrollLeft", "10" );
+    Fixture.readDataAndProcessAction( tree );
+    assertEquals( 1, log.size() );
+    assertEquals( 10, tree.getHorizontalBar().getSelection() );
+    log.clear();
+    tree.getVerticalBar().addSelectionListener( listener );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( tableId + ".scrollLeft", "10" );
+    Fixture.fakeRequestParam( tableId + ".topItemIndex", "10" );
+    Fixture.readDataAndProcessAction( tree );
+    assertEquals( 2, log.size() );
+    assertEquals( 10 * tree.getItemHeight(),
+                  tree.getVerticalBar().getSelection());
+  }
+
+  public void testWriteScrollbarsSelectionListener() throws IOException {
+    Fixture.fakeNewRequest();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    SelectionAdapter listener = new SelectionAdapter() {
+    };
+    tree.getHorizontalBar().addSelectionListener( listener );
+    TreeLCA lca = new TreeLCA();
+    lca.renderChanges( tree );
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setHasScrollBarsSelectionListener( true );";
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
   // TODO [tb] : Test for fake redraw calls checkAllData
 
   protected void setUp() throws Exception {

@@ -63,6 +63,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._dummyColumn = new qx.ui.basic.Atom();
     this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
     this._vertScrollBar = new qx.ui.basic.ScrollBar( false );
+    this._hasScrollBarsSelectionListener = false;
     this._rows = this._clientArea.getChildren();
     this._vertGridLines = [];
     this.add( this._columnArea );
@@ -135,11 +136,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var dragBlocker = function( event ) { event.stopPropagation(); };
       var preferredWidth = this._vertScrollBar.getPreferredBoxWidth()
       var preferredHeight = this._horzScrollBar.getPreferredBoxHeight();
+      this._horzScrollBar.setZIndex( 1e8 );
       this._horzScrollBar.setVisibility( false );
       this._horzScrollBar.setLeft( 0 );
       this._horzScrollBar.setMergeEvents( false );
       this._horzScrollBar.setHeight( preferredHeight );
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
+      this._vertScrollBar.setZIndex( 1e8 );
       this._vertScrollBar.setVisibility( false );
       this._vertScrollBar.setWidth( preferredWidth );
       this._vertScrollBar.setMergeEvents( false );
@@ -160,6 +163,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._dummyColumn.setLabel( "&nbsp;" );
       this._dummyColumn.addState( "dummy" );
       this._columnArea.add( this._dummyColumn );
+    },
+    
+    _createSendRequestTimer : function() {
+      if( this._sendRequestTimer === null ) {
+        var timer = new qx.client.Timer( 400 );
+        var req = org.eclipse.swt.Request.getInstance();
+        timer.addEventListener( "interval", req.send, req );
+        req.addEventListener( "send", timer.stop, timer );
+        this._sendRequestTimer = timer;
+      }
     },
     
     /////////////////////////////////
@@ -195,12 +208,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     setIsVirtual : function( value ) {
       this._isVirtual = value;
-      if( value && this._sendRequestTimer === null ) {
-        var timer = new qx.client.Timer( 400 );
-        var req = org.eclipse.swt.Request.getInstance();
-        timer.addEventListener( "interval", req.send, req );
-        req.addEventListener( "send", timer.stop, timer );
-        this._sendRequestTimer = timer;
+      if( value ) {
+        this._createSendRequestTimer();
       }
     },
 
@@ -977,7 +986,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         }
       }
       return result;
-   },
+    },
 
     _scrollIntoView : function( index ) {
       if( index < this._topItemIndex ) {
@@ -1016,6 +1025,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         layouter.layoutChild( this._rows[ i ], changes );
       }
     },
+    
+    setHasScrollBarsSelectionListener : function( value ) {
+      this._hasScrollBarsSelectionListener = value;
+      if( value ) {
+        this._createSendRequestTimer();
+      }
+    },
         
     //////////////
     // Send events
@@ -1046,7 +1062,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
       req.addParameter( id + ".topItemIndex", this._topItemIndex );
-      if( this._isVirtual ) {
+      if( this._isVirtual || this._hasScrollBarsSelectionListener ) {
         this._sendRequestTimer.start();
       }
     },
@@ -1058,7 +1074,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var id = wm.findIdByWidget( this );
         req.addParameter( id + ".scrollLeft", this._horzScrollBar.getValue() );
       }
-      if( this._isVirtual ) {
+      if( this._isVirtual || this._hasScrollBarsSelectionListener ) {
         this._sendRequestTimer.start();
       }
     },

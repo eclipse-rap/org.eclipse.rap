@@ -127,22 +127,28 @@ public class ControlEditor {
     for( int i = 0; i < EVENTS.length; i++ ) {
       parent.addListener( EVENTS[ i ], controlListener );
     }
+    scrollbarListener = new Listener() {
+      public void handleEvent( Event e ) {
+        scroll( e );
+      }
+    };
+    ScrollBar hBar = null;
+    ScrollBar vBar = null;
     // TODO: [if] Remove instance check when ScrollBars are moved to Scrollable
     if( parent instanceof Table ) {
       Table table = ( Table )parent;
-      scrollbarListener = new Listener() {
-        public void handleEvent( Event e ) {
-          scroll( e );
-        }
-      };
-      ScrollBar hBar = table.getHorizontalBar();
-      if( hBar != null ) {
-        hBar.addListener( SWT.Selection, scrollbarListener );
-      }
-      ScrollBar vBar = table.getVerticalBar();
-      if( vBar != null ) {
-        vBar.addListener( SWT.Selection, scrollbarListener );
-      }
+      hBar = table.getHorizontalBar();
+      vBar = table.getVerticalBar();
+    } else if( parent instanceof Tree ) {
+      Tree tree = ( Tree )parent;
+      hBar = tree.getHorizontalBar();
+      vBar = tree.getVerticalBar();
+    }
+    if( hBar != null ) {
+      hBar.addListener( SWT.Selection, scrollbarListener );
+    }
+    if( vBar != null ) {
+      vBar.addListener( SWT.Selection, scrollbarListener );
     }
   }
 
@@ -191,16 +197,22 @@ public class ControlEditor {
         parent.removeListener( EVENTS[ i ], controlListener );
       }
       // TODO: [if] Remove instance check when ScrollBars are moved to Scrollable
+      ScrollBar hBar = null;
+      ScrollBar vBar = null;
       if( parent instanceof Table ) {
         Table table = ( Table )parent;
-        ScrollBar hBar = table.getHorizontalBar();
-        if( hBar != null ) {
-          hBar.removeListener( SWT.Selection, scrollbarListener );
-        }
-        ScrollBar vBar = table.getVerticalBar();
-        if( vBar != null ) {
-          vBar.removeListener( SWT.Selection, scrollbarListener );
-        }
+        hBar = table.getHorizontalBar();
+        vBar = table.getVerticalBar();
+      } else if( parent instanceof Tree ) {
+        Tree tree = ( Tree )parent;
+        hBar = tree.getHorizontalBar();
+        vBar = tree.getVerticalBar();
+      }
+      if( hBar != null ) {
+        hBar.removeListener( SWT.Selection, scrollbarListener );
+      }
+      if( vBar != null ) {
+        vBar.removeListener( SWT.Selection, scrollbarListener );
       }
     }
     parent = null;

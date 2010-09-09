@@ -40,7 +40,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
   static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
   static final String PROP_ITEM_METRICS = "itemMetrics";
   static final String PROP_LINES_VISIBLE = "linesVisible";
-  
+  static final String PROP_SCROLLBARS_SELECTION_LISTENER
+    = "scrollBarsSelectionListeners";
+
   private static final Integer DEFAULT_SCROLL_LEFT = new Integer( 0 );
 
   public void preserveValues( final Widget widget ) {
@@ -63,6 +65,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TOP_ITEM_INDEX, new Integer( getTopItemIndex( tree ) ) );
     adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( tree ) );
     adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( tree ) );
+    adapter.preserve( PROP_SCROLLBARS_SELECTION_LISTENER,
+                      hasScrollBarsSelectionListener( tree ) );
     WidgetLCAUtil.preserveCustomVariant( tree );
   }
 
@@ -106,7 +110,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {
       writer.set( "isVirtual", true );
     }
-    writeIndentionWidth( tree );    
+    writeIndentionWidth( tree );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -115,12 +119,13 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writeItemHeight( tree );
     writeItemMetrics( tree );
     // NOTE : Client currently requires itemMetrics before columnCount
-    writeColumnCount( tree );  
+    writeColumnCount( tree );
     writeLinesVisible( tree );
-    writeTreeColumn( tree );   
+    writeTreeColumn( tree );
     writeTopItem( tree );
     writeScrollBars( tree );
     updateSelectionListener( tree );
+    writeScrollBarsSelectionListener( tree );
     writeHeaderHeight( tree );
     writeHeaderVisible( tree );
     writeScrollLeft( tree );
@@ -136,7 +141,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     int evtId = ControlEvent.CONTROL_RESIZED;
     ControlEvent evt = new ControlEvent( control, evtId );
     evt.processEvent();
-  } 
+  }
 
   private static void processWidgetSelectedEvent( final Tree tree ) {
     HttpServletRequest request = ContextProvider.getRequest();
@@ -203,8 +208,10 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static void readScrollLeft( final Tree tree ) {
     String left = WidgetLCAUtil.readPropertyValue( tree, "scrollLeft" );
     if( left != null ) {
+      int leftOffset = parsePosition( left );
       final ITreeAdapter treeAdapter = getTreeAdapter( tree );
-      treeAdapter.setScrollLeft( parsePosition( left ) );
+      treeAdapter.setScrollLeft( leftOffset );
+      processScrollBarSelection( tree.getHorizontalBar(), leftOffset );
     }
   }
 
@@ -213,10 +220,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
     if( topItemIndex != null ) {
       final ITreeAdapter treeAdapter = getTreeAdapter( tree );
       int newIndex = parsePosition( topItemIndex );
+      int topOffset = newIndex * tree.getItemHeight();
       treeAdapter.setTopItemIndex( newIndex );
+      processScrollBarSelection( tree.getVerticalBar(), topOffset );
     }
   }
-  
+
   private static int parsePosition( final String position ) {
     int result = 0;
     try {
@@ -236,10 +245,10 @@ public final class TreeLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( tree, PROP_ITEM_HEIGHT, newValue ) ) {
       writer.set( PROP_ITEM_HEIGHT, "itemHeight", newValue, new Integer( 16 ) );
     }
-  }  
-  
+  }
+
   public static void writeItemMetrics( final Tree tree )
-    throws IOException 
+    throws IOException
   {
     ItemMetrics[] itemMetrics = getItemMetrics( tree );
     if( hasItemMetricsChanged( tree, itemMetrics ) ) {
@@ -259,18 +268,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
   public static void writeIndentionWidth( final Tree tree )
-  throws IOException 
+  throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tree );
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     writer.set( "indentionWidth", treeAdapter.getIndentionWidth() );
   }
-  
+
   private static void writeHeaderHeight( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getHeaderHeight() );
     writer.set( PROP_HEADER_HEIGHT, "headerHeight", newValue, null );
-  }  
+  }
 
   private void writeColumnCount( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
@@ -287,7 +296,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
       writer.set( PROP_TREE_COLUMN, "treeColumn", newValue, new Integer( 0 ) );
     }
   }
-  
+
   private void writeTopItem( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( getTopItemIndex( tree ) );
@@ -324,7 +333,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
        writer.set( "scrollBarsVisible", new boolean[]{ scrollX, scrollY } );
     }
   }
-  
+
   private static void writeLinesVisible( final Tree tree ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tree );
@@ -343,6 +352,17 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void writeScrollBarsSelectionListener( final Tree tree )
+    throws IOException
+  {
+    Boolean newValue = hasScrollBarsSelectionListener( tree );
+    String prop = PROP_SCROLLBARS_SELECTION_LISTENER;
+    if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( tree );
+      writer.set( "hasScrollBarsSelectionListener", newValue );
+    }
+  }
+
   //////////////////
   // Helping methods
 
@@ -355,9 +375,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     return treeAdapter.getTopItemIndex();
   }
-  
+
   private static Boolean hasHScrollBar( final Tree tree ) {
-    ITreeAdapter treeAdapter = getTreeAdapter( tree );    
+    ITreeAdapter treeAdapter = getTreeAdapter( tree );
     return Boolean.valueOf( treeAdapter.hasHScrollBar() );
   }
 
@@ -370,16 +390,44 @@ public final class TreeLCA extends AbstractWidgetLCA {
     int[] values = tree.getColumnOrder();
     return new Integer( values.length > 0 ? values[ 0 ] : 0 );
   }
-  
+
   private static ITreeAdapter getTreeAdapter( Tree tree ) {
     Object adapter = tree.getAdapter( ITreeAdapter.class );
     return ( ITreeAdapter )adapter;
   }
 
+  private static Boolean hasScrollBarsSelectionListener( final Tree tree ) {
+    boolean result = false;
+    ScrollBar horizontalBar = tree.getHorizontalBar();
+    if( horizontalBar != null ) {
+      result = result || SelectionEvent.hasListener( horizontalBar );
+    }
+    ScrollBar verticalBar = tree.getVerticalBar();
+    if( verticalBar != null ) {
+      result = result || SelectionEvent.hasListener( verticalBar );
+    }
+    return Boolean.valueOf( result );
+  }
+
+  private static void processScrollBarSelection( final ScrollBar scrollBar,
+                                                 final int selection )
+  {
+    if( scrollBar != null ) {
+      scrollBar.setSelection( selection );
+      if( SelectionEvent.hasListener( scrollBar ) ) {
+        int eventId = SelectionEvent.WIDGET_SELECTED;
+        SelectionEvent evt = new SelectionEvent( scrollBar, null, eventId );
+        evt.stateMask
+          = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+        evt.processEvent();
+      }
+    }
+  }
+
   /////////////////
   // Item Metrics:
 
-  
+
   // TODO: merge with Table:
   static final class ItemMetrics {
     int left;
@@ -424,7 +472,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     for( int i = 0; i < columnCount; i++ ) {
       result[ i ].left = adapter.getCellLeft( i );
       result[ i ].width = adapter.getCellWidth( i );
-      result[ i ].imageLeft = result[ i ].left + adapter.getImageOffset( i );   
+      result[ i ].imageLeft = result[ i ].left + adapter.getImageOffset( i );
       result[ i ].imageWidth = adapter.getItemImageSize( i ).x;
       result[ i ].textLeft = result[ i ].left + adapter.getTextOffset( i );
       result[ i ].textWidth = adapter.getTextMaxWidth( i );
@@ -441,5 +489,5 @@ public final class TreeLCA extends AbstractWidgetLCA {
                                                 final ItemMetrics[] metrics  )
   {
     return WidgetLCAUtil.hasChanged( tree, PROP_ITEM_METRICS, metrics );
-  }  
+  }
 }

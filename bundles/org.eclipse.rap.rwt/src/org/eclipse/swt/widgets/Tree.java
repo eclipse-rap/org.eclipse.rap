@@ -110,6 +110,8 @@ public class Tree extends Composite {
   private int topItemIndex = 0;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
+  private ScrollBar verticalBar;
+  private ScrollBar horizontalBar;
   private Point itemImageSize;
   private Rectangle bufferedCellPadding = null;
   private int bufferedCellSpacing = -1;
@@ -278,6 +280,7 @@ public class Tree extends Composite {
     itemHolder = new ItemHolder( TreeItem.class );
     columnHolder = new ItemHolder( TreeColumn.class );
     treeAdapter = new InternalTreeAdapter();
+    createScrollBars();
     selection = EMPTY_SELECTION;
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
@@ -2080,6 +2083,59 @@ public class Tree extends Composite {
     return bufferedCellSpacing;
   }
 
+  /////////////
+  // ScrollBars
+
+  // TODO [if] move to Scrollable as in SWT
+  private void createScrollBars() {
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      horizontalBar = new ScrollBar( this, SWT.H_SCROLL );
+      horizontalBar.setVisible( false );
+    }
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      verticalBar = new ScrollBar( this, SWT.V_SCROLL );
+      verticalBar.setVisible( false );
+    }
+  }
+
+  /**
+   * Returns the receiver's horizontal scroll bar if it has
+   * one, and null if it does not.
+   *
+   * @return the horizontal scroll bar (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.4
+   */
+  // TODO [if] move to Scrollable as in SWT
+  public ScrollBar getHorizontalBar() {
+    checkWidget();
+    return horizontalBar;
+  }
+
+  /**
+   * Returns the receiver's vertical scroll bar if it has
+   * one, and null if it does not.
+   *
+   * @return the vertical scroll bar (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.4
+   */
+  //  TODO [if] move to Scrollable as in SWT
+  public ScrollBar getVerticalBar() {
+    checkWidget();
+    return verticalBar;
+  }
+
   ///////////////////////////////////////
   // Helping methods - dynamic scrollbars
 
@@ -2158,6 +2214,8 @@ public class Tree extends Composite {
     }
     hasVScrollBar = ( style & SWT.V_SCROLL ) != 0 && hasVScrollBar;
     hasHScrollBar = ( style & SWT.H_SCROLL ) != 0 && hasHScrollBar;
+    horizontalBar.setVisible( hasHScrollBar );
+    verticalBar.setVisible( hasVScrollBar );
   }
 
   private int getScrollBarSize() {
