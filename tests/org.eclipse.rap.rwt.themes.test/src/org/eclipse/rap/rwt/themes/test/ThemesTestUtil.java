@@ -9,8 +9,6 @@
 *******************************************************************************/ 
 package org.eclipse.rap.rwt.themes.test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -20,7 +18,6 @@ import java.net.URLClassLoader;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
@@ -33,7 +30,7 @@ public class ThemesTestUtil {
   public static final String FANCY_PATH = "theme/fancy/fancy.css";
 
   static final ResourceLoader RESOURCE_LOADER
-    = ThemeTestUtil.createResourceLoader( ThemesTestUtil.class );
+    = createResourceLoader( ThemesTestUtil.class );
 
   private static final String BUNDLE_ID = "org.eclipse.rap.rwt.themes.test";
 
@@ -92,4 +89,15 @@ public class ThemesTestUtil {
     ThemeUtil.setCurrentThemeId( themeId );  
   }
   
+  public static ResourceLoader createResourceLoader( final Class clazz ) {
+    final ClassLoader classLoader = clazz.getClassLoader();
+    ResourceLoader resLoader = new ResourceLoader() {
+      public InputStream getResourceAsStream( final String resourceName )
+        throws IOException
+      {
+        return classLoader.getResourceAsStream( resourceName );
+      }
+    };
+    return resLoader;
+  }  
 }
