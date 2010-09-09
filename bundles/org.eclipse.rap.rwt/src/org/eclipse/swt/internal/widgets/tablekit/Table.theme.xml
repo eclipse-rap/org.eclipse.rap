@@ -130,7 +130,7 @@
     <element name="Table-Checkbox"
         description="Checkboxes in Table controls">
 
-      <property name="width"
+      <property name="width" deprecated="true"
           description="Width of check boxes (deprecated, use margin instead)" />
           
       <property name="margin"
