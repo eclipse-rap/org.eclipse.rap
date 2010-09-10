@@ -124,9 +124,196 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
     
-    // testKeyDownPrintable
-    // testKeyHoldPrintable
-    // testKeyReleasePrintable (non-printable, modifier)
+    testKeyDownPrintable : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "x" );
+      var expected = [ "keydown", "keypress", "keyinput" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+    
+    testKeyHoldPrintable : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "x" );
+      testUtil.keyHold( widget._getTargetNode(), "x" );
+      var expected 
+        = [ "keydown", "keypress", "keyinput", "keypress" ];
+      if( !qx.core.Variant.isSet( "qx.client", "opera" ) ) {
+        // keyinput is (currently) not repeated in opera (except Space/Enter)
+        expected.push( "keyinput" ); 
+      }
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+    
+    testKeyUp : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      testUtil.keyDown( widget._getTargetNode(), "x" );
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyUp( widget._getTargetNode(), "x" );
+      var expected = [ "keyup" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+
+  
+    testKeyDownNonPrintable : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "Left" );
+      var expected = [ "keydown", "keypress" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+    
+    testKeyHoldNonPrintable : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "Left" );
+      testUtil.keyHold( widget._getTargetNode(), "Left" );
+      var expected = [ "keydown", "keypress", "keypress" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+    
+    testKeyDownPrintableSpecialChar : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "Space" );
+      var expected = [ "keydown", "keypress", "keyinput" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+    
+    testKeyHoldPrintableSpecialChar : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "Space" );
+      testUtil.keyHold( widget._getTargetNode(), "Space" );
+      var expected 
+        = [ "keydown", "keypress", "keyinput", "keypress", "keyinput" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },  
+
+    
+    testKeyDownPrintableSpecialCharNoKeyInput : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "Enter" );
+      var expected = [ "keydown", "keypress" ];
+      if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {  
+        expected.push( "keyinput" ); 
+      }
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+    
+    testKeyHoldPrintableSpecialCharNoKeyInput : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "Enter" );
+      testUtil.keyHold( widget._getTargetNode(), "Enter" );
+      var expected = [ "keydown", "keypress", "keypress" ];
+      if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {  
+         expected 
+           = [ "keydown", "keypress", "keyinput", "keypress", "keyinput" ];
+      }
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+    
+    testKeyDownModifier : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "Shift" );
+      var expected = qx.core.Variant.select( "qx.client", {
+        "default" : [ "keydown", "keypress" ],
+        "gecko|opera" : [ "keydown" ]
+      } );
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+    
+    testKeyHoldModifier : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "Shift" );
+      testUtil.keyHold( widget._getTargetNode(), "Shift" );
+      var expected = qx.core.Variant.select( "qx.client", {
+        "default" : [ "keydown", "keypress", "keypress" ],
+        "gecko" : [ "keydown", "keydown" ],
+        "opera" : [ "keydown" ]
+      } );
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+ 
+    _addKeyLogger : function( widget, type, identifier, modifier ) {
+      var log = [];
+      var logger = function( event ) {
+        if( type ) {
+          log.push( event.getType() );
+        }
+        if( identifier ) {
+          log.push( event.getKeyIdentifier() );
+        }
+        if( modifier ) {
+          log.push( event.getModifiers() );
+        }
+      }
+      widget.addEventListener( "keydown", logger );
+      widget.addEventListener( "keypress", logger );
+      widget.addEventListener( "keyinput", logger );
+      widget.addEventListener( "keyup", logger );
+      return log;
+    },
 
     /////////
     // Helper

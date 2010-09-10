@@ -279,17 +279,42 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     },
     
     pressOnce : function( target, key, mod ) {
+      this.keyDown( target, key, mod );
+      this.keyUp( target, key, mod );
+    },
+    
+    keyDown : function( target, key, mod ) {
       this.fakeKeyEventDOM( target, "keydown", key, mod );
-      // Note : IE skips keypress for non-printable keys
       if( this._sendKeyPress( key ) ) { 
         this.fakeKeyEventDOM( target, "keypress", key, mod );
       }
+    },
+    
+    keyHold : function( target, key, mod ) {
+      if( this._sendKeyDownOnHold( key ) ) {
+        this.fakeKeyEventDOM( target, "keydown", key, mod );
+      }
+      if( this._sendKeyPress( key ) ) { 
+        this.fakeKeyEventDOM( target, "keypress", key, mod );
+      }
+    },
+    
+    keyUp : function( target, key, mod ) {
       this.fakeKeyEventDOM( target, "keyup", key, mod );
     },
     
+    _sendKeyDownOnHold : qx.core.Variant.select("qx.client", {
+      "default" : function( key ) {
+        return true;
+      },
+      "opera" : function( key ) {
+        return false;
+      }
+    } ),
+
     _sendKeyPress : qx.core.Variant.select("qx.client", { 
       "gecko|opera" : function( key ) {
-        return true; // TODO [tb] : modifiers
+        return !this._isModifier( key );
       },
       "default" : function( key ) {
         return this._isPrintable( key ); 
@@ -358,6 +383,11 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       var isPrintableIdentifier =    typeof stringOrKeyCode === "string"
                                   && idMap[ stringOrKeyCode ] != null;
       return isChar || isPrintableKeyCode || isPrintableIdentifier;               
+    },
+    
+    _isModifier : function( key ) {
+      var keyCode = this._convertToKeyCode( key );
+      return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;  
     },
 
     _convertToKeyCode : function( stringOrKeyCode ) {

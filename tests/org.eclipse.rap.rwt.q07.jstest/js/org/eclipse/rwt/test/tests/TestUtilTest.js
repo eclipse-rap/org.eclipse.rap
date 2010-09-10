@@ -360,7 +360,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       assertEquals( expected, log );
       widget.destroy();
     },    
-   
+
     testPressNonPrintable : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
@@ -375,7 +375,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       assertEquals( expected, log );
       widget.destroy();
     },
-    
+
     testShiftPress : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
