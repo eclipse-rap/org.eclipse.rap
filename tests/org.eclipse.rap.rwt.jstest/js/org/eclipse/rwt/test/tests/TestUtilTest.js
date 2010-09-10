@@ -323,8 +323,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.focus();
       testUtil.press( widget, "x" );
       // NOTE [tb] : the identifier is always uppercase
-      var expected 
-        = [ "keydown", "X", "keypress", "X", "keyinput", "X", "keyup", "X", ];
+      var expected = [ "keydown", "X", "keypress", "X", "keyup", "X", ];
       assertEquals( expected, log );
       widget.destroy();
     },    
@@ -338,7 +337,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.focus();
       testUtil.press( widget, "Space" );
       var expected 
-        = [ "keydown", "Space", "keypress", "Space", "keyinput", "Space", "keyup", "Space", ];
+        = [ "keydown", "Space", "keypress", "Space", "keyup", "Space", ];
       assertEquals( expected, log );
       widget.destroy();
     },    
@@ -353,7 +352,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       testUtil.press( widget, "Enter" );
       var expected = [ "keydown", "Enter", "keypress", "Enter" ];
       if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {
-        expected.push( "keyinput", "Enter", "keyup", "Enter" );
+        expected.push( "keyup", "Enter" );
       } else {
         expected.push( "keyup", "Enter" );
       }
@@ -384,7 +383,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       var log = this._addKeyLogger( widget, false, false, true );
       testUtil.shiftPress( widget, "x" );
       var shift = qx.event.type.DomEvent.SHIFT_MASK;
-      var expected = [ shift, shift, shift, shift ];
+      var expected = [ shift, shift, shift ];
       assertEquals( expected, log );
       widget.destroy();
     },
@@ -397,7 +396,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       var log = this._addKeyLogger( widget, false, false, true );
       testUtil.ctrlPress( widget, "x" );
       var ctrl = qx.event.type.DomEvent.CTRL_MASK;
-      var expected = [ ctrl, ctrl, ctrl, ctrl ];
+      var expected = [ ctrl, ctrl, ctrl ];
       assertEquals( expected, log );
       widget.destroy();
     },
@@ -410,7 +409,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       var log = this._addKeyLogger( widget, false, false, true );
       testUtil.altPress( widget, "x" );
       var alt = qx.event.type.DomEvent.ALT_MASK;
-      var expected = [ alt, alt, alt, alt ];
+      var expected = [ alt, alt, alt ];
       assertEquals( expected, log );
       widget.destroy();
     },
@@ -465,7 +464,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       }
       widget.addEventListener( "keydown", logger );
       widget.addEventListener( "keypress", logger );
-      widget.addEventListener( "keyinput", logger );
       widget.addEventListener( "keyup", logger );
       return log;
     }

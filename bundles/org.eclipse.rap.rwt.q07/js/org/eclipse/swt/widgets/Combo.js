@@ -93,7 +93,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // Keyboard events
     this.addEventListener( "keydown", this._onKeyDown );
     this.addEventListener( "keypress", this._onKeyPress );
-    this.addEventListener( "keyinput", this._onKeyInput );
     // Specific events
     this._field.addEventListener( "blur", this._onTextBlur, this );
     this._field.addEventListener( "input", this._onTextInput, this );
@@ -122,7 +121,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.removeEventListener( "mouseout", this._onMouseOut, this );
     this.removeEventListener( "keydown", this._onKeyDown );
     this.removeEventListener( "keypress", this._onKeyPress );
-    this.removeEventListener( "keyinput", this._onKeyInput );
     this._field.removeEventListener( "blur", this._onTextBlur, this );
     this._field.removeEventListener( "input", this._onTextInput, this );
     this._list.removeEventListener( "appear", this._onListAppear, this );
@@ -600,6 +598,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           && !org_eclipse_rap_rwt_EventUtil_suspend ) 
       {
         this._handleSelectionChange();
+      }
+      if( evt.getCharCode() !== 0 ) {
+        this._onKeyInput( evt );
       }
     },
 

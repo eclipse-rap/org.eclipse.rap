@@ -124,6 +124,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
     
+    testKeyDownCharCode : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = [];
+      widget.addEventListener( "keypress", function( event ) {
+        log.push( event.getCharCode() );
+        log.push( event.getKeyIdentifier() );
+      } );
+      testUtil.keyDown( widget._getTargetNode(), "x" );
+      var expected = qx.core.Variant.select( "qx.client", {
+        "default" : [ 120, "X" ],
+        "opera" : [  88, "X" ] // a existing bug
+      } );
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+    
     testKeyDownPrintable : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
@@ -132,7 +152,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
       testUtil.keyDown( widget._getTargetNode(), "x" );
-      var expected = [ "keydown", "keypress", "keyinput" ];
+      var expected = [ "keydown", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
@@ -146,12 +166,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var log = this._addKeyLogger( widget, true, false, false );
       testUtil.keyDown( widget._getTargetNode(), "x" );
       testUtil.keyHold( widget._getTargetNode(), "x" );
-      var expected 
-        = [ "keydown", "keypress", "keyinput", "keypress" ];
-      if( !qx.core.Variant.isSet( "qx.client", "opera" ) ) {
-        // keyinput is (currently) not repeated in opera (except Space/Enter)
-        expected.push( "keyinput" ); 
-      }
+      var expected = [ "keydown", "keypress", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
@@ -206,7 +221,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.focus();
       var log = this._addKeyLogger( widget, true, false, false );
       testUtil.keyDown( widget._getTargetNode(), "Space" );
-      var expected = [ "keydown", "keypress", "keyinput" ];
+      var expected = [ "keydown", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
@@ -220,8 +235,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var log = this._addKeyLogger( widget, true, false, false );
       testUtil.keyDown( widget._getTargetNode(), "Space" );
       testUtil.keyHold( widget._getTargetNode(), "Space" );
-      var expected 
-        = [ "keydown", "keypress", "keyinput", "keypress", "keyinput" ];
+      var expected = [ "keydown", "keypress", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
     },  
@@ -236,9 +250,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var log = this._addKeyLogger( widget, true, false, false );
       testUtil.keyDown( widget._getTargetNode(), "Enter" );
       var expected = [ "keydown", "keypress" ];
-      if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {  
-        expected.push( "keyinput" ); 
-      }
       assertEquals( expected, log );
       widget.destroy();
     },    
@@ -253,10 +264,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       testUtil.keyDown( widget._getTargetNode(), "Enter" );
       testUtil.keyHold( widget._getTargetNode(), "Enter" );
       var expected = [ "keydown", "keypress", "keypress" ];
-      if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {  
-         expected 
-           = [ "keydown", "keypress", "keyinput", "keypress", "keyinput" ];
-      }
       assertEquals( expected, log );
       widget.destroy();
     },
@@ -310,7 +317,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       }
       widget.addEventListener( "keydown", logger );
       widget.addEventListener( "keypress", logger );
-      widget.addEventListener( "keyinput", logger );
       widget.addEventListener( "keyup", logger );
       return log;
     },

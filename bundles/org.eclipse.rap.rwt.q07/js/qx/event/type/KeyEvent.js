@@ -33,7 +33,7 @@ qx.Class.define("qx.event.type.KeyEvent",
   extend : qx.event.type.DomEvent,
 
   /**
-   * @param vType {String} event type (keydown, keypress, keyinput, keyup)
+   * @param vType {String} event type (keydown, keypress, keyup)
    * @param vDomEvent {Element} DOM event object
    * @param vDomTarget {Element} target element of the DOM event
    * @param vTarget
@@ -136,7 +136,6 @@ qx.Class.define("qx.event.type.KeyEvent",
 
     /**
      * Unicode number of the pressed character.
-     * Only valid in "keyinput" events
      */
     charCode :
     {
@@ -149,8 +148,6 @@ qx.Class.define("qx.event.type.KeyEvent",
     /**
      * Identifier of the pressed key. This property is modeled after the <em>KeyboardEvent.keyIdentifier</em> property
      * of the W3C DOM 3 event specification (http://www.w3.org/TR/2003/NOTE-DOM-Level-3-Events-20031107/events.html#Events-KeyboardEvent-keyIdentifier).
-     *
-     * It is not valid in "keyinput" events"
      *
      * Printable keys are represented by a unicode string, non-printable keys have one of the following
      * values:

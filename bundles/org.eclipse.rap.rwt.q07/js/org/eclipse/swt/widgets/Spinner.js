@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     // Hack to prevent the spinner text field to request the focus
     this._textfield.setFocused = function() {};
     this._textfield.addEventListener( "changeValue", this._onChangeValue, this );
-    this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
+    this._textfield.addEventListener( "keypress", this._onChangeValue, this );
     this._textfield.addEventListener( "blur", this._onChangeValue, this );
     this._textfield.addEventListener( "keydown", this._onKeyDown, this );
     this._textfield.setTabIndex( null );
@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
 
   destruct : function() {
     this._textfield.removeEventListener( "changeValue", this._onChangeValue, this );
-    this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
+    this._textfield.removeEventListener( "keypress", this._onChangeValue, this );
     this._textfield.removeEventListener( "blur", this._onChangeValue, this );
     this._textfield.removeEventListener( "keydown", this._onKeyDown, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );

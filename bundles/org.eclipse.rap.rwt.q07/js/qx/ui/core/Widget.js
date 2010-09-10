@@ -135,9 +135,6 @@ qx.Class.define("qx.ui.core.Widget",
     "keypress"        : "qx.event.type.KeyEvent",
 
     /** (Fired by {@link qx.event.handler.EventHandler}) */
-    "keyinput"        : "qx.event.type.KeyEvent",
-
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
     "keyup"           : "qx.event.type.KeyEvent",
 
     /** (Fired by {@link qx.ui.core.Parent}) */

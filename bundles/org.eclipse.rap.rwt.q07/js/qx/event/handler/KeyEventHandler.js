@@ -655,7 +655,6 @@ qx.Class.define("qx.event.handler.KeyEventHandler",
       {
         keyIdentifier = this._charCodeToIdentifier(charCode);
         qx.event.handler.EventHandler.getInstance()._onkeyevent_post(domEvent, "keypress", keyCode, charCode, keyIdentifier);
-        qx.event.handler.EventHandler.getInstance()._onkeyevent_post(domEvent, "keyinput", keyCode, charCode, keyIdentifier);
       }
     }
   },

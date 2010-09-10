@@ -54,7 +54,7 @@ qx.Class.define("qx.ui.form.List",
 
     this.addEventListener("keydown", this._onkeydown);
     this.addEventListener("keypress", this._onkeypress);
-    this.addEventListener("keyinput", this._onkeyinput);
+    this.addEventListener("keypress", this._onkeyinput);
 
     // Initialize properties
     this.initOverflow();
@@ -326,57 +326,59 @@ qx.Class.define("qx.ui.form.List",
      * Handles the inline find - if enabled
      *
      * @type member
-     * @param e {qx.event.type.KeyEvent} keyInput event
+     * @param e {qx.event.type.KeyEvent} keyPress event
      * @return {void}
      */
     _onkeyinput : function(e)
     {
-      if (!this.getEnableInlineFind()) {
-        return;
-      }
-
-      // Reset string after a second of non pressed key
-      if (((new Date).valueOf() - this._lastKeyPress) > 1000) {
-        this._pressedString = "";
-      }
-
-      // Combine keys the user pressed to a string
-      this._pressedString += String.fromCharCode(e.getCharCode());
-
-      // Find matching item
-      var matchedItem = this.findString(this._pressedString, null);
-
-      if (matchedItem)
-      {
-        var oldVal = this._manager._getChangeValue();
-
-        // Temporary disable change event
-        var oldFireChange = this._manager.getFireChange();
-        this._manager.setFireChange(false);
-
-        // Reset current selection
-        this._manager._deselectAll();
-
-        // Update manager
-        this._manager.setItemSelected(matchedItem, true);
-        this._manager.setAnchorItem(matchedItem);
-        this._manager.setLeadItem(matchedItem);
-
-        // Scroll to matched item
-        matchedItem.scrollIntoView();
-
-        // Recover event status
-        this._manager.setFireChange(oldFireChange);
-
-        // Dispatch event if there were any changes
-        if (oldFireChange && this._manager._hasChanged(oldVal)) {
-          this._manager._dispatchChange();
+      if( e.getCharCode() !== 0 ) {
+        if (!this.getEnableInlineFind()) {
+          return;
         }
+  
+        // Reset string after a second of non pressed key
+        if (((new Date).valueOf() - this._lastKeyPress) > 1000) {
+          this._pressedString = "";
+        }
+  
+        // Combine keys the user pressed to a string
+        this._pressedString += String.fromCharCode(e.getCharCode());
+  
+        // Find matching item
+        var matchedItem = this.findString(this._pressedString, null);
+  
+        if (matchedItem)
+        {
+          var oldVal = this._manager._getChangeValue();
+  
+          // Temporary disable change event
+          var oldFireChange = this._manager.getFireChange();
+          this._manager.setFireChange(false);
+  
+          // Reset current selection
+          this._manager._deselectAll();
+  
+          // Update manager
+          this._manager.setItemSelected(matchedItem, true);
+          this._manager.setAnchorItem(matchedItem);
+          this._manager.setLeadItem(matchedItem);
+  
+          // Scroll to matched item
+          matchedItem.scrollIntoView();
+  
+          // Recover event status
+          this._manager.setFireChange(oldFireChange);
+  
+          // Dispatch event if there were any changes
+          if (oldFireChange && this._manager._hasChanged(oldVal)) {
+            this._manager._dispatchChange();
+          }
+        }
+  
+        // Store timestamp
+        this._lastKeyPress = (new Date).valueOf();
+        e.preventDefault();
       }
-
-      // Store timestamp
-      this._lastKeyPress = (new Date).valueOf();
-      e.preventDefault();
     },
 
 
