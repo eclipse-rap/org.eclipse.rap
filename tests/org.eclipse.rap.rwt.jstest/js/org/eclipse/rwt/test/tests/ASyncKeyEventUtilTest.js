@@ -12,6 +12,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ASyncKeyEventUtilTest", {
 
   extend : qx.core.Object,
   
+  construct : function() {
+    this.base( arguments );
+    org.eclipse.rwt.test.fixture.TestUtil.prepareTimerUse();
+  },
+  
   members : {
     
     TARGETENGINE : [ "gecko" ],
@@ -107,7 +112,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ASyncKeyEventUtilTest", {
       // cancel event
       assertNull( keyUtil._pendingEventInfo );
       assertEquals( 0, testUtil.getRequestsSend() );
-      testUtil.fakeKeyEventDOM( node, "keypress", 37 );
+      testUtil.fakeKeyEventDOM( node, "keydown", 37 );
       assertNull( keyUtil._pendingEventInfo );
       this._disposeTextWidget( text );
     },

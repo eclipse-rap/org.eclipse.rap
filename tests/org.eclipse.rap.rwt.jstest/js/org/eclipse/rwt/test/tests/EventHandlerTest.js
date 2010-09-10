@@ -124,6 +124,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
     
+    // testKeyDownPrintable
+    // testKeyHoldPrintable
+    // testKeyReleasePrintable (non-printable, modifier)
+
     /////////
     // Helper
 

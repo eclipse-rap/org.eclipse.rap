@@ -226,24 +226,174 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     fireFakeMouseEventDOM : function( domEvent ) {
       qx.event.handler.EventHandler.getInstance().__onmouseevent( domEvent );
     },
-
-    fakeKeyEventDOM : function( target, type, stringOrKeyCode, mod ) {
-      var charCode = null;
-      var keyCode = null;
-      var isChar = typeof stringOrKeyCode === "string";
-      if( isChar ) {
-        charCode = stringOrKeyCode.charCodeAt( 0 );
-      } else {
-        keyCode = stringOrKeyCode;
-      }
-      var domEvent = this._createFakeDomEvent( target, type, mod );
-      domEvent.keyCode = keyCode;
-      domEvent.charCode = charCode;
-      domEvent.isChar = isChar;
-      var handler = qx.event.handler.KeyEventHandler.getInstance();
-      handler._idealKeyHandler( keyCode, charCode, type, domEvent );
+    
+    _identifierToKeycodeMap : {
+      "Shift" : 16, 
+      "Control" : 17,
+      "Alt" : 18, 
+      "CapsLock" : 20,
+      "Meta" : 224, 
+      "Left" : 37, 
+      "Up" : 38, 
+      "Right" : 39,
+      "Down" : 40, 
+      "PageUp" : 33, 
+      "PageDown" : 34, 
+      "End" : 35, 
+      "Home" : 36, 
+      "Insert" : 45, 
+      "Delete" : 46, 
+      "F1" : 112, 
+      "F2" : 113, 
+      "F3" : 114, 
+      "F4" : 115, 
+      "F5" : 116, 
+      "F6" : 117, 
+      "F7" : 118, 
+      "F8" : 119, 
+      "F9" : 120, 
+      "F10" : 121, 
+      "F11" : 122, 
+      "F12" : 123, 
+      "NumLock" : 144, 
+      "PrintScreen" : 44, 
+      "Scroll" : 145, 
+      "Pause" : 19, 
+      "Win" : 91, 
+      "Apps" : 93,
+      "Enter" : qx.core.Variant.select("qx.client", {
+        "default" : null,
+        "gecko" : 13
+      } )
     },
     
+    _printableIdentifierToKeycodeMap : {
+      "Backspace" : 8, 
+      "Tab" : 9,
+      "Escape" : 27,
+      "Space" : 32, 
+      "Enter" : qx.core.Variant.select("qx.client", {
+        "default" : 13,
+        "gecko" : null
+      } )
+    },
+    
+    pressOnce : function( target, key, mod ) {
+      this.fakeKeyEventDOM( target, "keydown", key, mod );
+      // Note : IE skips keypress for non-printable keys
+      if( this._sendKeyPress( key ) ) { 
+        this.fakeKeyEventDOM( target, "keypress", key, mod );
+      }
+      this.fakeKeyEventDOM( target, "keyup", key, mod );
+    },
+    
+    _sendKeyPress : qx.core.Variant.select("qx.client", { 
+      "gecko|opera" : function( key ) {
+        return true; // TODO [tb] : modifiers
+      },
+      "default" : function( key ) {
+        return this._isPrintable( key ); 
+      } 
+    } ),
+
+    fakeKeyEventDOM : function( target, type, stringOrKeyCode, mod ) {
+      var domEvent = this._createFakeDomEvent( target, type, mod );
+      domEvent.keyCode = this._getKeyCode( type, stringOrKeyCode );
+      domEvent.charCode = this._getCharCode( type, stringOrKeyCode );
+      domEvent.isChar = stringOrKeyCode === "string"; // not always correct 
+      var handler = qx.event.handler.KeyEventHandler.getInstance();
+      if( type === "keypress" ) {
+        handler.__onkeypress( domEvent );
+      } else {
+        handler.__onkeyupdown( domEvent );
+      }
+    },
+
+    _getKeyCode : qx.core.Variant.select("qx.client", { 
+      "default" : function( type, stringOrKeyCode ) {
+        var result;
+        // NOTE [tb] : This is called for non-printable keypress only in opera
+        if( type === "keypress" && this._isPrintable( stringOrKeyCode ) ) {
+          result = this._convertToCharCode( stringOrKeyCode );
+        } else {
+          result = this._convertToKeyCode( stringOrKeyCode );
+        }
+        return result;
+      },
+      "gecko" : function( type, stringOrKeyCode ) {
+        var result;
+        if( type === "keypress" && this._isPrintable( stringOrKeyCode ) ) {
+          result = 0;
+        } else {
+          result = this._convertToKeyCode( stringOrKeyCode );          
+        }
+        return result;
+      }
+    } ),
+
+    _getCharCode : qx.core.Variant.select("qx.client", { 
+      "default" : function( type, stringOrKeyCode ) {
+        return undefined;
+      },
+      "gecko|webkit" : function( type, stringOrKeyCode ) {
+        // NOTE [tb] : this is never called with keypress for webkit
+        var result;
+        if( type === "keypress" && this._isPrintable( stringOrKeyCode ) ) {
+          result = this._convertToCharCode( stringOrKeyCode );
+        } else {
+          result = 0
+        }
+        return result;
+      }
+    } ),
+    
+    _isPrintable : function( stringOrKeyCode ) {
+      var handler = qx.event.handler.KeyEventHandler.getInstance();
+      var keyCodeMap = handler._keyCodeToIdentifierMap;
+      var idMap = this._printableIdentifierToKeycodeMap;
+      var isChar =    typeof stringOrKeyCode === "string" 
+                   && stringOrKeyCode.length === 1;
+      var isPrintableKeyCode =    typeof stringOrKeyCode === "number"
+                               && keyCodeMap[ stringOrKeyCode ] === undefined;
+      var isPrintableIdentifier =    typeof stringOrKeyCode === "string"
+                                  && idMap[ stringOrKeyCode ] != null;
+      return isChar || isPrintableKeyCode || isPrintableIdentifier;               
+    },
+
+    _convertToKeyCode : function( stringOrKeyCode ) {
+      var result;
+      if( typeof stringOrKeyCode === "string" && stringOrKeyCode.length > 1 ) {
+        result = this._identifierToKeycodeMap[ stringOrKeyCode ];
+        if( result == null ) { // result may be null or undefined
+          result = this._printableIdentifierToKeycodeMap[ stringOrKeyCode ];
+          if( result == null ) {
+            throw "_convertToKeyCode: unkown identifier " + stringOrKeyCode;
+          }
+        } 
+      } else if( typeof stringOrKeyCode === "string" ) {
+        result = stringOrKeyCode.toUpperCase().charCodeAt( 0 ); // should match
+      } else {
+        result = stringOrKeyCode;
+      }
+      return result;
+    },
+
+    _convertToCharCode : function( stringOrKeyCode ) {
+      var result;
+      if( typeof stringOrKeyCode === "string" && stringOrKeyCode.length > 1 ) {
+        // Note: In this case keycode matches charcode
+        result = this._printableIdentifierToKeycodeMap[ stringOrKeyCode ];
+        if( result == null ) {
+          throw "_convertToCharCode: not printable: " + stringOrKeyCode;
+        }
+      } else if( typeof stringOrKeyCode === "string" ) {
+        result = stringOrKeyCode.charCodeAt( 0 );
+      } else {
+        result = stringOrKeyCode; // works if its printable
+      }
+      return result;
+    },
+
     /////////////////////////////
     // Event handling - Qooxdoo
 
@@ -333,28 +483,29 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     },
 
     press : function( widget, key, checkActive, mod ) {
-      this.fakeKeyEvent( widget, "keydown", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keypress", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keyinput", key, checkActive, mod );
-      this.fakeKeyEvent( widget, "keyup", key, checkActive, mod );
+      var target = widget._getTargetNode();
+      if( checkActive !== true && !this.isActive( widget ) ) {
+        widget.focus();
+      }
+      this.pressOnce( target, key, mod );      
     },
-    
+
     shiftPress : function( widget, key, checkActive ) {
       var mod = qx.event.type.DomEvent.SHIFT_MASK;
       this.press( widget, key, checkActive, mod );
     },    
-    
+
     ctrlPress : function( widget, key, checkActive ) {
       var mod = qx.event.type.DomEvent.CTRL_MASK;
       this.press( widget, key, checkActive, mod );
     },    
-    
+
     altPress : function( widget, key, checkActive ) {
       var mod = qx.event.type.DomEvent.ALT_MASK;
       this.press( widget, key, checkActive, mod );
     },    
 
-    fakeKeyEvent : function( widget, type, key, checkActive, mod ) {
+    _fakeKeyEvent : function( widget, type, key, checkActive, mod ) {
       if( !widget._isCreated ) {
         throw( "Error in fakeKeyEvent: " + widget + " is not created" );
       }
@@ -383,6 +534,13 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       } else {
         widget.warn( type + " not possible: " + widget.__dbKey + " not focused!" );
       }
+    },
+
+    resetEventHandler : function() {
+      var keyHandler = qx.event.handler.KeyEventHandler.getInstance();
+      keyHandler._lastKeyCode = null;
+      keyHandler._lastUpDownType = {};
+      qx.event.handler.EventHandler.getInstance().setCaptureWidget( null );
     },
 
     ////////////////

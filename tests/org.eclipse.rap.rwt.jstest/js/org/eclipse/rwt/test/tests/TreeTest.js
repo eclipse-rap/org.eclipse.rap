@@ -2843,6 +2843,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       item0.setExpanded( false );
       item0.setExpanded( true );
+      tree.focus();
       testUtil.press( tree, "Left" );
       assertFalse( item0.isExpanded() );
       assertTrue( tree.isItemSelected( item0 ) );
