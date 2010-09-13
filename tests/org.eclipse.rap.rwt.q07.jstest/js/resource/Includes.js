@@ -162,7 +162,6 @@
     "qx/ui/embed/HtmlEmbed.js",
     "qx/ui/embed/Iframe.js",
     "qx/ui/pageview/AbstractButton.js",
-    "qx/client/Command.js",
     "qx/locale/Manager.js",
     "qx/locale/LocalizedString.js",
     "qx/locale/Key.js",

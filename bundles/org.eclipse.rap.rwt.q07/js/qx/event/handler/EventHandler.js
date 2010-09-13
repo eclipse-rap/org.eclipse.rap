@@ -323,44 +323,6 @@ qx.Class.define( "qx.event.handler.EventHandler", {
         value.setFocusedChild(value);
       }
     },
-
-    ////////////////////
-    // COMMAND INTERFACE
-
-    addCommand : function(vCommand) {
-      this._commands[vCommand.toHashCode()] = vCommand;
-    },
-
-    removeCommand : function(vCommand)
-    {
-      delete this._commands[vCommand.toHashCode()];
-
-      // reset list if it is empty. This frees some browser memory
-      if (qx.lang.Object.isEmpty(this._commands)) {
-        this._commands = {};
-      }
-    },
-
-    _checkKeyEventMatch : function(e)
-    {
-      var vCommand;
-
-      for (var vHash in this._commands)
-      {
-        vCommand = this._commands[vHash];
-
-        if (vCommand.getEnabled() && vCommand.matchesKeyEvent(e))
-        {
-          // allow the user to stop the event
-          // through the execute event.
-          if (!vCommand.execute(e.getTarget())) {
-            e.preventDefault();
-          }
-
-          break;
-        }
-      }
-    },
   
    ////////////////
    // EVENT-MAPPING
@@ -439,11 +401,6 @@ qx.Class.define( "qx.event.handler.EventHandler", {
 
       // Create Event Object
       var vKeyEventObject = new qx.event.type.KeyEvent(vType, vDomEvent, vDomTarget, vTarget, null, vKeyCode, vCharCode, vKeyIdentifier);
-
-      // Check for commands
-      if (vType == "keydown") {
-        this._checkKeyEventMatch(vKeyEventObject);
-      }
 
       if (vTarget != null && vTarget.getEnabled())
       {
