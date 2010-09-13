@@ -16,8 +16,6 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
 
   statics : {    
     start : function() {
-      qx.Class.patch( qx.event.handler.KeyEventHandler, 
-                      org.eclipse.rwt.KeyEventHandlerPatch ); 
       qx.Class.patch( org.eclipse.swt.Request,
                         org.eclipse.rwt.test.fixture.RAPRequestPatch);
       qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );

@@ -18,8 +18,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
     this.base( arguments );
     this._exitConfirmation = null;
     this._startupTime = new Date().getTime();
-    qx.Class.patch( qx.event.handler.KeyEventHandler,
-                    org.eclipse.rwt.KeyEventHandlerPatch );
     qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );
     qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GraphicsMixin );
     qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,

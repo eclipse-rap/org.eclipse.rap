@@ -188,7 +188,6 @@
     "org/eclipse/swt/LabelUtil.js",
     "org/eclipse/rwt/widgets/TreeRow.js",
     "org/eclipse/swt/Application.js",
-    "org/eclipse/rwt/KeyEventHandlerPatch.js",
     "org/eclipse/rwt/AsyncKeyEventUtil.js",
     "org/eclipse/swt/Request.js",
     "org/eclipse/swt/EventUtil.js",

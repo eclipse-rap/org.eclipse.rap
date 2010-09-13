@@ -623,6 +623,7 @@ qx.Class.define("qx.event.handler.KeyEventHandler",
     ---------------------------------------------------------------------------
     */
 
+
     /**
      * Key handler for an idealized browser.
      * Runs after the browser specific key handlers have normalized the key events.
@@ -634,27 +635,25 @@ qx.Class.define("qx.event.handler.KeyEventHandler",
      * @param domEvent {Element} DomEvent
      * @return {void}
      */
-    _idealKeyHandler : function(keyCode, charCode, eventType, domEvent)
-    {
-
-      if (!keyCode && !charCode) {
-        return;
+    _idealKeyHandler : function( keyCode, charCode, eventType, domEvent ) {
+      var util;      
+      if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+        util = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
+      } else {
+        util = org.eclipse.rwt.SyncKeyEventUtil.getInstance();
       }
-
-      var keyIdentifier;
-
-      // Use: keyCode
-      if (keyCode)
-      {
-        keyIdentifier = this._keyCodeToIdentifier(keyCode);
-        qx.event.handler.EventHandler.getInstance()._onkeyevent_post(domEvent, eventType, keyCode, charCode, keyIdentifier);
-      }
-
-      // Use: charCode
-      else
-      {
-        keyIdentifier = this._charCodeToIdentifier(charCode);
-        qx.event.handler.EventHandler.getInstance()._onkeyevent_post(domEvent, "keypress", keyCode, charCode, keyIdentifier);
+      if( !util.intercept( eventType, keyCode, charCode, domEvent ) ) {
+        if( !keyCode && !charCode ) {
+          return;
+        }
+        var keyIdentifier;
+        if( keyCode ) {
+          keyIdentifier = this._keyCodeToIdentifier(keyCode);
+          qx.event.handler.EventHandler.getInstance()._onkeyevent_post(domEvent, eventType, keyCode, charCode, keyIdentifier);
+        } else {
+          keyIdentifier = this._charCodeToIdentifier(charCode);
+          qx.event.handler.EventHandler.getInstance()._onkeyevent_post(domEvent, "keypress", keyCode, charCode, keyIdentifier);
+        }
       }
     }
   },
