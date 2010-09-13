@@ -22,6 +22,11 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil",
     allowEvent : function() {
       this._getInstance().allowEvent();
     },
+    
+    intercept : function( eventType, keyCode, charCode, domEvent ) {
+      var util = this._getInstance();
+      return util.intercept( eventType, keyCode, charCode, domEvent );
+    },
 
     _getInstance : function() {
       var util;

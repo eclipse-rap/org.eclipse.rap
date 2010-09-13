@@ -636,12 +636,7 @@ qx.Class.define("qx.event.handler.KeyEventHandler",
      * @return {void}
      */
     _idealKeyHandler : function( keyCode, charCode, eventType, domEvent ) {
-      var util;      
-      if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-        util = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
-      } else {
-        util = org.eclipse.rwt.SyncKeyEventUtil.getInstance();
-      }
+      var util = org.eclipse.rwt.KeyEventUtil.getInstance();
       if( !util.intercept( eventType, keyCode, charCode, domEvent ) ) {
         if( !keyCode && !charCode ) {
           return;
