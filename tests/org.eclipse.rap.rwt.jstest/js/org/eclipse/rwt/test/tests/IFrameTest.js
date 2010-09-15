@@ -27,12 +27,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.IFrameTest", {
         var widgetNode = iframe.getElement();
         assertEquals( "100%", node.width );
         assertEquals( "100%", node.height );
-        assertEquals( "", node.style.width );
-        assertEquals( "", node.style.height );
-        assertEquals( "", node.style.minWidth );
-        assertEquals( "", node.style.minHeight );
-        assertEquals( "", node.style.maxWidth );
-        assertEquals( "", node.style.maxHeight );
+        var style = node.style;
+        assertTrue( style.width === "" || style.minWidth === undefined );
+        assertTrue( style.height === "" || style.minWidth === undefined );
+        assertTrue( style.minWidth === "" || style.minWidth === undefined );
+        assertTrue( style.minHeight === "" || style.minWidth === undefined );
+        assertTrue( style.maxWidth === "" || style.minWidth === undefined );
+        assertTrue( style.maxHeight === "" || style.minWidth === undefined );
         assertEquals( 300, parseInt( widgetNode.style.width ) );
         assertEquals( 400, parseInt( widgetNode.style.height ) );
       }
