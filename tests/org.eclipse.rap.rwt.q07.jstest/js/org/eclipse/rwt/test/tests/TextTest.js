@@ -94,7 +94,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       testUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
       org.eclipse.swt.TextUtil.initialize( text );
-      text.setValue( "asdfjklö" );
+      text.setValue( "asdfjkloe" );
       text.addToDocument();
       testUtil.flush();
       text.setSelectionStart( 2 );
