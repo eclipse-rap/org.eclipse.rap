@@ -1165,6 +1165,29 @@ public class Tree_Test extends TestCase {
     assertTrue( items[ 54 ].getExpanded() );
   }
 
+  public void testScrollBars() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    assertNotNull( tree.getHorizontalBar() );
+    assertNotNull( tree.getVerticalBar() );
+    tree = new Tree( shell, SWT.NO_SCROLL );
+    assertNull( tree.getHorizontalBar() );
+    assertNull( tree.getVerticalBar() );
+  }
+
+  public void testHasScrollBar_NO_SCROLL() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NO_SCROLL );
+    tree.setSize( 200, 200 );
+    assertFalse( tree.hasVScrollBar() );
+    assertFalse( tree.hasHScrollBar() );
+    TreeColumn column = new TreeColumn( tree, SWT.LEFT );
+    column.setWidth( 220 );
+    assertFalse( tree.hasVScrollBar() );
+    assertFalse( tree.hasHScrollBar() );
+  }
 
   /////////
   // HELPER

@@ -2206,16 +2206,16 @@ public class Tree extends Composite {
   }
 
   void updateScrollBars() {
-    hasVScrollBar = false;
-    hasHScrollBar = needsHScrollBar();
-    if( needsVScrollBar() ) {
-      hasVScrollBar = true;
+    if( ( style & SWT.NO_SCROLL ) == 0 ) {
+      hasVScrollBar = false;
       hasHScrollBar = needsHScrollBar();
+      if( needsVScrollBar() ) {
+        hasVScrollBar = true;
+        hasHScrollBar = needsHScrollBar();
+      }
+      horizontalBar.setVisible( hasHScrollBar );
+      verticalBar.setVisible( hasVScrollBar );
     }
-    hasVScrollBar = ( style & SWT.V_SCROLL ) != 0 && hasVScrollBar;
-    hasHScrollBar = ( style & SWT.H_SCROLL ) != 0 && hasHScrollBar;
-    horizontalBar.setVisible( hasHScrollBar );
-    verticalBar.setVisible( hasVScrollBar );
   }
 
   private int getScrollBarSize() {
