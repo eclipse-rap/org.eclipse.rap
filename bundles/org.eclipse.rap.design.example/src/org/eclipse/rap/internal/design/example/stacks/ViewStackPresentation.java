@@ -54,6 +54,7 @@ import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartConstants;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -99,6 +100,7 @@ public class ViewStackPresentation extends ConfigurableStack {
   private Map buttonPartMap = new HashMap();
   private IPresentablePart oldPart;
   private boolean allActionsVisible;
+  private Label standaloneViewTitle;
 
   private class DirtyListener implements IPropertyListener {
 
@@ -110,23 +112,41 @@ public class ViewStackPresentation extends ConfigurableStack {
 
     public void propertyChanged( Object source, int propId ) {
       if( propId == ISaveablePart.PROP_DIRTY ) {
-        Button partButton = getPartButton( part );
-        if( partButton != null ) {
-          String text = partButton.getText();
-          char lastCharacter = getLastCharacter( text );
-          if( part.isDirty() ) {
-            // mark the part as dirty
-            if( lastCharacter != '*') {
-              text = text + "*"; //$NON-NLS-1$
-            }
-          } else {
-            // mark the part as clean
-            if( lastCharacter == '*' ) {
-              text = text.substring( 0, text.length() - 1 );
-            }
+        handleDirtyStateChanged();
+      } else if( propId == IWorkbenchPartConstants.PROP_PART_NAME ) {
+        handlePartNameChanged();
+      }
+    }
+
+    private void handleDirtyStateChanged() {
+      Button partButton = getPartButton( part );
+      if( partButton != null ) {
+        String text = partButton.getText();
+        char lastCharacter = getLastCharacter( text );
+        if( part.isDirty() ) {
+          // mark the part as dirty
+          if( lastCharacter != '*') {
+            text = text + "*"; //$NON-NLS-1$
           }
-          partButton.setText( text );
+        } else {
+          // mark the part as clean
+          if( lastCharacter == '*' ) {
+            text = text.substring( 0, text.length() - 1 );
+          }
         }
+        partButton.setText( text );
+      }
+    }
+
+    private void handlePartNameChanged() {
+      Button partButton = getPartButton( part );
+      if( partButton != null ) {
+        partButton.setText( part.getName() );
+        partButton.getParent().layout( true );
+      }
+      if( standaloneViewTitle != null ) {
+        standaloneViewTitle.setText( part.getName() );
+        standaloneViewTitle.getParent().layout( true );
       }
     }
 
@@ -240,9 +260,10 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( getShowTitle() ) {
       getTabBar().setVisible( true );
       tabBg.setVisible( true );
-      Label title = new Label( tabBg, SWT.NONE );
-      title.setData( WidgetUtil.CUSTOM_VARIANT, "standaloneView" ); //$NON-NLS-1$
-      title.setText( newPart.getName() );
+      standaloneViewTitle = new Label( tabBg, SWT.NONE );
+      standaloneViewTitle.setData( WidgetUtil.CUSTOM_VARIANT, 
+                                   "standaloneView" ); //$NON-NLS-1$
+      standaloneViewTitle.setText( newPart.getName() );
       hideFrameLabel( StackPresentationBuider.TOP_BORDER );      
     } else {
       getTabBar().setVisible( false );
