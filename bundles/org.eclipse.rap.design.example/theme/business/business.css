@@ -441,6 +441,10 @@ ToolBar {
   background-color: #ffffff;
 }
 
+ToolItem {
+  border: none;
+}
+
 /* Tree */
 
 Tree {

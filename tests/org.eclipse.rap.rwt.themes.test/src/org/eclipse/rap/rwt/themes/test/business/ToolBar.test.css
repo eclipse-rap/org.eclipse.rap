@@ -4,3 +4,7 @@
 ToolBar {
   background-color: #ffffff;
 }
+
+ToolItem {
+  border: none;
+}
