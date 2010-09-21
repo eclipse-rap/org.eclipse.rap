@@ -80,9 +80,6 @@ qx.Class.define("qx.application.Gui",
       // Initialize themes
       qx.theme.manager.Meta.getInstance().initialize();
 
-      // Force creation of event handler
-      qx.event.handler.EventHandler.getInstance();
-
       // Force creation of client document
       qx.ui.core.ClientDocument.getInstance();
 
@@ -109,7 +106,10 @@ qx.Class.define("qx.application.Gui",
      *
      * @type member
      */
-    terminate : function() {},
+    terminate : function() {
+      org.eclipse.rwt.EventHandler.detachEvents();
+      org.eclipse.rwt.EventHandler.cleanUp();
+    },
 
 
     /**
@@ -141,7 +141,8 @@ qx.Class.define("qx.application.Gui",
       this.info("render runtime: " + (new Date - start) + "ms");
 
       // Finally attach event to make the GUI ready for the user
-      qx.event.handler.EventHandler.getInstance().attachEvents();
+      org.eclipse.rwt.EventHandler.init();
+      org.eclipse.rwt.EventHandler.attachEvents();
 
       // Call postloader
       qx.client.Timer.once(this._postload, this, 100);

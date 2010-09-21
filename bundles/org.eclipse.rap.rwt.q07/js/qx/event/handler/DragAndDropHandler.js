@@ -258,9 +258,9 @@ qx.Class.define("qx.event.handler.DragAndDropHandler",
         // a valid event target. The target is always the element
         // which was the one with the mousedown event before.
         if (vCurrent == this.__dragCache.sourceWidget) {
-          vCurrent = qx.event.handler.EventHandler.getTargetObject(qx.html.ElementFromPoint.getElementFromPoint(e.getPageX(), e.getPageY()));
+          vCurrent = org.eclipse.rwt.EventHandler.getTargetObject(qx.html.ElementFromPoint.getElementFromPoint(e.getPageX(), e.getPageY()));
         } else {
-          vCurrent = qx.event.handler.EventHandler.getTargetObject(null, vCurrent);
+          vCurrent = org.eclipse.rwt.EventHandler.getTargetObject(null, vCurrent);
         }
 
         while (vCurrent != null)

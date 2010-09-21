@@ -101,7 +101,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       // prevent flush by timer
       this._disableAutoFlush();
       // prevent actual dom-events
-      qx.event.handler.EventHandler.getInstance().detachEvents();
+      org.eclipse.rwt.EventHandler.detachEvents();
       var that = this;
       this._loopWrapper = function(){ that._loop(); };
       this.info( "Found " + this._testClasses.length + " Tests.", false );
@@ -292,7 +292,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	
   	_freezeQooxdoo : function() {
       qx.ui.core.Widget.__allowFlushs = false;
-      qx.event.handler.EventHandler.getInstance().detachEvents();
+      org.eclipse.rwt.EventHandler.detachEvents();
       qx.core.Target.prototype.dispatchEvent = function(){};
   	},
   	

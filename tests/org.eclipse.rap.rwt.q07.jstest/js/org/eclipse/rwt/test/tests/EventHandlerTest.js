@@ -94,7 +94,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var targetNode = widget._getTargetNode();
       assertEquals( 2, targetNode.childNodes.length );
       var node1 = targetNode.childNodes[ 0 ];
-      var node2 = targetNode.childNodes[ 0 ];
+      var node2 = targetNode.childNodes[ 1 ];
       var log = [];
       var handler = function( event ) {
       	log.push( event.getDomEvent().relatedTarget );
@@ -124,6 +124,54 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
     
+    testClickFix : qx.core.Variant.select( "qx.client", {
+      "gecko" : function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this.createDefaultWidget();
+        var targetNode = widget._getTargetNode();
+        assertEquals( 2, targetNode.childNodes.length );
+        var node1 = targetNode.childNodes[ 0 ];
+        var node2 = targetNode.childNodes[ 1 ];
+        var log = [];
+        var handler = function( event ) {
+          log.push( event.getType() );
+        };
+        widget.addEventListener( "mousedown", handler );
+        widget.addEventListener( "mouseup", handler );
+        widget.addEventListener( "click", handler );
+        var left = qx.event.type.MouseEvent.buttons.left;
+        testUtil.fakeMouseEventDOM( node1, "mousedown", left );
+        testUtil.fakeMouseEventDOM( node2, "mouseup", left );
+        var expected = [ "mousedown", "mouseup", "click" ];
+        assertEquals( expected, log );
+      },
+      "default" : null
+    } ),
+    
+    testDoubleClickWithRightMouseButton : qx.core.Variant.select( "qx.client", {
+      "default" : function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this.createDefaultWidget();
+        var node = widget._getTargetNode();
+        var log = [];
+        var handler = function( event ) {
+          log.push( event.getType() );
+        };
+        widget.addEventListener( "dblclick", handler );
+        var right = qx.event.type.MouseEvent.buttons.right;
+        testUtil.fakeMouseEventDOM( node, "mousedown", right );
+        testUtil.fakeMouseEventDOM( node, "mouseup", right );
+        testUtil.fakeMouseEventDOM( node, "click", right );
+        testUtil.fakeMouseEventDOM( node, "mousedown", right );
+        testUtil.fakeMouseEventDOM( node, "mouseup", right );
+        testUtil.fakeMouseEventDOM( node, "click", right );
+        testUtil.fakeMouseEventDOM( node, "dblclick", right );
+        var expected = [];
+        assertEquals( expected, log );
+      },
+      "mshtml" : null
+    } ),
+    
     testKeyDownCharCode : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
@@ -136,10 +184,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
         log.push( event.getKeyIdentifier() );
       } );
       testUtil.keyDown( widget._getTargetNode(), "x" );
-      var expected = qx.core.Variant.select( "qx.client", {
-        "default" : [ 120, "X" ],
-        "opera" : [  88, "X" ] // a existing bug
-      } );
+      var expected = [ 120, "X" ];
       assertEquals( expected, log );
       widget.destroy();
     },    
@@ -184,7 +229,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       assertEquals( expected, log );
       widget.destroy();
     },    
-
   
     testKeyDownNonPrintable : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -240,7 +284,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },  
 
-    
     testKeyDownPrintableSpecialCharNoKeyInput : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
@@ -295,7 +338,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       testUtil.keyHold( widget._getTargetNode(), "Shift" );
       var expected = qx.core.Variant.select( "qx.client", {
         "default" : [ "keydown", "keypress", "keypress" ],
-        "gecko" : [ "keydown", "keydown" ],
+        "gecko" : [ "keydown" ],
         "opera" : [ "keydown" ]
       } );
       assertEquals( expected, log );

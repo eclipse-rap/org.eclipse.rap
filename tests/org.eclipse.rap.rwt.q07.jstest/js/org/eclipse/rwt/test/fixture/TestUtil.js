@@ -164,10 +164,10 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     hoverFromTo : function( fromNode, toNode ) {
       var outEvent = this._createFakeMouseEventDOM( fromNode, "mouseout", 0 );
       outEvent.relatedTarget = toNode;
-      this.fireFakeMouseEventDOM( outEvent );
+      this.fireFakeDomEvent( outEvent );
       var overEvent = this._createFakeMouseEventDOM( toNode, "mouseover", 0 );
       overEvent.relatedTarget = fromNode;
-      this.fireFakeMouseEventDOM( overEvent );
+      this.fireFakeDomEvent( overEvent );
     },
       
     fakeMouseEventDOM : function( target, type, button, left, top, mod, filter ) {
@@ -179,11 +179,12 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       if( filter === true && this.isMobileWebkit() ) {
         delete domEvent.originalEvent;
       }
-      this.fireFakeMouseEventDOM( domEvent );
+      this.fireFakeDomEvent( domEvent );
     },
 
     _createFakeMouseEventDOM : function( target, type, button, left, top, mod ) 
     {
+      // TODO [tb] : refactor to not overwrite paramters? 
       if( typeof left === "undefined" ) {
         left = 0;
       }
@@ -205,8 +206,20 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         clientX -= qx.bom.Viewport.getScrollLeft( window );
         clientY -= qx.bom.Viewport.getScrollTop( window );
       }
+      var which = null;
+      switch( button ) {
+        case qx.event.type.MouseEvent.buttons.left:
+          which = 1;
+        break;
+        case qx.event.type.MouseEvent.buttons.middle:
+          which = 2;
+        break;
+        case qx.event.type.MouseEvent.buttons.right:
+          which = 3;
+        break;
+      }
       var domEvent = this._createFakeDomEvent( target, type, mod );
-      domEvent.which = 1;
+      domEvent.which = which;
       domEvent.button = button;
       domEvent.pageX = left;
       domEvent.pageY = top;
@@ -223,8 +236,32 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       return domEvent; 
     },
 
-    fireFakeMouseEventDOM : function( domEvent ) {
-      qx.event.handler.EventHandler.getInstance().__onmouseevent( domEvent );
+    fireFakeDomEvent : function( domEvent ) {
+      var type = domEvent.type; 
+      switch( type ) {
+        case "mousedown":
+        case "mouseup":
+        case "mousemove":
+        case "mouseover":
+        case "mouseout":
+        case "contextmenu":
+        case "mousewheel":
+        case "DOMMouseScroll":
+        case "click":
+        case "dblclick":
+          var handler = org.eclipse.rwt.EventHandler;
+          handler.__onmouseevent( domEvent );
+        break;
+        case "keydown":
+        case "keypress":
+        case "keyup":
+          var handler = org.eclipse.rwt.KeyEventHandler;
+          handler.__onKeyEvent( domEvent );
+        break;
+        default:
+          throw "fireFakeDomEvent: Unkown dom-event " + domEvent.type;
+        break;
+      }
     },
     
     _identifierToKeycodeMap : {
@@ -326,12 +363,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       domEvent.keyCode = this._getKeyCode( type, stringOrKeyCode );
       domEvent.charCode = this._getCharCode( type, stringOrKeyCode );
       domEvent.isChar = stringOrKeyCode === "string"; // not always correct 
-      var handler = qx.event.handler.KeyEventHandler.getInstance();
-      if( type === "keypress" ) {
-        handler.__onkeypress( domEvent );
-      } else {
-        handler.__onkeyupdown( domEvent );
-      }
+      this.fireFakeDomEvent( domEvent );
     },
 
     _getKeyCode : qx.core.Variant.select("qx.client", { 
@@ -373,7 +405,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     } ),
     
     _isPrintable : function( stringOrKeyCode ) {
-      var handler = qx.event.handler.KeyEventHandler.getInstance();
+      var handler = org.eclipse.rwt.KeyEventHandler;
       var keyCodeMap = handler._keyCodeToIdentifierMap;
       var idMap = this._printableIdentifierToKeycodeMap;
       var isChar =    typeof stringOrKeyCode === "string" 
@@ -491,7 +523,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       var domEvent = 
         this._createFakeMouseEventDOM( target, "mousewheel", 0, 0, 0, 0 );
       this._addWheelDelta( domEvent, value );
-      this.fireFakeMouseEventDOM( domEvent );
+      this.fireFakeDomEvent( domEvent );
     },
     
     _addWheelDelta : qx.core.Variant.select("qx.client", {
@@ -567,10 +599,10 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     },
 
     resetEventHandler : function() {
-      var keyHandler = qx.event.handler.KeyEventHandler.getInstance();
+      var keyHandler = org.eclipse.rwt.KeyEventHandler;
       keyHandler._lastKeyCode = null;
       keyHandler._lastUpDownType = {};
-      qx.event.handler.EventHandler.getInstance().setCaptureWidget( null );
+      org.eclipse.rwt.EventHandler.setCaptureWidget( null );
     },
 
     ////////////////
@@ -695,11 +727,11 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     },
 
     isFocused : function( widget ) {
-      return widget == qx.event.handler.EventHandler.getInstance().getFocusRoot().getFocusedChild(); 
+      return widget == org.eclipse.rwt.EventHandler.getFocusRoot().getFocusedChild(); 
     },
     
     isActive: function( widget ) {
-      return widget == qx.event.handler.EventHandler.getInstance().getFocusRoot().getActiveChild(); 
+      return widget == org.eclipse.rwt.EventHandler.getFocusRoot().getActiveChild(); 
     },
     
     flush : function() {

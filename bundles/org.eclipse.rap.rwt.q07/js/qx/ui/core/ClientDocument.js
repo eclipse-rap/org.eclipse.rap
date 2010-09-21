@@ -88,7 +88,7 @@ qx.Class.define("qx.ui.core.ClientDocument",
     this.initSelectable();
 
     // Register as current focus root
-    qx.event.handler.EventHandler.getInstance().setFocusRoot(this);
+    org.eclipse.rwt.EventHandler.setFocusRoot(this);
   },
 
 
@@ -101,16 +101,16 @@ qx.Class.define("qx.ui.core.ClientDocument",
 
   events:
   {
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "focus"         : "qx.event.type.Event",
 
-    /** Fired when the window looses the focus (Fired by {@link qx.event.handler.EventHandler}) */
+    /** Fired when the window looses the focus (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "windowblur"    : "qx.event.type.Event",
 
-    /**  Fired when the window gets the focus (Fired by {@link qx.event.handler.EventHandler}) */
+    /**  Fired when the window gets the focus (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "windowfocus"   : "qx.event.type.Event",
 
-    /** Fired when the window has been resized (Fired by {@link qx.event.handler.EventHandler}) */
+    /** Fired when the window has been resized (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "windowresize"  : "qx.event.type.Event"
   },
 

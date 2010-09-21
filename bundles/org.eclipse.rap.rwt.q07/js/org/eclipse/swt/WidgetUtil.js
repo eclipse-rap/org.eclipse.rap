@@ -51,11 +51,11 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
     /**
      * Can be used simulate mouseEvents on the qooxdoo event-layer.
      * Manager and handler that are usually notified by 
-     * qx.event.handler.EventHandler will not receive the event. 
+     * org.eclipse.rwt.EventHandler will not receive the event. 
      */
     _fakeMouseEvent : function( originalTarget, type ) {
       var domTarget = originalTarget._getTargetNode();
-      var eventHandler = qx.event.handler.EventHandler;
+      var eventHandler = org.eclipse.rwt.EventHandler;
       var target = eventHandler.getTargetObject( null, 
                                                  originalTarget,
                                                  true );

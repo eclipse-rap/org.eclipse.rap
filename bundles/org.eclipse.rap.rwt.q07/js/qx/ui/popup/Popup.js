@@ -410,9 +410,9 @@ qx.Class.define("qx.ui.popup.Popup",
     {
       var vPopups = qx.lang.Object.getValues(qx.ui.popup.PopupManager.getInstance().getAll());
 
-      if (qx.event.handler.EventHandler.getInstance().getMenuManager() != null)
+      if (org.eclipse.rwt.EventHandler.getMenuManager() != null)
       {
-        var manager = qx.event.handler.EventHandler.getInstance().getMenuManager();
+        var manager = org.eclipse.rwt.EventHandler.getMenuManager();
         var vMenus = qx.lang.Object.getValues(manager.getAll());
         var vAll = vPopups.concat(vMenus).sort(qx.util.Compare.byZIndex);
       }

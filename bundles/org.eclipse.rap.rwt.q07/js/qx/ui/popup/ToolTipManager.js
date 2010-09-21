@@ -123,7 +123,7 @@ qx.Class.define("qx.ui.popup.ToolTipManager",
 
       // Allows us to use DOM Nodes as tooltip target :)
       if (!(vTarget instanceof qx.ui.core.Widget) && vTarget.nodeType == 1) {
-        vTarget = qx.event.handler.EventHandler.getTargetObject(vTarget);
+        vTarget = org.eclipse.rwt.EventHandler.getTargetObject(vTarget);
       }
 
       // Search first parent which has a tooltip

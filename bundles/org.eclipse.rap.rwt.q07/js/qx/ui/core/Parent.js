@@ -319,7 +319,7 @@ qx.Class.define("qx.ui.core.Parent",
       {
         this.setActiveChild(value);
         value.setFocused(true);
-        qx.event.handler.EventHandler.getInstance().setFocusRoot(this);
+        org.eclipse.rwt.EventHandler.setFocusRoot(this);
 
         // Dispatch Focus
         var vEventObject = new qx.event.type.FocusEvent("focus", value);

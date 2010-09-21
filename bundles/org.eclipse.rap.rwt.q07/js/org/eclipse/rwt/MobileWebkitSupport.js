@@ -97,7 +97,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
     
     _registerFilter : function() {
-      var eventHandler = qx.event.handler.EventHandler.getInstance();
+      var eventHandler = org.eclipse.rwt.EventHandler;
       eventHandler.setMouseEventFilter( this._filterMouseEvents, this );
     },
     

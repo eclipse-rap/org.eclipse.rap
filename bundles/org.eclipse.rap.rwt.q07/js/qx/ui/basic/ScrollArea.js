@@ -93,7 +93,7 @@ qx.Class.define("qx.ui.basic.ScrollArea",
     _onscroll : function(e)
     {
       this.createDispatchEvent("scroll");
-      qx.event.handler.EventHandler.stopDomEvent(e);
+      org.eclipse.rwt.EventHandler.stopDomEvent(e);
     }
   },
 

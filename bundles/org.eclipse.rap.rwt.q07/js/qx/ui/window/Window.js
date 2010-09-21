@@ -612,7 +612,7 @@ qx.Class.define("qx.ui.window.Window",
       qx.ui.popup.PopupManager.getInstance().update();
 
       // Configure the focus root to be the current opened window
-      qx.event.handler.EventHandler.getInstance().setFocusRoot(this);
+      org.eclipse.rwt.EventHandler.setFocusRoot(this);
 
       this.getWindowManager().add(this);
       this._makeActive();
@@ -633,16 +633,16 @@ qx.Class.define("qx.ui.window.Window",
       qx.ui.layout.CanvasLayout.prototype._beforeDisappear.call(this);
 
       // Reset focus root
-      var vFocusRoot = qx.event.handler.EventHandler.getInstance().getFocusRoot();
+      var vFocusRoot = org.eclipse.rwt.EventHandler.getFocusRoot();
 
       if (vFocusRoot == this || this.contains(vFocusRoot)) {
-        qx.event.handler.EventHandler.getInstance().setFocusRoot(null);
+        org.eclipse.rwt.EventHandler.setFocusRoot(null);
       }
 
       // Be sure to disable any capturing inside invisible parts
       // Is this to much overhead?
       // Are there any other working solutions?
-      var vWidget = qx.event.handler.EventHandler.getInstance().getCaptureWidget();
+      var vWidget = org.eclipse.rwt.EventHandler.getCaptureWidget();
 
       if (vWidget && this.contains(vWidget)) {
         vWidget.setCapture(false);

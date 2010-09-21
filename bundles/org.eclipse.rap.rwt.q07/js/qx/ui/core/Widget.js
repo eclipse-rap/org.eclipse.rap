@@ -95,46 +95,46 @@ qx.Class.define("qx.ui.core.Widget",
     "create"          : "qx.event.type.Event",
     "execute"         : "qx.event.type.Event",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "mouseover"       : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "mousemove"       : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "mouseout"        : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "mousedown"       : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "mouseup"         : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "mousewheel"      : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "click"           : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "dblclick"        : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "contextmenu"     : "qx.event.type.MouseEvent",
     
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "elementOver"     : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "elementOut"      : "qx.event.type.MouseEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "keydown"         : "qx.event.type.KeyEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "keypress"        : "qx.event.type.KeyEvent",
 
-    /** (Fired by {@link qx.event.handler.EventHandler}) */
+    /** (Fired by {@link org.eclipse.rwt.EventHandler}) */
     "keyup"           : "qx.event.type.KeyEvent",
 
     /** (Fired by {@link qx.ui.core.Parent}) */
@@ -6166,7 +6166,7 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _applyCapture : function(value, old)
     {
-      var vMgr = qx.event.handler.EventHandler.getInstance();
+      var vMgr = org.eclipse.rwt.EventHandler;
 
       if (old) {
         vMgr.setCaptureWidget(null);

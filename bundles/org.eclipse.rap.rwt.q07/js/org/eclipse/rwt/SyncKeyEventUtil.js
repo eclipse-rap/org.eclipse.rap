@@ -57,7 +57,7 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
     _isRelevantEvent : function( eventType, keyCode ) {
       var result;
       if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        var keyEventHandler = qx.event.handler.KeyEventHandler.getInstance();
+        var keyEventHandler = org.eclipse.rwt.KeyEventHandler;
         var nonPrintable
           =  keyEventHandler._isNonPrintableKeyCode( keyCode ) 
           || keyCode == 27 // escape
@@ -83,9 +83,9 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
     },
 
     _getTargetControl : function() {
-      var result = qx.event.handler.EventHandler.getInstance().getCaptureWidget();
+      var result = org.eclipse.rwt.EventHandler.getCaptureWidget();
       if( !result ) {
-        var focusRoot = qx.event.handler.EventHandler.getInstance().getFocusRoot();
+        var focusRoot = org.eclipse.rwt.EventHandler.getFocusRoot();
         result = focusRoot == null ? null : focusRoot.getActiveChild();  
       }
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
