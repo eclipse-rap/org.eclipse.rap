@@ -499,7 +499,7 @@ abstract class ExampleTab {
 
       public void widgetSelected( final SelectionEvent e ) {
         int width = parseInt( textWidth.getText() );
-        Color color = buttonColor.getBackground();
+        Color color = buttonColor.getForeground();
         int topLeft = parseInt( textTopLeft.getText() );
         int topRight = parseInt( textTopRight.getText() );
         int bottomRight = parseInt( textBottomRight.getText() );
