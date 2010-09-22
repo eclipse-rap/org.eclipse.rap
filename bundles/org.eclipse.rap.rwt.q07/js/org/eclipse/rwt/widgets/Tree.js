@@ -292,7 +292,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     setScrollBarsVisible : function( horzVisible, vertVisible ) {
+      if( !horzVisible ) {
+        this._horzScrollBar.setValue( 0 );
+      }
       this._horzScrollBar.setVisibility( horzVisible );
+      if( !vertVisible ) {
+        this._vertScrollBar.setValue( 0 );
+      }
       this._vertScrollBar.setVisibility( vertVisible );
       this._layoutX();
       this._layoutY();
@@ -1068,12 +1074,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _sendScrollLeftChange : function() {
-      if( !this._inServerResponse() ) {
-        var req = org.eclipse.swt.Request.getInstance();
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        var id = wm.findIdByWidget( this );
-        req.addParameter( id + ".scrollLeft", this._horzScrollBar.getValue() );
-      }
+      // TODO [tb] : There should be a check for _inServerResponse,
+      // but currently this is needed to sync the value with the 
+      // server when the scrollbars are hidden by the server. Should be 
+      // improved here and in table with new scrollbar implementation.
+      var req = org.eclipse.swt.Request.getInstance();
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var id = wm.findIdByWidget( this );
+      req.addParameter( id + ".scrollLeft", this._horzScrollBar.getValue() );
       if( this._isVirtual || this._hasScrollBarsSelectionListener ) {
         this._sendRequestTimer.start();
       }

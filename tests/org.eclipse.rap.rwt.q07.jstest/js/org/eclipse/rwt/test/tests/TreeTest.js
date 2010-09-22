@@ -572,6 +572,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree._vertScrollBar.getVisibility() );
       tree.destroy();
     },
+    
+    testSetScrollBarsVisibileResetValue : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      wm.add( tree, "wtest", false );
+      tree.setScrollBarsVisible( true, true );      
+      testUtil.flush();
+      tree._horzScrollBar.setValue( 10 );
+      tree._vertScrollBar.setValue( 10 );
+      testUtil.initRequestLog();
+      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      tree.setScrollBarsVisible( false, false );
+      delete org_eclipse_rap_rwt_EventUtil_suspend;  
+      assertEquals( 0, tree._horzScrollBar.getValue() );
+      assertEquals( 0, tree._vertScrollBar.getValue() );
+      var req = org.eclipse.swt.Request.getInstance();
+      assertEquals( "0", req.getParameter( "wtest.scrollLeft" ) );
+      wm.remove( tree );      
+      tree.destroy();
+    },
 
     testVerticalScrollBarLayout : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
