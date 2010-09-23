@@ -34,8 +34,9 @@ final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
-    writer.newWidget( "org.eclipse.swt.widgets.Separator" );    
+    writer.newWidget( "org.eclipse.swt.widgets.Separator" );
     ControlLCAUtil.writeStyleFlags( label );
+    WidgetLCAUtil.writeStyleFlag( label, SWT.SEPARATOR, "SEPARATOR" );
     writeOrientation( label );
     writeLineStyle( label );
   }
@@ -44,7 +45,7 @@ final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
     ControlLCAUtil.writeChanges( label );
     WidgetLCAUtil.writeCustomVariant( label );
   }
-  
+
   private static void writeOrientation( final Label label ) throws IOException {
     int style = label.getStyle();
     String orient = ( style & SWT.VERTICAL ) != 0 ? "vertical" : "horizontal";

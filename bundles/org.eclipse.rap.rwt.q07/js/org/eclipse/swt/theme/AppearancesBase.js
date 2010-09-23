@@ -1680,8 +1680,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "separator" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : states.rwt_BORDER ? "thinInset" : "undefined"
+        backgroundColor : tv.getCssColor( "Label", "background-color" ),
+        backgroundImage : tv.getCssImage( "Label", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "Label", "background-image" ),
+        border : tv.getCssBorder( "Label", "border" ),
+        cursor : tv.getCssCursor( "Label", "cursor" ),
+        opacity : tv.getCssFloat( "Label", "opacity" )
       }
     }
   },

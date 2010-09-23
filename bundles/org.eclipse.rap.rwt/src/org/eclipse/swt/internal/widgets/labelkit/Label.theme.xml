@@ -52,6 +52,9 @@
 
     <style name="BORDER"
         description="Indicates that the widget should have a border." />
+        
+    <style name="SEPARATOR"
+        description="Represents SWT Labels with style SWT.SEPARATOR." />
 
     <state name="hover"
         description="Applies to widgets while the cursor hovers over them." />
