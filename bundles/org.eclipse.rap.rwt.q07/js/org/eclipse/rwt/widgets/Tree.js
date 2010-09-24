@@ -1343,6 +1343,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
       var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
       tvGrid.dispose();
+      gridColor = gridColor == "undefined" ? "transparent" : gridColor;
       border.setColor( gridColor );
       if( state.horizontal ) {
         border.setWidthBottom( 1 );
