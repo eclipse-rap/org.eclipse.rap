@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.rap.ui.themes">
+      <theme
+            file="theme/classic.css"
+            id="org.eclipse.rap.rwt.theme.classic"
+            name="%Theme-Title">
+      </theme>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.branding">
+      <branding
+            id="org.eclipse.rap.rwt.theme.classic.branding"
+            servletName="classic"
+            themeId="org.eclipse.rap.rwt.theme.classic"
+            title="%Display-Title">
+      </branding>
+   </extension>
+
+</plugin>

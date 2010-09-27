@@ -1,0 +1,1192 @@
+/******************************************************************************* 
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* Browser Classic theme */
+
+Browser {
+  border: none;
+}
+
+Browser[BORDER] {
+  border: 2px inset;
+}
+
+/* CCombo Classic theme */
+
+CCombo {
+  background-color: white;
+  color: black;
+  border: none;
+}
+
+CCombo[BORDER] {
+  border: 1px inset;
+}
+
+CCombo-Button {
+  /* 
+  For backward compatibility we have to keep the drop-down button icon
+  definition in CCombo-Button and not in CCombo-Button-Icon
+  */
+  background-image: url( theme/img/widget/rap/combo/down_button.gif );
+  background-color: rgb( 248, 248, 255 );
+  border: 1px outset;
+  width: 15px;
+  cursor: default;
+}
+
+CCombo-Button-Icon {
+  background-image: none;
+}
+
+CCombo-Button[FLAT] {
+  border: none;
+}
+
+CCombo-Button[FLAT]:hover {
+  border: 1px outset;
+}
+
+CCombo-List {
+  border: 1px rgb( 167, 166, 170 );
+}
+
+CCombo-Field {
+  padding: 2px 3px;
+}
+
+CCombo-FocusIndicator {
+  background-color: transparent; 
+  border: 1px dotted #909090;
+  margin: 1px 16px 1px 1px;
+  opacity: 1;
+}
+
+/* CLabel Classic theme */
+
+CLabel {
+  color: black;
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  border: none;
+  padding: 3px;
+  spacing: 5px;
+  cursor: default;
+  opacity: 1;
+}
+
+CLabel[BORDER] {
+  border: 1px inset;
+}
+
+/* CTabFolder Classic theme */
+
+CTabFolder {
+  border-color: #c0c0c0;
+  border-radius: 0px;
+}
+
+CTabItem {
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  color: black;
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  padding: 2px 4px;
+  spacing: 4px;
+}
+
+CTabItem:selected {
+  color: black;
+  background-color: rgb( 217, 227, 243 );
+}
+
+/* Do not gray out disabled CTabItems, this is SWT behavior */
+CTabItem:disabled {
+  color: black;
+}
+
+CTabFolder-DropDownButton-Icon {
+  background-image: url( theme/img/widget/rap/ctabfolder/chevron.gif );
+}
+
+/* Button Classic theme */
+
+Button {
+  background-image: none;
+  color: black;
+  padding: 4px 5px;
+  spacing: 2px;
+  cursor: default;
+  animation: none;
+}
+
+Button[PUSH], Button[TOGGLE] {
+  background-color: rgb( 247, 247, 251 );
+  border: 1px outset;
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  padding: 5px 6px;
+}
+
+Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
+  border: 1px black;
+  padding: 5px 6px;
+}
+
+Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
+  border: 2px outset;
+}
+
+Button[PUSH]:hover, Button[TOGGLE]:hover {
+  background-color: rgb( 251, 251, 254 );
+}
+
+Button[PUSH]:pressed, Button[TOGGLE]:pressed, Button[TOGGLE]:selected {
+  border: 1px inset;
+  padding: 4px 3px 2px 5px;
+  animation: none;
+}
+
+Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
+  background-color: rgb( 225, 225, 230 );
+  padding: 5px 6px;
+}
+
+Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {
+  border: 2px inset;
+}
+
+Button[CHECK], Button[RADIO] {
+  spacing: 4px;
+}
+
+Button-CheckIcon {
+  background-image: url( theme/img/widget/rap/button/check-unselected.png );
+}
+
+Button-CheckIcon:hover {
+  background-image: url( theme/img/widget/rap/button/check-unselected-hover.png );
+}
+
+Button-CheckIcon:selected {
+  background-image: url( theme/img/widget/rap/button/check-selected.png );
+}
+
+Button-CheckIcon:selected:hover {
+  background-image: url( theme/img/widget/rap/button/check-selected-hover.png );
+}
+
+Button-CheckIcon:selected:grayed {
+  background-image: url( theme/img/widget/rap/button/check-grayed.png );
+}
+
+Button-CheckIcon:selected:grayed:hover {
+  background-image: url( theme/img/widget/rap/button/check-grayed-hover.png );
+}
+
+Button-RadioIcon {
+  background-image: url( theme/img/widget/rap/button/radio-unselected.png );
+}
+
+Button-RadioIcon:hover {
+  background-image: url( theme/img/widget/rap/button/radio-unselected-hover.png );
+}
+
+Button-RadioIcon:selected {
+  background-image: url( theme/img/widget/rap/button/radio-selected.png );
+}
+
+Button-RadioIcon:selected:hover {
+  background-image: url( theme/img/widget/rap/button/radio-selected-hover.png );
+}
+
+Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
+  background-color: transparent; 
+  border: 1px dotted #909090;
+  margin: 2px;
+  padding: 0px;
+  opacity: 1;
+}
+
+Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
+  background-color: transparent; 
+  border: 1px dotted #909090;
+  padding: 2px 2px 2px 1px;
+  margin: 0px;
+  opacity: 1;
+}
+
+/* Combo Classic theme */
+
+Combo {
+  background-color: white;
+  color: black;
+  border: 2px inset;
+}
+
+Combo-Button {
+  /* 
+  For backward compatibility we have to keep the drop-down button icon
+  definition in Combo-Button and not in Combo-Button-Icon
+  */  
+  background-image: url( theme/img/widget/rap/combo/down_button.gif );
+  background-color: rgb( 248, 248, 255 );
+  border: 1px outset;
+  width: 15px;
+  cursor: default;
+}
+  
+Combo-Button-Icon {
+  background-image: none;
+} 
+
+Combo-List {
+  border: 1px rgb( 167, 166, 170 );
+}
+
+Combo-Field {
+  padding: 2px 3px;
+}
+
+Combo-FocusIndicator {
+  background-color: transparent; 
+  border: 1px dotted #909090;
+  margin: 1px 16px 1px 1px;
+  opacity: 1;
+}
+
+/* Classic theme for all composites */
+
+Composite {
+  border: none;
+  background-image: none;
+  padding: 0px;
+  opacity: 1;
+}
+
+/* Classic theme for all controls */
+
+* {
+  border: none;
+  padding: 0px;
+}
+
+*[BORDER] {
+  border: 2px inset;
+}
+
+/* CoolBar Classic theme */
+
+CoolBar {
+  background-image: none;
+}
+
+CoolItem-Handle {
+  border: 1px outset;
+  width: 4px;
+}
+
+/* DateTime Classic theme */
+
+DateTime {
+  border: none;
+  background-color: white;
+  color: black;
+}
+
+DateTime-Field {
+  padding: 2px 3px;
+}
+
+DateTime[BORDER] {
+  border: 1px inset;
+}
+
+DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:selected:hover {
+  background-color: rgb( 49, 106, 197 );
+  color: white;
+}
+
+DateTime-Calendar-Day:selected:unfocused {
+  background-color: rgb( 192, 192, 192 );
+}
+
+DateTime-Calendar-Day:otherMonth {
+  background-color: transparent;
+  color: rgb( 128, 128, 128 );
+}
+
+DateTime-Calendar-Day:hover {
+  background-color: rgb( 217, 227, 243 );
+}
+
+DateTime-Calendar-Navbar {
+  border: none;
+  background-color: rgb( 0, 128, 192 );
+  color: white;
+  font: bold 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+}
+
+DateTime-Calendar-PreviousMonthButton {
+  background-image: url( theme/img/widget/rap/calendar/lastMonth.gif );
+  cursor: default;
+}
+
+DateTime-Calendar-NextMonthButton {
+  background-image: url( theme/img/widget/rap/calendar/nextMonth.gif );
+  cursor: default;
+}
+
+DateTime-Calendar-PreviousYearButton {
+  background-image: url( theme/img/widget/rap/calendar/lastYear.gif );
+  cursor: default;
+}
+
+DateTime-Calendar-NextYearButton {
+  background-image: url( theme/img/widget/rap/calendar/nextYear.gif );
+  cursor: default;
+}
+
+DateTime-UpButton, DateTime-DownButton {
+  background-color: rgb( 248, 248, 255 );
+  border: 2px outset;
+  width: 15px;
+  cursor: default;
+}
+
+DateTime-UpButton:pressed, DateTime-DownButton:pressed {
+  border: 2px inset;
+}
+
+DateTime-UpButton {
+  /* 
+  For backward compatibility we have to keep the up button icon
+  definition in DateTime-UpButton and not in DateTime-UpButton-Icon
+  */
+  background-image: url( theme/img/widget/rap/datetime/up_button.gif );
+}
+
+DateTime-DownButton {
+  /* 
+  For backward compatibility we have to keep the down button icon
+  definition in DateTime-DownButton and not in DateTime-DownButton-Icon
+  */
+  background-image: url( theme/img/widget/rap/datetime/down_button.gif );
+}
+
+DateTime-DropDownButton {
+  /* 
+  For backward compatibility we have to keep the drop-down button icon
+  definition in DateTime-DropDownButton and not in DateTime-DropDownButton-Icon
+  */
+  background-image: url( theme/img/widget/rap/datetime/drop_down_button.gif );
+  background-color: rgb( 248, 248, 255 );
+  border: 1px outset;
+  width: 15px;
+  cursor: default;
+}
+
+DateTime-UpButton-Icon, DateTime-DownButton-Icon, DateTime-DropDownButton-Icon {
+  background-image: none;
+}
+
+DateTime-DropDownCalendar {
+  border: 1px rgb( 167, 166, 170 );
+}
+
+/* ExpandBar Classic theme */
+
+ExpandBar {
+  color: black;
+}
+
+ExpandItem {
+  border: 1px solid #D4D0C8;
+}
+
+ExpandItem-Header {
+  border: none;
+  background-image: none;
+  background-color: #D4D0C8;
+  cursor: pointer;
+}
+
+ExpandItem-Header:disabled {
+  cursor: default;
+}
+
+ExpandItem-Button {
+  background-image: url( theme/img/widget/rap/expanditem/chevron_down.gif );
+}
+
+ExpandItem-Button:hover {
+  background-image: url( theme/img/widget/rap/expanditem/chevron_down_over.gif );
+}
+
+ExpandItem-Button:expanded {
+  background-image: url( theme/img/widget/rap/expanditem/chevron_up.gif );
+}
+
+ExpandItem-Button:expanded:hover {
+  background-image: url( theme/img/widget/rap/expanditem/chevron_up_over.gif );
+}
+
+/* Group Classic theme */
+
+Group {
+  background-color: rgb( 248, 248, 255 );
+}
+
+Group-Frame {
+  border: 1px solid #ACA899;
+  margin: 8px 0px 0px;
+  padding: 8px 2px 2px;
+}
+
+Group-Label {
+  margin: 1px 10px;
+  padding: 0px 3px 0px 4px;
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  background-color: transparent;
+  color: inherit;
+  border: none;
+}
+
+/* Label Classic theme */
+
+Label {
+  color: black;
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  border: none;
+  text-decoration: none;
+  cursor: default;
+  opacity: 1;
+}
+
+Label:hover {
+  color: black;
+  background-color: rgb( 248, 248, 255 );
+}
+
+Label[BORDER] {
+  border: 1px inset;
+}
+
+/* Link Classic theme */
+
+Link-Hyperlink {
+  color: rgb( 0, 0, 127 );
+}
+
+/* List Classic theme */
+
+List {
+  background-color: white;
+  color: black;
+  border: none;
+}
+
+List[BORDER] {
+  border: 1px inset;
+}
+
+List-Item {
+  background-color: transparent;
+  color: black;
+}
+
+List-Item:selected {
+  background-color: rgb( 49, 106, 197 );
+  color: white;
+}
+
+List-Item:selected:unfocused {
+  background-color: rgb( 192, 192, 192 );
+}
+
+/* Menu Classic theme */
+
+Menu {
+  color: black;
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  border: 2px outset;
+  border-radius: 0px;
+  padding: 1px;
+  opacity: 1;
+  animation: none;
+}
+
+MenuItem {
+  color: black;
+  background-color: transparent;
+  opacity: 1;
+}
+
+MenuItem:hover {
+  color: white;
+  background-color: rgb( 49, 106, 197 );
+}
+
+MenuItem-CheckIcon {
+  background-image: url( theme/img/widget/rap/menu/checkbox.gif );
+}
+
+MenuItem-RadioIcon {
+  background-image: url( theme/img/widget/rap/menu/radiobutton.gif );
+}
+
+MenuItem-CascadeIcon {
+  background-image: url( theme/img/widget/rap/menu/arrow.gif );
+}
+
+/* ProgressBar Classic theme */
+
+ProgressBar {
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  border: 1px solid #c0c0c0;
+  border-radius: 0px;
+}
+
+ProgressBar-Indicator {
+  background-color: rgb( 0, 128, 192 );
+  background-image: none;
+  border: none;
+  opacity: 1;
+}
+
+ProgressBar-Indicator:paused {
+  background-color: rgb( 255, 223, 33 );
+}
+
+ProgressBar-Indicator:error {
+  background-color: rgb( 203, 32, 32 );
+}
+
+/* Sash Classic theme */
+
+Sash-Handle {
+  background-image: none;
+}
+
+Sash-Handle:horizontal {
+  background-image: none;
+}
+
+Sash-Handle:vertical {
+  background-image: none;
+}
+
+/* Scale Classic theme */
+
+Scale {
+  background-color: rgb( 248, 248, 255 );
+}
+
+Scale-Thumb {
+  background-color: rgb( 241, 241, 255 );
+}
+
+/* Shell Classic theme */
+
+Shell {
+  border: 1px black;
+  background-color: rgb( 248, 248, 255 );
+  padding: 0px;
+  background-image: none;
+  opacity: 1;
+}
+
+Shell[TITLE], Shell[BORDER] {
+  border: 2px outset;
+}
+
+Shell:maximized {
+  border: none;
+}
+
+Shell-DisplayOverlay {
+  background-image: none;
+  background-color: transparent;
+  opacity: 1;
+  animation: none;
+}
+
+/* Shell titlebar */
+
+Shell-Titlebar {
+  background-color: rgb( 0, 128, 192 );
+  background-gradient-color: rgb( 0, 128, 192 );
+  color: white;
+  font: bold 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  height: 18px;
+  margin: 0px 0px 1px;
+  padding: 1px 2px;
+  background-image: url( theme/img/widget/rap/window/caption_active.gif );
+}
+
+Shell-Titlebar:inactive {
+  background-color: rgb( 121, 150, 165 );
+  background-gradient-color: rgb( 121, 150, 165 );
+  color: rgb( 221, 221, 221 );
+  background-image: url( theme/img/widget/rap/window/caption_inactive.gif );
+}
+
+/* Shell buttons */
+
+Shell-MinButton, Shell-MaxButton, Shell-CloseButton {
+  margin: 2px 0px 2px 1px;
+}
+
+/* Minimize button */
+
+Shell-MinButton {
+  background-image: url( theme/img/widget/rap/window/minimize.png );
+}
+
+Shell-MinButton:hover {
+  background-image: url( theme/img/widget/rap/window/minimize.over.png );
+}
+
+Shell-MinButton:inactive {
+  background-image: url( theme/img/widget/rap/window/minimize.inactive.png );
+}
+
+Shell-MinButton:inactive:hover {
+  background-image: url( theme/img/widget/rap/window/minimize.inactive.over.png );
+}
+
+/* Maximize button */
+
+Shell-MaxButton {
+  background-image: url( theme/img/widget/rap/window/maximize.png );
+}
+
+Shell-MaxButton:hover {
+  background-image: url( theme/img/widget/rap/window/maximize.over.png );
+}
+
+Shell-MaxButton:inactive {
+  background-image: url( theme/img/widget/rap/window/maximize.inactive.png );
+}
+
+Shell-MaxButton:inactive:hover {
+  background-image: url( theme/img/widget/rap/window/maximize.inactive.over.png );
+}
+
+/* Restore button */
+
+Shell-MaxButton:maximized {
+  background-image: url( theme/img/widget/rap/window/restore.png );
+}
+
+Shell-MaxButton:maximized:hover {
+  background-image: url( theme/img/widget/rap/window/restore.over.png );
+}
+
+Shell-MaxButton:maximized:inactive {
+  background-image: url( theme/img/widget/rap/window/restore.inactive.png );
+}
+
+Shell-MaxButton:maximized:inactive:hover {
+  background-image: url( theme/img/widget/rap/window/restore.inactive.over.png );
+}
+
+/* Close button */
+
+Shell-CloseButton {
+  background-image: url( theme/img/widget/rap/window/close.png );
+}
+
+Shell-CloseButton:hover {
+  background-image: url( theme/img/widget/rap/window/close.over.png );
+}
+
+Shell-CloseButton:inactive {
+  background-image: url( theme/img/widget/rap/window/close.inactive.png );
+}
+
+Shell-CloseButton:inactive:hover {
+  background-image: url( theme/img/widget/rap/window/close.inactive.over.png );
+}
+
+/* Slider Classic theme */
+
+Slider {
+  background-color: #F0F0F8;
+  border: none;
+}
+
+Slider-Thumb {
+  background-color: #F8F8FF;
+  border: 1px outset;
+  background-image: none;
+}
+
+Slider-DownButton, Slider-UpButton {
+  background-color: #F8F8FF;
+  border: 1px outset;
+  background-image: none;
+  cursor: default;
+}
+
+Slider-DownButton:horizontal {
+  /* 
+  For backward compatibility we have to keep the down button icon
+  definition in Slider-DownButton and not in Slider-DownButton-Icon
+  */
+  background-image: url( theme/img/widget/rap/slider/h_btn_min.gif );
+}
+
+Slider-DownButton:vertical {
+  /* 
+  For backward compatibility we have to keep the down button icon
+  definition in Slider-DownButton and not in Slider-DownButton-Icon
+  */
+  background-image: url( theme/img/widget/rap/slider/v_btn_min.gif );
+}
+
+Slider-UpButton:horizontal {
+  /* 
+  For backward compatibility we have to keep the up button icon
+  definition in Slider-UpButton and not in Slider-UpButton-Icon
+  */
+  background-image: url( theme/img/widget/rap/slider/h_btn_max.gif );
+}
+
+Slider-UpButton:vertical {
+  /* 
+  For backward compatibility we have to keep the up button icon
+  definition in Slider-UpButton and not in Slider-UpButton-Icon
+  */
+  background-image: url( theme/img/widget/rap/slider/v_btn_max.gif );
+}
+
+Slider-DownButton-Icon, Slider-UpButton-Icon {
+  background-image: none;
+}
+
+/* Spinner Classic theme */
+
+Spinner {
+  border: none;
+  color: black;
+  background-color: white;
+}
+
+Spinner-Field {
+  padding: 2px 3px;
+}
+
+Spinner[BORDER] {
+  border: 1px inset;
+}
+
+Spinner-UpButton, Spinner-DownButton {
+  background-color: rgb( 248, 248, 255 );
+  border: 2px outset;
+  width: 15px;
+  cursor: default;
+}
+
+Spinner-UpButton:pressed, Spinner-DownButton:pressed {
+  border: 2px inset;
+}
+
+Spinner-UpButton {
+  /* 
+  For backward compatibility we have to keep the up button icon
+  definition in Spinner-UpButton and not in Spinner-UpButton-Icon
+  */
+  background-image: url( theme/img/widget/rap/spinner/up_button.gif );
+}
+
+Spinner-DownButton {
+  /* 
+  For backward compatibility we have to keep the down button icon
+  definition in Spinner-DownButton and not in Spinner-DownButton-Icon
+  */
+  background-image: url( theme/img/widget/rap/spinner/down_button.gif );
+}
+
+Spinner-UpButton-Icon, Spinner-DownButton-Icon {
+  background-image: none;
+}
+
+/* TabFolder Classic theme */
+
+TabItem {
+  background-color: rgb( 248, 248, 255 );
+  border-top-color: rgb( 172, 168, 153 );
+  border-bottom-color: rgb( 172, 168, 153 );
+  background-image: none;
+}
+
+TabItem:selected {
+  background-color: rgb( 248, 248, 255 );
+  border-top-color: rgb( 254, 200, 60 );
+  border-bottom-color: rgb( 254, 200, 60 );
+}
+
+TabItem:hover {
+  background-color: rgb( 248, 248, 255 );
+}
+
+/* Table Classic theme */
+
+Table {
+  color: black;
+  background-color: white;
+  background-image: none;
+}
+
+TableItem {
+  color: inherit;
+  background-color: transparent;
+}
+
+TableItem:selected {
+  color: white;
+  background-color: rgb( 49, 106, 197 );
+}
+
+TableItem:selected:unfocused {
+  background-color: rgb( 192, 192, 192 );
+}
+
+TableColumn {
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  border-bottom: 2px solid rgb( 172, 168, 153 );
+  padding: 1px 2px;
+}
+
+TableColumn:hover {
+  border-bottom: 2px solid rgb( 254, 200, 60 );
+}
+
+TableColumn-SortIndicator {
+  background-image: none;
+}
+
+TableColumn-SortIndicator:up {
+  background-image: url( theme/img/widget/rap/column/up.gif );
+}
+
+TableColumn-SortIndicator:down {
+  background-image: url( theme/img/widget/rap/column/down.gif );
+}
+
+Table-Cell {
+  spacing: 2px;
+  padding: 0px 2px;
+}
+
+Table-GridLine {
+  color: #d0d0d0;
+}
+
+Table-Checkbox {
+  /* 
+  For backward compatibility we have to keep the width property.
+  Deprecated, use "margin" instead.
+  */
+  width: 21px;
+  margin: 0px;
+  background-image: url( theme/img/widget/rap/button/check-unselected.png );
+}
+
+Table-Checkbox:hover {
+  background-image: url( theme/img/widget/rap/button/check-unselected-hover.png );
+}
+
+Table-Checkbox:checked {
+  background-image: url( theme/img/widget/rap/button/check-selected.png );
+}
+
+Table-Checkbox:checked:hover {
+  background-image: url( theme/img/widget/rap/button/check-selected-hover.png );
+}
+
+Table-Checkbox:checked:grayed {
+  background-image: url( theme/img/widget/rap/button/check-grayed.png );
+}
+
+Table-Checkbox:checked:grayed:hover {
+  background-image: url( theme/img/widget/rap/button/check-grayed-hover.png );
+}
+
+/* Text Classic theme */
+
+Text {
+  border: none;
+  background-color: white;
+  color: black;
+  padding: 2px 3px;
+  background-image: none;
+}
+
+Text[BORDER] {
+  border: 1px inset;
+}
+
+Text[SINGLE] {
+  /* padding: 2px 3px; */
+}
+
+Text[MULTI] {
+  /* padding: 0px 0px 0px 3px; */
+}
+
+Text[MULTI][BORDER] {
+  /* padding: 0px 0px 0px 4px; */
+}
+
+Text-Message {
+  color: rgb( 167, 166, 170 );
+}
+
+/* ToolBar Classic theme */
+
+ToolBar {
+  color: black;
+  padding: 0px;
+  spacing: 0px;
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  border: none;
+  opacity: 1;
+}
+
+ToolBar[BORDER] {
+  border: 1px outset;
+}
+
+ToolItem {
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  border: 1px outset;
+  border-radius: 0px;
+  padding: 2px 3px;
+  spacing: 4px;
+  opacity: 1;
+  animation: none;
+}
+
+ToolItem[FLAT] {
+  border: none;
+  padding: 3px 4px;
+}
+
+ToolItem:hover {
+  background-color: white;
+  border: 1px outset;
+  padding: 2px 3px;
+}
+
+ToolItem:pressed, ToolItem:selected {
+  border: 1px inset;
+  padding: 3px 2px 1px 4px;
+}
+
+ToolItem-DropDownIcon {
+  background-image: url( theme/img/widget/rap/arrows/down.gif );
+  border: none;
+}
+
+ToolItem-DropDownIcon:hover {
+  border: 1px inset;
+}
+
+ToolItem-Separator {
+  width: 4px;
+}
+
+/* Tree Classic theme */
+
+Tree {
+  color: black;
+  background-color: white;
+  border: none;
+}
+
+Tree[BORDER] {
+  border: 2px inset;
+}
+
+TreeItem {
+  color: inherit;
+  background-color: transparent;
+}
+
+TreeItem:selected {
+  color: white;
+  background-color: rgb( 49, 106, 197 );
+}
+
+TreeItem:selected:unfocused {
+  color: white;
+  background-color: rgb( 192, 192, 192 );  
+}
+
+TreeColumn {
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  padding: 1px 2px;
+  border-bottom: 2px solid rgb( 172, 168, 153 );
+}
+
+TreeColumn:hover {
+  border-bottom: 2px solid rgb( 254, 200, 60 );
+}
+
+TreeColumn-SortIndicator {
+  background-image: none;
+}
+
+TreeColumn-SortIndicator:up {
+  background-image: url( theme/img/widget/rap/column/up.gif );
+}
+
+TreeColumn-SortIndicator:down {
+  background-image: url( theme/img/widget/rap/column/down.gif );
+}
+
+Tree-Cell {
+  spacing: 3px;
+  padding: 0px 2px;
+}
+
+Tree-GridLine {
+  color: #d0d0d0;
+}
+
+Tree-Checkbox {
+  margin: 0px 2px 0px 0px;
+  background-image: url( theme/img/widget/rap/button/check-unselected.png );
+}
+
+Tree-Checkbox:hover {
+  background-image: url( theme/img/widget/rap/button/check-unselected-hover.png );
+}
+
+Tree-Checkbox:checked {
+  background-image: url( theme/img/widget/rap/button/check-selected.png );
+}
+
+Tree-Checkbox:checked:hover {
+  background-image: url( theme/img/widget/rap/button/check-selected-hover.png );
+}
+
+Tree-Checkbox:checked:grayed {
+  background-image: url( theme/img/widget/rap/button/check-grayed.png );
+}
+
+Tree-Checkbox:checked:grayed:hover {
+  background-image: url( theme/img/widget/rap/button/check-grayed-hover.png );
+}
+
+Tree-Indent {
+  width: 16px;
+  background-image: url( theme/img/widget/rap/tree/cross.gif );
+}
+
+Tree-Indent:collapsed {
+  background-image: url( theme/img/widget/rap/tree/cross_plus.gif );
+}
+
+Tree-Indent:expanded {
+  background-image: url( theme/img/widget/rap/tree/cross_minus.gif );
+}
+
+Tree-Indent:line {
+  background-image: url( theme/img/widget/rap/tree/line.gif );
+}
+
+Tree-Indent:first {
+  background-image: url( theme/img/widget/rap/tree/start.gif );
+}
+
+Tree-Indent:first:collapsed {
+  background-image: url( theme/img/widget/rap/tree/start_plus.gif );
+}
+
+Tree-Indent:first:expanded {
+  background-image: url( theme/img/widget/rap/tree/start_minus.gif );
+}
+
+Tree-Indent:last {
+  background-image: url( theme/img/widget/rap/tree/end.gif );
+}
+
+Tree-Indent:last:collapsed {
+  background-image: url( theme/img/widget/rap/tree/end_plus.gif );
+}
+
+Tree-Indent:last:expanded {
+  background-image: url( theme/img/widget/rap/tree/end_minus.gif );
+}
+
+Tree-Indent:first:last {
+  background-image: url( theme/img/widget/rap/tree/single.gif );
+}
+
+Tree-Indent:first:last:collapsed {
+  background-image: url( theme/img/widget/rap/tree/single_plus.gif );
+}
+
+Tree-Indent:first:last:expanded {
+  background-image: url( theme/img/widget/rap/tree/single_minus.gif );
+}
+
+/* Classic theme for all widgets */
+
+* {
+  color: black;
+  background-color: rgb( 248, 248, 255 );
+  background-image: none;
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+}
+
+*:disabled {
+  color: rgb( 167, 166, 170 );
+}
+
+ToolTip {
+  border: 1px solid;
+  padding: 1px 3px 2px 3px;
+  color: black;
+  background-color: rgb( 255, 255, 225 );
+  opacity: 1;
+  animation: none;
+}
+
+Display {
+  rwt-shadow-color: rgb( 167, 166, 170 );
+  rwt-highlight-color: rgb( 255, 255, 255 );
+  rwt-darkshadow-color: rgb( 133, 135, 140 );
+  rwt-lightshadow-color: rgb( 220, 223, 228 );
+  rwt-thinborder-color: rgb( 172, 168, 153 );
+  rwt-selectionmarker-color: rgb( 254, 200, 60 );
+  rwt-infobackground-color: rgb( 255, 255, 225 );
+
+  rwt-error-image: url( theme/img/widget/rap/dialog/error.png );
+  rwt-information-image: url( theme/img/widget/rap/dialog/information.png );
+  rwt-warning-image: url( theme/img/widget/rap/dialog/information.png );
+  rwt-question-image: url( theme/img/widget/rap/dialog/question.png );
+  rwt-warning-image: url( theme/img/widget/rap/dialog/warning.png );
+  
+  rwt-fontlist: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
+  
+  background-image: url( theme/img/widget/rap/display/bg.gif );
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+}

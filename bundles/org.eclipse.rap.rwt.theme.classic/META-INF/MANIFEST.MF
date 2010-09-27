@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.rap.rwt.theme.classic;singleton:=true
+Bundle-Version: 1.4.0.qualifier
+Bundle-Vendor: %Bundle-Vendor
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Require-Bundle: org.eclipse.rap.ui;bundle-version="1.4.0"
