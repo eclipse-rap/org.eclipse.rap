@@ -112,6 +112,7 @@
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.theme.classic/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.design.example/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
       <fileset dir="${baseLocation}/plugins">
