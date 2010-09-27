@@ -1,3 +1,13 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
 /* Combo */
 
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
@@ -11,14 +21,6 @@ Combo, CCombo {
 Combo, CCombo[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
-}
-
-Combo-Button-Icon, CCombo-Button-Icon {
-  background-image: url( theme/business/icons/down.png );
-}
-
-Combo-Button-Icon:hover, CCombo-Button-Icon:hover {
-  background-image: url( theme/business/icons/down-hover.png );
 }
 
 Combo-Button, CCombo-Button {

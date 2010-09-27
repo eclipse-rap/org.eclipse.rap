@@ -542,25 +542,25 @@ public class CTabFolder_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    Rectangle expected = new Rectangle( -2, -18, 4, 20 );
+    Rectangle expected = new Rectangle( -2, -19, 4, 21 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
-    expected = new Rectangle( -2, -21, 4, 23 );
+    expected = new Rectangle( -2, -22, 4, 24 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder.setMinimized( true );
-    expected = new Rectangle( -2, -21, 4, 21 );
+    expected = new Rectangle( -2, -22, 4, 22 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new CTabFolder( shell, SWT.FLAT );
-    expected = new Rectangle( 0, -16, 0, 16 );
+    expected = new Rectangle( 0, -17, 0, 17 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new CTabFolder( shell, SWT.BORDER );
-    expected = new Rectangle( -3, -18, 6, 21 );
+    expected = new Rectangle( -3, -19, 6, 22 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
   }
 
@@ -574,21 +574,21 @@ public class CTabFolder_Test extends TestCase {
     new CTabItem( folder, SWT.NONE );
     folder.setSize( 100, 100 );
 
-    Rectangle expected = new Rectangle( 2, 21, 96, 77 );
+    Rectangle expected = new Rectangle( 2, 22, 96, 76 );
     assertEquals( expected, folder.getClientArea() );
 
     folder.setMinimized( true );
-    expected = new Rectangle( 2, 21, 0, 0 );
+    expected = new Rectangle( 2, 22, 0, 0 );
     assertEquals( expected, folder.getClientArea() );
 
     folder = new CTabFolder( shell, SWT.FLAT );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 0, 16, 100, 84 );
+    expected = new Rectangle( 0, 17, 100, 83 );
     assertEquals( expected, folder.getClientArea() );
 
     folder = new CTabFolder( shell, SWT.BORDER );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 3, 18, 94, 79 );
+    expected = new Rectangle( 3, 19, 94, 78 );
     assertEquals( expected, folder.getClientArea() );
   }
 
@@ -598,30 +598,30 @@ public class CTabFolder_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     assertEquals( new Point( 0, 0 ), folder.getSize() );
-    Point expected = new Point( 7, 84 );
+    Point expected = new Point( 7, 85 );
     assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
-    expected = new Point( 31, 87 );
+    expected = new Point( 31, 88 );
     assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     Button content1 = new Button( folder, SWT.PUSH );
     content1.setText( "Content for tab 1" );
     item1.setControl( content1 );
-    expected = new Point( 108, 48 );
+    expected = new Point( 114, 44 );
     assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     Label content2 = new Label( folder, SWT.NONE );
     content2.setText( "Content for tab 2 which is wider." );
     item2.setControl( content2 );
-    expected = new Point( 178, 48 );
+    expected = new Point( 194, 44 );
     assertEquals( expected, folder.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    Rectangle trimExpected = new Rectangle( -2, -21, 4, 23 );
+    Rectangle trimExpected = new Rectangle( -2, -22, 4, 24 );
     assertEquals( trimExpected, folder.computeTrim( 0, 0, 0, 0 ) );
-    expected = new Point( 304, 323 );
+    expected = new Point( 304, 324 );
     assertEquals( expected, folder.computeSize( 300, 300 ) );
   }
 

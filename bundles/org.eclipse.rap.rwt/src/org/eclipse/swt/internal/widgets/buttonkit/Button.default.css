@@ -2,18 +2,31 @@
 
 Button {
   background-image: none;
-  color: black;
   padding: 4px 5px;
   spacing: 2px;
   cursor: default;
   animation: none;
+  color: #4a4a4a;
+  background-color: white;
 }
 
-Button[PUSH], Button[TOGGLE] {
-  background-color: rgb( 247, 247, 251 );
-  border: 1px outset;
-  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
-  padding: 5px 6px;
+Button[PUSH], Button[TOGGLE], Button[BORDER] {
+  border: 1px solid #A4A4A4;
+  border-radius: 3px;
+  padding: 2px 5px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+  animation: hoverOut 500ms ease-out;
+  cursor: pointer;
+}
+
+Button[PUSH]:disabled, Button[TOGGLE]:disabled {
+  cursor: default;
 }
 
 Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
@@ -22,17 +35,58 @@ Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
 }
 
 Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
-  border: 2px outset;
+  border: 1px outset #A4A4A4;
+  border-radius: 3px;
+  padding: 2px 5px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+  animation: hoverOut 500ms ease-out;
 }
 
 Button[PUSH]:hover, Button[TOGGLE]:hover {
-  background-color: rgb( 251, 251, 254 );
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
 }
 
-Button[PUSH]:pressed, Button[TOGGLE]:pressed, Button[TOGGLE]:selected {
+Button[PUSH]:pressed, Button[TOGGLE]:pressed {
   border: 1px inset;
-  padding: 4px 3px 2px 5px;
   animation: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+  padding: 4px 5px 2px 7px;
+}
+
+Button[TOGGLE]:selected {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 30%, #f0f0f0 ),
+    color-stop( 70%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Button[TOGGLE]:selected:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
 }
 
 Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
@@ -46,6 +100,10 @@ Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {
 
 Button[CHECK], Button[RADIO] {
   spacing: 4px;
+}
+
+Button[CHECK][BORDER], Button[RADIO][BORDER] {
+  background-image: none;
 }
 
 Button-CheckIcon {
@@ -90,7 +148,7 @@ Button-RadioIcon:selected:hover {
 
 Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
   background-color: transparent; 
-  border: 1px dotted #909090;
+  border: 1px dotted #b8b8b8;
   margin: 2px;
   padding: 0px;
   opacity: 1;
@@ -98,7 +156,7 @@ Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
 
 Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
   background-color: transparent; 
-  border: 1px dotted #909090;
+  border: 1px dotted #b8b8b8;
   padding: 2px 2px 2px 1px;
   margin: 0px;
   opacity: 1;

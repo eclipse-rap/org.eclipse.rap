@@ -13,7 +13,9 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.rap.rwt.themes.test.business.BusinessTheme_Test;
+import org.eclipse.rap.rwt.themes.test.classic.ClassicTheme_Test;
 import org.eclipse.rap.rwt.themes.test.fancy.FancyTheme_Test;
+import org.eclipse.rap.rwt.themes.test.rwtdefault.DefaultTheme_Test;
 
 
 public class ThemesTestSuite {
@@ -21,6 +23,10 @@ public class ThemesTestSuite {
   public static Test suite() {
     TestSuite cssSuite = new TestSuite( "Tests for RWT Themes" );
     // Add CSS Themes tests
+    cssSuite.addTest( new TestSuite( DefaultTheme_Test.class, 
+                      "Default Theme" ) );
+    cssSuite.addTest( new TestSuite( ClassicTheme_Test.class, 
+                                     "Classic Theme" ) );
     cssSuite.addTest( new TestSuite( BusinessTheme_Test.class, 
                                      "Business Theme" ) );
     cssSuite.addTest( new TestSuite( FancyTheme_Test.class, 

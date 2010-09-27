@@ -1,9 +1,11 @@
 /* Spinner default theme */
 
 Spinner {
-  border: none;
-  color: black;
-  background-color: white;
+  border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
+  padding: 1px 2px;
+  color: #464a4e;
+  background-color: rgb( 252, 252, 252 );
 }
 
 Spinner-Field {
@@ -14,33 +16,62 @@ Spinner[BORDER] {
   border: 1px inset;
 }
 
-Spinner-UpButton, Spinner-DownButton {
-  background-color: rgb( 248, 248, 255 );
-  border: 2px outset;
-  width: 15px;
+Spinner-UpButton {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    to( #e0e0e0 )
+  );
+  width: 18px;
+  border: none;
+  border-radius: 0px 2px 0px 0px;
   cursor: default;
 }
 
-Spinner-UpButton:pressed, Spinner-DownButton:pressed {
-  border: 2px inset;
+Spinner-UpButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
 }
 
-Spinner-UpButton {
-  /* 
-  For backward compatibility we have to keep the up button icon
-  definition in Spinner-UpButton and not in Spinner-UpButton-Icon
-  */
-  background-image: url( resource/widget/rap/spinner/up_button.gif );
+Spinner-UpButton-Icon {
+  background-image: url( resource/widget/rap/spinner/up.png );
+}
+
+Spinner-UpButton-Icon:hover {
+  background-image: url( resource/widget/rap/spinner/up-hover.png );
 }
 
 Spinner-DownButton {
-  /* 
-  For backward compatibility we have to keep the down button icon
-  definition in Spinner-DownButton and not in Spinner-DownButton-Icon
-  */
-  background-image: url( resource/widget/rap/spinner/down_button.gif );
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    to( #ffffff )
+  );
+  width: 18px;
+  border: none;
+  border-radius: 0px 0px 2px 0px;
+  cursor: default;
 }
 
-Spinner-UpButton-Icon, Spinner-DownButton-Icon {
-  background-image: none;
+Spinner-DownButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #b0b0b0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+}
+
+Spinner-DownButton-Icon {
+  background-image: url( resource/widget/rap/spinner/down.png );
+}
+
+Spinner-DownButton-Icon:hover {
+  background-image: url( resource/widget/rap/spinner/down-hover.png );
 }

@@ -1,9 +1,12 @@
 /* DateTime default theme */
 
 DateTime {
-  border: none;
-  background-color: white;
-  color: black;
+  color: #464a4e;
+  background-color: rgb( 252, 252, 252 );
+  border: 1px solid #a4a4a4;
+  padding: 1px 2px;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-radius: 2px 2px 2px 2px;
 }
 
 DateTime-Field {
@@ -11,11 +14,17 @@ DateTime-Field {
 }
 
 DateTime[BORDER] {
-  border: 1px inset;
+  border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
 }
 
-DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:selected:hover {
-  background-color: rgb( 49, 106, 197 );
+DateTime-Field:selected, DateTime-Calendar-Day:selected {
+  background-color: #D2D2D2;
+  color: #4a4a4a;
+}
+
+DateTime-Calendar-Day:selected:hover {
+  background-color: #00569c;
   color: white;
 }
 
@@ -34,73 +43,130 @@ DateTime-Calendar-Day:hover {
 
 DateTime-Calendar-Navbar {
   border: none;
-  background-color: rgb( 0, 128, 192 );
+  background-color: #00569c;
   color: white;
-  font: bold 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 DateTime-Calendar-PreviousMonthButton {
-  background-image: url( resource/widget/rap/calendar/lastMonth.gif );
+  background-image: url( resource/widget/rap/calendar/lastMonth.png );
   cursor: default;
+}
+
+DateTime-Calendar-PreviousMonthButton:hover {
+  background-image: url( resource/widget/rap/calendar/lastMonth-hover.png );
 }
 
 DateTime-Calendar-NextMonthButton {
-  background-image: url( resource/widget/rap/calendar/nextMonth.gif );
+  background-image: url( resource/widget/rap/calendar/nextMonth.png );
   cursor: default;
+}
+
+DateTime-Calendar-NextMonthButton:hover {
+  background-image: url( resource/widget/rap/calendar/nextMonth-hover.png );
 }
 
 DateTime-Calendar-PreviousYearButton {
-  background-image: url( resource/widget/rap/calendar/lastYear.gif );
+  background-image: url( resource/widget/rap/calendar/lastYear.png );
   cursor: default;
+}
+
+DateTime-Calendar-PreviousYearButton:hover {
+  background-image: url( resource/widget/rap/calendar/lastYear-hover.png );
 }
 
 DateTime-Calendar-NextYearButton {
-  background-image: url( resource/widget/rap/calendar/nextYear.gif );
+  background-image: url( resource/widget/rap/calendar/nextYear.png );
   cursor: default;
 }
 
-DateTime-UpButton, DateTime-DownButton {
-  background-color: rgb( 248, 248, 255 );
-  border: 2px outset;
-  width: 15px;
-  cursor: default;
-}
-
-DateTime-UpButton:pressed, DateTime-DownButton:pressed {
-  border: 2px inset;
+DateTime-Calendar-NextYearButton:hover {
+  background-image: url( resource/widget/rap/calendar/nextYear-hover.png );
 }
 
 DateTime-UpButton {
-  /* 
-  For backward compatibility we have to keep the up button icon
-  definition in DateTime-UpButton and not in DateTime-UpButton-Icon
-  */
-  background-image: url( resource/widget/rap/datetime/up_button.gif );
-}
-
-DateTime-DownButton {
-  /* 
-  For backward compatibility we have to keep the down button icon
-  definition in DateTime-DownButton and not in DateTime-DownButton-Icon
-  */
-  background-image: url( resource/widget/rap/datetime/down_button.gif );
-}
-
-DateTime-DropDownButton {
-  /* 
-  For backward compatibility we have to keep the drop-down button icon
-  definition in DateTime-DropDownButton and not in DateTime-DropDownButton-Icon
-  */
-  background-image: url( resource/widget/rap/datetime/drop_down_button.gif );
-  background-color: rgb( 248, 248, 255 );
-  border: 1px outset;
-  width: 15px;
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    to( #e0e0e0 )
+  );
+  width: 18px;
+  border: none;
+  border-radius: 0px 2px 0px 0px;
   cursor: default;
 }
 
-DateTime-UpButton-Icon, DateTime-DownButton-Icon, DateTime-DropDownButton-Icon {
-  background-image: none;
+DateTime-UpButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
 }
+
+DateTime-UpButton-Icon {
+  background-image: url( resource/widget/rap/spinner/up.png );
+}
+
+DateTime-UpButton-Icon:hover {
+  background-image: url( resource/widget/rap/spinner/up-hover.png );
+}
+
+DateTime-DownButton {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    to( #ffffff )
+  );
+  width: 18px;
+  border: none;
+  border-radius: 0px 0px 2px 0px;
+  cursor: default;
+}
+
+DateTime-DownButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #b0b0b0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+}  
+
+DateTime-DropDownButton {
+  cursor: default;
+  background-color: transparent;
+  border: none;
+  border-radius: 0px 2px 2px 0px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+  width: 18px;
+}
+
+DateTime-DropDownButton-Icon {
+  background-image: url( resource/widget/rap/spinner/down.png );
+}
+
+DateTime-DropDownButton-Icon:hover {
+  background-image: url( resource/widget/rap/spinner/down-hover.png );
+}
+
+DateTime-DownButton-Icon {
+  background-image: url( resource/widget/rap/spinner/down.png );
+}
+
+DateTime-DownButton-Icon:hover {
+  background-image: url( resource/widget/rap/spinner/down-hover.png );
+}
+
 
 DateTime-DropDownCalendar {
   border: 1px rgb( 167, 166, 170 );

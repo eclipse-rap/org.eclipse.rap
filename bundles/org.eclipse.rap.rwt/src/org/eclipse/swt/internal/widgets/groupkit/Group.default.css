@@ -1,20 +1,22 @@
 /* Group default theme */
 
 Group {
-  background-color: rgb( 248, 248, 255 );
+  color: #4a4a4a;
+  background-color: white;  
 }
 
 Group-Frame {
-  border: 1px solid #ACA899;
   margin: 8px 0px 0px;
   padding: 8px 2px 2px;
+  border: 1px solid #cccccc;
+  border-radius: 2px 2px 2px 2px;
 }
 
 Group-Label {
-  margin: 1px 10px;
   padding: 0px 3px 0px 4px;
-  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: transparent;
-  color: inherit;
   border: none;
+  color: #464a4e;
+  margin: 1px 10px;
 }

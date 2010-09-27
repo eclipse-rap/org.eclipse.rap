@@ -648,7 +648,7 @@ public class TableLCA_Test extends TestCase {
 
     item1.setImage( image );
     metrics = TableLCAUtil.getItemMetrics( table );
-    int defaultLeftPadding = 2;
+    int defaultLeftPadding = 3;
     assertEquals( defaultLeftPadding, metrics[ 0 ].imageLeft );
     assertTrue( metrics[ 0 ].imageWidth > 0 );
 
@@ -658,7 +658,7 @@ public class TableLCA_Test extends TestCase {
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
 
     // spacing must be respected
-    int defaultSpacing = 2;
+    int defaultSpacing = 3;
     int expected =   metrics[ 0 ].imageLeft
                    + metrics[ 0 ].imageWidth
                    + defaultSpacing;
@@ -679,7 +679,7 @@ public class TableLCA_Test extends TestCase {
     // image must not exceed right column border
     column.setWidth( 12 );
     metrics = TableLCAUtil.getItemMetrics( table );
-    assertEquals( 10, metrics[ 0 ].imageWidth );
+    assertEquals( 9, metrics[ 0 ].imageWidth );
 
     Fixture.preserveWidgets();
     item1.setImage( image );
@@ -708,7 +708,7 @@ public class TableLCA_Test extends TestCase {
     item2.setImage( image );
     metrics = TableLCAUtil.getItemMetrics( table );
     assertTrue( metrics[ 0 ].imageWidth > 0 );
-    int defaultLeftPadding = 2;
+    int defaultLeftPadding = 3;
     assertEquals( defaultLeftPadding, metrics[ 0 ].imageLeft );
     assertTrue( metrics[ 0 ].imageWidth > 0 );
 
@@ -718,7 +718,7 @@ public class TableLCA_Test extends TestCase {
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
 
     // spacing must be respected
-    int defaultSpacing = 2;
+    int defaultSpacing = 3;
     int expected =   metrics[ 0 ].imageLeft
                    + metrics[ 0 ].imageWidth
                    + defaultSpacing;

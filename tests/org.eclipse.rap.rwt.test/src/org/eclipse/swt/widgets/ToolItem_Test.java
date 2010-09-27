@@ -191,7 +191,7 @@ public class ToolItem_Test extends TestCase {
     push.setText( "Hello" );
     assertEquals( 22, push.getPreferredHeight() );
     push.setImage(  display.getSystemImage( SWT.ICON_ERROR ) );
-    assertEquals( 38, push.getPreferredHeight() );    
+    assertEquals( 36, push.getPreferredHeight() );    
   }
   
   public void testPreferredWidth() {
@@ -199,9 +199,9 @@ public class ToolItem_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );    
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     ToolItem push = new ToolItem( toolBar, SWT.PUSH );
-    assertEquals( 8, push.getPreferredWidth() );
-    push.setImage(  display.getSystemImage( SWT.ICON_ERROR ) );
-    assertEquals( 40, push.getPreferredWidth() );
+    assertEquals( 6, push.getPreferredWidth() );
+    push.setImage( display.getSystemImage( SWT.ICON_ERROR ) );
+    assertEquals( 38, push.getPreferredWidth() );
     push.setText( "x" );
     assertTrue( push.getPreferredWidth() > 44 );
   }
@@ -211,9 +211,9 @@ public class ToolItem_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );    
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     ToolItem push = new ToolItem( toolBar, SWT.DROP_DOWN );
-    assertEquals( 24, push.getPreferredWidth() );
+    assertEquals( 22, push.getPreferredWidth() );
     push.setImage(  display.getSystemImage( SWT.ICON_ERROR ) );
-    assertEquals( 56, push.getPreferredWidth() );
+    assertEquals( 54, push.getPreferredWidth() );
     push.setText( "x" );
     assertTrue( push.getPreferredWidth() > 60 );
   }

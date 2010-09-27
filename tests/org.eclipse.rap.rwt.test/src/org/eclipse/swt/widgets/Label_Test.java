@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -148,11 +148,11 @@ public class Label_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
-    Point expected = new Point( 0, 11 );
+    Point expected = new Point( 0, 12 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     label.setText( "label text" );
-    expected = new Point( 53, 16 );
+    expected = new Point( 58, 17 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     label.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );

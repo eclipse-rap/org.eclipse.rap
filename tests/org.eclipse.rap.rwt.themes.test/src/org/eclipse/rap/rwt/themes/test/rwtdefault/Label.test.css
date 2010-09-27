@@ -1,0 +1,29 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* Label default theme */
+
+Label {
+  color: #4a4a4a;
+  background-color: white;
+  background-image: none;
+  border: none;
+  cursor: default;
+  opacity: 1;
+}
+
+Label:hover {
+  color: black;
+  background-color: rgb( 248, 248, 255 );
+}
+
+Label[BORDER] {
+  border: 1px inset;
+}

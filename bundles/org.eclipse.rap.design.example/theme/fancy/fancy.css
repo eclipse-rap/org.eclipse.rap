@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2009 EclipseSource and others. All rights reserved. This
+* Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
 * available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,110 +8,10 @@
 *   EclipseSource - initial API and implementation
 *******************************************************************************/
 
-* {
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-}
-
-*:disabled {
-  color: #CFCFCF;
-}
-
-*[BORDER] {
-  border: 1px solid #C1C1C1;
-}
-
 /* Button */
 
-Button {
-  color: #4a4a4a;
-  background-color: white;
-}
-
 Button[PUSH], Button[TOGGLE], Button[BORDER] {
-  border: 1px solid #A4A4A4;
-  border-radius: 3px;
-  padding: 2px 5px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
-  );
   animation: hoverIn 100ms ease-in, hoverOut 500ms ease-out;
-}
-
-Button[PUSH], Button[TOGGLE] {
-  cursor: pointer;
-}
-
-Button[PUSH]:disabled, Button[TOGGLE]:disabled {
-  cursor: default;
-}
-
-Button[TOGGLE]:selected {
-  /* background-color: #d3d3d3; */
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 30%, #f0f0f0 ),
-    color-stop( 70%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
-Button[TOGGLE]:selected:hover {
-  /* background-color: #d3d3d3; */
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
-Button[PUSH]:hover, Button[TOGGLE]:hover {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-Button[PUSH]:pressed, Button[TOGGLE]:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-  padding: 4px 5px 2px 7px;
-}
-
-Button[CHECK][BORDER] {
-  background-image: none;
-}
-
-Button[RADIO][BORDER] {
-  background-image: none;
-}
-
-Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
-  background-color: transparent; 
-  border: 1px dotted #b8b8b8;
-  margin: 2px;
-  padding: 0px;
-  opacity: 1;
-}
-
-Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
-  background-color: transparent; 
-  border: 1px dotted #b8b8b8;
-  padding: 2px 2px 2px 1px;
-  margin: 0px;
-  opacity: 1;
 }
 
 Button.clearButton {
@@ -345,15 +245,8 @@ Button-FocusIndicator.tabOverflowInactive {
 /* Shell */
 
 Shell-Titlebar {
-  color: white;
   background-image: gradient( linear, left top, left bottom,
                               from( #a8dd32 ), to( #87b127 ) );
-  padding: 2px 5px 2px;
-  margin: 0px;
-  height: 22px;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  border: none;
-  border-radius: 3px 3px 0px 0px;
 }
 
 Shell-Titlebar:inactive {
@@ -363,19 +256,10 @@ Shell-Titlebar:inactive {
 }
 
 Shell {
-  background-color: white;
   color: #4a4a4a;
 }
 
-Shell-DisplayOverlay {
-  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
-  background-image: none;
-  background-color: #FFFFFF;
-  opacity: 0.5;
-}
-
 Shell[BORDER], Shell[TITLE] {
-  background-color: white;
   border: 2px solid #99c92c;
   border-radius: 6px;
   padding: 5px;
@@ -386,19 +270,31 @@ Shell[BORDER]:inactive, Shell[TITLE]:inactive {
   border: 2px solid #4b4b4b;
 }
 
+Shell-DisplayOverlay {
+  animation: fadeIn 150ms linear, fadeOut 400ms ease-out;
+  background-image: none;
+  background-color: #FFFFFF;
+  opacity: 0.5;
+}
+
+Shell[BORDER], Shell[TITLE] {
+  border: 2px solid #99c92c;
+}
+
+Shell[BORDER]:inactive, Shell[TITLE]:inactive {
+  background-color: white;
+}
+
 Shell-CloseButton {
   background-image: url( "theme/fancy/icons/shell-close.png" );
-  margin: 0px 5px 0px 0px;
 }
 
 Shell-MaxButton {
   background-image: url( "theme/fancy/icons/shell-max.png" );
-  margin: 0px 6px 0px 0px;
 }
 
 Shell-MinButton {
   background-image: url( "theme/fancy/icons/shell-min.png" );
-  margin: 0px 6px 0px 0px;
 }
 
 Shell-CloseButton:hover {
@@ -429,23 +325,7 @@ Shell-DisplayOverlay.confDialog {
   opacity: 0.5;
 }
 
-/* ToolBar */
-
-ToolBar {
-  background-color: #ffffff;
-}
-
-ToolItem {
-  border: none;
-}
-
 /* Tree */
-
-Tree {
-  background-color: rgb( 255, 255, 255 );
-  border: none;
-  color: #4a4a4a;
-}
 
 Tree[BORDER] {
   border: 1px solid #C1C1C1;
@@ -482,21 +362,12 @@ TreeColumn:hover {
   border-bottom:none;
 }
 
-TreeColumn-SortIndicator {
-  background-image: none;
-}
-
 TreeColumn-SortIndicator:up {
   background-image: url( theme/fancy/icons/sort-indicator-up.png );
 }
 
 TreeColumn-SortIndicator:down {
   background-image: url( theme/fancy/icons/sort-indicator-down.png );
-}
-
-Tree-Indent {
-  width: 16px;
-  background-image: none;
 }
 
 Tree-Indent:collapsed {
@@ -515,14 +386,6 @@ Tree-Indent:expanded:hover {
   background-image: url( theme/fancy/icons/tree-expanded-hover.png );
 }
 
-Tree-Indent:line {
-  background-image: none;
-}
-
-Tree-Indent:first {
-  background-image: none;
-}
-
 Tree-Indent:first:collapsed {
   background-image: url( theme/fancy/icons/tree-collapsed.png );
 }
@@ -539,10 +402,6 @@ Tree-Indent:first:expanded:hover {
   background-image: url( theme/fancy/icons/tree-expanded-hover.png );
 }
 
-Tree-Indent:last {
-  background-image: none;
-}
-
 Tree-Indent:last:collapsed {
   background-image: url( theme/fancy/icons/tree-collapsed.png );
 }
@@ -557,10 +416,6 @@ Tree-Indent:last:collapsed:hover {
 
 Tree-Indent:last:expanded:hover {
   background-image: url( theme/fancy/icons/tree-expanded-hover.png );
-}
-
-Tree-Indent:first:last {
-  background-image: none;
 }
 
 Tree-Indent:first:last:collapsed {
@@ -581,31 +436,12 @@ Tree-Indent:first:last:expanded:hover {
 
 /* Table */
 
-Table {
-  color: #4a4a4a;
-  background-color: white;
-}
-
 TableColumn {
   background-image: url( "theme/fancy/icons/table-column.png" );
-  color: #666666;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  border-bottom:none;
 }
 
 TableColumn:hover {
   background-image: url( "theme/fancy/icons/table-column-hover.png" );
-  border-bottom:none;
-}
-
-Table-Cell {
-  spacing: 3px;
-  padding: 5px;
-}
-
-TableItem {
-  background-color: transparent;
-  color: #666666;
 }
 
 TableItem:hover {
@@ -614,12 +450,10 @@ TableItem:hover {
 
 TableItem:selected {
   background-color: #abe033;
-  color: #ffffff;
 }
 
 TableItem:selected:unfocused {
   background-color: #959595;
-  color: #ffffff;
 }
 
 TableItem:even {
@@ -632,20 +466,10 @@ TableItem:even:hover {
 
 TableItem:even:selected {
   background-color: #abe033;
-  color: #ffffff;
 }
 
 TableItem:even:selected:unfocused {
   background-color: #959595;
-  color: #ffffff;
-}
-
-Table-GridLine {
-  color: #dedede;
-}
-
-Table-GridLine:horizontal {
-  color: transparent;
 }
 
 Table-Checkbox {
@@ -683,32 +507,16 @@ TableColumn-SortIndicator:down {
 
 /* List */
 
-List {
-  background-color: #ffffff;
-  color: #4a4a4a;
-}
-
-List-Item {
-  background-color: #ffffff;
-  color: #4a4a4a;
-}
-
 List-Item:hover {
   background-color: #e9f3d2;
 }
 
 List-Item:selected {
   background-color: #abe033;
-  color: #ffffff;
 }
 
 List-Item:selected:unfocused {
   background-color: #959595;
-  color: #ffffff;
-}
-
-List-Item:even {
-  background-color: #f3f3f4;
 }
 
 List-Item:even:hover {
@@ -717,12 +525,10 @@ List-Item:even:hover {
 
 List-Item:even:selected {
   background-color: #abe033;
-  color: #ffffff;
 }
 
 List-Item:even:selected:unfocused {
   background-color: #959595;
-  color: #ffffff;
 }
 
 /* Check Buttons */
@@ -813,36 +619,7 @@ Composite.compGray {
   border: rgb( 235, 0, 0 );
 }
 
-/* Label */
-
-Label, CLabel {
-  color: #4a4a4a;
-  background-color: white;
-}
-
 /* Expand Bar */
-
-ExpandBar {
-  color: #4a4a4a;
-  background-color: white;
-}
-
-ExpandBar[BORDER] {
-  border: 1px solid #C1C1C1;
-}
-
-ExpandItem-Header {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 55%, #e0e0e0 ),
-    to( #f0f0f0 )
-  );
-}
-
-ExpandItem {
-  border: 1px solid #c1c1c1;
-}
 
 ExpandItem-Button {
   background-image: url( theme/fancy/icons/expanditem-expand.png );
@@ -865,14 +642,7 @@ ExpandItem-Button:expanded:hover {
 /* Combo always shows a border, the BORDER style flag is ignored by SWT */
 
 Combo, CCombo {
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  background-color: rgb( 252, 252, 252 );
   color: #4a4a4a;
-}
-
-Combo, CCombo[BORDER] {
-  border: 1px solid #c1c1c1;
-  border-radius: 2px;
 }
 
 Combo-Button-Icon, CCombo-Button-Icon {
@@ -883,50 +653,7 @@ Combo-Button-Icon:hover, CCombo-Button-Icon:hover {
   background-image: url( theme/fancy/icons/down-hover.png );
 }
 
-Combo-Button, CCombo-Button {
-  background-color: transparent;
-  border: none;
-  border-radius: 0px 2px 2px 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
-  );
-  width: 18px;
-}
-
-Combo-Button:pressed, CCombo-Button:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
-Combo-List, CCombo-List {
-  border: 1px solid #c1c1c1;
-  border-radius: 0px 0px 2px 2px;
-}
-
-Combo-FocusIndicator, CCombo-FocusIndicator {
-  background-color: transparent; 
-  border: 1px dotted #b8b8b8;
-  margin: 1px 19px 1px 1px;
-  opacity: 1;
-}
-
 /* Spinner */
-
-Spinner {
-  border: 1px solid #a4a4a4;
-  border-radius: 2px 2px 2px 2px;
-  padding: 1px 2px;
-  color: #464a4e;
-  background-color: rgb( 252, 252, 252 );
-}
 
 Spinner-DownButton-Icon {
   background-image: url( theme/fancy/icons/down.png );
@@ -934,27 +661,6 @@ Spinner-DownButton-Icon {
 
 Spinner-DownButton-Icon:hover {
   background-image: url( theme/fancy/icons/down-hover.png );
-}
-
-Spinner-DownButton {
-  background-color: transparent;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    to( #ffffff )
-  );
-  width: 18px;
-  border: none;
-  border-radius: 0px 0px 2px 0px;
-}
-
-Spinner-DownButton:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b0b0b0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
-  );
 }
 
 Spinner-UpButton-Icon {
@@ -965,37 +671,11 @@ Spinner-UpButton-Icon:hover {
   background-image: url( theme/fancy/icons/up-hover.png );
 }
 
-Spinner-UpButton {
-  background-color: transparent;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    to( #e0e0e0 )
-  );
-  width: 18px;
-  border: none;
-  border-radius: 0px 2px 0px 0px;
-}
-
-Spinner-UpButton:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
 /* DateTime */
 
 DateTime {
-  border: 1px solid #a4a4a4;
-  padding: 1px 2px;
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  border-radius: 2px 2px 2px 2px;
   color: #4a4a4a;
-  background-color: rgb( 252, 252, 252 );
-}
+}  
 
 DateTime-Calendar-Day:hover {
   background-color: #e9f3d2;
@@ -1003,8 +683,6 @@ DateTime-Calendar-Day:hover {
 
 DateTime-Calendar-Navbar {
   background-color: #abe033;
-  color: white;
-  font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 DateTime-Calendar-PreviousMonthButton {
@@ -1047,54 +725,12 @@ DateTime-DownButton-Icon:hover {
   background-image: url( theme/fancy/icons/down-hover.png );
 }
 
-DateTime-DownButton {
-  background-color: transparent;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    to( #ffffff )
-  );
-  width: 18px;
-  border: none;
-  border-radius: 0px 0px 2px 0px;
-}
-
-DateTime-DownButton:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b0b0b0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
-  );
-}
-
 DateTime-UpButton-Icon {
   background-image: url( theme/fancy/icons/up.png );
 }
 
 DateTime-UpButton-Icon:hover {
   background-image: url( theme/fancy/icons/up-hover.png );
-}
-
-DateTime-UpButton {
-  background-color: transparent;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    to( #e0e0e0 )
-  );
-  width: 18px;
-  border: none;
-  border-radius: 0px 2px 0px 0px;
-}
-
-DateTime-UpButton:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
 }
 
 DateTime-DropDownButton-Icon {
@@ -1105,63 +741,8 @@ DateTime-DropDownButton-Icon:hover {
   background-image: url( theme/fancy/icons/down-hover.png );
 }
 
-DateTime-DropDownButton {
-  background-color: transparent;
-  border: none;
-  border-radius: 0px 2px 2px 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
-  );
-  width: 18px;
-}
-
-DateTime-Field:selected, DateTime-Calendar-Day:selected {
-  background-color: #D2D2D2;
-  color: #4a4a4a;
-}
-
 DateTime-Calendar-Day:selected:hover {
   background-color: #abe033;
-  color: white;
-}
-
-DateTime-Calendar-Day:otherMonth {
-  background-color: transparent;
-  color: rgb( 128, 128, 128 );
-}
-
-/* Text */
-
-Text {
-  color: #464a4e;
-  background-color: rgb( 252, 252, 252 );
-}
-
-Text[BORDER] {
-  border: 1px solid #a4a4a4;
-  border-radius: 2px 2px 2px 2px;
-}
-
-/* Group */
-
-Group {
-  color: #4a4a4a;
-  background-color: white;
-}
-
-Group-Frame {
-  padding: 8px 2px 2px;
-  border: 1px solid #cccccc;
-  border-radius: 2px 2px 2px 2px;
-}
-
-Group-Label {
-  color: #464a4e;
-  margin: 1px 10px;
 }
 
 /* Link */
@@ -1176,12 +757,6 @@ Link-Hyperlink:disabled {
 
 /* Progress Bar */
 
-ProgressBar {
-  background-color: #ffffff;
-  border: 1px solid #A4A4A4;
-  border-radius: 2px;
-}
-
 ProgressBar-Indicator {
   background-color: #abe033;
   background-image: url( theme/fancy/icons/progress.png );
@@ -1191,22 +766,7 @@ ProgressBar-Indicator:paused {
   background-color: #ebebeb;
 }
 
-ProgressBar-Indicator:error {
-  background-color: rgb( 203, 32, 32 );
-}
-
 /* Composite */
-
-Composite {
-  background-color: #ffffff;
-  background-image: none;
-  border: none;
-}
-
-Composite[BORDER] {
-  background-color: white;
-  background-image: none;
-}
 
 Composite.tabActive {
   border: 1px solid #ffffff;
@@ -1230,39 +790,9 @@ Composite.inactiveButton {
 ToolTip {
   background-color: #e9f3d2;
   border: 1px solid #abe033;
-  border-radius: 2px 2px 2px 2px;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  color: #4a4a4a;
-  animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
 }
 
 /* Slider */
-
-Slider {
-  background-color: #f3f3f4;
-}
-
-Slider-DownButton:horizontal {
-  background-color: transparent;
-  border: 1px solid #A4A4A4;
-  border-radius: 2px 0px 0px 2px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-Slider-DownButton:horizontal:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
 
 Slider-DownButton-Icon:horizontal {
   background-image: url( theme/fancy/icons/left.png );
@@ -1270,28 +800,6 @@ Slider-DownButton-Icon:horizontal {
 
 Slider-DownButton-Icon:horizontal:hover {
   background-image: url( theme/fancy/icons/left-hover.png );
-}
-
-Slider-UpButton:horizontal {
-  background-color: transparent;
-  border: 1px solid #A4A4A4;
-  border-radius: 0px 2px 2px 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-Slider-UpButton:horizontal:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
 }
 
 Slider-UpButton-Icon:horizontal {
@@ -1302,56 +810,12 @@ Slider-UpButton-Icon:horizontal:hover {
   background-image: url( theme/fancy/icons/right-hover.png );
 }
 
-Slider-DownButton:vertical {
-  background-color: transparent;
-  border: 1px solid #A4A4A4;
-  border-radius: 2px 2px 0px 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-Slider-DownButton:vertical:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
 Slider-DownButton-Icon:vertical {
   background-image: url( theme/fancy/icons/up.png );
 }
 
 Slider-DownButton-Icon:vertical:hover {
   background-image: url( theme/fancy/icons/up-hover.png );
-}
-
-Slider-UpButton:vertical {
-  background-color: transparent;
-  border: 1px solid #A4A4A4;
-  border-radius: 0px 0px 2px 2px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #cccccc ),
-    color-stop( 52%, #e0e0e0 ),
-    color-stop( 56%, #f0f0f0 ),    
-    to( #ffffff )
-  );
-}
-
-Slider-UpButton:vertical:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
 }
 
 Slider-UpButton-Icon:vertical {
@@ -1362,79 +826,29 @@ Slider-UpButton-Icon:vertical:hover {
   background-image: url( theme/fancy/icons/down-hover.png );
 }
 
-Slider-Thumb {
-  background-color: transparent;
-  border: 1px solid #A4A4A4;
-  border-radius: 2px 2px 2px 2px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-Slider-Thumb:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
 /* Display */
 
 Display {
   background-image: url( theme/fancy/icons/browser_bg.png );
-  rwt-infobackground-color: rgb( 255, 255, 255 );
 }
 
 /* CTabFolder, TabFolder */
 
 TabItem {
-  background-color: white;
   border-top-color: #abe033;
-  border-bottom-color: white;
-  background-image: none;
 }
 
 TabItem:selected {
-  background-color: white;
   border-top-color: #abe033;
-  border-bottom-color: white;
-  background-image: none;
 }
 
 TabItem:hover {
   background-color: #e9f3d2;
   border-top-color: #abe033;
-  border-bottom-color: white;
-  background-image: none;
-}
-
-CTabFolder {
-  border-color: #A4A4A4;
-  border-radius: 2px;
-}
-
-CTabItem {
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  color: #4a4a4a;
-  background-color: white;
-  background-image: none;
-  padding: 2px 4px;
-  spacing: 4px;
 }
 
 CTabItem:selected {
-  color: white;
   background-color: #97c72c;
-}
-
-CTabItem:disabled {
-  color: #4a4a4a;
 }
 
 CTabFolder-DropDownButton-Icon {

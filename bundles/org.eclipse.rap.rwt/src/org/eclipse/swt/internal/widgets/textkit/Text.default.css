@@ -2,14 +2,15 @@
 
 Text {
   border: none;
-  background-color: white;
-  color: black;
   padding: 2px 3px;
   background-image: none;
+  color: #464a4e;
+  background-color: rgb( 252, 252, 252 );
 }
 
 Text[BORDER] {
-  border: 1px inset;
+  border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
 }
 
 Text[SINGLE] {

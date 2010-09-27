@@ -1,8 +1,14 @@
 /* Default theme for all composites */
 
 Composite {
-  border: none;
-  background-image: none;
   padding: 0px;
   opacity: 1;
+  background-color: #ffffff;
+  background-image: none;
+  border: none;
+}
+
+Composite[BORDER] {
+  background-color: white;
+  background-image: none;
 }

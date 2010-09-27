@@ -88,7 +88,7 @@ public class Layout_Test extends TestCase {
     assertEquals( 1, control1.getBorderWidth() );
     assertEquals( new Point( 52, 102 ), control1.computeSize( 50, 100 ) );
     Button control2 = new Button( shell, SWT.PUSH | SWT.BORDER );
-    assertEquals( 2, control2.getBorderWidth() );
-    assertEquals( new Point( 54, 104 ), control2.computeSize( 50, 100 ) );
+    assertEquals( 1, control2.getBorderWidth() );
+    assertEquals( new Point( 52, 102 ), control2.computeSize( 50, 100 ) );
   }
 }

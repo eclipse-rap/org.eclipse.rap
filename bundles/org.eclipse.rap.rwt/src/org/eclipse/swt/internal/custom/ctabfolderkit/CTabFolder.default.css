@@ -1,22 +1,22 @@
 /* CTabFolder default theme */
 
 CTabFolder {
-  border-color: #c0c0c0;
-  border-radius: 0px;
+  border-color: #A4A4A4;
+  border-radius: 2px;
 }
 
 CTabItem {
-  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
-  color: black;
-  background-color: rgb( 248, 248, 255 );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: white;
   background-image: none;
   padding: 2px 4px;
   spacing: 4px;
 }
 
 CTabItem:selected {
-  color: black;
-  background-color: rgb( 217, 227, 243 );
+  color: white;
+  background-color: #00589f;
 }
 
 /* Do not gray out disabled CTabItems, this is SWT behavior */
@@ -25,5 +25,9 @@ CTabItem:disabled {
 }
 
 CTabFolder-DropDownButton-Icon {
-  background-image: url( resource/widget/rap/ctabfolder/chevron.gif );
+  background-image: url( resource/widget/rap/ctabfolder/ctabfolder-dropdown.png );
+}
+
+CTabFolder-DropDownButton-Icon:hover {
+  background-image: url( resource/widget/rap/ctabfolder/ctabfolder-dropdown-hover.png );
 }

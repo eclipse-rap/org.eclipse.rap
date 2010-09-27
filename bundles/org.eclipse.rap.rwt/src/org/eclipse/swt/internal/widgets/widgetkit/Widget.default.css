@@ -1,23 +1,28 @@
 /* Default theme for all widgets */
 
 * {
-  color: black;
-  background-color: rgb( 248, 248, 255 );
+  color: #4a4a4a;
+  background-color: white;
   background-image: none;
-  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 *:disabled {
-  color: rgb( 167, 166, 170 );
+  color: #CFCFCF;
+}
+
+*[BORDER] {
+  border: 1px solid #C1C1C1;
 }
 
 ToolTip {
-  border: 1px solid;
   padding: 1px 3px 2px 3px;
-  color: black;
-  background-color: rgb( 255, 255, 225 );
-  opacity: 1;
-  animation: none;
+  background-color: #dae9f7;
+  border: 1px solid #00589f;
+  border-radius: 2px 2px 2px 2px;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
 }
 
 Display {
@@ -27,7 +32,7 @@ Display {
   rwt-lightshadow-color: rgb( 220, 223, 228 );
   rwt-thinborder-color: rgb( 172, 168, 153 );
   rwt-selectionmarker-color: rgb( 254, 200, 60 );
-  rwt-infobackground-color: rgb( 255, 255, 225 );
+  rwt-infobackground-color: rgb( 255, 255, 255 );
 
   rwt-error-image: url( resource/widget/rap/dialog/error.png );
   rwt-information-image: url( resource/widget/rap/dialog/information.png );
@@ -37,6 +42,6 @@ Display {
   
   rwt-fontlist: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
   
-  background-image: url( resource/widget/rap/display/bg.gif );
-  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  background-image: url( resource/widget/rap/display/browser_bg.png );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }

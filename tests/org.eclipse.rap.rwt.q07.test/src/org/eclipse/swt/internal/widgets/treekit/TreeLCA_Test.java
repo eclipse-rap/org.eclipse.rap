@@ -359,7 +359,7 @@ public class TreeLCA_Test extends TestCase {
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     item1.setText( "item" );
     item1.setImage( image );
-    int expected = 121;
+    int expected = 123;
     ItemMetrics[] metrics = TreeLCA.getItemMetrics( tree );
     assertEquals( expected, metrics[ 0 ].textLeft );
   }
@@ -378,7 +378,7 @@ public class TreeLCA_Test extends TestCase {
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     item1.setText( "item" );
     item1.setImage( image );
-    int expected = 74;
+    int expected = 72;
     ItemMetrics[] metrics = TreeLCA.getItemMetrics( tree );
     assertEquals( expected, metrics[ 0 ].textWidth );
   }

@@ -44,7 +44,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( 1, spinner.getIncrement() );
     assertEquals( 10, spinner.getPageIncrement() );
     assertEquals( 0, spinner.getDigits() );
-    assertEquals( 0, spinner.getBorderWidth() );
+    assertEquals( 1, spinner.getBorderWidth() );
 
     spinner = new Spinner( shell, SWT.BORDER );
     assertTrue( ( spinner.getStyle() & SWT.BORDER ) != 0 );
@@ -138,27 +138,27 @@ public class Spinner_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    Point expected = new Point( 52, 18 );
+    Point expected = new Point( 59, 20 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner.setMaximum( 1000000 );
-    expected = new Point( 73, 18 );
+    expected = new Point( 82, 20 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner.setMinimum( -1000000 );
     spinner.setMaximum( 100 );
-    expected = new Point( 78, 18 );
+    expected = new Point( 88, 20 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner = new Spinner( shell, SWT.BORDER );
-    expected = new Point( 54, 20 );
+    expected = new Point( 61, 20 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner.setDigits( 5 );
-    expected = new Point( 75, 20 );
+    expected = new Point( 84, 20 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 117, 102 );
+    expected = new Point( 120, 102 );
     assertEquals( expected, spinner.computeSize( 100, 100 ) );
   }
 
@@ -167,11 +167,11 @@ public class Spinner_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    Rectangle expected = new Rectangle( 0, 0, 115, 100 );
+    Rectangle expected = new Rectangle( 0, 0, 118, 100 );
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
 
     spinner = new Spinner( shell, SWT.BORDER );
-    expected = new Rectangle( -1, -1, 117, 102 );
+    expected = new Rectangle( -1, -1, 120, 102 );
     assertEquals( expected, spinner.computeTrim( 0, 0, 100, 100 ) );
   }
 

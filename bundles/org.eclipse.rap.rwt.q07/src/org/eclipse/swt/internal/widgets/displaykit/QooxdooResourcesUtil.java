@@ -295,7 +295,7 @@ final class QooxdooResourcesUtil {
     "resource/widget/rap/ctabfolder/restore.gif",
     "resource/widget/rap/ctabfolder/close.gif",
     "resource/widget/rap/ctabfolder/close_hover.gif",
-    "resource/widget/rap/ctabfolder/chevron.gif",
+    "resource/widget/rap/ctabfolder/ctabfolder-dropdown.png",
     "resource/widget/rap/cursors/alias.gif",
     "resource/widget/rap/cursors/copy.gif",
     "resource/widget/rap/cursors/move.gif",

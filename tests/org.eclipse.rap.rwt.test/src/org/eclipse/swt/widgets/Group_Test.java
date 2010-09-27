@@ -54,18 +54,18 @@ public class Group_Test extends TestCase {
     group.setLayout( new FillLayout( SWT.VERTICAL ) );
     new Button( group, SWT.RADIO ).setText( "Radio 1" );
     new Button( group, SWT.RADIO ).setText( "Radio 2" );
-    Point expected = new Point( 70, 62 );
+    Point expected = new Point( 75, 66 );
     assertEquals( expected, group.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     group.setText( "This is a very long group title." );
-    expected = new Point( 196, 62 );
+    expected = new Point( 211, 66 );
     assertEquals( expected, group.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     group = new Group( shell, SWT.BORDER );
     group.setLayout( new FillLayout( SWT.VERTICAL ) );
     new Button( group, SWT.RADIO ).setText( "Radio 1" );
     new Button( group, SWT.RADIO ).setText( "Radio 2" );
-    expected = new Point( 78, 70 );
+    expected = new Point( 83, 74 );
     assertEquals( expected, group.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // hint + trimmings + border

@@ -1,0 +1,123 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* Table default theme */
+
+Table {
+  background-color: white;
+  background-image: none;
+  color: #4a4a4a;
+}
+
+TableItem {
+  background-color: transparent;
+  color: #666666;
+}
+
+TableItem:hover {
+  background-color: #dae9f7;
+}
+
+TableItem:selected {
+  color: white;
+  background-color: #00589f;
+}
+
+TableItem:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+TableItem:linesvisible:even {
+  background-color: #f3f3f4;
+}
+
+TableItem:linesvisible:even:hover {
+  background-color: #dae9f7;
+}
+
+TableItem:linesvisible:even:selected {
+  background-color: #00589f;
+  color: white;
+}
+
+TableItem:linesvisible:even:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+TableColumn {
+  background-color: rgb( 248, 248, 255 );
+  padding: 1px 2px;
+  background-image: url( resource/widget/rap/table/table-column.png );
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-bottom:none;
+}
+
+TableColumn:hover {
+  background-image: url( resource/widget/rap/table/table-column-hover.png );
+  border-bottom: none;
+}
+
+TableColumn-SortIndicator {
+  background-image: none;
+}
+
+TableColumn-SortIndicator:up {
+  background-image: url( resource/widget/rap/column/sort-indicator-up.png );
+}
+
+TableColumn-SortIndicator:down {
+  background-image: url( resource/widget/rap/column/sort-indicator-down.png );
+}
+
+Table-Cell {
+  spacing: 3px;
+  padding: 4px 3px 3px 3px;
+}
+
+Table-GridLine {
+  color: #dedede;
+}
+
+Table-GridLine:horizontal {
+  color: transparent;
+}
+
+Table-Checkbox {
+  /* 
+  For backward compatibility we have to keep the width property.
+  Deprecated, use "margin" instead.
+  */
+  width: 21px;
+  margin: 0px;
+  background-image: url( resource/widget/rap/button/check-unselected.png );
+}
+
+Table-Checkbox:hover {
+  background-image: url( resource/widget/rap/button/check-unselected-hover.png );
+}
+
+Table-Checkbox:checked {
+  background-image: url( resource/widget/rap/button/check-selected.png );
+}
+
+Table-Checkbox:checked:hover {
+  background-image: url( resource/widget/rap/button/check-selected-hover.png );
+}
+
+Table-Checkbox:checked:grayed {
+  background-image: url( resource/widget/rap/button/check-grayed.png );
+}
+
+Table-Checkbox:checked:grayed:hover {
+  background-image: url( resource/widget/rap/button/check-grayed-hover.png );
+}

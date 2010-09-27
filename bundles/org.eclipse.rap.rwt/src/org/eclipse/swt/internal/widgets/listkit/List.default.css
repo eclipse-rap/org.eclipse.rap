@@ -2,8 +2,8 @@
 
 List {
   background-color: white;
-  color: black;
   border: none;
+  color: #4a4a4a;
 }
 
 List[BORDER] {
@@ -11,15 +11,38 @@ List[BORDER] {
 }
 
 List-Item {
-  background-color: transparent;
-  color: black;
+  background-color: white;
+  color: #4a4a4a;
+}
+
+List-Item:hover {
+  background-color: #dae9f7;
 }
 
 List-Item:selected {
-  background-color: rgb( 49, 106, 197 );
   color: white;
+  background-color: #00589f;
 }
 
 List-Item:selected:unfocused {
-  background-color: rgb( 192, 192, 192 );
+  background-color: #959595;
+  color: white;
+}
+
+List-Item:even {
+  background-color: #f3f3f4;
+}
+
+List-Item:even:hover {
+  background-color: #dae9f7;
+}
+
+List-Item:even:selected {
+  background-color: #00589f;
+  color: white;
+}
+
+List-Item:even:selected:unfocused {
+  background-color: #959595;
+  color: white;
 }

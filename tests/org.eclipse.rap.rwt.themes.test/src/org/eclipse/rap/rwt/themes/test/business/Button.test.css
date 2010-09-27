@@ -1,3 +1,12 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
 
 /* Test values for Business theme */
 
@@ -91,38 +100,6 @@ Button[CHECK][BORDER] {
   background-image: none;
 }
 
-Button-CheckIcon[CHECK] {
-  background-image: url( "theme/business/icons/check-unselected.png" );
-}
-Button-CheckIcon[CHECK]:selected {
-  background-image: url( "theme/business/icons/check-selected.png" );
-}
-Button-CheckIcon[CHECK]:hover {
-  background-image: url( "theme/business/icons/check-unselected-hover.png" );
-}
-Button-CheckIcon[CHECK]:selected:hover {
-  background-image: url( "theme/business/icons/check-selected-hover.png" );
-}
-Button-CheckIcon[CHECK]:selected:grayed {
-  background-image: url( "theme/business/icons/check-grayed.png" );
-}
-Button-CheckIcon[CHECK]:selected:grayed:hover {
-  background-image: url( "theme/business/icons/check-grayed-hover.png" );
-}
-
-Button-RadioIcon[RADIO] {
-  background-image: url( "theme/business/icons/radio-unselected.png" );
-}
-Button-RadioIcon[RADIO]:selected {
-  background-image: url( "theme/business/icons/radio-selected.png" );
-}
-Button-RadioIcon[RADIO]:hover {
-  background-image: url( "theme/business/icons/radio-unselected-hover.png" );
-}
-Button-RadioIcon[RADIO]:selected:hover {
-  background-image: url( "theme/business/icons/radio-selected-hover.png" );
-}
-
 Button[PUSH]:disabled,
 Button[TOGGLE]:disabled {
   cursor: default;
@@ -149,49 +126,4 @@ Button-FocusIndicator[CHECK] {
   margin: 0px;
   padding: 2px 2px 2px 1px;
   opacity: 1.0;
-}
-
-
-/* Check Buttons */
-
-Button-CheckIcon {
-  background-image: url( theme/business/icons/check-unselected.png );
-}
-
-Button-CheckIcon:selected {
-  background-image: url( theme/business/icons/check-selected.png );
-}
-
-Button-CheckIcon:hover {
-  background-image: url( theme/business/icons/check-unselected-hover.png );
-}
-
-Button-CheckIcon:selected:hover {
-  background-image: url( theme/business/icons/check-selected-hover.png );
-}
-
-Button-CheckIcon:selected:grayed {
-  background-image: url( theme/business/icons/check-grayed.png );
-}
-
-Button-CheckIcon:selected:grayed:hover {
-  background-image: url( theme/business/icons/check-grayed-hover.png );
-}
-
-/* Radio Buttons */
-
-Button-RadioIcon {
-  background-image: url( theme/business/icons/radio-unselected.png );
-}
-
-Button-RadioIcon:selected {
-  background-image: url( theme/business/icons/radio-selected.png );
-}
-
-Button-RadioIcon:hover {
-  background-image: url( theme/business/icons/radio-unselected-hover.png );
-}
-
-Button-RadioIcon:selected:hover {
-  background-image: url( theme/business/icons/radio-selected-hover.png );
 }

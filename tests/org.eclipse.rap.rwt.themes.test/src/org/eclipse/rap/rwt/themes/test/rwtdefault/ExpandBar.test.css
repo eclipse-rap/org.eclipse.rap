@@ -1,0 +1,54 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* ExpandBar default theme */
+
+ExpandBar {
+  color: #4a4a4a;
+}
+
+ExpandBar[BORDER] {
+  border: 1px solid #C1C1C1;
+}
+
+ExpandItem {
+  border: 1px solid #c1c1c1;
+}
+
+ExpandItem-Header {
+  border: none;
+  cursor: pointer;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 55%, #e0e0e0 ),
+    to( #f0f0f0 )
+  );
+}
+
+ExpandItem-Header:disabled {
+  cursor: default;
+}
+
+ExpandItem-Button {
+  background-image: url( resource/widget/rap/expanditem/expanditem-expand.png );
+}
+
+ExpandItem-Button:hover {
+  background-image: url( resource/widget/rap/expanditem/expanditem-expand-hover.png );
+}
+
+ExpandItem-Button:expanded {
+  background-image: url( resource/widget/rap/expanditem/expanditem-collapse.png );
+}
+
+ExpandItem-Button:expanded:hover {
+  background-image: url( resource/widget/rap/expanditem/expanditem-collapse-hover.png );
+}

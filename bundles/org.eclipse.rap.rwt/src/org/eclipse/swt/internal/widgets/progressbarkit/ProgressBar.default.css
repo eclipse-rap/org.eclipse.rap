@@ -1,21 +1,21 @@
 /* ProgressBar default theme */
 
 ProgressBar {
-  background-color: rgb( 248, 248, 255 );
+  background-color: #ffffff;
   background-image: none;
-  border: 1px solid #c0c0c0;
-  border-radius: 0px;
+  border: 1px solid #A4A4A4;
+  border-radius: 2px;
 }
 
 ProgressBar-Indicator {
-  background-color: rgb( 0, 128, 192 );
+  background-color: #00589f;
   background-image: none;
   border: none;
   opacity: 1;
 }
 
 ProgressBar-Indicator:paused {
-  background-color: rgb( 255, 223, 33 );
+  background-color: #ebebeb;
 }
 
 ProgressBar-Indicator:error {

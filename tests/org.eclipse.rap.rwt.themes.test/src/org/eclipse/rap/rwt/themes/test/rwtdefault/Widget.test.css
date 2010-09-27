@@ -1,0 +1,40 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+ToolTip {
+  padding: 1px 3px 2px 3px;
+  background-color: #dae9f7;
+  border: 1px solid #00589f;
+  border-radius: 2px 2px 2px 2px;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
+}
+
+Display {
+  rwt-shadow-color: rgb( 167, 166, 170 );
+  rwt-highlight-color: rgb( 255, 255, 255 );
+  rwt-darkshadow-color: rgb( 133, 135, 140 );
+  rwt-lightshadow-color: rgb( 220, 223, 228 );
+  rwt-thinborder-color: rgb( 172, 168, 153 );
+  rwt-selectionmarker-color: rgb( 254, 200, 60 );
+  rwt-infobackground-color: rgb( 255, 255, 255 );
+
+  rwt-error-image: url( resource/widget/rap/dialog/error.png );
+  rwt-information-image: url( resource/widget/rap/dialog/information.png );
+  rwt-warning-image: url( resource/widget/rap/dialog/information.png );
+  rwt-question-image: url( resource/widget/rap/dialog/question.png );
+  rwt-warning-image: url( resource/widget/rap/dialog/warning.png );
+  
+  rwt-fontlist: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
+  
+  background-image: url( resource/widget/rap/display/browser_bg.png );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}

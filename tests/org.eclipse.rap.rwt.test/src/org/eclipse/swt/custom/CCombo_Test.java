@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others.
+ * Copyright (c) 2009, 2010 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -642,7 +642,7 @@ public class CCombo_Test extends TestCase {
     combo.add( "1" );
     combo.add( "22" );
     combo.add( "333" );
-    expected = new Point( 47, 17 );
+    expected = new Point( 50, 17 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 100, 100 );

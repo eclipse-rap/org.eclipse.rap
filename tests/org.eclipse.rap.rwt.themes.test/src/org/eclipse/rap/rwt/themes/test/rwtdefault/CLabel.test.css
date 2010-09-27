@@ -1,0 +1,26 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* CLabel default theme */
+
+CLabel {
+  color: #4a4a4a;
+  background-color: white;
+  background-image: none;
+  border: none;
+  padding: 3px;
+  spacing: 5px;
+  cursor: default;
+  opacity: 1;
+}
+
+CLabel[BORDER] {
+  border: 1px inset;
+}

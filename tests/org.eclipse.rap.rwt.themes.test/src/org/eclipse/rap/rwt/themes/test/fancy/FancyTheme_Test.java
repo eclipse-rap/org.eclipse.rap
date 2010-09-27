@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 
 public class FancyTheme_Test extends ThemeTestCase {
 
-  public void testBusinessTheme() throws IOException {
+  public void testFancyTheme() throws IOException {
     ThemesTestUtil.createAndActivateTheme( ThemesTestUtil.FANCY_PATH,
                                            "test.fancy.id");
     processCssTestFile( getClass(), "Menu.test.css" );

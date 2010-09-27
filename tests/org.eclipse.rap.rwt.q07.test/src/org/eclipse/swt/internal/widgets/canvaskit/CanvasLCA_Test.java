@@ -21,7 +21,9 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.internal.graphics.*;
-import org.eclipse.swt.internal.graphics.GCOperation.*;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
+import org.eclipse.swt.internal.graphics.GCOperation.SetFont;
+import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.widgets.*;
 
 public class CanvasLCA_Test extends TestCase {
@@ -50,7 +52,7 @@ public class CanvasLCA_Test extends TestCase {
     String expected
       = "var w = wm.findWidgetById( \"w2\" );"
       + "var gc = w.getGC();"
-      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
       + "gc.drawLine( 1, 2, 3, 4 );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
@@ -72,7 +74,7 @@ public class CanvasLCA_Test extends TestCase {
     String expected
       = "var w = wm.findWidgetById( \"w2\" );"
       + "var gc = w.getGC();"
-      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -124,7 +126,7 @@ public class CanvasLCA_Test extends TestCase {
     String expected
       = "var w = wm.findWidgetById( \"w2\" );"
       + "var gc = w.getGC();"
-      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -177,7 +179,7 @@ public class CanvasLCA_Test extends TestCase {
       = "var w = wm.findWidgetById( \"w2\" );"
       + "w.setSpace( 0, 150, 0, 150 );"
       + "var gc = w.getGC();"
-      + "gc.init( 150, 150, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.init( 150, 150, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
@@ -207,7 +209,7 @@ public class CanvasLCA_Test extends TestCase {
     String expected
       = "var w = wm.findWidgetById( \"w2\" );"
       + "var gc = w.getGC();"
-      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
@@ -234,7 +236,7 @@ public class CanvasLCA_Test extends TestCase {
     String expected
       = "var w = wm.findWidgetById( \"w2\" );"
       + "var gc = w.getGC();"
-      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );";
+      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
@@ -262,7 +264,7 @@ public class CanvasLCA_Test extends TestCase {
     String expected
       = "var w = wm.findWidgetById( \"w2\" );"
       + "var gc = w.getGC();"
-      + "gc.init( 50, 50, \"11px Arial\", \"#f8f8ff\", \"#000000\" );"
+      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
       + "gc.setProperty( \"font\", \"bold 18px Verdana\" );"
       + "gc.drawLine( 1, 2, 3, 4 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );

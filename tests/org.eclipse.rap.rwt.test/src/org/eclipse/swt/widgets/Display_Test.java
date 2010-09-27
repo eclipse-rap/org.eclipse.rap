@@ -30,7 +30,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.FillLayout;
 
 
 public class Display_Test extends TestCase {
@@ -681,19 +681,19 @@ public class Display_Test extends TestCase {
     color = display.getSystemColor( SWT.COLOR_WIDGET_BORDER );
     assertEquals( new RGB( 172, 168, 153 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_WIDGET_FOREGROUND );
-    assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );
+    assertEquals( new RGB( 74, 74, 74 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
-    assertEquals( new RGB( 248, 248, 255 ), color.getRGB() );
+    assertEquals( new RGB( 255, 255, 255 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_INFO_BACKGROUND );
-    assertEquals( new RGB( 255, 255, 225 ), color.getRGB() );
+    assertEquals( new RGB( 255, 255, 255 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_INFO_FOREGROUND );
-    assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );
+    assertEquals( new RGB( 74, 74, 74 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_LIST_BACKGROUND );
     assertEquals( new RGB( 255, 255, 255 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_LIST_FOREGROUND );
-    assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );
+    assertEquals( new RGB( 74, 74, 74 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_LIST_SELECTION );
-    assertEquals( new RGB( 49, 106, 197 ), color.getRGB() );
+    assertEquals( new RGB( 0, 88, 159 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_LIST_SELECTION_TEXT );
     assertEquals( new RGB( 255, 255, 255 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_TITLE_BACKGROUND );
@@ -707,7 +707,7 @@ public class Display_Test extends TestCase {
     color = display.getSystemColor( SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT );
     assertEquals( new RGB( 121, 150, 165 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_TITLE_INACTIVE_FOREGROUND );
-    assertEquals( new RGB( 221, 221, 221 ), color.getRGB() );
+    assertEquals( new RGB( 170, 170, 170 ), color.getRGB() );
     // Fix colors
     color = display.getSystemColor( SWT.COLOR_BLACK );
     assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );

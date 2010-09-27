@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1125,28 +1125,28 @@ public class List_Test extends TestCase {
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 52, 51 );
+    expected = new Point( 56, 54 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.V_SCROLL );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 68, 51 );
+    expected = new Point( 72, 54 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.H_SCROLL );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 52, 67 );
+    expected = new Point( 56, 70 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.BORDER );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 54, 53 );
+    expected = new Point( 58, 56 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 102, 102 );

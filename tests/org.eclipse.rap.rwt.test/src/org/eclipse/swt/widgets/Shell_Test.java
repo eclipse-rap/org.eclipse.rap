@@ -578,9 +578,9 @@ public class Shell_Test extends TestCase {
         log.add( event );
       }
     } );
-    assertEquals( new Point( 80, 23 ), shell.getMinimumSize() );
+    assertEquals( new Point( 80, 26 ), shell.getMinimumSize() );
     shell.setSize( 10, 10 );
-    assertEquals( new Point( 80, 23 ), shell.getSize() );
+    assertEquals( new Point( 80, 26 ), shell.getSize() );
     shell.setSize( 100, 100 );
     log.clear();
     assertEquals( new Point( 100, 100 ), shell.getSize() );
@@ -589,7 +589,7 @@ public class Shell_Test extends TestCase {
     assertEquals( new Point( 150, 150 ), shell.getMinimumSize() );
     assertEquals( new Point( 150, 150 ), shell.getSize() );
     shell.setMinimumSize( 10, 10 );
-    assertEquals( new Point( 80, 23 ), shell.getMinimumSize() );
+    assertEquals( new Point( 80, 26 ), shell.getMinimumSize() );
     shell.setMinimumSize( new Point( 150, 150 ) );
     assertEquals( new Point( 150, 150 ), shell.getMinimumSize() );
     shell.setBounds( 10, 10, 100, 100 );

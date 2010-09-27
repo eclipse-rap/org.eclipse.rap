@@ -1,3 +1,13 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
 /* Table */
 
 Table {
@@ -6,20 +16,18 @@ Table {
 }
 
 TableColumn {
-  background-image: url( "theme/business/icons/table-column.png" );
   color: #666666;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom:none;
 }
 
 TableColumn:hover {
-  background-image: url( "theme/business/icons/table-column-hover.png" );
   border-bottom:none;
 }
 
 Table-Cell {
   spacing: 3px;
-  padding: 5px;
+  padding: 4px 3px 3px 3px;
 }
 
 TableItem {
@@ -41,20 +49,20 @@ TableItem:selected:unfocused {
   color: #ffffff;
 }
 
-TableItem:even {
+TableItem:linesvisible:even {
   background-color: #f3f3f4;
 }
 
-TableItem:even:hover {
+TableItem:linesvisible:even:hover {
   background-color: #dae9f7;
 }
 
-TableItem:even:selected {
+TableItem:linesvisible:even:selected {
   background-color: #00589f;
-  color: #ffffff;
+  color: white;
 }
 
-TableItem:even:selected:unfocused {
+TableItem:linesvisible:even:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
 }
@@ -69,33 +77,4 @@ Table-GridLine:horizontal {
 
 Table-Checkbox {
   width: 21px;
-  background-image: url( theme/business/icons/check-unselected.png );
-}
-
-Table-Checkbox:hover {
-  background-image: url( theme/business/icons/check-unselected-hover.png );
-}
-
-Table-Checkbox:checked {
-  background-image: url( theme/business/icons/check-selected.png );
-}
-
-Table-Checkbox:checked:hover {
-  background-image: url( theme/business/icons/check-selected-hover.png );
-}
-
-Table-Checkbox:checked:grayed {
-  background-image: url( theme/business/icons/check-grayed.png );
-}
-
-Table-Checkbox:checked:grayed:hover {
-  background-image: url( theme/business/icons/check-grayed-hover.png );
-}
-
-TableColumn-SortIndicator:up {
-  background-image: url( theme/business/icons/sort-indicator-up.png );
-}
-
-TableColumn-SortIndicator:down {
-  background-image: url( theme/business/icons/sort-indicator-down.png );
 }

@@ -220,35 +220,35 @@ public class DateTime_Test extends TestCase {
     RWT.setLocale( Locale.US );
 
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT );
-    Point expected = new Point( 110, 18 );
+    Point expected = new Point( 115, 20 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT | SWT.BORDER );
-    expected = new Point( 112, 20 );
+    expected = new Point( 115, 20 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
-    expected = new Point( 93, 18 );
+    expected = new Point( 98, 20 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.DATE | SWT.LONG );
-    expected = new Point( 188, 18 );
+    expected = new Point( 193, 20 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.TIME | SWT.SHORT );
-    expected = new Point( 61, 18 );
+    expected = new Point( 66, 20 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
-    expected = new Point( 83, 18 );
+    expected = new Point( 88, 20 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.TIME | SWT.LONG );
-    expected = new Point( 83, 18 );
+    expected = new Point( 88, 20 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     dateTime = new DateTime( shell, SWT.CALENDAR );
-    expected = new Point( 192, 136 );
+    expected = new Point( 194, 138 );
     assertEquals( expected, dateTime.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 100, 100 );

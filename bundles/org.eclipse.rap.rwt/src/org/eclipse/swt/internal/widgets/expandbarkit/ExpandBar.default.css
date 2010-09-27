@@ -1,18 +1,27 @@
 /* ExpandBar default theme */
 
 ExpandBar {
-  color: black;
+  color: #4a4a4a;
+  background-color: white;
+}
+
+ExpandBar[BORDER] {
+  border: 1px solid #C1C1C1;
 }
 
 ExpandItem {
-  border: 1px solid #D4D0C8;
+  border: 1px solid #c1c1c1;
 }
 
 ExpandItem-Header {
   border: none;
-  background-image: none;
-  background-color: #D4D0C8;
   cursor: pointer;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 55%, #e0e0e0 ),
+    to( #f0f0f0 )
+  );
 }
 
 ExpandItem-Header:disabled {
@@ -20,17 +29,17 @@ ExpandItem-Header:disabled {
 }
 
 ExpandItem-Button {
-  background-image: url( resource/widget/rap/expanditem/chevron_down.gif );
+  background-image: url( resource/widget/rap/expanditem/expanditem-expand.png );
 }
 
 ExpandItem-Button:hover {
-  background-image: url( resource/widget/rap/expanditem/chevron_down_over.gif );
+  background-image: url( resource/widget/rap/expanditem/expanditem-expand-hover.png );
 }
 
 ExpandItem-Button:expanded {
-  background-image: url( resource/widget/rap/expanditem/chevron_up.gif );
+  background-image: url( resource/widget/rap/expanditem/expanditem-collapse.png );
 }
 
 ExpandItem-Button:expanded:hover {
-  background-image: url( resource/widget/rap/expanditem/chevron_up_over.gif );
+  background-image: url( resource/widget/rap/expanditem/expanditem-collapse-hover.png );
 }

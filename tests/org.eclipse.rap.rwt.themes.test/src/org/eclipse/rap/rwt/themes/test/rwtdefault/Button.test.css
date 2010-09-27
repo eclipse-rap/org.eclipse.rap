@@ -1,0 +1,173 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* Button default theme */
+
+Button {
+  background-image: none;
+  padding: 4px 5px;
+  spacing: 2px;
+  cursor: default;
+  animation: none;
+  color: #4a4a4a;
+  background-color: white;
+}
+
+Button[PUSH], Button[TOGGLE], Button[BORDER] {
+  border: 1px solid #A4A4A4;
+  border-radius: 3px;
+  padding: 2px 5px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+  animation: hoverOut 500ms ease-out;
+  cursor: pointer;
+}
+
+Button[PUSH]:disabled, Button[TOGGLE]:disabled {
+  cursor: default;
+}
+
+Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
+  border: 1px black;
+  padding: 5px 6px;
+}
+
+Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
+  border: 1px outset #A4A4A4;
+  border-radius: 3px;
+  padding: 2px 5px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+  animation: hoverOut 500ms ease-out;
+}
+
+Button[PUSH]:hover, Button[TOGGLE]:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Button[PUSH]:pressed, Button[TOGGLE]:pressed {
+  border: 1px inset;
+  animation: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+  padding: 4px 5px 2px 7px;
+}
+
+Button[TOGGLE]:selected {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 30%, #f0f0f0 ),
+    color-stop( 70%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Button[TOGGLE]:selected:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
+  background-color: rgb( 225, 225, 230 );
+  padding: 5px 6px;
+}
+
+Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {
+  border: 2px inset;
+}
+
+Button[CHECK], Button[RADIO] {
+  spacing: 4px;
+}
+
+Button[CHECK][BORDER], Button[RADIO][BORDER] {
+  background-image: none;
+}
+
+Button-CheckIcon {
+  background-image: url( resource/widget/rap/button/check-unselected.png );
+}
+
+Button-CheckIcon:hover {
+  background-image: url( resource/widget/rap/button/check-unselected-hover.png );
+}
+
+Button-CheckIcon:selected {
+  background-image: url( resource/widget/rap/button/check-selected.png );
+}
+
+Button-CheckIcon:selected:hover {
+  background-image: url( resource/widget/rap/button/check-selected-hover.png );
+}
+
+Button-CheckIcon:selected:grayed {
+  background-image: url( resource/widget/rap/button/check-grayed.png );
+}
+
+Button-CheckIcon:selected:grayed:hover {
+  background-image: url( resource/widget/rap/button/check-grayed-hover.png );
+}
+
+Button-RadioIcon {
+  background-image: url( resource/widget/rap/button/radio-unselected.png );
+}
+
+Button-RadioIcon:hover {
+  background-image: url( resource/widget/rap/button/radio-unselected-hover.png );
+}
+
+Button-RadioIcon:selected {
+  background-image: url( resource/widget/rap/button/radio-selected.png );
+}
+
+Button-RadioIcon:selected:hover {
+  background-image: url( resource/widget/rap/button/radio-selected-hover.png );
+}
+
+Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
+  background-color: transparent; 
+  border: 1px dotted #b8b8b8;
+  margin: 2px;
+  padding: 0px;
+  opacity: 1;
+}
+
+Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
+  background-color: transparent; 
+  border: 1px dotted #b8b8b8;
+  padding: 2px 2px 2px 1px;
+  margin: 0px;
+  opacity: 1;
+}

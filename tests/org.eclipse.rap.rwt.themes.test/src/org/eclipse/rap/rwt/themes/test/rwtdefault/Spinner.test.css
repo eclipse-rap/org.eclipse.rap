@@ -1,0 +1,87 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* Spinner default theme */
+
+Spinner {
+  border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
+  padding: 1px 2px;
+  color: #464a4e;
+  background-color: rgb( 252, 252, 252 );
+}
+
+Spinner-Field {
+  padding: 2px 3px;
+}
+
+Spinner[BORDER] {
+  border: 1px inset;
+}
+
+Spinner-UpButton {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    to( #e0e0e0 )
+  );
+  width: 18px;
+  border: none;
+  border-radius: 0px 2px 0px 0px;
+  cursor: default;
+}
+
+Spinner-UpButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Spinner-UpButton-Icon {
+  background-image: url( resource/widget/rap/spinner/up.png );
+}
+
+Spinner-UpButton-Icon:hover {
+  background-image: url( resource/widget/rap/spinner/up-hover.png );
+}
+
+Spinner-DownButton {
+  background-color: transparent;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    to( #ffffff )
+  );
+  width: 18px;
+  border: none;
+  border-radius: 0px 0px 2px 0px;
+  cursor: default;
+}
+
+Spinner-DownButton:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #b0b0b0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+}
+
+Spinner-DownButton-Icon {
+  background-image: url( resource/widget/rap/spinner/down.png );
+}
+
+Spinner-DownButton-Icon:hover {
+  background-image: url( resource/widget/rap/spinner/down-hover.png );
+}

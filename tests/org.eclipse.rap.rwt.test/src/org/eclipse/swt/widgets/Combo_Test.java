@@ -671,17 +671,17 @@ public class Combo_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
-    Point expected = new Point( 68, 21 );
+    Point expected = new Point( 66, 19 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     combo = new Combo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "22" );
     combo.add( "333" );
-    expected = new Point( 51, 21 );
+    expected = new Point( 52, 19 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 104, 104 );
+    expected = new Point( 102, 102 );
     assertEquals( expected, combo.computeSize( 100, 100 ) );
   }
 

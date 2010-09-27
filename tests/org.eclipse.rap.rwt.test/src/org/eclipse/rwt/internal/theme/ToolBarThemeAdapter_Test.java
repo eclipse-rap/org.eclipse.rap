@@ -27,7 +27,7 @@ public class ToolBarThemeAdapter_Test extends TestCase {
     ToolBar toolBar = new ToolBar( shell, SWT.HORIZONTAL );
     ToolBarThemeAdapter themeAdapter
       = ( ToolBarThemeAdapter )toolBar.getAdapter( IThemeAdapter.class );
-    assertEquals( 1, themeAdapter.getItemBorderWidth( toolBar ) );
+    assertEquals( 0, themeAdapter.getItemBorderWidth( toolBar ) );
     assertEquals( new Rectangle( 3, 2, 6, 4 ),
                   themeAdapter.getItemPadding( toolBar ) );
     ToolBar flatToolBar = new ToolBar( shell, SWT.HORIZONTAL | SWT.FLAT );

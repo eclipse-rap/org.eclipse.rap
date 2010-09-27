@@ -1,0 +1,45 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* Menu default theme */
+
+Menu {
+  background-image: none;
+  padding: 2px 0px;
+  opacity: 1;
+  animation: none;
+  color: rgb( 0, 89, 165 );
+  background-color: white;
+  border: 1px rgb( 0, 89, 165 );
+  border-radius: 2px;
+}
+
+MenuItem {
+  color: black;
+  background-color: transparent;
+  opacity: 1;
+}
+
+MenuItem:hover {
+  background-color: #dae9f7;
+  color: #4a4a4a;
+}
+
+MenuItem-CheckIcon {
+  background-image: url( resource/widget/rap/menu/checkbox.gif );
+}
+
+MenuItem-RadioIcon {
+  background-image: url( resource/widget/rap/menu/radiobutton.gif );
+}
+
+MenuItem-CascadeIcon {
+  background-image: url( resource/widget/rap/menu/arrow.gif );
+}

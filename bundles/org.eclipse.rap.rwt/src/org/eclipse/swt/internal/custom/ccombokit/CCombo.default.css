@@ -1,29 +1,48 @@
 /* CCombo default theme */
 
 CCombo {
-  background-color: white;
-  color: black;
   border: none;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: rgb( 252, 252, 252 );
+  color: #464a4e;
+  border-radius: 2px;
 }
 
 CCombo[BORDER] {
-  border: 1px inset;
+  border: 1px solid #c1c1c1;
+  border-radius: 2px;
 }
 
 CCombo-Button {
-  /* 
-  For backward compatibility we have to keep the drop-down button icon
-  definition in CCombo-Button and not in CCombo-Button-Icon
-  */
-  background-image: url( resource/widget/rap/combo/down_button.gif );
-  background-color: rgb( 248, 248, 255 );
-  border: 1px outset;
-  width: 15px;
   cursor: default;
+  background-color: transparent;
+  border: none;
+  border-radius: 0px 2px 2px 0px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+  width: 18px;
+}
+
+CCombo-Button:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
 }
 
 CCombo-Button-Icon {
-  background-image: none;
+  background-image: url( resource/widget/rap/ccombo/down.png );
+} 
+
+CCombo-Button-Icon:hover {
+  background-image: url( resource/widget/rap/ccombo/down-hover.png );
 }
 
 CCombo-Button[FLAT] {
@@ -35,7 +54,8 @@ CCombo-Button[FLAT]:hover {
 }
 
 CCombo-List {
-  border: 1px rgb( 167, 166, 170 );
+  border: 1px solid #c1c1c1;
+  border-radius: 0px 0px 2px 2px;
 }
 
 CCombo-Field {
@@ -44,7 +64,7 @@ CCombo-Field {
 
 CCombo-FocusIndicator {
   background-color: transparent; 
-  border: 1px dotted #909090;
-  margin: 1px 16px 1px 1px;
+  border: 1px dotted #b8b8b8;
+  margin: 1px 19px 1px 1px;
   opacity: 1;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,96 +175,96 @@ public class Button_Test extends TestCase {
     // Text and image to use
     String text = "Click me!";
     Point extent = TextSizeDetermination.stringExtent( shell.getFont(), text );
-    assertEquals( new Point( 48, 13 ), extent );
+    assertEquals( new Point( 52, 14 ), extent );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
     // PUSH button
     Button button = new Button( shell, SWT.PUSH );
-    Point expected = new Point( 15, 22 );
+    Point expected = new Point( 13, 16 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 62, 25 );
+    expected = new Point( 64, 20 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
-    expected = new Point( 164, 62 );
+    expected = new Point( 166, 56 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( "" );
-    expected = new Point( 114, 62 );
+    expected = new Point( 112, 56 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // PUSH button with BORDER
     button = new Button( shell, SWT.PUSH | SWT.BORDER );
-    expected = new Point( 17, 24 );
+    expected = new Point( 13, 16 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
     button.setImage( image );
-    expected = new Point( 166, 64 );
+    expected = new Point( 166, 56 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // TOGGLE button
     button = new Button( shell, SWT.TOGGLE );
     button.setText( text );
-    expected = new Point( 62, 25 );
+    expected = new Point( 64, 20 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
-    expected = new Point( 164, 62 );
+    expected = new Point( 166, 56 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // TOGGLE button with border
     button = new Button( shell, SWT.TOGGLE | SWT.BORDER );
-    expected = new Point( 17, 24 );
+    expected = new Point( 13, 16 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
     button.setImage( image );
-    expected = new Point( 166, 64 );
+    expected = new Point( 166, 56 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // CHECK button
     button = new Button( shell, SWT.CHECK );
-    expected = new Point( 28, 21 );
+    expected = new Point( 30, 23 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 75, 21 );
+    expected = new Point( 81, 23 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
-    expected = new Point( 179, 58 );
+    expected = new Point( 185, 58 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // CHECK button with border
     button = new Button( shell, SWT.CHECK | SWT.BORDER );
-    expected = new Point( 32, 25 );
+    expected = new Point( 32, 21 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 79, 25 );
+    expected = new Point( 83, 21 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
-    expected = new Point( 183, 62 );
+    expected = new Point( 187, 56 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // RADIO button
     button = new Button( shell, SWT.RADIO );
-    expected = new Point( 28, 21 );
+    expected = new Point( 30, 23 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 75, 21 );
+    expected = new Point( 81, 23 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
-    expected = new Point( 179, 58 );
+    expected = new Point( 185, 58 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // RADIO button with border
     button = new Button( shell, SWT.RADIO | SWT.BORDER );
-    expected = new Point( 32, 25 );
+    expected = new Point( 32, 21 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setText( text );
-    expected = new Point( 79, 25 );
+    expected = new Point( 83, 21 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
-    expected = new Point( 183, 62 );
+    expected = new Point( 187, 56 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // fixed size
-    expected = new Point( 104, 104 );
+    expected = new Point( 102, 102 );
     assertEquals( expected, button.computeSize( 100, 100 ) );
   }
 
@@ -279,23 +279,23 @@ public class Button_Test extends TestCase {
     // Text and image to use
     String text = "Click me!";
     Point extent = TextSizeDetermination.stringExtent( shell.getFont(), text );
-    assertEquals( new Point( 48, 13 ), extent );
+    assertEquals( new Point( 52, 14 ), extent );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     
     // PUSH button
     Button button = new Button( shell, SWT.PUSH );
     button.setText( text );
     button.setImage( image );
-    Point expected = new Point( 172, 62 );
+    Point expected = new Point( 174, 56 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   
     // CHECK button
     button = new Button( shell, SWT.CHECK );
     button.setText( text );
-    expected = new Point( 81, 21 );
+    expected = new Point( 87, 23 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     button.setImage( image );
-    expected = new Point( 191, 58 );
+    expected = new Point( 197, 58 );
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 

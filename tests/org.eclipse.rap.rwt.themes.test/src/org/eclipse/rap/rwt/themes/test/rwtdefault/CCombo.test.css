@@ -1,0 +1,80 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* CCombo default theme */
+
+CCombo {
+  border: none;
+  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: rgb( 252, 252, 252 );
+  color: #464a4e;
+  border-radius: 2px;
+}
+
+CCombo[BORDER] {
+  border: 1px solid #c1c1c1;
+  border-radius: 2px;
+}
+
+CCombo-Button {
+  cursor: default;
+  background-color: transparent;
+  border: none;
+  border-radius: 0px 2px 2px 0px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+  width: 18px;
+}
+
+CCombo-Button:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+CCombo-Button-Icon {
+  background-image: url( resource/widget/rap/ccombo/down.png );
+} 
+
+CCombo-Button-Icon:hover {
+  background-image: url( resource/widget/rap/ccombo/down-hover.png );
+}
+
+CCombo-Button[FLAT] {
+  border: none;
+}
+
+CCombo-Button[FLAT]:hover {
+  border: 1px outset;
+}
+
+CCombo-List {
+  border: 1px solid #c1c1c1;
+  border-radius: 0px 0px 2px 2px;
+}
+
+CCombo-Field {
+  padding: 2px 3px;
+}
+
+CCombo-FocusIndicator {
+  background-color: transparent; 
+  border: 1px dotted #b8b8b8;
+  margin: 1px 19px 1px 1px;
+  opacity: 1;
+}

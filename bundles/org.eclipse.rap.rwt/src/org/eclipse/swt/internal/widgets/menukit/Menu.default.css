@@ -1,14 +1,14 @@
 /* Menu default theme */
 
 Menu {
-  color: black;
-  background-color: rgb( 248, 248, 255 );
   background-image: none;
-  border: 2px outset;
-  border-radius: 0px;
-  padding: 1px;
+  padding: 2px 0px;
   opacity: 1;
   animation: none;
+  color: rgb( 0, 89, 165 );
+  background-color: white;
+  border: 1px rgb( 0, 89, 165 );
+  border-radius: 2px;
 }
 
 MenuItem {
@@ -18,8 +18,8 @@ MenuItem {
 }
 
 MenuItem:hover {
-  color: white;
-  background-color: rgb( 49, 106, 197 );
+  background-color: #dae9f7;
+  color: #4a4a4a;
 }
 
 MenuItem-CheckIcon {

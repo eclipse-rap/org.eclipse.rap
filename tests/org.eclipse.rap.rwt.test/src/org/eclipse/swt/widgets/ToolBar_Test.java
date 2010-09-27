@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -18,6 +17,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+
 
 public class ToolBar_Test extends TestCase {
 
@@ -170,7 +170,7 @@ public class ToolBar_Test extends TestCase {
     separator.setControl( new Text( toolbar, SWT.NONE ) );
     ToolItem toolItem3 = new ToolItem( toolbar, SWT.DROP_DOWN );
     toolItem3.setText( "Item 3" );
-    assertEquals( new Point( 152, 22 ),
+    assertEquals( new Point( 153, 22 ),
                   toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     assertEquals( new Point( 100, 100 ), toolbar.computeSize( 100, 100 ) );

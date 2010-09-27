@@ -1,5 +1,9 @@
 /* Link default theme */
 
 Link-Hyperlink {
-  color: rgb( 0, 0, 127 );
+  color: #00589f;
+}
+
+Link-Hyperlink:disabled {
+  color: #959595;
 }

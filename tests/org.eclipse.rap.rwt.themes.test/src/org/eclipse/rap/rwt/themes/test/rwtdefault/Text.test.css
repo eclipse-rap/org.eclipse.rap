@@ -1,0 +1,40 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
+/* Text default theme */
+
+Text {
+  border: none;
+  padding: 2px 3px;
+  background-image: none;
+  color: #464a4e;
+  background-color: rgb( 252, 252, 252 );
+}
+
+Text[BORDER] {
+  border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
+}
+
+Text[SINGLE] {
+  /* padding: 2px 3px; */
+}
+
+Text[MULTI] {
+  /* padding: 0px 0px 0px 3px; */
+}
+
+Text[MULTI][BORDER] {
+  /* padding: 0px 0px 0px 4px; */
+}
+
+Text-Message {
+  color: rgb( 167, 166, 170 );
+}

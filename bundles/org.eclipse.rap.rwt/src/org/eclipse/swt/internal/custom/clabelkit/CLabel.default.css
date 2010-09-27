@@ -1,8 +1,8 @@
 /* CLabel default theme */
 
 CLabel {
-  color: black;
-  background-color: rgb( 248, 248, 255 );
+  color: #4a4a4a;
+  background-color: white;
   background-image: none;
   border: none;
   padding: 3px;

@@ -2,25 +2,32 @@
 
 Shell {
   border: 1px black;
-  background-color: rgb( 248, 248, 255 );
+  background-color: white;
   padding: 0px;
   background-image: none;
   opacity: 1;
 }
 
 Shell[TITLE], Shell[BORDER] {
-  border: 2px outset;
+  background-color: white;
+  border: 2px solid #005092;
+  border-radius: 5px 5px 0px 0px;
+  padding: 5px;
 }
 
-Shell:maximized {
+Shell[BORDER]:inactive, Shell[TITLE]:inactive {
+  border: 2px solid #4b4b4b;
+}
+
+Shell:maximized, Shell:maximized:inactive {
   border: none;
 }
 
 Shell-DisplayOverlay {
+  animation: fadeIn 200ms linear, fadeOut 400ms ease-out;
   background-image: none;
-  background-color: transparent;
-  opacity: 1;
-  animation: none;
+  background-color: #808080;
+  opacity: 0.2;
 }
 
 /* Shell titlebar */
@@ -29,94 +36,100 @@ Shell-Titlebar {
   background-color: rgb( 0, 128, 192 );
   background-gradient-color: rgb( 0, 128, 192 );
   color: white;
-  font: bold 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
-  height: 18px;
-  margin: 0px 0px 1px;
-  padding: 1px 2px;
-  background-image: url( resource/widget/rap/window/caption_active.gif );
+  background-image: gradient( linear, left top, left bottom,
+                              from( #005fac ), to( #005092 ) );
+  padding: 2px 5px 2px;
+  margin: 0px;
+  height: 22px;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border: none;
+  border-radius: 3px 3px 0px 0px;
 }
 
 Shell-Titlebar:inactive {
   background-color: rgb( 121, 150, 165 );
   background-gradient-color: rgb( 121, 150, 165 );
-  color: rgb( 221, 221, 221 );
-  background-image: url( resource/widget/rap/window/caption_inactive.gif );
+  color: #aaaaaa;
+  background-image: gradient( linear, left top, left bottom,
+                              from( #595959 ), to( #4b4b4b ) );
 }
 
 /* Shell buttons */
 
-Shell-MinButton, Shell-MaxButton, Shell-CloseButton {
-  margin: 2px 0px 2px 1px;
-}
-
 /* Minimize button */
 
 Shell-MinButton {
-  background-image: url( resource/widget/rap/window/minimize.png );
+  background-image: url( resource/widget/rap/window/shell-min.png );
+  margin: 0px 6px 0px 0px;
 }
 
 Shell-MinButton:hover {
-  background-image: url( resource/widget/rap/window/minimize.over.png );
+  background-image: url( resource/widget/rap/window/shell-min-hover.png );
 }
 
 Shell-MinButton:inactive {
-  background-image: url( resource/widget/rap/window/minimize.inactive.png );
+  background-image: url( resource/widget/rap/window/shell-min.png );
+  margin: 0px 6px 0px 0px;
 }
 
 Shell-MinButton:inactive:hover {
-  background-image: url( resource/widget/rap/window/minimize.inactive.over.png );
+  background-image: url( resource/widget/rap/window/shell-min-hover.png );
 }
 
 /* Maximize button */
 
 Shell-MaxButton {
-  background-image: url( resource/widget/rap/window/maximize.png );
+  background-image: url( resource/widget/rap/window/shell-max.png );
+  margin: 0px 6px 0px 0px;
 }
 
 Shell-MaxButton:hover {
-  background-image: url( resource/widget/rap/window/maximize.over.png );
+  background-image: url( resource/widget/rap/window/shell-max-hover.png );
 }
 
 Shell-MaxButton:inactive {
-  background-image: url( resource/widget/rap/window/maximize.inactive.png );
+  background-image: url( resource/widget/rap/window/shell-max.png );
+  margin: 0px 6px 0px 0px;
 }
 
 Shell-MaxButton:inactive:hover {
-  background-image: url( resource/widget/rap/window/maximize.inactive.over.png );
+  background-image: url( resource/widget/rap/window/shell-max-hover.png );
 }
 
 /* Restore button */
 
 Shell-MaxButton:maximized {
-  background-image: url( resource/widget/rap/window/restore.png );
+  background-image: url( resource/widget/rap/window/shell-restore.png );
 }
 
 Shell-MaxButton:maximized:hover {
-  background-image: url( resource/widget/rap/window/restore.over.png );
+  background-image: url( resource/widget/rap/window/shell-restore-hover.png );
 }
 
 Shell-MaxButton:maximized:inactive {
-  background-image: url( resource/widget/rap/window/restore.inactive.png );
+  background-image: url( resource/widget/rap/window/shell-restore.png );
 }
 
 Shell-MaxButton:maximized:inactive:hover {
-  background-image: url( resource/widget/rap/window/restore.inactive.over.png );
+  background-image: url( resource/widget/rap/window/shell-restore-hover.png );
 }
 
 /* Close button */
 
 Shell-CloseButton {
-  background-image: url( resource/widget/rap/window/close.png );
+  background-image: url( resource/widget/rap/window/shell-close.png );
+  margin: 0px 5px 0px 0px;
 }
 
 Shell-CloseButton:hover {
-  background-image: url( resource/widget/rap/window/close.over.png );
+  background-image: url( resource/widget/rap/window/shell-close-hover.png );
 }
 
 Shell-CloseButton:inactive {
-  background-image: url( resource/widget/rap/window/close.inactive.png );
+  background-image: url( resource/widget/rap/window/shell-close.png );
+  margin: 0px 5px 0px 0px;
 }
 
 Shell-CloseButton:inactive:hover {
-  background-image: url( resource/widget/rap/window/close.inactive.over.png );
+  background-image: url( resource/widget/rap/window/shell-close-hover.png );
 }

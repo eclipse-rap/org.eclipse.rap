@@ -1,9 +1,9 @@
 /* Tree default theme */
 
 Tree {
-  color: black;
   background-color: white;
   border: none;
+  color: #4a4a4a;
 }
 
 Tree[BORDER] {
@@ -11,29 +11,53 @@ Tree[BORDER] {
 }
 
 TreeItem {
-  color: inherit;
   background-color: transparent;
+  color: #666666;
+}
+
+TreeItem:hover {
+  background-color: #dae9f7;
 }
 
 TreeItem:selected {
-  color: white;
-  background-color: rgb( 49, 106, 197 );
+  background-color: #00589f;
+  color: #ffffff;
 }
 
 TreeItem:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
+}
+
+TreeItem:linesvisible:even {
+  background-color: #f3f3f4;
+}
+
+TreeItem:linesvisible:even:hover {
+  background-color: #dae9f7;
+}
+
+TreeItem:linesvisible:even:selected {
+  background-color: #00589f;
   color: white;
-  background-color: rgb( 192, 192, 192 );  
+}
+
+TreeItem:linesvisible:even:selected:unfocused {
+  background-color: #959595;
+  color: #ffffff;
 }
 
 TreeColumn {
   background-color: rgb( 248, 248, 255 );
-  background-image: none;
+  background-image: url( resource/widget/rap/table/table-column.png );
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-bottom:none;
   padding: 1px 2px;
-  border-bottom: 2px solid rgb( 172, 168, 153 );
 }
 
 TreeColumn:hover {
-  border-bottom: 2px solid rgb( 254, 200, 60 );
+  background-image: url( resource/widget/rap/table/table-column-hover.png );
+  border-bottom:none;
 }
 
 TreeColumn-SortIndicator {
@@ -41,11 +65,11 @@ TreeColumn-SortIndicator {
 }
 
 TreeColumn-SortIndicator:up {
-  background-image: url( resource/widget/rap/column/up.gif );
+  background-image: url( resource/widget/rap/column/sort-indicator-up.png );
 }
 
 TreeColumn-SortIndicator:down {
-  background-image: url( resource/widget/rap/column/down.gif );
+  background-image: url( resource/widget/rap/column/sort-indicator-down.png );
 }
 
 Tree-Cell {
@@ -55,6 +79,10 @@ Tree-Cell {
 
 Tree-GridLine {
   color: #d0d0d0;
+}
+
+Tree-GridLine:horizontal {
+  color: transparent;
 }
 
 Tree-Checkbox {
@@ -84,53 +112,85 @@ Tree-Checkbox:checked:grayed:hover {
 
 Tree-Indent {
   width: 16px;
-  background-image: url( resource/widget/rap/tree/cross.gif );
+  background-image: none;
 }
 
 Tree-Indent:collapsed {
-  background-image: url( resource/widget/rap/tree/cross_plus.gif );
+  background-image: url( resource/widget/rap/tree/tree-collapsed.png );
+}
+
+Tree-Indent:collapsed:hover {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
 }
 
 Tree-Indent:expanded {
-  background-image: url( resource/widget/rap/tree/cross_minus.gif );
+  background-image: url( resource/widget/rap/tree/tree-expanded.png );
+}
+
+Tree-Indent:expanded:hover {
+  background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
 Tree-Indent:line {
-  background-image: url( resource/widget/rap/tree/line.gif );
+  background-image: none;
 }
 
 Tree-Indent:first {
-  background-image: url( resource/widget/rap/tree/start.gif );
+  background-image: none;
 }
 
 Tree-Indent:first:collapsed {
-  background-image: url( resource/widget/rap/tree/start_plus.gif );
+  background-image: url( resource/widget/rap/tree/tree-collapsed.png );
+}
+
+Tree-Indent:first:collapsed:hover {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
 }
 
 Tree-Indent:first:expanded {
-  background-image: url( resource/widget/rap/tree/start_minus.gif );
+  background-image: url( resource/widget/rap/tree/tree-expanded.png );
+}
+
+Tree-Indent:first:expanded:hover {
+  background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
 Tree-Indent:last {
-  background-image: url( resource/widget/rap/tree/end.gif );
+  background-image: none;
 }
 
 Tree-Indent:last:collapsed {
-  background-image: url( resource/widget/rap/tree/end_plus.gif );
+  background-image: url( resource/widget/rap/tree/tree-collapsed.png );
+}
+
+Tree-Indent:last:collapsed:hover {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
 }
 
 Tree-Indent:last:expanded {
-  background-image: url( resource/widget/rap/tree/end_minus.gif );
+  background-image: url( resource/widget/rap/tree/tree-expanded.png );
+}
+
+Tree-Indent:last:expanded:hover {
+  background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
 Tree-Indent:first:last {
-  background-image: url( resource/widget/rap/tree/single.gif );
+  background-image: none;
 }
 
 Tree-Indent:first:last:collapsed {
-  background-image: url( resource/widget/rap/tree/single_plus.gif );
+  background-image: url( resource/widget/rap/tree/tree-collapsed.png );
+}
+
+Tree-Indent:first:last:collapsed:hover {
+  background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
 }
 
 Tree-Indent:first:last:expanded {
-  background-image: url( resource/widget/rap/tree/single_minus.gif );
+  background-image: url( resource/widget/rap/tree/tree-expanded.png );
+}
+
+Tree-Indent:first:last:expanded:hover {
+  background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }

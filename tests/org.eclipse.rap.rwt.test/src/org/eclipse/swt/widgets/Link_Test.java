@@ -75,7 +75,7 @@ public class Link_Test extends TestCase {
       = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and "
       + "the <a>SWT</a> homepage.";
     link.setText( text );
-    expected = new Point( 273, 18 );
+    expected = new Point( 298, 19 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     link = new Link( shell, SWT.BORDER );
@@ -88,13 +88,13 @@ public class Link_Test extends TestCase {
     text = "<a>test & test2</a>";
     link = new Link( shell, SWT.NONE );
     link.setText( text );
-    expected = new Point( 62, 18 );
+    expected = new Point( 67, 19 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     
     text = "<a>test && test2</a>";
     link = new Link( shell, SWT.NONE );
     link.setText( text );
-    expected = new Point( 73, 18 );
+    expected = new Point( 79, 19 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 

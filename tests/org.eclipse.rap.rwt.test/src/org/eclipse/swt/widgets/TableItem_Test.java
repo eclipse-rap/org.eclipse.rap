@@ -287,7 +287,7 @@ public class TableItem_Test extends TestCase {
     // Set an actual image - its size rules the bounds returned
     item.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
-    assertEquals( 50, bounds.height );
+    assertEquals( 57, bounds.height );
     assertEquals( 100, bounds.width );
   }
 
@@ -315,7 +315,7 @@ public class TableItem_Test extends TestCase {
     column.setWidth( 1000 );
     item.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
-    assertEquals( 50, bounds.height );
+    assertEquals( 57, bounds.height );
     assertEquals( 100, bounds.width );
 
     // A column width that is smaller than the images width does not clip the
@@ -323,14 +323,14 @@ public class TableItem_Test extends TestCase {
     column.setWidth( 20 );
     item.setImage( 0, Graphics.getImage( Fixture.IMAGE_100x50 ) );
     bounds = item.getImageBounds( 0 );
-    assertEquals( 50, bounds.height );
+    assertEquals( 57, bounds.height );
     assertEquals( 100, bounds.width );
 
     // ImageBounds for item without an image
     column.setWidth( 20 );
     item.setImage( 0, null );
     bounds = item.getImageBounds( 0 );
-    assertEquals( 50, bounds.height );
+    assertEquals( 57, bounds.height );
     assertEquals( 0, bounds.width );
   }
 

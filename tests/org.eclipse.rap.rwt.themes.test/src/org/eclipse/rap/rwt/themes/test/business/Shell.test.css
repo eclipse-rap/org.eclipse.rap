@@ -1,3 +1,13 @@
+/*******************************************************************************
+* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* program and the accompanying materials are made available under the terms of
+* the Eclipse Public License v1.0 which accompanies this distribution, and is
+* available at http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*   EclipseSource - initial API and implementation
+*******************************************************************************/
+
 /* Shell */
 
 Shell-Titlebar {
@@ -29,10 +39,10 @@ Shell-DisplayOverlay {
   opacity: 0.2;
 }
 
-Shell[BORDER], Shell[TITLE] {
+Shell[TITLE], Shell[BORDER] {
   background-color: white;
   border: 2px solid #005092;
-  border-radius: 6px;
+  border-radius: 5px 5px 0px 0px;
   padding: 5px;
 }
 
@@ -41,28 +51,13 @@ Shell[BORDER]:inactive, Shell[TITLE]:inactive {
 }
 
 Shell-CloseButton {
-  background-image: url( "theme/business/icons/shell-close.png" );
   margin: 0px 5px 0px 0px;
 }
 
 Shell-MaxButton {
-  background-image: url( "theme/business/icons/shell-max.png" );
   margin: 0px 6px 0px 0px;
 }
 
 Shell-MinButton {
-  background-image: url( "theme/business/icons/shell-min.png" );
   margin: 0px 6px 0px 0px;
-}
-
-Shell-CloseButton:hover {
-  background-image: url( "theme/business/icons/shell-close-hover.png" );
-}
-
-Shell-MaxButton:hover {
-  background-image: url( "theme/business/icons/shell-max-hover.png" );
-}
-
-Shell-MinButton:hover {
-  background-image: url( "theme/business/icons/shell-min-hover.png" );
 }

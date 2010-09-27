@@ -309,18 +309,18 @@ public class TabFolderAndItem_Test extends TestCase {
       TabItem tabItem = new TabItem( folder, SWT.NONE );
       tabItem.setText( "TabItem " + i );
     }
-    Rectangle expected = new Rectangle( 0, 0, 65, 21 );
+    Rectangle expected = new Rectangle( 0, 0, 69, 22 );
     assertEquals( expected, folder.getItem( 0 ).getBounds() );
-    expected = new Rectangle( 65, 3, 60, 18 );
+    expected = new Rectangle( 69, 3, 64, 19 );
     assertEquals( expected, folder.getItem( 1 ).getBounds() );
-    expected = new Rectangle( 126, 3, 61, 18 );
+    expected = new Rectangle( 134, 3, 65, 19 );
     assertEquals( expected, folder.getItem( 2 ).getBounds() );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 2 ) ) );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 10 ) ) );
     assertNull( folder.getItem( new Point( 95, 2 ) ) );
     assertEquals( folder.getItem( 1 ), folder.getItem( new Point( 95, 10 ) ) );
     assertNull( folder.getItem( new Point( 130, 2 ) ) );
-    assertEquals( folder.getItem( 2 ), folder.getItem( new Point( 130, 10 ) ) );
+    assertEquals( folder.getItem( 2 ), folder.getItem( new Point( 140, 10 ) ) );
 
     // Test with bar on bottom
     folder = new TabFolder( shell, SWT.BOTTOM );
@@ -329,18 +329,18 @@ public class TabFolderAndItem_Test extends TestCase {
       TabItem tabItem = new TabItem( folder, SWT.NONE );
       tabItem.setText( "TabItem " + i );
     }
-    expected = new Rectangle( 0, 379, 65, 21 );
+    expected = new Rectangle( 0, 378, 69, 22 );
     assertEquals( expected, folder.getItem( 0 ).getBounds() );
-    expected = new Rectangle( 65, 379, 60, 18 );
+    expected = new Rectangle( 69, 378, 64, 19 );
     assertEquals( expected, folder.getItem( 1 ).getBounds() );
-    expected = new Rectangle( 126, 379, 61, 18 );
+    expected = new Rectangle( 134, 378, 65, 19 );
     assertEquals( expected, folder.getItem( 2 ).getBounds() );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 398 ) ) );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 390 ) ) );
     assertNull( folder.getItem( new Point( 95, 398 ) ) );
     assertEquals( folder.getItem( 1 ), folder.getItem( new Point( 95, 390 ) ) );
     assertNull( folder.getItem( new Point( 130, 398 ) ) );
-    assertEquals( folder.getItem( 2 ), folder.getItem( new Point( 130, 390 ) ) );
+    assertEquals( folder.getItem( 2 ), folder.getItem( new Point( 140, 390 ) ) );
 
     assertNull( folder.getItem( new Point( 200, 200 ) ) );
 

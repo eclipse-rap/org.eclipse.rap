@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -24,8 +25,8 @@ import org.eclipse.swt.widgets.Shell;
 public class ShellThemeAdapter_Test extends TestCase {
 
   public void testPlainShell() {
-    Color defFgColor = Graphics.getColor( 0, 0, 0 );
-    Color defBgColor = Graphics.getColor( 248, 248, 255 );
+    Color defFgColor = Graphics.getColor( 74, 74, 74 );
+    Color defBgColor = Graphics.getColor( 255, 255, 255 );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     ShellThemeAdapter themeAdapter
