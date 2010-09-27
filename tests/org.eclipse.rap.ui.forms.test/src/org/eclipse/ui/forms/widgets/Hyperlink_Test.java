@@ -16,9 +16,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 
 public class Hyperlink_Test extends TestCase {
 
@@ -103,10 +101,10 @@ public class Hyperlink_Test extends TestCase {
     Hyperlink hyperlink
       = toolkit.createHyperlink( form.getBody(), text, SWT.NONE );
     assertNotNull( hyperlink );
-    Point expected = new Point( 108, 16 );
+    Point expected = new Point( 117, 17 );
     assertEquals( expected, hyperlink.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // fixed size
-    expected = new Point( 50, 16 );
+    expected = new Point( 50, 17 );
     assertEquals( expected, hyperlink.computeSize( 50, 50 ) );
   }
 

@@ -16,9 +16,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.forms.HyperlinkSettings;
 
 public class FormText_Test extends TestCase {
@@ -57,7 +55,7 @@ public class FormText_Test extends TestCase {
       + "<p>Second paragraph</p>"
       + "</form>";
     formText.setText( text, true, false );
-    Point expected = new Point( 86, 92 );
+    Point expected = new Point( 94, 101 );
     assertEquals( expected, formText.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // fixed size
     expected = new Point( 50, 50 );
