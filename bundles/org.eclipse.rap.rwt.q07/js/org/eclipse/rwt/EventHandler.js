@@ -15,16 +15,16 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
   type : "static",
 
   statics : {
-    _lastMouseEventType : null,
-    _lastMouseDown : false,
-    _lastMouseEventDate : 0,
-    _focused : false,
-
     _filter : {},
     _allowContextMenu : qx.lang.Function.returnFalse,
     _captureWidget : null,
     _focusRoot : null,
     _menuManager : null,
+    // state storage:
+    _focused : false,
+    _lastMouseEventType : null,
+    _lastMouseDown : false,
+    _lastMouseEventDate : 0,
     
     ///////////////////
     // Public functions
@@ -37,9 +37,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       this.__onwindowblur = functionUtil.bind( this._onwindowblur, this );
       this.__onwindowfocus = functionUtil.bind( this._onwindowfocus, this );
       this.__onwindowresize = functionUtil.bind( this._onwindowresize, this );
-      org.eclipse.rwt.KeyEventHandler.init();
-      this.__keyHandler = 
-        org.eclipse.rwt.KeyEventHandler.__onKeyEvent;      
+      this.__onKeyEvent = qx.lang.Function.bind( this._onKeyEvent, this );     
     },
 
     cleanUp : function() {
@@ -49,19 +47,20 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       delete this.__onwindowblur; 
       delete this.__onwindowfocus; 
       delete this.__onwindowresize;
+      delete this.__onKeyEvent;
       delete this._lastMouseEventType;
       delete this._lastMouseDown;
       delete this._lastMouseEventDate;
       delete this._lastMouseDownDomTarget;
       delete this._lastMouseDownDispatchTarget;
-      org.eclipse.rwt.KeyEventHandler.cleanUp();
+      org.eclipse.rwt.EventHandlerUtil.cleanUp();
     },
 
     attachEvents : function() {
       var eventUtil = qx.html.EventRegistration;
       this.attachEventTypes( this._mouseEventTypes, this.__onmouseevent );
       this.attachEventTypes( this._dragEventTypes, this.__ondragevent );
-      this.attachEventTypes( this._keyEventTypes, this.__keyHandler );
+      this.attachEventTypes( this._keyEventTypes, this.__onKeyEvent );
       eventUtil.addEventListener( window, "blur", this.__onwindowblur );
       eventUtil.addEventListener( window, "focus", this.__onwindowfocus );
       eventUtil.addEventListener( window, "resize", this.__onwindowresize );
@@ -74,7 +73,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       var eventUtil = qx.html.EventRegistration;
       this.detachEventTypes( this._mouseEventTypes, this.__onmouseevent);
       this.detachEventTypes( this._dragEventTypes, this.__ondragevent);
-      this.detachEventTypes( this._keyEventTypes, this.__keyHandler );
+      this.detachEventTypes( this._keyEventTypes, this.__onKeyEvent );
       eventUtil.removeEventListener( window, "blur", this.__onwindowblur );
       eventUtil.removeEventListener( window, "focus", this.__onwindowfocus );
       eventUtil.removeEventListener( window, "resize", this.__onwindowresize );
@@ -139,16 +138,59 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       this._filter[ "mouseevent" ] = [ filter, context ];
     },
 
-    ///////////////////
-    // Global Handlers:
+    setKeyEventFilter : function( filter, context ) {
+      // TODO [tb] : Unify behavior and API for EventFilter, only use event 
+      // wrapper objects instead of dom-events, create API for order of filter  
+      this._filter[ "keyevent" ] = [ filter, context ];
+    },
+
+    //////////////
+    // KEY EVENTS:
+    
+    _onKeyEvent : function() {
+      var util = org.eclipse.rwt.EventHandlerUtil;
+      var event = util.getDomEvent( arguments );
+      var keyCode = util.getKeyCode( event );
+      var charCode = util.getCharCode( event );
+      var pseudoTypes = util.getEventPseudoTypes( event, keyCode, charCode );
+      for( var i = 0; i < pseudoTypes.length; i++ ) {
+        this._onkeyevent_post( event, pseudoTypes[ i ], keyCode, charCode );
+      }
+      util.saveData( event, keyCode, charCode );
+    },
+
     
     _onkeyevent_post : function( vDomEvent, 
                                  vType, 
                                  vKeyCode, 
-                                 vCharCode, 
-                                 vKeyIdentifier ) 
+                                 vCharCode ) 
     {
-      var vDomTarget = this.getDomTarget( vDomEvent );
+      var process = true;
+      if( typeof this._filter[ "keyevent" ] !== "undefined" ) {
+        var context = this._filter[ "keyevent" ][ 1 ];
+        process = this._filter[ "keyevent" ][ 0 ].call( context, 
+                                                        vType, 
+                                                        vKeyCode, 
+                                                        vCharCode, 
+                                                        vDomEvent );
+      }
+      if( process ) {
+        this._processKeyEvent( vDomEvent, vType, vKeyCode, vCharCode );
+      }
+    },
+    
+    _processKeyEvent : function( vDomEvent, 
+                                 vType, 
+                                 vKeyCode, 
+                                 vCharCode ) {
+      var util = org.eclipse.rwt.EventHandlerUtil;
+      var keyIdentifier;
+      if( !isNaN( vKeyCode ) && vKeyCode !== 0 ) {
+        keyIdentifier = util.keyCodeToIdentifier( vKeyCode );
+      } else {
+        keyIdentifier = util.charCodeToIdentifier( vCharCode );
+      }
+      var vDomTarget = util.getDomTarget( vDomEvent );
       var vTarget = this._getKeyEventTarget();
       var vKeyEventObject = new qx.event.type.KeyEvent( vType, 
                                                         vDomEvent, 
@@ -157,10 +199,9 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
                                                         null, 
                                                         vKeyCode, 
                                                         vCharCode, 
-                                                        vKeyIdentifier );
-
+                                                        keyIdentifier );
       if( vTarget != null && vTarget.getEnabled() ) {
-        switch( vKeyIdentifier ) {
+        switch( keyIdentifier ) {
           case "Escape":
           case "Tab":
             if ( this._menuManager != null ) {
@@ -168,8 +209,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
             }
           break;
         }
-
-        if( vDomEvent.ctrlKey && vKeyIdentifier == "A" ) {
+        if( vDomEvent.ctrlKey && keyIdentifier == "A" ) {
           switch( vDomTarget.tagName.toLowerCase() ) {
             case "input":
             case "textarea":
@@ -177,21 +217,20 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
               // selection allowed
             break;
             default:
-             this.stopDomEvent(vDomEvent);
+             util.stopDomEvent(vDomEvent);
             break;
           }
         }
-
         vTarget.dispatchEvent( vKeyEventObject );
-
         if( qx.Class.isDefined("qx.event.handler.DragAndDropHandler") ) {
           qx.event.handler.DragAndDropHandler.getInstance().handleKeyEvent( vKeyEventObject );
         }
       }
-
-      // Cleanup Event Object
       vKeyEventObject.dispose();
     },
+    
+    ///////////////
+    // MOUSE EVENTS
  
     _onmouseevent : function( event ) {
       var process = true;
@@ -204,10 +243,12 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
     },
 
+    // TODO [tb] : refactor to work like _onKeyEvent
     _processMouseEvent : qx.core.Variant.select("qx.client",  {
       "mshtml" : function() {
-        var vDomEvent = this._getDomEvent( arguments );
-        var vDomTarget = this.getDomTarget( vDomEvent );
+        var util = org.eclipse.rwt.EventHandlerUtil;
+        var vDomEvent = util.getDomEvent( arguments );
+        var vDomTarget = util.getDomTarget( vDomEvent );
         var vType = vDomEvent.type;
         if( vType == "mousemove" ) {
           if( this._mouseIsDown && vDomEvent.button == 0 ) {
@@ -251,7 +292,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       },
 
       "default" : function( vDomEvent ) {
-        var vDomTarget = this.getDomTarget( vDomEvent );
+        var util = org.eclipse.rwt.EventHandlerUtil;
+        var vDomTarget = util.getDomTarget( vDomEvent );
         var vType = vDomEvent.type;
         switch(vType) {
           case "  ":
@@ -269,10 +311,11 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     } ),
 
     _onmouseevent_post : function( vDomEvent, vType, vDomTarget ) {
+      var util = org.eclipse.rwt.EventHandlerUtil;
       var vCaptureTarget = this.getCaptureWidget();
       var vOriginalTarget 
-        = this.getOriginalTargetObject( vDomTarget );
-      var vTarget = this.getTargetObject( null, vOriginalTarget, true );
+        = util.getOriginalTargetObject( vDomTarget );
+      var vTarget = util.getTargetObject( null, vOriginalTarget, true );
       if( !vTarget ) {
         return;
       }
@@ -281,7 +324,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         = this._onmouseevent_click_fix( vDomTarget, vType, vDispatchTarget );
       if(    vType == "contextmenu" 
           && !this._allowContextMenu( vOriginalTarget, vDomTarget ) ) {
-       this.stopDomEvent( vDomEvent );
+       util.stopDomEvent( vDomEvent );
       }
       if( vTarget.getEnabled() && vType == "mousedown" ) {
         qx.event.handler.FocusHandler.mouseFocus = true;
@@ -301,7 +344,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
       // handle related target object
       if( vType == "mouseover" || vType == "mouseout" ) {
-        var vRelatedTarget =this.getRelatedTargetObjectFromEvent( vDomEvent );
+        var vRelatedTarget = util.getRelatedTargetObjectFromEvent( vDomEvent );
         var elementEventType = vType == "mouseover" ? "elementOver" : "elementOut";
         this._fireElementHoverEvents( elementEventType,
                                       vDomEvent,
@@ -417,22 +460,24 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     },
 
     _ondragevent : function( vEvent ) {
+      var util = org.eclipse.rwt.EventHandlerUtil;
       if( !vEvent ) {
         vEvent = window.event;
       }
-      this.stopDomEvent( vEvent );
+      util.stopDomEvent( vEvent );
     },
 
     ////////////////
     // SELECT EVENTS
 
     _onselectevent : function( ) {
-      var e = this._getDomEvent( arguments );
-      var target = this.getOriginalTargetObjectFromEvent( e );
+      var util = org.eclipse.rwt.EventHandlerUtil;
+      var e = util.getDomEvent( arguments );
+      var target = util.getOriginalTargetObjectFromEvent( e );
       while( target )       {
         if( target.getSelectable() != null ) {
           if ( !target.getSelectable() ) {
-           this.stopDomEvent( e );
+           util.stopDomEvent( e );
           }
           break;
         }
@@ -524,134 +569,12 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     ////////////////////
     // Helper-functions:
 
-    _getDomEvent : qx.core.Variant.select("qx.client", {
-      "mshtml" : function( args ) {
-        return args.length > 0 ? args[ 0 ] : window.event;
-      },
-      "default" : function( args ) {
-        return args[ 0 ];
-      }
-    } ),
-
-    getDomTarget : qx.core.Variant.select("qx.client", {
-      "mshtml" : function( vDomEvent ) {
-        return vDomEvent.target || vDomEvent.srcElement;
-      },
-      "webkit" : function( vDomEvent ) {
-        var vNode = vDomEvent.target || vDomEvent.srcElement;
-        // Safari takes text nodes as targets for events
-        if( vNode && ( vNode.nodeType == qx.dom.Node.TEXT ) ) {
-          vNode = vNode.parentNode;
-        }
-        return vNode;
-      },
-      "default" : function(vDomEvent) {
-        return vDomEvent.target;
-      }
-    } ),
-    
     _getKeyEventTarget : function() {
       var vFocusRoot = this.getFocusRoot();
-      return this.getCaptureWidget() || (vFocusRoot == null ? null : vFocusRoot.getActiveChild());
+      return    this.getCaptureWidget() 
+             || ( vFocusRoot == null ? null : vFocusRoot.getActiveChild() );
     },
 
-    stopDomEvent : function( vDomEvent ) {
-      if( vDomEvent.preventDefault ) {
-        vDomEvent.preventDefault();
-      }
-      try {
-        // this allows us to prevent some key press events in IE and Firefox.
-        // See bug #1049
-        vDomEvent.keyCode = 0;
-      } catch( ex ) {
-      }
-
-      vDomEvent.returnValue = false;
-    },
-
-    // BUG: http://xscroll.mozdev.org/
-    // If your Mozilla was built with an option `--enable-default-toolkit=gtk2',
-    // it can not return the correct event target for DOMMouseScroll.
-
-    getOriginalTargetObject : function( vNode ) {
-      // Events on the HTML element, when using absolute locations which
-      // are outside the HTML element. Opera does not seem to fire events
-      // on the HTML element.
-      if( vNode == document.documentElement ) {
-        vNode = document.body;
-      }
-      // Walk up the tree and search for an qx.ui.core.Widget
-      while( vNode != null && vNode.qx_Widget == null )       {
-        try {
-          vNode = vNode.parentNode;
-        } catch( vDomEvent ) {
-          vNode = null;
-        }
-      }
-      return vNode ? vNode.qx_Widget : null;
-    },
-
-
-    getOriginalTargetObjectFromEvent : function( vDomEvent, vWindow ) {
-      var vNode = this.getDomTarget(vDomEvent);
-      // Especially to fix key events.
-      // 'vWindow' is the window reference then
-      if( vWindow ) {
-        var vDocument = vWindow.document;
-        if(    vNode == vWindow 
-            || vNode == vDocument 
-            || vNode == vDocument.documentElement 
-            || vNode == vDocument.body ) 
-        {
-          return vDocument.body.qx_Widget;
-        }
-      }
-      return this.getOriginalTargetObject( vNode );
-    },
-
-    getRelatedOriginalTargetObjectFromEvent : function( vDomEvent ) {
-      return this.getOriginalTargetObject(
-           vDomEvent.relatedTarget 
-        || ( vDomEvent.type == "mouseover" ? vDomEvent.fromElement : vDomEvent.toElement )
-      );
-    },
-
-
-    getTargetObject : function( vNode, vObject, allowDisabled ) {
-      if( !vObject ) {
-        var vObject =this.getOriginalTargetObject( vNode );
-        if (!vObject) {
-          return null;
-        }
-      }
-      while( vObject ) {
-        if( !allowDisabled && !vObject.getEnabled() ) {
-          return null;
-        }
-        if( !vObject.getAnonymous() ) {
-          break;
-        }
-        vObject = vObject.getParent();
-      }
-      return vObject;
-    },
-
-    getTargetObjectFromEvent : function( vDomEvent ) {
-      this.getTargetObject( this.getDomTarget( vDomEvent ) );
-    },
-
-    getRelatedTargetObjectFromEvent : function( vDomEvent ) {
-      var target = vDomEvent.relatedTarget;
-      if( !target ) {
-        if( vDomEvent.type == "mouseover" ) {
-          target = vDomEvent.fromElement;
-        } else {
-          target = vDomEvent.toElement;
-        }
-      }
-      return this.getTargetObject(target);
-    },
-    
     attachEventTypes : function( vEventTypes, vFunctionPointer ) {
       try {
         // Gecko is a bit buggy to handle key events on document if 

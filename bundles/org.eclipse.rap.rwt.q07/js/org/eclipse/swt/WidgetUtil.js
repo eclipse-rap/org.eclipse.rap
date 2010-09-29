@@ -55,10 +55,10 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
      */
     _fakeMouseEvent : function( originalTarget, type ) {
       var domTarget = originalTarget._getTargetNode();
-      var eventHandler = org.eclipse.rwt.EventHandler;
-      var target = eventHandler.getTargetObject( null, 
-                                                 originalTarget,
-                                                 true );
+      var util = org.eclipse.rwt.EventHandlerUtil;
+      var target = util.getTargetObject( null, 
+                                         originalTarget,
+                                         true );
       var domEvent = {
         "type" : type,
         "target" : domTarget,

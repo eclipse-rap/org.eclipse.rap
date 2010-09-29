@@ -27,6 +27,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
     qx.Class.patch( qx.event.type.DomEvent,
                     org.eclipse.rwt.DomEventPatch );              
     org.eclipse.rwt.MobileWebkitSupport.init();
+    org.eclipse.rwt.KeyEventUtil.getInstance();
     org.eclipse.rwt.GraphicsUtil.init();
     var eventHandler = org.eclipse.rwt.EventHandler;
     eventHandler.setAllowContextMenu(

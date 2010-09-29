@@ -238,6 +238,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
 
     fireFakeDomEvent : function( domEvent ) {
       var type = domEvent.type; 
+      var handler = org.eclipse.rwt.EventHandler;
       switch( type ) {
         case "mousedown":
         case "mouseup":
@@ -249,13 +250,11 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         case "DOMMouseScroll":
         case "click":
         case "dblclick":
-          var handler = org.eclipse.rwt.EventHandler;
           handler.__onmouseevent( domEvent );
         break;
         case "keydown":
         case "keypress":
         case "keyup":
-          var handler = org.eclipse.rwt.KeyEventHandler;
           handler.__onKeyEvent( domEvent );
         break;
         default:
@@ -405,8 +404,8 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     } ),
     
     _isPrintable : function( stringOrKeyCode ) {
-      var handler = org.eclipse.rwt.KeyEventHandler;
-      var keyCodeMap = handler._keyCodeToIdentifierMap;
+      var util = org.eclipse.rwt.EventHandlerUtil;
+      var keyCodeMap = util._keyCodeToIdentifierMap;
       var idMap = this._printableIdentifierToKeycodeMap;
       var isChar =    typeof stringOrKeyCode === "string" 
                    && stringOrKeyCode.length === 1;
@@ -599,7 +598,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     },
 
     resetEventHandler : function() {
-      var keyHandler = org.eclipse.rwt.KeyEventHandler;
+      var keyHandler = org.eclipse.rwt.EventHandlerUtil;
       keyHandler._lastKeyCode = null;
       keyHandler._lastUpDownType = {};
       org.eclipse.rwt.EventHandler.setCaptureWidget( null );

@@ -11,35 +11,24 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.KeyEventHandler", {
+qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
   type : "static",
 
   statics : {
+    // TODO [tb] : integrate qx.html.EventRegistration
     _lastUpDownType : {},
     _lastKeyCode : null,
-    
-    init : function() {
-      this.__onKeyEvent = qx.lang.Function.bind( this._onKeyEvent, this );  
-    },
     
     cleanUp : function() {
       delete this.__onKeyEvent;
       delete this._lastUpDownType;
       delete this._lastKeyCode;      
     },
+    
+    /////////////////////////
+    // GENERAL EVENT HANDLING
 
-    _onKeyEvent : function() {
-      var event = this._getDomEvent( arguments );
-      var keyCode = this._getKeyCode( event );
-      var charCode = this._getCharCode( event );
-      var pseudoTypes = this._getEventPseudoTypes( event, keyCode, charCode );
-      for( var i = 0; i < pseudoTypes.length; i++ ) {
-        this._idealKeyHandler( keyCode, charCode, pseudoTypes[ i ], event );
-      }
-      this._saveData( event, keyCode, charCode  );
-    },
-
-    _getDomEvent : qx.core.Variant.select( "qx.client", {
+    getDomEvent : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( args ) {
         return args.length > 0 ? args[ 0 ] : window.event;
       },
@@ -47,8 +36,112 @@ qx.Class.define( "org.eclipse.rwt.KeyEventHandler", {
         return args[ 0 ];
       }
     } ),
+    
+    getDomTarget : qx.core.Variant.select("qx.client", {
+      "mshtml" : function( vDomEvent ) {
+        return vDomEvent.target || vDomEvent.srcElement;
+      },
+      "webkit" : function( vDomEvent ) {
+        var vNode = vDomEvent.target || vDomEvent.srcElement;
+        // Safari takes text nodes as targets for events
+        if( vNode && ( vNode.nodeType == qx.dom.Node.TEXT ) ) {
+          vNode = vNode.parentNode;
+        }
+        return vNode;
+      },
+      "default" : function(vDomEvent) {
+        return vDomEvent.target;
+      }
+    } ),
+    
+    stopDomEvent : function( vDomEvent ) {
+      if( vDomEvent.preventDefault ) {
+        vDomEvent.preventDefault();
+      }
+      try {
+        // this allows us to prevent some key press events in IE and Firefox.
+        // See bug #1049
+        vDomEvent.keyCode = 0;
+      } catch( ex ) {
+        // do nothing
+      }
+      vDomEvent.returnValue = false;
+    },
 
-    _getKeyCode : qx.core.Variant.select( "qx.client", {
+    // BUG: http://xscroll.mozdev.org/
+    // If your Mozilla was built with an option `--enable-default-toolkit=gtk2',
+    // it can not return the correct event target for DOMMouseScroll.
+    getOriginalTargetObject : function( vNode ) {
+      // Events on the HTML element, when using absolute locations which
+      // are outside the HTML element. Opera does not seem to fire events
+      // on the HTML element.
+      if( vNode == document.documentElement ) {
+        vNode = document.body;
+      }
+      // Walk up the tree and search for an qx.ui.core.Widget
+      while( vNode != null && vNode.qx_Widget == null )       {
+        try {
+          vNode = vNode.parentNode;
+        } catch( vDomEvent ) {
+          vNode = null;
+        }
+      }
+      return vNode ? vNode.qx_Widget : null;
+    },
+
+    getOriginalTargetObjectFromEvent : function( vDomEvent, vWindow ) {
+      var vNode = this.getDomTarget( vDomEvent );
+      // Especially to fix key events.
+      // 'vWindow' is the window reference then
+      if( vWindow ) {
+        var vDocument = vWindow.document;
+        if(    vNode == vWindow 
+            || vNode == vDocument 
+            || vNode == vDocument.documentElement 
+            || vNode == vDocument.body ) 
+        {
+          return vDocument.body.qx_Widget;
+        }
+      }
+      return this.getOriginalTargetObject( vNode );
+    },
+
+    getRelatedTargetObjectFromEvent : function( vDomEvent ) {
+      var util = org.eclipse.rwt.EventHandlerUtil;
+      var target = vDomEvent.relatedTarget;
+      if( !target ) {
+        if( vDomEvent.type == "mouseover" ) {
+          target = vDomEvent.fromElement;
+        } else {
+          target = vDomEvent.toElement;
+        }
+      }
+      return util.getTargetObject(target);
+    },
+
+    getTargetObject : function( vNode, vObject, allowDisabled ) {
+      if( !vObject ) {
+        var vObject = this.getOriginalTargetObject( vNode );
+        if (!vObject) {
+          return null;
+        }
+      }
+      while( vObject ) {
+        if( !allowDisabled && !vObject.getEnabled() ) {
+          return null;
+        }
+        if( !vObject.getAnonymous() ) {
+          break;
+        }
+        vObject = vObject.getParent();
+      }
+      return vObject;
+    },    
+
+    ///////////////
+    // KEY HANDLING
+
+    getKeyCode : qx.core.Variant.select( "qx.client", {
       "gecko" : function( event ) {
         return event.keyCode;
       },
@@ -72,7 +165,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventHandler", {
       } 
     } ),
 
-    _getCharCode : qx.core.Variant.select( "qx.client", {
+    getCharCode : qx.core.Variant.select( "qx.client", {
       "default" : function( event ) {
         return event.charCode;
       },
@@ -99,7 +192,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventHandler", {
       return this._lastUpDownType[ keyCode ] !== "keydown"
     },
 
-    _getEventPseudoTypes : qx.core.Variant.select( "qx.client", {
+    getEventPseudoTypes : qx.core.Variant.select( "qx.client", {
       "default" : function( event, keyCode, charCode ) {
         var result;
         if( event.type === "keydown" ) { 
@@ -133,18 +226,14 @@ qx.Class.define( "org.eclipse.rwt.KeyEventHandler", {
       }
     } ),
 
-    _saveData : function( event, keyCode, charCode ) {
+    saveData : function( event, keyCode, charCode ) {
       if( event.type !== "keypress" ) {
         this._lastUpDownType[ keyCode ] = event.type;
         this._lastKeyCode = keyCode;
       }
     },
 
-    _isNonPrintableKeyCode : function( keyCode ) {
-      return this._keyCodeToIdentifierMap[keyCode] ? true : false;
-    },
-
-    _keyCodeToIdentifier : function( keyCode ) {
+    keyCodeToIdentifier : function( keyCode ) {
       var result = "Unidentified";
       if( this._numpadToCharCode[ keyCode ] !== undefined ) {
         result = String.fromCharCode( this._numpadToCharCode[ keyCode ] );
@@ -158,7 +247,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventHandler", {
       return result;
     },
 
-    _charCodeToIdentifier : function( charCode ) {
+    charCodeToIdentifier : function( charCode ) {
       var result;
       if( this._specialCharCodeMap[ charCode ] !== undefined ) {
         result = this._specialCharCodeMap[ charCode ];
@@ -168,24 +257,10 @@ qx.Class.define( "org.eclipse.rwt.KeyEventHandler", {
       return result;
     },
 
-    _idealKeyHandler : function( keyCode, charCode, eventType, domEvent ) {
-      var util = org.eclipse.rwt.KeyEventUtil.getInstance();
-      if( !util.intercept( eventType, keyCode, charCode, domEvent ) ) {
-        var keyIdentifier;
-        if( keyCode ) {
-          keyIdentifier = this._keyCodeToIdentifier(keyCode);
-        } else {
-          keyIdentifier = this._charCodeToIdentifier(charCode);
-        }
-        var eventHandler = org.eclipse.rwt.EventHandler;
-        eventHandler._onkeyevent_post( domEvent, 
-                                       eventType, 
-                                       keyCode, 
-                                       charCode, 
-                                       keyIdentifier);
-      }
+    _isNonPrintableKeyCode : function( keyCode ) {
+      return this._keyCodeToIdentifierMap[keyCode] ? true : false;
     },
-    
+
     ///////////////
     // Helper-maps:
 

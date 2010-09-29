@@ -69,7 +69,7 @@
     "qx/event/type/FocusEvent.js",
     "org/eclipse/rwt/EventHandler.js",
     "qx/dom/Node.js",
-    "org/eclipse/rwt/KeyEventHandler.js",
+    "org/eclipse/rwt/EventHandlerUtil.js",
     "qx/event/type/DomEvent.js",
     "qx/event/type/KeyEvent.js",
     "qx/event/type/MouseEvent.js",
