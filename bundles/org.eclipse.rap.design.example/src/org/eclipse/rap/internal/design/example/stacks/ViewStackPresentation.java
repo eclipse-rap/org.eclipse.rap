@@ -70,14 +70,14 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   private static final String VARIANT_PART_INACTIVE = "partInactive"; //$NON-NLS-1$
   private static final String VARIANT_PART_ACTIVE = "partActive"; //$NON-NLS-1$
-  private static final String VARIANT_PART_INACTIVE_ACTIVE 
+  private static final String VARIANT_PART_INACTIVE_ACTIVE
     = "partInActiveActive"; //$NON-NLS-1$
   private static final int BUTTON_SPACING = 6;
   private static final String ID_CLOSE = "close"; //$NON-NLS-1$
   private static final String BUTTON_ID = "buttonId"; //$NON-NLS-1$
   private static final int WIDTH_SPACING = 65;
   private static final int HEIGHT_SPACING = 15;
-  
+
   private Control presentationControl;
   private IPresentablePart currentPart;
   private ElementBuilder stackBuilder;
@@ -89,7 +89,6 @@ public class ViewStackPresentation extends ConfigurableStack {
   private List partList = new ArrayList();
   private List buttonList = new ArrayList();
   private Composite toolbarBg;
-  private Shell toolBarLayer;
   private int activeState;
   private int state;
   protected boolean deactivated;
@@ -181,7 +180,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       action.addConfigurationChangeListener( new IConfigurationChangeListener(){
 
         public void toolBarChanged() {
-          ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();         
+          ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();
           registry.fireToolBarChanged( );
         }
 
@@ -252,7 +251,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     // add the listener for the dirty activeState
     IPropertyListener listener = new DirtyListener( newPart );
     dirtyListenerMap.put( newPart, listener );
-    newPart.addPropertyListener( listener );    
+    newPart.addPropertyListener( listener );
   }
 
   private void decorateStandaloneView( final IPresentablePart newPart ) {
@@ -261,17 +260,17 @@ public class ViewStackPresentation extends ConfigurableStack {
       getTabBar().setVisible( true );
       tabBg.setVisible( true );
       standaloneViewTitle = new Label( tabBg, SWT.NONE );
-      standaloneViewTitle.setData( WidgetUtil.CUSTOM_VARIANT, 
+      standaloneViewTitle.setData( WidgetUtil.CUSTOM_VARIANT,
                                    "standaloneView" ); //$NON-NLS-1$
       standaloneViewTitle.setText( newPart.getName() );
-      hideFrameLabel( StackPresentationBuider.TOP_BORDER );      
+      hideFrameLabel( StackPresentationBuider.TOP_BORDER );
     } else {
       getTabBar().setVisible( false );
       hideFrameLabel( StackPresentationBuider.LEFT );
       hideFrameLabel( StackPresentationBuider.RIGHT );
     }
   }
-  
+
   private void hideFrameLabel( final String id ) {
     Object labelMap = stackBuilder.getAdapter( Map.class );
     if( labelMap != null && ( labelMap instanceof Map )  ) {
@@ -308,7 +307,7 @@ public class ViewStackPresentation extends ConfigurableStack {
               Display display = viewMenuButton.getDisplay();
               int height = viewMenuButton.getSize().y;
               Point newLoc = display.map( viewMenuButton, null, 0, height );
-              viewMenu.showMenu( newLoc );              
+              viewMenu.showMenu( newLoc );
             };
           } );
         }
@@ -334,24 +333,6 @@ public class ViewStackPresentation extends ConfigurableStack {
       // toolbarbg and layer
       if( toolBar != null || viewMenu != null ) {
         toolbarBg.setVisible( true );
-        // Toolbar Layer
-        if( !deactivated ) {
-          getToolBarLayer();
-          if( toolBarLayer != null ) {
-            toolBarLayer.setVisible( false );
-            if( activeState != AS_ACTIVE_FOCUS ) {
-              Display display = toolBarLayer.getDisplay();
-              Point newLocation = display.map( toolbarBg, null, 0, 0 );
-              toolBarLayer.setBounds( newLocation.x,
-                                      newLocation.y,
-                                      size.x,
-                                      size.y - 1
-                                    );
-              toolBarLayer.moveAbove( toolBar );
-              toolBarLayer.setVisible( true );              
-            }
-          }
-        }
       } else {
         toolbarBg.setVisible( false );
       }
@@ -377,7 +358,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           if( confButton != null ) {
             // enable conf button
             confButton.setEnabled( true );
-            String buttonTooltip 
+            String buttonTooltip
               = Messages.get().ViewStackPresentation_ConfButtonToolTipEnabled;
             String toolTip = buttonTooltip + currentPart.getName();
             confButton.setToolTipText( toolTip );
@@ -386,7 +367,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           if( confButton != null ) {
             // disable conf button
             confButton.setEnabled( false );
-            String buttonToolTip 
+            String buttonToolTip
               = Messages.get().ViewStackPresentation_ConfButtonToolTipDisabled;
             String toolTip =  currentPart.getName() + buttonToolTip;
             confButton.setToolTipText( toolTip );
@@ -435,9 +416,6 @@ public class ViewStackPresentation extends ConfigurableStack {
           selectPart( part );
         }
         activatePart( part );
-        if( toolBarLayer != null ) {
-          toolBarLayer.setVisible( false );
-        }
         // move the toolbar on top
         currentPart.getControl().moveAbove( null );
         Control toolBar = currentPart.getToolBar();
@@ -448,7 +426,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     } );
     partButton.addListener( SWT.MouseDoubleClick, new Listener() {
       public void handleEvent( final Event event ) {
-        handleToggleZoom( part );        
+        handleToggleZoom( part );
       }
     } );
     Composite corner = new Composite( buttonArea, SWT.NONE );
@@ -469,13 +447,13 @@ public class ViewStackPresentation extends ConfigurableStack {
     buttonPartMap.put( buttonArea, part );
     buttonList.add( buttonArea );
   }
-  
+
   private void handleToggleZoom( final IPresentablePart part ) {
     IWorkbench workbench = PlatformUI.getWorkbench();
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     IWorkbenchPage page = window.getActivePage();
     page.toggleZoom( getReference( part ) );
-    handleToolbarsOnToggleZoom();       
+    handleToolbarsOnToggleZoom();
   }
 
   private void handleToolbarsOnToggleZoom() {
@@ -484,9 +462,6 @@ public class ViewStackPresentation extends ConfigurableStack {
       registry.moveAllToolbarsBellow( null );
     } else if( state == IStackPresentationSite.STATE_RESTORED ) {
       registry.fireToolBarChanged();
-    }
-    if( toolBarLayer != null ) {
-      toolBarLayer.setVisible( false );
     }
     if( currentPart != null ) {
       currentPart.getControl().moveAbove( null );
@@ -600,7 +575,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( isOverflowNecessary() ) {
       showPartButton( currentPart );
     }
-  } 
+  }
 
   private void checkHideSeparator( final Composite buttonArea ) {
     int indexOf = buttonList.indexOf( buttonArea );
@@ -710,12 +685,12 @@ public class ViewStackPresentation extends ConfigurableStack {
     }
     handleOverflowButton();
   }
-  
+
   private boolean isOverflowNecessary() {
     int tabChildrenSize = getTabChildrenSize();
-    boolean childrenBiggerThanParent 
+    boolean childrenBiggerThanParent
       = tabChildrenSize > tabBg.getBounds().width;
-    return childrenBiggerThanParent && moreThanOneChildVisible(); 
+    return childrenBiggerThanParent && moreThanOneChildVisible();
   }
 
   private boolean moreThanOneChildVisible() {
@@ -773,7 +748,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       final IPresentablePart part = ( IPresentablePart ) obj;
       MenuItem item = new MenuItem( overflowMenu, SWT.PUSH );
       if( part != null ) {
-        item.setText( part.getName() );      
+        item.setText( part.getName() );
         item.addSelectionListener( new SelectionAdapter() {
           public void widgetSelected( final SelectionEvent e ) {
             activatePart( part );
@@ -799,7 +774,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       button.moveAbove( hiddenButton );
       tabBg.layout( true, true );
       manageOverflow();
-    }        
+    }
   }
 
   private void showLastChildIfNecessary( final int recursionCount ) {
@@ -881,7 +856,7 @@ public class ViewStackPresentation extends ConfigurableStack {
             overflowButtons.add( children[ i ] );
           }
           lastChildHidden = true;
-          tabBg.layout( true, true );  
+          tabBg.layout( true, true );
         }
       }
     }
@@ -898,7 +873,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( children[ i ] instanceof Button ) {
           Object data = children[ i ].getData( WidgetUtil.CUSTOM_VARIANT );
           if( data.equals( VARIANT_PART_INACTIVE_ACTIVE )
-              || data.equals( VARIANT_PART_ACTIVE ) ) 
+              || data.equals( VARIANT_PART_ACTIVE ) )
           {
             result = true;
           }
@@ -971,9 +946,6 @@ public class ViewStackPresentation extends ConfigurableStack {
   public void dispose() {
     ViewToolBarRegistry registry = ViewToolBarRegistry.getInstance();
     registry.removeViewPartPresentation( this );
-    if( toolBarLayer != null ) {
-      toolBarLayer.dispose();
-    }
     presentationControl.dispose();
   }
 
@@ -998,9 +970,6 @@ public class ViewStackPresentation extends ConfigurableStack {
   public void removePart( final IPresentablePart oldPart ) {
     Object object = partButtonMap.get( oldPart );
     buttonPartMap.remove( object );
-    if( toolBarLayer != null ) {
-      toolBarLayer.setVisible( false );
-    }
     // remove the dirtyListener
     Object listener = dirtyListenerMap.get( oldPart );
     if( listener != null && listener instanceof IPropertyListener ) {
@@ -1027,7 +996,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( currentPart != null  ) {
       oldPart = currentPart;
       if( currentPart instanceof PresentablePart
-          && ( (PresentablePart) currentPart ).getPane() != null ) 
+          && ( (PresentablePart) currentPart ).getPane() != null )
       {
         currentPart.setVisible( false );
       }
@@ -1037,12 +1006,9 @@ public class ViewStackPresentation extends ConfigurableStack {
     currentPart.getControl().moveAbove( null );
     makePartButtonActive( currentPart );
     setBounds( presentationControl.getBounds() );
-    if( toolBarLayer != null ) {
-      toolBarLayer.setVisible( false );
-    }
   }
-  
-  public StackDropResult dragOver( final Control currentControl, 
+
+  public StackDropResult dragOver( final Control currentControl,
                                    final Point location )
   {
     return null;
@@ -1267,21 +1233,6 @@ public class ViewStackPresentation extends ConfigurableStack {
     layoutToolBar();
   }
 
-  private Shell getToolBarLayer() {
-    if( toolBarLayer == null && toolbarBg != null ) {
-      toolBarLayer = new Shell( toolbarBg.getShell(), SWT.NO_TRIM );
-      toolBarLayer.setData( WidgetUtil.CUSTOM_VARIANT, "toolbarLayer" ); //$NON-NLS-1$
-      toolBarLayer.setAlpha( 200 );
-      toolBarLayer.addListener( SWT.MouseDown, new Listener() {
-        public void handleEvent( final Event event ) {
-          activatePart( currentPart );
-        }
-      } );
-    }
-    return toolBarLayer;
-  }
-
-
   private Composite getTabBar() {
     Composite result = null;
     Object adapter = stackBuilder.getAdapter( this.getClass() );
@@ -1299,14 +1250,8 @@ public class ViewStackPresentation extends ConfigurableStack {
     if( currentPart != null && getPartPane( currentPart ) != null ) {
       currentPart.setVisible( isVisible );
       // Toolbar Layer
-      deactivated = !isVisible;    
-      layoutToolBar();     
-      if( toolBarLayer != null ) {
-        if( !isVisible ) {
-          toolBarLayer.setVisible( false );
-        }
-
-      }
+      deactivated = !isVisible;
+      layoutToolBar();
       setBounds( presentationControl.getBounds() );
     }
   }
@@ -1366,5 +1311,5 @@ public class ViewStackPresentation extends ConfigurableStack {
     }
     return result + WIDTH_SPACING;
   }
-  
+
 }
