@@ -519,13 +519,16 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         throw( "Error in testUtil.fakeMouseEvent: widget is not created" );
       }
       var target = widget._getTargetNode();
+      var type =   qx.core.Variant.isSet( "qx.client", "gecko" ) 
+                 ? "DOMMouseScroll" 
+                 : "mousewheel"
       var domEvent = 
-        this._createFakeMouseEventDOM( target, "mousewheel", 0, 0, 0, 0 );
+        this._createFakeMouseEventDOM( target, type, 0, 0, 0, 0 );
       this._addWheelDelta( domEvent, value );
       this.fireFakeDomEvent( domEvent );
     },
     
-    _addWheelDelta : qx.core.Variant.select("qx.client", {
+    _addWheelDelta : qx.core.Variant.select( "qx.client", {
       "default" : function( event, value ) {
         event.wheelDelta = value * 120;
       },

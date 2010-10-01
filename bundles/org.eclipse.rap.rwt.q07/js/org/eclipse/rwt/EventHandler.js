@@ -296,7 +296,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         var vDomTarget = util.getDomTarget( vDomEvent );
         var vType = vDomEvent.type;
         switch(vType) {
-          case "  ":
+          case "DOMMouseScroll":
             vType = "mousewheel";
           break;
           case "click":
