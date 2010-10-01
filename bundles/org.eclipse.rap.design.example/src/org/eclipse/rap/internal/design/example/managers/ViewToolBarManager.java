@@ -11,10 +11,11 @@ package org.eclipse.rap.internal.design.example.managers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.internal.provisional.action.ToolBarManager2;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
@@ -24,25 +25,16 @@ import org.eclipse.swt.widgets.ToolItem;
 public class ViewToolBarManager extends ToolBarManager2 {
 
   private static final String STYLING_VARIANT = "viewToolbar"; //$NON-NLS-1$
-  private ToolBar fakeToolBar;
+  private ArrayList itemsData;
 
   public ToolBar createControl( final Composite parent ) {
     ToolBar toolBar = getControl();
     if( !toolBarExist() && parent != null ) {
-      fakeToolBar = new ToolBar( parent, SWT.NONE );
-      fakeToolBar.setVisible( false );
+      itemsData = new ArrayList();
       toolBar = super.createControl( parent );
       toolBar.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );
     }
     return toolBar;
-  }
-
-  public void dispose() {
-    super.dispose();
-    if( fakeToolBar != null ) {
-      fakeToolBar.dispose();
-      fakeToolBar = null;
-    }
   }
 
   public void update( final boolean force ) {
@@ -152,7 +144,7 @@ public class ViewToolBarManager extends ToolBarManager2 {
             }
           }
           setDirty(false);
-          updateFakeToolBar();
+          updateItemsData();
           disposeInvisibleItems();
         } finally {
           // turn redraw back on if we turned it off above
@@ -164,8 +156,8 @@ public class ViewToolBarManager extends ToolBarManager2 {
     }
   }
 
-  public ToolItem[] getToolItems() {
-    return fakeToolBar.getItems();
+  public List getItemsData() {
+    return itemsData;
   }
 
   private boolean toolBarExist() {
@@ -173,19 +165,18 @@ public class ViewToolBarManager extends ToolBarManager2 {
     return toolBar != null && !toolBar.isDisposed();
   }
 
-  private void updateFakeToolBar() {
+  private void updateItemsData() {
     ToolBar toolBar = getControl();
-    ToolItem[] items = fakeToolBar.getItems();
+    itemsData.clear();
+    ToolItem[] items = toolBar.getItems();
     for( int i = 0; i < items.length; i++ ) {
-      items[ i ].dispose();
-    }
-    items = toolBar.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      ToolItem item = new ToolItem( fakeToolBar, items[ i ].getStyle() );
-      item.setText( items[ i ].getText() );
-      item.setToolTipText( items[ i ].getToolTipText() );
-      item.setImage( items[ i ].getImage() );
-      item.setData( items[ i ].getData() );
+      IContributionItem contributionItem
+        = ( IContributionItem )items[ i ].getData();
+      ItemData data = new ItemData( contributionItem.getId(),
+                                    items[ i ].getText(),
+                                    items[ i ].getToolTipText(),
+                                    items[ i ].getImage() );
+      itemsData.add( data );
     }
   }
 

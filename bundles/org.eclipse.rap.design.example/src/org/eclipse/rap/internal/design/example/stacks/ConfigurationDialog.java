@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.rap.internal.design.example.ILayoutSetConstants;
 import org.eclipse.rap.internal.design.example.Messages;
 import org.eclipse.rap.internal.design.example.builder.DummyBuilder;
+import org.eclipse.rap.internal.design.example.managers.ItemData;
 import org.eclipse.rap.internal.design.example.managers.ViewToolBarManager;
 import org.eclipse.rap.ui.interactiondesign.ConfigurableStack;
 import org.eclipse.rap.ui.interactiondesign.layout.ElementBuilder;
@@ -38,7 +38,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -209,51 +208,47 @@ public class ConfigurationDialog extends PopupDialog {
       String paneId = stackPresentation.getPaneId( site );
       if( manager instanceof ViewToolBarManager ) {
         //manager.update( true );
-        ToolItem[] toolItems = ( ( ViewToolBarManager) manager ).getToolItems();
-        for( int i = 0; i < toolItems.length; i++ ) {
-          ToolItem item = toolItems[ i ];
-          if( item != null && !item.isDisposed() ) {
-            // handle parameter
-            IContributionItem contribItem
-              = ( IContributionItem ) item.getData();
-            String itemId = contribItem.getId();
-            Image icon = item.getImage();
-            String text = ""; //$NON-NLS-1$
-            if( item.getText() != null && !item.getText().equals( "" ) ) { //$NON-NLS-1$
-              text = item.getText();
-            } else {
-              text = item.getToolTipText();
-            }
+        List itemsData = ( ( ViewToolBarManager) manager ).getItemsData();
+        for( int i = 0; i < itemsData.size(); i++ ) {
+          ItemData itemData = ( ItemData )itemsData.get( i );
+          // handle parameter
+          String itemId = itemData.getId();
+          Image icon = itemData.getImage();
+          String text = ""; //$NON-NLS-1$
+          if( itemData.getText() != null && !itemData.getText().equals( "" ) ) { //$NON-NLS-1$
+            text = itemData.getText();
+          } else {
+            text = itemData.getToolTipText();
+          }
 
-            // render the dialog
-            Label imageLabel = new Label( container, SWT.NONE );
-            imageLabel.setImage( icon );
-            FormData fdImageLabel = new FormData();
-            imageLabel.setLayoutData( fdImageLabel );
-            if( lastImageLabel != null ) {
-              fdImageLabel.top = new FormAttachment( lastImageLabel, OFFSET );
-              lastImageLabel = imageLabel;
-            } else {
-              fdImageLabel.top = new FormAttachment( description, OFFSET );
-              lastImageLabel = imageLabel;
-            }
-            fdImageLabel.left = new FormAttachment( 0, OFFSET * 4 );
-
-            Button check = new Button( container, SWT.CHECK );
-            check.setText( text );
-            check.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-            boolean selected
-              = action.isViewActionVisibile( paneId, itemId );
-            FormData fdCheck = new FormData();
-            check.setLayoutData( fdCheck );
-            fdCheck.left = new FormAttachment( imageLabel, OFFSET + 5 );
-            fdCheck.top = fdImageLabel.top;
-            check.setSelection( selected );
-            check.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" ); //$NON-NLS-1$
-            actionButtonMap.put( itemId, check );
-            actionList.add( itemId );
+          // render the dialog
+          Label imageLabel = new Label( container, SWT.NONE );
+          imageLabel.setImage( icon );
+          FormData fdImageLabel = new FormData();
+          imageLabel.setLayoutData( fdImageLabel );
+          if( lastImageLabel != null ) {
+            fdImageLabel.top = new FormAttachment( lastImageLabel, OFFSET );
+            lastImageLabel = imageLabel;
+          } else {
+            fdImageLabel.top = new FormAttachment( description, OFFSET );
             lastImageLabel = imageLabel;
           }
+          fdImageLabel.left = new FormAttachment( 0, OFFSET * 4 );
+
+          Button check = new Button( container, SWT.CHECK );
+          check.setText( text );
+          check.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+          boolean selected
+            = action.isViewActionVisibile( paneId, itemId );
+          FormData fdCheck = new FormData();
+          check.setLayoutData( fdCheck );
+          fdCheck.left = new FormAttachment( imageLabel, OFFSET + 5 );
+          fdCheck.top = fdImageLabel.top;
+          check.setSelection( selected );
+          check.setData( WidgetUtil.CUSTOM_VARIANT, "configMenuButton" ); //$NON-NLS-1$
+          actionButtonMap.put( itemId, check );
+          actionList.add( itemId );
+          lastImageLabel = imageLabel;
         }
       }
     }
