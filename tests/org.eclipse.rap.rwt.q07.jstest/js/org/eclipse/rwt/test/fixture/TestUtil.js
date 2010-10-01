@@ -523,7 +523,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
                  ? "DOMMouseScroll" 
                  : "mousewheel"
       var domEvent = 
-        this._createFakeMouseEventDOM( target, type, 0, 0, 0, 0 );
+      this._createFakeMouseEventDOM( target, type, 0, 0, 0, 0 );
       this._addWheelDelta( domEvent, value );
       this.fireFakeDomEvent( domEvent );
     },
