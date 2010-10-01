@@ -136,6 +136,7 @@ public class ViewToolBarManager extends ToolBarManager2 {
             for( int i = 0; i < newItems; i++ ) {
               ToolItem item = toolBar.getItem( destIx++ );
               item.setData( src );
+              item.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );
             }
           }
           // remove any old tool items not accounted for
