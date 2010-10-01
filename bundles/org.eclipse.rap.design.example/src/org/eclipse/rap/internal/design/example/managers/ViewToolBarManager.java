@@ -1,4 +1,4 @@
-/******************************************************************************* 
+/*******************************************************************************
 * Copyright (c) 2008, 2010 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
@@ -6,91 +6,83 @@
 *
 * Contributors:
 *   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*******************************************************************************/
 package org.eclipse.rap.internal.design.example.managers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.internal.provisional.action.ToolBarManager2;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 
 public class ViewToolBarManager extends ToolBarManager2 {
-  
+
   private static final String STYLING_VARIANT = "viewToolbar"; //$NON-NLS-1$
-  private ToolBar toolBar;
-  private ToolBar fakeToolbar;
+  private ToolBar fakeToolBar;
 
-
-  public ToolBar createControl(Composite parent) {
+  public ToolBar createControl( final Composite parent ) {
+    ToolBar toolBar = getControl();
     if( !toolBarExist() && parent != null ) {
-      toolBar = new ToolBar( parent, SWT.NONE );
+      fakeToolBar = new ToolBar( parent, SWT.NONE );
+      fakeToolBar.setVisible( false );
+      toolBar = super.createControl( parent );
       toolBar.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );
-      toolBar.setMenu( getContextMenuControl() );
-      // create the fake Toolbar
-      fakeToolbar = new ToolBar( parent, SWT.NONE );
-      fakeToolbar.setVisible( false );
-      update( true );
     }
     return toolBar;
   }
-  
-  public ToolBar getControl() {
-    return toolBar;
-  }
-  
-  private Menu getContextMenuControl() {
-    Menu result = null;
-    if( ( getContextMenuManager() != null ) && ( toolBar != null ) ) {
-      Menu menuWidget = getContextMenuManager().getMenu();
-      if( ( menuWidget == null ) || ( menuWidget.isDisposed() ) ) {
-        menuWidget = getContextMenuManager().createContextMenu( toolBar);
-      }
-      result = menuWidget;
+
+  public void dispose() {
+    super.dispose();
+    if( fakeToolBar != null ) {
+      fakeToolBar.dispose();
+      fakeToolBar = null;
     }
-    return result;
   }
-  
-  private boolean toolBarExist() {
-    return toolBar != null && !toolBar.isDisposed();
-  }
-  
-  /*
-   * (non-Javadoc) Method declared on IContributionManager.
-   */
-  public void update( boolean force ) {
+
+  public void update( final boolean force ) {
     if( isDirty() || force ) {
       if( toolBarExist() ) {
-
-        // clean contains all active items without separators
+        ToolBar toolBar = getControl();
+        // clean contains all active items without double separators
         IContributionItem[] items = getItems();
-        ArrayList clean = new ArrayList( items.length );
+        ArrayList clean = new ArrayList(items.length);
+        IContributionItem separator = null;
         for( int i = 0; i < items.length; ++i ) {
           IContributionItem ci = items[ i ];
-          if( !ci.isSeparator() ) {
+          if( ci.isSeparator() ) {
+            separator = ci;
+          } else {
+            if( separator != null ) {
+              if( clean.size() > 0 ) {
+                clean.add( separator );
+              }
+              separator = null;
+            }
             clean.add( ci );
           }
         }
         // determine obsolete items (removed or non active)
         ToolItem[] mi = toolBar.getItems();
-        ArrayList toRemove = new ArrayList();
+        ArrayList toRemove = new ArrayList( mi.length );
         for( int i = 0; i < mi.length; i++ ) {
-          toRemove.add( mi[ i ] );
+          // there may be null items in a toolbar
+          if( mi[ i ] == null ) {
+            continue;
+          }
+          Object data = mi[ i ].getData();
+          if( data == null
+              || !clean.contains( data )
+              || ( data instanceof IContributionItem && ( ( IContributionItem ) data)
+                  .isDynamic() ) ) {
+            toRemove.add( mi[ i ] );
+          }
         }
-        // add fake toolbar items to the items to remove
-        for( int i = 0; i < fakeToolbar.getItemCount(); i++ ) {
-          toRemove.add( fakeToolbar.getItem( i ) );
-        }
-
         // Turn redraw off if the number of items to be added
         // is above a certain threshold, to minimize flicker,
         // otherwise the toolbar can be seen to redraw after each item.
@@ -102,10 +94,9 @@ public class ViewToolBarManager extends ToolBarManager2 {
           if( useRedraw ) {
             toolBar.setRedraw( false );
           }
-
           // remove obsolete items
-          for( int i = toRemove.size(); --i >= 0; ) {
-            ToolItem item = ( ToolItem ) toRemove.get(i);
+          for (int i = toRemove.size(); --i >= 0;) {
+            ToolItem item = ( ToolItem )toRemove.get( i );
             if( !item.isDisposed() ) {
               Control ctrl = item.getControl();
               if( ctrl != null ) {
@@ -115,55 +106,38 @@ public class ViewToolBarManager extends ToolBarManager2 {
               item.dispose();
             }
           }
-
           // add new items
           IContributionItem src, dest;
           mi = toolBar.getItems();
           int srcIx = 0;
-          int destIx = 0;         
-          
+          int destIx = 0;
           for( Iterator e = clean.iterator(); e.hasNext(); ) {
             src = ( IContributionItem )e.next();
-
             // get corresponding item in SWT widget
             if( srcIx < mi.length ) {
-              dest = ( IContributionItem ) mi[ srcIx ].getData();
+              dest = ( IContributionItem )mi[ srcIx ].getData();
             } else {
               dest = null;
             }
-
             if( dest != null && src.equals( dest ) ) {
               srcIx++;
               destIx++;
               continue;
             }
-
-            if(    dest != null && dest.isSeparator()
-                && src.isSeparator() ) 
-            {
+            if( dest != null && dest.isSeparator() && src.isSeparator() ) {
               mi[ srcIx ].setData( src );
               srcIx++;
               destIx++;
               continue;
             }
-
-            // fill item if visible, if not fill it into the fake toolbar
-            ToolBar tempToolBar = null;
-            if( src.isVisible() ) {
-              src.fill( toolBar, destIx );
-              tempToolBar = toolBar;
-            } else {
-              src.fill( fakeToolbar, destIx );
-              tempToolBar = fakeToolbar;
-            }
-            // check necessary for bug 306741
-            if( destIx >= 0 && destIx < tempToolBar.getItemCount() - 1 ) {
-              ToolItem toolItem = tempToolBar.getItem( destIx );
-              toolItem.setData( src );
-              toolItem.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );
+            int start = toolBar.getItemCount();
+            src.fill( toolBar, destIx );
+            int newItems = toolBar.getItemCount() - start;
+            for( int i = 0; i < newItems; i++ ) {
+              ToolItem item = toolBar.getItem( destIx++ );
+              item.setData( src );
             }
           }
-
           // remove any old tool items not accounted for
           for( int i = mi.length; --i >= srcIx; ) {
             ToolItem item = mi[ i ];
@@ -176,8 +150,9 @@ public class ViewToolBarManager extends ToolBarManager2 {
               item.dispose();
             }
           }
-
-          setDirty( false );
+          setDirty(false);
+          updateFakeToolBar();
+          disposeInvisibleItems();
         } finally {
           // turn redraw back on if we turned it off above
           if( useRedraw ) {
@@ -187,16 +162,51 @@ public class ViewToolBarManager extends ToolBarManager2 {
       }
     }
   }
-  
-  public List getToolItems() {
-    List result = new ArrayList();
-    for( int i = 0; i < toolBar.getItemCount(); i++ ) {
-      result.add( toolBar.getItem( i ) );
-    }
-    for( int i = 0; i < fakeToolbar.getItemCount(); i++ ) {
-      result.add( fakeToolbar.getItem( i ) );
-    }
-    return result;
+
+  public ToolItem[] getToolItems() {
+    return fakeToolBar.getItems();
   }
 
+  private boolean toolBarExist() {
+    ToolBar toolBar = getControl();
+    return toolBar != null && !toolBar.isDisposed();
+  }
+
+  private void updateFakeToolBar() {
+    ToolBar toolBar = getControl();
+    ToolItem[] items = fakeToolBar.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      items[ i ].dispose();
+    }
+    items = toolBar.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      ToolItem item = new ToolItem( fakeToolBar, items[ i ].getStyle() );
+      item.setText( items[ i ].getText() );
+      item.setToolTipText( items[ i ].getToolTipText() );
+      item.setImage( items[ i ].getImage() );
+      item.setData( items[ i ].getData() );
+    }
+  }
+
+  private void disposeInvisibleItems() {
+    ToolBar toolBar = getControl();
+    ToolItem[] items = toolBar.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      ToolItem item = items[ i ];
+      if( !item.isDisposed() ) {
+        Object data = item.getData();
+        if( data instanceof IContributionItem ) {
+          IContributionItem itemData = ( IContributionItem )data;
+          if( !itemData.isVisible() ) {
+            Control ctrl = item.getControl();
+            if( ctrl != null ) {
+              item.setControl( null );
+              ctrl.dispose();
+            }
+            item.dispose();
+          }
+        }
+      }
+    }
+  }
 }

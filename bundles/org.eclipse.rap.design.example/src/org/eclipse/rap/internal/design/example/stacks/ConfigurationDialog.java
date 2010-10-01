@@ -112,7 +112,7 @@ public class ConfigurationDialog extends PopupDialog {
       = ( ConfigurableStack ) action.getStackPresentation();
     IToolBarManager manager = stackPresentation.getPartToolBarManager();
     if( manager != null ) {
-      manager.update( true );     
+      manager.update( true );
     }
     action.fireToolBarChange();
     return super.close();
@@ -161,7 +161,7 @@ public class ConfigurationDialog extends PopupDialog {
     fdOK.width = 90;
     ok.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        close( true );       
+        close( true );
       };
     } );
     ok.moveAbove( cancel );
@@ -209,12 +209,12 @@ public class ConfigurationDialog extends PopupDialog {
       String paneId = stackPresentation.getPaneId( site );
       if( manager instanceof ViewToolBarManager ) {
         //manager.update( true );
-        List toolItems = ( ( ViewToolBarManager) manager ).getToolItems();
-        for( int i = 0; i < toolItems.size(); i++ ) {
-          ToolItem item = ( ToolItem ) toolItems.get( i );
+        ToolItem[] toolItems = ( ( ViewToolBarManager) manager ).getToolItems();
+        for( int i = 0; i < toolItems.length; i++ ) {
+          ToolItem item = toolItems[ i ];
           if( item != null && !item.isDisposed() ) {
             // handle parameter
-            IContributionItem contribItem 
+            IContributionItem contribItem
               = ( IContributionItem ) item.getData();
             String itemId = contribItem.getId();
             Image icon = item.getImage();
@@ -224,7 +224,7 @@ public class ConfigurationDialog extends PopupDialog {
             } else {
               text = item.getToolTipText();
             }
-  
+
             // render the dialog
             Label imageLabel = new Label( container, SWT.NONE );
             imageLabel.setImage( icon );
@@ -238,7 +238,7 @@ public class ConfigurationDialog extends PopupDialog {
               lastImageLabel = imageLabel;
             }
             fdImageLabel.left = new FormAttachment( 0, OFFSET * 4 );
-  
+
             Button check = new Button( container, SWT.CHECK );
             check.setText( text );
             check.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
@@ -259,12 +259,12 @@ public class ConfigurationDialog extends PopupDialog {
     }
   }
 
-  public int open() {    
+  public int open() {
     int result = super.open();
     Shell shell = getShell();
     shell.setData( WidgetUtil.CUSTOM_VARIANT, "confDialog" ); //$NON-NLS-1$
     shell.setBackgroundMode( SWT.INHERIT_NONE );
-    shell.setText( Messages.get().ConfigurationDialog_ConfigurationFor 
+    shell.setText( Messages.get().ConfigurationDialog_ConfigurationFor
                    + site.getSelectedPart().getName() );
     String configDialogIcon = ILayoutSetConstants.CONFIG_DIALOG_ICON;
     shell.setImage( builder.getImage( configDialogIcon ) );
