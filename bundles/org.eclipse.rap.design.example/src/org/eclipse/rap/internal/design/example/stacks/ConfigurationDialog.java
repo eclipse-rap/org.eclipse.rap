@@ -208,9 +208,9 @@ public class ConfigurationDialog extends PopupDialog {
       String paneId = stackPresentation.getPaneId( site );
       if( manager instanceof ViewToolBarManager ) {
         //manager.update( true );
-        List itemsData = ( ( ViewToolBarManager) manager ).getItemsData();
-        for( int i = 0; i < itemsData.size(); i++ ) {
-          ItemData itemData = ( ItemData )itemsData.get( i );
+        ItemData[] itemsData = ( ( ViewToolBarManager) manager ).getItemsData();
+        for( int i = 0; i < itemsData.length; i++ ) {
+          ItemData itemData = itemsData[ i ];
           // handle parameter
           String itemId = itemData.getId();
           Image icon = itemData.getImage();

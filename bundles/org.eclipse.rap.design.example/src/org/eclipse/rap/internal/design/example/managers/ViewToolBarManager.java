@@ -11,8 +11,6 @@ package org.eclipse.rap.internal.design.example.managers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.internal.provisional.action.ToolBarManager2;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -25,12 +23,11 @@ import org.eclipse.swt.widgets.ToolItem;
 public class ViewToolBarManager extends ToolBarManager2 {
 
   private static final String STYLING_VARIANT = "viewToolbar"; //$NON-NLS-1$
-  private ArrayList itemsData;
+  private ItemData[] itemsData;
 
   public ToolBar createControl( final Composite parent ) {
     ToolBar toolBar = getControl();
     if( !toolBarExist() && parent != null ) {
-      itemsData = new ArrayList();
       toolBar = super.createControl( parent );
       toolBar.setData( WidgetUtil.CUSTOM_VARIANT, STYLING_VARIANT );
     }
@@ -156,7 +153,7 @@ public class ViewToolBarManager extends ToolBarManager2 {
     }
   }
 
-  public List getItemsData() {
+  public ItemData[] getItemsData() {
     return itemsData;
   }
 
@@ -167,8 +164,8 @@ public class ViewToolBarManager extends ToolBarManager2 {
 
   private void updateItemsData() {
     ToolBar toolBar = getControl();
-    itemsData.clear();
     ToolItem[] items = toolBar.getItems();
+    itemsData = new ItemData[ items.length ];
     for( int i = 0; i < items.length; i++ ) {
       IContributionItem contributionItem
         = ( IContributionItem )items[ i ].getData();
@@ -176,7 +173,7 @@ public class ViewToolBarManager extends ToolBarManager2 {
                                     items[ i ].getText(),
                                     items[ i ].getToolTipText(),
                                     items[ i ].getImage() );
-      itemsData.add( data );
+      itemsData[ i ] = data;
     }
   }
 
