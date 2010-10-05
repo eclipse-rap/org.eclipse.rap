@@ -17,8 +17,7 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.*;
 
 /**
  * This class creates, caches and provides access to shared instances of
@@ -183,7 +182,16 @@ public final class InternalImageFactory {
       }
     }
     if( imageData.palette != null  ) {
-      result = result * 31 + imageData.palette.hashCode();
+      if( imageData.palette.isDirect ) {
+        result = result * 31 + imageData.palette.redMask;
+        result = result * 31 + imageData.palette.greenMask;
+        result = result * 31 + imageData.palette.blueMask;
+      } else {
+        RGB[] rgb = imageData.palette.getRGBs();
+        for( int i = 0; i < rgb.length; i++ ) {
+          result = result * 31 + rgb[ i ].hashCode();
+        }
+      }
     }
     result = result * 31 + imageData.alpha;
     result = result * 31 + imageData.transparentPixel;
