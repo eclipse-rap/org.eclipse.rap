@@ -198,6 +198,9 @@ public final class InternalImageFactory {
     result = result * 31 + imageData.alpha;
     result = result * 31 + imageData.transparentPixel;
     result = result * 31 + imageData.type;
+    result = result * 31 + imageData.bytesPerLine;
+    result = result * 31 + imageData.scanlinePad;
+    result = result * 31 + imageData.maskPad;
     return result;
   }
 

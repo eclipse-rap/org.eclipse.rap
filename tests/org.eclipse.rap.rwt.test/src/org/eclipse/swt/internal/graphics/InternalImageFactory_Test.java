@@ -51,7 +51,7 @@ public class InternalImageFactory_Test extends TestCase {
         imageData.setPixel( x, y, 1 );
       }
     }
-    // imageData without type field should not throw SWT exception 
+    // imageData without type field should not throw SWT exception
     assertNotNull( InternalImageFactory.createInputStream( imageData ) );
   }
 
@@ -100,6 +100,18 @@ public class InternalImageFactory_Test extends TestCase {
     InternalImage internalImage2
       = InternalImageFactory.findInternalImage( key, stream2 );
     assertSame( internalImage1, internalImage2 );
+  }
+
+  public void testInternalImageWithDifferentPalette() {
+    Image image1 = Graphics.getImage( Fixture.IMAGE4 );
+    ImageData imageData1 = image1.getImageData();
+    InternalImage internalImage1
+      = InternalImageFactory.findInternalImage( imageData1 );
+    Image image2 = Graphics.getImage( Fixture.IMAGE5 );
+    ImageData imageData2 = image2.getImageData();
+    InternalImage internalImage2
+      = InternalImageFactory.findInternalImage( imageData2 );
+    assertNotSame( internalImage1, internalImage2 );
   }
 
   protected void setUp() throws Exception {

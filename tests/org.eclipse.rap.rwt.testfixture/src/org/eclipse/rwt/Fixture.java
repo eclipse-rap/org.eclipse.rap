@@ -37,20 +37,22 @@ import org.xml.sax.SAXException;
 
 public class Fixture {
 
-  public final static File TEMP_DIR 
+  public final static File TEMP_DIR
     = new File( System.getProperty( "java.io.tmpdir" ) );
   public final static File CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
-  
+
   public static final String IMAGE1 = "resources/images/image1.gif";
   public static final String IMAGE2 = "resources/images/image2.gif";
   public static final String IMAGE3 = "resources/images/image3.gif";
+  public static final String IMAGE4 = "resources/images/image4.gif";
+  public static final String IMAGE5 = "resources/images/image5.gif";
   public static final String IMAGE_100x50 = "resources/images/test-100x50.png";
   public static final String IMAGE_50x100 = "resources/images/test-50x100.png";
 
   private static LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private static PhaseListener currentPhaseListener
     = new CurrentPhase.Listener();
-  
+
   private Fixture() {
     // prevent instantiation
   }
@@ -60,14 +62,14 @@ public class Fixture {
     commonSetUp();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
-  
+
     ThemeManager.getInstance().initialize();
     registerAdapterFactories();
     PhaseListenerRegistry.add( Fixture.currentPhaseListener );
-  
+
     // registration of mockup resource manager
     registerResourceManager();
-  
+
     SettingStoreManager.register( new MemorySettingStoreFactory() );
   }
 
@@ -76,7 +78,7 @@ public class Fixture {
     commonSetUp();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
-  
+
     // registration of adapter factories
     registerAdapterFactories();
   }
@@ -90,7 +92,7 @@ public class Fixture {
     } catch( Throwable shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
     }
-    
+
     TestResponse response = new TestResponse();
     TestRequest request = new TestRequest();
     request.setSession( new TestSession() );
@@ -100,11 +102,11 @@ public class Fixture {
   public static void tearDown() {
     // deregistration of mockup resource manager
     deregisterResourceManager();
-  
+
     // deregistration of adapter factories
     deregisterAdapterFactories();
     AdapterFactoryRegistry.clear();
-  
+
     // Keep the ThemeManager instance alive to speed up the TestSuite,
     // but reset it if any custom themes have been registered
     ThemeManager themeManager = ThemeManager.getInstance();
@@ -114,7 +116,7 @@ public class Fixture {
 
     // clear Graphics resources
     ResourceFactory.clear();
-  
+
     // remove all registered entry points
     String[] entryPoints = EntryPointManager.getEntryPoints();
     for( int i = 0; i < entryPoints.length; i++ ) {
@@ -126,32 +128,32 @@ public class Fixture {
     session.invalidate();
     clearSingletons();
     System.getProperties().remove( IInitialization.PARAM_LIFE_CYCLE );
-  
+
     AbstractBranding[] all = BrandingManager.getAll();
     for( int i = 0; i < all.length; i++ ) {
       BrandingManager.deregister( all[ i ] );
     }
-  
+
     LifeCycleFactory.destroy();
-  
+
     PhaseListenerRegistry.clear();
   }
 
   public static void clearSingletons() {
     setPrivateField( ResourceManagerImpl.class, null, "_instance", null );
     setPrivateField( LifeCycleFactory.class, null, "globalLifeCycle", null );
-    setPrivateField( SettingStoreManager.class, null, "factory", null ); 
+    setPrivateField( SettingStoreManager.class, null, "factory", null );
   }
 
   public static void createContext( final boolean fake )
-    throws IOException, 
-           FactoryConfigurationError, 
-           ParserConfigurationException, 
+    throws IOException,
+           FactoryConfigurationError,
+           ParserConfigurationException,
            SAXException
   {
     if( fake ) {
       setPrivateField( ResourceManagerImpl.class,
-                       null, 
+                       null,
                        "_instance",
                        new TestResourceManager() );
     } else {
@@ -161,12 +163,12 @@ public class Fixture {
       ResourceManagerImpl.createInstance( webAppBase, deliverFromDisk );
     }
   }
-  
+
   public static void createContextWithoutResourceManager()
-    throws FileNotFoundException, 
-           IOException, 
-           FactoryConfigurationError, 
-           ParserConfigurationException, 
+    throws FileNotFoundException,
+           IOException,
+           FactoryConfigurationError,
+           ParserConfigurationException,
            SAXException
   {
     CONTEXT_DIR.mkdirs();
@@ -180,7 +182,7 @@ public class Fixture {
     libDir.mkdirs();
     File w4tXml = new File( conf, "W4T.xml" );
     copyTestResource( "resources/w4t_fixture.xml", w4tXml );
-    
+
     String webAppBase = CONTEXT_DIR.toString();
     EngineConfig engineConfig = new EngineConfig( webAppBase );
     ConfigurationReader.setEngineConfig( engineConfig );
@@ -191,7 +193,7 @@ public class Fixture {
       delete( CONTEXT_DIR );
     }
   }
-  
+
   private static void delete( final File toDelete ) {
     if( toDelete.isDirectory() ) {
       File[] children = toDelete.listFiles();
@@ -202,7 +204,7 @@ public class Fixture {
     toDelete.delete();
   }
 
-  public static void copyTestResource( final String resourceName, 
+  public static void copyTestResource( final String resourceName,
                                        final File destination )
     throws FileNotFoundException, IOException
   {
@@ -223,7 +225,7 @@ public class Fixture {
       is.close();
     }
   }
-  
+
   public static File getWebAppBase() throws Exception {
     File result = CONTEXT_DIR;
     if( !result.exists() )  {
@@ -232,25 +234,25 @@ public class Fixture {
     }
     return result;
   }
-  
+
   public static void fakeRequestParam( final String key, final String value ) {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setParameter( key, value );
   }
-  
-  public static void fakeContextProvider( final HttpServletResponse response, 
-                                          final HttpServletRequest request ) 
+
+  public static void fakeContextProvider( final HttpServletResponse response,
+                                          final HttpServletRequest request )
   {
     ServiceContext context = new ServiceContext( request, response );
     ServiceStateInfo stateInfo = new ServiceStateInfo();
     context.setStateInfo( stateInfo );
     ContextProvider.setContext( context );
   }
-  
-  public static void setPrivateField( final Class clazz, 
-                                      final Object object, 
-                                      final String fieldName, 
-                                      final Object value ) 
+
+  public static void setPrivateField( final Class clazz,
+                                      final Object object,
+                                      final String fieldName,
+                                      final Object value )
   {
     Field[] fields = clazz.getDeclaredFields();
     Field field = null;
@@ -275,15 +277,15 @@ public class Fixture {
                    + clazz.getName()
                    + "#"
                    + fieldName );
-    } 
+    }
   }
-  
+
   public static String getAllMarkup() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter writer = stateInfo.getResponseWriter();
     return getAllMarkup( writer );
   }
-  
+
   public static String getAllMarkup( final HtmlResponseWriter writer ) {
     StringBuffer buffer = new StringBuffer();
     for( int i = 0; i < writer.getBodySize(); i++ ) {
@@ -291,7 +293,7 @@ public class Fixture {
     }
     return buffer.toString();
   }
-  
+
   public static void fakeResponseWriter() {
     HtmlResponseWriter writer = new HtmlResponseWriter();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
@@ -400,7 +402,7 @@ public class Fixture {
       = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     final IUIThreadHolder threadHolder = new IUIThreadHolder() {
       private Thread thread = Thread.currentThread();
-  
+
       public void setServiceContext( ServiceContext serviceContext ) {
       }
       public void switchThread() {
@@ -426,7 +428,7 @@ public class Fixture {
     };
     ISessionStore session = ContextProvider.getSession();
     session.setAttribute( RWTLifeCycle.UI_THREAD, threadHolder );
-  
+
     final ServiceContext context = ContextProvider.getContext();
     Thread serverThread = new Thread( new Runnable() {
       public void run() {
@@ -446,7 +448,7 @@ public class Fixture {
         }
       }
     }, "ServerThread" );
-  
+
     synchronized( threadHolder.getLock() ) {
       serverThread.start();
       try {
@@ -455,10 +457,10 @@ public class Fixture {
         throw new RuntimeException( e );
       }
     }
-  
+
     while( RWTLifeCycle.getSessionDisplay().readAndDispatch() ) {
     }
-  
+
     lifeCycle.sleep();
   }
 }
