@@ -765,7 +765,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       var itemIndex = row.getItemIndex();
       if( itemIndex != -1 ) {
-        this._renderItem( row, this._items[ itemIndex ] );
+        var item = this._items[ itemIndex ];
+        if( item ) {
+          this._renderItem( row, item );
+        }
       }
     },
 
