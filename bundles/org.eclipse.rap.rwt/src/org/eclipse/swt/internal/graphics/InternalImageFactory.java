@@ -189,7 +189,9 @@ public final class InternalImageFactory {
       } else {
         RGB[] rgb = imageData.palette.getRGBs();
         for( int i = 0; i < rgb.length; i++ ) {
-          result = result * 31 + rgb[ i ].hashCode();
+          result = result * 31 + rgb[ i ].red;
+          result = result * 31 + rgb[ i ].green;
+          result = result * 31 + rgb[ i ].blue;
         }
       }
     }
