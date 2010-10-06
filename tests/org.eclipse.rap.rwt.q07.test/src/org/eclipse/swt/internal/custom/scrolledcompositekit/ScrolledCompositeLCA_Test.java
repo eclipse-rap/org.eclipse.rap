@@ -73,8 +73,12 @@ public class ScrolledCompositeLCA_Test extends TestCase {
                   adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
     Object bounds = adapter.getPreserved( ScrolledCompositeLCA.PROP_BOUNDS );
     assertEquals( rectangle, bounds );
-    Object overflow = adapter.getPreserved( ScrolledCompositeLCA.PROP_OVERFLOW );
-    assertEquals( "scroll", overflow );
+    Object hasHScrollBar 
+      = adapter.getPreserved( ScrolledCompositeLCA.PROP_HAS_H_SCROLL_BAR );
+    Object hasVScrollBar 
+    = adapter.getPreserved( ScrolledCompositeLCA.PROP_HAS_V_SCROLL_BAR );
+    assertEquals( Boolean.TRUE, hasHScrollBar );
+    assertEquals( Boolean.TRUE, hasVScrollBar );
     // bound
     sc.setBounds( rectangle );
     Fixture.preserveWidgets();

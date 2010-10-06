@@ -146,7 +146,11 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       // TODO [rh] there seems to be a difference between add and setParent
       //      when using add sizes and clipping are treated differently
       // parent.add( widget );
-      widget.setParent( parent );
+      if( parent instanceof org.eclipse.swt.custom.ScrolledComposite ) {
+        parent.setContent( widget );
+      } else {
+        widget.setParent( parent );
+      }
     },
     
     setHtmlId : function( widget, id ) {

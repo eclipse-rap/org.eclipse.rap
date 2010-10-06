@@ -40,7 +40,8 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   // Property names for preserve value mechanism
   static final String PROP_BOUNDS = "clientArea";
-  static final String PROP_OVERFLOW = "overflow";
+  static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
+  static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
   private static final String PROP_H_BAR_SELECTION = "hBarSelection";
   private static final String PROP_V_BAR_SELECTION = "vBarSelection";
   private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
@@ -51,7 +52,8 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( composite );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( composite );
     adapter.preserve( PROP_BOUNDS, composite.getBounds() );
-    adapter.preserve( PROP_OVERFLOW, getOverflow( composite ) );
+    adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( composite ) );
+    adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( composite ) );
     adapter.preserve( PROP_H_BAR_SELECTION,
                       getBarSelection( composite.getHorizontalBar() ) );
     adapter.preserve( PROP_V_BAR_SELECTION,
@@ -118,9 +120,20 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static void writeScrollBars( final ScrolledComposite composite )
     throws IOException
   {
-    String overflow = getOverflow( composite );
-    JSWriter writer = JSWriter.getWriterFor( composite );
-    writer.set( PROP_OVERFLOW, "overflow", overflow, null );
+    boolean hasHChanged = WidgetLCAUtil.hasChanged( composite,
+                                                    PROP_HAS_H_SCROLL_BAR,
+                                                    hasHScrollBar( composite ),
+                                                    Boolean.FALSE );
+    boolean hasVChanged = WidgetLCAUtil.hasChanged( composite,
+                                                    PROP_HAS_V_SCROLL_BAR,
+                                                    hasVScrollBar( composite ),
+                                                    Boolean.FALSE );
+    if( hasHChanged || hasVChanged ) {
+      boolean scrollX = hasHScrollBar( composite ).booleanValue();
+      boolean scrollY = hasVScrollBar( composite ).booleanValue();
+      JSWriter writer = JSWriter.getWriterFor( composite );
+      writer.set( "scrollBarsVisible", new boolean[]{ scrollX, scrollY } );      
+    }
   }
 
   private static void writeBarSelection( final ScrolledComposite composite )
@@ -171,24 +184,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static String getOverflow( final ScrolledComposite composite ) {
-    String result;
-    ScrollBar horizontalBar = composite.getHorizontalBar();
-    boolean scrollX = horizontalBar != null && horizontalBar.getVisible();
-    ScrollBar verticalBar = composite.getVerticalBar();
-    boolean scrollY = verticalBar != null && verticalBar.getVisible();
-    if( scrollX && scrollY ) {
-      result = "scroll";
-    } else if( scrollX ) {
-      result = "scrollX";
-    } else if( scrollY ) {
-      result = "scrollY";
-    } else {
-      result = "hidden";
-    }
-    return result;
-  }
-
   //////////////////////////////////////////////////
   // Helping methods to obtain scroll bar properties
 
@@ -215,6 +210,19 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     }
     return result;
   }
+  
+  private static Boolean hasHScrollBar( final ScrolledComposite composite ) {
+    ScrollBar horizontalBar = composite.getHorizontalBar();    
+    boolean result = horizontalBar != null && horizontalBar.getVisible();
+    return Boolean.valueOf( result );
+  }
+  
+  private static Boolean hasVScrollBar( final ScrolledComposite composite ) {
+    ScrollBar verticalBar = composite.getVerticalBar();    
+    boolean result = verticalBar != null && verticalBar.getVisible();
+    return Boolean.valueOf( result );
+  }
+  
 
   private static void processSelection( final ScrollBar scrollBar ) {
     SelectionEvent evt
