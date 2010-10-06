@@ -146,9 +146,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
     testInitialPosition : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite( true );
-      this._setScrollDimension( composite, 200, 200, true );
       composite.setHBarSelection( 10 );
       composite.setVBarSelection( 20 );
+      this._setScrollDimension( composite, 200, 200, true );
       testUtil.flush();
       var position = this._getScrollPosition( composite );
       assertEquals( [ 10, 20 ], position );
@@ -281,9 +281,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
         child = new qx.ui.basic.Terminator();
         child.setLeft( 0 );
         child.setTop( 0 );
+        composite.setContent( child );
         child.setWidth( width );
         child.setHeight( height );
-        composite.setContent( child );
       }
       if( noflush !== true ) {
         testUtil.flush();

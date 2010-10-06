@@ -70,12 +70,20 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
       // scroll event onto the wrong target. Remove after re-implementing 
       // scroll-bar. 
       this._internalChangeFlag = true;
+      if( this._horzScrollBar.getMaximum() < value ) {
+        // TODO [tb] : The ScrollBar should do that itself
+        this._horzScrollBar.setMaximum( value );
+      }
       this._horzScrollBar.setValue( value );
       this._internalChangeFlag = false;
     },
 
     setVBarSelection : function( value ) {
       this._internalChangeFlag = true;
+      if( this._vertScrollBar.getMaximum() < value ) {
+        // TODO [tb] : The ScrollBar should do that itself
+        this._vertScrollBar.setMaximum( value );
+      }
       this._vertScrollBar.setValue( value );
       this._internalChangeFlag = false;
     },
@@ -158,17 +166,15 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     },
     
     _onContentResize : function() {
-      var maxWidth = 0;
-      var maxHeight = 0;
       if(    this._content !== null 
           && typeof this._content.getWidth() === "number"  
           && typeof this._content.getHeight() === "number" ) 
       {
-        maxWidth = this._content.getWidth();
-        maxHeight = this._content.getHeight();
+        var maxWidth = this._content.getWidth();
+        var maxHeight = this._content.getHeight();
+        this._horzScrollBar.setMaximum( maxWidth );
+        this._vertScrollBar.setMaximum( maxHeight );
       }
-      this._horzScrollBar.setMaximum( maxWidth );
-      this._vertScrollBar.setMaximum( maxHeight );
     },
     
     _onHorzScrollBarChangeValue : function() {
