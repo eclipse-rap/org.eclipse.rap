@@ -123,11 +123,11 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     boolean hasHChanged = WidgetLCAUtil.hasChanged( composite,
                                                     PROP_HAS_H_SCROLL_BAR,
                                                     hasHScrollBar( composite ),
-                                                    Boolean.FALSE );
+                                                    Boolean.TRUE );
     boolean hasVChanged = WidgetLCAUtil.hasChanged( composite,
                                                     PROP_HAS_V_SCROLL_BAR,
                                                     hasVScrollBar( composite ),
-                                                    Boolean.FALSE );
+                                                    Boolean.TRUE );
     if( hasHChanged || hasVChanged ) {
       boolean scrollX = hasHScrollBar( composite ).booleanValue();
       boolean scrollY = hasVScrollBar( composite ).booleanValue();
