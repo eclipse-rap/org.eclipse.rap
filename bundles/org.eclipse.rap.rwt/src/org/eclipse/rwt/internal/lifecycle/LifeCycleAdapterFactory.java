@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Locale;
 
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
@@ -107,7 +108,7 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
       buffer.append( variants[ i ] );
       buffer.append( "." );
       String simpleClassName = LifeCycleAdapterUtil.getSimpleClassName( clazz );
-      buffer.append( simpleClassName.toLowerCase() );
+      buffer.append( simpleClassName.toLowerCase( Locale.ENGLISH ) );
       buffer.append( "kit." );
       buffer.append( simpleClassName );
       buffer.append( "LCA" );

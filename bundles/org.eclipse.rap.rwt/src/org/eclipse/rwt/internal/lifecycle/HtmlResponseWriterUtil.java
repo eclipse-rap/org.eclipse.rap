@@ -12,6 +12,7 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Locale;
 
 import org.eclipse.rwt.internal.util.EncodingUtil;
 
@@ -43,7 +44,7 @@ final class HtmlResponseWriterUtil {
   
   // TODO [rh] check performance
   static boolean isEmptyTag( final String name ) {
-    return EMPTY_TAGS.contains( name.toLowerCase() );
+    return EMPTY_TAGS.contains( name.toLowerCase( Locale.ENGLISH ) );
   }
   
   static String encode( final String text ) {

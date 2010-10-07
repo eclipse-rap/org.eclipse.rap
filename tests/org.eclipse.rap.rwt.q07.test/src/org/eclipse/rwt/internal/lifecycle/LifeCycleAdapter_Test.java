@@ -11,6 +11,7 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.Enumeration;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -89,6 +90,21 @@ public class LifeCycleAdapter_Test extends TestCase {
     Object otherSessionAdapter
       = otherSessionShell.getAdapter( ILifeCycleAdapter.class );
     assertSame( shell1LCA, otherSessionAdapter );
+  }
+
+  public void testTreeItemLifeCycleAdapter() {
+    Locale originalLocale = Locale.getDefault();
+    try {
+      Locale.setDefault( new Locale( "tr", "TR" ) );
+      Display display = new Display();
+      Composite shell = new Shell( display, SWT.NONE );
+      Tree tree = new Tree( shell, SWT.NONE );
+      TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+      Object treeItemLCA = treeItem.getAdapter( ILifeCycleAdapter.class );
+      assertTrue( treeItemLCA instanceof IWidgetLifeCycleAdapter );
+    } finally {
+      Locale.setDefault( originalLocale );
+    }
   }
 
   private void removeDisplay() {

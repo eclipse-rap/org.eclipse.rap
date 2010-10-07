@@ -9,8 +9,9 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
+
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -67,5 +68,17 @@ public class HtmlResponseWriterUtil_Test extends TestCase {
       result = HtmlResponseWriterUtil.isEmptyTag( nonEmptyTags[ i ] );
     }
     assertFalse( result );
+  }
+  
+  public void testIsEmptyTagWithTurkishLocale() {
+    boolean emptyTag;
+    Locale currentLocale = Locale.getDefault();
+    try {
+      Locale.setDefault( new Locale( "tr", "TR" ) );
+      emptyTag = HtmlResponseWriterUtil.isEmptyTag( "LINK" );
+    } finally {
+      Locale.setDefault( currentLocale );
+    }
+    assertTrue( emptyTag );
   }
 }
