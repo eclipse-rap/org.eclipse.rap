@@ -130,6 +130,34 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite.destroy();
     },
 
+    testDispose: function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var composite = this._createComposite();
+      this._setScrollDimension( composite, 200, 200 );
+      composite.setHBarSelection( 10 );
+      composite.setVBarSelection( 20 );
+      var clientArea = composite._clientArea;
+      var hbar = composite._horzScrollBar;
+      var vbar = composite._vertScrollBar;
+      var scrollNode = clientArea._getTargetNode();
+      composite.destroy();
+      testUtil.flush();
+      assertNull( composite._horzScrollBar );
+      assertNull( composite._vertScrollBar );
+      assertNull( composite._clientArea );
+      assertTrue( composite.isDisposed() );
+      assertTrue( clientArea.isDisposed() );
+      assertTrue( hbar.isDisposed() );
+      assertTrue( vbar.isDisposed() );
+      assertNull( composite.hasEventListeners( "changeParent" ) );
+      assertNull( clientArea.hasEventListeners( "appear" ) );
+      assertNull( clientArea.hasEventListeners( "mousewheel" ) );
+      assertNull( clientArea.hasEventListeners( "keypress" ) );
+      assertNull( hbar.hasEventListeners( "changeValue" ) );
+      assertNull( vbar.hasEventListeners( "changeValue" ) );
+    },
+
+
     testScrollOutOfBounds : function() {
       var composite = this._createComposite();
       this._setScrollDimension( composite, 200, 200 );

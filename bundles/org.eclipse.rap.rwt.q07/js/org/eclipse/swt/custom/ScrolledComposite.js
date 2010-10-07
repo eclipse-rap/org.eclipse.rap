@@ -34,22 +34,17 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     this.setAppearance( "scrolledcomposite" );
   },
   
-  destruct : function() {
-    var el = this._clientArea.getElement();
+  destruct : function() {    
+    var el = this._clientArea._getTargetNode();
     if( el ) {
       qx.html.EventRegistration.removeEventListener( el, 
                                                      "scroll", 
                                                      this.__onscroll );
       delete this.__onscroll;
     }
-    this._clientArea.removeEventListener( "appear", 
-                                          this._onClientAppear, 
-                                          this );
-    this._clientArea.removeEventListener( "mousewheel", 
-                                          this._onMouseWheel, 
-                                          this );
-    this._clientArea.removeEventListener( "keypress", this._onKeyPress, this );
-    this.removeEventListener( "changeParent", this._onChangeParent, this );
+    this._clientArea = null;
+    this._horzScrollBar = null;
+    this._vertScrollBar = null;
   },
   
   members : {
