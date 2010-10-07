@@ -183,24 +183,24 @@ public final class InternalImageFactory {
     }
     if( imageData.palette != null  ) {
       if( imageData.palette.isDirect ) {
-        result = result * 31 + imageData.palette.redMask;
-        result = result * 31 + imageData.palette.greenMask;
-        result = result * 31 + imageData.palette.blueMask;
+        result = result * 29 + imageData.palette.redMask;
+        result = result * 29 + imageData.palette.greenMask;
+        result = result * 29 + imageData.palette.blueMask;
       } else {
         RGB[] rgb = imageData.palette.getRGBs();
         for( int i = 0; i < rgb.length; i++ ) {
-          result = result * 31 + rgb[ i ].red;
-          result = result * 31 + rgb[ i ].green;
-          result = result * 31 + rgb[ i ].blue;
+          result = result * 37 + rgb[ i ].red;
+          result = result * 37 + rgb[ i ].green;
+          result = result * 37 + rgb[ i ].blue;
         }
       }
     }
-    result = result * 31 + imageData.alpha;
-    result = result * 31 + imageData.transparentPixel;
-    result = result * 31 + imageData.type;
-    result = result * 31 + imageData.bytesPerLine;
-    result = result * 31 + imageData.scanlinePad;
-    result = result * 31 + imageData.maskPad;
+    result = result * 41 + imageData.alpha;
+    result = result * 41 + imageData.transparentPixel;
+    result = result * 41 + imageData.type;
+    result = result * 41 + imageData.bytesPerLine;
+    result = result * 41 + imageData.scanlinePad;
+    result = result * 41 + imageData.maskPad;
     return result;
   }
 

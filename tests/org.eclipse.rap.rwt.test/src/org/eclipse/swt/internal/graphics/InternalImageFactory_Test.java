@@ -88,6 +88,30 @@ public class InternalImageFactory_Test extends TestCase {
     assertSame( internalImage1, internalImage2 );
   }
 
+  public void testInternalImagesDifferForDifferentPalettes() {
+    PaletteData palette1 = new PaletteData( new RGB[] { new RGB( 23, 1, 7 ) } );
+    PaletteData palette2 = new PaletteData( new RGB[] { new RGB( 3, 5, 42 ) } );
+    ImageData imageData1 = new ImageData( 8, 8, 8, palette1  );
+    ImageData imageData2 = new ImageData( 8, 8, 8, palette2 );
+    InternalImage internalImage1
+      = InternalImageFactory.findInternalImage( imageData1 );
+    InternalImage internalImage2
+      = InternalImageFactory.findInternalImage( imageData2 );
+    assertNotSame( internalImage1, internalImage2 );
+  }
+
+  public void testInternalImagesDifferForDifferentPalettes2() {
+    PaletteData palette1 = new PaletteData( new RGB[] { new RGB( 1, 2, 3 ) } );
+    PaletteData palette2 = new PaletteData( 1, 2, 3 );
+    ImageData imageData1 = new ImageData( 8, 8, 8, palette1  );
+    ImageData imageData2 = new ImageData( 8, 8, 8, palette2 );
+    InternalImage internalImage1
+      = InternalImageFactory.findInternalImage( imageData1 );
+    InternalImage internalImage2
+      = InternalImageFactory.findInternalImage( imageData2 );
+    assertNotSame( internalImage1, internalImage2 );
+  }
+
   public void testFindInternalImageWithPath() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream1 = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -100,18 +124,6 @@ public class InternalImageFactory_Test extends TestCase {
     InternalImage internalImage2
       = InternalImageFactory.findInternalImage( key, stream2 );
     assertSame( internalImage1, internalImage2 );
-  }
-
-  public void testInternalImageWithDifferentPalette() {
-    Image image1 = Graphics.getImage( Fixture.IMAGE4 );
-    ImageData imageData1 = image1.getImageData();
-    InternalImage internalImage1
-      = InternalImageFactory.findInternalImage( imageData1 );
-    Image image2 = Graphics.getImage( Fixture.IMAGE5 );
-    ImageData imageData2 = image2.getImageData();
-    InternalImage internalImage2
-      = InternalImageFactory.findInternalImage( imageData2 );
-    assertNotSame( internalImage1, internalImage2 );
   }
 
   protected void setUp() throws Exception {

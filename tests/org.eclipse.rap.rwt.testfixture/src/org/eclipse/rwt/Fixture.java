@@ -44,8 +44,6 @@ public class Fixture {
   public static final String IMAGE1 = "resources/images/image1.gif";
   public static final String IMAGE2 = "resources/images/image2.gif";
   public static final String IMAGE3 = "resources/images/image3.gif";
-  public static final String IMAGE4 = "resources/images/image4.gif";
-  public static final String IMAGE5 = "resources/images/image5.gif";
   public static final String IMAGE_100x50 = "resources/images/test-100x50.png";
   public static final String IMAGE_50x100 = "resources/images/test-50x100.png";
 
@@ -401,7 +399,7 @@ public class Fixture {
     final RWTLifeCycle lifeCycle
       = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     final IUIThreadHolder threadHolder = new IUIThreadHolder() {
-      private Thread thread = Thread.currentThread();
+      private final Thread thread = Thread.currentThread();
 
       public void setServiceContext( ServiceContext serviceContext ) {
       }
