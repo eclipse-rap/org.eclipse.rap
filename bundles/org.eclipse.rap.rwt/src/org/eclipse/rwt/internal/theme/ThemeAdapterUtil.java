@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2009 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -10,8 +10,7 @@
 package org.eclipse.rwt.internal.theme;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.swt.widgets.Widget;
@@ -56,7 +55,7 @@ public final class ThemeAdapterUtil {
       buffer.append( variants[ i ] );
       buffer.append( "." );
       String simpleClassName = LifeCycleAdapterUtil.getSimpleClassName( clazz );
-      buffer.append( simpleClassName.toLowerCase() );
+      buffer.append( simpleClassName.toLowerCase( Locale.ENGLISH ) );
       buffer.append( "kit." );
       buffer.append( simpleClassName );
       buffer.append( "ThemeAdapter" );

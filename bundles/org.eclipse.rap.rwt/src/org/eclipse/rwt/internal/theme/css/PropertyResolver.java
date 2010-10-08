@@ -166,10 +166,11 @@ public final class PropertyResolver {
       throw new IllegalArgumentException( "Failed to parse rgb() function" );
     } else if( type == LexicalUnit.SAC_IDENT ) {
       String string = unit.getStringValue();
+      String lowerCaseString = string.toLowerCase( Locale.ENGLISH );
       if( TRANSPARENT.equals( string ) ) {
         result = QxColor.TRANSPARENT;
-      } else if( NAMED_COLORS.containsKey( string.toLowerCase() ) ) {
-        NamedColor color = ( NamedColor )NAMED_COLORS.get( string.toLowerCase() );
+      } else if( NAMED_COLORS.containsKey( lowerCaseString ) ) {
+        NamedColor color = ( NamedColor )NAMED_COLORS.get( lowerCaseString );
         result = QxColor.create( color.red, color.green, color.blue );
       }
     } else if( type == LexicalUnit.SAC_INHERIT ) {

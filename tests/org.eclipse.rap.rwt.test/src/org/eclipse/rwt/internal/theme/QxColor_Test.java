@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import java.util.Locale;
+
 import junit.framework.TestCase;
 
 
@@ -104,5 +106,15 @@ public class QxColor_Test extends TestCase {
   public void testDefaultString() {
     QxColor color = QxColor.valueOf( "100, 23, 42" );
     assertEquals( "#64172a", color.toDefaultString() );
+  }
+
+  public void testWithTurkishLocale() {
+    Locale originalLocale = Locale.getDefault();
+    try {
+      Locale.setDefault( new Locale( "tr", "TR" ) );
+      assertSame( QxColor.WHITE, QxColor.valueOf( "WHITE" ) );
+    } finally {
+      Locale.setDefault( originalLocale );
+    }
   }
 }

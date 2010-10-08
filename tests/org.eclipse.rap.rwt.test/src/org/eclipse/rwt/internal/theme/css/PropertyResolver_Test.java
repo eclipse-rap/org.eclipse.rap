@@ -12,6 +12,7 @@
 package org.eclipse.rwt.internal.theme.css;
 
 import java.io.*;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -62,6 +63,17 @@ public class PropertyResolver_Test extends TestCase {
       fail();
     } catch( IllegalArgumentException e ) {
       // expected
+    }
+  }
+
+  public void testColorWithTurkishLocale() throws Exception {
+    Locale originalLocale = Locale.getDefault();
+    try {
+      Locale.setDefault( new Locale( "tr", "TR" ) );
+      QxColor white = PropertyResolver.readColor( parseProperty( "WHITE" ) );
+      assertEquals( QxColor.WHITE, white );
+    } finally {
+      Locale.setDefault( originalLocale );
     }
   }
 

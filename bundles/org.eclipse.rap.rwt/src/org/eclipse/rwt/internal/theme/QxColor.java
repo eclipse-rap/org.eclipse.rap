@@ -12,8 +12,7 @@
 package org.eclipse.rwt.internal.theme;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Color;
@@ -95,6 +94,7 @@ public class QxColor implements QxType {
       result = TRANSPARENT;
     } else {
       int red, green, blue;
+      String lowerCaseInput = input.toLowerCase( Locale.ENGLISH );
       if( input.startsWith( "#" ) ) {
         try {
           if( input.length() == 7 ) {
@@ -117,8 +117,8 @@ public class QxColor implements QxType {
           String message = MessageFormat.format( pattern, arguments );
           throw new IllegalArgumentException( message );
         }
-      } else if( NAMED_COLORS.containsKey( input.toLowerCase() ) ) {
-        int[] values = ( int[] )NAMED_COLORS.get( input.toLowerCase() );
+      } else if( NAMED_COLORS.containsKey( lowerCaseInput ) ) {
+        int[] values = ( int[] )NAMED_COLORS.get( lowerCaseInput );
         red = values[ 0 ];
         green = values[ 1 ];
         blue = values[ 2 ];

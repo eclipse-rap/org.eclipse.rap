@@ -311,7 +311,12 @@ public final class ThemeManager {
     boolean found = false;
     try {
       for( int i = 0; i < variants.length && !found ; i++ ) {
-        String pkgName = variants[ i ] + "." + className.toLowerCase() + "kit";
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( variants[ i ] );
+        buffer.append( "." );
+        buffer.append( className.toLowerCase( Locale.ENGLISH ) );
+        buffer.append( "kit" );
+        String pkgName = buffer.toString();
         found |= loadThemeDef( themeWidget, pkgName, className );
         found |= loadAppearanceJs( themeWidget, pkgName, className );
         found |= loadDefaultCss( themeWidget, pkgName, className );

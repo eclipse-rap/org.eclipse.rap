@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -33,7 +33,7 @@ import org.eclipse.swt.layout.GridLayout;
  * IMPORTANT: This class is intended to be subclassed <em>only</em> within the
  * SWT implementation.
  * </p>
- * 
+ *
  * @since 1.3
  */
 public class FontDialog extends Dialog {
@@ -54,7 +54,7 @@ public class FontDialog extends Dialog {
 
   /**
    * Constructs a new instance of this class given only its parent.
-   * 
+   *
    * @param parent a shell which will be the parent of the new instance
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
@@ -81,7 +81,7 @@ public class FontDialog extends Dialog {
    * constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param parent a shell which will be the parent of the new instance
    * @param style the style of dialog to construct
    * @exception IllegalArgumentException <ul>
@@ -103,7 +103,7 @@ public class FontDialog extends Dialog {
   /**
    * Returns a FontData set describing the font that was selected in the dialog,
    * or null if none is available.
-   * 
+   *
    * @return the FontData for the selected font, or null
    */
   public FontData[] getFontList() {
@@ -118,7 +118,7 @@ public class FontDialog extends Dialog {
   /**
    * Sets the set of FontData objects describing the font to be selected by
    * default in the dialog, or null to let the platform choose one.
-   * 
+   *
    * @param fontData the set of FontData objects to use initially, or null to
    *          let the platform select a default when open() is called
    * @see Font#getFontData
@@ -134,7 +134,7 @@ public class FontDialog extends Dialog {
   /**
    * Returns an RGB describing the color that was selected in the dialog, or
    * null if none is available.
-   * 
+   *
    * @return the RGB value for the selected color, or null
    * @see PaletteData#getRGBs
    */
@@ -145,7 +145,7 @@ public class FontDialog extends Dialog {
   /**
    * Sets the RGB describing the color to be selected by default in the dialog,
    * or null to let the platform choose one.
-   * 
+   *
    * @param rgb the RGB value to use initially, or null to let the platform
    *          select a default when open() is called
    * @see PaletteData#getRGBs
@@ -156,7 +156,7 @@ public class FontDialog extends Dialog {
 
   /**
    * Makes the dialog visible and brings it to the front of the display.
-   * 
+   *
    * @return a FontData object describing the font that was selected, or null if
    *         the dialog was cancelled or an error occurred
    * @exception SWTException <ul>
@@ -175,7 +175,7 @@ public class FontDialog extends Dialog {
     openShell();
     return fontData;
   }
-  
+
   private void initializeDefaults() {
     if( fontData == null ) {
       Display display = parent.getDisplay();
@@ -298,7 +298,7 @@ public class FontDialog extends Dialog {
       }
     } );
   }
-  
+
   private void createFontSizeGroup( final Composite parent ) {
     Group result = new Group( parent, SWT.NONE );
     result.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
@@ -475,8 +475,8 @@ public class FontDialog extends Dialog {
     fontFamilyList.deselectAll();
     String[] items = fontFamilyList.getItems();
     for( int i = 0; i < items.length; i++ ) {
-      String item = items[ i ];
-      if( fontFamily.toLowerCase().equals( item.toLowerCase() ) ) {
+      String item = items[ i ].toLowerCase( Locale.ENGLISH );
+      if( fontFamily.toLowerCase( Locale.ENGLISH ).equals( item ) ) {
         fontFamilyList.select( i );
       }
     }
