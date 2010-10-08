@@ -18,12 +18,22 @@ public final class LifeCycleAdapterUtil {
     // prevent instatiation
   }
 
+  public static String[] getKitPackageVariants( final Class clazz ) {
+    String packageName = null;
+    Package packageObject = clazz.getPackage();
+    if( packageObject != null ) {
+      packageName = packageObject.getName();
+    }
+    String className = getSimpleClassName( clazz );
+    return getKitPackageVariants( packageName, className );
+  }
+
   /**
    * Inserts the package path segment <code>internal</code> at every possible
    * position in a given package name and appends class name + kit at the end.
    */
-  public static String[] getKitPackageVariants( final String packageName,
-                                                final String className )
+  static String[] getKitPackageVariants( final String packageName,
+                                         final String className )
   {
     String[] result;
     if( packageName == null || "".equals( packageName ) ) {

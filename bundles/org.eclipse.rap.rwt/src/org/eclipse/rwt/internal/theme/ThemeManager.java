@@ -304,11 +304,10 @@ public final class ThemeManager {
    */
   private void processThemeableWidget( final ThemeableWidget themeWidget )
   {
-    String packageName = themeWidget.widget.getPackage().getName();
     String className
       = LifeCycleAdapterUtil.getSimpleClassName( themeWidget.widget );
     String[] variants
-      = LifeCycleAdapterUtil.getKitPackageVariants( packageName, className );
+      = LifeCycleAdapterUtil.getKitPackageVariants( themeWidget.widget );
     boolean found = false;
     try {
       for( int i = 0; i < variants.length && !found ; i++ ) {

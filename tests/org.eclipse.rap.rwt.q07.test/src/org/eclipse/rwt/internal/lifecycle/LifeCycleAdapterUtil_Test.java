@@ -20,6 +20,21 @@ import org.eclipse.swt.widgets.Button;
 
 public class LifeCycleAdapterUtil_Test extends TestCase {
 
+  public void testGetKitPackageVariantsWithClass() {
+    String[] variants
+      = LifeCycleAdapterUtil.getKitPackageVariants( Button.class );
+    assertEquals( 5, variants.length );
+    String expected = "internal.org.eclipse.swt.widgets.buttonkit";
+    assertEquals( expected, variants[ 0 ] );
+    expected = "org.internal.eclipse.swt.widgets.buttonkit";
+    assertEquals( expected, variants[ 1 ] );
+    expected = "org.eclipse.internal.swt.widgets.buttonkit";
+    assertEquals( expected, variants[ 2 ] );
+    expected = "org.eclipse.swt.internal.widgets.buttonkit";
+    assertEquals( expected, variants[ 3 ] );
+    expected = "org.eclipse.swt.widgets.internal.buttonkit";
+  }
+
   public void testGetKitPackageVariants() {
     String packageName = "org.eclipse.swt.widgets";
     String className = "Item";

@@ -48,10 +48,8 @@ public final class ThemeAdapterUtil {
 
   private static IThemeAdapter loadThemeAdapter( final Class clazz ) {
     IThemeAdapter result = null;
-    String packageName = clazz.getPackage().getName();
     String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
-    String[] variants
-      = LifeCycleAdapterUtil.getKitPackageVariants( packageName, className );
+    String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
     for( int i = 0; result == null && i < variants.length; i++ ) {
       StringBuffer buffer = new StringBuffer();
       buffer.append( variants[ i ] );
