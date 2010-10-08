@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,6 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Locale;
-
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetLifeCycleAdapter;
@@ -102,15 +100,14 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   private static IWidgetLifeCycleAdapter loadWidgetLCA( final Class clazz ) {
     IWidgetLifeCycleAdapter result = null;
     String packageName = clazz.getPackage().getName();
-    String[] variants = LifeCycleAdapterUtil.getPackageVariants( packageName );
+    String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
+    String[] variants
+      = LifeCycleAdapterUtil.getKitPackageVariants( packageName, className );
     for( int i = 0; result == null && i < variants.length; i++ ) {
       StringBuffer buffer = new StringBuffer();
       buffer.append( variants[ i ] );
       buffer.append( "." );
-      String simpleClassName = LifeCycleAdapterUtil.getSimpleClassName( clazz );
-      buffer.append( simpleClassName.toLowerCase( Locale.ENGLISH ) );
-      buffer.append( "kit." );
-      buffer.append( simpleClassName );
+      buffer.append( className );
       buffer.append( "LCA" );
       String classToLoad = buffer.toString();
       ClassLoader loader = clazz.getClassLoader();

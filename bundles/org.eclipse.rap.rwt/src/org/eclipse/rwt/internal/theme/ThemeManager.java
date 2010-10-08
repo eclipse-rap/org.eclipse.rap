@@ -305,21 +305,16 @@ public final class ThemeManager {
   private void processThemeableWidget( final ThemeableWidget themeWidget )
   {
     String packageName = themeWidget.widget.getPackage().getName();
-    String[] variants = LifeCycleAdapterUtil.getPackageVariants( packageName );
     String className
       = LifeCycleAdapterUtil.getSimpleClassName( themeWidget.widget );
+    String[] variants
+      = LifeCycleAdapterUtil.getKitPackageVariants( packageName, className );
     boolean found = false;
     try {
       for( int i = 0; i < variants.length && !found ; i++ ) {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append( variants[ i ] );
-        buffer.append( "." );
-        buffer.append( className.toLowerCase( Locale.ENGLISH ) );
-        buffer.append( "kit" );
-        String pkgName = buffer.toString();
-        found |= loadThemeDef( themeWidget, pkgName, className );
-        found |= loadAppearanceJs( themeWidget, pkgName, className );
-        found |= loadDefaultCss( themeWidget, pkgName, className );
+        found |= loadThemeDef( themeWidget, variants[ i ], className );
+        found |= loadAppearanceJs( themeWidget, variants[ i ], className );
+        found |= loadDefaultCss( themeWidget, variants[ i ], className );
       }
       if( themeWidget.elements == null ) {
         log( "WARNING: No elements defined for themeable widget: "

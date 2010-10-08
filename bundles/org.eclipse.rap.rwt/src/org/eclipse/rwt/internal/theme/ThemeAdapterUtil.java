@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -49,15 +49,14 @@ public final class ThemeAdapterUtil {
   private static IThemeAdapter loadThemeAdapter( final Class clazz ) {
     IThemeAdapter result = null;
     String packageName = clazz.getPackage().getName();
-    String[] variants = LifeCycleAdapterUtil.getPackageVariants( packageName );
+    String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
+    String[] variants
+      = LifeCycleAdapterUtil.getKitPackageVariants( packageName, className );
     for( int i = 0; result == null && i < variants.length; i++ ) {
       StringBuffer buffer = new StringBuffer();
       buffer.append( variants[ i ] );
       buffer.append( "." );
-      String simpleClassName = LifeCycleAdapterUtil.getSimpleClassName( clazz );
-      buffer.append( simpleClassName.toLowerCase( Locale.ENGLISH ) );
-      buffer.append( "kit." );
-      buffer.append( simpleClassName );
+      buffer.append( className );
       buffer.append( "ThemeAdapter" );
       String classToLoad = buffer.toString();
       ClassLoader loader = clazz.getClassLoader();

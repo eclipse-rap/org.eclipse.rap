@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.util.Locale;
 
 public final class LifeCycleAdapterUtil {
-  
+
   private LifeCycleAdapterUtil() {
     // prevent instatiation
   }
@@ -44,6 +45,25 @@ public final class LifeCycleAdapterUtil {
         }
         result[ i ] = buffer.toString();
       }
+    }
+    return result;
+  }
+
+  /**
+   * Inserts the package path segment <code>internal</code> at every possible
+   * position in a given package name and appends class name + kit at the end.
+   */
+  public static String[] getKitPackageVariants( final String packageName,
+                                                final String className )
+  {
+    String[] result = getPackageVariants( packageName );
+    for( int i = 0; i < result.length; i++ ) {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append( result[ i ] );
+      buffer.append( "." );
+      buffer.append( className.toLowerCase( Locale.ENGLISH ) );
+      buffer.append( "kit" );
+      result[ i ] = buffer.toString();
     }
     return result;
   }
