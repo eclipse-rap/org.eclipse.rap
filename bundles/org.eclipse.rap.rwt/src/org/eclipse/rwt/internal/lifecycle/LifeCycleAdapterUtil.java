@@ -20,12 +20,18 @@ public final class LifeCycleAdapterUtil {
 
   /**
    * Inserts the package path segment <code>internal</code> at every possible
-   * position in a given package name.
+   * position in a given package name and appends class name + kit at the end.
    */
-  public static String[] getPackageVariants( final String packageName ) {
+  public static String[] getKitPackageVariants( final String packageName,
+                                                final String className )
+  {
     String[] result;
     if( packageName == null || "".equals( packageName ) ) {
-      result = new String[] { "internal" };
+      StringBuffer buffer = new StringBuffer();
+      buffer.append( "internal." );
+      buffer.append( className.toLowerCase( Locale.ENGLISH ) );
+      buffer.append( "kit" );
+      result = new String[] { buffer.toString() };
     } else {
       String[] segments = packageName.split( "\\." );
       result = new String[ segments.length + 1 ];
@@ -43,27 +49,11 @@ public final class LifeCycleAdapterUtil {
         if( i == segments.length ) {
           buffer.append( ".internal" );
         }
+        buffer.append( "." );
+        buffer.append( className.toLowerCase( Locale.ENGLISH ) );
+        buffer.append( "kit" );
         result[ i ] = buffer.toString();
       }
-    }
-    return result;
-  }
-
-  /**
-   * Inserts the package path segment <code>internal</code> at every possible
-   * position in a given package name and appends class name + kit at the end.
-   */
-  public static String[] getKitPackageVariants( final String packageName,
-                                                final String className )
-  {
-    String[] result = getPackageVariants( packageName );
-    for( int i = 0; i < result.length; i++ ) {
-      StringBuffer buffer = new StringBuffer();
-      buffer.append( result[ i ] );
-      buffer.append( "." );
-      buffer.append( className.toLowerCase( Locale.ENGLISH ) );
-      buffer.append( "kit" );
-      result[ i ] = buffer.toString();
     }
     return result;
   }
