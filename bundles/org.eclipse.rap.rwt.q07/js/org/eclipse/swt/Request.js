@@ -121,10 +121,23 @@ qx.Class.define( "org.eclipse.swt.Request", {
       var request = new qx.io.remote.Request( this._url,
                                               qx.net.Http.METHOD_GET,
                                               qx.util.Mime.JAVASCRIPT );
+      request.addEventListener( "completed", 
+                                 this._handleUICallBackFinished, 
+                                 this );
+      request.addEventListener( "failed", 
+                                 this._handleUICallBackFinished, 
+                                 this );
       request.setParameter(
         "custom_service_handler",
         "org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler" );
       this._sendStandalone( request );
+    },
+
+    _handleUICallBackFinished : function( event ) {
+      var transport = event.getTarget();
+      var request = transport.getRequest();
+      transport.dispose();
+      request.dispose();
     },
 
     /**
