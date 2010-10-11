@@ -1278,6 +1278,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isItemSelected( item4 ) );
       tree.destroy();
     },
+
+    testMultiSelectionRightClick : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setHasMultiSelection( true );
+      var item0 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      var item1 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      var item2 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      testUtil.flush();
+      testUtil.click( tree._rows[ 0 ] );
+      testUtil.ctrlClick( tree._rows[ 0 ] );
+      testUtil.shiftClick( tree._rows[ 1 ] );
+      testUtil.rightClick( tree._rows[ 0 ] );
+      assertTrue( tree.isItemSelected( item0 ) );
+      assertTrue( tree.isItemSelected( item1 ) );
+      assertFalse( tree.isItemSelected( item2 ) );
+      testUtil.rightClick( tree._rows[ 2 ] );
+      assertFalse( tree.isItemSelected( item0 ) );
+      assertFalse( tree.isItemSelected( item1 ) );
+      assertTrue( tree.isItemSelected( item2 ) );
+      tree.destroy();
+    },
     
     testSetDimensionBeforeItemHeight : function() {
       var tree = new org.eclipse.rwt.widgets.Tree();

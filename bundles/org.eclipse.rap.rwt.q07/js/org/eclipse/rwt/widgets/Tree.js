@@ -1160,7 +1160,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _multiSelectItem : function( event, item ) {
-      if( event.isCtrlPressed() ) {
+      if(    event instanceof qx.event.type.MouseEvent
+          && event.isRightButtonPressed() ) 
+      {
+        if( !this.isItemSelected( item ) ) {
+          this._singleSelectItem( item );
+        }
+      } else if( event.isCtrlPressed() ) {
         if(   event instanceof qx.event.type.KeyEvent
            && item != this._focusItem  ) {
           this.setFocusItem( item );
