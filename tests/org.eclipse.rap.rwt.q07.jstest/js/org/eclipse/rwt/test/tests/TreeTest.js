@@ -2162,7 +2162,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertFalse( testUtil.hasCssBorder( row.getElement() ) );
       tree.setLinesVisible( true );
       testUtil.flush();
-      assertTrue( testUtil.hasCssBorder( row.getElement() ) );      
+      var border = tree._getHorizontalGridBorder();
+      assertIdentical( border, row.getBorder() );      
       tree.destroy();
     },
     
@@ -2171,10 +2172,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree( true );
       tree.setHeight( 0 );
       tree.setLinesVisible( true );
-      tree.setHeight( 100 );
+      tree.setHeight( 100 );      
       testUtil.flush();
+      var border = tree._getHorizontalGridBorder();
       var row = tree._rows[ 0 ];
-      assertTrue( testUtil.hasCssBorder( row.getElement() ) );      
+      assertIdentical( border, row.getBorder() );
       tree.destroy();
     },
     

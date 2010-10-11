@@ -792,7 +792,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertNotNull( dndSupport._dropFeedbackRenderer );
       testUtil.flush();
       assertTrue( tree._rows[ 1 ].hasState( "dnd_selected") );
-//      assertNull( tree._rows[ 1 ].getBackgroundColor() );
+      assertNull( tree._rows[ 1 ].getBackgroundColor() );
       assertTrue( tree._rows[ 1 ]._getTargetNode().lastChild.style.backgroundColor != "" );
       // drop
       testUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
