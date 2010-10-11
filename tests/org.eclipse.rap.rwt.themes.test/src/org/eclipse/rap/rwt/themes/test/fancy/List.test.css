@@ -16,8 +16,8 @@ List {
 }
 
 List-Item {
-  background-color: #ffffff;
-  color: #4a4a4a;
+  background-color: transparent;
+  color: inherit;
 }
 
 List-Item:hover {
