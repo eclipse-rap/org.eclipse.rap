@@ -16,7 +16,7 @@ qxsettings[ "qx.isSource" ] = false;
 qxvariants = {};
 qxvariants[ "qx.compatibility" ] = "off";
 qxvariants[ "qx.aspects" ] = "off";
-qxvariants[ "qx.debug" ] = "on";
+qxvariants[ "qx.debug" ] = "off";
 
 
     
