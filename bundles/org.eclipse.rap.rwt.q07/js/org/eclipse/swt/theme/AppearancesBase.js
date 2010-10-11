@@ -562,7 +562,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         spacing : 2,
-        padding : [ 2, 4 ],        
+        padding : [ 2, 4 ],
+        backgroundImage : tv.getCssImage( "MenuItem", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "MenuItem", "background-image" ),
         backgroundColor : tv.getCssColor( "MenuItem", "background-color" ),
         height : states.bar ? "100%" : "auto",
         opacity : tv.getCssFloat( "MenuItem", "opacity" )
