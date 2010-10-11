@@ -121,10 +121,38 @@ qx.Class.define( "org.eclipse.swt.Request", {
       var request = new qx.io.remote.Request( this._url,
                                               qx.net.Http.METHOD_GET,
                                               qx.util.Mime.JAVASCRIPT );
+      request.addEventListener( "completed", 
+                                 this._handleUICallBackFinished, 
+                                 this );
+      request.addEventListener( "failed", 
+                                 this._handleUICallBackFinished, 
+                                 this );
       request.setParameter(
         "custom_service_handler",
         "org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler" );
       this._sendStandalone( request );
+    },
+    
+    _handleUICallBackFinished : function( event ) {
+      if( event.getType() === "completed" ) {
+        // NOTE: this was originally done almost exactly like this in 
+        // XmlHttpTransport.getResponseContent, but is now done here for
+        // better overview
+        try {
+          var text = event.getContent();
+          if( text && text.length > 0 ) {
+            window.eval( text );
+          }
+        } catch( ex ) {
+          this.error( "Could not execute javascript: [" + text + "]", ex );
+        }
+      }
+      // Transport is normally disposed of in RequestQueue but UICallBackReuests
+      // bypass the queue 
+      var transport = event.getTarget();
+      var request = transport.getRequest();
+      transport.dispose();
+      request.dispose();
     },
 
     /**
@@ -198,7 +226,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     _createRequest : function() {
       var result = new qx.io.remote.Request( this._url,
                                              qx.net.Http.METHOD_POST,
-                                             qx.util.Mime.TEXT );
+                                             qx.util.Mime.JAVASCRIPT );
       result.addEventListener( "sending", this._handleSending, this );
       result.addEventListener( "completed", this._handleCompleted, this );
       result.addEventListener( "failed", this._handleFailed, this );

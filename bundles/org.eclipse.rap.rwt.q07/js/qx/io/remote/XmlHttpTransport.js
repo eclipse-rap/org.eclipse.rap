@@ -7,9 +7,9 @@
    Copyright:
      2004-2008 1&1 Internet AG, Germany, http://www.1und1.de
      2006 Derrell Lipman
+     2010 EclipseSource (adaptation for RAP)
 
    License:
-     LGPL: http://www.gnu.org/licenses/lgpl.html
      EPL: http://www.eclipse.org/org/documents/epl-v10.php
      See the LICENSE file in the project's top-level directory for details.
 
@@ -681,113 +681,13 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
       return typeof vText == "string" ? vText.length : 0;
     },
 
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @return {null | var} TODOC
-     */
-    getResponseContent : function()
-    {
-      if (this.getState() !== "completed")
-      {
-        if (qx.core.Variant.isSet("qx.debug", "on"))
-        {
-          if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-            this.warn("Transfer not complete, ignoring content!");
-          }
-        }
-
-        return null;
+    getResponseContent : function() {
+      var result = null;
+      if( this.getState() === "completed" ) {
+        result = this.getResponseText();
       }
-
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          this.debug("Returning content for responseType: " + this.getResponseType());
-        }
-      }
-
-      var vText = this.getResponseText();
-
-      switch(this.getResponseType())
-      {
-        case qx.util.Mime.TEXT:
-        case qx.util.Mime.HTML:
-          if (qx.core.Variant.isSet("qx.debug", "on"))
-          {
-            if (qx.core.Setting.get("qx.ioRemoteDebugData"))
-            {
-              this.debug("Response: " + vText);
-            }
-          }
-
-          return vText;
-
-        case qx.util.Mime.JSON:
-          if (qx.core.Variant.isSet("qx.debug", "on"))
-          {
-            if (qx.core.Setting.get("qx.ioRemoteDebugData"))
-            {
-              this.debug("Response: " + vText);
-            }
-          }
-
-          try {
-            if (vText && vText.length > 0) {
-              return qx.io.Json.parseQx(vText) || null;
-            } else {
-              return null;
-            }
-          }
-          catch(ex)
-          {
-            this.error("Could not execute json: [" + vText + "]", ex);
-            return null;
-          }
-
-        case qx.util.Mime.JAVASCRIPT:
-          if (qx.core.Variant.isSet("qx.debug", "on"))
-          {
-            if (qx.core.Setting.get("qx.ioRemoteDebugData"))
-            {
-              this.debug("Response: " + vText);
-            }
-          }
-
-          try {
-            if(vText && vText.length > 0) {
-              return window.eval(vText) || null;
-            } else {
-              return null;
-            }
-          } catch(ex) {
-            this.error("Could not execute javascript: [" + vText + "]", ex);
-            return null;
-          }
-
-        case qx.util.Mime.XML:
-          vText = this.getResponseXml();
-
-          if (qx.core.Variant.isSet("qx.debug", "on"))
-          {
-            if (qx.core.Setting.get("qx.ioRemoteDebugData"))
-            {
-              this.debug("Response: " + vText);
-            }
-          }
-
-          return vText || null;
-
-        default:
-          this.warn("No valid responseType specified (" + this.getResponseType() + ")!");
-          return null;
-      }
+      return result;
     },
-
-
-
 
     /*
     ---------------------------------------------------------------------------
