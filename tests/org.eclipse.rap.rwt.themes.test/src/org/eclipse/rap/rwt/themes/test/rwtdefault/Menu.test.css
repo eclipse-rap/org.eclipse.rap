@@ -22,6 +22,7 @@ Menu {
 }
 
 MenuItem {
+  background-image: none;
   color: black;
   background-color: transparent;
   opacity: 1;
