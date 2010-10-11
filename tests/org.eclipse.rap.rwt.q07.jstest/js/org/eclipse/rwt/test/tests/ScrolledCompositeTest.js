@@ -130,6 +130,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite.destroy();
     },
 
+    testScrollWhileInvisible : function() {
+      var composite = this._createComposite();
+      composite.hide();
+      this._setScrollDimension( composite, 200, 200 );
+      composite.setHBarSelection( 10 );
+      composite.setVBarSelection( 20 );
+      composite.show();
+      var position = this._getScrollPosition( composite );
+      assertEquals( [ 10, 20 ], position );
+      composite.destroy();
+    },
+
     testDispose: function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var composite = this._createComposite();
