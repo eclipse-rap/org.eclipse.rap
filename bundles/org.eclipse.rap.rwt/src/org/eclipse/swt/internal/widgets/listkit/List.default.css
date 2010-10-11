@@ -12,7 +12,7 @@ List[BORDER] {
 
 List-Item {
   background-color: white;
-  color: #4a4a4a;
+  color: inherit;
 }
 
 List-Item:hover {

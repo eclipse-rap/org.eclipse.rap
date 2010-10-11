@@ -22,7 +22,7 @@ Tree[BORDER] {
 
 TreeItem {
   background-color: transparent;
-  color: #666666;
+  color: inherit;
 }
 
 TreeItem:hover {

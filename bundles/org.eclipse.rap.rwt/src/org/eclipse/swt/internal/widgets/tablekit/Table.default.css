@@ -8,7 +8,7 @@ Table {
 
 TableItem {
   background-color: transparent;
-  color: #666666;
+  color: inherit;
 }
 
 TableItem:hover {
