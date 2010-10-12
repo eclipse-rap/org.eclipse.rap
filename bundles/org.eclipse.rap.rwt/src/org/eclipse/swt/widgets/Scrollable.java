@@ -91,7 +91,11 @@ public abstract class Scrollable extends Control {
       = bounds.width - borderWidth * 2 - padding.width - getVScrollBarWidth();
     int height
       = bounds.height - borderWidth * 2 - padding.height - getHScrollBarHeight();
-    return new Rectangle( padding.x, padding.y, width, height );
+    Rectangle result = new Rectangle( padding.x, 
+                                      padding.y, 
+                                      Math.max( 0, width ),
+                                      Math.max( 0, height ) );
+    return result;
   }
 
   /**

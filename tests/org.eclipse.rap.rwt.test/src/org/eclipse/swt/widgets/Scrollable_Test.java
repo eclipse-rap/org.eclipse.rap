@@ -85,4 +85,30 @@ public class Scrollable_Test extends TestCase {
     expected = new Rectangle( 10, 10, 66, 66 );
     assertEquals( expected, composite.getClientArea() );
   }
+  
+  public void testClientAreaIsZero() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Composite composite = new Composite( shell, SWT.BORDER );
+    composite.setSize( 0, 0 );
+    assertEquals( 2, composite.getBorderWidth() );
+    Rectangle expected = new Rectangle( 0, 0, 0, 0 );
+    assertEquals( expected, composite.getClientArea() );
+    composite = new Composite( shell, SWT.BORDER ) {
+      int getVScrollBarWidth() {
+        return 20;
+      }
+      int getHScrollBarHeight() {
+        return 20;
+      }
+      Rectangle getPadding() {
+        return new Rectangle( 10, 10, 10, 10 );
+      }
+    };
+    composite.setSize( 25, 25 );
+    assertEquals( 2, composite.getBorderWidth() );
+    expected = new Rectangle( 10, 10, 0, 0 );
+    assertEquals( expected, composite.getClientArea() );
+  }
+
 }
