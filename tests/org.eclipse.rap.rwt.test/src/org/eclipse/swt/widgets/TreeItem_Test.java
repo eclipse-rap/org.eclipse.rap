@@ -644,6 +644,7 @@ public class TreeItem_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
+    tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
     TreeItem subItem = new TreeItem( treeItem, 0 );
     assertEquals( NULL_RECT, subItem.getBounds() );
@@ -651,77 +652,116 @@ public class TreeItem_Test extends TestCase {
     assertTrue( treeItem.getBounds().height > 0 );
     assertTrue( treeItem.getBounds().width > 0 );
   }
-
-  public void testGetBoundsWithoutColumns() {
+  
+  public void testGetBoundsForInvalidColumns() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( shell, 0 );
+    tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    // no columns - plain style
+    Rectangle bounds = treeItem.getBounds( 0 );
+    assertTrue( bounds.x > 0 && bounds.height > 0 );
+    bounds = treeItem.getBounds( -1 );
+    assertTrue( bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
+    bounds = treeItem.getBounds( 1 );
+    assertTrue( bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
+  }
+  
+  public void testGetBoundsCollapsedSubItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, 0 );
+    tree.setSize( 200, 200 );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem subItem = new TreeItem( treeItem, SWT.NONE );
+    Rectangle bounds = subItem.getBounds( 0 );
+    assertTrue( bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
+    treeItem.setExpanded( true );
+    bounds = subItem.getBounds( 0 );
+    assertTrue( bounds.x > 0 && bounds.height > 0 );
+    treeItem.setExpanded( false );
+    bounds = subItem.getBounds( 0 );
+    assertTrue( bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
+  }
+  
+  public void testGetBoundsExpandedSubItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    String string = "hello";
+    Tree tree = new Tree( shell, 0 );
+    tree.setSize( 200, 200 );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(),
+                                                             string );
+    TreeItem subItem = new TreeItem( treeItem, SWT.NONE );
+    treeItem.setExpanded( true );
+    subItem.setText( string );
+    Rectangle subItemBounds = subItem.getBounds( 0 );
+    Rectangle itemBounds = treeItem.getBounds( 0 );
+    assertTrue( subItemBounds.x > itemBounds.x );
+    assertTrue( subItemBounds.y >= itemBounds.y + itemBounds.height );
+    assertTrue( subItemBounds.height > stringExtent.y );
+    assertTrue( subItemBounds.width > stringExtent.x );
+  }
+  
+  public void testGetBoundsWithText() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    String string = "hello";
+    Tree tree = new Tree( shell, 0 );
+    tree.setSize( 200, 200 );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(),
+                                                             string );
+    treeItem.setText( string );
+    Rectangle withTextBounds = treeItem.getBounds( 0 );
+    treeItem.setText( "" );
+    Rectangle noTextBounds = treeItem.getBounds( 0 );
+    assertTrue( withTextBounds.x > 0 );
+    assertTrue( withTextBounds.height > stringExtent.y );
+    assertTrue( withTextBounds.width > stringExtent.x );
+    assertTrue( noTextBounds.x > 0 && noTextBounds.height > 0 );
+    assertTrue( noTextBounds.width < withTextBounds.width );
+  }
+  
+  public void testGetBoundsWithImage() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Rectangle imageBounds = image.getBounds();
+    Tree tree = new Tree( shell, 0 );
+    tree.setSize( 200, 200 );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+    treeItem.setImage( image );
+    Rectangle boundsWithImage = treeItem.getBounds( 0 );
+    treeItem.setImage( ( Image )null );
+    Rectangle boundsNoImage = treeItem.getBounds( 0 );
+    assertTrue( boundsWithImage.x > 0 );
+    assertTrue( boundsWithImage.height >= imageBounds.height );
+    assertTrue( boundsWithImage.width >= imageBounds.width );
+    assertTrue( boundsNoImage.x > 0 && boundsNoImage.height > 0 );
+  }
+
+  public void testGetBoundsWithTextAndImage() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     Rectangle imageBounds = image.getBounds();
     String string = "hello";
+    Tree tree = new Tree( shell, 0 );
+    tree.setSize( 200, 200 );
+    TreeItem treeItem = new TreeItem( tree, 0 );
     Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(),
                                                              string );
-    Rectangle bounds;
-    Rectangle bounds2;
-    tree = new Tree( shell, 0 );
-    treeItem = new TreeItem( tree, 0 );
-    bounds = treeItem.getBounds( 0 );
-    assertTrue( ":1a:", bounds.x > 0 && bounds.height > 0 );
-    bounds = treeItem.getBounds( -1 );
-    assertTrue( ":1b:", bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
-    bounds = treeItem.getBounds( 1 );
-    assertTrue( ":1c:", bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
-    // unexpanded item
-    TreeItem subItem = new TreeItem( treeItem, SWT.NONE );
-    bounds = subItem.getBounds( 0 );
-    assertTrue( ":1d:", bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
-    treeItem.setExpanded( true );
-    bounds = subItem.getBounds( 0 );
-    assertTrue( ":1e:", bounds.x > 0 && bounds.height > 0 );
-    treeItem.setExpanded( false );
-    bounds = subItem.getBounds( 0 );
-    assertTrue( ":1f:", bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
-    treeItem.setExpanded( true );
-    subItem.setText( string );
-    bounds = subItem.getBounds( 0 );
-    bounds2 = treeItem.getBounds( 0 );
-    assertTrue( ":1g:",    bounds.x > bounds2.x
-                        && bounds.y >= bounds2.y + bounds2.height
-                        && bounds.height > stringExtent.y
-                        && bounds.width > stringExtent.x );
     treeItem.setText( string );
-    bounds = treeItem.getBounds( 0 );
-    assertTrue( ":1h:", bounds.x > 0
-                        && bounds.height > stringExtent.y
-                        && bounds.width > stringExtent.x );
-    bounds2 = treeItem.getBounds();
-    treeItem.setText( "" );
-    bounds2 = treeItem.getBounds( 0 );
-    assertTrue( ":1i:", bounds2.x > 0 && bounds2.height > 0 );
-    assertTrue( ":1j:", bounds2.width < bounds.width );
-    tree = new Tree( shell, 0 );
-    treeItem = new TreeItem( tree, 0 );
+    Rectangle boundsTextOnly = treeItem.getBounds( 0 );
     treeItem.setImage( image );
-    bounds = treeItem.getBounds( 0 );
-    assertTrue( ":1k:", bounds.x > 0
-                        && bounds.height >= imageBounds.height
-                        && bounds.width >= imageBounds.width );
-    treeItem.setImage( ( Image )null );
-    bounds2 = treeItem.getBounds( 0 );
-    assertTrue( ":1l:", bounds2.x > 0 && bounds2.height > 0 );
-    tree = new Tree( shell, 0 );
-    treeItem = new TreeItem( tree, 0 );
-    treeItem.setText( string );
-    bounds = treeItem.getBounds( 0 );
-    treeItem.setImage( image );
-    bounds2 = treeItem.getBounds( 0 );
-    assertTrue( ":1n:", bounds2.x > 0 && bounds2.height > 0 );
-    assertTrue( ":1o:", bounds2.width > bounds.width );
-    assertTrue( ":1p", bounds2.width >= stringExtent.x + imageBounds.width
-                       && bounds2.height >= Math.max( stringExtent.y,
-                                                      imageBounds.height ) );
+    Rectangle boundsBoth = treeItem.getBounds( 0 );
+    int maxHeight = Math.max( stringExtent.y, imageBounds.height );
+    assertTrue( boundsBoth.x > 0 && boundsBoth.height > 0 );
+    assertTrue( boundsBoth.width > boundsTextOnly.width );
+    assertTrue( boundsBoth.width >= stringExtent.x + imageBounds.width );
+    assertTrue( boundsBoth.height >= maxHeight );
   }
 
   public void testGetBoundsSubsequentRootItems() {

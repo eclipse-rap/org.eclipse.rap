@@ -1796,9 +1796,10 @@ public class Tree extends Composite {
   }
 
   int getTextWidth( final int index ) {
-    return   getCellWidth( index )
-           - getTextOffset( index )
-           - ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+    int result =   getCellWidth( index )
+                 - getTextOffset( index )
+                 - ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+    return Math.max( 0, result );
   }
 
   int getIndentionOffset( final TreeItem item ) {
@@ -1917,20 +1918,35 @@ public class Tree extends Composite {
   }
 
   Point getItemImageSize( final int index ) {
-    return hasColumnImages( index ) ? getItemImageSize() : new Point( 0, 0 );
+    Point result;
+    if( hasColumnImages( index ) ) {
+      result = getItemImageSize();
+      int availWidth = getCellWidth( index );
+      availWidth -= getCellPadding().x;
+      availWidth = Math.max( 0, availWidth );
+      result.x = Math.min( result.x, availWidth );
+    } else {
+      result = new Point( 0, 0 );
+    }
+    return result;
   }
 
   private int getItemImageOuterWidth( final int index ) {
     int result = 0;
     if( hasColumnImages( index ) ) {
-      result += getItemImageSize().x;
+      result += getItemImageSize( index ).x;
       result += getCellSpacing();
     }
     return result;
   }
 
   private Point getItemImageSize() {
-    return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
+    Point result = new Point( 0, 0 );
+    if( itemImageSize != null ) {
+      result.x = itemImageSize.x;
+      result.y = itemImageSize.y;
+    }
+    return result;
   }
 
   private Point getCheckImageSize() {
