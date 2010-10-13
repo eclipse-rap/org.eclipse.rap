@@ -179,7 +179,7 @@ public class TreeTab extends ExampleTab {
         TreeItem item = tree.getSelection()[ 0 ];
         String itemText = "null";
         if( item != null ) {
-          item.getText();
+          itemText = item.getText();
         }
         String message = "You requested a context menu for: " + itemText;
         MessageDialog.openInformation( tree.getShell(),
