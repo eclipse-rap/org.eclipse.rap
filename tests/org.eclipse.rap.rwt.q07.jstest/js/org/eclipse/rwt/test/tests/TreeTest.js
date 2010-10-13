@@ -2018,6 +2018,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testMoveColumn : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      tree.setHeaderVisible( true );
       var column = new org.eclipse.swt.widgets.TableColumn( tree );
       var child = new org.eclipse.rwt.widgets.TreeItem( tree );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -2040,6 +2041,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testResizeColumn : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      tree.setHeaderVisible( true );
       var column = new org.eclipse.swt.widgets.TableColumn( tree );
       var child = new org.eclipse.rwt.widgets.TreeItem( tree );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -2051,14 +2053,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.initRequestLog();
       var left = qx.event.type.MouseEvent.buttons.left;
       var node = column._getTargetNode();
-      testUtil.fakeMouseEventDOM( node, "mousedown", left, 100, 0 );
-      testUtil.fakeMouseEventDOM( node, "mousemove", left, 105, 0 );
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 200, 0 );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 205, 0 );
       assertEquals( "table-column-resizer", tree._resizeLine.getAppearance() );
       var line = tree._resizeLine._getTargetNode();
       assertIdentical( tree._getTargetNode(), line.parentNode );
       assertEquals( 203, parseInt( line.style.left ) );
       assertEquals( "", tree._resizeLine.getStyleProperty( "visibility" ) );
-      testUtil.fakeMouseEventDOM( node, "mouseup", left, 105, 0 );
+      testUtil.fakeMouseEventDOM( node, "mouseup", left, 205, 0 );
       var expected = "rg.eclipse.swt.events.controlResized=w1";
       assertTrue( testUtil.getMessage().indexOf( expected ) != -1 );
       assertEquals( "hidden", tree._resizeLine.getStyleProperty( "visibility" ) );      
@@ -2122,6 +2124,81 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
     
+    testSetScrollLeftBeforeAppear : function() {
+      // See Bug 325091 (also the next 3 tests)
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
+      var columnX = new org.eclipse.swt.widgets.TableColumn( tree );
+      columnX.setLeft( 0 );
+      columnX.setWidth( 1100 );
+      tree.setHeaderHeight( 30 );
+      tree.setHeaderVisible( true );
+      testUtil.flush();
+      tree.hide();
+      testUtil.flush();
+      tree.setScrollLeft( 160 );
+      tree.show();
+      assertEquals( 160, tree._horzScrollBar.getValue() );
+      assertEquals( 160, tree._clientArea.getScrollLeft() );      
+      assertEquals( 160, tree._columnArea.getScrollLeft() );      
+      tree.destroy();
+    },
+
+      //NOTE: This next test would fail in IE. For some reason, under this very
+      //specific set of circumstances, the scrollWidth of the clientArea element
+      //will not be updated by IE, and setting scrollLeft fails. (This can be
+      //fixed by setting the width of one of the children to 0 and back to its
+      //original value.) But since i was unable to reproduce this problem 
+      //in an actual RAP application, i will comment this test for now.
+      //Also, see Bug 325091.
+
+//    testSetScrollLeftBeforeAppearIEbug : function() {
+//      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+//      var tree = this._createDefaultTree();
+//      tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
+//      testUtil.flush();
+//      tree.hide();
+//      testUtil.flush();
+//      tree.setScrollLeft( 160 );
+//      tree.show();
+//      assertEquals( 160, tree._horzScrollBar.getValue() );
+//      assertEquals( 160, tree._clientArea.getScrollLeft() );      
+//      tree.destroy();
+//    },
+
+    testSetScrollLeftBeforeCreate : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( true );
+      tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
+      var columnX = new org.eclipse.swt.widgets.TableColumn( tree );
+      columnX.setLeft( 0 );
+      columnX.setWidth( 1100 );
+      tree.setHeaderHeight( 30 );
+      tree.setHeaderVisible( true );
+      tree.setScrollLeft( 160 );
+      testUtil.flush();
+      assertEquals( 160, tree._horzScrollBar.getValue() );      
+      assertEquals( 160, tree._clientArea.getScrollLeft() );      
+      assertEquals( 160, tree._columnArea.getScrollLeft() );      
+      tree.destroy();
+    },
+
+    testSetScrollBeforeColumnHeaderVisible: function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
+      var columnX = new org.eclipse.swt.widgets.TableColumn( tree );
+      columnX.setLeft( 0 );
+      columnX.setWidth( 1100 );
+      testUtil.flush();
+      tree.setScrollLeft( 160 );
+      tree.setHeaderHeight( 30 );
+      tree.setHeaderVisible( true );
+      testUtil.flush();
+      assertEquals( 160, tree._columnArea.getScrollLeft() );      
+      tree.destroy();
+    },
 
     testRenderOnItemGrayed : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
