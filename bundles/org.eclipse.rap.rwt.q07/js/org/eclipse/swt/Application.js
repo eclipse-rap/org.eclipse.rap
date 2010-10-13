@@ -207,7 +207,8 @@ qx.Class.define( "org.eclipse.swt.Application", {
         // Firefox bug: On the very first mousedown, access to the events target 
         // is forbidden and causes an error.
       }
-      if( tagName != null && tagName != "INPUT" ) {
+      // NOTE: See also Bug 321372
+      if( event.button === 0 && tagName != null && tagName != "INPUT" ) {
         event.preventDefault();
       }
     },
