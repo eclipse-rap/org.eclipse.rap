@@ -483,6 +483,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     rightClick : function( widget ) {
       var right = qx.event.type.MouseEvent.buttons.right;
       var node = widget._getTargetNode();
+      // TODO [tb] : Event order differs on MAC OS
       this.fakeMouseEventDOM( node, "mousedown", right );
       this.fakeMouseEventDOM( node, "mouseup", right );
       this.fakeMouseEventDOM( node, "click", right );

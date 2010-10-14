@@ -633,12 +633,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _onSelectionClick: function( event, item ) {
       // NOTE: Using a listener for "dblclick" does not work because the
       //       item is re-rendered on mousedown which prevents the dom-event.
-      var doubleClick = this._isDoubleClicked( item );
+      var doubleClick = this._isDoubleClicked( event, item );
       if( doubleClick ) {
-        this._selectionTimestamp = null;
         this._sendSelectionEvent( item, true, null );
       } else {
-        this._selectionTimestamp = new Date();
         if( this._hasMultiSelection ) {
           this._multiSelectItem( event, item );
         } else {
@@ -1148,14 +1146,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }      
     },
 
-    _isDoubleClicked : function( item ) {
+    _isDoubleClicked : function( event, item ) {
       var result = false;
-      if( this.isFocusItem( item ) && this._selectionTimestamp != null ) {
+      var leftClick = event.getButton() === "left";
+      if(    leftClick
+          && this.isFocusItem( item ) 
+          && this._selectionTimestamp != null ) 
+      {
         var stamp = new Date();
         var diff = org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME;
         if( stamp.getTime() - this._selectionTimestamp.getTime() < diff ) {
           result = true;
         }
+      }
+      if( leftClick && !result ) {
+        this._selectionTimestamp = new Date();
+      } else {
+        this._selectionTimestamp = null;
       }
       return result;
     },

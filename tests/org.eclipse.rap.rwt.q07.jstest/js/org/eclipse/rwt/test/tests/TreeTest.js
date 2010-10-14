@@ -1473,6 +1473,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( log[ 1 ].indexOf( expected3 ) == -1 );            
       tree.destroy();
     },
+
+    testDontSendDefaultSelectionEventOnDoubleRightClick : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var tree = this._createDefaultTree();
+      tree.setHasSelectionListeners( true );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      wm.add( tree, "w1", true );
+      wm.add( child1, "w2", false );
+      testUtil.flush();
+      testUtil.initRequestLog();
+      testUtil.rightClick( tree._rows[ 0 ] );
+      testUtil.rightClick( tree._rows[ 0 ] );
+      assertEquals( 2, testUtil.getRequestsSend() );
+      var log = testUtil.getRequestLog();
+      var expected = "org.eclipse.swt.events.widgetSelected.item=w2";
+      var notExpected = "org.eclipse.swt.events.widgetDefaultSelected";
+      assertTrue( log[ 0 ].indexOf( notExpected ) == -1 );
+      assertTrue( log[ 1 ].indexOf( notExpected ) == -1 );
+      assertTrue( log[ 0 ].indexOf( expected ) != -1 );
+      assertTrue( log[ 1 ].indexOf( expected ) != -1 );
+      tree.destroy();
+    },
   
     testSendDefaultSelectionEventByEnter : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
