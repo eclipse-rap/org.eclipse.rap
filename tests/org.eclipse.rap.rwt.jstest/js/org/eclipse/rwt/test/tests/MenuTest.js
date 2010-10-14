@@ -226,6 +226,35 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.disposeMenu();            
     },
     
+    testContextmenuStopsPropagation : function() {
+      var menu1 = new org.eclipse.rwt.widgets.Menu();
+      var menu2 = new org.eclipse.rwt.widgets.Menu();
+      menu1.setHasMenuListener( true );
+      menu2.setHasMenuListener( true );
+      var parent = new org.eclipse.swt.widgets.Composite();
+      parent.addToDocument();    
+      parent.setContextMenu( menu1 );
+      parent.addEventListener( 
+        "contextmenu", 
+        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      var widget = new qx.ui.basic.Atom( "bla" );
+      widget.setContextMenu( menu2 );
+      widget.setParent( parent );
+      widget.addEventListener( 
+        "contextmenu", 
+        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      this.testUtil.flush();
+      assertFalse( menu1.isSeeable() );
+      assertFalse( menu2.isSeeable() );
+      this.testUtil.rightClick( widget );
+      assertTrue( menu2.isSeeable() );
+      assertFalse( menu1.isSeeable() );
+      menu1.destroy();            
+      menu2.destroy();            
+      widget.destroy();
+      parent.destroy();
+    },
+    
     testDropDownExecuteMenuItem : function() {
       this.createMenuBar( "push" );
       this.executed = false;

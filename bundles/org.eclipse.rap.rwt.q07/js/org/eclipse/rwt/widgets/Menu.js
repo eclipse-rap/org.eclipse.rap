@@ -68,6 +68,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
       var widget = event.getCurrentTarget();
       var contextMenu = widget.getContextMenu();
       if( contextMenu != null ) {
+        event.stopPropagation();
         contextMenu.setLocation( event.getPageX(), event.getPageY() );
         contextMenu.setOpener( this );
         contextMenu.show();
