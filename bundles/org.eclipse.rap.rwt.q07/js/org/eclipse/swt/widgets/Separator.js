@@ -41,6 +41,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
   },
   
   members : {
+  
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._line.addState( state );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._line.removeState( state );
+      }
+    },
 
     setLineStyle : function( style ) {
       this._line.addState( style );
