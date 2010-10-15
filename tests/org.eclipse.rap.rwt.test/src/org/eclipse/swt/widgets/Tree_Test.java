@@ -974,7 +974,7 @@ public class Tree_Test extends TestCase {
     item1.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
     assertTrue( tree.getItemImageSize( 0 ).x <= 20 );
   }
-  
+
   public void testImageCutOffMultiColumn() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -993,7 +993,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 100, tree.getItemImageSize( 0 ).x );
     assertTrue( tree.getItemImageSize( 1 ).x <= 50 );
   }
-  
+
   public void testImageCutOffAndRestore() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -1009,7 +1009,7 @@ public class Tree_Test extends TestCase {
     column.setWidth( 200 );
     assertEquals( 100, tree.getItemImageSize( 0 ).x );
   }
-  
+
   public void testHideColumn() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1017,8 +1017,8 @@ public class Tree_Test extends TestCase {
     tree.setSize( 200, 200 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 0 );
-    assertEquals(  0, tree.getItemImageSize( 0 ).x );  
-    assertEquals(  0, tree.getTextWidth( 0 ) );  
+    assertEquals(  0, tree.getItemImageSize( 0 ).x );
+    assertEquals(  0, tree.getTextWidth( 0 ) );
   }
 
   public void testHideColumnWidthImage() {
@@ -1028,10 +1028,10 @@ public class Tree_Test extends TestCase {
     tree.setSize( 200, 200 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );    
+    item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     column.setWidth( 0 );
-    assertEquals( 0, tree.getItemImageSize( 0 ).x );  
-    assertEquals( 0, tree.getTextWidth( 0 ) );  
+    assertEquals( 0, tree.getItemImageSize( 0 ).x );
+    assertEquals( 0, tree.getTextWidth( 0 ) );
   }
 
   //////////
@@ -1120,7 +1120,6 @@ public class Tree_Test extends TestCase {
     } );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     tree.setItemCount( 1 );
-    Fixture.readDataAndProcessAction( tree );
     assertEquals( "node 0", tree.getItem( 0 ).getText() );
     tree.clearAll( true );
     assertEquals( "node 0", tree.getItem( 0 ).getText() );
