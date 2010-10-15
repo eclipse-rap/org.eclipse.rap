@@ -1,6 +1,6 @@
 /*
 
-   Copyright 1999-2003  The Apache Software Foundation 
+   Copyright 1999-2003  The Apache Software Foundation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,19 +22,19 @@ package org.eclipse.rwt.apache.batik.css.parser;
  * A collection of utility functions for a CSS scanner.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: ScannerUtilities.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
+ * @version $Id: ScannerUtilities.java,v 1.2 2010/10/15 07:12:12 ifurnadjiev Exp $
  */
 public class ScannerUtilities {
 
     /**
      * The set of the valid identifier start characters.
      */
-    protected final static int[] IDENTIFIER_START = { 0, 0, 134217726, 134217726 };
+    protected final static int[] IDENTIFIER_START = { 0, 0, -2013265922, 134217726 };
 
     /**
      * The set of the valid name characters.
      */
-    protected final static int[] NAME = { 0, 67051520, 134217726, 134217726 };
+    protected final static int[] NAME = { 0, 67051520, -2013265922, 134217726 };
 
     /**
      * The set of the valid hexadecimal characters.
