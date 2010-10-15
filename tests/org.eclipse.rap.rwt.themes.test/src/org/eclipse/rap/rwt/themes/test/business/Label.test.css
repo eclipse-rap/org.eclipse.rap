@@ -29,3 +29,19 @@ Label.standaloneView {
   color: rgb( 102, 102, 102 );
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
+
+Label-SeparatorLine {
+  background-image: none;
+  background-color: transparent;
+  border: 1px solid #a4a4a4;
+  border-radius: 0px;
+  width: 2px;
+}
+
+Label-SeparatorLine[SHADOW_IN] {  
+  border: 1px inset;
+}
+
+Label-SeparatorLine[SHADOW_OUT] {
+  border: 1px outset;
+}

@@ -59,6 +59,8 @@ final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
       writer.call( "setLineStyle", new Object[] { "rwt_SHADOW_IN" } );
     } else if( ( label.getStyle() & SWT.SHADOW_OUT ) != 0 ) {
       writer.call( "setLineStyle", new Object[] { "rwt_SHADOW_OUT" } );
+    } else {
+      writer.call( "setLineStyle", new Object[] { "rwt_SHADOW_NONE" } );
     }
   }
 }

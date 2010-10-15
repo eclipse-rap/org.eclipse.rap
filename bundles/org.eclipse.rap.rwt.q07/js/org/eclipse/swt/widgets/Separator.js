@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     // Fix IE Styling issues
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this );
     // the actual separator line
-    this._line = new qx.ui.basic.Terminator();
+    this._line = new qx.ui.layout.CanvasLayout();
     this._line.setAnonymous( true );
     this._line.setAppearance( "separator-line" );
     this.add( this._line );
@@ -49,13 +49,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     setLineOrientation : function( value ) {
       if( value == "vertical" ) {
         this.setHorizontalChildrenAlign( "center" );
-        this._line.setWidth( "auto" );
         this._line.setHeight( "100%" );
         this._line.addState( "rwt_VERTICAL" );
       } else {
         this.setVerticalChildrenAlign( "middle" );
         this._line.setWidth( "100%" );
-        this._line.setHeight( "auto" );
         this._line.removeState( "rwt_VERTICAL" );
       }
     }

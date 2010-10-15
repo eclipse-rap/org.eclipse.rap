@@ -1696,15 +1696,26 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "separator-line" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      var orient = states.rwt_VERTICAL ? "vertical" : "horizontal";
-      if( states.rwt_SHADOW_IN ) {
-        result.border = "separator.shadowin." + orient + ".border";
-      } else if( states.rwt_SHADOW_OUT ) {
-        result.border = "separator.shadowout." + orient + ".border";
+      if( states.rwt_VERTICAL ) {
+        result.width = tv.getCssDimension( "Label-SeparatorLine", "width" );
       } else {
-        result.border = "undefined";
+        result.height = tv.getCssDimension( "Label-SeparatorLine", "width" );
       }
+      result.border = tv.getCssBorder( "Label-SeparatorLine", "border" );      
+      var orient = states.rwt_VERTICAL ? "vertical" : "horizontal";
+      if( result.border === "thinInset" ) {          
+        result.border = "separator.shadowin." + orient + ".border";
+      } else if( result.border === "thinOutset" ) {
+        result.border = "separator.shadowout." + orient + ".border";
+      }     
+      result.backgroundColor = tv.getCssColor( "Label-SeparatorLine", 
+                                               "background-color" );
+      result.backgroundImage = tv.getCssImage( "Label-SeparatorLine",
+                                               "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Label-SeparatorLine",
+                                                     "background-image" );      
       return result;
     }
   },

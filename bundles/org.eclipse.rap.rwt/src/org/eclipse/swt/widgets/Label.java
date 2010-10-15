@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,16 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.labelkit.LabelThemeAdapter;
 
 /**
  * Instances of this class represent a non-selectable
@@ -259,7 +262,7 @@ public class Label extends Control {
     int width = 0;
     int height = 0;
     if( ( style & SWT.SEPARATOR ) != 0 ) {
-      int lineWidth = 2;
+      int lineWidth = getSeparatorLineWidth();
       if( ( style & SWT.HORIZONTAL ) != 0 ) {
         width = DEFAULT_WIDTH;
         height = lineWidth;
@@ -316,5 +319,11 @@ public class Label extends Control {
     }
     result = checkBits( result, SWT.LEFT, SWT.CENTER, SWT.RIGHT, 0, 0, 0 );
     return result;
+  }
+
+  private int getSeparatorLineWidth() {
+    LabelThemeAdapter themeAdapter
+      = ( LabelThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getSeparatorLineWidth( this );
   }
 }
