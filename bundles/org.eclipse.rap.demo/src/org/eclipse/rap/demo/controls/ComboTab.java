@@ -95,11 +95,11 @@ public class ComboTab extends ExampleTab {
     selectionTitle.setText( "Text selection:" );
     createSetSelectionControls( group );
     createGetSelectionControls( group );
-    createSetTextLimitButton( group, firstCombo );
+    createSetTextLimitButton( group, true );
     Group grpManioulateCCombo = new Group( parent, SWT.NONE );
     grpManioulateCCombo.setText( "Manipulate CCombo" );
     grpManioulateCCombo.setLayout( new GridLayout() );
-    createSetTextLimitButton( grpManioulateCCombo, cCombo );
+    createSetTextLimitButton( grpManioulateCCombo, false );
     createChangeSizeButton( grpManioulateCCombo );
     createShowListButton( grpManioulateCCombo );
   }
@@ -363,7 +363,7 @@ public class ComboTab extends ExampleTab {
   }
 
   private void createSetTextLimitButton( final Composite parent,
-                                         final Control combo )
+                                         final boolean isCombo )
   {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
@@ -376,10 +376,10 @@ public class ComboTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         try {
           int textLimit = Integer.parseInt( text.getText() );
-          if( combo instanceof Combo ) {
-            ( ( Combo )combo ).setTextLimit( textLimit );
-          } else if( combo instanceof CCombo ) {
-            ( ( CCombo )combo ).setTextLimit( textLimit );
+          if( isCombo ) {
+            firstCombo.setTextLimit( textLimit );
+          } else {
+            cCombo.setTextLimit( textLimit );
           }
         } catch( NumberFormatException e ) {
         }
