@@ -13,7 +13,10 @@
     return result;
   };
   
-  if( console && console.log && getURLParam( "debug" ) === "off" ) {
+  if(    typeof console === "object" 
+      && typeof console.log === "function"
+      && getURLParam( "debug" ) === "off" ) 
+  {
     console.log( "debug is OFF" );
   }
 
