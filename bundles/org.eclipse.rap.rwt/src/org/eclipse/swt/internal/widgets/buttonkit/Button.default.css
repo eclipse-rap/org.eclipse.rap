@@ -34,20 +34,6 @@ Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
   padding: 5px 6px;
 }
 
-Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
-  border: 1px outset #A4A4A4;
-  border-radius: 3px;
-  padding: 2px 5px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
-  );
-  animation: hoverOut 500ms ease-out;
-}
-
 Button[PUSH]:hover, Button[TOGGLE]:hover {
   background-image: gradient(
     linear, left top, left bottom,
@@ -59,7 +45,6 @@ Button[PUSH]:hover, Button[TOGGLE]:hover {
 }
 
 Button[PUSH]:pressed, Button[TOGGLE]:pressed {
-  border: 1px inset;
   animation: none;
   background-image: gradient(
     linear, left top, left bottom,
@@ -92,10 +77,6 @@ Button[TOGGLE]:selected:hover {
 Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
   background-color: rgb( 225, 225, 230 );
   padding: 5px 6px;
-}
-
-Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {
-  border: 2px inset;
 }
 
 Button[CHECK], Button[RADIO] {
