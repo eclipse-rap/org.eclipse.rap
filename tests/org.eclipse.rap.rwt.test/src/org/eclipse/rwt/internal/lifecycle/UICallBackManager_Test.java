@@ -109,6 +109,27 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
   }
 
+  // same test as above, but while UIThread running
+  public void testWaitOnBackgroundThread_DuringLifecycle() throws Exception {
+    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
+    ServiceContext context = ContextProvider.getContext();
+    simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
+    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        display.wake();
+      }
+    } );
+    // assume that UIThread is currently running the life cycle
+    UICallBackManager.getInstance().notifyUIThreadStart();
+    thread.start();
+    thread.join();
+    Thread.sleep( SLEEP_TIME );
+    UICallBackManager.getInstance().notifyUIThreadEnd();
+    assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
+  }
+
   public void testAsyncExecWhileLifeCycleIsRunning() {
     fakeRequestParam( display );
     Fixture.fakePhase( PhaseId.READ_DATA );
