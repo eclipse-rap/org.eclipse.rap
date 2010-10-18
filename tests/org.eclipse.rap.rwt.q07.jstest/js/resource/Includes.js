@@ -1,5 +1,22 @@
 ( function(){
 
+  var getURLParam = function( name ) {
+    var result = null;
+    var href = window.location.href;
+    var hashes = href.slice( href.indexOf( "?" ) + 1).split( "&" );
+    for( var i = 0; i < hashes.length; i++ ) {
+      var hash = hashes[ i ].split( "=" );
+      if( hash[ 0 ] === name ) {
+        result = hash[ 1 ];
+      }
+    }
+    return result;
+  };
+  
+  if( console && console.log && getURLParam( "debug" ) === "off" ) {
+    console.log( "debug is OFF" );
+  }
+
   qxsettings = {};
   qxsettings[ "qx.application" ] = "org.eclipse.rwt.test.Application";
   qxsettings[ "qx.minLogLevel" ] = 200;
@@ -12,7 +29,7 @@
   qxvariants = {};
   qxvariants[ "qx.compatibility" ] = "off";
   qxvariants[ "qx.aspects" ] = "off";
-  qxvariants[ "qx.debug" ] = "on";
+  qxvariants[ "qx.debug" ] = getURLParam( "debug" ) === "off" ? "off" : "on";
 
   var clientClasses = [
     "qx/core/Bootstrap.js",
@@ -287,9 +304,14 @@
     document.write( output.join( "" ) );
   };
   
-  for( var i = 0; i < clientClasses.length; i++ ) {
-    include( "../org.eclipse.rap.rwt.q07/js/" + clientClasses[ i ] );
-  }  
+  if( getURLParam( "debug" ) === "off" ) {
+    include( "../org.eclipse.rap.rwt.q07/resources/client.js" );
+  } else {
+    for( var i = 0; i < clientClasses.length; i++ ) {
+      include( "../org.eclipse.rap.rwt.q07/js/" + clientClasses[ i ] );
+    }
+  }
+
   for( var i = 0; i < testRunnerClasses.length; i++ ) {
     include( "./js/" + testRunnerClasses[ i ] );
   }
