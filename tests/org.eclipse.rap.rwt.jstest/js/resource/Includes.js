@@ -35,6 +35,7 @@
   qxvariants[ "qx.debug" ] = getURLParam( "debug" ) === "off" ? "off" : "on";
 
   var clientClasses = [
+    "debug-settings.js",
     "qx/core/Bootstrap.js",
     "qx/lang/Core.js",
     "qx/lang/Generics.js",
@@ -168,7 +169,6 @@
     "qx/util/Mime.js",
     "qx/io/remote/XmlHttpTransport.js",
     "qx/net/HttpRequest.js",
-    "qx/io/remote/IframeTransport.js",
     "qx/html/Iframe.js",
     "qx/net/Http.js",
     "qx/io/remote/Request.js",
@@ -186,7 +186,6 @@
     "qx/locale/LocalizedString.js",
     "qx/locale/Key.js",
     "qx/ui/groupbox/GroupBox.js",
-    "qx/ui/form/InputCheckSymbol.js",
     "qx/ui/resizer/MResizable.js",
     "qx/ui/resizer/IResizable.js",
     "qx/ui/resizer/ResizablePopup.js",
@@ -197,13 +196,9 @@
     "qx/constant/Core.js",
     "qx/ui/pageview/AbstractPage.js",
     "qx/ui/pageview/tabview/Page.js",
-    "qx/ui/form/CheckBox.js",
-    "qx/ui/form/RadioButton.js",
     "qx/ui/pageview/tabview/Button.js",
     "qx/locale/Locale.js",
     "qx/core/Package.js",
-    "qx/log/appender/HtmlElement.js",
-    "qx/application/Basic.js",
     "org/eclipse/swt/LabelUtil.js",
     "org/eclipse/rwt/widgets/TreeRow.js",
     "org/eclipse/swt/Application.js",
