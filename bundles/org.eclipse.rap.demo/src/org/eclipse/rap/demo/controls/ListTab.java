@@ -223,7 +223,13 @@ public class ListTab extends ExampleTab {
     button.setText( "setTopIndex" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        list2.setTopIndex( Integer.parseInt( txtTopIndex.getText() ) );
+        try {
+          int topIndex = Integer.parseInt( txtTopIndex.getText() );
+          list2.setTopIndex( topIndex );
+        } catch( NumberFormatException e ) {
+          String msg = "Invalid number of topIndex: " + txtTopIndex.getText();
+          MessageDialog.openInformation( getShell(), "Information", msg );
+        }
       }
     } );
   }
