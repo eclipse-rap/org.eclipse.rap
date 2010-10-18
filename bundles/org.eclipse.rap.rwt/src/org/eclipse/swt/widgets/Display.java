@@ -2282,14 +2282,6 @@ public class Display extends Device implements Adaptable {
     public int getAsyncRunnablesCount() {
       return Display.this.synchronizer.getMessageCount();
     }
-
-    public void runAsyncRunnables() {
-      Display.this.synchronizer.runAsyncMessages( true );
-    }
-
-    public Object getDeviceLock() {
-      return Display.this.deviceLock;
-    }
   }
 
   /**
