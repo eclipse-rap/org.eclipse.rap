@@ -7,7 +7,8 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-if( typeof qxsettings !== "undefined" ) {
+
+if( typeof qxsettings === "undefined" ) {
   qxsettings = {};
   qxsettings[ "qx.theme" ] = "org.eclipse.swt.theme.Default";
   qxsettings[ "qx.logAppender" ] = "qx.log.appender.Native";
