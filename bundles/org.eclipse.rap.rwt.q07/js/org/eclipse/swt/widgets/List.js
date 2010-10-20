@@ -1,24 +1,38 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ *  Copyright: 2004-2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
- * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ *  Contributors:
+ *    1&1 Internet AG and others - original API and implementation
+ *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
 /**
  * This class extends qx.ui.form.List to make its API more SWT-like.
  */
 qx.Class.define( "org.eclipse.swt.widgets.List", {
-  extend : qx.ui.form.List,
+  extend : qx.ui.layout.VerticalBoxLayout,
 
   construct : function( multiSelection ) {
     this.base( arguments );
-    this.setMarkLeadingItem( true );
+    this.setAppearance( "list" );
+    this.setOverflow( "hidden" );
+    this.setTabIndex( 1 );
+    this._manager = new qx.ui.selection.SelectionManager( this );
+    this.addEventListener( "mouseover", this._onmouseover );
+    this.addEventListener( "mousedown", this._onmousedown );
+    this.addEventListener( "mouseup", this._onmouseup );
+    this.addEventListener( "click", this._onclick );
+    this.addEventListener( "dblclick", this._ondblclick );
+    this.addEventListener( "keydown", this._onkeydown );
+    this.addEventListener( "keypress", this._onkeypress );
+    this.addEventListener( "keypress", this._onkeyinput );
+    this.initOverflow();
+    this.initTabIndex();    
     // Should changeSelection events passed to the server-side?
     // state == no, action == yes
     this._changeSelectionNotification = "state";
@@ -49,11 +63,151 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     this.removeEventListener( "click", this._onClick, this );
     this.removeEventListener( "dblclick", this._onDblClick, this );
     this.removeEventListener( "appear", this._onAppear, this );
+    this._disposeObjects("_manager" );
   },
 
   members : {
+
+    _pressedString : "",
+    _lastKeyPress : 0,
+
+    getManager : function() {
+      return this._manager;
+    },
+
+    getListItemTarget : function( vItem ) {
+      while( vItem != null && vItem.getParent() != this ) {
+        vItem = vItem.getParent();
+      }
+      return vItem;
+    },
+
+    getSelectedItem : function() {
+      return this.getSelectedItems()[0] || null;
+    },
+
+    getSelectedItems : function() {
+      return this._manager.getSelectedItems();
+    },
+
+    _onmouseover : function( event ) {
+      var vItem = this.getListItemTarget( event.getTarget() );
+      if( vItem ) {
+        this._manager.handleMouseOver( vItem, event );
+      }
+    },
+
+    _onmousedown : function( event ) {
+      var vItem = this.getListItemTarget( event.getTarget() );
+      if( vItem ) {
+        this._manager.handleMouseDown( vItem, event );
+      }
+    },
+
+    _onmouseup : function( event ) {
+      var vItem = this.getListItemTarget( event.getTarget() );
+      if( vItem ) {
+        this._manager.handleMouseUp( vItem, event );
+      }
+    },
+
+    _onclick : function( event ) {
+      var vItem = this.getListItemTarget( event.getTarget() );
+      if( vItem ) {
+        this._manager.handleClick( vItem, event );
+      }
+    },
+
+    _ondblclick : function( event ) {
+      var vItem = this.getListItemTarget( event.getTarget() );
+      if( vItem ) {
+        this._manager.handleDblClick( vItem, event );
+      }
+    },
+
+    _onkeydown : function( event ) {
+      // Execute action on press <ENTER>
+      if( event.getKeyIdentifier() == "Enter" && !event.isAltPressed() ) {
+        var items = this.getSelectedItems();
+        for( var i = 0; i < items.length; i++ ) {
+          items[i].createDispatchEvent( "action" );
+        }
+      }
+    },
+
+    _onkeypress : function( event ) {
+      // Give control to selectionManager
+      this._manager.handleKeyPress( event );
+    },
+
+    _onkeyinput : function( event ) { 
+      // Fix for bug# 288344
+      if( !event.isAltPressed() && !event.isCtrlPressed() ) {
+        if( event.getCharCode() !== 0 ) {
+          // Reset string after a second of non pressed key
+          if( ( ( new Date() ).valueOf() - this._lastKeyPress ) > 1000 ) {
+            this._pressedString = "";
+          }
+          // Combine keys the user pressed to a string
+          this._pressedString += String.fromCharCode( event.getCharCode() );
+          // Find matching item
+          var matchedItem = this.findString( this._pressedString, null );
+          if( matchedItem ) {
+            var oldVal = this._manager._getChangeValue();
+            // Temporary disable change event
+            var oldFireChange = this._manager.getFireChange();
+            this._manager.setFireChange( false );
+            // Reset current selection
+            this._manager._deselectAll();
+            // Update manager
+            this._manager.setItemSelected( matchedItem, true );
+            this._manager.setAnchorItem( matchedItem );
+            this._manager.setLeadItem( matchedItem );
+            // Scroll to matched item
+            matchedItem.scrollIntoView();
+            // Recover event status
+            this._manager.setFireChange( oldFireChange );
+            // Dispatch event if there were any changes
+            if( oldFireChange && this._manager._hasChanged( oldVal ) ) {
+              this._manager._dispatchChange();
+            }
+          }
+          // Store timestamp
+          this._lastKeyPress = ( new Date() ).valueOf();
+          event.preventDefault();
+        }
+      } 
+    },
+
+    findString : function( vText, vStartIndex ) {
+      return this._findItem( vText, vStartIndex || 0, "String" );
+    },
     
-    /** Sets the given array of items. */
+    _findItem : function( vUserValue, vStartIndex, vType ) {
+      var vAllItems = this.getChildren();
+      // If no startIndex given try to get it by current selection
+      if( vStartIndex == null ) {
+        vStartIndex = vAllItems.indexOf( this.getSelectedItem() );
+        if (vStartIndex == -1) {
+          vStartIndex = 0;
+        }
+      }
+      var methodName = "matches" + vType;
+      // Mode #1: Find all items after the startIndex
+      for( var i = vStartIndex; i < vAllItems.length; i++ ) {
+        if( vAllItems[ i ][ methodName ]( vUserValue ) ) {
+          return vAllItems[i];
+        }
+      }
+      // Mode #2: Find all items before the startIndex
+      for( var i = 0; i < vStartIndex; i++ ) {
+        if( vAllItems[ i ][ methodName ]( vUserValue ) ) {
+          return vAllItems[i];
+        }
+      }
+      return null;
+    },
+  
     setItems : function( items ) {
       // preserve selection and focused item
       var manager = this.getManager();
@@ -148,10 +302,6 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       }
     },
 
-    /**
-     * Selects all item if the List is multi-select. Does nothing for single-
-     * select Lists.
-     */
     selectAll : function() {
       if( this.getManager().getMultiSelection() == true ) {
         this.getManager().selectAll();
@@ -287,14 +437,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         }
       }
     },
-    
-    // Fix for bug# 288344
-    _onkeyinput : function( evt ) {
-      if( !evt.isAltPressed() && !evt.isCtrlPressed() ) {
-        this.base( arguments, evt );
-      } 
-    },
-    
+
     _onSelectionChange : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -355,5 +498,6 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         }
       }
     }
+
   }
-});
+} );
