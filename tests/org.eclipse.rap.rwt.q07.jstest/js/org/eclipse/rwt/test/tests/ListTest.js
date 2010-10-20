@@ -46,6 +46,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertEquals( "item2", selection[ 0 ].getLabel() );
       list.destroy();
     },
+    
+    testSelectItemByCharacter : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var list = this._createDefaultList();
+      list.setItems( [ "Akira", "Boogiepop", "C something", "Daria" ] );
+      testUtil.flush();
+      testUtil.press( list, "c" )
+      var selection = this._getSelection( list ); 
+      assertEquals( 1, selection.length );
+      assertEquals( "C something", selection[ 0 ].getLabel() );
+      list.destroy();
+    },
 
     testSelectItems : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
