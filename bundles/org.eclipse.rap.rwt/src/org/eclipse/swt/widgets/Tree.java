@@ -92,6 +92,7 @@ public class Tree extends Composite {
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
   // This values must be kept in sync with appearance of list items
   private static final int MIN_ITEM_HEIGHT = 16;
+  private static final int GRID_WIDTH = 1;
 
   private static final Rectangle TEXT_MARGIN = new Rectangle( 3, 0, 8, 0 );
 
@@ -942,6 +943,23 @@ public class Tree extends Composite {
       return; /* no change */
     }
     linesVisible = value;
+  }
+
+  /**
+   * Returns the width in pixels of a grid line.
+   *
+   * @return the width of a grid line in pixels
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.4
+   */
+  public int getGridLineWidth() {
+    checkWidget();
+    return GRID_WIDTH;
   }
 
   /**
