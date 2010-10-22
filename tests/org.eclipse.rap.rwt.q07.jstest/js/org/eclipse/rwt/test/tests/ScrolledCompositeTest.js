@@ -169,7 +169,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertNull( vbar.hasEventListeners( "changeValue" ) );
     },
 
-
     testScrollOutOfBounds : function() {
       var composite = this._createComposite();
       this._setScrollDimension( composite, 200, 200 );
@@ -252,9 +251,62 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       composite._clientArea.setScrollLeft( 50 );
       composite._clientArea.setScrollTop( 70 );
       composite._onscroll( {} );
+      testUtil.forceTimerOnce();
       assertEquals( 0, testUtil.getRequestsSend() );
       var position = this._getScrollPosition( composite );
       assertEquals( [ 10, 20 ], position );      
+      composite.destroy();      
+    },
+
+    testNoScrollStyle : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.prepareTimerUse();
+      var composite = this._createComposite();
+      composite.setHasSelectionListener( true );
+      this._setScrollDimension( composite, 200, 200 );
+      composite.setScrollBarsVisible( false, false );
+      composite._clientArea.setScrollLeft( 50 );
+      composite._clientArea.setScrollTop( 70 );
+      composite._onscroll( {} );
+      testUtil.forceTimerOnce();
+      assertEquals( 0, testUtil.getRequestsSend() );
+      var position = this._getScrollPosition( composite );
+      assertEquals( [ 0, 0 ], position );      
+      composite.destroy();      
+    },
+
+    testOnlyHScrollStyle : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.prepareTimerUse();
+      var composite = this._createComposite();
+      composite.setHasSelectionListener( true );
+      this._setScrollDimension( composite, 200, 200 );
+      composite.setScrollBarsVisible( true, false );
+      testUtil.flush();
+      composite._clientArea.setScrollLeft( 50 );
+      composite._clientArea.setScrollTop( 70 );
+      composite._onscroll( {} );
+      var position = this._getScrollPosition( composite );
+      assertEquals( [ 50, 0 ], position );
+      testUtil.forceTimerOnce();
+      assertEquals( 1, testUtil.getRequestsSend() );
+      composite.destroy();      
+    },
+
+    testOnlyVScrollStyle : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.prepareTimerUse();
+      var composite = this._createComposite();
+      composite.setHasSelectionListener( true );
+      this._setScrollDimension( composite, 200, 200 );
+      composite.setScrollBarsVisible( false, true );
+      composite._clientArea.setScrollLeft( 50 );
+      composite._clientArea.setScrollTop( 70 );
+      composite._onscroll( {} );
+      testUtil.forceTimerOnce();
+      assertEquals( 1, testUtil.getRequestsSend() );
+      var position = this._getScrollPosition( composite );
+      assertEquals( [ 0, 70 ], position );      
       composite.destroy();      
     },
 
@@ -275,6 +327,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertIdentical( child2, composite._content );
       child2.destroy();   
       assertNull( composite._content );
+      composite.destroy();
+    },
+    
+    testResize : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var composite = this._createComposite();
+      var client = composite._clientArea;
+      var hbar = composite._horzScrollBar;
+      var vbar = composite._vertScrollBar;
+      var barWidth = vbar._getScrollBarWidth();
+      assertEquals( "scroll", client._getTargetNode().style.overflow );
+      assertEquals( "hidden", client.getElement().style.overflow );
+      var elementBounds = testUtil.getElementBounds( client.getElement() );
+      var targetBounds = testUtil.getElementBounds( client._getTargetNode() );
+      assertEquals( elementBounds.width + barWidth, targetBounds.width );
+      assertEquals( elementBounds.height + barWidth, targetBounds.height );
+      composite.setWidth( 200 );
+      composite.setHeight( 200 );
+      composite.setScrollBarsVisible( false, false );
+      testUtil.flush();
+      var elementBounds = testUtil.getElementBounds( client.getElement() );
+      var targetBounds = testUtil.getElementBounds( client._getTargetNode() );
+      assertEquals( elementBounds.width, targetBounds.width );
+      assertEquals( elementBounds.height, targetBounds.height );
       composite.destroy();
     },
 

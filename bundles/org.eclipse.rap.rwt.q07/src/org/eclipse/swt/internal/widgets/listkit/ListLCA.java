@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,9 @@ import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
@@ -32,12 +34,14 @@ public class ListLCA extends AbstractWidgetLCA {
   static final String PROP_TOP_INDEX = "topIndex";
   static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
   static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
+  static final String PROP_ITEM_DIMENSIONS = "itemDimensions";
 
   private static final Integer DEFAULT_SINGLE_SELECTION = new Integer( -1 );
   private static final int[] DEFAULT_MULTI_SELECTION = new int[ 0 ];
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_FOCUS_INDEX = new Integer( -1 );
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
+  private static final Point DEFAULT_ITEM_DIMENSIONS = new Point( 0, 0 );
 
   public void preserveValues( final Widget widget ) {
     List list = ( List  )widget;
@@ -51,6 +55,7 @@ public class ListLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( list ) );
     adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( list ) );
     preserveSelection( list );
+    adapter.preserve( PROP_ITEM_DIMENSIONS, getItemDimensions( list ) );
     WidgetLCAUtil.preserveCustomVariant( list );
   }
 
@@ -83,8 +88,9 @@ public class ListLCA extends AbstractWidgetLCA {
     writeSelection( list );
     writeTopIndex( list );
     writeFocusIndex( list );
-    writeOverflow( list );
+    writeScrollBars( list );
     updateSelectionListeners( list );
+    writeItemDimensions( list );
     WidgetLCAUtil.writeCustomVariant( list );
   }
 
@@ -165,30 +171,22 @@ public class ListLCA extends AbstractWidgetLCA {
     writer.set( PROP_TOP_INDEX, "topIndex", newValue, DEFAULT_TOP_INDEX );
   }
 
-  private static void writeOverflow( final List list ) throws IOException {
+  private static void writeScrollBars( final List list )
+    throws IOException
+  {
+    boolean hasHBar = hasHScrollBar( list ).booleanValue();
+    boolean hasVBar = hasVScrollBar( list ).booleanValue();
     boolean hasHChanged = WidgetLCAUtil.hasChanged( list,
                                                     PROP_HAS_H_SCROLL_BAR,
-                                                    hasHScrollBar( list ),
-                                                    Boolean.FALSE );
+                                                    Boolean.valueOf( hasHBar ),
+                                                    Boolean.TRUE );
     boolean hasVChanged = WidgetLCAUtil.hasChanged( list,
                                                     PROP_HAS_V_SCROLL_BAR,
-                                                    hasVScrollBar( list ),
-                                                    Boolean.FALSE );
+                                                    Boolean.valueOf( hasVBar ),
+                                                    Boolean.TRUE );
     if( hasHChanged || hasVChanged ) {
-      boolean scrollX = hasHScrollBar( list ).booleanValue();
-      boolean scrollY = hasVScrollBar( list ).booleanValue();
-      String overflow;
-      if( scrollX && scrollY ) {
-        overflow = "auto";
-      } else if( scrollX ) {
-        overflow = "scrollX";
-      } else if( scrollY ) {
-        overflow = "scrollY";
-      } else {
-        overflow = "hidden";
-      }
       JSWriter writer = JSWriter.getWriterFor( list );
-      writer.set( "overflow", overflow );
+      writer.set( "scrollBarsVisible", new boolean[]{ hasHBar, hasVBar } );
     }
   }
 
@@ -202,6 +200,22 @@ public class ListLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( list );
       String value = newValue.booleanValue() ? "action" : "state";
       writer.set( "changeSelectionNotification", value );
+    }
+  }
+
+  private static void writeItemDimensions( final List list )
+    throws IOException
+  {
+    String prop = PROP_ITEM_DIMENSIONS;
+    Point newValue = getItemDimensions( list );
+    Point defValue = DEFAULT_ITEM_DIMENSIONS;
+    if( WidgetLCAUtil.hasChanged( list, prop, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( list );
+      Object[] args = new Object[] {
+        new Integer( newValue.x ),
+        new Integer( newValue.y )
+      };
+      writer.call( "setItemDimensions", args );
     }
   }
 
@@ -259,5 +273,11 @@ public class ListLCA extends AbstractWidgetLCA {
     Object adapter = list.getAdapter( IListAdapter.class );
     IListAdapter listAdapter = ( IListAdapter )adapter;
     return Boolean.valueOf( listAdapter.hasVScrollBar() );
+  }
+
+  private static Point getItemDimensions( final List list ) {
+    Object adapter = list.getAdapter( IListAdapter.class );
+    IListAdapter listAdapter = ( IListAdapter )adapter;
+    return listAdapter.getItemDimensions();
   }
 }

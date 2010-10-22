@@ -245,6 +245,7 @@ final class QooxdooResourcesUtil {
     "org/eclipse/swt/widgets/Shell.js",
     "org/eclipse/swt/widgets/ProgressBar.js",
     "org/eclipse/swt/widgets/Link.js",
+    "org/eclipse/swt/widgets/Scrollable.js",
     "org/eclipse/swt/custom/ScrolledComposite.js",
     "org/eclipse/rwt/widgets/ToolBar.js",
     "org/eclipse/swt/TextUtil.js",
