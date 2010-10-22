@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing implementation
  *     Ralf Zahn (ARS) - browser history support (Bug 283291)
  ******************************************************************************/
 package org.eclipse.rwt;
@@ -264,7 +265,7 @@ public final class RWT {
 
   /**
    * Returns the preferred <code>Locale</code> that the client will accept
-   * content in. This is eihter the <code>Locale</code> that was set in 
+   * content in. This is either the <code>Locale</code> that was set in 
    * session-scope using the {@link #setLocale(Locale)} method or the locale
    * based on the <code>Accept-Language</code> HTTP header of the current 
    * request. If neither the <code>Locale</code> was set programmatically, nor 
