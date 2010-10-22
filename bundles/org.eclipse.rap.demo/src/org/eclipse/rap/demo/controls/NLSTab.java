@@ -72,8 +72,10 @@ public final class NLSTab extends ExampleTab {
     SelectionListener listener = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         Locale locale = ( Locale )event.widget.getData( LOCALE_DATA );
-        RWT.setLocale( locale );
-        updateTranslatable();
+        if( ( ( Button )event.widget ).getSelection() ) {
+          RWT.setLocale( locale );
+          updateTranslatable();
+        }
       }
     };
     Button result = new Button( parent, SWT.RADIO );
