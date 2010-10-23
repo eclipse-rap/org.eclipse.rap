@@ -1344,6 +1344,24 @@ public class List_Test extends TestCase {
     assertTrue( list.hasVScrollBar() );
   }
 
+  public void testItemDimensions() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    assertEquals( new Point( 0, 0 ), list.getItemDimensions() );
+    list.add( "123" );
+    assertEquals( new Point( 27, 18 ), list.getItemDimensions() );
+    list.setSize( 100, 100 );
+    assertEquals( new Point( 100, 18 ), list.getItemDimensions() );
+    for( int i = 0; i < 10; i++ ) {
+      list.add( "123" );
+    }
+    assertEquals( new Point( 84, 18 ), list.getItemDimensions() );
+    list.add( "Very long list item" );
+    assertEquals( new Point( 119, 18 ), list.getItemDimensions() );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

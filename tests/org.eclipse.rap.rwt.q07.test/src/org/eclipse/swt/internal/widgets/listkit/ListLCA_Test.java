@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,6 +58,9 @@ public class ListLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( list );
     String[] items = ( String[] )adapter.getPreserved( ListLCA.PROP_ITEMS );
     assertEquals( 0, items.length );
+    Point itemDimensions
+      = ( Point )adapter.getPreserved( ListLCA.PROP_ITEM_DIMENSIONS );
+    assertEquals( new Point( 0, 0 ),  itemDimensions );
     Fixture.clearPreserved();
     list.setItems( new String[]{
       "item1", "item2", "item3"
@@ -69,6 +72,10 @@ public class ListLCA_Test extends TestCase {
     assertEquals( "item1", items[ 0 ] );
     assertEquals( "item2", items[ 1 ] );
     assertEquals( "item3", items[ 2 ] );
+    itemDimensions
+      = ( Point )adapter.getPreserved( ListLCA.PROP_ITEM_DIMENSIONS );
+    assertTrue( itemDimensions.x > 0 );
+    assertEquals( list.getItemHeight(),  itemDimensions.y );
     Fixture.clearPreserved();
     // focus_index, topIndex, selection
     list.setSelection( 2 );
@@ -385,19 +392,6 @@ public class ListLCA_Test extends TestCase {
                + parentId
                + "\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-  }
-
-  public void testWriteOverflow() throws IOException {
-    Fixture.fakeNewRequest();
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    List list = new List( shell, SWT.V_SCROLL | SWT.H_SCROLL );
-    list.add( "Item" );
-    ListLCA lca = new ListLCA();
-    lca.renderChanges( list );
-    String markup = Fixture.getAllMarkup();
-    String expected = "w.setOverflow( \"auto\" );";
-    assertTrue( markup.indexOf( expected ) != -1 );
   }
 
   protected void setUp() throws Exception {

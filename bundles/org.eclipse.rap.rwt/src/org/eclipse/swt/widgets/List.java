@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,6 +116,10 @@ public class List extends Scrollable {
 
           public boolean hasVScrollBar() {
             return List.this.hasVScrollBar();
+          }
+
+          public Point getItemDimensions() {
+            return List.this.getItemDimensions();
           }
         };
       }
@@ -1065,14 +1069,8 @@ public class List extends Scrollable {
                             final int hHint,
                             final boolean changed ) {
     checkWidget ();
-    int width = 0, height = 0;
-    String[] items = getItems();
-    int itemWidth = 0;
-    for( int i = 0; i < items.length; i++ ) {
-      itemWidth = getItemWidth( items[ i ] );
-      width = Math.max( width, itemWidth );
-    }
-    height = getItemHeight() * items.length;
+    int width = getMaxItemWidth();
+    int height = getItemHeight() * getItemCount();
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
     }
@@ -1138,6 +1136,16 @@ public class List extends Scrollable {
     return Graphics.stringExtent( getFont(), item ).x + margin;
   }
 
+  private int getMaxItemWidth() {
+    int result = 0;
+    String[] items = getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      int itemWidth = getItemWidth( items[ i ] );
+      result = Math.max( result, itemWidth );
+    }
+    return result;
+  }
+
   private void adjustTopIndex() {
     int count = model.getItemCount();
     if( count == 0 ) {
@@ -1158,6 +1166,17 @@ public class List extends Scrollable {
       result = clientHeight / itemHeight;
     }
     return result;
+  }
+
+  Point getItemDimensions() {
+    int width = 0;
+    int height = 0;
+    if( getItemCount() > 0 ) {
+      int availableWidth = getClientArea().width;
+      width = Math.max( getMaxItemWidth(), availableWidth );
+      height = getItemHeight();
+    }
+    return new Point( width, height );
   }
 
   ///////////////////////////////////////
@@ -1188,19 +1207,14 @@ public class List extends Scrollable {
   }
 
   boolean needsVScrollBar() {
-    int availableHeight = getClientArea().height - getHScrollBarHeight();
+    int availableHeight = getClientArea().height;
     int height = getItemCount() * getItemHeight();
     return height > availableHeight;
   }
 
   boolean needsHScrollBar() {
-    int availableWidth = getClientArea().width - getVScrollBarWidth();
-    String[] items = getItems();
-    int width = 0;
-    for( int i = 0; i < items.length; i++ ) {
-      int itemWidth = getItemWidth( items[ i ] );
-      width = Math.max( width, itemWidth );
-    }
+    int availableWidth = getClientArea().width;
+    int width = getMaxItemWidth();
     return width > availableWidth;
   }
 

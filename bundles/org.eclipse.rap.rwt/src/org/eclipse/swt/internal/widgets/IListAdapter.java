@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
 
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.swt.graphics.Point;
+
 
 public interface IListAdapter {
 
@@ -19,4 +21,6 @@ public interface IListAdapter {
 
   boolean hasHScrollBar();
   boolean hasVScrollBar();
+
+  Point getItemDimensions();
 }
