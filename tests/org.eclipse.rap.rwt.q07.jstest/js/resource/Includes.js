@@ -81,6 +81,7 @@
     "qx/application/IApplication.js",
     "qx/core/Version.js",
     "qx/util/manager/MConnectedObject.js",
+    "org/eclipse/rwt/HtmlUtil.js",
     "qx/ui/core/Widget.js",
     "qx/html/Dimension.js",
     "qx/html/Style.js",

@@ -6356,12 +6356,6 @@ qx.Class.define("qx.ui.core.Widget",
     }),
 
 
-
-
-
-
-
-
     /*
     ---------------------------------------------------------------------------
       OPACITY SUPPORT
@@ -6379,47 +6373,9 @@ qx.Class.define("qx.ui.core.Widget",
      * @return {void}
      * @signature function(value, old)
      */
-    _applyOpacity : qx.core.Variant.select("qx.client",
-    {
-      "mshtml" : function(value, old)
-      {
-        if (value == null || value >= 1 || value < 0) {
-          this.removeStyleProperty("filter");
-        } else {
-          this.setStyleProperty("filter", ("Alpha(Opacity=" + Math.round(value * 100) + ")"));
-        }
-      },
-
-      "default" : function(value, old)
-      {
-        if (value == null || value > 1)
-        {
-          if (qx.core.Variant.isSet("qx.client", "gecko")) {
-            this.removeStyleProperty("MozOpacity");
-          }
-
-          this.removeStyleProperty("opacity");
-        }
-        else
-        {
-          value = qx.lang.Number.limit(value, 0, 1);
-
-          // should we omit gecko's flickering here
-          // and limit the max value to 0.99?
-          if (qx.core.Variant.isSet("qx.client", "gecko")) {
-            this.setStyleProperty("MozOpacity", value);
-          }
-
-          this.setStyleProperty("opacity", value);
-        }
-      }
-    }),
-
-
-
-
-
-
+    _applyOpacity : function( value, old ) {
+      org.eclipse.rwt.HtmlUtil.setOpacity( this, value );
+    },
 
 
     /*

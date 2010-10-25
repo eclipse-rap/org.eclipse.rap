@@ -249,13 +249,10 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         }
         // make opacity work
         if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-          this.removeStyleProperty( "filter" );
           this.__outerElementStyleProperties.filter = true;
         } else {
-          this.removeStyleProperty( "opacity" );
           this.__outerElementStyleProperties.opacity = true;
           if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-            this.removeStyleProperty( "MozOpacity" );
             this.__outerElementStyleProperties.MozOpacity = true;
           }
         }
@@ -318,6 +315,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
           switch( i ) {
             case "zIndex":
             case "filter":
+            case "opacity":
+            case "MozOpacity":
             case "display":
             case "cursor":
               break;

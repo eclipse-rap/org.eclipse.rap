@@ -336,18 +336,8 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     },
     
     setOpacity : function( shape, opacity ) {
-      var antiAlias = true;
-      if( opacity < 1 ) {
-        var filterStr =   "progid:DXImageTransform.Microsoft.Alpha"
-                        + "(opacity="
-                        + Math.round( opacity * 100 )
-                        + ")";
-        antiAlias = false;
-        shape.node.style.filter = filterStr;
-      } else {
-        this._removeFilter( shape );
-      }
-      this._setAntiAlias( shape, antiAlias );
+      org.eclipse.rwt.HtmlUtil.setOpacity( shape.node, opacity );
+      this._setAntiAlias( shape, opacity < 1 );
     },
     
     /////////

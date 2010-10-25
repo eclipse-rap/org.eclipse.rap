@@ -296,6 +296,65 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       testUtil.flush();
     },
     
+    testOpacityWidthEnhancedBorder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var widget = this._createWidget();
+      assertTrue( widget.isSeeable() );      
+      assertTrue( widget.getElement() === widget._getTargetNode() );
+      widget.setOpacity( 0.5 );
+      assertTrue( testUtil.hasElementOpacity( widget.getElement() ) );
+      widget.setBackgroundGradient( this.gradient );
+      assertTrue( widget.getElement() !== widget._getTargetNode() );
+      assertTrue( testUtil.hasElementOpacity( widget.getElement() ) );
+      assertFalse( testUtil.hasElementOpacity( widget._getTargetNode() ) );
+      widget.setOpacity( 1 );
+      assertFalse( testUtil.hasElementOpacity( widget.getElement() ) );
+      assertFalse( testUtil.hasElementOpacity( widget._getTargetNode() ) );
+      widget.destroy();
+    },
+    
+    testAntialiasingBugIE : qx.core.Variant.select("qx.client", {
+      "mshtml" : function() {
+        var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+        var widget = this._createWidget();
+        assertTrue( widget.isSeeable() );      
+        assertTrue( widget.getElement() === widget._getTargetNode() );      
+        widget.setBackgroundGradient( this.gradient );
+        assertTrue( this.usesGfxBackground( widget ) );
+        var innerCSS = widget._getTargetNode().style.cssText.toLowerCase();
+        var outerCSS = widget.getElement().style.cssText.toLowerCase();
+        assertTrue( innerCSS.indexOf( "filter" ) == -1 );
+        assertTrue( outerCSS.indexOf( "filter" ) == -1 );      
+        widget.destroy();
+      },
+      "default" : function(){}
+    } ),
+    
+    
+    testAntialiasingBugIEWithOpacitySet : qx.core.Variant.select("qx.client", {
+      "mshtml" : function() {
+        var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+        var widget = this._createWidget();
+        widget.setOpacity( 0.5 );
+        assertTrue( widget.isSeeable() );      
+        assertTrue( widget.getElement() === widget._getTargetNode() );      
+        widget.setBackgroundGradient( this.gradient );
+        assertTrue( this.usesGfxBackground( widget ) );
+        var innerCSS = widget._getTargetNode().style.cssText.toLowerCase();
+        var outerCSS = widget.getElement().style.cssText.toLowerCase();
+        assertTrue( innerCSS.indexOf( "filter" ) == -1 );
+        assertTrue( outerCSS.indexOf( "filter" ) != -1 );
+        widget.setOpacity( 1 );      
+        innerCSS = widget._getTargetNode().style.cssText.toLowerCase();
+        outerCSS = widget.getElement().style.cssText.toLowerCase();
+        assertTrue( innerCSS.indexOf( "filter" ) == -1 );
+        assertTrue( outerCSS.indexOf( "filter" ) == -1 );
+        widget.destroy();
+      },
+      "default" : function(){}
+    } ),
+    
     /////////
     // Helper
 
