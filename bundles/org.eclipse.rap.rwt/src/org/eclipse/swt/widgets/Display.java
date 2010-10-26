@@ -1150,7 +1150,11 @@ public class Display extends Device implements Adaptable {
         error( SWT.ERROR_DEVICE_DISPOSED );
       }
       if( thread != Thread.currentThread() ) {
-        wakeThread();
+        UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
+          public void run() {
+            UICallBackManager.getInstance().sendImmediately();
+          }
+        } );
       }
     }
   }
