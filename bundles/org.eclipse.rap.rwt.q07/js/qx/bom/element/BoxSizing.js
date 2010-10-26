@@ -44,17 +44,6 @@ qx.Class.define("qx.bom.element.BoxSizing",
       "opera" : ["boxSizing"]
     }),
 
-
-    /** {Map} Internal helper structure to return the valid box-sizing CSS property names */
-    __cssProperties : qx.core.Variant.select("qx.client",
-    {
-      "mshtml" : null,
-      "webkit" : ["box-sizing", "-khtml-box-sizing", "-webkit-box-sizing"],
-      "gecko" : ["-moz-box-sizing", "box-sizing"],
-      "opera" : ["box-sizing"]
-    }),
-
-
     /** {Map} Internal data structure for __usesNativeBorderBox() */
     __nativeBorderBox :
     {
@@ -87,37 +76,6 @@ qx.Class.define("qx.bom.element.BoxSizing",
       var map = this.__nativeBorderBox;
       return map.tags[element.tagName.toLowerCase()] || map.types[element.type];
     },
-
-
-    /**
-     * Compiles the given box sizing into a CSS compatible string.
-     *
-     * @type static
-     * @signature function(value)
-     * @param value {String} Valid CSS box-sizing value
-     * @return {String} CSS string
-     */
-    compile : qx.core.Variant.select("qx.client",
-    {
-      "mshtml" : function(value) {
-        qx.log.Logger.warn(this, "This client do not support the dynamic modification of the box-sizing property.");
-      },
-
-      "default" : function(value)
-      {
-        var props = this.__cssProperties;
-        var css = "";
-
-        if (props)
-        {
-          for (var i=0, l=props.length; i<l; i++) {
-            css += props[i] + ":" + value + ";";
-          }
-        }
-
-        return css;
-      }
-    }),
 
 
     /**
@@ -158,46 +116,7 @@ qx.Class.define("qx.bom.element.BoxSizing",
           }
         }
       }
-    }),
+    })
 
-
-    /**
-     * Applies a new box sizing to the given element
-     *
-     * @type static
-     * @signature function(element, value)
-     * @param element {Element} The element to modify
-     * @param value {String} New box sizing value to set
-     * @return {void}
-     */
-    set : qx.core.Variant.select("qx.client",
-    {
-      "mshtml" : function(element, value) {
-        qx.log.Logger.warn(this, "This client do not support the dynamic modification of the box-sizing property.");
-      },
-
-      "default" : function(element, value)
-      {
-        var props = this.__styleProperties;
-        if (props)
-        {
-          for (var i=0, l=props.length; i<l; i++) {
-            element.style[props[i]] = value;
-          }
-        }
-      }
-    }),
-
-
-    /**
-     * Removes the local box sizing applied to the element
-     *
-     * @type static
-     * @param element {Element} The element to modify
-     * @return {void}
-     */
-    reset : function(element) {
-      this.set(element, "");
-    }
   }
 });
