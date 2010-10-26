@@ -7,7 +7,7 @@
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  *  Contributors:
- *    1&1 Internet AG - original API and implementation
+ *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
