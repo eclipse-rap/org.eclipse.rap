@@ -24,7 +24,6 @@
 qx.Class.define("qx.util.range.Range",
 {
   extend : qx.core.Target,
-  implement : [ qx.util.range.IRange ],
 
 
 

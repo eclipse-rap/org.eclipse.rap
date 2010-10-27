@@ -512,7 +512,7 @@ qx.Class.define("qx.core.Property",
 
       // Fill dispose value
       if (config.dispose === undefined && typeof config.check === "string") {
-        config.dispose = this.__dispose[config.check] || qx.Class.isDefined(config.check) || qx.Interface.isDefined(config.check);
+        config.dispose = this.__dispose[config.check] || qx.Class.isDefined(config.check);
       }
 
       var method = this.$$method;
@@ -884,10 +884,6 @@ qx.Class.define("qx.core.Property",
           else if (qx.Class.isDefined(config.check))
           {
             code.push('!(value instanceof ', config.check, ')');
-          }
-          else if (qx.Interface.isDefined(config.check))
-          {
-            code.push('!(value && qx.Class.hasInterface(value.constructor, ', config.check, '))');
           }
           else if (typeof config.check === "function")
           {

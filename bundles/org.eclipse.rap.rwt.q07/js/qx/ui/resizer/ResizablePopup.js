@@ -24,7 +24,6 @@ qx.Class.define("qx.ui.resizer.ResizablePopup",
 {
   extend   : qx.ui.popup.Popup,
   include  : qx.ui.resizer.MResizable,
-  implement: qx.ui.resizer.IResizable,
 
   construct : function()
   {
@@ -85,11 +84,6 @@ qx.Class.define("qx.ui.resizer.ResizablePopup",
 
   members:
   {
-    /*
-    ---------------------------------------------------------------------------
-      IResizable interface
-    ---------------------------------------------------------------------------
-    */
 
     _changeWidth: function(value) {
       this.setWidth(value);

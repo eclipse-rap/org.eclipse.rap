@@ -122,7 +122,7 @@ qx.Class.define("qx.core.Init",
           "The application property takes an application instance as parameter " +
           "and no longer a class/constructor. You may have to fix your 'index.html'.");
         }
-        return value && qx.Class.hasInterface(value.constructor, qx.application.IApplication);
+        return value instanceof qx.application.Gui;
       }
     }
   },
@@ -161,7 +161,6 @@ qx.Class.define("qx.core.Init",
       this.debug("qooxdoo " + qx.core.Version.toString());
 
       this.debug("loaded " + qx.Class.getTotalNumber() + " classes");
-      this.debug("loaded " + qx.Interface.getTotalNumber() + " interfaces");
       this.debug("loaded " + qx.Mixin.getTotalNumber() + " mixins");
 
       if (qx.Theme) {
