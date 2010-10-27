@@ -158,7 +158,7 @@ qx.Class.define("qx.core.Init",
 
       this.createDispatchEvent("load");
 
-      this.debug("qooxdoo " + qx.core.Version.toString());
+      this.debug("qooxdoo 0.7.4 (r16878)" );
 
       this.debug("loaded " + qx.Class.getTotalNumber() + " classes");
       this.debug("loaded " + qx.Mixin.getTotalNumber() + " mixins");

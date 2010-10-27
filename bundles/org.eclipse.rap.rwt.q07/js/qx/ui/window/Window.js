@@ -672,8 +672,11 @@ qx.Class.define("qx.ui.window.Window",
      * @return {void}
      */
     _sendTo : function()
-    {
-      var vAll = qx.lang.Object.getValues(this.getWindowManager().getAll()).sort(qx.util.Compare.byZIndex);
+    {  
+      var zIndexCompare = function(a, b) { 
+        return a.getZIndex() - b.getZIndex();
+      };
+      var vAll = qx.lang.Object.getValues(this.getWindowManager().getAll()).sort(zIndexCompare);
       var vLength = vAll.length;
       var vIndex = this._minZIndex;
 

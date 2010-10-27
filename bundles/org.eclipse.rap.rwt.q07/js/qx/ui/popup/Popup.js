@@ -409,16 +409,18 @@ qx.Class.define("qx.ui.popup.Popup",
     _sendTo : function()
     {
       var vPopups = qx.lang.Object.getValues(qx.ui.popup.PopupManager.getInstance().getAll());
-
+      var zIndexCompare = function(a, b) { 
+        return a.getZIndex() - b.getZIndex();
+      };
       if (org.eclipse.rwt.EventHandler.getMenuManager() != null)
       {
         var manager = org.eclipse.rwt.EventHandler.getMenuManager();
         var vMenus = qx.lang.Object.getValues(manager.getAll());
-        var vAll = vPopups.concat(vMenus).sort(qx.util.Compare.byZIndex);
+        var vAll = vPopups.concat(vMenus).sort(zIndexCompare);
       }
       else
       {
-        var vAll = vPopups.sort(qx.util.Compare.byZIndex);
+        var vAll = vPopups.sort(zIndexCompare);
       }
 
       var vLength = vAll.length;

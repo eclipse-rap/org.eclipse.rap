@@ -76,7 +76,7 @@ qx.Class.define("qx.io.remote.Request",
 
     // Prototype-Style Request Headers
     this.setRequestHeader("X-Requested-With", "qooxdoo");
-    this.setRequestHeader("X-Qooxdoo-Version", qx.core.Version.toString());
+    this.setRequestHeader("X-Qooxdoo-Version", "0.7.4 (r16878)");
     
     // Get the next sequence number for this request
     this._seqNum = ++qx.io.remote.Request._seqNum;

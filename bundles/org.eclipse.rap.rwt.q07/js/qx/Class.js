@@ -906,7 +906,7 @@ qx.Class.define("qx.Class",
     {
       var clazz;
 
-      if (!extend && qx.core.Variant.isSet("qx.aspects", "off"))
+      if (!extend)
       {
         // Create empty/non-empty class
         clazz = statics || {};
@@ -934,19 +934,7 @@ qx.Class.define("qx.Class",
           for (var i=0, a=qx.lang.Object.getKeys(statics), l=a.length; i<l; i++)
           {
             key = a[i];
-
-            if (qx.core.Variant.isSet("qx.aspects", "on"))
-            {
-              var staticValue = statics[key];
-              if (staticValue instanceof Function) {
-                staticValue = qx.core.Aspect.wrap(name + "." + key, staticValue, "static");
-              }
-              clazz[key] = staticValue;
-            }
-            else
-            {
-              clazz[key] = statics[key];
-            }
+            clazz[key] = statics[key];
           }
         }
       }
@@ -995,9 +983,6 @@ qx.Class.define("qx.Class",
 
         // Store destruct onto class
         if (destruct) {
-          if (qx.core.Variant.isSet("qx.aspects", "on")) {
-            destruct = qx.core.Aspect.wrap(name, destruct, "destructor");
-          }
           clazz.$$destructor = destruct;
         }
       }
@@ -1302,10 +1287,6 @@ qx.Class.define("qx.Class",
             member.self = clazz;
           }
 
-          if (qx.core.Variant.isSet("qx.aspects", "on")) {
-            member = qx.core.Aspect.wrap(clazz.classname + "." + key, member, "member");
-          }
-
         }
 
         // Attach member
@@ -1484,13 +1465,6 @@ qx.Class.define("qx.Class",
 
       }
 
-      if (qx.core.Variant.isSet("qx.aspects", "on")) {
-        var aspectWrapper = qx.core.Aspect.wrap(name, wrapper, "constructor");
-        wrapper.$$original = construct;
-        wrapper.constructor = aspectWrapper;
-        wrapper = aspectWrapper;
-      }
-
       // Add singleton getInstance()
       if (type === "singleton") {
         wrapper.getInstance = this.getInstance;
@@ -1504,19 +1478,6 @@ qx.Class.define("qx.Class",
 
       // Return generated wrapper
       return wrapper;
-    }
-  },
-
-  defer : function(statics)
-  {
-    // profiling
-    if (qx.core.Variant.isSet("qx.aspects", "on")) {
-      for (var key in statics) {
-        // only functions, no regexps
-        if (statics[key] instanceof Function) {
-          statics[key] = qx.core.Aspect.wrap("qx.Class." + key, statics[key], "static");
-        }
-      }
     }
   }
 });
