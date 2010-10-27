@@ -467,7 +467,22 @@ qx.Class.define("qx.core.Client",
     getLocale : function() {
       return this._browserLocale;
     },
-
+    
+    getLanguage : function() {
+      var locale = this.getLocale();
+      var language;
+      var pos = locale.indexOf("_");
+      if (pos == -1) {
+        language = locale;
+      } else {
+        language = locale.substring(0, pos);
+      }
+      return language;
+    },
+    
+    getTerritory : function() {
+      return this.getLocale().split("_")[1] || "";
+    },
 
     /**
      * Returns the locale variant setting

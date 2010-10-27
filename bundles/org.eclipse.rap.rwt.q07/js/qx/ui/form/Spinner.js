@@ -174,7 +174,6 @@ qx.Class.define("qx.ui.form.Spinner",
     }
 
     this._checkValue = this.__checkValue;
-    this._numberFormat = null;
 
     this.initWidth();
     this.initHeight();
@@ -336,15 +335,6 @@ qx.Class.define("qx.ui.form.Spinner",
       apply : "_applyCheckValueFunction"
     },
 
-
-    /**  */
-    numberFormat :
-    {
-      check : "qx.util.format.NumberFormat",
-      apply : "_applyNumberFormat"
-    },
-
-
     /**  */
     selectTextOnInteract :
     {
@@ -405,14 +395,6 @@ qx.Class.define("qx.ui.form.Spinner",
     _applyCheckValueFunction : function(value, old) {
       this._checkValue = value;
     },
-
-
-    _applyNumberFormat : function(value, old) {
-      this._numberFormat = value;
-      this.getManager().setPrecision(value.getMaximumFractionDigits());
-      this._onchange();
-    },
-
 
     /*
     ---------------------------------------------------------------------------
@@ -500,12 +482,6 @@ qx.Class.define("qx.ui.form.Spinner",
             if ((vIdentifier >= "0" && vIdentifier <= "9") ||
                 (vIdentifier == '-')) {
               return;
-            }
-            if (this._numberFormat) {
-              var locale = this._numberFormat._locale;
-              if ((vIdentifier == qx.locale.Number.getGroupSeparator(locale)) ||
-                  (vIdentifier == qx.locale.Number.getDecimalSeparator(locale)))
-                return;
             }
 
             // supress all key events without modifier
@@ -751,11 +727,7 @@ qx.Class.define("qx.ui.form.Spinner",
     _onchange : function(e)
     {
       var vValue = this.getManager().getValue();
-      if (this._numberFormat) {
-        this._textfield.setValue(this._numberFormat.format(vValue));
-      } else {
-        this._textfield.setValue(String(vValue));
-      }
+      this._textfield.setValue(String(vValue));
 
       if (vValue == this.getMin() && !this.getWrap())
       {
@@ -986,19 +958,7 @@ qx.Class.define("qx.ui.form.Spinner",
         // things like "4000."
         var parsable_str;
 
-        if (this._numberFormat)
-        {
-          var groupSepEsc =
-    qx.lang.String.escapeRegexpChars(qx.locale.Number.getGroupSeparator(this._numberFormat._locale) + "");
-          var decimalSepEsc =
-    qx.lang.String.escapeRegexpChars(qx.locale.Number.getDecimalSeparator(this._numberFormat._locale) + "");
-          parsable_str = str_val.replace(new RegExp(groupSepEsc, "g"), "");
-          parsable_str = parsable_str.replace(new RegExp(decimalSepEsc), ".");
-        }
-        else
-        {
-          parsable_str = str_val;
-        }
+        parsable_str = str_val;
 
         // parse the string
         var val = parseFloat(parsable_str);
@@ -1027,11 +987,7 @@ qx.Class.define("qx.ui.form.Spinner",
 
         var formattedValue;
 
-        if (this._numberFormat) {
-          formattedValue = this._numberFormat.format(fixedVal);
-        } else {
-          formattedValue = String(fixedVal);
-        }
+        formattedValue = String(fixedVal);
 
         if ((fixedVal === oldValue) && (str_val !== formattedValue)) {
           // "silently" update the displayed value as it won't get

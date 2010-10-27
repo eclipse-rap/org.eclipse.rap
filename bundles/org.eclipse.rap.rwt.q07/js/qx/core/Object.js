@@ -40,7 +40,7 @@
 qx.Class.define("qx.core.Object",
 {
   extend : Object,
-  include : [ qx.locale.MTranslation, qx.log.MLogging, qx.core.MUserData ],
+  include : [ qx.log.MLogging, qx.core.MUserData ],
 
 
 

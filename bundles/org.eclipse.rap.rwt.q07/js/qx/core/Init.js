@@ -22,7 +22,6 @@
 
 #module(core)
 #optional(qx.Theme)
-#optional(qx.locale.Manager)
 #require(qx.html.EventRegistration)
 
 ************************************************************************ */
@@ -167,10 +166,6 @@ qx.Class.define("qx.core.Init",
 
       if (qx.Theme) {
         this.debug("loaded " + qx.Theme.getTotalNumber() + " themes");
-      }
-
-      if (qx.locale && qx.locale.Manager) {
-        this.debug("loaded " + qx.locale.Manager.getInstance().getAvailableLocales().length + " locales");
       }
 
       // Print browser information

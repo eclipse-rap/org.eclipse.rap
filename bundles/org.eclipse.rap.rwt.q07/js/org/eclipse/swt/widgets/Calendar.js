@@ -63,10 +63,10 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     var nextYearBt = new qx.ui.form.Button;
 
     var wm = org.eclipse.swt.WidgetManager.getInstance();
-    wm.setToolTip( lastYearBt, this.tr( "Previous year" ) );
-    wm.setToolTip( lastMonthBt, this.tr( "Previous month" ) );
-    wm.setToolTip( nextMonthBt, this.tr( "Next month" ) );
-    wm.setToolTip( nextYearBt, this.tr( "Next year" ) );
+    wm.setToolTip( lastYearBt, "Previous year" );
+    wm.setToolTip( lastMonthBt, "Previous month" );
+    wm.setToolTip( nextMonthBt, "Next month" );
+    wm.setToolTip( nextYearBt, "Next year" );
 
     lastYearBt.set({
       show    : 'icon',
@@ -211,9 +211,6 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
     // Show the right date
     var shownDate = (date != null) ? date : new Date();
     this.showMonth(shownDate.getMonth(), shownDate.getFullYear());
-
-    // listen for locale changes
-    qx.locale.Manager.getInstance().addEventListener("changeLocale", this._updateDatePane, this);
 
     // Add the main widgets
     this.add(navBar);
@@ -733,10 +730,9 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      * Reference: Common Locale Data Repository (cldr) supplementalData.xml
      *
      * @type member
-     * @param locale {String} optional locale to be used
      * @return {Integer} index of the first day of the week. 0=sunday, 1=monday, ...
      */
-    __getWeekStart : function(locale) {
+    __getWeekStart : function() {
       var weekStart = {
         // default is monday
         "MV" : 5, // friday
@@ -805,7 +801,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         "TJ" : 0
       };
 
-      var territory = this.__getTerritory(locale);
+      var territory = this.__getTerritory();
 
       // default is monday
       return weekStart[territory] != null ? weekStart[territory] : 1;
@@ -817,10 +813,9 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      * Reference: Common Locale Data Repository (cldr) supplementalData.xml
      *
      * @type member
-     * @param locale {String} optional locale to be used
      * @return {Integer} index of the first day of the weekend. 0=sunday, 1=monday, ...
      */
-    __getWeekendStart : function(locale) {
+    __getWeekendStart : function() {
       var weekendStart = {
         // default is saturday
         "EG" : 5, // friday
@@ -844,7 +839,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         "YE" : 4
       };
 
-      var territory = this.__getTerritory(locale);
+      var territory = this.__getTerritory();
 
       // default is saturday
       return weekendStart[territory] != null ? weekendStart[territory] : 6;
@@ -856,10 +851,9 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      * Reference: Common Locale Data Repository (cldr) supplementalData.xml
      *
      * @type member
-     * @param locale {String} optional locale to be used
      * @return {Integer} index of the last day of the weekend. 0=sunday, 1=monday, ...
      */
-    __getWeekendEnd : function(locale) {
+    __getWeekendEnd : function() {
       var weekendEnd = {
         // default is sunday
         "AE" : 5, // friday
@@ -884,7 +878,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
         "SY" : 6
       };
 
-      var territory = this.__getTerritory(locale);
+      var territory = this.__getTerritory();
 
       // default is sunday
       return weekendEnd[territory] != null ? weekendEnd[territory] : 0;
@@ -895,12 +889,11 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      *
      * @type member
      * @param day {Integer} index of the day. 0=sunday, 1=monday, ...
-     * @param locale {String} optional locale to be used
      * @return {Boolean} whether the given day is a weekend day
      */
-    __isWeekend : function(day, locale) {
-      var weekendStart = this.__getWeekendStart(locale);
-      var weekendEnd = this.__getWeekendEnd(locale);
+    __isWeekend : function(day) {
+      var weekendStart = this.__getWeekendStart();
+      var weekendEnd = this.__getWeekendEnd();
 
       if (weekendEnd > weekendStart) {
         return ((day >= weekendStart) && (day <= weekendEnd));
@@ -913,16 +906,10 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      * Extract the territory part from a locale
      *
      * @type member
-     * @param locale {String} the locale
      * @return {String} territory
      */
-    __getTerritory : function(locale) {
-      if (locale) {
-        var territory = locale.split("_")[1] || locale;
-      } else {
-        territory = qx.locale.Manager.getInstance().getTerritory() || qx.locale.Manager.getInstance().getLanguage();
-      }
-
+    __getTerritory : function() {
+        var territory = qx.core.Client.getTerritory() || qx.core.Client.getLanguage();
       return territory.toUpperCase();
     }
   },
@@ -934,8 +921,6 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
   */
 
   destruct : function() {
-    qx.locale.Manager.getInstance().removeEventListener("changeLocale", this._updateDatePane, this);
-
     this._disposeObjects("_lastYearBt", "_lastMonthBt", "_nextMonthBt", "_nextYearBt", "_monthYearLabel");
 
     this._disposeObjectDeep("_weekdayLabelArr", 1);
