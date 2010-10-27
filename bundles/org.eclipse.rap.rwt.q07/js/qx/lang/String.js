@@ -43,48 +43,6 @@ qx.Class.define("qx.lang.String",
 {
   statics :
   {
-    /**
-     * converts a string seperated by '-' to camel case.
-     * Example:
-     * <pre class='javascript'>qx.lang.String.toCamelCase("to-camel-case") == "toCamelCase"</pre>
-     *
-     * Adapted from PrototypeJS
-     *
-     * @type static
-     * @param str {String} string seperated by '-'
-     * @return {String} camel case string
-     */
-    toCamelCase : function(string)
-    {
-      return string.replace(/\-([a-z])/g, function(match, chr) {
-        return chr.toUpperCase();
-      });
-    },
-
-
-    /**
-     * removes white space from the left side of a string
-     *
-     * @type static
-     * @param str {String} the string to trim
-     * @return {String} TODOC
-     */
-    trimLeft : function(str) {
-      return str.replace(/^\s+/, "");
-    },
-
-
-    /**
-     * removes white space from the right side of a string
-     *
-     * @type static
-     * @param str {String} the string to trim
-     * @return {String} TODOC
-     */
-    trimRight : function(str) {
-      return str.replace(/\s+$/, "");
-    },
-
 
     /**
      * removes white space from the left and the right side of a string
@@ -96,41 +54,6 @@ qx.Class.define("qx.lang.String",
     trim : function(str) {
       return str.replace(/^\s+|\s+$/g, "");
     },
-
-
-    /**
-     * Check whether the string starts with the given substring
-     *
-     * @type static
-     * @param fullstr {String} the string to search in
-     * @param substr {String} the substring to look for
-     * @return {Boolean} whether the string starts with the given substring
-     */
-    startsWith : function(fullstr, substr) {
-      return !fullstr.indexOf(substr);
-    },
-
-    startsWithAlternate : function(fullstr, substr) {
-      return fullstr.substring(0, substr.length) === substr;
-    },
-
-
-    /**
-     * Check whether the string ends with the given substring
-     *
-     * @type static
-     * @param fullstr {String} the string to search in
-     * @param substr {String} the substring to look for
-     * @return {Boolean} whether the string ends with the given substring
-     */
-    endsWith : function(fullstr, substr) {
-      return fullstr.lastIndexOf(substr) === fullstr.length - substr.length;
-    },
-
-    endsWithAlternate : function(fullstr, substr) {
-      return fullstr.substring(fullstr.length - substr.length, fullstr.length) === substr;
-    },
-
 
     /**
      * Pad a string up to a given length. By default, padding characters are added to the
@@ -162,7 +85,6 @@ qx.Class.define("qx.lang.String",
       }
     },
 
-
     /**
      * Convert the first character of the string to upper case.
      *
@@ -173,92 +95,6 @@ qx.Class.define("qx.lang.String",
     toFirstUp : function(str) {
       return str.charAt(0).toUpperCase() + str.substr(1);
     },
-
-
-    /**
-     * Convert the first character of the string to lower case.
-     *
-     * @type static
-     * @param str {String} the string
-     * @return {String} the string with a lower case first character
-     */
-    toFirstLower : function(str) {
-      return str.charAt(0).toLowerCase() + str.substr(1);
-    },
-
-
-    /**
-     * Add a list item to a serialized list string
-     * Example:
-     * <pre class='javascript'>qx.lang.String.addListItem("red, yellow, green", "blue", ", ") == "red, yellow, green, blue"</pre>
-     *
-     * @type static
-     * @param str {String} serialized list. The items are seperated by "sep"
-     * @param item {String} list item to be added
-     * @param sep {String} separator
-     * @return {String} the string with the added item
-     */
-    addListItem : function(str, item, sep)
-    {
-      if (str == item || str == "") {
-        return item;
-      }
-
-      if (sep == null) {
-        sep = ",";
-      }
-
-      var a = str.split(sep);
-
-      if (a.indexOf(item) == -1)
-      {
-        a.push(item);
-        return a.join(sep);
-      }
-      else
-      {
-        return str;
-      }
-    },
-
-
-    /**
-     * Remove a list item from a serialized list string
-     * Example:
-     * <pre class='javascript'>qx.lang.String.removeListItem("red, yellow, green", "yellow", ", ") == "red, green, blue"</pre>
-     *
-     * @type static
-     * @param str {String} serialized list. The items are seperated by "sep"
-     * @param item {String} list item to be removed
-     * @param sep {String} separator
-     * @return {String} the string with the removed item
-     */
-    removeListItem : function(str, item, sep)
-    {
-      if (str == item || str == "") {
-        return "";
-      }
-      else
-      {
-        if (sep == null) {
-          sep = ",";
-        }
-
-        var a = str.split(sep);
-        var p = a.indexOf(item);
-
-        if (p === -1) {
-          return str;
-        }
-
-        do {
-          a.splice(p, 1);
-        } while ((p = a.indexOf(item)) != -1);
-
-        return a.join(sep);
-      }
-    },
-
 
     /**
      * Check whether the string contains a given substring
@@ -305,19 +141,7 @@ qx.Class.define("qx.lang.String",
      */
     escapeRegexpChars : function(str) {
       return str.replace(/([\\\.\(\)\[\]\{\}\^\$\?\+\*])/g, "\\$1");
-    },
-
-
-    /**
-     * Converts a string to an array of characters.
-     * <pre>"hello" => [ "h", "e", "l", "l", "o" ];</pre>
-     *
-     * @type static
-     * @param str {String} the string which should be splitted
-     * @return {Array} the result array of characters
-     */
-    toArray : function(str) {
-      return str.split(/\B|\b/g);
     }
+
   }
 });

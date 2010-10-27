@@ -51,19 +51,6 @@ qx.Class.define("qx.lang.Array",
       return Array.prototype.slice.call(args, 0);
     },
 
-
-    /**
-     * Convert a (node) collection into an array
-     *
-     * @type static
-     * @param coll {var} node collection
-     * @return {Array} a newly created array (copy) with the content of the node collection.
-     */
-    fromCollection : function(coll) {
-      return Array.prototype.slice.call(coll, 0);
-    },
-
-
     /**
      * Expand shorthand definition to a four element list.
      * This is an utility function for padding/margin and all other shorthand handling.
@@ -114,20 +101,6 @@ qx.Class.define("qx.lang.Array",
       return arr.concat();
     },
 
-
-    /**
-     * Return a copy of the given array
-     * The same as {@link qx.lang.Array#copy}
-     *
-     * @type static
-     * @param arr {Array} the array to copy
-     * @return {Array} copy of the array
-     */
-    clone : function(arr) {
-      return arr.concat();
-    },
-
-
     /**
      * Return the last element of an array
      *
@@ -168,53 +141,6 @@ qx.Class.define("qx.lang.Array",
       return arr;
     },
 
-
-    /**
-     * Insert an element into the array before a given second element
-     *
-     * @type static
-     * @param arr {Array} the array
-     * @param obj {var} object to be inserted
-     * @param obj2 {var} insert obj1 before this object
-     * @return {Array} the array
-     */
-    insertBefore : function(arr, obj, obj2)
-    {
-      var i = arr.indexOf(obj2);
-
-      if (i == -1) {
-        arr.push(obj);
-      } else {
-        arr.splice(i, 0, obj);
-      }
-
-      return arr;
-    },
-
-
-    /**
-     * Insert an element into the array after a given second element
-     *
-     * @type static
-     * @param arr {Array} the array
-     * @param obj {var} object to be inserted
-     * @param obj2 {var} insert obj1 after this object
-     * @return {Array} the array
-     */
-    insertAfter : function(arr, obj, obj2)
-    {
-      var i = arr.indexOf(obj2);
-
-      if (i == -1 || i == (arr.length - 1)) {
-        arr.push(obj);
-      } else {
-        arr.splice(i + 1, 0, obj);
-      }
-
-      return arr;
-    },
-
-
     /**
      * Remove an element from the array at the given index
      *
@@ -225,44 +151,6 @@ qx.Class.define("qx.lang.Array",
      */
     removeAt : function(arr, i) {
       return arr.splice(i, 1)[0];
-    },
-
-
-    /**
-     * Remmove all elements from the array
-     *
-     * @type static
-     * @param arr {Array} the array
-     * @return {Array} empty array
-     */
-    removeAll : function(arr) {
-      return arr.length = 0;
-    },
-
-
-    /**
-     * Append the elements of an array to the array
-     *
-     * @type static
-     * @param arr {Array} the array
-     * @param a {Array} the elements of this array will be appended to the array
-     * @return {Array} The modified array.
-     * @throws an exception if the second argument is not an array
-     */
-    append : function(arr, a)
-    {
-      // this check is important because opera throws an uncatchable error if apply is called without
-      // an array as second argument.
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (!(typeof (a) == "object" && a instanceof Array)) {
-          throw new Error("The second parameter must be an array!");
-        }
-      }
-
-      Array.prototype.push.apply(arr, a);
-
-      return arr;
     },
 
 
@@ -296,30 +184,8 @@ qx.Class.define("qx.lang.Array",
      */
     contains : function(arr, obj) {
       return arr.indexOf(obj) != -1;
-    },
-
-
-    /**
-     * Check whether the two array have the same content. Checks only the
-     * equality of the arrays' content.
-     *
-     * @param array1 {Array} first array
-     * @param array2 {Array} second array
-     * @return {Boolean} Whether the two arrays are equal
-     */
-    equals : function(array1, array2)
-    {
-      if (array1.length !== array2.length) {
-        return false;
-      }
-      for (var i=0, l=array1.length; i<l; i++)
-      {
-        if (array1[i] !== array2[i]) {
-          return false;
-        }
-      }
-      return true;
     }
+
 
   }
 });

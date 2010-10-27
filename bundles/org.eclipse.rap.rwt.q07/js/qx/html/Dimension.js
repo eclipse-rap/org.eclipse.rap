@@ -52,84 +52,6 @@ qx.Class.define("qx.html.Dimension",
   statics :
   {
 
-    // Dimensions
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {var} TODOC
-     */
-    getOuterWidth : function(el) {
-      return qx.html.Dimension.getBoxWidth(el) + qx.html.Style.getMarginLeft(el) + qx.html.Style.getMarginRight(el);
-    },
-
-
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {var} TODOC
-     */
-    getOuterHeight : function(el) {
-      return qx.html.Dimension.getBoxHeight(el) + qx.html.Style.getMarginTop(el) + qx.html.Style.getMarginBottom(el);
-    },
-
-
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {var} TODOC
-     */
-    getBoxWidthForZeroHeight : function(el)
-    {
-      var h = el.offsetHeight;
-
-      if (h == 0)
-      {
-        var o = el.style.height;
-        el.style.height = "1px";
-      }
-
-      var v = el.offsetWidth;
-
-      if (h == 0) {
-        el.style.height = o;
-      }
-
-      return v;
-    },
-
-
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {var} TODOC
-     */
-    getBoxHeightForZeroWidth : function(el)
-    {
-      var w = el.offsetWidth;
-
-      if (w == 0)
-      {
-        var o = el.style.width;
-        el.style.width = "1px";
-      }
-
-      var v = el.offsetHeight;
-
-      if (w == 0) {
-        el.style.width = o;
-      }
-
-      return v;
-    },
-
 
     /**
      * TODOC
@@ -228,29 +150,6 @@ qx.Class.define("qx.html.Dimension",
       }
     }),
 
-
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {var} TODOC
-     */
-    getInnerWidth : function(el) {
-      return qx.html.Dimension.getAreaWidth(el) - qx.html.Style.getPaddingLeft(el) - qx.html.Style.getPaddingRight(el);
-    },
-
-
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {var} TODOC
-     */
-    getInnerHeight : function(el) {
-      return qx.html.Dimension.getAreaHeight(el) - qx.html.Style.getPaddingTop(el) - qx.html.Style.getPaddingBottom(el);
-    },
 
     // Insets
     /**
@@ -362,31 +261,6 @@ qx.Class.define("qx.html.Dimension",
       }
     }),
 
-    // Scrollbar
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {int} TODOC
-     */
-    getScrollBarSizeLeft : function(el) {
-      return 0;
-    },
-
-
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {int} TODOC
-     */
-    getScrollBarSizeTop : function(el) {
-      return 0;
-    },
-
-
     /**
      * TODOC
      *
@@ -408,30 +282,7 @@ qx.Class.define("qx.html.Dimension",
      */
     getScrollBarSizeBottom : function(el) {
       return qx.html.Dimension.getInsetBottom(el) - qx.html.Style.getBorderBottom(el);
-    },
-
-
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {var} TODOC
-     */
-    getScrollBarVisibleX : function(el) {
-      return qx.html.Dimension.getScrollBarSizeRight(el) > 0;
-    },
-
-
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param el {Element} TODOC
-     * @return {var} TODOC
-     */
-    getScrollBarVisibleY : function(el) {
-      return qx.html.Dimension.getScrollBarSizeBottom(el) > 0;
     }
+
   }
 });

@@ -36,24 +36,6 @@ qx.Class.define("qx.html.StyleSheet",
 
   statics :
   {
-    /**
-     * Include a CSS file
-     *
-     * @type static
-     * @param vHref {String} Href value
-     * @return {void}
-     */
-    includeFile : function(vHref)
-    {
-      var el = document.createElement("link");
-      el.type = "text/css";
-      el.rel = "stylesheet";
-      el.href = vHref;
-
-      var head = document.getElementsByTagName("head")[0];
-      head.appendChild(el);
-    },
-
 
     /**
      * create a new Stylesheet node and append it to the document
@@ -254,110 +236,7 @@ qx.Class.define("qx.html.StyleSheet",
           }
         }
       })
-    }),
-
-
-    // TODO import functions are not working crossbrowser (Safari) !!
-    // see CSS_1.html test
-    /**
-     * add an import of an external CSS file to a stylesheet
-     *
-     * @type static
-     * @param vSheet {Object} the stylesheet object
-     * @param vUrl {String} URL of the external stylesheet file
-     * @return {void}
-     * @signature function(vSheet, vUrl)
-     */
-    addImport : qx.lang.Object.select(document.createStyleSheet ? "ie4+" : "other",
-    {
-      "ie4+" : function(vSheet, vUrl) {
-        vSheet.addImport(vUrl);
-      },
-
-      "other" : qx.lang.Object.select(qx.core.Client.getInstance().isSafari2() ? "safari2" : "other",
-      {
-        "safari2+" : function(vSheet, vUrl) {
-          vSheet.ownerNode.appendChild(document.createTextNode('@import "' + vUrl + '";'));
-        },
-
-        "other" : function(vSheet, vUrl) {
-          vSheet.insertRule('@import "' + vUrl + '";', vSheet.cssRules.length);
-        }
-      })
-    }),
-
-
-    /**
-     * removes an import from a stylesheet
-     *
-     * @type static
-     * @param vSheet {Object} the stylesheet object
-     * @param vUrl {String} URL of the importet CSS file
-     * @return {void}
-     * @signature function(vSheet, vUrl)
-     */
-    removeImport : qx.lang.Object.select(document.createStyleSheet ? "ie4+" : "other",
-    {
-      "ie4+" : function(vSheet, vUrl)
-      {
-        var vImports = vSheet.imports;
-        var vLength = vImports.length;
-
-        for (var i=vLength-1; i>=0; i--)
-        {
-          if (vImports[i].href == vUrl) {
-            vSheet.removeImport(i);
-          }
-        }
-      },
-
-      "other" : function(vSheet, vUrl)
-      {
-        var vRules = vSheet.cssRules;
-        var vLength = vRules.length;
-
-        for (var i=vLength-1; i>=0; i--)
-        {
-          if (vRules[i].href == vUrl) {
-            vSheet.deleteRule(i);
-          }
-        }
-      }
-    }),
-
-
-    /**
-     * remove all imports from a stylesheet
-     *
-     * @type static
-     * @param vSheet {Object} the stylesheet object
-     * @return {void}
-     * @signature function(vSheet)
-     */
-    removeAllImports : qx.lang.Object.select(document.createStyleSheet ? "ie4+" : "other",
-    {
-      "ie4+" : function(vSheet)
-      {
-        var vImports = vSheet.imports;
-        var vLength = vImports.length;
-
-        for (var i=vLength-1; i>=0; i--) {
-          vSheet.removeImport(i);
-        }
-      },
-
-      "other" : function(vSheet)
-      {
-        var vRules = vSheet.cssRules;
-        var vLength = vRules.length;
-
-        for (var i=vLength-1; i>=0; i--)
-        {
-          if (vRules[i].type == vRules[i].IMPORT_RULE) {
-            vSheet.deleteRule(i);
-          }
-        }
-      }
     })
+
   }
 });

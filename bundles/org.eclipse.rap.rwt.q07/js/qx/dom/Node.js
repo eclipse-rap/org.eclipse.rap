@@ -74,7 +74,16 @@ qx.Class.define("qx.dom.Node",
 
 
 
-
+    /**
+     * Whether the given node is a DOM document node
+     *
+     * @type static
+     * @param node {Node} the node which should be tested
+     * @return {Boolean} true when the node is a document
+     */
+    isDocument : function(node) {
+      return !!(node && node.nodeType === qx.dom.Node.DOCUMENT);
+    },
 
 
     /*
@@ -117,141 +126,7 @@ qx.Class.define("qx.dom.Node",
       "default" : function(node) {
         return this.getDocument(node).defaultView;
       }
-    }),
+    })
 
-
-    /**
-     * Returns the document element. (Logical root node)
-     *
-     * This is a convenience attribute that allows direct access to the child
-     * node that is the root element of the document. For HTML documents,
-     * this is the element with the tagName "HTML".
-     *
-     * @type static
-     * @param node {Node} node to inspect
-     * @return {Element} document element of the given node
-     */
-    getDocumentElement : function(node) {
-      return this.getDocument(node).documentElement;
-    },
-
-
-    /**
-     * Returns the body element. (Visual root node)
-     *
-     * This normally only makes sense for HTML documents. It returns
-     * the content area of the HTML document.
-     *
-     * @type static
-     * @param node {Node} node to inspect
-     * @return {Element} document body of the given node
-     */
-    getBodyElement : function(node) {
-      return this.getDocument(node).body;
-    },
-
-
-
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      TYPE TESTS
-    ---------------------------------------------------------------------------
-    */
-
-    /**
-     * Whether the given node is a DOM element node
-     *
-     * @type static
-     * @param node {Node} the node which should be tested
-     * @return {Boolean} true if the node is a DOM element
-     */
-    isElement : function(node) {
-      return !!(node && node.nodeType === qx.dom.Node.ELEMENT);
-    },
-
-
-    /**
-     * Whether the given node is a DOM document node
-     *
-     * @type static
-     * @param node {Node} the node which should be tested
-     * @return {Boolean} true when the node is a document
-     */
-    isDocument : function(node) {
-      return !!(node && node.nodeType === qx.dom.Node.DOCUMENT);
-    },
-
-
-    /**
-     * Whether the given node is a DOM text node
-     *
-     * @type static
-     * @param node {Node} the node which should be tested
-     * @return {Boolean} true if the node is a DOM element
-     */
-    isText : function(node) {
-      return !!(node && node.nodeType === qx.dom.Node.TEXT);
-    },
-
-
-    /**
-     * Check whether the given object is a browser window object.
-     *
-     * @param node {Object} the object which should be tested
-     * @return {Boolean} true if the object is a window object.
-     */
-    isWindow : function(node) {
-      return node.document && this.getWindow(node.document) == node;
-    },
-
-
-
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      UTILITIES
-    ---------------------------------------------------------------------------
-    */
-
-    /**
-     * Returns the text content of an node where the node may be of node type NODE_ELEMENT, NODE_ATTRIBUTE or NODE_TEXT
-     *
-     * @param node {Node} the node from where the search should start.
-     *     If the node has subnodes the text contents are recursively retreived and joined.
-     * @return {String} the joined text content of the given node or null if not appropriate.
-     * @signature function(node)
-     */
-    getText : function(node)
-    {
-      if(!node || !node.nodeType) {
-        return null;
-      }
-
-      switch(node.nodeType)
-      {
-        case 1: // NODE_ELEMENT
-          var i, a=[], nodes = node.childNodes, length = nodes.length;
-          for (i=0; i<length; i++) {
-            a[i] = this.getText(nodes[i]);
-          };
-
-          return a.join("");
-
-        case 2: // NODE_ATTRIBUTE
-          return node.nodeValue;
-          break;
-
-        case 3: // NODE_TEXT
-          return node.nodeValue;
-          break;
-      }
-
-      return null;
-    }
   }
 });

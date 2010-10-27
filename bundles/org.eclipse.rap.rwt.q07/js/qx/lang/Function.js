@@ -32,22 +32,6 @@ qx.Class.define("qx.lang.Function",
 {
   statics :
   {
-    /**
-     * TODOC
-     *
-     * @type static
-     * @param data {var} TODOC
-     * @return {void}
-     */
-    globalEval : function(data)
-    {
-      if (window.execScript) {
-        window.execScript(data);
-      } else {
-        eval.call(window, data);
-      }
-    },
-
 
     /**
      * Simply return true.
@@ -90,28 +74,6 @@ qx.Class.define("qx.lang.Function",
      */
     returnThis : function() {
       return this;
-    },
-
-
-    /**
-     * Used to return a refernce to an singleton. Classes which should act as singletons can use this
-     * function to implement the "getInstance" methods.
-     *
-     * @type static
-     * @return {Object} TODOC
-     */
-    returnInstance : function()
-    {
-      if (!this._instance) {
-        this._instance = new this;
-      }
-
-      /*
-      if (this._instance.debug) {
-        this._instance.debug("Created...");
-      } */
-
-      return this._instance;
     },
 
 
