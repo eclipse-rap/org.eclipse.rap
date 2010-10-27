@@ -53,7 +53,6 @@ final class QooxdooResourcesUtil {
     "qx/core/Property.js",
     "qx/lang/String.js",
     "qx/core/Object.js",
-    "qx/core/Log.js",
     "qx/lang/Function.js",
     "qx/bom/Viewport.js",
     "qx/Theme.js",
