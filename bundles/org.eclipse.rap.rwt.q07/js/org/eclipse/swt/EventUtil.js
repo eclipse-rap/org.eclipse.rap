@@ -345,4 +345,4 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
   }
 } );
 
-var org_eclipse_rap_rwt_EventUtil_suspend = false;
+org_eclipse_rap_rwt_EventUtil_suspend = false;
