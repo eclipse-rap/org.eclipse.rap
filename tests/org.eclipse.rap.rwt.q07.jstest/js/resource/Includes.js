@@ -295,7 +295,7 @@
   }
 
   for( var i = 0; i < testRunnerClasses.length; i++ ) {
-    include( "./js/" + testRunnerClasses[ i ] );
+    include( "../org.eclipse.rap.rwt.q07.jstest/js/" + testRunnerClasses[ i ] );
   }
 
 } )();
