@@ -475,6 +475,40 @@ public class CTabFolder_Test extends TestCase {
     }
   }
 
+  // bug 329013
+  public void testSelectionBackgroundGradientWithHighlightColor() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
+    new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+
+    Color[] colors = new Color[] {
+      display.getSystemColor( SWT.COLOR_RED ),
+      display.getSystemColor( SWT.COLOR_WHITE ),
+      display.getSystemColor( SWT.COLOR_RED )
+    };
+    int[] percents = new int[] { 0 };
+    try {
+      folder.setSelectionBackground( colors, percents );
+    } catch( final IllegalArgumentException iae ) {
+      fail( "Should not throw IAE when percents.lenght == colors.lenght - 2." );
+    }
+    IWidgetGraphicsAdapter gfxAdapter
+      = folderAdapter.getUserSelectionBackgroundGradient();
+    Color[] gfxColors = gfxAdapter.getBackgroundGradientColors();
+    assertEquals( 2, gfxColors.length );
+    assertEquals( colors[ 0 ], gfxColors[ 0 ] );
+    assertEquals( colors[ 1 ], gfxColors[ 1 ] );
+    assertEquals( colors[ 1 ], folder.getSelectionBackground() );
+    int[] gfxPercents = gfxAdapter.getBackgroundGradientPercents();
+    assertEquals( 2, gfxPercents.length );
+    assertEquals( 0, gfxPercents[ 0 ] );
+    assertEquals( 0, gfxPercents[ 1 ] );
+  }
+
   public void testSelectionBackgroundImage() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -639,7 +673,7 @@ public class CTabFolder_Test extends TestCase {
     folder.setSize( 800, 800 );
     assertSame( item1, folder.getItem( new Point( 10, 7 ) ) );
   }
-  
+
   public void testSetSelectionBackground() {
     Display display = new Display();
     Composite control = new Shell( display );
@@ -653,7 +687,7 @@ public class CTabFolder_Test extends TestCase {
       // Expected Exception
     }
   }
-  
+
   public void testSetSelectionBackgroundI() {
     Display display = new Display();
     Composite control = new Shell( display );
@@ -661,8 +695,8 @@ public class CTabFolder_Test extends TestCase {
     Color color = new Color( display, 255, 0, 0 );
     color.dispose();
     Color[] colors = new Color[]{
-      new Color( display, 0, 0, 0 ), 
-      color, 
+      new Color( display, 0, 0, 0 ),
+      color,
       new Color( display, 0, 0, 255 )
     };
     int[] percents = new int[]{ 10, 40, 50 };
@@ -673,7 +707,7 @@ public class CTabFolder_Test extends TestCase {
       // Expected Exception
     }
   }
-  
+
   // bug 300998
   public void testRemoveLastItem() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );

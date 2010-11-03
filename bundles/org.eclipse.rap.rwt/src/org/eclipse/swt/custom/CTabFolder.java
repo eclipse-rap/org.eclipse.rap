@@ -1132,14 +1132,19 @@ public class CTabFolder extends Composite {
   {
     checkWidget();
     if( colors != null ) {
-      for (int i = 0; i < colors.length; i++ ) {
-        if(colors[i] != null && colors[i].isDisposed()) {
-          SWT.error(SWT.ERROR_INVALID_ARGUMENT);
+      for( int i = 0; i < colors.length; i++ ) {
+        if( colors[ i ] != null && colors[ i ].isDisposed() ) {
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
         }
       }
-      if(    percents == null
-          || percents.length != colors.length - 1 ) {
-        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      // The colors array can optionally have an extra entry which describes the
+      // highlight top color.
+      // Thus its either one or two larger than the percents array
+      if( percents == null
+          || !( ( percents.length == colors.length - 1 )
+             || ( percents.length == colors.length - 2 ) ) )
+      {
+        SWT.error(SWT.ERROR_INVALID_ARGUMENT);
       }
       for( int i = 0; i < percents.length; i++ ) {
         if( percents[ i ] < 0 || percents[ i ] > 100 ) {
@@ -1155,15 +1160,21 @@ public class CTabFolder extends Composite {
       selectionGraphicsAdapter.setBackgroundGradient( null, null );
       setSelectionBackground( ( Color )null );
     } else {
-      int[] gradientPercents = new int[ colors.length ];
-      if( colors.length > 0 ) {
+      int colorsLength = colors.length;
+      if( percents.length == colors.length - 2 ) {
+        colorsLength = colors.length - 1 ;
+      }
+      Color[] gradientColors = new Color[ colorsLength ];
+      System.arraycopy( colors, 0, gradientColors, 0, colorsLength );
+      int[] gradientPercents = new int[ gradientColors.length ];
+      if( gradientColors.length > 0 ) {
         gradientPercents[ 0 ] = 0;
         for( int i = 1; i < gradientPercents.length; i++ ) {
           gradientPercents[ i ] = percents[ i - 1 ];
         }
-        selectionGraphicsAdapter.setBackgroundGradient( colors,
+        selectionGraphicsAdapter.setBackgroundGradient( gradientColors,
                                                         gradientPercents );
-        setSelectionBackground( colors[ colors.length - 1 ] );
+        setSelectionBackground( gradientColors[ gradientColors.length - 1 ] );
       }
     }
   }
@@ -1304,11 +1315,11 @@ public class CTabFolder extends Composite {
   }
 
   /**
-   * Returns the alignment of the top right control. 
+   * Returns the alignment of the top right control.
    *
    * @return the alignment of the top right control which is either
-   * <code>SWT.RIGHT</code> or <code>SWT.FILL</code> 
-   * 
+   * <code>SWT.RIGHT</code> or <code>SWT.FILL</code>
+   *
    * @exception  SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
