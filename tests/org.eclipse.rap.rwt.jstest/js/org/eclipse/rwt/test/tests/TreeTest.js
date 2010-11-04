@@ -483,9 +483,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         var item = new org.eclipse.rwt.widgets.TreeItem( tree );
         item.setTexts( [ "Test" + i ] );
       }
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree.setTopItemIndex( 55 );
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+      org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var area = tree._clientArea._getTargetNode();
       assertEquals( 1100, tree._vertScrollBar.getValue() );
@@ -521,9 +521,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       }
       var child = new org.eclipse.rwt.widgets.TreeItem( topItem );
       child.setTexts( [ "subitem" ] );
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree.setTopItemIndex( 55 );
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+      org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var area = tree._clientArea._getTargetNode();
       testUtil.clickDOM( area.childNodes[ 0 ].childNodes[ 0 ] )
@@ -583,9 +583,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree._horzScrollBar.setValue( 10 );
       tree._vertScrollBar.setValue( 10 );
       testUtil.initRequestLog();
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree.setScrollBarsVisible( false, false );
-      delete org_eclipse_rap_rwt_EventUtil_suspend;  
+      org.eclipse.swt.EventUtil.setSuspended( false );  
       assertEquals( 0, tree._horzScrollBar.getValue() );
       assertEquals( 0, tree._vertScrollBar.getValue() );
       var req = org.eclipse.swt.Request.getInstance();
@@ -699,9 +699,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         item.setTexts( [ "Test" + i ] );
       }
       testUtil.flush();
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 1000 );
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+      org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var itemNode = tree._clientArea._getTargetNode().firstChild;
       assertEquals( "Test50", itemNode.firstChild.innerHTML );
@@ -722,9 +722,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       var maxScroll = tree._vertScrollBar.getMaximum() 
                     - tree._vertScrollBar.getHeight();
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( maxScroll );
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+      org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var itemNode = tree._clientArea._getTargetNode().firstChild;
       assertEquals( "Test78", itemNode.firstChild.innerHTML );
@@ -745,9 +745,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         i++;
       }
       testUtil.flush();
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 1020 );
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+      org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var itemNode = tree._clientArea._getTargetNode().firstChild;
       assertEquals( "Test51", itemNode.firstChild.innerHTML );
@@ -768,10 +768,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         i++;
       }
       testUtil.flush();
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 1400 ); 
       tree._vertScrollBar.setValue( 1020 );
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+      org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var itemNode = tree._clientArea._getTargetNode().firstChild;
       assertEquals( "Test51", itemNode.firstChild.innerHTML );
@@ -792,10 +792,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         i++;
       }
       testUtil.flush();
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 1040 ); 
       tree._vertScrollBar.setValue( 1020 );
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+      org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var itemNode = tree._clientArea._getTargetNode().firstChild;
       assertEquals( "Test51", itemNode.firstChild.innerHTML );
@@ -816,9 +816,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         i++;
       }
       testUtil.flush();
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 100 );
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+      org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var itemNode = tree._rows[ 0 ]._getTargetNode();
       assertEquals( "Test5", itemNode.firstChild.innerHTML );
@@ -834,9 +834,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         var subitem = new org.eclipse.rwt.widgets.TreeItem( item );
       }
       testUtil.flush();
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+      org.eclipse.swt.EventUtil.setSuspended( true );
       tree._vertScrollBar.setValue( 100 );
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+      org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var itemNode = tree._rows[ 0 ]._getTargetNode();
       assertEquals( "Test5", itemNode.firstChild.innerHTML );
@@ -1385,11 +1385,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree );
       var child2 = new org.eclipse.rwt.widgets.TreeItem( child1 );
       wm.add( child1, "wtest", false );
-      org.eclipse.swt.EventUtil.suspendEventHandling();
+      org.eclipse.swt.EventUtil.setSuspended( true );
       child1.setExpanded( true );
       child1.setExpanded( false );
       assertEquals( 0, testUtil.getRequestsSend() );
-      org.eclipse.swt.EventUtil.resumeEventHandling();
+      org.eclipse.swt.EventUtil.setSuspended( false );
       wm.remove( child1 );
       tree.destroy()
     },

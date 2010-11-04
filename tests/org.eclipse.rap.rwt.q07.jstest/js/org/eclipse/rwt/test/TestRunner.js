@@ -294,6 +294,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       qx.ui.core.Widget.__allowFlushs = false;
       org.eclipse.rwt.EventHandler.detachEvents();
       qx.core.Target.prototype.dispatchEvent = function(){};
+      org.eclipse.rwt.Animation._stopLoop();
   	},
   	
     _disableAutoFlush : function() {

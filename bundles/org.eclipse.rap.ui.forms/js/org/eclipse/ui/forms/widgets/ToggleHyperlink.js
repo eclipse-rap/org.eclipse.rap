@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
     
     // This event handler is added/removed by the server-side LCA
     onClick : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
 widgetManager.debug( "clicked" );      
         var id = widgetManager.findIdByWidget( evt.getTarget() );

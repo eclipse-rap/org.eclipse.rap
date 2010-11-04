@@ -47,7 +47,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     UNDERLINE_ALWAYS : 3,
     // This event handler is added/removed by the server-side LCA
     onClick : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
         var req = org.eclipse.swt.Request.getInstance();
