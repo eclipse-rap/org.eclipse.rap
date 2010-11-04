@@ -627,7 +627,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     },
 
     _sendChanges : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( this );

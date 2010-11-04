@@ -131,12 +131,12 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       if( this._pendingEventInfo !== null ) {
         // [rst] switch suspend off while re-dispatching event
         //       See https://bugs.eclipse.org/bugs/show_bug.cgi?id=261532
-        var suspendBuffer = org_eclipse_rap_rwt_EventUtil_suspend;
-        org_eclipse_rap_rwt_EventUtil_suspend = false;
+        var suspendBuffer = org.eclipse.swt.EventUtil.getSuspended();
+        org.eclipse.swt.EventUtil.setSuspended( false );
         this._allowIntercept = false;      
         this._redispatchKeyEvent( this._pendingEventInfo );
         this._allowIntercept = true;      
-        org_eclipse_rap_rwt_EventUtil_suspend = suspendBuffer;
+        org.eclipse.swt.EventUtil.setSuspended( suspendBuffer );
       }
     },
 

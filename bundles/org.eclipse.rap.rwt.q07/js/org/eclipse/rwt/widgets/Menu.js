@@ -521,7 +521,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
     },
             
    _menuShown : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( this._hasListener ) {
           // create preliminary item              
           if( this._preItem == null ) {
@@ -562,7 +562,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
     },
 
     _menuHidden : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( this._hasListener ) {
           var wm = org.eclipse.swt.WidgetManager.getInstance();
           var id = wm.findIdByWidget( this );

@@ -219,7 +219,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
     },
     
     _sendWidgetSelected : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {        
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {        
         // TODO [rst] Clarify what the getOffsetLeft() does
         var leftOffset = this._slider.getLeft() + this._frameOffset;
         var topOffset = this._slider.getTop() + this._frameOffset;

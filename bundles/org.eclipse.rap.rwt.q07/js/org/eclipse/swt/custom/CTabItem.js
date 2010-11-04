@@ -208,7 +208,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     },
 
     _onClick : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( evt.getTarget() != this._closeButton ) {
           evt.getTarget().getParent()._notifyItemClick( evt.getTarget() );
         }
@@ -222,7 +222,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     },
 
     _onClose : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( this );

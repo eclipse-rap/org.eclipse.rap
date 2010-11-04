@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     
     _onFocusIn : function( evt ) {
       if(    this._field.isCreated()
-          && !org_eclipse_rap_rwt_EventUtil_suspend )
+          && !org.eclipse.swt.EventUtil.getSuspended() )
       {
         this._handleSelectionChange();
       }
@@ -368,7 +368,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var fieldValue = value.getLabel().toString();
         this._field.setValue( this._formatText( fieldValue ) );
         if( this._field.isCreated() ) {
-          if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+          if( !org.eclipse.swt.EventUtil.getSuspended() ) {
             this._field.selectAll();
             this._handleSelectionChange();
           }
@@ -456,7 +456,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this.setCapture( false );
       }
       if(    evt.getTarget() == this._field
-          && !org_eclipse_rap_rwt_EventUtil_suspend ) 
+          && !org.eclipse.swt.EventUtil.getSuspended() ) 
       {
         this._handleSelectionChange();
       }
@@ -545,7 +545,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           break;
       }
       if(    this._field.isCreated()
-          && !org_eclipse_rap_rwt_EventUtil_suspend ) 
+          && !org.eclipse.swt.EventUtil.getSuspended() ) 
       {
         this._handleSelectionChange();
       }
@@ -595,7 +595,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           break;
       }
       if(    this._field.isCreated()
-          && !org_eclipse_rap_rwt_EventUtil_suspend ) 
+          && !org.eclipse.swt.EventUtil.getSuspended() ) 
       {
         this._handleSelectionChange();
       }
@@ -618,7 +618,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._isModified = true;
         this._selected = null;
         this._resetListSelection();
-        if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
           var req = org.eclipse.swt.Request.getInstance();
           req.addEventListener( "send", this._onSend, this );
           if( this._hasVerifyModifyListener ) {
@@ -632,7 +632,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // Actions, connected with server communication
     
     _onTextBlur : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && this._isModified ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && this._isModified ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
@@ -659,7 +659,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
 
     _sendWidgetSelected : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( this );
@@ -675,7 +675,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
     
     _sendWidgetDefaultSelected : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( this );
@@ -688,7 +688,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
     
     _updateListVisibleRequestParam : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( this );

@@ -100,7 +100,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
 
     tabSelected : function( evt ) {
       var tab = evt.getTarget();
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && tab.getChecked() ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && tab.getChecked() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         // TODO [rst] Add item parameter in doWidgetSelected
         var itemId = widgetManager.findIdByWidget( tab );

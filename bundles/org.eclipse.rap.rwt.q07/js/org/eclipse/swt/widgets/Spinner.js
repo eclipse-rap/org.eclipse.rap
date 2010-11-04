@@ -119,7 +119,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     },
 
     _onChangeValue : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && !this._isModified ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && !this._isModified ) {
         this._isModified = true;
         var req = org.eclipse.swt.Request.getInstance();
         req.addEventListener( "send", this._onSend, this );
@@ -142,7 +142,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     },
 
     _onKeyDown : function( event ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if(    event.getKeyIdentifier() == "Enter"
             && !event.isShiftPressed()
             && !event.isAltPressed()

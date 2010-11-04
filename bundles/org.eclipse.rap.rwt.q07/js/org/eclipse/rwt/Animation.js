@@ -259,7 +259,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     },
 
     _mainLoop : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var time = new Date().getTime();
         var queue = org.eclipse.rwt.Animation._queue;
         try{

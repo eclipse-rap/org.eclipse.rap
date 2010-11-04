@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
     },
 
     _onDropDownClick : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && this._hasSelectionListener )
+      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener )
       {
         var req = org.eclipse.swt.Request.getInstance();
         if( this._sendEvent ) {

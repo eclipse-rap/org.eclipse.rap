@@ -122,7 +122,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     },
 
     _onDblClick : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( this._changeSelectionNotification == "action" ) {
           var wm = org.eclipse.swt.WidgetManager.getInstance();
           var id = wm.findIdByWidget( this );
@@ -426,7 +426,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     },
 
     _onChangeLeadItem : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
@@ -436,7 +436,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     },
 
     _onClick : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         this._updateSelectedItemState();
         if( !this.__clicksSuspended ) {
           this._suspendClicks();
@@ -455,7 +455,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     },
 
     _onSelectionChange : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();

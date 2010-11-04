@@ -59,13 +59,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     ],
 
     _onParentClose : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         this.doClose();
       }
     },
 
     _appendCloseRequestParam : function( shell ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( shell );
         var req = org.eclipse.swt.Request.getInstance();
@@ -297,7 +297,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
      * Called when user tries to close the shell.
      */
     close : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         org.eclipse.swt.widgets.Shell._appendCloseRequestParam( this );
         if( this._hasShellListener ) {
           org.eclipse.swt.Request.getInstance().send();
@@ -356,7 +356,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       // Work around qooxdoo bug #254: the changeActiveChild is fired twice when
       // a widget was activated by keyboard (getData() is null in this case)
       var widget = this._getParentControl( evt.getValue() );
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && widget != null ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && widget != null ) {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetMgr.findIdByWidget( widget );
         var shellId = widgetMgr.findIdByWidget( this );
@@ -373,7 +373,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     },
     
     _onChangeFocusedChild : function( evt ) {
-      if( org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( org.eclipse.swt.EventUtil.getSuspended() ) {
         this._focusControl = this.getFocusedChild();
       }
     },
@@ -388,7 +388,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         this.warn( "--- INFINITE Z-ORDER ---" );
       }
       // end of workaround
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && this.getActive() ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && this.getActive() ) {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetMgr.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
@@ -416,7 +416,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     },
         
     _onChangeSize : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
@@ -429,7 +429,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     },
 
     _onChangeLocation : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );

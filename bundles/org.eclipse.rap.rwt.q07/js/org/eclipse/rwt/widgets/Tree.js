@@ -1612,7 +1612,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // misc helper
     
     _inServerResponse : function() {
-      return org_eclipse_rap_rwt_EventUtil_suspend;      
+      return org.eclipse.swt.EventUtil.getSuspended();      
     }
     
   }

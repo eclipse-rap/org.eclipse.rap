@@ -135,7 +135,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     },
 
     _sendChanges : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && this.isCreated() ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && this.isCreated() ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var req = org.eclipse.swt.Request.getInstance();
         var id = wm.findIdByWidget( this );

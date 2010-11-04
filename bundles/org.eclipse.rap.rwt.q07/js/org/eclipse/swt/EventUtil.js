@@ -16,12 +16,14 @@
 qx.Class.define( "org.eclipse.swt.EventUtil", {
 
   statics : {
-    suspendEventHandling : function() {
-      org_eclipse_rap_rwt_EventUtil_suspend = true;
+    _suspended : false,
+    
+    setSuspended : function( value ) {
+      this._suspended = value;
     },
-
-    resumeEventHandling : function() {
-      org_eclipse_rap_rwt_EventUtil_suspend = false;
+    
+    getSuspended : function() {
+      return this._suspended;
     },
 
     DOUBLE_CLICK_TIME : 500,
@@ -56,7 +58,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     doWidgetSelected : function( id, left, top, width, height ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var req = org.eclipse.swt.Request.getInstance();
         req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
@@ -69,7 +71,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     addWidgetSelectedModifier : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var modifier = org.eclipse.swt.EventUtil._getKeyModifier();
         if( modifier !== "" ) {
           var req = org.eclipse.swt.Request.getInstance();
@@ -96,7 +98,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     focusGained : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         // [if] The focusControl parameter is added in the request in Shell.js
         var req = org.eclipse.swt.Request.getInstance();
         req.send();
@@ -104,7 +106,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     focusLost : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         // [if] The focusControl parameter is added in the request in Shell.js
         var req = org.eclipse.swt.Request.getInstance();
         req.send();
@@ -115,7 +117,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     // Mouse event handling
 
     mouseDown : function( evt ) {
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend
+      if(    !org.eclipse.swt.EventUtil.getSuspended()
           && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
         // disabled capturing as it interferes with Combo capturing
@@ -147,7 +149,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     mouseUp : function( evt ) {
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend
+      if(    !org.eclipse.swt.EventUtil.getSuspended()
           && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) )
       {
         // disabled capturing as it interferes with Combo capturing
@@ -323,7 +325,7 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     sendMenuDetected : function( widget, x, y ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         // send menu detect request to server
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         // find parent control for the widget that received the event in case
@@ -344,5 +346,3 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
 
   }
 } );
-
-org_eclipse_rap_rwt_EventUtil_suspend = false;

@@ -557,8 +557,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           this.updateItem( this._focusIndex, false );
         }
         // This function is called from server-side and from within Table.js
-        // org_eclipse_rap_rwt_EventUtil_suspend is used to distinguish the caller
-        if( org_eclipse_rap_rwt_EventUtil_suspend ) {
+        // org.eclipse.swt.EventUtil.getSuspended() is used to distinguish the caller
+        if( org.eclipse.swt.EventUtil.getSuspended() ) {
           this._selectionStart = -1;
         } else {
           var req = org.eclipse.swt.Request.getInstance();
@@ -1521,7 +1521,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _resolveItem : function( itemIndex ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( this._unresolvedItems === null ) {
           this._unresolvedItems = new Array();
           qx.client.Timer.once( this._sendResolveItemsRequest, this, 30 );
@@ -1690,7 +1690,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
     
     _sendChanges : function() {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var req = org.eclipse.swt.Request.getInstance();
         req.send();
       }

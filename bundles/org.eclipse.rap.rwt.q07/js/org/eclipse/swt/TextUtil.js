@@ -129,14 +129,14 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     // === Event listener ===
 
     _onMouseUp : function( event ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
     },
 
     _onKeyDown : function( event ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
         if(    event.getKeyIdentifier() == "Enter"
@@ -156,14 +156,14 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _onKeyPress : function( event ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
     },
 
     _onKeyUp : function( event ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }
@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     _onTextChange : function( event ) {
       var text = event.getTarget();
       org.eclipse.swt.TextUtil._updateMessageLabel( text );
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         org.eclipse.swt.TextUtil._handleModification( text );
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
       }

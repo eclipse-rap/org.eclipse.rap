@@ -26,7 +26,7 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
       var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
       var realKeyCode = this._getRealKeyCode( keyCode, domEvent );
       var relevantEvent = keyUtil._isRelevantEvent( eventType, realKeyCode );
-      if( !org_eclipse_rap_rwt_EventUtil_suspend && relevantEvent ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && relevantEvent ) {
         var control = keyUtil._getTargetControl();
         var hasKeyListener = keyUtil._hasKeyListener( control );
         var hasTraverseListener = keyUtil._hasTraverseListener( control );

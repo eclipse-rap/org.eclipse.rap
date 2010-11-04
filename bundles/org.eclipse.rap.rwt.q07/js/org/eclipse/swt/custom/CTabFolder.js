@@ -400,7 +400,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     _onChevronExecute : function( evt ) {
       if( this._chevronMenu == null || !this._chevronMenu.isSeeable() ) {
-        if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
           var wm = org.eclipse.swt.WidgetManager.getInstance();
           var id = wm.findIdByWidget( this );
           var req = org.eclipse.swt.Request.getInstance();
@@ -411,7 +411,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     },
 
     _onMinMaxExecute : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var event;
         if ( evt.getTarget() == this._minButton ) {
           // Minimize button was pressed
@@ -469,7 +469,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     // TODO [rst] Change to respect _hasSelectionListener as soon as server-side
     // code is revised accordingly -> CTabFolderLCA.readData().
     _notifyItemClick : function( item ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( !item.isSelected() ) {
           // deselect any previous selected CTabItem
           this._mapItems( function( item ) {
@@ -489,7 +489,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     },
 
     _notifyItemDblClick : function( item ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( this._hasSelectionListener ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var req = org.eclipse.swt.Request.getInstance();

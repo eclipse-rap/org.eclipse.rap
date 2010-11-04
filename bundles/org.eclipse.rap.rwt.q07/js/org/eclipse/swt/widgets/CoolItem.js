@@ -126,7 +126,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
       this.resetBackgroundColor();
       this.getTopLevelWidget().setGlobalCursor( null );
       // Send request that informs about dragged CoolItem
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
