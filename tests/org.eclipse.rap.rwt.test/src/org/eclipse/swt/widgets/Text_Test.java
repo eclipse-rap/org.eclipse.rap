@@ -517,5 +517,11 @@ public class Text_Test extends TestCase {
     result = text.getTextChars();
     assertEquals( 0, result.length );
     assertEquals( "", text.getText() );
+    String string = "new string";
+    text.setText( string );
+    result = text.getTextChars();
+    for( int i = 0; i < string.length(); i++ ) {
+      assertEquals( string.charAt( i ), result[ i ] );
+    }
   }
 }
