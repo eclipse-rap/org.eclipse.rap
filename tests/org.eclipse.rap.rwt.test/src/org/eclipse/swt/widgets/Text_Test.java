@@ -485,13 +485,37 @@ public class Text_Test extends TestCase {
     passwordText.setEchoChar( '*' );
     assertEquals( '*', passwordText.getEchoChar() );
   }
-  
-  // Ensure that the CANCEL hint isn't returned by getStyle if it isn't 
+
+  // Ensure that the CANCEL hint isn't returned by getStyle if it isn't
   // actually supported
   public void testCancelStyle() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.SEARCH | SWT.CANCEL );
     assertTrue( ( text.getStyle() & SWT.CANCEL ) == 0 );
+  }
+
+  public void testSetTextChars() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.NONE );
+    try {
+      text.setTextChars( null );
+      fail( "No exception thrown for chars == null" );
+    } catch( IllegalArgumentException e ) {
+    }
+    char[] expected = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
+    text.setTextChars( expected );
+    char[] result = text.getTextChars();
+    assertEquals( expected.length, result.length );
+    for( int i = 0; i < expected.length; i++ ) {
+      assertEquals( expected[ i ], result[ i ] );
+    }
+    assertEquals( "password", text.getText() );
+    expected = new char[ 0 ];
+    text.setTextChars( expected );
+    result = text.getTextChars();
+    assertEquals( 0, result.length );
+    assertEquals( "", text.getText() );
   }
 }

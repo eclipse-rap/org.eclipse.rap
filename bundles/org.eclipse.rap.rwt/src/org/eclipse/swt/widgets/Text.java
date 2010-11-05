@@ -13,7 +13,6 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
@@ -196,6 +195,57 @@ public class Text extends Scrollable {
   public String getText() {
     checkWidget();
     return text;
+  }
+
+  /**
+   * Sets the contents of the receiver to the characters in the array. If the receiver has style
+   * SINGLE and the argument contains multiple lines of text, the result of this
+   * operation is undefined and may vary from platform to platform.
+   *
+   * @param text a character array that contains the new text
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the array is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @see #getTextChars()
+   * @since 1.4
+   */
+  public void setTextChars( final char[] text ) {
+    checkWidget();
+    if( text == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    setText( new String( text ) );
+  }
+
+  /**
+   * Returns the widget's text as a character array.
+   * <p>
+   * The text for a text widget is the characters in the widget, or
+   * a zero length array if this has never been set.
+   * </p>
+   *
+   * @return a character array that contains the widget's text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @see #setTextChars(char[])
+   * @since 1.4
+   */
+  public char[] getTextChars() {
+    checkWidget();
+    int length = text.length();
+    char[] chars = new char[ length ];
+    if( length > 0 ) {
+      text.getChars( 0, length, chars, 0 );
+    }
+    return chars;
   }
 
   /**
@@ -794,7 +844,7 @@ public class Text extends Scrollable {
     // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
     height += 2;
     // [rh] Fix for bug 306354: take into account that there is now 1px
-    // right padding on the client side (see Text.js#_applyElement)  
+    // right padding on the client side (see Text.js#_applyElement)
     width += 1;
     Rectangle trim = computeTrim( 0, 0, width, height );
     return new Point( trim.width, trim.height );
