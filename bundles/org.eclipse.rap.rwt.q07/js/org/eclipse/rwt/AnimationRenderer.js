@@ -313,10 +313,12 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
           }
         break;
         case "backgroundColor":
-          if( this._context.isCreated() ) {
-            result = this._context._style.backgroundColor;
-          } else if( this._context._styleProperties ) {
-            result = this._context._styleProperties.backgroundColor;
+          var bg = "backgroundColor";
+          var w = this._context;
+          if( w.getGfxProperty && w.getGfxProperty( bg ) ) {
+            result = w.getGfxProperty( bg );
+          } else if( w.getStyleProperty( bg ) ) {
+            result = w.getStyleProperty( bg );
           } else {
             result = null
           }

@@ -416,6 +416,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       this._cleanUp( animation );      
     }, 
 
+    testGetBackgroundColorFromWidgetWidthRoundedBorder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var animation = new org.eclipse.rwt.Animation();
+      var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
+      var widget = this._createWidget();
+      var border = new org.eclipse.rwt.RoundedBorder( 1, "black", 0 );
+      border.setRadius( 4 );
+      widget.setBorder( border );
+      widget.setBackgroundColor( "#FF0000" );
+      testUtil.flush();
+      renderer.animate( widget, "backgroundColor", 0 );
+      assertEquals( [ 255, 0, 0 ], 
+                    renderer._prepareValue( renderer.getValueFromWidget() ) );
+      widget.setBackgroundColor( "transparent" );
+      assertEquals( null, 
+                    renderer._prepareValue( renderer.getValueFromWidget() ) );
+      widget.setBackgroundColor( null );
+      assertEquals( null, 
+                    renderer._prepareValue( renderer.getValueFromWidget() ) );
+      this._cleanUp( animation );      
+    }, 
+
     testGetBackgroundGradientFromWidget : function() {
       var animation = new org.eclipse.rwt.Animation();
       var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
