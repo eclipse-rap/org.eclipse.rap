@@ -499,11 +499,6 @@ public class Text_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
-    try {
-      text.setTextChars( null );
-      fail( "No exception thrown for chars == null" );
-    } catch( IllegalArgumentException e ) {
-    }
     char[] expected = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
     text.setTextChars( expected );
     char[] result = text.getTextChars();
@@ -512,14 +507,37 @@ public class Text_Test extends TestCase {
       assertEquals( expected[ i ], result[ i ] );
     }
     assertEquals( "password", text.getText() );
-    expected = new char[ 0 ];
+  }
+
+  public void testSetTextChars_NullValue() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.NONE );
+    try {
+      text.setTextChars( null );
+      fail( "No exception thrown for chars == null" );
+    } catch( IllegalArgumentException e ) {
+    }
+  }
+
+  public void testSetTextChars_EmptyArray() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.NONE );
+    char[] expected = new char[ 0 ];
     text.setTextChars( expected );
-    result = text.getTextChars();
+    char[] result = text.getTextChars();
     assertEquals( 0, result.length );
     assertEquals( "", text.getText() );
+  }
+
+  public void testGetTextChars_FromText() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.NONE );
     String string = "new string";
     text.setText( string );
-    result = text.getTextChars();
+    char[]result = text.getTextChars();
     for( int i = 0; i < string.length(); i++ ) {
       assertEquals( string.charAt( i ), result[ i ] );
     }
