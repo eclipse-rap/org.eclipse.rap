@@ -1,34 +1,15 @@
-/* ************************************************************************
-
-   qooxdoo - the new era of web development
-
-   http://qooxdoo.org
-
-   Copyright:
-     2004-2008 1&1 Internet AG, Germany, http://www.1und1.de
-
-   License:
-     LGPL: http://www.gnu.org/licenses/lgpl.html
-     EPL: http://www.eclipse.org/org/documents/epl-v10.php
-     See the LICENSE file in the project's top-level directory for details.
-
-   Authors:
-     * Andreas Ecker (ecker)
-     * Sebastian Werner (wpbasti)
-     * Fabian Jakobs (fjakobs)
-
-************************************************************************ */
-
-/* ************************************************************************
-
-#module(core)
-#require(qx.core.Bootstrap)
-#require(qx.core.Setting)
-#require(qx.lang.Array)
-#ignore(auto-require)
-#ignore(auto-use)
-
-/* ************************************************************************ */
+/*******************************************************************************
+ *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                        and EclipseSource
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ *  Contributors:
+ *    1&1 Internet AG and others - original API and implementation
+ *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ ******************************************************************************/
 
 /**
  * Manage variants of source code. May it be for different debug options,

@@ -1,24 +1,17 @@
-/* ************************************************************************
-
-   qooxdoo - the new era of web development
-
-   http://qooxdoo.org
-
-   Copyright:
-     2007 David Pérez Carmona
-     2004-2008 1&1 Internet AG, Germany, http://www.1und1.de
-
-   License:
-     LGPL: http://www.gnu.org/licenses/lgpl.html
-     EPL: http://www.eclipse.org/org/documents/epl-v10.php
-     See the LICENSE file in the project's top-level directory for details.
-
-   Authors:
-     * David Perez Carmona (david-perez)
-     * Sebastian Werner (wpbasti)
-
-************************************************************************ */
-
+/*******************************************************************************
+ *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                        David Perez Carmona,
+ *                        and EclipseSource
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ *  Contributors:
+ *    1&1 Internet AG and others - original API and implementation
+ *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ ******************************************************************************/
+ 
 /**
  * Provides resizing behavior to any widget.
  */

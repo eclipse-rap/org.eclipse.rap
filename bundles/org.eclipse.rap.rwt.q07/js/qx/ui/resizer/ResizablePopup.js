@@ -1,21 +1,15 @@
-/* ************************************************************************
-
-   qooxdoo - the new era of web development
-
-   http://qooxdoo.org
-
-   Copyright:
-     2007 David Pérez Carmona
-
-   License:
-     LGPL: http://www.gnu.org/licenses/lgpl.html
-     EPL: http://www.eclipse.org/org/documents/epl-v10.php
-     See the LICENSE file in the project's top-level directory for details.
-
-   Authors:
-     * David Perez Carmona (david-perez)
-
-************************************************************************ */
+/*******************************************************************************
+ *  Copyright: 2007, 2010 David Perez Carmona,
+ *                        and EclipseSource
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ *  Contributors:
+ *    1&1 Internet AG and others - original API and implementation
+ *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ ******************************************************************************/
 
 /**
  * A popup that can be resized.
