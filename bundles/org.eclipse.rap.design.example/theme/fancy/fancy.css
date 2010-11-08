@@ -835,16 +835,16 @@ Display {
 /* CTabFolder, TabFolder */
 
 TabItem {
-  border-top-color: #abe033;
+  background-color: white;
 }
 
 TabItem:selected {
   border-top-color: #abe033;
+  border-bottom-color: #abe033;
 }
 
 TabItem:hover {
   background-color: #e9f3d2;
-  border-top-color: #abe033;
 }
 
 CTabItem:selected {

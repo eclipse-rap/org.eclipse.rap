@@ -12,7 +12,7 @@
 
 TabItem {
   background-color: white;
-  border-top-color: #00589f;
+  border-top-color: white;
   border-bottom-color: white;
   background-image: none;
 }
@@ -20,13 +20,11 @@ TabItem {
 TabItem:selected {
   background-color: white;
   border-top-color: #00589f;
-  border-bottom-color: white;
+  border-bottom-color: #00589f;
   background-image: none;
 }
 
 TabItem:hover {
   background-color: #dae9f7;
-  border-top-color: #00589f;
-  border-bottom-color: white;
   background-image: none;
 }
