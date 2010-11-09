@@ -352,6 +352,52 @@ public class TabFolderAndItem_Test extends TestCase {
     }
   }
 
+  public void testClientArea() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    folder.setSize( 100, 100 );
+    Rectangle expected = new Rectangle( 1, 24, 98, 75 );
+    assertEquals( expected, folder.getClientArea() );
+
+    folder = new TabFolder( shell, SWT.BORDER );
+    folder.setSize( 100, 100 );
+    expected = new Rectangle( 3, 26, 94, 71 );
+    assertEquals( expected, folder.getClientArea() );
+
+    folder = new TabFolder( shell, SWT.BOTTOM );
+    folder.setSize( 100, 100 );
+    expected = new Rectangle( 1, 1, 98, 75 );
+    assertEquals( expected, folder.getClientArea() );
+
+    folder = new TabFolder( shell, SWT.BOTTOM | SWT.BORDER );
+    folder.setSize( 100, 100 );
+    expected = new Rectangle( 3, 3, 94, 71 );
+    assertEquals( expected, folder.getClientArea() );
+  }
+
+  public void testComputeTrim() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    Rectangle expected = new Rectangle( -1, -24, 2, 25 );
+    assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
+
+    folder = new TabFolder( shell, SWT.BORDER );
+    expected = new Rectangle( -3, -26, 6, 29 );
+    assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
+
+    folder = new TabFolder( shell, SWT.BOTTOM );
+    expected = new Rectangle( -1, -1, 2, 25 );
+    assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
+
+    folder = new TabFolder( shell, SWT.BOTTOM | SWT.BORDER );
+    expected = new Rectangle( -3, -3, 6, 29 );
+    assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

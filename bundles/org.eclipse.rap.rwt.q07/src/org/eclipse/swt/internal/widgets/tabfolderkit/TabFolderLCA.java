@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.tabfolderkit;
@@ -40,7 +41,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     writer.set( "hideFocus", true );
     if( ( tabFolder.getStyle() & SWT.BOTTOM ) != 0 ) {
       writer.set( "placeBarOnTop", false );
-    }    
+    }
     ControlLCAUtil.writeStyleFlags( tabFolder );
     writer.addListener( "keypress",
                         "org.eclipse.swt.TabUtil.onTabFolderKeyPress" );
@@ -61,10 +62,13 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   public Rectangle adjustCoordinates( final Widget widget,
                                       final Rectangle newBounds )
   {
-    int border = 1;
-    int hTabBar = 23;
+    Control control = ( Control )widget;
+    TabFolder tabFolder = ( TabFolder )control.getParent();
+    boolean onBottom = ( tabFolder.getStyle() & SWT.BOTTOM ) != 0;
+    int border = tabFolder.getBorderWidth() + 1;
+    int hTabBar = onBottom ? 0 : 23;
     return new Rectangle( newBounds.x - border - 10,
-                          newBounds.y - hTabBar - border -10,
+                          newBounds.y - hTabBar - border - 10,
                           newBounds.width,
                           newBounds.height );
   }

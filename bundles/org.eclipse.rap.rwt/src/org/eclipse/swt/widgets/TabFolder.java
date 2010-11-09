@@ -47,9 +47,11 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
 public class TabFolder extends Composite {
 
   private static final TabItem[] EMPTY_TAB_ITEMS = new TabItem[ 0 ];
+  private static final int TAB_BAR_HEIGHT = 23;
 
   private final ItemHolder itemHolder = new ItemHolder( TabItem.class );
   private int selectionIndex = -1;
+  private boolean onBottom;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -81,6 +83,7 @@ public class TabFolder extends Composite {
    */
   public TabFolder( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
+    onBottom = ( super.getStyle() & SWT.BOTTOM ) != 0;
   }
 
   void initState() {
@@ -384,12 +387,27 @@ public class TabFolder extends Composite {
     Rectangle bounds = getBounds();
     int width = bounds.width;
     int height = bounds.height;
-    int border = 1;
-    int hTabBar = 23;
+    int border = getBorderWidth() + 1;
+    int hTabBar = onBottom ? 0 : TAB_BAR_HEIGHT;
     return new Rectangle( border,
                           hTabBar + border,
                           width - border * 2,
-                          height - ( hTabBar + border * 2 ) );
+                          height - ( TAB_BAR_HEIGHT + border * 2 ) );
+  }
+
+  public Rectangle computeTrim( final int x,
+                                final int y,
+                                final int width,
+                                final int height )
+  {
+    checkWidget();
+    int border = getBorderWidth() + 1;
+    int hTabBar = onBottom ? 0 : TAB_BAR_HEIGHT;
+    int trimX = x - border;
+    int trimWidth = width + 2 * border;
+    int trimY = y - border - hTabBar;
+    int trimHeight = height + 2 * border + TAB_BAR_HEIGHT;
+    return new Rectangle( trimX, trimY, trimWidth, trimHeight );
   }
 
   public Point computeSize( final int wHint,
