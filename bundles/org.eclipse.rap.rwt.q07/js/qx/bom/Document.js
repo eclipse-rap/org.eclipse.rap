@@ -9,6 +9,19 @@
  *  Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
+ * 
+ *  This class contains code based on the following work:
+ *
+ *  * Yahoo! UI Library
+ *      http://developer.yahoo.com/yui
+ *      Version 2.2.0
+ *
+ *    Copyright:
+ *      (c) 2007, Yahoo! Inc.
+ *
+ *    License:
+ *      BSD: http://developer.yahoo.com/yui/license.txt
+ * 
  ******************************************************************************/
 
 /**
