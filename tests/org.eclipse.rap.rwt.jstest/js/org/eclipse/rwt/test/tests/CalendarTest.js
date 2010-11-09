@@ -10,31 +10,31 @@
 
 qx.Class.define( "org.eclipse.rwt.test.tests.CalendarTest", {
   extend : qx.core.Object,
-  
+
   members : {
 
     testCreateDispose : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       org.eclipse.swt.widgets.Calendar.CELL_WIDTH = 24;
       org.eclipse.swt.widgets.Calendar.CELL_HEIGHT = 16;
-      var months = [ 
-        "Januar", 
-        "Februar", 
-        "März", 
-        "April", 
-        "Mai", 
-        "Juni", 
-        "Juli", 
-        "August", 
-        "September", 
-        "Oktober", 
-        "November", 
-        "Dezember", 
-        "" 
+      var months = [
+        "Januar",
+        "Februar",
+        "MÃ¤rz",
+        "April",
+        "Mai",
+        "Juni",
+        "Juli",
+        "August",
+        "September",
+        "Oktober",
+        "November",
+        "Dezember",
+        ""
       ];
       var days = [ "", "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" ];
-      var calendar = new org.eclipse.swt.widgets.DateTimeCalendar( "medium", 
-                                                                   months, 
+      var calendar = new org.eclipse.swt.widgets.DateTimeCalendar( "medium",
+                                                                   months,
                                                                    days );
       calendar.addToDocument();
       calendar.setSpace( 3, 194, 3, 138 );
@@ -48,7 +48,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CalendarTest", {
       testUtil.flush();
       assertTrue( calendar.isDisposed() );
     }
-  
+
   }
 
 } );
