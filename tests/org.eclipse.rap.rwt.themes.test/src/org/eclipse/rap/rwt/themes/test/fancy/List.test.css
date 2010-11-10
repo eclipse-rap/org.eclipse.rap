@@ -26,11 +26,8 @@ List-Item:hover {
 }
 
 List-Item:selected {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #0078Bf ),
-    to( #00589f )
-  );  
+  background-color: #abe033;
+  background-image: none;
   color: #ffffff;
 }
 
@@ -48,11 +45,8 @@ List-Item:even:hover {
 }
 
 List-Item:even:selected {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #0078Bf ),
-    to( #00589f )
-  );  
+  background-color: #abe033;
+  background-image: none; 
   color: #ffffff;
 }
 

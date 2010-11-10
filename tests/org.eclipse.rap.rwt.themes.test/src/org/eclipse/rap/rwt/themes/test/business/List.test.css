@@ -26,12 +26,13 @@ List-Item:hover {
 }
 
 List-Item:selected {
+  color: #ffffff;
+  background-color: #00589f;
   background-image: gradient(
     linear, left top, left bottom,
     from( #0078Bf ),
     to( #00589f )
-  );  
-  color: #ffffff;
+  );
 }
 
 List-Item:selected:unfocused {
@@ -48,12 +49,13 @@ List-Item:even:hover {
 }
 
 List-Item:even:selected {
+  color: #ffffff;
+  background-color: #00589f;
   background-image: gradient(
     linear, left top, left bottom,
     from( #0078Bf ),
     to( #00589f )
-  );  
-  color: #ffffff;
+  );
 }
 
 List-Item:even:selected:unfocused {

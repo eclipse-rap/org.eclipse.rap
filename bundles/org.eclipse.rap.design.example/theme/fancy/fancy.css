@@ -513,6 +513,7 @@ List-Item:hover {
 
 List-Item:selected {
   background-color: #abe033;
+  background-image: none;
 }
 
 List-Item:selected:unfocused {
@@ -525,6 +526,7 @@ List-Item:even:hover {
 
 List-Item:even:selected {
   background-color: #abe033;
+  background-image: none;
 }
 
 List-Item:even:selected:unfocused {
