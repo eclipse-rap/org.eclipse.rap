@@ -13,6 +13,7 @@ List[BORDER] {
 List-Item {
   background-color: transparent;
   color: inherit;
+  background-image: none;
 }
 
 List-Item:hover {

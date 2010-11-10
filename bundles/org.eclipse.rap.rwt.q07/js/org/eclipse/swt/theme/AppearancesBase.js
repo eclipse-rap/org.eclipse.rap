@@ -657,6 +657,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       result.textColor = tv.getCssColor( "List-Item", "color" );
       result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );
+      result.backgroundImage = tv.getCssImage( "List-Item", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "List-Item", 
+                                                     "background-image" );      
       return result;
     }
   },

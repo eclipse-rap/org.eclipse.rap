@@ -504,6 +504,7 @@ List[BORDER] {
 List-Item {
   background-color: transparent;
   color: black;
+  background-image: none;
 }
 
 List-Item:selected {
