@@ -22,7 +22,11 @@ List-Item:hover {
 
 List-Item:selected {
   color: white;
-  background-color: #00589f;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #0078Bf ),
+    to( #00589f )
+  );  
 }
 
 List-Item:selected:unfocused {
@@ -39,7 +43,11 @@ List-Item:even:hover {
 }
 
 List-Item:even:selected {
-  background-color: #00589f;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #0078Bf ),
+    to( #00589f )
+  );  
   color: white;
 }
 
