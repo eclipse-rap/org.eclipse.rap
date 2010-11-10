@@ -354,6 +354,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       },
       "default" : function(){}
     } ),
+
+    
+    testSetBackgroundImageOverwritesGradient : function() {
+      // Note: a gradient and background-image can note be set at the same
+      // time via CSS, but when using CSS and Java-API.  
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] ); 
+      this.gfxBorder.setRadius( 5 );
+      widget.addToDocument();
+      widget.setLocation( 0, 0 );
+      widget.setDimension( 100, 100 );
+      widget.setBorder( this.gfxBorder ); 
+      widget.setBackgroundImage( "bla.jpg" );
+      widget.setBackgroundGradient( this.gradient );
+      testUtil.flush();
+      assertTrue( this.usesGfxBackground( widget ) );
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var shape = widget._gfxData.currentShape;
+      assertEquals( "pattern", gfxUtil.getFillType( shape )  );
+      widget.destroy();
+    },
     
     /////////
     // Helper

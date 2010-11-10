@@ -168,12 +168,16 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     },
 
     _handleGfxBackground : function() {
-      var useGradient = this.getGfxProperty( "gradient" ) != null;
-      if( useGradient ) {
-        this.setGfxProperty( "fillType", "gradient" );
+      var useImage = this.getBackgroundImage() != null;
+      if( useImage ){
+        this.setGfxProperty( "fillType", "image" );
       } else {
-        var useImage = this.getBackgroundImage() != null; 
-        this.setGfxProperty( "fillType", useImage? "image" : "solid" );        
+        var useGradient = this.getGfxProperty( "gradient" ) != null;
+        if( useGradient ) {
+          this.setGfxProperty( "fillType", "gradient" );
+        } else {
+          this.setGfxProperty( "fillType", "solid" );
+        }
       }
       var useBackground = ( useGradient || this._gfxBorderEnabled );
       var toggle = ( this._gfxBackgroundEnabled != useBackground );
