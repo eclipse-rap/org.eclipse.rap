@@ -2255,6 +2255,14 @@ public class SWT {
    */
   public static final int DRAW_TAB = 1 << 2;
 
+  /**
+   * Draw constant indicating whether the string drawing operation
+   * should handle mnemonics (value is 1&lt;&lt;3).
+   *
+   * @since 1.4
+   */
+  public static final int DRAW_MNEMONIC = 1 << 3;
+
   // Predefined images
 
   /**

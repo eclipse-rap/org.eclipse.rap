@@ -180,14 +180,15 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "drawText", args );
   }
 
-  private static String processText( final String text, final int flags ) {
-    String result = WidgetLCAUtil.escapeText( text, false );
-    String replacement = " ";
+  static String processText( final String text, final int flags ) {
+    boolean drawMnemonic = ( flags & SWT.DRAW_MNEMONIC ) != 0;
+    String result = WidgetLCAUtil.escapeText( text, drawMnemonic );
+    String replacement = "";
     if( ( flags & SWT.DRAW_DELIMITER ) != 0 ) {
       replacement = "</br>";
     }
     result = EncodingUtil.replaceNewLines( result, replacement );
-    replacement = " ";
+    replacement = "";
     if( ( flags & SWT.DRAW_TAB ) != 0 ) {
       replacement = "&nbsp;&nbsp;&nbsp;&nbsp;";
     }
