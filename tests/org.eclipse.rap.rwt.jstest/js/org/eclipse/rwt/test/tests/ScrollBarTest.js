@@ -108,8 +108,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       vBar.destroy();      
     },
     
-    // TODO [tb] : testResizeSmallerThanMaximum
-    // TODO [tb] : testChangeValueWhileInvisible
+    testResizeReducesValue : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var vBar = this._createScrollBar( false, false );
+      vBar.setValue( 150 );
+      assertEquals( [ 0, 50 ], this._getRelativeKnobPosition( vBar ) );
+      vBar.setHeight( 200 );
+      testUtil.flush();
+      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
+      vBar.destroy();      
+    },
+    
+    testResizeLargerThanMaximum : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var vBar = this._createScrollBar( false, false );
+      vBar.setValue( 150 );
+      assertEquals( [ 0, 50 ], this._getRelativeKnobPosition( vBar ) );
+      vBar.setHeight( 301 );
+      testUtil.flush();
+      assertEquals( [ 0, 0 ], this._getRelativeKnobPosition( vBar ) );
+      vBar.destroy();      
+    },
+        
+    testChangeValueWhileInvisible : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var vBar = this._createScrollBar( false, false );
+      vBar.setValue( 0 );
+      assertEquals( [ 0, 0 ], this._getRelativeKnobPosition( vBar ) );
+      vBar.setVisibility( false );
+      vBar.setValue( 100 );
+      vBar.setVisibility( true );
+      assertEquals( 100, vBar.getValue() );
+      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
+      vBar.destroy();
+    },
 
     // TODO [tb] : with new ScrollBar: testInternalLayout 
     // TODO [tb] : with new ScrollBar: testButtonImages 
