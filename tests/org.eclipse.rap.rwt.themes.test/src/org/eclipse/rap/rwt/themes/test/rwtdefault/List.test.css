@@ -28,6 +28,11 @@ List-Item {
 
 List-Item:hover {
   background-color: #dae9f7;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #dae9f7 ),
+    to( #d2e0ee )
+  );
 }
 
 List-Item:selected {
@@ -43,7 +48,11 @@ List-Item:selected {
 List-Item:selected:unfocused {
   background-color: #959595;
   color: white;
-  background-image: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #A5A5A5 ),
+    to( #858585 )
+  );
 }
 
 List-Item:even {
@@ -67,5 +76,9 @@ List-Item:even:selected {
 List-Item:even:selected:unfocused {
   background-color: #959595;
   color: white;
-  background-image: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #A5A5A5 ),
+    to( #858585 )
+  );
 }

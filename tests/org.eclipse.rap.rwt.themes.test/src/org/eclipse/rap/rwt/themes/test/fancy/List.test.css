@@ -23,17 +23,32 @@ List-Item {
 
 List-Item:hover {
   background-color: #e9f3d2;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e9f3d2 ),
+    to( #d9e3c2 )
+  );
 }
 
 List-Item:selected {
   background-color: #abe033;
   background-image: none;
   color: #ffffff;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #aee336 ),
+    to( #88bd10 )
+  );
 }
 
 List-Item:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #A5A5A5 ),
+    to( #858585 )
+  );
 }
 
 List-Item:even {
@@ -42,15 +57,29 @@ List-Item:even {
 
 List-Item:even:hover {
   background-color: #e9f3d2;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e9f3d2 ),
+    to( #d9e3c2 )
+  );
 }
 
 List-Item:even:selected {
   background-color: #abe033;
-  background-image: none; 
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #aee336 ),
+    to( #88bd10 )
+  );
   color: #ffffff;
 }
 
 List-Item:even:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #A5A5A5 ),
+    to( #858585 )
+  );
 }
