@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     // Thumb offset
     this._thumbOffset = 0;
     // Min button
-    this._minButton = new qx.ui.form.Button();
+    this._minButton = new org.eclipse.rwt.widgets.BasicButton( "push" );
     this._minButton.setTabIndex( null );
     if( this._horizontal ) {
       this._minButton.setHeight( "100%" );
@@ -108,7 +108,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._minButton );
     this.add( this._minButton );
     // Max button
-    this._maxButton = new qx.ui.form.Button();
+    this._maxButton = new org.eclipse.rwt.widgets.BasicButton( "push" );
     this._maxButton.setTabIndex( null );
     if( this._horizontal ) {
       this._maxButton.setHeight( "100%" );

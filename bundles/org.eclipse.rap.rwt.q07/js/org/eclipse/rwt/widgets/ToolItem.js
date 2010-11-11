@@ -10,7 +10,7 @@
 
 
 qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
-  extend : org.eclipse.rwt.widgets.AbstractButton,
+  extend : org.eclipse.rwt.widgets.BasicButton,
 
   construct : function( itemType, flat ) {
     this.base( arguments, itemType );
@@ -48,7 +48,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
   },
   
   members : {
-    
+    // overwritten:
+    _CELLORDER : [ "image", "image", "label", "label", "image" ],
+        
     // overwritten:
     _onKeyPress : function( event ) {
       // give to toolBar for keyboard control (left/right keys):

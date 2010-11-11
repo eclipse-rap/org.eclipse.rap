@@ -222,7 +222,7 @@ final class QooxdooResourcesUtil {
     "org/eclipse/swt/browser/Browser.js",
     "org/eclipse/rwt/widgets/ExternalBrowser.js",
     "org/eclipse/swt/FontSizeCalculation.js",
-    "org/eclipse/rwt/widgets/AbstractButton.js",
+    "org/eclipse/rwt/widgets/BasicButton.js",
     "org/eclipse/rwt/widgets/ToolItem.js",
     "org/eclipse/swt/widgets/Group.js",
     "org/eclipse/swt/widgets/Shell.js",

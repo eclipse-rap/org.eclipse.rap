@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -9,12 +9,11 @@
  ******************************************************************************/
 
 
-qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
+qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
   extend : org.eclipse.rwt.widgets.MultiCellWidget,
-  type : "abstract",
 
   construct : function( buttonType ) {
-    this.base( arguments, [ "image", "image", "label", "label", "image" ] );
+    this.base( arguments, this._CELLORDER );
     this._hasSelectionListener = false;
     this._selected = false;
     this._image = [ null, null, null ] ;
@@ -68,6 +67,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
       nullable : true,
       themeable : true
     },
+    
+    // TODO [tb] : non-ideal solution to provide theming support for image
+    icon : {
+      apply : "_applyIcon",
+      nullable : true,
+      themeable : true
+    },
 
     animation : {
       check : "Object",
@@ -80,6 +86,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
   },
 
   members : {
+    _CELLORDER : [ "image", "image", "label" ],
+    
+    _applyIcon : function( newValue, oldValue ) {
+      this.setImage.apply( this, newValue );
+    },
 
     setImage : function( value, width, height ) {
       this._image = [ value, width, height ];
@@ -89,8 +100,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.AbstractButton", {
     setHotImage : function( value, width, height ) {
       this._hotImage = [ value, width, height ];
       this._updateButtonImage();
-    },        
-
+    },
+    
     _updateButtonImage : function() {
       var image = 
           ( this._hotImage[ 0 ] != null && this.hasState( "over" ) ) 
