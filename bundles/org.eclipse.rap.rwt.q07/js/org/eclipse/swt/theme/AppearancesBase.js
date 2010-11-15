@@ -738,9 +738,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "Combo-List", "border" );
-      result.height = "auto";
-      result.overflow = "scrollY";
+      result.border = tv.getCssBorder( "Combo-List", "border" );      
       result.textColor = tv.getCssColor( "Combo", "color" );
       result.font = tv.getCssFont( "*", "font" );
       result.backgroundColor = tv.getCssColor( "Combo", "background-color" );
@@ -820,8 +818,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "CCombo-List", "border" );
-      result.height = "auto";
-      result.overflow = "scrollY";
       result.textColor = tv.getCssColor( "CCombo", "color" );
       result.font = tv.getCssFont( "*", "font" );
       result.backgroundColor = tv.getCssColor( "CCombo",

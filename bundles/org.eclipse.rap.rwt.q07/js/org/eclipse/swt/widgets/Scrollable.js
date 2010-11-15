@@ -106,7 +106,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
     
     _configureScrollBars : function() {
       var dragBlocker = function( event ) { event.stopPropagation(); };
-      var preferredWidth = this._vertScrollBar.getPreferredBoxWidth()
+      var preferredWidth = this._vertScrollBar.getPreferredBoxWidth();
       var preferredHeight = this._horzScrollBar.getPreferredBoxHeight();
       this._horzScrollBar.setLeft( 0 );
       this._horzScrollBar.setHeight( preferredHeight );

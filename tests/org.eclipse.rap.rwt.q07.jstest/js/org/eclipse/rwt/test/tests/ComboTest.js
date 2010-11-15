@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setListVisible( true );
       testUtil.flush();
       assertTrue( combo._list.isSeeable() );
-      assertEquals( "scrollY", combo._list.getOverflow() );
+      assertEquals( "hidden", combo._list.getOverflow() );
     },
 
     testItems : function() {
@@ -69,7 +69,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
     },
 
     _getItems : function( combo ) {
-      return combo._list.getChildren();
+      return combo._list.getItems();
     }
 
   }

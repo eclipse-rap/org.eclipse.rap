@@ -34,6 +34,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._selectionStart = 0;
     this._selectionLength = 0;
     this._listItemHeight = "auto";
+    this._listMaxHeight = 0;
     // Text field
     this._field = new qx.ui.form.TextField();
     this._field.setTabIndex( null );
@@ -45,10 +46,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._button.setHeight( "100%" );
     this.add( this._button );
     // List
-    this._list = new qx.ui.form.List();
+    this._list = new org.eclipse.rwt.widgets.BasicList( false );
     this._list.setTabIndex( null );
     this._list.setDisplay( false );
-    this._list.setWidth( "auto" );
     // List Manager
     this._manager = this._list.getManager();
     this._manager.setMultiSelection( false );
@@ -155,7 +155,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
 
     _onChangeSize : function( evt ) {
-      this._list.setMinWidth( this.getWidth() );
       this._setListBounds();
     },
 
@@ -166,7 +165,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.addState( "rwt_FLAT" );
       }
       this.getTopLevelWidget().add( this._list );
-      this._setListBounds();
       org.eclipse.swt.TextUtil._updateLineHeight( this._field );
     },
     
@@ -191,7 +189,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _onChangeFont : function( evt ) {
       var value = evt.getValue();
       this._field.setFont( value );
-      var items = this._list.getChildren();
+      var items = this._list.getItems();
       for( var i = 0; i < items.length; i++ ) {
         items[ i ].setFont( value );
       }
@@ -285,21 +283,25 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var listTop = comboTop + this.getHeight();
         var browserHeight = qx.html.Window.getInnerHeight( window );
         var browserWidth = qx.html.Window.getInnerWidth( window );
-        var itemsHeight = this._list.getChildren().length * this._listItemHeight;
-        var listHeight = Math.min( this._list.getMaxHeight(), itemsHeight );
-        if(    browserHeight < listTop + listHeight 
-            && comboTop > browserHeight - listTop ) 
+        var itemsWidth = this._list.getPreferredWidth();
+        var listWidth = Math.min( browserWidth - listLeft, itemsWidth );
+        listWidth = Math.max( this.getWidth(), listWidth )
+        var itemsHeight = this._list.getItemsCount() * this._listItemHeight;
+        var listHeight = Math.min( this._listMaxHeight, itemsHeight );
+        if(    browserHeight < listTop + listHeight
+            && comboTop > browserHeight - listTop )
         {
           listTop = elementPos.top - listHeight;
         }
         this._list.setLocation( listLeft, listTop );
-        this._list.setMaxWidth( Math.max( browserWidth - listLeft, 
-                                          this.getWidth() ) );
+        this._list.setWidth( listWidth );
+        this._list.setHeight( listHeight );
+        this._list.setItemDimensions( listWidth, this._listItemHeight );
       }
     },
     
     _toggleListVisibility : function() {
-      if( this._list.getChildrenLength() ) {
+      if( this._list.getItemsCount() ) {
         // Temporary make the text field ReadOnly, when the list is dropped.
         if( this._editable ) {
           this._field.setReadOnly( !this._dropped  );
@@ -307,28 +309,22 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         if( !this._dropped ) {
           // Brings this widget on top of the others with same parent.
           this._bringToFront();
-          this.setCapture( true );
-          this._setListBounds();
-        } else {
-          this.setCapture( false );
         }
+        this.setCapture( !this._dropped );
         this._list.setDisplay( !this._dropped );
         this._dropped = !this._dropped;
-        this._updateListOverflow();
+        this._updateListScrollBar();
         if( this.hasState( "rwt_CCOMBO" ) ) {
           this._updateListVisibleRequestParam();
         }
       }
     },
     
-    _updateListOverflow : function() {
-      if( this._dropped ) {
-        var overflow = "hidden";
-        var itemsHeight = this._list.getChildren().length * this._listItemHeight;
-        if( this._list.getMaxHeight() < itemsHeight ) {
-          overflow = "scrollY";
-        }
-        this._list.setOverflow( overflow );
+    _updateListScrollBar : function() {
+      if( this._dropped ) {        
+        var itemsHeight = this._list.getItemsCount() * this._listItemHeight;
+        var visible = this._listMaxHeight < itemsHeight;
+        this._list.setScrollBarsVisible( false, visible );
       }
     },
     
@@ -339,6 +335,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
 
     _onListAppear : function( evt ) {
+      this._setListBounds();
       if( this._selected ) {
         this._selected.scrollIntoView();
       }
@@ -431,9 +428,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
         // Redirecting the action, according to the click target 
         var target = evt.getTarget();
-        // Click is on a list item
-        if(    target instanceof qx.ui.form.ListItem 
-            && target.getParent() === this._list )
+        // Click is on a list item 
+        if(    target instanceof qx.ui.form.ListItem
+            && target === this._list.getListItemTarget( target ) )
         {
           this._list._onmousedown( evt );
           this._toggleListVisibility();
@@ -464,10 +461,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _onMouseWheel : function( evt ) {
       if( this._dropped ) {
-        var target = evt.getTarget();
-        if(    !( target instanceof qx.ui.form.List )
-            && !( target instanceof qx.ui.form.ListItem ) )
-        {      
+        if( !this._list.isRelevantEvent( evt ) ) {      
           evt.preventDefault();
           evt.stopPropagation();
         }
@@ -485,8 +479,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           if( toSelect ) {
             this._setSelected( toSelect );
           }
-        } else if( this._list.getChildrenLength() ) {
-          this._setSelected( this._list.getChildren()[0] );
+        } else if( this._list.getItemsCount() ) {
+          this._setSelected( this._list.getItems()[0] );
         }
       }
     },
@@ -589,8 +583,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
             this._list._onkeypress( evt );
             var selected = this._manager.getSelectedItem();
             this._setSelected( selected );
-          } else if( this._list.getChildrenLength() ) {
-            this._setSelected( this._list.getChildren()[0] );
+          } else if( this._list.getItemsCount() ) {
+            this._setSelected( this._list.getItems()[0] );
           }
           break;
       }
@@ -665,7 +659,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var id = widgetManager.findIdByWidget( this );
         var list = this._list;
         var listItem = this._list.getSelectedItem();
-        req.addParameter( id + ".selectedItem", list.indexOf( listItem ) );
+        req.addParameter( id + ".selectedItem", list.getItemIndex( listItem ) );
         if( this._hasSelectionListener || this._hasVerifyModifyListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
@@ -724,54 +718,24 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         req.addParameter( id + ".selectionLength", length );
       }
     },
-    
-    // [if] Workaround for bug:
-    // 278361: [Combo] Overlays text after changing items
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=278361
-    // Items are not removed from DOM if the _isDisplayable property is false.
-    _removeAll : function() {
-      var items = this._list.getChildren();
-      var item = items.length > 0 ? items[ 0 ] : null;
-      while( item != null ) {
-        item._isDisplayable = true;
-        item.destroy();
-        item = items.length > 0 ? items[ 0 ] : null;
-      }
-    },
 
     //////////////
     // Set methods
     
     setItems : function( items ) {
-      this._removeAll();
-      for( var i = 0; i < items.length; i++ ) {
-        var item = new qx.ui.form.ListItem();
-        // [if] Omit the focused item outline border - see bug 286902
-        item.setStyleProperty( "outline", "0px none" );
-        item.handleStateChange = function() {};
-        item.setLabel( "(empty)" );
-        item.getLabelObject().setMode( "html" );
-        item.setLabel( items[ i ] );
-        item.setFont( this.getFont() );
-        item.setHeight( this._listItemHeight );
-        this._list.add( item );
-      }
+      this._list.setItems( items );
     },
 
     setMaxListHeight : function( value ) {
-      this._list.setMaxHeight( value );
+      this._listMaxHeight = value;
     },
     
     setListItemHeight : function( value ) {
       this._listItemHeight = value;
-      var items = this._list.getChildren();
-      for( var i = 0; i < items.length; i++ ) {
-        items[ i ].setHeight( this._listItemHeight );
-      }
     },
 
     select : function( index ) {
-      var items = this._list.getChildren();
+      var items = this._list.getItems();
       var item = null;
       if( index >= 0 && index <= items.length - 1 ) {
         item = items[ index ];

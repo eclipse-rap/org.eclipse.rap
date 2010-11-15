@@ -74,7 +74,7 @@ final class QooxdooResourcesUtil {
     "qx/html/EventRegistration.js",
     "qx/core/Init.js",
     "qx/util/manager/MConnectedObject.js",
-    "org/eclipse/rwt/HtmlUtil.js",    
+    "org/eclipse/rwt/HtmlUtil.js",
     "qx/ui/core/Widget.js",
     "qx/html/Dimension.js",
     "qx/html/Style.js",
@@ -146,7 +146,6 @@ final class QooxdooResourcesUtil {
     "qx/ui/pageview/tabview/Pane.js",
     "qx/ui/popup/Popup.js",
     "qx/ui/popup/PopupManager.js",
-    "qx/ui/form/List.js",
     "qx/ui/selection/SelectionManager.js",
     "qx/ui/selection/Selection.js",
     "qx/ui/basic/ScrollArea.js",
@@ -235,6 +234,7 @@ final class QooxdooResourcesUtil {
     "org/eclipse/swt/widgets/Scale.js",
     "org/eclipse/rwt/widgets/ToolSeparator.js",
     "org/eclipse/swt/theme/BordersBase.js",
+    "org/eclipse/rwt/widgets/BasicList.js",
     "org/eclipse/swt/widgets/Combo.js",
     "org/eclipse/rwt/FocusIndicator.js",
     "org/eclipse/swt/CLabelUtil.js",
@@ -318,7 +318,7 @@ final class QooxdooResourcesUtil {
       }
     } else {
       register( CLIENT_JS, false );
-    }    
+    }
   }
 
   private static void registerWidgetImages() {
