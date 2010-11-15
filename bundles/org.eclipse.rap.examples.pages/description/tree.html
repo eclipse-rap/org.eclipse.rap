@@ -7,15 +7,48 @@
   <h2>Tree</h2>
 
   <p>
-  The Tree widget supports columns, and checkboxes, and multi-selection.
+    The Tree widget can display structured data in a hierarchical view.
+    It supports checkboxes, resizeable and moveable columns, multi-selection mode,
+    on-demand data loading (so-called Virtual Trees), and more.
+  </p>
+
+  <h3>Style Flags</h3>
+
+  <p>
+    The style flag <code>CHECK</code> enables checkboxes.
   </p>
   <p>
-  The style flag <code>CHECK</code> enables checkboxes.
+    The selection mode can be chosen by specifying either <code>SINGLE</code>, which is the default, or
+    <code>MULTI</code> to enable multi-selection.
   </p>
+
+  <h3>Virtual Trees</h3>
   <p>
-  The selection mode can be chosen by specifying either <code>SINGLE</code> or
-  <code>MULTI</code>.
+    Trees can handle lots of data.
+    Too many rows can slow down rendering.
+    With virtual trees, only the range of visible rows is loaded from the server.
+    Everytime a new range of items becomes visible, the new information to display
+    is requested from the server.
   </p>
+
+  <h3>JFace TreeViewers</h3>
+  <p>
+    JFace viewers provide a model-view-controller separation.
+    For advanced uses, a TreeViewer is an alternative to using a plain SWT Tree.
+    The TreeViewer operates on an underlying Tree widget and performs all tasks
+    necessary for labeling, filtering, sorting, etc.
+  </p>
+
+  <h3>Theming</h3>
+  <p>
+    The appearance of the Tree widget is highly customizeable.
+    Examples are:
+  </p>
+  <ul>
+    <li>Alternating row colors</li>
+    <li>Exchangeable indent icons</li>
+    <li>Configurable cell padding</li>
+  </ul>
 
 </body>
 </html>
