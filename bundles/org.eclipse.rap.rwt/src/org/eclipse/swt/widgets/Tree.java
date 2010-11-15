@@ -72,7 +72,7 @@ import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
  * <p>
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>SINGLE, MULTI, CHECK<!--, FULL_SELECTION-->, VIRTUAL, NO_SCROLL</dd>
+ * <dd>SINGLE, MULTI, CHECK, FULL_SELECTION, VIRTUAL, NO_SCROLL</dd>
  * <dt><b>Events:</b></dt>
  * <dd>Selection, DefaultSelection, Collapse, Expand, SetData<!--, MeasureItem,
  * EraseItem, PaintItem--></dd>
