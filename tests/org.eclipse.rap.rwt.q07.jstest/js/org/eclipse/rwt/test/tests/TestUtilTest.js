@@ -36,6 +36,67 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       };
       assertEquals( expected, bounds );
     },
+    
+    
+    testGetElementBoundsNoLeftTop : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var parent = document.createElement( "div" );
+      var child = document.createElement( "div" );
+      parent.style.width = "100px";
+      parent.style.height = "200px";
+      parent.appendChild( child );
+      child.style.width = "50px";
+      child.style.height = "70px";
+      var bounds = testUtil.getElementBounds( child );
+      var expected = {
+        "top" : 0,
+        "left" : 0,
+        "width" : 50,
+        "height" : 70,
+        "right" : 50,
+        "bottom" : 130
+      };
+      assertEquals( expected, bounds );
+    },
+    
+    testGetElementBoundsUsingRightBottom : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var parent = document.createElement( "div" );
+      var child = document.createElement( "div" );
+      parent.style.width = "100px";
+      parent.style.height = "200px";
+      parent.appendChild( child );
+      child.style.right = "20px";
+      child.style.bottom = "30px";
+      child.style.width = "50px";
+      child.style.height = "70px";
+      var bounds = testUtil.getElementBounds( child );
+      var expected = {
+        "top" : 100,
+        "left" : 30,
+        "width" : 50,
+        "height" : 70,
+        "right" : 20,
+        "bottom" : 30
+      };
+      assertEquals( expected, bounds );
+    },
+    
+    testGetElementLayout : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var parent = document.createElement( "div" );
+      var child = document.createElement( "div" );
+      parent.style.width = "100px";
+      parent.style.height = "200px";
+      parent.appendChild( child );
+      child.style.top = "20px";
+      child.style.left = "30px";
+      child.style.width = "50px";
+      child.style.height = "70px";
+      var bounds = testUtil.getElementLayout( child );
+      var expected = [ 30, 20, 50, 70 ];
+      assertEquals( expected, bounds );
+    },
    
     testGetElementBoundsNoParent : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

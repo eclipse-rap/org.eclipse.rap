@@ -16,28 +16,43 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     //////
     // DOM
     
-   getElementBounds : function( node ) {
+    getElementBounds : function( node ) {
       var style = node.style;
-      var result = {
-        top : this._parseLength( style.top ),
-        left : this._parseLength( style.left ),
-        width : this._parseLength( style.width ),
-        height : this._parseLength( style.height )        
-      };
       try {
         var ps = node.parentNode.style;
-        result.right =   this._parseLength( ps.width ) 
-                       - this._parseLength( ps.borderLeftWidth || 0 ) 
-                       - this._parseLength( ps.borderRightWidth || 0 ) 
-                       - ( result.left + result.width )
-        result.bottom =   this._parseLength( ps.height ) 
-                        - this._parseLength( ps.borderTopWidth || 0 ) 
-                        - this._parseLength( ps.borderBottomWidth || 0 ) 
-                        - ( result.top + result.height );
       } catch( e ) {
         throw( "Could not get bounds: no parentNode!" );
       }
+      var space = {}; 
+      space.width =   this._parseLength( ps.width ) 
+                    - this._parseLength( ps.borderLeftWidth || 0 ) 
+                    - this._parseLength( ps.borderRightWidth || 0 ); 
+      space.height =   this._parseLength( ps.height ) 
+                     - this._parseLength( ps.borderTopWidth || 0 ) 
+                     - this._parseLength( ps.borderBottomWidth || 0 );
+      var result = {};
+      result.width = this._parseLength( style.width );
+      result.height = this._parseLength( style.height );
+      if( style.right && !style.left ) {
+        result.right = this._parseLength( style.right );
+        result.left = space.width - ( result.right + result.width );
+      } else {
+        result.left = this._parseLength( style.left );
+        result.right = space.width - ( result.left + result.width );
+      } 
+      if( style.bottom && !style.top ) {
+        result.bottom = this._parseLength( style.bottom );
+        result.top = space.height - ( result.bottom + result.height );
+      } else {
+        result.top = this._parseLength( style.top );
+        result.bottom = space.height - ( result.top + result.height );
+      } 
       return result;
+    },
+    
+    getElementLayout : function( node ) {
+      var bounds = this.getElementBounds( node );
+      return [ bounds.left, bounds.top, bounds.width, bounds.height ];
     },
     
     _parseLength : function( value ) {
