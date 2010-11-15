@@ -222,3 +222,6 @@ MenuItem.fancy:hover {
   background-color: #0369bc;
 }
 
+Tree-Cell.modern {
+  padding: 2px;
+}
