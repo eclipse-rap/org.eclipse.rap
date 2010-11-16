@@ -11,11 +11,15 @@
 /* Spinner */
 
 Spinner {
-  border: 1px solid #a4a4a4;
-  border-radius: 2px 2px 2px 2px;
+  border: none;
   padding: 1px 2px;
   color: #464a4e;
   background-color: rgb( 252, 252, 252 );
+}
+
+Spinner[BORDER] {
+  border: 1px solid #a4a4a4;
+  border-radius: 2px 2px 2px 2px;
 }
 
 Spinner-DownButton {

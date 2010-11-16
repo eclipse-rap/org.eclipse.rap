@@ -44,7 +44,7 @@ public class Spinner_Test extends TestCase {
     assertEquals( 1, spinner.getIncrement() );
     assertEquals( 10, spinner.getPageIncrement() );
     assertEquals( 0, spinner.getDigits() );
-    assertEquals( 1, spinner.getBorderWidth() );
+    assertEquals( 0, spinner.getBorderWidth() );
 
     spinner = new Spinner( shell, SWT.BORDER );
     assertTrue( ( spinner.getStyle() & SWT.BORDER ) != 0 );
@@ -138,16 +138,16 @@ public class Spinner_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    Point expected = new Point( 59, 20 );
+    Point expected = new Point( 59, 18 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner.setMaximum( 1000000 );
-    expected = new Point( 82, 20 );
+    expected = new Point( 82, 18 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner.setMinimum( -1000000 );
     spinner.setMaximum( 100 );
-    expected = new Point( 88, 20 );
+    expected = new Point( 88, 18 );
     assertEquals( expected, spinner.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     spinner = new Spinner( shell, SWT.BORDER );
