@@ -227,6 +227,156 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertFalse( slider._scrollTimer.isEnabled() );      
       assertEquals( 5, slider._selection );
     },
+    
+    testHoldMinButton : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( false );
+      slider.setMaximum( 110 ); // the place needed by thumb 
+      slider.setSelection( 100 );
+      assertEquals( 100, slider._selection );
+      var node = slider._minButton.getElement();
+      testUtil.fakeMouseEventDOM( node, "mousedown" );
+      assertEquals( 95, slider._selection );
+      testUtil.forceTimerOnce(); // start scrolling
+      testUtil.forceInterval( slider._scrollTimer );
+      assertEquals( 90, slider._selection );
+      testUtil.forceInterval( slider._scrollTimer );
+      assertEquals( 85, slider._selection );
+      assertFalse( slider._readyToSendChanges );
+      testUtil.forceTimerOnce(); // add request parameter
+      assertTrue( slider._readyToSendChanges );
+      testUtil.forceInterval( slider._scrollTimer );
+      assertFalse( slider._readyToSendChanges );
+      assertEquals( 80, slider._selection );
+      testUtil.fakeMouseEventDOM( node, "mouseup" );
+      assertFalse( slider._scrollTimer.isEnabled() );
+      slider.destroy();
+    },
+    
+    testHoldMinButtonAbort : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( false );
+      slider.setMaximum( 110 ); // the place needed by thumb
+      slider.setSelection( 100 );
+      var node = slider._minButton.getElement();
+      testUtil.fakeMouseEventDOM( node, "mousedown" );
+      assertEquals( 95, slider._selection );
+      testUtil.fakeMouseEventDOM( node, "mouseout" );
+      testUtil.forceTimerOnce(); // try start scrolling
+      assertFalse( slider._scrollTimer.isEnabled() );      
+      assertEquals( 95, slider._selection );
+      slider.destroy();
+    },
+    
+    testClickLineVertical : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( false );
+      slider.setSelection( 2 );
+      assertEquals( 2, slider._selection ); 
+      var node = slider._line.getElement();
+      var left = qx.event.type.MouseEvent.buttons.left;
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 10 + 16 + 50 );
+      assertEquals( 12, slider._selection ); 
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 10 + 16 + 1 );
+      assertEquals( 2, slider._selection ); 
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 10 + 16 + 1 );
+      assertEquals( 0, slider._selection );
+      slider.setSelection( 85 ); 
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 10 + 84 - 1 );
+      assertEquals( 90, slider._selection );
+      slider.destroy();
+    },
+    
+    testClickLineHorizontal : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( true );
+      slider.setSelection( 2 );
+      assertEquals( 2, slider._selection ); 
+      var node = slider._line.getElement();
+      var left = qx.event.type.MouseEvent.buttons.left;
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16 + 50, 11 );
+      assertEquals( 12, slider._selection ); 
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16 + 1, 11 );
+      assertEquals( 2, slider._selection ); 
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16 + 1, 11 );
+      assertEquals( 0, slider._selection );
+      slider.setSelection( 85 ); 
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 84 - 1, 11 );
+      assertEquals( 90, slider._selection );
+      slider.destroy();
+    },
+
+    testHoldOnLine : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( false );
+      var node = slider._line.getElement();
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var thumb = slider._thumb.getHeight();
+      // scale is 100 - 32 = 68 : 100 => thumb is 6.8
+      // last page-increment occured when distance between thumb middle 
+      // and mouse is smaller than one increment (also 6.8).
+      // Thumb-middle on selection 50 is: 10 + 16 + 50 * 0.68 + 6.8 / 2 = 63.4
+      // The mouse will be moved there after the scrolling started:
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 50 );
+      assertEquals( 10, slider._selection );
+      testUtil.forceTimerOnce(); // start scrolling
+      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 11, 63 );
+      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.forceInterval( slider._scrollTimer );
+      assertEquals( 40, slider._selection );
+      testUtil.forceInterval( slider._scrollTimer );
+      assertEquals( 50, slider._selection );
+      assertFalse( slider._scrollTimer.isEnabled() );
+      // NOTE: this should work, but doesnt:
+      //testUtil.fakeMouseEventDOM( node, "mousemove", left, 11, 64 );
+      testUtil.fakeMouseEventDOM( node, "mouseup", left, 11, 63 );
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 64 );
+      assertEquals( 60, slider._selection );
+      slider.destroy();
+    },
+
+    testHoldOnLineAbort : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( false );
+      var node = slider._line.getElement();
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var thumb = slider._thumb.getHeight();
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 50 );
+      assertEquals( 10, slider._selection );
+      testUtil.fakeMouseEventDOM( node, "mouseup", left, 11, 50 );
+      testUtil.forceTimerOnce(); // start scrolling
+      assertFalse( slider._scrollTimer.isEnabled() );
+      slider.destroy();
+    },
+        
+    testHoldOnLineMouseOut : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( false );
+      var node = slider._line.getElement();
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var thumb = slider._thumb.getHeight();
+      testUtil.fakeMouseEventDOM( node, "mouseover", left, 11, 90 );
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 90 );
+      assertEquals( 10, slider._selection );
+      testUtil.forceTimerOnce(); // start scrolling
+      testUtil.forceInterval( slider._scrollTimer );
+      assertEquals( 20, slider._selection );
+      testUtil.fakeMouseEventDOM( node, "mouseout", left, 9, 90 );
+      assertFalse( slider._scrollTimer.isEnabled() );
+      // NOTE: It should actually continue on mouseover, but doesnt right now:
+      //testUtil.fakeMouseEventDOM( node, "mouseover", left, 11 90 );
+      slider.destroy();
+    },
+
+
+        
+    //testHoldLineLimit
+    //testKey...
+    //testMouseWheel
+    //testDragThumb
+    //testDispose
+    
 
     /////////
     // Helper
