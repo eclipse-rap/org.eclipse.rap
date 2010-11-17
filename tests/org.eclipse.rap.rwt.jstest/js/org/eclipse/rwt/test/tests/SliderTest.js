@@ -368,15 +368,160 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       //testUtil.fakeMouseEventDOM( node, "mouseover", left, 11 90 );
       slider.destroy();
     },
-
-
         
-    //testHoldLineLimit
-    //testKey...
-    //testMouseWheel
-    //testDragThumb
-    //testDispose
-    
+    testKeyControlVertical : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( false );
+      assertEquals( 0, slider._selection );
+      testUtil.press( slider, "Right" );
+      assertEquals( 5, slider._selection );
+      testUtil.press( slider, "Down" );
+      assertEquals( 10, slider._selection );
+      testUtil.press( slider, "Left" );
+      assertEquals( 5, slider._selection );
+      testUtil.press( slider, "Up" );
+      assertEquals( 0, slider._selection );
+      testUtil.press( slider, "PageDown" );
+      assertEquals( 10, slider._selection );
+      testUtil.press( slider, "PageUp" );
+      assertEquals( 0, slider._selection );
+      testUtil.press( slider, "End" );
+      assertEquals( 90, slider._selection );
+      testUtil.press( slider, "Right" );
+      assertEquals( 90, slider._selection );      
+      testUtil.press( slider, "Home" );
+      assertEquals( 0, slider._selection );
+      testUtil.press( slider, "Left" );
+      assertEquals( 0, slider._selection );      
+      slider.destroy();
+    },
+        
+    testKeyControlHorizontal : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( true );
+      assertEquals( 0, slider._selection );
+      testUtil.press( slider, "Right" );
+      assertEquals( 5, slider._selection );
+      testUtil.press( slider, "Up" );
+      assertEquals( 10, slider._selection );
+      testUtil.press( slider, "Left" );
+      assertEquals( 5, slider._selection );
+      testUtil.press( slider, "Down" );
+      assertEquals( 0, slider._selection );
+      testUtil.press( slider, "PageUp" );
+      assertEquals( 10, slider._selection );
+      testUtil.press( slider, "PageDown" );
+      assertEquals( 0, slider._selection );
+      testUtil.press( slider, "End" );
+      assertEquals( 90, slider._selection );
+      testUtil.press( slider, "Right" );
+      assertEquals( 90, slider._selection );      
+      testUtil.press( slider, "Home" );
+      assertEquals( 0, slider._selection );
+      testUtil.press( slider, "Left" );
+      assertEquals( 0, slider._selection );      
+      slider.destroy();
+    },
+
+    testMouseWheel : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( true );
+      assertEquals( 0, slider._selection );
+      testUtil.fakeWheel( slider, -1 );
+      assertEquals( 0, slider._selection );
+      testUtil.fakeWheel( slider, 1 );
+      assertEquals( 0, slider._selection );
+      testUtil.fakeWheel( slider, 1 );
+      assertEquals( 0, slider._selection );
+      slider.destroy();
+    },
+  
+    testDragThumb : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var slider = this._createSlider( true );
+      var node = slider._thumb.getElement();
+      assertEquals( 0, slider._selection );
+      assertEquals( 16, testUtil.getElementBounds( node ).left );
+      // Note: 10 pixel = 14.7 units
+      testUtil.fakeMouseEventDOM( node, "mouseover", left, 10 + 16, 11 );
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16, 11 );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 + 10, 11 );
+      assertEquals( 16 + 10, testUtil.getElementBounds( node ).left );
+      assertEquals( 15, slider._selection );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 + 5, 11 );
+      assertEquals( 16 + 5, testUtil.getElementBounds( node ).left );
+      assertEquals( 7, slider._selection );
+      testUtil.fakeMouseEventDOM( node, "mouseup", left, 10 + 16 + 5, 11 );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 + 10, 11 );      
+      assertEquals( 16 + 5, testUtil.getElementBounds( node ).left );
+      assertEquals( 7, slider._selection );
+      slider.destroy();
+    },
+  
+    testDragThumbMouseOut : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var slider = this._createSlider( true );
+      var node = slider._thumb.getElement();
+      assertEquals( 0, slider._selection );
+      assertEquals( 16, testUtil.getElementBounds( node ).left );
+      testUtil.fakeMouseEventDOM( node, "mouseover", left, 10 + 16, 11 );
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16, 11 );
+      testUtil.fakeMouseEventDOM( node, "mouseout", left, 10 + 16, 9 );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16, 9 );
+      assertEquals( 16, testUtil.getElementBounds( node ).left );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 + 5, 9 );
+      assertEquals( 16 + 5, testUtil.getElementBounds( node ).left );
+      testUtil.fakeMouseEventDOM( node, "mouseup", left, 10 + 16 + 5, 9 );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 + 10 );      
+      assertEquals( 16 + 5, testUtil.getElementBounds( node ).left );
+      slider.destroy();
+    },
+  
+    testDragThumbLimit : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var slider = this._createSlider( true );
+      var node = slider._thumb.getElement();
+      assertEquals( 0, slider._selection );
+      assertEquals( 16, testUtil.getElementBounds( node ).left );
+      testUtil.fakeMouseEventDOM( node, "mouseover", left, 10 + 16, 11 );
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16, 11 );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 - 10, 11 );
+      assertEquals( 16, testUtil.getElementBounds( node ).left );
+      assertEquals( 0, slider._selection );
+      testUtil.fakeMouseEventDOM( node, "mousemove", left, 10 + 16 + 120, 11 );
+      assertEquals( 77, testUtil.getElementBounds( node ).left );
+      assertEquals( 90, slider._selection );
+      slider.destroy();
+    },
+
+    testDispose : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( true );
+      var thumb = slider._thumb;
+      var line = slider._line;
+      var minButton = slider._minButton;
+      var maxButton = slider._maxButton;
+      var timer = slider._scrollTimer;
+      var parent = slider.getElement().parentNode;
+      var parentLength = parent.childNodes.length;
+      slider.destroy();
+      testUtil.flush();
+      assertNull( slider._thumb );
+      assertNull( slider._line );
+      assertNull( slider._minButton );
+      assertNull( slider._maxButton );
+      assertNull( slider._scrollTimer );
+      assertNull( slider.getElement() );
+      assertNull( slider.__listeners );
+      assertTrue( parent.childNodes.length === parentLength - 1 );
+      assertTrue( line.isDisposed() );
+      assertTrue( minButton.isDisposed() );
+      assertTrue( maxButton.isDisposed() );
+      assertTrue( timer.isDisposed() );
+    },
 
     /////////
     // Helper
