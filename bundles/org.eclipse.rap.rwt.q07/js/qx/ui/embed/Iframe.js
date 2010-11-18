@@ -670,7 +670,19 @@ qx.Class.define("qx.ui.embed.Iframe",
       }
     },
 
-
+    destroy : function() {
+      var src = "javascript:false;";
+      if( this._iframeNode && this.getSource() !== src ) {
+        this.setStyleProperty( "visibility", "hidden" );
+        this.addToDocument();
+        this.addEventListener( "load", function() {
+          this.destroy();
+        }, this );
+        this.setSource( src );
+      } else {
+        this.base( arguments );
+      }
+    },
 
 
     /*
@@ -725,8 +737,9 @@ qx.Class.define("qx.ui.embed.Iframe",
     {
       this._iframeNode._QxIframe = null;
       this._iframeNode.onload = null;
+      this._iframeNode = null;
+      this._getTargetNode().innerHTML = "";
     }
-
-    this._disposeFields("__onload", "_iframeNode", "_blockerNode");
+    this._disposeFields("__onload", "_blockerNode");
   }
 });
