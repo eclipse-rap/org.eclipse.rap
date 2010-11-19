@@ -249,7 +249,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         var startColor = gradient[ 0 ][ 1 ];
         //fill.color = startColor;
         fill.color2 = gradient[ gradient.length - 1 ][ 1 ];
-        fill.angle = gradient.horizonal ? 270 : 180;
+        fill.angle = gradient.horizontal ? 270 : 180;
         var transitionColors = "0% " + startColor;
         var lastColor = qx.util.ColorUtil.stringToRgb( startColor );
         var nextColor = null;

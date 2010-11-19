@@ -14,7 +14,7 @@ Slider {
   background-color: #f3f3f4;
 }
 
-Slider-DownButton:horizontal {
+Slider-DownButton[HORIZONTAL] {
   background-color: transparent;
   border: 1px solid #A4A4A4;
   border-radius: 2px 0px 0px 2px;
@@ -27,7 +27,7 @@ Slider-DownButton:horizontal {
   );
 }
 
-Slider-DownButton:horizontal:pressed {
+Slider-DownButton[HORIZONTAL]:pressed {
   background-image: gradient(
     linear, left top, left bottom,
     from( #e0e0e0 ),
@@ -36,7 +36,7 @@ Slider-DownButton:horizontal:pressed {
   );
 }
 
-Slider-UpButton:horizontal {
+Slider-UpButton[HORIZONTAL] {
   background-color: transparent;
   border: 1px solid #A4A4A4;
   border-radius: 0px 2px 2px 0px;
@@ -49,7 +49,7 @@ Slider-UpButton:horizontal {
   );
 }
 
-Slider-UpButton:horizontal:pressed {
+Slider-UpButton[HORIZONTAL]:pressed {
   background-image: gradient(
     linear, left top, left bottom,
     from( #e0e0e0 ),
@@ -58,12 +58,12 @@ Slider-UpButton:horizontal:pressed {
   );
 }
 
-Slider-DownButton:vertical {
+Slider-DownButton[VERTICAL] {
   background-color: transparent;
   border: 1px solid #A4A4A4;
   border-radius: 2px 2px 0px 0px;
   background-image: gradient(
-    linear, left top, left bottom,
+    linear, left top, right top,
     from( #ffffff ),
     color-stop( 48%, #f0f0f0 ),
     color-stop( 52%, #e0e0e0 ),
@@ -71,43 +71,21 @@ Slider-DownButton:vertical {
   );
 }
 
-Slider-DownButton:vertical:pressed {
+Slider-DownButton[VERTICAL]:pressed {
   background-image: gradient(
-    linear, left top, left bottom,
+    linear, left top, right top,
     from( #e0e0e0 ),
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
   );
 }
 
-Slider-UpButton:vertical {
+Slider-UpButton[VERTICAL] {
   background-color: transparent;
   border: 1px solid #A4A4A4;
   border-radius: 0px 0px 2px 2px;
   background-image: gradient(
-    linear, left top, left bottom,
-    from( #cccccc ),
-    color-stop( 52%, #e0e0e0 ),
-    color-stop( 56%, #f0f0f0 ),    
-    to( #ffffff )
-  );
-}
-
-Slider-UpButton:vertical:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
-Slider-Thumb {
-  background-color: transparent;
-  border: 1px solid #A4A4A4;
-  border-radius: 2px 2px 2px 2px;
-  background-image: gradient(
-    linear, left top, left bottom,
+    linear, left top, right top,
     from( #ffffff ),
     color-stop( 48%, #f0f0f0 ),
     color-stop( 52%, #e0e0e0 ),
@@ -115,9 +93,31 @@ Slider-Thumb {
   );
 }
 
-Slider-Thumb:pressed {
+Slider-UpButton[VERTICAL]:pressed {
   background-image: gradient(
-    linear, left top, left bottom,
+    linear, left top, right top,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Slider-Thumb[VERTICAL] {
+  background-color: transparent;
+  border: 1px solid #A4A4A4;
+  border-radius: 2px 2px 2px 2px;
+  background-image: gradient(
+    linear, left top, right top,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Slider-Thumb[VERTICAL]:pressed {
+  background-image: gradient(
+    linear, left top, right top,
     from( #e0e0e0 ),
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )

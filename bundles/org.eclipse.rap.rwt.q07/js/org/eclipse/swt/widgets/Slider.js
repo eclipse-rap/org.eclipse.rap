@@ -52,7 +52,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this._line = new qx.ui.basic.Atom();
     if( this._horizontal ) {
       this._line.setHeight( "100%" );
-      this._line.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     } else {
       this._line.setWidth( "100%" );
     }
@@ -70,7 +69,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this._thumb = new qx.ui.basic.Atom();
     if( this._horizontal ) {
       this._thumb.setHeight( "100%" );
-      this._thumb.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     } else {
       this._thumb.setWidth( "100%" );
     }
@@ -88,10 +86,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this._minButton.setTabIndex( null );
     if( this._horizontal ) {
       this._minButton.setHeight( "100%" );
-      this._minButton.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     } else {
       this._minButton.setWidth( "100%" );
-      this._minButton.addState( org.eclipse.swt.widgets.Slider.STATE_VERTICAL );
     }
     this._minButton.addState( "rwt_PUSH" );
     this._minButton.setAppearance( "slider-min-button" );
@@ -113,11 +109,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     if( this._horizontal ) {
       this._maxButton.setHeight( "100%" );
       this._maxButton.setRight( 0 );
-      this._maxButton.addState( org.eclipse.swt.widgets.Slider.STATE_HORIZONTAL );
     } else {
       this._maxButton.setWidth( "100%" );
       this._maxButton.setBottom( 0 );
-      this._maxButton.addState( org.eclipse.swt.widgets.Slider.STATE_VERTICAL );
     }
     this._maxButton.addState( "rwt_PUSH" );
     this._maxButton.setAppearance( "slider-max-button" );
@@ -140,6 +134,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+    this._setStates();
   },
 
   destruct : function() {
@@ -205,6 +200,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
   },
 
   members : {
+    
+    _setStates : function() {
+      var style = this._horizontal ? "rwt_HORIZONTAL" : "rwt_VERTICAL";
+      var state = this._horizontal ? "horizontal" : "vertical";
+      this.addState( style ); 
+      this._minButton.addState( style );
+      this._minButton.addState( state );
+      this._maxButton.addState( style );
+      this._maxButton.addState( state );
+      this._line.addState( style );
+      this._thumb.addState( style );
+    },
+    
     _onChangeSize : function( evt ) {
       this._borderWidth = ( this.getOuterWidth() - this.getInnerWidth() ) / 2;
       this._updateLineSize();

@@ -2285,10 +2285,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.opacity = 0;
       // Assigning icon for proper visualization in IE
       result.icon = "static/image/blank.gif";
-      if( states.horizontal ){
+      if( states[ "rwt_HORIZONTAL" ] ){
         result.left = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+        result.top = 0;
       } else {
         result.top = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+        result.left = 0;
       }
       return result;
     }
@@ -2335,7 +2337,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundGradient = tv.getCssGradient( "Slider-DownButton", 
                                                      "background-image" );
       result.border = tv.getCssBorder( "Slider-DownButton", "border" );
-      if( states.horizontal ){
+      if( states[ "rwt_HORIZONTAL" ] ){
         result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
       } else {
         result.height = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
@@ -2368,7 +2370,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundGradient = tv.getCssGradient( "Slider-UpButton", 
                                                      "background-image" );
       result.border = tv.getCssBorder( "Slider-UpButton", "border" );
-      if( states.horizontal ) {
+      if( states[ "rwt_HORIZONTAL" ] ) {
         result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
       } else {
         result.height = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;

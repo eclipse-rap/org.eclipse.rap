@@ -166,6 +166,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
               gradient[ i ] = [ value.percents[ i ] / 100, 
                                 value.colors[ i ] ];
             }
+            gradient.horizontal = !value.vertical;
             this._values.gradients[ key ] = gradient;
           }
         }

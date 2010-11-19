@@ -475,6 +475,7 @@ public final class PropertyResolver {
 
   static QxImage readGradient( final LexicalUnit unit ) {
     QxImage result = null;
+    boolean vertical;
     LexicalUnit nextUnit = unit.getParameters();
     String gradientType = readGradientType( nextUnit );
     if( !"linear".equals( gradientType ) ) {
@@ -506,9 +507,14 @@ public final class PropertyResolver {
     }
     nextUnit = nextUnit.getNextLexicalUnit();
     String[] endPoint = readGradientPoint( nextUnit );
-    if( !(    "left".equals( endPoint[ 0 ] )
-           && "bottom".equals( endPoint[ 1 ] ) ) )
+    if(    "left".equals( endPoint[ 0 ] )
+        && "bottom".equals( endPoint[ 1 ] ) )
     {
+      vertical = true;
+    } else if(    "right".equals( endPoint[ 0 ] )
+               && "top".equals( endPoint[ 1 ] )) {
+      vertical = false;
+    } else {
       String msg = "Invalid value for background-image gradient end point: "
                    + endPoint[ 0 ]
                    + " "
@@ -522,7 +528,8 @@ public final class PropertyResolver {
       gradient = normalizeGradientValue( gradient );
       String[] gradientColors = getGradientColors( gradient );
       float[] gradientPercents = getGradientPercents( gradient );
-      result = QxImage.createGradient( gradientColors, gradientPercents );
+      result
+        = QxImage.createGradient( gradientColors, gradientPercents, vertical );
     }
     return result;
   }

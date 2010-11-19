@@ -23,13 +23,14 @@ public final class QxImage implements QxType {
   private static final String NONE_INPUT = "none";
 
   public static final QxImage NONE
-    = new QxImage( true, null, null, null, null );
+    = new QxImage( true, null, null, null, null, true );
 
   public final boolean none;
   public final String path;
   public final ResourceLoader loader;
   public final String[] gradientColors;
   public final float[] gradientPercents;
+  public final boolean vertical;
   public final int width;
   public final int height;
 
@@ -42,18 +43,22 @@ public final class QxImage implements QxType {
    *            given path
    * @param gradientColors an array with gradient colors
    * @param gradientPercents an array with gradient percents
+   * @param vertical if true sweeps from top to bottom, else
+   *        sweeps from left to right
    */
   private QxImage( final boolean none,
                    final String path,
                    final ResourceLoader loader,
                    final String[] gradientColors,
-                   final float[] gradientPercents )
+                   final float[] gradientPercents,
+                   final boolean vertical )
   {
     this.none = none;
     this.path = path;
     this.loader = loader;
     this.gradientColors = gradientColors;
     this.gradientPercents = gradientPercents;
+    this.vertical = vertical;
     if( none ) {
       width = 0;
       height = 0;
@@ -89,19 +94,25 @@ public final class QxImage implements QxType {
       if( input.length() == 0 ) {
         throw new IllegalArgumentException( "Empty image path" );
       }
-      result = new QxImage( false, input, loader, null, null );
+      result = new QxImage( false, input, loader, null, null, true );
     }
     return result;
   }
 
   public static QxImage createGradient( final String[] gradientColors,
-                                        final float[] gradientPercents )
+                                        final float[] gradientPercents,
+                                        final boolean vertical )
   {
     QxImage result;
     if( gradientColors == null || gradientPercents == null ) {
       throw new NullPointerException( "null argument" );
     }
-    result = new QxImage( true, null, null, gradientColors, gradientPercents );
+    result = new QxImage( true,
+                          null,
+                          null,
+                          gradientColors,
+                          gradientPercents,
+                          vertical );
     return result;
   }
 
@@ -136,7 +147,8 @@ public final class QxImage implements QxType {
                     : Arrays.equals( gradientColors, other.gradientColors ) )
                && ( gradientPercents == null
                     ? other.gradientPercents == null
-                    : Arrays.equals( gradientPercents, other.gradientPercents ) );
+                    : Arrays.equals( gradientPercents, other.gradientPercents ) )
+               && other.vertical == vertical;
     }
     return result;
   }
@@ -152,6 +164,7 @@ public final class QxImage implements QxType {
         for( int i = 0; i < gradientPercents.length; i++ ) {
           result += 31 * result + Float.floatToIntBits( gradientPercents[ i ] );
         }
+        result += vertical ? 0 : 31 * result + 37;
       }
     } else {
       result = path.hashCode();
@@ -164,10 +177,9 @@ public final class QxImage implements QxType {
     result.append( "QxImage{ " );
     if( gradientColors != null && gradientPercents != null ) {
       result.append( "gradient: " );
+      result.append( vertical ? "vertical " : "horizontal " );
       for( int i = 0; i < gradientColors.length; i++ ) {
-        if( i != 0 ) {
-          result.append( ", " );
-        }
+        result.append( ", " );
         result.append( gradientColors[ i ] );
         if( i  < gradientPercents.length ) {
           result.append( " " );

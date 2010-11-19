@@ -41,13 +41,13 @@ public class QxImage_Test extends TestCase {
       // expected
     }
     try {
-      QxImage.createGradient( null, new float[] {} );
+      QxImage.createGradient( null, new float[] {}, true );
       fail( "Must throw NPE" );
     } catch( NullPointerException e ) {
       // expected
     }
     try {
-      QxImage.createGradient( new String[] {}, null );
+      QxImage.createGradient( new String[] {}, null, true );
       fail( "Must throw NPE" );
     } catch( NullPointerException e ) {
       // expected
@@ -71,6 +71,7 @@ public class QxImage_Test extends TestCase {
     assertNull( QxImage.NONE.loader );
     assertNull( QxImage.NONE.gradientColors );
     assertNull( QxImage.NONE.gradientPercents );
+    assertTrue( QxImage.NONE.vertical );
     assertEquals( 0, QxImage.NONE.width );
     assertEquals( 0, QxImage.NONE.height );
   }
@@ -83,17 +84,36 @@ public class QxImage_Test extends TestCase {
     assertSame( RESOURCE_LOADER, qxImage.loader );
     assertNull( qxImage.gradientColors );
     assertNull( qxImage.gradientPercents );
+    assertTrue( qxImage.vertical );
     assertEquals( 50, qxImage.width );
     assertEquals( 100, qxImage.height );
   }
 
-  public void testCreateGradient() {
+  public void testCreateVerticalGradient() {
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
     QxImage qxImage = QxImage.createGradient( gradientColors,
-                                              gradientPercents );
+                                              gradientPercents,
+                                              true );
     assertSame( gradientColors, qxImage.gradientColors );
     assertSame( gradientPercents, qxImage.gradientPercents );
+    assertTrue( qxImage.vertical );
+    assertTrue( qxImage.none );
+    assertNull( qxImage.path );
+    assertNull( qxImage.loader );
+    assertEquals( 0, qxImage.width );
+    assertEquals( 0, qxImage.height );
+  }
+
+  public void testCreateHorizontalGradient() {
+    String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
+    float[] gradientPercents = new float[] { 0f, 50f, 100f };
+    QxImage qxImage = QxImage.createGradient( gradientColors,
+                                              gradientPercents,
+                                              false );
+    assertSame( gradientColors, qxImage.gradientColors );
+    assertSame( gradientPercents, qxImage.gradientPercents );
+    assertFalse( qxImage.vertical );
     assertTrue( qxImage.none );
     assertNull( qxImage.path );
     assertNull( qxImage.loader );
@@ -118,13 +138,15 @@ public class QxImage_Test extends TestCase {
     String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
     float[] gradientPercents = new float[] { 0f, 50f, 100f };
     QxImage gradient1 = QxImage.createGradient( gradientColors,
-                                                gradientPercents );
+                                                gradientPercents,
+                                                true );
     QxImage gradient2 = QxImage.createGradient( gradientColors,
-                                                gradientPercents );
+                                                gradientPercents,
+                                                true );
     assertEquals( gradient1, gradient2 );
     assertEquals( gradient1.hashCode(), gradient2.hashCode() );
   }
-  
+
   public void testGetResourceName() {
     QxImage image = QxImage.NONE;
     assertNull( image.getResourceName() );

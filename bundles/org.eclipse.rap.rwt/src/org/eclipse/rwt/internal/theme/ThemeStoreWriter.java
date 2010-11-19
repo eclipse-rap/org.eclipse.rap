@@ -80,6 +80,7 @@ public final class ThemeStoreWriter {
             gradientObject.append( "percents", percents );
             JsonArray colors = JsonArray.valueOf( image.gradientColors );
             gradientObject.append( "colors", colors );
+            gradientObject.append( "vertical", image.vertical );
           }
           imageMap.append( key, JsonValue.NULL );
           gradientMap.append( key, gradientObject );

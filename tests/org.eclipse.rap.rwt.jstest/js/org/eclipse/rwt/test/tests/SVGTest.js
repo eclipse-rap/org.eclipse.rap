@@ -80,7 +80,72 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertEquals( "0", gradNode.firstChild.getAttribute( "offset" ) ); 
       assertEquals( "red", gradNode.firstChild.getAttribute( "stop-color" ) ); 
       assertEquals( "1", gradNode.lastChild.getAttribute( "offset" ) ); 
+      assertEquals( 0, gradNode.getAttribute( "x1" ) );
+      assertEquals( 0, gradNode.getAttribute( "y1" ) );
+      assertEquals( 0, gradNode.getAttribute( "x2" ) );
+      assertEquals( 1, gradNode.getAttribute( "y2" ) );      
       assertEquals( "green", gradNode.lastChild.getAttribute( "stop-color" ) ); 
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+
+    testFillGradientHorizontal : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      var shape = gfxUtil.createShape( "rect" );
+      var hash = qx.core.Object.toHashCode( shape );
+      gfxUtil.addToCanvas( canvas, shape );
+      gfxUtil.handleAppear( canvas );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      var gradient = [ [ 0, "red" ], [ 1, "green" ] ];
+      gradient.horizontal = true;
+      gfxUtil.setFillGradient( shape, gradient );
+      assertEquals( "gradient", gfxUtil.getFillType( shape ) );
+      var expected = "url(#gradient_" + hash + ")"; 
+      assertEquals( expected, shape.node.getAttribute( "fill" ) );
+      var gradNode = canvas.defsNode.firstChild;
+      assertEquals( "linearGradient", gradNode.tagName ); 
+      assertEquals( 0, gradNode.getAttribute( "x1" ) );
+      assertEquals( 0, gradNode.getAttribute( "y1" ) );
+      assertEquals( 1, gradNode.getAttribute( "x2" ) );
+      assertEquals( 0, gradNode.getAttribute( "y2" ) );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+
+    testChangeGradientOrientation : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      var shape = gfxUtil.createShape( "rect" );
+      var hash = qx.core.Object.toHashCode( shape );
+      gfxUtil.addToCanvas( canvas, shape );
+      gfxUtil.handleAppear( canvas );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      var gradient = [ [ 0, "red" ], [ 1, "green" ] ];
+      gradient.horizontal = true;
+      gfxUtil.setFillGradient( shape, gradient );
+      var gradNode = canvas.defsNode.firstChild;
+      assertEquals( 0, gradNode.getAttribute( "x1" ) );
+      assertEquals( 0, gradNode.getAttribute( "y1" ) );
+      assertEquals( 1, gradNode.getAttribute( "x2" ) );
+      assertEquals( 0, gradNode.getAttribute( "y2" ) );
+      var gradientVert = [ [ 0, "red" ], [ 1, "green" ] ];
+      gradientVert.horizontal = false;
+      gfxUtil.setFillGradient( shape, gradientVert );
+      assertEquals( 0, gradNode.getAttribute( "x1" ) );
+      assertEquals( 0, gradNode.getAttribute( "y1" ) );
+      assertEquals( 0, gradNode.getAttribute( "x2" ) );
+      assertEquals( 1, gradNode.getAttribute( "y2" ) );
+      gfxUtil.setFillGradient( shape, gradient );
+      assertEquals( 0, gradNode.getAttribute( "x1" ) );
+      assertEquals( 0, gradNode.getAttribute( "y1" ) );
+      assertEquals( 1, gradNode.getAttribute( "x2" ) );
+      assertEquals( 0, gradNode.getAttribute( "y2" ) );
+      
       parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
     },
 

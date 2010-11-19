@@ -329,6 +329,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 0f, res1.gradientPercents[ 0 ], 0 );
     assertEquals( 50f, res1.gradientPercents[ 1 ], 0 );
     assertEquals( 100f, res1.gradientPercents[ 2 ], 0 );
+    assertTrue( res1.vertical );
     String input2 = "gradient( linear, left top, left bottom, "
                   + "color-stop( 0%, #0000FF ), "
                   + "color-stop( 50%, #00FF00 ), "
@@ -349,6 +350,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 0f, res2.gradientPercents[ 0 ], 0 );
     assertEquals( 50f, res2.gradientPercents[ 1 ], 0 );
     assertEquals( 100f, res2.gradientPercents[ 2 ], 0 );
+    assertTrue( res2.vertical );
     String input3 = "gradient( linear, left top, left bottom, "
                   + "color-stop( 50%, #00FF00 ) )";
     QxImage res3 = PropertyResolver.readBackgroundImage( parseProperty( input3 ),
@@ -367,6 +369,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 0f, res3.gradientPercents[ 0 ], 0 );
     assertEquals( 50f, res3.gradientPercents[ 1 ], 0 );
     assertEquals( 100f, res3.gradientPercents[ 2 ], 0 );
+    assertTrue( res3.vertical );
     String input4 = "gradient( linear, left top, left bottom, "
                   + "from( #0000FF ), "
                   + "to( #00FF00 ) )";
@@ -384,6 +387,31 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 2, res4.gradientPercents.length );
     assertEquals( 0f, res4.gradientPercents[ 0 ], 0 );
     assertEquals( 100f, res4.gradientPercents[ 1 ], 0 );
+    assertTrue( res4.vertical );
+  }
+
+  public void testGradient_Horizontal() throws Exception {
+    String input = "gradient( linear, left top, right top, "
+                  + "from( #0000FF ), "
+                  + "color-stop( 50%, #00FF00 ), "
+                  + "to( #0000FF ) )";
+    QxImage res = PropertyResolver.readBackgroundImage( parseProperty( input ),
+                                                        RESOURCE_LOADER );
+    assertNotNull( res );
+    assertTrue( res.none );
+    assertNull( res.path );
+    assertNull( res.loader );
+    assertNotNull( res.gradientColors );
+    assertEquals( 3, res.gradientColors.length );
+    assertEquals( "#0000ff", res.gradientColors[ 0 ] );
+    assertEquals( "#00ff00", res.gradientColors[ 1 ] );
+    assertEquals( "#0000ff", res.gradientColors[ 2 ] );
+    assertNotNull( res.gradientPercents );
+    assertEquals( 3, res.gradientPercents.length );
+    assertEquals( 0f, res.gradientPercents[ 0 ], 0 );
+    assertEquals( 50f, res.gradientPercents[ 1 ], 0 );
+    assertEquals( 100f, res.gradientPercents[ 2 ], 0 );
+    assertFalse( res.vertical );
   }
 
   public void testGradient_InvalidValues() throws Exception {

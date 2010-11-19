@@ -160,6 +160,8 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
     
     /**
      * gradient is a two dimensional array [ [ offset, color ] ] or null.
+     * the array can also have a "horizontal" boolean as a field, creating
+     * a horizontal instead of a vertical gradient if set to true.
      * offset is a number between 0 and 1
      * Iniital value is null (transparent). 
      */

@@ -96,8 +96,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       assertEquals( "gradient", shape.fill.type );      
       assertEquals( "gradient", gfxUtil.getFillType( shape ) );
       assertEquals( "yellow", shape.fill.color2.value );
+      assertEquals( 180, shape.fill.angle );
       var expected = "0 red;.25 #ff4000;.5 #ff8000;.75 #ffbf00;1 yellow";
       assertEquals( expected, shape.fill.colors.value );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+
+    testFillGradientHorizontal : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
+      var gradient = [ [ 0, "red" ], [ 1, "yellow" ] ];
+      gradient.horizontal = true;
+      gfxUtil.setFillGradient( shape, gradient );
+      assertTrue( shape.fill.on );
+      assertEquals( "gradient", shape.fill.type );      
+      assertEquals( "gradient", gfxUtil.getFillType( shape ) );
+      assertEquals( "yellow", shape.fill.color2.value );
+      assertEquals( 270, shape.fill.angle );
       parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
     },
 

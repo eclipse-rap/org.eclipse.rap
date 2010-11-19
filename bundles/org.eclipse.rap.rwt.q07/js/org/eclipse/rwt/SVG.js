@@ -153,17 +153,18 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       if( gradient != null ) {
         var id = "gradient_" + qx.core.Object.toHashCode( shape );
         var gradNode;
+        var horizontal = gradient.horizontal === true;
         if( typeof shape.defNodes[ id ] == "undefined" ) {
           gradNode = this._createNode( "linearGradient" ); 
           gradNode.setAttribute( "id", id );
           gradNode.setAttribute( "x1", 0 );
           gradNode.setAttribute( "y1", 0 );
-          gradNode.setAttribute( "x2", 0 );
-          gradNode.setAttribute( "y2", 1 );
           this._addNewDefinition( shape, gradNode, id );
         } else {
           gradNode = shape.defNodes[ id ];
         }
+        gradNode.setAttribute( "x2", horizontal ? 1 : 0 );
+        gradNode.setAttribute( "y2", horizontal ? 0 : 1 );
         // clear old colors:
         var stopColor = null;
         while( stopColor = gradNode.childNodes[ 0 ] ) {

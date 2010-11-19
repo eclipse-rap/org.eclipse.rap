@@ -36,20 +36,45 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertEquals( "slider-min-button", slider._minButton.getAppearance() );
       slider.destroy();
     },
-    
-    testBasicLayoutHorizontal : function() {
+
+    testStatesHorizontal : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = this._createSlider( true );
-      var slider = testUtil.getElementLayout( widget.getElement() );
-      var min = testUtil.getElementLayout( widget._minButton.getElement() );
-      var max = testUtil.getElementLayout ( widget._maxButton.getElement() );
-      var line = testUtil.getElementLayout( widget._line.getElement() );
-      var thumb = testUtil.getElementLayout( widget._thumb.getElement() );
-      assertEquals( [ 10, 10, 100, 20 ], slider );
-      assertEquals( [ 0, 0, 16, 20 ], min );
-      assertEquals( [ 84, 0, 16, 20 ], max );
-      assertEquals( [ 16, 0, 68, 20 ], line );
-      assertEquals( [ 16, 0, 7, 20 ], thumb );
+      assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
+      assertTrue( widget._minButton.hasState( "horizontal" ) );
+      assertTrue( widget._maxButton.hasState( "horizontal" ) );
+      assertTrue( widget._minButton.hasState( "rwt_HORIZONTAL" ) );
+      assertTrue( widget._maxButton.hasState( "rwt_HORIZONTAL" ) );
+      assertTrue( widget._line.hasState( "rwt_HORIZONTAL" ) );
+      assertTrue( widget._thumb.hasState( "rwt_HORIZONTAL" ) );
+      assertFalse( widget.hasState( "rwt_VERTICAL" ) );
+      assertFalse( widget.hasState( "vertical" ) );
+      assertFalse( widget._minButton.hasState( "vertical" ) );
+      assertFalse( widget._maxButton.hasState( "vertical" ) );
+      assertFalse( widget._minButton.hasState( "rwt_VERTICAL" ) );
+      assertFalse( widget._maxButton.hasState( "rwt_VERTICAL" ) );
+      assertFalse( widget._line.hasState( "rwt_VERTICAL" ) );
+      assertFalse( widget._thumb.hasState( "rwt_VERTICAL" ) );
+      widget.destroy();
+    },
+
+    testStatesVertical : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = this._createSlider( false );
+      assertTrue( widget.hasState( "rwt_VERTICAL" ) );
+      assertTrue( widget._minButton.hasState( "vertical" ) );
+      assertTrue( widget._maxButton.hasState( "vertical" ) );
+      assertTrue( widget._minButton.hasState( "rwt_VERTICAL" ) );
+      assertTrue( widget._maxButton.hasState( "rwt_VERTICAL" ) );
+      assertTrue( widget._line.hasState( "rwt_VERTICAL" ) );
+      assertTrue( widget._thumb.hasState( "rwt_VERTICAL" ) );
+      assertFalse( widget.hasState( "rwt_HORIZONTAL" ) );
+      assertFalse( widget._minButton.hasState( "horizontal" ) );
+      assertFalse( widget._maxButton.hasState( "horizontal" ) );
+      assertFalse( widget._minButton.hasState( "rwt_HORIZONTAL" ) );
+      assertFalse( widget._maxButton.hasState( "rwt_HORIZONTAL" ) );
+      assertFalse( widget._line.hasState( "rwt_HORIZONTAL" ) );
+      assertFalse( widget._thumb.hasState( "rwt_HORIZONTAL" ) );
       widget.destroy();
     },
     
@@ -66,6 +91,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertEquals( [ 0, 84, 20, 16 ], max );
       assertEquals( [ 0, 16, 20, 68 ], line );
       assertEquals( [ 0, 16, 20, 7 ], thumb );
+      widget.destroy();
+    },    
+    
+    testBasicLayoutHorizontal : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = this._createSlider( true );
+      var slider = testUtil.getElementLayout( widget.getElement() );
+      var min = testUtil.getElementLayout( widget._minButton.getElement() );
+      var max = testUtil.getElementLayout ( widget._maxButton.getElement() );
+      var line = testUtil.getElementLayout( widget._line.getElement() );
+      var thumb = testUtil.getElementLayout( widget._thumb.getElement() );
+      assertEquals( [ 10, 10, 100, 20 ], slider );
+      assertEquals( [ 0, 0, 16, 20 ], min );
+      assertEquals( [ 84, 0, 16, 20 ], max );
+      assertEquals( [ 16, 0, 68, 20 ], line );
+      assertEquals( [ 16, 0, 7, 20 ], thumb );
       widget.destroy();
     },
     

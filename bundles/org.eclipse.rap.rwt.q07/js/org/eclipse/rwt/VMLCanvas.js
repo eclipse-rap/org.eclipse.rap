@@ -182,7 +182,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
     createLinearGradient : function( x1, y1, x2, y2 ) {
       var gradient = new Array();
       gradient.addColorStop = this._addColorStopFunction;
-      gradient.horizonal = x1 != x2;
+      gradient.horizontal = x1 != x2;
       return gradient;
     },
 

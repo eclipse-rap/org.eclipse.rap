@@ -9,6 +9,20 @@ Slider-Thumb {
   background-color: transparent;
   border: 1px solid #A4A4A4;
   border-radius: 2px 2px 2px 2px;
+  background-image: none;
+}
+
+Slider-Thumb[VERTICAL] {
+  background-image: gradient(
+    linear, left top, right top,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+Slider-Thumb[HORIZONTAL] {
   background-image: gradient(
     linear, left top, left bottom,
     from( #ffffff ),
@@ -18,9 +32,18 @@ Slider-Thumb {
   );
 }
 
-Slider-Thumb:pressed {
+Slider-Thumb[HORIZONTAL]:pressed {
   background-image: gradient(
     linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+Slider-Thumb[VERTICAL]:pressed {
+  background-image: gradient(
+    linear, left top, right top,
     from( #e0e0e0 ),
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
@@ -34,7 +57,7 @@ Slider-DownButton, Slider-UpButton {
   cursor: default;
 }
 
-Slider-DownButton:horizontal {
+Slider-DownButton[HORIZONTAL] {
   background-color: transparent;
   border: 1px solid #A4A4A4;
   border-radius: 2px 0px 0px 2px;
@@ -47,7 +70,7 @@ Slider-DownButton:horizontal {
   );
 }
 
-Slider-DownButton:horizontal:pressed {
+Slider-DownButton[HORIZONTAL]:pressed {
   background-image: gradient(
     linear, left top, left bottom,
     from( #e0e0e0 ),
@@ -56,20 +79,20 @@ Slider-DownButton:horizontal:pressed {
   );
 }
 
-Slider-DownButton-Icon:horizontal {
+Slider-DownButton-Icon[HORIZONTAL] {
   background-image: url( resource/widget/rap/slider/left.png );
 }
 
-Slider-DownButton-Icon:horizontal:hover {
+Slider-DownButton-Icon[HORIZONTAL]:hover {
   background-image: url( resource/widget/rap/slider/left-hover.png );
 }
 
-Slider-DownButton:vertical {
+Slider-DownButton[VERTICAL] {
   background-color: transparent;
   border: 1px solid #A4A4A4;
   border-radius: 2px 2px 0px 0px;
   background-image: gradient(
-    linear, left top, left bottom,
+    linear, left top, right top,
     from( #ffffff ),
     color-stop( 48%, #f0f0f0 ),
     color-stop( 52%, #e0e0e0 ),
@@ -77,24 +100,24 @@ Slider-DownButton:vertical {
   );
 }
 
-Slider-DownButton:vertical:pressed {
+Slider-DownButton[VERTICAL]:pressed {
   background-image: gradient(
-    linear, left top, left bottom,
+    linear, left top, right top,
     from( #e0e0e0 ),
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
   );
 }
 
-Slider-DownButton-Icon:vertical {
+Slider-DownButton-Icon[VERTICAL] {
   background-image: url( resource/widget/rap/spinner/up.png );
 }
 
-Slider-DownButton-Icon:vertical:hover {
+Slider-DownButton-Icon[VERTICAL]:hover {
   background-image: url( resource/widget/rap/spinner/up-hover.png );
 }
 
-Slider-UpButton:horizontal {
+Slider-UpButton[HORIZONTAL] {
   background-color: transparent;
   border: 1px solid #A4A4A4;
   border-radius: 0px 2px 2px 0px;
@@ -107,7 +130,7 @@ Slider-UpButton:horizontal {
   );
 }
 
-Slider-UpButton:horizontal:pressed {
+Slider-UpButton[HORIZONTAL]:pressed {
   background-image: gradient(
     linear, left top, left bottom,
     from( #e0e0e0 ),
@@ -116,40 +139,40 @@ Slider-UpButton:horizontal:pressed {
   );
 }
 
-Slider-UpButton-Icon:horizontal {
+Slider-UpButton-Icon[HORIZONTAL] {
   background-image: url( resource/widget/rap/slider/right.png );
 }
 
-Slider-UpButton-Icon:horizontal:hover {
+Slider-UpButton-Icon[HORIZONTAL]:hover {
   background-image: url( resource/widget/rap/slider/right-hover.png );
 }
 
-Slider-UpButton:vertical {
+Slider-UpButton[VERTICAL] {
   background-color: transparent;
   border: 1px solid #A4A4A4;
   border-radius: 0px 0px 2px 2px;
   background-image: gradient(
-    linear, left top, left bottom,
-    from( #cccccc ),
+    linear, left top, right top,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
     color-stop( 52%, #e0e0e0 ),
-    color-stop( 56%, #f0f0f0 ),    
-    to( #ffffff )
+    to( #cccccc )
   );
 }
 
-Slider-UpButton:vertical:pressed {
+Slider-UpButton[VERTICAL]:pressed {
   background-image: gradient(
-    linear, left top, left bottom,
+    linear, left top, right top,
     from( #e0e0e0 ),
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
   );
 }
 
-Slider-UpButton-Icon:vertical {
+Slider-UpButton-Icon[VERTICAL] {
   background-image: url( resource/widget/rap/spinner/down.png );
 }
 
-Slider-UpButton-Icon:vertical:hover {
+Slider-UpButton-Icon[VERTICAL]:hover {
   background-image: url( resource/widget/rap/spinner/down-hover.png );
 }

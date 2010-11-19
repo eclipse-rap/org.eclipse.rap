@@ -80,6 +80,72 @@ public class ThemeStoreWriter_Test extends TestCase {
     assertTrue( output.indexOf( expected ) != -1 );
   }
 
+  public void testWriteVerticalGradient() throws Exception {
+    ThemeCssElement element = new ThemeCssElement( "Button" );
+    element.addProperty( "background-image" );
+    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
+    String themeId = "myTheme";
+    String cssCode =  "Button { background-image: gradient(\n"
+                      + "linear, left top, left bottom,\n"
+                      + "from( #ffffff ),\n"
+                      + "color-stop( 48%, #f0f0f0 ),\n"
+                      + "color-stop( 52%, #e0e0e0 ),\n"
+                      + "to( #ffffff )\n"
+                      + "); }";
+    ResourceLoader loader
+      = ThemeTestUtil.createResourceLoader( Fixture.class );
+    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
+    Theme theme = ThemeManager.getInstance().getTheme( themeId );
+    storeWriter.addTheme( theme, true );
+    String output = storeWriter.createJs();
+    String expected = "\"gradients\": {\n"
+      + "\"96f80000\": {\n"
+      + "\"percents\": [ 0.0, 48.0, 52.0, 100.0 ],\n"
+      + "\"colors\": [ \"#ffffff\", \"#f0f0f0\", \"#e0e0e0\", \"#ffffff\" ],\n"
+      + "\"vertical\": true\n"
+      + "}\n"
+      + "},";
+    assertTrue( output.indexOf( expected ) != -1 );
+    expected = "\"Button\": {\n"
+               + "\"background-image\": [ [ [], \"96f80000\" ] ]\n"
+               + "}";
+    assertTrue( output.indexOf( expected ) != -1 );
+  }
+
+  public void testWriteHorizontalGradient() throws Exception {
+    ThemeCssElement element = new ThemeCssElement( "Button" );
+    element.addProperty( "background-image" );
+    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
+    String themeId = "myTheme";
+    String cssCode =  "Button { background-image: gradient(\n"
+                      + "linear, left top, right top,\n"
+                      + "from( #ffffff ),\n"
+                      + "color-stop( 48%, #f0f0f0 ),\n"
+                      + "color-stop( 52%, #e0e0e0 ),\n"
+                      + "to( #ffffff )\n"
+                      + "); }";
+    ResourceLoader loader
+      = ThemeTestUtil.createResourceLoader( Fixture.class );
+    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
+    Theme theme = ThemeManager.getInstance().getTheme( themeId );
+    storeWriter.addTheme( theme, true );
+    String output = storeWriter.createJs();
+    String expected = "\"gradients\": {\n"
+      + "\"df000025\": {\n"
+      + "\"percents\": [ 0.0, 48.0, 52.0, 100.0 ],\n"
+      + "\"colors\": [ \"#ffffff\", \"#f0f0f0\", \"#e0e0e0\", \"#ffffff\" ],\n"
+      + "\"vertical\": false\n"
+      + "}\n"
+      + "},";
+    assertTrue( output.indexOf( expected ) != -1 );
+    expected = "\"Button\": {\n"
+               + "\"background-image\": [ [ [], \"df000025\" ] ]\n"
+               + "}";
+    assertTrue( output.indexOf( expected ) != -1 );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeNewRequest();

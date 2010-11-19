@@ -819,35 +819,35 @@ ToolTip {
 
 /* Slider */
 
-Slider-DownButton-Icon:horizontal {
+Slider-DownButton-Icon[HORIZONTAL] {
   background-image: url( theme/fancy/icons/left.png );
 }
 
-Slider-DownButton-Icon:horizontal:hover {
+Slider-DownButton-Icon[HORIZONTAL]:hover {
   background-image: url( theme/fancy/icons/left-hover.png );
 }
 
-Slider-UpButton-Icon:horizontal {
+Slider-UpButton-Icon[HORIZONTAL] {
   background-image: url( theme/fancy/icons/right.png );
 }
 
-Slider-UpButton-Icon:horizontal:hover {
+Slider-UpButton-Icon[HORIZONTAL]:hover {
   background-image: url( theme/fancy/icons/right-hover.png );
 }
 
-Slider-DownButton-Icon:vertical {
+Slider-DownButton-Icon[VERTICAL] {
   background-image: url( theme/fancy/icons/up.png );
 }
 
-Slider-DownButton-Icon:vertical:hover {
+Slider-DownButton-Icon[VERTICAL]:hover {
   background-image: url( theme/fancy/icons/up-hover.png );
 }
 
-Slider-UpButton-Icon:vertical {
+Slider-UpButton-Icon[VERTICAL] {
   background-image: url( theme/fancy/icons/down.png );
 }
 
-Slider-UpButton-Icon:vertical:hover {
+Slider-UpButton-Icon[VERTICAL]:hover {
   background-image: url( theme/fancy/icons/down-hover.png );
 }
 
