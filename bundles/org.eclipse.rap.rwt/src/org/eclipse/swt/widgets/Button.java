@@ -207,7 +207,7 @@ public class Button extends Control {
       this.selected = selected;
     }
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is grayed,
    * and false otherwise. When the widget does not have
@@ -219,7 +219,7 @@ public class Button extends Control {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.2
    */
   public boolean getGrayed () {
@@ -230,9 +230,9 @@ public class Button extends Control {
     }
     return result;
   }
-  
+
   /**
-   * Sets the grayed state of the receiver.  This state change 
+   * Sets the grayed state of the receiver.  This state change
    * only applies if the control was created with the SWT.CHECK
    * style.
    *
@@ -242,7 +242,7 @@ public class Button extends Control {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.2
    */
   public void setGrayed( final boolean grayed ) {
@@ -391,9 +391,6 @@ public class Button extends Control {
       width += extent.x;
       height = Math.max( height, extent.y );
     }
-    if( width == 0 ) {
-      width = 1;
-    }
     if( height == 0 ) {
       height = 10;
     }
@@ -405,7 +402,10 @@ public class Button extends Control {
     }
     if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
       Point checkSize = themeAdapter.getCheckSize( this );
-      width += checkSize.x + themeAdapter.getCheckSpacing( this );
+      width += checkSize.x;
+      if( hasText || hasImage ) {
+        width += themeAdapter.getCheckSpacing( this );
+      }
       height = Math.max( height, checkSize.y );
     }
     Rectangle padding = themeAdapter.getPadding( this );
