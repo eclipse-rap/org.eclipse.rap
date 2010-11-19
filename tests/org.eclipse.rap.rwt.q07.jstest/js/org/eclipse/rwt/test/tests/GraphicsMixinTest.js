@@ -376,6 +376,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       widget.destroy();
     },
     
+    testChangeBackgroundImageWhileBackgoundGradientSet : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new org.eclipse.rwt.widgets.MultiCellWidget( [] ); 
+      widget.addToDocument();
+      widget.setLocation( 0, 0 );
+      widget.setDimension( 100, 100 );
+      widget.setBackgroundGradient( this.gradient );
+      testUtil.flush();
+      assertTrue( "initally uses gfx", this.usesGfxBackground( widget ) );      
+      widget.setBackgroundImage( "bla.jpg" );
+      testUtil.flush();
+      assertFalse( "no more gfx", this.usesGfxBackground( widget ) );
+      var src = widget._getTargetNode().style.backgroundImage;
+      assertTrue( "normal background", src.indexOf( "bla.jpg" ) != -1 );
+      widget.setBackgroundImage( null );
+      src = widget._getTargetNode().style.backgroundImage;
+      assertTrue( "no more normal background", src.indexOf( "bla.jpg" ) == -1 );
+      assertTrue( "uses gfx again", this.usesGfxBackground( widget ) );
+      widget.destroy();
+    },
+    
     /////////
     // Helper
 

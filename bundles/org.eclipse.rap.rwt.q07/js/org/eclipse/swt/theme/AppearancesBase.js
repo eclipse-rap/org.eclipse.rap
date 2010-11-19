@@ -356,10 +356,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "ToolItem", "color" );
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
       result.opacity = tv.getCssFloat( "ToolItem", "opacity" );
-      // TODO [tb] no longer needed?
-      result.backgroundImage = states.selected && !states.over
-                             ? "static/image/dotted_white.gif"
-                             : tv.getCssImage( "ToolItem", "background-image" );
+      result.backgroundImage = tv.getCssImage( "ToolItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "ToolItem",
                                                      "background-image" );
       result.border = tv.getCssBorder( "ToolItem", "border" );

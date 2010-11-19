@@ -70,7 +70,11 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
           this._handleGfxBackground();
         }
       } else {
-        this.base( arguments, value );
+        if( value == null && this.getGfxProperty( "gradient" ) != null ) {
+          this._handleGfxBackground();
+        } else {
+          this.base( arguments, value );
+        }
       }
     },
 
@@ -169,10 +173,11 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     _handleGfxBackground : function() {
       var useImage = this.getBackgroundImage() != null;
+      var useGradient = false;
       if( useImage ){
         this.setGfxProperty( "fillType", "image" );
       } else {
-        var useGradient = this.getGfxProperty( "gradient" ) != null;
+        useGradient = this.getGfxProperty( "gradient" ) != null;
         if( useGradient ) {
           this.setGfxProperty( "fillType", "gradient" );
         } else {

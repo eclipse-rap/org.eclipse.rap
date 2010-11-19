@@ -1012,6 +1012,7 @@ ToolItem:hover {
 ToolItem:pressed, ToolItem:selected {
   border: 1px inset;
   padding: 3px 2px 1px 4px;
+  background-image: url( theme/img/widget/rap/toolbar/dotted_white.gif );
 }
 
 ToolItem-DropDownIcon {
