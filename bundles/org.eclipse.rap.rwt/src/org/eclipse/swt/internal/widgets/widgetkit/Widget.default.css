@@ -11,10 +11,6 @@
   color: #CFCFCF;
 }
 
-*[BORDER] {
-  border: 1px solid #C1C1C1;
-}
-
 ToolTip {
   padding: 1px 3px 2px 3px;
   background-color: #dae9f7;
