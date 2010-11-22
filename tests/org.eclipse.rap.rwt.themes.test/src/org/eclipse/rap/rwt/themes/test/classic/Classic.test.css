@@ -743,40 +743,20 @@ Slider-DownButton, Slider-UpButton {
   cursor: default;
 }
 
-Slider-DownButton:horizontal {
-  /* 
-  For backward compatibility we have to keep the down button icon
-  definition in Slider-DownButton and not in Slider-DownButton-Icon
-  */
+Slider-DownButton-Icon[HORIZONTAL] {
   background-image: url( theme/img/widget/rap/slider/h_btn_min.gif );
 }
 
-Slider-DownButton:vertical {
-  /* 
-  For backward compatibility we have to keep the down button icon
-  definition in Slider-DownButton and not in Slider-DownButton-Icon
-  */
+Slider-DownButton-Icon[VERTICAL] {
   background-image: url( theme/img/widget/rap/slider/v_btn_min.gif );
 }
 
-Slider-UpButton:horizontal {
-  /* 
-  For backward compatibility we have to keep the up button icon
-  definition in Slider-UpButton and not in Slider-UpButton-Icon
-  */
+Slider-UpButton-Icon[HORIZONTAL] {
   background-image: url( theme/img/widget/rap/slider/h_btn_max.gif );
 }
 
-Slider-UpButton:vertical {
-  /* 
-  For backward compatibility we have to keep the up button icon
-  definition in Slider-UpButton and not in Slider-UpButton-Icon
-  */
+Slider-UpButton-Icon[VERTICAL] {
   background-image: url( theme/img/widget/rap/slider/v_btn_max.gif );
-}
-
-Slider-DownButton-Icon, Slider-UpButton-Icon {
-  background-image: none;
 }
 
 /* Spinner Classic theme */
