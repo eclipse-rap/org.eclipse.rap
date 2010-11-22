@@ -13,6 +13,11 @@
 Table {
   color: #4a4a4a;
   background-color: #ffffff;
+  border: none;
+}
+
+Table[BORDER] {
+  border: 1px solid #a4a4a4;
 }
 
 TableColumn {

@@ -21,6 +21,12 @@
     <property name="background-color"
         description="Background color for tables." />
         
+    <property name="border"
+        description="The border around the table including header." />
+
+    <style name="BORDER"
+        description="Indicates that the table should have a border." />
+        
     <property name="background-image"
         description="Background image or gradient for table client area." />
 

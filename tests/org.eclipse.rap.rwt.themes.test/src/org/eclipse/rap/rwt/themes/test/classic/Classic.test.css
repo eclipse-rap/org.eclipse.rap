@@ -831,6 +831,11 @@ Table {
   color: black;
   background-color: white;
   background-image: none;
+  border: none;
+}
+
+Table[BORDER] {
+  border: 2px inset;
 }
 
 TableItem {

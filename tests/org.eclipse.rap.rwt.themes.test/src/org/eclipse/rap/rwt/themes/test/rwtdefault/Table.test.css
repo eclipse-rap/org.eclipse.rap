@@ -14,6 +14,11 @@ Table {
   background-color: white;
   background-image: none;
   color: #4a4a4a;
+  border: none;
+}
+
+Table[BORDER] {
+  border: 1px solid #a4a4a4;
 }
 
 TableItem {

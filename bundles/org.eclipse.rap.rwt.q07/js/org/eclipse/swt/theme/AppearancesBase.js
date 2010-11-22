@@ -1246,7 +1246,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         textColor : tv.getCssColor( "Table", "color" ),
         font : tv.getCssFont( "*", "font" ),
-        border : tv.getCssBorder( "*", "border" ),
+        border : tv.getCssBorder( "Table", "border" ),
         checkWidth : checkWidth,
         checkHeight : checkHeight
       };
