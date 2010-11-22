@@ -3,10 +3,9 @@
 DateTime {
   color: #464a4e;
   background-color: rgb( 252, 252, 252 );
-  border: 1px solid #a4a4a4;
+  border: none;
   padding: 1px 2px;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  border-radius: 2px 2px 2px 2px;
 }
 
 DateTime-Field {
