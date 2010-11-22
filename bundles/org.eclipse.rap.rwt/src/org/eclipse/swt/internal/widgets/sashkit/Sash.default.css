@@ -1,5 +1,13 @@
 /* Sash default theme */
 
+Sash {
+  border: none;
+}
+
+Sash[BORDER] {
+  border: 1px solid #a4a4a4;
+}
+
 Sash-Handle {
   background-image: none;
 }

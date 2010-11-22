@@ -15,6 +15,12 @@
 
   <element name="Sash"
       description="Sash control">
+      
+    <property name="border"
+        description="The border around the sash." />
+
+    <style name="BORDER"
+        description="Indicates that the sash should have a border." />
 
     <element name="Sash-Handle">
       <description>

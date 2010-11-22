@@ -1386,8 +1386,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "sash" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : states.rwt_BORDER ? "inset" : "undefined",
+        border : tv.getCssBorder( "Sash", "border" ),
         cursor : states.disabled
                  ? "undefined"
                  : states.horizontal

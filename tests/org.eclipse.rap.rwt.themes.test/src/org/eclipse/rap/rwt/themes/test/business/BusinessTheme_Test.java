@@ -45,6 +45,7 @@ public class BusinessTheme_Test extends ThemeTestCase {
     processCssTestFile( getClass(), "ToolBar.test.css" );
     processCssTestFile( getClass(), "ToolBar.CustomVariant.test.css" );
     processCssTestFile( getClass(), "Combo.test.css" );
+    processCssTestFile( getClass(), "Sash.test.css" );
   }
 
 }

@@ -1,4 +1,4 @@
-/******************************************************************************* 
+/*******************************************************************************
 * Copyright (c) 2010 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
@@ -6,7 +6,7 @@
 *
 * Contributors:
 *   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*******************************************************************************/
 package org.eclipse.rap.rwt.themes.test.rwtdefault;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 
 
 public class DefaultTheme_Test extends ThemeTestCase {
-  
+
   public void testDefaultTheme() throws IOException {
     createFakeTheme( "widgets/buttonkit/Button.default.css" );
     processCssTestFile( getClass(), "Button.test.css" );
@@ -67,14 +67,16 @@ public class DefaultTheme_Test extends ThemeTestCase {
     processCssTestFile( getClass(), "CTabFolder.test.css" );
     createFakeTheme( "widgets/scalekit/Scale.default.css" );
     processCssTestFile( getClass(), "Scale.test.css" );
+    createFakeTheme( "widgets/sashkit/Sash.default.css" );
+    processCssTestFile( getClass(), "Sash.test.css" );
   }
-  
-  
+
+
   private void createFakeTheme( final String filePath ) {
     String prefix = ThemesTestUtil.DEFAULT_PREFIX;
     Random random = new Random();
-    ThemesTestUtil.createAndActivateTheme( prefix + filePath, 
+    ThemesTestUtil.createAndActivateTheme( prefix + filePath,
                                            "test." + random.nextInt() + ".id");
   }
-  
+
 }

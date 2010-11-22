@@ -578,6 +578,14 @@ ProgressBar-Indicator:error {
 
 /* Sash Classic theme */
 
+Sash {
+  border: none;
+}
+
+Sash[BORDER] {
+  border: 2px inset;
+}
+
 Sash-Handle {
   background-image: none;
 }
