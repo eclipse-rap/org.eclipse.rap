@@ -1147,6 +1147,11 @@ Tree-Indent:first:last:expanded {
   background-image: url( theme/img/widget/rap/tree/single_minus.gif );
 }
 
+/* Sash */
+Sash:hover {
+  background-color: transparent;
+}
+
 /* Classic theme for all widgets */
 
 ToolTip {

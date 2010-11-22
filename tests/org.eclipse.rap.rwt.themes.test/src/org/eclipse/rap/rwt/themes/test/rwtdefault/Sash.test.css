@@ -12,10 +12,16 @@
 
 Sash {
   border: none;
+  background-image: none;
+  background-color: transparent;
 }
 
 Sash[BORDER] {
   border: 1px solid #a4a4a4;
+}
+
+Sash:hover {
+  background-color: #dae9f7;
 }
 
 Sash-Handle:horizontal,

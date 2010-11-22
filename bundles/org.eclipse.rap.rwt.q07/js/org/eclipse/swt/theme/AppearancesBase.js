@@ -1388,6 +1388,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
+        backgroundColor : tv.getCssColor( "Sash", "background-color" ),
+        backgroundImage : tv.getCssImage( "Sash", "background-image" ),
         border : tv.getCssBorder( "Sash", "border" ),
         cursor : states.disabled
                  ? "undefined"

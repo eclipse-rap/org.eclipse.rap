@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
     this.setHtmlProperty( "unselectable", "on" );
     this.addEventListener( "changeWidth", this._onChangeSize, this );
     this.addEventListener( "changeHeight", this._onChangeSize, this );
+    this.addEventListener( "mouseover", this._onMouseOver, this );
+    this.addEventListener( "mouseout", this._onMouseOut, this );
     this._slider = new qx.ui.layout.CanvasLayout();
     this._slider.setAppearance( "sash-slider" );
     this._slider.setVisibility( false );    
@@ -45,6 +47,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
   destruct : function() {
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
+    this.removeEventListener( "mouseover", this._onMouseOver, this );
+    this.removeEventListener( "mouseout", this._onMouseOut, this );
     this._removeStyle( this.getOrientation() );
     this._disposeObjects( "_slider", "_handle", "_sliderHandle" );
   },
@@ -138,6 +142,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
       if( this._bufferZIndex != null ) {
         this.setZIndex( this._bufferZIndex );
       }
+      var widgetUtil = org.eclipse.swt.WidgetUtil;
+      widgetUtil._fakeMouseEvent( this, "mouseout" );
       // notify server
       this._sendWidgetSelected();
     },
@@ -238,6 +244,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
         }
         req.send();
       }
+    },
+    
+    _onMouseOver : function( evt ) {
+      this.addState( "over" );
+    },
+    
+    _onMouseOut : function( evt ) {
+      this.removeState( "over" );
     }
   }
 });

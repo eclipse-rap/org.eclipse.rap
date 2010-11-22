@@ -12,20 +12,19 @@
 
 Sash {
   border: none;
+  background-image: none;
+  background-color: transparent;
 }
 
 Sash[BORDER] {
   border: 1px solid #a4a4a4;
 }
 
-Sash-Handle {
-  background-image: none;
+Sash:hover {
+  background-color: #dae9f7;
 }
 
-Sash-Handle:horizontal {
-  background-image: none;
-}
-
+Sash-Handle:horizontal,
 Sash-Handle:vertical {
   background-image: none;
 }

@@ -589,14 +589,21 @@ ProgressBar-Indicator:error {
 
 /* Sash Classic theme */
 
+Sash {
+  border: none;
+  background-image: none;
+  background-color: transparent;
+}
+
+Sash:hover {
+  background-color: transparent;
+}
+
 Sash-Handle {
   background-image: none;
 }
 
-Sash-Handle:horizontal {
-  background-image: none;
-}
-
+Sash-Handle:horizontal,
 Sash-Handle:vertical {
   background-image: none;
 }

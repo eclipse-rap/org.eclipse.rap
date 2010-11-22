@@ -16,11 +16,20 @@
   <element name="Sash"
       description="Sash control">
       
+    <property name="background-color"
+        description="Background color for sash." />
+
+    <property name="background-image"
+        description="Background image for sash." />
+    
     <property name="border"
         description="The border around the sash." />
 
     <style name="BORDER"
         description="Indicates that the sash should have a border." />
+        
+    <state name="hover"
+        description="Applies while the user hovers over a sash." />
 
     <element name="Sash-Handle">
       <description>

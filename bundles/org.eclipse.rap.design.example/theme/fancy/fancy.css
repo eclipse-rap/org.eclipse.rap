@@ -1030,6 +1030,11 @@ MenuItem.menuBar:hover {
   background-color: transparent;
 }
 
+/* Sash */
+Sash:hover {
+  background-color: #e9f3d2;
+}
+
 /* View ToolBar */
 
 ToolBar.viewToolbar {
