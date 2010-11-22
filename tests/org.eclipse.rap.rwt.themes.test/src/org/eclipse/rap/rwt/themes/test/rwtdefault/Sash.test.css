@@ -18,14 +18,7 @@ Sash[BORDER] {
   border: 1px solid #a4a4a4;
 }
 
-Sash-Handle {
-  background-image: none;
-}
-
-Sash-Handle:horizontal {
-  background-image: none;
-}
-
+Sash-Handle:horizontal,
 Sash-Handle:vertical {
   background-image: none;
 }
