@@ -65,11 +65,11 @@ public class Group_Test extends TestCase {
     group.setLayout( new FillLayout( SWT.VERTICAL ) );
     new Button( group, SWT.RADIO ).setText( "Radio 1" );
     new Button( group, SWT.RADIO ).setText( "Radio 2" );
-    expected = new Point( 83, 74 );
+    expected = new Point( 79, 70 );
     assertEquals( expected, group.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // hint + trimmings + border
-    expected = new Point( 114, 128 );
+    expected = new Point( 110, 124 );
     assertEquals( expected, group.computeSize( 100, 100 ) );
   }
 

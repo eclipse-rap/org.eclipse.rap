@@ -76,7 +76,7 @@ public class Composite_Test extends TestCase {
     assertSame( text2, group.getTabList()[ 0 ] );
     assertSame( text1, group.getTabList()[ 1 ] );
   }
-  
+
   public void testLayout() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -87,12 +87,12 @@ public class Composite_Test extends TestCase {
     shell.setLayout( rowLayout );
     assertSame( rowLayout, shell.getLayout() );
   }
-  
+
   public void testBackgroundMode() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
-    IControlAdapter adapter 
+    IControlAdapter adapter
       = ( IControlAdapter )button.getAdapter( IControlAdapter.class );
     shell.setBackgroundMode( SWT.INHERIT_NONE );
     assertEquals( SWT.INHERIT_NONE, shell.getBackgroundMode() );
@@ -109,15 +109,15 @@ public class Composite_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.BORDER );
-    assertEquals( 2, composite.getBorderWidth() );
+    assertEquals( 1, composite.getBorderWidth() );
     composite.setLayout( new FillLayout( SWT.HORIZONTAL ) );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setImage( image );
     new Label( composite, SWT.NONE ).setImage( image );
     Point preferredSize = composite.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-    assertEquals( 304, preferredSize.x ); // 3 * 100 + border
-    assertEquals( 54, preferredSize.y ); // 50 + border
+    assertEquals( 302, preferredSize.x ); // 3 * 100 + border
+    assertEquals( 52, preferredSize.y ); // 50 + border
   }
 
   public void testSetFocus() {

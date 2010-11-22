@@ -22,8 +22,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.layout.FillLayout;
-;
-
 
 public class Table_Test extends TestCase {
 
@@ -1572,7 +1570,7 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getSelectionIndex() );
     assertEquals( selectedItem, table.getSelection()[ 0 ] );
   }
-  
+
   // bug 303473
   public void testItemImageSizeAfterClear() {
     Display display = new Display();
@@ -1583,7 +1581,7 @@ public class Table_Test extends TestCase {
     table.clearAll();
     assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
   }
-  
+
   public void testItemImageSizeAfterRemovingAllItems() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1815,12 +1813,12 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE ).setText( "Item " + i );
     }
     new TableItem( table, SWT.NONE ).setText( "Long long item 10" );
-    expected = new Point( 124, 229 );
+    expected = new Point( 122, 227 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     table.setHeaderVisible( true );
     assertEquals( 14, table.getHeaderHeight() );
-    expected = new Point( 124, 243 );
+    expected = new Point( 122, 241 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     TableColumn col1 = new TableColumn( table, SWT.NONE );
@@ -1829,19 +1827,19 @@ public class Table_Test extends TestCase {
     col2.setText( "Column 2" );
     TableColumn col3 = new TableColumn( table, SWT.NONE );
     col3.setText( "Wider Column" );
-    expected = new Point( 84, 243 );
+    expected = new Point( 82, 241 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 247, 243 );
+    expected = new Point( 245, 241 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
     assertEquals( 73, col3.getWidth() );
-    expected = new Point( 113, 243 );
+    expected = new Point( 111, 241 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     table = new Table( shell, SWT.CHECK );
@@ -1870,14 +1868,14 @@ public class Table_Test extends TestCase {
         item.setText( "Item " + tableIndex );
       }
     } );
-    // 12 + srollbar (16) + 2 * border (2)
+    // 12 + srollbar (16) + 2 * border (`)
     assertEquals( 190, table.getItemCount() * table.getItemHeight() );
-    Point expected = new Point( 32, 210 );
+    Point expected = new Point( 30, 208 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     table.setHeaderVisible( true );
     assertEquals( 14, table.getHeaderHeight() );
-    expected = new Point( 32, 224 );
+    expected = new Point( 30, 222 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     TableColumn col1 = new TableColumn( table, SWT.NONE );
@@ -1886,23 +1884,23 @@ public class Table_Test extends TestCase {
     col2.setText( "Column 2" );
     TableColumn col3 = new TableColumn( table, SWT.NONE );
     col3.setText( "Wider Column" );
-    expected = new Point( 84, 224 );
+    expected = new Point( 82, 222 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // first table item is auto resolved
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 184, 224 );
+    expected = new Point( 182, 222 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
     assertEquals( 73, col3.getWidth() );
-    expected = new Point( 113, 224 );
+    expected = new Point( 111, 222 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 320, 320 );
+    expected = new Point( 318, 318 );
     assertEquals( expected, table.computeSize( 300, 300 ) );
   }
 
@@ -2368,7 +2366,7 @@ public class Table_Test extends TestCase {
     assertEquals( 33, table.getItemsPreferredWidth( 0 ) );
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
   }
-  
+
   public void testRemoveArrayDuplicates() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -2388,7 +2386,7 @@ public class Table_Test extends TestCase {
     } );
     assertEquals( 1, table.getItemCount() );
   }
-  
+
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {

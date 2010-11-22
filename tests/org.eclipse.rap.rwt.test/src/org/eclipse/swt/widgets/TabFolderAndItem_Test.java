@@ -363,7 +363,7 @@ public class TabFolderAndItem_Test extends TestCase {
 
     folder = new TabFolder( shell, SWT.BORDER );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 3, 26, 94, 71 );
+    expected = new Rectangle( 2, 25, 96, 73 );
     assertEquals( expected, folder.getClientArea() );
 
     folder = new TabFolder( shell, SWT.BOTTOM );
@@ -373,7 +373,7 @@ public class TabFolderAndItem_Test extends TestCase {
 
     folder = new TabFolder( shell, SWT.BOTTOM | SWT.BORDER );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 3, 3, 94, 71 );
+    expected = new Rectangle( 2, 2, 96, 73 );
     assertEquals( expected, folder.getClientArea() );
   }
 
@@ -386,7 +386,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new TabFolder( shell, SWT.BORDER );
-    expected = new Rectangle( -3, -26, 6, 29 );
+    expected = new Rectangle( -2, -25, 4, 27 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new TabFolder( shell, SWT.BOTTOM );
@@ -394,7 +394,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new TabFolder( shell, SWT.BOTTOM | SWT.BORDER );
-    expected = new Rectangle( -3, -3, 6, 29 );
+    expected = new Rectangle( -2, -2, 4, 27 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
   }
 

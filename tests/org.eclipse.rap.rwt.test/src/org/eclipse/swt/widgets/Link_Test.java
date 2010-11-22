@@ -62,7 +62,7 @@ public class Link_Test extends TestCase {
     assertEquals( "www.eclipse.org", ids[ 0 ] );
     assertEquals( "SWT", ids[ 1 ] );
   }
-  
+
   public void testComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -79,18 +79,18 @@ public class Link_Test extends TestCase {
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     link = new Link( shell, SWT.BORDER );
-    expected = new Point( 8, 8 );
+    expected = new Point( 6, 6 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 108, 108 );
+    expected = new Point( 106, 106 );
     assertEquals( expected, link.computeSize( 100, 100 ) );
-    
+
     text = "<a>test & test2</a>";
     link = new Link( shell, SWT.NONE );
     link.setText( text );
     expected = new Point( 67, 19 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    
+
     text = "<a>test && test2</a>";
     link = new Link( shell, SWT.NONE );
     link.setText( text );

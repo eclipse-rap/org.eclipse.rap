@@ -120,7 +120,7 @@ public class Scale_Test extends TestCase {
     assertEquals( expected, scale.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     scale = new Scale( shell, SWT.HORIZONTAL | SWT.BORDER );
-    expected = new Point( 164, 45 );
+    expected = new Point( 162, 43 );
     assertEquals( expected, scale.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     scale = new Scale( shell, SWT.VERTICAL );
@@ -128,10 +128,10 @@ public class Scale_Test extends TestCase {
     assertEquals( expected, scale.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     scale = new Scale( shell, SWT.VERTICAL | SWT.BORDER );
-    expected = new Point( 45, 164 );
+    expected = new Point( 43, 162 );
     assertEquals( expected, scale.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 104, 104 );
+    expected = new Point( 102, 102 );
     assertEquals( expected, scale.computeSize( 100, 100 ) );
   }
 }

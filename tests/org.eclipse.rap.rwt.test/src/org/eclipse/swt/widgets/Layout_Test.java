@@ -76,8 +76,8 @@ public class Layout_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 50, 100 ), comp1.getClientArea() );
     Composite comp2 = new Composite( shell, SWT.BORDER );
     comp2.setBounds( 0, 0, 50, 100 );
-    assertEquals( 2, comp2.getBorderWidth() );
-    assertEquals( new Rectangle( 0, 0, 46, 96 ), comp2.getClientArea() );
+    assertEquals( 1, comp2.getBorderWidth() );
+    assertEquals( new Rectangle( 0, 0, 48, 98 ), comp2.getClientArea() );
   }
 
   public void testComputeSize() {

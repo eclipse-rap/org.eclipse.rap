@@ -34,12 +34,12 @@ public class Scrollable_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.BORDER );
-    assertEquals( 2, composite.getBorderWidth() );
+    assertEquals( 1, composite.getBorderWidth() );
     Rectangle trim = composite.computeTrim( 20, 30, 200, 300 );
-    assertEquals( 18, trim.x );
-    assertEquals( 28, trim.y );
-    assertEquals( 204, trim.width );
-    assertEquals( 304, trim.height );
+    assertEquals( 19, trim.x );
+    assertEquals( 29, trim.y );
+    assertEquals( 202, trim.width );
+    assertEquals( 302, trim.height );
 
     composite = new Composite( shell, SWT.BORDER ) {
       int getVScrollBarWidth() {
@@ -52,12 +52,12 @@ public class Scrollable_Test extends TestCase {
         return new Rectangle( 10, 10, 10, 10 );
       }
     };
-    assertEquals( 2, composite.getBorderWidth() );
+    assertEquals( 1, composite.getBorderWidth() );
     trim = composite.computeTrim( 20, 30, 200, 300 );
-    assertEquals( 8, trim.x );
-    assertEquals( 18, trim.y );
-    assertEquals( 234, trim.width );
-    assertEquals( 334, trim.height );
+    assertEquals( 9, trim.x );
+    assertEquals( 19, trim.y );
+    assertEquals( 232, trim.width );
+    assertEquals( 332, trim.height );
   }
 
   public void testGetClientArea() {
@@ -65,8 +65,8 @@ public class Scrollable_Test extends TestCase {
     Composite shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.BORDER );
     composite.setSize( 100, 100 );
-    assertEquals( 2, composite.getBorderWidth() );
-    Rectangle expected = new Rectangle( 0, 0, 96, 96 );
+    assertEquals( 1, composite.getBorderWidth() );
+    Rectangle expected = new Rectangle( 0, 0, 98, 98 );
     assertEquals( expected, composite.getClientArea() );
 
     composite = new Composite( shell, SWT.BORDER ) {
@@ -81,17 +81,17 @@ public class Scrollable_Test extends TestCase {
       }
     };
     composite.setSize( 100, 100 );
-    assertEquals( 2, composite.getBorderWidth() );
-    expected = new Rectangle( 10, 10, 66, 66 );
+    assertEquals( 1, composite.getBorderWidth() );
+    expected = new Rectangle( 10, 10, 68, 68 );
     assertEquals( expected, composite.getClientArea() );
   }
-  
+
   public void testClientAreaIsZero() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.BORDER );
     composite.setSize( 0, 0 );
-    assertEquals( 2, composite.getBorderWidth() );
+    assertEquals( 1, composite.getBorderWidth() );
     Rectangle expected = new Rectangle( 0, 0, 0, 0 );
     assertEquals( expected, composite.getClientArea() );
     composite = new Composite( shell, SWT.BORDER ) {
@@ -106,7 +106,7 @@ public class Scrollable_Test extends TestCase {
       }
     };
     composite.setSize( 25, 25 );
-    assertEquals( 2, composite.getBorderWidth() );
+    assertEquals( 1, composite.getBorderWidth() );
     expected = new Rectangle( 10, 10, 0, 0 );
     assertEquals( expected, composite.getClientArea() );
   }
