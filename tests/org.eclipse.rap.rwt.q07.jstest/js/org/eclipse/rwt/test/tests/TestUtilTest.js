@@ -507,6 +507,65 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget2.destroy();
     },
     
+    testStore : [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertTrue( "Test1", true );
+        testUtil.store( 1 );
+      },
+      function( value1, value2 ) {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertEquals( 1, value1 );
+        assertIdentical( undefined, value2 );
+        testUtil.store( 1, 2 );
+      },
+      function( value1, value2 ) {
+        assertEquals( 1, value1 );
+        assertEquals( 2, value2 );
+      }  
+    ],
+    
+    testDelayTest : [
+      // NOTE: accuarcy of timeout is about 16-32 ms
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var store = { 
+          x : 0,
+          inc : function( delay ) {
+            var that = this;
+            window.setTimeout( function() {
+              that.x++;
+            }, delay );
+          }
+        };
+        store.inc( 40 );
+        testUtil.delayTest( 70 );
+        testUtil.store( store );
+      },
+      function( store ) {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertEquals( "delayed at least 40ms", 1, store.x );
+        store.inc( 70 );
+        testUtil.delayTest( 30 );
+        testUtil.store( store );
+      },
+      function( store ) {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertEquals( "delayed less than 70ms", 1, store.x );
+        testUtil.delayTest( 60 );
+        testUtil.store( store );
+      },
+      function( store ) {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertEquals( "sum of delay greater 70ms", 2, store.x );
+        store.inc( 20 );
+        testUtil.store( store );
+      },
+      function( store ) {
+        assertEquals( "no more delay", 2, store.x );
+      }  
+    ],
+    
     /////////
     // helper
     

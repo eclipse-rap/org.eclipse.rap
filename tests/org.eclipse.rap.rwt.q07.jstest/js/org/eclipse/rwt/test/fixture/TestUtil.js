@@ -776,6 +776,26 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     
     emptyDragCache : function() {
       qx.event.handler.DragAndDropHandler.__dragCache = null;
+    },
+
+    /**
+     * Delays exection of next test function so events may be fired.
+     * To be used with multi-part tests, i.e. a test that is composed
+     * of several funtions in an array, guarenteed to be called in the given
+     * order.
+     */
+    delayTest : function( time ) {
+      org.eclipse.rwt.test.TestRunner.getInstance().pause( time );
+    },
+    
+    /**
+     * All given values will be passed on to the next test-functions as
+     * arguments. This is true until either this function is called again
+     * or the test-instance is disposed.
+     */
+    store : function() {
+      var runner = org.eclipse.rwt.test.TestRunner.getInstance();
+      runner.setArguments( arguments );
     }
      
   }

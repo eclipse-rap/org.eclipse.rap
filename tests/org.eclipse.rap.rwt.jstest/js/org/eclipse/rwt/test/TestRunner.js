@@ -25,6 +25,8 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     this._currentClass = 0;
     this._currentInstance = null;
     this._currentFunction = 0;
+    this._args = [];
+    this._pause = null;
     this._failed = false;
     this._log = null;
     this._asserts = 0;
@@ -69,11 +71,27 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	  this._initTest();
       this._loopWrapper();
   	},
+  	
+  	pause : function( value ) {
+  	  this._pause = value;
+  	},
 
+    setArguments : function( args ) {
+      this._args = args;
+    },
+  	
+  	////////////
+  	// Internals
+  	
   	_loop : function() {
       this._executeTestFunction();
     	if( this._iterate() ) {
-    	  window.setTimeout( this._loopWrapper, 5 );
+    	  var time = 5;
+    	  if( this._pause !== null ) {
+    	    time = this._pause;
+    	    this._pause = null;
+    	  }
+    	  window.setTimeout( this._loopWrapper, time );
     	}                  
   	},
   	
@@ -113,7 +131,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
                                               this._testClasses.length );
       var className = this._testClasses[ this._currentClass ].classname;
       this._presenter.log( '', false );
-      this.info( "+ " + className, false );       
+      this.info( "+ " + className, false );
       this._currentInstance = null;
       this._createTestInstance();
       this._testFunctions = this._getTestFunctions( this._currentInstance );      
@@ -121,8 +139,9 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	},
   	
   	_testFinished : function() {
-        this._currentInstance.dispose();
-        this._presenter.setNumberTestsFinished( this._currentClass, 
+      this._args = [];
+      this._currentInstance.dispose();
+      this._presenter.setNumberTestsFinished( this._currentClass, 
                                                 this._testClasses.length );  	
     },
     
@@ -133,16 +152,22 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	
   	_executeTestFunction : function() {
       this._asserts = 0;
-      var functionName = this._testFunctions[ this._currentFunction ];
+      var test = this._testFunctions[ this._currentFunction ];
+      var fun;
+      if( test instanceof Array ) {
+        var fun = this._currentInstance[ test[ 0 ] ][ test[ 1 ] ];        
+      }  else {
+        var fun = this._currentInstance[ test ];
+      }
       if( this._NOTRYCATCH ) {
-        this._currentInstance[ functionName ]();
+        fun.apply( this._currentInstance, this._args );
         this._cleanUp();
-        this.info( functionName + " - OK ", true );  	  
+        this.info( test + " - OK ", true );  	  
       } else {
         try {
-          this._currentInstance[ functionName ]();
+          fun.apply( this._currentInstance, this._args );
           this._cleanUp();
-          this.info( functionName + " - OK ", true );  	  
+          this.info( test + " - OK ", true );  	  
         } catch( e ) {
           this._handleException( e );
         }
@@ -336,11 +361,18 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     
     _getTestFunctions : function( obj ){
       var testFunctions = [];
-      for ( var fun in obj ) {
-        if(    fun.substr( 0, 4 ) == "test" 
-            && typeof obj[ fun ] == "function") 
-         {
-          testFunctions.push( fun );
+      for ( var key in obj ) {
+        if( key.substr( 0, 4 ) === "test" ) {
+          if( typeof obj[ key ] === "function" ) {
+            testFunctions.push( key );
+          } else if( obj[ key ] instanceof Array ) {
+            var arr = obj[ key ];
+            for( var i = 0; i < arr.length; i++ ) {
+              if( typeof arr[ i ] === "function" ) {
+                testFunctions.push( [ key, i ] );
+              }
+            }
+          } 
         }
       }
       return testFunctions;
