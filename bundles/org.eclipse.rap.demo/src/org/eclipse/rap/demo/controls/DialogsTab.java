@@ -330,7 +330,8 @@ public class DialogsTab extends ExampleTab {
   private void showLoginDialog() {
     String message = "Please sign in with your username and password:";
     final LoginDialog loginDialog
-      = new LoginDialog( getShell(), "Login", message, "john" );
+      = new LoginDialog( getShell(), "Login", message );
+    loginDialog.setUsername( "john" );
     int returnCode = loginDialog.open();
     String resultText = "Result: " + getReturnCodeText( returnCode );
     if( returnCode == Window.OK ) {
