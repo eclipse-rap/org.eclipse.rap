@@ -603,11 +603,6 @@ Sash-Handle {
   background-image: none;
 }
 
-Sash-Handle:horizontal,
-Sash-Handle:vertical {
-  background-image: none;
-}
-
 /* Scale Classic theme */
 
 Scale {
