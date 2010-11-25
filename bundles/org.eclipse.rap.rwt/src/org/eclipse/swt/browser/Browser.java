@@ -258,16 +258,20 @@ public class Browser extends Composite {
     if( script == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    executeScript = script;
-    executeResult = null;
-    while( executeResult == null ) {
-      Display display = getDisplay();
-      if( !display.readAndDispatch() )  {
-        display.sleep();
+    boolean result = false;
+    if( executeScript == null ) {
+      executeScript = script;
+      executeResult = null;
+      while( executeResult == null ) {
+        Display display = getDisplay();
+        if( !display.readAndDispatch() )  {
+          display.sleep();
+        }
       }
+      executeScript = null;
+      result = executeResult.booleanValue();
     }
-    executeScript = null;
-    return executeResult.booleanValue();
+    return result;
   }
 
   /**
@@ -295,22 +299,22 @@ public class Browser extends Composite {
    * error to be thrown.
    *
    * @param script the script with javascript commands
-   *  
+   *
    * @return the return value, if any, of executing the script
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the script is null</li>
    * </ul>
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_FAILED_EVALUATE when the script evaluation causes a javascript error to be thrown</li>
    *    <li>ERROR_INVALID_RETURN_VALUE when the script returns a value of unsupported type</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
-   * 
+   *
    * @see ProgressListener#completed(ProgressEvent)
-   * 
+   *
    * @since 1.4
    */
   public Object evaluate( final String script ) throws SWTException {
@@ -327,7 +331,7 @@ public class Browser extends Composite {
     }
     return evaluateResult;
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will be
    * notified when the current location has changed or is about to change.
