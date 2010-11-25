@@ -137,7 +137,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         testUtil.initRequestLog();
         browser.execute( "/regexp/;" );
         var msg = testUtil.getMessage();
-        console.log( msg );
         assertTrue( msg.indexOf( "w6.evaluateResult=null" ) != -1 );
         assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
         browser.destroy();
@@ -178,7 +177,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         testUtil.initRequestLog();
         browser.execute( "( function(){ return [ 1,2,3 ]; } )();" );
         var msg = testUtil.getMessage();
-        console.log( msg );
         assertTrue( msg.indexOf( "w6.evaluateResult=%5B%5B1%2C2%2C3%5D%5D" ) != -1 );
         assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
         browser.destroy();
