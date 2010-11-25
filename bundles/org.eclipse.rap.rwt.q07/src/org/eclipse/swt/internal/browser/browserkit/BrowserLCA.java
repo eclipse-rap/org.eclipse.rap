@@ -36,6 +36,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     = "org.eclipse.swt.events.progressCompleted";
 
   private static final String PARAM_EXECUTE_RESULT = "executeResult";
+  private static final String PARAM_EVALUATE_RESULT = "evaluateResult";
   static final String PARAM_EXECUTE_FUNCTION = "executeFunction";
   static final String PARAM_EXECUTE_ARGUMENTS = "executeArguments";
   static final String PARAM_PROGRESS_LISTENERS = "progressListeners";
@@ -69,11 +70,20 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     Browser browser = ( Browser )widget;
-    String value
+    String executeValue
       = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_RESULT );
-    if( value != null ) {
-      boolean executeResult = Boolean.valueOf( value ).booleanValue();
-      getAdapter( browser ).setExecuteResult( executeResult );
+    if( executeValue != null ) {
+      String evalValue
+        = WidgetLCAUtil.readPropertyValue( browser, PARAM_EVALUATE_RESULT );
+      boolean executeResult = Boolean.valueOf( executeValue ).booleanValue();
+      Object evalResult = null;
+      if( evalValue != null ) {
+        Object[] parsedValues = parseArguments( evalValue );
+        if( parsedValues.length == 1 ) {
+          evalResult = parsedValues[ 0 ];
+        }
+      }
+      getAdapter( browser ).setExecuteResult( executeResult, evalResult );
     }
     executeFunction( browser );
     if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {

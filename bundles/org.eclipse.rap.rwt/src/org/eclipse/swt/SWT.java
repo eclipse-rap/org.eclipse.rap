@@ -2909,6 +2909,15 @@ public class SWT {
    */
   public static final int ERROR_FUNCTION_DISPOSED = 49;
 
+  /** 
+   * SWT error constant indicating that an exception happened
+   * when evaluating a javascript expression
+   * (value is 50).
+   * 
+   * @since 1.4
+   */
+  public static final int ERROR_FAILED_EVALUATE = 50;
+
   /**
    * The <code>Image</code> constructor argument indicating that
    * the new image should be a copy of the image provided as

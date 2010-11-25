@@ -69,20 +69,49 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     },
 
     execute : function( script ) {
-      var result = true;
+      var success = true;
+      var result = null;
       try {
-        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-          this.getContentWindow().execScript( script , "JScript" );
-        } else {
-          this.getContentWindow().eval( script );
-        }
+        result = this._parseEvalResult( this._eval( script ) );
       } catch( e ) {
-        result = false;
+        success = false;
       }
       var req = org.eclipse.swt.Request.getInstance();
-      var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
-      req.addParameter( id + ".executeResult", result );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var id = wm.findIdByWidget( this );
+      req.addParameter( id + ".executeResult", success );
+      req.addParameter( id + ".evaluateResult", result );
       req.send();
+    },
+    
+    _eval : function( script ) {
+      var win = this.getContentWindow();
+      if( !win.eval && win.execScript ) {
+        // Workaround for IE bug, see: http://www.thismuchiknow.co.uk/?p=25
+        win.execScript( "null;", "JScript" );
+      }
+      return win.eval( script );
+    },
+    
+    _parseEvalResult : function( value ) {
+      var result = null;
+      var win; 
+      if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+        // in gecko the prototypes from the parent-frame are used
+        win = window;
+      } else {
+        win = this.getContentWindow();
+      }
+      // NOTE: This mimics the behavior of the evaluate method in SWT:
+      if( value instanceof win.Function ) {
+        result = this.objectToString( [ [] ] );
+      } else if( value instanceof win.Array ) {
+        result = this.objectToString( [ value ] );
+      } else if( typeof value !== "object" && typeof value !== "function" ) {
+        // above: some browser say regular expressions of the type "function"
+        result = this.objectToString( [ value ] );
+      }
+      return result;
     },
 
     createFunction : function( name ) {

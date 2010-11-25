@@ -12,6 +12,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
   extend : qx.core.Object,
   
   members : {
+
     BLANK : "../org.eclipse.rap.rwt.q07/resources/resource/static/html/blank.html",
         
     testDispose :  [
@@ -19,16 +20,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         // See Bug 327440 - Memory leak problem with Iframe in Internet Explorer
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var wm = org.eclipse.swt.WidgetManager.getInstance();      
-        var browser = new org.eclipse.swt.browser.Browser();
-        wm.add( browser, "w6", true );
-        browser.addToDocument();
-        browser.addState( "rwt_BORDER" );
-        browser.setSpace( 10, 576, 57, 529 );
-        browser.setSource( this.BLANK );
-        testUtil.flush();
+        var browser = this._createBrowser();
         assertTrue( browser.isSeeable() );
         assertFalse( browser.isLoaded() );
-        testUtil.delayTest( 100 );
+        testUtil.delayTest( 300 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -48,7 +43,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         }
         assertEquals( "javascript:false;", browser.getSource() );
         assertTrue( wm.findWidgetById( "w6" ) == null ); /* may be undefined */
-        testUtil.delayTest( 50 );
+        testUtil.delayTest( 100 );
         testUtil.store( browser, el, iframe );
       },
       function( browser, el, iframe ) {
@@ -58,7 +53,173 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( el.innerHTML === "" );
         assertTrue( iframe.parentNode == null );
       }
-    ]
+    ],
+
+    testExecute :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var wm = org.eclipse.swt.WidgetManager.getInstance();      
+        var browser = this._createBrowser();
+        testUtil.delayTest( 100 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( browser.isLoaded() );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        var win = browser.getContentWindow();
+        assertNotNull( win );
+        assertTrue( typeof foo == "undefined" );
+        foo = 17;
+        // Note: Using this line would fail in firefox, no workaround known:
+        //browser.execute( "foo = 33;" );
+        browser.execute( "window.foo = 33;" );
+        assertEquals( 17, foo );
+        assertEquals( 33, win.foo );
+        var msg = testUtil.getMessage();
+        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 )
+        browser.destroy();
+        delete foo;
+      }
+    ],
+    
+    testEvaluate :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var wm = org.eclipse.swt.WidgetManager.getInstance();      
+        var browser = this._createBrowser();
+        testUtil.delayTest( 100 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( browser.isLoaded() );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        browser.execute( "33;" );
+        var msg = testUtil.getMessage();
+        assertTrue( msg.indexOf( "w6.evaluateResult=%5B33%5D" ) != -1 )
+        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 )
+        browser.destroy();
+      }
+    ],
+    
+    testExecuteFailed :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var wm = org.eclipse.swt.WidgetManager.getInstance();      
+        var browser = this._createBrowser();
+        testUtil.delayTest( 100 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( browser.isLoaded() );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        browser.execute( "for(){}" );
+        var msg = testUtil.getMessage();
+        assertTrue( msg.indexOf( "w6.executeResult=false" ) != -1 );
+        browser.destroy();
+        delete foo;
+      }
+    ],
+    
+    testEvaluateReturnsRegexp :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var wm = org.eclipse.swt.WidgetManager.getInstance();      
+        var browser = this._createBrowser();
+        testUtil.delayTest( 100 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( browser.isLoaded() );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        browser.execute( "/regexp/;" );
+        var msg = testUtil.getMessage();
+        console.log( msg );
+        assertTrue( msg.indexOf( "w6.evaluateResult=null" ) != -1 );
+        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
+        browser.destroy();
+      }
+    ],
+
+    testEvaluateReturnsMap :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var wm = org.eclipse.swt.WidgetManager.getInstance();      
+        var browser = this._createBrowser();
+        testUtil.delayTest( 100 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( browser.isLoaded() );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        browser.execute( "( function(){ return {};})();" );
+        var msg = testUtil.getMessage();
+        assertTrue( msg.indexOf( "w6.evaluateResult=null" ) != -1 );
+        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
+        browser.destroy();
+      }
+    ],
+
+    testEvaluateReturnsArray :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var wm = org.eclipse.swt.WidgetManager.getInstance();      
+        var browser = this._createBrowser();
+        testUtil.delayTest( 100 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( browser.isLoaded() );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        browser.execute( "( function(){ return [ 1,2,3 ]; } )();" );
+        var msg = testUtil.getMessage();
+        console.log( msg );
+        assertTrue( msg.indexOf( "w6.evaluateResult=%5B%5B1%2C2%2C3%5D%5D" ) != -1 );
+        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 );
+        browser.destroy();
+      }
+    ],
+
+    testEvaluateReturnsFunction :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var wm = org.eclipse.swt.WidgetManager.getInstance();      
+        var browser = this._createBrowser();
+        testUtil.delayTest( 100 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( browser.isLoaded() );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        browser.execute( "( function(){ return function(){}; } )();" );
+        var msg = testUtil.getMessage();
+        assertTrue( msg.indexOf( "w6.evaluateResult=%5B%5B%5D%5D" ) != -1 )
+        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 )
+        browser.destroy();
+      }
+    ],
+
+    /////////////
+    // helper
+    
+    _createBrowser : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var browser = new org.eclipse.swt.browser.Browser();
+      browser.addToDocument();
+      browser.setSpace( 10, 576, 57, 529 );
+      browser.setSource( this.BLANK );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();      
+      wm.add( browser, "w6", true );
+      testUtil.flush();
+      return browser;
+    }
+    
     
  }
   
