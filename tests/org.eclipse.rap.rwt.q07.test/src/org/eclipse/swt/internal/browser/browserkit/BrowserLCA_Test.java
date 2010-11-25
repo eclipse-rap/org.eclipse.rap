@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.browser.browserkit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -21,14 +22,11 @@ import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.BrowserFunction;
+import org.eclipse.swt.browser.*;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
 
 public class BrowserLCA_Test extends TestCase {
 
@@ -256,6 +254,53 @@ public class BrowserLCA_Test extends TestCase {
     result = BrowserLCA.toJson( input, true );
     expected = "[\"string1\",[],\"string2\"]";
     assertEquals( expected, result );
+  }
+
+  public void testPreserveProgressListener() {
+    Display display = new Display();
+    Fixture.markInitialized( display );
+    Shell shell = new Shell( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    Fixture.preserveWidgets();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( browser );
+    Boolean hasListeners
+      = ( Boolean )adapter.getPreserved( BrowserLCA.PARAM_PROGRESS_LISTENERS );
+    assertEquals( Boolean.FALSE, hasListeners );
+    Fixture.clearPreserved();
+    browser.addProgressListener( new ProgressListener() {
+      public void changed( final ProgressEvent event ) {
+      }
+      public void completed( final ProgressEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( browser );
+    hasListeners
+      = ( Boolean )adapter.getPreserved( BrowserLCA.PARAM_PROGRESS_LISTENERS );
+    assertEquals( Boolean.TRUE, hasListeners );
+    Fixture.clearPreserved();
+  }
+
+  public void testProgressEvent() {
+    final ArrayList log = new ArrayList();
+    Display display = new Display();
+    Fixture.markInitialized( display );
+    Shell shell = new Shell( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    browser.addProgressListener( new ProgressListener() {
+      public void changed( final ProgressEvent event ) {
+        log.add( "changed" );
+      }
+      public void completed( final ProgressEvent event ) {
+        log.add( "completed" );
+      }
+    } );
+    String browserId = WidgetUtil.getId( browser );
+    Fixture.fakeRequestParam( BrowserLCA.EVENT_PROGRESS_COMPLETED, browserId );
+    Fixture.readDataAndProcessAction( browser );
+    assertEquals( 2, log.size() );
+    assertEquals( "changed", log.get( 0 ) );
+    assertEquals( "completed", log.get( 1 ) );
   }
 
   protected void setUp() throws Exception {

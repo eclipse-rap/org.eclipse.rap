@@ -21,6 +21,7 @@ import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -64,6 +65,7 @@ public class TypedEvent extends Event {
     DeselectionEvent.class,
     SelectionEvent.class,
     LocationEvent.class,
+    ProgressEvent.class,
     ShellEvent.class,
     MenuEvent.class,
     KeyEvent.class,

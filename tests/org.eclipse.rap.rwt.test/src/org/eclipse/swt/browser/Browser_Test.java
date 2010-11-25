@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.browser;
+
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -22,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 
 
 public class Browser_Test extends TestCase {
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
@@ -35,21 +37,21 @@ public class Browser_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
-    
+
     assertEquals( "", browser.getUrl() );
     assertEquals( "", getText( browser ) );
   }
-  
+
   public void testUrlAndText() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
-    
+
     browser.setUrl( "http://eclipse.org/rap" );
     assertEquals( "", getText( browser ) );
     browser.setText( "<html></head>..." );
     assertEquals( "", browser.getUrl() );
-    
+
     try {
       browser.setUrl( "oldValue" );
       browser.setUrl( null );
@@ -65,7 +67,7 @@ public class Browser_Test extends TestCase {
       assertEquals( "oldValue", getText( browser ) );
     }
   }
-  
+
   public void testLocationEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
@@ -108,10 +110,10 @@ public class Browser_Test extends TestCase {
     success = browser.setUrl( expectedLocation[ 0 ] );
     assertEquals( true, success );
     assertEquals( "changingNEW_URL|changedNEW_URL", log.toString() );
-    // clean up 
+    // clean up
     log.setLength( 0 );
     browser.removeLocationListener( listener );
-    
+
     // test vetoing listener with with setUrl
     browser.setUrl( "OLD_URL" );
     browser.addLocationListener( vetoListener );
@@ -119,10 +121,10 @@ public class Browser_Test extends TestCase {
     assertEquals( false, success );
     assertEquals( "changingNEW_URL|", log.toString() );
     assertEquals( "OLD_URL", browser.getUrl() );
-    // clean up 
+    // clean up
     log.setLength( 0 );
     browser.removeLocationListener( vetoListener );
-    
+
     // test basic event behaviour with setText
     browser.addLocationListener( listener );
     expectedLocation[ 0 ] = "about:blank";
@@ -134,7 +136,7 @@ public class Browser_Test extends TestCase {
     success = browser.setText( "Some html" );
     assertEquals( true, success );
     assertEquals( "changingabout:blank|changedabout:blank", log.toString() );
-    // clean up 
+    // clean up
     log.setLength( 0 );
     browser.removeLocationListener( listener );
 
@@ -145,9 +147,105 @@ public class Browser_Test extends TestCase {
     assertEquals( false, success );
     assertEquals( "changingabout:blank|", log.toString() );
     assertEquals( "Old html", getText( browser ) );
-    // clean up 
+    // clean up
     log.setLength( 0 );
     browser.removeLocationListener( vetoListener );
+  }
+
+  public void testProgressEvent_setTextAllowed() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final ArrayList log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Browser browser = new Browser( shell, SWT.NONE );
+    browser.addProgressListener( new ProgressListener() {
+      public void changed( final ProgressEvent event ) {
+        log.add( "changed" );
+      }
+
+      public void completed( final ProgressEvent event ) {
+        log.add( "completed" );
+      }
+    } );
+    browser.setText( "test" );
+    assertEquals( 1, log.size() );
+    assertEquals( "changed", log.get( 0 ) );
+  }
+
+  public void testProgressEvent_setTextNotAllowed() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final ArrayList log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Browser browser = new Browser( shell, SWT.NONE );
+    browser.addLocationListener( new LocationListener() {
+      public void changing( final LocationEvent event ) {
+        event.doit = false;
+      }
+
+      public void changed( final LocationEvent event ) {
+      }
+
+    } );
+    browser.addProgressListener( new ProgressListener() {
+      public void changed( final ProgressEvent event ) {
+        log.add( "changed" );
+      }
+
+      public void completed( final ProgressEvent event ) {
+        log.add( "completed" );
+      }
+    } );
+    browser.setText( "test" );
+    assertEquals( 0, log.size() );
+  }
+
+  public void testProgressEvent_setUrlAllowed() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final ArrayList log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Browser browser = new Browser( shell, SWT.NONE );
+    browser.addProgressListener( new ProgressListener() {
+      public void changed( final ProgressEvent event ) {
+        log.add( "changed" );
+      }
+
+      public void completed( final ProgressEvent event ) {
+        log.add( "completed" );
+      }
+    } );
+    browser.setUrl( "http://www.eclipse.org" );
+    assertEquals( 1, log.size() );
+    assertEquals( "changed", log.get( 0 ) );
+  }
+
+  public void testProgressEvent_setUrlNotAllowed() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final ArrayList log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Browser browser = new Browser( shell, SWT.NONE );
+    browser.addLocationListener( new LocationListener() {
+      public void changing( final LocationEvent event ) {
+        event.doit = false;
+      }
+
+      public void changed( final LocationEvent event ) {
+      }
+
+    } );
+    browser.addProgressListener( new ProgressListener() {
+      public void changed( final ProgressEvent event ) {
+        log.add( "changed" );
+      }
+
+      public void completed( final ProgressEvent event ) {
+        log.add( "completed" );
+      }
+    } );
+    browser.setUrl( "http://www.eclipse.org" );
+    assertEquals( 0, log.size() );
   }
 
   private static String getText( final Browser browser ) {

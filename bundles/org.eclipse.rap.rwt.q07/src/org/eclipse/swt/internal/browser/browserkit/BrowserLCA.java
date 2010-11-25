@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.BrowserFunction;
+import org.eclipse.swt.browser.*;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Widget;
 
@@ -32,9 +31,14 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   private static final String QX_TYPE = "org.eclipse.swt.browser.Browser";
   private static final String QX_FIELD_SOURCE = "source";
 
+  // Request parameters that denote ProgressEvents
+  public static final String EVENT_PROGRESS_COMPLETED
+    = "org.eclipse.swt.events.progressCompleted";
+
   private static final String PARAM_EXECUTE_RESULT = "executeResult";
   static final String PARAM_EXECUTE_FUNCTION = "executeFunction";
   static final String PARAM_EXECUTE_ARGUMENTS = "executeArguments";
+  static final String PARAM_PROGRESS_LISTENERS = "progressListeners";
 
   static final String EXECUTED_FUNCTION_NAME
     = Browser.class.getName() + "#executedFunctionName.";
@@ -57,6 +61,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( browser );
     adapter.preserve( PROP_URL, browser.getUrl() );
     adapter.preserve( PROP_TEXT, getText( browser ) );
+    boolean hasListeners = ProgressEvent.hasListener( browser );
+    adapter.preserve( PARAM_PROGRESS_LISTENERS,
+                      Boolean.valueOf( hasListeners ) );
     WidgetLCAUtil.preserveCustomVariant( browser );
   }
 
@@ -69,6 +76,14 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       getAdapter( browser ).setExecuteResult( executeResult );
     }
     executeFunction( browser );
+    if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {
+      ProgressEvent changedEvent
+        = new ProgressEvent( browser, ProgressEvent.CHANGED );
+      changedEvent.processEvent();
+      ProgressEvent completedEvent
+        = new ProgressEvent( browser, ProgressEvent.COMPLETED );
+      completedEvent.processEvent();
+    }
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -88,6 +103,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     createBrowserFunctions( browser );
     writeExecute( browser );
     writeFunctionResult( browser );
+    writeListener( browser );
     WidgetLCAUtil.writeCustomVariant( browser );
   }
 
@@ -159,6 +175,16 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static IBrowserAdapter getAdapter( final Browser browser ) {
     return ( IBrowserAdapter )browser.getAdapter( IBrowserAdapter.class );
+  }
+
+  private void writeListener( final Browser browser ) throws IOException {
+    boolean hasListener = ProgressEvent.hasListener( browser );
+    Boolean newValue = Boolean.valueOf( hasListener );
+    String prop = PARAM_PROGRESS_LISTENERS;
+    if( WidgetLCAUtil.hasChanged( browser, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( browser );
+      writer.set( "hasProgressListener", newValue );
+    }
   }
 
   //////////////////////////////////////

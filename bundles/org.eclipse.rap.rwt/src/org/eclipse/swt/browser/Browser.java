@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,6 +149,10 @@ public class Browser extends Composite {
       event = new LocationEvent( this, LocationEvent.CHANGED, url );
       event.top = true;
       event.processEvent();
+
+      ProgressEvent progressEvent
+        = new ProgressEvent( this, ProgressEvent.CHANGED );
+      progressEvent.processEvent();
     }
     return result;
   }
@@ -208,6 +212,10 @@ public class Browser extends Composite {
       event = new LocationEvent( this, LocationEvent.CHANGED, ABOUT_BLANK );
       event.top = true;
       event.processEvent();
+
+      ProgressEvent progressEvent
+        = new ProgressEvent( this, ProgressEvent.CHANGED );
+      progressEvent.processEvent();
     }
     return result;
   }
@@ -303,6 +311,52 @@ public class Browser extends Composite {
   public void removeLocationListener( final LocationListener listener ) {
     checkWidget();
     LocationEvent.removeListener( this, listener );
+  }
+
+  /**
+   * Adds the listener to the collection of listeners who will be
+   * notified when a progress is made during the loading of the current
+   * URL or when the loading of the current URL has been completed.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   * </ul>
+   *
+   * @since 1.4
+   */
+  public void addProgressListener( final ProgressListener listener ) {
+    checkWidget();
+    ProgressEvent.addListener( this, listener );
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when a progress is made during the loading of the current
+   * URL or when the loading of the current URL has been completed.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   * </ul>
+   *
+   * @since 1.4
+   */
+  public void removeProgressListener( final ProgressListener listener ) {
+    checkWidget();
+    ProgressEvent.removeListener( this, listener );
   }
 
   public Object getAdapter( final Class adapter ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
 
   construct : function() {
     this.base( arguments );
+    this._hasProgressListener = false;
     // TODO [rh] preliminary workaround to make Browser accessible by tab
     this.setTabIndex( 1 );
     this.setAppearance( "browser" );
@@ -50,6 +51,21 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
 
     _onLoad : function( evt ) {
       this.release();
+      this._sendProgressEvent();
+    },
+    
+    _sendProgressEvent : function() {
+      if( this._hasProgressListener ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var req = org.eclipse.swt.Request.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        req.addEvent( "org.eclipse.swt.events.progressCompleted", id );
+        req.send();
+      }
+    },
+    
+    setHasProgressListener : function( value ) {
+      this._hasProgressListener = value;
     },
 
     execute : function( script ) {

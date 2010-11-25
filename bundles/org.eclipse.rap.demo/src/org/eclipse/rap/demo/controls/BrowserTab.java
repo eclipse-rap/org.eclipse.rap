@@ -15,14 +15,15 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rwt.widgets.ExternalBrowser;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.BrowserFunction;
+import org.eclipse.swt.browser.*;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 final class BrowserTab extends ExampleTab {
+
+  private static final String PROP_PROGRESS_LISTENER = "progressListener";
 
   private static final String DEFAULT_HTML
     = "<html>\n"
@@ -51,6 +52,7 @@ final class BrowserTab extends ExampleTab {
     createVisibilityButton();
 //    createEnablementButton();
     createUrlAndHTMLSelector( parent );
+    createPropertyCheckbox( "Add Progress Listener", PROP_PROGRESS_LISTENER );
     createExternalBrowserSelector( parent );
     createBrowserFunctionSelector( parent );
   }
@@ -58,6 +60,17 @@ final class BrowserTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     browser = new Browser( parent, getStyle() );
+    if( hasCreateProperty( PROP_PROGRESS_LISTENER ) ) {
+      browser.addProgressListener( new ProgressListener() {
+        public void changed( final ProgressEvent event ) {
+          log( "changed: " + event );
+        }
+
+        public void completed( final ProgressEvent event ) {
+          log( "completed: " + event );
+        }
+      } );
+    }
     registerControl( browser );
   }
 
