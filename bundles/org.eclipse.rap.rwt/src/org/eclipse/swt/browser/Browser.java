@@ -62,6 +62,12 @@ public class Browser extends Composite {
         }
       } );
     }
+    public void setExecutePending( final boolean executePending ) {
+      Browser.this.executePending = executePending;
+    }
+    public boolean getExecutePending() {
+      return Browser.this.executePending;
+    }
     public BrowserFunction[] getBrowserFunctions() {
       return Browser.this.getBrowserFunctions();
     }
@@ -78,6 +84,7 @@ public class Browser extends Composite {
   private String html;
   public String executeScript;
   private Boolean executeResult;
+  private boolean executePending;
   private Object evaluateResult;
   private final IBrowserAdapter browserAdapter;
   private List functions;
@@ -269,6 +276,7 @@ public class Browser extends Composite {
         }
       }
       executeScript = null;
+      executePending = false;
       result = executeResult.booleanValue();
     }
     return result;

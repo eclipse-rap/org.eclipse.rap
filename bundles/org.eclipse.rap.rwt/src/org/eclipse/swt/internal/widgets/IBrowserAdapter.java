@@ -19,6 +19,8 @@ public interface IBrowserAdapter {
 
   String getExecuteScript();
   void setExecuteResult( boolean executeResult, Object evalResult );
+  void setExecutePending( boolean executePending );
+  boolean getExecutePending();
 
   BrowserFunction[] getBrowserFunctions();
 

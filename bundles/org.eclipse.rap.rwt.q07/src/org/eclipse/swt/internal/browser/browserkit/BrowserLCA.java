@@ -155,9 +155,11 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   private static void writeExecute( final Browser browser ) throws IOException {
     IBrowserAdapter adapter = getAdapter( browser );
     String executeScript = adapter.getExecuteScript();
-    if( executeScript != null ) {
+    boolean executePending = adapter.getExecutePending();
+    if( executeScript != null && !executePending ) {
       JSWriter writer = JSWriter.getWriterFor( browser );
       writer.call( "execute", new Object[] { executeScript } );
+      adapter.setExecutePending( true );
     }
   }
 
