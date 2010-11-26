@@ -148,6 +148,7 @@ final class QooxdooResourcesUtil {
     "qx/ui/popup/PopupManager.js",
     "qx/ui/selection/SelectionManager.js",
     "qx/ui/selection/Selection.js",
+    "org/eclipse/swt/widgets/AbstractSlider.js",
     "qx/ui/basic/ScrollArea.js",
     "qx/ui/basic/ScrollBar.js",
     "qx/application/Gui.js",

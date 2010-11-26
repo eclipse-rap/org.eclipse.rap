@@ -2280,25 +2280,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "slider-line" : {
-    include : "atom",
-    style : function( states ) {
-      var result = {};
-      result.backgroundColor = "#eeeeee";
-      result.opacity = 0;
-      // Assigning icon for proper visualization in IE
-      result.icon = "static/image/blank.gif";
-      if( states[ "rwt_HORIZONTAL" ] ){
-        result.left = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
-        result.top = 0;
-      } else {
-        result.top = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
-        result.left = 0;
-      }
-      return result;
-    }
-  },
-
   "slider-thumb" : {
     include : "atom",
     style : function( states ) {
@@ -2341,9 +2322,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                                      "background-image" );
       result.border = tv.getCssBorder( "Slider-DownButton", "border" );
       if( states[ "rwt_HORIZONTAL" ] ){
-        result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+        result.width = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH;
       } else {
-        result.height = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+        result.height = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH;
       }
       result.cursor = tv.getCssCursor( "Slider-DownButton", "cursor" );
       return result;
@@ -2374,9 +2355,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                                      "background-image" );
       result.border = tv.getCssBorder( "Slider-UpButton", "border" );
       if( states[ "rwt_HORIZONTAL" ] ) {
-        result.width = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+        result.width = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH;
       } else {
-        result.height = org.eclipse.swt.widgets.Slider.BUTTON_WIDTH;
+        result.height = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH;
       }
       result.cursor = tv.getCssCursor( "Slider-UpButton", "cursor" );
       return result;

@@ -149,6 +149,7 @@
     "qx/ui/selection/SelectionManager.js",
     "qx/ui/selection/Selection.js",
     "qx/ui/basic/ScrollArea.js",
+    "org/eclipse/swt/widgets/AbstractSlider.js",    
     "qx/ui/basic/ScrollBar.js",
     "qx/application/Gui.js",
     "qx/io/image/PreloaderSystem.js",

@@ -30,7 +30,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var slider = this._createSlider();
       assertEquals( "slider", slider.getAppearance() );
       // TODO [tb] : what do we need that subwidget anyway?
-      assertEquals( "slider-line", slider._line.getAppearance() );
       assertEquals( "slider-thumb", slider._thumb.getAppearance() );
       assertEquals( "slider-max-button", slider._maxButton.getAppearance() );
       assertEquals( "slider-min-button", slider._minButton.getAppearance() );
@@ -45,7 +44,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertTrue( widget._maxButton.hasState( "horizontal" ) );
       assertTrue( widget._minButton.hasState( "rwt_HORIZONTAL" ) );
       assertTrue( widget._maxButton.hasState( "rwt_HORIZONTAL" ) );
-      assertTrue( widget._line.hasState( "rwt_HORIZONTAL" ) );
       assertTrue( widget._thumb.hasState( "rwt_HORIZONTAL" ) );
       assertFalse( widget.hasState( "rwt_VERTICAL" ) );
       assertFalse( widget.hasState( "vertical" ) );
@@ -53,7 +51,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertFalse( widget._maxButton.hasState( "vertical" ) );
       assertFalse( widget._minButton.hasState( "rwt_VERTICAL" ) );
       assertFalse( widget._maxButton.hasState( "rwt_VERTICAL" ) );
-      assertFalse( widget._line.hasState( "rwt_VERTICAL" ) );
       assertFalse( widget._thumb.hasState( "rwt_VERTICAL" ) );
       widget.destroy();
     },
@@ -66,14 +63,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertTrue( widget._maxButton.hasState( "vertical" ) );
       assertTrue( widget._minButton.hasState( "rwt_VERTICAL" ) );
       assertTrue( widget._maxButton.hasState( "rwt_VERTICAL" ) );
-      assertTrue( widget._line.hasState( "rwt_VERTICAL" ) );
       assertTrue( widget._thumb.hasState( "rwt_VERTICAL" ) );
       assertFalse( widget.hasState( "rwt_HORIZONTAL" ) );
       assertFalse( widget._minButton.hasState( "horizontal" ) );
       assertFalse( widget._maxButton.hasState( "horizontal" ) );
       assertFalse( widget._minButton.hasState( "rwt_HORIZONTAL" ) );
       assertFalse( widget._maxButton.hasState( "rwt_HORIZONTAL" ) );
-      assertFalse( widget._line.hasState( "rwt_HORIZONTAL" ) );
       assertFalse( widget._thumb.hasState( "rwt_HORIZONTAL" ) );
       widget.destroy();
     },
@@ -84,12 +79,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var slider = testUtil.getElementLayout( widget.getElement() );
       var min = testUtil.getElementLayout( widget._minButton.getElement() );
       var max = testUtil.getElementLayout ( widget._maxButton.getElement() );
-      var line = testUtil.getElementLayout( widget._line.getElement() );
       var thumb = testUtil.getElementLayout( widget._thumb.getElement() );
       assertEquals( [ 10, 10, 20, 100 ], slider );
       assertEquals( [ 0, 0, 20, 16 ], min );
       assertEquals( [ 0, 84, 20, 16 ], max );
-      assertEquals( [ 0, 16, 20, 68 ], line );
       assertEquals( [ 0, 16, 20, 7 ], thumb );
       widget.destroy();
     },    
@@ -100,12 +93,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var slider = testUtil.getElementLayout( widget.getElement() );
       var min = testUtil.getElementLayout( widget._minButton.getElement() );
       var max = testUtil.getElementLayout ( widget._maxButton.getElement() );
-      var line = testUtil.getElementLayout( widget._line.getElement() );
       var thumb = testUtil.getElementLayout( widget._thumb.getElement() );
       assertEquals( [ 10, 10, 100, 20 ], slider );
       assertEquals( [ 0, 0, 16, 20 ], min );
       assertEquals( [ 84, 0, 16, 20 ], max );
-      assertEquals( [ 16, 0, 68, 20 ], line );
       assertEquals( [ 16, 0, 7, 20 ], thumb );
       widget.destroy();
     },
@@ -168,7 +159,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertEquals( 0, slider._selection );
       testUtil.click( slider._maxButton );
       assertEquals( 5, slider._selection );
-      assertFalse( slider._readyToSendChanges );
+      assertTrue( slider._requestScheduled );
       slider.destroy();
     },
     
@@ -179,7 +170,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertEquals( 50, slider._selection );
       testUtil.click( slider._minButton );
       assertEquals( 45, slider._selection );
-      assertFalse( slider._readyToSendChanges );
+      assertTrue( slider._requestScheduled );
       slider.destroy();
     },
     
@@ -190,11 +181,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertEquals( 5, slider._selection );
       testUtil.click( slider._minButton );
       assertEquals( 0, slider._selection );
-      assertFalse( slider._readyToSendChanges );
-      slider._readyToSendChanges = true;
+      assertTrue( slider._requestScheduled );
+      slider._requestScheduled = false;
       testUtil.click( slider._minButton );
       assertEquals( 0, slider._selection );
-      assertFalse( slider._readyToSendChanges );
+      assertTrue( slider._requestScheduled );
       slider.destroy();
     },
 
@@ -205,11 +196,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       slider.setSelection( 90 );
       testUtil.click( slider._maxButton );
       assertEquals( 93, slider._selection );
-      assertFalse( slider._readyToSendChanges );
-      slider._readyToSendChanges = true;
+      assertTrue( slider._requestScheduled );
+      slider._requestScheduled = false;
       testUtil.click( slider._maxButton );
       assertEquals( 93, slider._selection );
-      assertFalse( slider._readyToSendChanges );
+      assertTrue( slider._requestScheduled );
       slider.destroy();
     },
     
@@ -218,18 +209,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var slider = this._createSlider( false );
       slider.setUserData( "id", "w99" );
       testUtil.click( slider._maxButton );
-      assertFalse( slider._readyToSendChanges );
+      assertTrue( slider._requestScheduled );
       testUtil.forceTimerOnce();
-      assertTrue( slider._readyToSendChanges );
+      assertFalse( slider._requestScheduled );
       assertEquals( 0, testUtil.getRequestsSend() );
       org.eclipse.swt.Request.getInstance().send();
       assertTrue( testUtil.getMessage().indexOf( "w99.selection=5" ) != -1 );
       testUtil.clearRequestLog();
       slider.setHasSelectionListener( true );
       testUtil.click( slider._maxButton );
-      assertFalse( slider._readyToSendChanges );
+      assertTrue( slider._requestScheduled );
       testUtil.forceTimerOnce();
-      assertTrue( slider._readyToSendChanges );
+      assertFalse( slider._requestScheduled );
       assertEquals( 1, testUtil.getRequestsSend() );
       assertTrue( testUtil.getMessage().indexOf( "widgetSelected=w99" ) != -1 );
       assertTrue( testUtil.getMessage().indexOf( "w99.selection=10" ) != -1 );
@@ -243,18 +234,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       testUtil.fakeMouseEventDOM( node, "mousedown" );
       assertEquals( 5, slider._selection );
       testUtil.forceTimerOnce(); // start scrolling
-      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.forceInterval( slider._repeatTimer );
       assertEquals( 10, slider._selection );
-      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.forceInterval( slider._repeatTimer );
       assertEquals( 15, slider._selection );
-      assertFalse( slider._readyToSendChanges );
+      assertTrue( slider._requestScheduled );
       testUtil.forceTimerOnce(); // add request parameter
-      assertTrue( slider._readyToSendChanges );
-      testUtil.forceInterval( slider._scrollTimer );
-      assertFalse( slider._readyToSendChanges );
+      assertFalse( slider._requestScheduled );
+      testUtil.forceInterval( slider._repeatTimer );
+      assertTrue( slider._requestScheduled );
       assertEquals( 20, slider._selection );
       testUtil.fakeMouseEventDOM( node, "mouseup" );
-      assertFalse( slider._scrollTimer.isEnabled() );
+      assertFalse( slider._repeatTimer.isEnabled() );
     },
     
     testHoldMaxButtonAbort : function() {
@@ -265,7 +256,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertEquals( 5, slider._selection );
       testUtil.fakeMouseEventDOM( node, "mouseout" );
       testUtil.forceTimerOnce(); // try start scrolling
-      assertFalse( slider._scrollTimer.isEnabled() );      
+      assertFalse( slider._repeatTimer.isEnabled() );      
       assertEquals( 5, slider._selection );
     },
     
@@ -279,18 +270,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       testUtil.fakeMouseEventDOM( node, "mousedown" );
       assertEquals( 95, slider._selection );
       testUtil.forceTimerOnce(); // start scrolling
-      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.forceInterval( slider._repeatTimer );
       assertEquals( 90, slider._selection );
-      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.forceInterval( slider._repeatTimer );
       assertEquals( 85, slider._selection );
-      assertFalse( slider._readyToSendChanges );
+      assertTrue( slider._requestScheduled );
       testUtil.forceTimerOnce(); // add request parameter
-      assertTrue( slider._readyToSendChanges );
-      testUtil.forceInterval( slider._scrollTimer );
-      assertFalse( slider._readyToSendChanges );
+      assertFalse( slider._requestScheduled );
+      testUtil.forceInterval( slider._repeatTimer );
+      assertTrue( slider._requestScheduled );
       assertEquals( 80, slider._selection );
       testUtil.fakeMouseEventDOM( node, "mouseup" );
-      assertFalse( slider._scrollTimer.isEnabled() );
+      assertFalse( slider._repeatTimer.isEnabled() );
       slider.destroy();
     },
     
@@ -304,7 +295,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       assertEquals( 95, slider._selection );
       testUtil.fakeMouseEventDOM( node, "mouseout" );
       testUtil.forceTimerOnce(); // try start scrolling
-      assertFalse( slider._scrollTimer.isEnabled() );      
+      assertFalse( slider._repeatTimer.isEnabled() );      
       assertEquals( 95, slider._selection );
       slider.destroy();
     },
@@ -314,7 +305,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var slider = this._createSlider( false );
       slider.setSelection( 2 );
       assertEquals( 2, slider._selection ); 
-      var node = slider._line.getElement();
+      var node = slider.getElement();
       var left = qx.event.type.MouseEvent.buttons.left;
       testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 10 + 16 + 50 );
       assertEquals( 12, slider._selection ); 
@@ -333,7 +324,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var slider = this._createSlider( true );
       slider.setSelection( 2 );
       assertEquals( 2, slider._selection ); 
-      var node = slider._line.getElement();
+      var node = slider.getElement();
       var left = qx.event.type.MouseEvent.buttons.left;
       testUtil.fakeMouseEventDOM( node, "mousedown", left, 10 + 16 + 50, 11 );
       assertEquals( 12, slider._selection ); 
@@ -350,7 +341,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testHoldOnLine : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
-      var node = slider._line.getElement();
+      var node = slider.getElement();
       var left = qx.event.type.MouseEvent.buttons.left;
       var thumb = slider._thumb.getHeight();
       // scale is 100 - 32 = 68 : 100 => thumb is 6.8
@@ -361,14 +352,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 50 );
       assertEquals( 10, slider._selection );
       testUtil.forceTimerOnce(); // start scrolling
-      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.forceInterval( slider._repeatTimer );
       testUtil.fakeMouseEventDOM( node, "mousemove", left, 11, 63 );
-      testUtil.forceInterval( slider._scrollTimer );
-      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.forceInterval( slider._repeatTimer );
+      testUtil.forceInterval( slider._repeatTimer );
       assertEquals( 40, slider._selection );
-      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.forceInterval( slider._repeatTimer );
       assertEquals( 50, slider._selection );
-      assertFalse( slider._scrollTimer.isEnabled() );
+      assertFalse( slider._repeatTimer.isEnabled() );
       // NOTE: this should work, but doesnt:
       //testUtil.fakeMouseEventDOM( node, "mousemove", left, 11, 64 );
       testUtil.fakeMouseEventDOM( node, "mouseup", left, 11, 63 );
@@ -380,31 +371,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testHoldOnLineAbort : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
-      var node = slider._line.getElement();
+      var node = slider.getElement();
       var left = qx.event.type.MouseEvent.buttons.left;
       var thumb = slider._thumb.getHeight();
       testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 50 );
       assertEquals( 10, slider._selection );
       testUtil.fakeMouseEventDOM( node, "mouseup", left, 11, 50 );
       testUtil.forceTimerOnce(); // start scrolling
-      assertFalse( slider._scrollTimer.isEnabled() );
+      assertFalse( slider._repeatTimer.isEnabled() );
       slider.destroy();
     },
         
     testHoldOnLineMouseOut : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
-      var node = slider._line.getElement();
+      var node = slider.getElement();
       var left = qx.event.type.MouseEvent.buttons.left;
       var thumb = slider._thumb.getHeight();
       testUtil.fakeMouseEventDOM( node, "mouseover", left, 11, 90 );
       testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 90 );
       assertEquals( 10, slider._selection );
       testUtil.forceTimerOnce(); // start scrolling
-      testUtil.forceInterval( slider._scrollTimer );
+      testUtil.forceInterval( slider._repeatTimer );
       assertEquals( 20, slider._selection );
       testUtil.fakeMouseEventDOM( node, "mouseout", left, 9, 90 );
-      assertFalse( slider._scrollTimer.isEnabled() );
+      assertFalse( slider._repeatTimer.isEnabled() );
       // NOTE: It should actually continue on mouseover, but doesnt right now:
       //testUtil.fakeMouseEventDOM( node, "mouseover", left, 11 90 );
       slider.destroy();
@@ -542,23 +533,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( true );
       var thumb = slider._thumb;
-      var line = slider._line;
       var minButton = slider._minButton;
       var maxButton = slider._maxButton;
-      var timer = slider._scrollTimer;
+      var timer = slider._repeatTimer;
       var parent = slider.getElement().parentNode;
       var parentLength = parent.childNodes.length;
       slider.destroy();
       testUtil.flush();
       assertNull( slider._thumb );
-      assertNull( slider._line );
       assertNull( slider._minButton );
       assertNull( slider._maxButton );
-      assertNull( slider._scrollTimer );
+      assertNull( slider._repeatTimer );
       assertNull( slider.getElement() );
       assertNull( slider.__listeners );
       assertTrue( parent.childNodes.length === parentLength - 1 );
-      assertTrue( line.isDisposed() );
       assertTrue( minButton.isDisposed() );
       assertTrue( maxButton.isDisposed() );
       assertTrue( timer.isDisposed() );
