@@ -221,10 +221,10 @@ public class TreeViewerExample implements IExamplePage {
     {
       CheckboxTreeViewer viewer = ( CheckboxTreeViewer )currentTree;
       TreeObject[] children = parent.getChildren();
-      for(int i = 0; i < children.length; i++) {
-        TreeObject treeObject = children[i];
+      for( int i = 0; i < children.length; i++ ) {
+        TreeObject treeObject = children[ i ];
         viewer.setChecked( treeObject, checked );
-        if(treeObject.hasChildren()) {
+        if( treeObject.hasChildren() ) {
           setChildrenChecked( checked, treeObject );
         }
       }
@@ -240,7 +240,6 @@ public class TreeViewerExample implements IExamplePage {
         TreeObject parent = null;
         while( iterator.hasNext() ) {
           TreeObject obj = ( TreeObject )iterator.next();
-          System.out.println( "remove " + obj );
           parent = obj.getParent();
           if( parent != null ) {
             parent.removeChild( obj );
