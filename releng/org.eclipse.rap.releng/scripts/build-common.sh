@@ -119,7 +119,7 @@ java -cp $launcher org.eclipse.core.launcher.Main \
   -DfetchTag=$cvsTag \
   -DbaseLocation="$basePlatformDir" \
   -DrapTarget="$rapTarget" \
-  -Dfile.encoding=ISO-8859-1
+  -Dfile.encoding=UTF-8
 
 if test $? = 0
 then
@@ -128,3 +128,4 @@ then
 else
   exit $?
 fi
+
