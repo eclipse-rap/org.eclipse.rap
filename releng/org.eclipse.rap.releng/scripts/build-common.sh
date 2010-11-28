@@ -3,7 +3,7 @@
 # This script is used to build RAP runtime, tooling and war using PDE build.
 
 # Initialize variables that represent command line args with default values
-cvsTag=HEAD
+cvsTag=
 buildType=N
 runtimeDir=
 basePlatformDir=
@@ -15,14 +15,14 @@ rapTarget=
 # Print usage info
 print_usage() {
   echo "Usage: $0 [args]"
-  echo "  --cvs-tag TAG, defaults to $cvsTag"
-  echo "  --builder cvs repository location of builder"
-  echo "  --build-type N/I/M/R, defaults to $buildType"
-  echo "  --runtime path to runtime eclipse install"
-  echo "  --base-platform path to base platform to build against"
-  echo "  --work temporary working directory, defaults to $workDir"
-  echo "  --output path to place output in, defaults to $outputDir"
-  echo "  --rap-target path to a zipped rap target platform, only applicable in tooling build"
+  echo "  --cvs-tag  CVS tag to checkout from"
+  echo "  --builder  CVS repository location of builder"
+  echo "  --build-type  N/I/M/R, defaults to $buildType"
+  echo "  --runtime  path to runtime eclipse install"
+  echo "  --base-platform  path to base platform to build against"
+  echo "  --work  temporary working directory, defaults to $workDir"
+  echo "  --output  path to place output in, defaults to $outputDir"
+  echo "  --rap-target  path to a zipped rap target platform, only applicable in tooling build"
 }
 
 # Print failure notice and exit
@@ -52,6 +52,13 @@ do
     --help|-h) shift; print_usage; exit 1; shift;;
   esac
 done
+
+# Check CVS tag
+if [ -z "$cvsTag" ]; then
+  echo "No CVS tag given"
+  print_usage
+  exit 1
+fi
 
 # resolve relative paths
 runtimeDir=`readlink -f $runtimeDir`
