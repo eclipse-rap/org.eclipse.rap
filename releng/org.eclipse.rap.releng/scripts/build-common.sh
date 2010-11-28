@@ -86,12 +86,9 @@ echo ""
 # Checkout releng project
 echo "Checking out Builder from CVS <$cvsTag>..."
 bufferedDir=`pwd`
-cd "$workDir"
-
-cvs -Q -f -d:pserver:anonymous@dev.eclipse.org:/cvsroot/rt checkout -d ./builder -r $cvsTag $builderCvsPath
-
 builderDir="$workDir"/builder/
-
+cd "$workDir"
+cvs -Q -f -d:pserver:anonymous@dev.eclipse.org:/cvsroot/rt checkout -d ./builder -r $cvsTag $builderCvsPath
 cd "$bufferedDir"
 
 # search pde build
@@ -124,7 +121,7 @@ java -cp $launcher org.eclipse.core.launcher.Main \
 if test $? = 0
 then
   echo "Cleaning up workspace"
-  rm -rf "$workDir"/builder
+  test -d "$builderDir" && rm -rf "$builderDir"
 else
   exit $?
 fi
