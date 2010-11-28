@@ -8,7 +8,7 @@
 # Cleanup workspace dir
 rm -rf "$WORKSPACE"/*
 
-runtimeDir=/home/build/rap/build-runtime/eclipse-3.4.1
+runtimeDir=/home/build/rap/build-runtimes/eclipse-3.4.1
 rapTargets="/home/build/.hudson/jobs/RAP Runtime 1.2 (Galileo)/lastSuccessful/archive"
 
 scriptsDir=`dirname $0`

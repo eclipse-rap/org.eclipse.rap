@@ -5,7 +5,7 @@
 # See Job -> Configure... -> This build is parameterized
 #
 
-runtimeDir=/home/build/rap/build-runtime/eclipse-3.4.1
+runtimeDir=/home/build/rap/build-runtimes/eclipse-3.4.1
 tomcatDir=/home/build/rap/apache-tomcat-6.0.18/
 
 scriptsDir=`dirname $0`
