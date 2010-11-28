@@ -6,7 +6,7 @@
 #
 
 # Cleanup workspace dir
-rm -rf "$WORKSPACE"/*
+test -d "$WORKSPACE" && rm -rf "$WORKSPACE"/*
 
 runtimeDir=/home/build/rap/build-runtimes/eclipse-3.4.1
 scriptsDir=`dirname $0`
