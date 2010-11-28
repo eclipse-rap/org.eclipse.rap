@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# This script is used to build RAP runtime, tooling and war using PDE build.
+
 # Initialize variables that represent command line args with default values
 cvsTag=HEAD
 buildType=N
@@ -9,7 +12,7 @@ outputDir=./output
 builderCvsPath=
 rapTarget=
 
-# print usage info
+# Print usage info
 print_usage() {
   echo "Usage: $0 [args]"
   echo "  --cvs-tag TAG, defaults to $cvsTag"
@@ -22,9 +25,9 @@ print_usage() {
   echo "  --rap-target path to a zipped rap target platform, only applicable in tooling build"
 }
 
-# print failure notice and exit
+# Print failure notice and exit
 fail() {
-  echo "failed"
+  echo "Failed"
   exit 1
 }
 
@@ -61,12 +64,12 @@ fi
 
 # Create base working directory
 if [ ! -d "$workDir" ]; then
-  mkdir "$workDir"
+  mkdir "$workDir" || fail
 fi
 
 # Create output directory
 if [ ! -d "$outputDir" ]; then
-  mkdir "$outputDir"
+  mkdir "$outputDir" || fail
 fi
 
 # Show informations
@@ -89,7 +92,7 @@ echo "Checking out builder from CVS $cvsTag ..."
 cd "$workDir"
 cvs -Q -f -d:pserver:anonymous@dev.eclipse.org:/cvsroot/rt checkout \
     -d ./builder -r $cvsTag $builderCvsPath \
-  || exit $?
+  || fail
 cd -
 
 # Find PDE build
@@ -118,7 +121,7 @@ java -cp $launcher org.eclipse.core.launcher.Main \
     -DbaseLocation="$basePlatformDir" \
     -DrapTarget="$rapTarget" \
     -Dfile.encoding=UTF-8 \
-  || exit $?
+  || fail
 
 echo "Cleaning up workspace"
 test -d "$builderDir" && rm -rf "$builderDir"
