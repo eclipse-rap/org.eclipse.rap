@@ -8,15 +8,11 @@
 # Cleanup workspace dir
 rm -rf "$WORKSPACE"/*
 
+#runtimeDir=/home/build/rap/build-runtime/eclipse-3.4.1
+#runtimeDir=/home/build/rap/build-runtime/eclipse-3.6M7
 runtimeDir=/home/build/rap/build-runtime/eclipse-3.6
 
-rapTargets="/home/build/.hudson/jobs/RAP Runtime/lastSuccessful/archive"
-
 scriptsDir=`dirname $0`
-
-# detect latest runtime target archive
-latestTargetQualifier=`find "$rapTargets" -name '*runtime*.zip' -printf "%f\n" | cut -f5,6 -d"-" | sort | tail -n 1`
-latestTarget=`find "$rapTargets" -name *${latestTargetQualifier}`
 
 $scriptsDir/build-common.sh \
   --cvs-tag "$CVS_TAG" \
@@ -24,5 +20,5 @@ $scriptsDir/build-common.sh \
   --work "$WORKSPACE" \
   --runtime "$runtimeDir" \
   --base-platform "$PLATFORM_DIR" \
-  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/tooling" \
-  --rap-target "$latestTarget"
+  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/runtime" \
+  --output "$WORKSPACE"
