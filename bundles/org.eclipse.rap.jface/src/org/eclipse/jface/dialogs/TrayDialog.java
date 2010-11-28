@@ -243,7 +243,6 @@ public abstract class TrayDialog extends Dialog {
 				cursor.dispose();
 			}
 		});		
-
         ToolItem item = new ToolItem(toolBar, SWT.NONE);
 		item.setImage(image);
 		item.setToolTipText(JFaceResources.getString("helpToolTip")); //$NON-NLS-1$

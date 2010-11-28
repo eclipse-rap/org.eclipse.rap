@@ -63,7 +63,7 @@ import org.eclipse.jface.util.Util;
  * Bindings are intended to be immutable objects.
  * </p>
  * 
- * @since 1.0
+ * @since 1.4
  */
 public abstract class Binding {
 

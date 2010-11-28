@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ import org.eclipse.jface.util.Util;
  * resolution.
  * </p>
  * 
- * @since 1.0
+ * @since 1.4
  */
 final class CachedBindingSet {
 
@@ -67,7 +67,6 @@ final class CachedBindingSet {
 	/**
 	 * A map of triggers to collections of bindings. If this binding set
 	 * contains conflicts, they are logged here.
-	 * 
 	 */
 	private Map conflictsByTrigger = null;
 

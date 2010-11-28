@@ -21,7 +21,7 @@ package org.eclipse.jface.bindings;
  * This interface may be implemented by clients.
  * </p>
  * 
- * @since 1.0
+ * @since 1.4
  * @see BindingManager#addBindingManagerListener(IBindingManagerListener)
  * @see org.eclipse.jface.bindings.BindingManager#addBindingManagerListener(IBindingManagerListener)
  * @see BindingManagerEvent

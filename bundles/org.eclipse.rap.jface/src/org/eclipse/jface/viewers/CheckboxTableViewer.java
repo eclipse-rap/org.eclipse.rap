@@ -242,8 +242,11 @@ public class CheckboxTableViewer extends TableViewer implements ICheckable {
         ArrayList v = new ArrayList(children.length);
         for (int i = 0; i < children.length; i++) {
             TableItem item = children[i];
-            if (item.getChecked()) {
-				v.add(item.getData());
+            Object data = item.getData();
+			if (data != null) {
+				if (item.getChecked()) {
+					v.add(data);
+				}
 			}
         }
         return v.toArray();
@@ -280,8 +283,11 @@ public class CheckboxTableViewer extends TableViewer implements ICheckable {
         List v = new ArrayList(children.length);
         for (int i = 0; i < children.length; i++) {
             TableItem item = children[i];
-            if (item.getGrayed()) {
-				v.add(item.getData());
+            Object data = item.getData();
+			if (data != null) {
+				if (item.getGrayed()) {
+					v.add(data);
+				}
 			}
         }
         return v.toArray();
@@ -370,7 +376,10 @@ public class CheckboxTableViewer extends TableViewer implements ICheckable {
         TableItem[] children = getTable().getItems();
         for (int i = 0; i < children.length; i++) {
             TableItem item = children[i];
-            item.setChecked(state);
+            if (item.getData() != null) {
+				if (item.getChecked() != state)
+					item.setChecked(state);
+			}
         }
     }
 
@@ -384,7 +393,10 @@ public class CheckboxTableViewer extends TableViewer implements ICheckable {
         TableItem[] children = getTable().getItems();
         for (int i = 0; i < children.length; i++) {
             TableItem item = children[i];
-            item.setGrayed(state);
+            if (item.getData() != null) {
+				if (item.getGrayed() != state)
+					item.setGrayed(state);
+			}
         }
     }
 
@@ -395,7 +407,9 @@ public class CheckboxTableViewer extends TableViewer implements ICheckable {
         Assert.isNotNull(element);
         Widget widget = findItem(element);
         if (widget instanceof TableItem) {
-            ((TableItem) widget).setChecked(state);
+            TableItem item = (TableItem) widget;
+			if (item.getChecked() != state)
+				item.setChecked(state);
             return true;
         }
         return false;
@@ -447,7 +461,9 @@ public class CheckboxTableViewer extends TableViewer implements ICheckable {
         Assert.isNotNull(element);
         Widget widget = findItem(element);
         if (widget instanceof TableItem) {
-            ((TableItem) widget).setGrayed(state);
+            TableItem item = (TableItem) widget;
+			if (item.getGrayed() != state)
+				item.setGrayed(state);
             return true;
         }
         return false;

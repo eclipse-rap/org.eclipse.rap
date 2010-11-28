@@ -21,7 +21,7 @@ package org.eclipse.jface.bindings;
  * This interface may be implemented by clients.
  * </p>
  * 
- * @since 1.0
+ * @since 1.4
  * @see Scheme#addSchemeListener(ISchemeListener)
  * @see Scheme#removeSchemeListener(ISchemeListener)
  * @see SchemeEvent

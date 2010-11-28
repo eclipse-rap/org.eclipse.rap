@@ -17,7 +17,7 @@ package org.eclipse.jface.bindings;
  * need to be hashable.
  * </p>
  * 
- * @since 1.0
+ * @since 1.4
  */
 public abstract class Trigger implements Comparable {
 

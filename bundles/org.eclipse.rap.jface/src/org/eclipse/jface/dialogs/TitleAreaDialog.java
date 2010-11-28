@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -31,7 +32,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -108,6 +111,10 @@ public class TitleAreaDialog extends TrayDialog {
 
 	private Image titleAreaImage;
 
+	private int xTrim;
+
+	private int yTrim;
+
 	/**
 	 * Instantiate a new title area dialog.
 	 * 
@@ -144,6 +151,18 @@ public class TitleAreaDialog extends TrayDialog {
 		// create the dialog area and button bar
 		dialogArea = createDialogArea(workArea);
 		buttonBar = createButtonBar(workArea);
+		
+		// computing trim for later
+		Rectangle rect = messageLabel.computeTrim(0, 0, 100, 100);
+		xTrim = rect.width - 100;
+		yTrim = rect.height - 100;
+		
+		// need to react to new size of title area
+		getShell().addListener(SWT.Resize, new Listener() {
+			public void handleEvent(Event event) {
+				layoutForNewMessage(true);
+			}
+		});
 		return contents;
 	}
 
@@ -393,13 +412,16 @@ public class TitleAreaDialog extends TrayDialog {
 				setImageLabelVisible(true);
 			}
 		}
-		layoutForNewMessage();
+		layoutForNewMessage(false);
 	}
 
 	/**
 	 * Re-layout the labels for the new message.
+	 * 
+	 * @param forceLayout
+	 *            <code>true</code> to force a layout of the shell
 	 */
-	private void layoutForNewMessage() {
+	private void layoutForNewMessage(boolean forceLayout) {
 		int verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
 		int horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
 		// If there are no images then layout as normal
@@ -443,10 +465,50 @@ public class TitleAreaDialog extends TrayDialog {
 						0, SWT.BOTTOM);
 			messageLabel.setLayoutData(messageLabelData);
 		}
-		// Do not layout before the dialog area has been created
-		// to avoid incomplete calculations.
-		if (dialogArea != null)
-			workArea.getParent().layout(true);
+
+		if (forceLayout) {
+			getShell().layout();
+		} else {
+			// Do not layout before the dialog area has been created
+			// to avoid incomplete calculations.
+			if (dialogArea != null)
+				workArea.getParent().layout(true);
+		}
+
+// RAP [if] ToolTip is missing
+//		int messageLabelUnclippedHeight = messageLabel.computeSize(messageLabel.getSize().x - xTrim, SWT.DEFAULT, true).y;
+//		boolean messageLabelClipped = messageLabelUnclippedHeight > messageLabel.getSize().y - yTrim;
+//		if (messageLabel.getData() instanceof ToolTip) {
+//			ToolTip toolTip = (ToolTip) messageLabel.getData();
+//			toolTip.hide();
+//			toolTip.deactivate();
+//			messageLabel.setData(null);
+//		}
+//		if (messageLabelClipped) {
+//			ToolTip tooltip = new ToolTip(messageLabel, ToolTip.NO_RECREATE, false) {
+//				
+//				protected Composite createToolTipContentArea(Event event, Composite parent) {
+//					Composite result = new Composite(parent, SWT.NONE);
+//					result.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+//					result.setLayout(new GridLayout());
+//					Text text = new Text(result, SWT.WRAP);
+//					text.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+//					text.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+//					text.setText(messageLabel.getText());
+//					GridData gridData = new GridData();
+//					gridData.widthHint = messageLabel.getSize().x;
+//					text.setLayoutData(gridData);
+//					Dialog.applyDialogFont(result);
+//					return result;
+//				}
+//				public Point getLocation(Point tipSize, Event event) {
+//					return messageLabel.getShell().toDisplay(messageLabel.getLocation());
+//				}
+//			};
+//			messageLabel.setData(tooltip);
+//			tooltip.setPopupDelay(0);
+//			tooltip.activate();
+//		}
 	}
 
 	/**
@@ -533,7 +595,7 @@ public class TitleAreaDialog extends TrayDialog {
 			updateMessage(shownMessage);
 			messageImageLabel.setImage(messageImage);
 			setImageLabelVisible(messageImage != null);
-			layoutForNewMessage();
+			layoutForNewMessage(false);
 		}
 	}
 
@@ -583,15 +645,15 @@ public class TitleAreaDialog extends TrayDialog {
 		titleAreaImage = newTitleImage;
 		if (titleImageLabel != null) {
 			titleImageLabel.setImage(newTitleImage);
-				determineTitleImageLargest();
-				Control top;
-				if (titleImageLargest)
-					top = titleImageLabel;
-				else
-					top = messageLabel;
-				resetWorkAreaAttachments(top);
-			}
+			determineTitleImageLargest();
+			Control top;
+			if (titleImageLargest)
+				top = titleImageLabel;
+			else
+				top = messageLabel;
+			resetWorkAreaAttachments(top);
 		}
+	}
 
 	/**
 	 * Make the label used for displaying error images visible depending on
@@ -621,7 +683,6 @@ public class TitleAreaDialog extends TrayDialog {
 		childData.bottom = new FormAttachment(100, 0);
 		workArea.setLayoutData(childData);
 	}
-
 	
 	/**
 	 * Returns the current message text for this dialog.  This message is 

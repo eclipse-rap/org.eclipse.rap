@@ -373,8 +373,8 @@ public abstract class ViewerDropAdapter extends DropTargetAdapter {
     /**
      * Returns the object currently selected by the viewer.
      *
-     * @return the selected object, or <code>null</code> if either no object or 
-     *   multiple objects are selected
+	 * @return the selected object or the first element in current selection,
+	 *         and null if no objects are selected
      */
     protected Object getSelectedObject() {
         ISelection selection = viewer.getSelection();

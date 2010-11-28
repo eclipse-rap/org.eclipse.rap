@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -249,7 +249,7 @@ public abstract class Viewer implements IInputSelectionProvider {
 
     /**
      * Removes the given help listener from this viewer.
-     * Has no affect if an identical listener is not registered.
+     * Has no effect if an identical listener is not registered.
      *
      * @param listener a help listener
      */

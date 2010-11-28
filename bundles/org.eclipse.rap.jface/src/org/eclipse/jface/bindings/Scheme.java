@@ -42,7 +42,7 @@ import org.eclipse.jface.util.Util;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 1.0
+ * @since 1.4
  * @see ISchemeListener
  * @see org.eclipse.core.commands.CommandManager
  */

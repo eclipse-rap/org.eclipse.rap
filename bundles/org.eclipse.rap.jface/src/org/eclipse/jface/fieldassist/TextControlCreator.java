@@ -15,12 +15,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * An IControlCreator for SWT Text controls. This is a convenience class
+ * An {@link IControlCreator} for SWT Text controls. This is a convenience class
  * for creating text controls to be supplied to a decorated field.
  * 
  * @since 1.0
-* @deprecated As of 3.3, clients should use ControlDecoration instead
-*             of DecoratedField.
+* @deprecated As of 3.3, clients should use {@link ControlDecoration} instead
+*             of {@link DecoratedField}.
 * 
  */
 public class TextControlCreator implements IControlCreator {

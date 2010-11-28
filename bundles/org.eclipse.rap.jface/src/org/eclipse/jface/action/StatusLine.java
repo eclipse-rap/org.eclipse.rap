@@ -256,6 +256,13 @@ import org.eclipse.swt.widgets.ToolItem;
 	 */
 	public StatusLine(Composite parent, int style) {
 		super(parent, style);
+		
+// RAP [if]	Accessibility not available
+//		getAccessible().addAccessibleControlListener(new AccessibleControlAdapter() {
+//			public void getRole(AccessibleControlEvent e) {
+//				e.detail = ACC.ROLE_STATUSBAR;
+//			}
+//		});
 
 		addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {

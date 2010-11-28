@@ -49,6 +49,10 @@ public abstract class ViewerRow implements Cloneable {
 	
 	private static final String KEY_TEXT_LAYOUT = Policy.JFACE + "styled_label_key_"; //$NON-NLS-1$
 
+	private static final String KEY_TEXT_LAYOUT_0 = Policy.JFACE + "styled_label_key_0"; //$NON-NLS-1$
+
+	private static String[] cachedDataKeys;
+	
 	/**
 	 * Get the bounds of the entry at the columnIndex,
 	 * 

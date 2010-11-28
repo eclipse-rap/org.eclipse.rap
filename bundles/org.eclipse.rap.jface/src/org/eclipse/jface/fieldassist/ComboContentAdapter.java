@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
-import org.eclipse.swt.SWT;
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -34,7 +34,7 @@ public class ComboContentAdapter implements IControlContentAdapter,
 	 * The corresponding SWT bug is
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=44072
 	 */
-	private static final boolean COMPUTE_TEXT_USING_CLIENTAREA = !"carbon".equals(SWT.getPlatform()); //$NON-NLS-1$
+	private static final boolean COMPUTE_TEXT_USING_CLIENTAREA = !Util.isCarbon();
 
 
 	/*

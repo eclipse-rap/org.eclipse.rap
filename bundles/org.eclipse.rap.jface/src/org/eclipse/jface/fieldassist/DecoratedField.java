@@ -56,8 +56,7 @@ import org.eclipse.swt.widgets.Shell;
  * This class is not intended to be subclassed.
  * 
  * @since 1.0
- * @deprecated As of 3.3, clients should use ControlDecoration instead.
- * 
+ * @deprecated As of 3.3, clients should use {@link ControlDecoration} instead.
  */
 public class DecoratedField {
 
@@ -211,7 +210,7 @@ public class DecoratedField {
 //			hoverShell.addPaintListener(new PaintListener() {
 //				public void paintControl(PaintEvent pe) {
 //					pe.gc.drawString(text, hm, hm);
-//					if (!CARBON) {
+//					if (!MAC) {
 //						pe.gc.drawPolygon(getPolygon(true));
 //					}
 //				}

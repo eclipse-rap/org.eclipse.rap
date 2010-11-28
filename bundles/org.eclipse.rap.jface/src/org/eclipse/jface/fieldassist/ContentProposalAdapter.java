@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Hannes Erven <hannes@erven.at> - Bug 293841 - [FieldAssist] NumLock keyDown event should not close the proposal popup [with patch]
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
@@ -38,6 +39,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.JFaceResources;
@@ -424,7 +426,7 @@ public class ContentProposalAdapter {
 						asyncRecomputeProposals(filterText);
 					}
 					break;
-				}			
+				}
 			}
 		}
 		// RAPEND: [bm] 
@@ -1197,8 +1199,7 @@ public class ContentProposalAdapter {
 	/*
 	 * The keystroke that signifies content proposals should be shown.
 	 */
-	// RAP [bm]: 
-//	private KeyStroke triggerKeyStroke;
+	private KeyStroke triggerKeyStroke;
 
 	/*
 	 * The String containing characters that auto-activate the popup.
@@ -1296,13 +1297,11 @@ public class ContentProposalAdapter {
 	 *            the <code>IContentProposalProvider</code> used to obtain
 	 *            content proposals for this control, or <code>null</code> if
 	 *            no content proposal is available.
-	 * <!--
-	 * param keyStroke
+	 * @param keyStroke
 	 *            the keystroke that will invoke the content proposal popup. If
 	 *            this value is <code>null</code>, then proposals will be
 	 *            activated automatically when any of the auto activation
 	 *            characters are typed.
-	 * -->
 	 * @param autoActivationCharacters
 	 *            An array of characters that trigger auto-activation of content
 	 *            proposal. If specified, these characters will trigger
@@ -1314,17 +1313,10 @@ public class ContentProposalAdapter {
 	 *            <code>null</code>, then all alphanumeric characters will
 	 *            auto-activate content proposal.
 	 */
-	// RAP [bm]: 
-//	public ContentProposalAdapter(Control control,
-//			IControlContentAdapter controlContentAdapter,
-//			IContentProposalProvider proposalProvider, KeyStroke keyStroke,
-//			char[] autoActivationCharacters) {
-		public ContentProposalAdapter(Control control,
-				IControlContentAdapter controlContentAdapter,
-				IContentProposalProvider proposalProvider,
-				char[] autoActivationCharacters) {
-		// RAPEND: [bm] 
-
+	public ContentProposalAdapter(Control control,
+			IControlContentAdapter controlContentAdapter,
+			IContentProposalProvider proposalProvider, KeyStroke keyStroke,
+			char[] autoActivationCharacters) {
 		super();
 		// We always assume the control and content adapter are valid.
 		Assert.isNotNull(control);
@@ -1334,8 +1326,7 @@ public class ContentProposalAdapter {
 
 		// The rest of these may be null
 		this.proposalProvider = proposalProvider;
-		// RAP [bm]: KeyStroke
-//		this.triggerKeyStroke = keyStroke;
+		this.triggerKeyStroke = keyStroke;
 		if (autoActivationCharacters != null) {
 			this.autoActivateString = new String(autoActivationCharacters);
 		}
@@ -1761,26 +1752,24 @@ public class ContentProposalAdapter {
 
 					// The popup is not open. We are looking at keydown events
 					// for a trigger to open the popup.
-					// RAP [if]: KeyStroke
-//					if (triggerKeyStroke != null) {
-//						// Either there are no modifiers for the trigger and we
-//						// check the character field...
-//						if ((triggerKeyStroke.getModifierKeys() == KeyStroke.NO_KEY && triggerKeyStroke
-//								.getNaturalKey() == e.character)
-//								||
-//								// ...or there are modifiers, in which case the
-//								// keycode and state must match
-//								(triggerKeyStroke.getNaturalKey() == e.keyCode && ((triggerKeyStroke
-//										.getModifierKeys() & e.stateMask) == triggerKeyStroke
-//										.getModifierKeys()))) {
-//							// We never propagate the keystroke for an explicit
-//							// keystroke invocation of the popup
-//							e.doit = false;
-//							openProposalPopup(false);
-//							return;
-//						}
-//					}
-					// ENDRAP [if]
+					if (triggerKeyStroke != null) {
+						// Either there are no modifiers for the trigger and we
+						// check the character field...
+						if ((triggerKeyStroke.getModifierKeys() == KeyStroke.NO_KEY && triggerKeyStroke
+								.getNaturalKey() == e.character)
+								||
+								// ...or there are modifiers, in which case the
+								// keycode and state must match
+								(triggerKeyStroke.getNaturalKey() == e.keyCode && ((triggerKeyStroke
+										.getModifierKeys() & e.stateMask) == triggerKeyStroke
+										.getModifierKeys()))) {
+							// We never propagate the keystroke for an explicit
+							// keystroke invocation of the popup
+							e.doit = false;
+							openProposalPopup(false);
+							return;
+						}
+					}
 					/*
 					 * The triggering keystroke was not invoked. If a character
 					 * was typed, compare it to the autoactivation characters.
@@ -1803,12 +1792,11 @@ public class ContentProposalAdapter {
 						} else {
 							// The autoactivate string is null. If the trigger
 							// is also null, we want to act on any modification
-							// to the content.  Set a flag so we'll catch this
+							// to the content. Set a flag so we'll catch this
 							// in the modify event.
-						    // RAP [if]: KeyStroke
-//							if (triggerKeyStroke == null) {
+							if (triggerKeyStroke == null) {
 								watchModify = true;
-//							}
+							}
 						}
 					} else {
 						// A non-character key has been pressed. Interrupt any
@@ -1817,34 +1805,51 @@ public class ContentProposalAdapter {
 					}
 					break;
 
-				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=147377
-				// Given that we will close the popup when there are no valid
-				// proposals, we must reopen it when there are. This means
-				// we should check modifications in those cases.
-				// See also https://bugs.eclipse.org/bugs/show_bug.cgi?id=183650
-				// The watchModify flag ensures that we don't autoactivate if
-				// the content change was caused by something other than typing.
-				case SWT.Modify:
-					// RAP [bm]: KeyStroke
-					if (/* triggerKeyStroke == null && */ autoActivateString == null
-							&& watchModify) {
-						if (DEBUG) {
-							dump("Modify event triggers autoactivation", e); //$NON-NLS-1$
+
+					// There are times when we want to monitor content changes
+					// rather than individual keystrokes to determine whether
+					// the popup should be closed or opened based on the entire
+					// content of the control.
+					// The watchModify flag ensures that we don't autoactivate if
+					// the content change was caused by something other than typing.
+					// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=183650
+					case SWT.Modify:
+						if (allowsAutoActivate() && watchModify) {
+							if (DEBUG) {
+								dump("Modify event triggers popup open or close", e); //$NON-NLS-1$
+							}
+							watchModify = false;
+							// We are in autoactivation mode, either for specific
+							// characters or for all characters. In either case, 
+							// we should close the proposal popup when there is no
+							// content in the control.
+							if (isControlContentEmpty()) {
+								// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=192633
+								closeProposalPopup();
+							} else {
+								// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=147377
+								// Given that we will close the popup when there are
+								// no valid proposals, we must consider reopening it on any
+								// content change when there are no particular autoActivation
+								// characters
+								if (autoActivateString == null) {
+									autoActivate();
+								} else {
+									// Autoactivation characters are defined, but this
+									// modify event does not involve one of them.  See
+									// if any of the autoactivation characters are left
+									// in the content and close the popup if none remain.
+									if (!shouldPopupRemainOpen())
+										closeProposalPopup();
+								}
+							}
 						}
-						watchModify = false;
-						// We don't autoactivate if the net change is no
-						// content.  In other words, backspacing to empty 
-						// should never cause a popup to open.
-						if (!isControlContentEmpty()) {
-							autoActivate();
+						// RAP [if]: Recompute proposals on modify event too.
+						if( popup != null ) {
+                      		popup.getTargetControlListener().handleEvent( e );
 						}
-					}
-					// RAP [if]: Recompute proposals on modify event too.
-					if( popup != null ) {
-                      popup.getTargetControlListener().handleEvent( e );
-					}
-					// ENDRAP [if]
-					break;
+						// ENDRAP [if]
+						break;
 				default:
 					break;
 				}
@@ -1913,6 +1918,7 @@ public class ContentProposalAdapter {
 							popup = null;
 						}
 					});
+					internalPopupOpened();
 					notifyPopupOpened();
 				} else if (!autoActivated) {
 					getControl().getDisplay().beep();
@@ -2197,10 +2203,8 @@ public class ContentProposalAdapter {
 	 * specific characters or by any characters.
 	 */
 	private boolean allowsAutoActivate() {
-// RAP [rh]	no triggerKeyStroke
-//		return (autoActivateString != null && autoActivateString.length() > 0) // there are specific autoactivation chars supplied
-//		  || (autoActivateString == null && triggerKeyStroke == null);    // we autoactivate on everything
-		return (autoActivateString != null && autoActivateString.length() > 0); // there are specific autoactivation chars supplied
+		return (autoActivateString != null && autoActivateString.length() > 0) // there are specific autoactivation chars supplied
+		  || (autoActivateString == null && triggerKeyStroke == null);    // we autoactivate on everything		
 	}
 	
 	/**

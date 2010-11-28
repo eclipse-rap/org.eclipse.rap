@@ -45,13 +45,8 @@ public class AutoCompleteField {
 			IControlContentAdapter controlContentAdapter, String[] proposals) {
 		proposalProvider = new SimpleContentProposalProvider(proposals);
 		proposalProvider.setFiltering(true);
-		// RAP [bm]: used slightly modifed api to work around KeyStroke
-//		adapter = new ContentProposalAdapter(control, controlContentAdapter,
-//				proposalProvider, null, null);
 		adapter = new ContentProposalAdapter(control, controlContentAdapter,
-				proposalProvider, null);
-		// RAPEND: [bm] 
-
+				proposalProvider, null, null);
 		adapter.setPropagateKeys(true);
 		adapter
 				.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);

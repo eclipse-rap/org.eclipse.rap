@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1535,7 +1535,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	}
 
 	/**
-	 * Removes the given open listener from this viewer. Has no affect if an
+	 * Removes the given open listener from this viewer. Has no effect if an
 	 * identical listener is not registered.
 	 * 
 	 * @param listener
@@ -1553,7 +1553,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	}
 
 	/**
-	 * Removes the given double-click listener from this viewer. Has no affect
+	 * Removes the given double-click listener from this viewer. Has no effect
 	 * if an identical listener is not registered.
 	 * 
 	 * @param listener
@@ -1656,7 +1656,12 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * @see org.eclipse.jface.viewers.Viewer#setInput(java.lang.Object)
 	 */
 	public final void setInput(Object input) {
-
+		Control control = getControl();
+		if (control == null || control.isDisposed()) {
+			throw new IllegalStateException(
+					"Need an underlying widget to be able to set the input." + //$NON-NLS-1$
+							"(Has the widget been disposed?)"); //$NON-NLS-1$
+		}
 		try {
 			//		fInChange= true;
 

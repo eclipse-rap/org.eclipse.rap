@@ -18,7 +18,7 @@ import org.eclipse.jface.util.Util;
  * <code>null</code>.
  * </p>
  * 
- * @since 1.0
+ * @since 1.4
  */
 public abstract class TriggerSequence {
 	

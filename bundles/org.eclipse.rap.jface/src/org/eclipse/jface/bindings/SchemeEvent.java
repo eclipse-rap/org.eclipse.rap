@@ -20,7 +20,7 @@ import org.eclipse.core.commands.common.AbstractNamedHandleEvent;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 1.0
+ * @since 1.4
  * @see ISchemeListener#schemeChanged(SchemeEvent)
  */
 public final class SchemeEvent extends AbstractNamedHandleEvent {
