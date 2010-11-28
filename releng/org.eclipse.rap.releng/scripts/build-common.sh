@@ -84,20 +84,21 @@ fi
 echo ""
 
 # Checkout releng project
-echo "Checking out Builder from CVS <$cvsTag>..."
-bufferedDir=`pwd`
-builderDir="$workDir"/builder/
+builderDir="$workDir/builder/"
+echo "Checking out builder from CVS $cvsTag ..."
 cd "$workDir"
-cvs -Q -f -d:pserver:anonymous@dev.eclipse.org:/cvsroot/rt checkout -d ./builder -r $cvsTag $builderCvsPath
-cd "$bufferedDir"
+cvs -Q -f -d:pserver:anonymous@dev.eclipse.org:/cvsroot/rt checkout \
+    -d ./builder -r $cvsTag $builderCvsPath \
+  || exit $?
+cd -
 
-# search pde build
+# Find PDE build
 pdeBuild=`ls -1 $runtimeDir/plugins | grep pde.build_ | tail -n 1`
-echo "Using the following PDE Build: $pdeBuild"
+echo "Using PDE Build: $pdeBuild"
 
-# search equinox launcher
+# Find Equinox launcher
 launcher=$runtimeDir/plugins/`ls -1 $runtimeDir/plugins | grep launcher_ | tail -n 1`
-echo "Using the following Equinox launcher: $launcher"
+echo "Using Equinox launcher: $launcher"
 
 if [ -z "$rapTarget" ]; then
 #  rapTargetArg="\"-DrapTarget=$rapTarget\""
@@ -105,24 +106,20 @@ if [ -z "$rapTarget" ]; then
 fi
 
 java -cp $launcher org.eclipse.core.launcher.Main \
-  -application org.eclipse.ant.core.antRunner \
-  -buildfile "$runtimeDir/plugins/$pdeBuild/scripts/build.xml" \
-  -Dbuilder="$builderDir" \
-  -DbuildId=`date +%Y%m%d-%H%M` \
-  -DbuildDirectory="$workDir/build" \
-  -DoutputDirectory="$outputDir" \
-  -DbuildType=$buildType \
-  -DmapsCheckoutTag=$cvsTag \
-  -DfetchTag=$cvsTag \
-  -DbaseLocation="$basePlatformDir" \
-  -DrapTarget="$rapTarget" \
-  -Dfile.encoding=UTF-8
+    -application org.eclipse.ant.core.antRunner \
+    -buildfile "$runtimeDir/plugins/$pdeBuild/scripts/build.xml" \
+    -Dbuilder="$builderDir" \
+    -DbuildId=`date +%Y%m%d-%H%M` \
+    -DbuildDirectory="$workDir/build" \
+    -DoutputDirectory="$outputDir" \
+    -DbuildType=$buildType \
+    -DmapsCheckoutTag=$cvsTag \
+    -DfetchTag=$cvsTag \
+    -DbaseLocation="$basePlatformDir" \
+    -DrapTarget="$rapTarget" \
+    -Dfile.encoding=UTF-8 \
+  || exit $?
 
-if test $? = 0
-then
-  echo "Cleaning up workspace"
-  test -d "$builderDir" && rm -rf "$builderDir"
-else
-  exit $?
-fi
+echo "Cleaning up workspace"
+test -d "$builderDir" && rm -rf "$builderDir"
 
