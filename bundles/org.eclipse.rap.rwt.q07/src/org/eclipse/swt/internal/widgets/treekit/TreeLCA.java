@@ -391,7 +391,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return new Integer( values.length > 0 ? values[ 0 ] : 0 );
   }
 
-  private static ITreeAdapter getTreeAdapter( Tree tree ) {
+  private static ITreeAdapter getTreeAdapter( final Tree tree ) {
     Object adapter = tree.getAdapter( ITreeAdapter.class );
     return ( ITreeAdapter )adapter;
   }
@@ -462,7 +462,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
 
-  public static ItemMetrics[] getItemMetrics( Tree tree ) {
+  public static ItemMetrics[] getItemMetrics( final Tree tree ) {
     int columnCount = Math.max( 1, tree.getColumnCount() );
     ItemMetrics[] result = new ItemMetrics[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
