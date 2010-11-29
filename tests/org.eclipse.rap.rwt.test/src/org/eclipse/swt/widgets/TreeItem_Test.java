@@ -652,7 +652,7 @@ public class TreeItem_Test extends TestCase {
     assertTrue( treeItem.getBounds().height > 0 );
     assertTrue( treeItem.getBounds().width > 0 );
   }
-  
+
   public void testGetBoundsForInvalidColumns() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -666,7 +666,7 @@ public class TreeItem_Test extends TestCase {
     bounds = treeItem.getBounds( 1 );
     assertTrue( bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
   }
-  
+
   public void testGetBoundsCollapsedSubItem() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -683,7 +683,7 @@ public class TreeItem_Test extends TestCase {
     bounds = subItem.getBounds( 0 );
     assertTrue( bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
   }
-  
+
   public void testGetBoundsExpandedSubItem() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -703,7 +703,7 @@ public class TreeItem_Test extends TestCase {
     assertTrue( subItemBounds.height > stringExtent.y );
     assertTrue( subItemBounds.width > stringExtent.x );
   }
-  
+
   public void testGetBoundsWithText() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -723,7 +723,7 @@ public class TreeItem_Test extends TestCase {
     assertTrue( noTextBounds.x > 0 && noTextBounds.height > 0 );
     assertTrue( noTextBounds.width < withTextBounds.width );
   }
-  
+
   public void testGetBoundsWithImage() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -792,15 +792,15 @@ public class TreeItem_Test extends TestCase {
     TreeItem rootItem3 = new TreeItem( tree, 0 );
     Tree.checkAllData( tree );
     assertEquals( 0, rootItem.getBounds().y );
-    assertEquals( 16, rootItem2.getBounds().y );
-    assertEquals( 32, rootItem3.getBounds().y );
+    assertEquals( 18, rootItem2.getBounds().y );
+    assertEquals( 36, rootItem3.getBounds().y );
     Fixture.fakeNewRequest();
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
     Fixture.fakeRequestParam( treeId + ".topItemIndex", "2" );
     Fixture.executeLifeCycleFromServerThread();
-    assertEquals( -32, rootItem.getBounds().y );
-    assertEquals( -16, rootItem2.getBounds().y );
+    assertEquals( -36, rootItem.getBounds().y );
+    assertEquals( -18, rootItem2.getBounds().y );
     assertEquals( 0, rootItem3.getBounds().y );
   }
 
@@ -855,8 +855,8 @@ public class TreeItem_Test extends TestCase {
     // default height is 16
     assertEquals( 0, root.getBounds().y );
     assertEquals( 0, sub1.getBounds().y ); // not expanded
-    assertEquals( 16, root2.getBounds().y );
-    assertEquals( 32, sub2.getBounds().y );
+    assertEquals( 18, root2.getBounds().y );
+    assertEquals( 36, sub2.getBounds().y );
     // default indent for each level is 16
     assertEquals( 16, root.getBounds().x );
     assertEquals( 0, sub1.getBounds().x ); // not expanded
@@ -953,8 +953,8 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, col2Bounds.width );
     // but x and y have to be set correctly
     assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
-    assertEquals( 102, col1Bounds.x );
-    assertEquals( 202, col2Bounds.x );
+    assertEquals( 103, col1Bounds.x );
+    assertEquals( 203, col2Bounds.x );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     item.setImage( 0, image );
     item.setImage( 1, image );
@@ -1005,8 +1005,8 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, col2Bounds.width );
     // but x and y have to be set correctly
     assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
-    assertEquals( 102, col1Bounds.x );
-    assertEquals( 202, col2Bounds.x );
+    assertEquals( 103, col1Bounds.x );
+    assertEquals( 203, col2Bounds.x );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     item.setImage( 0, image );
     item.setImage( 1, image );
@@ -1441,7 +1441,7 @@ public class TreeItem_Test extends TestCase {
     tree.setItemCount( 1 );
     TreeItem item = tree.getItem( 0 );
     item.setItemCount( 10 );
-    tree.setSize( 100, 160 );
+    tree.setSize( 100, 180 );
     assertEquals( 1, log.size() );
     log.clear();
     item.setExpanded( true );

@@ -1809,14 +1809,17 @@ public class Tree extends Composite {
   private int getTextOffset( final int index ) {
     int result = getImageOffset( index );
     result += getItemImageOuterWidth( index );
-    result += TEXT_MARGIN.x;
+    if( isTreeColumn( index ) ) {
+      result += TEXT_MARGIN.x;
+    }
     return result;
   }
 
   int getTextWidth( final int index ) {
-    int result =   getCellWidth( index )
-                 - getTextOffset( index )
-                 - ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+    int result = getCellWidth( index ) - getTextOffset( index );
+    if( isTreeColumn( index ) ) {
+      result -= ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+    }
     return Math.max( 0, result );
   }
 
@@ -1888,7 +1891,9 @@ public class Tree extends Composite {
     result += Graphics.stringExtent( getFont(),
                                      item.getText( columnIndex, checkData ) ).x;
     result += ( padding.width - padding.x );
-    result += ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+    if( isTreeColumn( columnIndex ) ) {
+      result += ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+    }
     return result;
   }
 

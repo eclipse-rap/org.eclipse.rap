@@ -86,7 +86,7 @@ TreeColumn-SortIndicator:down {
 
 Tree-Cell {
   spacing: 3px;
-  padding: 0px 2px;
+  padding: 3px;
 }
 
 Tree-GridLine {

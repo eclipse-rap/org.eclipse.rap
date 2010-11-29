@@ -408,7 +408,10 @@ public class TreeTab extends ExampleTab {
   }
 
   private static void changeImage( final TreeItem item, final Image image ) {
-    item.setImage( image );
+    item.setImage( 0, image );
+    if( item.getParent().getColumnCount() > 1 ) {
+      item.setImage( 1, image );
+    }
     TreeItem[] items = item.getItems();
     for( int i = 0; i < items.length; i++ ) {
       changeImage( items[ i ], image );

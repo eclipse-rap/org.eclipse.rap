@@ -63,6 +63,11 @@ TreeColumn-SortIndicator:down {
   background-image: url( theme/fancy/icons/sort-indicator-down.png );
 }
 
+Tree-Cell {
+  spacing: 3px;
+  padding: 3px;
+}
+
 Tree-Indent {
   width: 16px;
   background-image: none;

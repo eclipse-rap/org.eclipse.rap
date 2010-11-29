@@ -270,12 +270,12 @@ public class TreeLCA_Test extends TestCase {
     item3.setText( "item3" );
     ItemMetrics[] metrics = TreeLCA.getItemMetrics( tree );
     assertEquals( 0, metrics[ 0 ].imageLeft );
-    assertEquals( 202, metrics[ 1 ].imageLeft );
+    assertEquals( 203, metrics[ 1 ].imageLeft );
     item2.setImage( image2 );
     item1.setImage( 1, image1 );
     metrics = TreeLCA.getItemMetrics( tree );
     assertEquals( 0, metrics[ 0 ].imageLeft );
-    assertEquals( 202, metrics[ 1 ].imageLeft );
+    assertEquals( 203, metrics[ 1 ].imageLeft );
   }
 
   public void testGetItemMetricsCellLeft() {
@@ -339,10 +339,10 @@ public class TreeLCA_Test extends TestCase {
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     item1.setText( 1, "item12" );
     ItemMetrics[] metrics = TreeLCA.getItemMetrics( tree );
-    assertEquals( 205, metrics[ 1 ].textLeft );
+    assertEquals( 203, metrics[ 1 ].textLeft );
     item1.setImage( 1, image );
     metrics = TreeLCA.getItemMetrics( tree );
-    assertEquals( 308, metrics[ 1 ].textLeft );
+    assertEquals( 306, metrics[ 1 ].textLeft );
   }
 
   public void testGetItemMetricsTextLeftWithCheckbox() {
@@ -443,7 +443,7 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     Integer itemHeight
       = ( Integer )adapter.getPreserved( TreeLCA.PROP_ITEM_HEIGHT );
-    assertEquals( new Integer( 50 ) , itemHeight );
+    assertEquals( new Integer( 56 ) , itemHeight );
     Fixture.clearPreserved();
     // scroll left
     ITreeAdapter treeAdapter
