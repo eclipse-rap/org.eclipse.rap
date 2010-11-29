@@ -594,8 +594,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( 3, nodes.length );
       assertEquals( 3, parseInt( nodes[ 1 ].style.zIndex ) );
       var position = nodes[ 1 ].style.backgroundPosition;
-      assertTrue( position.indexOf( "center" ) == -1 );
-      assertTrue( position.indexOf( "50%" ) == -1 );
+      assertTrue(    position.indexOf( "center" ) != -1 
+                  || position.indexOf( "50%" ) != -1 );
       var url1 = testUtil.getCssBackgroundImage( nodes[ 1 ] );
       assertTrue( url1.indexOf( "test1.jpg" ) != -1 );
       var url2 = testUtil.getCssBackgroundImage( nodes[ 2 ] );

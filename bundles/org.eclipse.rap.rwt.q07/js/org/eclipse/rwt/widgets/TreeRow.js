@@ -301,7 +301,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var element = null;
       if( source !== null ) {
         element = this._getNextElement( 3 );
-        this._setImage( element, source, false );
+        this._setImage( element, source, true );
         var left = this._tree.getItemImageLeft( item, cell );
         var width = this._tree.getItemImageWidth( item, cell );
         this._setBounds( element, left, 0, width, this._tree.getItemHeight() );
