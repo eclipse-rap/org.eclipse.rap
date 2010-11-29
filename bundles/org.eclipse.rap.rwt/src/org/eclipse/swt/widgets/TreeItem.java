@@ -1123,7 +1123,7 @@ public class TreeItem extends Item {
       result.width = size.x;
       result.height = size.y;
       result.x = parent.getVisualCellLeft( columnIndex, this );
-      result.x += parent.getImageOffset( columnIndex );
+      result.x += parent.getCellPadding().x;
       // SWT behavior on windows gives the correct y value
       // On Gtk the y value is always the same (eg. 1)
       // we emulate the default windows behavior here
