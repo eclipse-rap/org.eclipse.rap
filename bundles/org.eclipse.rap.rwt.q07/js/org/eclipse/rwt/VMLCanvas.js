@@ -98,7 +98,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
       } );
     },
 
-    bezierCurveTo : function( cpx1, cpy1, cpx2, cpy2, x, y ) {
+    bezierCurveTo : function( cp1x, cp1y, cp2x, cp2y, x, y ) {
       this._currentPath.push( {
         "type" : 'bezierCurveTo',
         "cp1x" : cp1x,
