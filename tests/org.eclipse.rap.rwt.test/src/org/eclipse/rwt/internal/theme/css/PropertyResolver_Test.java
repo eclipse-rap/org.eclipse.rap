@@ -92,7 +92,13 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
-  public void testBoxdimensions() throws Exception {
+  public void testDimension_ZeroWithoutUnit() throws Exception {
+    QxDimension zero = PropertyResolver.readDimension( parseProperty( "0" ) );
+    assertNotNull( zero );
+    assertEquals( QxDimension.ZERO, zero );
+  }
+
+  public void testBoxDimensions() throws Exception {
     LexicalUnit zeroUnit = parseProperty( "0px" );
     QxBoxDimensions zero = PropertyResolver.readBoxDimensions( zeroUnit );
     assertNotNull( zero );
@@ -125,6 +131,18 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  public void testBoxDimension_ZeroWithoutUnit() throws Exception {
+    QxBoxDimensions zero
+      = PropertyResolver.readBoxDimensions( parseProperty( "0" ) );
+    assertNotNull( zero );
+    assertEquals( QxBoxDimensions.ZERO, zero );
+
+    QxBoxDimensions withZero
+      = PropertyResolver.readBoxDimensions( parseProperty( "0 1px 2px 3px" ) );
+    assertNotNull( withZero );
+    assertEquals( QxBoxDimensions.create( 0, 1, 2, 3 ), withZero );
+  }
+
   public void testBorderWidth() throws Exception {
     int zero = PropertyResolver.readBorderWidth( parseProperty( "0px" ) );
     assertEquals( 0, zero );
@@ -142,6 +160,11 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( -1, illegal2 );
     int negative = PropertyResolver.readBorderWidth( parseProperty( "-1px" ) );
     assertEquals( -1, negative );
+  }
+
+  public void testBorderWidth_ZeroWithoutUnit() throws Exception {
+    int zero = PropertyResolver.readBorderWidth( parseProperty( "0" ) );
+    assertEquals( 0, zero );
   }
 
   public void testBorderStyle() throws Exception {
@@ -209,6 +232,10 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( -1, PropertyResolver.readFontSize( parseProperty( "2em" ) ) );
     assertEquals( -1, PropertyResolver.readFontSize( parseProperty( "-1px" ) ) );
     assertEquals( -1, PropertyResolver.readFontSize( parseProperty( "-2px" ) ) );
+  }
+
+  public void testFontSize_ZeroWithoutUnit() throws Exception {
+    assertEquals( 0, PropertyResolver.readFontSize( parseProperty( "0" ) ) );
   }
 
   public void testFontFamily() throws Exception {

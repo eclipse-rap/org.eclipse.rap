@@ -308,6 +308,11 @@ public final class PropertyResolver {
       } else if( THICK.equals( string ) ) {
         result = THICK_VALUE;
       }
+    } else if( type == LexicalUnit.SAC_INTEGER ) {
+      int value = unit.getIntegerValue();
+      if( value == 0 ) {
+        result = 0;
+      }
     } else if( type == LexicalUnit.SAC_PIXEL ) {
       float value = unit.getFloatValue();
       if( value >= 0f ) {
@@ -769,7 +774,12 @@ public final class PropertyResolver {
   private static Integer readSingleLengthUnit( final LexicalUnit unit ) {
     Integer result = null;
     short type = unit.getLexicalUnitType();
-    if( type == LexicalUnit.SAC_PIXEL ) {
+    if( type == LexicalUnit.SAC_INTEGER ) {
+      int value = unit.getIntegerValue();
+      if( value == 0 ) {
+        result = new Integer( 0 );
+      }
+    } else if( type == LexicalUnit.SAC_PIXEL ) {
       result = new Integer( ( int )unit.getFloatValue() );
     }
     return result;
