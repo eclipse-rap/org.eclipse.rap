@@ -23,7 +23,8 @@ ToolBar {
 }
 
 ToolBar[BORDER] {
-  border: 1px outset;
+  border: 1px solid #a4a4a4;
+  border-radius: 2px;
 }
 
 ToolItem {

@@ -22,5 +22,6 @@ CLabel {
 }
 
 CLabel[BORDER] {
-  border: 1px inset;
+  border: 1px solid #a4a4a4;
+  border-radius: 2px;
 }
