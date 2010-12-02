@@ -19,6 +19,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandBar", {
     this.setHideFocus( true );
     // This object is needed for proper scrolling behaviour
     this._bottomSpacing = new qx.ui.layout.CanvasLayout();
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._bottomSpacing );
     this._clientArea.add( this._bottomSpacing );
   },
   
