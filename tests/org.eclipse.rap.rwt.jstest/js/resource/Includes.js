@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   EclipseSource - initial API and implementation
+ ******************************************************************************/
+
 ( function(){
 
   var getURLParam = function( name ) {
@@ -148,9 +158,8 @@
     "qx/ui/popup/PopupManager.js",
     "qx/ui/selection/SelectionManager.js",
     "qx/ui/selection/Selection.js",
-    "qx/ui/basic/ScrollArea.js",
     "org/eclipse/swt/widgets/AbstractSlider.js",    
-    "qx/ui/basic/ScrollBar.js",
+    "org/eclipse/rwt/widgets/ScrollBar.js",
     "qx/application/Gui.js",
     "qx/io/image/PreloaderSystem.js",
     "qx/io/remote/RequestQueue.js",

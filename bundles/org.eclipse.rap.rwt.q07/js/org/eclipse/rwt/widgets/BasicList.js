@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
 	        = items[ i ].getLabelObject().getPreferredBoxWidth() + paddingWidth;
 	      result = Math.max( result, itemWidth );
 	    }
-	    result += qx.ui.core.Widget.SCROLLBAR_SIZE;
+	    result += this._vertScrollBar.getWidth();
       return result;
     },
     
@@ -330,6 +330,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
         items[ i ].setWidth( this._itemWidth );
         items[ i ].setHeight( this._itemHeight );
       }
+      this._vertScrollBar.setIncrement( height );
       this._updateScrollDimension();
     },
 
@@ -385,5 +386,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     _onListItemMouseOut : function( evt ) {
       evt.getTarget().removeState( "over" );
     }
+
   }
 } );

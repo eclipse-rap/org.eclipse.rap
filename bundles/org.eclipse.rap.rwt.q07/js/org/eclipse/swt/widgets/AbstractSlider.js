@@ -14,6 +14,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
 
   construct : function( horizontal ) {
     this.base( arguments );
+    this.setOverflow( "hidden" );
     this._horizontal = horizontal;
     // properties (using virtual units):
     this._selection = 0;
@@ -63,10 +64,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       var newSelection = this._limitSelection( value );
       if( newSelection !== this._selection ) {
         this._selection = newSelection;
-        this._updateThumbPosition();
-        if( this._autoRepeat !== null && !this._repeatTimer.isEnabled() ) {
-          qx.client.Timer.once( this._repeatTimerStart, this, 250 );
-        }
+        this._selectionChanged();
       }
     },
 
@@ -117,6 +115,13 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
                                         this._onMaxButtonMouseDown,
                                         this );
 
+    },
+    
+    _selectionChanged : function() {
+      this._updateThumbPosition();
+      if( this._autoRepeat !== null && !this._repeatTimer.isEnabled() ) {
+        qx.client.Timer.once( this._repeatTimerStart, this, 250 );
+      }
     },
     
     _onChangeSize : function( event ) {
@@ -269,12 +274,11 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       } else {
         this._thumb.setTop( pos );
       }
-      // Starting the auto repeat functionality after a 250 ms delay
     },
 
     _updateThumbSize : function() {
       var newSize =   this._thumbLength * this._getLineSize()
-                    / ( this._maximum - this._minimum )
+                    / ( this._maximum - this._minimum );
       if( this._horizontal ) {
         this._thumb.setWidth( newSize );
       } else {
@@ -309,7 +313,8 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       var result = value;
       if( value >= ( this._maximum - this._thumbLength ) ) {
         result = this._maximum - this._thumbLength;
-      } else if( value <= this._minimum ) {
+      } 
+      if( result <= this._minimum ) {
         result = this._minimum;
       }
       return result;

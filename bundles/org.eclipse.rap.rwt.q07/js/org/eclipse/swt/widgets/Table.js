@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._hasScrollBarsSelectionListener = false;
     // indicates that the next request can be sent
     this._readyToSendChanges = true;
+    this._resolveItemsFor = null;
     // Internally used fields to manage visible rows and scrolling
     this._itemHeight = 0;
     this._rows = new Array();
@@ -117,16 +118,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._clientArea.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
     this._clientArea.addEventListener( "appear", this._onClientAppear, this );
     // Create horizontal scrollBar
-    this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
+    this._horzScrollBar = new org.eclipse.rwt.widgets.ScrollBar( true );
     this._horzScrollBar.setZIndex( 1e8 );
     this._horzScrollBar.setMergeEvents( true );
     this.add( this._horzScrollBar );
     this._horzScrollBar.setHeight( this._horzScrollBar.getPreferredBoxHeight() );
     this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
     // Create vertical scrollBar
-    this._vertScrollBar = new qx.ui.basic.ScrollBar( false );
+    this._vertScrollBar = new org.eclipse.rwt.widgets.ScrollBar( false );
     this._vertScrollBar.setZIndex( 1e8 );
-    this._vertScrollBar.setMergeEvents( true );
+    this._vertScrollBar.setMergeEvents( false );
     this.add( this._vertScrollBar );
     this._vertScrollBar.setWidth( this._vertScrollBar.getPreferredBoxWidth() );
     this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
@@ -399,6 +400,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( this._updateRowCount() ) {
         this._updateRows();
       }
+      this._vertScrollBar.setIncrement( value );
     },
 
     getItemHeight : function() {
@@ -1432,9 +1434,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _updateRows : function() {
+      var start = ( new Date() ).getTime();
       for( var i = 0; i < this._rows.length; i++ ) {
         this._updateRow( i, this._getItemIndexFromRowIndex( i ) );
       }
+      this._vertScrollBar.autoEnableMerge( ( new Date() ).getTime() - start );
     },
 
     _updateRow : function( rowIndex, itemIndex ) {
@@ -1442,7 +1446,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( itemIndex >= 0 && itemIndex < this._itemCount ) {
         var item = this._items[ itemIndex ];
         if( item === undefined || ( item !== null && !item.getCached() ) ) {
-          this._resolveItem( this._topIndex + rowIndex );
+          this._scheduleResolveItems();
           this._renderItem( row, this._virtualItem );
           row.setItemIndex( -1 );
         } else {
@@ -1519,26 +1523,40 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         row.addState( "parent_unfocused" );
       }
     },
-
-    _resolveItem : function( itemIndex ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        if( this._unresolvedItems === null ) {
-          this._unresolvedItems = new Array();
-          qx.client.Timer.once( this._sendResolveItemsRequest, this, 30 );
-        }
-        this._unresolvedItems.push( itemIndex );
+    
+    _scheduleResolveItems : function() {
+      if( this._resolveItemsFor === null ) {
+        qx.client.Timer.once( this._sendResolveItemsRequest, this, 500 );
       }
+      this._resolveItemsFor = this._topIndex;
     },
 
     _sendResolveItemsRequest : function( evt ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
-      var indices = this._unresolvedItems.join( "," );
-      req.addParameter( "org.eclipse.swt.events.setData.index", indices );
-      req.addEvent( "org.eclipse.swt.events.setData", id );
-      req.send();
-      this._unresolvedItems = null;
+      var scrollDiff = Math.abs( this._topIndex - this._resolveItemsFor );
+      this._resolveItemsFor = null;
+      if( scrollDiff > this._rows.length - 2 ) {
+        this._scheduleResolveItems();         
+      } else {
+        var unresolved = [];
+        for( var i = 0; i < this._rows.length; i++ ) {
+          var index = this._getItemIndexFromRowIndex( i );
+          if( index >= 0 && index < this._itemCount ) {
+            var item = this._items[ index ];
+            if( item === undefined || ( item !== null && !item.getCached() ) ) {
+              unresolved.push( index );
+            }
+          }
+        }
+        if( unresolved.length > 0 ) {
+          var indices = unresolved.join( "," );
+          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var id = widgetManager.findIdByWidget( this );
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addParameter( "org.eclipse.swt.events.setData.index", indices );
+          req.addEvent( "org.eclipse.swt.events.setData", id );
+          req.send();
+        }
+      }
     },
 
     //////////////////////////////////////////////////////////////

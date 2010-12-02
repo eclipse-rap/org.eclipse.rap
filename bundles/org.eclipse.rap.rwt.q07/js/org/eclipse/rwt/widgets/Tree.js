@@ -61,8 +61,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._clientArea = new qx.ui.layout.VerticalBoxLayout();
     this._columnArea = new qx.ui.layout.CanvasLayout();
     this._dummyColumn = new qx.ui.basic.Atom();
-    this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
-    this._vertScrollBar = new qx.ui.basic.ScrollBar( false );
+    this._horzScrollBar = new org.eclipse.rwt.widgets.ScrollBar( true );
+    this._vertScrollBar = new org.eclipse.rwt.widgets.ScrollBar( false );
     this._hasScrollBarsSelectionListener = false;
     this._rows = this._clientArea.getChildren();
     this._vertGridLines = [];
@@ -145,6 +145,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._vertScrollBar.setZIndex( 1e8 );
       this._vertScrollBar.setVisibility( false );
       this._vertScrollBar.setWidth( preferredWidth );
+      this._vertScrollBar.setIncrement( 16 );
       this._vertScrollBar.setMergeEvents( false );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
     },
@@ -241,6 +242,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     setItemHeight : function( height ) {
       this._itemHeight = height;
+      this._vertScrollBar.setIncrement( height );
       for( var i = 0; i < this._rows.length; i++ ) {
         this._rows[ i ].setHeight( height );
       }
@@ -902,7 +904,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _updateAllRows : function() {
+      var start = ( new Date() ).getTime();
       this._updateRows( 0, this._rows.length );
+      this._vertScrollBar.autoEnableMerge( ( new Date() ).getTime() - start );
     },
     
     _updateQueuedItems : function() {

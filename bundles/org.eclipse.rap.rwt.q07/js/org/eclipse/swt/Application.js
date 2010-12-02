@@ -73,7 +73,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
     },
     
     _appendScrollBarSize : function() {
-      var size = qx.ui.core.Widget.SCROLLBAR_SIZE;
+      var size = org.eclipse.rwt.widgets.ScrollBar.BAR_WIDTH;
       // Append scrollbar size to request
       var req = org.eclipse.swt.Request.getInstance();
       var id = req.getUIRootId();
@@ -145,7 +145,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
       this.base( arguments );
       // Reduce scroll-event delay to 80ms (default is 250ms)
       // All scroll events that arrive in shorter time will be merged
-      qx.ui.basic.ScrollBar.EVENT_DELAY = 125;
       // Overwrite the default mapping for internal images. This is necessary
       // if the application is deployed under a root different from "/".
       qx.io.Alias.getInstance().add( "static", "./rwt-resources/resource/static" );

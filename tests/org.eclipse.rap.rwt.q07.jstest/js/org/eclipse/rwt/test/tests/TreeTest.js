@@ -29,8 +29,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     
     testItemHeight : function() {
       var tree = new org.eclipse.rwt.widgets.Tree();
+      assertEquals( 16, tree.getItemHeight() );
+      assertEquals( 16, tree._vertScrollBar._increment );
       tree.setItemHeight( 23 );
       assertEquals( 23, tree.getItemHeight() );
+      assertEquals( 23, tree._vertScrollBar._increment );
       tree.destroy();
     },
     
@@ -537,8 +540,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree();
       assertFalse( tree._horzScrollBar.getVisibility() );
       assertFalse( tree._vertScrollBar.getVisibility() );
-      assertFalse( tree._horzScrollBar.getMergeEvents() );
-      assertFalse( tree._vertScrollBar.getMergeEvents() );
+      assertFalse( tree._horzScrollBar._mergeEvents );
+      assertFalse( tree._vertScrollBar._mergeEvents );
       tree.destroy();
     },
 

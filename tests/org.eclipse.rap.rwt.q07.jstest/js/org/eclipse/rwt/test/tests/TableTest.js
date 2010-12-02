@@ -9,8 +9,13 @@
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
-
   extend : qx.core.Object,
+
+  construct : function() {
+    var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+    testUtil.prepareTimerUse();
+    testUtil.initRequestLog();
+  },
   
   members : {
     
@@ -38,6 +43,53 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       table.setLinesVisible( false );
       assertFalse( table.hasState( "linesvisible" ) );
       assertFalse( table._rows[ 0 ].hasState( "linesvisible" ) );      
+      table.destroy();
+    },
+    
+    testSendSetDataEvents : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.clearRequestLog();
+      var table = this._createDefaultTable();
+      assertNull( 0, table._resolveItemsFor );
+      table.setItemCount( 100 );
+      assertEquals( 0, table._resolveItemsFor );
+      assertEquals( 0, testUtil.getRequestsSend() );
+      testUtil.forceTimerOnce();
+      assertEquals( 1, testUtil.getRequestsSend() );
+      var msg = testUtil.getMessage();
+      assertTrue( msg.indexOf( "setData.index=0%2C1%2C2" ) != -1 );
+      assertNull( 0, table._resolveItemsFor );
+      table.destroy();
+    },
+    
+    testSendSetDataEventsOnScroll : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.clearRequestLog();
+      var table = this._createDefaultTable();
+      table.setItemCount( 100 );
+      testUtil.flush();
+      table._vertScrollBar.setMergeEvents( true );
+      table._vertScrollBar.setValue( 100 );
+      testUtil.forceInterval( table._vertScrollBar._eventTimer );
+      assertEquals( 5, table._resolveItemsFor );
+      assertEquals( 0, testUtil.getRequestsSend() );
+      table._vertScrollBar.setValue( 200 );
+      assertEquals( 5, table._resolveItemsFor );
+      table._vertScrollBar.setValue( 300 );
+      testUtil.forceInterval( table._vertScrollBar._eventTimer );
+      assertEquals( 15, table._resolveItemsFor );
+      testUtil.forceTimerOnce();
+      assertEquals( 1, testUtil.getRequestsSend() );
+      var msg = testUtil.getMessage();
+      assertTrue( msg.indexOf( "setData.index=15%2C16%2C" ) != -1 );
+      table.destroy();
+    },
+    
+    testSetItemHeight : function() {
+      var table = this._createDefaultTable();
+      table.setItemHeight( 30 );
+      assertEquals( 3, table._rows.length );
+      assertEquals( 30, table._vertScrollBar._increment );
       table.destroy();
     },
     

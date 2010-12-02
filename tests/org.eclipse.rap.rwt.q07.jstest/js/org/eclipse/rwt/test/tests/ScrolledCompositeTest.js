@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
-      var barWidth = vbar._getScrollBarWidth();
+      var barWidth = org.eclipse.rwt.widgets.ScrollBar.BAR_WIDTH;
       assertIdentical( composite, client.getParent() );
       assertIdentical( composite, hbar.getParent() );
       assertIdentical( composite, vbar.getParent() );
@@ -62,7 +62,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
-      var barWidth = vbar._getScrollBarWidth();
+      var barWidth 
+        = org.eclipse.rwt.widgets.ScrollBar.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = testUtil.getElementBounds( client.getElement() );
@@ -174,7 +175,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       this._setScrollDimension( composite, 200, 200 );
       var maxScroll = 100; // 200 (content) - 100 (clientArea)
       // visible scrollbars => clientArea is smaller
-      maxScroll += composite._vertScrollBar._getScrollBarWidth();
+      maxScroll += composite._vertScrollBar.getWidth();
       composite.setHBarSelection( 150 );
       composite.setVBarSelection( 250 );
       var position = this._getScrollPosition( composite );
@@ -336,7 +337,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
-      var barWidth = vbar._getScrollBarWidth();
+      var barWidth 
+        = org.eclipse.rwt.widgets.ScrollBar.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = testUtil.getElementBounds( client.getElement() );

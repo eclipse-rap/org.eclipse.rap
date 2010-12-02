@@ -132,11 +132,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var items = this._getItems( list );
       assertEquals( 200, items[ 0 ].getWidth() );
       assertEquals( 20, items[ 0 ].getHeight() );
+      assertEquals( 20, list._vertScrollBar._increment );
+      assertEquals( 20, list._vertScrollBar._increment );
       list.setItemDimensions( 100, 30 );
       testUtil.flush();
       items = this._getItems( list );
       assertEquals( 100, items[ 0 ].getWidth() );
       assertEquals( 30, items[ 0 ].getHeight() );
+      assertEquals( 30, list._vertScrollBar._increment );
       list.destroy();
     },
 

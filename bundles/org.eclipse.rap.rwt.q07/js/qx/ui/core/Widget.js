@@ -167,12 +167,6 @@ qx.Class.define("qx.ui.core.Widget",
     },
 
 
-
-
-
-    // Will be calculated later (TODO: Move to qx.html?)
-    SCROLLBAR_SIZE : null,
-
     /* ************************************************************************
        Class data, properties and methods
     ************************************************************************ */
@@ -1187,48 +1181,7 @@ qx.Class.define("qx.ui.core.Widget",
     },
 
 
-
-
-
-
-    /*
-    ---------------------------------------------------------------------------
-      OVERFLOW
-    ---------------------------------------------------------------------------
-    */
-
-    /*
-      This will measure the typical native scrollbar size in the environment
-    */
-
-    /**
-     * TODOC
-     *
-     * @type static
-     * @return {void}
-     */
-    initScrollbarWidth : function()
-    {
-      var t = document.createElement("div");
-      var s = t.style;
-
-      s.height = s.width = "100px";
-      s.overflow = "scroll";
-
-      document.body.appendChild(t);
-
-      var c = qx.html.Dimension.getScrollBarSizeRight(t);
-
-      qx.ui.core.Widget.SCROLLBAR_SIZE = c ? c : 16;
-
-      document.body.removeChild(t);
-    },
-
     _idCounter : 0,
-
-
-
-
 
 
     /*
