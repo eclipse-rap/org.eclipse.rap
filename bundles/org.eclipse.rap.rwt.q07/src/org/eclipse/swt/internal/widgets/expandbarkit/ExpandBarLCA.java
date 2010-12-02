@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,13 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
 
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.widgets.*;
@@ -21,8 +21,9 @@ import org.eclipse.swt.widgets.*;
 public final class ExpandBarLCA extends AbstractWidgetLCA {
 
   // Property names for preserveValues
-  public static final String PROP_SHOW_VSCROLLBAR = "showVScrollbar";
   public static final String PROP_BOTTOM_SPACING_BOUNDS = "bottomSpacingBounds";
+  public static final String PROP_SHOW_VSCROLLBAR = "showVScrollbar";
+  public static final String PROP_VSCROLLBAR_MAX = "vScrollbarMax";
 
   public void preserveValues( final Widget widget ) {
     ExpandBar expandBar = ( ExpandBar )widget;
@@ -31,6 +32,7 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     IExpandBarAdapter expandBarAdapter = getExpandBarAdapter( expandBar );
     adapter.preserve( PROP_SHOW_VSCROLLBAR,
                       Boolean.valueOf( expandBarAdapter.isVScrollbarVisible() ) );
+    adapter.preserve( PROP_VSCROLLBAR_MAX, getVScrollbarMax( expandBar ) );
     adapter.preserve( PROP_BOTTOM_SPACING_BOUNDS,
                       expandBarAdapter.getBottomSpacingBounds() );
   }
@@ -44,14 +46,7 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     ExpandBar expandBar = ( ExpandBar )widget;
     JSWriter writer = JSWriter.getWriterFor( expandBar );
-    String style = "";
-    if( ( expandBar.getStyle() & SWT.V_SCROLL ) != 0 ) {
-      style = "v_scroll";
-    }
-    Object[] args = new Object[]{
-      style
-    };
-    writer.newWidget( "org.eclipse.swt.widgets.ExpandBar", args );
+    writer.newWidget( "org.eclipse.swt.widgets.ExpandBar" );
     WidgetLCAUtil.writeCustomVariant( widget );
     ControlLCAUtil.writeStyleFlags( expandBar );
   }
@@ -59,8 +54,9 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     ExpandBar expandBar = ( ExpandBar )widget;
     ControlLCAUtil.writeChanges( expandBar );
-    writeShowVScrollbar( expandBar );
     writeBottomSpacing( expandBar );
+    writeShowVScrollbar( expandBar );
+    writeVScrollbarMax( expandBar );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -74,19 +70,6 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
 
   //////////////////////////////////////
   // Helping methods to write properties
-  private static void writeShowVScrollbar( final ExpandBar bar )
-    throws IOException
-  {
-    IExpandBarAdapter expandBarAdapter = getExpandBarAdapter( bar );
-    Boolean newValue = Boolean.valueOf( expandBarAdapter.isVScrollbarVisible() );
-    if( WidgetLCAUtil.hasChanged( bar, PROP_SHOW_VSCROLLBAR, newValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( bar );
-      writer.call( "showVScrollbar", new Object[]{
-        newValue
-      } );
-    }
-  }
-
   private static void writeBottomSpacing( final ExpandBar bar )
     throws IOException
   {
@@ -104,5 +87,37 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
         new Integer( bottomSpacingBounds.height )
       } );
     }
+  }
+
+  private static void writeShowVScrollbar( final ExpandBar bar )
+    throws IOException
+  {
+    IExpandBarAdapter expandBarAdapter = getExpandBarAdapter( bar );
+    Boolean newValue = Boolean.valueOf( expandBarAdapter.isVScrollbarVisible() );
+    if( WidgetLCAUtil.hasChanged( bar, PROP_SHOW_VSCROLLBAR, newValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( bar );
+      writer.call( "showVScrollbar", new Object[] { newValue } );
+    }
+  }
+
+  private static void writeVScrollbarMax( final ExpandBar bar )
+    throws IOException
+  {
+    Integer newValue = getVScrollbarMax( bar );
+    if( WidgetLCAUtil.hasChanged( bar, PROP_VSCROLLBAR_MAX, newValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( bar );
+      writer.call( "setVScrollbarMax", new Object[] { newValue } );
+    }
+  }
+
+  private static Integer getVScrollbarMax( final ExpandBar bar ) {
+    int result = 0;
+    IExpandBarAdapter expandBarAdapter = getExpandBarAdapter( bar );
+    ExpandItem[] items = bar.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      result += expandBarAdapter.getBounds( items[ i ] ).height;
+    }
+    result += bar.getSpacing() * ( items.length + 1 );
+    return new Integer( result );
   }
 }

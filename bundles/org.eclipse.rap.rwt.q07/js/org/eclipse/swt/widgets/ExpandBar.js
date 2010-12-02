@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,47 +7,48 @@
  * 
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.widgets.ExpandBar", {
-  extend : qx.ui.layout.CanvasLayout,
+  extend : org.eclipse.swt.widgets.Scrollable,
 
-  construct : function( style ) {
-    this.base( arguments );  
+  construct : function() {
+    this.base( arguments, new qx.ui.layout.CanvasLayout() );
     this.setAppearance( "expand-bar" );
     this.setHideFocus( true );
-        
-    this._vscroll = qx.lang.String.contains( style, "v_scroll" );
-    
-    // This object is needed for reset the scrollbar position
-    this._zeroScrolling = new qx.ui.layout.CanvasLayout(); 
-    this.add( this._zeroScrolling );
     // This object is needed for proper scrolling behaviour
     this._bottomSpacing = new qx.ui.layout.CanvasLayout();
-    this.add( this._bottomSpacing );
+    this._clientArea.add( this._bottomSpacing );
+  },
+  
+  destruct : function() {
+    this._disposeObjects( "_bottomSpacing" );
   },
 
-  destruct : function() {
-    this._disposeObjects( "_zeroScrolling", "_bottomSpacing" );   
-  },  
-
   members : {
+
+    addWidget : function( widget ) {
+      this._clientArea.add( widget );
+    },
+
     setBottomSpacingBounds : function( x, y, width, height ) {
       this._bottomSpacing.setLeft( x );
       this._bottomSpacing.setTop( y );
       this._bottomSpacing.setWidth( width );
       this._bottomSpacing.setHeight( height );
     },
-    
+
     showVScrollbar : function( show ) {
-      if( show ) {
-        this.setOverflow( qx.constant.Style.OVERFLOW_VERTICAL );
-      } else {
-        if( this._zeroScrolling.isCreated() ) {
-          this._zeroScrolling.scrollIntoView();
-        }
-        this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-      }  
-    }   
+      this.setScrollBarsVisible( false, show );
+      if( !show ) {
+        this.setVBarSelection( 0 );
+      }
+    },
+
+    setVScrollbarMax : function( value ) {
+      this._vertScrollBar.setMaximum( value );
+    }
+
   }
 } );

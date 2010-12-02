@@ -148,6 +148,8 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       // parent.add( widget );
       if( parent instanceof org.eclipse.swt.custom.ScrolledComposite ) {
         parent.setContent( widget );
+      } else if( parent instanceof org.eclipse.swt.widgets.ExpandBar ) {
+        parent.addWidget( widget );
       } else {
         widget.setParent( parent );
       }

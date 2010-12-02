@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expanditemkit;
 
@@ -47,7 +48,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_HEADER_HEIGHT,
                       new Integer( expandItem.getHeaderHeight() ) );
     IExpandBarAdapter expandBarAdapter = getExpandBarAdapter( expandItem.getParent() );
-    WidgetLCAUtil.preserveBounds( expandItem, 
+    WidgetLCAUtil.preserveBounds( expandItem,
                                   expandBarAdapter.getBounds( expandItem ) );
   }
 
@@ -79,7 +80,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( expandItem );
     Object[] args = new Object[]{ parent };
     writer.newWidget( "org.eclipse.swt.widgets.ExpandItem", args );
-    writer.call( parent, "add", new Object[]{ expandItem } );
+    writer.call( parent, "addWidget", new Object[]{ expandItem } );
     WidgetLCAUtil.writeCustomVariant( widget );
   }
 
