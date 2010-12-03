@@ -49,33 +49,33 @@ public class UICallBackServiceHandler implements IServiceHandler {
   // inner classes
 
   private static final class IdManager {
-    
+
     static IdManager getInstance() {
       return ( IdManager )SessionSingletonBase.getInstance( IdManager.class );
     }
-    
+
     private final Set ids;
     private final Object lock;
-    
+
     private IdManager() {
       ids = new HashSet();
       lock = new Object();
     }
-    
+
     int add( final String id ) {
       synchronized( lock ) {
         ids.add( id );
         return ids.size();
       }
     }
-    
+
     int remove( final String id ) {
       synchronized( lock ) {
         ids.remove( id );
         return ids.size();
       }
     }
-    
+
     boolean isEmpty() {
       synchronized( lock ) {
         return ids.isEmpty();
@@ -86,7 +86,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
   public void service() throws IOException, ServletException {
     ISessionStore sessionStore = RWT.getSessionStore();
     if(    !UICallBackManager.getInstance().blockCallBackRequest()
-        && ContextProvider.hasContext() 
+        && ContextProvider.hasContext()
         && sessionStore.isBound() )
     {
       writeResponse();
@@ -122,13 +122,13 @@ public class UICallBackServiceHandler implements IServiceHandler {
       UICallBackManager.getInstance().setActive( true );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
       HtmlResponseWriter writer = stateInfo.getResponseWriter();
-      writer.write( UICallBackServiceHandler.JS_SEND_CALLBACK_REQUEST );
+      writer.write( JS_SEND_CALLBACK_REQUEST );
     }
   }
 
   private static boolean needsActivation() {
     ISessionStore session = ContextProvider.getSession();
-    return    UICallBackServiceHandler.isUICallBackActive()
+    return    isUICallBackActive()
            && Boolean.TRUE == session.getAttribute( NEED_UI_CALLBACK_ACTIVATOR )
            && !UICallBackManager.getInstance().isCallBackRequestBlocked();
   }
