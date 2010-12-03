@@ -58,6 +58,8 @@ TreeColumn:hover {
     from( #f4f5f6 ),
     to( #e6e6e6 )
   );
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom:none;
 }
 

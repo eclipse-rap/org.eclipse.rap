@@ -41,12 +41,15 @@ TreeItem:selected:unfocused {
 
 TreeColumn {
   background-image: url( "theme/fancy/icons/table-column.png" );
+  color: #666666;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom:none;
   padding: 1px 2px;
 }
 
 TreeColumn:hover {
+  color: #666666;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-image: url( "theme/fancy/icons/table-column-hover.png" );
   border-bottom: none;
 }
