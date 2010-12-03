@@ -26,6 +26,7 @@ Button[PUSH] {
   );
   cursor: pointer;
   animation: hoverOut 500ms ease-out;
+  opacity: 1;
 }
 
 Button[TOGGLE] {
@@ -40,6 +41,7 @@ Button[TOGGLE] {
   );
   cursor: pointer;
   animation: hoverOut 500ms ease-out;
+  opacity: 1;
 }
 
 Button[BORDER] {
@@ -53,6 +55,7 @@ Button[BORDER] {
     to( #ffffff )
   );
   animation: hoverOut 500ms ease-out;
+  opacity: 1;
 }
 
 Button[TOGGLE]:selected {
@@ -63,6 +66,7 @@ Button[TOGGLE]:selected {
     color-stop( 70%, #e0e0e0 ),
     to( #b0b0b0 )
   );
+  opacity: 1;
 }
 
 Button[TOGGLE]:selected:hover {
@@ -72,6 +76,7 @@ Button[TOGGLE]:selected:hover {
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
   );
+  opacity: 1;
 }
 
 Button[PUSH]:hover,
@@ -83,6 +88,7 @@ Button[TOGGLE]:hover {
     color-stop( 52%, #e0e0e0 ),
     to( #cccccc )
   );
+  opacity: 1;
 }
 
 Button[PUSH]:pressed,
@@ -93,21 +99,27 @@ Button[TOGGLE]:pressed {
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
   );
+  opacity: 1;
 }
 
-Button[RADIO][BORDER],
-Button[CHECK][BORDER] {
+Button[CHECK],
+Button[CHECK][BORDER],
+Button[RADIO],
+Button[RADIO][BORDER] {
   background-image: none;
+  opacity: 1;
 }
 
 Button[PUSH]:disabled,
 Button[TOGGLE]:disabled {
   cursor: default;
+  opacity: 1;
 }
 
 Button[PUSH]:pressed,
 Button[TOGGLE]:pressed {
   padding: 4px 5px 2px 7px;
+  opacity: 1;
 }
 
 Button-FocusIndicator[PUSH],

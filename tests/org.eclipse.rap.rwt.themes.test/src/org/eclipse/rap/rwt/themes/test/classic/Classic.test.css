@@ -125,6 +125,7 @@ Button {
   spacing: 2px;
   cursor: default;
   animation: none;
+  opacity: 1;
 }
 
 Button[PUSH], Button[TOGGLE] {
@@ -132,38 +133,46 @@ Button[PUSH], Button[TOGGLE] {
   border: 1px outset;
   font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
   padding: 5px 6px;
+  opacity: 1;
 }
 
 Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
   border: 1px black;
   padding: 5px 6px;
+  opacity: 1;
 }
 
 Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
   border: 2px outset;
+  opacity: 1;
 }
 
 Button[PUSH]:hover, Button[TOGGLE]:hover {
   background-color: rgb( 251, 251, 254 );
+  opacity: 1;
 }
 
 Button[PUSH]:pressed, Button[TOGGLE]:pressed, Button[TOGGLE]:selected {
   border: 1px inset;
   padding: 4px 3px 2px 5px;
   animation: none;
+  opacity: 1;
 }
 
 Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
   background-color: rgb( 225, 225, 230 );
   padding: 5px 6px;
+  opacity: 1;
 }
 
 Button[PUSH][BORDER]:pressed, Button[TOGGLE][BORDER]:pressed {
   border: 2px inset;
+  opacity: 1;
 }
 
 Button[CHECK], Button[RADIO] {
   spacing: 4px;
+  opacity: 1;
 }
 
 Button-CheckIcon {

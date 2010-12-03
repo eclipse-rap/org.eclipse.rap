@@ -232,6 +232,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.cursor = tv.getCssCursor( "Button", "cursor" );
+      result.opacity = tv.getCssFloat( "Button", "opacity" );
       return result;
     }
   },
@@ -264,7 +265,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
         selectionIndicator : tv.getCssSizedImage( "Button-CheckIcon", 
                                                   "background-image" ),
-        cursor : tv.getCssCursor( "Button", "cursor" )
+        cursor : tv.getCssCursor( "Button", "cursor" ),
+        opacity : tv.getCssFloat( "Button", "opacity" )
       }
     }
   },
@@ -287,7 +289,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
         selectionIndicator : tv.getCssSizedImage( "Button-RadioIcon", 
                                                   "background-image" ),
-        cursor : tv.getCssCursor( "Button", "cursor" )
+        cursor : tv.getCssCursor( "Button", "cursor" ),
+        opacity : tv.getCssFloat( "Button", "opacity" )
       }
     }
   },
