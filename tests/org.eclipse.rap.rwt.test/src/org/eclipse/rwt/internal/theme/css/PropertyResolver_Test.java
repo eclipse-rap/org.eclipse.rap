@@ -90,6 +90,12 @@ public class PropertyResolver_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+    try {
+      PropertyResolver.readDimension( parseProperty( "2" ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   public void testDimension_ZeroWithoutUnit() throws Exception {
@@ -125,6 +131,13 @@ public class PropertyResolver_Test extends TestCase {
     LexicalUnit illegalUnit2 = parseProperty( "2em" );
     try {
       PropertyResolver.readBoxDimensions( illegalUnit2 );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    LexicalUnit illegalUnit3 = parseProperty( "2 3px 4px 5px" );
+    try {
+      PropertyResolver.readBoxDimensions( illegalUnit3 );
       fail();
     } catch( IllegalArgumentException e ) {
       // expected
@@ -183,6 +196,13 @@ public class PropertyResolver_Test extends TestCase {
       // expected
     }
     input = "1px red blue green";
+    try {
+      PropertyResolver.readBorder( parseProperty( input ) );
+      fail();
+    } catch( Exception e ) {
+      // expected
+    }
+    input = "1 solid blue";
     try {
       PropertyResolver.readBorder( parseProperty( input ) );
       fail();
@@ -300,6 +320,12 @@ public class PropertyResolver_Test extends TestCase {
     }
     try {
       PropertyResolver.readFont( parseProperty( "Helvetica 8px" ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      PropertyResolver.readFont( parseProperty( "9 Helvetica" ) );
       fail();
     } catch( IllegalArgumentException e ) {
       // expected
