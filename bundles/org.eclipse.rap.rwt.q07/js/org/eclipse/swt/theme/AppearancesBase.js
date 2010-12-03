@@ -923,7 +923,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.cursor = "default";
       result.spacing = 2;
-      result.textColor = tv.getCssColor( "*", "color" );
+      result.textColor = tv.getCssColor( "TreeColumn", "color" );
+      result.font = tv.getCssFont( "TreeColumn", "font" );
       result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
       result.backgroundImage = tv.getCssImage( "TreeColumn",
                                                "background-image" );

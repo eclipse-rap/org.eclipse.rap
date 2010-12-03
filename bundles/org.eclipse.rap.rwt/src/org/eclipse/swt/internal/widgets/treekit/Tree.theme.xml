@@ -64,6 +64,12 @@
 
     <element name="TreeColumn"
         description="Column header of Tree controls">
+        
+      <property name="color"
+          description="Text color for tree column headers" />
+
+      <property name="font"
+          description="Font for tree column headers" />
 
       <property name="background-color"
           description="Background color for tree column headers" />

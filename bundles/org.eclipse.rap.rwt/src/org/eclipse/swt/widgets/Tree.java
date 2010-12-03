@@ -1227,7 +1227,10 @@ public class Tree extends Composite {
     checkWidget();
     int result = 0;
     if( headerVisible ) {
-      int textHeight = Graphics.getCharHeight( getFont() );
+      TreeThemeAdapter themeAdapter
+        = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
+      Font headerFont = themeAdapter.getHeaderFont( this );
+      int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
         Image image = getColumn( i ).getImage();
@@ -1237,8 +1240,6 @@ public class Tree extends Composite {
         }
       }
       result = Math.max( textHeight, imageHeight );
-      TreeThemeAdapter themeAdapter
-        = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
       result += themeAdapter.getHeaderBorderBottomWidth( this );
       result += themeAdapter.getHeaderPadding( this ).height;
     }

@@ -9,8 +9,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 
@@ -39,6 +38,10 @@ public final class TreeThemeAdapter extends ControlThemeAdapter {
 
   public Rectangle getHeaderPadding( final Control control ) {
     return getCssBoxDimensions( "TreeColumn", "padding", control );
+  }
+
+  public Font getHeaderFont( final Control control ) {
+    return getCssFont( "TreeColumn", "font", control );
   }
 
   public int getIndentionWidth( Control control ) {
