@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -26,10 +27,10 @@ public final class UICallBackManager {
     Object inst = SessionSingletonBase.getInstance( UICallBackManager.class );
     return ( UICallBackManager )inst;
   }
-  
-  // synchronziation-object to control access to the runnables List
-  final Object lock;
-  // contains a reference to the callback request thread that is currently 
+
+  // synchronization object to control access to the runnables List
+  private final Object lock;
+  // contains a reference to the callback request thread that is currently
   // blocked.
   private final Set blockedCallBackRequests;
   // Flag that indicates whether a request is processed. In that case no
@@ -37,12 +38,12 @@ public final class UICallBackManager {
   private boolean uiThreadRunning;
   // Flag that indicates that a notification was sent to the client. If the new
   // callback thread returns earlier than the UI Thread the callback thread
-  // must be blocked although the runnbles are not empty
+  // must be blocked although the runnables are not empty
   private boolean waitForUIThread;
   // Flag that indicates whether the UICallBack mechanism is active. If not
   // no callback thread must be blocked.
   private boolean active;
-  
+
   private UICallBackManager() {
     lock = new Object();
     blockedCallBackRequests = new HashSet();
@@ -50,20 +51,19 @@ public final class UICallBackManager {
     waitForUIThread = false;
     active = false;
   }
-  
+
   boolean isCallBackRequestBlocked() {
     synchronized( lock ) {
       return !blockedCallBackRequests.isEmpty();
     }
   }
-  
 
   public void setActive( final boolean active ) {
     synchronized( lock ) {
       this.active = active;
     }
   }
-  
+
   public void sendUICallBack() {
     synchronized( lock ) {
       if( !uiThreadRunning || !active ) {
@@ -77,7 +77,7 @@ public final class UICallBackManager {
       lock.notifyAll();
     }
   }
-  
+
   void notifyUIThreadStart() {
     synchronized( lock ) {
       uiThreadRunning = true;
