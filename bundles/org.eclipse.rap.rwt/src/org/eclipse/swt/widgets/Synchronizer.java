@@ -11,6 +11,8 @@
 package org.eclipse.swt.widgets;
 
 
+import org.eclipse.rwt.internal.lifecycle.UICallBackManager;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.Compatibility;
@@ -68,6 +70,15 @@ void addLast (RunnableLock lock) {
 			messages = newMessages;
 		}
 		messages [messageCount++] = lock;
+// RAP [rst] Notify UICallBack mechanism when runnable was added to empty queue
+		if( messageCount == 1 ) {
+		  UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+		    public void run() {
+		      UICallBackManager.getInstance().setHasRunnables( true );
+		    }
+		  } );
+		}
+// END RAP
 		wake = messageCount == 1;
 	}
 	if (wake) display.wakeThread ();
@@ -117,7 +128,16 @@ RunnableLock removeFirst () {
 		if (messageCount == 0) {
 			if (messages.length > MESSAGE_LIMIT) messages = null;
 		}
-		return lock;
+// RAP [rst] Notify UICallBack mechanism when last runnable has been removed
+		if( messageCount == 0 ) {
+		  UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+		    public void run() {
+		      UICallBackManager.getInstance().setHasRunnables( false );
+		    }
+		  } );
+		}
+// END RAP
+    return lock;
 	}
 }
 

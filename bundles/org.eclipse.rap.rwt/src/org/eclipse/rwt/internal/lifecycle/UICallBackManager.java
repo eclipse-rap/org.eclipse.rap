@@ -16,8 +16,6 @@ import java.util.*;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.*;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.widgets.Display;
 
 
 public final class UICallBackManager {
@@ -27,7 +25,7 @@ public final class UICallBackManager {
     return ( UICallBackManager )inst;
   }
   
-  // synchronziation-object to control access to the runnables List
+  // synchronization object to control access to the member fields
   final Object lock;
   // contains a reference to the callback request thread that is currently 
   // blocked.
@@ -37,11 +35,13 @@ public final class UICallBackManager {
   private boolean uiThreadRunning;
   // Flag that indicates that a notification was sent to the client. If the new
   // callback thread returns earlier than the UI Thread the callback thread
-  // must be blocked although the runnbles are not empty
+  // must be blocked although the runnables are not empty
   private boolean waitForUIThread;
   // Flag that indicates whether the UICallBack mechanism is active. If not
   // no callback thread must be blocked.
   private boolean active;
+  // indicates whether the display has runnables to execute
+  private boolean hasRunnables;
   
   private UICallBackManager() {
     lock = new Object();
@@ -77,7 +77,13 @@ public final class UICallBackManager {
       lock.notifyAll();
     }
   }
-  
+
+  public void setHasRunnables( final boolean hasRunnables ) {
+    synchronized( lock ) {
+      this.hasRunnables = hasRunnables;
+    }
+  }
+
   void notifyUIThreadStart() {
     synchronized( lock ) {
       uiThreadRunning = true;
@@ -88,23 +94,18 @@ public final class UICallBackManager {
   void notifyUIThreadEnd() {
     synchronized( lock ) {
       uiThreadRunning = false;
-      if( hasRunnables() ) {
+      if( hasRunnables ) {
         sendUICallBack();
       }
     }
   }
 
   boolean hasRunnables() {
-    boolean result = false;
-    Display display = RWTLifeCycle.getSessionDisplay();
-    if( display != null && !display.isDisposed() ) {
-      IDisplayAdapter adapter
-        = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
-      result = adapter.getAsyncRunnablesCount() > 0;
+    synchronized( lock ) {
+      return hasRunnables;
     }
-    return result;
   }
-  
+
   boolean blockCallBackRequest() {
     boolean result = false;
     synchronized( lock ) {
@@ -140,6 +141,6 @@ public final class UICallBackManager {
            && blockedCallBackRequests.isEmpty()
            && (    waitForUIThread 
                 || uiThreadRunning 
-                || !hasRunnables() );
+                || !hasRunnables );
   }
 }
