@@ -709,7 +709,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     include : "text-field",
     style : function( states ) {
       return {
-        padding : states.rwt_BORDER ? [ 0, 0, 0, 4 ] : [ 0, 0, 0, 3 ]
+        padding : [ 0, 0, 0, 3 ]
       };
     }
   },
