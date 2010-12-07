@@ -878,6 +878,40 @@ public class Display extends Device implements Adaptable {
     }
   }
 
+  //////////////////////
+  // Information methods
+  
+  /**
+   * Returns the display which the given thread is the
+   * user-interface thread for, or null if the given thread
+   * is not a user-interface thread for any display.  Specifying
+   * <code>null</code> as the thread will return <code>null</code>
+   * for the display.
+   *
+   * @param thread the user-interface thread
+   * @return the display for the given thread
+   *
+   * @since 1.3
+   */
+  public static Display findDisplay( final Thread thread ) {
+    synchronized( Device.class ) {
+      Display result = null;
+      for( int i = 0; result == null && i < displays.length; i++ ) {
+        WeakReference current = displays[ i ];
+        if( current != null ) {
+          Display display = ( Display )current.get();
+          if(    display != null
+              && !display.isDisposed()
+              && display.thread == thread )
+          {
+            result = display;
+          }
+        }
+      }
+      return result;
+    }
+  }
+
   /**
    * Sets the synchronizer used by the display to be
    * the argument, which can not be null.
@@ -1173,6 +1207,21 @@ public class Display extends Device implements Adaptable {
 
   //////////////////////
   // Information methods
+
+  /**
+   * Returns the single instance of the system tray or null when there is no
+   * system tray available for the platform.
+   *
+   * @return the system tray or <code>null</code>
+   * @exception SWTException <ul>
+   *              <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   *              </ul>
+   * @since 1.4
+   */
+  public Tray getSystemTray() {
+    checkDevice();
+    return null;
+  }
 
   /**
    * Returns the matching standard color for the given
@@ -1609,20 +1658,6 @@ public class Display extends Device implements Adaptable {
     }
   }
 
-  /**
-   * Does whatever display specific cleanup is required, and then uses the code
-   * in <code>SWTError.error</code> to handle the error.
-   *
-   * @param code the descriptive error code
-   * @see SWT#error(int)
-   */
-  void error( final int code ) {
-    SWT.error( code );
-  }
-
-  //////////////////
-  // Deferred layout
-
   void addLayoutDeferred( final Composite comp ) {
     if( layoutDeferred == null ) {
       layoutDeferred = new Composite[ 64 ];
@@ -1910,8 +1945,7 @@ public class Display extends Device implements Adaptable {
    */
   public Monitor[] getMonitors() {
     checkDevice();
-    Monitor[] result = new Monitor[] { monitor };
-    return result;
+    return new Monitor[] { monitor };
   }
 
   /**
@@ -1926,37 +1960,8 @@ public class Display extends Device implements Adaptable {
     return monitor;
   }
 
-  /**
-   * Forces all outstanding paint requests for the display
-   * to be processed before this method returns.
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
-   * </ul>
-   *
-   * @see Control#update()
-   *
-   * @since 1.3
-   */
-  public void update() {
-    checkDevice();
-  }
-
-  /**
-   * Causes the system hardware to emit a short sound
-   * (if it supports this capability).
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
-   * </ul>
-   *
-   * @since 1.3
-   */
-  public void beep() {
-    checkDevice();
-  }
+  ////////////////////////
+  // AppName- and version
 
   /**
    * Returns the application name.
@@ -2014,40 +2019,41 @@ public class Display extends Device implements Adaptable {
   }
 
   /**
-   * Returns the display which the given thread is the
-   * user-interface thread for, or null if the given thread
-   * is not a user-interface thread for any display.  Specifying
-   * <code>null</code> as the thread will return <code>null</code>
-   * for the display.
+   * Forces all outstanding paint requests for the display
+   * to be processed before this method returns.
    *
-   * @param thread the user-interface thread
-   * @return the display for the given thread
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see Control#update()
    *
    * @since 1.3
    */
-  public static Display findDisplay( final Thread thread ) {
-    synchronized( Device.class ) {
-      Display result = null;
-      for( int i = 0; result == null && i < displays.length; i++ ) {
-        WeakReference current = displays[ i ];
-        if( current != null ) {
-          Display display = ( Display )current.get();
-          if(    display != null
-              && !display.isDisposed()
-              && display.thread == thread )
-          {
-            result = display;
-          }
-        }
-      }
-      return result;
-    }
+  public void update() {
+    checkDevice();
+  }
+
+  /**
+   * Causes the system hardware to emit a short sound
+   * (if it supports this capability).
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @since 1.3
+   */
+  public void beep() {
+    checkDevice();
   }
 
   private void register() {
     synchronized( Device.class ) {
       boolean registered = false;
-      for( int i = 0; i < displays.length && !registered; i++ ) {
+      for( int i = 0; !registered && i < displays.length; i++ ) {
         if( canDisplayRefBeReplaced( displays[ i ] ) ) {
           displays[ i ] = new WeakReference( this );
           registered = true;
@@ -2111,6 +2117,17 @@ public class Display extends Device implements Adaptable {
 
   //////////////////
   // Helping methods
+
+  /**
+   * Does whatever display specific cleanup is required, and then uses the code
+   * in <code>SWTError.error</code> to handle the error.
+   *
+   * @param code the descriptive error code
+   * @see SWT#error(int)
+   */
+  void error( final int code ) {
+    SWT.error( code );
+  }
 
   private Rectangle readInitialBounds() {
     HttpServletRequest request = ContextProvider.getRequest();
@@ -2282,20 +2299,5 @@ public class Display extends Device implements Adaptable {
     public int getAsyncRunnablesCount() {
       return Display.this.synchronizer.getMessageCount();
     }
-  }
-
-  /**
-   * Returns the single instance of the system tray or null when there is no
-   * system tray available for the platform.
-   *
-   * @return the system tray or <code>null</code>
-   * @exception SWTException <ul>
-   *              <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
-   *              </ul>
-   * @since 1.4
-   */
-  public Tray getSystemTray() {
-    checkDevice();
-    return null;
   }
 }
