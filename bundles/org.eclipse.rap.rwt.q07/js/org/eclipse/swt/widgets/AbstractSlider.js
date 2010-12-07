@@ -105,6 +105,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       this.addEventListener( "mouseup", this._onMouseUpOut, this );
       this.addEventListener( "mouseout",  this._onMouseUpOut, this );
       this.addEventListener( "mousemove", this._onLineMouseMove, this );
+      this.addEventListener( "mousewheel", this._onMouseWheel, this );
       this._thumb.addEventListener( "mousedown", this._onThumbMouseDown, this );
       this._thumb.addEventListener( "mousemove", this._onThumbMouseMove, this );
       this._thumb.addEventListener( "mouseup", this._onThumbMouseUp, this );
@@ -130,6 +131,21 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
 
     _onChangeEnabled : function( event ) {
       this._thumb.setVisibility( event.getValue() );
+    },
+    
+    _onMouseWheel : function( event ) {
+      event.preventDefault();
+      event.stopPropagation();
+      var data = event.getWheelDelta();
+      var change = ( data / Math.abs( data ) ) * this._increment;
+      var sel = this._selection - change;
+      if( sel < this._minimum ) {
+        sel = this._minimum;
+      } 
+      if( sel > ( this._maximum - this._thumbWidth ) ) {
+        sel = this._maximum - this._thumbWidth;
+      } 
+      this._setSelection( sel );
     },
 
     _onLineMouseDown : function( event ) {

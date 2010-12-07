@@ -26,7 +26,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this._maxButton.setAppearance( "slider-max-button" );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
-    this.addEventListener( "mousewheel", this._onMouseWheel, this );
     this._setStates();
   },
 
@@ -167,7 +166,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
             evt.stopPropagation();
             break;
         }
-        
         if( sel != undefined ) {
           if( sel < this._minimum ) {
             sel = this._minimum;
@@ -189,17 +187,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     
     _onMouseWheel : function( evt ) {
       if( this.getFocused() ) {
-      evt.preventDefault();
-      evt.stopPropagation();
-        var change = Math.round( evt.getWheelDelta() );
-        var sel = this._selection - change;
-        if( sel < this._minimum ) {
-          sel = this._minimum;
-        } 
-        if( sel > ( this._maximum - this._thumbWidth ) ) {
-          sel = this._maximum - this._thumbWidth;
-        } 
-        this.setSelection( sel );
+        this.base( arguments, evt );
         if( this._readyToSendChanges ) {
           this._readyToSendChanges = false;
           // Send changes
@@ -208,7 +196,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
       }
     },
 
-    
+    // TODO [tb] : refactor to use only this for scheduling
     _scheduleSendChanges : function() {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( !this._requestScheduled ) {

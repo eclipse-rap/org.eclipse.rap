@@ -459,12 +459,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( true );
       assertEquals( 0, slider._selection );
+      testUtil.fakeWheel( slider, 1 );
+      assertEquals( 0, slider._selection );
       testUtil.fakeWheel( slider, -1 );
       assertEquals( 0, slider._selection );
+      testUtil.fakeWheel( slider, -1 );
+      assertEquals( 0, slider._selection );
+      slider.focus();
       testUtil.fakeWheel( slider, 1 );
       assertEquals( 0, slider._selection );
-      testUtil.fakeWheel( slider, 1 );
-      assertEquals( 0, slider._selection );
+      testUtil.fakeWheel( slider, -1 );
+      assertEquals( 5, slider._selection );
+      testUtil.fakeWheel( slider, -1 );
+      assertEquals( 10, slider._selection );
       slider.destroy();
     },
   

@@ -401,6 +401,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 0, bar.getValue() );
       bar.destroy();
     },
+    
+    testMouseWheel : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      bar = this._createScrollBar( false, false );
+      assertEquals( 0, bar.getValue() );
+      testUtil.fakeWheel( bar, 1 );
+      assertEquals( 0, bar.getValue() );
+      testUtil.fakeWheel( bar, -1 );
+      assertEquals( 20, bar._selection );
+      testUtil.fakeWheel( bar, -1 );
+      assertEquals( 40, bar._selection );
+      bar.destroy();
+    },
 
 
     // test div increment

@@ -275,7 +275,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
             // Fix MSHTML Doubleclick, should be after a normal click event, 
              // like Mozilla does this
             this._onmouseevent_post(vDomEvent, "click", vDomTarget);
-          }  
+          }
           switch( vType ) {
             case "mousedown":
             case "mouseup":
