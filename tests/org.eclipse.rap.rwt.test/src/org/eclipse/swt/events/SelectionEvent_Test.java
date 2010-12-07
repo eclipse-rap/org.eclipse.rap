@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.events;
@@ -89,6 +90,38 @@ public class SelectionEvent_Test extends TestCase {
                                                item,
                                                SelectionEvent.WIDGET_SELECTED );
     event.processEvent();
+    assertEquals( WIDGET_SELECTED, log );
+  }
+
+  public void testSelectionEvent_DataField() {
+    final Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    final Button button = new Button( shell, SWT.PUSH );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        assertSame( button, event.getSource() );
+        assertSame( display, event.display );
+        assertNull( event.item );
+        assertEquals( 10, event.x );
+        assertEquals( 20, event.y );
+        assertEquals( 30, event.width );
+        assertEquals( 40, event.height );
+        assertEquals( 3, event.stateMask );
+        assertEquals( true, event.doit );
+        assertEquals( "data", event.data );
+        log += WIDGET_SELECTED;
+      }
+    } );
+    Event event = new Event();
+    event.widget = button;
+    event.x = 10;
+    event.y = 20;
+    event.width = 30;
+    event.height = 40;
+    event.stateMask = 3;
+    event.doit = true;
+    event.data = "data";
+    button.notifyListeners( SWT.Selection, event );
     assertEquals( WIDGET_SELECTED, log );
   }
 }
