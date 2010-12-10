@@ -124,66 +124,87 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     },
 
     createFunction : function( name ) {
-      var window = this.getContentWindow();
-      if( window == null || !this.isLoaded() ) {
+      var win = this.getContentWindow();
+      if( win == null || !this.isLoaded() ) {
         qx.client.Timer.once( function() {
           this.createFunction( name );
         }, this, 100 );
       } else {
-        var req = org.eclipse.swt.Request.getInstance();
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
-        var that = this;
         try {
-          window[ name ] = function() {
-            var result;
-            var error;
-            if( that.getExecutedFunctionPending() ) {
-              error = "Unable to execute browser function \""
-                    + name
-                    + "\". Another browser function is still pending."
-              throw new Error( error );
-            }
-            var args = that.objectToString( arguments );
-            req.addParameter( id + ".executeFunction", name );
-            req.addParameter( id + ".executeArguments", args );
-            that.setExecutedFunctionResult( null );
-            that.setExecutedFunctionError( null );
-            that.setExecutedFunctionPending( true );
-            that.setAsynchronousResult( false );
-            req.sendSyncronous();
-            if( that.getExecutedFunctionPending() ) {
-              that.setAsynchronousResult( true );
-	          } else {
-	            error = that.getExecutedFunctionError();
-              if( error != null ) {
-                throw new Error( error );
-              }
-              result = that.getExecutedFunctionResult();
-	          }
-            return result;
-          }
+          this._createFunctionImpl( name );
+          this._createFunctionWrapper( name );
         } catch( e ) {
           this.warn( "Unable to create function: " + name + " error: " + e );
         }
       }
     },
 
-    destroyFunction : function( name ) {
-      var window = this.getContentWindow();
-      if( window != null ) {
-        try {
-          if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-            var script = "window." + name + " = undefined";
-            window.execScript( script , "JScript" );
+    _createFunctionImpl : function( name ) {
+      var win = this.getContentWindow();
+      var req = org.eclipse.swt.Request.getInstance();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var that = this;
+      win[ name + "_impl" ] = function() {
+        var result = {};
+        if( that.getExecutedFunctionPending() ) {
+          result.error = "Unable to execute browser function \""
+                       + name
+                       + "\". Another browser function is still pending.";
+        } else {
+          var args = that.objectToString( arguments );
+          req.addParameter( id + ".executeFunction", name );
+          req.addParameter( id + ".executeArguments", args );
+          that.setExecutedFunctionResult( null );
+          that.setExecutedFunctionError( null );
+          that.setExecutedFunctionPending( true );
+          that.setAsynchronousResult( false );
+          req.sendSyncronous();
+          if( that.getExecutedFunctionPending() ) {
+            that.setAsynchronousResult( true );
           } else {
-            var script = "delete window." +  name;
-            window.eval( script );
+            var error = that.getExecutedFunctionError();
+            if( error != null ) {
+              result.error = error;
+            } else {
+              result.result = that.getExecutedFunctionResult();
+            }
           }
-        } catch( e ) {
-          this.warn( "Unable to destroy function: " + name + " error: " + e );
         }
+        return result;
       }
+    },
+
+    // [if] This wrapper function is a workaround for bug 332313
+    _createFunctionWrapper : function( name ) {
+      var script = [];
+      script.push( "function " + name + "(){" );
+      script.push( "  var result = " + name + "_impl.apply( window, arguments );" );
+      script.push( "  if( result.error ) {" );
+      script.push( "    throw new Error( result.error );" );
+      script.push( "  }" );
+      script.push( "  return result.result;" );
+      script.push( "}");
+      this._eval( script.join( "" ) );
+    },
+
+    destroyFunction : function( name ) {
+      var win = this.getContentWindow();
+      if( win != null ) {
+	      try {
+	        var script = [];
+	        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+	          script.push( "window." + name + " = undefined;" );
+	          script.push( "window." + name + "_impl = undefined;" );
+	        } else {
+	          script.push( "delete window." +  name + ";" );
+	          script.push( "delete window." +  name + "_impl;" );
+	        }
+	        this._eval( script.join( "" ) );
+	      } catch( e ) {
+	        this.warn( "Unable to destroy function: " + name + " error: " + e );
+	      }
+	    }
     },
 
     setFunctionResult : function( name, result, error ) {
