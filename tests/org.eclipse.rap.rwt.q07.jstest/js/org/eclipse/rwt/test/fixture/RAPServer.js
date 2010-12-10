@@ -91,4 +91,4 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.RAPServer", {
     }
    
   }
-});
+} );

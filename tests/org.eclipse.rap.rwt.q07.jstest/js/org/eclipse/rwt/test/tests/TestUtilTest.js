@@ -563,8 +563,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       },
       function( store ) {
         assertEquals( "no more delay", 2, store.x );
-      }  
+      }
     ],
+    
+    testScheduleResponse : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.initRequestLog();
+      var x = 1;
+      testUtil.scheduleResponse( function(){
+        x = 2;
+      } );
+      org.eclipse.swt.Request.getInstance().send();        
+      assertEquals( 2, x );
+      x = 1;
+      org.eclipse.swt.Request.getInstance().send();        
+      assertEquals( 1, x );
+    },
     
     /////////
     // helper
