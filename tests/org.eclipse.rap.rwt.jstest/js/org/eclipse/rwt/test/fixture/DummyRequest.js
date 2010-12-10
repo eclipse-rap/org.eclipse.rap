@@ -307,7 +307,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.DummyRequest", {
     
     _sendSync : function( request ) {
       request._onsending( new qx.event.type.Event( "sending" ) );
-      org.eclipse.rwt.test.fixture.RAPServer.getInstance().receiveSync( request );
+      org.eclipse.rwt.test.fixture.RAPServer.getInstance().receive( request );
     },
     
     receiveSync : function( request ) {

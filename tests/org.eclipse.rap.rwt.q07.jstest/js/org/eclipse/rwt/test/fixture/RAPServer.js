@@ -75,7 +75,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.RAPServer", {
       if( request.getAsynchronous() ){
         org.eclipse.rwt.test.fixture.DummyRequest.receiveAsync( request );
       }else{
-        org.eclipse.rwt.test.fixture.DummyRequest.receivceSync( request );
+        org.eclipse.rwt.test.fixture.DummyRequest.receiveSync( request );
       }
     },
     
