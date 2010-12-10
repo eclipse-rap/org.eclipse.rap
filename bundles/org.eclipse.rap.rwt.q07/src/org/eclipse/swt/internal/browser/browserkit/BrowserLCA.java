@@ -15,6 +15,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -152,13 +153,32 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static void writeExecute( final Browser browser ) throws IOException {
+  private static void writeExecute( final Browser browser ) {
     IBrowserAdapter adapter = getAdapter( browser );
-    String executeScript = adapter.getExecuteScript();
+    final String executeScript = adapter.getExecuteScript();
     boolean executePending = adapter.getExecutePending();
     if( executeScript != null && !executePending ) {
-      JSWriter writer = JSWriter.getWriterFor( browser );
-      writer.call( "execute", new Object[] { executeScript } );
+      // [if] Put the execution to the end of the rendered script. This is very
+      // important when Browser#execute is called from within a BrowserFunction,
+      // because than, we have a synchronous requests.
+      LifeCycleFactory.getLifeCycle().addPhaseListener( new PhaseListener() {
+        private static final long serialVersionUID = 1L;
+        public void beforePhase( final PhaseEvent event ) {
+        }
+        public void afterPhase( final PhaseEvent event ) {
+          try {
+            JSWriter writer = JSWriter.getWriterFor( browser );
+            writer.call( "execute", new Object[] { executeScript } );
+          } catch( IOException e ) {
+            throw new RuntimeException( e );
+          } finally {
+            LifeCycleFactory.getLifeCycle().removePhaseListener( this );
+          }
+        }
+        public PhaseId getPhaseId() {
+          return PhaseId.RENDER;
+        }
+      } );
       adapter.setExecutePending( true );
     }
   }
@@ -248,12 +268,12 @@ public final class BrowserLCA extends AbstractWidgetLCA {
           ProcessActionRunner.add( new Runnable() {
             public void run() {
               try {
-                setExecutedFunctionName( browser, current.getName() );
                 Object executedFunctionResult = current.function( args );
                 setExecutedFunctionResult( browser, executedFunctionResult );
               } catch( Exception e ) {
                 setExecutedFunctionError( browser, e.getMessage() );
               }
+              setExecutedFunctionName( browser, current.getName() );
             }
           } );
           found = true;
@@ -267,9 +287,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( browser );
-    String function
+    String name
       = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_NAME + id );
-    if( function != null ) {
+    if( name != null ) {
       Object result = stateInfo.getAttribute( EXECUTED_FUNCTION_RESULT + id );
       if( result != null ) {
         result = new JSVar( toJson( result, true ) );
@@ -277,7 +297,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       String error
         = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_ERROR + id );
       JSWriter writer = JSWriter.getWriterFor( browser );
-      writer.call( "setFunctionResult", new Object[]{ result, error } );
+      writer.call( "setFunctionResult", new Object[] { name, result, error } );
     }
   }
 

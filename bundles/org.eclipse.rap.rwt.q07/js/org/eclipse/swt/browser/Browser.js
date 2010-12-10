@@ -27,11 +27,15 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
   },
   
   properties : {
+  
+    asynchronousResult : {
+      check : "Boolean",
+      init : false
+    },
 
-    executedFunctionName : {
-      check : "String",
-      nullable : true,
-      init : null
+    executedFunctionPending : {
+      check : "Boolean",
+      init : false
     },
     
     executedFunctionResult : {
@@ -75,13 +79,18 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         result = this._parseEvalResult( this._eval( script ) );
       } catch( e ) {
         success = false;
+        this.warn( "Browser execute failed: " + e );
       }
       var req = org.eclipse.swt.Request.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
       req.addParameter( id + ".executeResult", success );
       req.addParameter( id + ".evaluateResult", result );
-      req.send();
+      if( this.getExecutedFunctionPending() ) {
+        req.sendSyncronous();
+      } else {
+        req.send();
+      }
     },
     
     _eval : function( script ) {
@@ -127,18 +136,32 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         var that = this;
         try {
           window[ name ] = function() {
+            var result;
+            var error;
+            if( that.getExecutedFunctionPending() ) {
+              error = "Unable to execute browser function \""
+                    + name
+                    + "\". Another browser function is still pending."
+              throw new Error( error );
+            }
             var args = that.objectToString( arguments );
             req.addParameter( id + ".executeFunction", name );
             req.addParameter( id + ".executeArguments", args );
-            that.setExecutedFunctionName( name );
             that.setExecutedFunctionResult( null );
             that.setExecutedFunctionError( null );
-            req.sendSyncronous();            
-            var error = that.getExecutedFunctionError();
-            if( error != null ) {
-              throw new Error( error );
-            }
-            return that.getExecutedFunctionResult();
+            that.setExecutedFunctionPending( true );
+            that.setAsynchronousResult( false );
+            req.sendSyncronous();
+            if( that.getExecutedFunctionPending() ) {
+              that.setAsynchronousResult( true );
+	          } else {
+	            error = that.getExecutedFunctionError();
+              if( error != null ) {
+                throw new Error( error );
+              }
+              result = that.getExecutedFunctionResult();
+	          }
+            return result;
           }
         } catch( e ) {
           this.warn( "Unable to create function: " + name + " error: " + e );
@@ -163,9 +186,10 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       }
     },
 
-    setFunctionResult : function( result, error ) {      
+    setFunctionResult : function( name, result, error ) {
       this.setExecutedFunctionResult( result );
       this.setExecutedFunctionError( error );
+      this.setExecutedFunctionPending( false );
     },
 
     objectToString : function( object ) {
