@@ -339,9 +339,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
           var content
             = "<html><head><title>Error Page</title></head><body>"
             + "<p>Could not evaluate javascript response:</p><pre>"
-            + ex
-            + "\n\n"
-            + text
+            + this._gatherErrorInfo( text, ex )
             + "</pre></body></html>";
           this._writeErrorPage( content );
           errorOccured = true;
@@ -352,6 +350,28 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
       // [if] Dispose the only finished transport - see bug 301261, 317616
       exchange.dispose();
+    },
+    
+    _gatherErrorInfo : function( text, error ) {
+      var result = [];
+      result.push( "Error: " + error + "\n" );
+      result.push( "Script: " + text );
+      try{
+        if( error instanceof Error ) {
+          for( var key in error ) {
+            result.push( key + ": " + error[ key ] );
+          }
+        }
+        result.push( "Debug: " + qx.core.Variant.get( "qx.debug" ) );
+        result.push( "Request: " + this._currentRequest.getData() );
+        var inFlush = qx.ui.core.Widget._inFlushGlobalQueues;
+        if( inFlush ) {
+          result.push( "Phase: " + qx.ui.core.Widget._flushGlobalQueuesPhase );
+        }
+      } catch( ex ) {
+        // ensure we get a result no matter what
+      }
+      return result.join( "\n  " );
     },
 
     ///////////////////////////////
