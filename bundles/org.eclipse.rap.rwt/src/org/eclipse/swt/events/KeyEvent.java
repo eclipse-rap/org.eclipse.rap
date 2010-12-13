@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -29,20 +30,20 @@ import org.eclipse.swt.widgets.Event;
  * to add traversal listeners for these controls, unless you want to override
  * the default traversal.
  * </p>
- * 
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
- * this class are <em>not</em> part of the RWT public API. They are marked 
- * public only so that they can be shared within the packages provided by RWT. 
+ *
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
+ * this class are <em>not</em> part of the RWT public API. They are marked
+ * public only so that they can be shared within the packages provided by RWT.
  * They should never be accessed from application code.
  * </p>
- * 
+ *
  * @see KeyListener
  * @see TraverseListener
- * 
+ *
  * @since 1.2
  */
 public class KeyEvent extends TypedEvent {
-  
+
   private static final long serialVersionUID = 1L;
 
   public static final int KEY_PRESSED = SWT.KeyDown;
@@ -60,7 +61,7 @@ public class KeyEvent extends TypedEvent {
    * correct.
    */
   public char character;
-  
+
   /**
    * the key code of the key that was typed, as defined by the key code
    * constants in class <code>SWT</code>. When the character field of the event
@@ -68,19 +69,19 @@ public class KeyEvent extends TypedEvent {
    * character. For example, typing Ctrl+M or Return both result in the
    * character '\r' but the keyCode field will also contain '\r' when Return was
    * typed.
-   * 
+   *
    * @see org.eclipse.swt.SWT
    */
   public int keyCode;
-  
+
   /**
    * the state of the keyboard modifier keys at the time the event was
    * generated, as defined by the key code constants in class <code>SWT</code>.
-   * 
+   *
    * @see org.eclipse.swt.SWT
    */
   public int stateMask;
-  
+
   /**
    * A flag indicating whether the operation should be allowed. Setting this
    * field to <code>false</code> will cancel the operation.
@@ -90,17 +91,17 @@ public class KeyEvent extends TypedEvent {
   /**
    * Constructs a new instance of this class based on the information in the
    * given untyped event.
-   * 
+   *
    * @param event the untyped event containing the information
    */
   public KeyEvent( final Event event ) {
-    super( event.widget, event.type );
+    super( event );
     this.character = event.character;
     this.keyCode = event.keyCode;
     this.stateMask = event.stateMask;
     this.doit = event.doit;
   }
-  
+
   public KeyEvent( final Control source, final int id ) {
     super( source, id );
     doit = true;
@@ -118,11 +119,11 @@ public class KeyEvent extends TypedEvent {
         throw new IllegalStateException( "Invalid event handler type." );
     }
   }
-  
+
   protected Class getListenerType() {
     return LISTENER;
   }
-  
+
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
@@ -130,7 +131,7 @@ public class KeyEvent extends TypedEvent {
   /**
    * Returns a string containing a concise, human-readable description of the
    * receiver.
-   * 
+   *
    * @return a string representation of the event
    */
   public String toString() {
@@ -154,12 +155,12 @@ public class KeyEvent extends TypedEvent {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable, 
+  public static void removeListener( final Adaptable adaptable,
                                      final KeyListener listener )
   {
     removeListener( adaptable, LISTENER, listener );
   }
-  
+
   public static boolean hasListener( final Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }

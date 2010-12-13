@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.events;
@@ -22,12 +23,12 @@ import org.eclipse.swt.widgets.Event;
  * Instances of this class are sent as a result of
  * operations being performed on shells.
  *
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
- * this class are <em>not</em> part of the RWT public API. They are marked 
- * public only so that they can be shared within the packages provided by RWT. 
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
+ * this class are <em>not</em> part of the RWT public API. They are marked
+ * public only so that they can be shared within the packages provided by RWT.
  * They should never be accessed from application code.
  * </p>
- * 
+ *
  * @see ShellListener
  */
 public final class ShellEvent extends TypedEvent {
@@ -37,17 +38,17 @@ public final class ShellEvent extends TypedEvent {
   public static final int SHELL_CLOSED = SWT.Close;
   public static final int SHELL_ACTIVATED = SWT.Activate;
   public static final int SHELL_DEACTIVATED = SWT.Deactivate;
-  
+
   private static final Class LISTENER = ShellListener.class;
-  
+
   /**
    * A flag indicating whether the operation should be allowed.
    * Setting this field to <code>false</code> will cancel the operation.
-   * 
+   *
    * <p><strong>NOTE:</code> for close-events, this is not yet implemented</p>
    */
   public boolean doit;
-  
+
   /**
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
@@ -55,14 +56,15 @@ public final class ShellEvent extends TypedEvent {
    * @param event the untyped event containing the information
    */
   public ShellEvent( final Event event ) {
-    this( event.widget, event.type );
+    super( event );
+    doit = true;
   }
 
   /**
-   * Constructs a new instance of this class. 
+   * Constructs a new instance of this class.
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
@@ -70,7 +72,7 @@ public final class ShellEvent extends TypedEvent {
     super( source, id );
     doit = true;
   }
-  
+
   protected void dispatchToObserver( final Object listener ) {
     switch( getID() ) {
       case SHELL_CLOSED:
@@ -90,7 +92,7 @@ public final class ShellEvent extends TypedEvent {
   protected Class getListenerType() {
     return LISTENER;
   }
-  
+
   protected boolean allowProcessing() {
     boolean result;
     if( getID() == SHELL_CLOSED ) {
@@ -100,11 +102,11 @@ public final class ShellEvent extends TypedEvent {
     }
     return result;
   }
-  
+
   public static boolean hasListener( final Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
-  
+
   public static void addListener( final Adaptable adaptable,
                                   final ShellListener listener )
   {

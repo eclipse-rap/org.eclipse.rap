@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -34,7 +35,7 @@ public class ExpandEvent extends SelectionEvent {
 
   public static final int EXPAND = SWT.Expand;
   public static final int COLLAPSE = SWT.Collapse;
-  
+
   private static final Class LISTENER = ExpandListener.class;
 
   /**
@@ -44,7 +45,7 @@ public class ExpandEvent extends SelectionEvent {
    * @param event the untyped event containing the information
    */
   public ExpandEvent( final Event event ) {
-    this( event.widget, event.item, event.type );
+    super( event );
   }
 
   /**

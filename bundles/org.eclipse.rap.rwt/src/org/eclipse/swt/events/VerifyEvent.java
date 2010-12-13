@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@ import org.eclipse.swt.widgets.Event;
 /**
  * Instances of this class are sent as a result of
  * text being modified.
- * 
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
- * this class are <em>not</em> part of the RWT public API. They are marked 
- * public only so that they can be shared within the packages provided by RWT. 
+ *
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
+ * this class are <em>not</em> part of the RWT public API. They are marked
+ * public only so that they can be shared within the packages provided by RWT.
  * They should never be accessed from application code.
  * </p>
  *
@@ -58,14 +58,15 @@ public final class VerifyEvent extends KeyEvent {
    * @param event the untyped event containing the information
    */
   public VerifyEvent( final Event event ) {
-    this( ( Control )event.widget );
+    super( event );
+    doit = true;
   }
-  
+
   /**
-   * Constructs a new instance of this class. 
+   * Constructs a new instance of this class.
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
@@ -73,7 +74,7 @@ public final class VerifyEvent extends KeyEvent {
     super( source, VERIFY_TEXT );
     doit = true;
   }
-  
+
   protected void dispatchToObserver( final Object listener ) {
     switch( getID() ) {
       case VERIFY_TEXT:
@@ -92,22 +93,22 @@ public final class VerifyEvent extends KeyEvent {
     return true;
   }
 
-  public static void addListener( final Adaptable adaptable, 
+  public static void addListener( final Adaptable adaptable,
                                   final VerifyListener listener )
   {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable, 
+  public static void removeListener( final Adaptable adaptable,
                                      final VerifyListener listener )
   {
     removeListener( adaptable, LISTENER, listener );
   }
-  
+
   public static boolean hasListener( final Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
-  
+
   public static Object[] getListeners( final Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
@@ -122,7 +123,7 @@ public final class VerifyEvent extends KeyEvent {
     String string = super.toString();
     return string.substring( 0, string.length() - 1 ) // remove trailing '}'
       // differs from SWT: no doit in superclass, thus add explicitly
-      + " doit=" + doit 
+      + " doit=" + doit
       + " start=" + start
       + " end=" + end
       + " text=" + text

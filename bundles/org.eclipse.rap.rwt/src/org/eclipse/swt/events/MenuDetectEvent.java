@@ -1,13 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ *   EclipseSource - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.swt.events;
 
 
@@ -30,9 +29,9 @@ import org.eclipse.swt.widgets.Widget;
 public final class MenuDetectEvent extends TypedEvent {
 
   private static final long serialVersionUID = -3061660596590828941L;
-  
+
   private static final int MENU_DETECT = SWT.MenuDetect;
-  
+
   private static final Class LISTENER = MenuDetectListener.class;
 
   /**
@@ -46,13 +45,13 @@ public final class MenuDetectEvent extends TypedEvent {
 	 * at the time the context menu trigger occurred
 	 */
   public int y;
-  
+
   /**
    * A flag indicating whether the operation should be allowed. Setting this
    * field to <code>false</code> will cancel the operation.
    */
   public boolean doit;
-  
+
 
   /**
    * Constructs a new instance of this class based on the
@@ -61,7 +60,7 @@ public final class MenuDetectEvent extends TypedEvent {
    * @param e the untyped event containing the information
    */
   public MenuDetectEvent( final Event event ) {
-    super( event.widget, event.type );
+    super( event );
     this.x = event.x;
     this.y = event.y;
     this.doit = event.doit;

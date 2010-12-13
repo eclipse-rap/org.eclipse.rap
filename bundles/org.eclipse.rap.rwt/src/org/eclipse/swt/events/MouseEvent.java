@@ -107,10 +107,11 @@ public class MouseEvent extends TypedEvent {
    * @since 1.2
    */
   public MouseEvent( final Event event ) {
-    this( event.widget, event.type );
+    super( event );
     this.x = event.x;
     this.y = event.y;
     this.button = event.button;
+    this.stateMask = event.stateMask;
   }
 
   /**
