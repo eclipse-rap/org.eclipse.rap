@@ -93,6 +93,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       table.destroy();
     },
     
+    testScrollBarsPreventDragStart : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var table = this._createDefaultTable();
+      table.setScrollBarsVisibile( true, true );
+      var log = [];
+      var loghandler = function( event ) { log.push( event ); }
+      var drag = function( node ) {
+        testUtil.fakeMouseEventDOM( node, "mousedown", leftButton, 11, 11 );
+        testUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 25, 15 );
+        testUtil.fakeMouseEventDOM( node, "mouseup", leftButton, 25, 15 );
+      };
+      table.addEventListener( "dragstart", loghandler );
+      drag( table._getTargetNode() );
+      assertEquals( 1, log.length );
+      drag( table._horzScrollBar._getTargetNode() );
+      drag( table._vertScrollBar._getTargetNode() );
+      assertEquals( 1, log.length );      
+      table.destroy();
+    },
+
+
+    
     /////////
     // Helper
     
