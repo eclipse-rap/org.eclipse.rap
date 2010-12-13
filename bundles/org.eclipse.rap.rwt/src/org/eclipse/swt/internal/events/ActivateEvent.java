@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.events;
@@ -18,11 +19,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 /**
- * Instances of this class are sent as a result of controls being activated 
+ * Instances of this class are sent as a result of controls being activated
  * or deactivated.
- * 
+ *
  * <p>This class is <em>not</em> intended to be used by clients.</p>
- * 
+ *
  * @see ActivateListener
  * @since 1.0
  */
@@ -32,13 +33,13 @@ public final class ActivateEvent extends TypedEvent {
 
   public static final int ACTIVATED = SWT.Activate;
   public static final int DEACTIVATED = SWT.Deactivate;
-  
+
   private static final Class LISTENER = ActivateListener.class;
 
   public ActivateEvent( final Event event ) {
-    this( ( Control )event.widget, event.type );
+    super( event );
   }
-  
+
   public ActivateEvent( final Control source, final int id ) {
     super( source, id );
   }
@@ -59,27 +60,27 @@ public final class ActivateEvent extends TypedEvent {
   protected Class getListenerType() {
     return LISTENER;
   }
-  
+
   protected boolean allowProcessing() {
     return true;
   }
 
-  public static void addListener( final Adaptable adaptable, 
+  public static void addListener( final Adaptable adaptable,
                                   final ActivateListener listener )
   {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable, 
+  public static void removeListener( final Adaptable adaptable,
                                      final ActivateListener listener )
   {
     removeListener( adaptable, LISTENER, listener );
   }
-  
+
   public static boolean hasListener( final Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
-  
+
   public static Object[] getListeners( final Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }

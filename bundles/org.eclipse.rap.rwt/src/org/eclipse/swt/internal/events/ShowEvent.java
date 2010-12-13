@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -16,10 +16,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
 /**
- * Instances of this class are sent as a result of controls being shown. 
- * 
+ * Instances of this class are sent as a result of controls being shown.
+ *
  * <p>This class is <em>not</em> intended to be used by clients.</p>
- * 
+ *
  * @see ShowListener
  * @since 1.2
  */
@@ -29,7 +29,7 @@ public final class ShowEvent extends TypedEvent {
 
   public static final int SHOWN = SWT.Show;
   public static final int HIDDEN = SWT.Hide;
-  
+
   private static final Class LISTENER = ShowListener.class;
 
 
@@ -38,7 +38,7 @@ public final class ShowEvent extends TypedEvent {
   }
 
   public ShowEvent( final Event event ) {
-    super( event.widget, event.type );
+    super( event );
   }
 
   protected void dispatchToObserver( final Object listener ) {
@@ -57,27 +57,27 @@ public final class ShowEvent extends TypedEvent {
   protected Class getListenerType() {
     return LISTENER;
   }
-  
+
   protected boolean allowProcessing() {
     return true;
   }
 
-  public static void addListener( final Adaptable adaptable, 
+  public static void addListener( final Adaptable adaptable,
                                   final ShowListener listener )
   {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable, 
+  public static void removeListener( final Adaptable adaptable,
                                      final ShowListener listener )
   {
     removeListener( adaptable, LISTENER, listener );
   }
-  
+
   public static boolean hasListener( final Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
-  
+
   public static Object[] getListeners( final Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
