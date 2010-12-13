@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -166,13 +167,15 @@ public final class BrowserLCA extends AbstractWidgetLCA {
         public void beforePhase( final PhaseEvent event ) {
         }
         public void afterPhase( final PhaseEvent event ) {
-          try {
-            JSWriter writer = JSWriter.getWriterFor( browser );
-            writer.call( "execute", new Object[] { executeScript } );
-          } catch( IOException e ) {
-            throw new RuntimeException( e );
-          } finally {
-            LifeCycleFactory.getLifeCycle().removePhaseListener( this );
+          if( browser.getDisplay() == RWTLifeCycle.getSessionDisplay() ) {
+            try {
+              JSWriter writer = JSWriter.getWriterFor( browser );
+              writer.call( "execute", new Object[] { executeScript } );
+            } catch( IOException e ) {
+              throw new RuntimeException( e );
+            } finally {
+              LifeCycleFactory.getLifeCycle().removePhaseListener( this );
+            }
           }
         }
         public PhaseId getPhaseId() {
