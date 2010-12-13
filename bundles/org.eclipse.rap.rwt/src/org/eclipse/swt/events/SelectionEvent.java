@@ -123,18 +123,19 @@ public class SelectionEvent extends TypedEvent {
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
    *
-   * @param e the untyped event containing the information
+   * @param event the untyped event containing the information
    */
   public SelectionEvent( final Event e ) {
-    this( e.widget,
-          e.item,
-          e.type,
-          new Rectangle( e.x, e.y, e.width, e.height ),
-          e.stateMask,
-          e.text,
-          e.doit,
-          e.detail );
-    this.data = e.data;
+    super( e );
+    this.item = e.item;
+    this.x = e.x;
+    this.y = e.y;
+    this.width = e.width;
+    this.height = e.height;
+    this.detail = e.detail;
+    this.stateMask = e.stateMask;
+    this.text = e.text;
+    this.doit = e.doit;
   }
 
   /**
