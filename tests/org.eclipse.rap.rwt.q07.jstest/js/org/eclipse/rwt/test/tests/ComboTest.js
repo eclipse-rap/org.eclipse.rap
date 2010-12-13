@@ -52,6 +52,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() )
       combo.destroy();
     },
+    
+    testScrollBarClick : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.setListVisible( true );
+      testUtil.flush();
+      assertTrue( combo._list._vertScrollBar.isSeeable() );
+      testUtil.click( combo._list._vertScrollBar );
+      assertTrue( combo._list.isSeeable() );
+      combo.destroy();
+    },
 
     //////////
     // Helpers
