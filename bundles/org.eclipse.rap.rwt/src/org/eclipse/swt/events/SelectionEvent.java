@@ -123,7 +123,7 @@ public class SelectionEvent extends TypedEvent {
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
    *
-   * @param event the untyped event containing the information
+   * @param e the untyped event containing the information
    */
   public SelectionEvent( final Event e ) {
     super( e );
