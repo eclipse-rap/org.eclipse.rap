@@ -163,10 +163,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._list._isFocusRoot = true;
       this._list.activateFocusRoot();
       this._list._contains = this._list.contains;
-      var field = this._field;
       this._list.contains = function( widget ) {
         var result;
-        if( widget === field ) {
+        if( widget === that._field || widget === that._button ) {
           result = true; 
         } else {
           return this._contains( widget );
