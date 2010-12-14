@@ -10,13 +10,12 @@
 
 /* Test values for Business theme */
 
-Button[PUSH] {
+/* PUSH and TOGGLE buttons */
+
+Button[PUSH], Button[TOGGLE] {
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  background-color: white;
-  border: 1px solid #a4a4a4;
-  border-radius: 3px;
-  padding: 2px 5px 2px 5px;
   color: #4a4a4a;
+  background-color: white;
   background-image: gradient(
     linear, left top, left bottom,
     from( #ffffff ),
@@ -24,14 +23,17 @@ Button[PUSH] {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
+  border: 1px solid #a4a4a4;
+  border-radius: 3px;
   cursor: pointer;
+  padding: 2px 5px 2px 5px;
   animation: hoverOut 500ms ease-out;
   opacity: 1;
 }
 
-Button[TOGGLE] {
-  border: 1px solid #a4a4a4;
-  border-radius: 3px;
+Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
+  color: #4a4a4a;
+  background-color: white;
   background-image: gradient(
     linear, left top, left bottom,
     from( #ffffff ),
@@ -39,23 +41,8 @@ Button[TOGGLE] {
     color-stop( 52%, #e0e0e0 ),
     to( #ffffff )
   );
-  cursor: pointer;
-  animation: hoverOut 500ms ease-out;
-  opacity: 1;
-}
-
-Button[BORDER] {
   border: 1px solid #a4a4a4;
   border-radius: 3px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
-  );
-  animation: hoverOut 500ms ease-out;
-  opacity: 1;
 }
 
 Button[TOGGLE]:selected {
@@ -99,26 +86,21 @@ Button[TOGGLE]:pressed {
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
   );
-  opacity: 1;
-}
-
-Button[CHECK],
-Button[CHECK][BORDER],
-Button[RADIO],
-Button[RADIO][BORDER] {
-  background-image: none;
+  padding: 4px 5px 2px 7px;
   opacity: 1;
 }
 
 Button[PUSH]:disabled,
 Button[TOGGLE]:disabled {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 48%, #f0f0f0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #ffffff )
+  );
+  color: #cfcfcf;
   cursor: default;
-  opacity: 1;
-}
-
-Button[PUSH]:pressed,
-Button[TOGGLE]:pressed {
-  padding: 4px 5px 2px 7px;
   opacity: 1;
 }
 
@@ -129,6 +111,35 @@ Button-FocusIndicator[TOGGLE] {
   margin: 2px;
   padding: 0px;
   opacity: 1.0;
+}
+
+/* CHECK and RADIO buttons */
+
+Button[CHECK],
+Button[RADIO] {
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: white;
+  background-image: none;
+  border: none;
+  cursor: default;
+  padding: 4px 5px 4px 5px;
+  animation: none;
+  opacity: 1;
+}
+
+Button[CHECK][BORDER],
+Button[RADIO][BORDER] {
+  color: #4a4a4a;
+  background-color: white;
+  border: 1px solid #a4a4a4;
+  border-radius: 3px;
+}
+
+Button[PUSH]:disabled,
+Button[TOGGLE]:disabled {
+  cursor: default;
+  color: #cfcfcf;
 }
 
 Button-FocusIndicator[RADIO],
