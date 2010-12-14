@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -500,6 +500,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       );
       this.menuItem.setSelection( false );      
       this.menuItem.setHasSelectionListener( true );
+      this.testUtil.clearRequestLog();
+      this.testUtil.click( this.menuItem );
+      assertEquals( 1, this.testUtil.getRequestsSend() );
+      assertTrue( this.menuItem.hasState( "selected" ) );      
+      assertContains( "w1.selection=true",  this.testUtil.getMessage() );
       this.testUtil.clearRequestLog();
       this.testUtil.click( this.menuItem );
       assertEquals( 1, this.testUtil.getRequestsSend() );
