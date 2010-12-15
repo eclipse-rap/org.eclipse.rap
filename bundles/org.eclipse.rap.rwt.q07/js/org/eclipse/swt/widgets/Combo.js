@@ -49,7 +49,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._list = new org.eclipse.rwt.widgets.BasicList( false );
     this._list.setTabIndex( null );
     this._list.setDisplay( false );
-    this._addListPopUpBehavior();
     // List Manager
     this._manager = this._list.getManager();
     this._manager.setMultiSelection( false );
@@ -98,8 +97,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._field.addEventListener( "blur", this._onTextBlur, this );
     this._field.addEventListener( "input", this._onTextInput, this );
     this._list.addEventListener( "appear", this._onListAppear, this );
-    this._list.addEventListener( "click", this._onMouseClick, this );
-    this._list.addEventListener( "mouseover", this._onMouseOver, this );
+    this._setupCaptureRestore();
   },
 
   destruct : function() {
@@ -140,39 +138,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
   },
 
   members : {
-    
-    // TODO [tb] : A very hacky quick-fix for Bug 332413 - refactor!
-    // Note: Uses the popup-manager (with some hacks) instead of 
-    //       setCapture( true ). 
-    _addListPopUpBehavior : function() {
-      this._list.hide = this._list.disconnect;
-      var that = this;
-      this._list._beforeAppear = function() {
-        qx.ui.core.Parent.prototype._beforeAppear.apply( this, arguments );
-        qx.ui.popup.PopupManager.getInstance().add( this );
-        qx.ui.popup.PopupManager.getInstance().update( this );
-      };
-      this._list._beforeDisappear = function() {
-        qx.ui.core.Parent.prototype._beforeDisappear.apply( this, arguments );
-        qx.ui.popup.PopupManager.getInstance().remove( this );
-        if( !that._toggleFlag ) {
-          that._toggleListVisibility();
-        }
-      };
-      this._list.getAutoHide = function(){ return true; }
-      this._list._isFocusRoot = true;
-      this._list.activateFocusRoot();
-      this._list._contains = this._list.contains;
-      this._list.contains = function( widget ) {
-        var result;
-        if( widget === that._field || widget === that._button ) {
-          result = true; 
-        } else {
-          return this._contains( widget );
-        }
-        return result;
-      };
-    },
 
     addState : function( state ) {
       this.base( arguments, state );
@@ -346,9 +311,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           // Brings this widget on top of the others with same parent.
           this._bringToFront();
         }
-        this._toggleFlag = true;
+        this.setCapture( !this._dropped );
         this._list.setDisplay( !this._dropped );
-        delete this._toggleFlag;
         this._dropped = !this._dropped;
         this._updateListScrollBar();
         if( this.hasState( "rwt_CCOMBO" ) ) {
@@ -364,7 +328,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.setScrollBarsVisible( false, visible );
       }
     },
-    
+
     _resetListSelection : function() {
       this._manager.deselectAll();
       this._manager.setLeadItem( null );
@@ -435,21 +399,29 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     ////////////////////////////////
     // Mouse events handling methods
     
+    _reDispatch : function( event ) {
+      var original = event.getTarget();
+      if( !this.contains( original ) ) {
+        // TODO [tb] : should be disposed automatically, test
+        original.dispatchEvent( event, false );
+        event.stopPropagation();
+      }
+    },
+    
     _onMouseDown : function( evt ) {
       if( evt.isLeftButtonPressed() ) {
         if( evt.getTarget() == this._field ) {
           if( !this._editable || this._dropped ) {
             this._toggleListVisibility();
           }
+        } else if( this._dropped ) {
+          this._reDispatch( evt );
         }
-        evt.stopPropagation();
       }
     },
 
     _onMouseClick : function( evt ) {
       if( evt.isLeftButtonPressed() ) {
-        // Correction of the list manager selection 
-        // after a mouse over interaction with ListItem
         // In case the 'mouseout' event has not been catched
         if( this._button.hasState( "over" ) ) {
           this._button.removeState( "over" );
@@ -460,6 +432,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         if(    target instanceof qx.ui.form.ListItem
             && target === this._list.getListItemTarget( target ) )
         {
+          this._reDispatch( evt );
           this._toggleListVisibility();
           this._setSelected( this._manager.getSelectedItem() );
           this.setFocused( true );
@@ -468,7 +441,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
                    || (    this._dropped
                         && target != this 
                         && target != this._field 
-                        && target != this._list ) ) 
+                        && !this._list.contains( target ) ) ) 
         {
           this._toggleListVisibility();
         }
@@ -476,10 +449,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
     
     _onMouseUp : function( evt ) {
+      if( !this._dropped ) {
+        this.setCapture( false );
+      }
       if(    evt.getTarget() == this._field
           && !org.eclipse.swt.EventUtil.getSuspended() ) 
       {
         this._handleSelectionChange();
+      } else if( this._dropped ) {
+        this._reDispatch( evt );
       }
     },
 
@@ -525,6 +503,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       if( evt.getTarget() == this._button ) {
         this._button.removeState( "over" );
       }
+    },
+    
+    _setupCaptureRestore : function() {
+      var thumb = this._list._vertScrollBar._thumb;
+      thumb.addEventListener( "mouseup", this._captureRestore, this );
+    },
+    
+    _captureRestore : function( event ) {
+      this.setCapture( true );
     },
 
     ////////////////////////////////////

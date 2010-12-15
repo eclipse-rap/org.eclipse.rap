@@ -52,6 +52,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() )
       combo.destroy();
     },
+
+    testHoverClickItem : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.setListVisible( true );
+      testUtil.flush();
+      var items = this._getItems( combo );
+      testUtil.mouseOver( items[ 1 ] );
+      assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() )
+      testUtil.click( items[ 1 ] );
+      assertEquals( "Java", combo._field.getValue() );
+      combo.destroy();      
+    },
     
     testScrollBarClick : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -59,7 +72,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setListVisible( true );
       testUtil.flush();
       assertTrue( combo._list._vertScrollBar.isSeeable() );
-      testUtil.click( combo._list._vertScrollBar );
+      testUtil.click( combo._list._vertScrollBar._thumb );
+      assertTrue( combo._list.isSeeable() );
+      combo.destroy();
+    },
+
+    testFieldClick : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      testUtil.click( combo._field );
+      testUtil.flush();
+      assertTrue( combo._list.isSeeable() );
+      testUtil.click( combo._list._vertScrollBar._thumb );
+      testUtil.click( combo._field );
+      testUtil.flush();
+      assertFalse( combo._list.isSeeable() );
+      combo.destroy();
+    },
+
+    testButtonClick : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      testUtil.click( combo._button );
+      testUtil.flush();
+      assertTrue( combo._list.isSeeable() );
+      testUtil.click( combo._list._vertScrollBar._thumb );
+      testUtil.click( combo._button );
+      testUtil.flush();
+      assertFalse( combo._list.isSeeable() );
+      combo.destroy();
+    },
+
+    testListPopUpBehavior : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      testUtil.click( combo._field );
+      testUtil.flush();
+      testUtil.click( combo._list._vertScrollBar._thumb );
+      assertTrue( combo._list.isSeeable() );
+      testUtil.click( testUtil.getDocument() );
+      assertFalse( combo._list.isSeeable() );
+      testUtil.click( combo._field );
+      testUtil.flush();
       assertTrue( combo._list.isSeeable() );
       combo.destroy();
     },
@@ -72,6 +126,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       var combo = new org.eclipse.swt.widgets.Combo();
       combo.setSpace( 239, 81, 6, 23 );
       combo.setListItemHeight( 19 );
+      combo.setEditable( false );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       combo.setMaxListHeight( 95 ); 
       combo.addToDocument(),
