@@ -289,6 +289,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         listWidth = Math.max( this.getWidth(), listWidth )
         var itemsHeight = this._list.getItemsCount() * this._listItemHeight;
         var listHeight = Math.min( this._listMaxHeight, itemsHeight );
+        listHeight += this._list.getFrameHeight();
         if(    browserHeight < listTop + listHeight
             && comboTop > browserHeight - listTop )
         {

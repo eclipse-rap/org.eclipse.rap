@@ -117,6 +117,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertTrue( combo._list.isSeeable() );
       combo.destroy();
     },
+    
+    
+    testOpenList : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.setItems( [ "Eiffel", "Java", "Python" ] );
+      var correctHeight = 19 * 3 + combo._list.getFrameHeight();
+      combo.setListVisible( true );
+      testUtil.flush();
+      assertEquals( correctHeight, combo._list.getHeight() );
+    },
 
     //////////
     // Helpers
