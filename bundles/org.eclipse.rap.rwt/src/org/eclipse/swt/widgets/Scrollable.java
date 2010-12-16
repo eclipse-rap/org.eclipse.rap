@@ -153,9 +153,11 @@ public abstract class Scrollable extends Control {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.4
    */
   public ScrollBar getHorizontalBar() {
-    checkWidget ();
+    checkWidget();
     /* [austin] - Subclasses should override.  Default implementation returns null, 
         but this should eventually provide the scrollbars for subtypes as in SWT. */
     return null;
@@ -171,9 +173,11 @@ public abstract class Scrollable extends Control {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.4
    */
   public ScrollBar getVerticalBar() {
-    checkWidget ();
+    checkWidget();
     /* [austin] - Subclasses should override.  Default implementation returns null, 
         but this should eventually provide the scrollbars for subtypes as in SWT. */
     return null;
