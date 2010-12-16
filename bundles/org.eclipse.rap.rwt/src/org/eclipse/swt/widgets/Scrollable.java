@@ -142,6 +142,42 @@ public abstract class Scrollable extends Control {
                           newWidth,
                           newHeight );
   }
+  
+  /**
+   * Returns the receiver's horizontal scroll bar if it has
+   * one, and null if it does not.
+   *
+   * @return the horizontal scroll bar (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public ScrollBar getHorizontalBar() {
+    checkWidget ();
+    /* [austin] - Subclasses should override.  Default implementation returns null, 
+        but this should eventually provide the scrollbars for subtypes as in SWT. */
+    return null;
+  }
+
+  /**
+   * Returns the receiver's vertical scroll bar if it has
+   * one, and null if it does not.
+   *
+   * @return the vertical scroll bar (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public ScrollBar getVerticalBar() {
+    checkWidget ();
+    /* [austin] - Subclasses should override.  Default implementation returns null, 
+        but this should eventually provide the scrollbars for subtypes as in SWT. */
+    return null;
+  }
 
   int getVScrollBarWidth() {
     //subclasses may override
