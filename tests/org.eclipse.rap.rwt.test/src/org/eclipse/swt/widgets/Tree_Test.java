@@ -1259,6 +1259,27 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.hasHScrollBar() );
   }
 
+  public void testCellWidthWithoutColumns() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    item1.setText( "First item text." );
+    TreeItem item2 = new TreeItem( item1, SWT.NONE );
+    item2.setText( "Second item text is longer." );
+    TreeItem item3 = new TreeItem( item2, SWT.NONE );
+    item3.setText( "Third item text is longer than the second item text." );
+    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    int cellWidth1 = adapter.getCellWidth( 0 );
+    assertTrue( cellWidth1 > 0 );
+    item1.setExpanded( true );
+    int cellWidth2 = adapter.getCellWidth( 0 );
+    assertTrue( cellWidth2 > cellWidth1 );
+    item2.setExpanded( true );
+    int cellWidth3 = adapter.getCellWidth( 0 );
+    assertTrue( cellWidth3 > cellWidth2 );
+  }
+
   /////////
   // HELPER
 
