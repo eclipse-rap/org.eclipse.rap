@@ -1794,7 +1794,7 @@ public class Tree extends Composite {
 
   private int getCellWidth( final int index ) {
     return   getColumnCount() == 0 && index == 0
-           ? getClientArea().width
+           ? getMaxInnerWidth( getItems(), 1 )
            : getColumn( index ).getWidth();
   }
 
@@ -1945,10 +1945,12 @@ public class Tree extends Composite {
     Point result;
     if( hasColumnImages( index ) ) {
       result = getItemImageSize();
-      int availWidth = getCellWidth( index );
-      availWidth -= getCellPadding().x;
-      availWidth = Math.max( 0, availWidth );
-      result.x = Math.min( result.x, availWidth );
+      if( getColumnCount() > 0 ) {
+        int availWidth = getColumn( index ).getWidth();
+        availWidth -= getCellPadding().x;
+        availWidth = Math.max( 0, availWidth );
+        result.x = Math.min( result.x, availWidth );
+      }
     } else {
       result = new Point( 0, 0 );
     }
