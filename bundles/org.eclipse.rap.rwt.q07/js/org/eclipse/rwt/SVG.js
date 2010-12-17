@@ -216,8 +216,12 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
           // Bug 301236: Loading an image using SVG causes a bad request
           // AFTER the image-request. Prevent by pre-loading the image.
           this._onImageLoad( source, function() {
-            org.eclipse.rwt.SVG._setXLink( imageNode, source );
-            org.eclipse.rwt.SVG._redrawWebkit( shape );
+            if(   shape.parent !== null 
+               && shape.parent.node.parentNode )
+            {
+              org.eclipse.rwt.SVG._setXLink( imageNode, source );
+              org.eclipse.rwt.SVG._redrawWebkit( shape );
+            }
           } );
         } else {
           this._setXLink( imageNode, source );
