@@ -17,7 +17,7 @@ import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 
 public final class ThemeStoreWriter {
 
-  private Set valueSet = new HashSet();
+  private Set valueSet = new LinkedHashSet();
   private final IThemeCssElement[] elements;
   private StringBuffer cssValuesBuffer;
 
