@@ -201,6 +201,7 @@ public class Display extends Device implements Adaptable {
   private Widget[] skinList;
   private int skinCount;
   private Set skinListeners;
+  private Set settingsListeners;
 
   /* Display Data */
   private Object data;
@@ -579,6 +580,11 @@ public class Display extends Device implements Adaptable {
         skinListeners = new HashSet();
       }
       skinListeners.add( listener );
+    } else if( eventType == SWT.Settings ) {
+      if( settingsListeners == null ) {
+        settingsListeners = new HashSet();
+      }
+      settingsListeners.add( listener );
     }
   }
 
@@ -623,6 +629,11 @@ public class Display extends Device implements Adaptable {
       skinListeners.remove( listener );
       if( skinListeners.size() == 0 ) {
         skinListeners = null;
+      }
+    } else if( eventType == SWT.Settings && settingsListeners != null ) {
+      settingsListeners.remove( listener );
+      if( settingsListeners.size() == 0 ) {
+        settingsListeners = null;
       }
     }
   }
@@ -880,7 +891,7 @@ public class Display extends Device implements Adaptable {
 
   //////////////////////
   // Information methods
-  
+
   /**
    * Returns the display which the given thread is the
    * user-interface thread for, or null if the given thread
@@ -1732,6 +1743,23 @@ public class Display extends Device implements Adaptable {
     if( skinListeners != null ) {
       Listener[] listeners = new Listener[ skinListeners.size() ];
       skinListeners.toArray( listeners );
+      for( int i = 0; i < listeners.length; i++ ) {
+        listeners[ i ].handleEvent( event );
+      }
+    }
+  }
+
+  ///////////////////
+  // Settings support
+  // [if] Use this method when theme change in runtime is possible
+  private void sendSettingsEvent() {
+    Event event = new Event();
+    event.display = this;
+    event.type = SWT.Settings;
+    notifyFilters( event );
+    if( settingsListeners != null ) {
+      Listener[] listeners = new Listener[ settingsListeners.size() ];
+      settingsListeners.toArray( listeners );
       for( int i = 0; i < listeners.length; i++ ) {
         listeners[ i ].handleEvent( event );
       }
