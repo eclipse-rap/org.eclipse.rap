@@ -49,7 +49,8 @@ ToolItem:hover {
 }
 
 ToolItem:pressed, ToolItem:selected {
-  border: 1px inset;
+  border: 1px solid #a4a4a4;
+  border-radius: 2px;
   padding: 3px 2px 1px 4px;
   background-image: url( resource/static/image/dotted_white.gif );
 }
