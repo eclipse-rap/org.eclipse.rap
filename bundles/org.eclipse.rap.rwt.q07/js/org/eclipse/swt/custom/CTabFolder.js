@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this._selectionForeground = null;
     this._selectionBackground = null;
     this._selectionBackgroundImage = null;
-    this._selectionBackgroundGradientColors = null;
-    this._selectionBackgroundGradientPercents = null;
+    this._selectionBackgroundGradient = null;
     this._chevron = null;
     this._chevronMenu = null;
     // Minimize/maximize buttons, initially non-existing
@@ -186,9 +185,11 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       } );
     },
 
-    setSelectionBackgroundGradient : function( colors, percents ) {
-      this._selectionBackgroundGradientColors = colors;
-      this._selectionBackgroundGradientPercents = percents;
+    setSelectionBackgroundGradient : function( colors, percents, vertical ) {
+      this._selectionBackgroundGradient = {};
+      this._selectionBackgroundGradient.colors = colors;
+      this._selectionBackgroundGradient.percents = percents;
+      this._selectionBackgroundGradient.vertical = vertical
       this._mapItems( function( item ) {
         item.updateBackgroundGradient();
       } );
@@ -215,12 +216,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       return this._selectionBackgroundImage;
     },
     
-    getSelectionBackgroundGradientColors : function() {
-      return this._selectionBackgroundGradientColors;
-    },
-    
-    getSelectionBackgroundGradientPercents : function() {
-      return this._selectionBackgroundGradientPercents;
+    getSelectionBackgroundGradient : function() {
+      return this._selectionBackgroundGradient;
     },
 
     _mapItems : function( func ) {

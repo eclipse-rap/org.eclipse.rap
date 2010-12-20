@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -172,12 +172,15 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     updateBackgroundGradient : function() {
       var colors = null;
       var percents = null;
-      if( this.isSelected() ) {
-        colors = this._parent.getSelectionBackgroundGradientColors();
-        percents = this._parent.getSelectionBackgroundGradientPercents();
+      var vertical = true;
+      var gradient = this._parent.getSelectionBackgroundGradient();
+      if( this.isSelected() && gradient != null ) {
+        colors = gradient.colors;
+        percents = gradient.percents;
+        vertical = gradient.vertical;
       }
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      widgetManager.setBackgroundGradient( this, colors, percents );
+      widgetManager.setBackgroundGradient( this, colors, percents, vertical );
     },
 
     _updateCloseButton : function() {

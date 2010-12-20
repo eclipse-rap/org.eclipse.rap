@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.custom.ctabfolderkit;
@@ -31,8 +32,6 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
-
-
 
 public class CTabFolderLCA_Test extends TestCase {
 
@@ -460,6 +459,56 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( "showList|", log.toString() );
     menu = getShowListMenu( folder );
     assertEquals( 1, menu.getItemCount() );
+  }
+
+  public void testWriteSelectionBackgroundGradient_Vertical() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
+
+    Fixture.fakeResponseWriter();
+    CTabFolderLCA lca = new CTabFolderLCA();
+    lca.preserveValues( folder );
+    Fixture.markInitialized( folder );
+    Color[] gradientColors = new Color[] {
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    int[] percents = new int[] { 100 };
+    folder.setSelectionBackground( gradientColors, percents, true );
+    lca.renderChanges( folder );
+    String expected
+      = "var w = wm.findWidgetById( \"w2\" );"
+      + "w.setSelectionBackground( \"#0000ff\" );"
+      + "w.setSelectionBackgroundGradient( [\"#00ff00\",\"#0000ff\" ], "
+      + "[0,100 ], true );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+
+  public void testWriteSelectionBackgroundGradient_Horizontal()
+    throws IOException
+  {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
+
+    Fixture.fakeResponseWriter();
+    CTabFolderLCA lca = new CTabFolderLCA();
+    lca.preserveValues( folder );
+    Fixture.markInitialized( folder );
+    Color[] gradientColors = new Color[] {
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    int[] percents = new int[] { 100 };
+    folder.setSelectionBackground( gradientColors, percents );
+    lca.renderChanges( folder );
+    String expected
+      = "var w = wm.findWidgetById( \"w2\" );"
+      + "w.setSelectionBackground( \"#0000ff\" );"
+      + "w.setSelectionBackgroundGradient( [\"#00ff00\",\"#0000ff\" ], "
+      + "[0,100 ], false );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   private static Menu getShowListMenu( final CTabFolder folder ) {

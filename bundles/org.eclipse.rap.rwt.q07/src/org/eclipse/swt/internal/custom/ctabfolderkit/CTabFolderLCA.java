@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     = "selectionBgGradientColors";
   public static final String PROP_SELECTION_BG_GRADIENT_PERCENTS
     = "selectionBgGradientPercents";
+  public static final String PROP_SELECTION_BG_GRADIENT_VERTICAL
+    = "selectionBgGradientVertical";
   public static final String PROP_TAB_POSITION = "tabPosition";
   private static final String PROP_BORDER_VISIBLE = "borderVisible";
 
@@ -248,11 +250,15 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       = adapter.getUserSelectionBackgroundGradient();
     Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
     int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+    Boolean bgGradientVertical
+      = new Boolean( gfxAdapter.isBackgroundGradientVertical() );
     IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( tabFolder );
     widgetAdapter.preserve( PROP_SELECTION_BG_GRADIENT_COLORS,
                             bgGradientColors );
     widgetAdapter.preserve( PROP_SELECTION_BG_GRADIENT_PERCENTS,
                             bgGradientPercents );
+    widgetAdapter.preserve( PROP_SELECTION_BG_GRADIENT_VERTICAL,
+                            bgGradientVertical );
   }
 
   //////////////////////////////////////
@@ -458,6 +464,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       = adapter.getUserSelectionBackgroundGradient();
     Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
     int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+    Boolean bgGradientVertical
+      = new Boolean( gfxAdapter.isBackgroundGradientVertical() );
     boolean changed
       = WidgetLCAUtil.hasChanged( tabFolder,
                                   PROP_SELECTION_BG_GRADIENT_COLORS,
@@ -468,6 +476,12 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                                           PROP_SELECTION_BG_GRADIENT_PERCENTS,
                                           bgGradientPercents,
                                           null );
+    }
+    if( !changed ) {
+      changed = WidgetLCAUtil.hasChanged( tabFolder,
+                                          PROP_SELECTION_BG_GRADIENT_VERTICAL,
+                                          bgGradientVertical,
+                                          Boolean.FALSE );
     }
     if( changed ) {
       JSWriter writer = JSWriter.getWriterFor( tabFolder );
@@ -480,7 +494,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       }
       Object[] args = new Object[] {
         bgGradientColors,
-        percents
+        percents,
+        bgGradientVertical
       };
       writer.call( "setSelectionBackgroundGradient", args );
     }
