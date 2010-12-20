@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -30,13 +30,13 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     assertNull( gfxAdapter.getRoundedBorderColor() );
     assertNotNull( gfxAdapter.getRoundedBorderRadius() );
   }
-  
+
   public void testRoundedBorderRadii() {
     WidgetGraphicsAdapter graphicsAdapter = new WidgetGraphicsAdapter();
     Rectangle radius = graphicsAdapter.getRoundedBorderRadius();
     assertNotNull( radius );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), radius );
-    
+
     graphicsAdapter.setRoundedBorder( 0, null, 1, 2, 3, 4 );
     radius = graphicsAdapter.getRoundedBorderRadius();
     assertEquals( new Rectangle( 1, 2, 3, 4 ), radius );
@@ -44,10 +44,10 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     graphicsAdapter.setRoundedBorder( 0, null, 1, 2, 3, 4 );
     radius = graphicsAdapter.getRoundedBorderRadius();
     radius.x = 99;
-    assertEquals( new Rectangle( 1, 2, 3, 4 ), 
+    assertEquals( new Rectangle( 1, 2, 3, 4 ),
                   graphicsAdapter.getRoundedBorderRadius() );
   }
-  
+
   public void testRoundedBorderColor() {
     WidgetGraphicsAdapter graphicsAdapter = new WidgetGraphicsAdapter();
     Color blue = Graphics.getColor( 0, 0, 255 );
@@ -56,9 +56,9 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     assertEquals( blue, graphicsAdapter.getRoundedBorderColor() );
     assertEquals( new Rectangle( 1, 2, 3, 4 ),
                   graphicsAdapter.getRoundedBorderRadius() );
-    
+
   }
-  
+
   public void testBackgroundGradient() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -71,21 +71,23 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     Color green = Graphics.getColor( 0, 255, 0 );
     Color[] gradientColors = new Color[] { blue, green, blue };
     int[] percents = new int[] { 0, 50, 100 };
-    graphicsAdapter.setBackgroundGradient( gradientColors, percents );
+    graphicsAdapter.setBackgroundGradient( gradientColors, percents, false );
     assertEquals( blue, graphicsAdapter.getBackgroundGradientColors()[ 0 ] );
     assertEquals( green, graphicsAdapter.getBackgroundGradientColors()[ 1 ] );
     assertEquals( blue, graphicsAdapter.getBackgroundGradientColors()[ 2 ] );
     assertEquals( 0, graphicsAdapter.getBackgroundGradientPercents()[ 0 ] );
     assertEquals( 50, graphicsAdapter.getBackgroundGradientPercents()[ 1 ] );
     assertEquals( 100, graphicsAdapter.getBackgroundGradientPercents()[ 2 ] );
+    assertFalse( graphicsAdapter.isBackgroundGradientVertical() );
 
-    graphicsAdapter.setBackgroundGradient( null, null );
+    graphicsAdapter.setBackgroundGradient( null, null, true );
     assertNull( graphicsAdapter.getBackgroundGradientColors() );
     assertNull( graphicsAdapter.getBackgroundGradientPercents() );
+    assertTrue( graphicsAdapter.isBackgroundGradientVertical() );
 
     percents = new int[] { 0, 100 };
     try {
-      graphicsAdapter.setBackgroundGradient( gradientColors, percents );
+      graphicsAdapter.setBackgroundGradient( gradientColors, percents, true );
       fail( "Must throw exception for invalid arguments" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -94,7 +96,7 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     gradientColors = new Color[] { blue, null, blue };
     percents = new int[] { 0, 50, 100 };
     try {
-      graphicsAdapter.setBackgroundGradient( gradientColors, percents );
+      graphicsAdapter.setBackgroundGradient( gradientColors, percents, true );
       fail( "Must throw exception for invalid arguments" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -108,7 +110,7 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color[] colors = { Graphics.getColor( new RGB( 1, 2, 3 ) ) };
     int[] percentages = { 1 };
-    graphicsAdapter.setBackgroundGradient( colors, percentages );
+    graphicsAdapter.setBackgroundGradient( colors, percentages, true );
     percentages[ 0 ] = 2;
     assertEquals( 1, graphicsAdapter.getBackgroundGradientPercents()[ 0 ] );
   }

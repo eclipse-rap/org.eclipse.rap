@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -235,13 +235,18 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * Sets the background gradient for the given widget. A null colors or null
      * percents removes the background gradient of the widget.
      */
-    setBackgroundGradient : function( widget, gradientColor, percents ) {
+    setBackgroundGradient : function( widget,
+                                      gradientColor,
+                                      percents,
+                                      vertical )
+    {
       var gradient = null;
       if( gradientColor != null && percents != null ) {
         gradient = new Array();
         for( var i = 0; i < gradientColor.length; i++ ) {
           gradient[ i ] = [ percents[ i ] / 100, gradientColor[ i ] ];
         }
+        gradient.horizontal = !vertical;
       }
       widget.setBackgroundGradient( gradient );
     },

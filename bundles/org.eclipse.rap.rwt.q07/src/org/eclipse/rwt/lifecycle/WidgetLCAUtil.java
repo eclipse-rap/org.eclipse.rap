@@ -56,6 +56,8 @@ public final class WidgetLCAUtil {
     = "backgroundGradientColors";
   private static final String PROP_BACKGROUND_GRADIENT_PERCENTS
     = "backgroundGradientPercents";
+  private static final String PROP_BACKGROUND_GRADIENT_VERTICAL
+    = "backgroundGradientVertical";
   private static final String PROP_ROUNDED_BORDER_WIDTH = "roundedBorderWidth";
   private static final String PROP_ROUNDED_BORDER_COLOR = "roundedBorderColor";
   private static final String PROP_ROUNDED_BORDER_RADIUS
@@ -200,11 +202,14 @@ public final class WidgetLCAUtil {
       IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
       Color[] bgGradientColors = gfxAdapter.getBackgroundGradientColors();
       int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
+      boolean bgGradientVertical = gfxAdapter.isBackgroundGradientVertical();
       IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
       widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS,
                               bgGradientColors );
       widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS,
                               bgGradientPercents );
+      widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_VERTICAL,
+                              new Boolean( bgGradientVertical ) );
     }
   }
 
@@ -724,9 +729,11 @@ public final class WidgetLCAUtil {
   {
     if( hasBackgroundGradientChanged( widget ) ) {
       Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
-      IWidgetGraphicsAdapter graphicAdapter = ( IWidgetGraphicsAdapter )adapter;
-      Color[] bgGradientColors = graphicAdapter.getBackgroundGradientColors();
-      int[] bgGradientPercents = graphicAdapter.getBackgroundGradientPercents();
+      IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
+      int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
+      boolean bgGradientVertical
+        = graphicsAdapter.isBackgroundGradientVertical();
       JSWriter writer = JSWriter.getWriterFor( widget );
       Integer[] percents = null;
       if( bgGradientPercents != null ) {
@@ -735,7 +742,12 @@ public final class WidgetLCAUtil {
           percents[ i ] =  new Integer( bgGradientPercents[ i ] );
         }
       }
-      Object[] args = new Object[] { widget, bgGradientColors, percents };
+      Object[] args = new Object[] {
+        widget,
+        bgGradientColors,
+        percents,
+        new Boolean( bgGradientVertical )
+      };
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setBackgroundGradient", args );
     }
   }
@@ -745,6 +757,8 @@ public final class WidgetLCAUtil {
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
     int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
+    boolean bgGradientVertical
+      = graphicsAdapter.isBackgroundGradientVertical();
     return    WidgetLCAUtil.hasChanged( widget,
                                         PROP_BACKGROUND_GRADIENT_COLORS,
                                         bgGradientColors,
@@ -752,7 +766,11 @@ public final class WidgetLCAUtil {
            || WidgetLCAUtil.hasChanged( widget,
                                         PROP_BACKGROUND_GRADIENT_PERCENTS,
                                         bgGradientPercents,
-                                        null );
+                                        null )
+           || WidgetLCAUtil.hasChanged( widget,
+                                        PROP_BACKGROUND_GRADIENT_VERTICAL,
+                                        new Boolean( bgGradientVertical ),
+                                        Boolean.FALSE );
   }
 
   /**
@@ -1066,7 +1084,7 @@ public final class WidgetLCAUtil {
         buffer.append( "&gt;" );
       } else if( ch == '"' ) {
         buffer.append( "&quot;" );
-      } else if( EncodingUtil.isNonDisplayableChar( ch ) ) { 
+      } else if( EncodingUtil.isNonDisplayableChar( ch ) ) {
         // Escape \u2028 and \u2029 - see bug 304364
         buffer.append( "&#" );
         buffer.append( ( int )ch );

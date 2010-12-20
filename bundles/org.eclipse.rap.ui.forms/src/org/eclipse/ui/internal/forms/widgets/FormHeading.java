@@ -387,7 +387,7 @@ public class FormHeading extends Canvas {
 			if (fontHeight == -1) {
 				Control c = getMessageControl();
 				if (c == null)
-					return 0;				
+					return 0;
 				GC gc = new GC(c.getDisplay());
 				gc.setFont(c.getFont());
 				fontHeight = gc.getFontMetrics().getHeight();
@@ -888,7 +888,8 @@ public class FormHeading extends Canvas {
 	    IWidgetGraphicsAdapter adapter
 	      = ( IWidgetGraphicsAdapter )getAdapter( IWidgetGraphicsAdapter.class );
       adapter.setBackgroundGradient( gradientInfo.gradientColors,
-                                     gradientInfo.percents );
+                                     gradientInfo.percents,
+                                     gradientInfo.vertical );
 	  }
 // RAPEND [if]
 	}

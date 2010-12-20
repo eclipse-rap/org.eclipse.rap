@@ -606,9 +606,9 @@ abstract class ExampleTab {
           BGG_COLOR_BLUE
         };
         int[] percents = new int[] { 0, 25, 50, 75, 100 };
-        gfxAdapter.setBackgroundGradient( gradientColors, percents );
+        gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
       } else {
-        gfxAdapter.setBackgroundGradient( null, null );
+        gfxAdapter.setBackgroundGradient( null, null, true );
       }
     }
   }

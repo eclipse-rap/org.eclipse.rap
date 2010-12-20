@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -17,7 +17,7 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
 
 //  private static final class Data {
 //  }
-//  
+//
 //  private Data data;
 
   private int roundedBorderWidth;
@@ -25,6 +25,7 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
   private Rectangle roundedBorderRadius;
   private Color[] backgroundGradientColors;
   private int[] backgroundGradientPercents;
+  private boolean backgroundGradientVertical;
 
   public Color[] getBackgroundGradientColors() {
     Color[] result = null;
@@ -42,8 +43,13 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
     return result;
   }
 
+  public boolean isBackgroundGradientVertical() {
+    return backgroundGradientVertical;
+  }
+
   public void setBackgroundGradient( final Color[] gradientColors,
-                                     final int[] percents )
+                                     final int[] percents,
+                                     final boolean vertical )
   {
     if( gradientColors != null && percents != null ) {
       if( gradientColors.length != percents.length ) {
@@ -63,6 +69,7 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
     if( percents != null ) {
       backgroundGradientPercents = ( int[] )percents.clone();
     }
+    backgroundGradientVertical = vertical;
   }
 
   public int getRoundedBorderWidth() {
@@ -76,9 +83,9 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
   public Rectangle getRoundedBorderRadius() {
     Rectangle result;
     if( roundedBorderRadius != null ) {
-      result = new Rectangle( roundedBorderRadius.x, 
-                              roundedBorderRadius.y, 
-                              roundedBorderRadius.width, 
+      result = new Rectangle( roundedBorderRadius.x,
+                              roundedBorderRadius.y,
+                              roundedBorderRadius.width,
                               roundedBorderRadius.height );
     } else {
       result = new Rectangle( 0, 0, 0, 0 );

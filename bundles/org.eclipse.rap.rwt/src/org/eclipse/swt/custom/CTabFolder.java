@@ -1088,7 +1088,6 @@ public class CTabFolder extends Composite {
    *  </ul>
    *  @since 1.3
    */
-  // TODO: [if] Only vertical gradient is supported. The "vertical" parameter is not used.
   public void setSelectionBackground( final Color[] colors,
                                       final int[] percents )
   {
@@ -1125,7 +1124,6 @@ public class CTabFolder extends Composite {
    *
    * @since 1.3
    */
-  // TODO: [if] Only vertical gradient is supported. The "vertical" parameter is not used.
   public void setSelectionBackground( final Color[] colors,
                                       final int[] percents,
                                       final boolean vertical )
@@ -1157,7 +1155,7 @@ public class CTabFolder extends Composite {
     }
 
     if( colors == null ) {
-      selectionGraphicsAdapter.setBackgroundGradient( null, null );
+      selectionGraphicsAdapter.setBackgroundGradient( null, null, vertical );
       setSelectionBackground( ( Color )null );
     } else {
       int colorsLength = colors.length;
@@ -1173,7 +1171,8 @@ public class CTabFolder extends Composite {
           gradientPercents[ i ] = percents[ i - 1 ];
         }
         selectionGraphicsAdapter.setBackgroundGradient( gradientColors,
-                                                        gradientPercents );
+                                                        gradientPercents,
+                                                        vertical );
         setSelectionBackground( gradientColors[ gradientColors.length - 1 ] );
       }
     }

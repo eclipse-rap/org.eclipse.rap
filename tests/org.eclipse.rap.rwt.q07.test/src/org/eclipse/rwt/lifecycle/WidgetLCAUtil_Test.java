@@ -489,12 +489,12 @@ public class WidgetLCAUtil_Test extends TestCase {
       Graphics.getColor( 0, 0, 255 )
     };
     int[] percents = new int[] { 0, 100 };
-    gfxAdapter.setBackgroundGradient( gradientColors, percents );
+    gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
     lca.renderChanges( control );
     String expected
       = "wm.setBackgroundGradient"
       + "( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], "
-      + "[0,100 ] );";
+      + "[0,100 ], true );";
     assertEquals( expected, Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
@@ -505,12 +505,12 @@ public class WidgetLCAUtil_Test extends TestCase {
       Graphics.getColor( 0, 0, 255 )
     };
     percents = new int[] { 0, 50, 100 };
-    gfxAdapter.setBackgroundGradient( gradientColors, percents );
+    gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
     lca.renderChanges( control );
     expected
       = "wm.setBackgroundGradient"
       + "( wm.findWidgetById( \"w2\" ), [\"#ff0000\",\"#00ff00\",\"#0000ff\" ],"
-      + " [0,50,100 ] );";
+      + " [0,50,100 ], true );";
     assertEquals( expected, Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
@@ -520,11 +520,36 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     Fixture.fakeResponseWriter();
     lca.preserveValues( control );
-    gfxAdapter.setBackgroundGradient( null, null );
+    gfxAdapter.setBackgroundGradient( null, null, true );
     lca.renderChanges( control );
     expected
       = "wm.setBackgroundGradient"
-      + "( wm.findWidgetById( \"w2\" ), null, null );";
+      + "( wm.findWidgetById( \"w2\" ), null, null, true );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+
+  public void testWriteBackgroundGradient_Horizontal() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Control control = new Composite( shell, SWT.NONE );
+
+    Fixture.fakeResponseWriter();
+    CompositeLCA lca = new CompositeLCA();
+    lca.preserveValues( control );
+    Fixture.markInitialized( control );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] gradientColors = new Color[] {
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    int[] percents = new int[] { 0, 100 };
+    gfxAdapter.setBackgroundGradient( gradientColors, percents, false );
+    lca.renderChanges( control );
+    String expected
+      = "wm.setBackgroundGradient"
+      + "( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], "
+      + "[0,100 ], false );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
