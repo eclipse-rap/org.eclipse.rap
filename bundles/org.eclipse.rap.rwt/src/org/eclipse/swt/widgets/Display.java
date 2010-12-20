@@ -1749,23 +1749,6 @@ public class Display extends Device implements Adaptable {
     }
   }
 
-  ///////////////////
-  // Settings support
-  // [if] Use this method when theme change in runtime is possible
-  private void sendSettingsEvent() {
-    Event event = new Event();
-    event.display = this;
-    event.type = SWT.Settings;
-    notifyFilters( event );
-    if( settingsListeners != null ) {
-      Listener[] listeners = new Listener[ settingsListeners.size() ];
-      settingsListeners.toArray( listeners );
-      for( int i = 0; i < listeners.length; i++ ) {
-        listeners[ i ].handleEvent( event );
-      }
-    }
-  }
-
   ///////////////
   // Data methods
 
