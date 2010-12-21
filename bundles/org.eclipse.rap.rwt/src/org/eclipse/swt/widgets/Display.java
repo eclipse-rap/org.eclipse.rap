@@ -201,7 +201,6 @@ public class Display extends Device implements Adaptable {
   private Widget[] skinList;
   private int skinCount;
   private Set skinListeners;
-  private Set settingsListeners;
 
   /* Display Data */
   private Object data;
@@ -580,11 +579,6 @@ public class Display extends Device implements Adaptable {
         skinListeners = new HashSet();
       }
       skinListeners.add( listener );
-    } else if( eventType == SWT.Settings ) {
-      if( settingsListeners == null ) {
-        settingsListeners = new HashSet();
-      }
-      settingsListeners.add( listener );
     }
   }
 
@@ -629,11 +623,6 @@ public class Display extends Device implements Adaptable {
       skinListeners.remove( listener );
       if( skinListeners.size() == 0 ) {
         skinListeners = null;
-      }
-    } else if( eventType == SWT.Settings && settingsListeners != null ) {
-      settingsListeners.remove( listener );
-      if( settingsListeners.size() == 0 ) {
-        settingsListeners = null;
       }
     }
   }
