@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -40,8 +39,6 @@ public class RWTLifeCycle extends LifeCycle {
 
   private static final String ATTR_SESSION_DISPLAY
     = RWTLifeCycle.class.getName() + "#sessionDisplay";
-  private static final String ATTR_REDRAW_CONTROLS
-    = RWTLifeCycle.class.getName() + "#redrawControls";
   private static final String INITIALIZED
     = RWTLifeCycle.class.getName() + "Initialized";
   private static final String CURRENT_PHASE
@@ -377,9 +374,6 @@ public class RWTLifeCycle extends LifeCycle {
         }
       }
     }
-    if( current == PhaseId.PROCESS_ACTION ) {
-      doRedrawFake();
-    }
   }
 
   private static void initialize() {
@@ -402,40 +396,6 @@ public class RWTLifeCycle extends LifeCycle {
       PhaseListener[] result = new PhaseListener[ listeners.size() ];
       listeners.toArray( result );
       return result;
-    }
-  }
-
-  public static void fakeRedraw( final Control control,
-                                 final boolean redraw )
-  {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Set set = ( Set )stateInfo.getAttribute( ATTR_REDRAW_CONTROLS );
-    if( set == null ) {
-      set = new HashSet();
-      stateInfo.setAttribute( ATTR_REDRAW_CONTROLS, set );
-    }
-    if( redraw ) {
-      set.add( control );
-    } else {
-      set.remove( control );
-    }
-  }
-  
-  public static boolean needsFakeRedraw( final Control control ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Set set = ( Set )stateInfo.getAttribute( ATTR_REDRAW_CONTROLS );
-    return set != null && set.contains( control );
-  }
-
-  private static void doRedrawFake() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Set set = ( Set )stateInfo.getAttribute( ATTR_REDRAW_CONTROLS );
-    if( set != null ) {
-      Object[] controls = set.toArray();
-      for( int i = 0; i < controls.length; i++ ) {
-        Control control = ( Control )controls[ i ];
-        WidgetUtil.getLCA( control ).doRedrawFake( control );
-      }
     }
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
@@ -1964,7 +1963,7 @@ public abstract class Control extends Widget implements Drawable {
   }
 
   void internalSetRedraw( final boolean redraw ) {
-    RWTLifeCycle.fakeRedraw( this, redraw );
+    display.redrawControl( this, redraw );
   }
 
   /**
@@ -2061,7 +2060,7 @@ public abstract class Control extends Widget implements Drawable {
     if( shell.getSavedFocus() == this ) {
       shell.setSavedFocus( null );
     }
-    RWTLifeCycle.fakeRedraw( this, false );
+    internalSetRedraw( false );
     super.releaseWidget();
   }
 
@@ -2122,8 +2121,7 @@ public abstract class Control extends Widget implements Drawable {
       display.setActiveShell( control.getShell() );
     }
     // focus
-    Object adapter = getDisplay().getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    IDisplayAdapter displayAdapter = getDisplayAdapter();
     displayAdapter.setFocusControl( control );
     // active
     if( control != null ) {
@@ -2169,9 +2167,8 @@ public abstract class Control extends Widget implements Drawable {
     shell.setSavedFocus (focusControl);
 //    OS.SetFocus (0);
     // Replacement for OS.setFocus( 0 )
-    IDisplayAdapter adapter
-      = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
-    adapter.setFocusControl( null );
+    IDisplayAdapter displayAdapter = getDisplayAdapter();
+    displayAdapter.setFocusControl( null );
   }
 
   // Copied from SWT/win32 as is
@@ -2219,5 +2216,9 @@ public abstract class Control extends Widget implements Drawable {
     if( menu != null ) {
       menu.removeDisposeListener( menuDisposeListener );
     }
+  }
+
+  private IDisplayAdapter getDisplayAdapter() {
+    return ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
   }
 }

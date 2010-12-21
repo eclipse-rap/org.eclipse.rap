@@ -13,7 +13,6 @@ package org.eclipse.swt.widgets;import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -1464,7 +1463,7 @@ public class Table_Test extends TestCase {
     // a SetData event to populate the newly appeared item at the bottom of the
     // table
     table.getItem( 0 ).dispose();
-    assertTrue( RWTLifeCycle.needsFakeRedraw( table ) );
+    assertTrue( display.needsRedraw( table ) );
   }
 
   public void testSetColumnOrderWithInvalidArguments() {

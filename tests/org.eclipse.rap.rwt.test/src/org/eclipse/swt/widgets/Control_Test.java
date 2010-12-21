@@ -15,14 +15,14 @@ package org.eclipse.swt.widgets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -32,6 +32,52 @@ import org.eclipse.swt.layout.FillLayout;
 
 
 public class Control_Test extends TestCase {
+
+  private static class RedrawLogginShell extends Shell {
+    private final List log;
+
+    private RedrawLogginShell( Display display, List log ) {
+      super( display );
+      this.log = log;
+    }
+
+    public Object getAdapter( Class adapter ) {
+      Object result = null;
+      if( adapter == ILifeCycleAdapter.class ) {
+        result = new LoggingWidgetLCA( log );
+      } else {
+        result = super.getAdapter( adapter );
+      }
+      return result;
+    }
+  }
+
+  private static class LoggingWidgetLCA extends AbstractWidgetLCA {
+    private final List log;
+
+    public LoggingWidgetLCA( List log ) {
+      this.log = log;
+    }
+
+    public void readData( Widget widget ) {
+    }
+
+    public void preserveValues( Widget widget ) {
+    }
+
+    public void renderInitialization( Widget widget ) throws IOException {
+    }
+    
+    public void doRedrawFake( Control control ) {
+      log.add( control );
+    }
+
+    public void renderChanges( Widget widget ) throws IOException {
+    }
+
+    public void renderDispose( Widget widget ) throws IOException {
+    }
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
@@ -741,7 +787,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testShowEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Listener showListener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -785,7 +830,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testHideEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Listener showListener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -843,7 +887,6 @@ public class Control_Test extends TestCase {
 
   public void testUntypedHelpListener() {
     final Event[] untypedHelpEvent = { null };
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Control control = new Shell( display );
     control.addListener( SWT.Help, new Listener() {
@@ -854,14 +897,54 @@ public class Control_Test extends TestCase {
     control.notifyListeners( SWT.Help, new Event() );
     assertNotNull( untypedHelpEvent[ 0 ] );
   }
+  
+  public void testSetRedraw() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    control.setRedraw( true );
+    assertTrue( display.needsRedraw( control ) );
+    control.setRedraw( false );
+    assertFalse( display.needsRedraw( control ) );
+  }
 
   public void testRedraw() {
     Display display = new Display();
     Composite control = new Shell( display );
     control.redraw();
-    assertTrue( RWTLifeCycle.needsFakeRedraw( control ) );
+    assertTrue( display.needsRedraw( control ) );
   }
-
+  
+  public void testRedrawWithBounds() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    control.redraw( 0, 0, -1, 0, true );
+    assertFalse( display.needsRedraw( control ) );
+  }
+  
+  public void testRedrawTriggersLCAInOrder() {
+    final List log = new ArrayList();
+    Display display = new Display();
+    Composite control0 = new RedrawLogginShell( display, log );
+    Composite control1 = new RedrawLogginShell( display, log );
+    control0.redraw();
+    control1.redraw();
+    display.readAndDispatch();
+    display.readAndDispatch();
+    assertEquals( 2, log.size() );
+    assertEquals( control0, log.get( 0 ) );
+    assertEquals( control1, log.get( 1 ) );
+    assertFalse( display.needsRedraw( control0 ) );
+    assertFalse( display.needsRedraw( control1 ) );
+  }
+  
+  public void testRedrawDisposed() {
+    Display display = new Display();
+    Composite control = new Shell( display );
+    control.redraw();
+    control.dispose();
+    assertFalse( display.needsRedraw( control ) );
+  }
+  
   public void testSetBackground() {
     Display display = new Display();
     Composite control = new Shell( display );
@@ -871,7 +954,8 @@ public class Control_Test extends TestCase {
     control.setBackground( null );
     IControlThemeAdapter themeAdapter
       = ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
-    assertEquals( themeAdapter.getBackground( control ), control.getBackground() );
+    assertEquals( themeAdapter.getBackground( control ), 
+                  control.getBackground() );
     Color color2 = new Color( display, 0, 0, 0 );
     color2.dispose();
     try {
@@ -899,8 +983,8 @@ public class Control_Test extends TestCase {
       try {
         stream.close();
       }
-      catch(IOException e) {
-        fail("Unable to close input stream.");
+      catch( IOException e ) {
+        fail( "Unable to close input stream." );
       }
     }
   }
@@ -957,7 +1041,8 @@ public class Control_Test extends TestCase {
     control.setForeground( null );
     IControlThemeAdapter themeAdapter
       = ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
-    assertEquals( themeAdapter.getForeground( control ), control.getForeground() );
+    assertEquals( themeAdapter.getForeground( control ), 
+                  control.getForeground() );
     Color color2 = new Color( display, 255, 0, 0 );
     color2.dispose();
     try {

@@ -189,6 +189,7 @@ public class Display extends Device implements Adaptable {
   private int scrollBarSize;
   private Shell activeShell;
   private List filters;
+  private Collection redrawControls;
   private Control focusControl;
   private final Monitor monitor;
   private IDisplayAdapter displayAdapter;
@@ -1136,6 +1137,9 @@ public class Display extends Device implements Adaptable {
       if( !result ) {
         result = synchronizer.runAsyncMessages( false );
       }
+      if( !result ) {
+        result = executeNextRedraw();
+      }
     }
     return result;
   }
@@ -1203,6 +1207,42 @@ public class Display extends Device implements Adaptable {
 
   Object getDeviceLock() {
     return deviceLock;
+  }
+
+  //////////
+  // Redraw
+
+  void redrawControl( final Control control, boolean redraw ) {
+    if( redraw ) {
+      if( redrawControls == null ) {
+        redrawControls = new LinkedList();
+      }
+      if( !redrawControls.contains( control ) ) {
+        redrawControls.add( control );
+      }
+    } else {
+      if( redrawControls != null ) {
+        redrawControls.remove( control );
+      }
+    }
+  }
+
+  boolean needsRedraw( final Control control ) {
+    return redrawControls != null && redrawControls.contains( control );
+  }
+
+  private boolean executeNextRedraw() {
+    boolean result = false;
+    if( redrawControls != null ) {
+      Iterator iterator = redrawControls.iterator();
+      if( iterator.hasNext() ) {
+        Control control = ( Control )iterator.next();
+        WidgetUtil.getLCA( control ).doRedrawFake( control );
+        redrawControls.remove( control );
+        result = true;
+      }
+    }
+    return result;
   }
 
   //////////////////////
@@ -2237,7 +2277,6 @@ public class Display extends Device implements Adaptable {
   }
 
   private final class DisplayAdapter implements IDisplayAdapter {
-
     private final ISessionStore session;
 
     private DisplayAdapter( final ISessionStore session ) {
