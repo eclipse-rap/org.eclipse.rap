@@ -115,7 +115,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._clientArea.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this._clientArea.setTop( 20 );
     this._clientArea.setLeft( 0 );
-    this._clientArea.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
+    this._noScroll = qx.lang.String.contains( style, "noScroll" );
+    if( !this._noScroll ) {
+      this._clientArea.addEventListener( "mousewheel",
+                                         this._onClientAreaMouseWheel,
+                                         this );
+    }
     this._clientArea.addEventListener( "appear", this._onClientAppear, this );
     var dragBlocker = function( event ) { event.stopPropagation(); };
     // Create horizontal scrollBar
@@ -209,7 +214,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._gridLines[ i ] = null;
     }
     if( this._clientArea ) {
-      this._clientArea.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
+      if( !this._noScroll ) {
+        this._clientArea.removeEventListener( "mousewheel",
+                                              this._onClientAreaMouseWheel,
+                                              this );
+      }
       this._clientArea.removeEventListener( "appear", this._onClientAppear, this );
       if( this._cellToolTip ) {
         this._clientArea.removeEventListener( "mousemove", this._onClientAreaMouseMove, this );

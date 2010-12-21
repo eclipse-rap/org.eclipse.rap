@@ -223,6 +223,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
 
+    setNoScroll : function( value ) {
+      if( value ) {
+        this._clientArea.removeEventListener( "mousewheel",
+                                              this._onClientAreaMouseWheel,
+                                              this );
+      }
+    },
+
     ///////////////////////////
     // API for server - general
     

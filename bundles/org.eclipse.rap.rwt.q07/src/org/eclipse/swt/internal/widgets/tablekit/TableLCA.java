@@ -133,6 +133,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( ( table.getStyle() & SWT.HIDE_SELECTION ) != 0 ) {
       style += "|hideSelection";
     }
+    if( ( table.getStyle() & SWT.NO_SCROLL ) != 0 ) {
+      style += "|noScroll";
+    }
     Object[] args = new Object[] { WidgetUtil.getId( table ), style };
     writer.newWidget( "org.eclipse.swt.widgets.Table", args );
     ControlLCAUtil.writeStyleFlags( table );
