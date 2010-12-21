@@ -1,23 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
+ ******************************************************************************/
 package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
@@ -278,6 +281,7 @@ public class CLabel extends Canvas {
     }
     background = color;
     backgroundImage = null;
+    setBackgroundGradient( null, null, false );
   }
 
   /**
@@ -290,13 +294,119 @@ public class CLabel extends Canvas {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  // TODO: [bm] review
-  public void setBackground( Image image ) {
+  public void setBackground( final Image image ) {
     checkWidget();
-    if ( image == backgroundImage )
-      return;
-    backgroundImage = image;
+    if( image != backgroundImage ) {
+      backgroundImage = image;
+      if( image != null ) {
+        setBackgroundGradient( null, null, false );
+      }
+    }
+  }
 
+  /**
+   * Specify a gradient of colours to be drawn in the background of the CLabel.
+   * <p>For example, to draw a gradient that varies from dark blue to blue and then to
+   * white and stays white for the right half of the label, use the following call
+   * to setBackground:</p>
+   * <pre>
+   *  clabel.setBackground(new Color[]{display.getSystemColor(SWT.COLOR_DARK_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE)},
+   *                   new int[] {25, 50, 100});
+   * </pre>
+   *
+   * @param colors an array of Color that specifies the colors to appear in the gradient
+   *               in order of appearance from left to right;  The value <code>null</code>
+   *               clears the background gradient; the value <code>null</code> can be used
+   *               inside the array of Color to specify the background color.
+   * @param percents an array of integers between 0 and 100 specifying the percent of the width
+   *                 of the widget at which the color should change; the size of the percents
+   *                 array must be one less than the size of the colors array.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the values of colors and percents are not consistent</li>
+   * </ul>
+   *
+   * @since 1.4
+   */
+  public void setBackground( final Color[] colors, final int[] percents ) {
+    setBackground( colors, percents, false );
+  }
+
+  /**
+   * Specify a gradient of colours to be drawn in the background of the CLabel.
+   * <p>For example, to draw a gradient that varies from dark blue to white in the vertical,
+   * direction use the following call
+   * to setBackground:</p>
+   * <pre>
+   *  clabel.setBackground(new Color[]{display.getSystemColor(SWT.COLOR_DARK_BLUE),
+   *                               display.getSystemColor(SWT.COLOR_WHITE)},
+   *                     new int[] {100}, true);
+   * </pre>
+   *
+   * @param colors an array of Color that specifies the colors to appear in the gradient
+   *               in order of appearance from left/top to right/bottom;  The value <code>null</code>
+   *               clears the background gradient; the value <code>null</code> can be used
+   *               inside the array of Color to specify the background color.
+   * @param percents an array of integers between 0 and 100 specifying the percent of the width/height
+   *                 of the widget at which the color should change; the size of the percents
+   *                 array must be one less than the size of the colors array.
+   * @param vertical indicate the direction of the gradient.  True is vertical and false is horizontal.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the values of colors and percents are not consistent</li>
+   * </ul>
+   *
+   * @since 1.4
+   */
+  public void setBackground( final Color[] colors,
+                             final int[] percents,
+                             final boolean vertical )
+  {
+    checkWidget();
+    if( colors != null ) {
+      if( percents == null || percents.length != colors.length - 1 ) {
+        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      for( int i = 0; i < percents.length; i++ ) {
+        if( percents[ i ] < 0 || percents[ i ] > 100 ) {
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+        if( i > 0 && percents[ i ] < percents[ i - 1 ] ) {
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+      }
+    }
+    if( colors == null ) {
+      setBackgroundGradient( null, null, false );
+    } else {
+      Color[] gradientColors = new Color[ colors.length ];
+      for( int i = 0; i < colors.length; ++i ) {
+        gradientColors[ i ] = colors[ i ] != null ? colors[ i ] : background;
+      }
+      int[] gradientPercents = new int[ gradientColors.length ];
+      gradientPercents[ 0 ] = 0;
+      for( int i = 1; i < gradientPercents.length; i++ ) {
+        gradientPercents[ i ] = percents[ i - 1 ];
+      }
+      setBackgroundGradient( gradientColors, gradientPercents, vertical );
+    }
+    backgroundImage = null;
+  }
+
+  private void setBackgroundGradient( final Color[] colors,
+                                      final int[] percents,
+                                      final boolean vertical )
+  {
+    IWidgetGraphicsAdapter adapter
+      = ( IWidgetGraphicsAdapter )getAdapter( IWidgetGraphicsAdapter.class );
+    adapter.setBackgroundGradient( colors, percents, vertical );
   }
 
   public void setFont( Font font ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -15,12 +16,19 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-
+import org.eclipse.swt.widgets.*;
 
 public class CLabelTab extends ExampleTab {
+
+  private CLabel left;
+  private CLabel center;
+  private CLabel right;
+  private boolean showBgGradient;
 
   private static final String IMAGE2 = "resources/newfile_wiz.gif";
   private static final String IMAGE1 = "resources/button-image.gif";
@@ -43,24 +51,57 @@ public class CLabelTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createBgImageButton();
+    createBgGradientButton();
   }
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout() );
     int style = getStyle();
-    CLabel left = new CLabel( parent, style );
+    left = new CLabel( parent, style );
     left.setText( "Some Text" );
     ClassLoader classLoader = getClass().getClassLoader();
     Image image1 = Graphics.getImage( IMAGE1, classLoader );
     left.setImage( image1 );
-    CLabel center = new CLabel( parent, style );
+    center = new CLabel( parent, style );
     center.setText( "First Line\nSecond Line\n" );
-    CLabel right = new CLabel( parent, style );
+    right = new CLabel( parent, style );
     right.setText( "And more" );
     Image image2 = Graphics.getImage( IMAGE2, classLoader );
     right.setImage( image2 );
     registerControl( left );
     registerControl( center );
     registerControl( right );
+  }
+
+  protected Button createBgGradientButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Background Gradient" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        showBgGradient = button.getSelection();
+        updateBgGradient();
+      }
+    } );
+    return button;
+  }
+
+  private void updateBgGradient() {
+    if( showBgGradient ) {
+      Color[] gradientColors = new Color[] {
+        BGG_COLOR_BLUE,
+        BGG_COLOR_GREEN,
+        BGG_COLOR_BLUE,
+        BGG_COLOR_GREEN,
+        BGG_COLOR_BLUE
+      };
+      int[] percents = new int[] { 25, 50, 75, 100 };
+      left.setBackground( gradientColors, percents );
+      center.setBackground( gradientColors, percents, true );
+      right.setBackground( gradientColors, percents );
+    } else {
+      left.setBackground( null, null );
+      center.setBackground( null, null );
+      right.setBackground( null, null );
+    }
   }
 }

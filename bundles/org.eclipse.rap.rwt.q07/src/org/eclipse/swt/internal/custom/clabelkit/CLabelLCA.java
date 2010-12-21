@@ -50,6 +50,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_BOTTOM_MARGIN,
                       new Integer( label.getBottomMargin() ) );
     WidgetLCAUtil.preserveCustomVariant( label );
+    WidgetLCAUtil.preserveBackgroundGradient( label );
   }
 
   public void readData( final Widget widget ) {
@@ -82,6 +83,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     writeAlignment( label );
     writeMargins( label );
     WidgetLCAUtil.writeCustomVariant( label );
+    WidgetLCAUtil.writeBackgroundGradient( label );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
