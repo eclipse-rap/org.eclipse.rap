@@ -208,6 +208,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._hasMultiSelection = value;
     },
 
+    setHasNoScroll : function( value ) {
+      if( value ) {
+        this._clientArea.removeEventListener( "mousewheel",
+                                              this._onClientAreaMouseWheel,
+                                              this );
+      }
+    },
+
     setIndentionWidth : function( offset ) {
       this._indentionWidth = offset;
     },
@@ -220,14 +228,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._isVirtual = value;
       if( value ) {
         this._createSendRequestTimer();
-      }
-    },
-
-    setNoScroll : function( value ) {
-      if( value ) {
-        this._clientArea.removeEventListener( "mousewheel",
-                                              this._onClientAreaMouseWheel,
-                                              this );
       }
     },
 

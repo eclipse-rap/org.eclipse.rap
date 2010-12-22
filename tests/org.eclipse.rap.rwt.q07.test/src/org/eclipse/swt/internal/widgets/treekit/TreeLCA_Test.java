@@ -35,10 +35,10 @@ import org.eclipse.swt.widgets.*;
 
 public class TreeLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   public void testMinimalInitialization() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeLCA lca = new TreeLCA();
     lca.renderInitialization( tree );
@@ -47,18 +47,14 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "w.setSelectionPadding( 3, 5 )" ) != -1 );
     assertTrue( markup.indexOf( "w.setIndentionWidth" ) != -1 );
     assertTrue( markup.indexOf( "w.setHasCheckBoxes(" ) == -1 );
+    assertTrue( markup.indexOf( "w.setHasNoScroll(" ) == -1 );
     assertTrue( markup.indexOf( "w.setHasMultiSelection(" ) == -1 );
     assertTrue( markup.indexOf( "w.setHasFullSelection(" ) == -1 );
     assertTrue( markup.indexOf( "w.setCheckBoxMetrics( " ) == -1 );
     assertTrue( markup.indexOf( "w.setIsVirtual( " ) == -1 );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testInitialization() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     int style = SWT.MULTI | SWT.CHECK | SWT.FULL_SELECTION | SWT.VIRTUAL;
     Tree tree = new Tree( shell, style );
     TreeLCA lca = new TreeLCA();
@@ -71,15 +67,18 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "w.setIsVirtual( true )" ) != -1 );
     assertTrue( markup.indexOf( "w.setCheckBoxMetrics( " ) != -1 );
     assertTrue( markup.indexOf( "w.setSelectionPadding" ) == -1 );
-    Fixture.clearPreserved();
-    display.dispose();
+  }
+
+  public void testInitializationWithNoScroll() throws Exception {
+    Tree tree = new Tree( shell, SWT.NO_SCROLL );
+    TreeLCA lca = new TreeLCA();
+    lca.renderInitialization( tree );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "w.setHasNoScroll( true )" ) != -1 );
   }
 
   public void testRenderTopItemIndex() throws Exception {
-    Fixture.fakeResponseWriter();
     TreeLCA lca = new TreeLCA();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
@@ -94,14 +93,9 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "w.setTopItemIndex( 4 )" )  != -1 );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testRenderColumnCount() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
@@ -117,14 +111,9 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "w.setColumnCount( 3" ) != -1 );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testRenderTreeColumn() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
@@ -140,14 +129,9 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "w.setTreeColumn( 1" ) != -1 );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testRenderLinesVisible() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setBounds( 0, 0, 100, 100 );
     Fixture.clearPreserved();
@@ -167,13 +151,9 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setLinesVisible( true )" ) == -1 );
-    display.dispose();
   }
 
   public void testRenderHorizontalScrollBar() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setBounds( 0, 0, 100, 100 );
     Fixture.clearPreserved();
@@ -189,14 +169,9 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setScrollBarsVisible( true, false )" ) != -1 );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testRenderVerticalScrollBar() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setBounds( 0, 0, 100, 100 );
     Fixture.clearPreserved();
@@ -213,15 +188,11 @@ public class TreeLCA_Test extends TestCase {
     lca.render( tree );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setScrollBarsVisible( false, true )" ) != -1 );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testGetItemMetricsImageWidth() {
-    Display display = new Display();
     Image image1 = Graphics.getImage( Fixture.IMAGE_100x50 );
     Image image2 = Graphics.getImage( Fixture.IMAGE_50x100 );
-    Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -248,10 +219,8 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testGetItemMetricsImageLeft() {
-    Display display = new Display();
     Image image1 = Graphics.getImage( Fixture.IMAGE_100x50 );
     Image image2 = Graphics.getImage( Fixture.IMAGE_50x100 );
-    Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -279,8 +248,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testGetItemMetricsCellLeft() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -301,8 +268,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testGetItemMetricsCellWidth() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -323,8 +288,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testGetItemMetricsTextLeftWithImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -346,8 +309,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testGetItemMetricsTextLeftWithCheckbox() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -365,8 +326,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testGetItemMetricsTextWidthWithCheckbox() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
@@ -384,8 +343,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     // Selection_Listener
@@ -572,14 +529,10 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testSelectionEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     final Tree tree = new Tree( shell, SWT.NONE );
     final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
@@ -610,8 +563,6 @@ public class TreeLCA_Test extends TestCase {
 
   public void testDefaultSelectionEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     final Tree tree = new Tree( shell, SWT.NONE );
     final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
@@ -642,8 +593,6 @@ public class TreeLCA_Test extends TestCase {
 
   public void testDefaultSelectionEventUntyped() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     final Tree tree = new Tree( shell, SWT.NONE );
     final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
@@ -672,8 +621,6 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testInvalidScrollValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     final Tree tree = new Tree( shell, SWT.NONE );
     String treeId = WidgetUtil.getId( tree );
     String displayId = DisplayUtil.getAdapter( display ).getId();
@@ -689,8 +636,6 @@ public class TreeLCA_Test extends TestCase {
   public void testScrollbarsSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final ArrayList log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
@@ -717,8 +662,6 @@ public class TreeLCA_Test extends TestCase {
 
   public void testWriteScrollbarsSelectionListener() throws IOException {
     Fixture.fakeNewRequest();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     SelectionAdapter listener = new SelectionAdapter() {
     };
@@ -735,9 +678,12 @@ public class TreeLCA_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
 }

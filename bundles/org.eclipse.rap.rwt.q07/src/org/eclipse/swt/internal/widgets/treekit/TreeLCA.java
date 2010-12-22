@@ -89,7 +89,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.newWidget( "org.eclipse.rwt.widgets.Tree" );
     ControlLCAUtil.writeStyleFlags( tree );
     if( ( tree.getStyle() & SWT.NO_SCROLL ) != 0 ) {
-      writer.set( "noScroll", true );
+      writer.set( "hasNoScroll", true );
     }
     if( ( tree.getStyle() & SWT.MULTI ) != 0 ) {
       writer.set( "hasMultiSelection", true );
