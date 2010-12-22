@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -20,25 +19,28 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.layout.*;
 
 public class Composite_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     assertTrue( ( composite.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
     composite = new Composite( shell, SWT.NONE );
@@ -46,8 +48,6 @@ public class Composite_Test extends TestCase {
   }
 
   public void testTabList() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     // add different controls to the shell
     Control button = new Button( shell, SWT.PUSH );
     Control link = new Link( shell, SWT.NONE );
@@ -79,8 +79,6 @@ public class Composite_Test extends TestCase {
   }
 
   public void testLayout() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     GridLayout gridLayout = new GridLayout();
     shell.setLayout( gridLayout );
     assertSame( gridLayout, shell.getLayout() );
@@ -90,8 +88,6 @@ public class Composite_Test extends TestCase {
   }
 
   public void testBackgroundMode() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     IControlAdapter adapter
       = ( IControlAdapter )button.getAdapter( IControlAdapter.class );
@@ -107,8 +103,6 @@ public class Composite_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.BORDER );
     assertEquals( 1, composite.getBorderWidth() );
     composite.setLayout( new FillLayout( SWT.HORIZONTAL ) );
@@ -123,8 +117,6 @@ public class Composite_Test extends TestCase {
 
   public void testSetFocus() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     shell.setVisible( true );
     Composite composite = new Composite( shell, SWT.BORDER );
     Text text = new Text( composite, SWT.SINGLE );
@@ -137,5 +129,15 @@ public class Composite_Test extends TestCase {
     assertEquals( "", log.toString() );
     composite.setFocus();
     assertEquals( "focusGained", log.toString() );
+  }
+
+  public void testMimimumSize() {
+    // See bug 333002
+    Group group = new Group( shell, SWT.NONE );
+    Rectangle clientArea = group.getClientArea();
+    Button button = new Button( group, SWT.PUSH );
+    button.setBounds( clientArea.x, clientArea.y, 200, 50 );
+    Point size = group.minimumSize( SWT.DEFAULT, SWT.DEFAULT, true );
+    assertEquals( new Point( 200, 50 ), size );
   }
 }
