@@ -33,15 +33,52 @@ public class MouseEvent_Test extends TestCase {
   private static final String MOUSE_DOUBLE_CLICK = "mouseDoubleClick|";
 
   private String log;
+  private Display display;
+  private Shell shell;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
     log = "";
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
+  }
+
+  public void testCopyFieldsFromUntypedEvent() {
+    final Button button = new Button( shell, SWT.PUSH );
+    button.addMouseListener( new MouseAdapter() {
+      public void mouseDown( MouseEvent event ) {
+        assertSame( button, event.getSource() );
+        assertEquals( button, event.widget );
+        assertSame( display, event.display );
+        assertEquals( 10, event.x );
+        assertEquals( 20, event.y );
+        assertEquals( 3, event.stateMask );
+        assertEquals( "data", event.data );
+        assertEquals( 2, event.button );
+        assertEquals( 4711, event.time );
+        assertEquals( SWT.MouseDown, event.getID() );
+        log += MOUSE_DOWN;
+      }
+    } );
+    Event event = new Event();
+    event.widget = button;
+    event.button = 2;
+    event.x = 10;
+    event.y = 20;
+    event.width = 30;
+    event.height = 40;
+    event.stateMask = 3;
+    event.doit = true;
+    event.data = "data";
+    event.time = 4711;
+    button.notifyListeners( SWT.MouseDown, event );
+    assertEquals( MOUSE_DOWN, log );
   }
 
   public void testAddRemoveListener() {
@@ -56,8 +93,6 @@ public class MouseEvent_Test extends TestCase {
         log += MOUSE_UP;
       }
     };
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     MouseEvent.addListener( shell, listener );
 
     MouseEvent event;
@@ -78,53 +113,49 @@ public class MouseEvent_Test extends TestCase {
 
   public void testAddRemoveUntypedListener() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Control control = new Shell( display, SWT.NONE );
     Listener listener = new Listener() {
       public void handleEvent( Event event ) {
         log.add( event );
       }
     };
     // MouseDown
-    control.addListener( SWT.MouseDown, listener );
+    shell.addListener( SWT.MouseDown, listener );
     MouseEvent event;
-    event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
+    event = new MouseEvent( shell, MouseEvent.MOUSE_DOWN );
     event.processEvent();
     Event firedEvent = ( Event )log.get( 0 );
     assertEquals( SWT.MouseDown, firedEvent.type );
     log.clear();
-    control.removeListener( SWT.MouseDown, listener );
-    event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
+    shell.removeListener( SWT.MouseDown, listener );
+    event = new MouseEvent( shell, MouseEvent.MOUSE_DOWN );
     event.processEvent();
     assertEquals( 0, log.size() );
     // MouseUp
-    control.addListener( SWT.MouseUp, listener );
-    event = new MouseEvent( control, MouseEvent.MOUSE_UP );
+    shell.addListener( SWT.MouseUp, listener );
+    event = new MouseEvent( shell, MouseEvent.MOUSE_UP );
     event.processEvent();
     firedEvent = ( Event )log.get( 0 );
     assertEquals( SWT.MouseUp, firedEvent.type );
     log.clear();
-    control.removeListener( SWT.MouseUp, listener );
-    event = new MouseEvent( control, MouseEvent.MOUSE_UP );
+    shell.removeListener( SWT.MouseUp, listener );
+    event = new MouseEvent( shell, MouseEvent.MOUSE_UP );
     event.processEvent();
     assertEquals( 0, log.size() );
     // MouseDoubleCLick
-    control.addListener( SWT.MouseDoubleClick, listener );
-    event = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
+    shell.addListener( SWT.MouseDoubleClick, listener );
+    event = new MouseEvent( shell, MouseEvent.MOUSE_DOUBLE_CLICK );
     event.processEvent();
     firedEvent = ( Event )log.get( 0 );
     assertEquals( SWT.MouseDoubleClick, firedEvent.type );
     log.clear();
-    control.removeListener( SWT.MouseDoubleClick, listener );
-    event = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
+    shell.removeListener( SWT.MouseDoubleClick, listener );
+    event = new MouseEvent( shell, MouseEvent.MOUSE_DOUBLE_CLICK );
     event.processEvent();
     assertEquals( 0, log.size() );
   }
 
   public void testTypedMouseEventOrder() {
     final java.util.List events = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setLocation( 100, 100 );
     shell.open();
     shell.addMouseListener( new MouseListener() {
@@ -196,8 +227,6 @@ public class MouseEvent_Test extends TestCase {
 
   public void testUntypedMouseEventOrder() {
     final java.util.List events = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setLocation( 100, 100 );
     shell.open();
     shell.addListener( SWT.MouseDown, new Listener() {
@@ -269,8 +298,6 @@ public class MouseEvent_Test extends TestCase {
 
   public void testNoMouseEventOutsideClientArea() {
     final java.util.List events = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
     shell.setLocation( 100, 100 );
@@ -318,8 +345,6 @@ public class MouseEvent_Test extends TestCase {
 
   public void testNoMouseEventOnScrollBars() {
     final java.util.List events = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 100, 100 );
     for( int i = 0; i < 50; i++ ) {

@@ -112,6 +112,8 @@ public class MouseEvent extends TypedEvent {
     this.y = event.y;
     this.button = event.button;
     this.stateMask = event.stateMask;
+    // TODO [rst] Pull up when bug 332976 is fixed 
+    this.time = event.time;
   }
 
   /**
