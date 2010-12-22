@@ -33,9 +33,19 @@ import org.eclipse.swt.widgets.*;
 
 public class TableLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  public void testInitializationWithNoScroll() throws Exception {
+    Table table = new Table( shell, SWT.NO_SCROLL );
+    TableLCA lca = new TableLCA();
+    Fixture.fakeResponseWriter();
+    lca.renderInitialization( table );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "|noScroll" ) != -1 );
+  }
+
   public void testPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.BORDER );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -263,17 +273,13 @@ public class TableLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testSetDataEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
     table.addListener( SWT.SetData, new Listener() {
-
       public void handleEvent( final Event event ) {
         assertSame( table.getItem( 1 ), event.item );
         assertEquals( 1, event.index );
@@ -287,8 +293,6 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "1" );
     Fixture.executeLifeCycleFromServerThread( );
-
-
     assertEquals( 1, ItemHolder.getItems( table ).length );
     assertEquals( "SetDataEvent", log.toString() );
     String tableItemCtor = "org.eclipse.swt.widgets.TableItem";
@@ -297,8 +301,6 @@ public class TableLCA_Test extends TestCase {
 
   public void testWidgetSelectedWithCheck() {
     final SelectionEvent[] events = new SelectionEvent[ 1 ];
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Table table = new Table( shell, SWT.CHECK );
     TableItem item1 = new TableItem( table, SWT.NONE );
     final TableItem item2 = new TableItem( table, SWT.NONE );
@@ -337,8 +339,6 @@ public class TableLCA_Test extends TestCase {
 
   public void testWidgetDefaultSelected() {
     final SelectionEvent[] events = new SelectionEvent[ 1 ];
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Table table = new Table( shell, SWT.MULTI );
     TableItem item1 = new TableItem( table, SWT.NONE );
     final TableItem item2 = new TableItem( table, SWT.NONE );
@@ -435,8 +435,6 @@ public class TableLCA_Test extends TestCase {
 
   public void testRedraw() {
     final Table[] table = { null };
-    Display display = new Display();
-    final Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
@@ -461,8 +459,6 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testNoUnwantedResolveItems() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     final Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 90, 90 );
@@ -502,8 +498,6 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
     final Table table = new Table( shell, SWT.VIRTUAL );
@@ -551,8 +545,6 @@ public class TableLCA_Test extends TestCase {
 
   public void testSelectUnresolvedVirtualItem() {
     // Set up VIRTUAL table with SetData listener
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     Listener listener = new Listener() {
@@ -596,8 +588,6 @@ public class TableLCA_Test extends TestCase {
    */
   public void testReduceItemCountInSetData() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.addListener( SWT.SetData, new Listener() {
@@ -625,9 +615,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testGetItemMetrics() {
-    Display display = new Display();
     Image image = Graphics.getImage( Fixture.IMAGE1 );
-    Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.NONE );
@@ -688,9 +676,7 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testGetItemMetricsWithoutColumns() {
-    Display display = new Display();
     Image image = Graphics.getImage( Fixture.IMAGE1 );
-    Shell shell = new Shell( display );
     shell.setBounds( 0, 0, 800, 600 );
     shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.NONE );
@@ -743,8 +729,6 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testAlwaysHideSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     assertEquals( Boolean.FALSE, TableLCA.alwaysHideSelection( table ) );
     table.setData( Table.ALWAYS_HIDE_SELECTION, Boolean.TRUE );
@@ -755,8 +739,6 @@ public class TableLCA_Test extends TestCase {
 
   public void testWriteScrollbarsVisible() throws IOException {
     Fixture.fakeNewRequest();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NO_SCROLL );
     TableLCA lca = new TableLCA();
     lca.renderChanges( table );
@@ -767,8 +749,6 @@ public class TableLCA_Test extends TestCase {
 
   public void testWriteScrollbarsSelectionListener() throws IOException {
     Fixture.fakeNewRequest();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     SelectionAdapter listener = new SelectionAdapter() {
     };
@@ -781,8 +761,6 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testWriteFocusIndex() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NO_SCROLL );
     for( int i = 0; i < 3; i++ ) {
       new TableItem( table, SWT.NONE );
@@ -805,8 +783,6 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testReadFocusIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.MULTI );
     for( int i = 0; i < 5; i++ ) {
       new TableItem( table, SWT.NONE );
@@ -823,8 +799,6 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testReadTopIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.MULTI );
     table.setSize( 485, 485 );
     for( int i = 0; i < 115; i++ ) {
@@ -843,8 +817,6 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testGetCellToolTipText() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 5 );
     Object adapter = table.getAdapter( ITableAdapter.class );
@@ -869,8 +841,6 @@ public class TableLCA_Test extends TestCase {
   }
 
   public void testCellTooltipRequestForMissingCells() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 3 );
     final StringBuffer log = new StringBuffer();
@@ -903,8 +873,6 @@ public class TableLCA_Test extends TestCase {
   public void testScrollbarsSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final ArrayList log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
@@ -931,9 +899,12 @@ public class TableLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
 
