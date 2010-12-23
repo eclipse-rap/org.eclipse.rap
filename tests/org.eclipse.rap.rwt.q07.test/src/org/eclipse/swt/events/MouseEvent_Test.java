@@ -12,6 +12,7 @@
 package org.eclipse.swt.events;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -50,35 +51,33 @@ public class MouseEvent_Test extends TestCase {
   }
 
   public void testCopyFieldsFromUntypedEvent() {
-    final Button button = new Button( shell, SWT.PUSH );
+    final List log = new ArrayList();
+    Button button = new Button( shell, SWT.PUSH );
     button.addMouseListener( new MouseAdapter() {
-      public void mouseDown( MouseEvent event ) {
-        assertSame( button, event.getSource() );
-        assertEquals( button, event.widget );
-        assertSame( display, event.display );
-        assertEquals( 10, event.x );
-        assertEquals( 20, event.y );
-        assertEquals( 3, event.stateMask );
-        assertEquals( "data", event.data );
-        assertEquals( 2, event.button );
-        assertEquals( 4711, event.time );
-        assertEquals( SWT.MouseDown, event.getID() );
-        log += MOUSE_DOWN;
+      public void mouseDown( final MouseEvent event ) {
+        log.add( event );
       }
     } );
+    Object data = new Object();
     Event event = new Event();
-    event.widget = button;
+    event.data = data;
     event.button = 2;
     event.x = 10;
     event.y = 20;
-    event.width = 30;
-    event.height = 40;
-    event.stateMask = 3;
-    event.doit = true;
-    event.data = "data";
+    event.stateMask = 23;
     event.time = 4711;
     button.notifyListeners( SWT.MouseDown, event );
-    assertEquals( MOUSE_DOWN, log );
+    MouseEvent mouseEvent = ( MouseEvent )log.get( 0 );
+    assertSame( button, mouseEvent.getSource() );
+    assertSame( button, mouseEvent.widget );
+    assertSame( display, mouseEvent.display );
+    assertSame( data, mouseEvent.data );
+    assertEquals( 10, mouseEvent.x );
+    assertEquals( 20, mouseEvent.y );
+    assertEquals( 2, mouseEvent.button );
+    assertEquals( 23, mouseEvent.stateMask );
+    assertEquals( 4711, mouseEvent.time );
+    assertEquals( SWT.MouseDown, mouseEvent.getID() );
   }
 
   public void testAddRemoveListener() {

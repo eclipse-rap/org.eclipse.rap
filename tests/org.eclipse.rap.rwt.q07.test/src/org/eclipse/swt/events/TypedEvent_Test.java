@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,12 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.events;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -46,25 +47,49 @@ public class TypedEvent_Test extends TestCase {
   private static final String BEFORE_PREPARE_UI_ROOT
     = "before" + PhaseId.PREPARE_UI_ROOT + "|";
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
+  }
+
+  public void testCopyFieldsFromUntypedEvent() {
+    final List log = new ArrayList();
+    Button button = new Button( shell, SWT.PUSH );
+    button.addHelpListener( new HelpListener() {
+      public void helpRequested( final HelpEvent event ) {
+        log.add( event );
+      }
+    } );
+    Object data = new Object();
+    Event event = new Event();
+    event.data = data;
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    button.notifyListeners( SWT.Help, event );
+    TypedEvent typedEvent = ( TypedEvent )log.get( 0 );
+    assertSame( button, typedEvent.getSource() );
+    assertSame( button, typedEvent.widget );
+    assertSame( display, typedEvent.display );
+    assertSame( data, typedEvent.data );
+    assertEquals( SWT.Help, typedEvent.getID() );
   }
 
   public void testPhase() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         log.append( EVENT_FIRED );
       }
     } );
-
     String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeResponseWriter();
@@ -101,7 +126,6 @@ public class TypedEvent_Test extends TestCase {
     // Ensure that two events get fired in the order as it is specified in
     // TypedEvent
     final java.util.List eventLog = new ArrayList();
-    Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
