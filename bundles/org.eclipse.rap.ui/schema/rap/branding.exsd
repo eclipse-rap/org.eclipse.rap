@@ -6,7 +6,10 @@
          <meta.schema plugin="org.eclipse.rap.ui" id="branding" name="Branding"/>
       </appInfo>
       <documentation>
-         The branding extension points allows you to have a RCP-like branding functionality but with additional aspects regarding web applications. You can specify values for the used servlet name or the favicon. Additionally you&apos;re able to group entrypoints together to one branding which helps you to brand external entrypoints.
+         A branding adds customizations and styling to the UI of a RAP application.  It can be used to set the title and icon displayed in the browser, or to apply a custom theme and styling.  A branding is associated with a name and can be activated by using this name as the servlet name in the URL.
+&lt;p&gt;
+Brandings can reside in a separate bundle, i.e. it is possible to brand applications without modifying their containing bundles.
+&lt;/p&gt;
       </documentation>
    </annotation>
 
@@ -62,21 +65,24 @@
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  The identifier of the branding with which it should be associated.
+                  The identifier of the branding.
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="servletName" type="string">
+         <attribute name="servletName" type="string" use="required">
             <annotation>
                <documentation>
-                  The name of the servlet on which the application should be available. Defining this attribute will cause your application to be available at http://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/&amp;lt;servletName&amp;gt;.
+                  The servlet name part of the URL under which the application should be available. As an example, setting this attribute to &amp;quot;foo&amp;quot; will make your application available at &lt;code&gt;http://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/foo&lt;/code&gt;.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="defaultEntrypointId" type="string">
             <annotation>
                <documentation>
-                  To not have an application-wide entrypoint you can define a default entrypoint per branding. Having an URI like http://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/&amp;lt;servletName&amp;gt; will automatically start the server with the entrypoint you defined here.
+                  A default entrypoint for this branding. This entrypoint is started when the application is accessed without a startup parameter like this: &lt;code&gt;http://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/&amp;lt;servletName&amp;gt;&lt;/code&gt;.
+&lt;p&gt;
+The value can be either the extension id of an application extension or the id of a registered entrypoint.
+&lt;/p&gt;
                </documentation>
                <appInfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.entrypoint/entrypoint/@id"/>
@@ -86,7 +92,7 @@
          <attribute name="themeId" type="string">
             <annotation>
                <documentation>
-                  To have the right look &amp;amp; feel for your application you can define the theme which should be used here.
+                  The theme to be used with this branding. If omitted, the default theme is used.
                </documentation>
                <appInfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.themes/theme/@id"/>
@@ -96,7 +102,10 @@
          <attribute name="title" type="string">
             <annotation>
                <documentation>
-                  The title attribute is responsible for the title of the RAP application. This will show up in the browser window or as title of the tab in the browser.
+                  The title of the application. This title is usually displayed as the browser window title or in the browser tab.
+&lt;p&gt;
+Effectively sets the &amp;lt;title&amp;gt; element of the HTML head.
+&lt;/p&gt;
                </documentation>
                <appInfo>
                   <meta.attribute translatable="true"/>
@@ -106,7 +115,10 @@
          <attribute name="favicon" type="string">
             <annotation>
                <documentation>
-                  If you have a logo or something for your web application you put its path here so it can be displayed as icon in the browser near the adressbar or in the favourites. Be sure you specify a file in the .ico format as most browsers don&apos;t accept other image types as favicons.
+                  The icon to be displayed with this application. The favicon is usually shown next to the browser&apos;s address bar or in the browser tab.
+&lt;p&gt;
+The icon should be in the .ico format for compatibility with all browsers.
+&lt;/p&gt;
                </documentation>
                <appInfo>
                   <meta.attribute kind="resource"/>
@@ -116,7 +128,7 @@
          <attribute name="body" type="string">
             <annotation>
                <documentation>
-                  You can define any valid html file to be used as body of the RAP startup page. You can put whatever you want in it as long as it does not break the page.
+                  A file that contains HTML markup to be added to the body of the RAP startup page. The file may contain any valid HTML.
                </documentation>
                <appInfo>
                   <meta.attribute kind="resource"/>
@@ -126,14 +138,13 @@
          <attribute name="exitConfirmationClass" type="string">
             <annotation>
                <documentation>
-                  Allows to show a confirmation dialog when the user tries to close the browser tab or window or to navigate away from the application.
+                  A class that defines the exit confirmation behavior of this application. This can be used to display a dialog that prevent users from unintentionally leaving the RAP application, losing all  their application state.
 &lt;p&gt;
 The argument must be a class that implements the interface &lt;code&gt;IExitConfirmation&lt;/code&gt;.
-This setting overrides the attribute &lt;code&gt;exitConfirmation&lt;/code&gt;.
 &lt;/p&gt;
 &lt;p&gt;
 &lt;b&gt;NOTE:&lt;/b&gt;
-This is not supported by every browser.
+Exit confirmations are not supported by some browsers.
 &lt;/p&gt;
                </documentation>
                <appInfo>
@@ -147,7 +158,7 @@ This is not supported by every browser.
    <element name="additionalHeaders">
       <annotation>
          <documentation>
-            Any additional header which should be added to the page.
+            Any additional header element to be added to the HTML page.
          </documentation>
       </annotation>
       <complexType>
@@ -163,7 +174,7 @@ This is not supported by every browser.
    <element name="meta">
       <annotation>
          <documentation>
-            Meta elements are elements used to provide structured metadata about a web page like author, keywords, description.
+            HTML META elements, used to provide structured metadata about a web page like author, keywords, description.
          </documentation>
       </annotation>
       <complexType>
@@ -173,14 +184,34 @@ This is not supported by every browser.
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  The name attribute of the meta tag.
+                  The name attribute of the META element.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="content" type="string">
             <annotation>
                <documentation>
-                  The content attribute of the meta tag.
+                  The content attribute of the META element.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="link">
+      <annotation>
+         <documentation>
+            HTML LINK elements, used to link the webpage with external resources such as CSS style sheets.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="attribute"/>
+         </sequence>
+         <attribute name="rel" type="string">
+            <annotation>
+               <documentation>
+                  The rel attribute of the LINK tag.
                </documentation>
             </annotation>
          </attribute>
@@ -190,7 +221,7 @@ This is not supported by every browser.
    <element name="attribute">
       <annotation>
          <documentation>
-            Attributes are used to provide additional informations for HTML tags.
+            Additional attributes to be added to HTML elements.
          </documentation>
       </annotation>
       <complexType>
@@ -205,26 +236,6 @@ This is not supported by every browser.
             <annotation>
                <documentation>
                   The value of the attribute.
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="link">
-      <annotation>
-         <documentation>
-            Link elements are elements used link the webpage with external resources like CSS style sheets.
-         </documentation>
-      </annotation>
-      <complexType>
-         <sequence minOccurs="0" maxOccurs="unbounded">
-            <element ref="attribute"/>
-         </sequence>
-         <attribute name="rel" type="string">
-            <annotation>
-               <documentation>
-                  The rel attribute of the meta tag.
                </documentation>
             </annotation>
          </attribute>
@@ -257,7 +268,7 @@ This is not supported by every browser.
          <attribute name="id" type="string">
             <annotation>
                <documentation>
-                  The id of the referenced entrypoint extension.
+                  The id of the referenced entrypoint or application extension.
                </documentation>
                <appInfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.entrypoint/entrypoint/@id"/>
@@ -366,17 +377,17 @@ This is not supported by every browser.
       <documentation>
          &lt;pre&gt;
 &lt;extension
-    point=&quot;org.eclipse.rap.ui.branding&quot;&gt;
-  &lt;branding
-    id=&quot;org.eclipse.rap.demo.teabranding&quot;
-    servletName=&quot;tea&quot;
-    defaultEntrypointId=&quot;org.eclipse.rap.demo.anentrypoint&quot;
-    themeId=&quot;org.eclipse.rap.demo.alttheme&quot;
-    title=&quot;It&amp;apos;s tea-time&quot;
-    favicon=&quot;icons/favicon2.ico&quot;
-    body=&quot;body.html&quot;
-    exitConfirmationClass=&quot;org.eclipse.rap.demo.DemoExitConfirmation&quot;
-  &lt;/branding&gt;
+      point=&quot;org.eclipse.rap.ui.branding&quot;&gt;
+   &lt;branding
+         id=&quot;org.example.tea.teabranding&quot;
+         servletName=&quot;tea&quot;
+         defaultEntrypointId=&quot;org.example.tea.application&quot;
+         themeId=&quot;org.example.tea.teatheme&quot;
+         title=&quot;Tea Portal&quot;
+         favicon=&quot;icons/favicon.ico&quot;
+         body=&quot;body.html&quot;
+         exitConfirmationClass=&quot;org.example.tea.ExitConfirmation&quot;&gt;
+   &lt;/branding&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
       </documentation>
@@ -397,7 +408,7 @@ This is not supported by every browser.
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         Copyright (c) 2007 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
+         Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
 All rights reserved. This program and the accompanying materials are made
 available under the terms of the Eclipse Public License v1.0 which accompanies
 this distribution, and is available at &lt;a 
