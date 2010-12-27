@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.theme;
 
 
 /**
- * Simple genearator for JSON arrays.
+ * Simple generator for JSON arrays.
  */
 public final class JsonArray extends JsonValue {
 
