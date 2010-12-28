@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2008 IBM Corporation and others.
+ * Copyright (c) 2003, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,17 +18,28 @@ import org.eclipse.ui.presentations.IPresentablePart;
  * IWorkbenchPartProgressService is an IProgressService that adds API for jobs
  * that change the state in a IWorkbenchPartSite while they are being run.
  * <p>
- * WorkbenchParts may access an instance of IWorkbenchSiteProgressService by
- * calling <code>getSite.getAdapter(IWorkbenchSiteProgressService.class);</code>
+ * This service can be acquired from your service locator (IWorkbenchPartSite):
+ * 
+ * <pre>
+ * <code>
+ * 	IWorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) getSite().getService(IWorkbenchSiteProgressService.class);
+ * </code>
+ * </pre>
+ * 
+ * <ul>
+ * <li>This service is not available globally, only at the part site level.</li>
+ * </ul>
  * </p>
  * <p>
- * It can also be acquired from your service locator: e.g.
- * getSite().getService(IWorkbenchSiteProgressService.class)
+ * WorkbenchParts may access an instance of IWorkbenchSiteProgressService by
+ * calling
+ * <code>getSite().getAdapter(IWorkbenchSiteProgressService.class);</code> ,
+ * although getSite().getService(IWorkbenchSiteProgressService.class) is
+ * preferred.
  * </p>
  * 
- * This interface is not intended to be implemented by client plug-ins.
- * 
  * @see IWorkbenchPartSite#getAdapter(Class)
+ * @see org.eclipse.ui.services.IServiceLocator#getService(Class)
  * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
@@ -40,40 +51,49 @@ public interface IWorkbenchSiteProgressService extends IProgressService {
      */
     public static final String BUSY_PROPERTY = "SITE_BUSY"; //$NON-NLS-1$
 
-    /**
-     * Jobs scheduled with this method will cause the part's presentation 
-     * to be changed to indicate that the part is busy and in a transient 
-     * state until the job completes. Parts can also add customized busy 
-     * indication by overriding <code>WorkbenchPart.setBusy()</code>.
-     * If useHalfBusyCursor is true then the cursor will change to
-     * the half busy cursor for the duration of the job.
-     * @param job The job to schedule
-     * @param delay The delay in scheduling.
-     * @param useHalfBusyCursor A boolean to indicate if the half busy
-     * 		cursor should be used while this job is running.
-     * @see Job#schedule(long)
-     */
+	/**
+	 * Jobs scheduled with this method will cause the part's presentation to be
+	 * changed to indicate that the part is busy and in a transient state until
+	 * the job completes. Parts can also add customized busy indication by
+	 * overriding <code>WorkbenchPart.showBusy()</code>. If useHalfBusyCursor is
+	 * true then the cursor will change to the half busy cursor for the duration
+	 * of the job.
+	 * 
+	 * @param job
+	 *            The job to schedule
+	 * @param delay
+	 *            The delay in scheduling.
+	 * @param useHalfBusyCursor
+	 *            A boolean to indicate if the half busy cursor should be used
+	 *            while this job is running.
+	 * @see Job#schedule(long)
+	 */
     public void schedule(Job job, long delay, boolean useHalfBusyCursor);
 
-    /**
-     * Jobs scheduled with this method will cause the part's presentation 
-     * to be changed to indicate that the part is busy and in a transient 
-     * state until the job completes. Parts can also add customized busy 
-     * indication by overriding <code>WorkbenchPart.setBusy</code>.
-     * @param job The job to schedule
-     * @param delay The delay in scheduling.
-     * @see Job#schedule(long)
-     */
+	/**
+	 * Jobs scheduled with this method will cause the part's presentation to be
+	 * changed to indicate that the part is busy and in a transient state until
+	 * the job completes. Parts can also add customized busy indication by
+	 * overriding <code>WorkbenchPart.showBusy</code>.
+	 * 
+	 * @param job
+	 *            The job to schedule
+	 * @param delay
+	 *            The delay in scheduling.
+	 * @see Job#schedule(long)
+	 */
     public void schedule(Job job, long delay);
 
-    /**
-     * Jobs scheduled with this method will cause the part's presentation 
-     * to be changed to indicate that the part is busy and in a transient 
-     * state until the job completes. Parts can also add customized busy 
-     * indication by overriding <code>WorkbenchPart.setBusy</code>.
-     * @param job The job to schedule
-     * @see Job#schedule()
-     */
+	/**
+	 * Jobs scheduled with this method will cause the part's presentation to be
+	 * changed to indicate that the part is busy and in a transient state until
+	 * the job completes. Parts can also add customized busy indication by
+	 * overriding <code>WorkbenchPart.showBusy</code>.
+	 * 
+	 * @param job
+	 *            The job to schedule
+	 * @see Job#schedule()
+	 */
     public void schedule(Job job);
 
     /**

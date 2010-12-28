@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,9 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Chris Grindstaff <chris@gstaff.org> - Fix for bug 158016     
+ *     Chris Grindstaff <chris@gstaff.org> - Fix for bug 158016
  *     Tonny Madsen, RCP Company - bug 201055
+ *     Mark Hoffmann <mark.hoffmann@web.de> - Fix for bug 84603
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
@@ -53,6 +54,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -373,13 +375,25 @@ public class PerspectiveSwitcher implements IWindowTrim {
         StringTokenizer tok = new StringTokenizer(extras, ", "); //$NON-NLS-1$
         int numExtras = tok.countTokens();
         int numPersps = Math.max(numExtras, 1); // assume initial perspective is also listed in extras
-		return Math.max(MIN_DEFAULT_WIDTH, MIN_WIDTH + (numPersps*ITEM_WIDTH));
+        
+        // Fixed bug 84603: [RCP] [PerspectiveBar] New API or pref to set default perspective bar size
+        String sizeString = PrefUtil.getAPIPreferenceStore().getString(
+				IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_SIZE);
+        int size = MIN_DEFAULT_WIDTH;
+        try {
+        	 size = Integer.parseInt(sizeString);
+        }
+        catch (NumberFormatException e) {
+        	// leave size value at MIN_DEFAULT_WIDTH
+        }
+        int defaultWidth = Math.max(MIN_DEFAULT_WIDTH, size);
+		return Math.max(defaultWidth, MIN_WIDTH + (numPersps*ITEM_WIDTH));
 	}
 
 	/**
 	 * Get the trim manager from the default workbench window. If the current
 	 * workbench window is -not- the <code>WorkbenchWindow</code> then return null.
-	 *  
+	 * 
 	 * @return The trim manager for the current workbench window
 	 */
 	private ITrimManager getTrimManager() {
@@ -553,7 +567,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
 	}
 
     /**
-	 * Attach drag and drop support and associated listeners hooked for 
+	 * Attach drag and drop support and associated listeners hooked for
 	 * the perspective switcher.
 	 */
 	 private void hookDragSupport() {
@@ -784,7 +798,6 @@ public class PerspectiveSwitcher implements IWindowTrim {
         });
         coolItem.setMinimumSize(0, 0);
         perspectiveBar.getControl().addListener(SWT.MenuDetect, popupListener);
-
     }
 
     /**
@@ -832,7 +845,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
         // Get the tool item under the mouse.
         ToolBar toolBar = perspectiveBar.getControl();
         ToolItem toolItem = toolBar.getItem(toolBar.toControl(pt));
-
+        
         // Get the action for the tool item.
         Object data = null;
         if (toolItem != null){
@@ -893,7 +906,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     /**
      * @param persp the perspective
-     * @return <code>true</code> if the perspective is active in the active page 
+     * @return <code>true</code> if the perspective is active in the active page
      */
     private boolean perspectiveIsActive(IPerspectiveDescriptor persp) {
     	IWorkbenchPage page = window.getActivePage();
@@ -902,7 +915,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     /**
      * @param persp the perspective
-     * @return <code>true</code> if the perspective is open in the active page 
+     * @return <code>true</code> if the perspective is open in the active page
      */
     private boolean perspectiveIsOpen(IPerspectiveDescriptor persp) {
     	IWorkbenchPage page = window.getActivePage();
@@ -932,8 +945,6 @@ public class PerspectiveSwitcher implements IWindowTrim {
         window.getWorkbench().getHelpSystem().setHelp(menuItem,
         		IWorkbenchHelpContextIds.CLOSE_PAGE_ACTION);
         menuItem.addSelectionListener(new SelectionAdapter() {
-			private static final String COMMAND_CLOSE_PERSP = "org.eclipse.ui.window.closePerspective"; //$NON-NLS-1$
-			private static final String PARAMETER_CLOSE_PERSP_ID = "org.eclipse.ui.window.closePerspective.perspectiveId"; //$NON-NLS-1$
 
 			public void widgetSelected(SelectionEvent e) {
                 ToolItem perspectiveToolItem = (ToolItem) popupMenu
@@ -946,10 +957,13 @@ public class PerspectiveSwitcher implements IWindowTrim {
 					IPerspectiveDescriptor persp = item.getPerspective();
 					
 					ICommandService commandService = (ICommandService) window.getService(ICommandService.class);
-					Command command = commandService.getCommand(COMMAND_CLOSE_PERSP);
+					Command command = commandService.getCommand(IWorkbenchCommandConstants.WINDOW_CLOSE_PERSPECTIVE);
 					
 					HashMap parameters = new HashMap();
-					parameters.put(PARAMETER_CLOSE_PERSP_ID, persp.getId());
+					parameters
+							.put(
+									IWorkbenchCommandConstants.WINDOW_CLOSE_PERSPECTIVE_PARM_ID,
+									persp.getId());
 					
 					ParameterizedCommand pCommand = ParameterizedCommand.generateCommand(command, parameters);
 					
@@ -973,8 +987,14 @@ public class PerspectiveSwitcher implements IWindowTrim {
     private PerspectiveBarManager createBarManager(int direction) {
         PerspectiveBarManager barManager = new PerspectiveBarManager(style
                 | direction);
+		// this is the index in which the item for recently perspectives should
+		// be inserted into
+		int perspectiveInsertionIndex = 0;
         if (apiPreferenceStore.getBoolean(IWorkbenchPreferenceConstants.SHOW_OPEN_ON_PERSPECTIVE_BAR)) {
 			barManager.add(new PerspectiveBarNewContributionItem(window));
+			// the 'Open Perspective' needs to go first, so we offset the other
+			// perspective entries after it by setting our index to '1'
+			perspectiveInsertionIndex = 1;
 		}
 
         // add an item for all open perspectives
@@ -984,13 +1004,15 @@ public class PerspectiveSwitcher implements IWindowTrim {
             IPerspectiveDescriptor[] perspectives = page
                     .getOpenPerspectives();
             for (int i = 0; i < perspectives.length; i++) {
-                barManager.insert(1, new PerspectiveBarContributionItem(
+				barManager.insert(perspectiveInsertionIndex,
+						new PerspectiveBarContributionItem(
                         perspectives[i], page));
             }
         }
 
         return barManager;
     }
+
 
     private void updateLocationItems(Menu parent, int newLocation) {
         MenuItem left;
@@ -1024,13 +1046,13 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
         final MenuItem menuItemTopRight = new MenuItem(subMenu, SWT.RADIO);
         menuItemTopRight.setText(WorkbenchMessages.get().PerspectiveSwitcher_topRight); 
-
+        
         window.getWorkbench().getHelpSystem().setHelp(menuItemTopRight,
         		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
 
         final MenuItem menuItemTopLeft = new MenuItem(subMenu, SWT.RADIO);
         menuItemTopLeft.setText(WorkbenchMessages.get().PerspectiveSwitcher_topLeft); 
-
+        
         window.getWorkbench().getHelpSystem().setHelp(menuItemTopLeft,
         		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
 
@@ -1105,7 +1127,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
                 PrefUtil
                         .getAPIPreferenceStore()
                         .getBoolean(
-                                IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR));        
+                                IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR));
     }
 
     private void addCustomizeItem(Menu menu) {
@@ -1122,7 +1144,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
 						.getService(IHandlerService.class);
 				try {
 					handlerService.executeCommand(
-							"org.eclipse.ui.window.customizePerspective", null); //$NON-NLS-1$
+							IWorkbenchCommandConstants.WINDOW_CUSTOMIZE_PERSPECTIVE, null);
 				} catch (ExecutionException e1) {
 				} catch (NotDefinedException e1) {
 				} catch (NotEnabledException e1) {
@@ -1161,14 +1183,14 @@ public class PerspectiveSwitcher implements IWindowTrim {
 				}
                 ResetPerspectiveAction resetAction=new ResetPerspectiveAction(window);
                 resetAction.setEnabled(true);
-                resetAction.run(); 
+                resetAction.run();
              }
         });
     }
     
     /**
-     * Method to save the width of the perspective bar in the 
-     * @param persBarMem 
+     * Method to save the width of the perspective bar in the
+     * @param persBarMem
      */
     public void saveState(IMemento persBarMem) {
         // save the width of the perspective bar
@@ -1187,7 +1209,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     /**
      * Method to restore the width of the perspective bar
-     * @param memento 
+     * @param memento
      */
     public void restoreState(IMemento memento) {
         if (memento == null) {

@@ -111,7 +111,7 @@
 //		be.init(parameterizedCommand);
 //		be.setParent(this);
 //		bindingElements.add(be);
-//		commandToElement.put(parameterizedCommand.getId(), be);
+//		commandToElement.put(parameterizedCommand, be);
 //		controller.firePropertyChange(this, PROP_BINDING_ADD, null, be);
 //		setSelectedElement(be);
 //	}
@@ -190,7 +190,7 @@
 //				be.init(cmd);
 //				be.setParent(this);
 //				bindingElements.add(be);
-//				commandToElement.put(cmd.getId(), be);
+//				commandToElement.put(cmd, be);
 //			}
 //		}
 //	}
@@ -220,10 +220,9 @@
 //				bindingToElement.put(b, be);
 //				controller.firePropertyChange(this, PROP_BINDING_ADD, null, be);
 //
-//				String idKey = parameterizedCommand.getId();
-//				if (commandToElement.containsKey(idKey)
+//				if (commandToElement.containsKey(parameterizedCommand)
 //						&& be.getUserDelta().intValue() == Binding.SYSTEM) {
-//					Object remove = commandToElement.remove(idKey);
+//					Object remove = commandToElement.remove(parameterizedCommand);
 //					bindingElements.remove(remove);
 //					controller.firePropertyChange(this, PROP_BINDING_REMOVE,
 //							null, remove);
@@ -260,7 +259,7 @@
 //				be.init(cmd);
 //				be.setParent(this);
 //				bindingElements.add(be);
-//				commandToElement.put(cmd.getId(), be);
+//				commandToElement.put(cmd, be);
 //				controller.firePropertyChange(this, PROP_BINDING_ADD, null, be);
 //			}
 //		}
@@ -316,7 +315,7 @@
 //						ParameterizedCommand pCommand = binding
 //								.getParameterizedCommand();
 //						be.fill(pCommand);
-//						commandToElement.put(pCommand.getId(), be);
+//						commandToElement.put(pCommand, be);
 //					}
 //				}
 //			}
@@ -324,7 +323,7 @@
 //		ParameterizedCommand parameterizedCommand = keyBinding
 //				.getParameterizedCommand();
 //		bindingElement.fill(parameterizedCommand);
-//		commandToElement.put(parameterizedCommand.getId(), bindingElement);
+//		commandToElement.put(parameterizedCommand, bindingElement);
 //		controller.firePropertyChange(this, PROP_CONFLICT_ELEMENT_MAP, null,
 //				bindingElement);
 //	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -277,6 +277,9 @@ public class ProgressViewUpdater implements IJobProgressManagerListener {
 		}
     }
 
+    /** keep track of how often we schedule the job to avoid overloading the JobManager */
+    private long lastUpdateJobScheduleRequest = 0;
+    
     /**
      * Schedule an update.
      */
@@ -287,10 +290,13 @@ public class ProgressViewUpdater implements IJobProgressManagerListener {
 //            updateJob.schedule(100);
 //        }
         if (ProgressUtil.isWorkbenchRunning( display )) {
-          //Add in a 100ms delay so as to keep priority low
+          // make sure we don't schedule too often
+          final long now = System.currentTimeMillis();
           UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
             public void run() {
+	          //Add in a 100ms delay so as to keep priority low
               updateJob.schedule(100);
+        	  lastUpdateJobScheduleRequest = now;
             }
           } );
         }

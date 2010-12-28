@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,9 @@ import org.eclipse.ui.internal.tweaklets.Tweaklets;
  */
 public class NavigationHistory implements INavigationHistory {
 
-    private static final int CAPACITY = 50;
+	private static final boolean DEBUG= false;
+
+	private static final int CAPACITY = 50;
 
     private NavigationHistoryAction backwardAction;
 
@@ -53,15 +55,16 @@ public class NavigationHistory implements INavigationHistory {
 
     private ArrayList editors = new ArrayList(CAPACITY);
 
-    private WorkbenchPage page;
+    private IWorkbenchPage page;
 
     private int activeEntry = 0;
 
-    /**
-     * Creates a new NavigationHistory to keep the NavigationLocation
-     * entries of the specified page.
-     */
-    public NavigationHistory(final WorkbenchPage page) {
+	/**
+	 * Creates a new NavigationHistory to keep the NavigationLocation entries of the specified page.
+	 * 
+	 * @param page the workbench page
+	 */
+    public NavigationHistory(final IWorkbenchPage page) {
         this.page = page;
         page.addPartListener(new IPartListener2() {
             public void partActivated(IWorkbenchPartReference partRef) {
@@ -153,8 +156,8 @@ public class NavigationHistory implements INavigationHistory {
                     
                     /*
                      * Promote the entry of the last closed editor to be the active
-                     * one, see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=154431 
-                     */ 
+                     * one, see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=154431
+                     */
                     if (!isEntryDisposed && page.getActiveEditor() == null && activeEntry < history.size())
                     	activeEntry++;
                     
@@ -179,7 +182,7 @@ public class NavigationHistory implements INavigationHistory {
         if (ignoreEntries > 0 || part == null) {
 			return;
 		}
-        /* Ignore all entries until the async exec runs. Workaround to avoid 
+        /* Ignore all entries until the async exec runs. Workaround to avoid
          * extra entry when using Open Declaration (F3) that opens another editor. */
         ignoreEntries++;
         getDisplay().asyncExec(new Runnable() {
@@ -213,7 +216,7 @@ public class NavigationHistory implements INavigationHistory {
 
     /*
      * Return the backward history entries.  Return in restore order (i.e., the
-     * first entry is the entry that would become active if the "Backward" action 
+     * first entry is the entry that would become active if the "Backward" action
      * was executed).
      * <p>
      * (Called by NavigationHistoryAction)
@@ -387,7 +390,7 @@ public class NavigationHistory implements INavigationHistory {
      * Prints all the entries in the console. For debug only.
      */
     private void printEntries(String label) {
-        if (false) {
+        if (DEBUG) {
             System.out.println("+++++ " + label + "+++++ "); //$NON-NLS-1$ //$NON-NLS-2$
             int size = history.size();
             for (int i = 0; i < size; i++) {
@@ -627,7 +630,7 @@ public class NavigationHistory implements INavigationHistory {
 
 					public void runWithException() throws Throwable {
 						gotoEntry(entry);
-					}});		
+					}});
 			}
         }
     }
@@ -643,9 +646,8 @@ public class NavigationHistory implements INavigationHistory {
                     && editorInput.equals(info.editorInput)) {
                 info.refCount++;
                 break;
-            } else {
-                info = null;
             }
+			info= null;
         }
         if (info == null) {
             info = new NavigationHistoryEditorInfo(part);
@@ -676,9 +678,8 @@ public class NavigationHistory implements INavigationHistory {
             if (info != dup && info.editorID.equals(dup.editorID)
                     && info.editorInput.equals(dup.editorInput)) {
 				break;
-			} else {
-				dup = null;
 			}
+			dup= null;
         }
         if (dup == null) {
 			return;
@@ -879,12 +880,12 @@ public class NavigationHistory implements INavigationHistory {
     	return false;
     }
 
-    /**
-     * Returns entries in restore order.
-     * @param editorTabCookie
-     * @param forward
-     * @return
-     */
+	/**
+	 * Returns entries in restore order.
+	 * 
+	 * @param forward <code>true</code> for forward and <code>false</code> for backward history
+	 * @return the navigation history entries
+	 */
     private NavigationHistoryEntry[] getEntriesForTab(boolean forward) {
 		Object editorTabCookie = getCookieForTab(page.getActiveEditor());
 		if (editorTabCookie != null) {
@@ -926,4 +927,27 @@ public class NavigationHistory implements INavigationHistory {
 			it.remove();
 		}
 	}
+
+	public boolean updateActive(IEditorPart editor) {
+        NavigationHistoryEntry e = getEntry(activeEntry);
+        if (e == null)
+        	return false;
+        // 1) check if editor ID matches
+        IWorkbenchPartSite site = editor.getSite();
+        if (site == null) // might happen if site has not being initialized yet
+        	return false;
+        String editorID = site.getId(); 
+        if (editorID == null) // should not happen for an editor
+        	return false;
+        if (!editorID.equals(e.editorInfo.editorID))
+            return false;
+        // 2) check that input matches
+		IEditorInput input = editor.getEditorInput();
+		if (input == null)
+			return false;
+		if (!input.equals(e.editorInfo.editorInput))
+			return false;
+		updateEntry(e);
+		return true;
+    }
 }

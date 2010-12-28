@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,17 @@ import org.eclipse.ui.services.IServiceWithSources;
  * line.
  * </p>
  * <p>
- * This interface should not be implemented or extended by clients.
+ * This service can be acquired from your service locator:
+ * <pre>
+ * 	IMenuService service = (IMenuService) getSite().getService(IMenuService.class);
+ * </pre>
+ * <ul>
+ * <li>This service is available globally.</li>
+ * </ul>
  * </p>
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
  * 
  * @since 1.0
  */
@@ -32,11 +41,6 @@ public interface IMenuService extends IServiceWithSources {
 	 * Contribute and initialize the contribution factory. This should only be
 	 * called once per factory. After the call, the factory should be treated as
 	 * an unmodifiable object.
-	 * <p>
-	 * <b>Note:</b> Contributing factories will place them within the existing
-	 * contribution manager menu or toolbar structure, not reprocess the
-	 * entire menu contributions for that factory.
-	 * </p>
 	 * <p>
 	 * <b>Note:</b> factories should be removed when no longer necessary. If
 	 * not, they will be removed when the IServiceLocator used to acquire this
@@ -52,12 +56,6 @@ public interface IMenuService extends IServiceWithSources {
 	/**
 	 * Remove the contributed factory from the menu service. If the factory is
 	 * not contained by this service, this call does nothing.
-	 * <p>
-	 * <b>Note:</b>In 3.3M4, this factory will no longer be called during
-	 * {@link #populateContributionManager(ContributionManager, String)} calls,
-	 * but outstanding contributions will not be removed from populated
-	 * contribution managers.
-	 * </p>
 	 * 
 	 * @param factory
 	 *            the contribution factory to remove. Must not be
@@ -86,6 +84,11 @@ public interface IMenuService extends IServiceWithSources {
 	 * service, you must inform the menu service to release its contributions.
 	 * This takes care of unregistering any IContributionItems that have their
 	 * visibleWhen clause managed by this menu service.
+	 * <p>
+	 * This will not update the ContributionManager (and any widgets). It will
+	 * simply remove all menu service references to the contents of this
+	 * ContributionManager.
+	 * </p>
 	 * 
 	 * @param mgr
 	 *            The manager that was populated by a call to
@@ -99,6 +102,7 @@ public interface IMenuService extends IServiceWithSources {
 	 * @return an IEvaluationContext containing state variables.
 	 * 
 	 * @see org.eclipse.ui.ISources
+	 * @see org.eclipse.ui.services.IEvaluationService
 	 */
 	public IEvaluationContext getCurrentState();
 }

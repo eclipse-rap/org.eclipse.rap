@@ -1,6 +1,6 @@
 // RAP [rh] quick access disabled
 ///*******************************************************************************
-// * Copyright (c) 2005, 2008 IBM Corporation and others.
+// * Copyright (c) 2005, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@
 //import java.util.LinkedList;
 //import java.util.List;
 //import java.util.Map;
-//
 //import org.eclipse.core.commands.Command;
 //import org.eclipse.core.runtime.Assert;
 //import org.eclipse.jface.bindings.TriggerSequence;
@@ -32,6 +31,7 @@
 //import org.eclipse.jface.resource.ImageDescriptor;
 //import org.eclipse.jface.resource.JFaceResources;
 //import org.eclipse.jface.resource.LocalResourceManager;
+//import org.eclipse.jface.util.Util;
 //import org.eclipse.jface.viewers.ColumnWeightData;
 //import org.eclipse.osgi.util.NLS;
 //import org.eclipse.swt.SWT;
@@ -45,6 +45,7 @@
 //import org.eclipse.swt.events.ModifyListener;
 //import org.eclipse.swt.events.MouseAdapter;
 //import org.eclipse.swt.events.MouseEvent;
+//import org.eclipse.swt.events.MouseMoveListener;
 //import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.events.SelectionListener;
 //import org.eclipse.swt.graphics.Color;
@@ -62,8 +63,9 @@
 //import org.eclipse.swt.widgets.TableColumn;
 //import org.eclipse.swt.widgets.TableItem;
 //import org.eclipse.swt.widgets.Text;
-//import org.eclipse.ui.IWorkbenchPage;
+//import org.eclipse.ui.IWorkbenchPreferenceConstants;
 //import org.eclipse.ui.IWorkbenchWindow;
+//import org.eclipse.ui.PlatformUI;
 //import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 //import org.eclipse.ui.internal.WorkbenchImages;
 //import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -80,12 +82,12 @@
 //	private static final int INITIAL_COUNT_PER_PROVIDER = 5;
 //	private static final int MAX_COUNT_TOTAL = 20;
 //
-//	private Text filterText;
+//	protected Text filterText;
 //
 //	private QuickAccessProvider[] providers;
 //	private IWorkbenchWindow window;
 //
-//	private Table table;
+//	protected Table table;
 //
 //	private LocalResourceManager resourceManager = new LocalResourceManager(
 //			JFaceResources.getResources());
@@ -116,7 +118,7 @@
 //	protected boolean resized = false;
 //
 //
-//	QuickAccessDialog(IWorkbenchWindow window, final Command invokingCommand) {
+//	public QuickAccessDialog(IWorkbenchWindow window, final Command invokingCommand) {
 //		super(ProgressManagerUtil.getDefaultParent(), SWT.RESIZE, true, true, // persist size
 //				false, // but not location
 //				true, true, null,
@@ -172,23 +174,29 @@
 //		filterText.addKeyListener(getKeyAdapter());
 //		filterText.addKeyListener(new KeyListener() {
 //			public void keyPressed(KeyEvent e) {
-//				if (e.keyCode == 0x0D) {
+//				switch (e.keyCode) {
+//				case SWT.CR:
+//				case SWT.KEYPAD_CR:
 //					handleSelection();
-//					return;
-//				} else if (e.keyCode == SWT.ARROW_DOWN) {
+//					break;
+//				case SWT.ARROW_DOWN:
 //					int index = table.getSelectionIndex();
 //					if (index != -1 && table.getItemCount() > index + 1) {
 //						table.setSelection(index + 1);
 //					}
 //					table.setFocus();
-//				} else if (e.keyCode == SWT.ARROW_UP) {
-//					int index = table.getSelectionIndex();
+//					break;
+//				case SWT.ARROW_UP:
+//					index = table.getSelectionIndex();
 //					if (index != -1 && index >= 1) {
 //						table.setSelection(index - 1);
 //						table.setFocus();
 //					}
-//				} else if (e.character == 0x1B) // ESC
+//					break;
+//				case SWT.ESC:
 //					close();
+//					break;
+//				}
 //			}
 //
 //			public void keyReleased(KeyEvent e) {
@@ -212,7 +220,7 @@
 //	 */
 //	protected Control createDialogArea(Composite parent) {
 //		Composite composite = (Composite) super.createDialogArea(parent);
-//		boolean isWin32 = "win32".equals(SWT.getPlatform()); //$NON-NLS-1$
+//		boolean isWin32 = Util.isWindows();
 //		GridLayoutFactory.fillDefaults().extendedMargins(isWin32 ? 0 : 3, 3, 2, 2).applyTo(composite);
 //		Composite tableComposite = new Composite(composite, SWT.NONE);
 //		GridDataFactory.fillDefaults().grab(true, true).applyTo(tableComposite);
@@ -289,6 +297,27 @@
 //				}
 //			}
 //		});
+//		table.addMouseMoveListener(new MouseMoveListener() {
+//			TableItem lastItem = null;
+//
+//			public void mouseMove(MouseEvent e) {
+//				if (table.equals(e.getSource())) {
+//					Object o = table.getItem(new Point(e.x, e.y));
+//					if (lastItem == null ^ o == null) {
+//						table.setCursor(o == null ? null : table.getDisplay().getSystemCursor(
+//								SWT.CURSOR_HAND));
+//					}
+//					if (o instanceof TableItem) {
+//						if (!o.equals(lastItem)) {
+//							lastItem = (TableItem) o;
+//							table.setSelection(new TableItem[] { lastItem });
+//						}
+//					} else if (o == null) {
+//						lastItem = null;
+//					}
+//				}
+//			}
+//		});
 //
 //		table.addSelectionListener(new SelectionListener() {
 //			public void widgetSelected(SelectionEvent e) {
@@ -300,11 +329,17 @@
 //			}
 //		});
 //
-//		// italicsFont = resourceManager.createFont(FontDescriptor.createFrom(
-//		// table.getFont()).setStyle(SWT.ITALIC));
-//		grayColor = resourceManager.createColor(ColorUtil.blend(table
-//				.getBackground().getRGB(), table.getForeground().getRGB()));
-//		final TextStyle boldStyle = new TextStyle(boldFont, null, null);
+//
+//		final TextStyle boldStyle;
+//		if (PlatformUI.getPreferenceStore().getBoolean(IWorkbenchPreferenceConstants.USE_COLORED_LABELS)) {
+//			boldStyle = new TextStyle(boldFont, null, null);
+//			// italicsFont = resourceManager.createFont(FontDescriptor.createFrom(
+//			// table.getFont()).setStyle(SWT.ITALIC));
+//			grayColor = resourceManager.createColor(ColorUtil.blend(table
+//					.getBackground().getRGB(), table.getForeground().getRGB()));
+//		} else {
+//			boldStyle = null;
+//		}
 //		Listener listener = new Listener() {
 //			public void handleEvent(Event event) {
 //				QuickAccessEntry entry = (QuickAccessEntry) event.item
@@ -337,9 +372,10 @@
 //	 * 
 //	 */
 //	private int computeNumberOfItems() {
-//		int height = table.getClientArea().height;
-//		int lineWidth = table.getLinesVisible() ? table.getGridLineWidth() : 0;
-//		return (height - lineWidth) / (table.getItemHeight() + lineWidth);
+//		Rectangle rect = table.getClientArea ();
+//		int itemHeight = table.getItemHeight ();
+//		int headerHeight = table.getHeaderHeight ();
+//		return (rect.height - headerHeight + itemHeight - 1) / (itemHeight + table.getGridLineWidth());
 //	}
 //
 //	/**
@@ -425,7 +461,7 @@
 //		return keyAdapter;
 //	}
 //
-//	private void toggleShowAllMatches() {
+//	protected void toggleShowAllMatches() {
 //		showAllMatches = !showAllMatches;
 //		refresh(filterText.getText().toLowerCase());
 //	}
@@ -461,7 +497,7 @@
 //					item.setData(entry);
 //					item.setText(0, entry.provider.getName());
 //					item.setText(1, entry.element.getLabel());
-//					if (SWT.getPlatform().equals("wpf")) { //$NON-NLS-1$
+//					if (Util.isWpf()) {
 //						item.setImage(1, entry.getImage(entry.element,
 //							resourceManager));
 //					}
@@ -666,14 +702,11 @@
 //	}
 //
 //	protected void handleElementSelected(String text, Object selectedElement) {
-//		IWorkbenchPage activePage = window.getActivePage();
-//		if (activePage != null) {
-//			if (selectedElement instanceof QuickAccessElement) {
-//				addPreviousPick(text, selectedElement);
-//				storeDialog(getDialogSettings());
-//				QuickAccessElement element = (QuickAccessElement) selectedElement;
-//				element.execute();
-//			}
+//		if (selectedElement instanceof QuickAccessElement) {
+//			addPreviousPick(text, selectedElement);
+//			storeDialog(getDialogSettings());
+//			QuickAccessElement element = (QuickAccessElement) selectedElement;
+//			element.execute();
 //		}
 //	}
 //

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
 package org.eclipse.ui.internal;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.dialogs.IPageChangeProvider;
+import org.eclipse.jface.dialogs.IPageChangedListener;
+import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPropertyListener;
@@ -19,7 +22,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartConstants;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.part.MultiEditor;
+import org.eclipse.ui.part.AbstractMultiEditor;
 
 public abstract class PartList {
 	private IWorkbenchPartReference activePartReference;
@@ -54,10 +57,17 @@ public abstract class PartList {
 			}
 		}
 	};
+	
+	private IPageChangedListener partPageListener = new IPageChangedListener() {
+		public void pageChanged(PageChangedEvent event) {
+			firePageChanged(event);
+		}
+	};
 
 	public IWorkbenchPartReference getActivePartReference() {
 		return activePartReference;
 	}
+
 
 	public IEditorReference getActiveEditorReference() {
 		return activeEditorReference;
@@ -112,8 +122,8 @@ public abstract class PartList {
 		if (ref != null) {
 			IWorkbenchPart part = ref.getPart(true);
 			Assert.isNotNull(part);
-			if (part instanceof MultiEditor) {
-				IWorkbenchPartSite site = ((MultiEditor) part)
+			if (part instanceof AbstractMultiEditor) {
+				IWorkbenchPartSite site = ((AbstractMultiEditor) part)
 						.getActiveEditor().getSite();
 				if (site instanceof PartSite) {
 					ref = ((PartSite) site).getPane().getPartReference();
@@ -137,8 +147,8 @@ public abstract class PartList {
 		if (ref != null) {
 			IWorkbenchPart part = ref.getPart(true);
 			Assert.isNotNull(part);
-			if (part instanceof MultiEditor) {
-				IWorkbenchPartSite site = ((MultiEditor) part)
+			if (part instanceof AbstractMultiEditor) {
+				IWorkbenchPartSite site = ((AbstractMultiEditor) part)
 						.getActiveEditor().getSite();
 				if (site instanceof PartSite) {
 					ref = (IEditorReference) ((PartSite) site).getPane()
@@ -222,6 +232,10 @@ public abstract class PartList {
 		SaveablesList modelManager = (SaveablesList) actualPart
 				.getSite().getService(ISaveablesLifecycleListener.class);
 		modelManager.postOpen(actualPart);
+		if (actualPart instanceof IPageChangeProvider) {
+			((IPageChangeProvider) actualPart)
+					.addPageChangedListener(partPageListener);
+		}
 
 		// Fire the "part opened" event
 		firePartOpened(ref);
@@ -251,6 +265,11 @@ public abstract class PartList {
 		// deactivated before it may
 		// be closed.
 		Assert.isTrue(activeEditorReference != ref);
+
+		if (actualPart instanceof IPageChangeProvider) {
+			((IPageChangeProvider) actualPart)
+					.removePageChangedListener(partPageListener);
+		}
 
 		firePartClosed(ref);
 	}
@@ -340,4 +359,12 @@ public abstract class PartList {
 	protected abstract void firePartInputChanged(IWorkbenchPartReference ref);
 
 	protected abstract void firePartBroughtToTop(IWorkbenchPartReference ref);
+	
+	/**
+	 * Fire a page changed event for any IPartListener2 that also
+	 * implement IPageChangedListener.
+	 * 
+	 * @param event the page change event, which conatins the source.
+	 */
+	protected abstract void firePageChanged(PageChangedEvent event);
 }

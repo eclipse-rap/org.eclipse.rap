@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,10 @@
 package org.eclipse.ui.actions;
 
 import org.eclipse.core.runtime.IAdaptable;
+
 import org.eclipse.jface.action.Action;
+
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.WorkbenchException;
@@ -25,7 +28,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
  * Opens a new window. The initial perspective
  * for the new window will be the same type as
  * the active perspective in the window which this
- * action is running in. The default input for the 
+ * action is running in. The default input for the
  * new window's page is application-specific.
  * @since 1.1
  */
@@ -49,7 +52,7 @@ public class OpenInNewWindowAction extends Action implements
      */
     public OpenInNewWindowAction(IWorkbenchWindow window) {
         this(window, ((Workbench) window.getWorkbench()).getDefaultPageInput());
-        setActionDefinitionId("org.eclipse.ui.window.newWindow"); //$NON-NLS-1$
+		setActionDefinitionId(IWorkbenchCommandConstants.WINDOW_NEW_WINDOW);
     }
 
     /**
@@ -105,7 +108,7 @@ public class OpenInNewWindowAction extends Action implements
 
             workbenchWindow.getWorkbench().openWorkbenchWindow(perspId,
                     pageInput);
-        } catch (WorkbenchException e) {			
+        } catch (WorkbenchException e) {
 			StatusUtil.handleStatus(e.getStatus(),
 					WorkbenchMessages.get().OpenInNewWindowAction_errorTitle
 							+ ": " + e.getMessage(), //$NON-NLS-1$

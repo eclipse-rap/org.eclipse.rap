@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -232,10 +232,10 @@ final class ActivityPersistanceHelper {
             String activityId = (String) i.next();
             String preferenceKey = createPreferenceKey(activityId);
 			try {
-                IActivity activity = activityManager.getActivity(activityId);
-                if (activity.getExpression() != null) {
-                  continue;
-                }                
+				IActivity activity = activityManager.getActivity(activityId);
+				if (activity.getExpression() != null) {
+					continue;
+				}
                 if ("".equals(store.getDefaultString(preferenceKey))) { //$NON-NLS-1$ // no override has been provided in the customization file
                 	store // the default should be whatever the XML specifies
 					.setDefault(preferenceKey, activity
@@ -274,9 +274,10 @@ final class ActivityPersistanceHelper {
 	        while (values.hasNext()) {
 	            IActivity activity = activityManager.getActivity((String) values
 	                    .next());
-                if (activity.getExpression() != null) {
-                  continue;
-                }
+	            if (activity.getExpression() != null) {
+	            	continue;
+	            }
+	
 	            store.setValue(createPreferenceKey(activity.getId()), activity
 	                    .isEnabled());
 	        }

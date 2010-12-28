@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -220,7 +220,7 @@ public abstract class WorkbenchAdvisor {
 	 * 
 	 * @return the workbench error handler
 	 */
-	public AbstractStatusHandler getWorkbenchErrorHandler() {
+	public synchronized AbstractStatusHandler getWorkbenchErrorHandler() {
 		if (workbenchErrorHandler == null) {
 			workbenchErrorHandler = new WorkbenchErrorHandler();
 		}
@@ -229,7 +229,7 @@ public abstract class WorkbenchAdvisor {
 
 	/**
 	 * Performs arbitrary actions just before the first workbench window is
-	 * opened (or restored).
+	 * opened (or restored), and before the main event loop is run.
 	 * <p>
 	 * This method is called after the workbench has been initialized and just
 	 * before the first window is about to be opened. Clients must not call this
@@ -523,12 +523,12 @@ public abstract class WorkbenchAdvisor {
 
 		if (getWorkbenchConfigurer().getWorkbench().getIntroManager()
 				.hasIntro()) {
-			getWorkbenchConfigurer().getWorkbench().getIntroManager()
-					.showIntro(configurer.getWindow(), false);
-
 			PrefUtil.getAPIPreferenceStore().setValue(
 					IWorkbenchPreferenceConstants.SHOW_INTRO, false);
 			PrefUtil.saveAPIPrefs();
+			
+			getWorkbenchConfigurer().getWorkbench().getIntroManager()
+					.showIntro(configurer.getWindow(), false);
 		}
 	}
 

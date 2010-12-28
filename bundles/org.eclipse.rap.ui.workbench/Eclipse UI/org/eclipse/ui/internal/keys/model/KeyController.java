@@ -1,5 +1,6 @@
+// RAP [rh] Keys completely disabled as not implemented in RWT
 ///*******************************************************************************
-// * Copyright (c) 2007, 2008 IBM Corporation and others.
+// * Copyright (c) 2007, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -12,12 +13,12 @@
 //package org.eclipse.ui.internal.keys.model;
 //
 //import java.io.BufferedWriter;
-//import java.io.FileWriter;
+//import java.io.FileOutputStream;
 //import java.io.IOException;
+//import java.io.OutputStreamWriter;
 //import java.io.Writer;
 //import java.util.Map;
 //import java.util.ResourceBundle;
-//
 //import org.eclipse.core.commands.CommandManager;
 //import org.eclipse.core.commands.ParameterizedCommand;
 //import org.eclipse.core.commands.common.NotDefinedException;
@@ -136,19 +137,21 @@
 //				new ContextManager(), new CommandManager());
 //		final Scheme[] definedSchemes = bindingService.getDefinedSchemes();
 //		try {
+//			Scheme modelActiveScheme = null;
 //			for (int i = 0; i < definedSchemes.length; i++) {
 //				final Scheme scheme = definedSchemes[i];
 //				final Scheme copy = bindingManager.getScheme(scheme.getId());
 //				copy.define(scheme.getName(), scheme.getDescription(), scheme
 //						.getParentId());
 //				if (definedSchemes[i] == bindingService.getActiveScheme()) {
-//					bindingManager.setActiveScheme(copy);
+//					modelActiveScheme = copy;
 //				}
 //			}
-//
+//			bindingManager.setActiveScheme(modelActiveScheme);
 //		} catch (final NotDefinedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
+//			StatusManager.getManager().handle(
+//					new Status(IStatus.WARNING, WorkbenchPlugin.PI_WORKBENCH,
+//							"Keys page found an undefined scheme", e)); //$NON-NLS-1$
 //		}
 //		bindingManager.setLocale(bindingService.getLocale());
 //		bindingManager.setPlatform(bindingService.getPlatform());
@@ -194,11 +197,13 @@
 //							.getNewValue();
 //					if (binding == null) {
 //						conflictModel.setSelectedElement(null);
-//						contextModel.setSelectedElement(null);
 //						return;
 //					}
 //					conflictModel.setSelectedElement(binding);
-//					contextModel.setSelectedElement(binding.getContext());
+//					ContextElement context = binding.getContext();
+//					if (context != null) {
+//						contextModel.setSelectedElement(context);
+//					}
 //				}
 //			}
 //		});
@@ -253,7 +258,9 @@
 //						}
 //
 //						ContextElement context = element.getContext();
-//						contextModel.setSelectedElement(context);
+//						if (context != null) {
+//							contextModel.setSelectedElement(context);
+//						}
 //					}
 //				}
 //			}
@@ -348,8 +355,10 @@
 //				if (keySequence != null && !keySequence.isEmpty()) {
 //					String activeSchemeId = fSchemeModel.getSelectedElement()
 //							.getId();
-//					String activeContextId = contextModel.getSelectedElement()
-//							.getId();
+//					ModelElement selectedElement = contextModel
+//							.getSelectedElement();
+//					String activeContextId = selectedElement == null ? IContextService.CONTEXT_ID_WINDOW
+//							: selectedElement.getId();
 //					final KeyBinding binding = new KeyBinding(keySequence,
 //							keyBinding.getParameterizedCommand(),
 //							activeSchemeId, activeContextId, null, null, null,
@@ -401,7 +410,10 @@
 //			if (keySequence != null && !keySequence.isEmpty()) {
 //				String activeSchemeId = fSchemeModel.getSelectedElement()
 //						.getId();
-//				String activeContextId = IContextService.CONTEXT_ID_WINDOW;
+//				ModelElement selectedElement = contextModel
+//						.getSelectedElement();
+//				String activeContextId = selectedElement == null ? IContextService.CONTEXT_ID_WINDOW
+//						: selectedElement.getId();
 //				final KeyBinding binding = new KeyBinding(keySequence, cmd,
 //						activeSchemeId, activeContextId, null, null, null,
 //						Binding.USER);
@@ -490,10 +502,12 @@
 //	}
 //
 //	public void exportCSV(Shell shell) {
-//		final FileDialog fileDialog = new FileDialog(shell, SWT.SAVE);
+//		final FileDialog fileDialog = new FileDialog(shell, SWT.SAVE
+//				| SWT.SHEET);
 //		fileDialog.setFilterExtensions(new String[] { "*.csv" }); //$NON-NLS-1$
 //		fileDialog.setFilterNames(new String[] { Util.translateString(
 //				RESOURCE_BUNDLE, "csvFilterName") }); //$NON-NLS-1$
+//		fileDialog.setOverwrite(true);
 //		final String filePath = fileDialog.open();
 //		if (filePath == null) {
 //			return;
@@ -503,7 +517,8 @@
 //			public final void run() throws IOException {
 //				Writer fileWriter = null;
 //				try {
-//					fileWriter = new BufferedWriter(new FileWriter(filePath));
+//					fileWriter = new BufferedWriter(new OutputStreamWriter(
+//							new FileOutputStream(filePath), "UTF-8")); //$NON-NLS-1$
 //					final Object[] bindingElements = bindingModel.getBindings()
 //							.toArray();
 //					for (int i = 0; i < bindingElements.length; i++) {

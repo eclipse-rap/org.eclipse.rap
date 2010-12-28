@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,7 @@ public final class SourcePriorityNameMapping implements ISources {
 		addMapping(ACTIVE_CONTEXT_NAME, ACTIVE_CONTEXT);
 		addMapping(ACTIVE_CURRENT_SELECTION_NAME, ACTIVE_CURRENT_SELECTION);
 		addMapping(ACTIVE_EDITOR_NAME, ACTIVE_EDITOR);
+		addMapping(ACTIVE_EDITOR_INPUT_NAME, ACTIVE_EDITOR);
 		addMapping(ACTIVE_EDITOR_ID_NAME, ACTIVE_EDITOR_ID);
 		addMapping(ACTIVE_MENU_NAME, ACTIVE_MENU);
 		addMapping(ACTIVE_MENU_SELECTION_NAME, ACTIVE_MENU);

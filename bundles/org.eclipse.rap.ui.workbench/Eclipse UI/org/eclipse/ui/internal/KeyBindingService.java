@@ -1,6 +1,6 @@
 // RAP [rh] KeyBindingService disabed, since the implemented interface is not supported
 ///*******************************************************************************
-// * Copyright (c) 2000, 2007 IBM Corporation and others.
+// * Copyright (c) 2000, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 //import org.eclipse.ui.INestableKeyBindingService;
 //import org.eclipse.ui.IWorkbenchPartSite;
 //import org.eclipse.ui.IWorkbenchSite;
+//import org.eclipse.ui.PlatformUI;
 //import org.eclipse.ui.commands.ActionHandler;
 //import org.eclipse.ui.commands.HandlerSubmission;
 //import org.eclipse.ui.commands.IHandler;
@@ -226,13 +227,13 @@
 //            // Update the contexts.
 //            nestedEnabledSubmissions = nestedService.getEnabledSubmissions();
 //            normalizeSites(nestedEnabledSubmissions);
-//            Workbench.getInstance().getContextSupport().addEnabledSubmissions(
+//            PlatformUI.getWorkbench().getContextSupport().addEnabledSubmissions(
 //                    nestedEnabledSubmissions);
 //
 //            // Update the handlers.
 //            nestedHandlerSubmissions = nestedService.getHandlerSubmissions();
 //            normalizeSites(nestedHandlerSubmissions);
-//            Workbench.getInstance().getCommandSupport().addHandlerSubmissions(
+//            PlatformUI.getWorkbench().getCommandSupport().addHandlerSubmissions(
 //                    nestedHandlerSubmissions);
 //        }
 //    }
@@ -263,7 +264,7 @@
 //
 //        } else if (activeService instanceof KeyBindingService) {
 //            // Remove all the nested context ids.
-//            Workbench.getInstance().getContextSupport()
+//        	PlatformUI.getWorkbench().getContextSupport()
 //                    .removeEnabledSubmissions(nestedEnabledSubmissions);
 //
 //            /*
@@ -271,7 +272,7 @@
 //             * weren't created by this instance (but by the nest instance), and
 //             * hence can't be disposed here.
 //             */
-//            Workbench.getInstance().getCommandSupport()
+//        	PlatformUI.getWorkbench().getCommandSupport()
 //                    .removeHandlerSubmissions(nestedHandlerSubmissions);
 //
 //        }
@@ -294,8 +295,7 @@
 //            deactivateNestedService();
 //            disposed = true;
 //
-//            Workbench
-//                    .getInstance()
+//            PlatformUI.getWorkbench()
 //                    .getContextSupport()
 //                    .removeEnabledSubmissions(new ArrayList(enabledSubmissions));
 //            enabledSubmissions.clear();
@@ -311,7 +311,7 @@
 //                ((HandlerSubmission) submissionItr.next()).getHandler()
 //                        .dispose();
 //            }
-//            Workbench.getInstance().getCommandSupport()
+//            PlatformUI.getWorkbench().getCommandSupport()
 //                    .removeHandlerSubmissions(submissions);
 //            handlerSubmissionsByCommandId.clear();
 //
@@ -525,7 +525,7 @@
 //                    parent.activateNestedService(this);
 //                }
 //            } else {
-//                Workbench.getInstance().getCommandSupport()
+//            	PlatformUI.getWorkbench().getCommandSupport()
 //                        .addHandlerSubmission(handlerSubmission);
 //            }
 //        }
@@ -565,7 +565,7 @@
 //            active = true;
 //            parent.deactivateNestedService();
 //        } else {
-//            Workbench.getInstance().getContextSupport()
+//        	PlatformUI.getWorkbench().getContextSupport()
 //                    .removeEnabledSubmissions(enabledSubmissions);
 //        }
 //        enabledSubmissions.clear();
@@ -585,7 +585,7 @@
 //                parent.activateNestedService(this);
 //            }
 //        } else {
-//            Workbench.getInstance().getContextSupport().addEnabledSubmissions(
+//        	PlatformUI.getWorkbench().getContextSupport().addEnabledSubmissions(
 //                    enabledSubmissions);
 //        }
 //    }
@@ -627,7 +627,7 @@
 //                }
 //            } else {
 //            	if (handlerSubmission != null) {
-//                    Workbench.getInstance().getCommandSupport()
+//            		PlatformUI.getWorkbench().getCommandSupport()
 //                            .removeHandlerSubmission(handlerSubmission);
 //                    handlerSubmission.getHandler().dispose();
 //                }

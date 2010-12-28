@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,12 @@ package org.eclipse.ui.internal.dialogs;
 
 import java.util.Arrays;
 import java.util.HashSet;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -32,6 +34,7 @@ import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.util.PrefUtil;
+import org.eclipse.ui.testing.ContributionInfo;
 import org.osgi.framework.Constants;
 
 /**
@@ -82,18 +85,24 @@ public class StartupPreferencePage extends PreferencePage implements
         data = new GridData(GridData.FILL_BOTH);
         pluginsList.setFont(parent.getFont());
         pluginsList.setLayoutData(data);
-        populatePluginsList();
+		TableViewer viewer = new TableViewer(pluginsList);
+		viewer.setLabelProvider(new LabelProvider() {
+			public String getText(Object element) {
+				return (String) Platform.getBundle(((ContributionInfo) element).getBundleId())
+						.getHeaders().get(
+						Constants.BUNDLE_NAME);
+			}
+		});
+		viewer.setContentProvider(ArrayContentProvider.getInstance());
+		viewer.setInput(workbench.getEarlyActivatedPlugins());
+		updateCheckState();
     }
 
-    private void populatePluginsList() {
-        String pluginIds[] = workbench.getEarlyActivatedPlugins();
+	private void updateCheckState() {
         HashSet disabledPlugins = new HashSet(Arrays.asList(workbench.getDisabledEarlyActivatedPlugins()));
-        for (int i = 0; i < pluginIds.length; i++) {
-            String pluginId = pluginIds[i];
-            TableItem item = new TableItem(pluginsList, SWT.NONE);
-            item.setText((String) Platform.getBundle(pluginId).getHeaders().get(
-                    Constants.BUNDLE_NAME));
-            item.setData(pluginId);
+		for (int i = 0; i < pluginsList.getItemCount(); i++) {
+			TableItem item = pluginsList.getItem(i);
+			String pluginId = ((ContributionInfo) item.getData()).getBundleId();
             item.setChecked(!disabledPlugins.contains(pluginId));
         }
     }
@@ -123,7 +132,7 @@ public class StartupPreferencePage extends PreferencePage implements
         TableItem items[] = pluginsList.getItems();
         for (int i = 0; i < items.length; i++) {
             if (!items[i].getChecked()) {
-                preference.append((String) items[i].getData());
+				preference.append(((ContributionInfo) items[i].getData()).getBundleId());
                 preference.append(IPreferenceConstants.SEPARATOR);
             }
         }

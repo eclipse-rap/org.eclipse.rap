@@ -1,6 +1,6 @@
-// RAP [rh] DnD not supported
+// [rst] Image cursors not supported
 ///*******************************************************************************
-// * Copyright (c) 2004, 2006 IBM Corporation and others.
+// * Copyright (c) 2004, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -11,10 +11,13 @@
 // *******************************************************************************/
 //package org.eclipse.ui.internal;
 //
-//import org.eclipse.jface.resource.ImageDescriptor;
 //import org.eclipse.swt.SWT;
 //import org.eclipse.swt.graphics.Cursor;
 //import org.eclipse.swt.widgets.Display;
+//
+//import org.eclipse.jface.resource.ImageDescriptor;
+//
+//import org.eclipse.ui.ISharedImages;
 //
 ///**
 // * Provides the set of cursors used for drag-and-drop.
@@ -80,9 +83,11 @@
 //    }
 //
 //    /**
-//     * Return the cursor for a drop scenario, as identified by code.
-//     * Code must be one of INVALID, LEFT, RIGHT, TOP, etc.
-//     * If the code is not found default to INVALID.
+//     * Return the cursor for a drop scenario, as identified by code. Code must be one of INVALID,
+//     * LEFT, RIGHT, TOP, etc. If the code is not found default to INVALID.
+//     * 
+//     * @param code the code
+//     * @return the cursor
 //     */
 //    public static Cursor getCursor(int code) {
 //        Display display = Display.getCurrent();
@@ -92,65 +97,66 @@
 //            switch (code) {
 //            case LEFT:
 //                source = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_LEFT_SOURCE);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_LEFT_SOURCE);
 //                mask = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_LEFT_MASK);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_LEFT_MASK);
 //                cursors[LEFT] = new Cursor(display, source.getImageData(), mask
 //                        .getImageData(), 16, 16);
 //                break;
 //            case RIGHT:
 //                source = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_RIGHT_SOURCE);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_RIGHT_SOURCE);
 //                mask = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_RIGHT_MASK);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_RIGHT_MASK);
 //                cursors[RIGHT] = new Cursor(display, source.getImageData(),
 //                        mask.getImageData(), 16, 16);
 //                break;
 //            case TOP:
 //                source = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_TOP_SOURCE);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_TOP_SOURCE);
 //                mask = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_TOP_MASK);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_TOP_MASK);
 //                cursors[TOP] = new Cursor(display, source.getImageData(), mask
 //                        .getImageData(), 16, 16);
 //                break;
 //            case BOTTOM:
 //                source = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_BOTTOM_SOURCE);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_BOTTOM_SOURCE);
 //                mask = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_BOTTOM_MASK);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_BOTTOM_MASK);
 //                cursors[BOTTOM] = new Cursor(display, source.getImageData(),
 //                        mask.getImageData(), 16, 16);
 //                break;
 //            case CENTER:
 //                source = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_STACK_SOURCE);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_STACK_SOURCE);
 //                mask = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_STACK_MASK);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_STACK_MASK);
 //                cursors[CENTER] = new Cursor(display, source.getImageData(),
 //                        mask.getImageData(), 16, 16);
 //                break;
 //            case OFFSCREEN:
 //                source = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_OFFSCREEN_SOURCE);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_OFFSCREEN_SOURCE);
 //                mask = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_OFFSCREEN_MASK);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_OFFSCREEN_MASK);
 //                cursors[OFFSCREEN] = new Cursor(display, source.getImageData(),
 //                        mask.getImageData(), 16, 16);
 //                break;
 //            case FASTVIEW:
 //                source = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_TOFASTVIEW_SOURCE);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_TOFASTVIEW_SOURCE);
 //                mask = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_TOFASTVIEW_MASK);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_TOFASTVIEW_MASK);
 //                cursors[FASTVIEW] = new Cursor(Display.getCurrent(), source
 //                        .getImageData(), mask.getImageData(), 16, 16);
+//                break;
 //            default:
 //            case INVALID:
 //                source = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_INVALID_SOURCE);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_INVALID_SOURCE);
 //                mask = WorkbenchImages
-//                        .getImageDescriptor(IWorkbenchGraphicConstants.IMG_OBJS_DND_INVALID_MASK);
+//                        .getImageDescriptor(ISharedImages.IMG_OBJS_DND_INVALID_MASK);
 //                cursors[INVALID] = new Cursor(display, source.getImageData(),
 //                        mask.getImageData(), 16, 16);
 //                break;
@@ -164,8 +170,11 @@
 //     */
 //    public static void dispose() {
 //        for (int idx = 0; idx < cursors.length; idx++) {
-//            cursors[idx].dispose();
-//            cursors[idx] = null;
+//            Cursor cursor = cursors[idx];
+//            if (cursor != null) {
+//                cursor.dispose();
+//                cursors[idx] = null;
+//            }
 //        }
 //    }
 //}

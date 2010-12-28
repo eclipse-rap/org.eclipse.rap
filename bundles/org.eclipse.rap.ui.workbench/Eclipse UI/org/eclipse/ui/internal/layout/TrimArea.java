@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -285,7 +285,7 @@ public class TrimArea {
 			Control ctrl = cache.getControl();
 			
 			// Skip invisible trim
-			if (ctrl == null || !ctrl.isVisible())
+			if (ctrl == null || !ctrl.getVisible())
 				continue;
 			
 			// We need to keep the drag handle and the 'real' trim on the same line... 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -106,7 +106,6 @@ import com.ibm.icu.text.MessageFormat;
  *      When the Application
  *      calls createExecutableExtension to create an executable
  *      instance of our workbench class.
- *      
  */
 public class WorkbenchPlugin extends AbstractUIPlugin {
 
@@ -343,7 +342,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         // RAPEND: [bm] 
 
         if (decoratorManager != null) {
-            decoratorManager.dispose();
+			decoratorManager.shutdown();
             decoratorManager = null;
         }
 
@@ -388,6 +387,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         	operationSupport.dispose();
         	operationSupport = null;
         }
+        // RAP [rh] DnD not supported
+//		DragCursors.dispose();
 
         DEBUG = false;
          
@@ -666,9 +667,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      */
     public AbstractPresentationFactory getPresentationFactory(String targetID) {
         Object o = createExtension(
-		        IWorkbenchRegistryConstants.PL_PRESENTATION_FACTORIES,
-		        "factory", targetID); //$NON-NLS-1$
-
+                IWorkbenchRegistryConstants.PL_PRESENTATION_FACTORIES,
+                "factory", targetID); //$NON-NLS-1$
         if (o instanceof AbstractPresentationFactory) {
             return (AbstractPresentationFactory) o;
         }
@@ -743,33 +743,27 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 // RAP [rh]: PerspectiveRegistry has session scope
 //        if (perspRegistry == null) {
 //            perspRegistry = new PerspectiveRegistry();
-//            // the load methods can touch on WorkbenchImages if an image is
-//			// missing so we need to wrap the call in
-//			// a startup block for the case where a custom descriptor exists on
-//			// startup that does not have an image
-//			// associated with it. See bug 196352.
-//			StartupThreading.runWithoutExceptions(new StartupRunnable() {
-//				public void runWithException() throws Throwable {
-//					perspRegistry.load();
-//				}
-//			});
-//            
-//        }
-//        return perspRegistry;
-      final PerspectiveRegistry result
-        = ( PerspectiveRegistry )SessionSingletonBase.getInstance( PerspectiveRegistry.class );
-      ISessionStore sessionStore = RWT.getSessionStore();
-      Boolean initialized
-        = ( Boolean )sessionStore.getAttribute( PERSP_REGISTRY_INITIALIZED );
-      if( initialized == null ) {
-        sessionStore.setAttribute( PERSP_REGISTRY_INITIALIZED, Boolean.TRUE );        
-        StartupThreading.runWithoutExceptions(new StartupRunnable() {
-          public void runWithException() throws Throwable {
-            result.load();
-          }
-        } );      
-      }
-    	return result;
+    	final PerspectiveRegistry perspRegistry
+          = ( PerspectiveRegistry )SessionSingletonBase.getInstance( PerspectiveRegistry.class );
+    	ISessionStore sessionStore = RWT.getSessionStore();
+    	Boolean initialized
+          = ( Boolean )sessionStore.getAttribute( PERSP_REGISTRY_INITIALIZED );
+    	if( initialized == null ) {
+    		sessionStore.setAttribute( PERSP_REGISTRY_INITIALIZED, Boolean.TRUE );        
+// ENDRAP
+            // the load methods can touch on WorkbenchImages if an image is
+			// missing so we need to wrap the call in
+			// a startup block for the case where a custom descriptor exists on
+			// startup that does not have an image
+			// associated with it. See bug 196352.
+			StartupThreading.runWithoutExceptions(new StartupRunnable() {
+				public void runWithException() throws Throwable {
+					perspRegistry.load();
+				}
+			});
+            
+        }
+        return perspRegistry;
     }
 
     /**
@@ -1074,7 +1068,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     }
     // RAPEND: [bm] 
 
-    
     /*
      *  (non-Javadoc)
      * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
@@ -1286,23 +1279,34 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     	return bundleContext;
     }
 
-    // RAP [bm]: 
-//    /**
-//     * Returns the application name.
-//     * <p>
-//     * Note this is never shown to the user.
-//     * It is used to initialize the SWT Display.
-//     * On Motif, for example, this can be used
-//     * to set the name used for resource lookup.
-//     * </p>
-//     *
-//     * @return the application name, or <code>null</code>
-//     * @see org.eclipse.swt.widgets.Display#setAppName
-//     * @since 1.1
-//     */
-//    public String getAppName() {
-//        return getProductInfo().getAppName();
-//    }
+    /**
+     * Returns the application name.
+     * <p>
+     * Note this is never shown to the user.
+     * It is used to initialize the SWT Display.
+     * On Motif, for example, this can be used
+     * to set the name used for resource lookup.
+     * </p>
+     *
+     * @return the application name, or <code>null</code>
+     * @see org.eclipse.swt.widgets.Display#setAppName
+     * @since 1.4
+     */
+    public String getAppName() {
+        return getProductInfo().getAppName();
+    }
+
+	/**
+	 * Return the application version, as defined by the product.
+	 * 
+	 * @return the application version, or the empty version.
+	 * @see org.eclipse.swt.widgets.Display#setAppVersion
+	 * @see Version#emptyVersion
+	 * @since 3.6
+	 */
+	public String getAppVersion() {
+		return getProductInfo().getAppVersion();
+	}
 
     /**
      * Returns the name of the product.
@@ -1358,13 +1362,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     	// TODO normally super.stop(*) would be the last statement in this
     	// method
         super.stop(context);
-// RAP [bm] cleanup will be done in Workbench#ShutdownHandler
-//        if (workingSetManager != null) {
-//        	workingSetManager.dispose();
-//        	workingSetManager= null;
-//        }       
-//        SWTResourceUtil.shutdown();
-// RAPEND
     } 
     
     /**

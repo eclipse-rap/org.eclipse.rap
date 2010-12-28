@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@ package org.eclipse.ui.internal.decorators;
 
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.misc.StatusUtil;
 
@@ -41,7 +43,9 @@ abstract class FullDecoratorRunnable implements ISafeRunnable {
     public void handleException(Throwable exception) {
         IStatus status = StatusUtil.newStatus(IStatus.ERROR, exception
                 .getMessage(), exception);
-        WorkbenchPlugin.log("Exception in Decorator", status); //$NON-NLS-1$
+		String message = NLS.bind(WorkbenchMessages.get().DecoratorWillBeDisabled,
+				decorator.getName());
+        WorkbenchPlugin.log(message, status);
         decorator.crashDisable();
     }
 

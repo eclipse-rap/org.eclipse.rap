@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,10 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.ui.internal;
 
 import org.eclipse.ui.PlatformUI;
+
 
 /**
  * General constants used by the workbench.
@@ -190,6 +190,8 @@ public interface IWorkbenchConstants {
 
     public static final String TAG_SHOW_VIEW_ACTION = "show_view_action"; //$NON-NLS-1$
 
+	public static final String TAG_SHOW_IN_PART = "show_in_part"; //$NON-NLS-1$
+
     public static final String TAG_SHOW_IN_TIME = "show_in_time"; //$NON-NLS-1$
 
     public static final String TAG_TIME = "time"; //$NON-NLS-1$
@@ -197,6 +199,10 @@ public interface IWorkbenchConstants {
     public static final String TAG_NEW_WIZARD_ACTION = "new_wizard_action"; //$NON-NLS-1$
 
     public static final String TAG_PERSPECTIVE_ACTION = "perspective_action"; //$NON-NLS-1$
+    
+    public static final String TAG_HIDE_MENU = "hide_menu_item_id"; //$NON-NLS-1$
+    	
+    public static final String TAG_HIDE_TOOLBAR = "hide_toolbar_item_id"; //$NON-NLS-1$
 
     public static final String TAG_VIEW = "view"; //$NON-NLS-1$
 

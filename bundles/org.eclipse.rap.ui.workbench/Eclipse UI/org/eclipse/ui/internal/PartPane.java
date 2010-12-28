@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Stefan Xenos, IBM; Chris Torrence, ITT Visual Information Solutions - bug 51580
+ *     Nikolay Botev - bug 240651
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
@@ -16,15 +17,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.events.FocusAdapter;
-//import org.eclipse.swt.events.FocusEvent;
-//import org.eclipse.swt.events.KeyAdapter;
-//import org.eclipse.swt.events.KeyEvent;
-//import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-//import org.eclipse.swt.events.TraverseEvent;
-//import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
@@ -41,8 +35,10 @@ import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.internal.dnd.SwtUtil;
+import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.part.MultiEditor;
 import org.eclipse.ui.presentations.IPresentablePart;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
  * Provides the common behavior for both views
@@ -185,7 +181,11 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
         	ActivateEvent.removeListener(control, this);
 // RAP [rh] Traverse events not implemented            
 //            control.removeTraverseListener(traverseListener);
-            control.dispose();
+            try {
+            	control.dispose();
+            } catch (RuntimeException ex) {
+            	StatusUtil.handleStatus(ex, StatusManager.LOG);
+            }
             control = null;
         }
         if ((paneMenuManager != null)) {
@@ -266,11 +266,17 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
      */
     public void requestActivation() {
         IWorkbenchPart part = partReference.getPart(true);
-        // Cannot activate the outer bit of a MultiEditor. In previous versions of the 
+        // Cannot activate the outer bit of a AbstractMultiEditor. In previous versions of the 
         // workbench, MultiEditors had their own implementation of EditorPane for the purpose
         // of overriding requestActivation with a NOP... however, keeping the old pattern would
         // mean it is necessary to eagerly activate an editor's plugin in order to determine
         // what type of pane to create.
+
+        // The above comment no longer applies. The code below causes a bug which
+        // prevents the editor from being activated by clicking on its tab (when it is already active
+        // but out-of-focus, e.g. a viewpart holds the focus). MultiEditor case is handled in
+        // the page.requestActivation() method.
+        // MultiEditor backwards compatibility
         if (part instanceof MultiEditor) {
             return;
         }

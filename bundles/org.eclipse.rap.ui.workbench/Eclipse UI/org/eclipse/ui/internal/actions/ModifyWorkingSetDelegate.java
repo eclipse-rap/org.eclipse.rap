@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,6 @@ public class ModifyWorkingSetDelegate extends
 			dialog.create();
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
 					IWorkbenchHelpContextIds.WORKING_SET_NEW_WIZARD);
-
 			if (dialog.open() == Window.OK) {
 				IWorkingSet workingSet = wizard.getSelection();
 				if(workingSet != null) {
@@ -271,10 +270,11 @@ public class ModifyWorkingSetDelegate extends
 				}
 				else if (adaptables.length > 0) {
 					for (int k = 0; k < adaptables.length; k++) {
-						if (existingElements.contains(adaptables[k]))
+						if (existingElements.contains(adaptables[k])){
 							visible = true; // show if any element
 											// is present in removal
-						break;
+							break;
+						}
 					}
 				}
 				

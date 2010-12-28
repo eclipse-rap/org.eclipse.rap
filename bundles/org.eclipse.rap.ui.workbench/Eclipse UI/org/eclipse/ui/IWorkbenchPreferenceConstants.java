@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *     Kiryl Kazakevich, Intel - bug 88359
  *     Tonny Madsen, RCP Company - bug 201055
- *******************************************************************************/
+ *     Mark Hoffmann <mark.hoffmann@web.de> - Fix for bug 84603
+*******************************************************************************/
 package org.eclipse.ui;
 
 import org.eclipse.swt.SWT;
@@ -25,18 +26,18 @@ import org.eclipse.swt.SWT;
  * @see PlatformUI#getPreferenceStore()
  * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
  */
 public interface IWorkbenchPreferenceConstants {
 
-	// RAP [bm]: navigator? :)
-//	/**
-//	 * A named preference for whether to show an editor when its input file is
-//	 * selected in the Navigator (and vice versa).
-//	 * <p>
-//	 * Value is of type <code>boolean</code>.
-//	 * </p>
-//	 */
-//	public static final String LINK_NAVIGATOR_TO_EDITOR = "LINK_NAVIGATOR_TO_EDITOR"; //$NON-NLS-1$
+	/**
+	 * A named preference for whether to show an editor when its input file is
+	 * selected in the Navigator (and vice versa).
+	 * <p>
+	 * Value is of type <code>boolean</code>.
+	 * </p>
+	 */
+	public static final String LINK_NAVIGATOR_TO_EDITOR = "LINK_NAVIGATOR_TO_EDITOR"; //$NON-NLS-1$
 
 	/**
 	 * A named preference for how a new perspective is opened.
@@ -164,7 +165,19 @@ public interface IWorkbenchPreferenceConstants {
 	 * {@link #TOP_LEFT}, or {@link #LEFT}.
 	 * </p>
 	 */
-	public static String DOCK_PERSPECTIVE_BAR = "DOCK_PERSPECTIVE_BAR"; //$NON-NLS-1$	
+	public static String DOCK_PERSPECTIVE_BAR = "DOCK_PERSPECTIVE_BAR"; //$NON-NLS-1$
+	
+	/**
+	 * A preference indication the initial size of the perspective bar. The default value is 160.
+	 * This preference only works when <code>configurer.setShowPerspectiveBar(true)</code> is set in
+	 * WorkbenchWindowAdvisor#preWindowOpen()
+	 * 
+	 * This preference only uses integer values
+	 * bug 84603: [RCP] [PerspectiveBar] New API or pref to set default perspective bar size
+	 * 
+	 *  @since 1.4
+	 */
+	public static String PERSPECTIVE_BAR_SIZE = "PERSPECTIVE_BAR_SIZE"; //$NON-NLS-1$ 
 
 	/**
 	 * A named preference indicating where the fast view bar should be docked in
@@ -442,9 +455,8 @@ public interface IWorkbenchPreferenceConstants {
 	/**
 	 * Stores whether or not the workbench prompts for saving when a dirty
 	 * editor or view is closed, but the Saveable objects are still open in
-	 * other parts. If
-	 * <code>true<code> (default), the user will be prompted. If <code>false</code>, there will be
-	 * no prompt.
+	 * other parts. If <code>true</code> (default), the user will be prompted.
+	 * If <code>false</code>, there will be no prompt.
 	 * 
 	 * @see Saveable
 	 */
@@ -498,7 +510,10 @@ public interface IWorkbenchPreferenceConstants {
 
 	/**
 	 * An named preference for whether or not tabs are on the top or bottom
-	 * for views. Values are either {@link SWT#TOP} or {@link SWT#BOTTOM}
+	 * for views. Values are either {@link SWT#TOP} or {@link SWT#BOTTOM}.
+	 * <p>
+	 * The default value for this preference is: <code>SWT.TOP</code>.
+	 * </p>
 	 * 
 	 * @since 1.1
 	 */
@@ -506,7 +521,10 @@ public interface IWorkbenchPreferenceConstants {
 
 	/**
 	 * An named preference for whether or not tabs are on the top or bottom
-	 * for editors. Values are either {@link SWT#TOP} or {@link SWT#BOTTOM}
+	 * for editors. Values are either {@link SWT#TOP} or {@link SWT#BOTTOM}.
+	 * <p>
+	 * The default value for this preference is: <code>SWT.TOP</code>.
+	 * </p>
 	 * 
 	 * @since 1.1
 	 */

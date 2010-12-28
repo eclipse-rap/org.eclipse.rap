@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.presentations.util;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
@@ -30,7 +29,7 @@ public class StandardEditorSystemMenu extends StandardViewSystemMenu {
 
     private SystemMenuCloseOthers closeOthers;
     private SystemMenuCloseAll closeAll;
-    private IAction openAgain;
+    private ActionFactory.IWorkbenchAction openAgain;
     
     /**
      * @param site
@@ -59,5 +58,13 @@ public class StandardEditorSystemMenu extends StandardViewSystemMenu {
         closeOthers.setTarget(currentSelection);
         closeAll.update();
         super.show(parent, displayCoordinates, currentSelection);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.internal.presentations.util.StandardViewSystemMenu#dispose()
+     */
+    public void dispose() {
+    	openAgain.dispose();
+    	super.dispose();
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.presentations.defaultpresentation;
 
+import com.ibm.icu.text.MessageFormat;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.custom.CTabFolder;
@@ -22,8 +23,6 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.presentations.util.PartInfo;
 import org.eclipse.ui.internal.presentations.util.WidgetTabItem;
 import org.eclipse.ui.internal.util.Util;
-
-import com.ibm.icu.text.MessageFormat;
 
 /**
  */
@@ -95,11 +94,14 @@ public class DefaultTabItem extends WidgetTabItem {
 		}
 
 		String toolTipText = info.toolTip;
+
 		if (toolTipText.equals(Util.ZERO_LENGTH_STRING)) {
 			toolTipText = null;
 		}
 
 		if (!Util.equals(toolTipText, tabItem.getToolTipText())) {
+			if (toolTipText != null)
+				toolTipText = escapeAmpersands(toolTipText);
 			tabItem.setToolTipText(toolTipText);
 		}
 	}
@@ -120,6 +122,8 @@ public class DefaultTabItem extends WidgetTabItem {
 	 * Escapes all the ampersands in the given string such that they can be
 	 * displayed verbatim in an SWT label rather than treated as accelerators.
 	 * 
+	 * @param input
+	 *            the string for which to escape the ampersands
 	 * @return a string where all ampersands are escaped
 	 */
 	public static String escapeAmpersands(String input) {

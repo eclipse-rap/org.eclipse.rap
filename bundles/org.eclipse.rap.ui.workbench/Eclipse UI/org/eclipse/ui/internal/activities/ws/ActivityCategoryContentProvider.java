@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2003, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import org.eclipse.ui.activities.IActivity;
 import org.eclipse.ui.activities.IActivityManager;
 import org.eclipse.ui.activities.IActivityRequirementBinding;
 import org.eclipse.ui.activities.ICategory;
-import org.eclipse.ui.activities.ICategoryActivityBinding;
+import org.eclipse.ui.internal.activities.InternalActivityHelper;
 
 /**
  * Tree provider that provides <code>ICategory</code> objects in an 
@@ -49,25 +49,23 @@ public class ActivityCategoryContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * @param category the category to fetch.
-     * @return all activities in the category.
-     */
-    private IActivity[] getCategoryActivities(ICategory category) {
-        Set activityBindings = category.getCategoryActivityBindings();
-        List categoryActivities = new ArrayList(activityBindings.size());
-        for (Iterator j = activityBindings.iterator(); j.hasNext();) {
-            ICategoryActivityBinding binding = (ICategoryActivityBinding) j
-                    .next();
-            String activityId = binding.getActivityId();
-            IActivity activity = manager.getActivity(activityId);
-            if (activity.isDefined()) {
-                categoryActivities.add(new CategorizedActivity(category,
-                        activity));
-            }
-        }
-        return (IActivity[]) categoryActivities
-                .toArray(new IActivity[categoryActivities.size()]);
-    }
+	 * @param category
+	 * 		the category to fetch.
+	 * @return all activities in the category.
+	 */
+	private IActivity[] getCategoryActivities(ICategory category) {
+		Set activityIds = InternalActivityHelper.getActivityIdsForCategory(
+				manager, category);
+		List categoryActivities = new ArrayList(activityIds.size());
+		for (Iterator i = activityIds.iterator(); i.hasNext();) {
+			String activityId = (String) i.next();
+			categoryActivities.add(new CategorizedActivity(category, manager
+					.getActivity(activityId)));
+
+		}
+		return (IActivity[]) categoryActivities
+				.toArray(new IActivity[categoryActivities.size()]);
+	}
 
 	/**
 	 * Get the duplicate activities found in the other defined categories.

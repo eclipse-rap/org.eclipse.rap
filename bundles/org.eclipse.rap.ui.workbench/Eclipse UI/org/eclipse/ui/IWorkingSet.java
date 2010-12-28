@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * A working set holds a number of IAdaptable elements. 
  * A working set is intended to group elements for presentation to 
  * the user or for operations on a set of elements.
- * <p>
- * This interface is not intended to be implemented by clients.
- * </p>
  * 
  * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
@@ -27,7 +24,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public interface IWorkingSet extends IPersistableElement, IAdaptable {
     /**
      * Returns the elements that are contained in this working set.
-     * 
+     * <p>
+     * This method might throw an {@link IllegalStateException} if 
+     * the working set is invalid.
+     * </p>
      * @return	the working set's elements
      */
     public IAdaptable[] getElements();
@@ -168,6 +168,8 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 	 * It is recommended that clients of aggregate working sets treat them in a
 	 * specific way. Please see the documentation for
 	 * {@link IWorkbenchPage#getAggregateWorkingSet()} for details.
+	 * <p>
+	 * If this is true, you can cast this working set to an {@link IAggregateWorkingSet} 
 	 * 
 	 * @return whether this working set is an aggregate working set or not
 	 */

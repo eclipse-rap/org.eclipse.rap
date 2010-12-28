@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,9 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Carlos Devoto carlos.devoto@compuware.com Bug 213645
  *     Markus Alexander Kuppe, Versant Corporation - bug #215797
+ *     Semion Chichelnitsky (semion@il.ibm.com) - bug 278064
  *******************************************************************************/
 
 package org.eclipse.ui.internal;
@@ -17,7 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.SWT;
@@ -45,7 +46,6 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
  * appear in more than one manner (legacy FVB and Trim Stacks). The manager is
  * responsible for providing a single implementation for the methods relating to
  * fast views regardless of their UI presentation.
- * 
  * 
  * 
  */
@@ -142,7 +142,7 @@ public class FastViewManager {
 			return;
 
 		if (changeId.equals(IWorkbenchPage.CHANGE_VIEW_HIDE)) {
-			if (partRef instanceof IViewReference) {
+			if (partRef instanceof ViewReference) {
 				ViewReference ref = (ViewReference) partRef;
 				if (ref.getPane().getContainer() instanceof ViewStack) {
 					int viewCount = 0;
@@ -156,10 +156,6 @@ public class FastViewManager {
 						ref.getPane().getStack().setState(IStackPresentationSite.STATE_RESTORED);
 				}
 			}
-			// Remove the view from any FV list that it may be in
-			// Do this here since the view's controls may be about
-			// to be disposed...
-			removeViewReference((IViewReference) partRef, false, true);
 		}
 
 		if (changeId.equals(IWorkbenchPage.CHANGE_FAST_VIEW_REMOVE)) {
@@ -305,7 +301,7 @@ public class FastViewManager {
 	 * @param id
 	 *            The id of the {@link IWindowTrim} to update
 	 */
-	private void updateTrim(String id) {
+	public void updateTrim(String id) {
 		// Get the trim part from the trim manager
 		IWindowTrim trim = tbm.getTrim(id);
 
@@ -315,8 +311,10 @@ public class FastViewManager {
 
 		// If there are no fast views for the bar then hide it
 		List fvs = (List) idToFastViewsMap.get(id);
-		if (fvs != null && fvs.size() == 0
-				&& !FastViewBar.FASTVIEWBAR_ID.equals(id)) {
+		boolean hideEmptyFVB = WorkbenchPlugin.getDefault()
+				.getPreferenceStore().getBoolean(IPreferenceConstants.FVB_HIDE);
+		if ((fvs == null || fvs.size() == 0)
+				&& (!FastViewBar.FASTVIEWBAR_ID.equals(id) || hideEmptyFVB)) {
 			if (trim.getControl().getVisible()) {
 				tbm.setTrimVisible(trim, false);
 				tbm.forceLayout();
@@ -547,11 +545,21 @@ public class FastViewManager {
 		//long startTick = System.currentTimeMillis();
 		// Update the model first
 		List toMove = getTrueViewOrder(vs);
-		for (Iterator viewIter = toMove.iterator(); viewIter.hasNext();) {
-			IViewReference ref = (IViewReference) viewIter.next();
-			addViewReference(vs.getID(), -1, ref, false);
+		if (toMove.isEmpty()) {
+			// We are dealing with an empty durable ViewStack; hide it!
+			vs.dispose();
+			ILayoutContainer parentContainer = vs.getContainer();
+			ContainerPlaceholder placeholder = new ContainerPlaceholder(vs
+					.getID());
+            placeholder.setRealContainer(vs);
+			parentContainer.replace(vs, placeholder);
+			
+		} else {
+			for (Iterator viewIter = toMove.iterator(); viewIter.hasNext();) {
+				IViewReference ref = (IViewReference) viewIter.next();
+				addViewReference(vs.getID(), -1, ref, false);
+			}
 		}
-
 		vs.deferUpdates(false);
 		
 		// Find (or create) the trim stack to move to
@@ -559,9 +567,29 @@ public class FastViewManager {
 				.calcStackSide(stackBounds), paneOrientation);
 		vstb.setRestoreOnUnzoom(restoreOnUnzoom);
 		vstb.setSelectedTabId(selId);
-		updateTrim(vstb.getId());
-		
-		//System.out.println("minimize time: " + (System.currentTimeMillis()-startTick)); //$NON-NLS-1$
+		if (toMove.isEmpty()) {
+			// We are dealing with an empty durable ViewStack; show the trim!
+			IWindowTrim trim = vstb;
+
+			// Ensure that the trim is displayed
+			if (!trim.getControl().getVisible()) {
+				tbm.setTrimVisible(trim, true);
+			}
+
+			if (trim instanceof FastViewBar) {
+				FastViewBar fvb = (FastViewBar) trim;
+				fvb.update(true);
+			} else if (trim instanceof ViewStackTrimToolBar) {
+				vstb.update(true);
+				vstb.getControl().pack();
+				LayoutUtil.resize(trim.getControl());
+			}
+			tbm.forceLayout();
+		} else {
+	        updateTrim(vstb.getId());
+		}
+
+	    //System.out.println("minimize time: " + (System.currentTimeMillis()-startTick)); //$NON-NLS-1$
 		// RAP [bm]: no animation
 //		if (vstb != null) {
 //			animation.addEndRect(vstb.getControl());
@@ -592,10 +620,47 @@ public class FastViewManager {
 		// view; split out the secondary id (if any)
 		String selectedTabId = vstb.getSelectedTabId();
 		String[] idParts = Util.split(selectedTabId, ':');
-		if (idParts[0].length() == selectedTabId.length())
-			idParts[1] = null;
+		String secondaryId = null;
+		if (idParts[0].length() != selectedTabId.length())
+			secondaryId = idParts[1];
 		
 		List fvs = getFastViews(id);
+
+		// Check for 'durable' folders
+		boolean isDurable = false;
+		if (perspective.getDesc() != null) {
+			isDurable = page.window.getWindowAdvisor().isDurableFolder(
+				perspective.getDesc().getId(), id);
+		}
+		if (fvs.isEmpty() && isDurable) {
+			// We are dealing with a durable view stack that is currently empty, so execute special logic to restore it from the minimized state
+            LayoutPart part = perspective.getPresentation().findPart(id, null);	
+            if (part instanceof ContainerPlaceholder) {
+                ContainerPlaceholder containerPlaceholder = (ContainerPlaceholder) part;                        
+                ILayoutContainer parentContainer = containerPlaceholder
+                        .getContainer();
+                ILayoutContainer container = (ILayoutContainer) containerPlaceholder
+                        .getRealContainer();
+                if (container instanceof LayoutPart) {
+                    parentContainer.replace(containerPlaceholder,
+                            (LayoutPart) container);
+                }
+                containerPlaceholder.setRealContainer(null);
+                IWindowTrim trim = tbm.getTrim(id);
+
+        		// If it's not there there's not much we can do
+        		if (trim == null)
+        			return;
+
+        		// Hide the trim
+				if (trim.getControl().getVisible()) {
+					tbm.setTrimVisible(trim, false);
+					tbm.forceLayout();
+				}
+            }
+            return;
+		} 
+		
 		for (Iterator fvIter = fvs.iterator(); fvIter.hasNext();) {
 			IViewReference ref = (IViewReference) fvIter.next();
 			removeViewReference(ref, true, !fvIter.hasNext());
@@ -604,7 +669,7 @@ public class FastViewManager {
 		// Restore the correct tab to the 'top'
 		LayoutPart stack = perspective.getPresentation().findPart(id, null);
 		if (stack instanceof PartStack) {
-			LayoutPart selTab = perspective.getPresentation().findPart(idParts[0], idParts[1]);
+			LayoutPart selTab = perspective.getPresentation().findPart(idParts[0], secondaryId);
 			if (selTab instanceof PartPane && selTab instanceof ViewPane) {
 				((PartStack)stack).setSelection(selTab);
 				
@@ -931,19 +996,11 @@ public class FastViewManager {
 	 *  false when ending the operation
 	 */
 	public void deferUpdates(boolean defer) {
-		if (defer && !deferringUpdates) {
-			deferringUpdates = defer;
-			
-			// RAP [bm]: no animations
-//			deferAnimations(true);
-			// RAPEND: [bm] 
-
+		if (defer == deferringUpdates)
 			return;
-		}
-		
-		// 'false': reset and run any necessary updates
-		deferringUpdates = false;
-		deferAnimations(false);
+
+		deferringUpdates = defer;
+		deferAnimations(deferringUpdates);
 	}
 
 	/**

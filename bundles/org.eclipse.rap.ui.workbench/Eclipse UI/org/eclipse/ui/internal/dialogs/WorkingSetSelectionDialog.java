@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -85,10 +84,12 @@ public class WorkingSetSelectionDialog extends AbstractWorkingSetDialog {
      * Creates a working set selection dialog.
      *
      * @param parentShell the parent shell
-     * @param multi true=more than one working set can be chosen 
-     * 	in the dialog. false=only one working set can be chosen. Multiple
-     * 	working sets can still be selected and removed from the list but
-     * 	the dialog can only be closed when a single working set is selected.
+     * @param multi decides how the results are returned with 
+     *  <code>WorkingSetSelectionDialog#getSelection()</code> or 
+     *  <code>WorkingSetSelectionDialog#getResult()</code>. true= working sets 
+     *  chosen in the dialog are returned as an array of working set.false= returns 
+     *  an array having a single aggregate working set of all working sets selected 
+     *  in the dialog.
      * @param workingSetIds a list of working set ids which are valid workings sets
      *  to be selected, created, removed or edited, or <code>null</code> if all currently
      *  available working set types are valid 
@@ -330,60 +331,55 @@ public class WorkingSetSelectionDialog extends AbstractWorkingSetDialog {
      * 
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
-    protected void okPressed() {
-    		if (buttonWindowSet.getSelection()) {
-    			IWorkingSet [] windowSet = new IWorkingSet[] {workbenchWindow.getActivePage().getAggregateWorkingSet()};
-    			setSelection(windowSet);
-    			setResult(Arrays.asList(getSelection()));
-    		}
-    		else if (buttonNoSet.getSelection()) {
+	protected void okPressed() {
+		if (buttonWindowSet.getSelection()) {
+			IWorkingSet[] windowSet = new IWorkingSet[] { workbenchWindow.getActivePage()
+					.getAggregateWorkingSet() };
+			setSelection(windowSet);
+			setResult(Arrays.asList(getSelection()));
+		} else if (buttonNoSet.getSelection()) {
 			setSelection(new IWorkingSet[0]);
 			setResult(Arrays.asList(getSelection()));
-    		}
-    		else if (buttonSelectedSets.getSelection()) {
+		} else if (buttonSelectedSets.getSelection()) {
 			Object[] untypedResult = listViewer.getCheckedElements();
 			IWorkingSet[] typedResult = new IWorkingSet[untypedResult.length];
-			System.arraycopy(untypedResult, 0, typedResult, 0,
-					untypedResult.length);
-			// if multiselect is allowed or there was only one selected then dont create 
+			System.arraycopy(untypedResult, 0, typedResult, 0, untypedResult.length);
+			// if multiselect is allowed or there was only one selected then
+			// dont create
 			// an aggregate
 			if (multiSelect || typedResult.length <= 1) {
 				setSelection(typedResult);
 				setResult(Arrays.asList(typedResult));
-			}
-			else {
+			} else {
 				String setId = getAggregateIdForSets(typedResult);
-				IWorkingSetManager workingSetManager = workbenchWindow
-						.getWorkbench().getWorkingSetManager();
-				IWorkingSet aggregate = workingSetManager
-						.getWorkingSet(setId);
+				IWorkingSetManager workingSetManager = workbenchWindow.getWorkbench()
+						.getWorkingSetManager();
+				IWorkingSet aggregate = workingSetManager.getWorkingSet(setId);
 				if (aggregate == null) {
-					aggregate = workingSetManager
-							.createAggregateWorkingSet(
-									setId,
-									WorkbenchMessages.get().WorkbenchPage_workingSet_multi_label,
-									typedResult);
+					aggregate = workingSetManager.createAggregateWorkingSet(setId,
+							WorkbenchMessages.get().WorkbenchPage_workingSet_multi_label, typedResult);
 					workingSetManager.addWorkingSet(aggregate);
 				}
-				setSelection(new IWorkingSet[] {aggregate});
+				setSelection(new IWorkingSet[] { aggregate });
 				setResult(Collections.singletonList(aggregate));
 			}
-    		}
-        
-        super.okPressed();
-    }
+		}
 
-    /**
+		super.okPressed();
+	}
+
+	/**
 	 * Create a string that represents the name of the aggregate set composed of
 	 * the supplied working sets. It's very long and not printworthy.
 	 * 
-	 * @param typedResult the sets 
+	 * @param typedResult
+	 *            the sets
 	 * @return the name
 	 */
-    private String getAggregateIdForSets(IWorkingSet[] typedResult) {
-    		StringBuffer buffer = new StringBuffer();
-    		buffer.append("Aggregate:"); //$NON-NLS-1$
-    		for (int i = 0; i < typedResult.length; i++) {
+	private String getAggregateIdForSets(IWorkingSet[] typedResult) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Aggregate:"); //$NON-NLS-1$
+		for (int i = 0; i < typedResult.length; i++) {
 			buffer.append(typedResult[i].getName()).append(':');
 		}
 		return buffer.toString();

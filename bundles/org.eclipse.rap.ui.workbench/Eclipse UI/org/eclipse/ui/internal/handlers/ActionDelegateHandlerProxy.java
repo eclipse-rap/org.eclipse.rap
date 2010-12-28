@@ -304,19 +304,21 @@ public final class ActionDelegateHandlerProxy implements ISelectionListener,
 		if (editorDelegate != null) {
 			final Object activeEditor = context
 					.getVariable(ISources.ACTIVE_EDITOR_NAME);
-			if (activeEditor != null) {
+			if (activeEditor != IEvaluationContext.UNDEFINED_VARIABLE) {
 				editorDelegate.setActiveEditor(action,
 						(IEditorPart) activeEditor);
 			}
-			updateActivePart((IWorkbenchPart)activeEditor);
+			updateActivePart(activeEditor==IEvaluationContext.UNDEFINED_VARIABLE
+					?null:(IWorkbenchPart)activeEditor);
 		} else if (objectDelegate != null) {
 			final Object activePart = context
 					.getVariable(ISources.ACTIVE_PART_NAME);
-			if (activePart != null) {
+			if (activePart != IEvaluationContext.UNDEFINED_VARIABLE) {
 				objectDelegate.setActivePart(action,
 						(IWorkbenchPart) activePart);
 			}
-			updateActivePart((IWorkbenchPart) activePart);
+			updateActivePart(activePart==IEvaluationContext.UNDEFINED_VARIABLE
+					?null:(IWorkbenchPart) activePart);
 		}
 
 		final Object selectionObject = getCurrentSelection(context);
@@ -359,9 +361,9 @@ public final class ActionDelegateHandlerProxy implements ISelectionListener,
 	private Object getCurrentSelection(final IEvaluationContext context) {
 		Object obj = context
 				.getVariable(ISources.ACTIVE_MENU_EDITOR_INPUT_NAME);
-		if (obj == null) {
+		if (obj == null || obj == IEvaluationContext.UNDEFINED_VARIABLE) {
 			obj = context.getVariable(ISources.ACTIVE_MENU_SELECTION_NAME);
-			if (obj == null) {
+			if (obj == null || obj == IEvaluationContext.UNDEFINED_VARIABLE) {
 				obj = context
 						.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
 			}
@@ -478,16 +480,15 @@ public final class ActionDelegateHandlerProxy implements ISelectionListener,
 		if (!(evaluationContext instanceof IEvaluationContext)) {
 			return;
 		}
-		
+
 		IEvaluationContext context = (IEvaluationContext) evaluationContext;
 		final CommandLegacyActionWrapper action = getAction();
 		if (enabledWhenExpression != null) {
 			try {
 				final EvaluationResult result = enabledWhenExpression
 						.evaluate(context);
-				if (result == EvaluationResult.TRUE) {
-					updateDelegate(action, context);
-					return;
+				if (action != null) {
+					action.setEnabled(result != EvaluationResult.FALSE);
 				}
 			} catch (final CoreException e) {
 				// We will just fall through an let it return false.
@@ -502,9 +503,8 @@ public final class ActionDelegateHandlerProxy implements ISelectionListener,
 				final IStatus status = new Status(IStatus.WARNING,
 						WorkbenchPlugin.PI_WORKBENCH, 0, e.getMessage(), e);
 				WorkbenchPlugin.log(message.toString(), status);
+				return;
 			}
-
-			return;
 		}
 		updateDelegate(action, context);
 	}

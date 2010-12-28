@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,14 +20,15 @@ import org.eclipse.ui.dialogs.PatternFilter;
  * This PreferenceBoldLabelProvider will bold those elements which really match
  * the search contents
  */
-public class PreferenceBoldLabelProvider extends PreferenceLabelProvider
-		implements IFontProvider {
+public class PreferenceBoldLabelProvider extends PreferenceLabelProvider implements IFontProvider {
 
 	private FilteredTree filterTree;
-	private PatternFilter filterForBoldElements = new PreferencePatternFilter();
+
+	private PatternFilter filterForBoldElements;
 	
 	PreferenceBoldLabelProvider(FilteredTree filterTree) {
 		this.filterTree = filterTree;
+		this.filterForBoldElements= filterTree.getPatternFilter();
 	}
 
 	public Font getFont(Object element) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@
 package org.eclipse.ui.internal;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.dnd.DND;
@@ -22,8 +21,9 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Control;
-
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dnd.IDragAndDropService;
 import org.eclipse.ui.services.IDisposable;
@@ -46,6 +46,9 @@ import org.eclipse.ui.services.IDisposable;
  *
  */
 public class EditorSiteDragAndDropServiceImpl implements IDragAndDropService, IDisposable {
+	// Key used to store/retrieve the MergedDropTarget instance from the real DropTarget
+	private static String MDT_KEY = "MDT"; //$NON-NLS-1$
+	
 	/**
 	 * Implementation of a DropTarget wrapper that will either delegate to the
 	 * <code>primaryListener</code> if the event's <code>currentDataType</code>
@@ -71,6 +74,7 @@ public class EditorSiteDragAndDropServiceImpl implements IDragAndDropService, ID
 				int priOps, Transfer[] priTransfers, DropTargetListener priListener,
 				int secOps, Transfer[] secTransfers, DropTargetListener secListener) {
 			realDropTarget = new DropTarget(control, priOps | secOps);
+			realDropTarget.setData(MDT_KEY, this);
 			
 			// Cache the editor's transfers and listener
 			primaryTransfers = priTransfers;
@@ -141,12 +145,6 @@ public class EditorSiteDragAndDropServiceImpl implements IDragAndDropService, ID
 		private boolean isSupportedOperation(int dropOps, int eventDetail) {
 				return ((dropOps | DND.DROP_DEFAULT) & eventDetail) != 0;
 		}
-
-		/**
-		 * Clean up...
-		 */
-		public void dispose() {
-		}
 	}
 	
 	// Cache any listeners for cleanup
@@ -173,6 +171,13 @@ public class EditorSiteDragAndDropServiceImpl implements IDragAndDropService, ID
 		MergedDropTarget newTarget = new MergedDropTarget(control, ops, transfers, listener,
 				editorSiteOps, editorSiteTransfers, editorSiteListener);
 		addedListeners.add(newTarget);
+
+		newTarget.realDropTarget.addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				Object mdt = e.widget.getData(MDT_KEY);
+				addedListeners.remove(mdt);
+			}
+		});
 	}
 
 	/**
@@ -205,11 +210,6 @@ public class EditorSiteDragAndDropServiceImpl implements IDragAndDropService, ID
 	 * @see org.eclipse.ui.services.IDisposable#dispose()
 	 */
 	public void dispose() {
-		// Clean up the listeners
-		for (Iterator iterator = addedListeners.iterator(); iterator.hasNext();) {
-			MergedDropTarget target = (MergedDropTarget) iterator.next();
-			target.dispose();
-		}
 		addedListeners.clear();
 	}
 

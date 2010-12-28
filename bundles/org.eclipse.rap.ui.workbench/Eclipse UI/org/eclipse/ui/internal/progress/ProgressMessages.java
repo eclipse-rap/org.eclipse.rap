@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public class ProgressMessages {
 //	public static String JobInfo_Finished;
 //	public static String JobInfo_FinishedAt;
 //	public static String JobErrorDialog_CloseDialogMessage;
-//	public static String Error;
+//	public static String InternalError;
 //	public static String DeferredTreeContentManager_NotDeferred;
 //	public static String DeferredTreeContentManager_AddingChildren;
 //	public static String DeferredTreeContentManager_FetchingName;
@@ -89,7 +89,7 @@ public class ProgressMessages {
 	public String JobInfo_Finished;
 	public String JobInfo_FinishedAt;
 	public String JobErrorDialog_CloseDialogMessage;
-	public String Error;
+	public String InternalError;
 	public String DeferredTreeContentManager_NotDeferred;
 	public String DeferredTreeContentManager_AddingChildren;
 	public String DeferredTreeContentManager_FetchingName;

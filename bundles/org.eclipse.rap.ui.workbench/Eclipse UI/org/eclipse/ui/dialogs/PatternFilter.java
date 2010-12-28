@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,12 +26,13 @@ import org.eclipse.ui.internal.misc.StringMatcher;
 import com.ibm.icu.text.BreakIterator;
 
 /**
- * A filter used in conjunction with <code>FilteredTree</code>.  In order to 
- * determine if a node should be filtered it uses the content provider of the 
- * tree to do pattern matching on its children.  This causes the entire tree
- * structure to be realized.
- *  
- * @see org.eclipse.ui.dialogs.FilteredTree  
+ * A filter used in conjunction with <code>FilteredTree</code>. In order to
+ * determine if a node should be filtered it uses the content and label provider
+ * of the tree to do pattern matching on its children. This causes the entire
+ * tree structure to be realized. Note that the label provider must implement
+ * ILabelProvider.
+ * 
+ * @see org.eclipse.ui.dialogs.FilteredTree
  * @since 1.0
  */
 public class PatternFilter extends ViewerFilter {
@@ -123,9 +124,10 @@ public class PatternFilter extends ViewerFilter {
 
 	/**
 	 * Returns true if any of the elements makes it through the filter.
-	 * @param viewer
-	 * @param elements
-	 * @return
+	 * 
+	 * @param viewer the viewer
+	 * @param elements the elements to test
+	 * @return <code>true</code> if any of the elements makes it through the filter
 	 */
 	private boolean computeAnyVisible(Viewer viewer, Object[] elements) {
 		boolean elementFound = false;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -88,7 +89,11 @@ public class TabBehaviourMRU extends TabBehaviour {
 						dirtyEditor.getName()), MessageDialog.QUESTION,
 				new String[] { IDialogConstants.get().YES_LABEL,
 						IDialogConstants.get().NO_LABEL,
-						WorkbenchMessages.get().EditorManager_openNewEditorLabel }, 0);
+						WorkbenchMessages.get().EditorManager_openNewEditorLabel }, 0) {
+			protected int getShellStyle() {
+				return super.getShellStyle() | SWT.SHEET;
+			}
+		};
 		int result = dialog.open();
 		if (result == 0) { // YES
 			ProgressMonitorDialog pmd = new ProgressMonitorJobsDialog(dialog

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,8 @@ import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.internal.Workbench;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemeManager;
@@ -104,8 +105,7 @@ public final class ThemeElementHelper {
 			defaultFont = definition.getValue();
 		} else if (definition.getDefaultsTo() != null) {
 			defaultFont = registry.filterData(registry
-                    .getFontData(definition.getDefaultsTo()), Workbench
-                    .getInstance().getDisplay());
+                    .getFontData(definition.getDefaultsTo()), PlatformUI.getWorkbench().getDisplay());
 		} else {
             // values pushed in from jface property files.  Very ugly.
 // RAP [rh] work around missing FontRegistry#bestDataArray()		  

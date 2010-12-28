@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Semion Chichelnitsky (semion@il.ibm.com) - bug 208564     
  *******************************************************************************/
 
 package org.eclipse.ui.internal.registry;
@@ -17,7 +18,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
@@ -29,7 +29,7 @@ import com.ibm.icu.text.Collator;
 
 /**
  * Preference Transfer registry reader to read extenders of the
- * preferenceTranser schema.
+ * preferenceTransfer schema.
  */
 public class PreferenceTransferRegistryReader extends RegistryReader {
 	private List preferenceTransfers;
@@ -46,24 +46,24 @@ public class PreferenceTransferRegistryReader extends RegistryReader {
 		pluginPoint = pluginPointId;
 	}
 
-
-
 	/**
 	 * Returns a new PreferenceTransferElement configured according to the
-	 * parameters contained in the passed Registry.
+	 * parameters contained in the passed element.
 	 * 
-	 * May answer null if there was not enough information in the Extension to
-	 * create an adequate wizard
+	 * @param element
+	 *            the configuration element
+	 * @return the preference transfer element or <code>null</code> if there was
+	 *         not enough information in the element
 	 */
 	protected PreferenceTransferElement createPreferenceTransferElement(
 			IConfigurationElement element) {
-		// PreferenceTransfers must have a name and class attribute
+		// PreferenceTransfers must have a class attribute
 		if (element.getAttribute(IWorkbenchRegistryConstants.ATT_NAME) == null) {
 			logMissingAttribute(element, IWorkbenchRegistryConstants.ATT_NAME);
 			return null;
 		}
 
-		// must specifiy a mapping
+		// must specify a mapping
 		if (element.getChildren(IWorkbenchRegistryConstants.TAG_MAPPING) == null) {
 			logMissingElement(element, IWorkbenchRegistryConstants.TAG_MAPPING);
 			return null;
@@ -136,7 +136,7 @@ public class PreferenceTransferRegistryReader extends RegistryReader {
 		if (children.length < 1) {
 			logMissingElement(configElement,
 					IWorkbenchRegistryConstants.TAG_MAPPING);
-			return null;
+			return new IConfigurationElement[0];
 		}
 		return children;
 	}
@@ -151,7 +151,9 @@ public class PreferenceTransferRegistryReader extends RegistryReader {
 
 	/**
 	 * @param element
-	 * @return the maps mapping nodes to keys for this element
+	 *            the configuration element
+	 * @return a map that maps nodes to keys for this element or
+	 *         <code>null</code> for all nodes
 	 */
 	public static Map getEntry(IConfigurationElement element) {
 		IConfigurationElement[] entries = element
@@ -170,7 +172,9 @@ public class PreferenceTransferRegistryReader extends RegistryReader {
 				for (int j = 0; j < keys.length; j++) {
 					IConfigurationElement keyElement = keys[j];
 					prefFilters[j] = new PreferenceFilterEntry(keyElement
-							.getAttribute(IWorkbenchRegistryConstants.ATT_NAME));
+									.getAttribute(IWorkbenchRegistryConstants.ATT_NAME),
+							keyElement
+									.getAttribute(IWorkbenchRegistryConstants.ATT_MATCH_TYPE));
 				}
 			}
 			map.put(entry.getAttribute(IWorkbenchRegistryConstants.ATT_NODE),

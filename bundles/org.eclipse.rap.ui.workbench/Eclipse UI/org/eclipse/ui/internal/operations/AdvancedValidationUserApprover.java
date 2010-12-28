@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.Workbench;
@@ -80,15 +79,12 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
 
 		IUndoableOperation operation;
 
-		IOperationHistory history;
-
 		IAdaptable uiInfo;
 
 		StatusReportingRunnable(IUndoableOperation operation,
 				IOperationHistory history, IAdaptable uiInfo, int doing) {
 			super();
 			this.operation = operation;
-			this.history = history;
 			this.doing = doing;
 			this.uiInfo = uiInfo;
 		}
@@ -272,10 +268,7 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
 		Shell shell = getShell(uiInfo);
 		if (shell == null) {
 			createdShell = true;
-			// RAP [bm]: 
-//			shell = new Shell();
-			shell = new Shell(Display.getCurrent());
-			// RAPEND: [bm]
+			shell = new Shell();
 		}
 		ErrorDialog.openError(shell, title, message, status);
 		if (createdShell) {
@@ -311,10 +304,7 @@ public class AdvancedValidationUserApprover implements IOperationApprover,
 		Shell shell = getShell(uiInfo);
 		if (shell == null) {
 			createdShell = true;
-			// RAP [bm]: 
-//			shell = new Shell();
-			shell = new Shell(Display.getCurrent());
-			// RAPEND: [bm] 
+			shell = new Shell();
 		}
 
 		// Set up the dialog. For non-error statuses, we use a warning dialog

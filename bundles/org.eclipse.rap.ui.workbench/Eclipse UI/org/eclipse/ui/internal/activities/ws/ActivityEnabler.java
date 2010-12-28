@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2003, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,27 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.activities.ws;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,8 +39,17 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.activities.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.activities.ActivitiesPreferencePage;
+import org.eclipse.ui.activities.IActivity;
+import org.eclipse.ui.activities.ICategory;
+import org.eclipse.ui.activities.IMutableActivityManager;
+import org.eclipse.ui.activities.NotDefinedException;
+import org.eclipse.ui.internal.activities.InternalActivityHelper;
 
 /**
  * A simple control provider that will allow the user to toggle on/off the
@@ -344,26 +367,6 @@ public class ActivityEnabler {
         button.setLayoutData(data);
         return data;
     }
-    
-	/**
-	 * @param categoryId
-	 *            the id to fetch.
-	 * @return return all ids for activities that are in the given in the
-	 *         category.
-	 */
-	private Collection getCategoryActivityIds(String categoryId) {
-		ICategory category = activitySupport.getCategory(
-				categoryId);
-		Set activityBindings = category.getCategoryActivityBindings();
-		List categoryActivities = new ArrayList(activityBindings.size());
-		for (Iterator i = activityBindings.iterator(); i.hasNext();) {
-			ICategoryActivityBinding binding = (ICategoryActivityBinding) i
-					.next();
-			String activityId = binding.getActivityId();
-			categoryActivities.add(activityId);
-		}
-		return categoryActivities;
-	}
 
 	/**
 	 * Set the enabled category/activity check/grey states based on initial
@@ -385,7 +388,9 @@ public class ActivityEnabler {
 					.getCategory(categoryId);
 
 			int state = NONE;
-			Collection activities = getCategoryActivityIds(categoryId);
+			
+			Collection activities = InternalActivityHelper
+					.getActivityIdsForCategory(activitySupport, category);
 			int foundCount = 0;
 			for (Iterator j = activities.iterator(); j.hasNext();) {
 				String activityId = (String) j.next();

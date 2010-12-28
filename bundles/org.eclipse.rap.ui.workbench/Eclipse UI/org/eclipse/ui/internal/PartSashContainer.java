@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -352,6 +352,10 @@ public abstract class PartSashContainer extends LayoutPart implements
                 return measureTree(outerBounds, parent, horizontal)
                         - (left + right - childSize);
             }
+            
+            // Ensure we don't get a 'divide by zero'
+            if ((left+right) == 0)
+            	return 0;
 
             // Else return the size of the parent, scaled appropriately
             return measureTree(outerBounds, parent, horizontal) * childSize
@@ -1233,7 +1237,8 @@ public abstract class PartSashContainer extends LayoutPart implements
     		IViewReference vRef = vp.getViewReference();
     		LayoutPart fpp = pres.findPart(vRef.getId(), vRef.getSecondaryId());
     		
-    		if (fpp != null) {
+    		// 'findPart' won't find fast views that don't exist in the main presentation
+    		if (fpp != null || persp.isFastView(vRef)) {
     	        // Remove the part from old container.
     	        derefPart(newPart);
     		}

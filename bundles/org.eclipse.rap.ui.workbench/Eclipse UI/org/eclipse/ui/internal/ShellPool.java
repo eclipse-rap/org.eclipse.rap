@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,14 +65,22 @@ public class ShellPool {
                         s.setData(CLOSE_LISTENER, null);
                         l.shellClosed(e);
                         
-                        Control[] children = s.getChildren();
-                        for (int i = 0; i < children.length; i++) {
-                            Control control = children[i];
-                          
-                            control.dispose();
+                        // The shell can 'cancel' the close by setting
+                        // the 'doit' to false...if so, do nothing
+                        if (e.doit) {
+                            Control[] children = s.getChildren();
+	                        for (int i = 0; i < children.length; i++) {
+	                            Control control = children[i];
+	                          
+	                            control.dispose();
+	                        }
+	                        availableShells.add(s);
+	                        s.setVisible(false);
                         }
-                        availableShells.add(s);
-                        s.setVisible(false);
+                        else {
+                        	// Restore the listener
+                            s.setData(CLOSE_LISTENER, l);
+                        }
                     }
                 }
                 e.doit = false;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@ package org.eclipse.ui.internal.part;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -27,15 +30,17 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.WorkbenchMessages;
+import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.statushandlers.StatusManager;
+import org.eclipse.ui.views.IViewDescriptor;
 
 /**
  */
 public class StatusPart {
     
+	private static final String LOG_VIEW_ID = "org.eclipse.pde.runtime.LogView"; //$NON-NLS-1$
     boolean showingDetails = false;
     private Button detailsButton;
     private Composite detailsArea;
@@ -68,8 +73,7 @@ public class StatusPart {
         imageLabel.setBackground(bgColor);
         Image image = getImage();
         if (image != null) {
-// RAP [rh] Image#setBackground() missing          
-//            image.setBackground(bgColor);
+            image.setBackground(bgColor);
             imageLabel.setImage(image);
             imageLabel.setLayoutData(new GridData(
                     GridData.HORIZONTAL_ALIGN_CENTER
@@ -84,15 +88,27 @@ public class StatusPart {
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         text.setText(reason.getMessage());
         
-        detailsButton = new Button(parent, SWT.PUSH);
+        Composite buttonParent = new Composite(parent, SWT.NONE);
+        buttonParent.setBackground(parent.getBackground());
+        GridLayout buttonsLayout = new GridLayout();
+        buttonsLayout.numColumns = 2;
+        buttonsLayout.marginHeight = 0;
+        buttonsLayout.marginWidth  = 0;
+        buttonsLayout.horizontalSpacing = 0;
+		buttonParent.setLayout(buttonsLayout);
+        
+        
+        detailsButton = new Button(buttonParent, SWT.PUSH);
         detailsButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 showDetails(!showingDetails);
             }
         });
         
-        detailsButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        detailsButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, false));
         detailsButton.setVisible(reason.getException() != null);
+        
+        createShowLogButton(buttonParent);
         
         updateDetailsText();
         
@@ -169,5 +185,28 @@ public class StatusPart {
         pwriter.flush();
         pwriter.close();
         return swriter.toString();
+    }
+    
+    private void createShowLogButton(Composite parent){
+		IViewDescriptor descriptor = PlatformUI.getWorkbench().getViewRegistry()
+				.find(LOG_VIEW_ID);
+		if (descriptor == null) {
+			return;
+		}
+		Button button = new Button(parent, SWT.PUSH);
+		button.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getActivePage().showView(LOG_VIEW_ID);
+				} catch (CoreException ce) {
+					StatusManager.getManager().handle(ce,
+							WorkbenchPlugin.PI_WORKBENCH);
+				}
+			}
+		});
+		button.setImage(descriptor.getImageDescriptor().createImage());
+		button
+				.setToolTipText(WorkbenchMessages.get().ErrorLogUtil_ShowErrorLogTooltip);
     }
 }

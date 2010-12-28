@@ -1,22 +1,23 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   IBM Corporation - initial API and implementation 
+ *   IBM Corporation - initial API and implementation
  * 	 Sebastian Davids <sdavids@gmx.de> - Fix for bug 19346 - Dialog
  *    font should be activated and used by other components.
  *******************************************************************************/
 package org.eclipse.ui.dialogs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -32,6 +33,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
+import org.eclipse.core.runtime.IStatus;
+
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ILabelProvider;
+
+
 /**
  * A list selection dialog with two panes. Duplicated entries will be folded
  * together and are displayed in the lower pane (qualifier).
@@ -42,6 +49,12 @@ public class TwoPaneElementSelector extends AbstractElementListSelectionDialog {
     private String fUpperListLabel;
 
     private String fLowerListLabel;
+    
+    /**
+     * The comparator used to sort the list in the lower pane.
+     * @since 1.4
+     */
+    private Comparator fLowerListComparator = null;
 
     private ILabelProvider fQualifierRenderer;
 
@@ -88,6 +101,22 @@ public class TwoPaneElementSelector extends AbstractElementListSelectionDialog {
      */
     public void setLowerListLabel(String label) {
         fLowerListLabel = label;
+    }
+
+    /**
+     * Sets the comparator used to sort the list in the lower pane.
+     * <p>
+     * Note: the comparator might want to honor
+     * {@link AbstractElementListSelectionDialog#isCaseIgnored()}.
+     * </p>
+     * 
+     * @param comparator
+     *            a Comparator or <code>null</code> if <code>String</code>'s
+     *            comparison methods should be used
+     * @since 3.5
+     */
+    public void setLowerListComparator(Comparator comparator) {
+    	fLowerListComparator = comparator;
     }
 
     /**
@@ -157,19 +186,11 @@ public class TwoPaneElementSelector extends AbstractElementListSelectionDialog {
         });
 // RAP [rh] safer to replace MouseDoubleClick with WdigetDefaultSelected event for now        
 //        list.addListener(SWT.MouseDoubleClick, new Listener() {
-//            public void handleEvent(Event evt) {
-//                handleDefaultSelected();
-//            }
-//        });
-        list.addSelectionListener( new SelectionAdapter() {
-          /* (non-Javadoc)
-           * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-           */
-          public void widgetDefaultSelected( SelectionEvent event ) {
+        list.addListener(SWT.DefaultSelection, new Listener() {
+            public void handleEvent(Event evt) {
                 handleDefaultSelected();
-          }
-        } );
-        
+            }
+        });
         list.addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
                 fQualifierRenderer.dispose();
@@ -213,16 +234,32 @@ public class TwoPaneElementSelector extends AbstractElementListSelectionDialog {
     }
 
     private void handleUpperSelectionChanged() {
-        int index = getSelectionIndex();
+        int indices[] = getSelectionIndices();
         fLowerList.removeAll();
-        if (index >= 0) {
-	        fQualifierElements = getFoldedElements(index);
-	        if (fQualifierElements == null) {
-				updateLowerListWidget(new Object[] {});
-			} else {
-				updateLowerListWidget(fQualifierElements);
+		int elementCount = 0;
+		List elements= new ArrayList(indices.length * 5);
+        for (int i= 0; i < indices.length; i++) {
+        	Object[] foldedElements= getFoldedElements(indices[i]);
+			if (foldedElements != null) {
+				elementCount = elementCount + foldedElements.length;
+				elements.add(getFoldedElements(indices[i]));
 			}
-        }
+		}
+		if (elementCount > 0) {
+			fQualifierElements = new Object[elementCount];
+			int destPos = 0;
+			Iterator iterator = elements.iterator();
+			while (iterator.hasNext()) {
+				Object[] objects= (Object[])iterator.next();
+				System.arraycopy(objects, 0, fQualifierElements, destPos, objects.length);
+				destPos = destPos + objects.length;
+			}
+			updateLowerListWidget(fQualifierElements);
+		} else {
+			fQualifierElements = null;
+			updateLowerListWidget(new Object[] {});
+		}
+
         validateCurrentSelection();
     }
 
@@ -273,7 +310,14 @@ public class TwoPaneElementSelector extends AbstractElementListSelectionDialog {
 			}
             qualifiers[i] = text;
         }
-        TwoArrayQuickSorter sorter = new TwoArrayQuickSorter(isCaseIgnored());
+        
+        TwoArrayQuickSorter sorter;
+        if (fLowerListComparator == null) {
+        	sorter = new TwoArrayQuickSorter(isCaseIgnored());
+        } else {
+        	sorter = new TwoArrayQuickSorter(fLowerListComparator);
+        }
+        
         sorter.sort(qualifiers, elements);
         for (int i = 0; i != length; i++) {
             TableItem item = new TableItem(fLowerList, SWT.NONE);
@@ -292,4 +336,20 @@ public class TwoPaneElementSelector extends AbstractElementListSelectionDialog {
         super.handleEmptyList();
         fLowerList.setEnabled(false);
     }
+    
+    /**
+     * @see AbstractElementListSelectionDialog#validateCurrentSelection()
+     * @since 1.4
+     */
+    protected boolean validateCurrentSelection() {
+    	ISelectionStatusValidator validator = getValidator();
+    	Object lowerSelection = getLowerSelectedElement();
+    	
+    	if (validator != null && lowerSelection != null) {
+    		IStatus status = validator.validate(new Object [] {lowerSelection});
+    		updateStatus(status);
+    		return status.isOK();
+    	}
+        return super.validateCurrentSelection();
+     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -369,6 +370,7 @@ public class ObjectActionContributor extends PluginActionBuilder implements
                             object);
                     context.setAllowPluginActivation(true);
                     context.addVariable("selection", object); //$NON-NLS-1$
+                    context.addVariable("org.eclipse.core.runtime.Platform", Platform.class); //$NON-NLS-1$
                     EvaluationResult evalResult = enablement.evaluate(context);
                     if (evalResult == EvaluationResult.FALSE) {
 						return false;

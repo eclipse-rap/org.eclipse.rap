@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.ContributionManager;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -32,11 +30,15 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.internal.services.ActivePartSourceProvider;
+import org.eclipse.ui.internal.services.IWorkbenchLocationService;
+import org.eclipse.ui.internal.services.WorkbenchSourceProvider;
 import org.eclipse.ui.internal.util.Util;
+import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.menus.MenuUtil;
@@ -160,14 +162,10 @@ public class ShowInMenu extends ContributionItem implements
 		}
 
 		IViewDescriptor[] viewDescs = getViewDescriptors(sourcePart);
-		if (viewDescs.length == 0) {
-			return;
-		}
-
 		for (int i = 0; i < viewDescs.length; ++i) {
-			IAction action = getAction(viewDescs[i]);
-			if (action != null) {
-				innerMgr.add(action);
+			IContributionItem cci = getContributionItem(viewDescs[i]);
+			if (cci != null) {
+				innerMgr.add(cci);
 			}
 		}
 		if (innerMgr instanceof MenuManager) {
@@ -175,8 +173,8 @@ public class ShowInMenu extends ContributionItem implements
 					.getService(ISourceProviderService.class);
 			ISourceProvider sp = sps
 					.getSourceProvider(ISources.SHOW_IN_SELECTION);
-			if (sp instanceof ActivePartSourceProvider) {
-				((ActivePartSourceProvider) sp).checkActivePart();
+			if (sp instanceof WorkbenchSourceProvider) {
+				((WorkbenchSourceProvider) sp).checkActivePart(true);
 			}
 			IMenuService service = (IMenuService) locator
 					.getService(IMenuService.class);
@@ -186,19 +184,24 @@ public class ShowInMenu extends ContributionItem implements
 	}
 
 	/**
-	 * Returns the action for the given view id, or null if not found.
+	 * Return the appropriate command contribution item for the parameter.
+	 * @param viewDescriptor
+	 * @return the show in command contribution item
 	 */
-	private IAction getAction(IViewDescriptor desc) {
-		// Keep a cache, rather than creating a new action each time,
-		// so that image caching in ActionContributionItem works.
-		IAction action = (IAction) actions.get(desc.getId());
-		if (action == null) {
-			if (desc != null) {
-				action = new ShowInAction(window, desc);
-				actions.put(desc.getId(), action);
-			}
+	private IContributionItem getContributionItem(IViewDescriptor viewDescriptor) {
+		CommandContributionItemParameter parm = new CommandContributionItemParameter(
+				locator, viewDescriptor.getId(), IWorkbenchCommandConstants.NAVIGATE_SHOW_IN,
+				CommandContributionItem.STYLE_PUSH);
+		HashMap targetId = new HashMap();
+		targetId.put(IWorkbenchCommandConstants.NAVIGATE_SHOW_IN_PARM_TARGET,
+				viewDescriptor.getId());
+		parm.parameters = targetId;
+		parm.label = viewDescriptor.getLabel();
+		if (parm.label.length() > 0) {
+			parm.mnemonic = parm.label.substring(0, 1);
 		}
-		return action;
+		parm.icon = viewDescriptor.getImageDescriptor();
+		return new CommandContributionItem(parm);
 	}
 
 	/**
@@ -236,7 +239,11 @@ public class ShowInMenu extends ContributionItem implements
 	 * @return the source part or <code>null</code>
 	 */
 	private IWorkbenchPart getSourcePart() {
-		IWorkbenchPage page = getWindow().getActivePage();
+		IWorkbenchWindow window = getWindow();
+		
+		if(window == null)	return null;
+		
+		IWorkbenchPage page = window.getActivePage();
 		if (page != null) {
 			return page.getActivePart();
 		}
@@ -328,12 +335,16 @@ public class ShowInMenu extends ContributionItem implements
 	}
 
 	protected IWorkbenchWindow getWindow() {
+		if(locator == null) return null;
+		
+		IWorkbenchLocationService wls = (IWorkbenchLocationService) locator
+				.getService(IWorkbenchLocationService.class);
+
 		if (window == null) {
-			window = (IWorkbenchWindow) locator
-					.getService(IWorkbenchWindow.class);
+			window = wls.getWorkbenchWindow();
 		}
 		if (window == null) {
-			IWorkbench wb = (IWorkbench) locator.getService(IWorkbench.class);
+			IWorkbench wb = wls.getWorkbench();
 			if (wb != null) {
 				window = wb.getActiveWorkbenchWindow();
 			}
@@ -354,6 +365,13 @@ public class ShowInMenu extends ContributionItem implements
 				service.releaseContributions(currentManager);
 			}
 			currentManager.removeAll();
+			currentManager = null;
 		}
+		if (getParent() instanceof MenuManager) {
+			((MenuManager) getParent()).removeMenuListener(menuListener);
+		}
+		actions.clear();
+		window=null;
+		locator=null;
 	}
 }

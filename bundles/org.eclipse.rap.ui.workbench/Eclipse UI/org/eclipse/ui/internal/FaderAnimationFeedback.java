@@ -11,11 +11,9 @@
 // *******************************************************************************/
 //package org.eclipse.ui.internal;
 //
-//import org.eclipse.swt.SWT;
 //import org.eclipse.swt.graphics.GC;
 //import org.eclipse.swt.graphics.Image;
 //import org.eclipse.swt.graphics.Rectangle;
-//import org.eclipse.swt.widgets.Display;
 //import org.eclipse.swt.widgets.Shell;
 //
 ///**
@@ -32,8 +30,6 @@
 // */
 //public class FaderAnimationFeedback extends	AnimationFeedbackBase {
 //	private Image backingStore;
-//	private Shell theShell;
-//	private Display display;
 //	static boolean useCopy = true;
 //
 //	public FaderAnimationFeedback(Shell parentShell) {
@@ -41,9 +37,10 @@
 //	}
 //
 //	public void dispose() {
-//		backingStore.dispose();
-//		theShell.setVisible(false);
-//		theShell.dispose();
+//		super.dispose();
+//
+//		if (!backingStore.isDisposed())
+//			backingStore.dispose();
 //	}
 //
 ////	private static Image printImage(Control control) {
@@ -70,17 +67,14 @@
 ////	}
 //
 //	public void initialize(AnimationEngine engine) {
-//		display = getAnimationShell().getDisplay();
-//
-//		Rectangle psRect = getAnimationShell().getBounds();
-//		theShell = new Shell(getAnimationShell(), SWT.NO_TRIM | SWT.ON_TOP);
-//		theShell.setBounds(getAnimationShell().getBounds());
+//		Rectangle psRect = getBaseShell().getBounds();
+//		getAnimationShell().setBounds(psRect);
 //
 //		// Capture the background image
 //		System.out.println("Start time = " + System.currentTimeMillis()); //$NON-NLS-1$
 //		if (useCopy) {
-//			backingStore = new Image(theShell.getDisplay(), psRect);
-//			GC gc = new GC(display);
+//			backingStore = new Image(getAnimationShell().getDisplay(), psRect);
+//			GC gc = new GC(getAnimationShell());
 //			gc.copyArea(backingStore, psRect.x, psRect.y);
 //			gc.dispose();
 //		}
@@ -89,23 +83,16 @@
 //			//backingStore = printImage(getAnimationShell());
 //		}
 //		
-//		theShell.setAlpha(254);
-//		theShell.setBackgroundImage(backingStore);
-//		theShell.setVisible(true);
+//		getAnimationShell().setAlpha(254);
+//		getAnimationShell().setBackgroundImage(backingStore);
+//		getAnimationShell().setVisible(true);
 //		System.out.println("End time = " + System.currentTimeMillis()); //$NON-NLS-1$
 //		//display.update();
 //
 //	}
-//		
-//	/* (non-Javadoc)
-//	 * @see org.eclipse.ui.internal.RectangleAnimationFeedbackBase#jobInit(org.eclipse.ui.internal.AnimationEngine)
-//	 */
-//	public boolean jobInit(AnimationEngine engine) {
-//		return super.jobInit(engine);
-//	}
 //
 //	public void renderStep(AnimationEngine engine) {
-//		//System.out.println("render: " + System.currentTimeMillis() + " amount" + engine.amount()); //$NON-NLS-1$ //$NON-NLS-2$
-//		theShell.setAlpha((int) (255 - (engine.amount()*255)));
+//		getAnimationShell().setAlpha((int) (255 - (engine.amount()*255)));
 //	}
+//	
 //}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Nikolay Botev - bug 240651
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
@@ -19,17 +20,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.eclipse.osgi.util.NLS;
-
-//import org.eclipse.swt.custom.BusyIndicator;
-//import org.eclipse.swt.program.Program;
-//import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.IHandler;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -43,7 +36,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.internal.provisional.action.ICoolBarManager2;
@@ -58,12 +50,14 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.window.IShellProvider;
-
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ActiveShellExpression;
 import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
-//import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.IEditorMatchingStrategy;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -78,6 +72,7 @@ import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.ISaveablesLifecycleListener;
 import org.eclipse.ui.ISaveablesSource;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPart3;
@@ -91,8 +86,6 @@ import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-//import org.eclipse.ui.internal.editorsupport.ComponentSupport;
-//import org.eclipse.ui.internal.misc.ExternalEditor;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.misc.UIStats;
 import org.eclipse.ui.internal.part.NullEditorInput;
@@ -102,6 +95,7 @@ import org.eclipse.ui.internal.tweaklets.TabBehaviour;
 import org.eclipse.ui.internal.tweaklets.Tweaklets;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.model.WorkbenchPartLabelProvider;
+import org.eclipse.ui.part.AbstractMultiEditor;
 import org.eclipse.ui.part.MultiEditor;
 import org.eclipse.ui.part.MultiEditorInput;
 import org.eclipse.ui.statushandlers.StatusManager;
@@ -243,7 +237,7 @@ public class EditorManager implements IExtensionChangeHandler {
 			// Assign the handler for the pin editor keyboard shortcut.
 			final IHandlerService handlerService = (IHandlerService) window.getWorkbench().getService(IHandlerService.class);
 			pinEditorHandlerActivation = handlerService.activateHandler(
-					"org.eclipse.ui.window.pinEditor", pinEditorHandler, //$NON-NLS-1$
+					IWorkbenchCommandConstants.WINDOW_PIN_EDITOR, pinEditorHandler,
 					new ActiveShellExpression(shell));
 		}
 	}
@@ -375,7 +369,7 @@ public class EditorManager implements IExtensionChangeHandler {
 	 * 
 	 * @param input
 	 *            the editor input
-	 * @return the matching editor, or <code>null</code> if no match fond
+	 * @return the matching editor, or <code>null</code> if no match found
 	 */
 	public IEditorPart findEditor(IEditorInput input) {
 		return findEditor(null, input, IWorkbenchPage.MATCH_INPUT);
@@ -391,7 +385,7 @@ public class EditorManager implements IExtensionChangeHandler {
 	 *            the editor input
 	 * @param matchFlags
 	 *            flags specifying which aspects to match
-	 * @return the matching editor, or <code>null</code> if no match fond
+	 * @return the matching editor, or <code>null</code> if no match found
 	 * @since 3.1
 	 */
 	public IEditorPart findEditor(String editorId, IEditorInput input,
@@ -414,7 +408,7 @@ public class EditorManager implements IExtensionChangeHandler {
 	 *            the editor input
 	 * @param matchFlags
 	 *            flags specifying which aspects to match
-	 * @return the matching editor, or <code>null</code> if no match fond
+	 * @return the matching editor, or an empty array if no match found
 	 * @since 3.1
 	 */
 	public IEditorReference[] findEditors(IEditorInput input, String editorId,
@@ -440,8 +434,7 @@ public class EditorManager implements IExtensionChangeHandler {
 	}
 
 	/**
-	 * Returns an open editor matching the given editor id and/or editor input.
-	 * Returns <code>null</code> if none match.
+	 * Populates a list with open editor(s) matching the given editor id and/or editor input.
 	 * 
 	 * @param editorId
 	 *            the editor id
@@ -735,15 +728,15 @@ public class EditorManager implements IExtensionChangeHandler {
 	 * Create the part and reference for each inner editor.
 	 * 
 	 * @param ref
-	 *            the MultiEditor reference
+	 *            the AbstractMultiEditor reference
 	 * @param part
 	 *            the part
 	 * @param input
-	 *            the MultiEditor input
-	 * @return the array of inner references to store in the MultiEditor reference
+	 *            the AbstractMultiEditor input
+	 * @return the array of inner references to store in the AbstractMultiEditor reference
 	 */
 	IEditorReference[] openMultiEditor(final IEditorReference ref,
-			final MultiEditor part, final MultiEditorInput input)
+			final AbstractMultiEditor part, final MultiEditorInput input)
 			throws PartInitException {
 
 		String[] editorArray = input.getEditors();
@@ -764,7 +757,7 @@ public class EditorManager implements IExtensionChangeHandler {
 						editorArray[i]));
 			}
 			descArray[i] = innerDesc;
-			InnerEditor innerRef = new InnerEditor(ref, inputArray[i],
+			InnerEditor innerRef = new InnerEditor(ref, part, inputArray[i],
 					descArray[i]);
 			refArray[i] = innerRef;
 			partArray[i] = innerRef.getEditor(true);
@@ -779,7 +772,7 @@ public class EditorManager implements IExtensionChangeHandler {
 	private void createEditorTab(final EditorReference ref,
 			final String workbookId) throws PartInitException {
 
-		editorPresentation.addEditor(ref, workbookId);
+		editorPresentation.addEditor(ref, workbookId, true);
 
 	}
 
@@ -1050,6 +1043,18 @@ public class EditorManager implements IExtensionChangeHandler {
 				boolean addNonPartSources, final IRunnableContext runnableContext, final IShellProvider shellProvider) {
 		// clone the input list
 		dirtyParts = new ArrayList(dirtyParts);
+
+		if (closing) {
+			// if the parts are going to be closed, then we only save those that
+			// need to be saved when closed, see bug 272070
+			for (Iterator it = dirtyParts.iterator(); it.hasNext();) {
+				ISaveablePart saveablePart = (ISaveablePart) it.next();
+				if (!saveablePart.isSaveOnCloseNeeded()) {
+					it.remove();
+				}
+			}
+		}
+
     	List modelsToSave;
 		if (confirm) {
 			boolean saveable2Processed = false;
@@ -1158,7 +1163,11 @@ public class EditorManager implements IExtensionChangeHandler {
 				String[] buttons = new String[] { IDialogConstants.get().YES_LABEL, IDialogConstants.get().NO_LABEL, IDialogConstants.get().CANCEL_LABEL };
 				MessageDialog d = new MessageDialog(
 					shellProvider.getShell(), WorkbenchMessages.get().Save_Resource,
-					null, message, MessageDialog.QUESTION, buttons, 0);
+					null, message, MessageDialog.QUESTION, buttons, 0) {
+					protected int getShellStyle() {
+						return super.getShellStyle() | SWT.SHEET;
+					}
+				};
 				
 				int choice = SaveableHelper.testGetAutomatedResponse();
 				if (SaveableHelper.testGetAutomatedResponse() == SaveableHelper.USER_RESPONSE) {
@@ -1182,7 +1191,11 @@ public class EditorManager implements IExtensionChangeHandler {
 	            ListSelectionDialog dlg = new ListSelectionDialog(
 	                    shellProvider.getShell(), modelsToSave,
 	                    new ArrayContentProvider(),
-	                    new WorkbenchPartLabelProvider(), RESOURCES_TO_SAVE_MESSAGE);
+	                    new WorkbenchPartLabelProvider(), RESOURCES_TO_SAVE_MESSAGE) {
+	            	protected int getShellStyle() {
+	            		return super.getShellStyle() | SWT.SHEET;
+	            	}
+	            };
 	            dlg.setInitialSelections(modelsToSave.toArray());
 	            dlg.setTitle(SAVE_RESOURCES_TITLE);
 	
@@ -1213,7 +1226,7 @@ public class EditorManager implements IExtensionChangeHandler {
 			public void run(IProgressMonitor monitor) {
 				IProgressMonitor monitorWrap = new EventLoopProgressMonitor(
 						monitor);
-				monitorWrap.beginTask("", finalModels.size()); //$NON-NLS-1$
+				monitorWrap.beginTask(WorkbenchMessages.get().Saving_Modifications, finalModels.size());
 				for (Iterator i = finalModels.iterator(); i.hasNext();) {
 					Saveable model = (Saveable) i.next();
 					// handle case where this model got saved as a result of saving another
@@ -1427,16 +1440,35 @@ public class EditorManager implements IExtensionChangeHandler {
 
 		private IEditorReference outerEditor;
 
-		public InnerEditor(IEditorReference outerEditor, IEditorInput input,
+		private AbstractMultiEditor outerEditorPart;
+
+		public InnerEditor(IEditorReference outerEditor,
+				AbstractMultiEditor outerEditorPart, IEditorInput input,
 				EditorDescriptor desc) {
 			super(EditorManager.this, input, desc);
 			this.outerEditor = outerEditor;
+			this.outerEditorPart = outerEditorPart;
+		}
+
+		protected void doDisposePart() {
+			this.outerEditorPart = null;
+			super.doDisposePart();
 		}
 
 		protected PartPane createPane() {
+			// MultiEditor backwards compatibility
 			return new MultiEditorInnerPane(
 					(EditorPane) ((EditorReference) outerEditor).getPane(),
-					this, page, editorPresentation.getActiveWorkbook());
+					this, page, editorPresentation.getActiveWorkbook(),
+					outerEditorPart instanceof MultiEditor);
+		}
+
+		protected Composite getPaneControlContainer() {
+			// MultiEditor backwards compatibility
+			if (outerEditorPart instanceof MultiEditor) {
+				return super.getPaneControlContainer();
+			}
+			return outerEditorPart.getInnerEditorContainer(this);
 		}
 
 	}
@@ -1550,7 +1582,7 @@ public class EditorManager implements IExtensionChangeHandler {
 				editorMem.putString(IWorkbenchConstants.TAG_WORKBOOK,
 						editorPane.getWorkbook().getID());
 
-				if (editor == page.getActivePart()) {
+				if (editor == page.getActiveEditor()) {
 					editorMem.putString(IWorkbenchConstants.TAG_ACTIVE_PART,
 							"true"); //$NON-NLS-1$
 				}

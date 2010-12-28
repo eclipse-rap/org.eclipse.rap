@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.part.MultiEditor;
+import org.eclipse.ui.part.AbstractMultiEditor;
 
 /**
  * EditorAreaHelper is a wrapper for PartTabworkbook.
@@ -158,8 +158,8 @@ public class EditorAreaHelper {
         if (pane != null) {
             IEditorReference result = pane.getEditorReference();
             IEditorPart editorPart = (IEditorPart) result.getPart(false);
-            if ((editorPart != null) && (editorPart instanceof MultiEditor)) {
-                editorPart = ((MultiEditor) editorPart).getActiveEditor();
+            if ((editorPart != null) && (editorPart instanceof AbstractMultiEditor)) {
+                editorPart = ((AbstractMultiEditor) editorPart).getActiveEditor();
                 EditorSite site = (EditorSite) editorPart.getSite();
                 result = (IEditorReference) site.getPartReference();
             }
@@ -176,6 +176,15 @@ public class EditorAreaHelper {
 
 
 
+    public boolean containsEditor(EditorReference ref) {
+    	IEditorReference refs[] = editorArea.getPage().getEditorReferences();
+        for (int i = 0; i < refs.length; i++) {
+            if (ref == refs[i]) {
+				return true;
+			}
+        }
+        return false;
+    }
     /**
      * Main entry point for adding an editor. Adds the editor to the layout in the given
      * stack, and notifies the workbench page when done.
@@ -184,12 +193,9 @@ public class EditorAreaHelper {
      * @param workbookId workbook that will contain the editor (or null if the editor
      * should be added to the default workbook)
      */
-    public void addEditor(EditorReference ref, String workbookId) {
-        IEditorReference refs[] = editorArea.getPage().getEditorReferences();
-        for (int i = 0; i < refs.length; i++) {
-            if (ref == refs[i]) {
-				return;
-			}
+    public void addEditor(EditorReference ref, String workbookId, boolean notifyPage) {
+        if (containsEditor(ref)) {
+        	return;
         }
         
         if (!(ref.getPane() instanceof MultiEditorInnerPane)) {
@@ -207,7 +213,9 @@ public class EditorAreaHelper {
             addToLayout((EditorPane)ref.getPane(), stack);
         }
         
-        editorArea.getPage().partAdded(ref);
+        if (notifyPage) {
+        	editorArea.getPage().partAdded(ref);
+        }
     }
     
     private void addToLayout(EditorPane pane, EditorStack stack) {

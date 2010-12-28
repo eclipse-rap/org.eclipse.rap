@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -197,9 +197,8 @@ public abstract class AbstractElementListSelectionDialog extends
     public String getFilter() {
         if (fFilteredList == null) {
 			return fFilter;
-		} else {
-			return fFilteredList.getFilter();
 		}
+		return fFilteredList.getFilter();
     }
 
     /**
@@ -473,5 +472,17 @@ public abstract class AbstractElementListSelectionDialog extends
         if (okButton != null) {
 			okButton.setEnabled(getSelectedElements().length != 0);
 		}
+    }
+    
+    /**
+     * Gets the optional validator used to check if the selection is valid.
+     * The validator is invoked whenever the selection changes.
+     * @return the validator to validate the selection, or <code>null</code>
+     * if no validator has been set.
+     * 
+     * @since 1.4
+     */
+    protected ISelectionStatusValidator getValidator() {
+        return fValidator;
     }
 }

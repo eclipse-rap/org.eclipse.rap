@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.ui.internal;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 
 /**
@@ -27,7 +28,7 @@ public class SaveAsAction extends BaseSaveAction {
      */
     public SaveAsAction(IWorkbenchWindow window) {
         super(WorkbenchMessages.get().SaveAs_text, window); 
-        setActionDefinitionId("org.eclipse.ui.file.saveAs"); //$NON-NLS-1$
+        setActionDefinitionId(IWorkbenchCommandConstants.FILE_SAVE_AS);
         setText(WorkbenchMessages.get().SaveAs_text); 
         setToolTipText(WorkbenchMessages.get().SaveAs_toolTip); 
         setId("saveAs"); //$NON-NLS-1$

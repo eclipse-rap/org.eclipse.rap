@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.swt;
 
@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * Tracks focusGained and focusLost events for a Control registered with this
  * service, and provides the control and its registered ID as variables to the
- * application evaluation context for evaluation be the various services.
+ * application evaluation context for evaluation by the various services.
  * <p>
  * This service provides 2 variables, activeFocusControl (a Control) and
  * activeFocusControlId (the ID registered with the service).
@@ -41,6 +41,17 @@ import org.eclipse.swt.widgets.Control;
  * </pre>
  * 
  * </p>
+ * <p>
+ * This service can be acquired from your service locator:
+ * <pre>
+ * 	IFocusService service = (IFocusService) getSite().getService(IFocusService.class);
+ * </pre>
+ * <ul>
+ * <li>This service is available globally.</li>
+ * </ul>
+ * </p>
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
  * 
  * @see org.eclipse.ui.ISources
  * @since 1.1

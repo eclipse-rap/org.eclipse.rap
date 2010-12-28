@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,8 +44,6 @@ import org.eclipse.ui.internal.services.ExpressionAuthority;
  * 
  */
 public final class ContextAuthority extends ExpressionAuthority {
-	public static final String DEFER_EVENTS = "org.eclipse.ui.internal.contexts.deferEvents"; //$NON-NLS-1$
-	public static final String SEND_EVENTS = "org.eclipse.ui.internal.contexts.sendEvents"; //$NON-NLS-1$
 
 
 	/**
@@ -143,7 +141,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 		this.contextManager = contextManager;
 		this.contextService = contextService;
 	}
-
+	
 	/**
 	 * Activates a context on the workbench. This will add it to a master list.
 	 * 
@@ -153,10 +151,6 @@ public final class ContextAuthority extends ExpressionAuthority {
 	final void activateContext(final IContextActivation activation) {
 		// First we update the contextActivationsByContextId map.
 		final String contextId = activation.getContextId();
-		if (DEFER_EVENTS.equals(contextId) || SEND_EVENTS.equals(contextId)) {
-			contextManager.addActiveContext(contextId);
-			return;
-		}
 		final Object value = contextActivationsByContextId.get(contextId);
 		if (value instanceof Collection) {
 			final Collection contextActivations = (Collection) value;
@@ -332,9 +326,6 @@ public final class ContextAuthority extends ExpressionAuthority {
 	final void deactivateContext(final IContextActivation activation) {
 		// First we update the handlerActivationsByCommandId map.
 		final String contextId = activation.getContextId();
-		if (DEFER_EVENTS.equals(contextId) || SEND_EVENTS.equals(contextId)) {
-			return;
-		}
 		final Object value = contextActivationsByContextId.get(contextId);
 		if (value instanceof Collection) {
 			final Collection contextActivations = (Collection) value;
@@ -658,7 +649,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 		}
 
 		try {
-			contextManager.addActiveContext(DEFER_EVENTS);
+			contextManager.deferUpdates(true);
 			/*
 			 * For every context identifier with a changed activation, we
 			 * resolve conflicts and trigger an update.
@@ -678,7 +669,7 @@ public final class ContextAuthority extends ExpressionAuthority {
 				}
 			}
 		} finally {
-			contextManager.addActiveContext(SEND_EVENTS);
+			contextManager.deferUpdates(false);
 		}
 
 		// If tracing performance, then print the results.

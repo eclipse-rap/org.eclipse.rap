@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,7 +175,8 @@ public class SearchPattern {
 			if (camelCaseMatch(stringPattern, text)) {
 				return true;
 			}
-		default:
+			//$FALL-THROUGH$
+			default:
 			return startsWithIgnoreCase(text, stringPattern);
 		}
 	}
@@ -457,7 +458,7 @@ public class SearchPattern {
 			}
 
 			if (iName == nameEnd) {
-				if (iPattern == patternLength) 
+				if (iPattern == patternLength)
 					return true;
 				// We have exhausted name (and not pattern), so it's not a match
 				return false;
@@ -493,10 +494,16 @@ public class SearchPattern {
 					continue;
 				}
 
-				if (!isNameCharAllowed(nameChar)) {
+				if (Character.isDigit(nameChar)) {
+					// nameChar is digit => break if the digit is current
+					// pattern character, otherwise consume it
+					if (patternChar == nameChar)
+						break;
+					iName++;
+				} else if (!isNameCharAllowed(nameChar)) {
 					// nameChar is lowercase
 					iName++;
-					// nameChar is uppercase...
+				// nameChar is uppercase...
 				} else if (patternChar != nameChar) {
 					// .. and it does not match patternChar, so it's not a match
 					return false;
@@ -519,8 +526,8 @@ public class SearchPattern {
 	 * @return true if patternChar is in set of allowed characters for pattern
 	 */
 	protected boolean isPatternCharAllowed(char patternChar) {
-		return Character.isUpperCase(patternChar) || patternChar == END_SYMBOL
-				|| patternChar == BLANK;
+		return patternChar == END_SYMBOL || patternChar == BLANK
+			|| Character.isUpperCase(patternChar) || Character.isDigit(patternChar);
 	}
 
 	/**
@@ -554,32 +561,27 @@ public class SearchPattern {
 	 * Validate compatibility between given string pattern and match rule. <br>
 	 * Optimized (ie. returned match rule is modified) combinations are:
 	 * <ul>
-	 * <li>{@link #RULE_PATTERN_MATCH} without any '*' or '?' in string
-	 * pattern: pattern match bit is unset, </li>
-	 * <li>{@link #RULE_PATTERN_MATCH} and {@link #RULE_PREFIX_MATCH} bits
-	 * simultaneously set: prefix match bit is unset, </li>
-	 * <li>{@link #RULE_PATTERN_MATCH} and {@link #RULE_CAMELCASE_MATCH} bits
-	 * simultaneously set: camel case match bit is unset, </li>
-	 * <li>{@link #RULE_CAMELCASE_MATCH} with invalid combination of uppercase
-	 * and lowercase characters: camel case match bit is unset and replaced with
-	 * prefix match pattern, </li>
-	 * <li>{@link #RULE_CAMELCASE_MATCH} combined with
-	 * {@link #RULE_PREFIX_MATCH} and {@link #RULE_CASE_SENSITIVE} bits is
-	 * reduced to only {@link #RULE_CAMELCASE_MATCH} as Camel Case search is
-	 * already prefix and case sensitive, </li>
+	 * <li>{@link #RULE_PATTERN_MATCH} without any '*' or '?' in string pattern: pattern match bit
+	 * is unset,</li>
+	 * <li>{@link #RULE_PATTERN_MATCH} and {@link #RULE_PREFIX_MATCH} bits simultaneously set:
+	 * prefix match bit is unset,</li>
+	 * <li>{@link #RULE_PATTERN_MATCH} and {@link #RULE_CAMELCASE_MATCH} bits simultaneously set:
+	 * camel case match bit is unset,</li>
+	 * <li>{@link #RULE_CAMELCASE_MATCH} with invalid combination of uppercase and lowercase
+	 * characters: camel case match bit is unset and replaced with prefix match pattern,</li>
+	 * <li>{@link #RULE_CAMELCASE_MATCH} combined with {@link #RULE_PREFIX_MATCH} and
+	 * {@link #RULE_CASE_SENSITIVE} bits is reduced to only {@link #RULE_CAMELCASE_MATCH} as Camel
+	 * Case search is already prefix and case sensitive,</li>
 	 * </ul>
 	 * <br>
 	 * Rejected (ie. returned match rule -1) combinations are:
 	 * <ul>
-	 * <li>{@link #RULE_REGEXP_MATCH} with any other match mode bit set, </li>
+	 * <li>{@link #RULE_PATTERN_MATCH} with any other match mode bit set,</li>
 	 * </ul>
 	 * 
-	 * @param stringPattern
-	 *            The string pattern
-	 * @param matchRule
-	 *            The match rule
-	 * @return Optimized valid match rule or -1 if an incompatibility was
-	 *         detected.
+	 * @param stringPattern The string pattern
+	 * @param matchRule The match rule
+	 * @return Optimized valid match rule or -1 if an incompatibility was detected.
 	 */
 	private int validateMatchRule(String stringPattern, int matchRule) {
 
@@ -678,8 +680,24 @@ public class SearchPattern {
 	 *            string to be trimmed
 	 * @return trimmed pattern
 	 */
-	private String trimWildcardCharacters(String pattern) {
-		return pattern.replaceAll("\\*+", "\\*"); //$NON-NLS-1$ //$NON-NLS-2$		}
+	private static String trimWildcardCharacters(String pattern) {
+		// 1.3-compatible replacement for:
+		// return Util.replaceAll(pattern, "\\*+", "\\*");
+		int i = pattern.indexOf("**"); //$NON-NLS-1$
+		if (i == -1)
+			return pattern;
+
+		StringBuffer buf = new StringBuffer(pattern.length());
+		int prevAsterisk = 0;
+		do {
+			if (prevAsterisk == 0 || prevAsterisk != i) {
+				buf.append(pattern.substring(prevAsterisk, i + 1));
+			}
+			prevAsterisk = i + 1;
+			i = pattern.indexOf('*', prevAsterisk);
+		} while (i != -1);
+		buf.append(pattern.substring(prevAsterisk));
+		return buf.toString();
 	}
 
 }

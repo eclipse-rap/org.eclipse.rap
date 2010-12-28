@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.registry.ActionSetRegistry;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
+import org.eclipse.ui.services.IDisposable;
 
 /**
  * This builder reads the actions for an action set from the registry.
@@ -47,10 +48,24 @@ public class PluginActionSetBuilder extends PluginActionBuilder {
      * their associated window.
      * 
      */
-    public static class Binding {
+	public static class Binding implements IDisposable {
         PluginActionSetBuilder builder;
         PluginActionSet set;
         IWorkbenchWindow window;
+		IExtensionTracker tracker;
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.eclipse.ui.services.IDisposable#dispose()
+		 */
+		public void dispose() {
+			if (tracker != null) {
+				tracker.unregisterObject(set.getConfigElement()
+						.getDeclaringExtension(), this);
+				tracker = null;
+			}
+		}
     }
 
     /**
@@ -98,13 +113,7 @@ public class PluginActionSetBuilder extends PluginActionBuilder {
             }
         }
         
-        Binding binding = new Binding();
-        binding.builder = this;
-        binding.set = set;
-        binding.window = window;
-        window.getExtensionTracker().registerObject(
-                set.getConfigElement().getDeclaringExtension(), binding,
-                IExtensionTracker.REF_STRONG);
+        registerBinding(set);
     }
 
     /* (non-Javadoc)
@@ -272,17 +281,27 @@ public class PluginActionSetBuilder extends PluginActionBuilder {
                 }
             }
             
-            Binding binding = new Binding();
-            binding.builder = this;
-            binding.set = set;
-            binding.window = window;
-            window.getExtensionTracker().registerObject(
-                    set.getConfigElement().getDeclaringExtension(), binding,
-                    IExtensionTracker.REF_STRONG);
+            registerBinding(set);
+            
         } else {
             WorkbenchPlugin
                     .log("Action Set is empty: " + set.getDesc().getId()); //$NON-NLS-1$
         }
+    }
+    
+    private void registerBinding(final PluginActionSet set) {
+    	final IExtensionTracker tracker = window.getExtensionTracker();
+    	 
+    	// register the new binding
+    	final Binding binding = new Binding();
+        binding.builder = this;
+        binding.set = set;
+        binding.window = window;
+		binding.tracker = tracker;
+        tracker.registerObject(
+                set.getConfigElement().getDeclaringExtension(), binding,
+                IExtensionTracker.REF_STRONG);
+		set.setBuilder(binding);
     }
 
     /**

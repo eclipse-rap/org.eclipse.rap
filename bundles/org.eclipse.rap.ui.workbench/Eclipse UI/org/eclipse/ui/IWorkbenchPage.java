@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -238,6 +238,10 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * 
 	 * @param listener
 	 *            the property change listener to add
+	 * @deprecated client should register listeners on the instance of
+	 *             {@link org.eclipse.ui.IWorkingSetManager} returned by
+	 *             {@link org.eclipse.ui.IWorkbench#getWorkingSetManager()}
+	 *             instead.
 	 */
 	public void addPropertyChangeListener(IPropertyChangeListener listener);
 
@@ -401,7 +405,10 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * 
 	 * @return a list of open editors
 	 * 
-	 * @deprecated use #getEditorReferences() instead
+	 * @deprecated Clients are encouraged to use {@link #getEditorReferences()}
+	 *             instead. Calling this method has the side effect of restoring
+	 *             all the editors in the page which can cause plug-in
+	 *             activation.
 	 */
 	public IEditorPart[] getEditors();
 
@@ -468,7 +475,9 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * 
 	 * @return a list of visible views
 	 * 
-	 * @deprecated use #getViewReferences() instead.
+	 * @deprecated Clients are encouraged to use {@link #getViewReferences()}
+	 *             instead. Calling this method has the side effect of restoring
+	 *             all the views in the page which can cause plug-in activation.
 	 */
 	public IViewPart[] getViews();
 
@@ -798,10 +807,10 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	/**
 	 * Shows a view in this page with the given id and secondary id. The
 	 * behaviour of this method varies based on the supplied mode. If
-	 * <code>VIEW_ACTIVATE</code> is supplied, the view is focus. If
+	 * <code>VIEW_ACTIVATE</code> is supplied, the view is given focus. If
 	 * <code>VIEW_VISIBLE</code> is supplied, then it is made visible but not
-	 * given focus. Finally, if <code>VIEW_CREATE</code> is supplied the view
-	 * is created and will only be made visible if it is not created in a folder
+	 * given focus. Finally, if <code>VIEW_CREATE</code> is supplied the view is
+	 * created and will only be made visible if it is not created in a folder
 	 * that already contains visible views.
 	 * <p>
 	 * This allows multiple instances of a particular view to be created. They
@@ -813,8 +822,8 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * @param viewId
 	 *            the id of the view extension to use
 	 * @param secondaryId
-	 *            the secondary id to use, or <code>null</code> for no
-	 *            secondary id
+	 *            the secondary id to use, or <code>null</code> for no secondary
+	 *            id
 	 * @param mode
 	 *            the activation mode. Must be {@link #VIEW_ACTIVATE},
 	 *            {@link #VIEW_VISIBLE} or {@link #VIEW_CREATE}
@@ -1046,7 +1055,9 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 * </code>
 	 * </p>
 	 * 
-	 * @return the aggregate working set for this page
+	 * @return the aggregate working set for this page, this implements 
+	 *   {@link IAggregateWorkingSet}
+	 * @see IAggregateWorkingSet
 	 * @since 1.1
 	 */
 	public IWorkingSet getAggregateWorkingSet();
@@ -1106,4 +1117,66 @@ public interface IWorkbenchPage extends IPartService, ISelectionService,
 	 *         reference can be found.
 	 */
 	public IWorkbenchPartReference getReference(IWorkbenchPart part);
+
+	/**
+	 * Add back an open but non-participating editor
+	 * 
+	 * @param ref
+	 *            the editor to re-add. Must be an editor removed using
+	 *            #hideEditor(IEditorReference), must not have been closed,
+	 *            and must not be <code>null</code>.
+	 * @since 1.4
+	 * @see #hideEditor(IEditorReference)
+	 */
+	public void showEditor(IEditorReference ref);
+
+	/**
+	 * Remove an open editor, turn it into a non-participating editor.
+	 * <p>
+	 * A non-participating editor will not be returned in the list of open
+	 * editors ({@link #getEditorReferences()}) and will not be visible in the
+	 * editor area. However, it will continue to participate in the save
+	 * lifecycle and may still be closed by some workbench close events.
+	 * </p>
+	 * <p>
+	 * Behaviour for hiding and showing editors from multiple stacks is not
+	 * defined (and unsupported) at this time.
+	 * </p>
+	 * 
+	 * @param ref
+	 *            the editor reference to remove. It must be a current open
+	 *            editor belonging to this page, and must not be
+	 *            <code>null</code>.
+	 * @since 3.5
+	 * @see #showEditor(IEditorReference)
+	 */
+	public void hideEditor(IEditorReference ref);
+
+	/**
+	 * Opens editors for the given inputs. Only the editor constructed for the first input 
+	 * gets activated. 
+	 * <p>
+	 * The editor type is determined by mapping <code>editorIDs</code> to an editor
+	 * extension registered with the workbench.  An editor id is passed rather than
+	 * an editor object to prevent the accidental creation of more than one editor
+	 * for the same input. It also guarantees a consistent lifecycle for editors,
+	 * regardless of whether they are created by the user or restored from saved 
+	 * data.
+	 * </p><p>
+	 * The length of the input array and editor ID arrays must be the same. The editors
+	 * are opened using pairs of { input[i], editorIDs[i] }.
+	 * </p>
+	 * @param inputs the editor inputs
+	 * @param editorIDs the IDs of the editor extensions to use, in the order of inputs
+	 * @param matchFlags a bit mask consisting of zero or more of the MATCH_* constants OR-ed together
+	 * @return references to the editors constructed for the inputs. The editors 
+	 * corresponding to those reference might not be materialized.
+	 * @exception MultiPartInitException if at least one editor could not be created or initialized
+	 * @see #MATCH_NONE
+	 * @see #MATCH_INPUT
+	 * @see #MATCH_ID
+	 * @since 1.4
+	 */
+	public IEditorReference[] openEditors(final IEditorInput[] inputs, final String[] editorIDs, 
+			final int matchFlags) throws MultiPartInitException;
 }

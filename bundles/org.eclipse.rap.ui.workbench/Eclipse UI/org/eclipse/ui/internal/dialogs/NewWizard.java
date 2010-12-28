@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.ui.internal.dialogs;
 
 import java.util.StringTokenizer;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
@@ -105,11 +104,14 @@ public class NewWizard extends Wizard {
         this.workbench = aWorkbench;
         this.selection = currentSelection;
 
-        if (projectsOnly) {
-			setWindowTitle(WorkbenchMessages.get().NewProject_title);
-		} else {
-			setWindowTitle(WorkbenchMessages.get().NewWizard_title);
-		} 
+		if (getWindowTitle() == null) {
+			// No title supplied. Set the default title
+			if (projectsOnly) {
+				setWindowTitle(WorkbenchMessages.get().NewProject_title);
+			} else {
+				setWindowTitle(WorkbenchMessages.get().NewWizard_title);
+			}
+		}
         setDefaultPageImageDescriptor(WorkbenchImages
                 .getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_NEW_WIZ));
         setNeedsProgressMonitor(true);

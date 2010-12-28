@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
@@ -60,10 +61,10 @@ public class ShowViewDialog extends Dialog implements
     private static final int LIST_WIDTH = 250;
 
     private static final String STORE_EXPANDED_CATEGORIES_ID = DIALOG_SETTING_SECTION_NAME
-            + ".STORE_EXPANDED_CATEGORIES_ID"; //$NON-NLS-1$    
+            + ".STORE_EXPANDED_CATEGORIES_ID"; //$NON-NLS-1$
 
     private static final String STORE_SELECTED_VIEW_ID = DIALOG_SETTING_SECTION_NAME
-            + ".STORE_SELECTED_VIEW_ID"; //$NON-NLS-1$    
+            + ".STORE_SELECTED_VIEW_ID"; //$NON-NLS-1$
 
     private FilteredTree filteredTree;
 
@@ -154,9 +155,11 @@ public class ShowViewDialog extends Dialog implements
         layoutTopControl(filteredTree);
         
         // Use F2... label
-//        Label label = new Label(composite, SWT.WRAP);
-//        label.setText(WorkbenchMessages.get().ShowView_selectViewHelp);
-//        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        // RAP [bm] keybindings
+//		descriptionHint = new Label(composite, SWT.WRAP);
+//		descriptionHint.setText(WorkbenchMessages.ShowView_selectViewHelp);
+//		descriptionHint.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+//		descriptionHint.setVisible(false);
 
         // Restore the last state
         restoreWidgetValues();
@@ -200,22 +203,19 @@ public class ShowViewDialog extends Dialog implements
     private void createFilteredTreeViewer(Composite parent) {
 		PatternFilter filter = new ViewPatternFilter();
 		int styleBits = SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER;
-		filteredTree = new FilteredTree(parent, styleBits, filter);
+		filteredTree = new FilteredTree(parent, styleBits, filter, true);
 		filteredTree.setBackground(parent.getDisplay().getSystemColor(
 				SWT.COLOR_WIDGET_BACKGROUND));
 		
 		TreeViewer treeViewer = filteredTree.getViewer();
 		Control treeControl = treeViewer.getControl();
 		RGB dimmedRGB = blend(treeControl.getForeground().getRGB(), treeControl.getBackground().getRGB(), 60);
-// RAP [rh] Color constructor
-//		dimmedForeground = new Color(treeControl.getDisplay(), dimmedRGB);
-		dimmedForeground = Graphics.getColor( dimmedRGB );
-// RAP [rh] Color#dispose() not implemented
-//		treeControl.addDisposeListener(new DisposeListener() {
-//			public void widgetDisposed(DisposeEvent e) {
-//				dimmedForeground.dispose();
-//			}
-//		});
+		dimmedForeground = new Color(treeControl.getDisplay(), dimmedRGB);
+		treeControl.addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				dimmedForeground.dispose();
+			}
+		});
 		
 		treeViewer.setLabelProvider(new ViewLabelProvider(window, dimmedForeground));
 		treeViewer.setContentProvider(new ViewContentProvider());
@@ -382,7 +382,10 @@ public class ShowViewDialog extends Dialog implements
     public void selectionChanged(SelectionChangedEvent event) {
         updateSelection(event);
         updateButtons();
-    }
+        // RAP [bm] keybindings
+//		descriptionHint.setVisible(viewDescs.length == 1
+//				&& viewDescs[0].getDescription().length() > 0);
+	}
 
     /**
      * Update the button enablement state.
@@ -405,6 +408,7 @@ public class ShowViewDialog extends Dialog implements
                 descs.add(o);
             }
         }
+        
         viewDescs = new IViewDescriptor[descs.size()];
         descs.toArray(viewDescs);
     }

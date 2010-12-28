@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.ui.internal.handlers;
 
 import java.util.Iterator;
 
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -66,13 +65,7 @@ public final class NestableHandlerService extends SlaveHandlerService implements
 			final Object object = localActivationItr.next();
 			if (object instanceof IHandlerActivation) {
 				final IHandlerActivation localActivation = (IHandlerActivation) object;
-				final String commandId = localActivation.getCommandId();
-				final IHandler handler = localActivation.getHandler();
-				final IHandlerActivation parentActivation = parent
-						.activateHandler(commandId, handler, defaultExpression);
-				parentActivations.add(parentActivation);
-				localActivationsToParentActivations.put(localActivation,
-						parentActivation);
+				super.doActivation(localActivation);
 			}
 		}
 
@@ -81,15 +74,10 @@ public final class NestableHandlerService extends SlaveHandlerService implements
 
 	protected final IHandlerActivation doActivation(
 			final IHandlerActivation localActivation) {
-		final IHandlerActivation parentActivation;
 		if (active) {
-			parentActivation = parent.activateHandler(localActivation);
-			parentActivations.add(parentActivation);
-		} else {
-			parentActivation = null;
-		}
-		localActivationsToParentActivations.put(localActivation,
-				parentActivation);
+			return super.doActivation(localActivation);
+		} 
+		localActivationsToParentActivations.put(localActivation, null);
 		return localActivation;
 	}
 

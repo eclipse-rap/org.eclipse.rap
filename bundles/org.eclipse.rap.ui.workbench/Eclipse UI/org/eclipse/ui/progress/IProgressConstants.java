@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Tasktop Technologies - Bug 302529 [UX] [Progress] Show Eclipse IDE progress in the Eclipse icon on the Windows 7 Task Bar
  *******************************************************************************/
 package org.eclipse.ui.progress;
 
@@ -16,10 +17,15 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Constants relating to progress UI functionality of the workbench plug-in.
  * <p>
- * The four constants define property keys that are used to associate
- * UI related information with Jobs (<code>org.eclipse.core.runtime.jobs.Job</code>).
+ * The constants define property keys that are used to associate UI related
+ * information with Jobs (<code>org.eclipse.core.runtime.jobs.Job</code>).
+ * <p>
+ * In release 3.6, additional constants have been defined in
+ * {@link IProgressConstants2}. Clients are encouraged to use the newer class in
+ * order to get access to all of the available constants.
  * 
  * @see org.eclipse.core.runtime.jobs.Job#setProperty
+ * @see IProgressConstants2
  * @since 1.0
  */
 public interface IProgressConstants {
@@ -63,22 +69,28 @@ public interface IProgressConstants {
     public static final QualifiedName KEEPONE_PROPERTY = new QualifiedName(
             PROPERTY_PREFIX, "keepone"); //$NON-NLS-1$
 
-    /**
-     * This property is used to associate an <code>IAction</code> with a Job.
-     * If the Job is shown in the UI, the action might be represented as a button or
-     * hyper link to allow the user to trigger a job specific action, like showing
-     * the Job's results.
-     * <p>
-     * The progress UI will track the enabled state of the action and its tooltip text.
-     * </p>
-     * <p>
-     * If the action implements <code>ActionFactory.IWorkbenchAction</code>, its
-     * <code>dispose</code> method will be called as soon as the Job is finally
-     * removed from the set of kept jobs.
-     * </p>
-     * @see org.eclipse.jface.action.IAction
-     * @see org.eclipse.ui.actions.ActionFactory.IWorkbenchAction
-     **/
+	/**
+	 * This property is used to associate an <code>IAction</code> with a Job. If
+	 * the Job is shown in the UI, the action might be represented as a button
+	 * or hyper link to allow the user to trigger a job specific action, like
+	 * showing the Job's results.
+	 * <p>
+	 * The progress UI will track the enabled state of the action and its
+	 * tooltip text.
+	 * </p>
+	 * <p>
+	 * If the action implements <code>ActionFactory.IWorkbenchAction</code>, its
+	 * <code>dispose</code> method will be called as soon as the Job is finally
+	 * removed from the set of kept jobs.
+	 * </p>
+	 * <p>
+	 * Note: Only one of <code>ACTION_PROPERTY</code> or
+	 * <code>IProgressConstants2.COMMAND_PROPERTY</code> should be used
+	 * </p>
+	 * 
+	 * @see org.eclipse.jface.action.IAction
+	 * @see org.eclipse.ui.actions.ActionFactory.IWorkbenchAction
+	 **/
     public static final QualifiedName ACTION_PROPERTY = new QualifiedName(
             PROPERTY_PREFIX, "action"); //$NON-NLS-1$
 

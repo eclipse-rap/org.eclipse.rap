@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveRegistry;
@@ -56,19 +56,17 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.handlers.ClosePerspectiveHandler;
-import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.util.PrefUtil;
+import org.eclipse.ui.statushandlers.IStatusAdapterConstants;
+import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
  * Perspective registry.
  */
-// RAP [bm]: 
-//public class PerspectiveRegistry implements IPerspectiveRegistry,
-//		IExtensionChangeHandler
-public class PerspectiveRegistry extends SessionSingletonBase implements IPerspectiveRegistry,
-		IExtensionChangeHandler {
-// RAPEND: [bm] 
+public class PerspectiveRegistry implements IPerspectiveRegistry,
+		IExtensionChangeHandler
+{
 
 	private String defaultPerspID;
 
@@ -100,7 +98,7 @@ public class PerspectiveRegistry extends SessionSingletonBase implements IPerspe
 				.addPropertyChangeListener(preferenceListener);
 
 	}
-	
+
 	/**
 	 * Initialize the preference change listener.
 	 */
@@ -440,6 +438,15 @@ public class PerspectiveRegistry extends SessionSingletonBase implements IPerspe
 				String xmlString = store.getString(perspectivesList[i] + PERSP);
 				if (xmlString != null && xmlString.length() != 0) {
 					reader = new StringReader(xmlString);
+				} else {
+					throw new WorkbenchException(
+							new Status(
+									IStatus.ERROR,
+									WorkbenchPlugin.PI_WORKBENCH,
+									NLS
+											.bind(
+													WorkbenchMessages.get().Perspective_couldNotBeFound,
+													perspectivesList[i])));
 				}
 
 				// Restore the layout state.
@@ -516,13 +523,16 @@ public class PerspectiveRegistry extends SessionSingletonBase implements IPerspe
 	 * @param status
 	 */
 	private void unableToLoadPerspective(IStatus status) {
-		String msg = WorkbenchMessages.get().Perspective_errorLoadingState;
+		String msg = "Unable to load perspective."; //$NON-NLS-1$
 		if (status == null) {
 			IStatus errStatus = new Status(IStatus.ERROR, WorkbenchPlugin.PI_WORKBENCH, msg); 
-	    	StatusManager.getManager().handle(errStatus, StatusManager.SHOW);
+			StatusManager.getManager().handle(errStatus,
+					StatusManager.SHOW | StatusManager.LOG);
 		} else {
-			IStatus errStatus = StatusUtil.newStatus(status, msg); 
-	    	StatusManager.getManager().handle(errStatus, StatusManager.SHOW);
+			StatusAdapter adapter = new StatusAdapter(status);
+			adapter.setProperty(IStatusAdapterConstants.TITLE_PROPERTY, msg);
+			StatusManager.getManager().handle(adapter,
+					StatusManager.SHOW | StatusManager.LOG);
 		}
 	}
 
@@ -569,6 +579,15 @@ public class PerspectiveRegistry extends SessionSingletonBase implements IPerspe
 		String xmlString = store.getString(id + PERSP);
 		if (xmlString != null && xmlString.length() != 0) { // defined in store
 			reader = new StringReader(xmlString);
+		} else {
+			throw new WorkbenchException(
+					new Status(
+							IStatus.ERROR,
+							WorkbenchPlugin.PI_WORKBENCH,
+							NLS
+									.bind(
+											WorkbenchMessages.get().Perspective_couldNotBeFound,
+											id)));
 		}
 		XMLMemento memento = XMLMemento.createReadRoot(reader);
 		reader.close();
@@ -638,7 +657,10 @@ public class PerspectiveRegistry extends SessionSingletonBase implements IPerspe
 		}
 
 		// Step 3. Use application-specific default
-		defaultPerspID = Workbench.getInstance().getDefaultPerspectiveId();
+		Workbench instance = Workbench.getInstance();
+		if (instance != null) {
+			defaultPerspID = instance.getDefaultPerspectiveId();
+		}
 	}
 
 	/*

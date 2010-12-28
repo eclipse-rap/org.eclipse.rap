@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,12 @@ public class NewWizardAction extends Action implements
      */
     private String categoryId = null;
 
+	/**
+	 * The title of the wizard window or <code>null</code> to use the default
+	 * wizard window title.
+	 */
+	private String windowTitle = null;
+
     /**
      * The workbench window; or <code>null</code> if this
      * action has been <code>dispose</code>d.
@@ -129,6 +135,26 @@ public class NewWizardAction extends Action implements
         categoryId = id;
     }
 
+	/**
+	 * <p>
+	 * Sets the title of the wizard window
+	 * <p>
+	 * 
+	 * <p>
+	 * If the title of the wizard window is <code>null</code>, the default
+	 * wizard window title will be used.
+	 * </p>
+	 * 
+	 * @param windowTitle
+	 *            The title of the wizard window, otherwise <code>null</code>
+	 *            (default wizard window title).
+	 * 
+	 * @since 1.4
+	 */
+	public void setWizardWindowTitle(String windowTitle) {
+		this.windowTitle = windowTitle;
+	}
+
     /* (non-Javadoc)
      * Method declared on IAction.
      */
@@ -139,6 +165,7 @@ public class NewWizardAction extends Action implements
         }
         NewWizard wizard = new NewWizard();
         wizard.setCategoryId(categoryId);
+		wizard.setWindowTitle(windowTitle);
 
         ISelection selection = workbenchWindow.getSelectionService()
                 .getSelection();
@@ -163,6 +190,7 @@ public class NewWizardAction extends Action implements
         }
 
         wizard.init(workbenchWindow.getWorkbench(), selectionToPass);
+
         IDialogSettings workbenchSettings = WorkbenchPlugin.getDefault()
                 .getDialogSettings();
         IDialogSettings wizardSettings = workbenchSettings

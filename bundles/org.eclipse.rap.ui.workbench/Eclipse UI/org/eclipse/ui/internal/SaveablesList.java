@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,6 +99,11 @@ public class SaveablesList implements ISaveablesLifecycleListener {
 
 	// returns true if this model has not yet been in getModels()
 	private boolean addModel(Object source, Saveable model) {
+		if (model == null) {
+			logWarning(
+					"Ignored attempt to add invalid saveable", source, model); //$NON-NLS-1$
+			return false;
+		}
 		boolean result = false;
 		Set modelsForSource = (Set) modelMap.get(source);
 		if (modelsForSource == null) {
@@ -485,7 +490,7 @@ public class SaveablesList implements ISaveablesLifecycleListener {
 						protected int getShellStyle() {
 							return (canCancel ? SWT.CLOSE : SWT.NONE)
 									| SWT.TITLE | SWT.BORDER
-									| SWT.APPLICATION_MODAL
+									| SWT.APPLICATION_MODAL | SWT.SHEET
 									| getDefaultOrientation();
 						}
 					};
@@ -501,7 +506,7 @@ public class SaveablesList implements ISaveablesLifecycleListener {
 						protected int getShellStyle() {
 							return (canCancel ? SWT.CLOSE : SWT.NONE)
 									| SWT.TITLE | SWT.BORDER
-									| SWT.APPLICATION_MODAL
+									| SWT.APPLICATION_MODAL | SWT.SHEET
 									| getDefaultOrientation();
 						}
 					};
@@ -592,7 +597,7 @@ public class SaveablesList implements ISaveablesLifecycleListener {
 			public void run(IProgressMonitor monitor) {
 				IProgressMonitor monitorWrap = new EventLoopProgressMonitor(
 						monitor);
-				monitorWrap.beginTask("", finalModels.size()); //$NON-NLS-1$
+				monitorWrap.beginTask(WorkbenchMessages.get().Saving_Modifications, finalModels.size());
 				for (Iterator i = finalModels.iterator(); i.hasNext();) {
 					Saveable model = (Saveable) i.next();
 					// handle case where this model got saved as a result of
@@ -720,11 +725,11 @@ public class SaveablesList implements ISaveablesLifecycleListener {
 			super(shell, input, contentprovider, labelProvider, message);
 			this.canCancel = canCancel;
 			this.stillOpenElsewhere = stillOpenElsewhere;
+			int shellStyle = getShellStyle();
 			if (!canCancel) {
-				int shellStyle = getShellStyle();
 				shellStyle &= ~SWT.CLOSE;
-				setShellStyle(shellStyle);
 			}
+			setShellStyle(shellStyle | SWT.SHEET);
 		}
 
 		/**

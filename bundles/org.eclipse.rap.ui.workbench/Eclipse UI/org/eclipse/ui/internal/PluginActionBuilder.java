@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Remy Chi Jian Suen <remy.suen@gmail.com> - Bug 43573 [Contributions] Support icon in <menu>
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
@@ -22,10 +23,12 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.registry.RegistryReader;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * This class contains shared functionality for reading action contributions
@@ -245,6 +248,14 @@ public abstract class PluginActionBuilder extends RegistryReader {
             String id = menuElement.getAttribute(IWorkbenchRegistryConstants.ATT_ID);
             String label = menuElement.getAttribute(IWorkbenchRegistryConstants.ATT_LABEL);
             String path = menuElement.getAttribute(IWorkbenchRegistryConstants.ATT_PATH);
+            String icon = menuElement.getAttribute(IWorkbenchRegistryConstants.ATT_ICON);
+            ImageDescriptor image = null;
+            if (icon != null) {
+            	String extendingPluginId = menuElement.getDeclaringExtension()
+						.getContributor().getName();
+				image = AbstractUIPlugin.imageDescriptorFromPlugin(
+						extendingPluginId, icon);
+			}
             if (label == null) {
 				WorkbenchPlugin.log("Plugin \'" //$NON-NLS-1$
 						+ menuElement.getContributor().getName()
@@ -301,7 +312,7 @@ public abstract class PluginActionBuilder extends RegistryReader {
             // If the menu does not exist create it.
             IMenuManager newMenu = parent.findMenuUsingPath(id);
             if (newMenu == null) {
-				newMenu = new MenuManager(label, id);
+				newMenu = new MenuManager(label, image, id);
 			}
 
             // Add the menu

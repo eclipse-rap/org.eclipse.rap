@@ -1,6 +1,6 @@
 // RAP [rh] Keys completely disabled as not implemented in RWT
 ///*******************************************************************************
-// * Copyright (c) 2005, 2008 IBM Corporation and others.
+// * Copyright (c) 2005, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -8,7 +8,9 @@
 // *
 // * Contributors:
 // *     IBM Corporation - initial API and implementation
-// *     Remy Chi Jian Suen <remy.suen@gmail.com> - Bug 186522 - [KeyBindings] New Keys preference page does not resort by binding with conflicts
+// *     Remy Chi Jian Suen <remy.suen@gmail.com> -
+// *     		Bug 186522 - [KeyBindings] New Keys preference page does not resort by binding with conflicts
+// *     		Bug 226342 - [KeyBindings] Keys preference page conflict table is hard to read
 // *******************************************************************************/
 //
 //package org.eclipse.ui.internal.keys;
@@ -17,8 +19,10 @@
 //import java.util.Collection;
 //import java.util.Iterator;
 //import java.util.LinkedList;
+//import java.util.Map;
 //
 //import org.eclipse.core.commands.Category;
+//import org.eclipse.core.commands.ParameterizedCommand;
 //import org.eclipse.core.commands.util.Tracing;
 //import org.eclipse.core.runtime.IStatus;
 //import org.eclipse.core.runtime.Status;
@@ -37,6 +41,7 @@
 //import org.eclipse.jface.resource.LocalResourceManager;
 //import org.eclipse.jface.util.IPropertyChangeListener;
 //import org.eclipse.jface.util.PropertyChangeEvent;
+//import org.eclipse.jface.viewers.ColumnWeightData;
 //import org.eclipse.jface.viewers.ComboViewer;
 //import org.eclipse.jface.viewers.IBaseLabelProvider;
 //import org.eclipse.jface.viewers.ISelection;
@@ -46,9 +51,10 @@
 //import org.eclipse.jface.viewers.ITableLabelProvider;
 //import org.eclipse.jface.viewers.ITreeContentProvider;
 //import org.eclipse.jface.viewers.LabelProvider;
-//import org.eclipse.jface.viewers.ListViewer;
 //import org.eclipse.jface.viewers.SelectionChangedEvent;
 //import org.eclipse.jface.viewers.StructuredSelection;
+//import org.eclipse.jface.viewers.TableLayout;
+//import org.eclipse.jface.viewers.TableViewer;
 //import org.eclipse.jface.viewers.TreeViewer;
 //import org.eclipse.jface.viewers.Viewer;
 //import org.eclipse.jface.viewers.ViewerComparator;
@@ -74,6 +80,8 @@
 //import org.eclipse.swt.widgets.Label;
 //import org.eclipse.swt.widgets.Menu;
 //import org.eclipse.swt.widgets.MenuItem;
+//import org.eclipse.swt.widgets.Table;
+//import org.eclipse.swt.widgets.TableColumn;
 //import org.eclipse.swt.widgets.Text;
 //import org.eclipse.swt.widgets.Tree;
 //import org.eclipse.swt.widgets.TreeColumn;
@@ -177,7 +185,7 @@
 //
 //	private KeySequenceText fKeySequenceText;
 //
-//	private ListViewer conflictViewer;
+//	private TableViewer conflictViewer;
 //
 //	private ICommandImageService commandImageService;
 //
@@ -201,7 +209,7 @@
 //		 */
 //		protected CategoryFilterTree(Composite parent, int treeStyle,
 //				CategoryPatternFilter filter) {
-//			super(parent, treeStyle, filter);
+//			super(parent, treeStyle, filter, true);
 //			this.filter = filter;
 //		}
 //
@@ -776,7 +784,9 @@
 //			public final void selectionChanged(final SelectionChangedEvent event) {
 //				ContextElement context = (ContextElement) ((IStructuredSelection) event
 //						.getSelection()).getFirstElement();
-//				keyController.getContextModel().setSelectedElement(context);
+//				if (context != null) {
+//					keyController.getContextModel().setSelectedElement(context);
+//				}
 //			}
 //		});
 //		IPropertyChangeListener whenListener = new IPropertyChangeListener() {
@@ -803,6 +813,8 @@
 //		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 //		rightDataArea.setLayoutData(gridData);
 //
+//		new Label(rightDataArea, SWT.NONE); // filler
+//		
 //		// The description label.
 //		final Label descriptionLabel = new Label(rightDataArea, SWT.NONE);
 //		descriptionLabel.setText(NewKeysPreferenceMessages.ConflictsLabel_Text);
@@ -811,11 +823,23 @@
 //		gridData.horizontalAlignment = SWT.FILL;
 //		descriptionLabel.setLayoutData(gridData);
 //
-//		conflictViewer = new ListViewer(rightDataArea, SWT.MULTI | SWT.V_SCROLL
-//				| SWT.BORDER);
+//		conflictViewer = new TableViewer(rightDataArea, SWT.SINGLE | SWT.V_SCROLL
+//				| SWT.BORDER | SWT.FULL_SELECTION);
+//		Table table = conflictViewer.getTable();
+//		table.setHeaderVisible(true);
+//		TableColumn bindingNameColumn = new TableColumn(table, SWT.LEAD);
+//		bindingNameColumn.setText(NewKeysPreferenceMessages.CommandNameColumn_Text);
+//		bindingNameColumn.setWidth(150);
+//		TableColumn bindingContextNameColumn = new TableColumn(table, SWT.LEAD);
+//		bindingContextNameColumn.setText(NewKeysPreferenceMessages.WhenColumn_Text);
+//		bindingContextNameColumn.setWidth(150);
 //		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-//		gridData.horizontalIndent = 10;
-//		conflictViewer.getControl().setLayoutData(gridData);
+//		//gridData.horizontalIndent = 10;
+//		table.setLayoutData(gridData);
+//		TableLayout tableLayout = new TableLayout();
+//		tableLayout.addColumnData(new ColumnWeightData(60));
+//		tableLayout.addColumnData(new ColumnWeightData(40));
+//		table.setLayout(tableLayout);
 //		conflictViewer.setContentProvider(new IStructuredContentProvider() {
 //
 //			public Object[] getElements(Object inputElement) {
@@ -832,7 +856,15 @@
 //					Object newInput) {
 //			}
 //		});
-//		conflictViewer.setLabelProvider(new BindingElementLabelProvider());
+//		conflictViewer.setLabelProvider(new BindingElementLabelProvider() {
+//			public String getColumnText(Object o, int index) {
+//				BindingElement element = (BindingElement) o;
+//				if (index == 0) {
+//					return element.getName();
+//				}
+//				return element.getContext().getName();
+//			}
+//		});
 //		conflictViewer
 //				.addSelectionChangedListener(new ISelectionChangedListener() {
 //
@@ -917,9 +949,6 @@
 //					commandNameValueLabel.setText(""); //$NON-NLS-1$
 //					fDescriptionText.setText(""); //$NON-NLS-1$
 //					fBindingText.setText(""); //$NON-NLS-1$
-//					fWhenCombo.setSelection(null);
-//					fWhenCombo.getCombo().setVisible(false);
-//					whenLabel.setVisible(false);
 //				} else if (bindingElement != null) {
 //					commandNameValueLabel.setText(bindingElement.getName());
 //					String desc = bindingElement.getDescription();
@@ -927,11 +956,6 @@
 //					KeySequence trigger = (KeySequence) bindingElement
 //							.getTrigger();
 //					fKeySequenceText.setKeySequence(trigger);
-//					Object context = bindingElement.getContext();
-//					fWhenCombo.setSelection(context == null ? null
-//							: new StructuredSelection(context));
-//					fWhenCombo.getCombo().setVisible(context != null);
-//					whenLabel.setVisible(context != null);
 //				}
 //			}
 //		};
@@ -1229,6 +1253,15 @@
 //			fFilteredTree.getViewer().setSelection(new StructuredSelection(be),
 //					true);
 //		}
+//		if (data instanceof ParameterizedCommand) {
+//			Map commandToElement = keyController.getBindingModel().getCommandToElement();
+//			
+//			BindingElement be = (BindingElement)commandToElement.get(data);
+//			if(be != null) {
+//				fFilteredTree.getViewer().setSelection(new StructuredSelection(be),
+//					true);
+//			}
+//		}
 //	}
 //
 //	/*
@@ -1275,8 +1308,8 @@
 //		// Ask the user to confirm
 //		final String title = NewKeysPreferenceMessages.RestoreDefaultsMessageBoxText;
 //		final String message = NewKeysPreferenceMessages.RestoreDefaultsMessageBoxMessage;
-//		final boolean confirmed = MessageDialog.openConfirm(getShell(), title,
-//				message);
+//		final boolean confirmed = MessageDialog.open(MessageDialog.CONFIRM,
+//				getShell(), title, message, SWT.SHEET);
 //
 //		if (confirmed) {
 //			long startTime = 0L;

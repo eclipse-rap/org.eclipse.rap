@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -298,38 +298,67 @@ public class ProgressManagerUtil {
 		dialog.watchTicks();
 		return false;
 	}
-
+	
 	/**
 	 * Return the modal shell that is currently open. If there isn't one then
-	 * return null.
+	 * return null. If there are stacked modal shells, return the top one.
 	 * 
 	 * @param shell
 	 *            A shell to exclude from the search. May be <code>null</code>.
 	 * 
 	 * @return Shell or <code>null</code>.
 	 */
+
 	public static Shell getModalShellExcluding(Shell shell) {
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		Shell[] shells = workbench.getDisplay().getShells();
-// RAP [fappel]: SWT.SYSTEM_MODAL and SWT.PRIMARY_MODAL not supported
-//		int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL
-//				| SWT.PRIMARY_MODAL;
-		int modal = SWT.APPLICATION_MODAL;
-		for (int i = 0; i < shells.length; i++) {
-			if (shells[i].equals(shell)) {
-				break;
+
+		// If shell is null or disposed, then look through all shells
+		if (shell == null || shell.isDisposed()) {
+			return getModalChildExcluding(PlatformUI.getWorkbench()
+					.getDisplay().getShells(), shell);
+		}
+
+		// Start with the shell to exclude and check it's shells
+		return getModalChildExcluding(shell.getShells(), shell);
+	}
+	        
+	/**
+	 * Return the modal shell that is currently open. If there isn't one then
+	 * return null.
+	 * 
+	 * @param toSearch shells to search for modal children
+	 * @param toExclude shell to ignore
+	 * @return the most specific modal child, or null if none
+	 */
+	private static Shell getModalChildExcluding(Shell[] toSearch, Shell toExclude) {
+		int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL
+				| SWT.PRIMARY_MODAL;
+
+		// Make sure we don't pick a parent that has a modal child (this can
+		// lock the app)
+		// If we picked a parent with a modal child, use the modal child instead
+
+		for (int i = toSearch.length - 1; i >= 0; i--) {
+			Shell shell = toSearch[i];
+			if(shell.equals(toExclude)) {
+				continue;
 			}
-			// Do not worry about shells that will not block the user.
-			if (shells[i].isVisible()) {
-				int style = shells[i].getStyle();
-				if ((style & modal) != 0) {
-					return shells[i];
-				}
+			
+			// Check if this shell has a modal child
+			Shell[] children = shell.getShells();
+			Shell modalChild = getModalChildExcluding(children, toExclude);
+			if (modalChild != null) {
+				return modalChild;
+			}
+
+			// If not, check if this shell is modal itself
+			if (shell.isVisible() && (shell.getStyle() & modal) != 0) {
+				return shell;
 			}
 		}
+
 		return null;
 	}
-
+	 
 	/**
 	 * Utility method to get the best parenting possible for a dialog. If there
 	 * is a modal shell create it so as to avoid two modal dialogs. If not then
@@ -391,10 +420,8 @@ public class ProgressManagerUtil {
 		endPosition.x += windowLocation.x;
 		endPosition.y += windowLocation.y;
 		
-		// RAP [bm]: 
-//		RectangleAnimation animation = new RectangleAnimation(internalWindow
-//				.getShell(), startPosition, endPosition);
-//		animation.schedule();
+		// RAP [bm]: Animations
+//		AnimationEngine.createTweakedAnimation(internalWindow.getShell(), 400, startPosition, endPosition);
 		// RAPEND: [bm] 
 
 	}

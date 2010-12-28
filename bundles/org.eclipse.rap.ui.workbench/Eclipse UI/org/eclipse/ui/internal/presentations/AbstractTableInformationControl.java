@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@ import org.eclipse.swt.events.ModifyListener;
 //import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
@@ -102,13 +104,6 @@ public abstract class AbstractTableInformationControl {
 				throw new IllegalArgumentException();
 			}
             fBorderSize = borderSize;
-        }
-
-        /**
-         * Returns the border size.
-         */
-        public int getBorderSize() {
-            return fBorderSize;
         }
 
         /*
@@ -211,23 +206,39 @@ public abstract class AbstractTableInformationControl {
         fTableViewer = createTableViewer(fComposite, controlStyle);
 
         final Table table = fTableViewer.getTable();
-        // RAP [bm]: 
+        // RAP [bm] KeyListener
 //        table.addKeyListener(new KeyListener() {
 //            public void keyPressed(KeyEvent e) {
-//                if (e.character == SWT.ESC) {
+//				switch (e.keyCode) {
+//				case SWT.ESC:
 //					dispose();
-//				} else if (e.character == SWT.DEL) {
-//                    removeSelectedItems();
-//                    e.character = SWT.NONE;
-//                    e.doit = false;
-//                }
+//					break;
+//				case SWT.DEL:
+//					removeSelectedItems();
+//					e.character = SWT.NONE;
+//					e.doit = false;
+//					break;
+//				case SWT.ARROW_UP:
+//					if (table.getSelectionIndex() == 0) {
+//						// on the first item, going up should grant focus to
+//						// text field
+//						fFilterText.setFocus();
+//					}
+//					break;
+//				case SWT.ARROW_DOWN:
+//					if (table.getSelectionIndex() == table.getItemCount() - 1) {
+//						// on the last item, going down should grant focus to
+//						// the text field
+//						fFilterText.setFocus();
+//					}
+//					break;
+//				}
 //            }
 //
 //            public void keyReleased(KeyEvent e) {
 //                // do nothing
 //            }
 //        });
-        // RAPEND: [bm] 
 
         table.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
@@ -326,6 +337,43 @@ public abstract class AbstractTableInformationControl {
 //                }
 //            }
 //        });
+        
+        // RAP [bm] TraverseListener
+//		fShell.addTraverseListener(new TraverseListener() {
+//			public void keyTraversed(TraverseEvent e) {
+//				switch (e.detail) {
+//				case SWT.TRAVERSE_PAGE_NEXT:
+//					e.detail = SWT.TRAVERSE_NONE;
+//					e.doit = true;
+//					{
+//						int n = table.getItemCount();
+//						if (n == 0)
+//							return;
+//
+//						int i = table.getSelectionIndex() + 1;
+//						if (i >= n)
+//							i = 0;
+//						table.setSelection(i);
+//					}
+//					break;
+//
+//				case SWT.TRAVERSE_PAGE_PREVIOUS:
+//					e.detail = SWT.TRAVERSE_NONE;
+//					e.doit = true;
+//					{
+//						int n = table.getItemCount();
+//						if (n == 0)
+//							return;
+//
+//						int i = table.getSelectionIndex() - 1;
+//						if (i < 0)
+//							i = n - 1;
+//						table.setSelection(i);
+//					}
+//					break;
+//				}
+//			}
+//		});
 
         int border = ((shellStyle & SWT.NO_TRIM) == 0) ? 0 : BORDER;
         fShell.setLayout(new BorderFillLayout(border));
@@ -534,6 +582,7 @@ public abstract class AbstractTableInformationControl {
     protected void inputChanged(Object newInput, Object newSelection) {
         fFilterText.setText(""); //$NON-NLS-1$
         fTableViewer.setInput(newInput);
+		selectFirstMatch();
 
         // Resize the table's height accordingly to the new input
         Table viewerTable = fTableViewer.getTable();

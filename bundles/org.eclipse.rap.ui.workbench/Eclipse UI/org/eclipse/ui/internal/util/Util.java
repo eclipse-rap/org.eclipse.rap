@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -36,10 +35,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 
 public final class Util {
@@ -51,6 +52,8 @@ public final class Util {
             .unmodifiableSortedSet(new TreeSet());
 
     public final static String ZERO_LENGTH_STRING = ""; //$NON-NLS-1$
+    
+    public final static String[] EMPTY_STRING_ARRAY = new String[0];
 
     /**
      * Ensures that a string is not null. Converts null strings into empty
@@ -680,6 +683,61 @@ public final class Util {
 		}
 		return list.isEmpty() ? new String[0] : (String[]) list.toArray(new String[list.size()]);
 	}
+	
+	/**
+	 * Two {@link String}s presented in a list form.
+	 * This method can be used to form a longer list by providing a list for
+	 * <code>item1</code> and an item to append to the list for 
+	 * <code>item2</code>.  
+	 * 
+	 * @param item1	a string
+	 * @param item2	a string
+	 * @return	a string which presents <code>item1</code> and 
+	 * 	<code>item2</code> in a list form.
+	 */
+	public static String createList(String item1, String item2) {
+		return NLS.bind(WorkbenchMessages.get().Util_List, item1, item2);
+	}
+	
+	/**
+	 * Creates a {@link String} representing the elements in <code>items</code>
+	 * as a list. This method uses the {@link Object#toString()} method on the
+	 * objects to create them as a String.
+	 * @param items	the List to make into a String
+	 * @return	a string which presents <code>items</code> in String form. 
+	 */
+	public static String createList(List items) {
+		String list = null;
+		for (Iterator i = items.iterator(); i.hasNext();) {
+			Object object = i.next();
+			final String string = object == null ? WorkbenchMessages.get().Util_listNull : object.toString();
+			if(list == null) {
+				list = string;
+			} else {
+				list = createList(list, string);
+			}
+		}
+		return safeString(list);
+	}
+	
+	/**
+	 * Creates a {@link String} representing the elements in <code>items</code>
+	 * as a list. This method uses the {@link Object#toString()} method on the
+	 * objects to create them as a String.
+	 * @param items	the array to make into a String
+	 * @return	a string which presents <code>items</code> in String form. 
+	 */
+	public static String createList(Object[] items) {
+		String list = null;
+		for (int i = 0; i < items.length; i++) {
+			if(list == null) {
+				list = items[i].toString();
+			} else {
+				list = createList(list, items[i].toString());
+			}
+		}
+		return safeString(list);
+	}
 
 	/**
 	 * Return the window for the given shell or the currently active window if
@@ -726,42 +784,69 @@ public final class Util {
 				.getWorkbenchWindows()[0] : null) : activeWindow;
 		return windowToParentOn == null ? null : activeWindow.getShell();
 	}
-	
+
 	/**
-	 * Splits a string at the first occurance of the delimiting char.
-	 * If the source string is null then so is the result. If the source
-	 * string is badly formatted then it is returned in the first array
-	 * entry and the second entry is an empty string.
+	 * A String#split(*) replacement that splits on the provided char. No Regex
+	 * involved.
 	 * 
-	 * @param src The string to be split
-	 * @param delim The character to split on
-	 * @return A two entry string array containing the left/right pair.
+	 * @param src
+	 *            The string to be split
+	 * @param delim
+	 *            The character to split on
+	 * @return An array containing the split. Might be empty, but will not be
+	 *         <code>null</code>.
 	 */
 	public static String[] split(String src, char delim) {
-		if (src == null)
-			return null;
-		
-		String[] splitStr = new String[2];
-		int delimIndex = src.indexOf(delim);
-		if (delimIndex == -1 || delimIndex == 0 || delimIndex == src.length()-1) {
-			splitStr[0] = src;
-			splitStr[1] = ZERO_LENGTH_STRING;
-			return splitStr;
+		if (src == null) {
+			return EMPTY_STRING_ARRAY;
 		}
 		
-		splitStr[0] = src.substring(0, delimIndex);
-		splitStr[1] = src.substring(delimIndex+1);
-		
-		return splitStr;
+		if (src.length()==0) {
+			return new String[] { ZERO_LENGTH_STRING };
+		}
+
+		ArrayList result = new ArrayList();
+		int idx = src.indexOf(delim);
+		int lastIdx = 0;
+		while (idx != -1) {
+			result.add(src.substring(lastIdx, idx));
+			lastIdx = idx + 1;
+			if (lastIdx == src.length()) {
+				idx = -1;
+			} else {
+				idx = src.indexOf(delim, lastIdx);
+			}
+		}
+		if (lastIdx < src.length()) {
+			result.add(src.substring(lastIdx));
+		}
+		String[] resultArray = (String[]) result.toArray(new String[result.size()]);
+		boolean allEmpty = true;
+		for (int i = 0; i < resultArray.length && allEmpty; i++) {
+			if (resultArray[i].length()>0) {
+				allEmpty = false;
+			}
+		}
+		if (allEmpty) {
+			return EMPTY_STRING_ARRAY;
+		}
+		return resultArray;
 	}
 	
 	/**
-	 * Foundation replacement for String.replaceAll(*).
+	 * Foundation replacement for <code>String#replaceAll(String,
+	 * String)</code>, but <strong>without support for regular
+	 * expressions</strong>.
 	 * 
-	 * @param src the starting string.
-	 * @param find the string to find.
-	 * @param replacement the string to replace.
-	 * @return The new string.
+	 * @param src
+	 *            the original string
+	 * @param find
+	 *            the string to find
+	 * @param replacement
+	 *            the replacement string
+	 * @return the new string, with all occurrences of <code>find</code>
+	 *         replaced by <code>replacement</code> (not using regular
+	 *         expressions)
 	 * @since 3.3
 	 */
 	public static String replaceAll(String src, String find, String replacement) {

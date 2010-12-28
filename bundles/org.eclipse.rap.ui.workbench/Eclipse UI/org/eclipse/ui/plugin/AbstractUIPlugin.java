@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-//import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -43,6 +42,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
+import org.osgi.framework.SynchronousBundleListener;
 
 /**
  * Abstract base class for plug-ins that integrate with the Eclipse platform UI.
@@ -127,7 +127,7 @@ public abstract class AbstractUIPlugin extends Plugin {
      * Storage for dialog and wizard data; <code>null</code> if not yet
      * initialized.
      */
-    private DialogSettings dialogSettings = null;
+    private IDialogSettings dialogSettings = null;
 
     /**
      * Storage for preferences.
@@ -257,11 +257,16 @@ public abstract class AbstractUIPlugin extends Plugin {
      * @return the image registry
      */
     public ImageRegistry getImageRegistry() {
+        // RAP [bm]: replaced by session scoped one
+//        if (imageRegistry == null) {
+//            imageRegistry = createImageRegistry();
+//            initializeImageRegistry(imageRegistry);
+//        }
         String imageRegistryKey
     	    = AbstractUIPlugin.class.getName()
     	    + ".imageRegistry-"
     	    + getBundle().getSymbolicName();
-        ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( imageRegistryKey  );
+        ImageRegistry imageRegistry = ( ImageRegistry )RWT.getSessionStore().getAttribute( imageRegistryKey );
         if( imageRegistry == null ) {
           imageRegistry = createImageRegistry();
           initializeImageRegistry( imageRegistry );
@@ -393,7 +398,7 @@ public abstract class AbstractUIPlugin extends Plugin {
      * </p><p>
      * Subclasses may override this method to fill the image registry.
      * </p>
-     * @param reg the registry to initalize
+     * @param reg the registry to initialize
      *
      * @see #getImageRegistry
      */
@@ -609,7 +614,7 @@ public abstract class AbstractUIPlugin extends Plugin {
         // Also, if the start throws an exception, the bundle will be shut down.  
         // We don't want to have created any delegates if this happens.
         // See bug 63324 for more details.
-        bundleListener = new BundleListener() {
+		bundleListener = new SynchronousBundleListener() {
             public void bundleChanged(BundleEvent event) {
                 if (event.getBundle() == getBundle()) {
                     if (event.getType() == BundleEvent.STARTED) {
@@ -629,11 +634,11 @@ public abstract class AbstractUIPlugin extends Plugin {
     }
 
     /**
-     * The <code>AbstractUIPlugin</code> implementation of this <code>Plugin</code>
+     * The <code>AbstractUIPlugin</code> implementation of this {@link Plugin}
      * method saves this plug-in's preference and dialog stores and shuts down 
      * its image registry (if they are in use). Subclasses may extend this
      * method, but must send super <b>last</b>. A try-finally statement should
-     * be used where necessary to ensure that <code>super.shutdown()</code> is
+     * be used where necessary to ensure that <code>super.stop()</code> is
      * always done.
      * {@inheritDoc}
      * 
@@ -657,32 +662,40 @@ public abstract class AbstractUIPlugin extends Plugin {
         }
     }
 
-    /**
-     * Creates and returns a new image descriptor for an image file located
-     * within the specified plug-in.
-     * <p>
-     * This is a convenience method that simply locates the image file in
-     * within the plug-in (no image registries are involved). The path is
-     * relative to the root of the plug-in, and takes into account files
-     * coming from plug-in fragments. The path may include $arg$ elements.
-     * However, the path must not have a leading "." or path separator.
-     * Clients should use a path like "icons/mysample.gif" rather than 
-     * "./icons/mysample.gif" or "/icons/mysample.gif".
-     * </p>
-     * 
-     * @param pluginId the id of the plug-in containing the image file; 
-     * <code>null</code> is returned if the plug-in does not exist
-     * @param imageFilePath the relative path of the image file, relative to the
-     * root of the plug-in; the path must be legal
-     * @return an image descriptor, or <code>null</code> if no image
-     * could be found
-     * @since 3.0
-     */
+	/**
+	 * Creates and returns a new image descriptor for an image file located
+	 * within the specified plug-in.
+	 * <p>
+	 * This is a convenience method that simply locates the image file in within
+	 * the plug-in. It will now query the ISharedImages registry first. The path
+	 * is relative to the root of the plug-in, and takes into account files
+	 * coming from plug-in fragments. The path may include $arg$ elements.
+	 * However, the path must not have a leading "." or path separator. Clients
+	 * should use a path like "icons/mysample.gif" rather than
+	 * "./icons/mysample.gif" or "/icons/mysample.gif".
+	 * </p>
+	 * 
+	 * @param pluginId
+	 *            the id of the plug-in containing the image file;
+	 *            <code>null</code> is returned if the plug-in does not exist
+	 * @param imageFilePath
+	 *            the relative path of the image file, relative to the root of
+	 *            the plug-in; the path must be legal
+	 * @return an image descriptor, or <code>null</code> if no image could be
+	 *         found
+	 * @since 3.0
+	 */
     public static ImageDescriptor imageDescriptorFromPlugin(String pluginId,
             String imageFilePath) {
         if (pluginId == null || imageFilePath == null) {
             throw new IllegalArgumentException();
         }
+
+		IWorkbench workbench = PlatformUI.isWorkbenchRunning() ? PlatformUI.getWorkbench() : null;
+		ImageDescriptor imageDescriptor = workbench == null ? null : workbench
+				.getSharedImages().getImageDescriptor(imageFilePath);
+		if (imageDescriptor != null)
+			return imageDescriptor; // found in the shared images
 
         // if the bundle is not ready then there is no image
         Bundle bundle = Platform.getBundle(pluginId);
@@ -700,9 +713,6 @@ public abstract class AbstractUIPlugin extends Plugin {
             }
         }
 
-        if (fullPathString == null) {
-			return null;
-		}
         return ImageDescriptor.createFromURL(fullPathString);
     }
     

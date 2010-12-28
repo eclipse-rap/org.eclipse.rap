@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,9 +8,11 @@
  * Contributors:
  * IBM - Initial API and implementation
  * Sebastian Davids - bug 128529
+ * Semion Chichelnitsky (semion@il.ibm.com) - bug 278064
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
@@ -102,6 +104,12 @@ public class WorkbenchMessages {
 	public String ExportResourcesAction_toolTip;
 	public String ImportResourcesAction_text;
 	public String ImportResourcesAction_toolTip;
+	public String OpenBrowserHandler_NoInfoDialogMessage;
+
+
+	public String OpenBrowserHandler_NoInfoDialogTitle;
+
+
 	public String OpenRecent_errorTitle;
 	public String OpenRecent_unableToOpen;
 	public String Exit_text;
@@ -183,22 +191,47 @@ public class WorkbenchMessages {
 	public String ActionSetDialogInput_perspectiveCategory;
 	public String ActionSetDialogInput_wizardCategory;
 
-	public String ActionSetSelection_menuTab;
+	public String Shortcuts_shortcutTab;
+	public String Shortcuts_selectShortcutsLabel;
+	public String Shortcuts_availableMenus;
+	public String Shortcuts_availableCategories;
+	public String Shortcuts_allShortcuts;
+	
 	public String ActionSetSelection_actionSetsTab;
 	public String ActionSetSelection_selectActionSetsLabel;
-	public String ActionSetSelection_selectActionSetsHelp;
 	public String ActionSetSelection_availableActionSets;
 	public String ActionSetSelection_menubarActions;
 	public String ActionSetSelection_toolbarActions;
-	public String ActionSetSelection_selectMenusLabel;
-	public String ActionSetSelection_availableMenus;
-	public String ActionSetSelection_availableCategories;
-	public String ActionSetSelection_menuItems;
 	public String ActionSetSelection_descriptionColumnHeader;
 	public String ActionSetSelection_menuColumnHeader;
-	public String ActionSetSelection_toolbarLocation;
-	public String ActionSetSelection_menubarLocation;
-	public String ActionSetSelection_noDesc;
+	
+	public String HideItems_itemInActionSet; 
+	public String HideItems_itemInUnavailableActionSet;
+	public String HideItems_unavailableChildCommandGroup;
+	public String HideItems_unavailableChildCommandGroups;
+	public String HideItems_keyBindings;
+	public String HideItems_keyBindingsActionSetUnavailable;
+	public String HideItems_noKeyBindings;
+	public String HideItems_noKeyBindingsActionSetUnavailable;
+	public String HideItems_commandGroupTitle;
+	public String HideItems_turnOnActionSets;
+	public String HideItems_dynamicItemName;
+	public String HideItems_dynamicItemDescription;
+	public String HideItems_dynamicItemList;
+	public String HideItems_dynamicItemEmptyList;
+
+	public String HideItemsCannotMakeVisible_dialogTitle;
+	public String HideItemsCannotMakeVisible_unavailableCommandGroupText;
+	public String HideItemsCannotMakeVisible_switchToCommandGroupTab;
+	public String HideItemsCannotMakeVisible_unavailableChildrenText;
+	
+	public String HideMenuItems_menuItemsTab;
+	public String HideMenuItems_chooseMenuItemsLabel;
+	public String HideMenuItems_menuStructure;
+	
+	public String HideToolBarItems_toolBarItemsTab;
+	public String HideToolBarItems_chooseToolBarItemsLabel;
+	public String HideToolBarItems_toolBarStructure;
 
 	public String SavePerspective_text;
 	public String SavePerspective_toolTip;
@@ -261,11 +294,10 @@ public class WorkbenchMessages {
 	public String DynamicHelpAction_text;
 	public String DynamicHelpAction_toolTip;
 	public String AboutDialog_shellTitle;
-	public String AboutDialog_featureInfo;
-	public String AboutDialog_pluginInfo;
-	public String AboutDialog_systemInfo;
 	public String AboutDialog_defaultProductName;
-	public String AboutDialog_concatenationOfProviderNameAndFeatureName;
+
+
+	public String AboutDialog_DetailsButton;
 	public String ProductInfoDialog_errorTitle;
 	public String ProductInfoDialog_unableToOpenWebBrowser;
 	public String PreferencesExportDialog_ErrorDialogTitle;
@@ -285,6 +317,7 @@ public class WorkbenchMessages {
 	public String AboutPluginsDialog_moreInfo;
 	public String AboutPluginsDialog_signingInfo_show;
 	public String AboutPluginsDialog_signingInfo_hide;
+	public String AboutPluginsDialog_columns;
 	public String AboutPluginsDialog_errorTitle;
 	public String AboutPluginsDialog_unableToOpenFile;
 	public String AboutFeaturesDialog_shellTitle;
@@ -295,14 +328,24 @@ public class WorkbenchMessages {
 	public String AboutFeaturesDialog_provider;
 	public String AboutFeaturesDialog_moreInfo;
 	public String AboutFeaturesDialog_pluginsInfo;
+	public String AboutFeaturesDialog_columns;
 	public String AboutFeaturesDialog_noInformation;
 	public String AboutFeaturesDialog_pluginInfoTitle;
 	public String AboutFeaturesDialog_pluginInfoMessage;
 	public String AboutFeaturesDialog_noInfoTitle;
+
+
+	public String AboutFeaturesDialog_SimpleTitle;
 	public String AboutSystemDialog_browseErrorLogName;
 	public String AboutSystemDialog_copyToClipboardName;
 	public String AboutSystemDialog_noLogTitle;
 	public String AboutSystemDialog_noLogMessage;
+
+
+	public String AboutSystemPage_FetchJobTitle;
+
+
+	public String AboutSystemPage_RetrievingSystemInfo;
 
 	// --- Shortcutbar ---
 	public String PerspectiveBarContributionItem_toolTip;
@@ -445,7 +488,11 @@ public class WorkbenchMessages {
 
 	public String FileExtension_extensionEmptyMessage;
 	public String FileExtension_fileNameInvalidMessage;
+	public String FilteredPreferenceDialog_Key_Scrolling;
+
+
 	public String FilteredPreferenceDialog_PreferenceSaveFailed;
+	public String FilteredPreferenceDialog_Resize;
 	
 	public String FileExtension_fileTypeMessage;
 	public String FileExtension_fileTypeLabel;
@@ -464,9 +511,12 @@ public class WorkbenchMessages {
 	public String OpenPerspectiveMode_sameWindow;
 	public String OpenPerspectiveMode_newWindow;
 
+	public String FastViewsGroup_title;
 	public String OpenViewMode_title;
 	public String OpenViewMode_embed;
 	public String OpenViewMode_fast;
+
+	public String FastViewBar_hide;
 
 	public String PerspectivesPreference_MakeDefault;
 	public String PerspectivesPreference_MakeDefaultTip;
@@ -502,6 +552,8 @@ public class WorkbenchMessages {
 	public String DecoratorsPreferencePage_description;
 	public String DecoratorsPreferencePage_decoratorsLabel;
 	public String DecoratorsPreferencePage_explanation;
+	public String DecoratorError;
+	public String DecoratorWillBeDisabled;
 
 	// --- Startup preferences ---
 	public String StartupPreferencePage_label;
@@ -525,6 +577,12 @@ public class WorkbenchMessages {
 	// ==============================================================================
 	public String Error;
 	public String Information;
+
+
+	public String InstallationDialog_ShellTitle;
+	
+	public String Workbench_NeedsClose_Title;
+	public String Workbench_NeedsClose_Message;
 
 	public String ErrorPreferencePage_errorMessage;
 
@@ -575,6 +633,7 @@ public class WorkbenchMessages {
 	public String ExternalEditor_errorMessage;
 	public String Save;
 	public String Save_Resource;
+	public String Saving_Modifications;
 	public String Save_All;
 
 
@@ -595,8 +654,8 @@ public class WorkbenchMessages {
 
 	public String Perspective_problemRestoringTitle;
 	public String Perspective_errorReadingState;
+	public String Perspective_localCopyLabel;
 	public String Perspective_problemLoadingTitle;
-	public String Perspective_errorLoadingState;
 	public String WorkbenchPage_problemRestoringTitle;
 	public String WorkbenchPage_errorReadingState;
 
@@ -610,6 +669,7 @@ public class WorkbenchMessages {
 	// Views Framework
 	// ==============================================================================
 	public String Menu;
+	public String ViewMenu;
 
 	public String StandardSystemToolbar_Minimize;
 	public String StandardSystemToolbar_Maximize;
@@ -674,6 +734,9 @@ public class WorkbenchMessages {
 	public String WorkbenchPart_AutoTitleFormat;
 	public String EditorPart_AutoTitleFormat;
 	public String Abnormal_Workbench_Conditi;
+
+
+	public String AbstractWorkingSetManager_updatersActivating;
 	public String WorkbenchPage_ErrorActivatingView;
 	public String DecoratorManager_ErrorActivatingDecorator;
 
@@ -772,6 +835,7 @@ public class WorkbenchMessages {
 	public String ProblemRestoringWorkingSetState_message;
 
 	public String ProblemRestoringWorkingSetState_title;
+	public String ProblemCyclicDependency;
 
 	public String WorkingSetEditWizard_title;
 	public String WorkingSetNewWizard_title;
@@ -851,6 +915,9 @@ public class WorkbenchMessages {
 	public String PerspectiveBar_saveAs;
 	public String PerspectiveBar_reset;
 
+
+	public String Perspective_couldNotBeFound;
+
 	public String PerspectiveSwitcher_dockOn;
 	public String PerspectiveSwitcher_topRight;
 	public String PerspectiveSwitcher_topLeft;
@@ -871,6 +938,7 @@ public class WorkbenchMessages {
 	public String FilteredTree_ClearToolTip;
 	public String FilteredTree_FilterMessage;
 	public String FilteredTree_FilteredDialogTitle;
+	public String FilteredTree_AccessibleListenerClearButton;
 	public String FilteredTree_AccessibleListenerFiltered;
 	public String Workbench_restoreDisabled;
 	public String Workbench_noStateToRestore;
@@ -1011,11 +1079,10 @@ public class WorkbenchMessages {
     public String FilteredItemsSelectionDialog_taskProgressMessage;
     public String FilteredItemsSelectionDialog_subtaskProgressMessage;
     	
-// RAP [fappel]: need session aware NLS
-//    static {
-//		// load message values from bundle file
-//		NLS.initializeMessages(BUNDLE_NAME, WorkbenchMessages.class);
-//	}
+    static {
+		// load message values from bundle file
+		NLS.initializeMessages(BUNDLE_NAME, WorkbenchMessages.class);
+	}
 
 
     public String FastViewBar_show_view;
@@ -1035,7 +1102,8 @@ public class WorkbenchMessages {
 	public String WorkbenchStatusDialog_CopyThisReport;
 	public String WorkbenchStatusDialog_ExplanationLabel;
 	public String WorkbenchStatusDialog_NotAvailable;
-	public String WorkbenchStatusDialog_Support;
+	public String WorkbenchStatusDialog_SupportTooltip;
+	public String WorkbenchStatusDialog_SupportHyperlink;
 	public String WorkbenchStatusDialog_StatusLabel;
 	public String WorkbenchStatusDialog_TimestampNotAvailable;
 	public String WorkbenchStatusDialog_StatusWithChildren;
@@ -1049,6 +1117,9 @@ public class WorkbenchMessages {
 	public String StackTraceSupportArea_CausedBy;
 	public String StackTraceSupportArea_Title;
 	
+	public String ErrorLogUtil_ShowErrorLogTooltip;
+	public String ErrorLogUtil_ShowErrorLogHyperlink;
+
 	// WorkingSetConfigurationBlock
 	public String WorkingSetConfigurationBlock_SelectWorkingSet_button;
 	public String WorkingSetConfigurationBlock_WorkingSetText_name;
@@ -1059,6 +1130,10 @@ public class WorkbenchMessages {
 	public String WorkingSetGroup_WorkingSets_group;
 	public String WorkingSetGroup_WorkingSetSelection_message;
 	public String WorkingSetGroup_EnableWorkingSet_button;
+	
+	// Util
+	public String Util_List;
+	public String Util_listNull;
 	
 	/**
 	 * Load message values from bundle file

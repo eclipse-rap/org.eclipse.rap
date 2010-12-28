@@ -24,10 +24,18 @@ import org.eclipse.ui.services.IServiceWithSources;
  * access to contexts.
  * </p>
  * <p>
- * This interface should not be implemented or extended by clients.
+ * This service can be acquired from your service locator:
+ * <pre>
+ * 	IContextService service = (IContextService) getSite().getService(IContextService.class);
+ * </pre>
+ * <ul>
+ * <li>This service is available globally.</li>
+ * </ul>
  * </p>
  * 
  * @since 1.1
+ * @noextend This interface is not intended to be extended by clients.
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IContextService extends IServiceWithSources {
 
@@ -365,4 +373,21 @@ public interface IContextService extends IServiceWithSources {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean unregisterShell(Shell shell);
+
+	/**
+	 * Informs the service that a batch operation has started.
+	 * <p>
+	 * <b>Note:</b> You must insure that if you call
+	 * <code>deferUpdates(true)</code> that nothing in your batched operation
+	 * will prevent the matching call to <code>deferUpdates(false)</code>.
+	 * </p>
+	 * 
+	 * @param defer
+	 *            true when starting a batch operation false when ending the
+	 *            operation
+	 * 
+	 * @since 1.4
+	 */
+	public void deferUpdates(boolean defer);
+	
 }

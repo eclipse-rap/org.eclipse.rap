@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -523,6 +523,19 @@ public interface IWorkbench extends IAdaptable, IServiceLocator {
 
 	/**
 	 * Returns a boolean indicating whether the workbench is in the process of
+	 * starting. During this phase, it is not safe to make calls to other
+	 * methods of the workbench, or of objects owned by the workbench. To delay
+	 * work until after the workbench has been initialized, use {@link IStartup}
+	 * or {@link Display#asyncExec(Runnable)}.
+	 * 
+	 * @return <code>true</code> if the workbench is in the process of starting,
+	 *         <code>false</code> otherwise
+	 * @since 1.4
+	 */
+	public boolean isStarting();
+	
+	/**
+	 * Returns a boolean indicating whether the workbench is in the process of
 	 * closing.
 	 * 
 	 * @return <code>true</code> if the workbench is in the process of
@@ -604,4 +617,17 @@ public interface IWorkbench extends IAdaptable, IServiceLocator {
 	public boolean saveAll(IShellProvider shellProvider,
 			IRunnableContext runnableContext, ISaveableFilter filter,
 			boolean confirm);
+
+	/**
+	 * Return a shell provider that can be used to get the best parenting
+	 * possible for a modal dialog. If modal shells are already created, use the
+	 * topmost modal shell as the parent to avoid two modal dialogs. If there
+	 * are no modal shells, use the shell of the active workbench window.
+	 * 
+	 * @return a shell provider that provides the best parenting possible for a
+	 *         modal dialog.
+	 * 
+	 * @since 1.4
+	 */
+	public IShellProvider getModalDialogShellProvider();
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * This class is used to record "open editor" actions as they
@@ -134,7 +133,7 @@ public class EditorHistory {
                 add(item, fifoList.size());
             }
         }
-        return new Status(IStatus.OK, PlatformUI.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+        return Status.OK_STATUS;
     }
 
     /**
@@ -152,6 +151,6 @@ public class EditorHistory {
                 item.saveState(itemMemento);
             }
         }
-        return new Status(IStatus.OK, PlatformUI.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+        return Status.OK_STATUS;
     }
 }

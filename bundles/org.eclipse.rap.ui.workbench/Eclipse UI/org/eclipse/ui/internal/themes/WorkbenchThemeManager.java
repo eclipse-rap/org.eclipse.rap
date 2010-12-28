@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.rap.ui.internal.SessionSingletonEventManager;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
@@ -34,21 +35,21 @@ import org.eclipse.ui.themes.IThemeManager;
 /**
  * Theme manager for the Workbench.
  */
-// RAP [bm]: moved to session scope
-public class WorkbenchThemeManager extends SessionSingletonEventManager implements
-		IThemeManager {
+public class WorkbenchThemeManager extends EventManager implements IThemeManager {
 
 	private static final String SYSTEM_DEFAULT_THEME = "org.eclipse.ui.ide.systemDefault";//$NON-NLS-1$
 
 
-	// RAP [bm]:
+// RAP [bm]:
 //	private static WorkbenchThemeManager instance;
-//
-//	/**
-//	 * Returns the singelton instance of the WorkbenchThemeManager
-//	 *
-//	 * @return singleton instance
-//	 */
+	private boolean initialized;
+
+	/**
+	 * Returns the singelton instance of the WorkbenchThemeManager
+	 *
+	 * @return singleton instance
+	 */
+// RAP [rst]: use session scope
 //	public static synchronized WorkbenchThemeManager getInstance() {
 //		if (instance == null) {
 //			instance = new WorkbenchThemeManager();
@@ -56,20 +57,17 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 //		}
 //		return instance;
 //	}
-	private boolean initialized;
-
 	public static WorkbenchThemeManager getInstance() {
 		WorkbenchThemeManager result
-		  = ( WorkbenchThemeManager )getInstance( WorkbenchThemeManager.class );
+          = ( WorkbenchThemeManager ) SessionSingletonBase.getInstance( WorkbenchThemeManager.class );
 		synchronized( result ) {
-		  if( !result.initialized ) {
-		    result.initialized = true;
-		    result.getCurrentTheme();
-		  }
-        }
+			if( !result.initialized ) {
+				result.initialized = true;
+				result.getCurrentTheme();
+			}
+		}
 		return result;
 	}
-	// RAPEND: [bm]
 
 	private ITheme currentTheme;
 
@@ -123,7 +121,7 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 		//If not set, use default
 		if(themeId.length() == 0)
 			themeId = IThemeManager.DEFAULT_THEME;
-
+			
 		// Check if we are in high contrast mode. If so then set the theme to
 		// the system default
 		if (PlatformUI.getWorkbench().getDisplay() != null) {
@@ -194,7 +192,7 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.ui.themes.IThemeManager#addPropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
 	 */
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
@@ -242,7 +240,7 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.ui.themes.IThemeManager#getCurrentTheme()
 	 */
 	public ITheme getCurrentTheme() {
@@ -265,14 +263,14 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 													PlatformUI.PLUGIN_ID,
 													"Could not restore current theme: " + themeId, null)); //$NON-NLS-1$
 				}
-			}
+			}			
 		}
 		return currentTheme;
 	}
 
 	/**
 	 * Return the default color registry.
-	 *
+	 * 
 	 * @return the default color registry
 	 */
 	public ColorRegistry getDefaultThemeColorRegistry() {
@@ -281,7 +279,7 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 
 	/**
 	 * Return the default font registry.
-	 *
+	 * 
 	 * @return the default font registry
 	 */
 	public FontRegistry getDefaultThemeFontRegistry() {
@@ -299,7 +297,7 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.ui.themes.IThemeManager#getTheme(java.lang.String)
 	 */
 	public ITheme getTheme(String id) {
@@ -326,7 +324,7 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.ui.themes.IThemeManager#removePropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
 	 */
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
@@ -335,7 +333,7 @@ public class WorkbenchThemeManager extends SessionSingletonEventManager implemen
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.ui.themes.IThemeManager#setCurrentTheme(java.lang.String)
 	 */
 	public void setCurrentTheme(String id) {

@@ -1,6 +1,6 @@
 // RAP [bm]: not applicable at the moment
 ///*******************************************************************************
-// * Copyright (c) 2004, 2008 IBM Corporation and others.
+// * Copyright (c) 2004, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@
 // * all to work even in some cases where the "selectAll" method does not exist.
 // * This handler attempts to use "getTextLimit" and "setSelection" to do select
 // * all. If this doesn't work, then it finally fails.
+// * 
+// * @since 3.0
 // */
 //public class SelectAllHandler extends WidgetMethodHandler {
 //

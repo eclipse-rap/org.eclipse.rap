@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@
 package org.eclipse.ui.internal.progress;
 
 import java.util.*;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
@@ -35,15 +34,6 @@ class GroupInfo extends JobTreeElement implements IProgressMonitor {
 	double total = -1;
 
 	double currentWork;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.internal.progress.JobTreeElement#getParent()
-	 */
-	Object getParent() {
-		return null;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -116,11 +106,15 @@ class GroupInfo extends JobTreeElement implements IProgressMonitor {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String,
-	 *      int)
+	 * @see
+	 * org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String,
+	 * int)
 	 */
 	public void beginTask(String name, int totalWork) {
-		taskName = name;
+		if (name == null)
+			name = ProgressMessages.get().SubTaskInfo_UndefinedTaskName;
+		else
+			taskName = name;
 		total = totalWork;
 		synchronized (lock) {
 			isActive = true;
@@ -143,21 +137,20 @@ class GroupInfo extends JobTreeElement implements IProgressMonitor {
 	}
 
 	/**
-	 * Update the receiver in the progress manager. If all of the
-	 * jobs are finished and the receiver is not being kept then remove
-	 * it.
+	 * Update the receiver in the progress manager. If all of the jobs are
+	 * finished and the receiver is not being kept then remove it.
 	 */
 	private void updateInProgressManager() {
 		Iterator infoIterator = infos.iterator();
 		while (infoIterator.hasNext()) {
 			JobInfo next = (JobInfo) infoIterator.next();
-			if(!(next.getJob().getState() == Job.NONE)){
+			if (!(next.getJob().getState() == Job.NONE)) {
 				ProgressManager.getInstance().refreshGroup(this);
 				return;
 			}
 		}
-			
-		if(FinishedJobs.getInstance().isKept(this))
+
+		if (FinishedJobs.getInstance().isKept(this))
 			ProgressManager.getInstance().refreshGroup(this);
 		else
 			ProgressManager.getInstance().removeGroup(this);
@@ -197,13 +190,17 @@ class GroupInfo extends JobTreeElement implements IProgressMonitor {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
+	 * @see
+	 * org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
 	 */
 	public void setTaskName(String name) {
 		synchronized (this) {
 			isActive = true;
 		}
-		taskName = name;
+		if (name == null)
+			taskName = ProgressMessages.get().SubTaskInfo_UndefinedTaskName;
+		else
+			taskName = name;
 
 	}
 

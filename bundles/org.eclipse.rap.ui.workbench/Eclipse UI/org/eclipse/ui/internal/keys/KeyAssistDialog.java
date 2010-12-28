@@ -1,6 +1,6 @@
 // RAP [rh] Keys completely disabled as not implemented in RWT
 ///*******************************************************************************
-// * Copyright (c) 2004, 2008 IBM Corporation and others.
+// * Copyright (c) 2004, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -18,10 +18,8 @@
 //import java.util.Iterator;
 //import java.util.List;
 //import java.util.Map;
-//import java.util.ResourceBundle;
 //import java.util.SortedMap;
 //import java.util.TreeMap;
-//
 //import org.eclipse.core.commands.Command;
 //import org.eclipse.core.commands.ParameterizedCommand;
 //import org.eclipse.core.commands.common.CommandException;
@@ -34,6 +32,7 @@
 //import org.eclipse.jface.dialogs.PopupDialog;
 //import org.eclipse.jface.preference.PreferenceDialog;
 //import org.eclipse.jface.window.Window;
+//import org.eclipse.osgi.util.NLS;
 //import org.eclipse.swt.SWT;
 //import org.eclipse.swt.graphics.Point;
 //import org.eclipse.swt.graphics.Rectangle;
@@ -49,14 +48,12 @@
 //import org.eclipse.swt.widgets.TableColumn;
 //import org.eclipse.swt.widgets.TableItem;
 //import org.eclipse.ui.IWorkbench;
+//import org.eclipse.ui.IWorkbenchCommandConstants;
 //import org.eclipse.ui.activities.IActivityManager;
 //import org.eclipse.ui.commands.ICommandService;
 //import org.eclipse.ui.contexts.IContextService;
 //import org.eclipse.ui.dialogs.PreferencesUtil;
-//import org.eclipse.ui.internal.util.Util;
 //import org.eclipse.ui.keys.IBindingService;
-//
-//import com.ibm.icu.text.MessageFormat;
 //
 ///**
 // * <p>
@@ -84,12 +81,6 @@
 //	 * remembered width.
 //	 */
 //	private static final int NO_REMEMBERED_WIDTH = -1;
-//
-//	/**
-//	 * The translation bundle in which to look up internationalized text.
-//	 */
-//	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-//			.getBundle(KeyAssistDialog.class.getName());
 //
 //	/**
 //	 * The activity manager for the associated workbench.
@@ -356,7 +347,7 @@
 //	 */
 //	private String getKeySequenceString() {
 //		final Command command = commandService
-//				.getCommand("org.eclipse.ui.window.showKeyAssist"); //$NON-NLS-1$
+//				.getCommand(IWorkbenchCommandConstants.WINDOW_SHOW_KEY_ASSIST);
 //		final TriggerSequence[] keyBindings = bindingService
 //				.getActiveBindingsFor(new ParameterizedCommand(command, null));
 //		final int keyBindingsCount = keyBindings.length;
@@ -401,9 +392,8 @@
 //			return null; // couldn't find a suitable key binding
 //		}
 //
-//		return MessageFormat.format(Util.translateString(RESOURCE_BUNDLE,
-//				"openPreferencePage"), //$NON-NLS-1$
-//				new Object[] { keySequence.format() });
+//		return NLS.bind(KeyAssistMessages.openPreferencePage, keySequence
+//				.format());
 //	}
 //
 //	/**
@@ -457,8 +447,7 @@
 //	 */
 //	private final void createEmptyDialogArea(final Composite parent) {
 //		final Label noMatchesLabel = new Label(parent, SWT.NULL);
-//		noMatchesLabel.setText(Util.translateString(RESOURCE_BUNDLE,
-//				"NoMatches.Message")); //$NON-NLS-1$
+//		noMatchesLabel.setText(KeyAssistMessages.NoMatches_Message);
 //		noMatchesLabel.setLayoutData(new GridData(GridData.FILL_BOTH));
 //		noMatchesLabel.setBackground(parent.getBackground());
 //	}
@@ -515,6 +504,9 @@
 //			columnKeySequence.setWidth(previousWidth);
 //		}
 //		columnCommandName.pack();
+//		if (completionsTable.getItems().length > 0) {
+//			completionsTable.setSelection(0);
+//		}
 //
 //		/*
 //		 * If you double-click on the table, it should execute the selected
@@ -556,6 +548,7 @@
 //		if (selectionIndex >= 0) {
 //			final Binding binding = (Binding) bindings.get(selectionIndex);
 //			try {
+//				workbenchKeyboard.updateShellKludge(null);
 //				workbenchKeyboard.executeCommand(binding, trigger);
 //			} catch (final CommandException e) {
 //				workbenchKeyboard.logException(e, binding

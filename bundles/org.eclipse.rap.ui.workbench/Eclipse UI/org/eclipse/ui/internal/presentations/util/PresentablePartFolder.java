@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -184,7 +184,7 @@ public final class PresentablePartFolder implements IPresentablePartList {
         }
         
         item = folder.add(idx, style);
-
+		folder.showItem(item);
         item.setData(part);
 
         initTab(item, part);
@@ -310,8 +310,8 @@ public final class PresentablePartFolder implements IPresentablePartList {
             if (tab != null && getCurrent() == part) {
                 folder.flushToolbarSize();
             }
-            /* falls through */
-        case IPresentablePart.PROP_CONTENT_DESCRIPTION:
+            //$FALL-THROUGH$
+			case IPresentablePart.PROP_CONTENT_DESCRIPTION:
         case IPresentablePart.PROP_PANE_MENU:
         case IPresentablePart.PROP_TITLE:
             if (tab != null) {

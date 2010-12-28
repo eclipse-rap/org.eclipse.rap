@@ -1,6 +1,6 @@
 // RAP [rh] File names and extensions don't make sense in RAP
 ///*******************************************************************************
-// * Copyright (c) 2000, 2007 IBM Corporation and others.
+// * Copyright (c) 2000, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -63,11 +63,12 @@
 //     * @param parentShell the parent shell
 //     */
 //    public FileExtensionDialog(Shell parentShell) {
-//		this(parentShell, WorkbenchMessages.get().FileExtension_shellTitle,
+//		this(parentShell, WorkbenchMessages.FileExtension_shellTitle,
 //				IWorkbenchHelpContextIds.FILE_EXTENSION_DIALOG,
-//				WorkbenchMessages.get().FileExtension_dialogTitle,
-//				WorkbenchMessages.get().FileExtension_fileTypeMessage,
-//				WorkbenchMessages.get().FileExtension_fileTypeLabel);
+//				WorkbenchMessages.FileExtension_dialogTitle,
+//				WorkbenchMessages.FileExtension_fileTypeMessage,
+//				WorkbenchMessages.FileExtension_fileTypeLabel);
+//		setShellStyle(getShellStyle() | SWT.SHEET);
 //	}
 //    
 //    /**
@@ -88,7 +89,8 @@
 //		this.headerTitle = headerTitle;
 //		message2 = message;
 //		this.label = label;
-//    	
+//
+//		setShellStyle(getShellStyle() | SWT.SHEET);
 //    }
 //    
 //    /* (non-Javadoc)
@@ -167,7 +169,7 @@
 //        int index = filename.lastIndexOf('.');
 //        if (index == filename.length() - 1) {
 //            if (index == 0 || (index == 1 && filename.charAt(0) == '*')) {
-//                setErrorMessage(WorkbenchMessages.get().FileExtension_extensionEmptyMessage); 
+//                setErrorMessage(WorkbenchMessages.FileExtension_extensionEmptyMessage); 
 //                return false;
 //            }
 //        }
@@ -179,15 +181,15 @@
 //        index = filename.indexOf('*');
 //        if (index > -1) {
 //            if (filename.length() == 1) {
-//                setErrorMessage(WorkbenchMessages.get().FileExtension_extensionEmptyMessage); 
+//                setErrorMessage(WorkbenchMessages.FileExtension_extensionEmptyMessage); 
 //                return false;
 //            }
 //            if (index != 0 || filename.charAt(1) != '.') {
-//                setErrorMessage(WorkbenchMessages.get().FileExtension_fileNameInvalidMessage);
+//                setErrorMessage(WorkbenchMessages.FileExtension_fileNameInvalidMessage);
 //                return false;
 //            }
 //            if (filename.length() > index && filename.indexOf('*', index + 1) != -1) {
-//            	setErrorMessage(WorkbenchMessages.get().FileExtension_fileNameInvalidMessage); 
+//            	setErrorMessage(WorkbenchMessages.FileExtension_fileNameInvalidMessage); 
 //            	return false;
 //            }
 //        }

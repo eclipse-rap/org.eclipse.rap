@@ -1,16 +1,20 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.ui">
 <annotation>
-      <appinfo>
+      <appInfo>
          <meta.schema plugin="org.eclipse.ui" id="encodings" name="Encodings"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          A list of encodings that will be made available to the user for selection of file encodings. This list corresponds to the values of Charset#getName() for a series of Charsets. Those that are specified but not avaiable will be indicated as such in the workbench and will not be selectable by the user.
       </documentation>
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <documentation>
+         </documentation>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="encoding" minOccurs="0" maxOccurs="unbounded"/>
@@ -34,15 +38,19 @@
                <documentation>
                   
                </documentation>
-               <appinfo>
+               <appInfo>
                   <meta.attribute translatable="true"/>
-               </appinfo>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
    <element name="encoding">
+      <annotation>
+         <documentation>
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="name" type="string" use="required">
             <annotation>
@@ -55,18 +63,18 @@
    </element>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="since"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          3.1
       </documentation>
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="examples"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          The following is an example of an encodings extension:
 &lt;p&gt;
@@ -83,9 +91,9 @@
    </annotation>
 
    <annotation>
-      <appinfo>
-         <meta.section type="apiinfo"/>
-      </appinfo>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
       <documentation>
          Use method &lt;code&gt;org.eclipse.ui.WorkbenchEncoding.getDefinedEncodings&lt;/code&gt; to retrieve the encodings defined by this extension point.
 Use method &lt;code&gt;org.eclipse.ui.WorkbenchEncoding.getWorkbenchDefaultEncoding&lt;/code&gt; to retrieve the default encoding from the virtual machine.
@@ -93,18 +101,18 @@ Use method &lt;code&gt;org.eclipse.ui.WorkbenchEncoding.getWorkbenchDefaultEncod
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="implementation"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          The workbench provides some commonly used encodings.
       </documentation>
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="copyright"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          Copyright (c) 2004,2006 IBM Corporation and others.&lt;br&gt;
 All rights reserved. This program and the accompanying materials are made

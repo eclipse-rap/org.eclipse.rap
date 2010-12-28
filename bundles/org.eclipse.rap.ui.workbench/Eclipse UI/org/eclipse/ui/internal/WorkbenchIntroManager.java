@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -216,6 +216,14 @@ public class WorkbenchIntroManager implements IIntroManager {
         if (viewIntroAdapterPart == null) {
 			return false;
 		}
+
+		// if the welcome view is minimized then return true
+		WorkbenchPage page = (WorkbenchPage) viewIntroAdapterPart.getSite()
+				.getPage();
+		IViewReference reference = page
+				.findViewReference(IIntroConstants.INTRO_VIEW_ID);
+		if (page.isFastView(reference))
+			return true;
 
         return !((PartSite) viewIntroAdapterPart.getSite()).getPane()
                 .isZoomed();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,13 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Semion Chichelnitsky (semion@il.ibm.com) - bug 66889
  *******************************************************************************/
 package org.eclipse.ui.internal.presentations;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -33,7 +33,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.internal.dnd.DragUtil;
 import org.eclipse.ui.internal.dnd.SwtUtil;
 import org.eclipse.ui.internal.layout.SizeCache;
 import org.eclipse.ui.internal.presentations.util.ProxyControl;
@@ -343,7 +342,12 @@ public final class PaneFolder {
         topCenterCache.flush();
         viewForm.changed(new Control[] {viewFormTopCenterProxy.getControl()});
     }
-    
+
+	public void flushTopLeftSize() {
+		topLeftCache.flush();
+		viewForm.changed(new Control[] { viewFormTopLeftProxy.getControl() });
+	}
+
     /**
      * Sets the top-center control (usually a toolbar), or null if none. Note
      * that the control can have any parent.
@@ -475,7 +479,7 @@ public final class PaneFolder {
 		try {
 	        
         	viewForm.setLayoutDeferred(true);
-
+	
 	        tabFolder.setMinimizeVisible(showButtons && minimizeVisible);
 	        tabFolder.setMaximizeVisible(showButtons && maximizeVisible);
 	
@@ -497,7 +501,8 @@ public final class PaneFolder {
 	        useTopRightOptimization = false;
 	        // END OF HACK
 	
-	        Rectangle titleArea = DragUtil.getDisplayBounds(titleAreaProxy);
+			// Get the bounds relative to the CTabFolder
+	        Rectangle titleArea = titleAreaProxy.getBounds();
 	
 	        Point topRightSize = topRightCache
 	                .computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -532,8 +537,8 @@ public final class PaneFolder {
 	                    topRightSize.y);
 	
 	            if (topRight != null) {
-	                topRight.setBounds(Geometry.toControl(topRight.getParent(),
-	                        topRightArea));
+	            	// Map the coordinates from the tabFolder back to the control's parent
+	            	topRight.setBounds(topRight.getDisplay().map(tabFolder, topRight.getParent(), topRightArea));
 	            }
 	
 	            if (topCenter != null) {
@@ -542,10 +547,8 @@ public final class PaneFolder {
 	                        + (titleArea.height - topCenterSize.y) / 2,
 	                        topCenterSize.x, topCenterSize.y);
 	
-	                Rectangle localCoords = Geometry.toControl(topCenter
-	                        .getParent(), topCenterArea);
-	                
-	                topCenter.setBounds(localCoords);
+	            	// Map the coordinates from the tabFolder back to the control's parent
+	            	topCenter.setBounds(topCenter.getDisplay().map(tabFolder, topCenter.getParent(), topCenterArea));
 	            }
 	        } else {
                 if (topCenter != null) {
@@ -563,7 +566,6 @@ public final class PaneFolder {
 	        viewForm.setBounds(newBounds);
         } finally {
         	viewForm.setLayoutDeferred(false);
-
         	inLayout = false;
         }
 
@@ -743,6 +745,10 @@ public final class PaneFolder {
         tabFolder.setSelection(selection);
     }
 
+	public void showItem(int selection) {
+		tabFolder.showItem(tabFolder.getItem(selection));
+	}
+
     /**
      * @param i
      * @param j
@@ -776,15 +782,7 @@ public final class PaneFolder {
      */
     public void setSelectionBackground(Color[] bgColors, int[] percentages,
             boolean vertical) {
-    	// RAP [bm]: TabFolder#setSelectionBackground
-//        tabFolder.setSelectionBackground(bgColors, percentages, vertical);
-        if (bgColors == null) {
-			tabFolder.setSelectionBackground((Color)null);
-		} else {
-			tabFolder.setSelectionBackground(bgColors[0]);
-		}
-    	// RAPEND: [bm]
-
+        tabFolder.setSelectionBackground(bgColors, percentages, vertical);
     }
 
     public CTabItem getItem(int idx) {

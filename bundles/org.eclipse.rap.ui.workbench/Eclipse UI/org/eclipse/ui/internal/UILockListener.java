@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -136,6 +136,15 @@ public class UILockListener extends LockListener {
     void addPendingWork(Semaphore work) {
         pendingWork.add(work);
     }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.runtime.jobs.LockListener#canBlock()
+	 */
+	public boolean canBlock() {
+		return !isUI();
+	}
 
     /**
      * Should always be called from the UI thread.

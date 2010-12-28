@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,5 +135,21 @@ public abstract class AbstractStatusHandler {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	/**
+	 * This methods indicates if particular notification type is supported and
+	 * if {@link StatusManager#fireNotification(int, StatusAdapter[])} will be
+	 * called after the event occurs. Only known notification types should be
+	 * accepted, whereas unknown types should be always rejected.
+	 * 
+	 * @param type
+	 *            - a notification type that should be checked.
+	 * @return true if particular event notification is supported, false
+	 *         otherwise
+	 * @since 1.4
+	 */
+	public boolean supportsNotification(int type){
+		return false;
 	}
 }

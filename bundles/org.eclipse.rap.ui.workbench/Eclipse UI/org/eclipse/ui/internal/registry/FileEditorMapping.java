@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Jan-Hendrik Diederich, Bredex GmbH - bug 201052
+ *     Carsten Pfeiffer, Gebit Solutions GmbH - bug 259536
  *******************************************************************************/
 package org.eclipse.ui.internal.registry;
 
@@ -92,6 +93,8 @@ public class FileEditorMapping extends Object implements IFileEditorMapping,
         try {
             FileEditorMapping clone = (FileEditorMapping) super.clone();
             clone.editors = (List) ((ArrayList) editors).clone();
+			clone.deletedEditors = (List) ((ArrayList) deletedEditors).clone();
+			clone.declaredDefaultEditors = (List) ((ArrayList) declaredDefaultEditors).clone();
             return clone;
         } catch (CloneNotSupportedException e) {
             return null;
@@ -119,6 +122,9 @@ public class FileEditorMapping extends Object implements IFileEditorMapping,
         if (!compareList(this.editors, mapping.editors)) {
 			return false;
 		}
+		if (!compareList(this.declaredDefaultEditors, mapping.declaredDefaultEditors)) {
+			return false;
+		}
         return compareList(this.deletedEditors, mapping.deletedEditors);
     }
 
@@ -142,6 +148,18 @@ public class FileEditorMapping extends Object implements IFileEditorMapping,
         }
         return true;
     }
+	
+    public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((declaredDefaultEditors == null) ? 0 : declaredDefaultEditors.hashCode());
+		result = prime * result + ((deletedEditors == null) ? 0 : deletedEditors.hashCode());
+		result = prime * result + ((editors == null) ? 0 : editors.hashCode());
+		result = prime * result + ((extension == null) ? 0 : extension.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
 
     /* (non-Javadoc)
      * Method declared on IFileEditorMapping.
@@ -153,6 +171,13 @@ public class FileEditorMapping extends Object implements IFileEditorMapping,
 		}
         
         return (IEditorDescriptor) editors.get(0);
+    }
+
+    /**
+     * Returns all editor descriptors of this mapping, not filtered by activities.
+     */
+    IEditorDescriptor[] getUnfilteredEditors() {
+    	return (IEditorDescriptor[]) editors.toArray(new IEditorDescriptor[editors.size()]);
     }
 
     /* (non-Javadoc)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,12 @@ package org.eclipse.ui.internal.statushandlers;
 
 import org.eclipse.jface.util.Policy;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -46,9 +52,6 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 	 */
 	private List list;
 
-	// RAP [bm]: Clipboard
-//	private Clipboard clipboard;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -67,16 +70,6 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 		gd.grabExcessVerticalSpace = true;
 		gd.widthHint = 250;
 		list.setLayoutData(gd);
-		// RAP [bm]: 
-//		list.addDisposeListener(new DisposeListener() {
-//			public void widgetDisposed(DisposeEvent e) {
-//				if (clipboard != null) {
-//					clipboard.dispose();
-//				}
-//			}
-//		});
-		// RAPEND: [bm] 
-
 		list.addSelectionListener(new SelectionAdapter() {
 			/*
 			 * (non-Javadoc)
@@ -99,29 +92,27 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 	 * Creates DND source for the list
 	 */
 	private void createDNDSource() {
-		// RAP [bm]: 
-//		DragSource ds = new DragSource(list, DND.DROP_COPY);
-//		ds.setTransfer(new Transfer[] { TextTransfer.getInstance() });
-//		ds.addDragListener(new DragSourceListener() {
-//			public void dragFinished(DragSourceEvent event) {
-//
-//			}
-//
-//			public void dragSetData(DragSourceEvent event) {
-//				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-//					event.data = prepareCopyString();
-//				}
-//			}
-//
-//			public void dragStart(DragSourceEvent event) {
-//				list.selectAll();
-//			}
-//		});
-		// RAPEND: [bm] 
+		DragSource ds = new DragSource(list, DND.DROP_COPY);
+		ds.setTransfer(new Transfer[] { TextTransfer.getInstance() });
+		ds.addDragListener(new DragSourceListener() {
+			public void dragFinished(DragSourceEvent event) {
+
+			}
+
+			public void dragSetData(DragSourceEvent event) {
+				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+					event.data = prepareCopyString();
+				}
+			}
+
+			public void dragStart(DragSourceEvent event) {
+				list.selectAll();
+			}
+		});
 	}
 
 	private void createCopyAction(final Composite parent) {
-		// RAP [bm]: 
+		// RAP [bm]: Clipboard
 //		Menu menu = new Menu(parent.getShell(), SWT.POP_UP);
 //		MenuItem copyAction = new MenuItem(menu, SWT.PUSH);
 //		copyAction.setText("&Copy"); //$NON-NLS-1$
@@ -142,19 +133,18 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 		// RAPEND: [bm] 
 	}
 
-	// RAP [bm]: 
-//	private String prepareCopyString() {
-//		if (list == null || list.isDisposed()) {
-//			return ""; //$NON-NLS-1$
-//		}
-//		StringBuffer sb = new StringBuffer();
-//		String newLine = System.getProperty("line.separator"); //$NON-NLS-1$
-//		for (int i = 0; i < list.getItemCount(); i++) {
-//			sb.append(list.getItem(i));
-//			sb.append(newLine);
-//		}
-//		return sb.toString();
-//	}
+	private String prepareCopyString() {
+		if (list == null || list.isDisposed()) {
+			return ""; //$NON-NLS-1$
+		}
+		StringBuffer sb = new StringBuffer();
+		String newLine = System.getProperty("line.separator"); //$NON-NLS-1$
+		for (int i = 0; i < list.getItemCount(); i++) {
+			sb.append(list.getItem(i));
+			sb.append(newLine);
+		}
+		return sb.toString();
+	}
 
 	private void populateList(Throwable t) {
 		if (t == null) {
@@ -178,4 +168,9 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 	public List getList() {
 		return list;
 	}
+
+	public boolean validFor(StatusAdapter statusAdapter) {
+		return statusAdapter.getStatus().getException() != null;
+	}
+
 }

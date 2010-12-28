@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
 package org.eclipse.ui.internal.progress;
 
 import java.util.*;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
@@ -24,11 +23,18 @@ import org.eclipse.swt.graphics.Image;
  * JobInfo is the class that keeps track of the tree structure for objects that
  * display job status in a tree.
  */
-class JobInfo extends JobTreeElement {
+public class JobInfo extends JobTreeElement {
 
     private IStatus blockedStatus;
 
     private volatile boolean canceled = false;
+
+	/**
+	 * This flag controls whether the job result was passed to status handling in
+	 * order to display it.
+	 */
+	private volatile boolean reported = false;
+
     private List children = Collections.synchronizedList(new ArrayList());
 
     private Job job;
@@ -109,6 +115,7 @@ class JobInfo extends JobTreeElement {
      * @see org.eclipse.ui.internal.progress.JobTreeElement#isJobInfo()
      */
     void clearTaskInfo() {
+		FinishedJobs.getInstance().remove(taskInfo);
         taskInfo = null;
     }
 
@@ -313,7 +320,7 @@ class JobInfo extends JobTreeElement {
      * 
      * @return Job
      */
-    Job getJob() {
+	public Job getJob() {
         return job;
     }
 
@@ -322,7 +329,7 @@ class JobInfo extends JobTreeElement {
      * 
      * @see org.eclipse.ui.internal.progress.JobTreeElement#getParent()
      */
-    Object getParent() {
+	public Object getParent() {
         return parent;
     }
 
@@ -379,6 +386,14 @@ class JobInfo extends JobTreeElement {
     boolean isActive() {
         return getJob().getState() != Job.NONE;
     }
+
+	boolean isReported() {
+		return reported;
+	}
+
+	void setReported(boolean errorReported) {
+		this.reported = errorReported;
+	}
 
     /**
      * Return whether or not the receiver is blocked.

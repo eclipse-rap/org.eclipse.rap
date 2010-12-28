@@ -1,6 +1,6 @@
 // RAP [rh] AboutDialog left out for now
 ///*******************************************************************************
-// * Copyright (c) 2004, 2008 IBM Corporation and others.
+// * Copyright (c) 2004, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@
 //
 //import java.io.IOException;
 //import java.security.GeneralSecurityException;
-//
 //import org.eclipse.core.runtime.Platform;
 //import org.eclipse.osgi.signedcontent.SignedContent;
 //import org.eclipse.osgi.signedcontent.SignedContentFactory;
@@ -106,17 +105,17 @@
 //		SignedContentFactory contentFactory = (SignedContentFactory) bundleContext
 //				.getService(factoryRef);
 //		try {
+//			isSignedDetermined = true;
 //			SignedContent signedContent = contentFactory.getSignedContent(bundle);
 //			isSigned = signedContent != null && signedContent.isSigned();
-//			isSignedDetermined = true;
-//			return isSigned;
 //		} catch (IOException e) {
-//			throw (IllegalStateException) new IllegalStateException().initCause(e);
+//			isSigned = false;
 //		} catch (GeneralSecurityException e){
-//			throw (IllegalStateException) new IllegalStateException().initCause(e);
+//			isSigned = false;
 //		} finally {
 //			bundleContext.ungetService(factoryRef);
 //		}
+//		return isSigned;
 //	}
 //
 //	/**
@@ -186,40 +185,40 @@
 ////					{
 ////						checked++;
 ////						JarEntry je = (JarEntry)list.get(index);
-////						Certificate[] certs = je.getCertificates();
-////						if( certs != null )
-////						{
-////							//Something in this jar is signed by something!!
-////							signed = true;
-////							infoLine[5] = "Signed by "+certs[0].toString();
-////							break;
-////						}
-////						
-////					}
-////					if( !signed )
-////					{
-////						infoLine[5] = "Not signed";
-////					}
-////        		
-////			boolean isSigned = false;
-////        	while( e.hasMoreElements() )
-////        	{
-////        		JarEntry entry = (JarEntry)e.nextElement();
-////        		
-////        		if( entry.getName().matches("[mM][eE][tT][aA][-][iI][nN][fF]/.*[.][sS][fF]"))
-////        		{
-////        			isSigned = true;
-////        			break;
-////        		}
-////        		if( !entry.getName().matches("[mM][eE][tT][aA][-][iI][nN][fF].*"))
-////        		{
-////        			break;
-////        		}
-////        	}
-////        	return isSigned ? "Signed!" : "Not Signed.";
-////
-////		} catch (IOException e) {
-////			return "Couldn't open jar file: " + e.toString();
-////		} */
-////    }
+//						Certificate[] certs = je.getCertificates();
+//						if( certs != null )
+//						{
+//							//Something in this jar is signed by something!!
+//							signed = true;
+//							infoLine[5] = "Signed by "+certs[0].toString();
+//							break;
+//						}
+//						
+//					}
+//					if( !signed )
+//					{
+//						infoLine[5] = "Not signed";
+//					}
+//        		
+//			boolean isSigned = false;
+//        	while( e.hasMoreElements() )
+//        	{
+//        		JarEntry entry = (JarEntry)e.nextElement();
+//        		
+//        		if( entry.getName().matches("[mM][eE][tT][aA][-][iI][nN][fF]/.*[.][sS][fF]"))
+//        		{
+//        			isSigned = true;
+//        			break;
+//        		}
+//        		if( !entry.getName().matches("[mM][eE][tT][aA][-][iI][nN][fF].*"))
+//        		{
+//        			break;
+//        		}
+//        	}
+//        	return isSigned ? "Signed!" : "Not Signed.";
+//
+//		} catch (IOException e) {
+//			return "Couldn't open jar file: " + e.toString();
+//		} */
+//    }
 //}

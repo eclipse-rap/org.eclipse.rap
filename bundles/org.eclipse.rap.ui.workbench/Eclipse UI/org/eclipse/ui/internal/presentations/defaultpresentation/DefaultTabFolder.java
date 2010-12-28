@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Remy Chi Jian Suen <remy.suen@gmail.com> - Bug 145557 [WorkbenchParts] Content description label needs a hover 
+ *     Semion Chichelnitsky <semion@il.ibm.com> - Bug 66889 [ViewMgmt] Package explorer message clipped
  *******************************************************************************/
 package org.eclipse.ui.internal.presentations.defaultpresentation;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.Geometry;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
-//import org.eclipse.swt.events.MouseAdapter;
-//import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -118,12 +116,19 @@ public class DefaultTabFolder extends AbstractTabFolder {
         
         // Initialize view menu dropdown
         {            
-        	// RAP [bm]: 
+        	// RAP [bm]: SWT.NO_BACKGROUND
 //        	ToolBar actualToolBar = new ToolBar(paneFolder.getControl(), SWT.FLAT | SWT.NO_BACKGROUND);
             ToolBar actualToolBar = new ToolBar(paneFolder.getControl(), SWT.FLAT);
             // RAPEND: [bm] 
             viewToolBar = actualToolBar;
             
+            // RAP [bm] Accessibility
+//        	actualToolBar.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+//            	public void getName(AccessibleEvent e) {
+//            		e.result = WorkbenchMessages.ViewMenu;
+//            	}
+//            });
+        	
 	        ToolItem pullDownButton = new ToolItem(actualToolBar, SWT.PUSH);
 	        Image hoverImage = WorkbenchImages
 	                .getImage(IWorkbenchGraphicConstants.IMG_LCL_RENDERED_VIEW_MENU);
@@ -270,6 +275,20 @@ public class DefaultTabFolder extends AbstractTabFolder {
         paneFolder.setSelection(indexOf(toSelect));
     }
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.internal.presentations.util.AbstractTabFolder#showItem
+	 * (org.eclipse.ui.internal.presentations.util.AbstractTabItem)
+	 */
+	public void showItem(AbstractTabItem toSelect) {
+		// overrides default
+		int index = indexOf(toSelect);
+		if (index != -1)
+			paneFolder.showItem(index);
+	}
+
     /* (non-Javadoc)
      * @see org.eclipse.ui.internal.presentations.util.AbstractTabFolder#getToolbarParent()
      */
@@ -312,25 +331,31 @@ public class DefaultTabFolder extends AbstractTabFolder {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.internal.presentations.util.AbstractTabFolder#setSelectedInfo(org.eclipse.ui.internal.presentations.util.PartInfo)
-     */
-    public void setSelectedInfo(PartInfo info) {
-        String newTitle = DefaultTabItem.escapeAmpersands(info.contentDescription);
-        
-        if (!Util.equals(titleLabel.getText(), newTitle)) {
-            titleLabel.setText(newTitle);
-            titleLabel.setToolTipText(newTitle);
-        }
-    	
-        if (!info.contentDescription.equals(Util.ZERO_LENGTH_STRING)) {
-            paneFolder.setTopLeft(titleLabel);
-            titleLabel.setVisible(true);
-        } else {
-            paneFolder.setTopLeft(null);
-            titleLabel.setVisible(false);
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.internal.presentations.util.AbstractTabFolder#setSelectedInfo
+	 * (org.eclipse.ui.internal.presentations.util.PartInfo)
+	 */
+	public void setSelectedInfo(PartInfo info) {
+		String newTitle = DefaultTabItem
+				.escapeAmpersands(info.contentDescription);
+
+		if (!Util.equals(titleLabel.getText(), newTitle)) {
+			titleLabel.setText(newTitle);
+			titleLabel.setToolTipText(newTitle);
+		}
+
+		if (!info.contentDescription.equals(Util.ZERO_LENGTH_STRING)) {
+			paneFolder.flushTopLeftSize();
+			paneFolder.setTopLeft(titleLabel);
+			titleLabel.setVisible(true);
+		} else {
+			paneFolder.setTopLeft(null);
+			titleLabel.setVisible(false);
+		}
+	}
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.internal.presentations.util.AbstractTabFolder#getPaneMenuLocation()
@@ -455,7 +480,7 @@ public class DefaultTabFolder extends AbstractTabFolder {
     /**
      * 
      */
-    private void updateColors() {
+    public void updateColors() {
         DefaultTabFolderColors currentColors = shellActive ? 
                 activeShellColors[getActive()] 
                 : inactiveShellColors[getActive()];

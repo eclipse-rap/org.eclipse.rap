@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,11 @@ public interface ISourceProvider {
 	 * Returns the current state of the sources tracked by this provider. This
 	 * is used to provide a view of the world if the event loop is busy and
 	 * things are some state has already changed.
+	 * <p>
+	 * For use with core expressions, this map should contain 
+	 * IEvaluationContext#UNDEFINED_VARIABLE for properties which
+	 * are only sometimes available.
+	 * </p>
 	 * 
 	 * @return A map of variable names (<code>String</code>) to variable
 	 *         values (<code>Object</code>). This may be empty, and may be

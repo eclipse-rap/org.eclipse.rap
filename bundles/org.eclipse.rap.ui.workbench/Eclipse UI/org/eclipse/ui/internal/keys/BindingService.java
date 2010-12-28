@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,11 @@ import org.eclipse.jface.bindings.Binding;
 import org.eclipse.jface.bindings.BindingManager;
 import org.eclipse.jface.bindings.Scheme;
 import org.eclipse.jface.bindings.TriggerSequence;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.keys.IBindingService;
 
 /**
@@ -51,6 +54,7 @@ public final class BindingService implements IBindingService {
 //	private WorkbenchKeyboard keyboard;
 	// RAPEND: [bm] 
 
+	private IWorkbench workbench;
 	/**
 	 * Constructs a new instance of <code>BindingService</code> using a JFace
 	 * binding manager.
@@ -65,7 +69,7 @@ public final class BindingService implements IBindingService {
 	 *            be <code>null</code>.
 	 */
 	public BindingService(final BindingManager bindingManager,
-			final ICommandService commandService, final Workbench workbench) {
+			final ICommandService commandService, final IWorkbench workbench) {
 		if (bindingManager == null) {
 			throw new NullPointerException(
 					"Cannot create a binding service with a null manager"); //$NON-NLS-1$
@@ -76,6 +80,7 @@ public final class BindingService implements IBindingService {
 		}
 		this.bindingManager = bindingManager;
 
+		this.workbench = workbench;
 		// Hook up the key binding support.
 		// RAP [bm]: 
 //		this.bindingPersistence = new BindingPersistence(bindingManager,
@@ -112,11 +117,19 @@ public final class BindingService implements IBindingService {
 	}
 	
 	public final void dispose() {
-	// RAP [bm]: 
+		workbench = null;
+	// RAP [bm]: no keyboard
+//		final Listener listener = keyboard.getKeyDownFilter();
+//		final Display display = workbench.getDisplay();
+//		if (display != null) {
+//			display.removeFilter(SWT.KeyDown, listener);
+//			display.removeFilter(SWT.Traverse, listener);
+//		}
+//		keyboard = null;
 //		bindingPersistence.dispose();
 	// RAPEND: [bm] 
 	}
-	
+
 	public final TriggerSequence[] getActiveBindingsFor(
 			final ParameterizedCommand parameterizedCommand) {
 		return bindingManager.getActiveBindingsFor(parameterizedCommand);
@@ -250,12 +263,45 @@ public final class BindingService implements IBindingService {
 //		keyboard.getKeyDownFilter().setEnabled(enabled);
 //	}
 
-	// RAP [bm]: 
+	// RAP [bm]: Bindings
 //	/**
 //	 * @return Returns the bindingPersistence.
 //	 */
 //	public BindingPersistence getBindingPersistence() {
 //		return bindingPersistence;
 //	}
-	
+//	
+//	public BindingManager getBindingManager() {
+//		return bindingManager;
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * org.eclipse.ui.keys.IBindingService#addBindingManagerListener(org.eclipse
+//	 * .jface.bindings.IBindingManagerListener)
+//	 */
+//	public void addBindingManagerListener(IBindingManagerListener listener) {
+//		bindingManager.addBindingManagerListener(listener);
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * org.eclipse.ui.keys.IBindingService#removeBindingManagerListener(org.
+//	 * eclipse.jface.bindings.IBindingManagerListener)
+//	 */
+//	public void removeBindingManagerListener(IBindingManagerListener listener) {
+//		bindingManager.removeBindingManagerListener(listener);
+//	}
+//	
+//	/* (non-Javadoc)
+//	 * @see org.eclipse.ui.keys.IBindingService#getConflictsFor(org.eclipse.jface.bindings.TriggerSequence)
+//	 */
+//	public Collection getConflictsFor(TriggerSequence sequence) {
+//		return bindingManager.getConflictsFor(sequence);
+//	}
+
 }

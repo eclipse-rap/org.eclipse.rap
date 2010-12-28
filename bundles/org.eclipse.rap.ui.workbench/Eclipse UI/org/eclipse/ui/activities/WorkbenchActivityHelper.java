@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2008 IBM Corporation and others.
+ * Copyright (c) 2003, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,7 @@ public final class WorkbenchActivityHelper {
 	/**
 	 * Answers whether a given contribution is allowed to be used based on
 	 * activity enablement. If it is currently disabled, then a dialog is opened
-	 * and the user is prompted to activate the requried activities. If the user
+	 * and the user is prompted to activate the required activities. If the user
 	 * declines their activation then false is returned. In all other cases
 	 * <code>true</code> is returned.
 	 * 
@@ -608,7 +608,8 @@ public final class WorkbenchActivityHelper {
 				list.add(array[i]);
 			}
 		}
-		return list.toArray((Object[]) Array.newInstance(array.getClass().getComponentType(), array.length));
+		return list.toArray((Object[]) Array.newInstance(array.getClass()
+				.getComponentType(), list.size()));
 	}
 	
 	/**
@@ -647,7 +648,8 @@ public final class WorkbenchActivityHelper {
 				list.add(array[i]);
 			}
 		}
-		return list.toArray((Object[]) Array.newInstance(array.getClass().getComponentType(), array.length));
+		return list.toArray((Object[]) Array.newInstance(array.getClass()
+				.getComponentType(), list.size()));
 	}
 
 	/**

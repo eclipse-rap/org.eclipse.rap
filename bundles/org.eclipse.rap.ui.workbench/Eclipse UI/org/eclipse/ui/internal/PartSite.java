@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,13 +18,12 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-//import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
-//import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -33,10 +32,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.SubActionBars;
 import org.eclipse.ui.internal.progress.WorkbenchSiteProgressService;
 import org.eclipse.ui.internal.services.IServiceLocatorCreator;
+import org.eclipse.ui.internal.services.IWorkbenchLocationService;
 import org.eclipse.ui.internal.services.ServiceLocator;
+import org.eclipse.ui.internal.services.WorkbenchLocationService;
 import org.eclipse.ui.internal.testing.WorkbenchPartTestable;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
-import org.eclipse.ui.services.IServiceLocator;
+import org.eclipse.ui.services.IDisposable;
+import org.eclipse.ui.services.IServiceScopes;
 import org.eclipse.ui.testing.IWorkbenchPartTestable;
 
 /**
@@ -155,11 +157,18 @@ public abstract class PartSite implements IWorkbenchPartSite {
 		extensionName = "Unknown Name"; //$NON-NLS-1$
 
 		// Initialize the service locator.
-		final IServiceLocator parentServiceLocator = page.getWorkbenchWindow();
-		IServiceLocatorCreator slc = (IServiceLocatorCreator) parentServiceLocator
+		final WorkbenchWindow workbenchWindow = (WorkbenchWindow) page.getWorkbenchWindow();
+		IServiceLocatorCreator slc = (IServiceLocatorCreator) workbenchWindow
 				.getService(IServiceLocatorCreator.class);
 		this.serviceLocator = (ServiceLocator) slc.createServiceLocator(
-				parentServiceLocator, null);
+				workbenchWindow, null, new IDisposable(){
+					public void dispose() {
+						final Control control = getPane().getControl();
+						if (control != null && !control.isDisposed()) {
+							getPane().doHide();
+						}
+					}
+				});
 
 		initializeDefaultServices();
 	}
@@ -168,6 +177,11 @@ public abstract class PartSite implements IWorkbenchPartSite {
 	 * Initialize the local services.
 	 */
 	private void initializeDefaultServices() {
+		serviceLocator.registerService(IWorkbenchLocationService.class,
+				new WorkbenchLocationService(IServiceScopes.PARTSITE_SCOPE,
+						getWorkbenchWindow().getWorkbench(),
+						getWorkbenchWindow(), this, null, null, 2));
+		// added back for legacy reasons
 		serviceLocator.registerService(IWorkbenchPartSite.class, this);
 	}
 
@@ -436,34 +450,6 @@ public abstract class PartSite implements IWorkbenchPartSite {
 //	public IKeyBindingService getKeyBindingService() {
 //		if (keyBindingService == null) {
 //			keyBindingService = new KeyBindingService(this);
-//
-//			// TODO why is this here? and it should be using HandlerSubmissions
-//			// directly..
-//			if (this instanceof EditorSite) {
-//				EditorActionBuilder.ExternalContributor contributor = (EditorActionBuilder.ExternalContributor) ((EditorSite) this)
-//						.getExtensionActionBarContributor();
-//
-//				if (contributor != null) {
-//					ActionDescriptor[] actionDescriptors = contributor
-//							.getExtendedActions();
-//
-//					if (actionDescriptors != null) {
-//						for (int i = 0; i < actionDescriptors.length; i++) {
-//							ActionDescriptor actionDescriptor = actionDescriptors[i];
-//
-//							if (actionDescriptor != null) {
-//								IAction action = actionDescriptors[i]
-//										.getAction();
-//
-//								if (action != null
-//										&& action.getActionDefinitionId() != null) {
-//									keyBindingService.registerAction(action);
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
 //		}
 //
 //		return keyBindingService;
@@ -493,6 +479,10 @@ public abstract class PartSite implements IWorkbenchPartSite {
 	}
 
 	public void activateActionBars(boolean forceVisibility) {
+		if (serviceLocator != null) {
+			serviceLocator.activate();
+		}
+
 		if (actionBars != null) {
 			actionBars.activate(forceVisibility);
 		}
@@ -501,6 +491,9 @@ public abstract class PartSite implements IWorkbenchPartSite {
 	public void deactivateActionBars(boolean forceHide) {
 		if (actionBars != null) {
 			actionBars.deactivate(forceHide);
+		}
+		if (serviceLocator != null) {
+			serviceLocator.deactivate();
 		}
 	}
 

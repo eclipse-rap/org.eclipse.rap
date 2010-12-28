@@ -15,6 +15,7 @@ import java.net.URL;
 import org.eclipse.rwt.widgets.ExternalBrowser;
 import org.eclipse.ui.browser.AbstractWebBrowser;
 
+// RAP [bm]: Own implementation of default web browser
 public final class DefaultWebBrowser extends AbstractWebBrowser {
 
   private final DefaultWorkbenchBrowserSupport support;

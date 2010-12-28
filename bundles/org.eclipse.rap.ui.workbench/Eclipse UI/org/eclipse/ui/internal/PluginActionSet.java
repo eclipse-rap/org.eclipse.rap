@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.registry.ActionSetDescriptor;
 import org.eclipse.ui.internal.registry.IActionSet;
+import org.eclipse.ui.services.IDisposable;
 
 /**
  * A PluginActionSet is a proxy for an action set defined in XML.
@@ -31,6 +32,8 @@ public class PluginActionSet implements IActionSet {
     private ArrayList pluginActions = new ArrayList(4);
 
     private ActionSetActionBars bars;
+
+	private IDisposable disposableBuilder;
 
     /**
      * PluginActionSet constructor comment.
@@ -73,6 +76,10 @@ public class PluginActionSet implements IActionSet {
         }
         pluginActions.clear();
         bars = null;
+		if (disposableBuilder != null) {
+			disposableBuilder.dispose();
+			disposableBuilder = null;
+		}
     }
 
     /**
@@ -109,4 +116,11 @@ public class PluginActionSet implements IActionSet {
     public void init(IWorkbenchWindow window, IActionBars bars) {
         this.bars = (ActionSetActionBars) bars;
     }
+
+	public void setBuilder(IDisposable builder) {
+		if (disposableBuilder != null) {
+			disposableBuilder.dispose();
+		}
+		disposableBuilder = builder;
+	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,9 @@ public interface IIntroPart extends IAdaptable {
     /**
 	 * The property id for <code>getTitleImage</code> and
 	 * <code>getTitle</code>.
+	 * 
+	 * @since 3.2 this property now covers changes to <code>getTitle</code> in
+	 *        addition to <code>getTitleImage</code>
 	 */
 	public static final int PROP_TITLE = IWorkbenchPart.PROP_TITLE;
 
@@ -191,7 +194,7 @@ public interface IIntroPart extends IAdaptable {
 
     /**
      * Removes the given property listener from this intro part.
-     * Has no affect if an identical listener is not registered.
+     * Has no effect if an identical listener is not registered.
      *
      * @param listener a property listener
      */

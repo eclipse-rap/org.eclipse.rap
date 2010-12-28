@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,30 +7,27 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Dina Sayed, dsayed@eg.ibm.com, IBM -  bug 276324
  ******************************************************************************/
 
 package org.eclipse.ui.internal;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExecutableExtension;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.ParameterizedCommand;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-//import org.eclipse.swt.events.KeyEvent;
-//import org.eclipse.swt.events.KeyListener;
-//import org.eclipse.swt.events.MouseEvent;
-//import org.eclipse.swt.events.MouseListener;
-//import org.eclipse.swt.events.TraverseEvent;
-//import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -38,13 +35,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-
-//import org.eclipse.jface.bindings.Trigger;
-import org.eclipse.jface.bindings.TriggerSequence;
-//import org.eclipse.jface.bindings.keys.KeyStroke;
-//import org.eclipse.jface.bindings.keys.SWTKeySupport;
-//import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
@@ -53,7 +43,6 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.HandlerUtil;
-//import org.eclipse.ui.keys.IBindingService;
 
 /**
  * Its a base class for switching between views/editors/perspectives.
@@ -127,10 +116,14 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 	 */
 	protected void openDialog(WorkbenchPage page, IWorkbenchPart activePart) {
 		final int MAX_ITEMS = 22;
-
+		Shell shell = null;
 		selection = null;
-// RAP [rh] SWT.MODELESS not implemented, use APPLICATION_MODAL instead		
-		final Shell dialog = new Shell(window.getShell(), SWT.NONE /*SWT.MODELESS*/);
+
+		if (activePart != null)
+			shell = activePart.getSite().getShell();
+		if (shell == null)
+			shell = window.getShell();
+		final Shell dialog = new Shell(shell, SWT.MODELESS);
 		Display display = dialog.getDisplay();
 		dialog.setLayout(new FillLayout());
 
@@ -171,10 +164,6 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 		Rectangle tableBounds = table.getBounds();
 		tableBounds.height = Math.min(tableBounds.height, table.getItemHeight()
 				* MAX_ITEMS);
-// RAP [rh] Since Table always show scroll bar sm add some pixels to width and height  
-		tableBounds.height += 20;
-		tableBounds.width += 20;
-// RAP end		
 		table.setBounds(tableBounds);
 
 		dialog.setBounds(dialog.computeTrim(tableBounds.x, tableBounds.y,
@@ -191,6 +180,29 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 				cancel(dialog);
 			}
 		});
+
+		// RAP [bm] MouseMoveListener
+//		table.addMouseMoveListener(new MouseMoveListener() {
+//			TableItem lastItem = null;
+//
+//			public void mouseMove(MouseEvent e) {
+//				if (table.equals(e.getSource())) {
+//					Object o = table.getItem(new Point(e.x, e.y));
+//					if (lastItem == null ^ o == null) {
+//						table.setCursor(o == null ? null : table.getDisplay().getSystemCursor(
+//								SWT.CURSOR_HAND));
+//					}
+//					if (o instanceof TableItem) {
+//						if (!o.equals(lastItem)) {
+//							lastItem = (TableItem) o;
+//							table.setSelection(new TableItem[] { lastItem });
+//						}
+//					} else if (o == null) {
+//						lastItem = null;
+//					}
+//				}
+//			}
+//		});
 
 		setDialogLocation(dialog, activePart);
 
@@ -230,7 +242,7 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 		Rectangle monitorBounds = activePart == null ? display
 				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
 				.getSite()).getPane().getControl().getMonitor().getBounds();
-		
+
 		// Place it in the center of its parent;
 		dialogBounds.x = parentBounds.x
 				+ ((parentBounds.width - dialogBounds.width) / 2);
@@ -240,11 +252,12 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 				|| !monitorBounds.contains(dialogBounds.x + dialogBounds.width,
 						dialogBounds.y + dialogBounds.height)) {
 			// Place it in the center of the monitor if it is not visible
-			// when placed in the center of its parent;
-			dialogBounds.x = monitorBounds.x
-					+ (monitorBounds.width - dialogBounds.width) / 2;
-			dialogBounds.y = monitorBounds.y
-					+ (monitorBounds.height - dialogBounds.height) / 2;
+			// when placed in the center of its parent.
+			// Ensure the origin is visible on the screen.
+			dialogBounds.x = Math.max(0, 
+					monitorBounds.x + (monitorBounds.width - dialogBounds.width) / 2);
+			dialogBounds.y =  Math.max(0, 
+					monitorBounds.y + (monitorBounds.height - dialogBounds.height) / 2);
 		}
 
 		dialog.setLocation(dialogBounds.x, dialogBounds.y);

@@ -1,16 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *  IBM Corporation - initial API and implementation 
- *  Willian Mitsuda <wmitsuda@gmail.com> 
+ *  IBM Corporation - initial API and implementation
+ *  Willian Mitsuda <wmitsuda@gmail.com>
  *     - Fix for bug 196553 - [Dialogs] Support IColorProvider/IFontProvider in FilteredItemsSelectionDialog
  *  Peter Friese <peter.friese@gentleware.com>
- *     - Fix for bug 208602 - [Dialogs] Open Type dialog needs accessible labels 
+ *     - Fix for bug 208602 - [Dialogs] Open Type dialog needs accessible labels
+ *  Simon Muschel <smuschel@gmx.de> - bug 258493
  *******************************************************************************/
 package org.eclipse.ui.dialogs;
 
@@ -36,6 +37,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -45,38 +47,44 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-//import org.eclipse.jface.action.LegacyActionTools;
+import org.eclipse.jface.action.LegacyActionTools;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.viewers.*;
-//import org.eclipse.jface.viewers.StyledCellLabelProvider;
-//import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ContentViewer;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IColorProvider;
+import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IFontProvider;
+import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ILazyContentProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerFilter;
-//import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.accessibility.AccessibleAdapter;
-//import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
-//import org.eclipse.swt.events.KeyAdapter;
-//import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-//import org.eclipse.swt.events.TraverseEvent;
-//import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-//import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -86,16 +94,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-//import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.ActiveShellExpression;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IWorkbenchCommandConstants;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
@@ -164,6 +174,8 @@ public abstract class FilteredItemsSelectionDialog extends
 	private ItemsListLabelProvider itemsListLabelProvider;
 
 	private MenuManager menuManager;
+
+	private MenuManager contextMenuManager;
 
 	private boolean multi;
 
@@ -263,7 +275,7 @@ public abstract class FilteredItemsSelectionDialog extends
 	 * style text labels provided by it will be used. -->
 	 * 
 	 * @param listLabelProvider
-	 *            the label provider for items in the list
+	 * 		the label provider for items in the list
 	 */
 	public void setListLabelProvider(ILabelProvider listLabelProvider) {
 		getItemsListLabelProvider().setProvider(listLabelProvider);
@@ -387,9 +399,9 @@ public abstract class FilteredItemsSelectionDialog extends
 	 * @see org.eclipse.jface.window.Window#close()
 	 */
 	public boolean close() {
-    this.filterJob.cancel();
-    this.refreshCacheJob.cancel();
-    this.refreshProgressMessageJob.cancel();
+		this.filterJob.cancel();
+		this.refreshCacheJob.cancel();
+		this.refreshProgressMessageJob.cancel();
 		if (showViewHandler != null) {
 			IHandlerService service = (IHandlerService) PlatformUI
 					.getWorkbench().getService(IHandlerService.class);
@@ -397,6 +409,10 @@ public abstract class FilteredItemsSelectionDialog extends
 			showViewHandler.getHandler().dispose();
 			showViewHandler = null;
 		}
+		if (menuManager != null)
+			menuManager.dispose();
+		if (contextMenuManager != null)
+			contextMenuManager.dispose();
 		storeDialog(getDialogSettings());
 		return super.close();
 	}
@@ -543,7 +559,7 @@ public abstract class FilteredItemsSelectionDialog extends
 			}
 		};
 		showViewHandler = service.activateHandler(
-				"org.eclipse.ui.window.showViewMenu", handler, //$NON-NLS-1$
+				IWorkbenchCommandConstants.WINDOW_SHOW_VIEW_MENU, handler,
 				new ActiveShellExpression(getShell()));
 	}
 
@@ -567,42 +583,50 @@ public abstract class FilteredItemsSelectionDialog extends
 		menu.setVisible(true);
 	}
 
+    /**
+     * Hook that allows to add actions to the context menu.
+	 * <p>
+	 * Subclasses may extend in order to add other actions.</p>
+     * 
+     * @param menuManager the context menu manager
+     * @since 1.4
+     */
+	protected void fillContextMenu(IMenuManager menuManager) {
+		List selectedElements= ((StructuredSelection)list.getSelection()).toList();
+
+		Object item= null;
+
+		for (Iterator it= selectedElements.iterator(); it.hasNext();) {
+			item= it.next();
+			if (item instanceof ItemsListSeparator || !isHistoryElement(item)) {
+				return;
+			}
+		}
+
+		if (selectedElements.size() > 0) {
+			removeHistoryItemAction.setText(WorkbenchMessages.get().FilteredItemsSelectionDialog_removeItemsFromHistoryAction);
+
+			menuManager.add(removeHistoryActionContributionItem);
+
+		}
+	}
+
 	private void createPopupMenu() {
 		removeHistoryItemAction = new RemoveHistoryItemAction();
 		removeHistoryActionContributionItem = new ActionContributionItem(
 				removeHistoryItemAction);
 
-		MenuManager manager = new MenuManager();
-		manager.add(removeHistoryActionContributionItem);
-		manager.addMenuListener(new IMenuListener() {
+		contextMenuManager = new MenuManager();
+		contextMenuManager.setRemoveAllWhenShown(true);
+		contextMenuManager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				List selectedElements = ((StructuredSelection) list
-						.getSelection()).toList();
-
-				Object item = null;
-
-				manager.remove(removeHistoryActionContributionItem);
-
-				for (Iterator it = selectedElements.iterator(); it.hasNext();) {
-					item = it.next();
-					if (item instanceof ItemsListSeparator
-							|| !isHistoryElement(item)) {
-						return;
-					}
-				}
-
-				if (selectedElements.size() > 0) {
-					removeHistoryItemAction
-							.setText(WorkbenchMessages.get().FilteredItemsSelectionDialog_removeItemsFromHistoryAction);
-
-					manager.add(removeHistoryActionContributionItem);
-
-				}
+				fillContextMenu(manager);
 			}
 		});
 
-		Menu menu = manager.createContextMenu(getShell());
-		list.getTable().setMenu(menu);
+		final Table table = list.getTable();
+		Menu menu= contextMenuManager.createContextMenu(table);
+		table.setMenu(menu);
 	}
 
 	/**
@@ -632,12 +656,12 @@ public abstract class FilteredItemsSelectionDialog extends
 		layout.marginHeight = 0;
 		content.setLayout(layout);
 
-// RAP [rh] wor around "unused variable" compile error		
+// RAP [rh] workaround "unused variable" compile error
 //		final Label headerLabel = createHeader(content);
 		createHeader(content);
 
-		pattern = new Text(content, SWT.SINGLE | SWT.BORDER);
-// RAP [rh] Accessibility API missing		
+		pattern = new Text(content, SWT.SINGLE | SWT.BORDER | SWT.SEARCH | SWT.ICON_CANCEL);
+// RAP [rh] Accessibility API missing
 //		pattern.getAccessible().addAccessibleListener(new AccessibleAdapter() {
 //			public void getName(AccessibleEvent e) {
 //				e.result = LegacyActionTools.removeMnemonics(headerLabel
@@ -666,6 +690,8 @@ public abstract class FilteredItemsSelectionDialog extends
 		list.setInput(new Object[0]);
 		list.setItemCount(contentProvider.getNumberOfElements());
 		gd = new GridData(GridData.FILL_BOTH);
+		applyDialogFont(list.getTable());
+		gd.heightHint= list.getTable().getItemHeight() * 15;
 		list.getTable().setLayoutData(gd);
 
 		createPopupMenu();
@@ -1535,6 +1561,11 @@ public abstract class FilteredItemsSelectionDialog extends
 		}
 	}
 
+	// RAP [bm] not used
+//	private static boolean showColoredLabels() {
+//		return PlatformUI.getPreferenceStore().getBoolean(IWorkbenchPreferenceConstants.USE_COLORED_LABELS);
+//	}
+
 // RAP [rh] StyledCellLabelProvider not supported	
 //	private class ItemsListLabelProvider extends StyledCellLabelProvider
 	private class ItemsListLabelProvider extends CellLabelProvider
@@ -1618,15 +1649,6 @@ public abstract class FilteredItemsSelectionDialog extends
 
 // RAP [rh] IStyledLabelProvider not supported
 //			setOwnerDrawEnabled(provider instanceof IStyledLabelProvider);
-		}
-
-		/**
-		 * Gets the label provider.
-		 * 
-		 * @return the label provider for items in the list
-		 */
-		public ILabelProvider getProvider() {
-			return provider;
 		}
 
 		private Image getImage(Object element) {
@@ -2483,6 +2505,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		 * Matches text with filter.
 		 * 
 		 * @param text
+		 *            the text to match with the filter
 		 * @return <code>true</code> if text matches with filter pattern,
 		 *         <code>false</code> otherwise
 		 */
@@ -2625,16 +2648,6 @@ public abstract class FilteredItemsSelectionDialog extends
 		 * to be left intact.
 		 */
 		private boolean reset;
-
-		/**
-		 * Creates new instance of <code>ContentProvider</code>.
-		 * 
-		 * @param selectionHistory
-		 */
-		public ContentProvider(SelectionHistory selectionHistory) {
-			this();
-			this.selectionHistory = selectionHistory;
-		}
 
 		/**
 		 * Creates new instance of <code>ContentProvider</code>.
@@ -3008,39 +3021,36 @@ public abstract class FilteredItemsSelectionDialog extends
 		protected Object[] getFilteredItems(Object parent,
 				IProgressMonitor monitor) {
 			int ticks = 100;
+			if (monitor == null) {
+				monitor = new NullProgressMonitor();
+			}
 
-			if (monitor != null) {
-				monitor
-						.beginTask(
-								WorkbenchMessages.get(display).FilteredItemsSelectionDialog_cacheRefreshJob_getFilteredElements,
-								ticks);
-				if (filters != null) {
-					ticks /= (filters.size() + 2);
-				} else {
-					ticks /= 2;
-				}
+			monitor
+					.beginTask(
+							WorkbenchMessages.get().FilteredItemsSelectionDialog_cacheRefreshJob_getFilteredElements,
+							ticks);
+			if (filters != null) {
+				ticks /= (filters.size() + 2);
+			} else {
+				ticks /= 2;
 			}
 
 			// get already sorted array
 			Object[] filteredElements = getSortedItems();
 
-			if (monitor != null) {
-				monitor.worked(ticks);
-			}
+			monitor.worked(ticks);
 
 			// filter the elements using provided ViewerFilters
 			if (filters != null && filteredElements != null) {
 				for (Iterator iter = filters.iterator(); iter.hasNext();) {
 					ViewerFilter f = (ViewerFilter) iter.next();
 					filteredElements = f.filter(list, parent, filteredElements);
-					if (monitor != null)
-						monitor.worked(ticks);
+					monitor.worked(ticks);
 				}
 			}
 
 			if (filteredElements == null || monitor.isCanceled()) {
-				if (monitor != null)
-					monitor.done();
+				monitor.done();
 				return new Object[0];
 			}
 
@@ -3066,13 +3076,12 @@ public abstract class FilteredItemsSelectionDialog extends
 
 				preparedElements.add(item);
 
-				if (monitor != null && reportEvery != 0
-						&& ((i + 1) % reportEvery == 0))
+				if (reportEvery != 0 && ((i + 1) % reportEvery == 0)) {
 					monitor.worked(1);
+				}
 			}
 
-			if (monitor != null)
-				monitor.done();
+			monitor.done();
 
 			return preparedElements.toArray();
 		}
@@ -3245,6 +3254,9 @@ public abstract class FilteredItemsSelectionDialog extends
 		 *            the new image
 		 */
 		private void doRefresh(String text, Image image) {
+			if ( text != null ) {
+				text = LegacyActionTools.escapeMnemonics(text);
+			}
 			label.setText(text);
 			label.setImage(image);
 		}
@@ -3280,49 +3292,9 @@ public abstract class FilteredItemsSelectionDialog extends
 	}
 
 	/**
-	 * Compares items using camel case method.
-	 */
-	private class CamelCaseComparator implements Comparator {
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
-		public int compare(Object o1, Object o2) {
-
-			int leftCategory = getCamelCaseCategory(o1);
-			int rightCategory = getCamelCaseCategory(o2);
-			if (leftCategory < rightCategory)
-				return -1;
-			if (leftCategory > rightCategory)
-				return +1;
-
-			return getItemsComparator().compare(o1, o2);
-		}
-
-		private int getCamelCaseCategory(Object item) {
-			if (filter == null)
-				return 0;
-			if (!filter.isCamelCasePattern())
-				return 0;
-			return filter.matchesRawNamePattern(item) ? 0 : 1;
-		}
-	}
-
-	/**
 	 * Compares items according to the history.
 	 */
 	private class HistoryComparator implements Comparator {
-
-		private CamelCaseComparator camelCaseComparator;
-
-		/**
-		 * 
-		 */
-		public HistoryComparator() {
-			this.camelCaseComparator = new CamelCaseComparator();
-		}
 
 		/*
 		 * (non-Javadoc)
@@ -3332,7 +3304,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		public int compare(Object o1, Object o2) {
 			if ((isHistoryElement(o1) && isHistoryElement(o2))
 					|| (!isHistoryElement(o1) && !isHistoryElement(o2)))
-				return this.camelCaseComparator.compare(o1, o2);
+				return getItemsComparator().compare(o1, o2);
 
 			if (isHistoryElement(o1))
 				return -2;
@@ -3343,6 +3315,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		}
 
 	}
+	
 
 	/**
 	 * Get the control where the search pattern is entered. Any filtering should

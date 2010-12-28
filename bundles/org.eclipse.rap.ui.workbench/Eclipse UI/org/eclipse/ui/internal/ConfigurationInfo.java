@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,11 @@ public final class ConfigurationInfo {
 	 * extension point.
 	 */
 	private static void appendExtensions(PrintWriter writer) {
-		IConfigurationElement[] configElements = getSortedExtensions();
+		// RAP [bm] namespace
+		IConfigurationElement[] configElements = getSortedExtensions(Platform
+				.getExtensionRegistry().getConfigurationElementsFor(
+						PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+						IWorkbenchRegistryConstants.PL_SYSTEM_SUMMARY_SECTIONS));
 		for (int i = 0; i < configElements.length; ++i) {
 			IConfigurationElement element = configElements[i];
 
@@ -107,11 +111,7 @@ public final class ConfigurationInfo {
 		}
 	}
 
-	private static IConfigurationElement[] getSortedExtensions() {
-		IConfigurationElement[] configElements = Platform
-				.getExtensionRegistry().getConfigurationElementsFor(
-						PlatformUI.PLUGIN_ID,
-						IWorkbenchRegistryConstants.PL_SYSTEM_SUMMARY_SECTIONS);
+	public static IConfigurationElement[] getSortedExtensions(IConfigurationElement[] configElements) {
 
 		Arrays.sort(configElements, new Comparator() {
 			Collator collator = Collator.getInstance(Locale.getDefault());

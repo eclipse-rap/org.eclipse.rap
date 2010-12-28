@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
@@ -29,7 +30,11 @@ import org.eclipse.ui.internal.PopupMenuExtender;
 import org.eclipse.ui.internal.part.IPageSiteHolder;
 import org.eclipse.ui.internal.services.INestable;
 import org.eclipse.ui.internal.services.IServiceLocatorCreator;
+import org.eclipse.ui.internal.services.IWorkbenchLocationService;
 import org.eclipse.ui.internal.services.ServiceLocator;
+import org.eclipse.ui.internal.services.WorkbenchLocationService;
+import org.eclipse.ui.services.IDisposable;
+import org.eclipse.ui.services.IServiceScopes;
 
 /**
  * This implementation of <code>IPageSite</code> provides a site for a page
@@ -72,7 +77,7 @@ public class PageSite implements IPageSite, INestable {
 	 * @param parentViewSite
 	 *            the parent view site
 	 */
-	public PageSite(IViewSite parentViewSite) {
+	public PageSite(final IViewSite parentViewSite) {
 		Assert.isNotNull(parentViewSite);
 		parentSite = parentViewSite;
 		subActionBars = new SubActionBars(parentViewSite.getActionBars(), this);
@@ -81,7 +86,14 @@ public class PageSite implements IPageSite, INestable {
 		IServiceLocatorCreator slc = (IServiceLocatorCreator) parentSite
 				.getService(IServiceLocatorCreator.class);
 		this.serviceLocator = (ServiceLocator) slc.createServiceLocator(
-				parentSite, null);
+				parentViewSite, null, new IDisposable(){
+					public void dispose() {
+						final Control control = ((PartSite)parentViewSite).getPane().getControl();
+						if (control != null && !control.isDisposed()) {
+							((PartSite)parentViewSite).getPane().doHide();
+						}
+					}
+				});
 		initializeDefaultServices();
 	}
 
@@ -89,6 +101,10 @@ public class PageSite implements IPageSite, INestable {
 	 * Initialize the slave services for this site.
 	 */
 	private void initializeDefaultServices() {
+		serviceLocator.registerService(IWorkbenchLocationService.class,
+				new WorkbenchLocationService(IServiceScopes.PAGESITE_SCOPE,
+						getWorkbenchWindow().getWorkbench(),
+						getWorkbenchWindow(), parentSite, null, this, 3));
 		serviceLocator.registerService(IPageSiteHolder.class,
 				new IPageSiteHolder() {
 					public IPageSite getSite() {

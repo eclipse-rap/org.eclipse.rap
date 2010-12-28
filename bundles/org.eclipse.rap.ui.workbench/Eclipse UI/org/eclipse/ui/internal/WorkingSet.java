@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,14 +46,14 @@ public class WorkingSet extends AbstractWorkingSet {
 	 * @param name
 	 *            the name of the new working set. Should not have leading or
 	 *            trailing whitespace.
-	 * @param uniqueId
-	 *            the unique id
-	 * @param element
+	 * @param label
+	 *            the label of the new working set
+	 * @param elements
 	 *            the content of the new working set. May be empty but not
 	 *            <code>null</code>.
 	 */
-	public WorkingSet(String name, String uniqueId, IAdaptable[] elements) {
-		super(name, uniqueId);
+	public WorkingSet(String name, String label, IAdaptable[] elements) {
+		super(name, label);
 		internalSetElements(elements);
 	}
 
@@ -70,6 +70,13 @@ public class WorkingSet extends AbstractWorkingSet {
 	protected WorkingSet(String name, String label, IMemento memento) {
 		super(name, label);
 		workingSetMemento = memento;
+		if (workingSetMemento != null) {
+			String uniqueId = workingSetMemento
+					.getString(IWorkbenchConstants.TAG_ID);
+			if (uniqueId != null) {
+				setUniqueId(uniqueId);
+			}
+		}
 	}
 
 	/**
@@ -198,6 +205,7 @@ public class WorkingSet extends AbstractWorkingSet {
 		} else {
 			memento.putString(IWorkbenchConstants.TAG_NAME, getName());
 			memento.putString(IWorkbenchConstants.TAG_LABEL, getLabel());
+			memento.putString(IWorkbenchConstants.TAG_ID, getUniqueId());
 			memento.putString(IWorkbenchConstants.TAG_EDIT_PAGE_ID, editPageId);
 			Iterator iterator = elements.iterator();
 			while (iterator.hasNext()) {

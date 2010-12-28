@@ -1,6 +1,6 @@
 // RAP [rh] SplashHandler disabled
 ///*******************************************************************************
-// * Copyright (c) 2007 IBM Corporation and others.
+// * Copyright (c) 2007, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -69,7 +69,7 @@
 //			final String buildId = System.getProperty(
 //					"eclipse.buildId", "Unknown Build"); //$NON-NLS-1$ //$NON-NLS-2$
 //			// find the specified location.  Not currently API
-//			// hardcoded to be sensible with our current Europa Graphic
+//			// hardcoded to be sensible with our current splash Graphic
 //			String buildIdLocString = product.getProperty("buildIdLocation"); //$NON-NLS-1$
 //			final Point buildIdPoint = StringConverter.asPoint(buildIdLocString,
 //					new Point(322, 190));
@@ -77,7 +77,9 @@
 //
 //				public void paintControl(PaintEvent e) {
 //					e.gc.setForeground(getForeground());
-//					e.gc.drawText(buildId, buildIdPoint.x, buildIdPoint.y, true);
+//					e.gc
+//							.drawText(buildId, buildIdPoint.x, buildIdPoint.y,
+//									true);
 //				}
 //			});
 //		}

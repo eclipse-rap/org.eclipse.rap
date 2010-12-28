@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -54,7 +55,7 @@ public abstract class WizardHandler extends AbstractHandler {
 	    private static final int SIZING_WIZARD_HEIGHT = 550;
 
 		protected String getWizardIdParameterId() {
-			return "exportWizardId"; //$NON-NLS-1$
+			return IWorkbenchCommandConstants.FILE_EXPORT_PARM_WIZARDID;
 		}
 
 		protected IWizardRegistry getWizardRegistry() {
@@ -105,7 +106,7 @@ public abstract class WizardHandler extends AbstractHandler {
 	    private static final int SIZING_WIZARD_HEIGHT = 550;
 
 		protected String getWizardIdParameterId() {
-			return "importWizardId"; //$NON-NLS-1$
+			return IWorkbenchCommandConstants.FILE_IMPORT_PARM_WIZARDID;
 		}
 
 		protected IWizardRegistry getWizardRegistry() {
@@ -141,7 +142,6 @@ public abstract class WizardHandler extends AbstractHandler {
 	                SIZING_WIZARD_HEIGHT);
 	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
 					dialog.getShell(), IWorkbenchHelpContextIds.IMPORT_WIZARD);
-
 	        dialog.open();
 		}
 
@@ -169,7 +169,7 @@ public abstract class WizardHandler extends AbstractHandler {
 	    private String categoryId = null;
 
 		protected String getWizardIdParameterId() {
-			return "newWizardId"; //$NON-NLS-1$
+			return IWorkbenchCommandConstants.FILE_NEW_PARM_WIZARDID;
 		}
 
 		protected IWizardRegistry getWizardRegistry() {
@@ -249,7 +249,6 @@ public abstract class WizardHandler extends AbstractHandler {
 	                SIZING_WIZARD_HEIGHT);
 	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
 					dialog.getShell(), IWorkbenchHelpContextIds.NEW_WIZARD);
-
 	        dialog.open();
 		}
 

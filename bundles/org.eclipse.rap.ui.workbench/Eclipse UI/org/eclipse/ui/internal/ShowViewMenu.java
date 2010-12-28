@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IPluginContribution;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
@@ -60,9 +61,15 @@ import com.ibm.icu.text.Collator;
  * Perspective Customize dialog.
  */
 public class ShowViewMenu extends ContributionItem {
-	public static final String SHOW_VIEW_ID = "org.eclipse.ui.views.showView"; //$NON-NLS-1$
-	public static final String VIEW_ID_PARM = "org.eclipse.ui.views.showView.viewId"; //$NON-NLS-1$
-	private static final String PARAMETER_MAKE_FAST = "org.eclipse.ui.views.showView.makeFast"; //$NON-NLS-1$
+	/**
+	 * @deprecated As of 3.5, replaced by {@link IWorkbenchCommandConstants#VIEWS_SHOW_VIEW}
+	 */
+	public static final String SHOW_VIEW_ID= IWorkbenchCommandConstants.VIEWS_SHOW_VIEW;
+	/**
+	 * @deprecated As of 3.6, replaced by
+	 *             {@link IWorkbenchCommandConstants#VIEWS_SHOW_VIEW_PARM_ID}
+	 */
+	public static final String VIEW_ID_PARM = IWorkbenchCommandConstants.VIEWS_SHOW_VIEW_PARM_ID;
 
 	private IWorkbenchWindow window;
 
@@ -96,6 +103,7 @@ public class ShowViewMenu extends ContributionItem {
 			dirty = true;
 		}
 	};
+	private boolean makeFast;
 
 	private static Collator collator;
 
@@ -119,11 +127,13 @@ public class ShowViewMenu extends ContributionItem {
 	 *            the window containing the menu
 	 * @param id
 	 *            the id
+	 * @param makeFast use the fact view variant of the command
 	 */
 	public ShowViewMenu(IWorkbenchWindow window, String id,
 			final boolean makeFast) {
 		super(id);
 		this.window = window;
+		this.makeFast = makeFast;
 		final IHandlerService handlerService = (IHandlerService) window
 				.getService(IHandlerService.class);
 		final ICommandService commandService = (ICommandService) window
@@ -148,12 +158,13 @@ public class ShowViewMenu extends ContributionItem {
 
 		window.getWorkbench().getHelpSystem().setHelp(showDlgAction,
 				IWorkbenchHelpContextIds.SHOW_VIEW_OTHER_ACTION);
-		
 		// indicate that a show views submenu has been created
-		((WorkbenchWindow) window)
-				.addSubmenu(WorkbenchWindow.SHOW_VIEW_SUBMENU);
+		if (window instanceof WorkbenchWindow) {
+			((WorkbenchWindow) window)
+					.addSubmenu(WorkbenchWindow.SHOW_VIEW_SUBMENU);
+		}
 
-		showDlgAction.setActionDefinitionId(SHOW_VIEW_ID);
+		showDlgAction.setActionDefinitionId(IWorkbenchCommandConstants.VIEWS_SHOW_VIEW);
 		
 	}
 
@@ -205,56 +216,56 @@ public class ShowViewMenu extends ContributionItem {
 		}
 		Collections.sort(actions, actionComparator);
 		for (Iterator i = actions.iterator(); i.hasNext();) {
-		    CommandContributionItemParameter ccip = (CommandContributionItemParameter) i.next();
+			CommandContributionItemParameter ccip = (CommandContributionItemParameter) i.next();
 			if (WorkbenchActivityHelper.filterItem(ccip)) {
 				continue;
 			}
 			CommandContributionItem item = new CommandContributionItem(ccip);
-            innerMgr.add(item);
+			innerMgr.add(item);
 		}
 
 		// We only want to add the separator if there are show view shortcuts,
-        // otherwise, there will be a separator and then the 'Other...' entry
-        // and that looks weird as the separator is separating nothing
-        if (!innerMgr.isEmpty()) {
-            innerMgr.add(new Separator());
-        }
+		// otherwise, there will be a separator and then the 'Other...' entry
+		// and that looks weird as the separator is separating nothing
+		if (!innerMgr.isEmpty()) {
+			innerMgr.add(new Separator());
+		}
 		
-		// Add Other ..
+		// Add Other...
 		innerMgr.add(showDlgAction);
 	}
-	
+
 	static class PluginCCIP extends CommandContributionItemParameter implements
-	        IPluginContribution {
-	  
-	  private String localId;
-	  private String pluginId;
-	  
-	  public PluginCCIP(IViewDescriptor v, IServiceLocator serviceLocator,
-	      String id, String commandId, int style) {
-	    super(serviceLocator, id, commandId, style);
-	    localId = ((ViewDescriptor) v).getLocalId();
-	    pluginId = ((ViewDescriptor) v).getPluginId();
-	  }
-	  
-	  /*
-	   * (non-Javadoc)
-	   * 
-	   * @see org.eclipse.ui.IPluginContribution#getLocalId()
-	   */
-	  public String getLocalId() {
-	    return localId;
-	  }
-	  
-	  /*
-	   * (non-Javadoc)
-	   * 
-	   * @see org.eclipse.ui.IPluginContribution#getPluginId()
-	   */
-	  public String getPluginId() {
-	    return pluginId;
-	  }
-	  
+			IPluginContribution {
+
+		private String localId;
+		private String pluginId;
+
+		public PluginCCIP(IViewDescriptor v, IServiceLocator serviceLocator,
+				String id, String commandId, int style) {
+			super(serviceLocator, id, commandId, style);
+			localId = ((ViewDescriptor) v).getLocalId();
+			pluginId = ((ViewDescriptor) v).getPluginId();
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.eclipse.ui.IPluginContribution#getLocalId()
+		 */
+		public String getLocalId() {
+			return localId;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.eclipse.ui.IPluginContribution#getPluginId()
+		 */
+		public String getPluginId() {
+			return pluginId;
+		}
+
 	}
 
 	private CommandContributionItemParameter getItem(String viewId) {
@@ -266,13 +277,18 @@ public class ShowViewMenu extends ContributionItem {
 		String label = desc.getLabel();
 		
 		CommandContributionItemParameter parms = new PluginCCIP(desc,
-				window, viewId, SHOW_VIEW_ID,
+				window, viewId, IWorkbenchCommandConstants.VIEWS_SHOW_VIEW,
 				CommandContributionItem.STYLE_PUSH);
 		parms.label = label;
 		parms.icon = desc.getImageDescriptor();
 		parms.parameters = new HashMap();
 
 		parms.parameters.put(VIEW_ID_PARM, viewId);
+		if (makeFast) {
+			parms.parameters.put(
+					IWorkbenchCommandConstants.VIEWS_SHOW_VIEW_PARM_FASTVIEW,
+					"true"); //$NON-NLS-1$
+		}
 		return parms;
 	}
 
@@ -339,11 +355,12 @@ public class ShowViewMenu extends ContributionItem {
 	 */
 	private ParameterizedCommand getCommand(ICommandService commandService,
 			final boolean makeFast) {
-		Command c = commandService.getCommand(SHOW_VIEW_ID);
+		Command c = commandService.getCommand(IWorkbenchCommandConstants.VIEWS_SHOW_VIEW);
 		Parameterization[] parms = null;
 		if (makeFast) {
 			try {
-				IParameter parmDef = c.getParameter(PARAMETER_MAKE_FAST);
+				IParameter parmDef = c
+						.getParameter(IWorkbenchCommandConstants.VIEWS_SHOW_VIEW_PARM_FASTVIEW);
 				parms = new Parameterization[] { new Parameterization(parmDef,
 						"true") //$NON-NLS-1$
 				};

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -233,10 +233,11 @@ public interface IWorkingSetManager {
      * <code>IWorkingSetSelectionDialog#getSelection</code>.
      * 
      * @param parentShell the parent shell of the working set selection dialog
-     * @param multi true=more than one working set can be chosen 
-     * 	in the dialog. false=only one working set can be chosen. Multiple
-     * 	working sets can still be selected and removed from the list but
-     * 	the dialog can only be closed when a single working set is selected.
+     * @param multi true= <code>IWorkingSetSelectionDialog#getSelection()</code> 
+     *  returns the working sets chosen in the dialog as an array of working set.
+     *  false= <code>IWorkingSetSelectionDialog#getSelection()</code> returns
+     *  an array having a single aggregate working set of all working sets 
+     *  selected in the dialog.
      * @return a working set selection dialog
      */
     public IWorkingSetSelectionDialog createWorkingSetSelectionDialog(
@@ -252,10 +253,11 @@ public interface IWorkingSetManager {
      * <code>IWorkingSetSelectionDialog#getSelection</code>.
      * 
      * @param parentShell the parent shell of the working set selection dialog
-     * @param multi true=more than one working set can be chosen 
-     *  in the dialog. false=only one working set can be chosen. Multiple
-     *  working sets can still be selected and removed from the list but
-     *  the dialog can only be closed when a single working set is selected.
+     * @param multi true= <code>IWorkingSetSelectionDialog#getSelection()</code> 
+     *  returns the working sets chosen in the dialog as an array of working set.
+     *  false= <code>IWorkingSetSelectionDialog#getSelection()</code> returns
+     *  an array having a single aggregate working set of all working sets 
+     *  selected in the dialog.
      * @param workingsSetIds a list of working set ids which are valid workings sets
      *  to be selected, created, removed or edited, or <code>null</code> if all currently
      *  available working set types are valid 

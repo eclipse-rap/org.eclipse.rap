@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,24 +19,26 @@ import org.eclipse.jface.viewers.IPostSelectionProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
-//import org.eclipse.ui.IKeyBindingService;
-//import org.eclipse.ui.INestableKeyBindingService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.PartSite;
 import org.eclipse.ui.internal.PopupMenuExtender;
-//import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.part.IMultiPageEditorSiteHolder;
 import org.eclipse.ui.internal.services.INestable;
 import org.eclipse.ui.internal.services.IServiceLocatorCreator;
+import org.eclipse.ui.internal.services.IWorkbenchLocationService;
 import org.eclipse.ui.internal.services.ServiceLocator;
+import org.eclipse.ui.internal.services.WorkbenchLocationService;
+import org.eclipse.ui.services.IDisposable;
 import org.eclipse.ui.services.IServiceLocator;
+import org.eclipse.ui.services.IServiceScopes;
 
 /**
  * Site for a nested editor within a multi-page editor. Selection is handled by
@@ -117,7 +119,13 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 		IServiceLocatorCreator slc = (IServiceLocatorCreator) parentServiceLocator
 				.getService(IServiceLocatorCreator.class);
 		this.serviceLocator = (ServiceLocator) slc.createServiceLocator(
-				parentServiceLocator, null);
+				multiPageEditor.getSite(), null, new IDisposable(){
+					public void dispose() {
+						final Control control = ((PartSite)getMultiPageEditor().getSite()).getPane().getControl();
+						if (control != null && !control.isDisposed()) {
+							((PartSite)getMultiPageEditor().getSite()).getPane().doHide();
+						}
+					}});
 
 		initializeDefaultServices();
 	}
@@ -126,6 +134,11 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 	 * Initialize the slave services for this site.
 	 */
 	private void initializeDefaultServices() {
+		serviceLocator.registerService(IWorkbenchLocationService.class,
+				new WorkbenchLocationService(IServiceScopes.MPESITE_SCOPE,
+						getWorkbenchWindow().getWorkbench(),
+						getWorkbenchWindow(), getMultiPageEditor().getSite(),
+						this, null, 3));
 		serviceLocator.registerService(IMultiPageEditorSiteHolder.class,
 				new IMultiPageEditorSiteHolder() {
 					public MultiPageEditorSite getSite() {
@@ -166,11 +179,14 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 // RAP [rh] unused code, since IKeyBindingService not implemented 
 //		// Remove myself from the list of nested key binding services.
 //		if (service != null) {
-//			IKeyBindingService parentService = getEditor().getSite()
+//			IKeyBindingService parentService = getMultiPageEditor().getEditorSite()
 //					.getKeyBindingService();
 //			if (parentService instanceof INestableKeyBindingService) {
 //				INestableKeyBindingService nestableParent = (INestableKeyBindingService) parentService;
 //				nestableParent.removeKeyBindingService(this);
+//			}
+//			if (service instanceof KeyBindingService) {
+//				((KeyBindingService) service).dispose();
 //			}
 //			service = null;
 //		}

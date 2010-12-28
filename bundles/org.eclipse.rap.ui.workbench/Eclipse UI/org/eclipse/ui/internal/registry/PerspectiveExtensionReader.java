@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,6 +79,7 @@ public class PerspectiveExtensionReader extends RegistryReader {
     	tracker = extensionTracker;
     	targetID = id;
         pageLayout = out;
+        // RAP [bm] namespace
         readRegistry(Platform.getExtensionRegistry(), PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
                 IWorkbenchRegistryConstants.PL_PERSPECTIVE_EXTENSIONS);
     }
@@ -124,6 +125,10 @@ public class PerspectiveExtensionReader extends RegistryReader {
 					result = processPerspectiveShortcut(child);
 				} else if (type.equals(IWorkbenchRegistryConstants.TAG_SHOW_IN_PART)) {
 					result = processShowInPart(child);
+				} else if (type.equals(IWorkbenchRegistryConstants.TAG_HIDDEN_MENU_ITEM)) {
+					result = processHiddenMenuItem(child);
+				} else if (type.equals(IWorkbenchRegistryConstants.TAG_HIDDEN_TOOLBAR_ITEM)) {
+					result = processHiddenToolBarItem(child);
 				}
                 if (!result) {
                     WorkbenchPlugin.log("Unable to process element: " + //$NON-NLS-1$
@@ -155,6 +160,28 @@ public class PerspectiveExtensionReader extends RegistryReader {
         String id = element.getAttribute(IWorkbenchRegistryConstants.ATT_ID);
         if (id != null) {
 			pageLayout.addShowInPart(id);
+		}
+        return true;
+    }
+
+    /**
+     * Process a hidden menu item
+     */
+    private boolean processHiddenMenuItem(IConfigurationElement element) {
+        String id = element.getAttribute(IWorkbenchRegistryConstants.ATT_ID);
+        if (id != null) {
+			pageLayout.addHiddenMenuItemId(id);
+		}
+        return true;
+    }
+
+    /**
+     * Process a hidden toolbar item
+     */
+    private boolean processHiddenToolBarItem(IConfigurationElement element) {
+        String id = element.getAttribute(IWorkbenchRegistryConstants.ATT_ID);
+        if (id != null) {
+			pageLayout.addHiddenToolBarItemId(id);
 		}
         return true;
     }

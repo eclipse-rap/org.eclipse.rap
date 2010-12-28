@@ -1,6 +1,6 @@
 // RAP [rh] Keys completely disabled as not implemented in RWT
 ///*******************************************************************************
-// * Copyright (c) 2000, 2007 IBM Corporation and others.
+// * Copyright (c) 2000, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -656,7 +656,8 @@
 //		gridData = new GridData(GridData.FILL_BOTH);
 //		gridData.heightHint = 60;
 //		gridData.horizontalSpan = 2;
-//		gridData.widthHint = "carbon".equals(SWT.getPlatform()) ? 620 : 520; //$NON-NLS-1$
+//		boolean isMac = org.eclipse.jface.util.Util.isMac();
+//		gridData.widthHint =  isMac ? 620 : 520;
 //		tableBindingsForCommand.setLayoutData(gridData);
 //		TableColumn tableColumnDelta = new TableColumn(tableBindingsForCommand,
 //				SWT.NULL, 0);
@@ -805,7 +806,7 @@
 //		gridData = new GridData(GridData.FILL_BOTH);
 //		gridData.heightHint = 60;
 //		gridData.horizontalSpan = 3;
-//		gridData.widthHint = "carbon".equals(SWT.getPlatform()) ? 620 : 520; //$NON-NLS-1$
+//		gridData.widthHint = isMac ? 620 : 520;
 //		tableBindingsForTriggerSequence.setLayoutData(gridData);
 //		tableColumnDelta = new TableColumn(tableBindingsForTriggerSequence,
 //				SWT.NULL, 0);
@@ -1271,8 +1272,8 @@
 //				"restoreDefaultsMessageBoxText"); //$NON-NLS-1$
 //		final String message = Util.translateString(RESOURCE_BUNDLE,
 //				"restoreDefaultsMessageBoxMessage"); //$NON-NLS-1$
-//		final boolean confirmed = MessageDialog.openConfirm(getShell(), title,
-//				message);
+//		final boolean confirmed = MessageDialog.open(MessageDialog.CONFIRM,
+//				getShell(), title, message, SWT.SHEET);
 //
 //		if (confirmed) {
 //			// Fix the scheme in the local changes.
@@ -1365,7 +1366,8 @@
 //	 * @since 3.1
 //	 */
 //	private final void selectedButtonExport() {
-//		final FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE);
+//		final FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE
+//				| SWT.SHEET);
 //		fileDialog.setFilterExtensions(new String[] { "*.csv" }); //$NON-NLS-1$
 //		fileDialog.setFilterNames(new String[] { Util.translateString(
 //				RESOURCE_BUNDLE, "csvFilterName") }); //$NON-NLS-1$

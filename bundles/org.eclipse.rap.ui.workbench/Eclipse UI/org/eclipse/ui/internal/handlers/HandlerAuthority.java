@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -618,9 +618,11 @@ final class HandlerAuthority {
 		 * For every command identifier with a changed activation, we resolve
 		 * conflicts and trigger an update.
 		 */
-		final Iterator changedCommandIdItr = changedCommandIds.iterator();
-		while (changedCommandIdItr.hasNext()) {
-			final String commandId = (String) changedCommandIdItr.next();
+		String[] changedIds = (String[]) changedCommandIds.toArray(new String[changedCommandIds.size()]);
+		changedCommandIds.clear();
+		for (int i = 0; i < changedIds.length; i++) {
+			
+			final String commandId = changedIds[i];
 			final Object value = handlerActivationsByCommandId.get(commandId);
 			if (value instanceof IHandlerActivation) {
 				final IHandlerActivation activation = (IHandlerActivation) value;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -28,8 +27,11 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryChangeEvent;
 import org.eclipse.core.runtime.IRegistryChangeListener;
 import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.AbstractGroupMarker;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.ContributionManager;
 import org.eclipse.jface.action.IContributionItem;
@@ -46,8 +48,10 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.service.SessionStoreEvent;
 import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.ActivityManagerEvent;
@@ -67,13 +71,14 @@ import org.eclipse.ui.internal.handlers.HandlerProxy;
 import org.eclipse.ui.internal.handlers.HandlerService;
 import org.eclipse.ui.internal.layout.LayoutUtil;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
-import org.eclipse.ui.internal.services.IRestrictionService;
-import org.eclipse.ui.internal.services.RestrictionListener;
+import org.eclipse.ui.internal.services.IWorkbenchLocationService;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.menus.AbstractContributionFactory;
+import org.eclipse.ui.menus.MenuUtil;
 import org.eclipse.ui.services.IEvaluationReference;
 import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
  * <p>
@@ -85,6 +90,8 @@ import org.eclipse.ui.services.IServiceLocator;
  * </p>
  */
 public final class WorkbenchMenuService extends InternalMenuService {
+
+	private static final String INDEX_AFTER_ADDITIONS = "after=additions"; //$NON-NLS-1$
 
 	/**
 	 * A combined property and activity listener that updates the visibility of
@@ -163,13 +170,13 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	
 	private final class ManagerPopulationRecord {
 		public IServiceLocator serviceLocatorToUse;
-		public Expression restriction;
+		public Set restriction;
 		public String uri;
 		public boolean recurse;
 
 		Map factoryToItems = new HashMap();
 		
-		public ManagerPopulationRecord(IServiceLocator serviceLocatorToUse, Expression restriction,
+		public ManagerPopulationRecord(IServiceLocator serviceLocatorToUse, Set restriction,
 				String uri, boolean recurse) {
 			this.serviceLocatorToUse = serviceLocatorToUse;
 			this.restriction = restriction;
@@ -180,31 +187,19 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		public void addFactoryContribution(AbstractContributionFactory factory, ContributionRoot ciList) {
 			// Remove any existing cache info for this factory
 			removeFactoryContribution(factory);
-			
 			// save the new info
 			factoryToItems.put(factory, ciList);
 		}
 		
-		public void removeFactoryContribution(AbstractContributionFactory factory) {			
+		public void removeFactoryContribution(AbstractContributionFactory factory) {
 			ContributionRoot items =(ContributionRoot)factoryToItems.remove(factory);
 			if (items != null) {
 				WorkbenchMenuService.this.releaseContributions(items);
 			}
 		}
 		
-		public List getItemsForFactory(AbstractContributionFactory factory) {
-			ContributionRoot items =(ContributionRoot) factoryToItems.get(factory);
-			if (items == null)
-				return new ArrayList();
-			
-			return items.getItems();
-		}
-
-		/**
-		 * Removes all the cached info for the given manager.
-		 */
-		public void clearCaches() {
-			factoryToItems.clear();
+		public ContributionRoot getContributions(AbstractContributionFactory factory) {
+			return (ContributionRoot) factoryToItems.get(factory);
 		}
 
 		/**
@@ -247,8 +242,6 @@ public final class WorkbenchMenuService extends InternalMenuService {
 
 	private IActivityManagerListener activityManagerListener;
 
-	private IRestrictionService restrictionService;
-
 	/**
 	 * Constructs a new instance of <code>MenuService</code> using a menu
 	 * manager.
@@ -258,10 +251,10 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		this.serviceLocator = serviceLocator;
 		evaluationService = (IEvaluationService) serviceLocator
 				.getService(IEvaluationService.class);
-		restrictionService = (IRestrictionService) serviceLocator
-				.getService(IRestrictionService.class);
 		evaluationService.addServiceListener(getServiceListener());
-		((IWorkbench) serviceLocator.getService(IWorkbench.class))
+		IWorkbenchLocationService wls = (IWorkbenchLocationService) serviceLocator
+			.getService(IWorkbenchLocationService.class);
+		wls.getWorkbench()
 				.getActivitySupport().getActivityManager()
 				.addActivityManagerListener(getActivityManagerListener());
 		
@@ -331,7 +324,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		return serviceListener;
 	}
 
-	private void updateManagers() {
+	public void updateManagers() {
 		Object[] managers = managersAwaitingUpdates.toArray();
 		managersAwaitingUpdates.clear();
 		for (int i = 0; i < managers.length; i++) {
@@ -387,6 +380,11 @@ public final class WorkbenchMenuService extends InternalMenuService {
 
 	public final void dispose() {
 		menuPersistence.dispose();
+		if (registryChangeListener != null) {
+			final IExtensionRegistry registry = Platform.getExtensionRegistry();
+			registry.removeRegistryChangeListener(registryChangeListener);
+			registryChangeListener = null;
+		}
 		Iterator i = evaluationsByItem.values().iterator();
 		while (i.hasNext()) {
 			IEvaluationReference ref = (IEvaluationReference) i.next();
@@ -394,17 +392,20 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		}
 		evaluationsByItem.clear();
 		
-		i = restrictionsByItem.values().iterator();
-		while (i.hasNext()) {
-			IEvaluationReference ref = (IEvaluationReference) i.next();
-			restrictionService.removeEvaluationListener(ref);
-		}
-		restrictionsByItem.clear();
-		
 		managersAwaitingUpdates.clear();
 		if (serviceListener != null) {
 			evaluationService.removeServiceListener(serviceListener);
 			serviceListener = null;
+		}
+
+		if (activityManagerListener != null) {
+			IWorkbenchLocationService wls = (IWorkbenchLocationService) serviceLocator
+					.getService(IWorkbenchLocationService.class);
+			IWorkbench workbench = wls.getWorkbench();
+			if (workbench != null) {
+				workbench.getActivitySupport().getActivityManager()
+						.removeActivityManagerListener(activityManagerListener);
+			}
 		}
 	}
 
@@ -422,14 +423,14 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	private Map uriToFactories = new HashMap();
 
 	private Map evaluationsByItem = new HashMap();
-	
-	private Map restrictionsByItem = new HashMap();
 
 	private Map activityListenersByItem = new HashMap();
 
 	private Set managersAwaitingUpdates = new HashSet();
 
 	private HashMap populatedManagers = new HashMap();
+
+	private IRegistryChangeListener registryChangeListener;
 
 	/**
 	 * Construct an 'id' string from the given URI. The resulting 'id' is the
@@ -464,7 +465,9 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.internal.menus.IMenuService#addCacheForURI(org.eclipse.ui.internal.menus.MenuCacheEntry)
+	 * @see
+	 * org.eclipse.ui.menus.IMenuService#addContributionFactory(org.eclipse.
+	 * ui.menus.AbstractContributionFactory)
 	 */
 	public void addContributionFactory(AbstractContributionFactory factory) {
 		if (factory == null || factory.getLocation() == null)
@@ -537,7 +540,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 				if (subCaches != null) {
 					for (Iterator subCacheIter = subCaches.iterator(); subCacheIter
 							.hasNext();) {
-						MenuAdditionCacheEntry mace = (MenuAdditionCacheEntry) subCacheIter.next();
+						AbstractMenuAdditionCacheEntry mace = (AbstractMenuAdditionCacheEntry) subCacheIter.next();
 						removeContributionFactory(mace);
 					}
 				}
@@ -557,8 +560,12 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	}
 
 	private boolean processAdditions(final IServiceLocator serviceLocatorToUse,
-			Expression restriction, final ContributionManager mgr,
+			Set restriction, final ContributionManager mgr,
 			final AbstractContributionFactory cache, final Set itemsAdded) {
+
+		if (!processFactory(mgr, cache))
+			return true;
+
 		final int idx = getInsertionIndex(mgr, cache.getLocation());
 		if (idx == -1)
 			return false; // can't process (yet)
@@ -582,15 +589,64 @@ public final class WorkbenchMenuService extends InternalMenuService {
 				if (ciList.getItems().size() > 0) {
 					// Cache the items for future cleanup
 					ManagerPopulationRecord mpr = (ManagerPopulationRecord) populatedManagers.get(mgr);
+					ContributionRoot contributions = mpr.getContributions(cache);
+					if (contributions != null) {
+						// Existing contributions in the mgr will be released.
+						// Adjust the insertionIndex
+						for (Iterator i = contributions.getItems().iterator(); i.hasNext();) {
+							IContributionItem item = (IContributionItem) i.next();
+							if (item.equals(mgr.find(item.getId())))
+								insertionIndex--;
+						}
+					}
+
 					mpr.addFactoryContribution(cache, ciList);
 					
 					for (Iterator ciIter = ciList.getItems().iterator(); ciIter
 							.hasNext();) {
 						IContributionItem ici = (IContributionItem) ciIter
 								.next();
+						if ((ici instanceof ContributionManager || ici instanceof IToolBarContributionItem
+								|| ici instanceof AbstractGroupMarker)
+								&& ici.getId() != null
+								&& !"".equals(ici.getId())) { //$NON-NLS-1$
+							IContributionItem foundIci = mgr.find(ici.getId());
+							// really, this is a very specific scenario that
+							// allows merging
+							// but, if it is a contribution manager that also
+							// contains
+							// items, then we would be throwing stuff away.
+							if (foundIci instanceof ContributionManager) {
+								if (((ContributionManager) ici).getSize() > 0) {
+									IStatus status = new Status(
+											IStatus.WARNING,
+											WorkbenchPlugin.PI_WORKBENCH,
+											"Menu contribution id collision: " //$NON-NLS-1$
+													+ ici.getId());
+									StatusManager.getManager().handle(status);
+								}
+								continue;
+							} else if (foundIci instanceof IToolBarContributionItem) {
+								IToolBarManager toolBarManager = ((IToolBarContributionItem) ici)
+										.getToolBarManager();
+								if (toolBarManager instanceof ContributionManager
+										&& ((ContributionManager) toolBarManager)
+												.getSize() > 0) {
+									IStatus status = new Status(
+											IStatus.WARNING,
+											WorkbenchPlugin.PI_WORKBENCH,
+											"Toolbar contribution id collision: " //$NON-NLS-1$
+													+ ici.getId());
+									StatusManager.getManager().handle(status);
+								}
+								continue;
+							} else if (foundIci instanceof AbstractGroupMarker) {
+								continue;
+							}
+						}
 						final int oldSize = mgr.getSize();
 						mgr.insert(insertionIndex, ici);
-						if (ici.getId()!=null) {
+						if (ici.getId() != null) {
 							itemsAdded.add(ici.getId());
 						}
 						if (mgr.getSize() > oldSize)
@@ -600,6 +656,33 @@ public final class WorkbenchMenuService extends InternalMenuService {
 			}
 		};
 		SafeRunner.run(run);
+
+		return true;
+	}
+
+	/**
+	 * Determines whether the factory should be processed for this manager.
+	 * 
+	 * @param factory
+	 *            The factory to be added
+	 * @param mgr
+	 *            The contribution manager
+	 * @return <code>true</code> if the factory to be processed,
+	 *         <code>false</code> otherwise
+	 */
+	private boolean processFactory(ContributionManager mgr, AbstractContributionFactory factory) {
+
+		MenuLocationURI uri = new MenuLocationURI(factory.getLocation());
+		if (MenuUtil.ANY_POPUP.equals(uri.getScheme() + ':' + uri.getPath())) {
+			// its any popup. check whether manager has additions
+			if (mgr.indexOf(IWorkbenchActionConstants.MB_ADDITIONS) == -1) {
+				// menu has no additions. Add only if allPopups = true
+				if (factory instanceof MenuAdditionCacheEntry) {
+					MenuAdditionCacheEntry menuEntry = (MenuAdditionCacheEntry) factory;
+					return menuEntry.contributeToAllPopups();
+				}
+			}
+		}
 
 		return true;
 	}
@@ -634,7 +717,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	}
 
 	public void populateContributionManager(
-			IServiceLocator serviceLocatorToUse, Expression restriction,
+			IServiceLocator serviceLocatorToUse, Set restriction,
 			ContributionManager mgr, String uri, boolean recurse) {		
 		// Track this attempt to populate the menu, remembering all the parameters
 		ManagerPopulationRecord mpr = (ManagerPopulationRecord) populatedManagers.get(mgr);
@@ -650,7 +733,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	}
 
 	public void addContributionsToManager(
-			IServiceLocator serviceLocatorToUse, Expression restriction,
+			IServiceLocator serviceLocatorToUse, Set restriction,
 			ContributionManager mgr, String uri, boolean recurse,
 			List factories) {
 		MenuLocationURI contributionLocation = new MenuLocationURI(uri);
@@ -716,11 +799,6 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		}
 	}
 
-	/**
-	 * @param mgr
-	 * @param uri
-	 * @return
-	 */
 	private int getInsertionIndex(ContributionManager mgr, String location) {
 		MenuLocationURI uri = new MenuLocationURI(location);
 		String query = uri.getQuery();
@@ -729,19 +807,36 @@ public final class WorkbenchMenuService extends InternalMenuService {
 
 		// No Query means 'after=additions' (if ther) or
 		// the end of the menu
-		if (query.length() == 0 || query.equals("after=additions")) { //$NON-NLS-1$
-			additionsIndex = mgr.indexOf("additions"); //$NON-NLS-1$
+		if (query.length() == 0 || query.equals(INDEX_AFTER_ADDITIONS)) {
+			additionsIndex = mgr
+					.indexOf(IWorkbenchActionConstants.MB_ADDITIONS);
 			if (additionsIndex == -1)
 				additionsIndex = mgr.getItems().length;
 			else
 				++additionsIndex;
 		} else {
-			// Should be in the form "[before|after]=id"
+			// Should be in the form "[before|after|endof]=id"
 			String[] queryParts = Util.split(query, '=');
-			if (queryParts[1].length() > 0) {
-				additionsIndex = mgr.indexOf(queryParts[1]);
-				if (additionsIndex != -1 && queryParts[0].equals("after")) //$NON-NLS-1$
+			if (queryParts.length>1 && queryParts[1].length() > 0) {
+				String modifier = queryParts[0];
+				String id = queryParts[1];
+				additionsIndex = mgr.indexOf(id);
+				if (additionsIndex != -1) {
+					if (MenuUtil.QUERY_BEFORE.equals(modifier)) {
+						// this is OK, the additionsIndex will either be correct
+						// or -1 (which is a no-op)
+					} else if (MenuUtil.QUERY_AFTER.equals(modifier)) {
 					additionsIndex++;
+					} else if (MenuUtil.QUERY_ENDOF.equals(modifier)) {
+						// OK, this one is exciting
+						IContributionItem[] items = mgr.getItems();
+						for (additionsIndex++; additionsIndex < items.length; additionsIndex++) {
+							if (items[additionsIndex].isGroupMarker()) {
+								break;
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -764,7 +859,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	 *      org.eclipse.core.expressions.Expression)
 	 */
 	public void registerVisibleWhen(final IContributionItem item,
-			final Expression visibleWhen, final Expression restriction,
+			final Expression visibleWhen, final Set restriction,
 			String identifierID) {
 		if (item == null) {
 			throw new IllegalArgumentException("item cannot be null"); //$NON-NLS-1$
@@ -791,9 +886,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 			IEvaluationReference ref = evaluationService.addEvaluationListener(
 					visibleWhen, listener, PROP_VISIBLE);
 			if (restriction != null) {
-				IEvaluationReference restrictionRef = restrictionService.addEvaluationListener(restriction,
-						new RestrictionListener(ref), RestrictionListener.PROP);
-				restrictionsByItem.put(item, restrictionRef);
+				restriction.add(ref);
 			}
 			evaluationsByItem.put(item, ref);
 		}
@@ -805,7 +898,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	 * 
 	 * @see org.eclipse.ui.internal.menus.IMenuService#unregisterVisibleWhen(org.eclipse.jface.action.IContributionItem)
 	 */
-	public void unregisterVisibleWhen(IContributionItem item) {
+	public void unregisterVisibleWhen(IContributionItem item, final Set restriction) {
 		ContributionItemUpdater identifierListener = (ContributionItemUpdater) activityListenersByItem
 				.remove(item);
 		if (identifierListener != null) {
@@ -819,9 +912,8 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		}
 
 		evaluationService.removeEvaluationListener(ref);
-		ref = (IEvaluationReference) restrictionsByItem.remove(item);
-		if (ref !=null) {
-			restrictionService.removeEvaluationListener(ref);
+		if (restriction !=null) {
+			restriction.remove(ref);
 		}
 	}
 
@@ -833,7 +925,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		Iterator j = items.getItems().iterator();
 		while (j.hasNext()) {
 			IContributionItem item = (IContributionItem) j.next();
-			releaseItem(item);
+			releaseItem(item, items.restriction);
 			mgr.remove(item);
 		}
 		releaseCache(items);
@@ -846,6 +938,9 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	 * @see org.eclipse.ui.internal.menus.IMenuService#releaseMenu(org.eclipse.jface.action.ContributionManager)
 	 */
 	public void releaseContributions(ContributionManager mgr) {
+
+		if (mgr == null)
+			return;
 		// Recursive remove any contributions from sub-menus
 		IContributionItem[] items = mgr.getItems();
 		for (int i = 0; i < items.length; i++) {
@@ -868,8 +963,8 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	/**
 	 * @param item
 	 */
-	private void releaseItem(IContributionItem item) {
-		unregisterVisibleWhen(item);
+	private void releaseItem(IContributionItem item, final Set restriction) {
+		unregisterVisibleWhen(item, restriction);
 		if (item instanceof ContributionManager) {
 			releaseContributions((ContributionManager) item);
 		} else if (item instanceof IToolBarContributionItem) {
@@ -884,10 +979,36 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	 */
 	public void handleDynamicAdditions(List menuAdditions) {
 		for (Iterator additionsIter = menuAdditions.iterator(); additionsIter.hasNext();) {
-			IConfigurationElement menuAddition = (IConfigurationElement) additionsIter.next();
-			MenuAdditionCacheEntry newFactory = new MenuAdditionCacheEntry(this, menuAddition);
-			addContributionFactory(newFactory);
+			AbstractContributionFactory newFactory = null;
+			final IConfigurationElement menuAddition = (IConfigurationElement) additionsIter.next();
+			if (isProgramaticContribution(menuAddition))
+				newFactory = new ProxyMenuAdditionCacheEntry(
+						menuAddition
+								.getAttribute(IWorkbenchRegistryConstants.TAG_LOCATION_URI),
+						menuAddition.getNamespaceIdentifier(), menuAddition);
+
+			else
+				newFactory = new MenuAdditionCacheEntry(
+						this,
+						menuAddition,
+						menuAddition
+								.getAttribute(IWorkbenchRegistryConstants.TAG_LOCATION_URI),
+						menuAddition.getNamespaceIdentifier());
+
+			if (newFactory != null)
+				addContributionFactory(newFactory);
 		}
+	}
+
+	/**
+	 * Return whether or not this contribution is programmatic (ie: has a class attribute).
+	 * 
+	 * @param menuAddition
+	 * @return whether or not this contribution is programamtic
+	 * @since 3.5
+	 */
+	private boolean isProgramaticContribution(IConfigurationElement menuAddition) {
+		return menuAddition.getAttribute(IWorkbenchRegistryConstants.ATT_CLASS) != null;
 	}
 
 	/**
@@ -897,7 +1018,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	public void handleDynamicRemovals(List menuRemovals) {
 		for (Iterator additionsIter = menuRemovals.iterator(); additionsIter.hasNext();) {
 			IConfigurationElement ceToRemove = (IConfigurationElement) additionsIter.next();
-			MenuAdditionCacheEntry factoryToRemove = findFactory(ceToRemove);
+			AbstractMenuAdditionCacheEntry factoryToRemove = findFactory(ceToRemove);
 			removeContributionFactory(factoryToRemove);
 		}
 	}
@@ -906,14 +1027,14 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	 * @param ceToRemove
 	 * @return
 	 */
-	private MenuAdditionCacheEntry findFactory(IConfigurationElement ceToRemove) {
+	private AbstractMenuAdditionCacheEntry findFactory(IConfigurationElement ceToRemove) {
 		String uriStr = ceToRemove.getAttribute(IWorkbenchRegistryConstants.TAG_LOCATION_URI);
 		MenuLocationURI uri = new MenuLocationURI(uriStr);
 		List factories = getAdditionsForURI(uri);
 		for (Iterator iterator = factories.iterator(); iterator.hasNext();) {
 			AbstractContributionFactory factory = (AbstractContributionFactory) iterator.next();
-			if (factory instanceof MenuAdditionCacheEntry) {
-				MenuAdditionCacheEntry mace = (MenuAdditionCacheEntry) factory;
+			if (factory instanceof AbstractMenuAdditionCacheEntry) {
+				AbstractMenuAdditionCacheEntry mace = (AbstractMenuAdditionCacheEntry) factory;
 				if (mace.getConfigElement().equals(ceToRemove))
 					return mace;
 			}
@@ -922,7 +1043,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	}
 
 	private void handleMenuChanges(IRegistryChangeEvent event) {
-		// RAP [bm]: 
+		// RAP [bm]: Namespace
 //		final IExtensionDelta[] menuDeltas = event.getExtensionDeltas(
 //				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_MENUS);
 		final IExtensionDelta[] menuDeltas = event.getExtensionDeltas(
@@ -945,20 +1066,12 @@ public final class WorkbenchMenuService extends InternalMenuService {
 
 		// Handle additions
 		if (menuAdditions.size() > 0) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					handleDynamicAdditions(menuAdditions);
-				}							
-			});
+			handleDynamicAdditions(menuAdditions);
 		}
 		
 		// Handle Removals
 		if (menuRemovals.size() > 0) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					handleDynamicRemovals(menuRemovals);
-				}							
-			});
+			handleDynamicRemovals(menuRemovals);
 		}
 	}
 	
@@ -979,7 +1092,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		CommandService cmdSvc = (CommandService) serviceLocator.getService(ICommandService.class);
 		CommandPersistence cmdPersistence = cmdSvc.getCommandPersistence();
 		
-		// RAP [bm]: 
+		// RAP [bm]: Bindings
 //		BindingService bindingSvc = (BindingService) serviceLocator.getService(IBindingService.class);
 //		BindingPersistence bindingPersistence = bindingSvc.getBindingPersistence();
 		// RAPEND: [bm] 
@@ -997,7 +1110,7 @@ public final class WorkbenchMenuService extends InternalMenuService {
 				handlerPersistence.reRead();
 				needsUpdate = true;
 			}
-			// RAP [bm]: 
+			// RAP [bm]: Bindings
 //			if (bindingPersistence.bindingsNeedUpdating(event)) {
 //				bindingPersistence.reRead();
 //				needsUpdate = true;
@@ -1014,14 +1127,14 @@ public final class WorkbenchMenuService extends InternalMenuService {
 				handleMenuChanges(event);
 				needsUpdate = true;
 			}
-			// RAP [bm]: 
+			// RAP [bm]: Bindings
 //			if (bindingPersistence.bindingsNeedUpdating(event)) {
 //				bindingPersistence.reRead();
 //				needsUpdate = true;
 //			}
 			// RAPEND: [bm] 
 			if (handlerPersistence.handlersNeedUpdating(event)) {
-				// RAP [bm]: 
+				// RAP [bm]: Namespace
 //				final IExtensionDelta[] handlerDeltas = event.getExtensionDeltas(
 //						PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_HANDLERS);
 				final IExtensionDelta[] handlerDeltas = event.getExtensionDeltas(

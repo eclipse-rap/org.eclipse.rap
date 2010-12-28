@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,7 +50,7 @@ public class WorkbenchPreferenceNode extends WorkbenchPreferenceExtensionNode {
 			// Just inform the user about the error. The details are
 			// written to the log by now.
 			IStatus errStatus = StatusUtil.newStatus(e.getStatus(), WorkbenchMessages.get().PreferenceNode_errorMessage); 
-			StatusManager.getManager().handle(errStatus, StatusManager.SHOW);
+			StatusManager.getManager().handle(errStatus, StatusManager.SHOW | StatusManager.LOG);
 			page = new ErrorPreferencePage();
 		}
 

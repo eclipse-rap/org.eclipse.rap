@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,10 @@ public class BundleGroupProperties extends BrandingProperties implements
     private String providerName;
 
     private String versionId;
+
+	private String brandingId;
+
+	private String brandingVersion;
 
     /**
      * This instance will return properties from the given bundle group.  The properties are
@@ -163,6 +167,26 @@ public class BundleGroupProperties extends BrandingProperties implements
 		}
         return versionId;
     }
+    
+	/**
+	 * @return the branding plugin id, or <code>null</code>
+	 */
+	public String getBrandingBundleId() {
+		if (brandingId == null) {
+			brandingId = getBrandingBundleId(bundleGroup);
+		}
+		return brandingId;
+	}
+
+	/**
+	 * @return the branding plugin version, or <code>null</code>
+	 */
+	public String getBrandingBundleVersion() {
+		if (brandingVersion == null) {
+			brandingVersion = getBrandingBundleVersion(bundleGroup);
+		}
+		return brandingVersion;
+	}
 
     /**
      * An image which can be shown in an "about features" dialog (32x32).
@@ -236,4 +260,24 @@ public class BundleGroupProperties extends BrandingProperties implements
     public static String getFeatureVersion(IBundleGroup bundleGroup) {
         return bundleGroup.getVersion();
     }
+    
+	/**
+	 * A Feature's branding plugin id.
+	 * 
+	 * @param bundleGroup
+	 * @return the ID or <code>null</code> if not provided.
+	 */
+	public static String getBrandingBundleId(IBundleGroup bundleGroup) {
+		return bundleGroup.getProperty(BRANDING_BUNDLE_ID);
+	}
+
+	/**
+	 * A Feature's branding plugin version.
+	 * 
+	 * @param bundleGroup
+	 * @return the version, or <code>null</code> if not provided.
+	 */
+	public static String getBrandingBundleVersion(IBundleGroup bundleGroup) {
+		return bundleGroup.getProperty(BRANDING_BUNDLE_VERSION);
+	}
 }

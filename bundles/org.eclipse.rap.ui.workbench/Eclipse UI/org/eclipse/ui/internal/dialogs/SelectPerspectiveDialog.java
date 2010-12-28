@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,6 +74,7 @@ public class SelectPerspectiveDialog extends Dialog implements
             IPerspectiveRegistry perspReg) {
         super(parentShell);
         this.perspReg = perspReg;
+		setShellStyle(getShellStyle() | SWT.SHEET);
     }
 
     /*
@@ -179,7 +180,7 @@ public class SelectPerspectiveDialog extends Dialog implements
         list = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
                 | SWT.BORDER);
         list.getTable().setFont(parent.getFont());
-        list.setLabelProvider(new PerspectiveLabelProvider());
+		list.setLabelProvider(new PerspectiveLabelProvider());
         list.setContentProvider(new PerspContentProvider());
         list.addFilter(activityViewerFilter);
         list.setComparator(new ViewerComparator());

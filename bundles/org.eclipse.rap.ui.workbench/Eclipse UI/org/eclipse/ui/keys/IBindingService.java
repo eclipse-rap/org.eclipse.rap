@@ -10,7 +10,16 @@
  *******************************************************************************/
 package org.eclipse.ui.keys;
 
-import org.eclipse.ui.commands.ICommandService;
+//import java.io.IOException;
+//import java.util.Collection;
+//import java.util.Map;
+//
+//import org.eclipse.core.commands.ParameterizedCommand;
+//import org.eclipse.jface.bindings.Binding;
+//import org.eclipse.jface.bindings.IBindingManagerListener;
+//import org.eclipse.jface.bindings.Scheme;
+//import org.eclipse.jface.bindings.TriggerSequence;
+//import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.services.IDisposable;
 
 /**
@@ -20,14 +29,23 @@ import org.eclipse.ui.services.IDisposable;
  * currently active bindings, as well as the current state of the binding
  * architecture.
  * </p>
+ * <p>
+ * This service can be acquired from your service locator:
+ * <pre>
+ * 	IBindingService service = (IBindingService) getSite().getService(IBindingService.class);
+ * </pre>
+ * <ul>
+ * <li>This service is available globally.</li>
+ * </ul>
+ * </p>
+ * 
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  * 
  * @since 1.1
  */
 public interface IBindingService extends IDisposable {
-// RAP [bm]: disabled API as we don't have a real implementation
-
+// RAP [bm] disabled due to missing keybinding support
 //	/**
 //	 * The default default value for the active scheme id. This value can be
 //	 * overridden using the "plugin_customization.ini" file. The
@@ -35,6 +53,38 @@ public interface IBindingService extends IDisposable {
 //	 * try to decide if someone overrode the default.
 //	 */
 //	public static final String DEFAULT_DEFAULT_ACTIVE_SCHEME_ID = "org.eclipse.ui.defaultAcceleratorConfiguration"; //$NON-NLS-1$
+//
+//	/**
+//	 * <p>
+//	 * Adds a listener to this binding service. The listener will be notified
+//	 * when the set of defined schemes or bindings changes. This can be used to
+//	 * track the global appearance and disappearance of bindings.
+//	 * </p>
+//	 * <p>
+//	 * This method completes in amortized constant time (<code>O(1)</code>).
+//	 * </p>
+//	 * 
+//	 * @param listener
+//	 *            The listener to attach; must not be <code>null</code>.
+//	 * 
+//	 * @since 3.5
+//	 */
+//	public void addBindingManagerListener(IBindingManagerListener listener);
+//
+//	/**
+//	 * <p>
+//	 * Removes a listener from this binding service.
+//	 * </p>
+//	 * <p>
+//	 * This method completes in amortized <code>O(1)</code>.
+//	 * </p>
+//	 * 
+//	 * @param listener
+//	 *            The listener to be removed; must not be <code>null</code>.
+//	 * 
+//	 * @since 3.5
+//	 */
+//	public void removeBindingManagerListener(IBindingManagerListener listener);
 //
 //	/**
 //	 * Gets the active bindings for a given parameterized command.
@@ -252,20 +302,20 @@ public interface IBindingService extends IDisposable {
 //	 */
 //	public void openKeyAssistDialog();
 //
-	/**
-	 * <p>
-	 * Reads the binding information from the registry and the preferences. This
-	 * will overwrite any of the existing information in the binding service.
-	 * This method is intended to be called during start-up. When this method
-	 * completes, this binding service will reflect the current state of the
-	 * registry and preference store.
-	 * </p>
-	 * 
-	 * @param commandService
-	 *            Ignored.
-	 */
-	public void readRegistryAndPreferences(ICommandService commandService);
-
+//	/**
+//	 * <p>
+//	 * Reads the binding information from the registry and the preferences. This
+//	 * will overwrite any of the existing information in the binding service.
+//	 * This method is intended to be called during start-up. When this method
+//	 * completes, this binding service will reflect the current state of the
+//	 * registry and preference store.
+//	 * </p>
+//	 * 
+//	 * @param commandService
+//	 *            Ignored.
+//	 */
+//	public void readRegistryAndPreferences(ICommandService commandService);
+//
 //	/**
 //	 * <p>
 //	 * Writes the given active scheme and bindings to the preference store. Only
@@ -317,4 +367,16 @@ public interface IBindingService extends IDisposable {
 //	 *            Whether the key filter should be enabled.
 //	 */
 //	public void setKeyFilterEnabled(boolean enabled);
+//
+//	/**
+//	 * Provides the current conflicts in the keybindings for the given 
+//	 * TriggerSequence as a {@link Collection} of {@link Binding}
+//	 * 
+//	 * @param sequence The sequence for which conflict info is required
+//	 * 
+//	 * @return Collection of Bindings. If no conflicts,
+//	 *         then returns a <code>null</code>
+//	 * @since 3.5
+//	 */
+//	public Collection getConflictsFor(TriggerSequence sequence);
 }

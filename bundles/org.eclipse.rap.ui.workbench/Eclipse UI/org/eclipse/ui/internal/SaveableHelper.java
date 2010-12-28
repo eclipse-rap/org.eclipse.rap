@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.ISaveablesLifecycleListener;
@@ -111,9 +112,13 @@ public class SaveableHelper {
 					String message = NLS.bind(WorkbenchMessages.get().EditorManager_saveChangesQuestion, part.getTitle()); 
 					// Show a dialog.
 					String[] buttons = new String[] { IDialogConstants.get().YES_LABEL, IDialogConstants.get().NO_LABEL, IDialogConstants.get().CANCEL_LABEL };
-						MessageDialog d = new MessageDialog(
-							window.getShell(), WorkbenchMessages.get().Save_Resource,
-							null, message, MessageDialog.QUESTION, buttons, 0);
+					MessageDialog d = new MessageDialog(
+						window.getShell(), WorkbenchMessages.get().Save_Resource,
+						null, message, MessageDialog.QUESTION, buttons, 0) {
+						protected int getShellStyle() {
+							return super.getShellStyle() | SWT.SHEET;
+						}
+					};
 					choice = d.open();
 				}
 			}
@@ -174,20 +179,23 @@ public class SaveableHelper {
 			public void run(IProgressMonitor monitor) {
 				IProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
 				monitorWrap.beginTask(WorkbenchMessages.get().Save, dirtyModels.size());
-				for (Iterator i = dirtyModels.iterator(); i.hasNext();) {
-					Saveable model = (Saveable) i.next();
-					// handle case where this model got saved as a result of saving another
-					if (!model.isDirty()) {
-						monitor.worked(1);
-						continue;
+				try {
+					for (Iterator i = dirtyModels.iterator(); i.hasNext();) {
+						Saveable model = (Saveable) i.next();
+						// handle case where this model got saved as a result of
+						// saving another
+						if (!model.isDirty()) {
+							monitor.worked(1);
+							continue;
+						}
+						doSaveModel(model, new SubProgressMonitor(monitorWrap, 1), window, confirm);
+						if (monitor.isCanceled()) {
+							break;
+						}
 					}
-					doSaveModel(model, new SubProgressMonitor(monitorWrap, 1),
-							window, confirm);
-					if (monitor.isCanceled()) {
-						break;
-					}
+				} finally {
+					monitorWrap.done();
 				}
-				monitorWrap.done();
 			}
 		};
 

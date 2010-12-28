@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,10 @@ package org.eclipse.ui.internal.dialogs;
 
 import java.util.HashMap;
 //import java.util.Iterator;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ViewerColumn;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
@@ -30,7 +30,7 @@ import org.eclipse.ui.views.IViewDescriptor;
 /**
  * Provides labels for view children.
  */
-public class ViewLabelProvider extends LabelProvider implements IColorProvider {
+public class ViewLabelProvider extends ColumnLabelProvider {
     private HashMap images;
 	private final IWorkbenchWindow window;
 	private final Color dimmedForeground;
@@ -42,6 +42,10 @@ public class ViewLabelProvider extends LabelProvider implements IColorProvider {
 	public ViewLabelProvider(IWorkbenchWindow window, Color dimmedForeground) {
 		this.window = window;
 		this.dimmedForeground = dimmedForeground;
+	}
+	
+	protected void initialize(ColumnViewer viewer, ViewerColumn column) {
+		super.initialize(viewer, column);
 	}
 
 	Image cacheImage(ImageDescriptor desc) {
@@ -110,7 +114,7 @@ public class ViewLabelProvider extends LabelProvider implements IColorProvider {
 			IWorkbenchPage activePage = window.getActivePage();
 			if (activePage != null) {
 				if (activePage
-						.findView(((IViewDescriptor) element).getId()) != null) {
+						.findViewReference(((IViewDescriptor) element).getId()) != null) {
 					return dimmedForeground;
 				}
 			}

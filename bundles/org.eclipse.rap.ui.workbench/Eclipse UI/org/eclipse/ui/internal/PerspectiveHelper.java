@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,8 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Carlos Devoto carlos.devoto@compuware.com Bug 213645
+ *     Marco Maccaferri, maccasoft.com - patch for defect 222750
  *******************************************************************************/
 
 package org.eclipse.ui.internal;
@@ -759,11 +761,18 @@ public class PerspectiveHelper {
                     	inTrim = perspective.getFastViewManager().getFastViews(folder.getID()).size() > 0;
                     	
                     if (childVisible == 0 && !inTrim) {
-                        ILayoutContainer parentContainer = folder
-                                .getContainer();
-                        for (int i = 0; i < children.length; i++) {
-                            folder.remove(children[i]);
-                            parentContainer.add(children[i]);
+                        ILayoutContainer parentContainer = folder.getContainer();
+                        hasChildren = folder.getChildren().length > 0;
+                        
+                        // We maintain the stack as a place-holder if it has children
+                        // (which at this point would represent view place-holders)
+                        if (hasChildren) {
+                        	folder.dispose();
+                        	
+							// replace the real container with a ContainerPlaceholder
+							ContainerPlaceholder placeholder = new ContainerPlaceholder(folder.getID());
+							placeholder.setRealContainer(folder);
+							parentContainer.replace(folder, placeholder);
                         }
                         hasChildren = false;
                     } else if (childVisible == 1) {
@@ -774,9 +783,9 @@ public class PerspectiveHelper {
                 }
             }
 
-            if (!hasChildren) {
+            if (!hasChildren && !(oldContainer instanceof ViewStack && ((ViewStack)oldContainer).getDurable())) {
                 // There are no more children in this container, so get rid of
-                // it
+                // it (but only if the container is not a durable ViewStack)
                 if (oldContainer instanceof LayoutPart) {
                     LayoutPart parent = (LayoutPart) oldContainer;
                     ILayoutContainer parentContainer = parent.getContainer();
@@ -1244,12 +1253,16 @@ public class PerspectiveHelper {
             LayoutPart[] children = container.getChildren();
             if (children != null) {
                 boolean allInvisible = true;
-                for (int i = 0, length = children.length; i < length; i++) {
-                    if (!(children[i] instanceof PartPlaceholder)) {
-                        allInvisible = false;
-                        break;
-                    }
-                }
+                if (container instanceof ViewStack && !((ViewStack) container).isMinimized && ((ViewStack) container).getDurable()) {
+                	allInvisible = false;
+                } else {
+					for (int i = 0, length = children.length; i < length; i++) {
+						if (!(children[i] instanceof PartPlaceholder)) {
+							allInvisible = false;
+							break;
+						}
+					}
+				}
                 if (allInvisible && (container instanceof LayoutPart)) {
                     // what type of window are we in?
                     LayoutPart cPart = (LayoutPart) container;

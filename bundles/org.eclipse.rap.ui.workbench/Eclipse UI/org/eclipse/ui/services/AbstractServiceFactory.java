@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.services;
 
@@ -16,13 +16,6 @@ package org.eclipse.ui.services;
  * <code>org.eclipse.ui.services</code> extension point. You are given a
  * service locator to look up other services, and can retrieve your parent
  * service (if one has already been created).
- * <p>
- * <strong>PROVISIONAL</strong>. This class or interface has been added as part
- * of a work in progress. There is a guarantee neither that this API will work
- * nor that it will remain the same. Please do not use this API without
- * consulting with the Platform/UI team ... i.e. you can use it, but stay in
- * touch.
- * </p>
  * 
  * @since 1.1
  */

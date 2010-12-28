@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
@@ -25,8 +26,6 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.internal.WorkbenchErrorHandlerProxy;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.misc.StatusUtil;
-import org.eclipse.ui.internal.progress.FinishedJobs;
-import org.eclipse.ui.internal.progress.StatusAdapterHelper;
 import org.eclipse.ui.internal.statushandlers.StatusHandlerRegistry;
 import org.eclipse.ui.progress.IProgressConstants;
 
@@ -94,17 +93,27 @@ public class StatusManager {
 	public static final int SHOW = 0x02;
 
 	/**
-	 * A style indicating that the handling should block the calling method
-	 * until the user has responded. This is generally done using a modal window
-	 * such as a {@link Dialog}.
+	 * A style indicating that the handling should block the calling thread
+	 * until the status has been handled.
+	 * <p>
+	 * A typical usage of this would be to ensure that the user's actions are
+	 * blocked until they've dealt with the status in some manner. It is
+	 * therefore likely but not required that the <code>StatusHandler</code>
+	 * would achieve this through the use of a modal dialog. 
+	 * </p><p>Due to the fact
+	 * that use of <code>BLOCK</code> will block any thread, care should be
+	 * taken in this use of this flag.
+	 * </p>
 	 */
 	public static final int BLOCK = 0x04;
 
 	private static StatusManager MANAGER;
 
-	private AbstractStatusHandler workbenchHandler;
+	private AbstractStatusHandler statusHandler;
 
 	private List loggedStatuses = new ArrayList();
+
+	private ListenerList listeners = new ListenerList();
 
 	/**
 	 * Returns StatusManager singleton instance.
@@ -122,17 +131,21 @@ public class StatusManager {
 		Platform.addLogListener(new StatusManagerLogListener());
 	}
 
-	/**
-	 * @return the workbench status handler
-	 */
-	private AbstractStatusHandler getWorkbenchHandler() {
-		if (workbenchHandler == null) {
-			workbenchHandler = new WorkbenchErrorHandlerProxy();
+	private AbstractStatusHandler getStatusHandler(){
+		if(statusHandler == null && StatusHandlerRegistry.getDefault()
+					.getDefaultHandlerDescriptor() != null){
+			try {
+				statusHandler = StatusHandlerRegistry.getDefault()
+						.getDefaultHandlerDescriptor().getStatusHandler();
+			} catch (CoreException ex) {
+				logError("Errors during the default handler creating", ex); //$NON-NLS-1$
+			}
 		}
-
-		return workbenchHandler;
+		if(statusHandler == null){
+			statusHandler = new WorkbenchErrorHandlerProxy();
+		}
+		return statusHandler;
 	}
-
 	/**
 	 * Handles the given status adapter due to the style. Because the facility
 	 * depends on Workbench, this method will log the status, if Workbench isn't
@@ -172,41 +185,15 @@ public class StatusManager {
 				return;
 			}
 
-			// tries to handle the problem with default (product) handler
-			if (StatusHandlerRegistry.getDefault()
-					.getDefaultHandlerDescriptor() != null) {
-				try {
-					StatusHandlerRegistry.getDefault()
-							.getDefaultHandlerDescriptor().getStatusHandler()
-							.handle(statusAdapter, style);
-					// if statuses are shown, all finished jobs with error will
-					// be removed,
-					// we should remove it from the status manager, when error
-					// icon
-					// will be part of handlers not ProgressAnimationItem
-					if (((style & StatusManager.SHOW) == StatusManager.SHOW || (style & StatusManager.BLOCK) == StatusManager.BLOCK)
-							&& statusAdapter
-									.getProperty(IProgressConstants.NO_IMMEDIATE_ERROR_PROMPT_PROPERTY) != Boolean.TRUE) {
-						FinishedJobs.getInstance().removeErrorJobs();
-						StatusAdapterHelper.getInstance().clear();
-					}
-					return;
-				} catch (CoreException ex) {
-					logError("Errors during the default handler creating", ex); //$NON-NLS-1$
-				}
-			}
-
 			// delegates the problem to workbench handler
-			getWorkbenchHandler().handle(statusAdapter, style);
-
-			// if statuses are shown, all finished jobs with error will be
-			// removed,
-			// we should remove it from the status manager, when error icon
-			// will be part of handlers not ProgressAnimationItem
-			if (((style & StatusManager.SHOW) == StatusManager.SHOW || (style & StatusManager.BLOCK) == StatusManager.BLOCK)
-					&& statusAdapter
-							.getProperty(IProgressConstants.NO_IMMEDIATE_ERROR_PROMPT_PROPERTY) != Boolean.TRUE) {
-				FinishedJobs.getInstance().removeErrorJobs();
+			getStatusHandler().handle(statusAdapter, style);
+			
+			// if attached status handler is not able to notify StatusManager
+			// about particular event, use the default policy and fake the
+			// notification
+			if (!getStatusHandler().supportsNotification(
+					INotificationTypes.HANDLED)) {
+				generateFakeNotification(statusAdapter, style);
 			}
 		} catch (Throwable ex) {
 			// The used status handler failed
@@ -320,5 +307,103 @@ public class StatusManager {
 				loggedStatuses.remove(status);
 			}
 		}
+	}
+
+	/**
+	 * This method should be called by custom status handlers when an event
+	 * occurs. This method has no effect if statushandler does not support
+	 * particular event type.
+	 * 
+	 * @param type
+	 *            - type of the event.
+	 * @param adapters
+	 *            - array of affected {@link StatusAdapter}s.
+	 * @see INotificationTypes
+	 * @see AbstractStatusHandler#supportsNotification(int)
+	 * @since 1.4
+	 */
+	public void fireNotification(int type, StatusAdapter[] adapters){
+		if(getStatusHandler().supportsNotification(type)){
+			doFireNotification(type, adapters);
+		}
+	}
+	
+	private void doFireNotification(int type, StatusAdapter[] adapters) {
+		Object[] oListeners = listeners.getListeners();
+		for (int i = 0; i < oListeners.length; i++) {
+			if (oListeners[i] instanceof INotificationListener) {
+				((INotificationListener) oListeners[i])
+						.statusManagerNotified(type, adapters);
+			}
+		}
+	}
+	
+	private void generateFakeNotification(StatusAdapter statusAdapter, int style) {
+		if (((style & StatusManager.SHOW) == StatusManager.SHOW || (style & StatusManager.BLOCK) == StatusManager.BLOCK)
+				&& statusAdapter
+						.getProperty(IProgressConstants.NO_IMMEDIATE_ERROR_PROMPT_PROPERTY) != Boolean.TRUE) {
+			doFireNotification(INotificationTypes.HANDLED,
+					new StatusAdapter[] { statusAdapter });
+		}
+	}
+	
+	/**
+	 * Adds a listener to the StatusManager.
+	 * 
+	 * @param listener
+	 *            - a listener to be added.
+	 * @since 1.4
+	 */
+	public void addListener(INotificationListener listener) {
+		this.listeners.add(listener);
+	}
+
+	/**
+	 * Removes a listener from StatusManager.
+	 * 
+	 * @param listener
+	 *            - a listener to be removed.
+	 * @since 1.4
+	 */
+	public void removeListener(INotificationListener listener){
+		this.listeners.remove(listener);
+	}
+	
+	/**
+	 * This interface allows for listening to status handling framework changes.
+	 * Currently it is possible to be notified when:
+	 * <ul>
+	 * 	<li>all statuses has been handled</li>.
+	 * </ul>
+	 * @since 1.4
+	 *
+	 */
+	public interface INotificationListener{
+		/**
+		 * 
+		 * @param type
+		 *            - a type of notification.
+		 * @param adapters
+		 *            - affected {@link StatusAdapter}s
+		 */
+		public void statusManagerNotified(int type, StatusAdapter[] adapters);
+	}
+	
+	/**
+	 * This interface declares types of notification.
+	 * 
+	 * @since 1.4
+	 * @noextend This interface is not intended to be extended by clients.
+	 * @noimplement This interface is not intended to be implemented by clients.
+	 * 
+	 */
+	public interface INotificationTypes {
+
+		/**
+		 * This type notifications are used when a particular
+		 * {@link StatusAdapter} was handled.
+		 */
+		public static final int HANDLED = 0x01;
+		
 	}
 }

@@ -16,7 +16,10 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Implementation of the UI plugin's preference extension's customization
@@ -54,9 +57,8 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 		// setting, it remains as a preference to allow product overrides of the
 		// initial state of linking in the Navigator. By default, linking is
 		// off.
-//		node.putBoolean(IWorkbenchPreferenceConstants.LINK_NAVIGATOR_TO_EDITOR,
-//				false);
-		// RAPEND: [bm]
+		node.putBoolean(IWorkbenchPreferenceConstants.LINK_NAVIGATOR_TO_EDITOR,
+				false);
 
 		// Appearance / Presentation preferences
 		node.put(IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID,
@@ -129,20 +131,33 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 //		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_DETACHED_VIEWS,
 //				true);
 
-		// Default for prompting for save when saveables are still held on to by other parts
-		node.putBoolean(IWorkbenchPreferenceConstants.PROMPT_WHEN_SAVEABLE_STILL_OPEN,
+		// Default for prompting for save when saveables are still held on to by
+		// other parts
+		node.putBoolean(
+				IWorkbenchPreferenceConstants.PROMPT_WHEN_SAVEABLE_STILL_OPEN,
 				true);
 
 		// Default the min/max behaviour to the old (3.2) style
 		// RAP [bm]: disabled new min max story due to missing vertical toolbar
 		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_NEW_MIN_MAX, false);
-		
-		// By default the Fast View Bar allows to select a new fast view from the view list
-		node.putBoolean(IWorkbenchPreferenceConstants.DISABLE_NEW_FAST_VIEW, true);
+
+		// By default the Fast View Bar allows to select a new fast view from
+		// the view list
+		node.putBoolean(IWorkbenchPreferenceConstants.DISABLE_NEW_FAST_VIEW,
+				true);
 		
 		// Default the sticky view close behaviour to the new style
-		node.putBoolean(IWorkbenchPreferenceConstants.ENABLE_32_STICKY_CLOSE_BEHAVIOR, false);
+		node.putBoolean(
+				IWorkbenchPreferenceConstants.ENABLE_32_STICKY_CLOSE_BEHAVIOR,
+				false);
 
+		node.putInt(IWorkbenchPreferenceConstants.VIEW_TAB_POSITION, SWT.TOP);
+		node.putInt(IWorkbenchPreferenceConstants.EDITOR_TAB_POSITION, SWT.TOP);
+		node.putBoolean(
+				IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, true);
+
+		migrateInternalPreferences();
+		
 		// RAP [fappel]: instance scope vs. session scope
 //		IEclipsePreferences rootNode = (IEclipsePreferences) Platform
 //				.getPreferencesService().getRootNode()
@@ -191,6 +206,48 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 //					}
 //
 //				});
+	}
+
+	/**
+	 * Migrate any old internal preferences to the API store.
+	 */
+	private void migrateInternalPreferences() {
+
+		IPreferenceStore internalStore = WorkbenchPlugin.getDefault()
+				.getPreferenceStore();
+		IPreferenceStore apiStore = PlatformUI.getPreferenceStore();
+		// Is there a value there?
+		if (internalStore
+				.contains(IWorkbenchPreferenceConstants.VIEW_TAB_POSITION)) {
+			apiStore.setValue(IWorkbenchPreferenceConstants.VIEW_TAB_POSITION,
+					internalStore.getInt(IWorkbenchPreferenceConstants.VIEW_TAB_POSITION));
+			internalStore
+				.setToDefault(IWorkbenchPreferenceConstants.VIEW_TAB_POSITION);
+		}		
+
+		// Is there a value there?
+		if (internalStore
+				.contains(IWorkbenchPreferenceConstants.EDITOR_TAB_POSITION)) {
+				
+			apiStore.setValue(
+					IWorkbenchPreferenceConstants.EDITOR_TAB_POSITION,
+					internalStore.getInt(IWorkbenchPreferenceConstants.EDITOR_TAB_POSITION));
+			internalStore
+				.setToDefault(IWorkbenchPreferenceConstants.EDITOR_TAB_POSITION);
+		}
+
+		// As default is true we need to check if a value was set
+
+		if (internalStore
+				.contains(IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS)) {
+			apiStore
+					.setValue(
+							IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS,
+							internalStore
+							.getBoolean(IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS));
+			internalStore
+					.setToDefault(IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS);
+		}
 	}
 
 }

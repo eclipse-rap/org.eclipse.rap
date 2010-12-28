@@ -1,6 +1,6 @@
 // RAP [rh] package org.eclipse.ui.keys disabled
 ///*******************************************************************************
-// * Copyright (c) 2000, 2005 IBM Corporation and others.
+// * Copyright (c) 2000, 2008 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@
 //
 //import org.eclipse.jface.bindings.keys.IKeyLookup;
 //import org.eclipse.jface.bindings.keys.KeyLookupFactory;
-//import org.eclipse.swt.SWT;
+//import org.eclipse.jface.util.Util;
 //
 ///**
 // * <p>
@@ -103,13 +103,13 @@
 //		modifierKeysByName
 //				.put(
 //						M1_NAME,
-//						"carbon".equals(SWT.getPlatform()) ? ModifierKey.COMMAND : ModifierKey.CTRL); //$NON-NLS-1$
+//						Util.isMac() ? ModifierKey.COMMAND : ModifierKey.CTRL);
 //		modifierKeysByName.put(M2_NAME, ModifierKey.SHIFT);
 //		modifierKeysByName.put(M3_NAME, ModifierKey.ALT);
 //		modifierKeysByName
 //				.put(
 //						M4_NAME,
-//						"carbon".equals(SWT.getPlatform()) ? ModifierKey.CTRL : ModifierKey.COMMAND); //$NON-NLS-1$
+//						Util.isMac() ? ModifierKey.CTRL : ModifierKey.COMMAND);
 //	}
 //
 //	/**

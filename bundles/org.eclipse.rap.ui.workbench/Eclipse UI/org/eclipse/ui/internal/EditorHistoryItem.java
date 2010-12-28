@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,8 +153,7 @@ public class EditorHistoryItem {
     public IStatus restoreState() {
         Assert.isTrue(!isRestored());
 
-        Status result = new Status(IStatus.OK, PlatformUI.PLUGIN_ID, 0,
-                "", null); //$NON-NLS-1$
+        IStatus result = Status.OK_STATUS;
         IMemento memento = this.memento;
         this.memento = null;
 
@@ -235,7 +234,7 @@ public class EditorHistoryItem {
                         .getToolTipText());
             }
         }
-        return new Status(IStatus.OK, PlatformUI.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+        return Status.OK_STATUS;
     }
 
 }

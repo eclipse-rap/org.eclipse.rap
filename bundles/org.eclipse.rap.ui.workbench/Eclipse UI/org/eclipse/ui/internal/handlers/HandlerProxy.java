@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,14 +14,31 @@ package org.eclipse.ui.internal.handlers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.commands.*;
-import org.eclipse.core.expressions.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.commands.AbstractHandlerWithState;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.HandlerEvent;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.commands.IHandler2;
+import org.eclipse.core.commands.IHandlerListener;
+import org.eclipse.core.commands.IStateListener;
+import org.eclipse.core.commands.State;
+import org.eclipse.core.expressions.EvaluationResult;
+import org.eclipse.core.expressions.Expression;
+import org.eclipse.core.expressions.IEvaluationContext;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
+import org.eclipse.ui.handlers.RadioState;
+import org.eclipse.ui.handlers.RegistryToggleState;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
@@ -40,7 +57,7 @@ import org.eclipse.ui.services.IEvaluationService;
  * the proxied handler.
  * </p>
  */
-public final class HandlerProxy extends AbstractHandler implements
+public final class HandlerProxy extends AbstractHandlerWithState implements
 		IElementUpdater {
 
 // RAP [fappel]: change this due to memory problems
@@ -96,11 +113,23 @@ public final class HandlerProxy extends AbstractHandler implements
 	private IEvaluationReference enablementRef;
 
 	private boolean proxyEnabled;
+	
+	private String commandId;
+
+	//
+	// state to support checked or radio commands.
+	private State checkedState;
+	
+	private State radioState;
+
+	// Exception that occurs while loading the proxied handler class
+	private Exception loadException;
 
 	/**
 	 * Constructs a new instance of <code>HandlerProxy</code> with all the
 	 * information it needs to try to avoid loading until it is needed.
 	 * 
+	 * @param commandId the id for this handler
 	 * @param configurationElement
 	 *            The configuration element from which the real class can be
 	 *            loaded at run-time; must not be <code>null</code>.
@@ -108,15 +137,16 @@ public final class HandlerProxy extends AbstractHandler implements
 	 *            The name of the attibute or element containing the handler
 	 *            executable extension; must not be <code>null</code>.
 	 */
-	public HandlerProxy(final IConfigurationElement configurationElement,
+	public HandlerProxy(final String commandId, final IConfigurationElement configurationElement,
 			final String handlerAttributeName) {
-		this(configurationElement, handlerAttributeName, null, null);
+		this(commandId, configurationElement, handlerAttributeName, null, null);
 	}
 
 	/**
 	 * Constructs a new instance of <code>HandlerProxy</code> with all the
 	 * information it needs to try to avoid loading until it is needed.
 	 * 
+	 * @param commandId the id for this handler
 	 * @param configurationElement
 	 *            The configuration element from which the real class can be
 	 *            loaded at run-time; must not be <code>null</code>.
@@ -136,7 +166,8 @@ public final class HandlerProxy extends AbstractHandler implements
 	 *            This value may be <code>null</code> only if the
 	 *            <code>enabledWhenExpression</code> is <code>null</code>.
 	 */
-	public HandlerProxy(final IConfigurationElement configurationElement,
+	public HandlerProxy(final String commandId, 
+			final IConfigurationElement configurationElement,
 			final String handlerAttributeName,
 			final Expression enabledWhenExpression,
 			final IEvaluationService evaluationService) {
@@ -155,6 +186,7 @@ public final class HandlerProxy extends AbstractHandler implements
 					"We must have a handler service and evaluation service to support the enabledWhen expression"); //$NON-NLS-1$
 		}
 
+		this.commandId = commandId;
 		this.configurationElement = configurationElement;
 		this.handlerAttributeName = handlerAttributeName;
 		this.enabledWhenExpression = enabledWhenExpression;
@@ -273,6 +305,9 @@ public final class HandlerProxy extends AbstractHandler implements
 			}
 			return handler.execute(event);
 		}
+		
+		if(loadException !=null)
+			throw new ExecutionException("Exception occured when loading the handler", loadException); //$NON-NLS-1$
 
 		return null;
 	}
@@ -329,6 +364,7 @@ public final class HandlerProxy extends AbstractHandler implements
 					handler.addHandlerListener(getHandlerListener());
 					setEnabled(evaluationService == null ? null
 							: evaluationService.getCurrentState());
+					refreshElements();
 					return true;
 				}
 
@@ -338,6 +374,7 @@ public final class HandlerProxy extends AbstractHandler implements
 						WorkbenchPlugin.PI_WORKBENCH, 0, message, e);
 				WorkbenchPlugin.log(message, status);
 				configurationElement = null;
+				loadException = e;
 
 			} catch (final CoreException e) {
 				final String message = "The proxied handler for '" + configurationElement.getAttribute(handlerAttributeName) //$NON-NLS-1$
@@ -346,6 +383,7 @@ public final class HandlerProxy extends AbstractHandler implements
 						WorkbenchPlugin.PI_WORKBENCH, 0, message, e);
 				WorkbenchPlugin.log(message, status);
 				configurationElement = null;
+				loadException = e;
 			}
 			return false;
 		}
@@ -419,8 +457,60 @@ public final class HandlerProxy extends AbstractHandler implements
 	 *      java.util.Map)
 	 */
 	public void updateElement(UIElement element, Map parameters) {
+		if (checkedState != null) {
+			Boolean value = (Boolean) checkedState.getValue();
+			element.setChecked(value.booleanValue());
+		} else if (radioState != null) {
+			String value = (String) radioState.getValue();
+			Object parameter = parameters.get(RadioState.PARAMETER_ID);
+			element.setChecked(value != null && value.equals(parameter));
+		}
 		if (handler != null && handler instanceof IElementUpdater) {
 			((IElementUpdater) handler).updateElement(element, parameters);
 		}
+	}
+	
+	private void refreshElements() {
+		if (commandId == null || !(handler instanceof IElementUpdater)
+				&& (checkedState == null && radioState == null)) {
+			return;
+		}
+		ICommandService cs = (ICommandService) PlatformUI.getWorkbench()
+				.getService(ICommandService.class);
+		cs.refreshElements(commandId, null);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.commands.IStateListener#handleStateChange(org.eclipse.core.commands.State, java.lang.Object)
+	 */
+	public void handleStateChange(State state, Object oldValue) {
+		if (state.getId().equals(RegistryToggleState.STATE_ID)) {
+			checkedState = state;
+			refreshElements();
+		} else if (state.getId().equals(RadioState.STATE_ID)) {
+			radioState = state;
+			refreshElements();
+		}
+		if (handler instanceof IStateListener) {
+			((IStateListener) handler).handleStateChange(state, oldValue);
+		}
+	}
+	
+	/**
+	 * @return the config element for use with the PDE framework.
+	 */
+	public IConfigurationElement getConfigurationElement() {
+		return configurationElement;
+	}
+	
+	public String getAttributeName() {
+		return handlerAttributeName;
+	}
+
+	/**
+	 * @return Returns the handler.
+	 */
+	public IHandler getHandler() {
+		return handler;
 	}
 }

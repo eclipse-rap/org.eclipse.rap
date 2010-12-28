@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.ui.internal.handlers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.commands.IHandler;
@@ -23,7 +24,9 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryChangeEvent;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.services.RegistryPersistence;
 import org.eclipse.ui.services.IEvaluationService;
@@ -97,6 +100,21 @@ public final class HandlerPersistence extends RegistryPersistence {
 	 */
 	private final void clearActivations(final IHandlerService handlerService) {
 		handlerService.deactivateHandlers(handlerActivations);
+		Iterator i = handlerActivations.iterator();
+		while (i.hasNext()) {
+			IHandlerActivation activation = (IHandlerActivation) i.next();
+			if (activation.getHandler() != null) {
+				try {
+					activation.getHandler().dispose();
+				} catch (Exception e) {
+					WorkbenchPlugin.log("Failed to dispose handler for " //$NON-NLS-1$
+							+ activation.getCommandId(), e);
+				} catch (LinkageError e) {
+					WorkbenchPlugin.log("Failed to dispose handler for " //$NON-NLS-1$
+							+ activation.getCommandId(), e);
+				}
+			}
+		}
 		handlerActivations.clear();
 	}
 
@@ -250,7 +268,7 @@ public final class HandlerPersistence extends RegistryPersistence {
 			}
 
 			handlerActivations.add(handlerService
-					.activateHandler(commandId, new HandlerProxy(
+					.activateHandler(commandId, new HandlerProxy(commandId,
 							configurationElement, ATT_DEFAULT_HANDLER)));
 		}
 	}
@@ -303,7 +321,7 @@ public final class HandlerPersistence extends RegistryPersistence {
 				continue;
 			}
 
-			final IHandler proxy = new HandlerProxy(configurationElement,
+			final IHandler proxy = new HandlerProxy(commandId, configurationElement,
 					ATT_CLASS, enabledWhenExpression, evaluationService);
 			handlerActivations.add(handlerService.activateHandler(commandId,
 					proxy, activeWhenExpression));
@@ -312,7 +330,6 @@ public final class HandlerPersistence extends RegistryPersistence {
 			final String helpContextId = readOptional(configurationElement,
 					ATT_HELP_CONTEXT_ID);
 			handlerService.setHelpContextId(proxy, helpContextId);
-
 		}
 
 		logWarnings(

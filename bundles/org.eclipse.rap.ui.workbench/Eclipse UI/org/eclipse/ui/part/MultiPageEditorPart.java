@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,40 +14,46 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.util.Tracing;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
-
-import org.eclipse.core.commands.util.Tracing;
-
+import org.eclipse.jface.dialogs.IPageChangeProvider;
+import org.eclipse.jface.dialogs.IPageChangedListener;
+import org.eclipse.jface.dialogs.PageChangedEvent;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.SafeRunnable;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Item;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-
 import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
-//import org.eclipse.ui.IKeyBindingService;
-//import org.eclipse.ui.INestableKeyBindingService;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
-//import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.internal.PartSite;
 import org.eclipse.ui.internal.misc.Policy;
 import org.eclipse.ui.internal.services.INestable;
 import org.eclipse.ui.internal.services.IServiceLocatorCreator;
@@ -61,8 +67,8 @@ import org.eclipse.ui.services.IServiceLocator;
  * <p>
  * Subclasses must implement the following methods:
  * <ul>
- * <li><code>createPages</code> - to create the required pages by calling one
- * of the <code>addPage</code> methods</li>
+ * <li><code>createPages</code> - to create the required pages by calling one of
+ * the <code>addPage</code> methods</li>
  * <li><code>IEditorPart.doSave</code> - to save contents of editor</li>
  * <li><code>IEditorPart.doSaveAs</code> - to save contents of editor</li>
  * <li><code>IEditorPart.isSaveAsAllowed</code> - to enable Save As</li>
@@ -72,16 +78,30 @@ import org.eclipse.ui.services.IServiceLocator;
  * <p>
  * Multi-page editors have a single action bar contributor, which manages
  * contributions for all the pages. The contributor must be a subclass of
- * <code>AbstractMultiPageEditorActionBarContributor</code>. Note that since
- * any nested editors are created directly in code by callers of
+ * <code>MultiPageEditorActionBarContributor</code>. Note that since any nested
+ * editors are created directly in code by callers of
  * <code>addPage(IEditorPart,IEditorInput)</code>, nested editors do not have
  * their own contributors.
  * </p>
+ * <p>
+ * As of 3.5 multi-page editors will post PageChangedEvents at the end of
+ * {@link #pageChange(int)}. Subclasses may override {@link #getSelectedPage()}
+ * to return a page appropriate to their multi-page editor. IPartListener2
+ * listeners registered with the IPartService can implement IPageChangedListener
+ * to be notified about all page change events within the workbench page or
+ * workbench window.
+ * </p>
  * 
  * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor
+ * @see org.eclipse.jface.dialogs.IPageChangeProvider
+ * @see org.eclipse.jface.dialogs.IPageChangedListener
+ * @see org.eclipse.ui.IPartService
  * @since 1.0
  */
-public abstract class MultiPageEditorPart extends EditorPart {
+public abstract class MultiPageEditorPart extends EditorPart implements IPageChangeProvider {
+	
+	private static final String COMMAND_NEXT_SUB_TAB = "org.eclipse.ui.navigate.nextSubTab"; //$NON-NLS-1$
+	private static final String COMMAND_PREVIOUS_SUB_TAB = "org.eclipse.ui.navigate.previousSubTab"; //$NON-NLS-1$
 	
 	/**
 	 * Subclasses that override {@link #createPageContainer(Composite)} can use
@@ -123,6 +143,9 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	private List pageSites = new ArrayList(3);
 
 	private IServiceLocator pageContainerSite;
+	
+	private ListenerList pageChangeListeners = new ListenerList(
+			ListenerList.IDENTITY);
 
 	/**
 	 * Creates an empty multi-page editor with no pages.
@@ -266,6 +289,21 @@ public abstract class MultiPageEditorPart extends EditorPart {
 				pageChange(newPageIndex);
 			}
 		});
+		// RAP [bm]: no traverse listener
+//		newContainer.addTraverseListener(new TraverseListener() { 
+//			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=199499 : Switching tabs by Ctrl+PageUp/PageDown must not be caught on the inner tab set
+//			public void keyTraversed(TraverseEvent e) {
+//				switch (e.detail) {
+//					case SWT.TRAVERSE_PAGE_NEXT:
+//					case SWT.TRAVERSE_PAGE_PREVIOUS:
+//						int detail = e.detail;
+//						e.doit = true;
+//						e.detail = SWT.TRAVERSE_NONE;
+//						Control control = newContainer.getParent();
+//						control.traverse(detail, new Event());
+//				}
+//			}
+//		});
 		return newContainer;
 	}
 
@@ -322,6 +360,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 			}
 		}
 		initializePageSwitching();
+		initializeSubTabSwitching();
 	}
 
 	/**
@@ -365,6 +404,52 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	}
 
 	/**
+	 * Initialize the MultiPageEditorPart to use the sub-tab switching commands.
+	 * 
+	 * @since 1.4
+	 */
+	private void initializeSubTabSwitching() {
+		IHandlerService service = (IHandlerService) getSite().getService(IHandlerService.class);
+		service.activateHandler(COMMAND_NEXT_SUB_TAB, new AbstractHandler() {
+			/**
+			 * {@inheritDoc}
+			 * @throws ExecutionException
+			 *             if an exception occurred during execution
+			 */
+			public Object execute(ExecutionEvent event) throws ExecutionException {
+				int n= getPageCount();
+				if (n == 0)
+					return null;
+				
+				int i= getActivePage() + 1;
+				if (i >= n)
+					i= 0;
+				setActivePage(i);
+				return null;
+			}
+		});
+		
+		service.activateHandler(COMMAND_PREVIOUS_SUB_TAB, new AbstractHandler() {
+			/**
+			 * {@inheritDoc}
+			 * @throws ExecutionException
+			 *             if an exception occurred during execution
+			 */
+			public Object execute(ExecutionEvent event) throws ExecutionException {
+				int n= getPageCount();
+				if (n == 0)
+					return null;
+				
+				int i= getActivePage() - 1;
+				if (i < 0)
+					i= n - 1;
+				setActivePage(i);
+				return null;
+			}
+		});
+	}
+	
+	/**
 	 * Creates the parent control for the container returned by
 	 * {@link #getContainer() }.
 	 * 
@@ -402,6 +487,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * Subclasses may extend.
 	 */
 	public void dispose() {
+		pageChangeListeners.clear();
 		for (int i = 0; i < nestedEditors.size(); ++i) {
 			IEditorPart editor = (IEditorPart) nestedEditors.get(i);
 			disposePart(editor);
@@ -427,6 +513,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * Subclasses should not override this method
 	 * </p>
 	 * 
+	 * @nooverride
 	 * @return the active nested editor, or <code>null</code> if none
 	 */
 	protected IEditorPart getActiveEditor() {
@@ -444,9 +531,12 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * Subclasses should not override this method
 	 * </p>
 	 * 
+	 * @nooverride
+	 * 
 	 * @return the index of the active page, or -1 if there is no active page
+	 * @since 1.4
 	 */
-	protected int getActivePage() {
+	public int getActivePage() {
 		CTabFolder tabFolder = getTabFolder();
 		if (tabFolder != null && !tabFolder.isDisposed()) {
 			return tabFolder.getSelectionIndex();
@@ -544,7 +634,14 @@ public abstract class MultiPageEditorPart extends EditorPart {
 			} else if (data == null) {
 				IServiceLocatorCreator slc = (IServiceLocatorCreator) getSite()
 						.getService(IServiceLocatorCreator.class);
-				IServiceLocator sl = slc.createServiceLocator(getSite(), null);
+				IServiceLocator sl = slc.createServiceLocator(getSite(), null, new IDisposable(){
+					public void dispose() {
+						final Control control = ((PartSite)getSite()).getPane().getControl();
+						if (control != null && !control.isDisposed()) {
+							((PartSite)getSite()).getPane().doHide();
+						}
+					}
+				});
 				item.setData(sl);
 				pageSites.add(sl);
 				return sl;
@@ -564,7 +661,14 @@ public abstract class MultiPageEditorPart extends EditorPart {
 		if (pageContainerSite == null) {
 			IServiceLocatorCreator slc = (IServiceLocatorCreator) getSite()
 					.getService(IServiceLocatorCreator.class);
-			pageContainerSite = slc.createServiceLocator(getSite(), null);
+			pageContainerSite = slc.createServiceLocator(getSite(), null, new IDisposable(){
+				public void dispose() {
+					final Control control = ((PartSite)getSite()).getPane().getControl();
+					if (control != null && !control.isDisposed()) {
+						((PartSite)getSite()).getPane().doHide();
+					}
+				}
+			});
 		}
 		return pageContainerSite;
 	}
@@ -720,7 +824,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 		IPartService partService = (IPartService) getSite().getService(
 				IPartService.class);
 		if (partService.getActivePart() == this) {
-			setFocus(newPageIndex);
+			setFocus();
 		}
 
 		IEditorPart activeEditor = getEditor(newPageIndex);
@@ -758,6 +862,10 @@ public abstract class MultiPageEditorPart extends EditorPart {
 		}
 
 		activateSite();
+		Object selectedPage = getSelectedPage();
+		if (selectedPage != null) {
+			firePageChanged(new PageChangedEvent(this, selectedPage));
+		}
 	}
 	
 	/**
@@ -803,7 +911,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 //				nestableService.activateKeyBindingService(null);
 //			} else {
 //				WorkbenchPlugin
-//						.log("MultiPageEditorPart.setFocus()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
+//						.log("MultiPageEditorPart.deactivateSite()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
 //			}
 //		}
 		
@@ -855,7 +963,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 //
 //			} else {
 //				WorkbenchPlugin
-//						.log("MultiPageEditorPart.setFocus()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
+//						.log("MultiPageEditorPart.activateSite()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
 //			}
 			// Activate the services for the new service locator.
 			final IServiceLocator serviceLocator = editor.getEditorSite();
@@ -874,7 +982,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 //				nestableService.activateKeyBindingService(null);
 //			} else {
 //				WorkbenchPlugin
-//						.log("MultiPageEditorPart.setFocus()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
+//						.log("MultiPageEditorPart.activateSite()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
 //			}
 
 			if (item.getData() instanceof INestable) {
@@ -996,6 +1104,10 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 *            the index of the page
 	 */
 	private void setFocus(int pageIndex) {
+		if (pageIndex < 0 || pageIndex >= getPageCount()) {
+			// page index out of bounds, don't set focus.
+			return;
+		}
 		final IEditorPart editor = getEditor(pageIndex);
 		if (editor != null) {
 			editor.setFocus();
@@ -1092,6 +1204,74 @@ public abstract class MultiPageEditorPart extends EditorPart {
 				setActivePage(i);
 				break;
 			}
+		}
+	}
+
+	/**
+	 * Returns the selected page for the current active page index, either the
+	 * IEditorPart for editors or the Control for other pages.
+	 * <p>
+	 * <b>Note:</b> clients may override this method to return a page
+	 * appropriate for their editors. Maybe be <code>null</code>.
+	 * </p>
+	 * 
+	 * @return The IEditorPart or Control representing the current active page,
+	 *         or <code>null</code> if there are no active pages.
+	 * @since 1.4
+	 * @see #getActivePage()
+	 */
+	public Object getSelectedPage() {
+		int index = getActivePage();
+		if (index == -1) {
+			return null;
+		}
+		IEditorPart editor = getEditor(index);
+		if (editor != null) {
+			return editor;
+		}
+		return getControl(index);
+	}
+	
+	/**
+	 * Add the page change listener to be notified when the page changes. The
+	 * newly selected page will be the Object returned from
+	 * {@link #getSelectedPage()}. In the default case, this will be the active
+	 * page Control, IEditorPart, or <code>null</code>.
+	 * <p>
+	 * This method has no effect if the listener has already been added.
+	 * </p>
+	 * 
+	 * @nooverride
+	 * 
+	 * @since 1.4
+	 */
+	public void addPageChangedListener(IPageChangedListener listener) {
+		pageChangeListeners.add(listener);
+	}
+
+	/**
+	 * Remove the page change listener.
+	 * <p>
+	 * This method has no effect if the listener is not in the list.
+	 * </p>
+	 * 
+	 * @nooverride
+	 * 
+	 * @since 1.4
+	 */
+	public void removePageChangedListener(IPageChangedListener listener) {
+		pageChangeListeners.remove(listener);
+	}
+
+	private void firePageChanged(final PageChangedEvent event) {
+		Object[] listeners = pageChangeListeners.getListeners();
+		for (int i = 0; i < listeners.length; ++i) {
+			final IPageChangedListener l = (IPageChangedListener) listeners[i];
+			SafeRunnable.run(new SafeRunnable() {
+				public void run() {
+					l.pageChanged(event);
+				}
+			});
 		}
 	}
 }

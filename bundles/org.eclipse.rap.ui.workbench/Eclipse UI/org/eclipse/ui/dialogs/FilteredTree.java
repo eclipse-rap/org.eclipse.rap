@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Jacek Pospychala - bug 187762
+ *     Mohamed Tarief - tarief@eg.ibm.com - IBM - Bug 174481
  *******************************************************************************/
 package org.eclipse.ui.dialogs;
 
@@ -26,6 +27,7 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 //import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+//import org.eclipse.swt.accessibility.ACC;
 //import org.eclipse.swt.accessibility.AccessibleAdapter;
 //import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -38,18 +40,26 @@ import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseTrackListener;
 //import org.eclipse.swt.events.SelectionAdapter;
 //import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.events.TraverseEvent;
 //import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
@@ -77,9 +87,25 @@ public class FilteredTree extends Composite {
 	 * The control representing the clear button for the filter text entry. This
 	 * value may be <code>null</code> if no such button exists, or if the
 	 * controls have not yet been created.
+	 * <p>
+	 * <strong>Note:</strong> As of 3.5, this is not used if the new look is chosen.
+	 * </p>
 	 */
 	protected ToolBarManager filterToolBar;
 
+	/**
+	 * The control representing the clear button for the filter text entry. This
+	 * value may be <code>null</code> if no such button exists, or if the
+	 * controls have not yet been created.
+	 * <p>
+	 * <strong>Note:</strong> This is only used if the new look is chosen.
+	 * </p>
+	 * 
+	 * @since 3.5
+	 */
+	protected Control clearButtonControl;
+	
+	
 	/**
 	 * The viewer for the filtered tree. This value should never be
 	 * <code>null</code> after the widget creation methods are complete.
@@ -118,12 +144,19 @@ public class FilteredTree extends Composite {
 	 * default is to show these controls. This can be overridden by providing a
 	 * setting in the product configuration file. The setting to add to not show
 	 * these controls is:
-	 *
+	 * 
 	 * org.eclipse.ui/SHOW_FILTERED_TEXTS=false
 	 */
 	protected boolean showFilterControls;
 
 	protected Composite treeComposite;
+
+	/**
+	 * Tells whether to use the pre 3.5 or the new look.
+	 * 
+	 * @since 1.4
+	 */
+	private boolean useNewLook = false;
 
 	/**
 	 * Image descriptor for enabled clear button.
@@ -133,7 +166,7 @@ public class FilteredTree extends Composite {
 	/**
 	 * Image descriptor for disabled clear button.
 	 */
-	private static final String DCLEAR_ICON = "org.eclipse.ui.internal.dialogs.DCLEAR_ICON"; //$NON-NLS-1$
+	private static final String DISABLED_CLEAR_ICON= "org.eclipse.ui.internal.dialogs.DCLEAR_ICON"; //$NON-NLS-1$
 
 	/**
 	 * Maximum time spent expanding the tree after the filter text has been
@@ -170,11 +203,37 @@ public class FilteredTree extends Composite {
 	 *            the style bits for the <code>Tree</code>
 	 * @param filter
 	 *            the filter to be used
+	 * 
+	 * @deprecated As of 3.5, replaced by
+	 *             {@link #FilteredTree(Composite, int, PatternFilter, boolean)} where using the new
+	 *             look is encouraged
 	 */
 	public FilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
 		super(parent, SWT.NONE);
 		this.parent = parent;
 // RAP [rh] initialize image descriptors in session scope  
+		initializeImageDescriptors();
+		init(treeStyle, filter);
+	}
+
+	/**
+	 * Create a new instance of the receiver.
+	 * 
+	 * @param parent
+	 *            the parent <code>Composite</code>
+	 * @param treeStyle
+	 *            the style bits for the <code>Tree</code>
+	 * @param filter
+	 *            the filter to be used
+	 * @param useNewLook
+	 *            <code>true</code> if the new 3.5 look should be used
+	 * @since 3.5
+	 */
+	public FilteredTree(Composite parent, int treeStyle, PatternFilter filter, boolean useNewLook) {
+		super(parent, SWT.NONE);
+		this.parent = parent;
+		this.useNewLook= useNewLook;
+		// RAP [rh] initialize image descriptors in session scope  
 		initializeImageDescriptors();
 		init(treeStyle, filter);
 	}
@@ -188,12 +247,34 @@ public class FilteredTree extends Composite {
 	 * @param parent
 	 *            the parent <code>Composite</code>
 	 * @see #init(int, PatternFilter)
+	 * @deprecated As of 3.5, replaced by {@link #FilteredTree(Composite, boolean)} where using the
+	 *             look is encouraged
 	 */
 	protected FilteredTree(Composite parent) {
 		super(parent, SWT.NONE);
 		this.parent = parent;
 // RAP [rh] initialize image descriptors in session scope  
 		initializeImageDescriptors();
+	}
+	
+	/**
+	 * Create a new instance of the receiver. Subclasses that wish to override
+	 * the default creation behavior may use this constructor, but must ensure
+	 * that the <code>init(composite, int, PatternFilter)</code> method is
+	 * called in the overriding constructor.
+	 * 
+	 * @param parent
+	 *            the parent <code>Composite</code>
+	 * @param useNewLook
+	 *            <code>true</code> if the new 3.5 look should be used
+	 * @see #init(int, PatternFilter)
+	 * 
+	 * @since 1.4
+	 */
+	protected FilteredTree(Composite parent, boolean useNewLook) {
+		super(parent, SWT.NONE);
+		this.parent = parent;
+		this.useNewLook = useNewLook;
 	}
 	
 // RAP [rh] initialize image descriptors in session scope  
@@ -206,8 +287,8 @@ public class FilteredTree extends Composite {
     }
     descriptor = AbstractUIPlugin.imageDescriptorFromPlugin( PlatformUI.PLUGIN_ID,
                                                              "$nl$/icons/full/dtool16/clear_co.gif" ); //$NON-NLS-1$
-    if( descriptor != null && registry.getDescriptor( DCLEAR_ICON ) == null ) {
-      registry.put( DCLEAR_ICON, descriptor );
+    if( descriptor != null && registry.getDescriptor( DISABLED_CLEAR_ICON ) == null ) {
+      registry.put( DISABLED_CLEAR_ICON, descriptor );
     }
   }
 	
@@ -227,6 +308,7 @@ public class FilteredTree extends Composite {
 		createRefreshJob();
 		setInitialText(WorkbenchMessages.get().FilteredTree_FilterMessage);
 		setFont(parent.getFont());
+
 	}
 
 	/**
@@ -243,10 +325,15 @@ public class FilteredTree extends Composite {
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		if (showFilterControls) {
-			filterComposite = new Composite(this, SWT.NONE);
-			GridLayout filterLayout = new GridLayout(2, false);
-			filterLayout.marginHeight = 0;
-			filterLayout.marginWidth = 0;
+			if (!useNewLook || useNativeSearchField(parent)) {
+				filterComposite= new Composite(this, SWT.NONE);
+			} else {
+				filterComposite= new Composite(this, SWT.BORDER);
+				filterComposite.setBackground(getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+			}
+			GridLayout filterLayout= new GridLayout(2, false);
+			filterLayout.marginHeight= 0;
+			filterLayout.marginWidth= 0;
 			filterComposite.setLayout(filterLayout);
 			filterComposite.setFont(parent.getFont());
 
@@ -264,6 +351,26 @@ public class FilteredTree extends Composite {
 		treeComposite.setLayoutData(data);
 		createTreeControl(treeComposite, treeStyle);
 	}
+	
+	private static Boolean useNativeSearchField;
+	
+	private static boolean useNativeSearchField(Composite composite) {
+		if (useNativeSearchField == null) {
+			useNativeSearchField = Boolean.FALSE;
+			Text testText = null;
+			try {
+				testText = new Text(composite, SWT.SEARCH | SWT.ICON_CANCEL);
+				useNativeSearchField = new Boolean((testText.getStyle() & SWT.ICON_CANCEL) != 0);
+			} finally {
+				if (testText != null) {
+					testText.dispose();
+				}
+			}
+				
+		}
+		return useNativeSearchField.booleanValue();
+	}
+	
 
 	/**
 	 * Create the filter controls. By default, a text and corresponding tool bar
@@ -276,7 +383,14 @@ public class FilteredTree extends Composite {
 	 */
 	protected Composite createFilterControls(Composite parent) {
 		createFilterText(parent);
-		createClearText(parent);
+		if (useNewLook)
+			createClearTextNew(parent);
+		else
+			createClearTextOld(parent);
+		if (clearButtonControl != null) {
+			// initially there is no text to clear
+			clearButtonControl.setVisible(false);
+		}
 		if (filterToolBar != null) {
 			filterToolBar.update(false);
 			// initially there is no text to clear
@@ -431,7 +545,7 @@ public class FilteredTree extends Composite {
 						// enabled toolbar - there is text to clear
 						// and the list is currently being filtered
 						updateToolbar(true);
-
+						
 						if (cancel) {
 							return Status.CANCEL_STATUS;
 						}
@@ -442,12 +556,11 @@ public class FilteredTree extends Composite {
 					}
 				} finally {
 					// done updating the tree - set redraw back to true
-// RAP [rh] Tree#setTopItem missing
-//					TreeItem[] items = getViewer().getTree().getItems();
-//					if (items.length > 0
-//							&& getViewer().getTree().getSelectionCount() == 0) {
-//						treeViewer.getTree().setTopItem(items[0]);
-//					}
+					TreeItem[] items = getViewer().getTree().getItems();
+					if (items.length > 0
+							&& getViewer().getTree().getSelectionCount() == 0) {
+						treeViewer.getTree().setTopItem(items[0]);
+					}
 					redrawFalseControl.setRedraw(true);
 				}
 				return Status.OK_STATUS;
@@ -496,6 +609,9 @@ public class FilteredTree extends Composite {
 	}
 
 	protected void updateToolbar(boolean visible) {
+		if (clearButtonControl != null) {
+			clearButtonControl.setVisible(visible);
+		}
 		if (filterToolBar != null) {
 			filterToolBar.getControl().setVisible(visible);
 		}
@@ -569,50 +685,66 @@ public class FilteredTree extends Composite {
 		filterText.addFocusListener(new FocusAdapter() {
 			/*
 			 * (non-Javadoc)
-			 *
+			 * 
 			 * @see org.eclipse.swt.events.FocusListener#focusLost(org.eclipse.swt.events.FocusEvent)
 			 */
 			public void focusGained(FocusEvent e) {
-				/*
-				 * Running in an asyncExec because the selectAll() does not
-				 * appear to work when using mouse to give focus to text.
-				 */
-				Display display = filterText.getDisplay();
-				display.asyncExec(new Runnable() {
-					public void run() {
-// RAP [fappel]: workaround since Text#selectAll doesn't work (bug #223903)
-//						if (!filterText.isDisposed()) {
-//							if (getInitialText().equals(
-//									filterText.getText().trim())) {
-//								filterText.selectAll();
-//							}
-//						}
-                        if (!filterText.isDisposed()){
-                          if (getInitialText().equals(filterText.getText().trim())){
-//                            filterText.selectAll();
-                            filterText.setText( "" );
-                          }
-                      }
-					}
-				});
+				if (!useNewLook) {
+					/*
+					 * Running in an asyncExec because the selectAll() does not appear to work when
+					 * using mouse to give focus to text.
+					 */
+					Display display= filterText.getDisplay();
+					display.asyncExec(new Runnable() {
+						public void run() {
+							if (!filterText.isDisposed()) {
+								if (getInitialText().equals(
+										filterText.getText().trim())) {
+									filterText.selectAll();
+								}
+							}
+						}
+					});
+					return;
+				}
 			}
 
-// RAP [fappel]: workaround since Text#selectAll doesn't work (bug #223903)
-            public void focusLost( final FocusEvent event ) {
-              Display display = filterText.getDisplay();
-              display.asyncExec(new Runnable() {
-                  public void run() {
-                      if (!filterText.isDisposed()){
-                          if ("".equals(filterText.getText().trim())){
-//                            filterText.selectAll();
-                            filterText.setText( getInitialText() );
-                          }
-                      }
-                  }
-              });
-            }
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see org.eclipse.swt.events.FocusAdapter#focusLost(org.eclipse.swt.events.FocusEvent)
+			 */
 
+			public void focusLost(FocusEvent e) {
+				if (!useNewLook) {
+					return;
+				}
+				if (filterText.getText().equals(initialText)) {
+					setFilterText(""); //$NON-NLS-1$
+					textChanged();
+				}
+			}
 		});
+
+
+
+		if (useNewLook) {
+			filterText.addMouseListener(new MouseAdapter() {
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see
+				 * org.eclipse.swt.events.MouseAdapter#mouseDown(org.eclipse.swt.events.MouseEvent)
+				 */
+				public void mouseDown(MouseEvent e) {
+					if (filterText.getText().equals(initialText)) {
+						// XXX: We cannot call clearText() due to https://bugs.eclipse.org/bugs/show_bug.cgi?id=260664
+						setFilterText(""); //$NON-NLS-1$
+						textChanged();
+					}
+				}
+			});
+		}
 
 // RAP [rh] missing key yevents
 //		filterText.addKeyListener(new KeyAdapter() {
@@ -665,7 +797,7 @@ public class FilteredTree extends Composite {
 		filterText.addModifyListener(new ModifyListener() {
 			/*
 			 * (non-Javadoc)
-			 *
+			 * 
 			 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
 			 */
 			public void modifyText(ModifyEvent e) {
@@ -676,24 +808,24 @@ public class FilteredTree extends Composite {
 		// if we're using a field with built in cancel we need to listen for
 		// default selection changes (which tell us the cancel button has been
 		// pressed)
-		if ((filterText.getStyle() & SWT.CANCEL) != 0) {
+		if ((filterText.getStyle() & SWT.ICON_CANCEL) != 0) {
 			filterText.addSelectionListener(new SelectionAdapter() {
 				/*
 				 * (non-Javadoc)
-				 *
+				 * 
 				 * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
 				 */
 				public void widgetDefaultSelected(SelectionEvent e) {
-					if (e.detail == SWT.CANCEL)
+					if (e.detail == SWT.ICON_CANCEL)
 						clearText();
 				}
 			});
 		}
 
-		GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+		GridData gridData= new GridData(SWT.FILL, SWT.CENTER, true, false);
 		// if the text widget supported cancel then it will have it's own
 		// integrated button. We can take all of the space.
-		if ((filterText.getStyle() & SWT.CANCEL) != 0)
+		if ((filterText.getStyle() & SWT.ICON_CANCEL) != 0)
 			gridData.horizontalSpan = 2;
 		filterText.setLayoutData(gridData);
 	}
@@ -701,14 +833,17 @@ public class FilteredTree extends Composite {
 	/**
 	 * Creates the text control for entering the filter text. Subclasses may
 	 * override.
-	 *
+	 * 
 	 * @param parent
 	 *            the parent composite
 	 * @return the text widget
 	 */
 	protected Text doCreateFilterText(Composite parent) {
-		return new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.SEARCH
-				| SWT.CANCEL );
+		if (!useNewLook || useNativeSearchField(parent)) {
+			return new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.SEARCH
+					| SWT.ICON_CANCEL);
+		}
+		return new Text(parent, SWT.SINGLE);
 	}
 
 	private String previousFilterText;
@@ -720,22 +855,36 @@ public class FilteredTree extends Composite {
 	 */
 	protected void textChanged() {
 		narrowingDown = previousFilterText == null
+				|| previousFilterText
+						.equals(WorkbenchMessages.get().FilteredTree_FilterMessage)
 				|| getFilterString().startsWith(previousFilterText);
 		previousFilterText = getFilterString();
 		// cancel currently running job first, to prevent unnecessary redraw
 		refreshJob.cancel();
-		refreshJob.schedule(200);
+		refreshJob.schedule(getRefreshJobDelay());
+	}
+	
+	/**
+	 * Return the time delay that should be used when scheduling the
+	 * filter refresh job.  Subclasses may override.
+	 * 
+	 * @return a time delay in milliseconds before the job should run
+	 * 
+	 * @since 1.4
+	 */
+	protected long getRefreshJobDelay() {
+		return 200;
 	}
 
 	/**
 	 * Set the background for the widgets that support the filter text area.
-	 *
+	 * 
 	 * @param background
 	 *            background <code>Color</code> to set
 	 */
 	public void setBackground(Color background) {
 		super.setBackground(background);
-		if (filterComposite != null) {
+		if (filterComposite != null && (!useNewLook || useNativeSearchField(filterComposite))) {
 			filterComposite.setBackground(background);
 		}
 		if (filterToolBar != null && filterToolBar.getControl() != null) {
@@ -745,21 +894,21 @@ public class FilteredTree extends Composite {
 
 	/**
 	 * Create the button that clears the text.
-	 *
+	 * 
 	 * @param parent
 	 *            parent <code>Composite</code> of toolbar button
 	 */
-	private void createClearText(Composite parent) {
+	private void createClearTextOld(Composite parent) {
 		// only create the button if the text widget doesn't support one
 		// natively
-		if ((filterText.getStyle() & SWT.CANCEL) == 0) {
-			filterToolBar = new ToolBarManager(SWT.FLAT | SWT.HORIZONTAL);
+		if ((filterText.getStyle() & SWT.ICON_CANCEL) == 0) {
+			filterToolBar= new ToolBarManager(SWT.FLAT | SWT.HORIZONTAL);
 			filterToolBar.createControl(parent);
 
-			IAction clearTextAction = new Action("", IAction.AS_PUSH_BUTTON) {//$NON-NLS-1$
+			IAction clearTextAction= new Action("", IAction.AS_PUSH_BUTTON) {//$NON-NLS-1$
 				/*
 				 * (non-Javadoc)
-				 *
+				 * 
 				 * @see org.eclipse.jface.action.Action#run()
 				 */
 				public void run() {
@@ -772,15 +921,110 @@ public class FilteredTree extends Composite {
 			clearTextAction.setImageDescriptor(JFaceResources
 					.getImageRegistry().getDescriptor(CLEAR_ICON));
 			clearTextAction.setDisabledImageDescriptor(JFaceResources
-					.getImageRegistry().getDescriptor(DCLEAR_ICON));
+.getImageRegistry().getDescriptor(DISABLED_CLEAR_ICON));
 
 			filterToolBar.add(clearTextAction);
 		}
 	}
 
 	/**
-	 * Clears the text in the filter text widget. Also removes the optional
-	 * additional filter that is provided via addFilter(ViewerFilter).
+	 * Create the button that clears the text.
+	 * 
+	 * @param parent parent <code>Composite</code> of toolbar button
+	 */
+	private void createClearTextNew(Composite parent) {
+		// only create the button if the text widget doesn't support one
+		// natively
+		if ((filterText.getStyle() & SWT.ICON_CANCEL) == 0) {
+			final Image inactiveImage= JFaceResources.getImageRegistry().getDescriptor(DISABLED_CLEAR_ICON).createImage();
+			final Image activeImage= JFaceResources.getImageRegistry().getDescriptor(CLEAR_ICON).createImage();
+			// RAP [bm] IMAGE_GRAY
+//			final Image pressedImage= new Image(getDisplay(), activeImage, SWT.IMAGE_GRAY);
+			final Image pressedImage= new Image(getDisplay(), activeImage, SWT.IMAGE_COPY);
+			
+			final Label clearButton= new Label(parent, SWT.NONE);
+			clearButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+			clearButton.setImage(inactiveImage);
+			clearButton.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+			clearButton.setToolTipText(WorkbenchMessages.get().FilteredTree_ClearToolTip);
+			clearButton.addMouseListener(new MouseAdapter() {
+				private MouseMoveListener fMoveListener;
+
+				public void mouseDown(MouseEvent e) {
+					clearButton.setImage(pressedImage);
+					fMoveListener= new MouseMoveListener() {
+						private boolean fMouseInButton= true;
+
+						public void mouseMove(MouseEvent e) {
+							boolean mouseInButton= isMouseInButton(e);
+							if (mouseInButton != fMouseInButton) {
+								fMouseInButton= mouseInButton;
+								clearButton.setImage(mouseInButton ? pressedImage : inactiveImage);
+							}
+						}
+					};
+					// RAP [bm] mouse move listener
+//					clearButton.addMouseMoveListener(fMoveListener);
+				}
+
+				public void mouseUp(MouseEvent e) {
+					if (fMoveListener != null) {
+						// RAP [bm] mouse move listener
+//						clearButton.removeMouseMoveListener(fMoveListener);
+						fMoveListener= null;
+						boolean mouseInButton= isMouseInButton(e);
+						clearButton.setImage(mouseInButton ? activeImage : inactiveImage);
+						if (mouseInButton) {
+							clearText();
+							filterText.setFocus();
+						}
+					}
+				}
+				
+				private boolean isMouseInButton(MouseEvent e) {
+					Point buttonSize = clearButton.getSize();
+					return 0 <= e.x && e.x < buttonSize.x && 0 <= e.y && e.y < buttonSize.y;
+				}
+			});
+			// RAP [bm] MouseTrackListener
+//			clearButton.addMouseTrackListener(new MouseTrackListener() {
+//				public void mouseEnter(MouseEvent e) {
+//					clearButton.setImage(activeImage);
+//				}
+//
+//				public void mouseExit(MouseEvent e) {
+//					clearButton.setImage(inactiveImage);
+//				}
+//
+//				public void mouseHover(MouseEvent e) {
+//				}
+//			});
+			clearButton.addDisposeListener(new DisposeListener() {
+				public void widgetDisposed(DisposeEvent e) {
+					inactiveImage.dispose();
+					activeImage.dispose();
+					pressedImage.dispose();
+				}
+			});
+			// RAP [bm] Accessibility
+//			clearButton.getAccessible().addAccessibleListener(
+//				new AccessibleAdapter() {
+//					public void getName(AccessibleEvent e) {
+//						e.result= WorkbenchMessages.FilteredTree_AccessibleListenerClearButton;
+//					}
+//			});
+//			clearButton.getAccessible().addAccessibleControlListener(
+//				new AccessibleControlAdapter() {
+//					public void getRole(AccessibleControlEvent e) {
+//						e.detail= ACC.ROLE_PUSHBUTTON;
+//					}
+//			});
+			this.clearButtonControl= clearButton;
+		}
+	}
+
+	/**
+	 * Clears the text in the filter text widget.
 	 */
 	protected void clearText() {
 		setFilterText(""); //$NON-NLS-1$
@@ -789,7 +1033,7 @@ public class FilteredTree extends Composite {
 
 	/**
 	 * Set the text in the filter control.
-	 *
+	 * 
 	 * @param string
 	 */
 	protected void setFilterText(String string) {
@@ -801,7 +1045,7 @@ public class FilteredTree extends Composite {
 
 	/**
 	 * Returns the pattern filter used by this tree.
-	 *
+	 * 
 	 * @return The pattern filter; never <code>null</code>.
 	 */
 	public final PatternFilter getPatternFilter() {
@@ -810,7 +1054,7 @@ public class FilteredTree extends Composite {
 
 	/**
 	 * Get the tree viewer of the receiver.
-	 *
+	 * 
 	 * @return the tree viewer
 	 */
 	public TreeViewer getViewer() {
@@ -820,7 +1064,7 @@ public class FilteredTree extends Composite {
 	/**
 	 * Get the filter text for the receiver, if it was created. Otherwise return
 	 * <code>null</code>.
-	 *
+	 * 
 	 * @return the filter Text, or null if it was not created
 	 */
 	public Text getFilterControl() {
@@ -830,7 +1074,7 @@ public class FilteredTree extends Composite {
 	/**
 	 * Convenience method to return the text of the filter control. If the text
 	 * widget is not created, then null is returned.
-	 *
+	 * 
 	 * @return String in the text, or null if the text does not exist
 	 */
 	protected String getFilterString() {
@@ -841,19 +1085,36 @@ public class FilteredTree extends Composite {
 	 * Set the text that will be shown until the first focus. A default value is
 	 * provided, so this method only need be called if overriding the default
 	 * initial text is desired.
-	 *
+	 * 
 	 * @param text
 	 *            initial text to appear in text field
 	 */
 	public void setInitialText(String text) {
 		initialText = text;
-		setFilterText(initialText);
-		textChanged();
+		if (useNewLook && filterText != null) {
+			filterText.setMessage(text);
+			if (filterText.isFocusControl()) {
+				setFilterText(initialText);
+				textChanged();
+			} else {
+				getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						if (!filterText.isDisposed() && filterText.isFocusControl()) {
+							setFilterText(initialText);
+							textChanged();
+						}
+					}
+				});
+			}
+		} else {
+			setFilterText(initialText);
+			textChanged();
+		}
 	}
 
 	/**
 	 * Select all text in the filter text field.
-	 *
+	 * 
 	 */
 	protected void selectAll() {
 		if (filterText != null) {
@@ -863,7 +1124,7 @@ public class FilteredTree extends Composite {
 
 	/**
 	 * Get the initial text for the receiver.
-	 *
+	 * 
 	 * @return String
 	 */
 	protected String getInitialText() {
@@ -874,7 +1135,7 @@ public class FilteredTree extends Composite {
 	 * Return a bold font if the given element matches the given pattern.
 	 * Clients can opt to call this method from a Viewer's label provider to get
 	 * a bold font for which to highlight the given element in the tree.
-	 *
+	 * 
 	 * @param element
 	 *            element for which a match should be determined
 	 * @param tree
@@ -894,15 +1155,16 @@ public class FilteredTree extends Composite {
 
 		// Do nothing if it's empty string
 		String initialText = tree.getInitialText();
-		if (!("".equals(filterText) || initialText.equals(filterText))) {//$NON-NLS-1$
-			boolean initial = initialText != null
+		if (!filterText.equals("") && !filterText.equals(initialText)) {//$NON-NLS-1$
+			if (tree.getPatternFilter() != filter) {
+				boolean initial= initialText != null
 					&& initialText.equals(filterText);
-			if (initial) {
-				filter.setPattern(null);
-			} else if (filterText != null) {
-				filter.setPattern(filterText);
+				if (initial) {
+					filter.setPattern(null);
+				} else if (filterText != null) {
+					filter.setPattern(filterText);
+				}
 			}
-
 			if (filter.isElementVisible(tree.getViewer(), element)
 					&& filter.isLeafMatch(tree.getViewer(), element)) {
 				return JFaceResources.getFontRegistry().getBold(

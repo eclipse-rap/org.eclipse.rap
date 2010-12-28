@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.ui">
+<schema targetNamespace="org.eclipse.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.ui" id="intro" name="Intro Part"/>
@@ -24,6 +24,11 @@ The life cycle is as follows:
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="intro" minOccurs="0" maxOccurs="unbounded"/>
@@ -131,6 +136,9 @@ Since 3.2
                <documentation>
                   unique id of a product
                </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.runtime.products/@id"/>
+               </appInfo>
             </annotation>
          </attribute>
          <attribute name="introId" type="string" use="required">
@@ -138,6 +146,9 @@ Since 3.2
                <documentation>
                   unique id of an introduction
                </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.intro/intro/@id"/>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
@@ -220,7 +231,7 @@ Since 3.2
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         Copyright (c) 2004, 2007 IBM Corporation and others.&lt;br&gt;
+         Copyright (c) 2004, 2009 IBM Corporation and others.&lt;br&gt;
 All rights reserved. This program and the accompanying materials are made
 available under the terms of the Eclipse Public License v1.0 which accompanies
 this distribution, and is available at &lt;a 

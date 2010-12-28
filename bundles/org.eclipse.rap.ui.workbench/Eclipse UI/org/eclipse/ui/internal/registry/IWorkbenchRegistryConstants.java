@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *     Dan Rubel <dan_rubel@instantiations.com>
  *     - Fix for bug 11490 - define hidden view (placeholder for view) in plugin.xml    
  *     Markus Alexander Kuppe, Versant Corporation - bug #215797
+ *     Semion Chichelnitsky (semion@il.ibm.com) - bug 208564
  *******************************************************************************/
 package org.eclipse.ui.internal.registry;
 
@@ -324,6 +325,11 @@ public interface IWorkbenchRegistryConstants {
 	 * Name attribute. Value <code>name</code>.
 	 */
 	public static String ATT_NAME = "name"; //$NON-NLS-1$
+
+	/**
+	 * Match type attribute. Value <code>match</code>.
+	 */
+	public static String ATT_MATCH_TYPE = "match"; //$NON-NLS-1$
 
 	/**
 	 * Name filter attribute. Value <code>nameFilter</code>.
@@ -842,6 +848,8 @@ public interface IWorkbenchRegistryConstants {
 	 */
 	public static String TAG_ACTIVE_KEY_CONFIGURATION = "activeKeyConfiguration"; //$NON-NLS-1$
 
+	public static String TAG_SEQUENCE_MODIFIER = "sequenceModifier"; //$NON-NLS-1$
+
 	/**
 	 * The name of the active when element, which appears on a handler
 	 * definition.
@@ -1018,6 +1026,16 @@ public interface IWorkbenchRegistryConstants {
 	 * The name of the element storing a handler submission.
 	 */
 	public static String TAG_HANDLER_SUBMISSION = "handlerSubmission"; //$NON-NLS-1$
+
+	/**
+	 * The name of the element storing the id of a menu item to hide
+	 */
+	public static String TAG_HIDDEN_MENU_ITEM = "hiddenMenuItem"; //$NON-NLS-1$
+
+	/**
+	 * The name of the element storing the id of a toolbar item to hide
+	 */
+	public static String TAG_HIDDEN_TOOLBAR_ITEM = "hiddenToolBarItem"; //$NON-NLS-1$
 
 	/**
 	 * Trigger point hint tag. Value <code>hint</code>.
@@ -1291,4 +1309,12 @@ public interface IWorkbenchRegistryConstants {
 	public static final String ATT_PRIORITY_LEVEL = "priorityLevel"; //$NON-NLS-1$
 	
 	public static final String ATT_MODE = "mode"; //$NON-NLS-1$
+
+	public static final String ATT_PLATFORMS = "platforms"; //$NON-NLS-1$
+
+	public static final String ATT_REPLACE = "replace"; //$NON-NLS-1$
+
+	public static final String ATT_FIND = "find"; //$NON-NLS-1$
+
+	public static final String TAG_KEYWORD_REFERENCE = "keywordReference"; //$NON-NLS-1$
 }

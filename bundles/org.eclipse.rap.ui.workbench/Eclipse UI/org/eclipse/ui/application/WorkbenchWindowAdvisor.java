@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -170,12 +170,12 @@ public class WorkbenchWindowAdvisor {
         boolean isNewIntroContentAvailable = introManager.isNewContentAvailable();
         
 		if (hasIntro && (showIntro || isNewIntroContentAvailable)) {
+			PrefUtil.getAPIPreferenceStore().setValue(
+					IWorkbenchPreferenceConstants.SHOW_INTRO, false);
+			PrefUtil.saveAPIPrefs();
+			
             introManager
                     .showIntro(getWindowConfigurer().getWindow(), false);
-
-            PrefUtil.getAPIPreferenceStore().setValue(
-                    IWorkbenchPreferenceConstants.SHOW_INTRO, false);
-            PrefUtil.saveAPIPrefs();
         }
     }
 
@@ -283,6 +283,24 @@ public class WorkbenchWindowAdvisor {
     public Control createEmptyWindowContents(Composite parent) {
         return null;
     }
+    
+	/**
+	 * Returns <code>true</code> if the given folder in the given perspective
+	 * should remain visible even after all parts in it have been closed by the
+	 * user. The default is <code>false</code>. The return value for a certain
+	 * combination of perspective id and folder id must not change over time.
+	 * 
+	 * @param perspectiveId
+	 *            the perspective id
+	 * @param folderId
+	 *            the folder id
+	 * @return <code>true</code> if the given folder should be durable
+	 * 
+	 * @since 1.4
+	 */
+	public boolean isDurableFolder(String perspectiveId, String folderId) {
+		return false;
+	}
 
     /**
      * Disposes any resources allocated by this window advisor.

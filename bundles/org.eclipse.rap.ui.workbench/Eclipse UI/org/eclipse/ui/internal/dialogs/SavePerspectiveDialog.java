@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,6 +76,7 @@ public class SavePerspectiveDialog extends org.eclipse.jface.dialogs.Dialog
     public SavePerspectiveDialog(Shell parentShell, PerspectiveRegistry perspReg) {
         super(parentShell);
         this.perspReg = perspReg;
+		setShellStyle(getShellStyle() | SWT.SHEET);
     }
 
     /* (non-Javadoc)
@@ -246,7 +247,11 @@ public class SavePerspectiveDialog extends org.eclipse.jface.dialogs.Dialog
                     IDialogConstants.get().NO_LABEL, IDialogConstants.get().CANCEL_LABEL };
             MessageDialog d = new MessageDialog(this.getShell(),
                     WorkbenchMessages.get().SavePerspective_overwriteTitle, 
-                    null, message, MessageDialog.QUESTION, buttons, 0);
+                    null, message, MessageDialog.QUESTION, buttons, 0) {
+				protected int getShellStyle() {
+					return super.getShellStyle() | SWT.SHEET;
+				}
+			};
 
             switch (d.open()) {
             case 0: //yes

@@ -1,6 +1,6 @@
 // RAP [rh] external editor not supported
 ///*******************************************************************************
-// * Copyright (c) 2000, 2006 IBM Corporation and others.
+// * Copyright (c) 2000, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@
 //import org.eclipse.core.runtime.IStatus;
 //import org.eclipse.core.runtime.Platform;
 //import org.eclipse.core.runtime.Status;
+//import org.eclipse.jface.util.Util;
 //import org.eclipse.osgi.util.NLS;
 //import org.eclipse.swt.program.Program;
 //import org.eclipse.ui.internal.WorkbenchMessages;
@@ -127,7 +128,13 @@
 //        // thrown, it was not caught in time, and no feedback was given to user
 //
 //        try {
-//            Runtime.getRuntime().exec(new String[] { programFileName, path });
+//			if (Util.isMac()) {
+//				Runtime.getRuntime().exec(
+//						new String[] { "open", "-a", programFileName, path }); //$NON-NLS-1$ //$NON-NLS-2$
+//			} else {
+//				Runtime.getRuntime().exec(
+//						new String[] { programFileName, path });
+//			}
 //        } catch (Exception e) {
 //            throw new CoreException(
 //                    new Status(

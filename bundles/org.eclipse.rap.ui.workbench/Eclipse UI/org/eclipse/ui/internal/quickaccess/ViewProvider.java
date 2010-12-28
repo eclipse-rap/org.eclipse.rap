@@ -1,6 +1,6 @@
 // RAP [rh] quick access disabled
 ///*******************************************************************************
-// * Copyright (c) 2006, 2007 IBM Corporation and others.
+// * Copyright (c) 2006, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -40,6 +40,11 @@
 //	}
 //
 //	public QuickAccessElement[] getElements() {
+//		if (PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+//				.getActivePage() == null) {
+//			cachedElements = null;
+//			return new QuickAccessElement[0];
+//		}
 //		if (cachedElements == null) {
 //			IViewDescriptor[] views = PlatformUI.getWorkbench()
 //					.getViewRegistry().getViews();

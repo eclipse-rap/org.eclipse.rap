@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.swt.SWT;
 //import org.eclipse.swt.custom.StyledText;
 //import org.eclipse.swt.graphics.GC;
 import org.eclipse.rwt.graphics.Graphics;
@@ -24,6 +25,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -31,8 +34,9 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
- * Abstract class that is capable of creating a context menu under the mouse
- * pointer.
+ * Abstract class that is capable of creating a context menu. It will try and
+ * open the menu close to the current selection, or under the mouse pointer if
+ * that's not possible.
  * 
  * @since 1.1
  */
@@ -40,13 +44,11 @@ public abstract class QuickMenuCreator {
 
 	private static final int CHAR_INDENT = 3;
 
-	private Menu quickMenu;
-
 	/**
-	 * Create the context menu.
+	 * Create and open the context menu.
 	 */
 	public void createMenu() {
-		Display display = Display.getCurrent();
+		final Display display = Display.getCurrent();
 		if (display == null) {
 			return;
 		}
@@ -57,16 +59,25 @@ public abstract class QuickMenuCreator {
 
 		MenuManager menu = new MenuManager();
 		fillMenu(menu);
-		if (quickMenu != null) {
-			quickMenu.dispose();
-			quickMenu = null;
-		}
-		quickMenu = menu.createContextMenu(focus.getShell());
+		final Menu quickMenu = menu.createContextMenu(focus.getShell());
 		Point location = computeMenuLocation(focus);
 		if (location == null) {
 			return;
 		}
 		quickMenu.setLocation(location);
+		quickMenu.addListener(SWT.Hide, new Listener() {
+			public void handleEvent(Event event) {
+				if (!display.isDisposed()) {
+					display.asyncExec(new Runnable() {
+						public void run() {
+							if (!quickMenu.isDisposed()) {
+								quickMenu.dispose();
+							}
+						}
+					});
+				}
+			}
+		});
 		quickMenu.setVisible(true);
 	}
 
@@ -84,11 +95,10 @@ public abstract class QuickMenuCreator {
 	 * @param focus
 	 *            the focus control
 	 * @return the optimal placement
+	 * @since 1.4
 	 */
-	private Point computeMenuLocation(Control focus) {
-// RAP [rh] Display#getCursorLocation missing	  
-//		Point cursorLocation = focus.getDisplay().getCursorLocation();
-		Point cursorLocation = focus.getDisplay().map( focus, null, focus.getLocation() );
+	protected Point computeMenuLocation(Control focus) {
+		Point cursorLocation = focus.getDisplay().getCursorLocation();
 		Rectangle clientArea = null;
 		Point result = null;
 // RAP [rh] StyledText missing
@@ -133,10 +143,11 @@ public abstract class QuickMenuCreator {
 //	 * @return a widget relative position of the menu to pop up or
 //	 *         <code>null</code> if now position inside the widget can be
 //	 *         computed
+//	 * @since 3.5
 //	 */
-//	private Point computeMenuLocation(StyledText text) {
+//	protected Point computeMenuLocation(StyledText text) {
 //		Point result = text.getLocationAtOffset(text.getCaretOffset());
-//		result.y += text.getLineHeight();
+//		result.y += text.getLineHeight(text.getCaretOffset());
 //		if (!text.getClientArea().contains(result)) {
 //			return null;
 //		}
@@ -153,7 +164,7 @@ public abstract class QuickMenuCreator {
 	 *         <code>null</code> if now position inside the widget can be
 	 *         computed
 	 */
-	private Point computeMenuLocation(Tree tree) {
+	protected Point computeMenuLocation(Tree tree) {
 		TreeItem[] items = tree.getSelection();
 		Rectangle clientArea = tree.getClientArea();
 		switch (items.length) {
@@ -174,9 +185,7 @@ public abstract class QuickMenuCreator {
 			for (int i = 0; i < rectangles.length; i++) {
 				rectangles[i] = items[i].getBounds();
 			}
-// RAP [rh] Display#getCursorLocation missing			
-//			Point cursorLocation = tree.getDisplay().getCursorLocation();
-			Point cursorLocation = tree.getDisplay().map( tree, null, tree.getLocation() );
+			Point cursorLocation = tree.getDisplay().getCursorLocation();
 			Point result = findBestLocation(getIncludedPositions(rectangles,
 					clientArea), tree.toControl(cursorLocation));
 			if (result != null) {
@@ -196,7 +205,7 @@ public abstract class QuickMenuCreator {
 	 *         <code>null</code> if now position inside the widget can be
 	 *         computed
 	 */
-	private Point computeMenuLocation(Table table) {
+	protected Point computeMenuLocation(Table table) {
 		TableItem[] items = table.getSelection();
 		Rectangle clientArea = table.getClientArea();
 		switch (items.length) {
@@ -221,9 +230,7 @@ public abstract class QuickMenuCreator {
 				rectangles[i] = items[i].getBounds(0);
 			}
 			Rectangle iBounds = items[0].getImageBounds(0);
-// RAP [rh] Display#getCursorLocation missing			
-//			Point cursorLocation = table.getDisplay().getCursorLocation();
-			Point cursorLocation = table.getDisplay().map( table, null, table.getLocation() );
+			Point cursorLocation = table.getDisplay().getCursorLocation();
 			Point result = findBestLocation(getIncludedPositions(rectangles,
 					clientArea), table.toControl(cursorLocation));
 			if (result != null) {
@@ -290,11 +297,7 @@ public abstract class QuickMenuCreator {
 	/**
 	 * Dispose of this quick menu creator. Subclasses should ensure that they
 	 * call this method.
-	 */
+.	 */
 	public void dispose() {
-		if (quickMenu != null) {
-			quickMenu.dispose();
-			quickMenu = null;
-		}
 	}
 }

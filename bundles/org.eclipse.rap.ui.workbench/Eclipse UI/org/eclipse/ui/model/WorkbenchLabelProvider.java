@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,24 +10,26 @@
  *******************************************************************************/
 package org.eclipse.ui.model;
 
+import org.eclipse.jface.resource.ColorDescriptor;
+import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-//import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.util.SWTResourceUtil;
 import org.eclipse.ui.internal.util.Util;
 
 /**
@@ -66,7 +68,8 @@ public class WorkbenchLabelProvider extends LabelProvider implements
 				fireLabelProviderChanged(new LabelProviderChangedEvent(WorkbenchLabelProvider.this));
 			}
 		}
-	};
+	};		
+	private ResourceManager resourceManager;
 
     /**
      * Creates a new workbench label provider.
@@ -113,6 +116,9 @@ public class WorkbenchLabelProvider extends LabelProvider implements
      */
     public void dispose() {
     	PlatformUI.getWorkbench().getEditorRegistry().removePropertyListener(editorRegistryListener);
+		if (resourceManager != null)
+			resourceManager.dispose();
+    	resourceManager = null;
     	super.dispose();
     }
     
@@ -138,6 +144,20 @@ public class WorkbenchLabelProvider extends LabelProvider implements
         return (IWorkbenchAdapter2)Util.getAdapter(o, IWorkbenchAdapter2.class);
     }
 
+	/**
+	 * Lazy load the resource manager
+	 * 
+	 * @return The resource manager, create one if necessary
+	 */
+	private ResourceManager getResourceManager() {
+		if (resourceManager == null) {
+			resourceManager = new LocalResourceManager(JFaceResources
+					.getResources());
+		}
+
+		return resourceManager;
+	}
+
     /* (non-Javadoc)
      * Method declared on ILabelProvider
      */
@@ -155,12 +175,7 @@ public class WorkbenchLabelProvider extends LabelProvider implements
         //add any annotations to the image descriptor
         descriptor = decorateImage(descriptor, element);
 
-        Image image = (Image) SWTResourceUtil.getImageTable().get(descriptor);
-        if (image == null) {
-            image = descriptor.createImage();
-            SWTResourceUtil.getImageTable().put(descriptor, image);
-        }
-        return image;
+		return (Image) getResourceManager().get(descriptor);
     }
 
     /* (non-Javadoc)
@@ -206,14 +221,8 @@ public class WorkbenchLabelProvider extends LabelProvider implements
             return null;
         }
 
-        Font font = (Font) SWTResourceUtil.getFontTable().get(descriptor);
-        if (font == null) {
-// RAP [rh] missing Font constructor          
-//            font = new Font(Display.getCurrent(), descriptor);
-            font = Graphics.getFont( descriptor );
-            SWTResourceUtil.getFontTable().put(descriptor, font);
-        }
-        return font;
+		return (Font) getResourceManager().get(
+				FontDescriptor.createFrom(descriptor));
     }
 
     private Color getColor(Object element, boolean forground) {
@@ -227,13 +236,7 @@ public class WorkbenchLabelProvider extends LabelProvider implements
             return null;
         }
 
-        Color color = (Color) SWTResourceUtil.getColorTable().get(descriptor);
-        if (color == null) {
-// RAP [rh] missing Color constructor          
-//            color = new Color(Display.getCurrent(), descriptor);
-            color = Graphics.getColor( descriptor );
-            SWTResourceUtil.getColorTable().put(descriptor, color);
-        }
-        return color;
+		return (Color) getResourceManager().get(
+				ColorDescriptor.createFrom(descriptor));
     }
 }

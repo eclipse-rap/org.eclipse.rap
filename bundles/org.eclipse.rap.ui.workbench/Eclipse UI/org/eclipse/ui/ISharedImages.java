@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,10 @@
 package org.eclipse.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 
 /**
  * A registry for common images used by the workbench which may be useful 
@@ -27,6 +30,7 @@ import org.eclipse.swt.graphics.Image;
  * </p>
  * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
  */
 public interface ISharedImages {
     /**
@@ -433,6 +437,118 @@ public interface ISharedImages {
      *   Enabled images are now in color.  The workbench itself no longer uses the hover image variants.
      */
     public final static String IMG_TOOL_UP_HOVER = "IMG_TOOL_UP_HOVER"; //$NON-NLS-1$
+
+    // The following set of constants represent the image pairs that are used
+    // to construct cursors for drag and drop operations within the workbench
+    // Each cursor is represented by two images; the 'source' and the 'mask'
+    // These need to be combined using the following code snippet:
+	//    source = getImageDescriptor(sourceId);
+	//    mask = getImageDescriptor(maskId);
+	//    cursor = new Cursor(display, source.getImageData(), mask.getImageData(), 16, 16);
+
+    /**
+     * Cursor 'source' for the left arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_LEFT_SOURCE = "IMG_OBJS_DND_LEFT_SOURCE"; //$NON-NLS-1$
+    /**
+     * Cursor 'mask' for the left arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_LEFT_MASK = "IMG_OBJS_DND_LEFT_MASK"; //$NON-NLS-1$
+
+    /**
+     * Cursor 'source' for the right arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_RIGHT_SOURCE = "IMG_OBJS_DND_RIGHT_SOURCE"; //$NON-NLS-1$
+    /**
+     * Cursor 'mask' for the right arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_RIGHT_MASK = "IMG_OBJS_DND_RIGHT_MASK"; //$NON-NLS-1$
+
+    /**
+     * Cursor 'source' for the up arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_TOP_SOURCE = "IMG_OBJS_DND_TOP_SOURCE"; //$NON-NLS-1$
+    /**
+     * Cursor 'mask' for the up arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_TOP_MASK = "IMG_OBJS_DND_TOP_MASK"; //$NON-NLS-1$
+
+    /**
+     * Cursor 'source' for the down arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_BOTTOM_SOURCE = "IMG_OBJS_DND_BOTTOM_SOURCE"; //$NON-NLS-1$
+    /**
+     * Cursor 'mask' for the down arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_BOTTOM_MASK = "IMG_OBJS_DND_BOTTOM_MASK"; //$NON-NLS-1$
+
+    /**
+     * Cursor 'source' for the 'no drop' arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_INVALID_SOURCE = "IMG_OBJS_DND_INVALID_SOURCE"; //$NON-NLS-1$
+    /**
+     * Cursor 'mask' for the 'no drop' arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_INVALID_MASK = "IMG_OBJS_DND_INVALID_MASK"; //$NON-NLS-1$
+
+    /**
+     * Cursor 'source' for the 'in stack' arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_STACK_SOURCE = "IMG_OBJS_DND_STACK_SOURCE"; //$NON-NLS-1$
+    /**
+     * Cursor 'mask' for the 'in stack' arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_STACK_MASK = "IMG_OBJS_DND_STACK_MASK"; //$NON-NLS-1$
+
+    /**
+     * Cursor 'source' for the 'off-screen' (detached window) arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_OFFSCREEN_SOURCE = "IMG_OBJS_DND_OFFSCREEN_SOURCE"; //$NON-NLS-1$
+    /**
+     * Cursor 'mask' for the 'off-screen' (detached window) arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public final static String IMG_OBJS_DND_OFFSCREEN_MASK = "IMG_OBJS_DND_OFFSCREEN_MASK"; //$NON-NLS-1$
+
+    /**
+     * Cursor 'source' for the 'fast-view' arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public static final String IMG_OBJS_DND_TOFASTVIEW_SOURCE = "IMG_OBJS_DND_TOFASTVIEW_SOURCE"; //$NON-NLS-1$
+    /**
+     * Cursor 'mask' for the 'fast-view' arrow cursor. For cursor construction see:
+     * @see Cursor#Cursor(Device, ImageData, ImageData, int, int)
+     * @since 1.4
+     */
+    public static final String IMG_OBJS_DND_TOFASTVIEW_MASK = "IMG_OBJS_DND_TOFASTVIEW_MASK"; //$NON-NLS-1$    
     
     /**
      * Retrieves the specified image from the workbench plugin's image registry.

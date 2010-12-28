@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,9 +47,12 @@ import org.eclipse.ui.activities.IIdentifier;
 import org.eclipse.ui.activities.IMutableActivityManager;
 import org.eclipse.ui.activities.ITriggerPointAdvisor;
 import org.eclipse.ui.activities.IdentifierEvent;
+import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.internal.misc.Policy;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.services.IEvaluationReference;
 import org.eclipse.ui.services.IEvaluationService;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
  * An activity registry that may be altered.
@@ -58,7 +61,11 @@ import org.eclipse.ui.services.IEvaluationService;
  */
 public final class MutableActivityManager extends AbstractActivityManager
         implements IMutableActivityManager, Cloneable {
+	private static final boolean DEBUG = Policy.DEBUG_UI_GLOBAL;
 
+	private static final int MAX_ERRORS = 5;
+	private static int reportErrors = 0;
+	
     private Map activitiesById = new HashMap();
 
     private Map activityRequirementBindingsByActivityId = new HashMap();
@@ -136,6 +143,7 @@ public final class MutableActivityManager extends AbstractActivityManager
     }
 
     public IActivity getActivity(String activityId) {
+		checkThread();
         if (activityId == null) {
 			throw new NullPointerException();
 		}
@@ -152,6 +160,7 @@ public final class MutableActivityManager extends AbstractActivityManager
     }
 
     public ICategory getCategory(String categoryId) {
+		checkThread();
         if (categoryId == null) {
 			throw new NullPointerException();
 		}
@@ -168,18 +177,22 @@ public final class MutableActivityManager extends AbstractActivityManager
     }
 
     public Set getDefinedActivityIds() {
+		checkThread();
         return Collections.unmodifiableSet(definedActivityIds);
     }
 
     public Set getDefinedCategoryIds() {
+		checkThread();
         return Collections.unmodifiableSet(definedCategoryIds);
     }
 
     public Set getEnabledActivityIds() {
+		checkThread();
         return Collections.unmodifiableSet(enabledActivityIds);
     }
 
     public IIdentifier getIdentifier(String identifierId) {
+		checkThread();
         if (identifierId == null) {
 			throw new NullPointerException();
 		}
@@ -526,6 +539,7 @@ public final class MutableActivityManager extends AbstractActivityManager
 	}
 
 	public void setEnabledActivityIds(Set enabledActivityIds) {
+		checkThread();
         enabledActivityIds = new HashSet(enabledActivityIds);
         Set requiredActivityIds = new HashSet(enabledActivityIds);
         getRequiredActivityIds(enabledActivityIds, requiredActivityIds);
@@ -566,7 +580,7 @@ public final class MutableActivityManager extends AbstractActivityManager
             	enabledActivityIds.removeAll(removals);
             	// finally set the internal set of activities
             	this.enabledActivityIds = enabledActivityIds;
-            activityEventsByActivityId = updateActivities(deltaActivityIds);
+				activityEventsByActivityId = updateActivities(deltaActivityIds);
 			} else {
 				return;
 			}
@@ -587,7 +601,7 @@ public final class MutableActivityManager extends AbstractActivityManager
 	private void updateListeners(boolean activityManagerChanged,
 			Map activityEventsByActivityId, Set deltaActivityIds,
 			Set previouslyEnabledActivityIds) {
-        //don't update identifiers if the enabled activity set has not changed
+		// don't update identifiers if the enabled activity set has not changed
         if (activityManagerChanged) {
             Map identifierEventsByIdentifierId = updateIdentifiers(identifiersById
                     .keySet(), deltaActivityIds);
@@ -603,7 +617,7 @@ public final class MutableActivityManager extends AbstractActivityManager
 			fireActivityManagerChanged(new ActivityManagerEvent(this, false,
                     false, true, null, null, previouslyEnabledActivityIds));
 		}
-    }
+	}
 
 	private void addExpressionEnabledActivity(String id) {
 		Set previouslyEnabledActivityIds = new HashSet(this.enabledActivityIds);
@@ -683,11 +697,11 @@ public final class MutableActivityManager extends AbstractActivityManager
 			String id = event.getProperty();
 			IActivity activity = (IActivity)activitiesById.get(id);
 			if (activity.isEnabled() != enabledWhen) {				
-				if (enabledWhen) {
+				if (enabledWhen) {					
 					addExpressionEnabledActivity(id);					
 				} else {
 					removeExpressionEnabledActivity(id);
-				}
+				}				
 			}
 		}
 	};
@@ -840,7 +854,7 @@ public final class MutableActivityManager extends AbstractActivityManager
             Display display = Display.getCurrent();
             UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
               public void run() {
-                getUpdateJob().schedule();                
+                getUpdateJob().schedule();
               }
             } );
             // RAP [fappel]: end
@@ -916,6 +930,7 @@ public final class MutableActivityManager extends AbstractActivityManager
      * @see java.lang.Object#clone()
      */
     public Object clone() {
+		checkThread();
         MutableActivityManager clone = new MutableActivityManager(advisor, activityRegistry);
         clone.setEnabledActivityIds(getEnabledActivityIds());
         return clone;
@@ -994,4 +1009,24 @@ public final class MutableActivityManager extends AbstractActivityManager
         return deferredIdentifierJob;
     }
     
+	private static final String ERR_MSG = "Invalid Thread Access to Activity Manager"; //$NON-NLS-1$
+
+	private void checkThread() {
+		if (!DEBUG) {
+			return;
+		}
+		if (reportErrors >= MAX_ERRORS) {
+			return;
+		}
+		if (PlatformUI.getWorkbench().isStarting()) {
+			return;
+		}
+		boolean nonUiThread = (null == Display.getCurrent());
+		if (nonUiThread) {
+			reportErrors++;
+			StatusManager.getManager().handle(
+					new Status(IStatus.ERROR, WorkbenchPlugin.PI_WORKBENCH, ERR_MSG, new Exception(
+							ERR_MSG)), StatusManager.LOG);
+		}
+	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.ui.internal;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.dialogs.SavePerspectiveDialog;
@@ -32,7 +33,7 @@ public class SavePerspectiveAction extends PerspectiveAction {
     public SavePerspectiveAction(IWorkbenchWindow window) {
         super(window);
         setText(WorkbenchMessages.get().SavePerspective_text);
-        setActionDefinitionId("org.eclipse.ui.window.savePerspective"); //$NON-NLS-1$
+        setActionDefinitionId(IWorkbenchCommandConstants.WINDOW_SAVE_PERSPECTIVE_AS);
         // @issue missing action id
         setToolTipText(WorkbenchMessages.get().SavePerspective_toolTip); 
         window.getWorkbench().getHelpSystem().setHelp(this,

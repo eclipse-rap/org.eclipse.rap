@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
@@ -40,6 +39,9 @@ import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
  * 
  */
 public class DetailedProgressViewer extends AbstractProgressViewer {
+
+	//Maximum number of entries to display so that the view does not flood the UI with events
+	private static final int MAX_DISPLAYED = 20;
 
 	Composite control;
 
@@ -129,7 +131,6 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 		noEntryLabel.setLayoutData(textData);
 		noEntryLabel.setEditable(false);
 
-		
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(noEntryLabel,
 				IWorkbenchHelpContextIds.RESPONSIVE_UI);
 
@@ -142,17 +143,19 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 	 */
 	public void add(Object[] elements) {
 		ViewerComparator sorter = getComparator();
-		
-		//Use a Set in case we are getting something added that exists
+
+		// Use a Set in case we are getting something added that exists
 		Set newItems = new HashSet(elements.length);
 
 		Control[] existingChildren = control.getChildren();
 		for (int i = 0; i < existingChildren.length; i++) {
-			newItems.add(existingChildren[i].getData());
+			if (existingChildren[i].getData() != null)
+				newItems.add(existingChildren[i].getData());
 		}
 
 		for (int i = 0; i < elements.length; i++) {
-			newItems.add(elements[i]);
+			if (elements[i] != null)
+				newItems.add(elements[i]);
 		}
 
 		JobTreeElement[] infos = new JobTreeElement[newItems.size()];
@@ -167,7 +170,9 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 			((ProgressInfoItem) existingChildren[i]).dispose();
 		}
 
-		for (int i = 0; i < newItems.size(); i++) {
+		int totalSize = Math.min(newItems.size(), MAX_DISPLAYED);
+
+		for (int i = 0; i < totalSize; i++) {
 			ProgressInfoItem item = createNewItem(infos[i]);
 			item.setColor(i);
 		}
@@ -413,7 +418,7 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 				if (item == null) {
 					// Is the parent showing?
 					Object parent = treeElement.getParent();
-					if (parent != null )
+					if (parent != null)
 						item = doFindItem(parent);
 				}
 				if (item != null) {
@@ -466,13 +471,10 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 	public void setFocus() {
 		Control[] children = control.getChildren();
 		if (children.length > 0) {
-			for (int i = 0; i < children.length; i++) {
-				ProgressInfoItem item = (ProgressInfoItem) children[i];
-				item.setButtonFocus();
-				return;
-			}
-		} else
+			((ProgressInfoItem)children[0]).setButtonFocus();
+		} else {
 			noEntryArea.setFocus();
+		}
 	}
 
 	/**
@@ -487,8 +489,10 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 			existingChildren[i].dispose();
 
 		}
+		
+		int maxLength = Math.min(infos.length,MAX_DISPLAYED);
 		// Create new ones if required
-		for (int i = 0; i < infos.length; i++) {
+		for (int i = 0; i < maxLength; i++) {
 			ProgressInfoItem item = createNewItem((JobTreeElement) infos[i]);
 			item.setColor(i);
 		}
@@ -511,6 +515,13 @@ public class DetailedProgressViewer extends AbstractProgressViewer {
 			item.setDisplayed(top, bottom);
 
 		}
+	}
+
+	public ProgressInfoItem[] getProgressInfoItems() {
+		Control[] children = control.getChildren();
+		ProgressInfoItem[] progressInfoItems = new ProgressInfoItem[children.length];
+		System.arraycopy(children, 0, progressInfoItems, 0, children.length);
+		return progressInfoItems;
 	}
 
 }

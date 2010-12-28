@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,10 +7,12 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     James Blackburn - Bug 256316 getImageDescriptor() is not thread safe 
  *******************************************************************************/
 package org.eclipse.ui.internal.registry;
 
 //import java.io.File;
+import java.io.File;
 import java.io.Serializable;
 
 import org.eclipse.core.runtime.Assert;
@@ -28,7 +30,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.internal.IWorkbenchConstants;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-//import org.eclipse.ui.internal.misc.ProgramImageDescriptor;
 import org.eclipse.ui.internal.tweaklets.InterceptContributions;
 import org.eclipse.ui.internal.tweaklets.Tweaklets;
 import org.eclipse.ui.internal.util.Util;
@@ -66,6 +67,7 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
     private String imageFilename;
 
     private transient ImageDescriptor imageDesc;
+    private transient Object imageDescLock = new Object();
 
     private boolean testImage = true;
 
@@ -151,7 +153,7 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
 //
 //        return editor;
 //    }
-
+    
     // RAP [bm]: 
 //    /**
 //     * Return the program called programName. Return null if it is not found.
@@ -256,7 +258,7 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
      * 
      * @return the id
      */
-    public String getId() {
+    public String getId() {        
     	// RAP [bm]: Program
 //        if (program == null) {
         	if (configurationElement == null) {
@@ -274,48 +276,63 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
      * @return the image descriptor
      */
     public ImageDescriptor getImageDescriptor() {
-    	if (testImage) {
-    		testImage = false;
+    	ImageDescriptor tempDescriptor = null;
+
+    	synchronized (imageDescLock) {
+	    	if (!testImage)
+	            return imageDesc;
+	    	
 			if (imageDesc == null) {
 				String imageFileName = getImageFilename();
 // RAP [rh] unused code					
 //				String command = getFileName();
-				if (imageFileName != null && configurationElement != null) {
-					imageDesc = AbstractUIPlugin.imageDescriptorFromPlugin(
-							configurationElement.getNamespace(), imageFileName);
+				if (imageFileName != null && configurationElement != null)
+					tempDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(configurationElement.getNamespaceIdentifier(), imageFileName);
 // RAP [rh] program image descriptors not supported					
 //				} else if (command != null) {
 //					imageDesc = WorkbenchImages.getImageDescriptorFromProgram(
 //							command, 0);
 				}
+    		
+			if (tempDescriptor == null) { // still null? return default image
+				imageDesc = WorkbenchImages.getImageDescriptor(ISharedImages.IMG_OBJ_FILE);
+				testImage = false;
+		        return imageDesc;
 			}
-			verifyImage();    		
     	}
     	
-        return imageDesc;
+		// Verifies that the image descriptor generates an image.  If not, the descriptor is 
+    	// replaced with the default image.
+    	// We must create the image without holding any locks, since there is a potential for deadlock
+    	// on Linux due to SWT's implementation of Image. See bugs 265028 and 256316 for details.
+		Image img = tempDescriptor.createImage(false);
+		if (img == null) // @issue what should be the default image?
+			tempDescriptor = WorkbenchImages.getImageDescriptor(ISharedImages.IMG_OBJ_FILE);
+		else
+		    img.dispose();
+		// <----- End of must-not-lock part
+		
+		// reenter synchronized block
+		synchronized (imageDescLock) {
+			// if another thread has set the image description, use it
+			if (!testImage)
+				return imageDesc;
+			// otherwise set the image description we calculated above
+			imageDesc = tempDescriptor;
+			testImage = false;
+			return imageDesc;
+		}
     }
 
     /**
-	 * Verifies that the image descriptor generates an image.  If not, the 
-	 * descriptor is replaced with the default image.
-	 */
-	private void verifyImage() {
-		if (imageDesc == null) {
-			imageDesc = WorkbenchImages
-         		.getImageDescriptor(ISharedImages.IMG_OBJ_FILE);
-		}
-		else {
-			Image img = imageDesc.createImage(false);
-			if (img == null) {
-			    // @issue what should be the default image?
-			    imageDesc = WorkbenchImages
-			            .getImageDescriptor(ISharedImages.IMG_OBJ_FILE);
-			} else {
-				// RAP [bm]: Image#dispose
-//			    img.dispose();
-			}
-		}
-	}
+     * The Image to use to repesent this editor
+     */
+    /* package */void setImageDescriptor(ImageDescriptor desc) {
+    	synchronized (imageDescLock) {
+	        imageDesc = desc;
+	        testImage = true;
+    	}
+    }
 
     /**
      * The name of the image describing this editor.
@@ -533,14 +550,6 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
     /* package */void setID(String anID) {
         Assert.isNotNull(anID);
         id = anID;
-    }
-
-    /**
-     * The Image to use to repesent this editor
-     */
-    /* package */void setImageDescriptor(ImageDescriptor desc) {
-        imageDesc = desc;
-        testImage = true;
     }
 
     /**

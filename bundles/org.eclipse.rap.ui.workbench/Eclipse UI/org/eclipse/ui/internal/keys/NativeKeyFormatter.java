@@ -1,6 +1,6 @@
 // RAP [rh] Keys completely disabled as not implemented in RWT
 ///*******************************************************************************
-// * Copyright (c) 2000, 2005 IBM Corporation and others.
+// * Copyright (c) 2000, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@
 //import java.util.HashMap;
 //import java.util.ResourceBundle;
 //
-//import org.eclipse.swt.SWT;
 //import org.eclipse.ui.internal.util.Util;
 //import org.eclipse.ui.keys.CharacterKey;
 //import org.eclipse.ui.keys.Key;
@@ -70,7 +69,6 @@
 //        CARBON_KEY_LOOK_UP.put(CharacterKey.BS.toString(), "\u232B");  //$NON-NLS-1$
 //        CARBON_KEY_LOOK_UP.put(CharacterKey.CR.toString(), "\u21A9");  //$NON-NLS-1$
 //        CARBON_KEY_LOOK_UP.put(CharacterKey.DEL.toString(), "\u2326");  //$NON-NLS-1$
-//        CARBON_KEY_LOOK_UP.put(CharacterKey.SPACE.toString(), "\u2423");  //$NON-NLS-1$
 //        CARBON_KEY_LOOK_UP.put(ModifierKey.ALT.toString(), "\u2325");  //$NON-NLS-1$
 //        CARBON_KEY_LOOK_UP.put(ModifierKey.COMMAND.toString(), "\u2318");  //$NON-NLS-1$
 //        CARBON_KEY_LOOK_UP.put(ModifierKey.CTRL.toString(), "\u2303");  //$NON-NLS-1$
@@ -99,7 +97,7 @@
 //        String name = key.toString();
 //
 //        // TODO consider platform-specific resource bundles
-//        if ("carbon".equals(SWT.getPlatform())) { //$NON-NLS-1$    	
+//        if (org.eclipse.jface.util.Util.isMac()) {    	
 //            String formattedName = (String) CARBON_KEY_LOOK_UP.get(name);
 //            if (formattedName != null) {
 //                return formattedName;
@@ -116,7 +114,7 @@
 //     */
 //    protected String getKeyDelimiter() {
 //        // We must do the look up every time, as our locale might change.
-//        if ("carbon".equals(SWT.getPlatform())) { //$NON-NLS-1$
+//        if (org.eclipse.jface.util.Util.isMac()) {
 //            return Util.translateString(RESOURCE_BUNDLE,
 //                    CARBON_KEY_DELIMITER_KEY, Util.ZERO_LENGTH_STRING, false,
 //                    false);
@@ -133,7 +131,7 @@
 //     */
 //    protected String getKeyStrokeDelimiter() {
 //        // We must do the look up every time, as our locale might change.
-//        if ("win32".equals(SWT.getPlatform())) { //$NON-NLS-1$
+//        if (org.eclipse.jface.util.Util.isWindows()) {
 //            return Util.translateString(RESOURCE_BUNDLE,
 //                    WIN32_KEY_STROKE_DELIMITER_KEY,
 //                    KeySequence.KEY_STROKE_DELIMITER, false, false);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.eclipse.jface.resource.DeviceResourceException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -45,6 +46,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -61,8 +64,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IPreferenceConstants;
 import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.internal.activities.InternalActivityHelper;
 import org.eclipse.ui.internal.activities.ws.ActivityEnabler;
 import org.eclipse.ui.internal.activities.ws.ActivityMessages;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * Activities preference page that primarily shows categories and can optionally
@@ -125,6 +130,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
          */
         protected AdvancedDialog(Shell parentShell) {
             super(parentShell);
+			setShellStyle(getShellStyle() | SWT.SHEET);
          }
         
         /* (non-Javadoc)
@@ -133,7 +139,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         protected void configureShell(Shell newShell) {
             super.configureShell(newShell);
             String activityName = strings.getProperty(ACTIVITY_NAME, ActivityMessages.get().ActivityEnabler_activities);
-            activityName = activityName.replaceAll("&", ""); //strips possible mnemonic //$NON-NLS-1$ //$NON-NLS-2$
+            activityName = Util.replaceAll(activityName, "&", ""); //strips possible mnemonic //$NON-NLS-1$ //$NON-NLS-2$
 			newShell.setText(NLS.bind(           		
             		ActivityMessages.get().ActivitiesPreferencePage_advancedDialogTitle,
             		activityName		
@@ -185,8 +191,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         private LocalResourceManager manager = new LocalResourceManager(
                 JFaceResources.getResources());
 
-// RAP [fappel]: OverlayIcon not supported
-//        private ImageDescriptor lockDescriptor;
+        private ImageDescriptor lockDescriptor;
 
         private boolean decorate;
 
@@ -195,9 +200,8 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
          */
         public CategoryLabelProvider(boolean decorate) {
             this.decorate = decorate;
-// RAP [fappel]: OverlayIcon not supported
-//            lockDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
-//                    PlatformUI.PLUGIN_ID, "icons/full/ovr16/lock_ovr.gif"); //$NON-NLS-1$
+            lockDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
+                    PlatformUI.PLUGIN_ID, "icons/full/ovr16/lock_ovr.gif"); //$NON-NLS-1$
         }
 
         /*
@@ -212,18 +216,19 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
                     .getActivitySupport().getImageDescriptor(category);
             if (descriptor != null) {
                 try {
-// RAP [fappel]: OverlayIcon not supported
-//                    if (decorate) {
-//                        if (isLocked(category)) {
+                    if (decorate) {
+                        if (isLocked(category)) {
 //                            ImageData originalImageData = descriptor
-//                                    .getImageData();                          
+//                                    .getImageData();
+                            // RAP [bm] no OverlayIcon
 //                            OverlayIcon overlay = new OverlayIcon(
 //                                    descriptor, lockDescriptor, new Point(
 //                                            originalImageData.width,
 //                                            originalImageData.height));
 //                            return manager.createImage(overlay);
-//                        }
-//                    }
+                        	return manager.createImage(descriptor);
+                        }
+                    }
 
                     return manager.createImage(descriptor);
                 } catch (DeviceResourceException e) {
@@ -323,14 +328,14 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
          *      java.lang.Object, java.lang.Object)
          */
         public boolean select(Viewer viewer, Object parentElement,
-                Object element) {
-            ICategory category = (ICategory) element;
-            if (WorkbenchActivityHelper.getActivityIdsForCategory(category)
-                    .isEmpty()) {
+				Object element) {
+			ICategory category = (ICategory) element;
+			if (InternalActivityHelper.getActivityIdsForCategory(workingCopy,
+					category).isEmpty()) {
 				return false;
 			}
-            return true;
-        }
+			return true;
+		}
     }
 
     protected IWorkbench workbench;
@@ -594,13 +599,13 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
 
     private ICategory[] getPartialCategories() {
 		return WorkbenchActivityHelper.resolveCategories(workingCopy,
-				WorkbenchActivityHelper
+				InternalActivityHelper
 						.getPartiallyEnabledCategories(workingCopy));
 	}
 
 	private ICategory[] getEnabledCategories() {
 		return WorkbenchActivityHelper.resolveCategories(workingCopy,
-				WorkbenchActivityHelper.getEnabledCategories(workingCopy));
+				InternalActivityHelper.getEnabledCategories(workingCopy));
 	}
 
     protected void setDetails(ICategory category) {
@@ -712,5 +717,15 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
             allowAdvanced = Boolean.valueOf((String) table.remove(ALLOW_ADVANCED)).booleanValue();
             strings.putAll(table);
         }
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.dialogs.DialogPage#dispose()
+     */
+    public void dispose() {
+    	if (workingCopy != null) {
+    		workingCopy.removeActivityManagerListener((CategoryLabelProvider)categoryViewer.getLabelProvider());
+    	}
+    	super.dispose();
     }
 }

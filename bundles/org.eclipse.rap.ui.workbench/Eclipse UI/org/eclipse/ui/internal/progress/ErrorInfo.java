@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
+import com.ibm.icu.text.DateFormat;
 import java.util.Date;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
-
-import com.ibm.icu.text.DateFormat;
 
 /**
  * ErrorInfo is the info that displays errors.
@@ -42,15 +40,6 @@ public class ErrorInfo extends JobTreeElement {
 		errorStatus = status;
 		this.job = job;
 		timestamp = System.currentTimeMillis();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.internal.progress.JobTreeElement#getParent()
-	 */
-	Object getParent() {
-		return null;
 	}
 
 	/*

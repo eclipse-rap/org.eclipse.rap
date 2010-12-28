@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.ui.dialogs;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
@@ -33,7 +32,23 @@ import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceDialog;
  * @since 1.0
  */
 public final class PreferencesUtil {
+	
+	/**
+	 * Constant denoting no option.
+	 * @since 1.4
+	 */
+	public final static int OPTION_NONE = 0;
 
+	/**
+	 * Constant for configuring a preferences or properties dialog in which the
+	 * user cannot "unfilter" to show a larger set of pages than was passed to
+	 * {@link #createPreferenceDialogOn(Shell, String, String[], Object, int)}
+	 * or
+	 * {@link #createPropertyDialogOn(Shell, IAdaptable, String, String[], Object, int)}
+	 * .
+	 * @since 1.4
+	 */
+	public final static int OPTION_FILTER_LOCKED = 1;
 	
 	/**
 	 * Apply the data to the first page if there is any.
@@ -44,9 +59,10 @@ public final class PreferencesUtil {
 	 *            The ids to filter to.
 	 * @param dialog
 	 *            The dialog to apply to.
+	 * @param options 
 	 */
 	private static void applyOptions(Object data, String[] displayedIds,
-			FilteredPreferenceDialog dialog) {
+			FilteredPreferenceDialog dialog, int options) {
 		if (data != null) {
 			dialog.setPageData(data);
 			IPreferencePage page = dialog.getCurrentPage();
@@ -57,6 +73,10 @@ public final class PreferencesUtil {
 
 		if (displayedIds != null) {
 			dialog.showOnly(displayedIds);
+		}
+		
+		if ((options & OPTION_FILTER_LOCKED) != 0) {
+			dialog.setLocked(true);
 		}
 	}
 
@@ -92,12 +112,8 @@ public final class PreferencesUtil {
 	 */
 	public static final PreferenceDialog createPreferenceDialogOn(Shell shell,
 			String preferencePageId, String[] displayedIds, Object data) {
-		FilteredPreferenceDialog dialog = WorkbenchPreferenceDialog
-				.createDialogOn(shell, preferencePageId);
-
-		applyOptions(data, displayedIds, dialog);
-
-		return dialog;
+		return createPreferenceDialogOn(shell, preferencePageId, displayedIds, data,
+				OPTION_NONE);
 	}
 
 	/**
@@ -131,18 +147,141 @@ public final class PreferencesUtil {
 	public static final PreferenceDialog createPropertyDialogOn(Shell shell,
 			final IAdaptable element, String propertyPageId,
 			String[] displayedIds, Object data) {
+		return createPropertyDialogOn(shell, element, propertyPageId, displayedIds, data,
+				OPTION_NONE);
+	}
 
+	/**
+	 * Creates a workbench preference dialog and selects particular preference
+	 * page. If there is already a preference dialog open this dialog is used
+	 * and its selection is set to the page with id preferencePageId. Show the
+	 * other pages as filtered results using whatever filtering criteria the
+	 * search uses. It is the responsibility of the caller to then call
+	 * <code>open()</code>. The call to <code>open()</code> will not return
+	 * until the dialog closes, so this is the last chance to manipulate the
+	 * dialog.
+	 * 
+	 * @param shell
+	 *            The Shell to parent the dialog off of if it is not already
+	 *            created. May be <code>null</code> in which case the active
+	 *            workbench window will be used if available.
+	 * @param preferencePageId
+	 *            The identifier of the preference page to open; may be
+	 *            <code>null</code>. If it is <code>null</code>, then the
+	 *            preference page is not selected or modified in any way.
+	 * @param displayedIds
+	 *            The ids of the other pages to be displayed using the same
+	 *            filtering criterea as search. If this is <code>null</code>,
+	 *            then the all preference pages are shown.
+	 * @param data
+	 *            Data that will be passed to all of the preference pages to be
+	 *            applied as specified within the page as they are created. If
+	 *            the data is <code>null</code> nothing will be called.
+	 * @param options
+	 *            a bitwise OR of option constants
+	 * 
+	 * @return a preference dialog.
+	 * @since 3.5
+	 * @see PreferenceDialog#PreferenceDialog(Shell, PreferenceManager)
+	 */
+	public static final PreferenceDialog createPreferenceDialogOn(Shell shell,
+			String preferencePageId, String[] displayedIds, Object data, int options) {
+		FilteredPreferenceDialog dialog = WorkbenchPreferenceDialog
+		.createDialogOn(shell, preferencePageId);
+		
+		applyOptions(data, displayedIds, dialog, options);
+		
+		return dialog;
+	}
+
+	/**
+	 * Creates a workbench preference dialog to a particular preference page.
+	 * Show the other pages as filtered results using whatever filtering
+	 * criteria the search uses. It is the responsibility of the caller to then
+	 * call <code>open()</code>. The call to <code>open()</code> will not return
+	 * until the dialog closes, so this is the last chance to manipulate the
+	 * dialog.
+	 * 
+	 * @param shell
+	 *            The shell to use to parent the dialog if required.
+	 * @param propertyPageId
+	 *            The identifier of the preference page to open; may be
+	 *            <code>null</code>. If it is <code>null</code>, then the dialog
+	 *            is opened with no selected page.
+	 * @param element
+	 *            IAdaptable An adaptable element to open the dialog on.
+	 * @param displayedIds
+	 *            The ids of the other pages to be displayed using the same
+	 *            filtering criteria as search. If this is <code>null</code>,
+	 *            then the all preference pages are shown.
+	 * @param data
+	 *            Data that will be passed to all of the preference pages to be
+	 *            applied as specified within the page as they are created. If
+	 *            the data is <code>null</code> nothing will be called.
+	 * @param options
+	 *            a bitwise OR of option constants
+	 * 
+	 * @return A preference dialog showing properties for the selection or
+	 *         <code>null</code> if it could not be created.
+	 * @since 3.5
+	 */
+	public static final PreferenceDialog createPropertyDialogOn(Shell shell,
+			final IAdaptable element, String propertyPageId,
+			String[] displayedIds, Object data, int options) {
+		
 		FilteredPreferenceDialog dialog = PropertyDialog.createDialogOn(shell,
 				propertyPageId, element);
-
+		
 		if (dialog == null) {
 			return null;
 		}
-
-		applyOptions(data, displayedIds, dialog);
-
+		
+		applyOptions(data, displayedIds, dialog, options);
+		
 		return dialog;
+		
+	}
 
+	/**
+	 * Creates a workbench preference dialog to a particular preference page.
+	 * Show the other pages as filtered results using whatever filtering
+	 * criteria the search uses. It is the responsibility of the caller to then
+	 * call <code>open()</code>. The call to <code>open()</code> will not return
+	 * until the dialog closes, so this is the last chance to manipulate the
+	 * dialog.
+	 * 
+	 * @param shell
+	 *            The shell to use to parent the dialog if required.
+	 * @param propertyPageId
+	 *            The identifier of the preference page to open; may be
+	 *            <code>null</code>. If it is <code>null</code>, then the dialog
+	 *            is opened with no selected page.
+	 * @param element
+	 *            An element to open the dialog on.
+	 * @param displayedIds
+	 *            The IDs of the other pages to be displayed using the same
+	 *            filtering criteria as search. If this is <code>null</code>,
+	 *            then the all preference pages are shown.
+	 * @param data
+	 *            Data that will be passed to all of the preference pages to be
+	 *            applied as specified within the page as they are created. If
+	 *            the data is <code>null</code> nothing will be called.
+	 * @param options
+	 *            a bitwise OR of option constants
+	 * 
+	 * @return A preference dialog showing properties for the selection or
+	 *         <code>null</code> if it could not be created.
+	 * @since 1.4
+	 */
+	public static final PreferenceDialog createPropertyDialogOn(Shell shell,
+			final Object element, String propertyPageId, String[] displayedIds,
+			Object data, int options) {
+		FilteredPreferenceDialog dialog = PropertyDialog.createDialogOn(shell,
+				propertyPageId, element);
+		if (dialog == null)
+			return null;
+		applyOptions(data, displayedIds, dialog, options);
+		return dialog;
 	}
 
 	/**

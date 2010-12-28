@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,12 +19,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.ibm.icu.text.Collator;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.common.NotDefinedException;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -33,13 +43,10 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
+
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveRegistry;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -50,13 +57,11 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.statushandlers.StatusManager;
 
-import com.ibm.icu.text.Collator;
-
 /**
- * A menu for perspective selection.  
+ * A menu for perspective selection.
  * <p>
  * A <code>PerspectiveMenu</code> is used to populate a menu with
- * perspective shortcut items.  If the user selects one of these items 
+ * perspective shortcut items.  If the user selects one of these items
  * an action is performed for the selected perspective.
  * </p><p>
  * The visible perspective items within the menu are dynamic and reflect the
@@ -69,8 +74,10 @@ import com.ibm.icu.text.Collator;
  * @since 1.0
  */
 public abstract class PerspectiveMenu extends ContributionItem {
-
-  protected static final String SHOW_PERSP_ID = "org.eclipse.ui.perspectives.showPerspective"; //$NON-NLS-1$
+    /**
+	 * @deprecated Replaced by {@link IWorkbenchCommandConstants#PERSPECTIVES_SHOW_PERSPECTIVE}
+	 */
+	protected static final String SHOW_PERSP_ID = IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE;
 
 	private IPerspectiveRegistry reg;
 
@@ -120,7 +127,7 @@ public abstract class PerspectiveMenu extends ContributionItem {
 
 
     /**
-     * Constructs a new instance of <code>PerspectiveMenu</code>.  
+     * Constructs a new instance of <code>PerspectiveMenu</code>.
      *
      * @param window the window containing this menu
      * @param id the menu id
@@ -130,7 +137,7 @@ public abstract class PerspectiveMenu extends ContributionItem {
         this.window = window;
         reg = window.getWorkbench().getPerspectiveRegistry();
 		openOtherAction
-				.setActionDefinitionId(SHOW_PERSP_ID);
+				.setActionDefinitionId(IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE);
     }
 
     /*
@@ -275,7 +282,7 @@ public abstract class PerspectiveMenu extends ContributionItem {
      * @return an <code>ArrayList<code> of perspective items <code>IPerspectiveDescriptor</code>
      */
     protected ArrayList getPerspectiveItems() {
-        /* Allow the user to see all the perspectives they have 
+        /* Allow the user to see all the perspectives they have
          * selected via Customize Perspective. Bugzilla bug #23445 */
         ArrayList shortcuts = getPerspectiveShortcuts();
         ArrayList list = new ArrayList(shortcuts.size());
@@ -304,7 +311,7 @@ public abstract class PerspectiveMenu extends ContributionItem {
     /**
      * Returns the window for this menu.
      *
-     * @return the window 
+     * @return the window
      */
     protected IWorkbenchWindow getWindow() {
         return window;
@@ -348,31 +355,33 @@ public abstract class PerspectiveMenu extends ContributionItem {
         run(desc);
     }
 
-    /* (non-Javadoc)
-     * Show the "other" dialog, select a perspective, and run it. Pass on the selection
-     * event should the meny need it.
-     */
+	/**
+	 * Show the "other" dialog, select a perspective, and run it. Pass on the selection event should
+	 * the menu need it.
+	 * 
+	 * @param event the selection event
+	 */
     void runOther(SelectionEvent event) {
 		IHandlerService handlerService = (IHandlerService) window
 				.getService(IHandlerService.class);
 		try {
-			handlerService.executeCommand(SHOW_PERSP_ID, null);
+			handlerService.executeCommand(IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE, null);
 		} catch (ExecutionException e) {
 			StatusManager.getManager().handle(
 					new Status(IStatus.WARNING, WorkbenchPlugin.PI_WORKBENCH,
-							"Failed to execute " + SHOW_PERSP_ID, e)); //$NON-NLS-1$
+							"Failed to execute " + IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE, e)); //$NON-NLS-1$
 		} catch (NotDefinedException e) {
 			StatusManager.getManager().handle(
 					new Status(IStatus.WARNING, WorkbenchPlugin.PI_WORKBENCH,
-							"Failed to execute " + SHOW_PERSP_ID, e)); //$NON-NLS-1$
+							"Failed to execute " + IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE, e)); //$NON-NLS-1$
 		} catch (NotEnabledException e) {
 			StatusManager.getManager().handle(
 					new Status(IStatus.WARNING, WorkbenchPlugin.PI_WORKBENCH,
-							"Failed to execute " + SHOW_PERSP_ID, e)); //$NON-NLS-1$
+							"Failed to execute " + IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE, e)); //$NON-NLS-1$
 		} catch (NotHandledException e) {
 			StatusManager.getManager().handle(
 					new Status(IStatus.WARNING, WorkbenchPlugin.PI_WORKBENCH,
-							"Failed to execute " + SHOW_PERSP_ID, e)); //$NON-NLS-1$
+							"Failed to execute " + IWorkbenchCommandConstants.PERSPECTIVES_SHOW_PERSPECTIVE, e)); //$NON-NLS-1$
 		}
 	}
 

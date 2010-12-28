@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,8 @@ public class ViewStack extends PartStack {
     private SystemMenuFastView fastViewAction;
 
     private SystemMenuDetach detachViewAction;
+
+	private boolean durable = false;
 
     public void addSystemActions(IMenuManager menuManager) {
         appendToGroupIfPossible(menuManager,
@@ -140,7 +142,12 @@ public class ViewStack extends PartStack {
 		if (Perspective.useNewMinMax(persp)) {
 			FastViewManager fvm = persp.getFastViewManager();
 			if (minimized) {
+				// Need to temporarily set the durability attribute to false or we won't be able to minimized the folder
+				boolean tempDurable = durable;
+				durable = false; 
 				fvm.moveToTrim(this, false);
+				// Restore the durability attribute to its previous value
+				durable = tempDurable;
 			} else {
 				// First, if we're maximized then revert
 				if (persp.getPresentation().getMaximizedStack() != null) {
@@ -204,4 +211,24 @@ public class ViewStack extends PartStack {
     public StackPresentation getTestPresentation() {
     	return getPresentation();
     }
+
+	/**
+	 * Set the durability attribute for this stack. The stack's durability determines
+	 * whether or not the stack remains visible after its last child is closed.
+	 * 
+	 * @param durable If true, the stack remains visible after its last child is closed
+	 */
+	public void setDurable(boolean durable) {
+        this.durable  = durable;		
+	}
+	
+	/**
+	 * Get the durability attribute for this stack. The stack's durability determines
+	 * whether or not the stack remains visible after its last child is closed.
+	 * 
+	 * @return true, if the stack remains visible when its last child is closed; false otherwise
+	 */
+	public boolean getDurable () {
+		return this.durable;
+	}
 }

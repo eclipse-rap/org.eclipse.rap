@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,12 +110,17 @@ public class SlaveContextService implements IContextService {
 		fRegisteredShells = new ArrayList();
 	}
 
+	public void deferUpdates(boolean defer) {
+		fParentService.deferUpdates(defer);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ui.contexts.IContextService#activateContext(java.lang.String)
 	 */
 	public IContextActivation activateContext(String contextId) {
+		
 		ContextActivation activation = new ContextActivation(contextId,
 				fDefaultExpression, this);
 		return doActivateContext(activation);
@@ -146,20 +151,19 @@ public class SlaveContextService implements IContextService {
 			fParentActivations.add(activation);
 			return activation;
 		}
-		AndExpression andExpression = null;
-		if (expression instanceof AndExpression) {
-			andExpression = (AndExpression) expression;
-		} else {
-			andExpression = new AndExpression();
-			if (expression!=null) {
-				andExpression.add(expression);
-			}
-		}
-		if (fDefaultExpression!=null) {
+
+		Expression aExpression = fDefaultExpression;
+		if (expression != null && fDefaultExpression != null) {
+			final AndExpression andExpression = new AndExpression();
+			andExpression.add(expression);
 			andExpression.add(fDefaultExpression);
+			aExpression = andExpression;
+		} else if (expression != null) {
+			aExpression = expression;
 		}
+
 		ContextActivation activation = new ContextActivation(contextId,
-				andExpression, this);
+				aExpression, this);
 		return doActivateContext(activation);
 	}
 

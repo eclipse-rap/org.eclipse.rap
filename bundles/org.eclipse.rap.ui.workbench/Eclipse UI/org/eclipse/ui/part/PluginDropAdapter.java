@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,19 +97,20 @@ public class PluginDropAdapter extends ViewerDropAdapter {
                 IWorkbenchRegistryConstants.PL_DROP_ACTIONS);
         IExtension[] extensions = xpt.getExtensions();
         for (int i = 0; i < extensions.length; i++) {
-            IConfigurationElement[] configs = extensions[i]
-                    .getConfigurationElements();
+            IConfigurationElement[] configs = extensions[i].getConfigurationElements();
             if (configs != null && configs.length > 0) {
-                String id = configs[0].getAttribute("id");//$NON-NLS-1$
-                if (id != null && id.equals(adapterName)) {
-                    return (IDropActionDelegate) WorkbenchPlugin
-                            .createExtension(configs[0], ATT_CLASS);
+                for (int j=0; j < configs.length; j++) {
+                	String id = configs[j].getAttribute("id");//$NON-NLS-1$
+                    if (id != null && id.equals(adapterName)) {
+                        return (IDropActionDelegate) WorkbenchPlugin
+                                .createExtension(configs[j], ATT_CLASS);
+                    }
                 }
             }
         }
         return null;
     }
-
+    
     /**
      * @see ViewerDropAdapter#performDrop
      */

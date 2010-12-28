@@ -1,6 +1,6 @@
 // RAP [rh] quick access disabled
 ///*******************************************************************************
-// * Copyright (c) 2006, 2007 IBM Corporation and others.
+// * Copyright (c) 2006, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@
 //import org.eclipse.jface.action.MenuManager;
 //import org.eclipse.jface.action.SubContributionItem;
 //import org.eclipse.jface.resource.ImageDescriptor;
+//import org.eclipse.ui.IWorkbenchWindow;
 //import org.eclipse.ui.PlatformUI;
 //import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 //import org.eclipse.ui.internal.WorkbenchImages;
@@ -47,10 +48,10 @@
 //	public QuickAccessElement[] getElements() {
 //		if (idToElement == null) {
 //			idToElement = new HashMap();
-//			WorkbenchWindow window = (WorkbenchWindow) PlatformUI
+//			IWorkbenchWindow window = PlatformUI
 //					.getWorkbench().getActiveWorkbenchWindow();
-//			if (window != null) {
-//				MenuManager menu = window.getMenuManager();
+//			if (window instanceof WorkbenchWindow) {
+//				MenuManager menu = ((WorkbenchWindow) window).getMenuManager();
 //				Set result = new HashSet();
 //				collectContributions(menu, result);
 //				ActionContributionItem[] actions = (ActionContributionItem[]) result

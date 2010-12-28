@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,10 +7,12 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Chris Austin (IBM) - Fix for bug 296042
  *******************************************************************************/
 package org.eclipse.ui.internal.help;
 
 import java.net.URL;
+import java.util.Hashtable;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +29,7 @@ import org.eclipse.help.IHelp;
 import org.eclipse.help.IHelpResource;
 import org.eclipse.help.IToc;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.LegacyActionTools;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.HelpEvent;
@@ -63,6 +66,8 @@ public final class WorkbenchHelpSystem implements IWorkbenchHelpSystem {
 	/**
 	 * Id of extension point where the help UI is contributed.
 	 */
+	 // RAP [bm] namespace
+//	private static final String HELP_SYSTEM_EXTENSION_ID = PlatformUI.PLUGIN_ID + '.' + IWorkbenchRegistryConstants.PL_HELPSUPPORT;	 
 	private static final String HELP_SYSTEM_EXTENSION_ID = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE + '.' + IWorkbenchRegistryConstants.PL_HELPSUPPORT;
 
 	/**
@@ -159,6 +164,13 @@ public final class WorkbenchHelpSystem implements IWorkbenchHelpSystem {
 	 * debugging purposes.
 	 */
 	private String desiredHelpSystemId;
+
+	/**
+	 * Table for tracing registered context ids. This is used only for debugging
+	 * purposes.
+	 * 
+	 */
+	private Hashtable registeredIDTable;
 
 	/**
 	 * Handles dynamic removal of the help system.
@@ -470,7 +482,7 @@ public final class WorkbenchHelpSystem implements IWorkbenchHelpSystem {
 				for (int i = 0; i < extensions.length; i++) {
 					IExtension extension = extensions[i];
 					if (desiredHelpSystemId.equals(extension.getUniqueIdentifier())) {
-						IConfigurationElement[] elements = extensions[0]
+						IConfigurationElement[] elements = extension
 								.getConfigurationElements();
 						if (elements.length == 0) {
 							// help UI present but mangled - act like there was
@@ -966,6 +978,8 @@ public final class WorkbenchHelpSystem implements IWorkbenchHelpSystem {
 	 *      java.lang.String)
 	 */
 	public void setHelp(final IAction action, final String contextId) {
+		if (WorkbenchPlugin.DEBUG)
+			setHelpTrace(contextId);
 		action.setHelpListener(new HelpListener() {
 			public void helpRequested(HelpEvent event) {
 				if (getHelpUI() != null) {
@@ -973,7 +987,8 @@ public final class WorkbenchHelpSystem implements IWorkbenchHelpSystem {
 					if (context != null) {
 						Point point = computePopUpLocation(event.widget
 								.getDisplay());
-						displayContext(new ContextWithTitle(context, action.getText()), point.x, point.y);
+						String title = LegacyActionTools.removeMnemonics(action.getText());
+						displayContext(new ContextWithTitle(context, title), point.x, point.y);
 					}
 				}
 			}
@@ -987,6 +1002,8 @@ public final class WorkbenchHelpSystem implements IWorkbenchHelpSystem {
 	 *      java.lang.String)
 	 */
 	public void setHelp(Control control, String contextId) {
+		if (WorkbenchPlugin.DEBUG)
+			setHelpTrace(contextId);
 		control.setData(HELP_KEY, contextId);
 		// ensure that the listener is only registered once
 		control.removeHelpListener(getHelpListener());
@@ -1000,6 +1017,8 @@ public final class WorkbenchHelpSystem implements IWorkbenchHelpSystem {
 	 *      java.lang.String)
 	 */
 	public void setHelp(Menu menu, String contextId) {
+		if (WorkbenchPlugin.DEBUG)
+			setHelpTrace(contextId);
 		menu.setData(HELP_KEY, contextId);
 		// ensure that the listener is only registered once
 		menu.removeHelpListener(getHelpListener());
@@ -1013,10 +1032,49 @@ public final class WorkbenchHelpSystem implements IWorkbenchHelpSystem {
 	 *      java.lang.String)
 	 */
 	public void setHelp(MenuItem item, String contextId) {
+
+		if (WorkbenchPlugin.DEBUG)
+			setHelpTrace(contextId);
+
 		item.setData(HELP_KEY, contextId);
 		// ensure that the listener is only registered once
 		item.removeHelpListener(getHelpListener());
 		item.addHelpListener(getHelpListener());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * Traces all calls to the setHelp method in an attempt to find and report
+	 * duplicated context IDs.
+	 */
+	private void setHelpTrace(String contextId) {
+		// Create an unthrown exception to capture the stack trace
+		RuntimeException e = new RuntimeException();
+		StackTraceElement[] stackTrace = e.getStackTrace();
+		StackTraceElement currentElement = null;
+		for (int s = 0; s < stackTrace.length; s++) {
+			if (stackTrace[s].getMethodName().equals("setHelp") && s + 1 < stackTrace.length) //$NON-NLS-1$
+			{
+				currentElement = stackTrace[s + 1];
+				break;
+			}
+		}
+
+		if (registeredIDTable == null)
+			registeredIDTable = new Hashtable();
+
+		if (!registeredIDTable.containsKey(contextId))
+			registeredIDTable.put(contextId, currentElement);
+		else if (!registeredIDTable.get(contextId).equals(currentElement)) {
+			StackTraceElement initialElement = (StackTraceElement) registeredIDTable
+					.get(contextId);
+			String error = "UI Duplicate Context ID found: '" + contextId + "'\n" + //$NON-NLS-1$ //$NON-NLS-2$
+					" 1 at " + initialElement + '\n' + //$NON-NLS-1$
+					" 2 at " + currentElement; //$NON-NLS-1$
+
+			System.out.println(error);
+		}
 	}
 
 	/* (non-Javadoc)

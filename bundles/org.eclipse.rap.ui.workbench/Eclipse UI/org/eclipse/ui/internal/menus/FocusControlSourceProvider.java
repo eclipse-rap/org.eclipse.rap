@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.internal.menus;
 
@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
@@ -62,9 +63,6 @@ public class FocusControlSourceProvider extends AbstractSourceProvider
 		control.addDisposeListener(getDisposeListener());
 	}
 
-	/**
-	 * @return
-	 */
 	private DisposeListener getDisposeListener() {
 		if (disposeListener == null) {
 			disposeListener = new DisposeListener() {
@@ -76,9 +74,6 @@ public class FocusControlSourceProvider extends AbstractSourceProvider
 		return disposeListener;
 	}
 
-	/**
-	 * @return
-	 */
 	private FocusListener getFocusListener() {
 		if (focusListener == null) {
 			focusListener = new FocusListener() {
@@ -100,16 +95,20 @@ public class FocusControlSourceProvider extends AbstractSourceProvider
 	private void focusIn(Widget widget) {
 		String id = (String) controlToId.get(widget);
 		if (currentId != id) {
+			Map m = new HashMap();
 			if (id == null) {
 				currentId = null;
 				currentControl = null;
+				m.put(ISources.ACTIVE_FOCUS_CONTROL_ID_NAME,
+						IEvaluationContext.UNDEFINED_VARIABLE);
+				m.put(ISources.ACTIVE_FOCUS_CONTROL_NAME,
+						IEvaluationContext.UNDEFINED_VARIABLE);
 			} else {
 				currentId = id;
 				currentControl = (Control) widget;
+				m.put(ISources.ACTIVE_FOCUS_CONTROL_ID_NAME, currentId);
+				m.put(ISources.ACTIVE_FOCUS_CONTROL_NAME, currentControl);
 			}
-			Map m = new HashMap();
-			m.put(ISources.ACTIVE_FOCUS_CONTROL_ID_NAME, currentId);
-			m.put(ISources.ACTIVE_FOCUS_CONTROL_NAME, currentControl);
 			fireSourceChanged(ISources.ACTIVE_MENU, m);
 		}
 	}
@@ -155,8 +154,16 @@ public class FocusControlSourceProvider extends AbstractSourceProvider
 	 */
 	public Map getCurrentState() {
 		Map m = new HashMap();
-		m.put(ISources.ACTIVE_FOCUS_CONTROL_ID_NAME, currentId);
-		m.put(ISources.ACTIVE_FOCUS_CONTROL_NAME, currentControl);
+		if (currentId == null) {
+			m.put(ISources.ACTIVE_FOCUS_CONTROL_ID_NAME,
+					IEvaluationContext.UNDEFINED_VARIABLE);
+			m.put(ISources.ACTIVE_FOCUS_CONTROL_NAME,
+					IEvaluationContext.UNDEFINED_VARIABLE);
+
+		} else {
+			m.put(ISources.ACTIVE_FOCUS_CONTROL_ID_NAME, currentId);
+			m.put(ISources.ACTIVE_FOCUS_CONTROL_NAME, currentControl);
+		}
 		return m;
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *      IBM Corporation - initial API and implementation    
  * 		Sebastian Davids <sdavids@gmx.de> - Fix for bug 19346 - Dialog font should be
  * 			activated and used by other components.
+ *      Lubomir Marinov <lubomir.marinov@gmail.com> - Fix for bug 182122 -[Dialogs] 
+ *          CheckedTreeSelectionDialog#createSelectionButtons(Composite) fails to 
+ *          align the selection buttons to the right
  *******************************************************************************/
 package org.eclipse.ui.dialogs;
 
@@ -348,13 +351,15 @@ public class CheckedTreeSelectionDialog extends SelectionStatusDialog {
     protected Composite createSelectionButtons(Composite composite) {
         Composite buttonComposite = new Composite(composite, SWT.RIGHT);
         GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        buttonComposite.setLayout(layout);
+        layout.numColumns = 0;
+		layout.marginWidth = 0;
+		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+		buttonComposite.setLayout(layout);
         buttonComposite.setFont(composite.getFont());
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END
                 | GridData.GRAB_HORIZONTAL);
         data.grabExcessHorizontalSpace = true;
-        composite.setData(data);
+        buttonComposite.setLayoutData(data);
         Button selectButton = createButton(buttonComposite,
                 IDialogConstants.SELECT_ALL_ID, WorkbenchMessages.get().CheckedTreeSelectionDialog_select_all,
                 false);

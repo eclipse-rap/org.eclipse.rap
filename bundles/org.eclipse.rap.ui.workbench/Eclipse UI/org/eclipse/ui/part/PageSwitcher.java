@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
 package org.eclipse.ui.part;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.internal.handlers.CyclePageHandler;
@@ -39,8 +39,8 @@ public abstract class PageSwitcher {
 	public PageSwitcher(IWorkbenchPart part) {
 		IHandlerService service = (IHandlerService) part.getSite().getService(
 				IHandlerService.class);
-		service.activateHandler(COMMAND_NEXT_PAGE, new CyclePageHandler(this));
-		service.activateHandler(COMMAND_PREVIOUS_PAGE, new CyclePageHandler(
+		service.activateHandler(IWorkbenchCommandConstants.NAVIGATE_NEXT_PAGE, new CyclePageHandler(this));
+		service.activateHandler(IWorkbenchCommandConstants.NAVIGATE_PREVIOUS_PAGE, new CyclePageHandler(
 				this));
 	}
 

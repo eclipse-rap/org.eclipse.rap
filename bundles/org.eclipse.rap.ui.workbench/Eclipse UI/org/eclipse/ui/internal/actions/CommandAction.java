@@ -185,6 +185,7 @@ public class CommandAction extends Action {
 		createCommand(commandService, commandIdIn, parameterMap);
 		if (parameterizedCommand != null) {
 			setId(parameterizedCommand.getId());
+			setActionDefinitionId(parameterizedCommand.getId());
 			try {
 				setText(parameterizedCommand.getName());
 			} catch (NotDefinedException e) {
@@ -209,9 +210,6 @@ public class CommandAction extends Action {
 	}
 
 	public String getActionDefinitionId() {
-		if (parameterizedCommand != null) {
-			return parameterizedCommand.getId();
-		}
-		return null;
+		return super.getActionDefinitionId();
 	}
 }

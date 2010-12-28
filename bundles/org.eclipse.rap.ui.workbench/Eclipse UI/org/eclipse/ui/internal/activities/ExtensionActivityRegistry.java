@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.ui.internal.activities;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.expressions.Expression;
@@ -25,9 +26,12 @@ import org.eclipse.core.runtime.IExtensionDelta;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryChangeEvent;
 import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.service.SessionStoreEvent;
 import org.eclipse.rwt.service.SessionStoreListener;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.util.ConfigurationElementMemento;
@@ -198,49 +202,88 @@ final class ExtensionActivityRegistry extends AbstractActivityRegistry {
 			ActivityDefinition activityDef = getActivityDefinitionById(id);
 			if (activityDef != null && activityDef.getEnabledWhen() != null) {
 				defaultEnabledActivities.remove(i);
+				StatusManager
+						.getManager()
+						.handle(
+								new Status(
+										IStatus.WARNING,
+										PlatformUI.PLUGIN_ID,
+										"Default enabled activity declarations will be ignored (id: " + id + ")")); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
 				i++;
 			}
 		}
 
+		// remove all requirement bindings that reference expression-bound activities
+		for (Iterator i = activityRequirementBindingDefinitions.iterator(); i
+				.hasNext();) {
+			ActivityRequirementBindingDefinition bindingDef = (ActivityRequirementBindingDefinition) i
+					.next();
+			ActivityDefinition activityDef = getActivityDefinitionById(bindingDef
+					.getRequiredActivityId());
+			if (activityDef != null && activityDef.getEnabledWhen() != null) {
+				i.remove();
+				StatusManager
+						.getManager()
+						.handle(
+								new Status(
+										IStatus.WARNING,
+										PlatformUI.PLUGIN_ID,
+										"Expression activity cannot have requirements (id: " + activityDef.getId() + ")")); //$NON-NLS-1$ //$NON-NLS-2$
+				continue;
+			}
+
+			activityDef = getActivityDefinitionById(bindingDef.getActivityId());
+			if (activityDef != null && activityDef.getEnabledWhen() != null) {
+				i.remove();
+				StatusManager
+						.getManager()
+						.handle(
+								new Status(
+										IStatus.WARNING,
+										PlatformUI.PLUGIN_ID,
+										"Expression activity cannot be required (id: " + activityDef.getId() + ")")); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		}
+		
         boolean activityRegistryChanged = false;
 
         if (!activityRequirementBindingDefinitions
                 .equals(super.activityRequirementBindingDefinitions)) {
             super.activityRequirementBindingDefinitions = Collections
-                    .unmodifiableList(activityRequirementBindingDefinitions);
+                    .unmodifiableList(new ArrayList(activityRequirementBindingDefinitions));
             activityRegistryChanged = true;
         }
 
         if (!activityDefinitions.equals(super.activityDefinitions)) {
             super.activityDefinitions = Collections
-                    .unmodifiableList(activityDefinitions);
+                    .unmodifiableList(new ArrayList(activityDefinitions));
             activityRegistryChanged = true;
         }
 
         if (!activityPatternBindingDefinitions
                 .equals(super.activityPatternBindingDefinitions)) {
             super.activityPatternBindingDefinitions = Collections
-                    .unmodifiableList(activityPatternBindingDefinitions);
+                    .unmodifiableList(new ArrayList(activityPatternBindingDefinitions));
             activityRegistryChanged = true;
         }
 
         if (!categoryActivityBindingDefinitions
                 .equals(super.categoryActivityBindingDefinitions)) {
             super.categoryActivityBindingDefinitions = Collections
-                    .unmodifiableList(categoryActivityBindingDefinitions);
+                    .unmodifiableList(new ArrayList(categoryActivityBindingDefinitions));
             activityRegistryChanged = true;
         }
 
         if (!categoryDefinitions.equals(super.categoryDefinitions)) {
             super.categoryDefinitions = Collections
-                    .unmodifiableList(categoryDefinitions);
+                    .unmodifiableList(new ArrayList(categoryDefinitions));
             activityRegistryChanged = true;
         }
 
         if (!defaultEnabledActivities.equals(super.defaultEnabledActivities)) {
             super.defaultEnabledActivities = Collections
-                    .unmodifiableList(defaultEnabledActivities);
+                    .unmodifiableList(new ArrayList(defaultEnabledActivities));
             activityRegistryChanged = true;
         }
 

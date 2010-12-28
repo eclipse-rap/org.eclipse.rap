@@ -206,7 +206,6 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </appinfo>
             </annotation>
          </attribute>
-         <!-- RAP [bm] not used
          <attribute name="helpContextId" type="string">
             <annotation>
                <documentation>
@@ -214,7 +213,6 @@ If omitted and the action appears in the toolbar, the Workbench will use a place
                </documentation>
             </annotation>
          </attribute>
-         -->
          <attribute name="style" use="default" value="push">
             <annotation>
                <documentation>

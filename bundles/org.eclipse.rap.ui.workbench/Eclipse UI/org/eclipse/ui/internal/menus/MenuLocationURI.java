@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ public class MenuLocationURI {
 	public String getQuery() {
 		// Trim off the scheme
 		String[] vals = Util.split(rawString, '?');
-		return vals[1];
+		return vals.length>1?vals[1]:Util.ZERO_LENGTH_STRING;
 	}
 
 	/**
@@ -63,12 +63,12 @@ public class MenuLocationURI {
 	public String getPath() {
 		// Trim off the scheme
 		String[] vals = Util.split(rawString, ':');
-		if (vals[1] == null)
+		if (vals.length<2)
 			return null;
 		
 		// Now, trim off any query
 		vals = Util.split(vals[1], '?');
-		return vals[0];
+		return vals.length==0?Util.ZERO_LENGTH_STRING:vals[0];
 	}
 
 	/* (non-Javadoc)

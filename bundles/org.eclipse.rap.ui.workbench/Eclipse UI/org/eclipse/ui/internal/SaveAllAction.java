@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.ISaveablesLifecycleListener;
 import org.eclipse.ui.ISaveablesSource;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -60,7 +61,7 @@ public class SaveAllAction extends PageEventAction implements IPropertyListener 
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVEALL_EDIT));
         setDisabledImageDescriptor(WorkbenchImages
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVEALL_EDIT_DISABLED));
-        setActionDefinitionId("org.eclipse.ui.file.saveAll"); //$NON-NLS-1$
+        setActionDefinitionId(IWorkbenchCommandConstants.FILE_SAVE_ALL);
     }
 
     /* (non-Javadoc)
@@ -189,4 +190,5 @@ public class SaveAllAction extends PageEventAction implements IPropertyListener 
         }
         partsWithListeners.clear();
     }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,17 +14,13 @@ package org.eclipse.ui.internal.menus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.ExpressionConverter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
@@ -33,39 +29,23 @@ import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.commands.ICommandImageService;
 import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.internal.provisional.presentations.IActionBarPresentationFactory;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
-import org.eclipse.ui.internal.util.Util;
-import org.eclipse.ui.menus.AbstractContributionFactory;
+import org.eclipse.ui.internal.services.IWorkbenchLocationService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.menus.IContributionRoot;
 import org.eclipse.ui.menus.IMenuService;
-import org.eclipse.ui.menus.IWorkbenchContribution;
-import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.services.IServiceLocator;
 
 /**
  * 
  */
-public class MenuAdditionCacheEntry extends AbstractContributionFactory {
-	private IConfigurationElement additionElement;
-
-	// Caches
-
-
-	/**
-	 * If an {@link IConfigurationElement} is in the Set then we have already
-	 * tried (and failed) to load the associated ExecutableExtension.
-	 * 
-	 * This is used to prevent multiple retries which would spam the Log.
-	 */
-	Set failedLoads = new HashSet();
-
+public class MenuAdditionCacheEntry extends AbstractMenuAdditionCacheEntry {
+	
 	/**
 	 * Maps an IConfigurationElement to its parsed Expression
 	 */
@@ -84,17 +64,12 @@ public class MenuAdditionCacheEntry extends AbstractContributionFactory {
 
 	private boolean hasAdditions = false;
 
-	public MenuAdditionCacheEntry(IMenuService menuService,
-			IConfigurationElement element) {
-		this(menuService, element, element.getAttribute(IWorkbenchRegistryConstants.TAG_LOCATION_URI), 
-				element.getNamespaceIdentifier());
-	}
+	private Boolean contributeToAllPopups = null;
 
 	public MenuAdditionCacheEntry(IMenuService menuService,
 			IConfigurationElement element, String location, String namespace) {
-		super(location, namespace);
+		super(location, namespace, element);
 		this.menuService = menuService;
-		this.additionElement = element;
 		findAdditions();
 		generateSubCaches();
 	}
@@ -103,7 +78,7 @@ public class MenuAdditionCacheEntry extends AbstractContributionFactory {
 	 * 
 	 */
 	private void generateSubCaches() {
-		IConfigurationElement[] items = additionElement.getChildren();
+		IConfigurationElement[] items = getConfigElement().getChildren();
 		for (int i = 0; i < items.length; i++) {
 			String itemType = items[i].getName();
 			if (IWorkbenchRegistryConstants.TAG_MENU.equals(itemType)
@@ -170,14 +145,15 @@ public class MenuAdditionCacheEntry extends AbstractContributionFactory {
 			IContributionRoot additions) {
 		IActionBarPresentationFactory actionBarPresentationFactory = null;
 
-		WorkbenchWindow window = (WorkbenchWindow) serviceLocator
-				.getService(IWorkbenchWindow.class);
+		IWorkbenchLocationService wls = (IWorkbenchLocationService) serviceLocator
+		.getService(IWorkbenchLocationService.class);
+		WorkbenchWindow window = (WorkbenchWindow) wls.getWorkbenchWindow();
 		if (window != null) {
 			actionBarPresentationFactory = window
 					.getActionBarPresentationFactory();
 		}
 
-		IConfigurationElement[] items = additionElement.getChildren();
+		IConfigurationElement[] items = getConfigElement().getChildren();
 		for (int i = 0; i < items.length; i++) {
 			String itemType = items[i].getName();
 			IContributionItem newItem = null;
@@ -197,7 +173,7 @@ public class MenuAdditionCacheEntry extends AbstractContributionFactory {
 			} else if (IWorkbenchRegistryConstants.TAG_MENU.equals(itemType)) {
 				newItem = createMenuAdditionContribution(items[i]);
 			} else if (IWorkbenchRegistryConstants.TAG_TOOLBAR.equals(itemType)) {
-				newItem = createToolBarAdditionContribution(
+				newItem = createToolBarAdditionContribution(window,
 						actionBarPresentationFactory, items[i]);
 			}
 			
@@ -215,22 +191,28 @@ public class MenuAdditionCacheEntry extends AbstractContributionFactory {
 	}
 
 	/**
+	 * @param window
 	 * @param configurationElement
 	 * @return the toolbar contribution item
 	 */
-	private IContributionItem createToolBarAdditionContribution(
+	private IContributionItem createToolBarAdditionContribution(WorkbenchWindow window,
 			IActionBarPresentationFactory actionBarPresentationFactory,
 			IConfigurationElement configurationElement) {
 		if (!inToolbar()) {
 			return null;
 		}
+		String id = getId(configurationElement);
+		String label = getLabel(configurationElement);
+		if (label != null && label.length() > 0) {
+			window.putToolbarLabel(id, label);
+		}
 		if (actionBarPresentationFactory != null) {
 			return actionBarPresentationFactory.createToolBarContributionItem(
 					actionBarPresentationFactory.createToolBarManager(),
-					getId(configurationElement));
+					id);
 		}
 		return new ToolBarContributionItem(new ToolBarManager(),
-				getId(configurationElement));
+				id);
 	}
 
 	/**
@@ -284,64 +266,22 @@ public class MenuAdditionCacheEntry extends AbstractContributionFactory {
 	private IContributionItem createDynamicAdditionContribution(
 			final IServiceLocator locator,
 			final IConfigurationElement dynamicAddition) {
-		// If we've already tried (and failed) to load the
-		// executable extension then skip this addition.
-		if (failedLoads.contains(dynamicAddition))
-			return null;
-
-		// Attempt to load the addition's EE (creates a new instance)
-		final ContributionItem loadedDynamicContribution = (ContributionItem) Util
-				.safeLoadExecutableExtension(dynamicAddition,
-						IWorkbenchRegistryConstants.ATT_CLASS,
-						ContributionItem.class);
-
-		// Cache failures
-		if (loadedDynamicContribution == null) {
-			failedLoads.add(loadedDynamicContribution);
-			return null;
-		}
-
-		loadedDynamicContribution.setId(getId(dynamicAddition));
-		if (loadedDynamicContribution instanceof IWorkbenchContribution) {
-			((IWorkbenchContribution)loadedDynamicContribution).initialize(locator);
-		}
 		
-		// TODO provide a proxy IContributionItem that defers instantiation
-		// adding contribution items in a menu instantiates this object ...
-		// we need to defer loading until fill(*) is called.
-		return loadedDynamicContribution;
+		return new DynamicMenuContributionItem(getId(dynamicAddition), locator,
+				dynamicAddition);
+		
 	}
 
 	private IContributionItem createControlAdditionContribution(
 			final IServiceLocator locator,
 			final IConfigurationElement widgetAddition) {
-		if (!inToolbar()) {
-			return null;
+
+		if (inToolbar()) {
+			return new DynamicToolBarContributionItem(getId(widgetAddition), locator, widgetAddition);
 		}
-		// If we've already tried (and failed) to load the
-		// executable extension then skip this addirion.
-		if (failedLoads.contains(widgetAddition))
-			return null;
-
-		// Attempt to load the addition's EE (creates a new instance)
-		final WorkbenchWindowControlContribution loadedWidget = (WorkbenchWindowControlContribution) Util
-				.safeLoadExecutableExtension(widgetAddition,
-						IWorkbenchRegistryConstants.ATT_CLASS,
-						WorkbenchWindowControlContribution.class);
-
-		// Cache failures
-		if (loadedWidget == null) {
-			failedLoads.add(widgetAddition);
-			return null;
-		}
-
-		// explicitly set the id
-		loadedWidget.setId(getId(widgetAddition));
-		if (loadedWidget instanceof IWorkbenchContribution) {
-			((IWorkbenchContribution)loadedWidget).initialize(locator);
-		}
-
-		return loadedWidget;
+		
+		return null;
+		
 	}
 
 	private IContributionItem createCommandAdditionContribution(
@@ -531,13 +471,6 @@ public class MenuAdditionCacheEntry extends AbstractContributionFactory {
 	}
 
 	/**
-	 * @return
-	 */
-	public IConfigurationElement getConfigElement() {
-		return additionElement;
-	}
-
-	/**
 	 * @return Returns the subCaches.
 	 */
 	public List getSubCaches() {
@@ -545,7 +478,7 @@ public class MenuAdditionCacheEntry extends AbstractContributionFactory {
 	}
 	
 	private void findAdditions() {
-		IConfigurationElement[] items = additionElement.getChildren();
+		IConfigurationElement[] items = getConfigElement().getChildren();
 		boolean done = false;
 		for (int i = 0; i < items.length && !done; i++) {
 			String itemType = items[i].getName();
@@ -561,5 +494,24 @@ public class MenuAdditionCacheEntry extends AbstractContributionFactory {
 	
 	public boolean hasAdditions() {
 		return hasAdditions;
+	}
+
+	/**
+	 * 
+	 * Returns the value of the allPopups attribute
+	 * 
+	 * @return <code>true</code> if specified and the value equals to true,
+	 *         <code>false</code> otherwise
+	 * 
+	 */
+	public boolean contributeToAllPopups() {
+		if (contributeToAllPopups == null) {
+			String allPopups = getConfigElement().getAttribute("allPopups"); //$NON-NLS-1$
+			if (allPopups == null || Boolean.valueOf(allPopups).booleanValue())
+				contributeToAllPopups = Boolean.TRUE;
+			else
+				contributeToAllPopups = Boolean.FALSE;
+		}
+		return contributeToAllPopups.booleanValue();
 	}
 }

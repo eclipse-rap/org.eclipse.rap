@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,13 +137,16 @@ public interface IActionBars {
      */
     public void setGlobalActionHandler(String actionId, IAction handler);
 
-    /**
-     * Updates the action bars.
-     * <p>
-     * Clients who add or remove items from the menu, tool bar, or status line
-     * managers should call this method to propagated the changes throughout 
-     * the workbench.
-     * </p>
-     */
+	/**
+	 * Updates the action bars.
+	 * <p>
+	 * Clients who add or remove items from the menu, tool bar, or status line
+	 * managers, or that update global action handlers, should call this method
+	 * to propagated the changes throughout the workbench.
+	 * </p>
+	 * 
+	 * @see #setGlobalActionHandler(String, IAction)
+	 * @see #clearGlobalActionHandlers()
+	 */
     public void updateActionBars();
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.SafeRunnable;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.osgi.util.TextProcessor;
 import org.eclipse.swt.SWT;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -68,7 +70,10 @@ public class ReopenEditorMenu extends ContributionItem {
         super(id);
         this.window = window;
         this.showSeparator = showSeparator;
-        history = ((Workbench) window.getWorkbench()).getEditorHistory();
+        IWorkbench workbench = window.getWorkbench();
+		if (workbench instanceof Workbench) {
+			history = ((Workbench) workbench).getEditorHistory();
+		}
     }
 
     /**
@@ -76,21 +81,39 @@ public class ReopenEditorMenu extends ContributionItem {
      * within the MAX_TEXT_LENGTH.
      */
     private String calcText(int index, EditorHistoryItem item) {
+		// IMPORTANT: avoid accessing the item's input since
+		// this can require activating plugins.
+		// Instead, ask the item for the info, which can
+		// consult its memento if it is not restored yet.
+    	// RAP [bm] SWT.RIGHT_TO_LEFT
+//		return calcText(index, item.getName(), item.getToolTipText(), Window
+//				.getDefaultOrientation() == SWT.RIGHT_TO_LEFT);
+    	return calcText(index, item.getName(), item.getToolTipText(), false);
+	}
+    
+    /**
+     * Return a string suitable for a file MRU list.  This should not be called
+     * outside the framework.
+     * 
+     * @param index the index in the MRU list
+     * @param name the file name
+     * @param toolTip potentially the path
+     * @param rtl should it be right-to-left
+     * @return a string suitable for an MRU file menu
+     */
+    public static String calcText(int index, String name, String toolTip, boolean rtl) {
         StringBuffer sb = new StringBuffer();
 
         int mnemonic = index + 1;
-        sb.append(mnemonic);
+        StringBuffer nm = new StringBuffer();
+        nm.append(mnemonic);
         if (mnemonic <= MAX_MNEMONIC_SIZE) {
-            sb.insert(sb.length() - (mnemonic + "").length(), '&'); //$NON-NLS-1$
+        	nm.insert(nm.length() - (mnemonic + "").length(), '&'); //$NON-NLS-1$
         }
-        sb.append(" "); //$NON-NLS-1$
+//        sb.append(" "); //$NON-NLS-1$
 
-        // IMPORTANT: avoid accessing the item's input since
-        // this can require activating plugins.
-        // Instead, ask the item for the info, which can
-        // consult its memento if it is not restored yet.
-        String fileName = item.getName();
-        String pathName = item.getToolTipText();
+        String fileName = name;
+        String pathName = toolTip;
         if (pathName.equals(fileName)) {
             // tool tip text isn't necessarily a path;
             // sometimes it's the same as name, so it shouldn't be treated as a path then
@@ -169,7 +192,13 @@ public class ReopenEditorMenu extends ContributionItem {
                 }
             }
         }
-        return TextProcessor.process(sb.toString(), TextProcessor.getDefaultDelimiters() + "[]");//$NON-NLS-1$
+        final String process;
+        if (rtl) {
+        	process = sb + " " + nm; //$NON-NLS-1$
+        } else {
+        	process = nm + " " + sb; //$NON-NLS-1$
+        }
+        return TextProcessor.process(process, TextProcessor.getDefaultDelimiters() + "[]");//$NON-NLS-1$
     }
 
     /**
@@ -188,7 +217,7 @@ public class ReopenEditorMenu extends ContributionItem {
 
         int itemsToShow = WorkbenchPlugin.getDefault().getPreferenceStore()
                 .getInt(IPreferenceConstants.RECENT_FILES);
-        if (itemsToShow == 0) {
+		if (itemsToShow == 0 || history == null) {
             return;
         }
 

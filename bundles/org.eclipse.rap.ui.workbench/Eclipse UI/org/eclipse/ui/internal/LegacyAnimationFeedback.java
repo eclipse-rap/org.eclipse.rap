@@ -1,6 +1,6 @@
 // RAP [bm]: animations
 ///*******************************************************************************
-// * Copyright (c) 2007 IBM Corporation and others.
+// * Copyright (c) 2007, 2008 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@
 //import org.eclipse.swt.graphics.Color;
 //import org.eclipse.swt.graphics.Rectangle;
 //import org.eclipse.swt.graphics.Region;
-//import org.eclipse.swt.widgets.Display;
 //import org.eclipse.swt.widgets.Shell;
 //
 ///**
@@ -31,10 +30,7 @@
 //public class LegacyAnimationFeedback extends RectangleAnimationFeedbackBase {
 //	private static final int LINE_WIDTH = 1;
 //
-//	private Display display;
 //	private Region shellRegion;
-//
-//	private Shell theShell;
 //
 //	public LegacyAnimationFeedback(Shell parentShell, Rectangle start,
 //			Rectangle end) {
@@ -44,14 +40,14 @@
 //	public void renderStep(AnimationEngine engine) {
 //		if (shellRegion != null) {
 //			shellRegion.dispose();
-//			shellRegion = new Region(display);
+//			shellRegion = new Region(getAnimationShell().getDisplay());
 //		}
 //
 //		// Iterate across the set of start/end rects
 //		Iterator currentRects = getCurrentRects(engine.amount()).iterator();
 //		while (currentRects.hasNext()) {
 //			Rectangle curRect = (Rectangle) currentRects.next();
-//			Rectangle rect = Geometry.toControl(theShell, curRect);
+//			Rectangle rect = Geometry.toControl(getAnimationShell(), curRect);
 //			shellRegion.add(rect);
 //			rect.x += LINE_WIDTH;
 //			rect.y += LINE_WIDTH;
@@ -61,33 +57,30 @@
 //			shellRegion.subtract(rect);
 //		}
 //
-//		theShell.setRegion(shellRegion);
-//
-//		display.update();
+//		getAnimationShell().setRegion(shellRegion);
+//		getAnimationShell().getDisplay().update();
 //	}
 //
 //	/* (non-Javadoc)
 //	 * @see org.eclipse.ui.internal.AnimationFeedbackBase#initialize(org.eclipse.ui.internal.AnimationEngine)
 //	 */
 //	public void initialize(AnimationEngine engine) {
-//
-//		theShell = new Shell(getAnimationShell(), SWT.NO_TRIM | SWT.ON_TOP);
-//		display = theShell.getDisplay();
-//		Color color = display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW);
-//		theShell.setBackground(color);
+//		Color color = getAnimationShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW);
+//		getAnimationShell().setBackground(color);
 //
 //		// Ensure that the background won't show on the initial display
-//		shellRegion = new Region(display);
-//		theShell.setRegion(shellRegion);
+//		shellRegion = new Region(getAnimationShell().getDisplay());
+//		getAnimationShell().setRegion(shellRegion);
 //	}
 //
 //	/* (non-Javadoc)
 //	 * @see org.eclipse.ui.internal.AnimationFeedbackBase#dispose()
 //	 */
 //	public void dispose() {
-//		theShell.setVisible(false);
-//		theShell.dispose();
-//		shellRegion.dispose();
+//		super.dispose();
+//		
+//		if (!shellRegion.isDisposed())
+//			shellRegion.dispose();
 //	}
 //
 //	/**
@@ -107,10 +100,10 @@
 //			shellBounds.add((Rectangle) startIter.next());
 //			shellBounds.add((Rectangle) endIter.next());
 //		}
-//		theShell.setBounds(shellBounds);
+//		getAnimationShell().setBounds(shellBounds);
 //		// Making the shell visible will be slow on old video cards, so only start
 //		// the timer once it is visible.
-//		theShell.setVisible(true);
+//		getAnimationShell().setVisible(true);
 //		
 //		return true;  // OK to go...
 //	}

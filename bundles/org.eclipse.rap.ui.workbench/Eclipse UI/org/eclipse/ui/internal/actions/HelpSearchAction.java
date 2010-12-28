@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.ui.internal.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -49,7 +50,7 @@ public class HelpSearchAction extends Action implements IWorkbenchAction {
             throw new IllegalArgumentException();
         }
         this.workbenchWindow = window;
-        setActionDefinitionId("org.eclipse.ui.help.helpSearch"); //$NON-NLS-1$
+        setActionDefinitionId(IWorkbenchCommandConstants.HELP_HELP_SEARCH);
 
         // support for allowing a product to override the text for the action
         String overrideText = PrefUtil.getAPIPreferenceStore().getString(

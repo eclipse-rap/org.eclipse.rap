@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,22 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.progress;
 
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * The JobTreeElement is the abstract superclass of items displayed in the tree.
  */
-abstract class JobTreeElement implements Comparable {
+public abstract class JobTreeElement implements Comparable {
 
 	/**
 	 * Return the parent of this object.
 	 * 
 	 * @return Object
 	 */
-	abstract Object getParent();
+	public Object getParent() {
+		return null;
+	}
 
 	/**
 	 * Return whether or not the receiver has children.
@@ -57,12 +60,12 @@ abstract class JobTreeElement implements Comparable {
 	}
 
 	/**
-	 * Get the image for the reciever. By default there is no image.
+	 * Get the image for the reciever.
 	 * 
 	 * @return Image or <code>null</code>.
 	 */
 	public Image getDisplayImage() {
-		return null;
+		return JFaceResources.getImage(ProgressInfoItem.DEFAULT_JOB_KEY);
 	}
 
 	/**

@@ -79,13 +79,10 @@ public class WorkbenchPresentationFactory extends AbstractPresentationFactory {
         
         DefaultThemeListener themeListener = new DefaultThemeListener(folder, result.getTheme());
         result.getTheme().addListener(themeListener);
-        
-        IDynamicPropertyMap workbenchPreferences = result.getPluginPreferences(WorkbenchPlugin.getDefault()); 
-        
-        
+
         // RAP [bm]: 
         if( !Workbench.getInstance().isClosing() ) {
-          final DefaultMultiTabListener defaultMultiTabListener = new DefaultMultiTabListener(workbenchPreferences,
+          final DefaultMultiTabListener defaultMultiTabListener = new DefaultMultiTabListener(result.getApiPreferences(),
   				IWorkbenchPreferenceConstants.SHOW_MULTIPLE_EDITOR_TABS, folder);
           result.getControl().addDisposeListener( new DisposeListener() {
             public void widgetDisposed( DisposeEvent event ) {
@@ -105,7 +102,7 @@ public class WorkbenchPresentationFactory extends AbstractPresentationFactory {
         return result;
     }
 
-    /*
+	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ui.presentations.AbstractPresentationFactory#createViewPresentation(org.eclipse.swt.widgets.Composite,
@@ -142,25 +139,26 @@ public class WorkbenchPresentationFactory extends AbstractPresentationFactory {
 //				folder);
         // RAPEND: [bm] 
         
-        return result;
-    }
+		return result;
+	}
 
-    /*
+	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ui.presentations.AbstractPresentationFactory#createStandaloneViewPresentation(org.eclipse.swt.widgets.Composite,
 	 *      org.eclipse.ui.presentations.IStackPresentationSite, boolean)
 	 */
-    public StackPresentation createStandaloneViewPresentation(Composite parent,
-            IStackPresentationSite site, boolean showTitle) {
-        
-        if (showTitle) {
-            return createViewPresentation(parent, site);
-        }        
-        EmptyTabFolder folder = new EmptyTabFolder(parent, true);
-        TabbedStackPresentation presentation = new TabbedStackPresentation(site, folder, new StandardViewSystemMenu(site));
-            
-        return presentation;
-    }
+	public StackPresentation createStandaloneViewPresentation(Composite parent,
+			IStackPresentationSite site, boolean showTitle) {
+
+		if (showTitle) {
+			return createViewPresentation(parent, site);
+		}
+		EmptyTabFolder folder = new EmptyTabFolder(parent, true);
+		TabbedStackPresentation presentation = new TabbedStackPresentation(
+				site, folder, new StandardViewSystemMenu(site));
+
+		return presentation;
+	}
 
 }

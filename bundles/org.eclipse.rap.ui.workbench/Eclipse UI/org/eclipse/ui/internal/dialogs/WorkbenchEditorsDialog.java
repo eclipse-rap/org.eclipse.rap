@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.util.TextProcessor;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.events.DisposeEvent;
 //import org.eclipse.swt.events.DisposeListener;
@@ -55,7 +56,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
-import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.internal.WorkbenchPartReference;
@@ -116,12 +116,15 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 
     private SelectionListener headerListener = new SelectionAdapter() {
         public void widgetSelected(SelectionEvent e) {
-            int index = editorsTable.indexOf((TableColumn) e.widget);
+			TableColumn column = (TableColumn) e.widget;
+			int index = editorsTable.indexOf(column);
             if (index == sortColumn) {
 				reverse = !reverse;
 			} else {
 				sortColumn = index;
 			}
+			editorsTable.setSortDirection(reverse ? SWT.DOWN : SWT.UP);
+			editorsTable.setSortColumn(column);
             updateItems();
         }
     };
@@ -158,6 +161,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 				}
             }
         }
+		setShellStyle(getShellStyle() | SWT.SHEET);
     }
 
     /* (non-Javadoc)
@@ -508,12 +512,9 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
     private void updateItem(TableItem item, Adapter editor) {
         item.setData(editor);
         item.setText(editor.getText());
-        Image images[] = editor.getImage();
-        for (int i = 0; i < images.length; i++) {
-            if (images[i] != null) {
-				item.setImage(i, images[i]);
-			}
-        }
+        Image image = editor.getImage();
+        if (image != null)
+        	item.setImage(0, image);
     }
 
     /**
@@ -532,6 +533,14 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
      * Updates all items in the table
      */
     private void updateItems() {
+    	// record what the user has selected
+		TableItem[] selectedItems = editorsTable.getSelection();
+		Adapter[] selectedAdapters = new Adapter[selectedItems.length];
+		for (int i = 0; i < selectedItems.length; i++) {
+			selectedAdapters[i] = (Adapter) selectedItems[i].getData();
+		}
+		
+		// remove all the items
         editorsTable.removeAll();
         elements = new ArrayList();
         if (showAllPersp) {
@@ -546,19 +555,27 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
                 updateEditors(new IWorkbenchPage[] { page });
             }
         }
+
+        // sort the items
         sort();
-        Object selection = null;
-        if (window.getActivePage() != null) {
-			selection = window.getActivePage().getActiveEditor();
-		}
+
+		List selection = new ArrayList(selectedItems.length);
         for (Iterator iterator = elements.iterator(); iterator.hasNext();) {
             Adapter e = (Adapter) iterator.next();
             TableItem item = new TableItem(editorsTable, SWT.NULL);
             updateItem(item, e);
-            if ((selection != null) && (selection == e.editorRef)) {
-				editorsTable.setSelection(new TableItem[] { item });
+
+            // try to match this item's editor to one that was previously selected
+			for (int i = 0; i < selectedAdapters.length; i++) {
+				if (selectedAdapters[i].editorRef == e.editorRef) {
+					selection.add(item);
+				}
 			}
         }
+
+        // set the selection back to the table
+		editorsTable.setSelection((TableItem[]) selection.toArray(new TableItem[selection.size()]));
+
         // update the buttons, because the selection may have changed
         updateButtons();
     }
@@ -645,15 +662,10 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 
         String text[];
 
-        Image images[];
+        Image image;
 
         Adapter(IEditorReference ref) {
             editorRef = ref;
-        }
-
-        Adapter(IEditorInput input, IEditorDescriptor desc) {
-            this.input = input;
-            this.desc = desc;
         }
 
         boolean isDirty() {
@@ -661,10 +673,6 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 				return false;
 			}
             return editorRef.isDirty();
-        }
-
-        boolean isOpened() {
-            return editorRef != null;
         }
 
         void close() {
@@ -702,36 +710,33 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
                 text[0] = input.getName();
                 text[1] = input.getToolTipText();
             }
+			if (text[0] != null) {
+				text[0] = TextProcessor.process(text[0]);
+			}
+			if (text[1] != null) {
+				text[1] = TextProcessor.process(text[1]);
+			}
             return text;
         }
 
-        Image[] getImage() {
-            if (images != null) {
-				return images;
+        Image getImage() {
+            if (image != null) {
+				return image;
 			}
-            images = new Image[2];
             if (editorRef != null) {
-                images[0] = editorRef.getTitleImage();
-                WorkbenchPage p = ((WorkbenchPartReference) editorRef)
-                        .getPane().getPage();
-                IPerspectiveDescriptor persp = p.getPerspective();
-                ImageDescriptor image = persp.getImageDescriptor();
-                if (image == null) {
-					image = WorkbenchImages
-                            .getImageDescriptor(ISharedImages.IMG_ETOOL_DEF_PERSPECTIVE);
-				}
+                image = editorRef.getTitleImage();
             } else {
-                ImageDescriptor image = null;
+                ImageDescriptor imageDesc = null;
                 if (desc != null) {
-					image = desc.getImageDescriptor();
+                	imageDesc = desc.getImageDescriptor();
 				}
-                if (image == null) {
+                if (imageDesc == null) {
                     IEditorRegistry registry = WorkbenchPlugin.getDefault()
                             .getEditorRegistry();
-                    image = registry.getImageDescriptor(input.getName());
+                    imageDesc = registry.getImageDescriptor(input.getName());
 					//TODO: how can this honour content types?  Guessing at the content type perhaps?
 					
-                    if (image == null) {
+                    if (imageDesc == null) {
                         // @issue what should be the default image?
                         // image = registry.getDefaultEditor().getImageDescriptor();
                     }
@@ -749,7 +754,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 //                    }
 //                }
             }
-            return images;
+            return image;
         }
 
         private void activate() {

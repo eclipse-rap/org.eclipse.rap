@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,19 +54,19 @@ public class ObjectFilterTest {
         return true;
     }
 
-    /**
-     * Returns whether the object filter correctly matches a
-     * given object.  The results will be <code>true</code> if there is
-     * a filter match.  
-     * <p>
-     * If <code>adaptable is true</code>, the result will also be
-     * <code>rue</code> if the object is a wrapper for a resource, and
-     * the resource produces a filter match.
-     * </p>
-     * 
-     * @param object the object to examine
-     * @returns <code>true</code> if there is a filter match.  
-     */
+	/**
+	 * Returns whether the object filter correctly matches a given object. The
+	 * results will be <code>true</code> if there is a filter match.
+	 * <p>
+	 * If <code>adaptable is true</code>, the result will also be
+	 * <code>true</code> if the object is a wrapper for a resource, and the
+	 * resource produces a filter match.
+	 * </p>
+	 * 
+	 * @param object
+	 *            the object to examine
+	 * @returns <code>true</code> if there is a filter match.
+	 */
     public boolean matches(Object object, boolean adaptable) {
         // Optimize it.
         if (filterElements == null) {

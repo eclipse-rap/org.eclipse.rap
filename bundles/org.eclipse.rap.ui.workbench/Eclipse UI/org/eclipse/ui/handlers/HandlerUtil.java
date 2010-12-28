@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,10 @@ package org.eclipse.ui.handlers;
 
 import java.util.Collection;
 
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.State;
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Shell;
@@ -61,8 +63,9 @@ public class HandlerUtil {
 	 */
 	public static Object getVariable(ExecutionEvent event, String name) {
 		if (event.getApplicationContext() instanceof IEvaluationContext) {
-			return ((IEvaluationContext) event.getApplicationContext())
+			Object var = ((IEvaluationContext) event.getApplicationContext())
 					.getVariable(name);
+			return var == IEvaluationContext.UNDEFINED_VARIABLE ? null : var;
 		}
 		return null;
 	}
@@ -101,7 +104,8 @@ public class HandlerUtil {
 	 */
 	public static Object getVariable(Object context, String name) {
 		if (context instanceof IEvaluationContext) {
-			return ((IEvaluationContext) context).getVariable(name);
+			Object var = ((IEvaluationContext) context).getVariable(name);
+			return var == IEvaluationContext.UNDEFINED_VARIABLE ? null : var;
 		}
 		return null;
 	}
@@ -575,9 +579,6 @@ public class HandlerUtil {
 	 */
 	public static Object getShowInInput(ExecutionEvent event) {
 		Object var = getVariable(event, ISources.SHOW_IN_INPUT);
-//		if (var == IEvaluationContext.UNDEFINED_VARIABLE) {
-//			return null;
-//		}
 		return var;
 	}
 
@@ -594,10 +595,86 @@ public class HandlerUtil {
 	public static Object getShowInInputChecked(ExecutionEvent event)
 			throws ExecutionException {
 		Object var = getVariableChecked(event, ISources.SHOW_IN_INPUT);
-//		if (var == IEvaluationContext.UNDEFINED_VARIABLE) {
-//			incorrectTypeFound(event, ISources.SHOW_IN_INPUT, Object.class, var
-//					.getClass());
-//		}
 		return var;
 	}
+
+	/**
+	 * Toggles the command's state.
+	 * 
+	 * @param command The command whose state needs to be toggled
+	 * @return the original value before toggling
+	 * 
+	 * @throws ExecutionException 
+	 * 	When the command doesn't contain the toggle state or when the state doesn't contain a boolean value
+	 * 
+	 * @since 1.4
+	 */
+	public static boolean toggleCommandState(Command command) throws ExecutionException {
+		State state = command.getState(RegistryToggleState.STATE_ID);
+		if(state == null)
+			throw new ExecutionException("The command does not have a toggle state"); //$NON-NLS-1$
+		 if(!(state.getValue() instanceof Boolean))
+			throw new ExecutionException("The command's toggle state doesn't contain a boolean value"); //$NON-NLS-1$
+			 
+		boolean oldValue = ((Boolean) state.getValue()).booleanValue();
+		state.setValue(new Boolean(!oldValue));
+		return oldValue;
+	}
+	
+	/**
+	 * Checks whether the radio state of the command is same as the radio state
+	 * parameter's value
+	 * 
+	 * @param event
+	 *            The execution event that contains the application context
+	 * @return <code>true</code> whe the values are same, <code>false</code>
+	 *         otherwise
+	 * 
+	 * @throws ExecutionException
+	 *             When the command doesn't have the radio state or the event
+	 *             doesn't have the radio state parameter
+	 * @since 1.4
+	 */
+	public static boolean matchesRadioState(ExecutionEvent event)
+			throws ExecutionException {
+
+		String parameter = event.getParameter(RadioState.PARAMETER_ID);
+		if (parameter == null)
+			throw new ExecutionException(
+					"The event does not have the radio state parameter"); //$NON-NLS-1$
+
+		Command command = event.getCommand();
+		State state = command.getState(RadioState.STATE_ID);
+		if (state == null)
+			throw new ExecutionException(
+					"The command does not have a radio state"); //$NON-NLS-1$
+		if (!(state.getValue() instanceof String))
+			throw new ExecutionException(
+					"The command's radio state doesn't contain a String value"); //$NON-NLS-1$
+
+		return parameter.equals(state.getValue());
+	}
+
+	/**
+	 * Updates the radio state of the command to the given value
+	 * 
+	 * @param command
+	 *            the command whose state should be updated
+	 * @param newState
+	 *            the new state
+	 * 
+	 * @throws ExecutionException
+	 *             When the command doesn't have a radio state
+	 * @since 1.4
+	 */
+	public static void updateRadioState(Command command, String newState)
+			throws ExecutionException {
+
+		State state = command.getState(RadioState.STATE_ID);
+		if (state == null)
+			throw new ExecutionException(
+					"The command does not have a radio state"); //$NON-NLS-1$
+		state.setValue(newState);
+	}
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,7 @@ public class EditorSashContainer extends PartSashContainer {
     private ArrayList editorWorkbooks = new ArrayList(3);
 
     private EditorStack activeEditorWorkbook;
-    
+
     private DropTarget dropTarget;
 
     public EditorSashContainer(String editorId, WorkbenchPage page, Composite parent) {
@@ -326,6 +326,7 @@ public class EditorSashContainer extends PartSashContainer {
 		            }
 		            if (defaultWorkbook != null) {
 						remove(defaultWorkbook);
+						defaultWorkbook.dispose();
 					}
 				}});
             
@@ -642,6 +643,6 @@ public class EditorSashContainer extends PartSashContainer {
 				}});
            
         }
-        return new Status(IStatus.OK, PlatformUI.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+        return Status.OK_STATUS;
     }
 }

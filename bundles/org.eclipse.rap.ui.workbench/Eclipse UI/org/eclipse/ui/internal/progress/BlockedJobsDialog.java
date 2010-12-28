@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	/**
 	 * The name of the task that is being blocked.
 	 */
-	private String blockedTaskName = null;
+	private String blockedTaskName = ProgressMessages.get().SubTaskInfo_UndefinedTaskName;
 
 	/**
 	 * The Cancel button control.
@@ -90,7 +90,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.ui.internal.progress.JobTreeElement#getChildren()
 		 */
 		Object[] getChildren() {
@@ -99,7 +99,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.ui.internal.progress.JobTreeElement#getDisplayString()
 		 */
 		String getDisplayString() {
@@ -111,7 +111,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.ui.internal.progress.JobTreeElement#getDisplayImage()
 		 */
 		public Image getDisplayImage() {
@@ -120,16 +120,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 		/*
 		 * (non-Javadoc)
-		 *
-		 * @see org.eclipse.ui.internal.progress.JobTreeElement#getParent()
-		 */
-		Object getParent() {
-			return null;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.ui.internal.progress.JobTreeElement#hasChildren()
 		 */
 		boolean hasChildren() {
@@ -138,7 +129,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.ui.internal.progress.JobTreeElement#isActive()
 		 */
 		boolean isActive() {
@@ -147,7 +138,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.ui.internal.progress.JobTreeElement#isJobInfo()
 		 */
 		boolean isJobInfo() {
@@ -156,7 +147,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.ui.internal.progress.JobTreeElement#cancel()
 		 */
 		public void cancel() {
@@ -165,7 +156,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.ui.internal.progress.JobTreeElement#isCancellable()
 		 */
 		public boolean isCancellable() {
@@ -179,7 +170,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	 * delay. When no longer needed, the dialog must be closed by calling
 	 * <code>close(IProgressMonitor)</code>, where the supplied monitor is
 	 * the same monitor passed to this factory method.
-	 *
+	 * 
 	 * @param parentShell
 	 *            The parent shell, or <code>null</code> to create a top-level
 	 *            shell. If the parentShell is not null we will open immediately
@@ -220,7 +211,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 					WorkbenchMessages.get().EventLoopProgressMonitor_OpenDialogJobName) {
 				/*
 				 * (non-Javadoc)
-				 *
+				 * 
 				 * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
 				 */
 				public IStatus runInUIThread(IProgressMonitor monitor) {
@@ -264,7 +255,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	/**
 	 * Creates a progress monitor dialog under the given shell. It also sets the
 	 * dialog's\ message. <code>open</code> is non-blocking.
-	 *
+	 * 
 	 * @param parentShell
 	 *            The parent shell, or <code>null</code> to create a top-level
 	 *            shell.
@@ -287,10 +278,10 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 	/**
 	 * This method creates the dialog area under the parent composite.
-	 *
+	 * 
 	 * @param parent
 	 *            The parent Composite.
-	 *
+	 * 
 	 * @return parent The parent Composite.
 	 */
 	protected Control createDialogArea(Composite parent) {
@@ -303,7 +294,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	/**
 	 * This method creates a dialog area in the parent composite and displays a
 	 * progress tree viewer of the running jobs.
-	 *
+	 * 
 	 * @param parent
 	 *            The parent Composite.
 	 */
@@ -313,7 +304,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 		viewer.setComparator(new ViewerComparator() {
 			/*
 			 * (non-Javadoc)
-			 *
+			 * 
 			 * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
 			 *      java.lang.Object, java.lang.Object)
 			 */
@@ -335,7 +326,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 	/**
 	 * Return the content provider used for the receiver.
-	 *
+	 * 
 	 * @return ProgressTreeContentProvider
 	 */
 	private ProgressViewerContentProvider getContentProvider() {
@@ -343,7 +334,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 			/*
 			 * (non-Javadoc)
-			 *
+			 * 
 			 * @see org.eclipse.ui.internal.progress.ProgressViewerContentProvider#getElements(java.lang.Object)
 			 */
 			public Object[] getElements(Object inputElement) {
@@ -374,7 +365,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 	/**
 	 * Clear the cursor on the supplied control.
-	 *
+	 * 
 	 * @param control
 	 */
 	private void clearCursor(Control control) {
@@ -385,7 +376,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
 	 */
 	protected void configureShell(Shell shell) {
@@ -399,7 +390,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 	/**
 	 * This method sets the message in the message label.
-	 *
+	 * 
 	 * @param messageString -
 	 *            the String for the message area
 	 */
@@ -414,7 +405,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.jface.dialogs.IconAndMessageDialog#getImage()
 	 */
 	protected Image getImage() {
@@ -424,7 +415,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	/**
 	 * Returns the progress monitor being used for this dialog. This allows
 	 * recursive blockages to also respond to cancelation.
-	 *
+	 * 
 	 * @return IProgressMonitor
 	 */
 	public IProgressMonitor getProgressMonitor() {
@@ -434,7 +425,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 	/**
 	 * Requests that the blocked jobs dialog be closed. The supplied monitor
 	 * must be the same one that was passed to the createBlockedDialog method.
-	 *
+	 * 
 	 * @param monitor
 	 * @return IProgressMonitor
 	 */
@@ -448,7 +439,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.jface.dialogs.Dialog#close()
 	 */
 	public boolean close() {
@@ -462,7 +453,7 @@ public class BlockedJobsDialog extends IconAndMessageDialog {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.jface.dialogs.IconAndMessageDialog#createButtonBar(org.eclipse.swt.widgets.Composite)
 	 */
 	protected Control createButtonBar(Composite parent) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,13 @@ import org.eclipse.jface.commands.ToggleState;
  */
 public final class RegistryToggleState extends ToggleState implements
 		IExecutableExtension {
+	
+	/**
+	 * The state ID for a toggle state understood by the system.
+	 * 
+	 * @since 1.4
+	 */
+	public final static String STATE_ID = "org.eclipse.ui.commands.toggleState";  //$NON-NLS-1$
 
 	/**
 	 * Reads the <code>default</code> parameter from the given string. This
@@ -66,9 +73,9 @@ public final class RegistryToggleState extends ToggleState implements
 	private final void readPersisted(final String persistedString) {
 		if ("false".equalsIgnoreCase(persistedString)) { //$NON-NLS-1$
 			setShouldPersist(false);
+		}else {
+			setShouldPersist(true);
 		}
-
-		setShouldPersist(true);
 	}
 
 	public final void setInitializationData(

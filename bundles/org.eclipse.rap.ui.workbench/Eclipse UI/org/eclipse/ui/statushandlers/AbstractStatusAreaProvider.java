@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,13 +26,6 @@ import org.eclipse.swt.widgets.Control;
  * <p>
  * The area provider can be set in {@link WorkbenchStatusDialogManager} as well as in
  * JFace {@link Policy} since its extends {@link ErrorSupportProvider}.
- * </p>
- * 
- * <p>
- * <strong>EXPERIMENTAL</strong>. This class or interface has been added as
- * part of a work in progress. There is no guarantee that this API will work or
- * that it will remain the same. Please do not use this API without consulting
- * with the eclipseUI team.
  * </p>
  * 
  * @see Policy#setErrorSupportProvider(ErrorSupportProvider)
@@ -62,5 +55,26 @@ public abstract class AbstractStatusAreaProvider extends ErrorSupportProvider {
 	 */
 	public final Control createSupportArea(Composite parent, IStatus status) {
 		return createSupportArea(parent, new StatusAdapter(status));
+	}
+
+	/**
+	 * This method is called before
+	 * {@link #createSupportArea(Composite, StatusAdapter)} to check if it will
+	 * display any significant implementation.
+	 * <p>
+	 * <b>Important</b>: This API is a part of work in progress and therefore is
+	 * suitable only for support area providers (which are presented in the
+	 * status dialog tray).
+	 * </p>
+	 * 
+	 * @param statusAdapter
+	 *            - {@link StatusAdapter} for which status are will be
+	 *            requested.
+	 * @return true if provider is able to process particular
+	 *         {@link StatusAdapter}
+	 * @since 1.4
+	 */
+	public boolean validFor(StatusAdapter statusAdapter) {
+		return true;
 	}
 }

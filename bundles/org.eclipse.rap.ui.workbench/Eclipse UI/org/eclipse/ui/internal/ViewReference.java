@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,21 +10,15 @@
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
-import org.eclipse.osgi.util.NLS;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
-
 import org.eclipse.jface.action.ContributionManager;
-//import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
-
-//import org.eclipse.ui.IKeyBindingService;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
@@ -37,10 +31,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.misc.UIStats;
 import org.eclipse.ui.internal.registry.ViewDescriptor;
+import org.eclipse.ui.internal.testing.ContributionInfoMessages;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.IWorkbenchPartOrientation;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.eclipse.ui.testing.ContributionInfo;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
 
@@ -363,6 +359,11 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 			// Create the top-level composite
 			{
 				Composite parent = (Composite) pane.getControl();
+				ViewDescriptor descriptor = (ViewDescriptor) this.factory.viewReg.find(getId());
+				if (descriptor != null && descriptor.getPluginId() != null) {
+					parent.setData(new ContributionInfo(descriptor.getPluginId(),
+							ContributionInfoMessages.ContributionInfo_View, null));
+				}
 				content = new Composite(parent, style);
 				content.setLayout(new FillLayout());
 
@@ -465,9 +466,9 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 				}
 			}
 
-			if (site != null) {
+			if (actionBars != null) {
 				try {
-					site.dispose();
+					actionBars.dispose();
 				} catch (RuntimeException re) {
 					StatusManager.getManager().handle(
 							StatusUtil.newStatus(WorkbenchPlugin.PI_WORKBENCH,
@@ -475,9 +476,9 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 				}
 			}
 
-			if (actionBars != null) {
+			if (site != null) {
 				try {
-					actionBars.dispose();
+					site.dispose();
 				} catch (RuntimeException re) {
 					StatusManager.getManager().handle(
 							StatusUtil.newStatus(WorkbenchPlugin.PI_WORKBENCH,

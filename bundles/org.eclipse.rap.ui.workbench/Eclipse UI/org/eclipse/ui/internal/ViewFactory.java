@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Markus Alexander Kuppe, Versant Corporation - bug #215797
+ *     Sascha Zak - bug 282874
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
@@ -266,7 +267,7 @@ public class ViewFactory implements IExtensionChangeHandler {
             //for dynamic UI - add the next line to replace subsequent code that is commented out
             restoreViewState(mem[i]);
         }
-        return new Status(IStatus.OK, PlatformUI.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+        return Status.OK_STATUS;
     }
 
     /**
@@ -282,7 +283,7 @@ public class ViewFactory implements IExtensionChangeHandler {
         final IViewReference refs[] = getViews();
         for (int i = 0; i < refs.length; i++) {
         	IViewDescriptor desc = viewReg.find(refs[i].getId());
-			if(desc.isRestorable()) {
+			if (desc != null && desc.isRestorable()) {
 				//for dynamic UI - add the following line to replace subsequent code which is commented out
 				saveViewState(memento, refs[i], result);
 			}

@@ -1,6 +1,6 @@
 // RAP [rh] DnD not supported
 ///*******************************************************************************
-// * Copyright (c) 2004, 2007 IBM Corporation and others.
+// * Copyright (c) 2004, 2008 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -331,11 +331,9 @@
 //         * area...put the trim back in the last location it was in
 //         */
 //        private void redock() {
-//        	// Since the control might move 'far' we'll provide an animation
+//    		// animate the 'redock'
 //        	Rectangle startRect = DragUtil.getDisplayBounds(draggedTrim.getControl());
-//            RectangleAnimation animation = new RectangleAnimation(
-//                    windowComposite.getShell(), startRect, initialLocation, 300);
-//            animation.schedule();
+//    		AnimationEngine.createTweakedAnimation(windowComposite.getShell(), 400, startRect, initialLocation);
 //
 //            dock(initialAreaId, initialInsertBefore);
 //        }

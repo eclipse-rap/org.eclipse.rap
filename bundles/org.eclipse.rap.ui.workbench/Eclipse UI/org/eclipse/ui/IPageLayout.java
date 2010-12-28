@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,10 +51,10 @@ package org.eclipse.ui;
  * // Get the editor area.
  * String editorArea = layout.getEditorArea();
  *
- * // Top left: Resource Navigator view and Bookmarks view placeholder
+ * // Top left: Project Explorer view and Bookmarks view placeholder
  * IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f,
  *    editorArea);
- * topLeft.addView(IPageLayout.ID_RES_NAV);
+ * topLeft.addView(IPageLayout.ID_PROJECT_EXPLORER);
  * topLeft.addPlaceholder(IPageLayout.ID_BOOKMARKS);
  *
  * // Bottom left: Outline view and Property Sheet view
@@ -78,10 +78,19 @@ public interface IPageLayout {
      */
     public static String ID_EDITOR_AREA = "org.eclipse.ui.editorss"; //$NON-NLS-1$
 
-    /**
-     * The view id for the workbench's Resource Navigator standard component.
-     */
+	/**
+	 * The view id for the workbench's Resource Navigator standard component.
+	 * 
+	 * @deprecated this has been replaced by the Common Navigator Framework as
+	 *             of release 3.5.
+	 */
     public static String ID_RES_NAV = "org.eclipse.ui.views.ResourceNavigator"; //$NON-NLS-1$
+
+    /**
+     * The view id for the Project Explorer.
+     * @since 1.4
+     */
+    public static String ID_PROJECT_EXPLORER = "org.eclipse.ui.navigator.ProjectExplorer"; //$NON-NLS-1$
 
     /**
      * The view id for the workbench's Property Sheet standard component.
@@ -256,14 +265,25 @@ public interface IPageLayout {
     public void addPlaceholder(String viewId, int relationship, float ratio,
             String refId);
 
-    /**
-     * Adds an item to the Show In prompter.
-     * The id must name a view contributed to the workbench's view extension point 
-     * (named <code>"org.eclipse.ui.views"</code>).
-     *
-     * @param id the view id
-     * 
-     */
+	/**
+	 * Adds an item to the 'Show In' menu.
+	 * <p>
+	 * The id must name a view contributed to the workbench's view extension
+	 * point (named <code>"org.eclipse.ui.views"</code>).
+	 * </p>
+	 * <strong>NOTE:</strong> This method should not be used because it only
+	 * works the first time a perspective is created. On restart this
+	 * information gets lost. Instead add your items using the
+	 * 'org.eclipse.ui.perspectiveExtensions' extension point.
+	 * 
+	 * @param id
+	 *            the view id
+	 * @deprecated As of 3.6, replaced by the corresponding perspective
+	 *             extension in the 'org.eclipse.ui.perspectiveExtensions'
+	 *             extension point
+	 * 
+	 * @since 1.0
+	 */
     public void addShowInPart(String id);
 
     /**

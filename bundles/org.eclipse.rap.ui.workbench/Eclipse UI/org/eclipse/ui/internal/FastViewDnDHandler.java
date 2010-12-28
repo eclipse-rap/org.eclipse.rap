@@ -1,6 +1,6 @@
 // RAP [bm]: DnD
 ///*******************************************************************************
-// * Copyright (c) 2007 IBM Corporation and others.
+// * Copyright (c) 2007, 2009 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -198,8 +198,8 @@
 //        if (draggedObject instanceof ViewPane) {
 //            ViewPane pane = (ViewPane) draggedObject;
 //
-//            // Can't drag views between windows
-//            if (pane.getWorkbenchWindow() != wbw) {
+//            // Can't drag views between pages
+//            if (pane.getPage() != wbw.getActivePage()) {
 //                return null;
 //            }
 //

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,13 @@
 
 package org.eclipse.ui.actions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -47,8 +46,6 @@ import org.eclipse.ui.internal.util.Util;
 public class WorkingSetFilterActionGroup extends ActionGroup {
     private static final String TAG_WORKING_SET_NAME = "workingSetName"; //$NON-NLS-1$
 
-	private static final String TAG_IS_WINDOW_WORKING_SET = "isWindowWorkingSet"; //$NON-NLS-1$
-	
     /**
      * Indicates if working set was changed
      */
@@ -70,17 +67,13 @@ public class WorkingSetFilterActionGroup extends ActionGroup {
 
     private IPropertyChangeListener workingSetUpdater;
 
-    private int mruMenuCount;
-
-    private IMenuManager menuManager;
-
-    private IMenuListener menuListener;
-
 	private IWorkbenchWindow workbenchWindow;
 
 	private IWorkbenchPage page;
 
 	private boolean allowWindowWorkingSetByDefault;
+
+	private CompoundContributionItem mruList;
 
     /**
 	 * Creates a new instance of the receiver.
@@ -104,6 +97,29 @@ public class WorkingSetFilterActionGroup extends ActionGroup {
         clearWorkingSetAction = new ClearWorkingSetAction(this);
         selectWorkingSetAction = new SelectWorkingSetAction(this, shell);
         editWorkingSetAction = new EditWorkingSetAction(this, shell);
+        mruList = new CompoundContributionItem() {
+
+			protected IContributionItem[] getContributionItems() {
+				IWorkingSet[] workingSets = PlatformUI.getWorkbench()
+						.getWorkingSetManager().getRecentWorkingSets();
+				List items = new ArrayList(workingSets.length);
+				List sortedWorkingSets = Arrays.asList(workingSets);
+				Collections.sort(sortedWorkingSets, new WorkingSetComparator());
+
+				int mruMenuCount = 0;
+				for (Iterator i = sortedWorkingSets.iterator(); i.hasNext();) {
+					IWorkingSet workingSet = (IWorkingSet) i.next();
+					if (workingSet != null) {
+						IContributionItem item = new WorkingSetMenuContributionItem(
+								++mruMenuCount,
+								WorkingSetFilterActionGroup.this, workingSet);
+						items.add(item);
+					}
+				}
+				return (IContributionItem[]) items
+						.toArray(new IContributionItem[items.size()]);
+			}
+        };
         
         workbenchWindow = Util.getWorkbenchWindowForShell(shell);
         allowWindowWorkingSetByDefault = false;
@@ -116,51 +132,14 @@ public class WorkingSetFilterActionGroup extends ActionGroup {
 			}
 		}
     }
-
-    /**
-	 * Adds actions for the most recently used working sets to the specified
-	 * menu manager.
-	 * 
-	 * @param menuManager
-	 *            menu manager to add actions to
-	 */
-    private void addMruWorkingSetActions(IMenuManager menuManager) {
-        IWorkingSet[] workingSets = PlatformUI.getWorkbench()
-                .getWorkingSetManager().getRecentWorkingSets();
-        List sortedWorkingSets = Arrays.asList(workingSets);
-        Collections.sort(sortedWorkingSets, new WorkingSetComparator());
-
-        Iterator iter = sortedWorkingSets.iterator();
-        mruMenuCount = 0;
-        while (iter.hasNext()) {
-            IWorkingSet workingSet = (IWorkingSet) iter.next();
-            if (workingSet != null) {
-                IContributionItem item = new WorkingSetMenuContributionItem(
-                        ++mruMenuCount, this, workingSet);
-                menuManager.insertBefore(SEPARATOR_ID, item);
-            }
-        }
-    }
-
- 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.actions.ActionGroup#dispose()
-     */
-    public void dispose() {
-        if (menuManager != null) {
-			menuManager.removeMenuListener(menuListener);
-		}
-        super.dispose();
-    }
-
     
     /* (non-Javadoc)
      * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
      */
     public void fillActionBars(IActionBars actionBars) {
-        menuManager = actionBars.getMenuManager();
+		IMenuManager menuManager = actionBars.getMenuManager();
         
-        if(menuManager.find(IWorkbenchActionConstants.MB_ADDITIONS) != null) 
+        if(menuManager.find(IWorkbenchActionConstants.MB_ADDITIONS) != null)
         	menuManager.insertAfter(IWorkbenchActionConstants.MB_ADDITIONS, new Separator(WORKING_SET_ACTION_GROUP));
         else
         	menuManager.add(new Separator(WORKING_SET_ACTION_GROUP));
@@ -169,15 +148,8 @@ public class WorkingSetFilterActionGroup extends ActionGroup {
         menuManager.appendToGroup(WORKING_SET_ACTION_GROUP, clearWorkingSetAction);
         menuManager.appendToGroup(WORKING_SET_ACTION_GROUP, editWorkingSetAction);
         menuManager.appendToGroup(WORKING_SET_ACTION_GROUP, new Separator(START_SEPARATOR_ID));
+        menuManager.appendToGroup(WORKING_SET_ACTION_GROUP, mruList);
         menuManager.appendToGroup(WORKING_SET_ACTION_GROUP, new Separator(SEPARATOR_ID));
-
-        menuListener = new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-                removePreviousMruWorkingSetActions(manager);
-                addMruWorkingSetActions(manager);
-            }
-        };
-        menuManager.addMenuListener(menuListener);
     }
     
     
@@ -189,15 +161,8 @@ public class WorkingSetFilterActionGroup extends ActionGroup {
 		menuManager.add(clearWorkingSetAction);
 		menuManager.add(editWorkingSetAction);
 		menuManager.add(new Separator());
+        menuManager.add(mruList);
 		menuManager.add(new Separator(SEPARATOR_ID));
-
-		menuListener = new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				removePreviousMruWorkingSetActions(manager);
-				addMruWorkingSetActions(manager);
-			}
-		};
-		menuManager.addMenuListener(menuListener);
 	}
 
     /**
@@ -207,18 +172,6 @@ public class WorkingSetFilterActionGroup extends ActionGroup {
      */
     public IWorkingSet getWorkingSet() {
         return workingSet;
-    }
-
-    /**
-     * Removes the most recently used working set actions that were
-     * added to the specified menu.
-     * 
-     * @param menuManager menu manager to remove actions from
-     */
-    private void removePreviousMruWorkingSetActions(IMenuManager menuManager) {
-        for (int i = 1; i <= mruMenuCount; i++) {
-			menuManager.remove(WorkingSetMenuContributionItem.getId(i));
-		}
     }
 
     /**
@@ -261,18 +214,11 @@ public class WorkingSetFilterActionGroup extends ActionGroup {
 	 * @since 3.3
 	 */
 	public void saveState(IMemento memento) {
-		String workingSetName = ""; //$NON-NLS-1$
-		boolean isWindowWorkingSet = false;
 		if (workingSet != null) {
-			if (workingSet.isAggregateWorkingSet()) {
-				isWindowWorkingSet = true;
-			} else {
-				workingSetName = workingSet.getName();
-			}
+			memento.putString(TAG_WORKING_SET_NAME, workingSet.getName());
+		} else {
+			memento.putString(TAG_WORKING_SET_NAME, ""); //$NON-NLS-1$
 		}
-		memento.putString(TAG_IS_WINDOW_WORKING_SET,
-				isWindowWorkingSet ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
-		memento.putString(TAG_WORKING_SET_NAME, workingSetName);
 	}
 
 	/**
@@ -285,28 +231,12 @@ public class WorkingSetFilterActionGroup extends ActionGroup {
 	 * @since 3.3
 	 */
 	public void restoreState(IMemento memento) {
-		boolean isWindowWorkingSet;
-		if (memento.getString(TAG_IS_WINDOW_WORKING_SET) != null) {
-			isWindowWorkingSet = Boolean.valueOf(
-					memento.getString(TAG_IS_WINDOW_WORKING_SET))
-					.booleanValue();
-		} else {
-			isWindowWorkingSet = useWindowWorkingSetByDefault();
-		}
 		String workingSetName = memento.getString(TAG_WORKING_SET_NAME);
-		boolean hasWorkingSetName = workingSetName != null
-				&& workingSetName.length() > 0;
-
-		IWorkingSet ws = null;
-		// First handle name if present.
-		if (hasWorkingSetName) {
-			ws = PlatformUI.getWorkbench().getWorkingSetManager()
-					.getWorkingSet(workingSetName);
-		} else if (isWindowWorkingSet && page != null) {
-			ws = page.getAggregateWorkingSet();
+		if (workingSetName != null && workingSetName.length() > 0) {
+			setWorkingSet(PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(workingSetName));
+		} else if (page != null && useWindowWorkingSetByDefault()) {
+			setWorkingSet(page.getAggregateWorkingSet());
 		}
-
-		setWorkingSet(ws);
 	}
 
 	private boolean useWindowWorkingSetByDefault() {

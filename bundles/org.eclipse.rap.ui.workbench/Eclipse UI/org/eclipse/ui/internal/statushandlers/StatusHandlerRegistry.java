@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@ public class StatusHandlerRegistry implements IExtensionChangeHandler {
 	private static final String TAG_STATUSHANDLER = "statusHandler"; //$NON-NLS-1$
 
 	private static final String TAG_STATUSHANDLER_PRODUCTBINDING = "statusHandlerProductBinding"; //$NON-NLS-1$
+	
+	private static final String STATUSHANDLER_ARG = "-statushandler"; //$NON-NLS-1$
 
 	private ArrayList statusHandlerDescriptors = new ArrayList();
 
@@ -54,7 +56,7 @@ public class StatusHandlerRegistry implements IExtensionChangeHandler {
 	private StatusHandlerRegistry() {
 		IExtensionTracker tracker = PlatformUI.getWorkbench()
 				.getExtensionTracker();
-		// RAP [bm]: 
+		// RAP [bm]: namespace
 //		IExtensionPoint handlersPoint = Platform.getExtensionRegistry()
 //				.getExtensionPoint(WorkbenchPlugin.PI_WORKBENCH,
 //						STATUSHANDLERS_POINT_NAME);
@@ -193,6 +195,24 @@ public class StatusHandlerRegistry implements IExtensionChangeHandler {
 	}
 
 	/**
+	 * It is possible since Eclipse 3.5 to configure custom status handling
+	 * using the -statushandler parameter.
+	 * 
+	 * @return the id of the statushandler
+	 * @since 3.5
+	 */
+	private String resolveUserStatusHandlerId(){
+		String[] parameters = Platform.getCommandLineArgs();
+		
+		for(int i = 0; i < parameters.length - 1; i++){
+			if(STATUSHANDLER_ARG.equals(parameters[i])){
+				return parameters[i + 1];
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Sets the default product handler descriptor if product exists and binding
 	 * is defined and creates handler descriptors tree due to the prefix policy.
 	 */
@@ -205,14 +225,19 @@ public class StatusHandlerRegistry implements IExtensionChangeHandler {
 
 		List allHandlers = new ArrayList();
 
-		String defaultHandlerId = null;
+		String defaultHandlerId = resolveUserStatusHandlerId();
 
-		for (Iterator it = productBindingDescriptors.iterator(); it.hasNext();) {
-			StatusHandlerProductBindingDescriptor descriptor = ((StatusHandlerProductBindingDescriptor) it
-					.next());
+		if (defaultHandlerId == null) {
+			// we look for product related statushandler if it was not passed as
+			// an argument to Eclipse
+			for (Iterator it = productBindingDescriptors.iterator(); it
+					.hasNext();) {
+				StatusHandlerProductBindingDescriptor descriptor = ((StatusHandlerProductBindingDescriptor) it
+						.next());
 
-			if (descriptor.getProductId().equals(productId)) {
-				defaultHandlerId = descriptor.getHandlerId();
+				if (descriptor.getProductId().equals(productId)) {
+					defaultHandlerId = descriptor.getHandlerId();
+				}
 			}
 		}
 

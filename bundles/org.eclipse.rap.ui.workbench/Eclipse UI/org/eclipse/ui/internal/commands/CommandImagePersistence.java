@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 
 package org.eclipse.ui.internal.commands;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +19,12 @@ import org.eclipse.core.runtime.IExtensionDelta;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryChangeEvent;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.services.RegistryPersistence;
-import org.eclipse.ui.internal.util.BundleUtility;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * <p>
@@ -110,22 +110,24 @@ final class CommandImagePersistence extends RegistryPersistence {
 			final String hoverIcon = readOptional(configurationElement,
 					ATT_HOVERICON);
 
-			final URL iconURL = BundleUtility.find(configurationElement
-					.getNamespace(), icon);
+			String namespaceId = configurationElement.getNamespaceIdentifier();
+			ImageDescriptor iconDescriptor = AbstractUIPlugin
+					.imageDescriptorFromPlugin(namespaceId, icon);
 			commandImageManager.bind(commandId,
-					CommandImageManager.TYPE_DEFAULT, style, iconURL);
+					CommandImageManager.TYPE_DEFAULT, style, iconDescriptor);
 			if (disabledIcon != null) {
-				final URL disabledIconURL = BundleUtility.find(
-						configurationElement.getNamespace(), disabledIcon);
+				ImageDescriptor disabledIconDescriptor = AbstractUIPlugin
+						.imageDescriptorFromPlugin(namespaceId, disabledIcon);
 				commandImageManager.bind(commandId,
 						CommandImageManager.TYPE_DISABLED, style,
-						disabledIconURL);
+						disabledIconDescriptor);
 			}
 			if (hoverIcon != null) {
-				final URL hoverIconURL = BundleUtility.find(
-						configurationElement.getNamespace(), hoverIcon);
+				ImageDescriptor hoverIconDescriptor = AbstractUIPlugin
+						.imageDescriptorFromPlugin(namespaceId, hoverIcon);
 				commandImageManager.bind(commandId,
-						CommandImageManager.TYPE_HOVER, style, hoverIconURL);
+						CommandImageManager.TYPE_HOVER, style,
+						hoverIconDescriptor);
 			}
 		}
 

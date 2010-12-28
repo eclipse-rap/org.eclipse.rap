@@ -70,6 +70,10 @@
    <extension-point id="org.eclipse.ui.workingSets" name="%ExtPoint.workingSets" schema="schema/workingSets.exsd"/>
    <extension-point id="org.eclipse.ui.browserSupport" name="%ExtPoint.browserSupport" schema="schema/browserSupport.exsd"/>
    <extension-point id="org.eclipse.ui.internalTweaklets" name="%ExtPoint.tweaklets" schema="schema/internalTweaklets.exsd"/>   
+   <!-- RAP [bm]: not applicable
+   <extension-point id="installationPages" name="%ExtPoint.installationPages" schema="schema/installationPages.exsd"/>
+   -->
+   <extension-point id="propertiesView" name="%ExtPoint.propertiesView" schema="schema/propertiesView.exsd"/>
    
    <extension
          point="org.eclipse.ui.contexts">
@@ -158,6 +162,16 @@
             sequence="M3+CR"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
       <key
+            commandId="org.eclipse.ui.file.properties"
+            platform="cocoa"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+I"/>
+      <key
+            commandId="org.eclipse.ui.file.properties"
+            platform="carbon"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+I"/>
+      <key
             commandId="org.eclipse.ui.file.refresh"
             sequence="F5"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
@@ -171,6 +185,17 @@
             contextId="org.eclipse.ui.contexts.dialogAndWindow"
             sequence="M1+Y"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+      <key
+      		platform="carbon"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+Y"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+      <key
+            commandId="org.eclipse.ui.edit.redo"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+M2+Z"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" 
+            platform="carbon"/>
       <key
             commandId="org.eclipse.ui.edit.cut"
             contextId="org.eclipse.ui.contexts.dialogAndWindow"
@@ -372,6 +397,7 @@
 
 	  <key
 	        commandId="org.eclipse.ui.edit.text.contentAssist.contextInformation"
+	        contextId="org.eclipse.ui.contexts.dialogAndWindow"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 	        sequence="CTRL+M2+SPACE"/>	<!- - Command+SPACE+* is reserved on carbon, hardcode to CTRL - - >
 
@@ -654,6 +680,34 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+NUMPAD_DIVIDE">
       </key>
+      <key
+            commandId="org.eclipse.ui.navigate.expandAll"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+NUMPAD_MULTIPLY">
+      </key>
+      <key
+            commandId="org.eclipse.ui.navigate.nextSubTab"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+PAGE_DOWN">
+      </key>
+      <key
+            commandId="org.eclipse.ui.navigate.previousSubTab"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+PAGE_UP">
+      </key>
+      <key
+            commandId="org.eclipse.ui.part.nextPage"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+F7">
+      </key>
+      <key
+            commandId="org.eclipse.ui.part.previousPage"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+F7">
+      </key>
    </extension>
    -->
    <extension
@@ -716,6 +770,13 @@
             helpContextId="org.eclipse.ui.about_action_context"
             id="org.eclipse.ui.help.aboutAction"
             name="%command.aboutAction.name"/>
+      <command
+            categoryId="org.eclipse.ui.category.help"
+            defaultHandler="org.eclipse.ui.internal.about.InstallationHandler"
+            description="%command.installationDialog.description"
+            helpContextId="org.eclipse.ui.about_action_context"
+            id="org.eclipse.ui.help.installationDialog"
+            name="%command.installationDialog.name"/>            
       -->
       <command
             categoryId="org.eclipse.ui.category.file"
@@ -934,10 +995,11 @@
             categoryId="org.eclipse.ui.category.navigate"
             id="org.eclipse.ui.navigate.linkWithEditor" />
       <command
-            name="%command.newWindow.name"
-            description="%command.newWindow.description"
             categoryId="org.eclipse.ui.category.window"
-            id="org.eclipse.ui.window.newWindow" />
+            defaultHandler="org.eclipse.ui.internal.handlers.OpenInNewWindowHandler"
+            description="%command.newWindow.description"
+            id="org.eclipse.ui.window.newWindow"
+            name="%command.newWindow.name"/>
       <command
             name="%command.newEditor.name"
             description="%command.newEditor.description"
@@ -956,6 +1018,13 @@
             id="org.eclipse.ui.window.quickAccess"
             name="%command.quickAccess.name"/>
       -->
+      <!-- RAP [bm] SpyHandler disabled in ui.workbench
+      <command
+            categoryId="org.eclipse.ui.category.window"
+            defaultHandler="org.eclipse.ui.internal.handlers.SpyHandler"
+            description="%command.spy.description"
+            id="org.eclipse.ui.window.spy"
+            name="%command.spy.name"/-->
       <command
             categoryId="org.eclipse.ui.category.window"
             defaultHandler="org.eclipse.ui.internal.WorkbenchEditorsHandler"
@@ -1157,6 +1226,34 @@
             categoryId="org.eclipse.ui.category.navigate"
             name="%command.previousPage.name">
       </command>
+      <command
+            description="%command.nextTab.description"
+            id="org.eclipse.ui.navigate.nextTab"
+            categoryId="org.eclipse.ui.category.navigate"
+            name="%command.nextTab.name">
+            <!-- RAP [bm] disabled due to TraverseEvents -->
+            <!--defaultHandler="org.eclipse.ui.internal.handlers.TraversePageHandler:next" -->
+      </command>
+      <command
+            description="%command.previousTab.description"
+            id="org.eclipse.ui.navigate.previousTab"
+            categoryId="org.eclipse.ui.category.navigate"
+            name="%command.previousTab.name">
+            <!-- RAP [bm] disabled due to TraverseEvents -->
+            <!--defaultHandler="org.eclipse.ui.internal.handlers.TraversePageHandler:previous" -->
+      </command>
+      <command
+            description="%command.nextSubTab.description"
+            id="org.eclipse.ui.navigate.nextSubTab"
+            categoryId="org.eclipse.ui.category.navigate"
+            name="%command.nextSubTab.name">
+      </command>
+      <command
+            description="%command.previousSubTab.description"
+            id="org.eclipse.ui.navigate.previousSubTab"
+            categoryId="org.eclipse.ui.category.navigate"
+            name="%command.previousSubTab.name">
+      </command>
       <category
             description="%category.perspective.description"
             id="org.eclipse.ui.category.perspectives"
@@ -1180,58 +1277,88 @@
                values="org.eclipse.ui.internal.registry.ViewParameterValues">
          </commandParameter>
       </command>
+      <command
+            categoryId="org.eclipse.ui.category.navigate"
+            description="%command.expandAll.description"
+            id="org.eclipse.ui.navigate.expandAll"
+            name="%command.expandAll.name">
+      </command>
    </extension>
    
    <extension
          point="org.eclipse.ui.commandImages">
       <image
             commandId="org.eclipse.ui.edit.copy"
-            icon="$nl$/icons/full/etool16/copy_edit.gif" />
+            disabledIcon="$nl$/icons/full/dtool16/copy_edit.gif"
+            icon="$nl$/icons/full/etool16/copy_edit.gif"/>
       <image
             commandId="org.eclipse.ui.edit.cut"
-            icon="$nl$/icons/full/etool16/cut_edit.gif" />
-      <image
-            commandId="org.eclipse.ui.edit.paste"
-            icon="$nl$/icons/full/etool16/paste_edit.gif" />
+            disabledIcon="$nl$/icons/full/dtool16/cut_edit.gif"
+            icon="$nl$/icons/full/etool16/cut_edit.gif"/>
       <image
             commandId="org.eclipse.ui.edit.delete"
-            icon="$nl$/icons/full/etool16/delete_edit.gif" />
+            disabledIcon="$nl$/icons/full/dtool16/delete_edit.gif"
+            icon="$nl$/icons/full/etool16/delete_edit.gif"/>
+      <image
+            commandId="org.eclipse.ui.edit.paste"
+            disabledIcon="$nl$/icons/full/dtool16/paste_edit.gif"
+            icon="$nl$/icons/full/etool16/paste_edit.gif"/>
       <image
             commandId="org.eclipse.ui.file.print"
-            icon="$nl$/icons/full/etool16/print_edit.gif" />
+            disabledIcon="$nl$/icons/full/dtool16/print_edit.gif"
+            icon="$nl$/icons/full/etool16/print_edit.gif"/>
       <image
             commandId="org.eclipse.ui.edit.undo"
-            icon="$nl$/icons/full/etool16/undo_edit.gif" />
+            disabledIcon="$nl$/icons/full/dtool16/undo_edit.gif"
+            icon="$nl$/icons/full/etool16/undo_edit.gif"/>
       <image
             commandId="org.eclipse.ui.edit.redo"
-            icon="$nl$/icons/full/etool16/redo_edit.gif" />
+            disabledIcon="$nl$/icons/full/dtool16/redo_edit.gif"
+            icon="$nl$/icons/full/etool16/redo_edit.gif"/>
       <image
             commandId="org.eclipse.ui.file.save"
-            icon="$nl$/icons/full/etool16/save_edit.gif" />
+            disabledIcon="$nl$/icons/full/dtool16/save_edit.gif"
+            icon="$nl$/icons/full/etool16/save_edit.gif"/>
       <image
             commandId="org.eclipse.ui.file.saveAll"
-            icon="$nl$/icons/full/etool16/saveall_edit.gif" />
+            disabledIcon="$nl$/icons/full/dtool16/saveall_edit.gif"
+            icon="$nl$/icons/full/etool16/saveall_edit.gif"/>
       <image
             commandId="org.eclipse.ui.file.saveAs"
-            icon="$nl$/icons/full/etool16/saveas_edit.gif" />
+            disabledIcon="$nl$/icons/full/dtool16/saveas_edit.gif"
+            icon="$nl$/icons/full/etool16/saveas_edit.gif"/>
       <image
             commandId="org.eclipse.ui.file.refresh"
-            icon="$nl$/icons/full/elcl16/refresh_nav.gif" />
+            disabledIcon="$nl$/icons/full/dlcl16/refresh_nav.gif"
+            icon="$nl$/icons/full/elcl16/refresh_nav.gif"/>
       <image
             commandId="org.eclipse.ui.file.export"
+            disabledIcon="$nl$/icons/full/dtool16/export_wiz.gif"
             icon="$nl$/icons/full/etool16/export_wiz.gif">
       </image>
-            <!-- disabledIcon="$nl$/icons/full/dtool16/export_wiz.gif" -->
       <image
             commandId="org.eclipse.ui.file.import"
+            disabledIcon="$nl$/icons/full/dtool16/import_wiz.gif"
             icon="$nl$/icons/full/etool16/import_wiz.gif">
       </image>
-            <!-- disabledIcon="$nl$/icons/full/dtool16/import_wiz.gif" -->
       <image
             commandId="org.eclipse.ui.navigate.collapseAll"
+            disabledIcon="$nl$/icons/full/dlcl16/collapseall.gif"
             icon="$nl$/icons/full/elcl16/collapseall.gif">
       </image>
-            <!-- disabledIcon="$nl$/icons/full/dlcl16/collapseall.gif" -->
+      <image
+            commandId="org.eclipse.ui.navigate.expandAll"
+            icon="$nl$/icons/full/elcl16/expandall.gif">
+      </image>
+      <image
+            commandId="org.eclipse.ui.newWizard"
+            disabledIcon="$nl$/icons/full/dtool16/new_wiz.gif"
+            icon="$nl$/icons/full/etool16/new_wiz.gif">
+      </image>
+      <image
+            commandId="org.eclipse.ui.perspectives.showPerspective"
+            icon="$nl$/icons/full/eview16/new_persp.gif">
+      </image>
    </extension>
    
    <extension
@@ -1387,15 +1514,33 @@
             %Color.counterTextDesc
          </description>
       </colorDefinition>
+      <colorDefinition
+            label="%Color.contentAssistBackground"
+            categoryId="org.eclipse.ui.workbenchMisc"
+            value="COLOR_LIST_BACKGROUND"
+            id="CONTENT_ASSIST_BACKGROUND_COLOR">
+         <description>
+            %Color.contentAssistBackgroundDesc
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            label="%Color.contentAssistForeground"
+            categoryId="org.eclipse.ui.workbenchMisc"
+            value="COLOR_LIST_FOREGROUND"
+            id="CONTENT_ASSIST_FOREGROUND_COLOR">
+         <description>
+            %Color.contentAssistForegroundDesc
+         </description>
+      </colorDefinition>
+
       <data
-      	name="org.eclipse.ui.workbench.ACTIVE_TAB_HIGHLIGHT" value="false">
+      	name="org.eclipse.ui.workbench.ACTIVE_TAB_HIGHLIGHT" value="true">
       </data>
 <!-- Active Tab Colors -->
       <colorDefinition
-            categoryId="org.eclipse.ui.presentation.default"
-            id="org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR"
             label="%Color.activeTabText"
-            value="COLOR_LIST_SELECTION_TEXT">
+            categoryId="org.eclipse.ui.presentation.default"
+            id="org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR">
          <description>
             %Color.activeTabTextDesc
          </description>
@@ -1418,8 +1563,7 @@
       <colorDefinition
             categoryId="org.eclipse.ui.presentation.default"
             id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_END"
-            label="%Color.activeTabBGEnd"
-            value="COLOR_LIST_SELECTION">
+            label="%Color.activeTabBGEnd">
          <description>
             %Color.activeTabBGEndDesc
          </description>
@@ -1440,10 +1584,9 @@
          </colorFactory>
       </colorDefinition>
       <colorDefinition
-            categoryId="org.eclipse.ui.presentation.default"
-            id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_START"
             label="%Color.activeTabBGStart"
-            value="COLOR_LIST_SELECTION">
+            categoryId="org.eclipse.ui.presentation.default"
+            id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_START">
          <description>
             %Color.activeTabBGStartDesc
          </description>
@@ -1467,7 +1610,7 @@
       <colorDefinition
             label="%Color.activeNofocusTabText"
             categoryId="org.eclipse.ui.presentation.default"
-            value="COLOR_LIST_SELECTION_TEXT"
+            value="COLOR_TITLE_INACTIVE_FOREGROUND"
             id="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_TEXT_COLOR">
          <description>
             %Color.activeNofocusTabTextDesc
@@ -1476,17 +1619,16 @@
       <colorDefinition
             label="%Color.activeNofocusTabBGEnd"
             categoryId="org.eclipse.ui.presentation.default"
-            value="COLOR_LIST_SELECTION"
+            value="COLOR_TITLE_INACTIVE_BACKGROUND"
             id="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_END">
          <description>
             %Color.activeNofocusTabBGEndDesc
          </description>
       </colorDefinition>
       <colorDefinition
-            categoryId="org.eclipse.ui.presentation.default"
-            id="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_START"
             label="%Color.activeNofocusTabBGStart"
-            value="COLOR_LIST_SELECTION">
+            categoryId="org.eclipse.ui.presentation.default"
+            id="org.eclipse.ui.workbench.ACTIVE_NOFOCUS_TAB_BG_START">
          <description>
             %Color.activeNofocusTabBGStartDesc
          </description>
@@ -1610,13 +1752,13 @@
 <!-- Override color factory for active tab colors, set to defaults based on title -->               
 		<colorOverride
 				id="org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR"
-				value="COLOR_LIST_SELECTION_TEXT"/>
+				value="COLOR_TITLE_FOREGROUND"/>
 		<colorOverride
 				id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_END"
-				value="COLOR_LIST_SELECTION"/>
+				value="COLOR_TITLE_BACKGROUND"/>
 		<colorOverride
 				id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_START"
-				value="COLOR_LIST_SELECTION"/>
+				value="COLOR_TITLE_BACKGROUND"/>
 		 <data
       		name="org.eclipse.ui.workbench.ACTIVE_TAB_HIGHLIGHT" value="false">
 		 </data>
@@ -1626,22 +1768,21 @@
             name="%ThemeName.R30">
              <colorOverride
                id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_START"
-               value="COLOR_LIST_SELECTION">
+               value="COLOR_TITLE_BACKGROUND">
          </colorOverride>
          <!-- RAP [bm] changed bundle id -->
          <colorOverride
-               id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_END"
-               value="COLOR_LIST_SELECTION">
+               id="org.eclipse.ui.workbench.ACTIVE_TAB_BG_END">
             <colorFactory
                   class="org.eclipse.ui.themes.RGBBlendColorFactory"
                   plugin="org.eclipse.rap.ui">
                <parameter
                      name="color1"
-                     value="COLOR_LIST_SELECTION">
+                     value="COLOR_TITLE_BACKGROUND_GRADIENT">
                </parameter>
                <parameter
                      name="color2"
-                     value="COLOR_LIST_SELECTION">
+                     value="COLOR_TITLE_BACKGROUND_GRADIENT">
                </parameter>
             </colorFactory>
          </colorOverride>
@@ -1651,10 +1792,10 @@
          </data>
          <colorOverride
                id="org.eclipse.ui.workbench.ACTIVE_TAB_TEXT_COLOR"
-               value="COLOR_LIST_SELECTION_TEXT">
+               value="COLOR_TITLE_FOREGROUND">
          </colorOverride>
 		 <data
-      		name="org.eclipse.ui.workbench.ACTIVE_TAB_HIGHLIGHT" value="true">
+      		name="org.eclipse.ui.workbench.ACTIVE_TAB_HIGHLIGHT" value="false">
 		 </data>
       </theme>
    </extension>
@@ -1734,16 +1875,16 @@
          point="org.eclipse.ui.preferenceTransfer">
       <settingsTransfer
             class="org.eclipse.ui.internal.WorkbenchLayoutSettingsTransfer"
+            helpContext="org.eclipse.ui.switch_workspace_dialog_context"
             id="org.eclipse.ui.workbenchTransfer"
             name="%SettingsTransfer.WorkbenchLayout">
       </settingsTransfer>
-            helpContext="org.eclipse.ui.switch_workspace_dialog_context"
       <settingsTransfer
             class="org.eclipse.ui.internal.preferences.WorkingSetSettingsTransfer"
+            helpContext="org.eclipse.ui.switch_workspace_dialog_context"
             id="org.eclipse.ui.workingSets"
             name="%SettingsTransfer.WorkingSets">
       </settingsTransfer>
-            helpContext="org.eclipse.ui.switch_workspace_dialog_context"
    </extension>
 -->
    
@@ -2020,6 +2161,23 @@
             </with>
          </enabledWhen>
       </handler>
+      <handler
+            class="org.eclipse.ui.internal.handlers.PinEditorHandler"
+            commandId="org.eclipse.ui.window.pinEditor">
+         <activeWhen>
+            <and>
+               <with
+                     variable="activeEditorId">
+                  <instanceof
+                        value="java.lang.String">
+                  </instanceof>
+               </with>
+               <test
+                     property="org.eclipse.ui.preferences.reuseEditor">
+               </test>
+            </and>
+         </activeWhen>
+      </handler>
    </extension>
    <extension
          point="org.eclipse.core.runtime.adapters">
@@ -2031,6 +2189,20 @@
          </adapter>
          <adapter
                type="org.eclipse.core.expressions.ICountable">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.ui.IPluginContribution"
+            class="org.eclipse.ui.internal.testing.PluginContributionAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.testing.ContributionInfo">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.ui.internal.progress.JobInfo"
+            class="org.eclipse.ui.internal.testing.PluginContributionAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.testing.ContributionInfo">
          </adapter>
       </factory>
    </extension>
@@ -2097,14 +2269,11 @@
          </service>
       </serviceFactory>
       <sourceProvider
-            provider="org.eclipse.ui.internal.services.CurrentSelectionSourceProvider">
+            provider="org.eclipse.ui.internal.services.WorkbenchSourceProvider">
          <variable
                name="selection"
                priorityLevel="workbench">
          </variable>
-      </sourceProvider>
-      <sourceProvider
-            provider="org.eclipse.ui.internal.services.ActiveShellSourceProvider">
          <variable
                name="activeShell"
                priorityLevel="workbench">
@@ -2127,29 +2296,6 @@
          </variable>
          <variable
                name="activeWorkbenchWindow.activePerspective"
-               priorityLevel="workbench">
-         </variable>
-      </sourceProvider>
-      <sourceProvider
-            provider="org.eclipse.ui.internal.services.ActivePartSourceProvider">
-         <variable
-               name="activeEditor"
-               priorityLevel="workbench">
-         </variable>
-         <variable
-               name="activeEditorId"
-               priorityLevel="workbench">
-         </variable>
-         <variable
-               name="activePart"
-               priorityLevel="workbench">
-         </variable>
-         <variable
-               name="activePartId"
-               priorityLevel="workbench">
-         </variable>
-         <variable
-               name="activeSite"
                priorityLevel="workbench">
          </variable>
       </sourceProvider>
@@ -2194,7 +2340,31 @@
          </variable>
       </sourceProvider>
    </extension>
-   
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.eclipse.ui.internal.handlers.ReuseEditorTester"
+            id="org.eclipse.ui.preferences.reuseTester"
+            namespace="org.eclipse.ui.preferences"
+            properties="reuseEditor"
+            type="java.lang.Object">
+      </propertyTester>
+   </extension>
+   <!-- RAP [bm]: not applicable
+   <extension
+         point="org.eclipse.ui.installationPages">
+          <page
+            name="%installationPage.plugins.name"
+            class="org.eclipse.ui.internal.about.AboutPluginsPage"
+            id="30.PluginPage">
+          </page>        
+          <page
+            name="%installationPage.system.name"
+            class="org.eclipse.ui.internal.about.AboutSystemPage"
+            id="31.SystemPage">
+          </page>
+   </extension>
+   -->
    <!--
      NOTE: HttpContext was added to org.eclipse.rap.ui to avoid starting
            the workbench bundle before the context is established. The latter

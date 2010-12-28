@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,7 +93,7 @@ public abstract class OperationHistoryActionHandler extends Action implements
 		 * @see IPartListener#partClosed(IWorkbenchPart)
 		 */
 		public void partClosed(IWorkbenchPart part) {
-			if (part.equals(site.getPart())) {
+			if (site != null && part.equals(site.getPart())) {
 				dispose();
 				// Special case for MultiPageEditorSite
 				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=103379
@@ -120,14 +120,20 @@ public abstract class OperationHistoryActionHandler extends Action implements
 
 	private class HistoryListener implements IOperationHistoryListener {
 		public void historyNotification(final OperationHistoryEvent event) {
-			Display display = getWorkbenchWindow().getWorkbench().getDisplay();
+			IWorkbenchWindow workbenchWindow = getWorkbenchWindow();
+			if (workbenchWindow == null)
+				return;
+			
+			Display display = workbenchWindow.getWorkbench().getDisplay();
+			if (display == null)
+				return;
+			
 			switch (event.getEventType()) {
 			case OperationHistoryEvent.OPERATION_ADDED:
 			case OperationHistoryEvent.OPERATION_REMOVED:
 			case OperationHistoryEvent.UNDONE:
 			case OperationHistoryEvent.REDONE:
-				if (display != null
-						&& event.getOperation().hasContext(undoContext)) {
+				if (event.getOperation().hasContext(undoContext)) {
 					display.asyncExec(new Runnable() {
 						public void run() {
 							update();
@@ -136,8 +142,7 @@ public abstract class OperationHistoryActionHandler extends Action implements
 				}
 				break;
 			case OperationHistoryEvent.OPERATION_NOT_OK:
-				if (display != null
-						&& event.getOperation().hasContext(undoContext)) {
+				if (event.getOperation().hasContext(undoContext)) {
 					display.asyncExec(new Runnable() {
 						public void run() {
 							if (pruning) {
@@ -162,7 +167,7 @@ public abstract class OperationHistoryActionHandler extends Action implements
 				}
 				break;
 			case OperationHistoryEvent.OPERATION_CHANGED:
-				if (display != null && event.getOperation() == getOperation()) {
+				if (event.getOperation() == getOperation()) {
 					display.asyncExec(new Runnable() {
 						public void run() {
 							update();

@@ -594,7 +594,7 @@ public class FastViewBar implements IWindowTrim {
      * @param position
      */
     private ToolItem getToolItem(Point position) {
-    	ToolBar toolbar = getToolBar();
+        ToolBar toolbar = getToolBar();
         Point local = toolbar.toControl(position);
         return toolbar.getItem(local);
     }
@@ -889,13 +889,11 @@ public class FastViewBar implements IWindowTrim {
         if (selectedView != null) {
             WorkbenchPage page = window.getActiveWorkbenchPage();
             if (page != null) {
-            	// RAP [bm]: 
-//                int idx = getIndex(selectedView);
-//                ToolItem item = getItem(idx);
-//                Rectangle bounds = item.getBounds();
-//                Rectangle startBounds = Geometry.toDisplay(item
-//                        .getParent(), bounds);
-            	// RAPEND: [bm] 
+                int idx = getIndex(selectedView);
+                ToolItem item = getItem(idx);
+                Rectangle bounds = item.getBounds();
+                Rectangle startBounds = Geometry.toDisplay(item
+                        .getParent(), bounds);
 
                 Perspective persp = getPerspective();
                 if (persp != null) {
@@ -912,11 +910,8 @@ public class FastViewBar implements IWindowTrim {
 //                ViewPane pane = (ViewPane) ((WorkbenchPartReference) selectedView)
 //                        .getPane();
 
-//                RectangleAnimation animation = new RectangleAnimation(
-//                        window.getShell(), startBounds, pane
-//                                .getParentBounds());
-//
-//                animation.schedule();
+//                      		// animate the view's relocation
+//        		AnimationEngine.createTweakedAnimation(window.getShell(), 400, startBounds, pane.getParentBounds());
                 // RAPEND: [bm] 
             }
         }

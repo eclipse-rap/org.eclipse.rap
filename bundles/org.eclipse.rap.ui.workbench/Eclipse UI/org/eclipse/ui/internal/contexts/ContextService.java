@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,13 @@ public final class ContextService implements IContextService {
 		this.contextPersistence = new ContextPersistence(contextManager);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.contexts.IContextService#deferUpdates(boolean)
+	 */
+	public void deferUpdates(boolean defer) {
+		contextManager.deferUpdates(defer);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -82,6 +89,7 @@ public final class ContextService implements IContextService {
 	 */
 	public final IContextActivation activateContext(final String contextId,
 			final Expression expression) {
+
 		final IContextActivation activation = new ContextActivation(contextId,
 				expression, this);
 		contextAuthority.activateContext(activation);
@@ -235,7 +243,7 @@ public final class ContextService implements IContextService {
 	 */
 	public final void removeContextManagerListener(
 			final IContextManagerListener listener) {
-		contextManager.addContextManagerListener(listener);
+		contextManager.removeContextManagerListener(listener);
 	}
 
 	/*

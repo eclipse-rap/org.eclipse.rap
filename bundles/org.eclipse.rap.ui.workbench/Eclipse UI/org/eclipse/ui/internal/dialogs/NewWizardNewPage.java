@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.util.Hashtable;
 //import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
@@ -292,7 +291,7 @@ class NewWizardNewPage implements ISelectionChangedListener {
 
         filteredTreeFilter = new WizardPatternFilter();
     	FilteredTree filterTree = new FilteredTree(composite, 
-    			SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, filteredTreeFilter);
+    			SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, filteredTreeFilter, true);
   	
 		final TreeViewer treeViewer = filterTree.getViewer();
 		treeViewer.setContentProvider(new WizardContentProvider());
@@ -685,6 +684,7 @@ class NewWizardNewPage implements ISelectionChangedListener {
         }
 
         descImageCanvas.getParent().layout(true);
+        filteredTree.getViewer().getTree().showSelection();
 
         IWizardContainer container = page.getWizard().getContainer();
         if (container instanceof IWizardContainer2) {

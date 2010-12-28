@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,7 @@ package org.eclipse.ui.internal.menus;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.eclipse.core.expressions.Expression;
+import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.ContributionManager;
@@ -26,10 +25,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.internal.WorkbenchWindow;
-import org.eclipse.ui.internal.expressions.WorkbenchWindowExpression;
 import org.eclipse.ui.internal.layout.IWindowTrim;
 import org.eclipse.ui.internal.layout.TrimLayout;
 import org.eclipse.ui.internal.misc.StatusUtil;
+import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.menus.AbstractContributionFactory;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
@@ -155,8 +154,8 @@ public class TrimContributionManager extends ContributionManager {
 		 */
 		public void dispose() {
 			if (tbm != null) {
-				tbm.removeAll();
 				tbm.dispose();
+				tbm.removeAll();
 			}
 		}
 	}
@@ -185,7 +184,7 @@ public class TrimContributionManager extends ContributionManager {
 
 	List contributedLists = new ArrayList();
 
-	private Expression restrictionExpression;
+	private Set restrictionExpression;
 
 	/**
 	 * Construct a contribution manager for the given window 
@@ -195,7 +194,7 @@ public class TrimContributionManager extends ContributionManager {
 		layout = (TrimLayout) wbWindow.getShell().getLayout();
 		menuService = (InternalMenuService) window.getService(
 				IMenuService.class);
-		restrictionExpression = new WorkbenchWindowExpression(wbWindow);
+		restrictionExpression = wbWindow.getMenuRestrictions();
 	}
 
 	/* (non-Javadoc)
@@ -222,6 +221,39 @@ public class TrimContributionManager extends ContributionManager {
 				ContributionRoot ciList = new ContributionRoot(menuService,
 						restrictionExpression, this, cache);
 				cache.createContributionItems(wbWindow, ciList);
+
+				// Where should we put this?
+				IWindowTrim insertBefore = null;
+				MenuLocationURI uri = new MenuLocationURI(cache.getLocation());
+				String query = uri.getQuery();
+				String[] args = Util.split(query, '=');
+				if (args.length == 2) {
+					String relative = args[0];
+					String relId = args[1];
+					insertBefore = layout.getTrim(relId);
+					if (MenuUtil.QUERY_AFTER.equals(relative)
+							&& insertBefore != null) {
+						// Get the trim -after- the id'd one
+						List areaTrim = layout.getAreaTrim(swtSides[i]);
+						for (Iterator iterator = areaTrim.iterator(); iterator
+								.hasNext();) {
+							IWindowTrim trimElement = (IWindowTrim) iterator
+									.next();
+							if (insertBefore == trimElement) {
+								insertBefore = (IWindowTrim) (iterator
+										.hasNext() ? iterator.next() : null);
+							}
+						}
+					}
+				}
+
+				// If we're adding to the 'command1' area then we're -before-
+				// the CoolBar
+				if (insertBefore == null && i == 0) {
+					insertBefore = layout
+							.getTrim("org.eclipse.ui.internal.WorkbenchWindow.topBar"); //$NON-NLS-1$
+				}
+
 				// save the list for later cleanup of any visibility expressions that were added.
 				contributedLists.add(ciList);
 				for (Iterator ciIter = ciList.getItems().iterator(); ciIter.hasNext();) {
@@ -231,11 +263,6 @@ public class TrimContributionManager extends ContributionManager {
 						ToolBarTrimProxy tbProxy = new ToolBarTrimProxy(ci.getId(), wbWindow);
 						tbProxy.dock(swtSides[i]);
 						
-						// If we're adding to the 'command1' area then we're -before- the CoolBar
-						IWindowTrim insertBefore = null;
-						if (i == 0) {
-							insertBefore = layout.getTrim("org.eclipse.ui.internal.WorkbenchWindow.topBar"); //$NON-NLS-1$
-						}
 						layout.addTrim(swtSides[i], tbProxy, insertBefore);						
 						contributedTrim.add(tbProxy);
 					}

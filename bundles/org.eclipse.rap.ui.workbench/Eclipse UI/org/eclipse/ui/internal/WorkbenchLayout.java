@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,14 +51,9 @@ public class WorkbenchLayout extends Layout {
 	 */
 	private class TrimLine {
 		/**
-		 * Teh list of controls in this trim line
+		 * The list of controls in this trim line
 		 */
 		List controls = new ArrayList();
-
-		/**
-		 * A cache of the previously computed sizes of each trim control
-		 */
-		List computedSizes = new ArrayList();
 
 		/**
 		 * In horizontal terms this is the 'height' of the tallest control.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 
 /**
  * This manager is used to populate a popup menu manager with actions
@@ -137,4 +138,11 @@ public class ObjectActionContributorManager extends ObjectContributorManager {
             reader.readElement(addedElements[i]);
         }
     }
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.internal.ObjectContributorManager#getExtensionPointFilter()
+	 */
+	protected String getExtensionPointFilter() {
+		return IWorkbenchRegistryConstants.PL_POPUP_MENU;
+	}
 }

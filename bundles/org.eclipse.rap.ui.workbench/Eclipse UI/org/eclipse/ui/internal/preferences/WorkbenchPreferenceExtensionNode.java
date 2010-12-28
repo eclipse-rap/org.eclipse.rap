@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@
 package org.eclipse.ui.internal.preferences;
 
 import java.util.*;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -38,8 +37,6 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
   private static final String ID_PAGE
     = WorkbenchPreferenceExtensionNode.class.getName() + "#Page"; //$NON-NLS-1$
   
-	private static final String TAG_KEYWORD_REFERENCE = "keywordReference"; //$NON-NLS-1$
-
 	private Collection keywordReferences;
 	
 	private IConfigurationElement configurationElement;
@@ -74,7 +71,7 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
 	public Collection getKeywordReferences() {
 		if (keywordReferences == null) {
 			IConfigurationElement[] references = getConfigurationElement()
-					.getChildren(TAG_KEYWORD_REFERENCE);
+					.getChildren(IWorkbenchRegistryConstants.TAG_KEYWORD_REFERENCE);
 			HashSet list = new HashSet(references.length);
 			for (int i = 0; i < references.length; i++) {
 				IConfigurationElement page = references[i];
@@ -180,7 +177,7 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
     	
     	String imageName = getConfigurationElement().getAttribute(IWorkbenchRegistryConstants.ATT_ICON);
 		if (imageName != null) {
-			String contributingPluginId = getConfigurationElement().getNamespace();
+			String contributingPluginId = pluginId;
 			imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(contributingPluginId, imageName);
 		}
 		return imageDescriptor;

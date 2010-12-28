@@ -1,6 +1,6 @@
 // RAP [bm]: missing file handling - download/upload?
 ///*******************************************************************************
-// * Copyright (c) 2005, 2007 IBM Corporation and others.
+// * Copyright (c) 2005, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@
 //import java.io.FileInputStream;
 //import java.io.FileNotFoundException;
 //import java.io.IOException;
-//
 //import org.eclipse.core.runtime.CoreException;
 //import org.eclipse.core.runtime.Platform;
 //import org.eclipse.core.runtime.preferences.IExportedPreferences;
@@ -25,6 +24,8 @@
 //import org.eclipse.swt.SWT;
 //import org.eclipse.swt.widgets.Composite;
 //import org.eclipse.swt.widgets.Event;
+//import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 //import org.eclipse.ui.internal.WorkbenchPlugin;
 //import org.eclipse.ui.internal.preferences.PreferenceTransferElement;
 //
@@ -52,6 +53,19 @@
 //    public WizardPreferencesImportPage1() {
 //        this("preferencesImportPage1");//$NON-NLS-1$
 //    }
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.eclipse.ui.internal.wizards.preferences.WizardPreferencesPage#
+//	 * createControl(org.eclipse.swt.widgets.Composite)
+//	 */
+//	public void createControl(Composite parent) {
+//		super.createControl(parent);
+//		PlatformUI.getWorkbench().getHelpSystem()
+//				.setHelp(getControl(), IWorkbenchHelpContextIds.PREFERENCES_IMPORT_WIZARD_PAGE);
+//
+//	}
 //
 //    /* (non-Javadoc)
 //     * @see org.eclipse.ui.internal.wizards.preferences.WizardPreferencesPage#getAllButtonText()
@@ -135,10 +149,12 @@
 //    protected void setPreferenceTransfers() {
 //    	super.setPreferenceTransfers();	
 //    	
-//		if(validFromFile() && (transfersTable.getItemCount() == 0)) {
-//			text.setText(PreferencesMessages.WizardPreferences_noSpecificPreferenceDescription);
+//		if (validFromFile()
+//				&& (transfersTree.getViewer().getTree().getItemCount() == 0)) {
+//			descText
+//					.setText(PreferencesMessages.WizardPreferences_noSpecificPreferenceDescription);
 //		} else {
-//			text.setText(""); //$NON-NLS-1$
+//			descText.setText(""); //$NON-NLS-1$
 //		}
 //	}
 //  
@@ -173,7 +189,9 @@
 //                    fis = new FileInputStream(importFile);
 //                } catch (FileNotFoundException e) {
 //                    WorkbenchPlugin.log(e.getMessage(), e);
-//                    MessageDialog.openError(getControl().getShell(), new String(), e.getLocalizedMessage());
+//					MessageDialog.open(MessageDialog.ERROR, getControl()
+//							.getShell(), new String(), e.getLocalizedMessage(),
+//							SWT.SHEET);
 //                    return false;
 //                }
 //                IPreferencesService service = Platform.getPreferencesService();
@@ -183,7 +201,9 @@
 //                    service.applyPreferences(prefs, filters);
 //                } catch (CoreException e) {
 //                    WorkbenchPlugin.log(e.getMessage(), e);
-//                    MessageDialog.openError(getControl().getShell(), new String(), e.getLocalizedMessage());
+//					MessageDialog.open(MessageDialog.ERROR, getControl()
+//							.getShell(), new String(), e.getLocalizedMessage(),
+//							SWT.SHEET);
 //                    return false;
 //                }
 //            }
@@ -193,7 +213,9 @@
 //                    fis.close();
 //                } catch (IOException e) {
 //                	WorkbenchPlugin.log(e.getMessage(), e);
-//                	MessageDialog.openError(getControl().getShell(), new String(), e.getLocalizedMessage());
+//					MessageDialog.open(MessageDialog.ERROR, getControl()
+//							.getShell(), new String(), e.getLocalizedMessage(),
+//							SWT.SHEET);
 //                }
 //			}
 //        }
@@ -225,7 +247,7 @@
 //	 * @see org.eclipse.ui.internal.wizards.preferences.WizardPreferencesPage#getFileDialogStyle()
 //	 */
 //	protected int getFileDialogStyle() {
-//		return SWT.OPEN;
+//		return SWT.OPEN | SWT.SHEET;
 //	}
 //	
 //	/* (non-Javadoc)
@@ -240,5 +262,15 @@
 //	 */
 //	protected String getInvalidDestinationMessage() {
 //		return PreferencesMessages.WizardPreferencesImportPage1_invalidPrefFile;
+//	}
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @seeorg.eclipse.ui.internal.wizards.preferences.WizardPreferencesPage#
+//	 * shouldSaveTransferAll()
+//	 */
+//	protected boolean shouldSaveTransferAll() {
+//		return false;
 //	}
 //}

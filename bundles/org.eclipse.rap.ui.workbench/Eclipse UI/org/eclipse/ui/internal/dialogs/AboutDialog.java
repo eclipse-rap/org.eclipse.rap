@@ -1,6 +1,6 @@
 // RAP [rh] AboutDialog left out for now
 ///*******************************************************************************
-// * Copyright (c) 2000, 2008 IBM Corporation and others.
+// * Copyright (c) 2000, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -13,13 +13,13 @@
 //
 //import java.util.ArrayList;
 //import java.util.LinkedList;
-//
 //import org.eclipse.core.runtime.IBundleGroup;
 //import org.eclipse.core.runtime.IBundleGroupProvider;
 //import org.eclipse.core.runtime.IProduct;
 //import org.eclipse.core.runtime.Platform;
 //import org.eclipse.jface.action.MenuManager;
 //import org.eclipse.jface.dialogs.IDialogConstants;
+//import org.eclipse.jface.dialogs.TrayDialog;
 //import org.eclipse.jface.resource.ImageDescriptor;
 //import org.eclipse.jface.resource.JFaceColors;
 //import org.eclipse.osgi.util.NLS;
@@ -36,7 +36,6 @@
 //import org.eclipse.swt.events.SelectionAdapter;
 //import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.graphics.Color;
-//import org.eclipse.swt.graphics.Cursor;
 //import org.eclipse.swt.graphics.GC;
 //import org.eclipse.swt.graphics.Image;
 //import org.eclipse.swt.graphics.Point;
@@ -48,26 +47,27 @@
 //import org.eclipse.swt.widgets.Control;
 //import org.eclipse.swt.widgets.Label;
 //import org.eclipse.swt.widgets.Shell;
+//import org.eclipse.ui.IWorkbenchCommandConstants;
+//import org.eclipse.ui.IWorkbenchWindow;
 //import org.eclipse.ui.PlatformUI;
 //import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 //import org.eclipse.ui.internal.ProductProperties;
 //import org.eclipse.ui.internal.WorkbenchMessages;
 //import org.eclipse.ui.internal.about.AboutBundleGroupData;
 //import org.eclipse.ui.internal.about.AboutFeaturesButtonManager;
+//import org.eclipse.ui.internal.about.AboutItem;
+//import org.eclipse.ui.internal.about.AboutTextManager;
+//import org.eclipse.ui.internal.about.InstallationDialog;
 //import org.eclipse.ui.menus.CommandContributionItem;
 //import org.eclipse.ui.menus.CommandContributionItemParameter;
 //
 ///**
 // * Displays information about the product.
 // */
-//public class AboutDialog extends ProductInfoDialog {
+//public class AboutDialog extends TrayDialog {
 //    private final static int MAX_IMAGE_WIDTH_FOR_TEXT = 250;
 //
-//    private final static int FEATURES_ID = IDialogConstants.CLIENT_ID + 1;
-//
-//    private final static int PLUGINS_ID = IDialogConstants.CLIENT_ID + 2;
-//
-//    private final static int INFO_ID = IDialogConstants.CLIENT_ID + 3;
+//    private final static int DETAILS_ID = IDialogConstants.CLIENT_ID + 1;
 //
 //    private String productName;
 //
@@ -79,9 +79,9 @@
 //
 //    private AboutFeaturesButtonManager buttonManager = new AboutFeaturesButtonManager();
 //
-//    // TODO should the styled text be disposed? if not then it likely
-//    //      doesn't need to be a member
 //    private StyledText text;
+//    
+//    private AboutTextManager aboutTextManager;
 //
 //    /**
 //     * Create an instance of the AboutDialog for the given window.
@@ -95,7 +95,7 @@
 //			productName = product.getName();
 //		}
 //        if (productName == null) {
-//			productName = WorkbenchMessages.get().AboutDialog_defaultProductName;
+//			productName = WorkbenchMessages.AboutDialog_defaultProductName;
 //		}
 //
 //        // create a descriptive object for each BundleGroup
@@ -118,25 +118,13 @@
 //     */
 //    protected void buttonPressed(int buttonId) {
 //        switch (buttonId) {
-//        case FEATURES_ID:
+//        case DETAILS_ID:
 //			BusyIndicator.showWhile(getShell().getDisplay(), new Runnable() {
 //				public void run() {
-//		            new AboutFeaturesDialog(getShell(), productName, bundleGroupInfos)
-//		                    .open();
-//				}
-//			});
-//            break;
-//        case PLUGINS_ID:
-//			BusyIndicator.showWhile(getShell().getDisplay(), new Runnable() {
-//				public void run() {
-//		            new AboutPluginsDialog(getShell(), productName).open();
-//				}
-//			});
-//            break;
-//        case INFO_ID:
-//			BusyIndicator.showWhile(getShell().getDisplay(), new Runnable() {
-//				public void run() {
-//		            new AboutSystemDialog(getShell()).open();
+//					IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+//					InstallationDialog dialog = new InstallationDialog(getShell(), workbenchWindow);
+//					dialog.setModalParent(AboutDialog.this);
+//					dialog.open();	
 //				}
 //			});
 //            break;
@@ -161,7 +149,7 @@
 //     */
 //    protected void configureShell(Shell newShell) {
 //        super.configureShell(newShell);
-//        newShell.setText(NLS.bind(WorkbenchMessages.get().AboutDialog_shellTitle,productName ));
+//        newShell.setText(NLS.bind(WorkbenchMessages.AboutDialog_shellTitle,productName ));
 //        PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
 //				IWorkbenchHelpContextIds.ABOUT_DIALOG);
 //    }
@@ -177,14 +165,7 @@
 //    protected void createButtonsForButtonBar(Composite parent) {
 //        parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 //
-//        // bug 64232: the feature details button should only be created if there
-//        // are features to show
-//        if (bundleGroupInfos != null && bundleGroupInfos.length > 0) {
-//			createButton(parent, FEATURES_ID, WorkbenchMessages.get().AboutDialog_featureInfo, false);
-//		} 
-//
-//        createButton(parent, PLUGINS_ID, WorkbenchMessages.get().AboutDialog_pluginInfo, false);
-//        createButton(parent, INFO_ID, WorkbenchMessages.get().AboutDialog_systemInfo, false); 
+//        createButton(parent, DETAILS_ID, WorkbenchMessages.AboutDialog_DetailsButton, false); 
 //
 //        Label l = new Label(parent, SWT.NONE);
 //        l.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -207,21 +188,9 @@
 //     * @return the dialog area control
 //     */
 //    protected Control createDialogArea(Composite parent) {
-//        final Cursor hand = new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
-//        final Cursor busy = new Cursor(parent.getDisplay(), SWT.CURSOR_WAIT);
-//        setHandCursor(hand);
-//        setBusyCursor(busy);
-//        getShell().addDisposeListener(new DisposeListener() {
-//            public void widgetDisposed(DisposeEvent e) {
-//                setHandCursor(null);
-//                hand.dispose();
-//                setBusyCursor(null);
-//                busy.dispose();
-//            }
-//        });
-//
-//        // brand the about box if there is product info
+//         // brand the about box if there is product info
 //        Image aboutImage = null;
+//        AboutItem item = null;
 //        if (product != null) {
 //            ImageDescriptor imageDescriptor = ProductProperties
 //                    .getAboutImage(product);
@@ -234,7 +203,7 @@
 //                    || aboutImage.getBounds().width <= MAX_IMAGE_WIDTH_FOR_TEXT) {
 //                String aboutText = ProductProperties.getAboutText(product);
 //                if (aboutText != null) {
-//					setItem(scan(aboutText));
+//					item = AboutTextManager.scan(aboutText);
 //				}
 //            }
 //
@@ -277,7 +246,7 @@
 //        topContainer.setForeground(foreground);
 //
 //        layout = new GridLayout();
-//        layout.numColumns = (aboutImage == null || getItem() == null ? 1 : 2);
+//        layout.numColumns = (aboutImage == null || item == null ? 1 : 2);
 //        layout.marginWidth = 0;
 //        layout.marginHeight = 0;
 //        layout.verticalSpacing = 0;
@@ -285,17 +254,15 @@
 //        topContainer.setLayout(layout);
 //        
 //
+//		// Calculate a good height for the text
 //        GC gc = new GC(parent);
-//        // arbitrary default
+//		int lineHeight = gc.getFontMetrics().getHeight();
+//		gc.dispose();
+//
 //        int topContainerHeightHint = 100;
-//        try {
-//        	// default height enough for 6 lines of text
-//        	topContainerHeightHint = Math.max(topContainerHeightHint, gc.getFontMetrics().getHeight() * 6);         
-//        }
-//        finally {
-//        	gc.dispose();
-//        }
 //        
+//		topContainerHeightHint = Math.max(topContainerHeightHint, lineHeight * 6);
+//
 //        //image on left side of dialog
 //        if (aboutImage != null) {
 //            Label imageLabel = new Label(topContainer, SWT.NONE);
@@ -319,13 +286,18 @@
 //        data.heightHint = topContainerHeightHint;
 //        topContainer.setLayoutData(data);
 //        
-//        if (getItem() != null) {
-//        	final int minWidth = 400; // This value should really be calculated
+//        if (item != null) {
+//			final int minWidth = 432;
+//			// This value should really be calculated
 //        	// from the computeSize(SWT.DEFAULT,
 //        	// SWT.DEFAULT) of all the
 //        	// children in infoArea excluding the
 //        	// wrapped styled text
 //        	// There is no easy way to do this.
+//
+//			// A scrolled composite is used instead of a vertical scroll bar on
+//			// the styled text, because styled text does not automatically
+//			// remove the vertical bar when not needed.
 //        	final ScrolledComposite scroller = new ScrolledComposite(topContainer,
 //    				SWT.V_SCROLL | SWT.H_SCROLL);
 //        	data = new GridData(GridData.FILL_BOTH);
@@ -339,14 +311,18 @@
 //    		textComposite.setLayout(layout);
 //
 //    		text = new StyledText(textComposite, SWT.MULTI | SWT.WRAP | SWT.READ_ONLY);
-//    		text.setCaret(null);
+//
+//    		// Don't set caret to 'null' as this causes https://bugs.eclipse.org/293263.
+////    		text.setCaret(null);
+//
 //            text.setFont(parent.getFont());
-//            text.setText(getItem().getText());
+//            text.setText(item.getText());
 //            text.setCursor(null);
 //            text.setBackground(background);
 //            text.setForeground(foreground);
-//            setLinkRanges(text, getItem().getLinkRanges());
-//            addListeners(text);
+//            
+//            aboutTextManager = new AboutTextManager(text);
+//            aboutTextManager.setItem(item);
 //            
 //            createTextMenu();
 //            
@@ -426,11 +402,11 @@
 //		final MenuManager textManager = new MenuManager();
 //		textManager.add(new CommandContributionItem(
 //				new CommandContributionItemParameter(PlatformUI
-//						.getWorkbench(), null, "org.eclipse.ui.edit.copy", //$NON-NLS-1$
+//						.getWorkbench(), null, IWorkbenchCommandConstants.EDIT_COPY,
 //						CommandContributionItem.STYLE_PUSH)));
 //		textManager.add(new CommandContributionItem(
 //				new CommandContributionItemParameter(PlatformUI
-//						.getWorkbench(), null, "org.eclipse.ui.edit.selectAll", //$NON-NLS-1$
+//						.getWorkbench(), null, IWorkbenchCommandConstants.EDIT_SELECT_ALL,
 //						CommandContributionItem.STYLE_PUSH)));
 //		text.setMenu(textManager.createContextMenu(text));
 //		text.addDisposeListener(new DisposeListener() {
@@ -470,12 +446,7 @@
 //        featureImage = desc.createImage();
 //        images.add(featureImage);
 //        button.setImage(featureImage);
-//        button
-//				.setToolTipText(NLS
-//						.bind(
-//								WorkbenchMessages.get().AboutDialog_concatenationOfProviderNameAndFeatureName,
-//								new Object[] { info.getProviderName(),
-//										info.getName() }));
+//        button.setToolTipText(info.getProviderName());
 //        
 //        button.getAccessible().addAccessibleListener(new AccessibleAdapter(){
 //        	/* (non-Javadoc)
@@ -493,12 +464,20 @@
 //                        .getData();
 //
 //                AboutFeaturesDialog d = new AboutFeaturesDialog(getShell(),
-//                        productName, groupInfos);
-//                d.setInitialSelection(selection);
+//                        productName, groupInfos, selection);
 //                d.open();
 //            }
 //        });
 //
 //        return button;
 //    }
+//
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.eclipse.jface.dialogs.Dialog#isResizable()
+//	 */
+//	protected boolean isResizable() {
+//		return true;
+//	}
 //}

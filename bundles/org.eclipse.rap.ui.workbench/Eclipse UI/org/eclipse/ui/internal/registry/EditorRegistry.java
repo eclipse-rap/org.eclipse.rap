@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Jan-Hendrik Diederich, Bredex GmbH - bug 201052
+ *     Carsten Pfeiffer, Gebit Solutions GmbH - bug 259536
  *******************************************************************************/
 package org.eclipse.ui.internal.registry;
 
@@ -28,8 +29,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -44,7 +47,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.SafeRunnable;
-import org.eclipse.rap.ui.internal.SessionSingletonEventManager;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
@@ -70,10 +73,7 @@ import com.ibm.icu.text.Collator;
 /**
  * Provides access to the collection of defined editors for resource types.
  */
-// RAP [bm]: 
-//public class EditorRegistry extends EventManager implements IEditorRegistry, IExtensionChangeHandler {
-public class EditorRegistry extends SessionSingletonEventManager implements IEditorRegistry, IExtensionChangeHandler {
-// RAPEND: [bm] 
+public class EditorRegistry extends EventManager implements IEditorRegistry, IExtensionChangeHandler {
 
 	
 	private final static IEditorDescriptor [] EMPTY = new IEditorDescriptor[0];
@@ -174,7 +174,7 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
      * @return
      */
     public static EditorRegistry getInstance() {
-        return ( EditorRegistry )getInstance( EditorRegistry.class );  
+        return ( EditorRegistry )SessionSingletonBase.getInstance( EditorRegistry.class );  
     }
     // RAPEND: [bm] 
 
@@ -1293,7 +1293,7 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
         IEditorDescriptor[] editors;
         while (iter.hasNext()) {
             mapping = (FileEditorMapping) iter.next();
-            editors = mapping.getEditors();
+            editors = mapping.getUnfilteredEditors();
             for (int i = 0; i < editors.length; i++) {
 				if (editors[i] == desc) {
                     mapping.removeEditor((EditorDescriptor) editors[i]);
@@ -1320,11 +1320,60 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
                 mapIDtoEditor.values().remove(desc);
                 removeEditorFromMapping(typeEditorMappings.defaultMap, desc);
                 removeEditorFromMapping(typeEditorMappings.map, desc);
-				//TODO remove from content type mappings
+                removeEditorFromContentTypeMappings(contentTypeToEditorMappings, desc);
             }
 
         }
     }
+
+    /**
+     * Removes all occurrences of the given editor descriptor from the map of content types.
+     * If the descriptor was the only editor, the whole content type is removed from the map.
+     */
+	private void removeEditorFromContentTypeMappings(Map map, IEditorDescriptor desc) {
+		for (Iterator iter = map.entrySet().iterator(); iter.hasNext();) {
+			Entry entry = (Entry) iter.next();
+			IEditorDescriptor[] descriptors = (IEditorDescriptor[]) entry.getValue();
+			IEditorDescriptor[] newDescriptors = removeDescriptor(descriptors, desc);
+			if (descriptors != newDescriptors) {
+				if (newDescriptors == null) {
+					iter.remove();
+				} else {
+					entry.setValue(newDescriptors);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Checks the given IEditorDescriptor for an occurrence of the given descriptor and
+	 * returns an array not containing this descriptor.
+	 * If the result would then be an empty array, <code>null</code> is returned.
+	 * If the descriptor is not contained at all in the given array, it is returned as is.
+	 */
+	private IEditorDescriptor[] removeDescriptor(IEditorDescriptor[] descriptors, IEditorDescriptor desc) {
+		for (int i = 0; i < descriptors.length; i++) {
+			if (descriptors[i] == desc) {
+				// remove the whole mapping
+				if (descriptors.length == 1) {
+					return null;
+				}
+				
+				IEditorDescriptor[] newDescriptors = new IEditorDescriptor[descriptors.length - 1];
+				if (i == 0) {
+					System.arraycopy(descriptors, 1, newDescriptors, 0, newDescriptors.length);
+				} else {
+					System.arraycopy(descriptors, 0, newDescriptors, 0, i);
+					if (i < newDescriptors.length) {
+						System.arraycopy(descriptors, i + 1, newDescriptors, i, newDescriptors.length - i);
+					}
+				}
+				return newDescriptors;
+			}
+		}
+
+		return descriptors;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.dynamicHelpers.IExtensionChangeHandler#addExtension(org.eclipse.core.runtime.dynamicHelpers.IExtensionTracker, org.eclipse.core.runtime.IExtension)
@@ -1342,6 +1391,7 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
 	}
 
 	private IExtensionPoint getExtensionPointFilter() {
+		//  RAP [bm] namespace
 		return Platform.getExtensionRegistry().getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_EDITOR);
 	}
 

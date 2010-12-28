@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package org.eclipse.ui.model;
 
 import java.util.HashMap;
-//import java.util.Iterator;
+import java.util.Iterator;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -92,10 +92,9 @@ public final class PerspectiveLabelProvider extends LabelProvider implements
      * @see org.eclipse.jface.viewers.ILabelProvider
      */
     public final void dispose() {
-// RAP [rh] Image#dispose() missing      
-//        for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
-//            ((Image) i.next()).dispose();
-//        }
+        for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
+            ((Image) i.next()).dispose();
+        }
         imageCache.clear();
     }
 

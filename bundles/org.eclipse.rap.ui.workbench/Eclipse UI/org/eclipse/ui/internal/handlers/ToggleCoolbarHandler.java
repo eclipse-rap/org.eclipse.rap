@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.internal.handlers;
 
@@ -23,11 +23,13 @@ import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchWindow;
+import org.eclipse.ui.internal.services.IWorkbenchLocationService;
 import org.eclipse.ui.menus.UIElement;
 import org.eclipse.ui.services.IServiceScopes;
 
 /**
- * Handler that toggles the visibility of the coolbar/perspective bar in a given window.
+ * Handler that toggles the visibility of the coolbar/perspective bar in a given
+ * window.
  */
 public class ToggleCoolbarHandler extends AbstractHandler implements
 		IElementUpdater {
@@ -35,7 +37,9 @@ public class ToggleCoolbarHandler extends AbstractHandler implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+	 * @see
+	 * org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.
+	 * ExecutionEvent)
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		final IWorkbenchWindow activeWorkbenchWindow = HandlerUtil
@@ -56,12 +60,15 @@ public class ToggleCoolbarHandler extends AbstractHandler implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.commands.IElementUpdater#updateElement(org.eclipse.ui.menus.UIElement,
-	 *      java.util.Map)
+	 * @see
+	 * org.eclipse.ui.commands.IElementUpdater#updateElement(org.eclipse.ui.
+	 * menus.UIElement, java.util.Map)
 	 */
 	public void updateElement(UIElement element, Map parameters) {
-		IWorkbenchWindow window = (IWorkbenchWindow) element
-				.getServiceLocator().getService(IWorkbenchWindow.class);
+		IWorkbenchLocationService wls = (IWorkbenchLocationService) element
+				.getServiceLocator()
+				.getService(IWorkbenchLocationService.class);
+		IWorkbenchWindow window = wls.getWorkbenchWindow();
 		if (window == null || !(window instanceof WorkbenchWindow))
 			return;
 		element
@@ -73,7 +80,7 @@ public class ToggleCoolbarHandler extends AbstractHandler implements
 	 * Return whether the coolbar is currently visible.
 	 * 
 	 * @param window
-	 *            the window to test
+	 * 		the window to test
 	 * @return whether or not the coolbar is visible
 	 */
 	private boolean isCoolbarVisible(WorkbenchWindow window) {

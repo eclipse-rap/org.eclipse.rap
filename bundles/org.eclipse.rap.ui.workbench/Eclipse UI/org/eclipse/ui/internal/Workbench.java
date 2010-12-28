@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,61 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Francis Upton - <francisu@ieee.org> - 
- *          Fix for Bug 217777 [Workbench] Workbench event loop does not terminate if Display is closed
+ *     		Fix for Bug 217777 [Workbench] Workbench event loop does not terminate if Display is closed
+ *     Tasktop Technologies -  Bug 304716 -  [UX] [Progress] Show Eclipse startup progress in the Eclipse icon on the Windows 7 Task Bar
+ *     Tom Schindl -  Bug 310153 -  Allow people to use CSS in 3.x plugins
  *******************************************************************************/
 
 package org.eclipse.ui.internal;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.CommandManager;
+import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.commands.contexts.ContextManager;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.databinding.observable.Realm;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionDelta;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IRegistryChangeEvent;
+import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.action.ExternalActionManager.*;
-import org.eclipse.jface.bindings.*;
-import org.eclipse.jface.dialogs.*;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.ExternalActionManager;
+import org.eclipse.jface.action.ExternalActionManager.CommandCallback;
+import org.eclipse.jface.action.ExternalActionManager.IActiveChecker;
+import org.eclipse.jface.action.ExternalActionManager.IExecuteApplicable;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.bindings.BindingManager;
+import org.eclipse.jface.bindings.BindingManagerEvent;
+import org.eclipse.jface.bindings.IBindingManagerListener;
+import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -35,20 +71,50 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.window.*;
+import org.eclipse.jface.window.IShellProvider;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.window.WindowManager;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.rap.ui.internal.RealmAdapterHook;
-import org.eclipse.rap.ui.internal.SessionSingletonEventManager;
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.UICallBack;
-import org.eclipse.rwt.service.*;
+import org.eclipse.rwt.service.ISettingStore;
+import org.eclipse.rwt.service.SettingStoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.IElementFactory;
+import org.eclipse.ui.ILocalWorkingSetManager;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IPerspectiveRegistry;
+import org.eclipse.ui.ISaveableFilter;
+import org.eclipse.ui.ISaveablePart;
+import org.eclipse.ui.ISaveablesLifecycleListener;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.ISourceProvider;
+import org.eclipse.ui.ISources;
+import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkingSetManager;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.Saveable;
+import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.activities.IWorkbenchActivitySupport;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -63,8 +129,12 @@ import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.actions.CommandAction;
 import org.eclipse.ui.internal.activities.ws.WorkbenchActivitySupport;
 import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
-import org.eclipse.ui.internal.commands.*;
-import org.eclipse.ui.internal.contexts.*;
+import org.eclipse.ui.internal.commands.CommandImageManager;
+import org.eclipse.ui.internal.commands.CommandImageService;
+import org.eclipse.ui.internal.commands.CommandService;
+import org.eclipse.ui.internal.contexts.ActiveContextSourceProvider;
+import org.eclipse.ui.internal.contexts.ContextService;
+import org.eclipse.ui.internal.contexts.WorkbenchContextSupport;
 import org.eclipse.ui.internal.dialogs.PropertyPageContributorManager;
 import org.eclipse.ui.internal.help.WorkbenchHelpSystem;
 import org.eclipse.ui.internal.intro.IIntroRegistry;
@@ -72,26 +142,56 @@ import org.eclipse.ui.internal.intro.IntroDescriptor;
 import org.eclipse.ui.internal.keys.BindingService;
 import org.eclipse.ui.internal.menus.FocusControlSourceProvider;
 import org.eclipse.ui.internal.menus.WorkbenchMenuService;
-import org.eclipse.ui.internal.misc.*;
+import org.eclipse.ui.internal.misc.Policy;
+import org.eclipse.ui.internal.misc.StatusUtil;
+import org.eclipse.ui.internal.misc.UIStats;
 import org.eclipse.ui.internal.model.ContributionService;
 import org.eclipse.ui.internal.progress.ProgressManager;
-import org.eclipse.ui.internal.registry.*;
-import org.eclipse.ui.internal.services.*;
+import org.eclipse.ui.internal.progress.ProgressManagerUtil;
+import org.eclipse.ui.internal.registry.IActionSetDescriptor;
+import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
+import org.eclipse.ui.internal.registry.UIExtensionTracker;
+import org.eclipse.ui.internal.services.ActionSetSourceProvider;
+import org.eclipse.ui.internal.services.EvaluationService;
+import org.eclipse.ui.internal.services.IServiceLocatorCreator;
+import org.eclipse.ui.internal.services.IWorkbenchLocationService;
+import org.eclipse.ui.internal.services.MenuSourceProvider;
+import org.eclipse.ui.internal.services.ServiceLocator;
+import org.eclipse.ui.internal.services.ServiceLocatorCreator;
+import org.eclipse.ui.internal.services.SourceProviderService;
+import org.eclipse.ui.internal.services.WorkbenchLocationService;
+import org.eclipse.ui.internal.testing.ContributionInfoMessages;
 import org.eclipse.ui.internal.testing.WorkbenchTestable;
-import org.eclipse.ui.internal.themes.*;
-import org.eclipse.ui.internal.tweaklets.*;
-import org.eclipse.ui.internal.util.*;
+import org.eclipse.ui.internal.themes.ColorDefinition;
+import org.eclipse.ui.internal.themes.FontDefinition;
+import org.eclipse.ui.internal.themes.ThemeElementHelper;
+import org.eclipse.ui.internal.themes.WorkbenchThemeManager;
+import org.eclipse.ui.internal.tweaklets.GrabFocus;
+import org.eclipse.ui.internal.tweaklets.Tweaklets;
+import org.eclipse.ui.internal.tweaklets.WorkbenchImplementation;
+import org.eclipse.ui.internal.util.BundleUtility;
+import org.eclipse.ui.internal.util.PrefUtil;
+import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.intro.IIntroManager;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.model.IContributionService;
 import org.eclipse.ui.operations.IWorkbenchOperationSupport;
 import org.eclipse.ui.progress.IProgressService;
-import org.eclipse.ui.services.*;
+import org.eclipse.ui.services.IDisposable;
+import org.eclipse.ui.services.IEvaluationService;
+import org.eclipse.ui.services.IServiceScopes;
+import org.eclipse.ui.services.ISourceProviderService;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.swt.IFocusService;
+import org.eclipse.ui.testing.ContributionInfo;
 import org.eclipse.ui.themes.IThemeManager;
 import org.eclipse.ui.views.IViewRegistry;
 import org.eclipse.ui.wizards.IWizardRegistry;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceRegistration;
+
+import com.ibm.icu.util.ULocale;
 
 /**
  * The workbench class represents the top of the Eclipse user interface. Its
@@ -107,11 +207,168 @@ import org.eclipse.ui.wizards.IWizardRegistry;
  * rewritten to use the new workbench advisor API.
  * </p>
  */
-// RAP [bm]: extended to be a session singleton
-//public final class Workbench extends SessionSingletonEventManager implements IWorkbench {
-public final class Workbench extends SessionSingletonEventManager implements IWorkbench {
-// RAPEND: [bm] 
+public final class Workbench extends EventManager implements IWorkbench {
 
+	// RAP [bm] no task bar
+//	private final class TaskBarDelegatingProgressMontior implements IProgressMonitor {
+//		private final Shell shell;
+//		private IProgressMonitor progessMonitor;
+//		private TaskItem systemTaskItem;
+//		private int totalWork;
+//		private int totalWorked;
+//
+//		public TaskBarDelegatingProgressMontior(IProgressMonitor progressMonitor, Shell shell) {
+//			Assert.isNotNull(progressMonitor);
+//			this.shell = shell;
+//			this.progessMonitor = progressMonitor;
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see
+//		 * org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String,
+//		 * int)
+//		 */
+//		public void beginTask(String name, int totalWork) {
+//			progessMonitor.beginTask(name, totalWork);
+//			if (this.totalWork == 0) {
+//				this.totalWork = totalWork;
+//			}
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.core.runtime.IProgressMonitor#worked(int)
+//		 */
+//		public void worked(int work) {
+//			progessMonitor.worked(work);
+//			totalWorked += work;
+//			if (Display.getCurrent() != null) {
+//				handleTaskBarProgressUpdated();
+//			} else if (getDisplay() != null && !getDisplay().isDisposed()) {
+//				getDisplay().asyncExec(new Runnable() {
+//					public void run() {
+//						handleTaskBarProgressUpdated();
+//					}
+//				});
+//			}
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.core.runtime.IProgressMonitor#done()
+//		 */
+//		public void done() {
+//			progessMonitor.done();
+//
+//			if (Display.getCurrent() != null) {
+//				handleTaskBarProgressDone();
+//			} else if (getDisplay() != null && !getDisplay().isDisposed()) {
+//				getDisplay().asyncExec(new Runnable() {
+//					public void run() {
+//						handleTaskBarProgressDone();
+//					}
+//				});
+//			}
+//		}
+//
+//		private TaskItem getTaskItem(Shell shell) {
+//			if (Display.getCurrent() == null) {
+//				return null;
+//			}
+//			if (systemTaskItem == null) {
+//				if (getDisplay() != null && shell != null && !shell.isDisposed()) {
+//					TaskBar systemTaskBar = getDisplay().getSystemTaskBar();
+//					if (systemTaskBar != null) {
+//						systemTaskItem = systemTaskBar.getItem(shell);
+//						if (systemTaskItem == null) {
+//							// fall back to the application TaskItem if there
+//							// isn't one for the shell
+//							systemTaskItem = systemTaskBar.getItem(null);
+//						}
+//					}
+//				}
+//			}
+//			return systemTaskItem;
+//		}
+//
+//		private void handleTaskBarProgressUpdated() {
+//			if (systemTaskItem == null) {
+//				systemTaskItem = getTaskItem(shell);
+//			}
+//			if (systemTaskItem != null && !systemTaskItem.isDisposed()) {
+//				if (systemTaskItem.getProgressState() != SWT.NORMAL) {
+//					systemTaskItem.setProgressState(SWT.NORMAL);
+//				}
+//				float percentComplete = ((float) totalWorked / (float) totalWork) * 100f;
+//				systemTaskItem.setProgress(Math.round(percentComplete));
+//			}
+//		}
+//
+//		private void handleTaskBarProgressDone() {
+//			if (systemTaskItem == null) {
+//				systemTaskItem = getTaskItem(shell);
+//			}
+//			if (systemTaskItem != null && !systemTaskItem.isDisposed()) {
+//				if (systemTaskItem.getProgressState() != SWT.DEFAULT) {
+//					systemTaskItem.setProgressState(SWT.DEFAULT);
+//				}
+//			}
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
+//		 */
+//		public void internalWorked(double work) {
+//			progessMonitor.internalWorked(work);
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled()
+//		 */
+//		public boolean isCanceled() {
+//			return progessMonitor.isCanceled();
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.core.runtime.IProgressMonitor#setCanceled(boolean)
+//		 */
+//		public void setCanceled(boolean value) {
+//			progessMonitor.setCanceled(value);
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see
+//		 * org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String
+//		 * )
+//		 */
+//		public void setTaskName(String name) {
+//			progessMonitor.setTaskName(name);
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see
+//		 * org.eclipse.core.runtime.IProgressMonitor#subTask(java.lang.String)
+//		 */
+//		public void subTask(String name) {
+//			progessMonitor.subTask(name);
+//		}
+//
+//	}
+	
   // RAP [fappel]: key for storing workbench state into setting store
   private static final String KEY_WORKBENCH_STATE
     = Workbench.class.getName() + "#XMLMemento";
@@ -205,7 +462,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 
     static final String DEFAULT_WORKBENCH_STATE_FILENAME = "workbench.xml"; //$NON-NLS-1$
 
-    // RAP [bm]: instance per session, see extends SessionSingletonBase 
+    // RAP [bm]: instance per session, see getInstance()
 //  /**
 //   * Holds onto the only instance of Workbench.
 //   */
@@ -309,7 +566,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
     private ListenerList workbenchListeners = new ListenerList(
             ListenerList.IDENTITY);
 
-    // RAP [bm]: see createAndRunWorkbench for initialisation
+	private ServiceRegistration workbenchService;
+	
+    // RAP [bm]: see createAndRunWorkbench for initialization
 //  /**
 //   * Creates a new workbench.
 //   * 
@@ -356,13 +615,29 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 //      serviceLocator.registerService(IWorkbench.class, this);
 //  }
     private Workbench() {
-        extensionEventHandler = new ExtensionEventHandler(this);
-        Platform.getExtensionRegistry().addRegistryChangeListener(
-                extensionEventHandler);
-        IServiceLocatorCreator slc = new ServiceLocatorCreator();
-        serviceLocator = (ServiceLocator) slc.createServiceLocator(null, null);
-        serviceLocator.registerService(IServiceLocatorCreator.class, slc);
-        serviceLocator.registerService(IWorkbench.class, this);
+		extensionEventHandler = new ExtensionEventHandler(this);
+		Platform.getExtensionRegistry().addRegistryChangeListener(
+				extensionEventHandler);
+		IServiceLocatorCreator slc = new ServiceLocatorCreator();
+		serviceLocator = (ServiceLocator) slc.createServiceLocator(null, null, new IDisposable(){
+			public void dispose() {
+				final Display display = getDisplay();
+				if (display != null && !display.isDisposed()) {
+					MessageDialog
+									.openInformation(
+											null,
+											WorkbenchMessages.get().Workbench_NeedsClose_Title,
+											WorkbenchMessages.get().Workbench_NeedsClose_Message);
+					close(PlatformUI.RETURN_RESTART, true);
+				}
+			}
+		});
+		serviceLocator.registerService(IServiceLocatorCreator.class, slc);
+		serviceLocator.registerService(IWorkbenchLocationService.class,
+				new WorkbenchLocationService(IServiceScopes.WORKBENCH_SCOPE,
+						this, null, null, null, null, 0));
+		// added back for legacy reasons
+		serviceLocator.registerService(IWorkbench.class, this);
     }
     // RAPEND: [bm] 
 
@@ -375,7 +650,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
     public static final Workbench getInstance() {
         // RAP [bm]: use SSB
 //      return instance;
-        return ( Workbench )getInstance( Workbench.class );
+        return ( Workbench ) SessionSingletonBase.getInstance( Workbench.class );
         // RAPEND: [bm] 
     }
 
@@ -406,8 +681,11 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
     public static final int createAndRunWorkbench(final Display display,
             final WorkbenchAdvisor advisor) {
         final int[] returnCode = new int[1];
-        Runnable runnable = new Runnable() {
-            public void run() {
+        
+		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
+			public void run() {
+				ULocale.setDefault(new ULocale(Platform.getNL()
+						+ Platform.getNLExtensions()));
                 // create the workbench instance
                 // RAP [bm]: 
 //              Workbench workbench = new Workbench(display, advisor);
@@ -423,8 +701,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 
                 returnCode[0] = workbench.runUI();
             }
-        };
-        RealmAdapterHook.runWithDefault( display, runnable );
+        });
         return returnCode[0];
     }
 
@@ -437,13 +714,16 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
         // setup the application name used by SWT to lookup resources on some
         // platforms
 
-        // RAP [bm]: 
-//      String applicationName = WorkbenchPlugin.getDefault().getAppName();
-//      if (applicationName != null) {
-//          Display.setAppName(applicationName);
-//      }
-        // RAPEND: [bm] 
+      String applicationName = WorkbenchPlugin.getDefault().getAppName();
+      if (applicationName != null) {
+          Display.setAppName(applicationName);
+      }
 
+      String appVersion = WorkbenchPlugin.getDefault().getAppVersion();
+		if (appVersion != null) {
+			Display.setAppVersion(appVersion);
+		}
+		
         // create the display
         Display newDisplay = Display.getCurrent();
         // RAP [bm]: 
@@ -563,21 +843,32 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 //   * @param splashLoc the location to load from
 //   * @return the image or <code>null</code>
 //   */
-//  private Image loadImage(String splashLoc) {
-//      Image background = null;
-//      if (splashLoc != null) {
-//          try {
-//              InputStream input = new BufferedInputStream(
-//                      new FileInputStream(splashLoc));
-//              background = new Image(display, input);
-//          } catch (IOException e) {
-//              StatusManager.getManager().handle(
-//                      StatusUtil.newStatus(WorkbenchPlugin.PI_WORKBENCH, e));
-//          }
-//      } 
-//      return background;
-//  }
-    // RAPEND: [bm] 
+//    private Image loadImage(String splashLoc) {
+//		Image background = null;
+//		if (splashLoc != null) {
+//			InputStream input = null;
+//			try {
+//				input = new BufferedInputStream(new FileInputStream(splashLoc));
+//				background = new Image(display, input);
+//			} catch (SWTException e) {
+//				StatusManager.getManager().handle(
+//						StatusUtil.newStatus(WorkbenchPlugin.PI_WORKBENCH, e));
+//			} catch (IOException e) {
+//				StatusManager.getManager().handle(
+//						StatusUtil.newStatus(WorkbenchPlugin.PI_WORKBENCH, e));
+//			} finally {
+//				if (input != null) {
+//					try {
+//						input.close();
+//					} catch (IOException e) {
+//						// he's done for
+//					}
+//				}
+//			}
+//		}
+//		return background;
+//	}
+// RAPEND: [bm] 
 
 
     // RAP [bm]: no splash
@@ -1286,8 +1577,6 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
             public void runWithException() {
-                serviceLocator.registerService(IRestrictionService.class,
-                        restrictionService);
                 serviceLocator.registerService(IEvaluationService.class,
                         evaluationService);
             }
@@ -1296,7 +1585,12 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
         // Initialize the activity support.
         workbenchActivitySupport = new WorkbenchActivitySupport();
         activityHelper = ActivityPersistanceHelper.getInstance();
+        StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
+			public void runWithException() {
+				WorkbenchImages.getImageRegistry();
+			}
+		});
         initializeDefaultServices();
         initializeFonts();
         initializeColors();
@@ -1327,7 +1621,13 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
             }
         });
         
+		StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
+			public void runWithException() {
+				startSourceProviders();
+			}
+		});
+		
         // attempt to restore a previous workbench state
         try {
             UIStats.start(UIStats.RESTORE_WORKBENCH, "Workbench"); //$NON-NLS-1$
@@ -1338,7 +1638,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
                 public void runWithException() throws Throwable {
                     advisor.preStartup();
                     
-                    if (!advisor.openWindows()) {
+                    if (isClosing() || !advisor.openWindows()) {
                         bail[0] = true;
                     }
                 }});
@@ -1499,11 +1799,6 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
         // TODO Correctly order service initialization
         // there needs to be some serious consideration given to
         // the services, and hooking them up in the correct order
-        final IRestrictionService restrictionService = 
-                (IRestrictionService) serviceLocator.getService(IRestrictionService.class);
-        final IEvaluationService evaluationService = 
-            (IEvaluationService) serviceLocator.getService(IEvaluationService.class);
-        
         
 
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
@@ -1566,8 +1861,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
                 
             }});
         
-        bindingService[0].readRegistryAndPreferences(commandService[0]);
-        serviceLocator.registerService(IBindingService.class, bindingService[0]);
+        // RAP [bm] Bindings
+//        bindingService[0].readRegistryAndPreferences(commandService[0]);
+//        serviceLocator.registerService(IBindingService.class, bindingService[0]);
 
         final CommandImageManager commandImageManager = new CommandImageManager();
         final CommandImageService commandImageService = new CommandImageService(
@@ -1584,76 +1880,39 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
         // the menu service
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
-            public void runWithException() {
-                menuService.readRegistry();
-            }});
+			public void runWithException() {
+				menuService.readRegistry();
+			}});
 
-        /*
-         * Phase 2 of the initialization of commands. The source providers that
-         * the workbench provides are creating and registered with the above
-         * services. These source providers notify the services when particular
-         * pieces of workbench state change.
-         */
-        final SourceProviderService sourceProviderService = new SourceProviderService(serviceLocator);
-        serviceLocator.registerService(ISourceProviderService.class,
-                sourceProviderService);
-        StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
-            public void runWithException() {
-                // this currently instantiates all players ... sigh
-                sourceProviderService.readRegistry();
-                ISourceProvider[] sp = sourceProviderService.getSourceProviders();
-                for (int i = 0; i < sp.length; i++) {
-                    restrictionService.addSourceProvider(sp[i]);
-                    evaluationService.addSourceProvider(sp[i]);
-                    if (!(sp[i] instanceof ActiveContextSourceProvider)) {
-                        contextService.addSourceProvider(sp[i]);
-                    }
-                }
-            }});
-                        
-        StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
-            public void runWithException() {
-                // these guys are need to provide the variables they say
-                // they source
-                actionSetSourceProvider = (ActionSetSourceProvider) sourceProviderService
-                        .getSourceProvider(ISources.ACTIVE_ACTION_SETS_NAME);
+		// the source providers are now initialized in phase 3
+		
+		/*
+		 * Phase 2 of the initialization of commands. This handles the creation
+		 * of wrappers for legacy APIs. By the time this phase completes, any
+		 * code trying to access commands through legacy APIs should work.
+		 */
+		final IHandlerService[] handlerService = new IHandlerService[1];
+		StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
-                FocusControlSourceProvider focusControl = (FocusControlSourceProvider) sourceProviderService
-                        .getSourceProvider(ISources.ACTIVE_FOCUS_CONTROL_ID_NAME);
-                serviceLocator.registerService(IFocusService.class,
-                        focusControl);
+			public void runWithException() {
+				handlerService[0] = (IHandlerService) serviceLocator
+						.getService(IHandlerService.class);
+			}
+		});
+		workbenchContextSupport = new WorkbenchContextSupport(this,
+				contextManager);
+		// RAP [bm] command service disabled
+//		workbenchCommandSupport = new WorkbenchCommandSupport(bindingManager,
+//				commandManager, contextManager, handlerService[0]);
+		initializeCommandResolver();
 
-                menuSourceProvider = (MenuSourceProvider) sourceProviderService
-                        .getSourceProvider(ISources.ACTIVE_MENU_NAME);
-            }});
-        
-        /*
-         * Phase 3 of the initialization of commands. This handles the creation
-         * of wrappers for legacy APIs. By the time this phase completes, any
-         * code trying to access commands through legacy APIs should work.
-         */
-        final IHandlerService[] handlerService = new IHandlerService[1];
-        StartupThreading.runWithoutExceptions(new StartupRunnable() {
+		addWindowListener(windowListener);
+		bindingManager.addBindingManagerListener(bindingManagerListener);
 
-            public void runWithException() {
-                handlerService[0] = (IHandlerService) serviceLocator
-                        .getService(IHandlerService.class);
-            }
-        });
-        workbenchContextSupport = new WorkbenchContextSupport(this,
-                contextManager);
-// RAP [rh] getCommandSupport is disabled       
-//      workbenchCommandSupport = new WorkbenchCommandSupport(bindingManager,
-//              commandManager, contextManager, handlerService[0]);
-        initializeCommandResolver();
-
-        addWindowListener(windowListener);
-        bindingManager.addBindingManagerListener(bindingManagerListener);
-
-        serviceLocator.registerService(ISelectionConversionService.class,
-                new SelectionConversionService());
+		serviceLocator.registerService(ISelectionConversionService.class,
+				new SelectionConversionService());
     }
 
     /**
@@ -1663,7 +1922,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
      *         running the event loop.
      */
     public boolean isStarting() {
-        return isStarting;
+        return isStarting && isRunning();
     }
 
     /*
@@ -1767,6 +2026,11 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 //          // fall back to starting without showing progress.
 //          runnable.run();
 //      } else {
+//			Shell shell = null;
+//			if (handler != null) {
+//				shell = handler.getSplash();
+//			}
+//			progressMonitor = new TaskBarDelegatingProgressMontior(progressMonitor, shell);
 //          progressMonitor.beginTask("", expectedProgressCount); //$NON-NLS-1$
 //          SynchronousBundleListener bundleListener = new StartupProgressBundleListener(
 //                  progressMonitor, (int) (expectedProgressCount * cutoff));
@@ -1845,8 +2109,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
                              null );
         }
 
-        final IStatus result[] = { new Status(IStatus.OK,
-                WorkbenchPlugin.PI_WORKBENCH, IStatus.OK, "", null) }; //$NON-NLS-1$
+		final IStatus result[] = { Status.OK_STATUS };
         SafeRunner.run(new SafeRunnable(WorkbenchMessages.get().ErrorReadingState) {
             public void run() throws Exception {
 // RAP [fappel]: need solution that allows cluster support            
@@ -2100,16 +2363,15 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
     }
 
     /**
-     * Returns the ids of all plug-ins that extend the
+     * Returns the contribution infos for plug-ins that extend the
      * <code>org.eclipse.ui.startup</code> extension point.
      * 
      * @return the ids of all plug-ins containing 1 or more startup extensions
      */
-    public String[] getEarlyActivatedPlugins() {
+    public ContributionInfo[] getEarlyActivatedPlugins() {
         // RAP [bm]: namespace
-        IExtensionPoint point = Platform.getExtensionRegistry()
-                .getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
-                        IWorkbenchRegistryConstants.PL_STARTUP);
+		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
+				PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_STARTUP);
         IExtension[] extensions = point.getExtensions();
         ArrayList pluginIds = new ArrayList(extensions.length);
         for (int i = 0; i < extensions.length; i++) {
@@ -2118,7 +2380,13 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
                 pluginIds.add(id);
             }
         }
-        return (String[]) pluginIds.toArray(new String[pluginIds.size()]);
+		ContributionInfo[] result = new ContributionInfo[pluginIds.size()];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = new ContributionInfo((String) pluginIds.get(i),
+					ContributionInfoMessages.ContributionInfo_EarlyStartupPlugin, null);
+
+		}
+		return result;
     }
 
     /**
@@ -2133,6 +2401,60 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
                 IPreferenceConstants.PLUGINS_NOT_ACTIVATED_ON_STARTUP);
         return Util.getArrayFromList(pref, ";"); //$NON-NLS-1$
     }
+
+	private void startSourceProviders() {
+		/*
+		 * Phase 3 of the initialization of commands. The source providers that
+		 * the workbench provides are creating and registered with the above
+		 * services. These source providers notify the services when particular
+		 * pieces of workbench state change.
+		 */
+		final IEvaluationService evaluationService = (IEvaluationService) serviceLocator
+				.getService(IEvaluationService.class);
+		final IContextService contextService = (IContextService) serviceLocator
+				.getService(IContextService.class);
+
+		final SourceProviderService sourceProviderService = new SourceProviderService(
+				serviceLocator);
+		serviceLocator.registerService(ISourceProviderService.class, sourceProviderService);
+		SafeRunner.run(new ISafeRunnable() {
+			public void run() throws Exception {
+				// this currently instantiates all players ... sigh
+				sourceProviderService.readRegistry();
+				ISourceProvider[] sp = sourceProviderService.getSourceProviders();
+				for (int i = 0; i < sp.length; i++) {
+					evaluationService.addSourceProvider(sp[i]);
+					if (!(sp[i] instanceof ActiveContextSourceProvider)) {
+						contextService.addSourceProvider(sp[i]);
+					}
+				}
+			}
+
+			public void handleException(Throwable exception) {
+				WorkbenchPlugin.log("Failed to initialize a source provider", exception); //$NON-NLS-1$
+			}
+		});
+
+		SafeRunner.run(new ISafeRunnable() {
+			public void run() throws Exception {
+				// these guys are need to provide the variables they say
+				// they source
+				actionSetSourceProvider = (ActionSetSourceProvider) sourceProviderService
+						.getSourceProvider(ISources.ACTIVE_ACTION_SETS_NAME);
+
+				FocusControlSourceProvider focusControl = (FocusControlSourceProvider) sourceProviderService
+						.getSourceProvider(ISources.ACTIVE_FOCUS_CONTROL_ID_NAME);
+				serviceLocator.registerService(IFocusService.class, focusControl);
+
+				menuSourceProvider = (MenuSourceProvider) sourceProviderService
+						.getSourceProvider(ISources.ACTIVE_MENU_NAME);
+			}
+
+			public void handleException(Throwable exception) {
+				WorkbenchPlugin.log("Failed to initialize a source provider", exception); //$NON-NLS-1$
+			}
+		});
+	}
 
     /*
      * Starts all plugins that extend the <code> org.eclipse.ui.startup </code>
@@ -2235,6 +2557,22 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 //          createSplashWrapper();
         // RAPEND: [bm] 
 
+		// activate styling if available
+		Bundle stylingBundle = Platform.getBundle("org.eclipse.e4.ui.css.swt.theme"); //$NON-NLS-1$
+		if (BundleUtility.isReady(stylingBundle)) {
+			try {
+				Class c = stylingBundle
+						.loadClass("org.eclipse.e4.ui.css.swt.internal.theme.BootstrapTheme3x"); //$NON-NLS-1$
+				Constructor constructor = c.getConstructor(new Class[] { Display.class });
+				constructor.newInstance(new Object[] { display });
+			} catch (Exception ex) {
+				WorkbenchPlugin.log(StatusUtil.newStatus(IStatus.WARNING,
+						"Could not start styling support.", //$NON-NLS-1$
+						ex));
+			}
+		}
+
+
 // RAP [rh] workaround for bug #249630 
 //       (IRunnableWithProgress in WorkbenchAdvisor does not show dialog)
 //      // ModalContext should not spin the event loop (there is no UI yet to
@@ -2325,6 +2663,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
             }
 
             if (initOK[0] && runEventLoop) {
+				workbenchService = WorkbenchPlugin.getDefault()
+				.getBundleContext().registerService(
+						IWorkbench.class.getName(), this, null);
                 // start eager plug-ins
                 startPlugins();
                 addStartupRegistryListener();
@@ -2724,7 +3065,13 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
      */
     private void shutdown() {
         // shutdown application-specific portions first
-        advisor.postShutdown();
+		try {
+			advisor.postShutdown();
+		} catch (Exception ex) {
+			StatusManager.getManager().handle(
+					StatusUtil.newStatus(WorkbenchPlugin.PI_WORKBENCH,
+							"Exceptions during shutdown", ex)); //$NON-NLS-1$
+		}
 
         // notify regular workbench clients of shutdown, and clear the list when
         // done
@@ -2732,7 +3079,9 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
         workbenchListeners.clear();
 
         cancelEarlyStartup();
-
+		if (workbenchService != null)
+			workbenchService.unregister();
+		
         // for dynamic UI
         Platform.getExtensionRegistry().removeRegistryChangeListener(
                 extensionEventHandler);
@@ -3543,5 +3892,18 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
             IWorkbenchPart[] parts) {
         return filter == null || filter.select(saveable, parts);
     }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IWorkbench#getModalDialogShellProvider()
+	 */
+	public IShellProvider getModalDialogShellProvider() {
+		return new IShellProvider() {
+			public Shell getShell() {
+				return ProgressManagerUtil.getDefaultParent();
+			}
+		};
+	}
 
 }

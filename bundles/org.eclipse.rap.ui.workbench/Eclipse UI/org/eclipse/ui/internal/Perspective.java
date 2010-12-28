@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Markus Alexander Kuppe, Versant GmbH - bug 215797
+ *     Sascha Zak - bug 282874
  *******************************************************************************/
 
 package org.eclipse.ui.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,6 +26,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.SubContributionItem;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -54,7 +59,6 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
-import org.eclipse.ui.internal.contexts.ContextAuthority;
 import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.internal.layout.ITrimManager;
 import org.eclipse.ui.internal.layout.IWindowTrim;
@@ -101,6 +105,12 @@ public class Perspective {
     protected ArrayList showViewShortcuts;
 
     protected ArrayList perspectiveShortcuts;
+    
+    /**	IDs of menu items the user has chosen to hide	*/
+    protected Collection hideMenuIDs;
+    
+    /**	IDs of toolbar items the user has chosen to hide	*/
+    protected Collection hideToolBarIDs;
 
     //private List fastViews;
     protected FastViewManager fastViewManager = null;
@@ -157,6 +167,8 @@ public class Perspective {
         this.viewFactory = page.getViewFactory();
         alwaysOnActionSets = new ArrayList(2);
         alwaysOffActionSets = new ArrayList(2);
+        hideMenuIDs = new HashSet();
+        hideToolBarIDs = new HashSet();
         
         // We'll only make a FastView Manager if there's a
         // Trim manager in the WorkbenchWindow
@@ -266,6 +278,7 @@ public class Perspective {
     public void dispose() {
         // Get rid of presentation.
         if (presentation == null) {
+        	disposeViewRefs();
 			return;
 		}
 
@@ -282,13 +295,44 @@ public class Perspective {
 
         mapIDtoViewLayoutRec.clear();
     }
+    
+    private void disposeViewRefs() {
+		if (memento == null) {
+			return;
+		}
+		IMemento views[] = memento.getChildren(IWorkbenchConstants.TAG_VIEW);
+		for (int x = 0; x < views.length; x++) {
+			// Get the view details.
+			IMemento childMem = views[x];
+			String id = childMem.getString(IWorkbenchConstants.TAG_ID);
+			// skip creation of the intro reference - it's handled elsewhere.
+			if (id.equals(IIntroConstants.INTRO_VIEW_ID)) {
+				continue;
+			}
+
+			String secondaryId = ViewFactory.extractSecondaryId(id);
+			if (secondaryId != null) {
+				id = ViewFactory.extractPrimaryId(id);
+			}
+			// Create and open the view.
+
+			if (!"true".equals(childMem.getString(IWorkbenchConstants.TAG_REMOVED))) { //$NON-NLS-1$
+				IViewReference ref = viewFactory.getView(id, secondaryId);
+				if (ref != null) {
+					viewFactory.releaseView(ref);
+				}
+			}
+
+		}
+	}
 
     /**
-     * Finds the view with the given ID that is open in this page, or <code>null</code>
-     * if not found.
-     * 
-     * @param viewId the view ID
-     */
+	 * Finds the view with the given ID that is open in this page, or
+	 * <code>null</code> if not found.
+	 * 
+	 * @param viewId
+	 *            the view ID
+	 */
     public IViewReference findView(String viewId) {
         return findView(viewId, null);
     }
@@ -548,9 +592,13 @@ public class Perspective {
             if (activeFastView == ref) {
 				setActiveFastView(null);
 			}
-            if (pane != null) {
+			if (pane != null && pane.getControl() != null) {
 				pane.getControl().setEnabled(true);
 			}
+            
+            // Remove the view from the set of fast views
+            if (fastViewManager != null)
+            	fastViewManager.removeViewReference(ref, false, true);
         } else {
             presentation.removePart(pane);
         }
@@ -782,7 +830,7 @@ public class Perspective {
 		}
         try {
         	if (service!=null) {
-        		service.activateContext(ContextAuthority.DEFER_EVENTS);
+        		service.deferUpdates(true);
         	}
 			for (Iterator iter = temp.iterator(); iter.hasNext();) {
 				IActionSetDescriptor descriptor = (IActionSetDescriptor) iter
@@ -791,13 +839,15 @@ public class Perspective {
 			}
 		} finally {
 			if (service!=null) {
-				service.activateContext(ContextAuthority.SEND_EVENTS);
+				service.deferUpdates(false);
 			}
         }
         newWizardShortcuts = layout.getNewWizardShortcuts();
         showViewShortcuts = layout.getShowViewShortcuts();
         perspectiveShortcuts = layout.getPerspectiveShortcuts();
         showInPartIds = layout.getShowInPartIds();
+        hideMenuIDs = layout.getHiddenMenuItems();
+        hideToolBarIDs = layout.getHiddenToolBarItems();
 
         // Retrieve fast views
         if (fastViewManager != null) {
@@ -881,6 +931,10 @@ public class Perspective {
      * activate.
      */
 	protected void onActivate() {
+		// Trim Stack Support
+        boolean useNewMinMax = Perspective.useNewMinMax(this);
+		boolean hideEditorArea = shouldHideEditorsOnActivate || (editorHidden && editorHolder == null);
+		
 		// Update editor area state.
 		if (editorArea.getControl() != null) {
 			boolean visible = isEditorAreaVisible();
@@ -890,6 +944,13 @@ public class Perspective {
 			// editor if it's supposed to be hidden because the intro is maximized. Note that
 			// 'childObscuredByZoom' will only respond 'true' when using the old behaviour.
 			boolean introMaxed = getPresentation().getLayout().childObscuredByZoom(editorArea);
+
+			// We have to set the editor area's stack state -before-
+			// activating the presentation since it's used there to determine
+			// size of the resulting stack
+			if (useNewMinMax && !hideEditorArea && !introMaxed) {
+				refreshEditorAreaVisibility();
+			}
 			
 			editorArea.setVisible(visible && !inTrim && !introMaxed);
 		}
@@ -915,19 +976,14 @@ public class Perspective {
 		// Set the visibility of all fast view pins
 		setAllPinsVisible(true);
 
-		// Trim Stack Support
-        boolean useNewMinMax = Perspective.useNewMinMax(this);
-		boolean hideEditorArea = shouldHideEditorsOnActivate || (editorHidden && editorHolder == null);
-		
-        // We have to set the editor area's stack state -before-
-        // activating the presentation since it's used there to determine
-        // size of the resulting stack
-        if (useNewMinMax && !hideEditorArea) {
-			refreshEditorAreaVisibility();
-        }
-
 		// Show the layout
 		presentation.activate(getClientComposite());
+
+		// Ensure that the action bars pick up local overrides
+		final IMenuManager windowManager = page.getActionBars()
+				.getMenuManager();
+		allowUpdates(windowManager);
+		windowManager.update(false);
 
     	if (useNewMinMax) {
     		fastViewManager.activate();
@@ -998,14 +1054,71 @@ public class Perspective {
 			if (useNewMinMax)
 				setEditorAreaTrimVisibility(editorAreaState == IStackPresentationSite.STATE_MINIMIZED);
 		}
+		
+		// Fix perspectives whose contributing bundle has gone away
+		fixOrphan();
+		
+		// Ensure that the new perspective's layout is correct
+		if (page.window != null && page.window.getTrimManager() != null)
+			page.window.getTrimManager().forceLayout();
+	}
+
+	/**
+	 * Mark the menu manager as dirty, and process all the children. Actual
+	 * updates of the widgets are deferred until menus are actually shown.
+	 * 
+	 * @param menuManager
+	 *            the manager to process.
+	 */
+	private void allowUpdates(IMenuManager menuManager) {
+		menuManager.markDirty();
+		final IContributionItem[] items = menuManager.getItems();
+		for (int i = 0; i < items.length; i++) {
+			if (items[i] instanceof IMenuManager) {
+				allowUpdates((IMenuManager) items[i]);
+			} else if (items[i] instanceof SubContributionItem) {
+				final IContributionItem innerItem = ((SubContributionItem) items[i])
+						.getInnerItem();
+				if (innerItem instanceof IMenuManager) {
+					allowUpdates((IMenuManager) innerItem);
+				}
+			}
+		}
+	}
+
+	/**
+	 * An 'orphan' perspective is one that was originally created through a
+	 * contribution but whose contributing bundle is no longer available. In
+	 * order to allow it to behave correctly within the environment (for Close,
+	 * Reset...) we turn it into a 'custom' perspective on its first activation.
+	 */
+	private void fixOrphan() {
+		PerspectiveRegistry reg = (PerspectiveRegistry) PlatformUI
+				.getWorkbench().getPerspectiveRegistry();
+		IPerspectiveDescriptor regDesc = reg.findPerspectiveWithId(descriptor
+				.getId());
+		if (regDesc == null) {
+			String msg = "Perspective " + descriptor.getLabel() + " has been made into a local copy"; //$NON-NLS-1$//$NON-NLS-2$
+			IStatus status = StatusUtil.newStatus(IStatus.WARNING, msg, null);
+			StatusManager.getManager().handle(status, StatusManager.LOG);
+
+			String newDescId = NLS.bind(
+					WorkbenchMessages.get().Perspective_localCopyLabel, descriptor
+							.getLabel());
+			while (reg.findPerspectiveWithId(newDescId) != null) {
+				newDescId = NLS.bind(WorkbenchMessages.get().Perspective_localCopyLabel, newDescId);
+			}
+			PerspectiveDescriptor newDesc = reg.createPerspective(newDescId, descriptor);
+			page.savePerspectiveAs(newDesc);
+		}
 	}
 
 	/**
      * deactivate.
      */
 	protected void onDeactivate() {
-		presentation.deactivate();
 		setActiveFastView(null);
+		presentation.deactivate();
 		setAllPinsVisible(false);
 
 		// Update fast views.
@@ -1152,7 +1265,7 @@ public class Perspective {
      */
     public IStatus restoreState() {
         if (this.memento == null) {
-			return new Status(IStatus.OK, PlatformUI.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+			return Status.OK_STATUS;
 		}
 
         MultiStatus result = new MultiStatus(
@@ -1281,7 +1394,7 @@ public class Perspective {
         try { // one big try block, don't kill me here
 			// defer context events
 			if (service != null) {
-				service.activateContext(ContextAuthority.DEFER_EVENTS);
+				service.deferUpdates(true);
 			}
 
 			HashSet knownActionSetIds = new HashSet();
@@ -1370,6 +1483,20 @@ public class Perspective {
 				String id = actions[x].getString(IWorkbenchConstants.TAG_ID);
 				perspectiveShortcuts.add(id);
 			}
+			
+	        // Load hidden menu item ids
+	        actions = memento.getChildren(IWorkbenchConstants.TAG_HIDE_MENU);
+	        hideMenuIDs = new HashSet();
+	        for (int x = 0; x < actions.length; x++) {
+	        	String id = actions[x].getString(IWorkbenchConstants.TAG_ID);
+	        	hideMenuIDs.add(id);
+	        }
+	        actions = memento.getChildren(IWorkbenchConstants.TAG_HIDE_TOOLBAR);
+	        hideToolBarIDs = new HashSet();
+	        for (int x = 0; x < actions.length; x++) {
+	        	String id = actions[x].getString(IWorkbenchConstants.TAG_ID);
+	        	hideToolBarIDs.add(id);
+	        }
 
 			ArrayList extActionSets = getPerspectiveExtensionActionSets();
 			for (int i = 0; i < extActionSets.size(); i++) {
@@ -1410,7 +1537,7 @@ public class Perspective {
         	if (service != null) {
 				StartupThreading.runWithoutExceptions(new StartupRunnable() {
 					public void runWithException() throws Throwable {
-						service.activateContext(ContextAuthority.SEND_EVENTS);
+						service.deferUpdates(false);
 					}
 				});
 			}
@@ -1465,7 +1592,7 @@ public class Perspective {
             viewID = ViewFactory.extractPrimaryId(viewID);
         }
 
-        IViewReference viewRef = getViewReference(viewID, secondaryId);
+        IViewReference viewRef = getViewFactory().getView(viewID, secondaryId);
         if (viewRef == null) {
             String key = ViewFactory.getKey(viewID, secondaryId);
             WorkbenchPlugin
@@ -1655,6 +1782,20 @@ public class Perspective {
                     .createChild(IWorkbenchConstants.TAG_PERSPECTIVE_ACTION);
             child.putString(IWorkbenchConstants.TAG_ID, str);
         }
+        
+        // Save hidden menu item ids
+        itr = hideMenuIDs.iterator();
+        while(itr.hasNext()) {
+        	String str = (String) itr.next();
+        	IMemento child = memento.createChild(IWorkbenchConstants.TAG_HIDE_MENU);
+        	child.putString(IWorkbenchConstants.TAG_ID, str);
+        }
+        itr = hideToolBarIDs.iterator();
+        while(itr.hasNext()) {
+        	String str = (String) itr.next();
+        	IMemento child = memento.createChild(IWorkbenchConstants.TAG_HIDE_TOOLBAR);
+        	child.putString(IWorkbenchConstants.TAG_ID, str);
+        }
 
         // Get visible views.
         List viewPanes = new ArrayList(5);
@@ -1666,9 +1807,9 @@ public class Perspective {
         while (itr.hasNext()) {
             ViewPane pane = (ViewPane) itr.next();
             IViewReference ref = pane.getViewReference();
-            boolean restorable = page.getViewFactory().getViewRegistry().find(
-					ref.getId()).isRestorable();
-			if(restorable) {
+			IViewDescriptor desc = page.getViewFactory().getViewRegistry()
+					.find(ref.getId());
+			if (desc != null && desc.isRestorable()) {
 	            IMemento viewMemento = memento
 	                    .createChild(IWorkbenchConstants.TAG_VIEW);
 	            viewMemento.putString(IWorkbenchConstants.TAG_ID, ViewFactory
@@ -1788,7 +1929,7 @@ public class Perspective {
             ViewPane pane = getPane(activeFastView);
             if (pane != null) {
                 if (pane.isZoomed()) {
-                    presentation.zoomOut();
+					pane.setZoomed(false);
                 }
                 hideFastView(activeFastView, steps);
             }
@@ -1929,7 +2070,7 @@ public class Perspective {
 			IWindowTrim beforeMe = ((TrimLayout)tbm).getPreferredLocation(IPageLayout.ID_EDITOR_AREA);
 			
     		// Gain access to the trim manager
-			editorAreaTrim = new EditorAreaTrimToolBar(wbw, editorArea);
+			editorAreaTrim = new EditorAreaTrimToolBar(wbw);
 			editorAreaTrim.dock(suggestedSide);
 			tbm.addTrim(suggestedSide, editorAreaTrim, beforeMe);
     	}
@@ -1969,9 +2110,23 @@ public class Perspective {
 		if (editorStack == null)
 			return;
 		
+		// Make sure that the other editor stack all match *this* presentation
+		// state
+		LayoutPart[] stacks = ((EditorSashContainer) editorArea).getChildren();
+		for (int i = 0; i < stacks.length; i++) {
+			if (stacks[i] instanceof EditorStack && stacks[i] != editorStack) {
+				EditorStack es = (EditorStack) stacks[i];
+				es.setPresentationState(editorAreaState);
+			}
+		}
+
 		// Whatever we're doing, make the current editor stack match it
 		editorStack.setStateLocal(editorAreaState);
-		
+
+		// Override the visibility of the EA's min.max buttons based on the
+		// 'fixed' state
+		editorStack.showMinMax(!isFixedLayout());
+
 		// If it's minimized then it's in the trim
 		if (editorAreaState == IStackPresentationSite.STATE_MINIMIZED) {
 			// Hide the editor area and show its trim 
@@ -2123,6 +2278,13 @@ public class Perspective {
             			id = ((ContainerPlaceholder)container).getID();
             		else if (container instanceof ViewStack)
             			id = ((ViewStack)container).getID();
+					else if (container instanceof DetachedPlaceHolder) {
+						// Views in a detached window don't participate in the
+						// minimize behavior so just revert to the default
+						// behavior
+						presentation.addPart(pane);
+						return part;
+					}
             		
             		// Is this place-holder in the trim?
                     if (id != null && fastViewManager.getFastViews(id).size() > 0) {
@@ -2132,7 +2294,8 @@ public class Perspective {
             	
             	// No explicit trim found; If we're maximized then we either have to find an
             	// arbitrary stack...
-            	if (trimId == null && presentation.getMaximizedStack() != null) {
+				if (trimId == null
+						&& presentation.getMaximizedStack() != null) {
             		if (vPart == null) {
             			ViewStackTrimToolBar blTrimStack = fastViewManager.getBottomRightTrimStack();
             			if (blTrimStack != null) {
@@ -2230,7 +2393,7 @@ public class Perspective {
     protected void addActionSet(IActionSetDescriptor newDesc) {
     	IContextService service = (IContextService)page.getWorkbenchWindow().getService(IContextService.class);
     	try {
-			service.activateContext(ContextAuthority.DEFER_EVENTS);
+			service.deferUpdates(true);
 			for (int i = 0; i < alwaysOnActionSets.size(); i++) {
 				IActionSetDescriptor desc = (IActionSetDescriptor) alwaysOnActionSets
 						.get(i);
@@ -2242,7 +2405,7 @@ public class Perspective {
 			}
 			addAlwaysOn(newDesc);
 		} finally {
-    		service.activateContext(ContextAuthority.SEND_EVENTS);
+    		service.deferUpdates(false);
     	}
     }
 
@@ -2250,7 +2413,7 @@ public class Perspective {
     /* package */void removeActionSet(String id) {
     	IContextService service = (IContextService)page.getWorkbenchWindow().getService(IContextService.class);
     	try {
-			service.activateContext(ContextAuthority.DEFER_EVENTS);
+			service.deferUpdates(true);
 			for (int i = 0; i < alwaysOnActionSets.size(); i++) {
 				IActionSetDescriptor desc = (IActionSetDescriptor) alwaysOnActionSets
 						.get(i);
@@ -2269,7 +2432,7 @@ public class Perspective {
 				}
 			}
 		} finally {
-    		service.activateContext(ContextAuthority.SEND_EVENTS);
+    		service.deferUpdates(false);
     	}
     }
     
@@ -2277,6 +2440,33 @@ public class Perspective {
         removeAlwaysOn(toRemove);
         removeAlwaysOff(toRemove);
     }
+
+	public void setFastViewState(IViewReference ref, int newState) {
+		// If the current pane is null then the FV is not open
+		if (fastViewManager != null) {
+			String id = fastViewManager.getIdForRef(ref);
+			if (id != null && id != FastViewBar.FASTVIEWBAR_ID) {
+				if (newState == IStackPresentationSite.STATE_MINIMIZED)
+					return; // No-op
+
+				// So it's either RESTORED or MAXIMIZED so we have to restore
+				// the stack
+				fastViewManager.restoreToPresentation(id);
+
+				// If it's MAXIMIZED we then have to MAXIMIZE the stack
+				if (newState == IStackPresentationSite.STATE_MAXIMIZED) {
+					// Recurse back to the page now that the stack is restored
+					page.setState(ref, newState);
+				}
+
+				return;
+			}
+		}
+
+		// Fast View is open, change its state
+		if (fastViewPane.getCurrentPane() != null)
+			fastViewPane.setState(newState);
+	}
 
     public void setFastViewState(int newState) {
         fastViewPane.setState(newState);
@@ -2497,4 +2687,20 @@ public class Perspective {
         boolean useNewMinMax = preferenceStore.getBoolean(IWorkbenchPreferenceConstants.ENABLE_NEW_MIN_MAX);
         return useNewMinMax;
     }
+	
+	/**	@return a Collection of IDs of items to be hidden from the menu bar	*/
+	public Collection getHiddenMenuItems() {
+		return hideMenuIDs;
+	}
+	
+	/**	@return a Collection of IDs of items to be hidden from the tool bar	*/
+	public Collection getHiddenToolbarItems() {
+		return hideToolBarIDs;
+	}
+	
+	public void updateActionBars() {
+		page.getActionBars().getMenuManager().updateAll(true);
+		page.resetToolBarLayout();
+	}
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.ISaveablesSource;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 
@@ -38,7 +40,7 @@ public class SaveAction extends BaseSaveAction implements IBackgroundSaveListene
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVE_EDIT));
         setDisabledImageDescriptor(WorkbenchImages
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVE_EDIT_DISABLED));
-        setActionDefinitionId("org.eclipse.ui.file.save"); //$NON-NLS-1$
+        setActionDefinitionId(IWorkbenchCommandConstants.FILE_SAVE); 
         ((WorkbenchWindow)window).addBackgroundSaveListener(this);
     }
     
@@ -99,4 +101,16 @@ public class SaveAction extends BaseSaveAction implements IBackgroundSaveListene
 	public void handleBackgroundSaveStarted() {
 		updateState();
 	}
+
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		IWorkbenchWindow window = getWorkbenchWindow();
+		if (window != null) {
+			Shell shell = window.getShell();
+			if (shell != null && !shell.isDisposed()) {
+				shell.setModified(enabled);
+			}
+		}
+	}
+
 }

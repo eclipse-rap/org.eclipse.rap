@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.menus;
 
@@ -142,7 +142,7 @@ public class CommandContributionItemParameter {
 	/**
 	 * Build the parameter object.
 	 * <p>
-	 * <b>Note:</b> This method should not be called outside the framework.
+	 * <b>Note:</b> This constructor should not be called outside the framework.
 	 * </p>
 	 * 
 	 * @param serviceLocator
@@ -181,6 +181,7 @@ public class CommandContributionItemParameter {
 	 *            <code>null</code>
 	 * @param visibleEnabled
 	 *            Visibility tracking for the menu contribution.
+	 * @noreference This constructor is not intended to be referenced by clients.
 	 */
 	public CommandContributionItemParameter(IServiceLocator serviceLocator,
 			String id, String commandId, Map parameters, ImageDescriptor icon,

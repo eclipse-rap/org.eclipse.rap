@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,15 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *     Benjamin Muskalla -	Bug 29633 [EditorMgmt] "Open" menu should
  *     						have Open With-->Other
+ *     Helena Halperin - Bug 298747 [EditorMgmt] Bidi Incorrect file type direction in mirrored "Editor Selection" dialog
  *******************************************************************************/
-
 package org.eclipse.ui.dialogs;
 
 import java.util.ArrayList;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.util.Util;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osgi.util.TextProcessor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -40,9 +47,11 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.EditorDescriptor;
 import org.eclipse.ui.internal.registry.EditorRegistry;
 
+
 /**
  * This class is used to allow the user to select a dialog from the set of
  * internal and external editors.
+ * 
  * @since 1.1
  *
  */
@@ -73,13 +82,13 @@ public final class EditorSelectionDialog extends Dialog {
 
 	private IEditorDescriptor[] internalEditors;
 
-	private Image[] externalEditorImages;
-
-	private Image[] internalEditorImages;
-
 	private IEditorDescriptor[] editorsToFilter;
 
 	private DialogListener listener = new DialogListener();
+
+	private ResourceManager resourceManager;
+
+	private TableViewer editorTableViewer;
 
 // RAP [rh] external editors not supported
 //	private static final String[] Executable_Filters;
@@ -102,6 +111,8 @@ public final class EditorSelectionDialog extends Dialog {
 	 */
 	public EditorSelectionDialog(Shell parentShell) {
 		super(parentShell);
+		resourceManager = new LocalResourceManager(JFaceResources.getResources(parentShell
+				.getDisplay()));
 	}
 
 	/**
@@ -118,21 +129,10 @@ public final class EditorSelectionDialog extends Dialog {
 	 * Close the window.
 	 */
 	public boolean close() {
-		if (internalEditorImages != null) {
-// RAP [rh] Image#dispose() missing
-//			for (int i = 0; i < internalEditorImages.length; i++) {
-//				internalEditorImages[i].dispose();
-//			}
-			internalEditorImages = null;
-		}
-		if (externalEditorImages != null) {
-// RAP [rh] Image#dispose() missing
-//			for (int i = 0; i < externalEditorImages.length; i++) {
-//				externalEditorImages[i].dispose();
-//			}
-			externalEditorImages = null;
-		}
-		return super.close();
+		boolean result = super.close();
+		resourceManager.dispose();
+		resourceManager = null;
+		return result;
 	}
 
 	/*
@@ -187,10 +187,6 @@ public final class EditorSelectionDialog extends Dialog {
 //		externalButton.setFont(font);
 
 		editorTable = new Table(contents, SWT.SINGLE | SWT.BORDER);
-		editorTable.addListener(SWT.Selection, listener);
-// RAP [rh] Mouse events don't work reliably with Table
-//		editorTable.addListener(SWT.MouseDoubleClick, listener);
-		editorTable.addListener(SWT.DefaultSelection, listener);
 		data = new GridData();
 		data.widthHint = convertHorizontalDLUsToPixels(TABLE_WIDTH);
 		data.horizontalAlignment = GridData.FILL;
@@ -201,6 +197,26 @@ public final class EditorSelectionDialog extends Dialog {
 		editorTable.setLayoutData(data);
 		editorTable.setFont(font);
 		data.heightHint = editorTable.getItemHeight() * 12;
+		editorTableViewer = new TableViewer(editorTable);
+		editorTableViewer.setContentProvider(ArrayContentProvider.getInstance());
+		editorTableViewer.setLabelProvider(new LabelProvider() {
+			public String getText(Object element) {
+				IEditorDescriptor d = (IEditorDescriptor) element;
+				return TextProcessor.process(d.getLabel(), "."); //$NON-NLS-1$
+			}
+
+			public Image getImage(Object element) {
+				IEditorDescriptor d = (IEditorDescriptor) element;
+				return (Image) resourceManager.get(d.getImageDescriptor());
+			}
+		});
+		editorTable.addListener(SWT.Selection, listener);
+		editorTable.addListener(SWT.DefaultSelection, listener);
+		// RAP [rh] DblClickListener doesn't work reliable
+//		editorTable.addListener(SWT.MouseDoubleClick, listener);
+		editorTable.addListener(SWT.Selection, listener);
+		editorTable.addListener(SWT.DefaultSelection, listener);
+		editorTable.addListener(SWT.MouseDoubleClick, listener);
 
 // RAP [rh] external editors not supported
 //		browseExternalEditorsButton = new Button(contents, SWT.PUSH);
@@ -224,31 +240,12 @@ public final class EditorSelectionDialog extends Dialog {
 	}
 
 	protected void fillEditorTable() {
-		editorTable.removeAll();
-		editorTable.update();
-		editorTable.redraw();
-		IEditorDescriptor[] editors;
-		Image[] images;
-// RAP [rh] external editors not supported
+		// RAP [bm] no external editors
 //		if (internalButton.getSelection()) {
-//			editors = getInternalEditors();
-//			images = internalEditorImages;
+			editorTableViewer.setInput(getInternalEditors());
 //		} else {
-//			editors = getExternalEditors();
-//			images = externalEditorImages;
+//			editorTableViewer.setInput(getExternalEditors());
 //		}
-    editors = getInternalEditors();
-    images = internalEditorImages;
-
-		// 1FWHIEX: ITPUI:WINNT - Need to call setRedraw
-		editorTable.setRedraw(false);
-		for (int i = 0; i < editors.length; i++) {
-			TableItem item = new TableItem(editorTable, SWT.NULL);
-			item.setData(editors[i]);
-			item.setText(editors[i].getLabel());
-			item.setImage(images[i]);
-		}
-		editorTable.setRedraw(true);
 	}
 
 	/**
@@ -333,17 +330,6 @@ public final class EditorSelectionDialog extends Dialog {
 	}
 
 	/**
-	 * Returns an array of images for the given array of editors
-	 */
-	protected Image[] getImages(IEditorDescriptor[] editors) {
-		Image[] images = new Image[editors.length];
-		for (int i = 0; i < editors.length; i++) {
-			images[i] = editors[i].getImageDescriptor().createImage();
-		}
-		return images;
-	}
-
-	/**
 	 * Returns the internal editors
 	 */
 	protected IEditorDescriptor[] getInternalEditors() {
@@ -352,7 +338,6 @@ public final class EditorSelectionDialog extends Dialog {
 					.getEditorRegistry();
 			internalEditors = reg.getSortedEditorsFromPlugins();
 			internalEditors = filterEditors(internalEditors);
-			internalEditorImages = getImages(internalEditors);
 		}
 		return internalEditors;
 	}
@@ -369,7 +354,7 @@ public final class EditorSelectionDialog extends Dialog {
 // RAP [rh] external editors not supported
 //	protected void promptForExternalEditor() {
 //		FileDialog dialog = new FileDialog(getShell(), SWT.OPEN
-//				| SWT.PRIMARY_MODAL);
+//				| SWT.PRIMARY_MODAL | SWT.SHEET);
 //		dialog.setFilterExtensions(Executable_Filters);
 //		String result = dialog.open();
 //		if (result != null) {
@@ -524,5 +509,13 @@ public final class EditorSelectionDialog extends Dialog {
 			updateEnableState();
 		}
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#isResizable()
+	 * @since 1.4
+	 */
+	protected boolean isResizable() {
+		return true;
 	}
 }

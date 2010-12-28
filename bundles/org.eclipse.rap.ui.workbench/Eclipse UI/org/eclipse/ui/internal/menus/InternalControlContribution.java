@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ public abstract class InternalControlContribution extends ControlContribution {
 	/**
 	 * @param wbw The wbw to set.
 	 */
-	/*package*/ void setWorkbenchWindow(IWorkbenchWindow wbw) {
+	public void setWorkbenchWindow(IWorkbenchWindow wbw) {
 		this.wbw = wbw;
 	}
 
@@ -62,7 +62,7 @@ public abstract class InternalControlContribution extends ControlContribution {
 	/**
 	 * @param curSide The curSide to set.
 	 */
-	/*package*/ void setCurSide(int curSide) {
+	public void setCurSide(int curSide) {
 		this.curSide = curSide;
 	}
 	

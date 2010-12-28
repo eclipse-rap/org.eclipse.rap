@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,22 +11,25 @@
 
 package org.eclipse.ui.internal.handlers;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.ParameterizedCommand;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.util.Geometry;
 
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.commands.ICommandService;
@@ -49,9 +52,6 @@ public class CyclePageHandler extends CycleBaseHandler {
 	 * The character limit before text is truncated.
 	 */
 	private static final int TEXT_LIMIT = 65;
-	private static final String COMMAND_PREVIOUS_PAGE = "org.eclipse.ui.part.previousPage"; //$NON-NLS-1$
-	private static final String COMMAND_NEXT_PAGE = "org.eclipse.ui.part.nextPage"; //$NON-NLS-1$
-
 	private PageSwitcher pageSwitcher;
 	private LocalResourceManager lrm;
 
@@ -90,7 +90,7 @@ public class CyclePageHandler extends CycleBaseHandler {
 		final ICommandService commandService = (ICommandService) window
 				.getWorkbench().getService(ICommandService.class);
 		final Command command = commandService
-				.getCommand(COMMAND_PREVIOUS_PAGE);
+.getCommand(IWorkbenchCommandConstants.NAVIGATE_PREVIOUS_PAGE);
 		ParameterizedCommand commandF = new ParameterizedCommand(command, null);
 		return commandF;
 	}
@@ -98,7 +98,7 @@ public class CyclePageHandler extends CycleBaseHandler {
 	protected ParameterizedCommand getForwardCommand() {
 		final ICommandService commandService = (ICommandService) window
 				.getWorkbench().getService(ICommandService.class);
-		final Command command = commandService.getCommand(COMMAND_NEXT_PAGE);
+		final Command command= commandService.getCommand(IWorkbenchCommandConstants.NAVIGATE_NEXT_PAGE);
 		ParameterizedCommand commandF = new ParameterizedCommand(command, null);
 		return commandF;
 	}
@@ -112,7 +112,7 @@ public class CyclePageHandler extends CycleBaseHandler {
 	}
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (event.getCommand().getId().equals(COMMAND_NEXT_PAGE)) {
+		if (event.getCommand().getId().equals(IWorkbenchCommandConstants.NAVIGATE_NEXT_PAGE)) {
 			gotoDirection = true;
 		} else {
 			gotoDirection = false;
@@ -127,36 +127,32 @@ public class CyclePageHandler extends CycleBaseHandler {
 
 	protected void setDialogLocation(final Shell dialog,
 			IWorkbenchPart activePart) {
-		Display display = dialog.getDisplay();
-		Rectangle dialogBounds = dialog.getBounds();
-		WorkbenchPart workbenchPart = (WorkbenchPart) activePart;
-		Rectangle viewBounds = ((PartSite) workbenchPart.getSite()).getPane()
-				.getBounds();
-		Rectangle parentBounds = ((PartSite) workbenchPart.getSite())
-				.getShell().getBounds();
+		if (dialog == null)
+			return;
 
-		// the bounds of the monitor that contains the currently active part.
-		Rectangle monitorBounds = activePart == null ? display
-				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
-				.getSite()).getPane().getControl().getMonitor().getBounds();
+		// Default to center on the display
+		Point dlgAnchor = Geometry.centerPoint(dialog.getDisplay().getBounds());
+		
+		// Center the dialog within the activePart's pane (if any)
+		if (activePart != null) {
+			WorkbenchPart wbPart = (WorkbenchPart) activePart;
+			PartSite site = (PartSite) wbPart.getSite();
+			Control paneCtrl = site.getPane().getControl();
 
-		// Place it in the center of its parent;
-		dialogBounds.x = parentBounds.x + viewBounds.x + (viewBounds.width / 2)
-				- (dialogBounds.width / 2);
-		dialogBounds.y = parentBounds.y + viewBounds.y
-				+ (viewBounds.height / 2) + (dialogBounds.height / 2);
-		if (!monitorBounds.contains(dialogBounds.x, dialogBounds.y)
-				|| !monitorBounds.contains(dialogBounds.x + dialogBounds.width,
-						dialogBounds.y + dialogBounds.height)) {
-			// Place it in the center of the monitor if it is not visible
-			// when placed in the center of its parent;
-			dialogBounds.x = monitorBounds.x
-					+ (monitorBounds.width - dialogBounds.width) / 2;
-			dialogBounds.y = monitorBounds.y
-					+ (monitorBounds.height - dialogBounds.height) / 2;
+			// Get the center of the view pane's control
+			Rectangle viewBounds = paneCtrl.getBounds();
+			Point vCenter = Geometry.centerPoint(viewBounds);
+			
+			// Map it to the display
+			dlgAnchor = paneCtrl.getParent().toDisplay(vCenter);
 		}
+		
+		// Offset the point by half the dialog size
+		Rectangle dialogBounds = dialog.getBounds();
+		dlgAnchor.x -= (dialogBounds.width / 2);
+		dlgAnchor.y -= (dialogBounds.height / 2);
 
-		dialog.setLocation(dialogBounds.x, dialogBounds.y);
+		dialog.setLocation(dlgAnchor);
 	}
 
 	public void dispose() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -217,7 +217,9 @@ public abstract class WorkbenchPart extends EventManager implements
     }
 
     /* (non-Javadoc)
-     * Asks this part to take focus within the workbench.
+     * Asks this part to take focus within the workbench. Parts must
+     * assign focus to one of the controls contained in the part's
+     * parent composite.
      * <p>
      * Subclasses must implement this method.  For a detailed description of the
      * requirements see <code>IWorkbenchPart</code>
@@ -315,8 +317,7 @@ public abstract class WorkbenchPart extends EventManager implements
      * @param titleImage the title image, or <code>null</code> to clear
      */
     protected void setTitleImage(Image titleImage) {
-// RAP [rh] Image#isDisposed() missing      
-//        Assert.isTrue(titleImage == null || !titleImage.isDisposed());
+        Assert.isTrue(titleImage == null || !titleImage.isDisposed());
         //Do not send changes if they are the same
         if (this.titleImage == titleImage) {
 			return;

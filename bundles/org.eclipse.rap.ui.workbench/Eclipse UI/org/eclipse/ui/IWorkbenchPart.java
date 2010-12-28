@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Composite;
  *  <li>When a part becomes visible in the workbench:
  * 	  <ul> 
  *		<li>add part to presentation by calling 
- *        <code>part.createControl(parent)</code> to create actual widgets</li>
+ *        <code>part.createPartControl(parent)</code> to create actual widgets</li>
  *		<li>fire <code>partOpened</code> event to all listeners</li>
  *	  </ul>
  *   </li>
@@ -79,7 +79,7 @@ import org.eclipse.swt.widgets.Composite;
  * </p>
  * <p>
  * An important point to note about this lifecycle is that following 
- * a call to init, createControl may never be called. Thus in the dispose
+ * a call to init, createPartControl may never be called. Thus in the dispose
  * method, implementors must not assume controls were created.
  * </p>
  * <p>
@@ -206,14 +206,16 @@ public interface IWorkbenchPart extends IAdaptable {
 
     /**
      * Removes the given property listener from this workbench part.
-     * Has no affect if an identical listener is not registered.
+     * Has no effect if an identical listener is not registered.
      *
      * @param listener a property listener
      */
     public void removePropertyListener(IPropertyListener listener);
 
     /**
-     * Asks this part to take focus within the workbench.
+     * Asks this part to take focus within the workbench. Parts must
+     * assign focus to one of the controls contained in the part's
+     * parent composite.
      * <p>
      * Clients should not call this method (the workbench calls this method at
      * appropriate times).  To have the workbench activate a part, use

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,8 @@ package org.eclipse.ui.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import com.ibm.icu.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 
@@ -23,6 +23,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.branding.IProductConstants;
+import org.osgi.framework.Bundle;
+
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * A class that converts the strings returned by
@@ -38,8 +41,7 @@ public class ProductProperties extends BrandingProperties implements
 
     private final IProduct product;
 
-    // RAP [bm]: Display#setAppName
-//    private String appName;
+    private String appName;
 
     private String aboutText;
 
@@ -55,15 +57,10 @@ public class ProductProperties extends BrandingProperties implements
 
     private static final String ABOUT_MAPPINGS = "$nl$/about.mappings"; //$NON-NLS-1$
 
-    private static String[] systemPropertiesKeys = new String[0];
-    private static String[] mappings = loadMappings();
-
-    private static String[] loadMappings() {
-        IProduct product = Platform.getProduct();
-        if (product == null) {
-			return new String[0];
-		}
-        URL location = Platform.find(product.getDefiningBundle(), new Path(
+    private static HashMap mappingsMap = new HashMap(4);
+    
+    private static String[] loadMappings(Bundle definingBundle) {
+        URL location = Platform.find(definingBundle, new Path(
                 ABOUT_MAPPINGS));
         PropertyResourceBundle bundle = null;
         InputStream is;
@@ -89,34 +86,31 @@ public class ProductProperties extends BrandingProperties implements
         if (bundle != null) {
             boolean found = true;
             int i = 0;
-            ArrayList systemPropertiesKeysList = new ArrayList();
             while (found) {
                 try {
-                	String nextString = bundle.getString(Integer.toString(i));
-                	int length = nextString.length();
-                	/*
-                	 * Check if the mapping value is a system property, specified
-                	 * by '$' at the beginning and end of the string.  If so, add 
-                	 * the key to the systemPropertiesKeys array and insert array
-                	 * indices "{i}" to allow the string to be formatted again with 
-                	 * the new system property values.
-                	 */
-                	if (length > 2 && nextString.indexOf('$') == 0 && nextString.lastIndexOf('$') == length - 1) {
-                		int newIndex = systemPropertiesKeysList.size();
-                		systemPropertiesKeysList.add(nextString.substring(1, length-1));
-                		nextString = "{" + newIndex + "}"; //$NON-NLS-1$ //$NON-NLS-2$
-                	}
-                    mappingsList.add(nextString);
+                    mappingsList.add(bundle.getString(Integer.toString(i)));
                 } catch (MissingResourceException e) {
                     found = false;
                 }
                 i++;
             }
-            systemPropertiesKeys = (String[]) systemPropertiesKeysList.toArray(new String[systemPropertiesKeysList.size()]) ;
         }
-        return (String[]) mappingsList.toArray(new String[mappingsList.size()]);
+        String[] mappings = (String[]) mappingsList.toArray(new String[mappingsList.size()]);
+        mappingsMap.put(definingBundle, mappings);
+        return mappings;
     }
-
+    
+    private static String[] getMappings(Bundle definingBundle) {
+    	String[] mappings = (String[]) mappingsMap.get(definingBundle);
+    	if (mappings == null) {
+    		mappings = loadMappings(definingBundle);
+    	}
+    	if (mappings == null) {
+    		mappings = new String[0];
+    	}
+    	return mappings;
+    }
+    
     /**
      * This instance will return properties from the given product.  The properties are
      * retrieved in a lazy fashion and cached for later retrieval.
@@ -129,23 +123,22 @@ public class ProductProperties extends BrandingProperties implements
         this.product = product;
     }
 
-    // RAP [bm]: Display#setAppName
-//    /**
-//     * The application name, used to initialize the SWT Display.  This
-//     * value is distinct from the string displayed in the application
-//     * title bar.
-//     * <p>
-//     * E.g., On motif, this can be used to set the name used for
-//     * resource lookup.
-//     * </p>
-//     * @see org.eclipse.swt.widgets.Display#setAppName
-//     */
-//    public String getAppName() {
-//        if (appName == null) {
-//			appName = getAppName(product);
-//		}
-//        return appName;
-//    }
+    /**
+     * The application name, used to initialize the SWT Display.  This
+     * value is distinct from the string displayed in the application
+     * title bar.
+     * <p>
+     * E.g., On motif, this can be used to set the name used for
+     * resource lookup.
+     * </p>
+     * @see org.eclipse.swt.widgets.Display#setAppName
+     */
+    public String getAppName() {
+        if (appName == null) {
+			appName = getAppName(product);
+		}
+        return appName;
+    }
 
     /**
      * The text to show in an "about" dialog for this product.
@@ -227,31 +220,31 @@ public class ProductProperties extends BrandingProperties implements
         return productId;
     }
 
-    // RAP [bm]: Display#setAppName
-//    /**
-//     * The application name, used to initialize the SWT Display.  This
-//     * value is distinct from the string displayed in the application
-//     * title bar.
-//     * <p>
-//     * E.g., On motif, this can be used to set the name used for
-//     * resource lookup.
-//     * </p>
-//     * <p>
-//     * The returned value will have {n} values substituted based on the
-//     * current product's mappings regardless of the given product argument.
-//     * </p>
-//     * @see org.eclipse.swt.widgets.Display#setAppName
-//     */
-//    public static String getAppName(IProduct product) {
-//        String property = product.getProperty(APP_NAME);
-//        if (property == null) {
-//			return ""; //$NON-NLS-1$
-//		}
-//        if (property.indexOf('{') == -1) {
-//			return property;
-//		}
-//        return MessageFormat.format(property, mappings);
-//    }
+    /**
+     * The application name, used to initialize the SWT Display.  This
+     * value is distinct from the string displayed in the application
+     * title bar.
+     * <p>
+     * E.g., On motif, this can be used to set the name used for
+     * resource lookup.
+     * </p>
+     * <p>
+     * The returned value will have {n} values substituted based on the
+     * current product's mappings regardless of the given product argument.
+     * </p>
+     * @see org.eclipse.swt.widgets.Display#setAppName
+     */
+    public static String getAppName(IProduct product) {
+        String property = product.getProperty(APP_NAME);
+        if (property == null) {
+			return ""; //$NON-NLS-1$
+		}
+        if (property.indexOf('{') == -1) {
+			return property;
+		}
+        String[] mappings = getMappings(product.getDefiningBundle());
+        return MessageFormat.format(property, mappings);
+    }
 
     /**
      * The text to show in an "about" dialog for this product.
@@ -270,34 +263,24 @@ public class ProductProperties extends BrandingProperties implements
         if (property.indexOf('{') == -1) {
 			return property;
 		}
-        property = MessageFormat.format(property, mappings);
-        
-        /*
-         * If there is still a "{" character, check if there are
-         * System properties in the systemPropertiesKeys array that 
-         * need to be loaded. 
-         */
-        if (property.indexOf('{') == -1) {
-        	return property;
+        String[] tempMappings = getMappings(product.getDefiningBundle());
+                /*
+    	 * Check if the mapping value is a system property, specified
+    	 * by '$' at the beginning and end of the string.  If so, update
+    	 * the mappings array with the system property value.  
+    	 */
+        for (int i=0; i<tempMappings.length; i++) {
+        	String nextString = tempMappings[i];
+        	int length = nextString.length();
+        	
+        	if (length > 2 && nextString.charAt(0) == '$' && nextString.charAt(length-1) == '$') {
+        		String systemPropertyKey = nextString.substring(1, length-1);
+        		// If system property is not set, insert an empty String
+        		tempMappings[i] = System.getProperty(systemPropertyKey, ""); //$NON-NLS-1$;
+        	}
         }
-        
-        if (systemPropertiesKeys.length == 0) 
-			return property;
-        
-        /*
-         * Create a String array of the actual values to be mapped
-         * to the system properties keys.
-         */
-        String[] systemPropertiesMappings = new String[systemPropertiesKeys.length];
-        for (int i=0; i < systemPropertiesKeys.length; i++){
-        	String systemProperty = systemPropertiesKeys[i];
-        	// If system property is not set, insert an empty String
-        	systemPropertiesMappings[i] = System.getProperty(systemProperty, ""); //$NON-NLS-1$
-        }
-        /*
-         * Format string with the system properties values.
-         */
-	    return MessageFormat.format(property, systemPropertiesMappings);
+
+        return MessageFormat.format(property, tempMappings);
     }
 
     /**

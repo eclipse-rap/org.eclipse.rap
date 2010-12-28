@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,7 +80,9 @@ public class PopupMenuExtender implements IMenuListener2,
      */
 	private int bitSet = 0;
 	
-	private ArrayList contributionCache = new ArrayList();
+	private ArrayList actionContributionCache = new ArrayList();
+	private ArrayList managerContributionCache = new ArrayList();
+	private boolean cleanupNeeded = false;
 
     /**
      * Construct a new menu extender.
@@ -310,6 +312,7 @@ public class PopupMenuExtender implements IMenuListener2,
 					.getWorkbench();
 			if (workbench instanceof Workbench) {
 				final Workbench realWorkbench = (Workbench) workbench;
+				runCleanUp(realWorkbench);
 				ISelection input = null;
 				if ((bitSet & INCLUDE_EDITOR_INPUT) != 0) {
 					if (part instanceof IEditorPart) {
@@ -354,10 +357,14 @@ public class PopupMenuExtender implements IMenuListener2,
 			menuService
 					.populateContributionManager(manager, MenuUtil.ANY_POPUP);
 			Iterator i = getMenuIds().iterator();
-			InternalMenuService realService = (InternalMenuService) menuService;
 			while (i.hasNext()) {
 				String id = "popup:" + i.next(); //$NON-NLS-1$
-				realService.populateContributionManager(manager, id, false);
+				if (menuService instanceof InternalMenuService) {
+					((InternalMenuService) menuService)
+							.populateContributionManager(manager, id, false);
+				} else {
+					menuService.populateContributionManager(manager, id);
+				}
 			}
 		}
 	}
@@ -367,6 +374,7 @@ public class PopupMenuExtender implements IMenuListener2,
 	 */
     public final void menuAboutToHide(final IMenuManager mgr) {
     	gatherContributions(mgr);
+		cleanupNeeded = true;
     	// Remove this menu as a visible menu.
     	final IWorkbenchPartSite site = part.getSite();
     	if (site != null) {
@@ -379,34 +387,62 @@ public class PopupMenuExtender implements IMenuListener2,
 				workbench.getDisplay().asyncExec(new Runnable() {
 					public void run() {
 						final Workbench realWorkbench = (Workbench) workbench;
-						realWorkbench.removeShowingMenus(getMenuIds(), null, null);
+						runCleanUp(realWorkbench);
 					}
 				});
 			}
     	}
     }
-    
 
-    /**
-	 * @param mgr
-	 */
+	private void runCleanUp(Workbench realWorkbench) {
+		if (!cleanupNeeded) {
+			return;
+		}
+		cleanupNeeded = false;
+		realWorkbench.removeShowingMenus(getMenuIds(), null, null);
+		cleanUpContributionCache();
+	}
+
 	private void gatherContributions(final IMenuManager mgr) {
 		final IContributionItem[] items = mgr.getItems();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i] instanceof PluginActionContributionItem) {
-				contributionCache.add(items[i]);
+				actionContributionCache.add(items[i]);
 			} else if (items[i] instanceof IMenuManager) {
+				if (items[i] instanceof ContributionManager) {
+					managerContributionCache.add(items[i]);
+				}
 				gatherContributions(((IMenuManager)items[i]));
 			}
 		}
 	}
 	
 	private void cleanUpContributionCache() {
-		PluginActionContributionItem[] items = (PluginActionContributionItem[]) contributionCache
-				.toArray(new PluginActionContributionItem[contributionCache.size()]);
-		contributionCache.clear();
-		for (int i = 0; i < items.length; i++) {
-			items[i].dispose();
+		if (!actionContributionCache.isEmpty()) {
+			PluginActionContributionItem[] items = (PluginActionContributionItem[]) actionContributionCache
+					.toArray(new PluginActionContributionItem[actionContributionCache
+							.size()]);
+			actionContributionCache.clear();
+			for (int i = 0; i < items.length; i++) {
+				items[i].dispose();
+			}
+		}
+		if (!managerContributionCache.isEmpty() && menu.getRemoveAllWhenShown()) {
+			ContributionManager[] items = (ContributionManager[]) managerContributionCache
+					.toArray(new ContributionManager[managerContributionCache
+							.size()]);
+			managerContributionCache.clear();
+			final IMenuService menuService = (IMenuService) part.getSite()
+					.getService(IMenuService.class);
+			if (menuService instanceof InternalMenuService) {
+				InternalMenuService realService = (InternalMenuService) menuService;
+				for (int i = 0; i < items.length; i++) {
+					realService.releaseContributions(items[i]);
+					items[i].removeAll();
+				}
+			}
+		} else {
+			managerContributionCache.clear();
 		}
 	}
 

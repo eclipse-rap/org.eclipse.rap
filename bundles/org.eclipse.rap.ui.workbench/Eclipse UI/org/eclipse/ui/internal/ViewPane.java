@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,14 @@ import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.internal.dnd.DragUtil;
@@ -150,7 +153,8 @@ public class ViewPane extends PartPane {
             boolean visible = ctrl != null && ctrl.isVisible()
                     && toolbarIsVisible();
 
-            toolbar.setVisible(visible);
+            if (toolbar.isVisible() != visible)
+            	toolbar.setVisible(visible);
         }
 
         firePropertyChange(IPresentablePart.PROP_TOOLBAR);
@@ -167,18 +171,17 @@ public class ViewPane extends PartPane {
         final Control isvToolBar = isvToolBarMgr.createControl2(parentControl.getParent());
         
         isvToolBarMgr.addPropertyChangeListener(new ISVPropListener(isvToolBar));
-
-// RAP [rh] ToolBar#getItem(Point) missing        
-//        isvToolBar.addMouseListener(new MouseAdapter() {
-//            public void mouseDoubleClick(MouseEvent event) {
-//                if (event.widget instanceof ToolBar) {
-//                
-//                    if (((ToolBar)event.widget).getItem(new Point(event.x, event.y)) == null) {
-//						doZoom();
-//					}
-//                }
-//            }
-//        });
+        
+        isvToolBar.addMouseListener(new MouseAdapter() {
+            public void mouseDoubleClick(MouseEvent event) {
+                if (event.widget instanceof ToolBar) {
+                
+                    if (((ToolBar)event.widget).getItem(new Point(event.x, event.y)) == null) {
+						doZoom();
+					}
+                }
+            }
+        });
 
         
         isvToolBar.addListener(SWT.Activate, this);
@@ -237,10 +240,9 @@ public class ViewPane extends PartPane {
         // RAP [bm]: no animations
 //        Shell shell = window.getShell();
 //
-//        RectangleAnimation animation = new RectangleAnimation(shell,
-//                getParentBounds(), fastViewBar.getLocationOfNextIcon());
-//
-//        animation.schedule();
+//      // Animate the operation
+//        AnimationEngine.createTweakedAnimation(shell, 400, getParentBounds(),
+//        										fastViewBar.getLocationOfNextIcon());
         // RAPEND: [bm] 
 
         FastViewManager fvm = getPage().getActivePerspective().getFastViewManager();
@@ -268,12 +270,8 @@ public class ViewPane extends PartPane {
         // RAP [bm]: no animations
 //        Rectangle finalBounds = getParentBounds();
 
-//        RectangleAnimation animation = new RectangleAnimation(shell,
-//                initialBounds, finalBounds);
-//
-//        animation.schedule();
-        // RAPEND: [bm] 
-
+//      // Animate the operation
+//        AnimationEngine.createTweakedAnimation(shell, 400, initialBounds, finalBounds);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,14 +29,19 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.dynamichelpers.ExtensionTracker;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IElementFactory;
@@ -57,6 +64,7 @@ import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.registry.WorkingSetDescriptor;
 import org.eclipse.ui.internal.registry.WorkingSetRegistry;
+import org.eclipse.ui.progress.WorkbenchJob;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -70,7 +78,24 @@ import org.osgi.framework.BundleListener;
 public abstract class AbstractWorkingSetManager extends EventManager implements
 		IWorkingSetManager, BundleListener, IExtensionChangeHandler {
 	
-    private SortedSet workingSets = new TreeSet(WorkingSetComparator.INSTANCE);
+	static abstract class WorkingSetRunnable implements ISafeRunnable {
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.Throwable)
+		 */
+		public void handleException(Throwable exception) {
+			StatusManager.getManager().handle(
+					StatusUtil.newStatus(PlatformUI.PLUGIN_ID, exception));
+		}
+	}
+
+	private SortedSet workingSets = new TreeSet(new Comparator() {
+		public int compare(Object o1, Object o2) {
+			// Cast and compare directly
+			return ((AbstractWorkingSet) o1).getUniqueId().compareTo(
+					((AbstractWorkingSet) o2).getUniqueId());
+		}
+	});
     
     /**
      * Size of the list of most recently used working sets.
@@ -143,10 +168,11 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
     	PlatformUI.getWorkbench().getExtensionTracker().registerHandler(this, ExtensionTracker
 				.createExtensionPointFilter(getExtensionPointFilter()));
 	}
-    
-    /**
+
+	/**
+	 * Returns the working sets extension point.
 	 * 
-	 * @return
+	 * @return the working sets extension point
 	 * @since 3.3
 	 */
 	private IExtensionPoint getExtensionPointFilter() {
@@ -158,12 +184,22 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
     
     public void dispose() {
     	bundleContext.removeBundleListener(this);
-    	for (Iterator iter= updaters.values().iterator(); iter.hasNext();) {
-			((IWorkingSetUpdater)iter.next()).dispose();
+    	for (final Iterator iter= updaters.values().iterator(); iter.hasNext();) {
+			SafeRunner.run(new WorkingSetRunnable() {
+
+				public void run() throws Exception {
+					((IWorkingSetUpdater) iter.next()).dispose();
+				}
+			});
 		}
     	
-    	for (Iterator iter= elementAdapters.values().iterator(); iter.hasNext();) {
-			((IWorkingSetElementAdapter)iter.next()).dispose();
+    	for (final Iterator iter= elementAdapters.values().iterator(); iter.hasNext();) {
+			SafeRunner.run(new WorkingSetRunnable() {
+
+				public void run() throws Exception {
+					((IWorkingSetElementAdapter)iter.next()).dispose();
+				}
+			});
 		}
     }
     
@@ -196,8 +232,8 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
      * @see org.eclipse.ui.IWorkingSetManager
      */
     public void addWorkingSet(IWorkingSet workingSet) {
-        Assert.isTrue(!workingSets.contains(workingSet),
-                "working set already registered"); //$NON-NLS-1$
+    	IWorkingSet wSet=getWorkingSet(workingSet.getName());
+    	Assert.isTrue(wSet==null,"working set with same name already registered"); //$NON-NLS-1$
         internalAddWorkingSet(workingSet);
     }
 
@@ -227,7 +263,8 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
      * @see org.eclipse.ui.IWorkingSetManager
      */
     public IWorkingSet[] getWorkingSets() {
-    		SortedSet visibleSubset = new TreeSet(WorkingSetComparator.INSTANCE);
+		SortedSet visibleSubset = new TreeSet(WorkingSetComparator
+				.getInstance());
     		for (Iterator i = workingSets.iterator(); i.hasNext();) {
 				IWorkingSet workingSet = (IWorkingSet) i.next();
 				if (workingSet.isVisible()) {
@@ -237,9 +274,12 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
         return (IWorkingSet[]) visibleSubset.toArray(new IWorkingSet[visibleSubset.size()]);
     }
     
-    public IWorkingSet[] getAllWorkingSets() {
-    		return (IWorkingSet[]) workingSets.toArray(new IWorkingSet[workingSets.size()]);
-    }
+	public IWorkingSet[] getAllWorkingSets() {
+		IWorkingSet[] sets = (IWorkingSet[]) workingSets
+					.toArray(new IWorkingSet[workingSets.size()]);
+		Arrays.sort(sets, WorkingSetComparator.getInstance());
+		return sets;
+	}
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkingSetManager
@@ -272,7 +312,7 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
      * Adds the specified working set to the list of recently used
      * working sets.
      * 
-     * @param workingSet working set to added to the list of recently 
+     * @param workingSet working set to added to the list of recently
      * 	used working sets.
      */
     protected void internalAddRecentWorkingSet(IWorkingSet workingSet) {
@@ -292,7 +332,7 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
      * Tests the receiver and the object for equality
      * 
      * @param object object to compare the receiver to
-     * @return true=the object equals the receiver, it has the same 
+     * @return true=the object equals the receiver, it has the same
      * 	working sets. false otherwise
      */
     public boolean equals(Object object) {
@@ -332,17 +372,17 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
     }
 
     /**
-     * Notify property change listeners about a change to the list of 
+     * Notify property change listeners about a change to the list of
      * working sets.
      * 
-     * @param changeId one of 
-     * 	IWorkingSetManager#CHANGE_WORKING_SET_ADD 
+     * @param changeId one of
+     * 	IWorkingSetManager#CHANGE_WORKING_SET_ADD
      * 	IWorkingSetManager#CHANGE_WORKING_SET_REMOVE
-     * 	IWorkingSetManager#CHANGE_WORKING_SET_CONTENT_CHANGE 
+     * 	IWorkingSetManager#CHANGE_WORKING_SET_CONTENT_CHANGE
      * 	IWorkingSetManager#CHANGE_WORKING_SET_NAME_CHANGE
-     * @param oldValue the removed working set or null if a working set 
+     * @param oldValue the removed working set or null if a working set
      * 	was added or changed.
-     * @param newValue the new or changed working set or null if a working 
+     * @param newValue the new or changed working set or null if a working
      * 	set was removed.
      */
     protected void firePropertyChange(String changeId, Object oldValue,
@@ -436,14 +476,26 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
 	 * @param list the working sets to save
 	 * @since 3.2
 	 */
-	private void saveWorkingSetState(IMemento memento, List list) {
+	private void saveWorkingSetState(final IMemento memento, List list) {
 		for (Iterator i = list.iterator(); i.hasNext();) {
-            IPersistableElement persistable = (IWorkingSet) i.next();
-            IMemento workingSetMemento = memento
-                    .createChild(IWorkbenchConstants.TAG_WORKING_SET);
-            workingSetMemento.putString(IWorkbenchConstants.TAG_FACTORY_ID,
-                    persistable.getFactoryId());
-            persistable.saveState(workingSetMemento);
+            final IPersistableElement persistable = (IWorkingSet) i.next();
+			SafeRunner.run(new WorkingSetRunnable() {
+
+				public void run() throws Exception {
+					// create a dummy node to write too - the write could fail so we
+					// shouldn't soil the final memento until we're sure it succeeds.
+					XMLMemento dummy = XMLMemento.createWriteRoot(IWorkbenchConstants.TAG_WORKING_SET);
+					dummy.putString(IWorkbenchConstants.TAG_FACTORY_ID,
+							persistable.getFactoryId());
+					persistable.saveState(dummy);
+					
+					// if the dummy was created successfully copy it to the real output
+					IMemento workingSetMemento = memento
+							.createChild(IWorkbenchConstants.TAG_WORKING_SET);
+					workingSetMemento.putMemento(dummy);
+				}
+			});
+			
         }
 	}
     
@@ -471,7 +523,7 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
      * @return the working set created from the memento or null if
      * 	creation failed.
      */
-    protected IWorkingSet restoreWorkingSet(IMemento memento) {
+    protected IWorkingSet restoreWorkingSet(final IMemento memento) {
         String factoryID = memento
                 .getString(IWorkbenchConstants.TAG_FACTORY_ID);
 
@@ -481,29 +533,35 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
             // IMemento.saveState, and should be restored using WorkingSetFactory
             factoryID = AbstractWorkingSet.FACTORY_ID;
         }
-        IElementFactory factory = PlatformUI.getWorkbench().getElementFactory(
+        final IElementFactory factory = PlatformUI.getWorkbench().getElementFactory(
                 factoryID);
         if (factory == null) {
             WorkbenchPlugin
                     .log("Unable to restore working set - cannot instantiate factory: " + factoryID); //$NON-NLS-1$
             return null;
         }
-        IAdaptable adaptable = factory.createElement(memento);
-        if (adaptable == null) {
+		final IAdaptable[] adaptable = new IAdaptable[1];
+		SafeRunner.run(new WorkingSetRunnable() {
+
+			public void run() throws Exception {
+				adaptable[0] = factory.createElement(memento);
+			}
+		});
+        if (adaptable[0] == null) {
             WorkbenchPlugin
                     .log("Unable to restore working set - cannot instantiate working set: " + factoryID); //$NON-NLS-1$
             return null;
         }
-        if ((adaptable instanceof IWorkingSet) == false) {
+        if ((adaptable[0] instanceof IWorkingSet) == false) {
             WorkbenchPlugin
                     .log("Unable to restore working set - element is not an IWorkingSet: " + factoryID); //$NON-NLS-1$
             return null;
         }
-        return (IWorkingSet) adaptable;
+        return (IWorkingSet) adaptable[0];
     }
 
     /**
-     * Saves the list of most recently used working sets in the persistence 
+     * Saves the list of most recently used working sets in the persistence
      * store.
      * 
      * @param memento the persistence store
@@ -522,7 +580,7 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
     }
 
    /**
-     * Restores the list of most recently used working sets from the 
+     * Restores the list of most recently used working sets from the
      * persistence store.
      * 
      * @param memento the persistence store
@@ -604,38 +662,57 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
     //---- working set delta handling -------------------------------------------------
     
 	public void bundleChanged(BundleEvent event) {
-		if (event.getBundle().getSymbolicName() == null)
-			return;
-		// If the workbench isn't running anymore simply return.
-// RAP [fappel]: need a multi user environment aware solution
-//		if (!Workbench.getInstance().isRunning()) {
+// RAP [rst]: Updating extensions at runtime not supported
+//		String symbolicName = event.getBundle().getSymbolicName();
+//		if (symbolicName == null)
+//			return;
+//		// If the workbench isn't running anymore simply return.
+//		if (!PlatformUI.isWorkbenchRunning()) {
 //			return;
 //		}
-		if( !PlatformUI.isWorkbenchRunning() ) {
-		  return;
-		}
-		
-		if (event.getBundle().getState() == Bundle.ACTIVE) {
-			WorkingSetDescriptor[] descriptors = WorkbenchPlugin.getDefault()
-					.getWorkingSetRegistry().getUpdaterDescriptorsForNamespace(
-							event.getBundle().getSymbolicName());
-			synchronized (updaters) {
-				for (int i = 0; i < descriptors.length; i++) {
-					WorkingSetDescriptor descriptor = descriptors[i];
-					List workingSets = getWorkingSetsForId(descriptor.getId());
-					if (workingSets.size() == 0) {
-						continue;
-					}
-					IWorkingSetUpdater updater = getUpdater(descriptor);
-					for (Iterator iter = workingSets.iterator(); iter.hasNext();) {
-						IWorkingSet workingSet = (IWorkingSet) iter.next();
-						if (!updater.contains(workingSet)) {
-							updater.add(workingSet);
-						}
-					}
-				}
-			}
-		}
+//		
+//		if (event.getBundle().getState() == Bundle.ACTIVE) {
+//			final WorkingSetDescriptor[] descriptors = WorkbenchPlugin.getDefault()
+//					.getWorkingSetRegistry().getUpdaterDescriptorsForNamespace(
+//							symbolicName);
+//			
+//			Job job = new WorkbenchJob(
+//					NLS
+//							.bind(
+//									WorkbenchMessages.get().AbstractWorkingSetManager_updatersActivating,
+//									symbolicName)) {
+//
+//				public IStatus runInUIThread(IProgressMonitor monitor) {
+//					synchronized (updaters) {
+//						for (int i = 0; i < descriptors.length; i++) {
+//							WorkingSetDescriptor descriptor = descriptors[i];
+//							List workingSets = getWorkingSetsForId(descriptor
+//									.getId());
+//							if (workingSets.size() == 0) {
+//								continue;
+//							}
+//							final IWorkingSetUpdater updater = getUpdater(descriptor);
+//							for (Iterator iter = workingSets.iterator(); iter
+//									.hasNext();) {
+//								final IWorkingSet workingSet = (IWorkingSet) iter
+//										.next();
+//								SafeRunner.run(new WorkingSetRunnable() {
+//
+//									public void run() throws Exception {
+//										if (!updater.contains(workingSet)) {
+//											updater.add(workingSet);
+//										}
+//									}
+//								});
+//							}
+//						}
+//					}
+//					return Status.OK_STATUS;
+//				}
+//			};
+//			job.setSystem(true);
+//			job.schedule();
+//		}
 	}
 
 	private List getWorkingSetsForId(String id) {
@@ -649,17 +726,21 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
     	return result;
 	}
 	
-    private void addToUpdater(IWorkingSet workingSet) {
+    private void addToUpdater(final IWorkingSet workingSet) {
     	WorkingSetDescriptor descriptor= WorkbenchPlugin.getDefault()
 			.getWorkingSetRegistry().getWorkingSetDescriptor(workingSet.getId());
     	if (descriptor == null || !descriptor.isUpdaterClassLoaded()) {
 			return;
 		}
 		synchronized(updaters) {
-	    	IWorkingSetUpdater updater= getUpdater(descriptor);
-	    	if (!updater.contains(workingSet)) {
-				updater.add(workingSet);
-			}
+	    	final IWorkingSetUpdater updater= getUpdater(descriptor);
+	    	SafeRunner.run(new WorkingSetRunnable() {
+
+				public void run() throws Exception {
+					if (!updater.contains(workingSet)) {
+						updater.add(workingSet);
+					}
+				}});
 		}
     }
     
@@ -696,15 +777,19 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
 		return elementAdapter;
 	}
 
-	private void removeFromUpdater(IWorkingSet workingSet) {
+	private void removeFromUpdater(final IWorkingSet workingSet) {
 		synchronized (updaters) {
-			IWorkingSetUpdater updater = (IWorkingSetUpdater) updaters
+			final IWorkingSetUpdater updater = (IWorkingSetUpdater) updaters
 					.get(workingSet.getId());
 			if (updater != null) {
-				updater.remove(workingSet);
+				SafeRunner.run(new WorkingSetRunnable() {
+
+					public void run() throws Exception {
+						updater.remove(workingSet);
+					}});
 			}
 		}
-    }	
+    }
     
     
     /* (non-Javadoc)
@@ -754,7 +839,7 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
 			if (object instanceof IWorkingSetElementAdapter) {
 				removeElementAdapter((IWorkingSetElementAdapter) object);
 			}
-		} 
+		}
 	}
 
 	/**
@@ -765,12 +850,7 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
 	 */
 	private void removeElementAdapter(
 			final IWorkingSetElementAdapter elementAdapter) {
-		SafeRunner.run(new ISafeRunnable() {
-
-			public void handleException(Throwable exception) {
-				StatusManager.getManager().handle(
-						StatusUtil.newStatus(PlatformUI.PLUGIN_ID, exception));
-			}
+		SafeRunner.run(new WorkingSetRunnable() {
 
 			public void run() throws Exception {
 				elementAdapter.dispose();
@@ -789,12 +869,7 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
 	 * @since 3.3
 	 */
 	private void removeUpdater(final IWorkingSetUpdater updater) {
-		SafeRunner.run(new ISafeRunnable() {
-
-			public void handleException(Throwable exception) {
-				StatusManager.getManager().handle(
-						StatusUtil.newStatus(PlatformUI.PLUGIN_ID, exception));
-			}
+		SafeRunner.run(new WorkingSetRunnable() {
 
 			public void run() throws Exception {
 				updater.dispose();
@@ -802,7 +877,7 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
 			}
 		});
 		synchronized (updaters) {
-			updaters.values().remove(updater);			
+			updaters.values().remove(updater);
 		}
 		firePropertyChange(IWorkingSetManager.CHANGE_WORKING_SET_UPDATER_UNINSTALLED, updater, null);
 	}
@@ -813,21 +888,26 @@ public abstract class AbstractWorkingSetManager extends EventManager implements
 	 * @see org.eclipse.ui.IWorkingSetManager#addToWorkingSets(org.eclipse.core.runtime.IAdaptable,
 	 *      org.eclipse.ui.IWorkingSet[])
 	 */
-	public void addToWorkingSets(IAdaptable element, IWorkingSet[] workingSets) {
+	public void addToWorkingSets(final IAdaptable element, IWorkingSet[] workingSets) {
 		// ideally this method would be in a static util class of some kind but
 		// we dont have any such beast for working sets and making one for one
 		// method is overkill.
 		for (int i = 0; i < workingSets.length; i++) {
-			IWorkingSet workingSet = workingSets[i];
-			IAdaptable[] adaptedNewElements = workingSet
-					.adaptElements(new IAdaptable[] { element });
-			if (adaptedNewElements.length == 1) {
-				IAdaptable[] elements = workingSet.getElements();
-				IAdaptable[] newElements = new IAdaptable[elements.length + 1];
-				System.arraycopy(elements, 0, newElements, 0, elements.length);
-				newElements[newElements.length - 1] = adaptedNewElements[0];
-				workingSet.setElements(newElements);
-			}
+			final IWorkingSet workingSet = workingSets[i];
+			SafeRunner.run(new WorkingSetRunnable() {
+
+				public void run() throws Exception {
+					IAdaptable[] adaptedNewElements = workingSet
+							.adaptElements(new IAdaptable[] { element });
+					if (adaptedNewElements.length == 1) {
+						IAdaptable[] elements = workingSet.getElements();
+						IAdaptable[] newElements = new IAdaptable[elements.length + 1];
+						System.arraycopy(elements, 0, newElements, 0,
+								elements.length);
+						newElements[newElements.length - 1] = adaptedNewElements[0];
+						workingSet.setElements(newElements);
+					}
+				}});
 		}
 	}
 }

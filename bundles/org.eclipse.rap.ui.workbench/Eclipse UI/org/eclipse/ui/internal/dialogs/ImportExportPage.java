@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.ui.internal.dialogs;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
@@ -109,12 +108,12 @@ public abstract class ImportExportPage extends WorkbenchWizardSelectionPage{
 		private void createFilteredTree(Composite parent){        
 			// Create a FilteredTree for the categories and wizards
 			FilteredTree filteredTree = new FilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL
-	                | SWT.V_SCROLL | SWT.BORDER, new WizardPatternFilter());
+	                | SWT.V_SCROLL | SWT.BORDER, new WizardPatternFilter(), true);
 	        viewer = filteredTree.getViewer();
 	        filteredTree.setFont(parent.getFont());
 
 	        viewer.setContentProvider(new WizardContentProvider());
-	        viewer.setLabelProvider(new WorkbenchLabelProvider());
+			viewer.setLabelProvider(new WorkbenchLabelProvider());
 	        viewer.setComparator(DataTransferWizardCollectionComparator.INSTANCE);
 	        
 	        ArrayList inputArray = new ArrayList();
@@ -232,6 +231,7 @@ public abstract class ImportExportPage extends WorkbenchWizardSelectionPage{
 		} else if (element instanceof WorkbenchWizardElement) {
 			if (canFlipToNextPage()) {
 				getContainer().showPage(getNextPage());
+				return;
 			}
 		}    	
         getContainer().showPage(getNextPage());   			
