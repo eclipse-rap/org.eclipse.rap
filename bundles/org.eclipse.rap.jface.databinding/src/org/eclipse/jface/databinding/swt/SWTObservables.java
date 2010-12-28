@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,8 +103,29 @@ public class SWTObservables {
 	 */
 	public static ISWTObservableValue observeDelayedValue(int delay,
 			ISWTObservableValue observable) {
-		return new SWTDelayedObservableValueDecorator(Observables
-				.observeDelayedValue(delay, observable), observable.getWidget());
+		return new SWTDelayedObservableValueDecorator(
+		        Observables.observeDelayedValue(delay, observable),
+				observable.getWidget());
+	}
+	
+	/**
+	 * Returns an observable value tracking the enabled state of the given
+	 * widget. The supported types are:
+	 * <ul>
+	 * <li>org.eclipse.swt.widgets.Control</li>
+	 * <li>org.eclipse.swt.widgets.Menu</li>
+	 * <li>org.eclipse.swt.widgets.MenuItem</li>
+	 * <li>org.eclipse.swt.widgets.ScrollBar</li>
+	 * <li>org.eclipse.swt.widgets.ToolItem</li>
+	 * </ul>
+	 * 
+	 * @param widget
+	 * @return an observable value tracking the enabled state of the given
+	 *         widget.
+	 * @since 1.4
+	 */
+	public static ISWTObservableValue observeEnabled(Widget widget) {
+		return WidgetProperties.enabled().observe(widget);
 	}
 
 	/**
@@ -117,7 +138,7 @@ public class SWTObservables {
 	 *         control
 	 */
 	public static ISWTObservableValue observeEnabled(Control control) {
-		return WidgetProperties.enabled().observe(control);
+		return observeEnabled((Widget) control);
 	}
 
 	/**
@@ -177,7 +198,31 @@ public class SWTObservables {
 	 * <li>org.eclipse.swt.widgets.Combo</li>
 	 * <li>org.eclipse.swt.custom.CCombo</li>
 	 * <li>org.eclipse.swt.widgets.List</li>
+	 * <li>org.eclipse.swt.widgets.MenuItem (since 1.4)</li>
 	 * <li>org.eclipse.swt.widgets.Scale</li>
+	 * </ul>
+	 * 
+	 * @param widget
+	 * @return observable value
+	 * @throws IllegalArgumentException
+	 *             if <code>control</code> type is unsupported
+	 * @since 1.4
+	 */
+	public static ISWTObservableValue observeSelection(Widget widget) {
+		return WidgetProperties.selection().observe(widget);
+	}
+	
+	/**
+	 * Returns an observable observing the selection attribute of the provided
+	 * <code>control</code>. The supported types are:
+	 * <ul>
+	 * <li>org.eclipse.swt.widgets.Button</li>
+	 * <li>org.eclipse.swt.widgets.Combo</li>
+	 * <li>org.eclipse.swt.custom.CCombo</li>
+	 * <li>org.eclipse.swt.widgets.List</li>
+	 * <li>org.eclipse.swt.widgets.Scale</li>
+	 * <li>org.eclipse.swt.widgets.Slider (since 1.5)</li>
+	 * <li>org.eclipse.swt.widgets.Spinner</li>
 	 * </ul>
 	 * 
 	 * @param control
@@ -186,7 +231,7 @@ public class SWTObservables {
 	 *             if <code>control</code> type is unsupported
 	 */
 	public static ISWTObservableValue observeSelection(Control control) {
-		return WidgetProperties.selection().observe(control);
+		return observeSelection((Widget) control);
 	}
 
 	/**
@@ -194,6 +239,7 @@ public class SWTObservables {
 	 * <code>control</code>. The supported types are:
 	 * <ul>
 	 * <li>org.eclipse.swt.widgets.Spinner</li>
+     * <li>org.eclipse.swt.widgets.Slider (since 1.4)</li>
 	 * <li>org.eclipse.swt.widgets.Scale</li>
 	 * </ul>
 	 * 
@@ -211,6 +257,7 @@ public class SWTObservables {
 	 * <code>control</code>. The supported types are:
 	 * <ul>
 	 * <li>org.eclipse.swt.widgets.Spinner</li>
+     * <li>org.eclipse.swt.widgets.Slider (since 1.4)</li>
 	 * <li>org.eclipse.swt.widgets.Scale</li>
 	 * </ul>
 	 * 

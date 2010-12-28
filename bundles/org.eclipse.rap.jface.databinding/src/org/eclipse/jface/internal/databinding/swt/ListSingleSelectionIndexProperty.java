@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Matthew Hall and others.
+ * Copyright (c) 2008, 2009 Matthew Hall and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,8 @@ import org.eclipse.swt.widgets.List;
  * @since 3.3
  * 
  */
-public class ListSingleSelectionIndexProperty extends WidgetIntValueProperty {
+public class ListSingleSelectionIndexProperty extends
+		SingleSelectionIndexProperty {
 	/**
 	 * 
 	 */
@@ -31,7 +32,10 @@ public class ListSingleSelectionIndexProperty extends WidgetIntValueProperty {
 	}
 
 	void doSetIntValue(Object source, int value) {
-		((List) source).setSelection(value);
+		if (value == -1)
+			((List) source).deselectAll();
+		else
+			((List) source).setSelection(value);
 	}
 
 	public String toString() {

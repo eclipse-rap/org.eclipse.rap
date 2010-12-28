@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Matthew Hall and others.
+ * Copyright (c) 2008, 2010 Matthew Hall and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,7 @@ import org.eclipse.swt.widgets.List;
  * 
  */
 public class ListItemsProperty extends ControlStringListProperty {
-	protected void doSetStringList(final Control control, String[] items,
-			ListDiff diff) {
+	protected void doUpdateStringList(final Control control, ListDiff diff) {
 		diff.accept(new ListDiffVisitor() {
 			List list = (List) control;
 

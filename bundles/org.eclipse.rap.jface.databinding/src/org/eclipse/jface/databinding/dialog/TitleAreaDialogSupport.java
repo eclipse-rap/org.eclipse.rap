@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Matthew Hall and others.
+ * Copyright (c) 2008, 2010 Matthew Hall and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,21 @@
  *        (through WizardPageSupport.java)
  *     Matthew Hall - initial API and implementation (bug 239900)
  *     Ben Vitale <bvitale3002@yahoo.com> - bug 263100
+ *     Kai Schlamp - bug 275058
+ *     Matthew Hall - bugs 275058, 278550
+ *     Ovidio Mallo - bug 248877
  ******************************************************************************/
 
 package org.eclipse.jface.databinding.dialog;
 
 import java.util.Iterator;
 
-import org.eclipse.core.databinding.AggregateValidationStatus;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.observable.ChangeEvent;
 import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.databinding.observable.IObservable;
+import org.eclipse.core.databinding.observable.ObservableTracker;
 import org.eclipse.core.databinding.observable.list.IListChangeListener;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.ListChangeEvent;
@@ -31,12 +34,13 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.core.databinding.util.Policy;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 
 /**
  * Connects the validation result from the given data binding context to the
@@ -65,7 +69,8 @@ public class TitleAreaDialogSupport {
 
 	private TitleAreaDialog dialog;
 	private DataBindingContext dbc;
-	private IObservableValue aggregateStatus;
+	private IValidationMessageProvider messageProvider = new ValidationMessageProvider();
+	private IObservableValue aggregateStatusProvider;
 	private boolean uiChanged = false;
 	private IChangeListener uiChangeListener = new IChangeListener() {
 		public void handleChange(ChangeEvent event) {
@@ -114,6 +119,7 @@ public class TitleAreaDialogSupport {
 			}
 		}
 	};
+	private ValidationStatusProvider currentStatusProvider;
 	private IStatus currentStatus;
 
 	private TitleAreaDialogSupport(TitleAreaDialog dialogPage,
@@ -123,19 +129,44 @@ public class TitleAreaDialogSupport {
 		init();
 	}
 
-	private void init() {
-		aggregateStatus = new AggregateValidationStatus(dbc
-				.getValidationStatusProviders(),
-				AggregateValidationStatus.MAX_SEVERITY);
-		aggregateStatus.addValueChangeListener(new IValueChangeListener() {
-			public void handleValueChange(ValueChangeEvent event) {
+	/**
+	 * Sets the {@link IValidationMessageProvider} to use for providing the
+	 * message text and message type to display on the title area dialog.
+	 * 
+	 * @param messageProvider
+	 *            The {@link IValidationMessageProvider} to use for providing
+	 *            the message text and message type to display on the title area
+	 *            dialog.
+	 * 
+	 * @since 1.4
+	 */
+	public void setValidationMessageProvider(
+			IValidationMessageProvider messageProvider) {
+		this.messageProvider = messageProvider;
+		handleStatusChanged();
+	}
 
-				currentStatus = (IStatus) event.diff.getNewValue();
-				handleStatusChanged();
+	private void init() {
+		ObservableTracker.setIgnore(true);
+		try {
+			aggregateStatusProvider = new MaxSeverityValidationStatusProvider(
+					dbc);
+		} finally {
+			ObservableTracker.setIgnore(false);
+		}
+
+		aggregateStatusProvider
+				.addValueChangeListener(new IValueChangeListener() {
+					public void handleValueChange(ValueChangeEvent event) {
+						statusProviderChanged();
+					}
+				});
+		dialog.getShell().addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				dispose();
 			}
 		});
-		currentStatus = (IStatus) aggregateStatus.getValue();
-		handleStatusChanged();
+		statusProviderChanged();
 		dbc.getValidationStatusProviders().addListChangeListener(
 				validationStatusProvidersListener);
 		for (Iterator it = dbc.getValidationStatusProviders().iterator(); it
@@ -149,6 +180,18 @@ public class TitleAreaDialogSupport {
 				((IObservable) iter.next()).addChangeListener(uiChangeListener);
 			}
 		}
+	}
+
+	private void statusProviderChanged() {
+		currentStatusProvider = (ValidationStatusProvider) aggregateStatusProvider
+				.getValue();
+		if (currentStatusProvider != null) {
+			currentStatus = (IStatus) currentStatusProvider
+					.getValidationStatus().getValue();
+		} else {
+			currentStatus = null;
+		}
+		handleStatusChanged();
 	}
 
 	private void handleUIChanged() {
@@ -175,43 +218,17 @@ public class TitleAreaDialogSupport {
 	private void handleStatusChanged() {
 		if (dialog.getShell() == null || dialog.getShell().isDisposed())
 			return;
-		if (currentStatus != null
-				&& currentStatus.getSeverity() == IStatus.ERROR) {
+		String message = messageProvider.getMessage(currentStatusProvider);
+		int type = messageProvider.getMessageType(currentStatusProvider);
+		if (type == IMessageProvider.ERROR) {
 			dialog.setMessage(null);
-			dialog.setErrorMessage(uiChanged ? currentStatus.getMessage()
-					: null);
-			if (currentStatusHasException()) {
+			dialog.setErrorMessage(uiChanged ? message : null);
+			if (currentStatus != null && currentStatusHasException()) {
 				handleStatusException();
 			}
-		} else if (currentStatus != null
-				&& currentStatus.getSeverity() != IStatus.OK) {
-			int severity = currentStatus.getSeverity();
-			int type;
-			switch (severity) {
-			case IStatus.OK:
-				type = IMessageProvider.NONE;
-				break;
-			case IStatus.CANCEL:
-				type = IMessageProvider.NONE;
-				break;
-			case IStatus.INFO:
-				type = IMessageProvider.INFORMATION;
-				break;
-			case IStatus.WARNING:
-				type = IMessageProvider.WARNING;
-				break;
-			case IStatus.ERROR:
-				type = IMessageProvider.ERROR;
-				break;
-			default:
-				Assert.isTrue(false, "incomplete switch statement"); //$NON-NLS-1$
-				return; // unreachable
-			}
-			dialog.setErrorMessage(null);
-			dialog.setMessage(currentStatus.getMessage(), type);
 		} else {
-			dialog.setMessage(null);
 			dialog.setErrorMessage(null);
+			dialog.setMessage(message, type);
 		}
 	}
 
@@ -268,8 +285,9 @@ public class TitleAreaDialogSupport {
 	 * it may have attached.
 	 */
 	public void dispose() {
-		aggregateStatus.dispose();
-		if (!uiChanged) {
+		if (aggregateStatusProvider != null)
+			aggregateStatusProvider.dispose();
+		if (dbc != null && !uiChanged) {
 			for (Iterator it = dbc.getValidationStatusProviders().iterator(); it
 					.hasNext();) {
 				ValidationStatusProvider validationStatusProvider = (ValidationStatusProvider) it
@@ -285,7 +303,7 @@ public class TitleAreaDialogSupport {
 			dbc.getValidationStatusProviders().removeListChangeListener(
 					validationStatusProvidersListener);
 		}
-		aggregateStatus = null;
+		aggregateStatusProvider = null;
 		dbc = null;
 		uiChangeListener = null;
 		validationStatusProvidersListener = null;

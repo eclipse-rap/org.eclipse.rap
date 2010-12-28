@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Matthew Hall and others.
+ * Copyright (c) 2008, 2009 Matthew Hall and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ package org.eclipse.jface.databinding.swt;
 
 import org.eclipse.jface.internal.databinding.swt.ControlBackgroundProperty;
 import org.eclipse.jface.internal.databinding.swt.ControlBoundsProperty;
-import org.eclipse.jface.internal.databinding.swt.ControlEnabledProperty;
 import org.eclipse.jface.internal.databinding.swt.ControlFocusedProperty;
 import org.eclipse.jface.internal.databinding.swt.ControlFontProperty;
 import org.eclipse.jface.internal.databinding.swt.ControlForegroundProperty;
@@ -23,6 +22,7 @@ import org.eclipse.jface.internal.databinding.swt.ControlLocationProperty;
 import org.eclipse.jface.internal.databinding.swt.ControlSizeProperty;
 import org.eclipse.jface.internal.databinding.swt.ControlVisibleProperty;
 import org.eclipse.jface.internal.databinding.swt.WidgetEditableProperty;
+import org.eclipse.jface.internal.databinding.swt.WidgetEnabledProperty;
 import org.eclipse.jface.internal.databinding.swt.WidgetImageProperty;
 import org.eclipse.jface.internal.databinding.swt.WidgetItemsProperty;
 import org.eclipse.jface.internal.databinding.swt.WidgetMaximumProperty;
@@ -33,11 +33,11 @@ import org.eclipse.jface.internal.databinding.swt.WidgetSingleSelectionIndexProp
 import org.eclipse.jface.internal.databinding.swt.WidgetTextProperty;
 import org.eclipse.jface.internal.databinding.swt.WidgetTextWithEventsProperty;
 import org.eclipse.jface.internal.databinding.swt.WidgetTooltipTextProperty;
-//import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabItem;
+//import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
@@ -46,14 +46,20 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolItem;
+//import org.eclipse.swt.widgets.ToolTip;
+//import org.eclipse.swt.widgets.TrayItem;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.Widget;
 
@@ -96,13 +102,15 @@ public class WidgetProperties {
 
 	/**
 	 * Returns a value property for observing the enablement state of a
-	 * {@link Control}.
+	 * {@link Control}, {@link Menu} (since 1.4), {@link MenuItem} (since 1.4),
+	 * {@link ScrollBar} (since 1.4) or {@link ToolItem} (since 1.4).
 	 * 
 	 * @return a value property for observing the enablement state of a
-	 *         {@link Control}.
+	 *         {@link Control}, {@link Menu}, {@link MenuItem},
+	 *         {@link ScrollBar} or {@link ToolItem}.
 	 */
 	public static IWidgetValueProperty enabled() {
-		return new ControlEnabledProperty();
+		return new WidgetEnabledProperty();
 	}
 
 	/**
@@ -169,10 +177,10 @@ public class WidgetProperties {
 
 	/**
 	 * Returns a value property for observing the maximum value of a
-	 * {@link Scale} or {@link Spinner}.
+	 * {@link Scale}, {@link Slider} (since 1.4) or {@link Spinner}.
 	 * 
 	 * @return a value property for observing the maximum value of a
-	 *         {@link Scale} or {@link Spinner}.
+	 *         {@link Scale}, {@link Slider} (since 1.4) or {@link Spinner}.
 	 */
 	public static IWidgetValueProperty maximum() {
 		return new WidgetMaximumProperty();
@@ -191,10 +199,10 @@ public class WidgetProperties {
 
 	/**
 	 * Returns a value property for observing the minimum value of a
-	 * {@link Scale} or {@link Spinner}.
+	 * {@link Scale}, {@link Slider} (since 1.4) or {@link Spinner}.
 	 * 
 	 * @return a value property for observing the minimum value of a
-	 *         {@link Scale} or {@link Spinner}.
+	 *         {@link Scale}, {@link Slider} (since 1.4) or {@link Spinner}.
 	 */
 	public static IWidgetValueProperty minimum() {
 		return new WidgetMinimumProperty();
@@ -203,11 +211,13 @@ public class WidgetProperties {
 	/**
 	 * Returns a value property for observing the selection state of a
 	 * {@link Button}, {@link CCombo}, {@link Combo}, {@link DateTime},
-	 * {@link List}, {@link Scale} or {@link Spinner}.
+	 * {@link List}, {@link MenuItem} (since 1.4), {@link Scale}, {@link Slider}
+	 * (since 1.4) or {@link Spinner}.
 	 * 
 	 * @return a value property for observing the selection state of a
 	 *         {@link Button}, {@link CCombo}, {@link Combo}, {@link DateTime},
-	 *         {@link List}, {@link Scale} or {@link Spinner}.
+	 *         {@link List}, {@link MenuItem}, {@link Scale}, {@link Slider} or
+	 *         {@link Spinner}.
 	 */
 	public static IWidgetValueProperty selection() {
 		return new WidgetSelectionProperty();

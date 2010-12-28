@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Matthew Hall and others.
+ * Copyright (c) 2008, 2009 Matthew Hall and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 207858)
- *     Matthew Hall - bugs 226765, 230296, 226292
+ *     Matthew Hall - bugs 226765, 230296, 226292, 312926
  ******************************************************************************/
 
 package org.eclipse.jface.internal.databinding.viewers;
@@ -74,6 +74,7 @@ public class TreeViewerUpdater {
 			int position) {
 		if (treeViewer != null && isElementOrderPreserved()) {
 			treeViewer.replace(parent, position, newElement);
+			treeViewer.refresh(newElement);
 		} else {
 			remove(parent, oldElement, position);
 			insert(parent, newElement, position);

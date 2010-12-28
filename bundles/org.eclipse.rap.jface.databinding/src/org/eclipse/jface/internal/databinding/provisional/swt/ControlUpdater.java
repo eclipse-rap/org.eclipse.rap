@@ -16,38 +16,38 @@ import org.eclipse.core.databinding.observable.IObservable;
 import org.eclipse.core.databinding.observable.ObservableTracker;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+//import org.eclipse.swt.events.PaintEvent;
+//import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * NON-API - A ControlUpdater updates an SWT control in response to changes in
- * the model. By wrapping a block of code in a ControlUpdater, clients can rely
- * on the fact that the block of code will be re-executed whenever anything
- * changes in the model that might affect its behavior.
- * 
+ * NON-API - A ControlUpdater updates an SWT control in response to changes in the model.
+ * By wrapping a block of code in a ControlUpdater, clients can rely on the fact
+ * that the block of code will be re-executed whenever anything changes in the
+ * model that might affect its behavior.
+ *  
  * <p>
- * ControlUpdaters only execute when their controls are visible. If something
- * changes in the model while the control is invisible, the updator is flagged
- * as dirty and the updator stops listening to the model until the next time the
- * control repaints. This saves CPU cycles by deferring UI updates to widgets
- * that are currently invisible.
+ * ControlUpdaters only execute when their controls are visible. If something changes
+ * in the model while the control is invisible, the updator is flagged as dirty and
+ * the updator stops listening to the model until the next time the control repaints.
+ * This saves CPU cycles by deferring UI updates to widgets that are currently invisible.
  * </p>
  * 
  * <p>
- * Clients should subclass this when copying information from the model to a
- * control. Typical usage:
+ * Clients should subclass this when copying information from the model to
+ * a control. Typical usage:
  * </p>
  * 
  * <ul>
- * <li>Override updateControl. It should do whatever is necessary to display the
- * contents of the model in the control.</li>
- * <li>In the constructor, attach listeners to the model. The listeners should
- * call markDirty whenever anything changes in the model that affects
- * updateControl. Note: this step can be omitted when calling any method tagged
- * with "@TrackedGetter" since ControlUpdater will automatically attach a
- * listener to any object if a "@TrackedGetter" method is called in
- * updateControl.</li>
- * <li>(optional)Extend dispose() to remove any listeners attached in the
- * constructor</li>
+ * <li>Override updateControl. It should do whatever is necessary to display
+ *     the contents of the model in the control.</li>
+ * <li>In the constructor, attach listeners to the model. The listeners should 
+ *     call markDirty whenever anything changes in the model that affects 
+ *     updateControl. Note: this step can be omitted when calling any method
+ *     tagged with "@TrackedGetter" since ControlUpdater will automatically attach
+ *     a listener to any object if a "@TrackedGetter" method is called in
+ *     updateControl.</li>
+ * <li>(optional)Extend dispose() to remove any listeners attached in the constructor</li>
  * </ul>
  * 
  * <p>
@@ -74,7 +74,7 @@ public abstract class ControlUpdater {
 
 	// RAP [rh]: PaintEvent not supported
 	private class PrivateInterface implements /* PaintListener, */
-	DisposeListener, Runnable, IChangeListener {
+		DisposeListener, Runnable, IChangeListener {
 
 		// PaintListener implementation
 		// public void paintControl(PaintEvent e) {
@@ -86,12 +86,10 @@ public abstract class ControlUpdater {
 			ControlUpdater.this.dispose();
 		}
 
-		// Runnable implementation. This method runs at most once per repaint
-		// whenever the
+		// Runnable implementation. This method runs at most once per repaint whenever the
 		// value gets marked as dirty.
 		public void run() {
-			if (theControl != null && !theControl.isDisposed()
-					&& theControl.isVisible()) {
+			if (theControl != null && !theControl.isDisposed() && theControl.isVisible()) {
 				updateIfNecessary();
 			}
 		}
@@ -118,8 +116,7 @@ public abstract class ControlUpdater {
 	/**
 	 * Creates an updater for the given control.
 	 * 
-	 * @param toUpdate
-	 *            control to update
+	 * @param toUpdate control to update
 	 */
 	public ControlUpdater(Control toUpdate) {
 		theControl = toUpdate;
@@ -132,17 +129,16 @@ public abstract class ControlUpdater {
 
 	private void updateIfNecessary() {
 		if (dirty) {
-			dependencies = ObservableTracker.runAndMonitor(updateRunnable,
-					privateInterface, null);
+			dependencies = ObservableTracker.runAndMonitor(updateRunnable, privateInterface, null);
 			dirty = false;
 		}
 	}
 
 	/**
-	 * This is called automatically when the control is disposed. It may also be
-	 * called explicitly to remove this updator from the control. Subclasses
-	 * will normally extend this method to detach any listeners they attached in
-	 * their constructor.
+	 * This is called automatically when the control is disposed. It may also
+	 * be called explicitly to remove this updator from the control. Subclasses
+	 * will normally extend this method to detach any listeners they attached
+	 * in their constructor.
 	 */
 	public void dispose() {
 		theControl.removeDisposeListener(privateInterface);
@@ -162,20 +158,20 @@ public abstract class ControlUpdater {
 	}
 
 	/**
-	 * Updates the control. This method will be invoked once after the updator
-	 * is created, and once before any repaint during which the control is
-	 * visible and dirty.
-	 * 
+	 * Updates the control. This method will be invoked once after the
+	 * updator is created, and once before any repaint during which the 
+	 * control is visible and dirty.
+	 *  
 	 * <p>
-	 * Subclasses should overload this method to provide any code that changes
-	 * the appearance of the widget.
+	 * Subclasses should overload this method to provide any code that 
+	 * changes the appearance of the widget.
 	 * </p>
 	 */
 	protected abstract void updateControl();
 
 	/**
-	 * Marks this updator as dirty. Causes the updateControl method to be
-	 * invoked before the next time the control is repainted.
+	 * Marks this updator as dirty. Causes the updateControl method to
+	 * be invoked before the next time the control is repainted.
 	 */
 	protected final void makeDirty() {
 		if (!dirty) {

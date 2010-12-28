@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007-2008 Matthew Hall and others.
+ * Copyright (c) 2007, 2009 Matthew Hall and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     Matthew Hall - initial API and implementation (bug 207858)
- *     Matthew Hall - bugs 226765, 222991, 226292, 266038
+ *     Matthew Hall - bugs 226765, 222991, 226292, 266038, 283351
  *******************************************************************************/
 
 package org.eclipse.jface.databinding.viewers;
@@ -180,7 +180,7 @@ public class ObservableListTreeContentProvider implements ITreeContentProvider {
 
 	/**
 	 * Constructs an ObservableListTreeContentProvider using the given list
-	 * factory.
+	 * factory. Must be called from the display thread.
 	 * 
 	 * @param listFactory
 	 *            observable factory that produces an IObservableList of
@@ -219,6 +219,18 @@ public class ObservableListTreeContentProvider implements ITreeContentProvider {
 		return impl.getParent(element);
 	}
 
+	/**
+	 * Disposes of this content provider. This is called by the viewer when a
+	 * content provider is replaced, or when the viewer itself is disposed.
+	 * <p>
+	 * The viewer should not be updated during this call, as it is in the
+	 * process of being disposed.
+	 * </p>
+	 * <p>
+	 * <em>Note:</em> Data binding content providers become unusable on
+	 * disposal.
+	 * </p>
+	 */
 	public void dispose() {
 		impl.dispose();
 	}

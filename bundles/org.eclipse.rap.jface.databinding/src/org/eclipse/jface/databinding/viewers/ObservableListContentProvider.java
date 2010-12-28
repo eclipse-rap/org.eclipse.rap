@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006-2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Tom Schindl<tom.schindl@bestsolution.at> - bugfix in: 214355
- *     Matthew Hall - bugs 215531, 226765, 222991, 238296, 226292, 266038
+ *     Matthew Hall - bugs 215531, 226765, 222991, 238296, 226292, 266038,
+ *                    283351
  *******************************************************************************/
 
 package org.eclipse.jface.databinding.viewers;
@@ -57,9 +58,8 @@ public class ObservableListContentProvider implements
 		}
 
 		protected void checkInput(Object input) {
-			Assert
-					.isTrue(input instanceof IObservableList,
-							"This content provider only works with input of type IObservableList"); //$NON-NLS-1$
+			Assert.isTrue(input instanceof IObservableList,
+					"This content provider only works with input of type IObservableList"); //$NON-NLS-1$
 		}
 
 		protected void addCollectionChangeListener(
@@ -146,14 +146,16 @@ public class ObservableListContentProvider implements
 	}
 
 	/**
-	 * Constructs an ObservableListContentProvider
+	 * Constructs an ObservableListContentProvider. Must be called from the
+	 * display thread.
 	 */
 	public ObservableListContentProvider() {
 		this(null);
 	}
 
 	/**
-	 * Constructs an ObservableListContentProvider with the given viewer updater
+	 * Constructs an ObservableListContentProvider with the given viewer
+	 * updater. Must be called from the display thread.
 	 * 
 	 * @param viewerUpdater
 	 *            the viewer updater to use when elements are added, removed,
@@ -172,6 +174,18 @@ public class ObservableListContentProvider implements
 		return impl.getElements(inputElement);
 	}
 
+	/**
+	 * Disposes of this content provider. This is called by the viewer when a
+	 * content provider is replaced, or when the viewer itself is disposed.
+	 * <p>
+	 * The viewer should not be updated during this call, as it is in the
+	 * process of being disposed.
+	 * </p>
+	 * <p>
+	 * <em>Note:</em> Data binding content providers become unusable on
+	 * disposal.
+	 * </p>
+	 */
 	public void dispose() {
 		impl.dispose();
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ package org.eclipse.jface.databinding.viewers;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.observable.ChangeEvent;
+import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.property.value.IValueProperty;
 import org.eclipse.core.runtime.Assert;
@@ -146,19 +148,25 @@ public abstract class ObservableValueEditingSupport extends EditingSupport {
 	final protected void initializeCellEditorValue(CellEditor cellEditor,
 			ViewerCell cell) {
 		IObservableValue target = doCreateCellEditorObservable(cellEditor);
-		Assert
-				.isNotNull(target,
-						"doCreateCellEditorObservable(...) did not return an observable"); //$NON-NLS-1$
+		Assert.isNotNull(target,
+				"doCreateCellEditorObservable(...) did not return an observable"); //$NON-NLS-1$
 
 		IObservableValue model = doCreateElementObservable(cell.getElement(),
 				cell);
 		Assert.isNotNull(model,
 				"doCreateElementObservable(...) did not return an observable"); //$NON-NLS-1$
 
+		dirty = false;
+
 		Binding binding = createBinding(target, model);
-		Assert
-				.isNotNull(binding,
-						"createBinding(...) did not return a binding"); //$NON-NLS-1$
+
+		target.addChangeListener(new IChangeListener() {
+			public void handleChange(ChangeEvent event) {
+				dirty = true;
+			}
+		});
+
+		Assert.isNotNull(binding, "createBinding(...) did not return a binding"); //$NON-NLS-1$
 
 		editingState = new EditingState(binding, target, model);
 
@@ -201,12 +209,17 @@ public abstract class ObservableValueEditingSupport extends EditingSupport {
 				UpdateValueStrategy.POLICY_CONVERT), null);
 	}
 
+	boolean dirty = false;
+
 	/**
 	 * Updates the model from the target.
 	 */
 	final protected void saveCellEditorValue(CellEditor cellEditor,
 			ViewerCell cell) {
-		editingState.binding.updateTargetToModel();
+		if (dirty) {
+			editingState.binding.updateTargetToModel();
+			dirty = false;
+		}
 	}
 
 	private class ColumnViewerEditorActivationListenerHelper extends
@@ -254,9 +267,9 @@ public abstract class ObservableValueEditingSupport extends EditingSupport {
 		}
 
 		void dispose() {
+			binding.dispose();
 			target.dispose();
 			model.dispose();
-			binding.dispose();
 		}
 	}
 }

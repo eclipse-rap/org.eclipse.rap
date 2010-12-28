@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Matthew Hall and others.
+ * Copyright (c) 2008, 2010 Matthew Hall and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,21 +9,21 @@
  *     IBM Corporation - initial API and implementation
  *         (through WizardPageSupport.java)
  *     Matthew Hall - initial API and implementation (bug 239900)
- *     Matthew Hall - bug 237856
- *     Ovidio Mallo - bug 237856
+ *     Matthew Hall - bugs 237856, 275058, 278550
+ *     Ovidio Mallo - bugs 237856, 248877
  ******************************************************************************/
 
 package org.eclipse.jface.databinding.dialog;
 
 import java.util.Iterator;
 
-import org.eclipse.core.databinding.AggregateValidationStatus;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.observable.ChangeEvent;
 import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.databinding.observable.IObservable;
 import org.eclipse.core.databinding.observable.IStaleListener;
+import org.eclipse.core.databinding.observable.ObservableTracker;
 import org.eclipse.core.databinding.observable.StaleEvent;
 import org.eclipse.core.databinding.observable.list.IListChangeListener;
 import org.eclipse.core.databinding.observable.list.IObservableList;
@@ -34,12 +34,14 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.core.databinding.util.Policy;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * Connects the validation result from the given data binding context to the
@@ -55,18 +57,19 @@ public class DialogPageSupport {
 	 * away. Upon any validation result change, the dialog page's error message
 	 * will be updated according to the current validation result.
 	 * 
-	 * @param wizardPage
+	 * @param dialogPage
 	 * @param dbc
 	 * @return an instance of WizardPageSupport
 	 */
-	public static DialogPageSupport create(DialogPage wizardPage,
+	public static DialogPageSupport create(DialogPage dialogPage,
 			DataBindingContext dbc) {
-		return new DialogPageSupport(wizardPage, dbc);
+		return new DialogPageSupport(dialogPage, dbc);
 	}
 
 	private DialogPage dialogPage;
 	private DataBindingContext dbc;
-	private IObservableValue aggregateStatus;
+	private IValidationMessageProvider messageProvider = new ValidationMessageProvider();
+	private IObservableValue aggregateStatusProvider;
 	private boolean uiChanged = false;
 	private IChangeListener uiChangeListener = new IChangeListener() {
 		public void handleChange(ChangeEvent event) {
@@ -115,6 +118,7 @@ public class DialogPageSupport {
 			}
 		}
 	};
+	private ValidationStatusProvider currentStatusProvider;
 	protected IStatus currentStatus;
 	protected boolean currentStatusStale;
 
@@ -131,6 +135,23 @@ public class DialogPageSupport {
 	}
 
 	/**
+	 * Sets the {@link IValidationMessageProvider} to use for providing the
+	 * message text and message type to display on the dialog page.
+	 * 
+	 * @param messageProvider
+	 *            The {@link IValidationMessageProvider} to use for providing
+	 *            the message text and message type to display on the dialog
+	 *            page.
+	 * 
+	 * @since 1.4
+	 */
+	public void setValidationMessageProvider(
+			IValidationMessageProvider messageProvider) {
+		this.messageProvider = messageProvider;
+		handleStatusChanged();
+	}
+
+	/**
 	 * @return the dialog page
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
@@ -142,25 +163,32 @@ public class DialogPageSupport {
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
 	protected void init() {
-		aggregateStatus = new AggregateValidationStatus(dbc
-				.getValidationStatusProviders(),
-				AggregateValidationStatus.MAX_SEVERITY);
-		aggregateStatus.addValueChangeListener(new IValueChangeListener() {
-			public void handleValueChange(ValueChangeEvent event) {
-				currentStatus = (IStatus) event.diff.getNewValue();
-				currentStatusStale = aggregateStatus.isStale();
-				handleStatusChanged();
+		ObservableTracker.setIgnore(true);
+		try {
+			aggregateStatusProvider = new MaxSeverityValidationStatusProvider(
+					dbc);
+		} finally {
+			ObservableTracker.setIgnore(false);
+		}
+
+		aggregateStatusProvider
+				.addValueChangeListener(new IValueChangeListener() {
+					public void handleValueChange(ValueChangeEvent event) {
+						statusProviderChanged();
+					}
+				});
+		dialogPage.getShell().addListener(SWT.Dispose, new Listener() {
+			public void handleEvent(Event event) {
+				dispose();
 			}
 		});
-		aggregateStatus.addStaleListener(new IStaleListener() {
+		aggregateStatusProvider.addStaleListener(new IStaleListener() {
 			public void handleStale(StaleEvent staleEvent) {
 				currentStatusStale = true;
 				handleStatusChanged();
 			}
 		});
-		currentStatus = (IStatus) aggregateStatus.getValue();
-		currentStatusStale = aggregateStatus.isStale();
-		handleStatusChanged();
+		statusProviderChanged();
 		dbc.getValidationStatusProviders().addListChangeListener(
 				validationStatusProvidersListener);
 		for (Iterator it = dbc.getValidationStatusProviders().iterator(); it
@@ -174,6 +202,19 @@ public class DialogPageSupport {
 				((IObservable) iter.next()).addChangeListener(uiChangeListener);
 			}
 		}
+	}
+
+	private void statusProviderChanged() {
+		currentStatusProvider = (ValidationStatusProvider) aggregateStatusProvider
+				.getValue();
+		if (currentStatusProvider != null) {
+			currentStatus = (IStatus) currentStatusProvider
+					.getValidationStatus().getValue();
+		} else {
+			currentStatus = null;
+		}
+		currentStatusStale = aggregateStatusProvider.isStale();
+		handleStatusChanged();
 	}
 
 	/**
@@ -204,43 +245,17 @@ public class DialogPageSupport {
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
 	protected void handleStatusChanged() {
-		if (currentStatus != null
-				&& currentStatus.getSeverity() == IStatus.ERROR) {
+		String message = messageProvider.getMessage(currentStatusProvider);
+		int type = messageProvider.getMessageType(currentStatusProvider);
+		if (type == IMessageProvider.ERROR) {
 			dialogPage.setMessage(null);
-			dialogPage.setErrorMessage(uiChanged ? currentStatus.getMessage()
-					: null);
-			if (currentStatusHasException()) {
+			dialogPage.setErrorMessage(uiChanged ? message : null);
+			if (currentStatus != null && currentStatusHasException()) {
 				handleStatusException();
 			}
-		} else if (currentStatus != null
-				&& currentStatus.getSeverity() != IStatus.OK) {
-			int severity = currentStatus.getSeverity();
-			int type;
-			switch (severity) {
-			case IStatus.OK:
-				type = IMessageProvider.NONE;
-				break;
-			case IStatus.CANCEL:
-				type = IMessageProvider.NONE;
-				break;
-			case IStatus.INFO:
-				type = IMessageProvider.INFORMATION;
-				break;
-			case IStatus.WARNING:
-				type = IMessageProvider.WARNING;
-				break;
-			case IStatus.ERROR:
-				type = IMessageProvider.ERROR;
-				break;
-			default:
-				Assert.isTrue(false, "incomplete switch statement"); //$NON-NLS-1$
-				return; // unreachable
-			}
-			dialogPage.setErrorMessage(null);
-			dialogPage.setMessage(currentStatus.getMessage(), type);
 		} else {
-			dialogPage.setMessage(null);
 			dialogPage.setErrorMessage(null);
+			dialogPage.setMessage(message, type);
 		}
 	}
 
@@ -296,8 +311,9 @@ public class DialogPageSupport {
 	 * may have attached.
 	 */
 	public void dispose() {
-		aggregateStatus.dispose();
-		if (!uiChanged) {
+		if (aggregateStatusProvider != null)
+			aggregateStatusProvider.dispose();
+		if (dbc != null && !uiChanged) {
 			for (Iterator it = dbc.getValidationStatusProviders().iterator(); it
 					.hasNext();) {
 				ValidationStatusProvider validationStatusProvider = (ValidationStatusProvider) it
@@ -313,7 +329,7 @@ public class DialogPageSupport {
 			dbc.getValidationStatusProviders().removeListChangeListener(
 					validationStatusProvidersListener);
 		}
-		aggregateStatus = null;
+		aggregateStatusProvider = null;
 		dbc = null;
 		uiChangeListener = null;
 		validationStatusProvidersListener = null;
