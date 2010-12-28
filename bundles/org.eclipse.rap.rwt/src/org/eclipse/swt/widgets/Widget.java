@@ -900,7 +900,7 @@ public abstract class Widget implements Adaptable {
    * created the widget and <code>false</code> otherwise
    */
   boolean isValidThread() {
-    return getDisplay().getThread() == Thread.currentThread();
+    return getDisplay().isValidThread();
   }
 
   static int checkBits( final int style,
