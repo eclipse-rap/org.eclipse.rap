@@ -36,7 +36,7 @@ CCombo-Button {
   definition in CCombo-Button and not in CCombo-Button-Icon
   */
   background-image: url( theme/img/widget/rap/combo/down_button.gif );
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   border: 1px outset;
   width: 15px;
   cursor: default;
@@ -55,7 +55,7 @@ CCombo-Button[FLAT]:hover {
 }
 
 CCombo-List {
-  border: 1px rgb( 167, 166, 170 );
+  border: 1px #a7a6aa;
 }
 
 CCombo-Field {
@@ -73,7 +73,7 @@ CCombo-FocusIndicator {
 
 CLabel {
   color: black;
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   background-image: none;
   border: none;
   padding: 3px;
@@ -96,7 +96,7 @@ CTabFolder {
 CTabItem {
   font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
   color: black;
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   background-image: none;
   padding: 2px 4px;
   spacing: 4px;
@@ -104,7 +104,7 @@ CTabItem {
 
 CTabItem:selected {
   color: black;
-  background-color: rgb( 217, 227, 243 );
+  background-color: #d9e3f3;
 }
 
 /* Do not gray out disabled CTabItems, this is SWT behavior */
@@ -128,7 +128,7 @@ Button {
 }
 
 Button[PUSH], Button[TOGGLE] {
-  background-color: rgb( 247, 247, 251 );
+  background-color: #f7f7fb;
   border: 1px outset;
   font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
   padding: 5px 6px;
@@ -144,7 +144,7 @@ Button[PUSH][BORDER], Button[TOGGLE][BORDER] {
 }
 
 Button[PUSH]:hover, Button[TOGGLE]:hover {
-  background-color: rgb( 251, 251, 254 );
+  background-color: #fbfbfe;
 }
 
 Button[PUSH]:pressed, Button[TOGGLE]:pressed, Button[TOGGLE]:selected {
@@ -154,7 +154,7 @@ Button[PUSH]:pressed, Button[TOGGLE]:pressed, Button[TOGGLE]:selected {
 }
 
 Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
-  background-color: rgb( 225, 225, 230 );
+  background-color: #e1e1e6;
   padding: 5px 6px;
 }
 
@@ -236,7 +236,7 @@ Combo-Button {
   definition in Combo-Button and not in Combo-Button-Icon
   */  
   background-image: url( theme/img/widget/rap/combo/down_button.gif );
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   border: 1px outset;
   width: 15px;
   cursor: default;
@@ -247,7 +247,7 @@ Combo-Button-Icon {
 } 
 
 Combo-List {
-  border: 1px rgb( 167, 166, 170 );
+  border: 1px #a7a6aa;
 }
 
 Combo-Field {
@@ -309,26 +309,26 @@ DateTime[BORDER] {
 }
 
 DateTime-Field:selected, DateTime-Calendar-Day:selected, DateTime-Calendar-Day:selected:hover {
-  background-color: rgb( 49, 106, 197 );
+  background-color: #316ac5;
   color: white;
 }
 
 DateTime-Calendar-Day:selected:unfocused {
-  background-color: rgb( 192, 192, 192 );
+  background-color: #c0c0c0;
 }
 
 DateTime-Calendar-Day:otherMonth {
   background-color: transparent;
-  color: rgb( 128, 128, 128 );
+  color: #808080;
 }
 
 DateTime-Calendar-Day:hover {
-  background-color: rgb( 217, 227, 243 );
+  background-color: #d9e3f3;
 }
 
 DateTime-Calendar-Navbar {
   border: none;
-  background-color: rgb( 0, 128, 192 );
+  background-color: #0080c0;
   color: white;
   font: bold 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
 }
@@ -354,7 +354,7 @@ DateTime-Calendar-NextYearButton {
 }
 
 DateTime-UpButton, DateTime-DownButton {
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   border: 2px outset;
   width: 15px;
   cursor: default;
@@ -386,7 +386,7 @@ DateTime-DropDownButton {
   definition in DateTime-DropDownButton and not in DateTime-DropDownButton-Icon
   */
   background-image: url( theme/img/widget/rap/datetime/drop_down_button.gif );
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   border: 1px outset;
   width: 15px;
   cursor: default;
@@ -397,7 +397,7 @@ DateTime-UpButton-Icon, DateTime-DownButton-Icon, DateTime-DropDownButton-Icon {
 }
 
 DateTime-DropDownCalendar {
-  border: 1px rgb( 167, 166, 170 );
+  border: 1px #a7a6aa;
 }
 
 /* ExpandBar Classic theme */
@@ -440,7 +440,7 @@ ExpandItem-Button:expanded:hover {
 /* Group Classic theme */
 
 Group {
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
 }
 
 Group-Frame {
@@ -462,7 +462,7 @@ Group-Label {
 
 Label {
   color: black;
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   background-image: none;
   border: none;
   text-decoration: none;
@@ -472,7 +472,7 @@ Label {
 
 Label:hover {
   color: black;
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
 }
 
 Label[BORDER] {
@@ -498,7 +498,7 @@ Label-SeparatorLine[SHADOW_OUT] {
 /* Link Classic theme */
 
 Link-Hyperlink {
-  color: rgb( 0, 0, 127 );
+  color: #00007f;
 }
 
 /* List Classic theme */
@@ -519,19 +519,19 @@ List-Item {
 }
 
 List-Item:selected {
-  background-color: rgb( 49, 106, 197 );
+  background-color: #316ac5;
   color: white;
 }
 
 List-Item:selected:unfocused {
-  background-color: rgb( 192, 192, 192 );
+  background-color: #c0c0c0;
 }
 
 /* Menu Classic theme */
 
 Menu {
   color: black;
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   background-image: none;
   border: 2px outset;
   border-radius: 0px;
@@ -548,7 +548,7 @@ MenuItem {
 
 MenuItem:hover {
   color: white;
-  background-color: rgb( 49, 106, 197 );
+  background-color: #316ac5;
 }
 
 MenuItem-CheckIcon {
@@ -566,25 +566,25 @@ MenuItem-CascadeIcon {
 /* ProgressBar Classic theme */
 
 ProgressBar {
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   background-image: none;
   border: 1px solid #c0c0c0;
   border-radius: 0px;
 }
 
 ProgressBar-Indicator {
-  background-color: rgb( 0, 128, 192 );
+  background-color: #0080c0;
   background-image: none;
   border: none;
   opacity: 1;
 }
 
 ProgressBar-Indicator:paused {
-  background-color: rgb( 255, 223, 33 );
+  background-color: #ffdf21;
 }
 
 ProgressBar-Indicator:error {
-  background-color: rgb( 203, 32, 32 );
+  background-color: #cb2020;
 }
 
 /* Sash Classic theme */
@@ -606,18 +606,18 @@ Sash-Handle {
 /* Scale Classic theme */
 
 Scale {
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
 }
 
 Scale-Thumb {
-  background-color: rgb( 241, 241, 255 );
+  background-color: #f1f1ff;
 }
 
 /* Shell Classic theme */
 
 Shell {
   border: 1px black;
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   padding: 0px;
   background-image: none;
   opacity: 1;
@@ -641,8 +641,8 @@ Shell-DisplayOverlay {
 /* Shell titlebar */
 
 Shell-Titlebar {
-  background-color: rgb( 0, 128, 192 );
-  background-gradient-color: rgb( 0, 128, 192 );
+  background-color: #0080c0;
+  background-gradient-color: #0080c0;
   color: white;
   font: bold 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
   height: 18px;
@@ -652,9 +652,9 @@ Shell-Titlebar {
 }
 
 Shell-Titlebar:inactive {
-  background-color: rgb( 121, 150, 165 );
-  background-gradient-color: rgb( 121, 150, 165 );
-  color: rgb( 221, 221, 221 );
+  background-color: #7996a5;
+  background-gradient-color: #7996a5;
+  color: #dddddd;
   background-image: url( theme/img/widget/rap/window/caption_inactive.gif );
 }
 
@@ -789,7 +789,7 @@ Spinner[BORDER] {
 }
 
 Spinner-UpButton, Spinner-DownButton {
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   border: 2px outset;
   width: 15px;
   cursor: default;
@@ -822,20 +822,20 @@ Spinner-UpButton-Icon, Spinner-DownButton-Icon {
 /* TabFolder Classic theme */
 
 TabItem {
-  background-color: rgb( 248, 248, 255 );
-  border-top-color: rgb( 172, 168, 153 );
-  border-bottom-color: rgb( 172, 168, 153 );
+  background-color: #f8f8ff;
+  border-top-color: #aca899;
+  border-bottom-color: #aca899;
   background-image: none;
 }
 
 TabItem:selected {
-  background-color: rgb( 248, 248, 255 );
-  border-top-color: rgb( 254, 200, 60 );
-  border-bottom-color: rgb( 254, 200, 60 );
+  background-color: #f8f8ff;
+  border-top-color: #fec83c;
+  border-bottom-color: #fec83c;
 }
 
 TabItem:hover {
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
 }
 
 /* Table Classic theme */
@@ -853,22 +853,22 @@ TableItem {
 
 TableItem:selected {
   color: white;
-  background-color: rgb( 49, 106, 197 );
+  background-color: #316ac5;
 }
 
 TableItem:selected:unfocused {
-  background-color: rgb( 192, 192, 192 );
+  background-color: #c0c0c0;
 }
 
 TableColumn {
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   background-image: none;
-  border-bottom: 2px solid rgb( 172, 168, 153 );
+  border-bottom: 2px solid #aca899;
   padding: 1px 2px;
 }
 
 TableColumn:hover {
-  border-bottom: 2px solid rgb( 254, 200, 60 );
+  border-bottom: 2px solid #fec83c;
 }
 
 TableColumn-SortIndicator {
@@ -949,7 +949,7 @@ Text[MULTI][BORDER] {
 }
 
 Text-Message {
-  color: rgb( 167, 166, 170 );
+  color: #a7a6aa;
 }
 
 /* ToolBar Classic theme */
@@ -958,7 +958,7 @@ ToolBar {
   color: black;
   padding: 0px;
   spacing: 0px;
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   background-image: none;
   border: none;
   opacity: 1;
@@ -1029,23 +1029,23 @@ TreeItem {
 
 TreeItem:selected {
   color: white;
-  background-color: rgb( 49, 106, 197 );
+  background-color: #316ac5;
 }
 
 TreeItem:selected:unfocused {
   color: white;
-  background-color: rgb( 192, 192, 192 );  
+  background-color: #c0c0c0;  
 }
 
 TreeColumn {
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   background-image: none;
   padding: 1px 2px;
-  border-bottom: 2px solid rgb( 172, 168, 153 );
+  border-bottom: 2px solid #aca899;
 }
 
 TreeColumn:hover {
-  border-bottom: 2px solid rgb( 254, 200, 60 );
+  border-bottom: 2px solid #fec83c;
 }
 
 TreeColumn-SortIndicator {
@@ -1151,32 +1151,32 @@ Tree-Indent:first:last:expanded {
 
 * {
   color: black;
-  background-color: rgb( 248, 248, 255 );
+  background-color: #f8f8ff;
   background-image: none;
   font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
 }
 
 *:disabled {
-  color: rgb( 167, 166, 170 );
+  color: #a7a6aa;
 }
 
 ToolTip {
   border: 1px solid;
   padding: 1px 3px 2px 3px;
   color: black;
-  background-color: rgb( 255, 255, 225 );
+  background-color: #ffffe1;
   opacity: 1;
   animation: none;
 }
 
 Display {
-  rwt-shadow-color: rgb( 167, 166, 170 );
-  rwt-highlight-color: rgb( 255, 255, 255 );
-  rwt-darkshadow-color: rgb( 133, 135, 140 );
-  rwt-lightshadow-color: rgb( 220, 223, 228 );
-  rwt-thinborder-color: rgb( 172, 168, 153 );
-  rwt-selectionmarker-color: rgb( 254, 200, 60 );
-  rwt-infobackground-color: rgb( 255, 255, 225 );
+  rwt-shadow-color: #a7a6aa;
+  rwt-highlight-color: #ffffff;
+  rwt-darkshadow-color: #85878c;
+  rwt-lightshadow-color: #dcdfe4;
+  rwt-thinborder-color: #aca899;
+  rwt-selectionmarker-color: #fec83c;
+  rwt-infobackground-color: #ffffe1;
 
   rwt-error-image: url( theme/img/widget/rap/dialog/error.png );
   rwt-information-image: url( theme/img/widget/rap/dialog/information.png );
