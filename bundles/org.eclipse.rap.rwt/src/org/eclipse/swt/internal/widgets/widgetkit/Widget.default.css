@@ -35,13 +35,13 @@ ToolTip {
 }
 
 Display {
-  rwt-shadow-color: rgb( 167, 166, 170 );
-  rwt-highlight-color: rgb( 255, 255, 255 );
-  rwt-darkshadow-color: rgb( 133, 135, 140 );
-  rwt-lightshadow-color: rgb( 220, 223, 228 );
-  rwt-thinborder-color: rgb( 172, 168, 153 );
-  rwt-selectionmarker-color: rgb( 254, 200, 60 );
-  rwt-infobackground-color: rgb( 255, 255, 255 );
+  rwt-shadow-color: #a7a6aa;
+  rwt-highlight-color: #ffffff;
+  rwt-darkshadow-color: #85878c;
+  rwt-lightshadow-color: #dcdfe4;
+  rwt-thinborder-color: #aca899;
+  rwt-selectionmarker-color: #fec83c;
+  rwt-infobackground-color: #ffffff;
 
   rwt-error-image: url( resource/widget/rap/dialog/error.png );
   rwt-information-image: url( resource/widget/rap/dialog/information.png );

@@ -31,5 +31,5 @@ ProgressBar-Indicator:paused {
 }
 
 ProgressBar-Indicator:error {
-  background-color: rgb( 203, 32, 32 );
+  background-color: #cb2020;
 }

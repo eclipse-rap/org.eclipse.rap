@@ -123,7 +123,7 @@ Button.partActive {
   background-color: transparent;
   background-image: none;
   border: none;
-  color: rgb( 252, 252, 252 );
+  color: #fcfcfc;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
@@ -139,7 +139,7 @@ Button.partInactive {
   background-color: transparent;
   background-image: none;
   border: none;
-  color: rgb( 102, 102, 102 );
+  color: #666666;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
@@ -155,7 +155,7 @@ Button.partInActiveActive {
   background-color: transparent;
   background-image: none;
   border: none;
-  color: rgb( 252, 252, 252 );
+  color: #fcfcfc;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
@@ -171,7 +171,7 @@ Button.perspective {
   background-color: transparent;
   background-image: none;
   border: none;
-  color: rgb( 0, 80, 145 );
+  color: #005091;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
@@ -189,7 +189,7 @@ Button-FocusIndicator.perspective {
 }
 
 Button.perspectiveActive {
-  color: rgb( 0, 80, 145 );
+  color: #005091;
   background-color: transparent;
   background-image: none;
   border: none;

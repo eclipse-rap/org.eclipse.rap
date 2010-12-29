@@ -11,9 +11,9 @@
 /* Test values for Business theme */
 
 Menu {
-  color: rgb( 0, 89, 165 );
-  background-color: rgb( 255, 255, 255 );
-  border: 1px solid rgb( 0, 89, 165);
+  color: #0059a5;
+  background-color: #ffffff;
+  border: 1px solid #0059a5;
   border-radius: 2px;
 }
 

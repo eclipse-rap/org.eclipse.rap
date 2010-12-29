@@ -15,9 +15,9 @@ Menu {
   padding: 2px 0px;
   opacity: 1;
   animation: none;
-  color: rgb( 0, 89, 165 );
+  color: #0059a5;
   background-color: white;
-  border: 1px rgb( 0, 89, 165 );
+  border: 1px #0059a5;
   border-radius: 2px;
 }
 

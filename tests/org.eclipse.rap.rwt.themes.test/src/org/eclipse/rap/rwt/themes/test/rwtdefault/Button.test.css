@@ -93,7 +93,7 @@ Button[TOGGLE]:selected:hover {
 }
 
 Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
-  background-color: rgb( 225, 225, 230 );
+  background-color: #e1e1e6;
   padding: 5px 6px;
   opacity: 1;
 }

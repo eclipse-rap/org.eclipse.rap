@@ -15,7 +15,7 @@ DateTime {
   padding: 1px 2px;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  background-color: rgb( 252, 252, 252 );
+  background-color: #fcfcfc;
 }
 
 DateTime-Calendar-Day:hover {
@@ -152,5 +152,5 @@ DateTime-Calendar-Day:selected:hover {
 
 DateTime-Calendar-Day:otherMonth {
   background-color: transparent;
-  color: rgb( 128, 128, 128 );
+  color: #808080;
 }

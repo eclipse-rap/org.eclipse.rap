@@ -17,7 +17,7 @@ Text {
   padding: 2px 3px;
   background-image: none;
   color: #464a4e;
-  background-color: rgb( 252, 252, 252 );
+  background-color: #fcfcfc;
 }
 
 Text[BORDER] {
@@ -38,5 +38,5 @@ Text[MULTI][BORDER] {
 }
 
 Text-Message {
-  color: rgb( 167, 166, 170 );
+  color: #a7a6aa;
 }

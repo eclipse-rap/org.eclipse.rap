@@ -16,17 +16,17 @@ Label, CLabel {
 }
 
 Label.menuBorder {
-  background-color: rgb( 221, 221, 221 );
+  background-color: #dddddd;
 }
 
 Label.stackBorder {
-  background-color: rgb( 235, 235, 235 );
+  background-color: #ebebeb;
 }
 
 Label.standaloneView {
   background-color: transparent;
   border: none;
-  color: rgb( 102, 102, 102 );
+  color: #666666;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 

@@ -11,13 +11,13 @@
 Composite.tabActive {
   border: 1px solid #ffffff;
   border-radius: 5px 5px 0px 0px;
-  background-color: rgb( 255, 255, 255 );
+  background-color: #ffffff;
 }
 
 Composite.tabInactive {
   border: 1px solid #ffffff;
   border-radius: 5px 5px 0px 0px;
-  background-color: rgb( 255, 255, 255 );
+  background-color: #ffffff;
 }
 
 Composite.inactiveButton {

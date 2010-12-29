@@ -14,7 +14,7 @@
 
 DateTime {
   color: #464a4e;
-  background-color: rgb( 252, 252, 252 );
+  background-color: #fcfcfc;
   border: none;
   padding: 1px 2px;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
@@ -40,16 +40,16 @@ DateTime-Calendar-Day:selected:hover {
 }
 
 DateTime-Calendar-Day:selected:unfocused {
-  background-color: rgb( 192, 192, 192 );
+  background-color: #c0c0c0;
 }
 
 DateTime-Calendar-Day:otherMonth {
   background-color: transparent;
-  color: rgb( 128, 128, 128 );
+  color: #808080;
 }
 
 DateTime-Calendar-Day:hover {
-  background-color: rgb( 217, 227, 243 );
+  background-color: #d9e3f3;
 }
 
 DateTime-Calendar-Navbar {
@@ -180,5 +180,5 @@ DateTime-DownButton-Icon:hover {
 
 
 DateTime-DropDownCalendar {
-  border: 1px rgb( 167, 166, 170 );
+  border: 1px #a7a6aa;
 }
