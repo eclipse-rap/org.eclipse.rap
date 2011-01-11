@@ -142,16 +142,15 @@
   <!-- ===================================================================== -->
   <target name="publish">
     <property name="buildOuputDirectory" value="${outputDirectory}/${buildType}-${buildId}" />
-    <property name="fBuildLocation" value="${buildDirectory}/${buildLabel}/" />
     <property name="reports.tests" value="${buildDirectory}/tests" />
 
     <mkdir dir="${ouputDirectory}" />
     <mkdir dir="${buildOuputDirectory}" />
 
-    <!-- copy targets -->
+    <!-- copy target zip -->
     <copy todir="${buildOuputDirectory}">
-      <fileset dir="${fBuildLocation}">
-        <include name="*runtime*.zip" />
+      <fileset dir="${buildDirectory}/${buildLabel}">
+        <include name="${buildLabel}.zip" />
       </fileset>
     </copy>
 
