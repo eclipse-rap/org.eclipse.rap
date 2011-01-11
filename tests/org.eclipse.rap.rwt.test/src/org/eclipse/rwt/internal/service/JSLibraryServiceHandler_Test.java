@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -17,6 +18,7 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
+import org.eclipse.rwt.internal.IConfiguration;
 import org.eclipse.rwt.internal.util.HTML;
 
 
@@ -33,7 +35,7 @@ public class JSLibraryServiceHandler_Test extends TestCase {
   public void testResponseEncoding() throws IOException, ServletException {
     // as there is js concatenation in unit test mode switched of
     // we only test header settings...
-    System.setProperty( "org.eclipse.rwt.compression", "true" );
+    System.setProperty( IConfiguration.PARAM_COMPRESSION, "true" );
     
     // test with encoding not allowed by browser
     TestResponse response = ( TestResponse )RWT.getResponse();
@@ -58,7 +60,7 @@ public class JSLibraryServiceHandler_Test extends TestCase {
     assertNotNull( encoding );
     assertEquals( JSLibraryServiceHandler.ENCODING_GZIP, encoding );
     // clean up
-    System.getProperties().remove( "org.eclipse.rwt.compression" );
+    System.getProperties().remove( IConfiguration.PARAM_COMPRESSION );
   }
   
   public void testRequestURLCreation() throws IOException {

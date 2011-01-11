@@ -72,7 +72,7 @@ public class JSLibraryServiceHandler implements IServiceHandler {
     response.setHeader( HTML.CONTENT_TYPE, HTML.CONTENT_TEXT_JAVASCRIPT );
     response.setHeader( EXPIRES, EXPIRES_NEVER );
     response.setCharacterEncoding( HTML.CHARSET_NAME_UTF_8 );
-    if( isAcceptEncoding() && getInitProps().isCompression()) {
+    if( isAcceptEncoding() && getConfiguration().isCompression()) {
       writeCompressedOutput();
     } else {
       writeUnCompressedOutput();
@@ -126,9 +126,8 @@ public class JSLibraryServiceHandler implements IServiceHandler {
     return encodings != null && encodings.indexOf( JSLibraryServiceHandler.ENCODING_GZIP ) != -1;
   }
   
-  private static IInitialization getInitProps() {
-    IConfiguration configuration = ConfigurationReader.getConfiguration();
-    return configuration.getInitialization();
+  private static IConfiguration getConfiguration() {
+    return ConfigurationReader.getConfiguration();
   }
   
   private static JsConcatenator getJsConcatenator() {

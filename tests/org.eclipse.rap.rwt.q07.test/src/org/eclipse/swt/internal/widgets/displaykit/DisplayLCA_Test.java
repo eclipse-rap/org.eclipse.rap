@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -381,8 +381,6 @@ public class DisplayLCA_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.fakeContext();
     Fixture.fakeNewRequest();
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
-                        RWTLifeCycle.class.getName() );
     ThemeManager.getInstance().initialize();
     AdapterManager manager = AdapterManagerImpl.getInstance();
     lifeCycleAdapterFactory = new AdapterFactory() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -20,7 +21,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.AdapterFactoryRegistry;
-import org.eclipse.rwt.internal.IInitialization;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -305,8 +305,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     eventLog = new ArrayList();
     StartupPage.configurer = new RWTStartupPageConfigurer();
     Fixture.clearSingletons();
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
-                        RWTLifeCycle.class.getName() );
     ThemeManager.getInstance().initialize();
     Fixture.registerResourceManager();
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );

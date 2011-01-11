@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -52,18 +53,13 @@ public final class LifeCycleFactory {
       String lifeCycleClassName = null;
       try {
         IConfiguration configuration = ConfigurationReader.getConfiguration();
-        IInitialization initialization = configuration.getInitialization();
-        lifeCycleClassName = initialization.getLifeCycle();
+        lifeCycleClassName = configuration.getLifeCycle();
         Class lifeCycleClass = Class.forName( lifeCycleClassName );
         result = ( LifeCycle )lifeCycleClass.newInstance();
         if( result.getScope().equals( Scope.APPLICATION ) ) {
           globalLifeCycle = result;
         }
       } catch( Exception ex ) {
-        // TODO [w4t] revise: throw exception instead of issuing a warning and
-        //      returning the w4t standard life cycle
-//        System.out.println( "Could not load lifecycle. " + ex.toString() );
-//        result = new org.eclipse.rap.engine.lifecycle.standard.LifeCycle_Standard();
         String text = "Could not load life cycle implementation {0}: {1}";
         Object[] args = new Object[] { lifeCycleClassName, ex.toString() };
         String msg = MessageFormat.format( text, args );

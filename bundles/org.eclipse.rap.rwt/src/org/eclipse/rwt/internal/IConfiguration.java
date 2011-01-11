@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,11 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal;
+
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 
 /** 
  * <p>This interface provides access to the W4 Toolkit configuration
@@ -17,7 +20,36 @@ package org.eclipse.rwt.internal;
  */
 public interface IConfiguration {
 
-  IInitialization getInitialization();
+  public static final String PARAM_LIFE_CYCLE = "lifecycle";
+  public static final String PARAM_COMPRESSION = "org.eclipse.rwt.compression";
 
-  IFileUpload getFileUpload();
+  public static final String LIFE_CYCLE_DEFAULT = RWTLifeCycle.class.getName();
+
+  public static final String RESOURCES_DELIVER_FROM_DISK = "deliverFromDisk";
+  public static final String RESOURCES_DELIVER_BY_SERVLET = "deliverByServlet";
+
+  /**
+   * specifies the implementation class that manages the lifecycle of each
+   * request.
+   */
+  String getLifeCycle();
+
+  /** 
+   * <p>Returns whether the HTML output of the web appliction is sent
+   * gzipped to browsers that support gzipped network communication
+   * (Should be 'true' for productive versions to save network traffic 
+   * and shorten loading time).</p>
+   */
+  boolean isCompression();
+
+  /**
+   * <p>Returns whether static resources like JavaScript-libraries, images,
+   * css-files etc. which are available on the applications
+   * classpath are copied to disk and delivered as static files by
+   * a web-server or delivered directly by the servlet engine.
+   * Should be <code>RESOURCES_DELIVER_FROM_DISK</code> in most cases. 
+   * Can be <code>RESOURCES_DELIVER_FROM_DISK</code> or 
+   * <code>RESOURCES_DELIVER_BY_SERVLET</code>.
+   */
+  String getResources();
 }

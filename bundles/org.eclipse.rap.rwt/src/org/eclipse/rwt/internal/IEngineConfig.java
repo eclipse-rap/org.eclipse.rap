@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
@@ -17,15 +18,6 @@ import java.io.File;
  * usable for configuration of the W4T engine adapter.
  */
 public interface IEngineConfig {
-  
-  /**
-   * This returns a file object that represent a W4T.xml config file
-   * containing the configuration for the W4T engine. The file object
-   * returned might differ for different engine adapters in the same VM.
-   * 
-   * @return A file object corresponding to a W4T config file.
-   */
-  public File getConfigFile();
 
   /**
    * This returns a file object representing a global lib directory

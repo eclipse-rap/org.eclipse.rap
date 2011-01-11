@@ -46,8 +46,6 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
-                        RWTLifeCycle.class.getName() );
     Fixture.fakeContext();
     Fixture.fakeNewRequest();
   }

@@ -36,7 +36,7 @@ public abstract class AbstractServiceHandler implements IServiceHandler {
   static PrintWriter getOutputWriter() throws IOException {
     OutputStreamWriter utf8Writer;
     OutputStream out = getResponse().getOutputStream();
-    if( isAcceptEncoding() && getInitProps().isCompression() ) {
+    if( isAcceptEncoding() && getConfiguration().isCompression() ) {
       GZIPOutputStream zipStream = new GZIPOutputStream( out );
       utf8Writer = new OutputStreamWriter( zipStream, HTML.CHARSET_NAME_UTF_8 );
       getResponse().setHeader( CONTENT_ENCODING, ENCODING_GZIP );
@@ -46,9 +46,8 @@ public abstract class AbstractServiceHandler implements IServiceHandler {
     return new PrintWriter( utf8Writer, false );
   }
 
-  static IInitialization getInitProps() {
-    IConfiguration configuration = ConfigurationReader.getConfiguration();
-    return configuration.getInitialization();
+  static IConfiguration getConfiguration() {
+    return ConfigurationReader.getConfiguration();
   }
 
   protected static HttpServletRequest getRequest() {

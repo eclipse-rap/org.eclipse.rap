@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing implementation
  ******************************************************************************/
 
 package org.eclipse.rwt;
@@ -16,7 +17,6 @@ import java.lang.reflect.Field;
 
 import javax.servlet.http.*;
 import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.Assert;
 
@@ -33,7 +33,6 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
-import org.xml.sax.SAXException;
 
 public class Fixture {
 
@@ -58,25 +57,17 @@ public class Fixture {
   public static void setUp() {
     // standard setup
     commonSetUp();
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
-                        RWTLifeCycle.class.getName() );
-
     ThemeManager.getInstance().initialize();
     registerAdapterFactories();
     PhaseListenerRegistry.add( Fixture.currentPhaseListener );
-
     // registration of mockup resource manager
     registerResourceManager();
-
     SettingStoreManager.register( new MemorySettingStoreFactory() );
   }
 
   public static void setUpWithoutResourceManager() {
     // standard setup
     commonSetUp();
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
-                        RWTLifeCycle.class.getName() );
-
     // registration of adapter factories
     registerAdapterFactories();
   }
@@ -85,12 +76,6 @@ public class Fixture {
     // disable js-versioning by default to make comparison easier
     System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "false" );
     clearSingletons();
-    try {
-      ConfigurationReader.setConfigurationFile( null );
-    } catch( Throwable shouldNotHappen ) {
-      throw new RuntimeException( shouldNotHappen );
-    }
-
     TestResponse response = new TestResponse();
     TestRequest request = new TestRequest();
     request.setSession( new TestSession() );
@@ -125,15 +110,14 @@ public class Fixture {
     ContextProvider.disposeContext();
     session.invalidate();
     clearSingletons();
-    System.getProperties().remove( IInitialization.PARAM_LIFE_CYCLE );
+    System.getProperties().remove( IConfiguration.PARAM_LIFE_CYCLE );
 
     AbstractBranding[] all = BrandingManager.getAll();
     for( int i = 0; i < all.length; i++ ) {
       BrandingManager.deregister( all[ i ] );
     }
-
+    ConfigurationReader.reset();
     LifeCycleFactory.destroy();
-
     PhaseListenerRegistry.clear();
   }
 
@@ -144,10 +128,7 @@ public class Fixture {
   }
 
   public static void createContext( final boolean fake )
-    throws IOException,
-           FactoryConfigurationError,
-           ParserConfigurationException,
-           SAXException
+    throws FactoryConfigurationError
   {
     if( fake ) {
       setPrivateField( ResourceManagerImpl.class,
@@ -157,17 +138,13 @@ public class Fixture {
     } else {
       createContextWithoutResourceManager();
       String webAppBase = CONTEXT_DIR.toString();
-      String deliverFromDisk = IInitialization.RESOURCES_DELIVER_FROM_DISK;
+      String deliverFromDisk = IConfiguration.RESOURCES_DELIVER_FROM_DISK;
       ResourceManagerImpl.createInstance( webAppBase, deliverFromDisk );
     }
   }
 
   public static void createContextWithoutResourceManager()
-    throws FileNotFoundException,
-           IOException,
-           FactoryConfigurationError,
-           ParserConfigurationException,
-           SAXException
+    throws FactoryConfigurationError
   {
     CONTEXT_DIR.mkdirs();
     File webInf = new File( CONTEXT_DIR, "WEB-INF" );
@@ -178,8 +155,6 @@ public class Fixture {
     classes.mkdirs();
     File libDir = new File( webInf, "lib" );
     libDir.mkdirs();
-    File w4tXml = new File( conf, "W4T.xml" );
-    copyTestResource( "resources/w4t_fixture.xml", w4tXml );
 
     String webAppBase = CONTEXT_DIR.toString();
     EngineConfig engineConfig = new EngineConfig( webAppBase );
@@ -208,6 +183,10 @@ public class Fixture {
   {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream is = loader.getResourceAsStream( resourceName );
+    if( is == null ) {
+      throw new IllegalArgumentException( "Resource could not be found: "
+                                          + resourceName );
+    }
     try {
       OutputStream out = new FileOutputStream( destination );
       try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing implementation
  ******************************************************************************/
 
 package org.eclipse.rwt.internal;
@@ -39,7 +40,7 @@ public class AdapterFactoryRegistry_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
+    System.setProperty( IConfiguration.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
     Fixture.fakeContext();
     Fixture.fakeNewRequest();

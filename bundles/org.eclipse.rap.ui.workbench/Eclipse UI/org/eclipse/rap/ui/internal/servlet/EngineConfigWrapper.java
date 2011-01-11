@@ -47,10 +47,6 @@ import org.osgi.framework.Bundle;
 // TODO: [fappel] clean replacement mechanism that is anchored in W4Toolkit core
 final class EngineConfigWrapper implements IEngineConfig {
 
-  private final static String FOLDER
-    = EngineConfigWrapper.class.getPackage().getName().replace( '.', '/' );
-  // path to a w4toolkit configuration file on the classpath
-  private final static String CONFIG = FOLDER +"/config.xml";
   //  extension point id for adapter factory registration
   private static final String ID_ADAPTER_FACTORY
     = "org.eclipse.rap.ui.adapterfactory";
@@ -101,20 +97,6 @@ final class EngineConfigWrapper implements IEngineConfig {
 
   public File getClassDir() {
     return engineConfig.getClassDir();
-  }
-
-  public File getConfigFile() {
-    File result = engineConfig.getConfigFile();
-    if( !result.exists() ) {
-      result.getParentFile().mkdirs();
-      try {
-        result.createNewFile();
-        createConfiguration( result );
-      } catch( final IOException shouldNotHappen ) {
-        throw new RuntimeException( shouldNotHappen );
-      }
-    }
-    return result;
   }
 
   public File getLibDir() {
@@ -384,27 +366,6 @@ final class EngineConfigWrapper implements IEngineConfig {
     Bundle bundle = Platform.getBundle( PlatformUI.PLUGIN_ID );
     IPath stateLocation = Platform.getStateLocation( bundle );
     return stateLocation.append( "context" );
-  }
-
-  private static void createConfiguration( final File destination )
-    throws FileNotFoundException, IOException
-  {
-    ClassLoader loader = EngineConfigWrapper.class.getClassLoader();
-    InputStream is = loader.getResourceAsStream( CONFIG );
-    try {
-      OutputStream out = new FileOutputStream( destination );
-      try {
-        int character = is.read();
-        while( character != -1 ) {
-          out.write( character );
-          character = is.read();
-        }
-      } finally {
-        out.close();
-      }
-    } finally {
-      is.close();
-    }
   }
 
   private static void registerResources() {
