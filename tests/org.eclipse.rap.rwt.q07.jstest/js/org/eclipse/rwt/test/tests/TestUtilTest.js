@@ -558,7 +558,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       function( store ) {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertEquals( "sum of delay greater 70ms", 2, store.x );
-        store.inc( 20 );
+        store.inc( 50 );
         testUtil.store( store );
       },
       function( store ) {
