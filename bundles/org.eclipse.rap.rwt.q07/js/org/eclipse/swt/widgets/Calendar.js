@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -909,7 +909,7 @@ qx.Class.define("org.eclipse.swt.widgets.Calendar", {
      * @return {String} territory
      */
     __getTerritory : function() {
-        var territory = qx.core.Client.getTerritory() || qx.core.Client.getLanguage();
+        var territory = org.eclipse.rwt.Client.getTerritory() || org.eclipse.rwt.Client.getLanguage();
       return territory.toUpperCase();
     }
   },

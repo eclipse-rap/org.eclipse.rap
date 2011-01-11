@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009,2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -40,6 +40,7 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
       org.eclipse.rwt.test.fixture.AppSimulator._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
       //req.send();     
+      org.eclipse.swt.Request.getInstance().setRequestCounter( 0 );
 
       var startupTime = new Date().getTime();
       var realApp = qx.core.Init.getInstance().getApplication();

@@ -53,7 +53,7 @@ qx.Class.define("qx.bom.element.Overflow",
     getX : qx.core.Variant.select("qx.client",
     {
       // gecko support differs
-      "gecko" : qx.core.Client.getVersion() < 1.8 ?
+      "gecko" : org.eclipse.rwt.Client.getVersion() < 1.8 ?
 
       // older geckos do not support overflowX
       // it's also more safe to translate hidden to -moz-scrollbars-none
@@ -75,7 +75,7 @@ qx.Class.define("qx.bom.element.Overflow",
       },
 
       // opera support differs
-      "opera" : qx.core.Client.getVersion() < 9.5 ?
+      "opera" : org.eclipse.rwt.Client.getVersion() < 9.5 ?
 
       // older versions of opera have no support for splitted overflow properties.
       function(element, mode) {
@@ -110,7 +110,7 @@ qx.Class.define("qx.bom.element.Overflow",
     getY : qx.core.Variant.select("qx.client",
     {
       // gecko support differs
-      "gecko" : qx.core.Client.getVersion() < 1.8 ?
+      "gecko" : org.eclipse.rwt.Client.getVersion() < 1.8 ?
 
       // older geckos do not support overflowY
       // it's also more safe to translate hidden to -moz-scrollbars-none
@@ -132,7 +132,7 @@ qx.Class.define("qx.bom.element.Overflow",
       },
 
       // opera support differs
-      "opera" : qx.core.Client.getVersion() < 9.5 ?
+      "opera" : org.eclipse.rwt.Client.getVersion() < 9.5 ?
 
       // older versions of opera have no support for splitted overflow properties.
       function(element, mode) {

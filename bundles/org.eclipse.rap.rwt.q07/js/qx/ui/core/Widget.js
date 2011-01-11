@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -6635,7 +6635,7 @@ qx.Class.define("qx.ui.core.Widget",
         var pv = value;
         var pn = "overflow";
 
-        if( qx.core.Client.getInstance().getVersion() < 9.8 ) {
+        if( org.eclipse.rwt.Client.getVersion() < 9.8 ) {
 	        switch( pv ) {
 	          case "scrollX":
 	          case "scrollY":

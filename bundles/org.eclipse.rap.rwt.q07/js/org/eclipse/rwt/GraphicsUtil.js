@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -15,15 +15,9 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
     
     init : function() {
       if( this._renderClass == null ) {
-        var engine = qx.core.Client.getEngine();
-        var version = qx.core.Client.getVersion();
-        if ( ( engine == "mshtml" ) && ( version >= 5.5 ) ) {
+        if( org.eclipse.rwt.Client.supportsVml() ) {
           this._renderClass = org.eclipse.rwt.VML;
-        } else if ( ( engine == "gecko" )  && ( version >= 1.8 ) ) {
-          this._renderClass = org.eclipse.rwt.SVG;
-        } else if ( ( engine == "webkit" ) && ( version >= 523 ) ) {
-          this._renderClass = org.eclipse.rwt.SVG;
-        } else if ( ( engine == "opera" )  && ( version >= 9 ) ) {
+        } else if ( org.eclipse.rwt.Client.supportsSvg() ) {
           this._renderClass = org.eclipse.rwt.SVG;
         }
         if( this._renderClass != null ) {

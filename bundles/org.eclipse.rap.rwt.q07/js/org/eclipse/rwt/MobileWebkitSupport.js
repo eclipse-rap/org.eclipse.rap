@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,19 +39,12 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     init : function() {
-      if( this.isMobileWebkit() ) {
+      if( org.eclipse.rwt.Client.isMobileSafari() ) {
         this._hideTabHighlight();
         this._bindListeners();
         this._registerListeners();
         this._registerFilter();
       } 
-    },
- 
-    isMobileWebkit : function() {
-      var platform = qx.core.Client.getPlatform();
-      var engine = qx.core.Client.getEngine();
-      var isMobile = platform === "ipad" || platform === "iphone";
-      return isMobile && engine === "webkit";
     },
 
     // Experimental API for custom-widget

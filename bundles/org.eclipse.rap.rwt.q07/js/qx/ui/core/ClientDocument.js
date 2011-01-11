@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -47,7 +47,7 @@ qx.Class.define("qx.ui.core.ClientDocument",
     this._document.body.style.position = "";
 
     // Disable IE background image cache
-    if( qx.core.Variant.isSet("qx.client", "mshtml") && (qx.core.Client.getInstance().getMajor() < 7) ){
+    if( qx.core.Variant.isSet("qx.client", "mshtml") && (org.eclipse.rwt.Client.getMajor() < 7) ){
       try {
         document.execCommand("BackgroundImageCache", false, true);
       } catch(err) {};
@@ -631,7 +631,7 @@ qx.Class.define("qx.ui.core.ClientDocument",
     // CSS fix
     if (qx.core.Setting.get("qx.boxModelCorrection"))
     {
-      var boxSizingAttr = qx.core.Client.getInstance().getEngineBoxSizingAttributes();
+      var boxSizingAttr = org.eclipse.rwt.Client.getEngineBoxSizingAttributes();
       var borderBoxCss = boxSizingAttr.join(":border-box;") + ":border-box;";
       var contentBoxCss = boxSizingAttr.join(":content-box;") + ":content-box;";
 

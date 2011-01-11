@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -166,7 +166,7 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
       // --------------------------------------
       //   Local handling
       // --------------------------------------
-      var vLocalRequest = (qx.core.Client.getInstance().getRunsLocally() && !(/^http(s){0,1}\:/.test(vUrl)));
+      var vLocalRequest = (org.eclipse.rwt.Client.getRunsLocally() && !(/^http(s){0,1}\:/.test(vUrl)));
       this._localRequest = vLocalRequest;
 
       // --------------------------------------

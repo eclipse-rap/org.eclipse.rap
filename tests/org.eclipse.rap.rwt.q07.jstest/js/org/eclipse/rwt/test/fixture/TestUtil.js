@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -217,7 +217,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       }
       var clientX = left;
       var clientY = top;
-      if( qx.core.Client.getEngine() == "mshtml" ) {
+      if( org.eclipse.rwt.Client.getEngine() == "mshtml" ) {
         clientX -= qx.bom.Viewport.getScrollLeft( window );
         clientY -= qx.bom.Viewport.getScrollTop( window );
       }
@@ -750,8 +750,8 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     // Misc
 
     isMobileWebkit : function() {
-      var platform = qx.core.Client.getPlatform();
-      var engine = qx.core.Client.getEngine();
+      var platform = org.eclipse.rwt.Client.getPlatform();
+      var engine = org.eclipse.rwt.Client.getEngine();
       var isMobile = platform === "ipad" || platform === "iphone";
       return isMobile && engine === "webkit"; 
     },

@@ -595,7 +595,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _updateImage : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( cell ) {
-        var version = qx.core.Client.getVersion();
+        var version = org.eclipse.rwt.Client.getVersion();
         var node = this.getCellNode( cell );
         var content = this.getCellContent( cell );
         if( version >= 8 ) {

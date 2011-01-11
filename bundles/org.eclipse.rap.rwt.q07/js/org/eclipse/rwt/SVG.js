@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -212,7 +212,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         imageNode.setAttribute( "width", width );
         imageNode.setAttribute( "height", height );
         shape.node.setAttribute( "fill", "url(#" + patternId + ")" );
-        if( qx.core.Client.getEngine() == "webkit" ) {
+        if( org.eclipse.rwt.Client.getEngine() == "webkit" ) {
           // Bug 301236: Loading an image using SVG causes a bad request
           // AFTER the image-request. Prevent by pre-loading the image.
           this._onImageLoad( source, function() {

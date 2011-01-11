@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -430,7 +430,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         // Firefox 3 reports other statusCode than oder versions (bug #249814)
         // Check if Gecko > 1.9 is running (used in FF 3)
         // Gecko/app integration overview: http://developer.mozilla.org/en/Gecko
-        if( qx.core.Client.getMajor() * 10 + qx.core.Client.getMinor() >= 19 ) {
+        if( org.eclipse.rwt.Client.getMajor() * 10 + org.eclipse.rwt.Client.getMinor() >= 19 ) {
           result = ( statusCode === 0 );
         } else {
           result = ( statusCode === -1 );
@@ -483,7 +483,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       app.setExitConfirmation( null );
       qx.io.remote.RequestQueue.getInstance().setEnabled( false );
       // write the error page content
-      var client = qx.core.Client.getInstance();
+      var client = org.eclipse.rwt.Client;
       if( client.isMshtml() && client.getMajor() == 6 ) {
         // do nothing for IE6, see bug 264150: Error page is broken in IE6
       } else {

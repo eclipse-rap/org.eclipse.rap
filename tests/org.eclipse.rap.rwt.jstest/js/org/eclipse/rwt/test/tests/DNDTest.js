@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -688,7 +688,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // drop
       testUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       assertNull( dndSupport._dropFeedbackRenderer );
-      if( qx.core.Client.getEngine() != "mshtml" ) {
+      if( org.eclipse.rwt.Client.getEngine() != "mshtml" ) {
         // TODO [tb] : does not succeed in IE unless the debugger is running
         assertNull( indicator.parentNode );
       }
@@ -745,7 +745,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // drop
       testUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       assertNull( dndSupport._dropFeedbackRenderer );
-      if( qx.core.Client.getEngine() != "mshtml" ) {
+      if( org.eclipse.rwt.Client.getEngine() != "mshtml" ) {
         // TODO [tb] : does not succeed in IE unless the debugger is running
         assertNull( indicator.parentNode );
       }

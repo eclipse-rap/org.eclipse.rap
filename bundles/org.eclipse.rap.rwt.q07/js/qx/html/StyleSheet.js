@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -89,29 +89,10 @@ qx.Class.define("qx.html.StyleSheet",
       "ie4+" : function(vSheet, vSelector, vStyle) {
         vSheet.addRule(vSelector, vStyle);
       },
-
-      "other" : qx.lang.Object.select(qx.core.Client.getInstance().isSafari2() ? "safari2" : "other",
-      {
-        "safari2+" : function(vSheet, vSelector, vStyle)
-        {
-          // insertRule in Safari 2 doesn't work
-          if (!vSheet._qxRules) {
-            vSheet._qxRules = {};
-          }
-
-          if (!vSheet._qxRules[vSelector])
-          {
-            var ruleNode = document.createTextNode(vSelector + "{" + vStyle + "}");
-            vSheet.ownerNode.appendChild(ruleNode);
-            vSheet._qxRules[vSelector] = ruleNode;
-          }
-        },
-
-        "other" : function(vSheet, vSelector, vStyle) {
-          vSheet.insertRule(vSelector + "{" + vStyle + "}", vSheet.cssRules.length);
-        }
-      })
-    }),
+      "other" : function(vSheet, vSelector, vStyle) {
+        vSheet.insertRule(vSelector + "{" + vStyle + "}", vSheet.cssRules.length);
+      }
+    } ),
 
 
     /**
@@ -125,11 +106,9 @@ qx.Class.define("qx.html.StyleSheet",
      */
     removeRule : qx.lang.Object.select(document.createStyleSheet ? "ie4+" : "other",
     {
-      "ie4+" : function(vSheet, vSelector)
-      {
+      "ie4+" : function(vSheet, vSelector) {
         var vRules = vSheet.rules;
         var vLength = vRules.length;
-
         for (var i=vLength-1; i>=0; i--)
         {
           if (vRules[i].selectorText == vSelector) {
@@ -137,46 +116,17 @@ qx.Class.define("qx.html.StyleSheet",
           }
         }
       },
-
-      "other" : qx.lang.Object.select(qx.core.Client.getInstance().isSafari2() ? "safari2" : "other",
-      {
-        "safari2+" : function(vSheet, vSelector)
+      "other" : function(vSheet, vSelector) {
+        var vRules = vSheet.cssRules;
+        var vLength = vRules.length;
+        for (var i=vLength-1; i>=0; i--)
         {
-          var warn = function() {
-            qx.log.Logger.ROOT_LOGGER.warn("In Safari/Webkit you can only remove rules that are created using qx.html.StyleSheet.addRule");
-          };
-
-          if (!vSheet._qxRules) {
-            warn();
-          }
-
-          var ruleNode = vSheet._qxRules[vSelector];
-
-          if (ruleNode)
-          {
-            vSheet.ownerNode.removeChild(ruleNode);
-            vSheet._qxRules[vSelector] = null;
-          }
-          else
-          {
-            warn();
-          }
-        },
-
-        "other" : function(vSheet, vSelector)
-        {
-          var vRules = vSheet.cssRules;
-          var vLength = vRules.length;
-
-          for (var i=vLength-1; i>=0; i--)
-          {
-            if (vRules[i].selectorText == vSelector) {
-              vSheet.deleteRule(i);
-            }
+          if (vRules[i].selectorText == vSelector) {
+            vSheet.deleteRule(i);
           }
         }
-      })
-    }),
+      }
+    } ),
 
 
     /**
@@ -189,39 +139,21 @@ qx.Class.define("qx.html.StyleSheet",
      */
     removeAllRules : qx.lang.Object.select(document.createStyleSheet ? "ie4+" : "other",
     {
-      "ie4+" : function(vSheet)
-      {
+      "ie4+" : function(vSheet) {
         var vRules = vSheet.rules;
         var vLength = vRules.length;
-
         for (var i=vLength-1; i>=0; i--) {
           vSheet.removeRule(i);
         }
       },
-
-      "other" : qx.lang.Object.select(qx.core.Client.getInstance().isSafari2() ? "safari2" : "other",
-      {
-        "safari2+" : function(vSheet)
-        {
-          var node = vSheet.ownerNode;
-          var rules = node.childNodes;
-
-          while (rules.length > 0) {
-            node.removeChild(rules[0]);
-          }
-        },
-
-        "other" : function(vSheet)
-        {
-          var vRules = vSheet.cssRules;
-          var vLength = vRules.length;
-
-          for (var i=vLength-1; i>=0; i--) {
-            vSheet.deleteRule(i);
-          }
+      "other" : function(vSheet) {
+        var vRules = vSheet.cssRules;
+        var vLength = vRules.length;
+        for (var i=vLength-1; i>=0; i--) {
+          vSheet.deleteRule(i);
         }
-      })
-    })
+      }
+    } )
 
   }
 });

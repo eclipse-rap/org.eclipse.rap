@@ -87,9 +87,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
 
   statics : {
     RESIZE_CURSOR : 
-      (    qx.core.Client.getInstance().isGecko() 
-        && ( qx.core.Client.getInstance().getMajor() > 1 
-             || qx.core.Client.getInstance().getMinor() >= 8 ) ) 
+      (    org.eclipse.rwt.Client.isGecko() 
+        && ( org.eclipse.rwt.Client.getMajor() > 1 
+             || org.eclipse.rwt.Client.getMinor() >= 8 ) ) 
         ? "ew-resize" 
         : "e-resize",
         

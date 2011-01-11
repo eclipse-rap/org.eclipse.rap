@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -15,8 +15,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.IFrameTest", {
   members : {
 
     testIFrameDimension : function() {
-      var platform = qx.core.Client.getPlatform();
-      if( platform !== "iphone" && platform !== "ipad" ) {
+      var platform = org.eclipse.rwt.Client.getPlatform();
+      if( platform !== "ios" ) {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var iframe = new qx.ui.embed.Iframe();
         iframe.addToDocument();

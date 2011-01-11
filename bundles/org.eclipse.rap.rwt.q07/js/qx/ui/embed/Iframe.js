@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -94,10 +94,7 @@ qx.Class.define("qx.ui.embed.Iframe",
     },
 
     _useAlternateLayouting : function() {
-      var platform = qx.core.Client.getPlatform();
-      var engine = qx.core.Client.getEngine();
-      var isMobile = platform === "ipad" || platform === "iphone";
-      return isMobile && engine === "webkit";      
+      return org.eclipse.rwt.Client.isMobileSafari();
     }
 
   },

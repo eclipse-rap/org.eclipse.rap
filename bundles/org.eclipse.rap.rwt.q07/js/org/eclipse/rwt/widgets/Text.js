@@ -124,7 +124,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       if( this._inputTag != "textarea" && this._inputType != type ) {
         this._inputType = type;
         if( this._isCreated ) {
-          if( qx.core.Client.getEngine() == "mshtml" ) {
+          if( org.eclipse.rwt.Client.getEngine() == "mshtml" ) {
             this._reCreateInputField();
           } else {
             this._inputElement.type = this._inputType;
