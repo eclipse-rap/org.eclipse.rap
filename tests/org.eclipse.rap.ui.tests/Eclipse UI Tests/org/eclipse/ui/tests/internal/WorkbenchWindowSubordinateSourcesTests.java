@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.tests.internal;
 
@@ -73,7 +73,33 @@ public class WorkbenchWindowSubordinateSourcesTests extends UITestCase {
 
 		window.setCoolBarVisible(current = !current);
 		try {
+			assertEquals(EvaluationResult.FALSE, with.evaluate(context));
+		} catch (CoreException e) {
+			fail(e.getMessage());
+		}
+	}
+
+	public void testIsStatusLineVisible() {
+		IEvaluationService service = (IEvaluationService) window
+				.getService(IEvaluationService.class);
+		IEvaluationContext context = service.getCurrentState();
+
+		WithExpression with = new WithExpression(
+				ISources.ACTIVE_WORKBENCH_WINDOW_NAME + ".isStatusLineVisible");
+		boolean current = window.getStatusLineVisible();
+		EqualsExpression test = new EqualsExpression(current ? Boolean.TRUE
+				: Boolean.FALSE);
+		with.add(test);
+
+		try {
 			assertEquals(EvaluationResult.TRUE, with.evaluate(context));
+		} catch (CoreException e) {
+			fail(e.getMessage());
+		}
+
+		window.setStatusLineVisible(current = !current);
+		try {
+			assertEquals(EvaluationResult.FALSE, with.evaluate(context));
 		} catch (CoreException e) {
 			fail(e.getMessage());
 		}
@@ -99,7 +125,9 @@ public class WorkbenchWindowSubordinateSourcesTests extends UITestCase {
 
 		window.setPerspectiveBarVisible(current = !current);
 		try {
-			assertEquals(EvaluationResult.TRUE, with.evaluate(context));
+// RAP [if] In RCP the initial visibility of the perspective bar is set by ide
+//			assertEquals(EvaluationResult.FALSE, with.evaluate(context));
+		    assertEquals(EvaluationResult.TRUE, with.evaluate(context));
 		} catch (CoreException e) {
 			fail(e.getMessage());
 		}

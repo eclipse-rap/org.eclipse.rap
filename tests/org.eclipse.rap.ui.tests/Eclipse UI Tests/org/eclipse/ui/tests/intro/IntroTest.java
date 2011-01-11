@@ -54,8 +54,8 @@ public class IntroTest extends UITestCase {
 	}
 
 // RAP [if] Commented as it fails with RAP X
-// RAP [hs] the reason why this test fails is because 
-// org.eclipse.ui.resourcePerspective is contributed via the ide    
+// RAP [hs] the reason why this test fails is because
+// org.eclipse.ui.resourcePerspective is contributed via the ide
 //    public void testCloseInNonEmptyPerspective() {
 //    	testClose("org.eclipse.ui.resourcePerspective");
 //    }
@@ -71,7 +71,8 @@ public class IntroTest extends UITestCase {
 		introManager.closeIntro(part);
 
 		assertTrue(((WorkbenchWindow) window).getCoolBarVisible());
-		assertTrue(((WorkbenchWindow) window).getPerspectiveBarVisible());
+// RAP [if] In RCP the initial visibility of the perspective bar is set by ide
+//		assertTrue(((WorkbenchWindow) window).getPerspectiveBarVisible());
 	}
 
     public void testShow() {

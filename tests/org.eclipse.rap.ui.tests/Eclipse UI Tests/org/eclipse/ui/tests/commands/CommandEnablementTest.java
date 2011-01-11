@@ -37,7 +37,7 @@ import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.internal.handlers.HandlerProxy;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
-import org.eclipse.ui.internal.services.CurrentSelectionSourceProvider;
+import org.eclipse.ui.internal.services.WorkbenchSourceProvider;
 import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.eclipse.ui.tests.harness.util.UITestCase;
@@ -204,8 +204,7 @@ public class CommandEnablementTest extends UITestCase {
 		 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 		 */
 		public Object execute(ExecutionEvent event) throws ExecutionException {
-			IWorkbenchPart activePart = HandlerUtil.getActivePartChecked(event);
-			lastActivePartId = activePart.getSite().getId();
+			HandlerUtil.getActivePartChecked(event);
 			return null;
 		}
 
@@ -415,6 +414,7 @@ public class CommandEnablementTest extends UITestCase {
 
 	public void testCommandWithHandlerProxy() throws Exception {
 		IConfigurationElement handlerProxyConfig = null;
+		String commandId = null;
 		IExtensionPoint point = Platform.getExtensionRegistry()
 				.getExtensionPoint("org.eclipse.ui.handlers");
 		IExtension[] extensions = point.getExtensions();
@@ -427,6 +427,8 @@ public class CommandEnablementTest extends UITestCase {
 						IWorkbenchRegistryConstants.ATT_CLASS).equals(
 						"org.eclipse.ui.tests.menus.HelloEHandler")) {
 					handlerProxyConfig = configElements[j];
+					commandId = handlerProxyConfig
+							.getAttribute(IWorkbenchRegistryConstants.ATT_ID);
 					found = true;
 				}
 			}
@@ -434,8 +436,8 @@ public class CommandEnablementTest extends UITestCase {
 		assertNotNull(handlerProxyConfig);
 		Expression enabledWhen = new ActiveContextExpression(CONTEXT_TEST1,
 				new String[] { ISources.ACTIVE_CONTEXT_NAME });
-		HandlerProxy proxy = new HandlerProxy(handlerProxyConfig, "class",
-				enabledWhen, evalService);
+		HandlerProxy proxy = new HandlerProxy(commandId, handlerProxyConfig,
+				"class", enabledWhen, evalService);
 		assertFalse(proxy.isEnabled());
 		contextActivation1 = contextService.activateContext(CONTEXT_TEST1);
 		assertTrue(proxy.isEnabled());
@@ -452,6 +454,7 @@ public class CommandEnablementTest extends UITestCase {
 
 	public void testEnablementWithHandlerProxy() throws Exception {
 		IConfigurationElement handlerProxyConfig = null;
+		String commandId = null;
 		IExtensionPoint point = Platform.getExtensionRegistry()
 				.getExtensionPoint("org.eclipse.ui.handlers");
 		IExtension[] extensions = point.getExtensions();
@@ -464,6 +467,8 @@ public class CommandEnablementTest extends UITestCase {
 						IWorkbenchRegistryConstants.ATT_COMMAND_ID).equals(
 						"org.eclipse.ui.tests.enabledCount")) {
 					handlerProxyConfig = configElements[j];
+					commandId = handlerProxyConfig
+							.getAttribute(IWorkbenchRegistryConstants.ATT_ID);
 					found = true;
 				}
 			}
@@ -474,14 +479,14 @@ public class CommandEnablementTest extends UITestCase {
 						handlerProxyConfig.getChildren("enabledWhen")[0]
 								.getChildren()[0]);
 		assertTrue(enabledWhen instanceof CountExpression);
-		HandlerProxy proxy = new HandlerProxy(handlerProxyConfig, "class",
+		HandlerProxy proxy = new HandlerProxy(commandId, handlerProxyConfig, "class",
 				enabledWhen, evalService);
 		Checker listener = new Checker();
 		proxy.addHandlerListener(listener);
 		assertFalse(proxy.isEnabled());
 		ISourceProviderService providers = (ISourceProviderService) fWorkbench
 				.getService(ISourceProviderService.class);
-		CurrentSelectionSourceProvider selectionProvider = (CurrentSelectionSourceProvider) providers
+		WorkbenchSourceProvider selectionProvider = (WorkbenchSourceProvider) providers
 				.getSourceProvider(ISources.ACTIVE_CURRENT_SELECTION_NAME);
 
 		selectionProvider.selectionChanged(null, StructuredSelection.EMPTY);
@@ -506,7 +511,7 @@ public class CommandEnablementTest extends UITestCase {
 	}
 
 // RAP [if] Commented as it fails with RAP X
-// RAP [hs] the reason why this test fails is because 
+// RAP [hs] the reason why this test fails is because
 //	org.eclipse.ui.resourcePerspective is contributed via the ide
 //	public void testEnablementForLocalContext() throws Exception {
 //		openTestWindow("org.eclipse.ui.resourcePerspective");
