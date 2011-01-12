@@ -48,10 +48,10 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.RAPServer", {
       this.base( arguments );
     },
     
-    receive : function(request){
+    receive : function( request ){
       if( this.getUseAsync() && request.getAsynchronous() ) {
         if( this._timer.isEnabled() ) {
-          this.error( "An Asynchronous requests is already processed! ");
+          this.error( "An Asynchronous requests is already processed!" );
         } else {
           this._currentAsyncRequest = request;
           this._timer.setInterval( this.getResponseTime() );

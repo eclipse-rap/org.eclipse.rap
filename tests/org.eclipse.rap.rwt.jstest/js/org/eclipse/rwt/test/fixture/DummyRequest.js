@@ -269,9 +269,9 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.DummyRequest", {
     _queue : [],
   
     addRequest : function( request ) {
-      org.eclipse.rwt.test.fixture.DummyRequest._queue.push( request );
-      request._onqueued( new qx.event.type.Event( "queued" ) );
       if( request.getAsynchronous() ) {
+        org.eclipse.rwt.test.fixture.DummyRequest._queue.push( request );
+        request._onqueued( new qx.event.type.Event( "queued" ) );
         org.eclipse.rwt.test.fixture.DummyRequest._sendAsync();
       } else {
         org.eclipse.rwt.test.fixture.DummyRequest._sendSync( request );
