@@ -238,7 +238,7 @@ public class ScrollBar extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setEnabled( boolean enabled ) {
+  public void setEnabled( final boolean enabled ) {
     checkWidget();
     if( enabled ) {
       state &= ~DISABLED;

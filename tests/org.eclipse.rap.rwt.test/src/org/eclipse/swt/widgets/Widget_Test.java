@@ -409,7 +409,27 @@ public class Widget_Test extends TestCase {
     } );
     assertTrue( control.isListening( SWT.Help ) );
   }
+  
+  public void testGetDisplay() {
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    assertSame( display, widget.getDisplay() );
+  }
 
+  public void testGetDisplayFromNonUIThread() throws Exception {
+    final Display[] widgetDisplay = { null };
+    Display display = new Display();
+    final Widget widget = new Shell( display );
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        widgetDisplay[ 0 ] = widget.getDisplay();
+      }
+    } );
+    thread.start();
+    thread.join();
+    assertSame( display, widgetDisplay[ 0 ] );
+  }
+  
   public void testReskin() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();

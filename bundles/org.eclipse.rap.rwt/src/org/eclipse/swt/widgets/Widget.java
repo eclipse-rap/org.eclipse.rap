@@ -388,7 +388,6 @@ public abstract class Widget implements Adaptable {
    * </ul>
    */
   public Display getDisplay() {
-    // do not check control for UI Thread, see bug #193389
     Display display = this.display;
 //    if( display == null )
 //      error( SWT.ERROR_WIDGET_DISPOSED );
