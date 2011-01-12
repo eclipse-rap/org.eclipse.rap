@@ -44,8 +44,6 @@ public final class ShellEvent extends TypedEvent {
   /**
    * A flag indicating whether the operation should be allowed.
    * Setting this field to <code>false</code> will cancel the operation.
-   *
-   * <p><strong>NOTE:</code> for close-events, this is not yet implemented</p>
    */
   public boolean doit;
 

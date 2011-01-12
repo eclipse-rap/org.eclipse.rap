@@ -58,123 +58,124 @@ public final class UntypedEventAdapter
 
   // XXXListener interface imlementations
 
-  public void controlMoved( final ControlEvent evt ) {
-    Event event = createEvent( SWT.Move, evt.getSource() );
-    copyFields( evt, event );
+  public void controlMoved( final ControlEvent typedEvent ) {
+    Event event = createEvent( SWT.Move, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void controlResized( final ControlEvent evt ) {
-    Event event = createEvent( SWT.Resize, evt.getSource() );
-    copyFields( evt, event );
+  public void controlResized( final ControlEvent typedEvent ) {
+    Event event = createEvent( SWT.Resize, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void widgetDisposed( final DisposeEvent evt ) {
-    Event event = createEvent( SWT.Dispose, evt.getSource() );
-    copyFields( evt, event );
+  public void widgetDisposed( final DisposeEvent typedEvent ) {
+    Event event = createEvent( SWT.Dispose, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void widgetDefaultSelected( final SelectionEvent evt ) {
-    Event event = createEvent( SWT.DefaultSelection, evt.getSource() );
-    copyFields( evt, event );
+  public void widgetDefaultSelected( final SelectionEvent typedEvent ) {
+    Event event = createEvent( SWT.DefaultSelection, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void widgetSelected( final SelectionEvent evt ) {
-    Event event = createEvent( SWT.Selection, evt.getSource() );
-    copyFields( evt, event );
+  public void widgetSelected( final SelectionEvent typedEvent ) {
+    Event event = createEvent( SWT.Selection, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void focusGained( final FocusEvent evt ) {
-    Event event = createEvent( SWT.FocusIn, evt.getSource() );
-    copyFields( evt, event );
+  public void focusGained( final FocusEvent typedEvent ) {
+    Event event = createEvent( SWT.FocusIn, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void focusLost( final FocusEvent evt ) {
-    Event event = createEvent( SWT.FocusOut, evt.getSource() );
-    copyFields( evt, event );
+  public void focusLost( final FocusEvent typedEvent ) {
+    Event event = createEvent( SWT.FocusOut, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void treeCollapsed( final TreeEvent evt ) {
-    Event event = createEvent( SWT.Collapse, evt.getSource() );
-    copyFields( evt, event );
+  public void treeCollapsed( final TreeEvent typedEvent ) {
+    Event event = createEvent( SWT.Collapse, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void treeExpanded( final TreeEvent evt ) {
-    Event event = createEvent( SWT.Expand, evt.getSource() );
-    copyFields( evt, event );
+  public void treeExpanded( final TreeEvent typedEvent ) {
+    Event event = createEvent( SWT.Expand, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void shellActivated( final ShellEvent evt ) {
-    Event event = createEvent( SWT.Activate, evt.getSource() );
-    copyFields( evt, event );
+  public void shellActivated( final ShellEvent typedEvent ) {
+    Event event = createEvent( SWT.Activate, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void shellClosed( final ShellEvent evt ) {
-    Event event = createEvent( SWT.Close, evt.getSource() );
-    copyFields( evt, event );
+  public void shellClosed( final ShellEvent typedEvent ) {
+    Event event = createEvent( SWT.Close, typedEvent.getSource() );
+    copyFields( typedEvent, event );
+    dispatchEvent( event );
+    typedEvent.doit = event.doit;
+  }
+
+  public void shellDeactivated( final ShellEvent typedEvent ) {
+    Event event = createEvent( SWT.Deactivate, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void shellDeactivated( final ShellEvent evt ) {
-    Event event = createEvent( SWT.Deactivate, evt.getSource() );
-    copyFields( evt, event );
+  public void menuHidden( final MenuEvent typedEvent ) {
+    Event event = createEvent( SWT.Hide, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void menuHidden( final MenuEvent evt ) {
-    Event event = createEvent( SWT.Hide, evt.getSource() );
-    copyFields( evt, event );
+  public void menuShown( final MenuEvent typedEvent ) {
+    Event event = createEvent( SWT.Show, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void menuShown( final MenuEvent evt ) {
-    Event event = createEvent( SWT.Show, evt.getSource() );
-    copyFields( evt, event );
+  public void modifyText( final ModifyEvent typedEvent ) {
+    Event event = createEvent( SWT.Modify, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void modifyText( final ModifyEvent evt ) {
-    Event event = createEvent( SWT.Modify, evt.getSource() );
-    copyFields( evt, event );
+  public void verifyText( final VerifyEvent typedEvent ) {
+    Event event = createEvent( SWT.Verify, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void verifyText( final VerifyEvent evt ) {
-    Event event = createEvent( SWT.Verify, evt.getSource() );
-    copyFields( evt, event );
+  public void update( final SetDataEvent typedEvent ) {
+    Event event = createEvent( SWT.SetData, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void update( final SetDataEvent evt ) {
-    Event event = createEvent( SWT.SetData, evt.getSource() );
-    copyFields( evt, event );
+  public void mouseDown( final MouseEvent typedEvent ) {
+    Event event = createEvent( SWT.MouseDown, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void mouseDown( final MouseEvent evt ) {
-    Event event = createEvent( SWT.MouseDown, evt.getSource() );
-    copyFields( evt, event );
+  public void mouseUp( final MouseEvent typedEvent ) {
+    Event event = createEvent( SWT.MouseUp, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void mouseUp( final MouseEvent evt ) {
-    Event event = createEvent( SWT.MouseUp, evt.getSource() );
-    copyFields( evt, event );
-    dispatchEvent( event );
-  }
-
-  public void mouseDoubleClick( final MouseEvent evt ) {
-    Event event = createEvent( SWT.MouseDoubleClick, evt.getSource() );
-    copyFields( evt, event );
+  public void mouseDoubleClick( final MouseEvent typedEvent ) {
+    Event event = createEvent( SWT.MouseDoubleClick, typedEvent.getSource() );
+    copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
