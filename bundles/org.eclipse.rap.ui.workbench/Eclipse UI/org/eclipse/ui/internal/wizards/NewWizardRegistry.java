@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.wizards;
 
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 
@@ -20,7 +21,8 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
  */
 public final class NewWizardRegistry extends AbstractExtensionWizardRegistry {
 
-	private static NewWizardRegistry singleton;
+// RAP [rst] session singleton
+//	private static NewWizardRegistry singleton;
 	
 	/**
 	 * Return the singleton instance of this class.
@@ -28,10 +30,12 @@ public final class NewWizardRegistry extends AbstractExtensionWizardRegistry {
 	 * @return the singleton instance of this class
 	 */
 	public static synchronized NewWizardRegistry getInstance() {		
-		if (singleton == null) {
-			singleton = new NewWizardRegistry();
-		}
-		return singleton;
+      // RAP [rst] session singleton
+	  return ( NewWizardRegistry )SessionSingletonBase.getInstance( NewWizardRegistry.class );
+//		if (singleton == null) {
+//			singleton = new NewWizardRegistry();
+//		}
+//		return singleton;
 	}
 		
 	/**

@@ -63,7 +63,8 @@ public class WizardsRegistryReader extends RegistryReader {
      */
     final public static String GENERAL_WIZARD_CATEGORY = "org.eclipse.ui.Basic";	//$NON-NLS-1$
 
-    final private static String UNCATEGORIZED_WIZARD_CATEGORY_LABEL = WorkbenchMessages.get().NewWizardsRegistryReader_otherCategory;
+// RAP [rst] multi-user i18n
+//    final private static String UNCATEGORIZED_WIZARD_CATEGORY_LABEL = WorkbenchMessages.get().NewWizardsRegistryReader_otherCategory;
     
     private final static String CATEGORY_SEPARATOR = "/";//$NON-NLS-1$
 
@@ -394,7 +395,9 @@ public class WizardsRegistryReader extends RegistryReader {
         if (otherCategory == null) {
 			otherCategory = createCollectionElement(root,
                     UNCATEGORIZED_WIZARD_CATEGORY, null,
-                    UNCATEGORIZED_WIZARD_CATEGORY_LABEL);
+// RAP [rst] multi-user i18n
+//                    UNCATEGORIZED_WIZARD_CATEGORY_LABEL);
+                    WorkbenchMessages.get().NewWizardsRegistryReader_otherCategory);
 		}
 
         otherCategory.add(element);
