@@ -329,7 +329,12 @@ public class ControlLCAUtil {
    * @throws IOException
    */
   public static void writeMenu( final Control control ) throws IOException {
-    WidgetLCAUtil.writeMenu( control, control.getMenu() );
+    // [if] Write the shell context menu in Shell#writePopupMenu(),
+    // otherwise the shell.setContextMenu is called before the actual creation
+    // of the client menu widget. See bug 223879.
+    if( !( control instanceof Shell ) ) {
+      WidgetLCAUtil.writeMenu( control, control.getMenu() );
+    }
   }
 
   /**

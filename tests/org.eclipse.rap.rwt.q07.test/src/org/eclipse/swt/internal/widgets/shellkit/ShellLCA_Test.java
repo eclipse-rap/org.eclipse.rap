@@ -498,6 +498,35 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
+  // see bug 223879
+  public void testRenderPopupMenu() {
+    Display display = new Display();
+    Fixture.markInitialized( display );
+    Shell shell = new Shell( display , SWT.NONE );
+    shell.setMinimumSize( 100, 100 );
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+    item.setText( "Popup" );
+    shell.setMenu( menu );
+    Fixture.fakeResponseWriter();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.executeLifeCycleFromServerThread();
+    String markup = Fixture.getAllMarkup();
+    String createMenuScript
+      = "var w = new org.eclipse.rwt.widgets.Menu();"
+      + "wm.add( w, \"w3\", false );";
+    int createMenuScriptIndex = markup.indexOf( createMenuScript );
+    String setShellMenuScript
+      = "var w = wm.findWidgetById( \"w2\" );"
+      + "w.setContextMenu( wm.findWidgetById( \"w3\" ) );";
+    int setShellMenuScriptIndex = markup.indexOf( setShellMenuScript );
+    assertTrue( createMenuScriptIndex != -1 );
+    assertTrue( setShellMenuScriptIndex != -1 );
+    assertTrue( createMenuScriptIndex < setShellMenuScriptIndex );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

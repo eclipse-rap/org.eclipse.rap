@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
@@ -139,6 +140,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writeCloseListener( shell );
     writeMinimumSize( shell );
     writeDefaultButton( shell );
+    writePopupMenu( shell );
     ControlLCAUtil.writeChanges( shell );
   }
 
@@ -200,6 +202,22 @@ public final class ShellLCA extends AbstractWidgetLCA {
     if( defaultButton != null && defaultButton.isDisposed() ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
       writer.call( "setDefaultButton", NULL_PARAMETER );
+    }
+  }
+
+  private static void writePopupMenu( final Shell shell ) throws IOException {
+    final Menu menu = shell.getMenu();
+    if( WidgetLCAUtil.hasChanged( shell, Props.MENU, menu, null ) ) {
+      if( menu != null ) {
+        WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( menu );
+        adapter.setRenderRunnable( new IRenderRunnable() {
+          public void afterRender() throws IOException {
+            WidgetLCAUtil.writeMenu( shell, menu );
+          }
+        } );
+      } else {
+        WidgetLCAUtil.writeMenu( shell, menu );
+      }
     }
   }
 
