@@ -66,8 +66,8 @@ import org.eclipse.swt.widgets.Display;
  * -->
  * @since 1.3
  */
-public class GC extends Resource {
 
+public class GC extends Resource {
   private final Control control;
   private Font font;
   private Color background;
@@ -1000,6 +1000,9 @@ public class GC extends Resource {
    */
   public void drawPolygon( final int[] pointArray ) {
     checkDisposed();
+    if( pointArray == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     DrawPolyline operation = new DrawPolyline( pointArray, true, false );
     addGCOperation( operation );
   }
@@ -1025,6 +1028,9 @@ public class GC extends Resource {
    */
   public void fillPolygon( final int[] pointArray ) {
     checkDisposed();
+    if( pointArray == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     DrawPolyline operation = new DrawPolyline( pointArray, true, true );
     addGCOperation( operation );
   }
@@ -1048,6 +1054,9 @@ public class GC extends Resource {
    */
   public void drawPolyline( final int[] pointArray ) {
     checkDisposed();
+    if( pointArray == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     DrawPolyline operation = new DrawPolyline( pointArray, false, false );
     addGCOperation( operation );
   }
@@ -1411,10 +1420,10 @@ public class GC extends Resource {
     }
   }
 
-  private static Rectangle checkBounds( final int x,
-                                        final int y,
-                                        final int width,
-                                        final int height )
+  static Rectangle checkBounds( final int x,
+                                final int y,
+                                final int width,
+                                final int height )
   {
     Rectangle result = new Rectangle( x, y, width, height );
     if( width < 0 ) {
