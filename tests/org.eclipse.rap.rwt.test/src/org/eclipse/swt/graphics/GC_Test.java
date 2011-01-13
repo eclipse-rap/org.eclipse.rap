@@ -25,8 +25,9 @@ import org.eclipse.swt.widgets.*;
 
 public class GC_Test extends TestCase {
 
+  private Display display;
+
   public void testConstructorWithNullArgument() {
-    new Display();
     try {
       new GC( null );
       fail( "GC( Device ): Must not allow null-argument" );
@@ -35,21 +36,26 @@ public class GC_Test extends TestCase {
     }
   }
 
+  public void testInitialValues() {
+    GC gc = new GC( display );
+    assertEquals( 255, gc.getAlpha() );
+    assertEquals( SWT.CAP_FLAT, gc.getLineCap() );
+    assertEquals( SWT.JOIN_MITER, gc.getLineJoin() );
+  }
+  
   public void testControlGCFont() {
-    Shell shell = new Shell( new Display() );
+    Shell shell = new Shell( display );
     Control control = new Label( shell, SWT.NONE );
     GC gc = new GC( control );
     assertEquals( control.getFont(), gc.getFont() );
   }
 
   public void testDisplayGCFont() {
-    Display display = new Display();
     GC gc = new GC( display );
     assertEquals( display.getSystemFont(), gc.getFont() );
   }
 
   public void testSetFont() {
-    Display display = new Display();
     GC gc = new GC( display );
     Font font = new Font( display, "font-name", 11, SWT.NORMAL );
     gc.setFont( font );
@@ -66,7 +72,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDisposedGC() {
-    Display display = new Display();
     GC gc = new GC( display );
     gc.dispose();
     assertTrue( gc.isDisposed() );
@@ -289,7 +294,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testTextExtentWithNullArgument() {
-    Display display = new Display();
     GC gc = new GC( display );
     try {
       gc.textExtent( null );
@@ -300,7 +304,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testTextExtent() {
-    Display display = new Display();
     GC gc = new GC( display );
     String string = "foo";
     Font systemFont = display.getSystemFont();
@@ -310,7 +313,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testStringExtent() {
-    Display display = new Display();
     GC gc = new GC( display );
     String string = "foo";
     Font systemFont = display.getSystemFont();
@@ -320,28 +322,25 @@ public class GC_Test extends TestCase {
   }
 
   public void testGetCharWidth() {
-    Display display = new Display();
     GC gc = new GC( display );
     int width = gc.getCharWidth( 'A' );
     assertTrue( width > 0 );
   }
 
   public void testControlGCBackground() {
-    Shell shell = new Shell( new Display() );
+    Shell shell = new Shell( display );
     Control control = new Label( shell, SWT.NONE );
     GC gc = new GC( control );
     assertEquals( control.getBackground(), gc.getBackground() );
   }
 
   public void testDisplayGCBackground() {
-    Display display = new Display();
     GC gc = new GC( display );
     assertEquals( display.getSystemColor( SWT.COLOR_WHITE ),
                   gc.getBackground() );
   }
 
   public void testSetBackground() {
-    Display display = new Display();
     GC gc = new GC( display );
     Color color = new Color( display, 1, 2, 3 );
     gc.setBackground( color );
@@ -357,7 +356,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testSetBackgroundNullArgument() {
-    Display display = new Display();
     GC gc = new GC( display );
     try {
       gc.setBackground( null );
@@ -368,7 +366,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testSetBackgroundWithDisposedColor() {
-    Display display = new Display();
     GC gc = new GC( display );
     Color color = new Color( display, 1, 2, 3 );
     color.dispose();
@@ -381,21 +378,19 @@ public class GC_Test extends TestCase {
   }
 
   public void testControlGCForeground() {
-    Shell shell = new Shell( new Display() );
+    Shell shell = new Shell( display );
     Control control = new Label( shell, SWT.NONE );
     GC gc = new GC( control );
     assertEquals( control.getForeground(), gc.getForeground() );
   }
 
   public void testDisplayGCForeground() {
-    Display display = new Display();
     GC gc = new GC( display );
     assertEquals( display.getSystemColor( SWT.COLOR_BLACK ),
                   gc.getForeground() );
   }
 
   public void testSetForeground() {
-    Display display = new Display();
     GC gc = new GC( display );
     Color color = new Color( display, 1, 2, 3 );
     gc.setForeground( color );
@@ -411,7 +406,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testSetForegroundNullArgument() {
-    Display display = new Display();
     GC gc = new GC( display );
     try {
       gc.setForeground( null );
@@ -422,7 +416,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testSetForegroundWithDisposedColor() {
-    Display display = new Display();
     GC gc = new GC( display );
     Color color = new Color( display, 1, 2, 3 );
     color.dispose();
@@ -435,7 +428,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testGetGCAdapter() {
-    Display display = new Display();
     Shell shell = new Shell( display );
     GC gc = new GC( shell );
     IGCAdapter adapter1 = gc.getGCAdapter();
@@ -450,7 +442,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawOperationWithNonCanvas() {
-    Display display = new Display();
     Shell shell = new Shell( display );
     Button button = new Button( shell, SWT.NONE );
     GC gc = new GC( button );
@@ -459,7 +450,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testSetAlpha() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.setAlpha( 123 );
@@ -470,9 +460,18 @@ public class GC_Test extends TestCase {
     assertEquals( SetProperty.ALPHA, operation.id );
     assertEquals( new Integer( 123 ), operation.value );
   }
+  
+  public void testSetAlphaWithInvalidValue() {
+    Control control = new Shell( display );
+    GC gc = new GC( control );
+    gc.setAlpha( 777 );
+    assertEquals( 255, gc.getAlpha() );
+    IGCAdapter adapter = gc.getGCAdapter();
+    GCOperation[] gcOperations = adapter.getGCOperations();
+    assertEquals( 0, gcOperations.length );
+  }
 
   public void testSetLineWidth() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.setLineWidth( 5 );
@@ -483,8 +482,8 @@ public class GC_Test extends TestCase {
     assertEquals( SetProperty.LINE_WIDTH, operation.id );
     assertEquals( new Integer( 5 ), operation.value );
   }
+  
   public void testSetLineCap() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.setLineCap( SWT.CAP_ROUND );
@@ -503,7 +502,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testSetLineJoin() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.setLineJoin( SWT.JOIN_ROUND );
@@ -522,7 +520,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testSetLineAttributes() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     LineAttributes attributes
@@ -554,7 +551,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawLine() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawLine( 1, 2, 3, 4 );
@@ -568,7 +564,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawPoint() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawPoint( 1, 2 );
@@ -580,7 +575,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawRectangle() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawRectangle( 1, 2, 3, 4 );
@@ -612,7 +606,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawFocus() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawFocus( 1, 2, 3, 4 );
@@ -627,7 +620,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testFillRectangle() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.fillRectangle( 1, 2, 3, 4 );
@@ -659,7 +651,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testFillGradientRectangle() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.fillGradientRectangle( 1, 2, 3, 4, true );
@@ -683,7 +674,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawRoundRectangle() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawRoundRectangle( 1, 2, 3, 4, 5, 6 );
@@ -732,7 +722,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testFillRoundRectangle() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.fillRoundRectangle( 1, 2, 3, 4, 5, 6 );
@@ -781,7 +770,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawArc() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawArc( 1, 2, 3, 4, 5, 6 );
@@ -823,7 +811,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testFillArc() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.fillArc( 1, 2, 3, 4, 5, 6 );
@@ -864,7 +851,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawOval() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawOval( 1, 2, 3, 4 );
@@ -893,7 +879,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testFillOval() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.fillOval( 1, 2, 3, 4 );
@@ -922,7 +907,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawPolygon() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     int[] pointArray = new int[] { 1, 2, 3, 4 };
@@ -936,7 +920,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testFillPolygon() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     int[] pointArray = new int[] { 1, 2, 3, 4 };
@@ -950,7 +933,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawPolyline() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     int[] pointArray = new int[] { 1, 2, 3, 4 };
@@ -964,12 +946,10 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawText() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawText( "text", 10, 10, SWT.DRAW_TRANSPARENT );
-    GCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawText operation = ( DrawText )gcOperations[ 0 ];
     assertEquals( "text", operation.text );
     assertEquals( 10, operation.x );
@@ -984,22 +964,18 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawTextWithEmptyString() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawText( "", 10, 10, SWT.DRAW_TRANSPARENT );
-    GCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     assertEquals( 0, gcOperations.length );
   }
 
   public void testDrawString() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawString( "text", 10, 10, true );
-    GCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawText operation = ( DrawText )gcOperations[ 0 ];
     assertEquals( "text", operation.text );
     assertEquals( 10, operation.x );
@@ -1014,17 +990,14 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawStringWithEmptyString() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawString( "", 10, 10, false );
-    GCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     assertEquals( 0, gcOperations.length );
   }
 
   public void testDrawImageWithNullImage() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     try {
@@ -1036,7 +1009,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawImageWithDisposedImage() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     ClassLoader loader = Fixture.class.getClassLoader();
@@ -1052,13 +1024,11 @@ public class GC_Test extends TestCase {
   }
 
   public void testDrawImage() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     Image image = display.getSystemImage( SWT.ICON_INFORMATION );
     gc.drawImage( image, 1, 2 );
-    GCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawImage operation = ( DrawImage )gcOperations[ 0 ];
     assertSame( image, operation.image );
     assertEquals( 0, operation.srcX );
@@ -1071,7 +1041,7 @@ public class GC_Test extends TestCase {
     assertEquals( -1, operation.destHeight );
     assertTrue( operation.simple );
     gc.drawImage( image, 1, 2, 3, 4, 5, 6, 7, 8 );
-    gcOperations = adapter.getGCOperations();
+    gcOperations = getGCOperations( gc );
     operation = ( DrawImage )gcOperations[ 1 ];
     assertSame( image, operation.image );
     assertEquals( 1, operation.srcX );
@@ -1086,7 +1056,6 @@ public class GC_Test extends TestCase {
   }
   
   public void testDrawImageWithInvalidSourceRegion() {
-    Display display = new Display();
     Control control = new Shell( display );
     GC gc = new GC( control );
     Image image = display.getSystemImage( SWT.ICON_INFORMATION );
@@ -1107,7 +1076,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testGetClippingForControl() {
-    Display display = new Display();
     Shell shell = new Shell( display );
     Canvas canvas = new Canvas( shell, SWT.NONE );
     canvas.setSize( 100, 100 );
@@ -1117,14 +1085,12 @@ public class GC_Test extends TestCase {
   }
 
   public void testGetClippingForDisplay() {
-    Display display = new Display();
     GC gc = new GC( display );
     Rectangle clipping = gc.getClipping();
     assertEquals( display.getBounds(), clipping );
   }
 
   public void testGetClippingOnDisposedGC() {
-    Display display = new Display();
     GC gc = new GC( display );
     gc.dispose();
     try {
@@ -1136,7 +1102,6 @@ public class GC_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
     Shell shell = new Shell( display );
     GC gc = new GC( shell, SWT.NONE );
     assertEquals( SWT.LEFT_TO_RIGHT, gc.getStyle() );
@@ -1148,9 +1113,15 @@ public class GC_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private static GCOperation[] getGCOperations( final GC gc ) {
+    GCAdapter adapter = gc.getGCAdapter();
+    return adapter.getGCOperations();
   }
 }
