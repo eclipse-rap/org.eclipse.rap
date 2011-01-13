@@ -285,6 +285,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       }
     ],
 
+    testObjectToString : function() {
+      var browser = this._createBrowser();
+      var object = [];
+      object[ 0 ] = 12;
+      object[ 1 ] = false;
+      object[ 2 ] = null;
+      object[ 3 ] = "eclipse";
+      object[ 4 ] = "double \" \" quotes";
+      object[ 5 ] = [ 3.6, [ 'swt', true ] ];
+      var ecpected = "[12,false,null,\"eclipse\",\"double \\\" \\\" quotes\",[3.6,[\"swt\",true]]]";
+      assertEquals( ecpected, browser.objectToString( object ) );
+    },
+
     /////////////
     // helper
     

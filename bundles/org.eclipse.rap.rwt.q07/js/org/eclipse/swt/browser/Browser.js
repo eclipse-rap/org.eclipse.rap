@@ -224,7 +224,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
           var value = object[ i ];
           type = typeof( value );
           if( type == "string" ) {
-            value = '"' + value.replace( "\"", "\\\"" ) + '"';
+            value = '"' + value.replace( /"/g, "\\\"" ) + '"';
           } else if( type == "object" && value !== null ) {
             value = this.objectToString( value );
           }
@@ -232,7 +232,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         }
         result = "[" + String( result ) + "]";
       } else if( type == "string" ) {
-        result = '"' + object.replace( "\"", "\\\"" ) + '"';
+        result = '"' + object.replace( /"/g, "\\\"" ) + '"';
       } else {
         result = String( object );
       }
