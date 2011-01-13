@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2003, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.IActivity;
 import org.eclipse.ui.activities.IActivityManager;
 import org.eclipse.ui.activities.IActivityPatternBinding;
 import org.eclipse.ui.activities.ICategory;
 import org.eclipse.ui.activities.IIdentifier;
 import org.eclipse.ui.activities.NotDefinedException;
-import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.internal.activities.ActivityRequirementBinding;
 import org.eclipse.ui.internal.activities.CategoryActivityBinding;
 import org.eclipse.ui.tests.harness.util.UITestCase;
@@ -47,7 +47,7 @@ public class StaticTest extends UITestCase {
      */
     public StaticTest(String testName) {
         super(testName);
-        activityManager = Workbench.getInstance().getActivitySupport()
+        activityManager = PlatformUI.getWorkbench().getActivitySupport()
                 .getActivityManager();
         populateIds();
     }

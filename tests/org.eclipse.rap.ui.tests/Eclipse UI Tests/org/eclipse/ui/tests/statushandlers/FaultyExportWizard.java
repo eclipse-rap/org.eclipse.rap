@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.tests.statushandlers;
 
@@ -30,7 +30,7 @@ public class FaultyExportWizard extends Wizard implements IExportWizard {
 
 	/**
 	 * Intentional constructor that hides default one
-	 *
+	 * 
 	 * @param name
 	 *            does nothing
 	 */
@@ -40,7 +40,7 @@ public class FaultyExportWizard extends Wizard implements IExportWizard {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	public boolean performFinish() {
@@ -49,7 +49,7 @@ public class FaultyExportWizard extends Wizard implements IExportWizard {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
 	 *      org.eclipse.jface.viewers.IStructuredSelection)
 	 */
@@ -65,7 +65,7 @@ public class FaultyExportWizard extends Wizard implements IExportWizard {
 	public class MyWizardPage extends WizardPage {
 		/**
 		 * Creates some wizard page
-		 *
+		 * 
 		 * @param pageName
 		 */
 		protected MyWizardPage(String pageName) {
@@ -74,7 +74,7 @@ public class FaultyExportWizard extends Wizard implements IExportWizard {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 		 */
 		public void createControl(Composite parent) {

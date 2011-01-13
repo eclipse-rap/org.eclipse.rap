@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,21 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Markus Alexander Kuppe, Versant Corporation - bug #215797
  *******************************************************************************/
 package org.eclipse.ui.tests.session;
 
-import org.eclipse.ui.tests.harness.util.TweakletCheckTest;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.eclipse.jface.util.Util;
+import org.eclipse.ui.tests.harness.util.TweakletCheckTest;
+//import org.eclipse.ui.tests.markers.MarkersViewColumnSizeTest;
+//import org.eclipse.ui.tests.statushandlers.StatusHandlerConfigurationSuite;
+//import org.eclipse.ui.tests.statushandlers.StatusHandlingConfigurationTest;
 
 /**
  * @since 3.1
@@ -37,7 +45,32 @@ public class SessionTests extends TestSuite {
 //		addEditorTests();
 		addViewStateTests();
 		addThemeTests();
+//		addStatusHandlingTests();
+//		addRestoredSessionTest();
+		addWindowlessSessionTest();
 	}
+
+	/**
+	 *
+	 */
+	private void addWindowlessSessionTest() {
+		// Windowless apps are available only on Cocoa
+		if(Util.isCocoa()) {
+			Map arguments = new HashMap(2);
+			arguments.put("product", null);
+			arguments.put("testApplication", "org.eclipse.ui.tests.windowLessRcpApplication");
+			addTest(new WorkbenchSessionTest("windowlessSessionTests",WindowlessSessionTest.class, arguments));
+		}
+	}
+
+//	/**
+//	 *
+//	 */
+//	private void addStatusHandlingTests() {
+//		//actually we do not care which workspace is used
+//		addTest(new StatusHandlerConfigurationSuite("themeSessionTests",
+//				StatusHandlingConfigurationTest.class));
+//	}
 
 	/**
 	 *
@@ -55,9 +88,16 @@ public class SessionTests extends TestSuite {
 
 	}
 
-	/**
-	 * Add editor tests that involve starting and stopping sessions.
-	 */
+//	private void addRestoredSessionTest() {
+//		Map arguments = new HashMap(2);
+//		arguments.put("product", null);
+//		arguments.put("testApplication", "org.eclipse.ui.tests.rcpSessionApplication");
+//		addTest(new WorkbenchSessionTest("introSessionTests",RestoreSessionTest.class, arguments));
+//	}
+
+//	/**
+//	 * Add editor tests that involve starting and stopping sessions.
+//	 */
 //	private void addEditorTests() {
 //		addTest(new WorkbenchSessionTest("editorSessionTests",
 //				Bug95357Test.class));
@@ -98,5 +138,11 @@ public class SessionTests extends TestSuite {
 				Bug108033Test.class));
 		addTest(new WorkbenchSessionTest("editorSessionTests",
 				ArbitraryPropertiesViewTest.class));
+		addTest(new WorkbenchSessionTest("editorSessionTests",
+				NonRestorableViewTest.class));
+		addTest(new WorkbenchSessionTest("editorSessionTests",
+				NonRestorablePropertySheetTest.class));
+//		addTest(new WorkbenchSessionTest("editorSessionTests",
+//				MarkersViewColumnSizeTest.class));
 	}
 }

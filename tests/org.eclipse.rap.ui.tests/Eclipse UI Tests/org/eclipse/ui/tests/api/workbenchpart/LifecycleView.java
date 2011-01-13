@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.tests.api.workbenchpart;
 
@@ -19,8 +19,8 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.internal.services.IWorkbenchLocationService;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -79,7 +79,9 @@ public class LifecycleView extends ViewPart {
 	 * @see org.eclipse.ui.part.WorkbenchPart#dispose()
 	 */
 	public void dispose() {
-		if (getSite().getService(IWorkbenchPartSite.class) == null) {
+		IWorkbenchLocationService wls = (IWorkbenchLocationService) getSite()
+				.getService(IWorkbenchLocationService.class);
+		if (wls.getPartSite() == null) {
 			callSiteDispose = true;
 		}
 		callPartDispose = true;

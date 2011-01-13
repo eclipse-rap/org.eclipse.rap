@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@ public class InternalTestSuite extends TestSuite {
      * Construct the test suite.
      */
     public InternalTestSuite() {
+//        addTest(new TestSuite(TrimLayoutTest.class));
+//        addTest(new TestSuite(AnimationEngineTest.class));
 //        addTest(new TestSuite(EditorActionBarsTest.class));
         addTest(new TestSuite(ActionSetExpressionTest.class));
         addTest(new TestSuite(PopupMenuExpressionTest.class));
@@ -47,8 +49,16 @@ public class InternalTestSuite extends TestSuite {
 //        addTest(new TestSuite(DeclarativeFilterDeclarationTest.class));
 //        addTest(new TestSuite(ResourceMappingMarkersTest.class));
 //        addTest(new TestSuite(MarkerSupportRegistryTests.class));
+//        addTest(new TestSuite(MarkerSortUtilTest.class));
 //        addTest(new TestSuite(MarkerViewTests.class));
 //        addTest(Bug99858Test.suite());
         addTest(new TestSuite(WorkbenchWindowSubordinateSourcesTests.class));
+        addTest(new TestSuite(ReopenMenuTest.class));
+        addTest(new TestSuite(UtilTest.class));
+//		addTest(new TestSuite(MarkerTesterTest.class));
+//		addTest(new TestSuite(TextHandlerTest.class));
+//        addTest(new TestSuite(PerspectiveSwitcherTest.class));
+//        addTest(new TestSuite(StickyViewManagerTest.class));
+//        addTest(new TestSuite(FileEditorMappingTest.class));
     }
 }

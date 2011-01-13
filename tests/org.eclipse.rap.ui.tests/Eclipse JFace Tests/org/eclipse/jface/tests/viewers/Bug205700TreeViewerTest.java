@@ -44,8 +44,7 @@ public class Bug205700TreeViewerTest extends TestCase {
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
-//		shell = new Shell();
-		shell = new Shell(SWT.TITLE);
+		shell = new Shell();
 
 		viewer = new TreeViewer(shell, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 

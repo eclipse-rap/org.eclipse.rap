@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,12 +27,12 @@ public class DecoratorsTestSuite extends TestSuite {
 	 * Construct the test suite.
 	 */
 	public DecoratorsTestSuite() {
-		addTest(new TestSuite(ExceptionDecoratorTestCase.class));
+//		addTest(new TestSuite(ExceptionDecoratorTestCase.class));
 		addTest(new TestSuite(DecoratorTestCase.class));
 		addTest(new TestSuite(LightweightDecoratorTestCase.class));
 		addTest(new TestSuite(BadIndexDecoratorTestCase.class));
-		addTest(new TestSuite(DecoratorTreeTest.class));
-		addTest(new TestSuite(DecoratorTableTest.class));
+//		addTest(new TestSuite(DecoratorTreeTest.class));
+//		addTest(new TestSuite(DecoratorTableTest.class));
 //		addTest(new TestSuite(DecoratorTableTreeTest.class));
 		addTest(new TestSuite(DecoratorAdaptableTests.class));
 //		addTest(new TestSuite(DecoratorCacheTest.class));

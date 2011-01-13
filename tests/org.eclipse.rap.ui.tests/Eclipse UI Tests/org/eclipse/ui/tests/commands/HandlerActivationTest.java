@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.tests.commands;
 
@@ -260,6 +260,19 @@ public class HandlerActivationTest extends UITestCase {
 				CMD_ID, currentHandler, expression));
 	}
 
+	
+	public void testExceptionThrowingHandler(){
+		
+		try {
+			handlerService.executeCommand("org.eclipse.ui.tests.command.handlerException", null);
+			fail("An exception should be thrown for this handler");
+		} catch (Exception e) {
+			if(!(e instanceof ExecutionException))
+				fail("Unexpected exception while executing command", e);
+		}
+	}
+	
+	
 	public void testBasicHandler() throws Exception {
 
 		createHandlerActivation(C1_ID, H1,

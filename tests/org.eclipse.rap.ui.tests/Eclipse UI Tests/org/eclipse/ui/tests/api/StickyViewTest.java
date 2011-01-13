@@ -1,5 +1,5 @@
 ///*******************************************************************************
-// * Copyright (c) 2004, 2007 IBM Corporation and others.
+// * Copyright (c) 2004, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@
 //
 //import org.eclipse.core.resources.IFile;
 //import org.eclipse.core.resources.IProject;
+//import org.eclipse.jface.action.IContributionItem;
 //import org.eclipse.jface.preference.IPreferenceStore;
 //import org.eclipse.swt.widgets.Menu;
 //import org.eclipse.swt.widgets.MenuItem;
@@ -28,24 +29,21 @@
 //import org.eclipse.ui.IWorkbenchPreferenceConstants;
 //import org.eclipse.ui.IWorkbenchWindow;
 //import org.eclipse.ui.PartInitException;
-//import org.eclipse.ui.internal.FastViewBar;
-//import org.eclipse.ui.internal.FastViewBarContextMenuContribution;
-//import org.eclipse.ui.internal.PartSite;
-//import org.eclipse.ui.internal.ViewPane;
-//import org.eclipse.ui.internal.WorkbenchPage;
+//import org.eclipse.ui.PlatformUI;
 //import org.eclipse.ui.internal.WorkbenchPlugin;
-//import org.eclipse.ui.internal.WorkbenchWindow;
+//import org.eclipse.ui.internal.tweaklets.Tweaklets;
 //import org.eclipse.ui.internal.util.PrefUtil;
 //import org.eclipse.ui.part.FileEditorInput;
 //import org.eclipse.ui.tests.harness.util.FileUtil;
 //import org.eclipse.ui.tests.harness.util.UITestCase;
+//import org.eclipse.ui.tests.helpers.TestFacade;
 //import org.eclipse.ui.views.IStickyViewDescriptor;
 //
 ///**
 // * @since 3.0
 // */
 //public class StickyViewTest extends UITestCase {
-//	
+//
 //	/**
 //	 * Allow tests to run just in this class.
 //	 * @return the TestSuite to run.
@@ -53,10 +51,12 @@
 //	public static TestSuite suite() {
 //		return new TestSuite(StickyViewTest.class);
 //	}
-//	
+//
 //    private IWorkbenchWindow window;
 //
 //    private IWorkbenchPage page;
+//
+//	private TestFacade facade;
 //
 //    /**
 //     * @param testName
@@ -146,9 +146,9 @@
 //        testMoveable("org.eclipse.ui.tests.api.StickyViewLeft1", true);
 //    }
 //
-//    /** 
+//    /**
 //     * Tests whether a sticky view with the given id is moveable or not.
-//     * 
+//     *
 //     * @param id the id
 //     * @param expectation the expected moveable state
 //     */
@@ -158,8 +158,8 @@
 //            assertNotNull(part);
 //            assertTrue(ViewUtils.isSticky(part));
 //
-//            //tests to ensure that the XML was read correctly            
-//            IStickyViewDescriptor[] descs = WorkbenchPlugin.getDefault()
+//            //tests to ensure that the XML was read correctly
+//            IStickyViewDescriptor[] descs = PlatformUI.getWorkbench()
 //                    .getViewRegistry().getStickyViews();
 //            for (int i = 0; i < descs.length; i++) {
 //                if (descs[i].getId().equals(id)) {
@@ -174,9 +174,9 @@
 //        }
 //    }
 //
-//    /** 
+//    /**
 //     * Tests whether a sticky view with the given id is closeable or not.
-//     * 
+//     *
 //     * @param id the id
 //     * @param expectation the expected closeable state
 //     */
@@ -186,8 +186,8 @@
 //            assertNotNull(part);
 //            assertTrue(ViewUtils.isSticky(part));
 //
-//            //tests to ensure that the XML was read correctly            
-//            IStickyViewDescriptor[] descs = WorkbenchPlugin.getDefault()
+//            //tests to ensure that the XML was read correctly
+//            IStickyViewDescriptor[] descs = PlatformUI.getWorkbench()
 //                    .getViewRegistry().getStickyViews();
 //            for (int i = 0; i < descs.length; i++) {
 //                if (descs[i].getId().equals(id)) {
@@ -231,11 +231,11 @@
 //            fail(e.getMessage());
 //        }
 //    }
-//    
+//
 //    /**
 //     * Test that closing a stand-alone view remove the editor stack and
 //     * doesn't throw an NPE.
-//     * 
+//     *
 //     * @throws Throwable on error
 //     * @since 3.2
 //     */
@@ -254,10 +254,10 @@
 //			page.closePerspective(page.getPerspective(), false, false);
 //		}
 //    }
-//    
+//
 //	/**
 //	 * Test that a view marked as non-closable cannot be closed as a fast view.
-//	 * 
+//	 *
 //	 * @throws Throwable
 //	 * @since 3.1.1
 //	 */
@@ -276,37 +276,35 @@
 //			IViewReference viewRef = page
 //					.findViewReference(PerspectiveViewsBug88345.NORMAL_VIEW_ID);
 //
-//			WorkbenchPage wpage = (WorkbenchPage) page;
-//			assertFalse(wpage.isFastView(stickyRef));
+//			assertFalse(facade.isFastView(page, stickyRef));
 //
-//			wpage.addFastView(stickyRef);
-//			assertTrue(wpage.isFastView(stickyRef));
+//			facade.addFastView(page, stickyRef);
+//			assertTrue(facade.isFastView(page, stickyRef));
 //
-//			wpage.addFastView(viewRef);
-//			assertTrue(wpage.isFastView(viewRef));
+//			facade.addFastView(page, viewRef);
+//			assertTrue(facade.isFastView(page, viewRef));
 //
-//			FastViewBar fastViewBar = ((WorkbenchWindow) page
-//					.getWorkbenchWindow()).getFastViewBar();
-//			FastViewBarContextMenuContribution menuContribution = fastViewBar
-//					.testContextMenu();
+//
+//
+//			IContributionItem menuContribution = facade.getFVBContribution(page);
 //
 //			// set the target of a normal view that is now a fast view
 //			// close should be enabled
-//			menuContribution.setTarget(viewRef);
-//			checkEnabledMenuItem(wpage, menuContribution, "Close", true);
+//			facade.setFVBTarget(menuContribution, viewRef);
+//			checkEnabledMenuItem(page, menuContribution, "Close", true);
 //
 //			// set the target of our non-closeable fast view
 //			// close should not be enabled
-//			menuContribution.setTarget(stickyRef);
-//			checkEnabledMenuItem(wpage, menuContribution, "Close", false);
+//			facade.setFVBTarget(menuContribution, stickyRef);
+//			checkEnabledMenuItem(page, menuContribution, "Close", false);
 //		} finally {
 //			page.closePerspective(page.getPerspective(), false, false);
 //		}
 //	}
-//	
+//
 //	/**
 //	 * Test that a fast view marked as non-moveable cannot be docked.
-//	 * 
+//	 *
 //	 * @throws Throwable
 //	 * @since 3.1.1
 //	 */
@@ -323,27 +321,23 @@
 //			IViewReference viewRef = page
 //					.findViewReference(PerspectiveViewsBug88345.NORMAL_VIEW_ID);
 //
-//			WorkbenchPage wpage = (WorkbenchPage) page;
-//			assertFalse(wpage.isFastView(viewRef));
-//			assertTrue(wpage.isFastView(stickyRef));
+//			assertFalse(facade.isFastView(page, viewRef));
+//			assertTrue(facade.isFastView(page, stickyRef));
 //
-//			wpage.addFastView(viewRef);
-//			assertTrue(wpage.isFastView(viewRef));
+//			facade.addFastView(page, viewRef);
+//			assertTrue(facade.isFastView(page, viewRef));
 //
-//			FastViewBar fastViewBar = ((WorkbenchWindow) page
-//					.getWorkbenchWindow()).getFastViewBar();
-//			FastViewBarContextMenuContribution menuContribution = fastViewBar
-//					.testContextMenu();
+//			IContributionItem menuContribution = facade.getFVBContribution(page);
 //
 //			// set the target of a normal view that is now a fast view
 //			// Fast View should be enabled
-//			menuContribution.setTarget(viewRef);
-//			checkEnabledMenuItem(wpage, menuContribution, "Fast View", true);
+//			facade.setFVBTarget(menuContribution, viewRef);
+//			checkEnabledMenuItem(page, menuContribution, "Fast View", true);
 //
 //			// set the target of our non-closeable fast view
 //			// Fast View should not be enabled
-//			menuContribution.setTarget(stickyRef);
-//			checkEnabledMenuItem(wpage, menuContribution, "Fast View", false);
+//			facade.setFVBTarget(menuContribution, stickyRef);
+//			checkEnabledMenuItem(page, menuContribution, "Fast View", false);
 //		} finally {
 //			page.closePerspective(page.getPerspective(), false, false);
 //		}
@@ -351,14 +345,14 @@
 //
 //	/**
 //	 * Find the supplied menu item and make sure it's enabled/disabled.
-//	 * 
+//	 *
 //	 * @param wpage the workbench page
 //	 * @param menuContribution the fast bar menu contribution item
 //	 * @param isEnabled should the item be enabled
 //	 * @since 3.1.1
 //	 */
-//	private void checkEnabledMenuItem(WorkbenchPage wpage,
-//			FastViewBarContextMenuContribution menuContribution,
+//	private void checkEnabledMenuItem(IWorkbenchPage wpage,
+//			IContributionItem menuContribution,
 //			String itemName,
 //			boolean isEnabled) {
 //		Menu m = new Menu(wpage.getWorkbenchWindow().getShell());
@@ -383,7 +377,7 @@
 //	/**
 //	 * Test that the view toolbar visibility matches the presentation
 //	 * visibility for a view.
-//	 * 
+//	 *
 //	 * @throws Throwable on an error
 //	 * @since 3.2
 //	 */
@@ -393,7 +387,7 @@
 //        IPreferenceStore apiStore = PrefUtil.getAPIPreferenceStore();
 //        boolean oldMinMaxState = apiStore.getBoolean(IWorkbenchPreferenceConstants.ENABLE_NEW_MIN_MAX);
 //		apiStore.setValue(IWorkbenchPreferenceConstants.ENABLE_NEW_MIN_MAX, false);
-//        
+//
 //		IPerspectiveDescriptor perspective = WorkbenchPlugin.getDefault()
 //				.getPerspectiveRegistry().findPerspectiveWithId(
 //						PerspectiveViewsBug88345.PERSP_ID);
@@ -416,12 +410,10 @@
 //			// make sure the view is active
 //			assertNotNull("The view must exist", viewRef.getPart(true));
 //			page.activate(viewRef.getPart(true));
-//			PartSite site = (PartSite) viewRef.getPart(true).getSite();
-//			ViewPane pane = (ViewPane) site.getPane();
 //
-//			assertTrue(pane.isVisible());
-//			assertNotNull("This view must have a toolbar", pane.getToolBar());
-//			assertTrue(pane.getToolBar().isVisible());
+//
+//			assertTrue(facade.isViewPaneVisible(viewRef));
+//			assertTrue(facade.isViewToolbarVisible(viewRef));
 //
 //			// open the editor and zoom it.
 //			editor = page.openEditor(new FileEditorInput(test01), registry
@@ -430,21 +422,21 @@
 //
 //			IWorkbenchPartReference ref = page.getReference(editor);
 //			page.toggleZoom(ref);
-//			assertFalse(pane.isVisible());
-//			assertFalse(pane.getToolBar().isVisible());
+//			assertFalse(facade.isViewPaneVisible(viewRef));
+//			assertFalse(facade.isViewToolbarVisible(viewRef));
 //
 //			// switch to another perspective, and then switch back.
 //			page.setPerspective(secondPerspective);
 //
-//			assertFalse(pane.isVisible());
-//			assertFalse(pane.getToolBar().isVisible());
+//			assertFalse(facade.isViewPaneVisible(viewRef));
+//			assertFalse(facade.isViewToolbarVisible(viewRef));
 //
 //			page.setPerspective(perspective);
 //			processEvents();
 //
 //			// both the view and the toolbar must be not visible
-//			assertFalse(pane.isVisible());
-//			assertFalse(pane.getToolBar().isVisible());
+//			assertFalse(facade.isViewPaneVisible(viewRef));
+//			assertFalse(facade.isViewToolbarVisible(viewRef));
 //
 //		} finally {
 //			if (editor != null) {
@@ -460,11 +452,12 @@
 //
 //    /*
 //	 * (non-Javadoc)
-//	 * 
+//	 *
 //	 * @see org.eclipse.ui.tests.util.UITestCase#doSetUp()
 //	 */
 //    protected void doSetUp() throws Exception {
 //        window = openTestWindow();
 //        page = window.getActivePage();
+//        facade = (TestFacade) Tweaklets.get(TestFacade.KEY);
 //    }
 //}

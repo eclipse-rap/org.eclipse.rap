@@ -1,5 +1,5 @@
 ///*******************************************************************************
-// * Copyright (c) 2000, 2007 IBM Corporation and others.
+// * Copyright (c) 2000, 2010 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials
 // * are made available under the terms of the Eclipse Public License v1.0
 // * which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@
 //import org.eclipse.core.resources.IProject;
 //import org.eclipse.core.resources.IResource;
 //import org.eclipse.core.runtime.IAdaptable;
+//import org.eclipse.core.runtime.ILogListener;
+//import org.eclipse.core.runtime.IStatus;
+//import org.eclipse.core.runtime.Platform;
+//import org.eclipse.jface.text.IDocument;
 //import org.eclipse.jface.util.IPropertyChangeListener;
 //import org.eclipse.jface.util.PropertyChangeEvent;
 //import org.eclipse.ui.IEditorInput;
@@ -35,11 +39,14 @@
 //import org.eclipse.ui.IEditorReference;
 //import org.eclipse.ui.IMemento;
 //import org.eclipse.ui.IPageLayout;
+//import org.eclipse.ui.IPartListener2;
 //import org.eclipse.ui.IPerspectiveDescriptor;
 //import org.eclipse.ui.IPerspectiveRegistry;
 //import org.eclipse.ui.IViewPart;
 //import org.eclipse.ui.IViewReference;
+//import org.eclipse.ui.IWorkbenchCommandConstants;
 //import org.eclipse.ui.IWorkbenchPage;
+//import org.eclipse.ui.IWorkbenchPartReference;
 //import org.eclipse.ui.IWorkbenchWindow;
 //import org.eclipse.ui.IWorkingSet;
 //import org.eclipse.ui.IWorkingSetManager;
@@ -48,18 +55,23 @@
 //import org.eclipse.ui.WorkbenchException;
 //import org.eclipse.ui.XMLMemento;
 //import org.eclipse.ui.commands.ICommandService;
+//import org.eclipse.ui.editors.text.EditorsUI;
+//import org.eclipse.ui.editors.text.TextEditor;
 //import org.eclipse.ui.handlers.IHandlerService;
 //import org.eclipse.ui.ide.IDE;
-//import org.eclipse.ui.internal.SaveableHelper;
-//import org.eclipse.ui.internal.WorkbenchPage;
 //import org.eclipse.ui.internal.WorkbenchPlugin;
-//import org.eclipse.ui.internal.registry.IActionSetDescriptor;
+//import org.eclipse.ui.internal.tweaklets.Tweaklets;
+//import org.eclipse.ui.internal.util.Util;
+//import org.eclipse.ui.navigator.resources.ProjectExplorer;
 //import org.eclipse.ui.part.FileEditorInput;
-//import org.eclipse.ui.tests.PerspectiveState;
+//import org.eclipse.ui.part.IPage;
 //import org.eclipse.ui.tests.harness.util.CallHistory;
 //import org.eclipse.ui.tests.harness.util.EmptyPerspective;
 //import org.eclipse.ui.tests.harness.util.FileUtil;
 //import org.eclipse.ui.tests.harness.util.UITestCase;
+//import org.eclipse.ui.tests.helpers.TestFacade;
+//import org.eclipse.ui.texteditor.ITextEditor;
+//import org.eclipse.ui.views.contentoutline.ContentOutline;
 //
 //public class IWorkbenchPageTest extends UITestCase {
 //
@@ -69,6 +81,61 @@
 //
 //	private IProject proj;
 //
+//	private int logCount;
+//	private IStatus logStatus;
+//	String getMessage() {
+//		return logStatus==null?"No message":logStatus.getMessage();
+//	}
+//	ILogListener openAndHideListener = new ILogListener() {
+//		public void logging(IStatus status, String plugin) {
+//			logStatus = status;
+//			logCount++;
+//		}
+//	};
+//
+//
+//	private int partHiddenCount = 0;
+//	private IWorkbenchPartReference partHiddenRef = null;
+//	private int partVisibleCount = 0;
+//	private IWorkbenchPartReference partVisibleRef = null;
+//	private int partActiveCount = 0;
+//	private IWorkbenchPartReference partActiveRef = null;
+//	IPartListener2 partListener2 = new IPartListener2() {
+//		public void partActivated(IWorkbenchPartReference partRef) {
+//			partActiveCount++;
+//			partActiveRef = partRef;
+//		}
+//
+//		public void partBroughtToTop(IWorkbenchPartReference partRef) {
+//		}
+//
+//		public void partClosed(IWorkbenchPartReference partRef) {
+//		}
+//
+//		public void partDeactivated(IWorkbenchPartReference partRef) {
+//		}
+//
+//		public void partHidden(IWorkbenchPartReference partRef) {
+//			partHiddenCount++;
+//			partHiddenRef = partRef;
+//		}
+//
+//		public void partInputChanged(IWorkbenchPartReference partRef) {
+//		}
+//
+//		public void partOpened(IWorkbenchPartReference partRef) {
+//		}
+//
+//		public void partVisible(IWorkbenchPartReference partRef) {
+//			partVisibleCount++;
+//			partVisibleRef = partRef;
+//		}
+//	};
+//
+//	private TestFacade facade;
+//
+//
+//
 //	public IWorkbenchPageTest(String testName) {
 //		super(testName);
 //	}
@@ -77,6 +144,10 @@
 //		super.doSetUp();
 //		fWin = openTestWindow();
 //		fActivePage = fWin.getActivePage();
+//		logStatus = null;
+//		logCount = 0;
+//		facade = (TestFacade) Tweaklets.get(TestFacade.KEY);
+//		Platform.addLogListener(openAndHideListener);
 //	}
 //
 //	protected void doTearDown() throws Exception {
@@ -85,11 +156,12 @@
 //			FileUtil.deleteProject(proj);
 //			proj = null;
 //		}
+//		Platform.removeLogListener(openAndHideListener);
 //	}
 //
 //	/**
 //	 * Tests the new working set API.
-//	 * 
+//	 *
 //	 * @since 3.2
 //	 */
 //	public void testWorkingSets1() {
@@ -143,7 +215,7 @@
 //
 //	/**
 //	 * Tests the new working set API.
-//	 * 
+//	 *
 //	 * @since 3.2
 //	 */
 //	public void testWorkingSets2() {
@@ -155,7 +227,7 @@
 //
 //	/**
 //	 * Tests the working set listeners.
-//	 * 
+//	 *
 //	 * @since 3.2
 //	 */
 //	public void testWorkingSets3() {
@@ -201,31 +273,26 @@
 //	 * stack that does not contain the active view. Ensures that the created
 //	 * view is not the active part but is the top part in its stack.
 //	 */
-//	public void testView_VISIBLE2() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		try {
-//			page.setPerspective(WorkbenchPlugin.getDefault()
-//					.getPerspectiveRegistry().findPerspectiveWithId(
-//							"org.eclipse.ui.tests.api.ViewPerspective"));
+//	public void testView_VISIBLE2() throws PartInitException {
+//		fActivePage.setPerspective(WorkbenchPlugin.getDefault()
+//				.getPerspectiveRegistry().findPerspectiveWithId(
+//						"org.eclipse.ui.tests.api.ViewPerspective"));
 //
-//			// create a part to be active
-//			IViewPart activePart = page.showView(MockViewPart.ID3);
+//		// create a part to be active
+//		IViewPart activePart = fActivePage.showView(MockViewPart.ID3);
 //
-//			IViewPart createdPart = page.showView(MockViewPart.ID2, null,
-//					IWorkbenchPage.VIEW_VISIBLE);
+//		IViewPart createdPart = fActivePage.showView(MockViewPart.ID2, null,
+//				IWorkbenchPage.VIEW_VISIBLE);
 //
-//			IViewPart[] stack = page.getViewStack(createdPart);
-//			assertEquals(2, stack.length);
+//		IViewPart[] stack = fActivePage.getViewStack(createdPart);
+//		assertEquals(2, stack.length);
 //
-//			assertEquals(createdPart, stack[0]);
-//			assertEquals(page.findView(MockViewPart.ID), stack[1]);
+//		assertEquals(createdPart, stack[0]);
+//		assertEquals(fActivePage.findView(MockViewPart.ID), stack[1]);
 //
-//			assertTrue(page.isPartVisible(createdPart));
+//		assertTrue(fActivePage.isPartVisible(createdPart));
 //
-//			assertEquals(activePart, page.getActivePart());
-//		} catch (PartInitException e) {
-//			fail(e.getMessage());
-//		}
+//		assertEquals(activePart, fActivePage.getActivePart());
 //	}
 //
 //	/**
@@ -627,6 +694,33 @@
 //		assertEquals(listenerCall.contains("partActivated"), true);
 //	}
 //
+//	/**
+//	 * Tests that the marker's value for the <code>IDE.EDITOR_ID_ATTR</code>
+//	 * attribute.
+//	 */
+//	public void testOpenEditor7_Bug203640() throws Throwable {
+//		proj = FileUtil.createProject("testOpenEditor");
+//		IFile file = FileUtil.createFile("aa.mock2", proj);
+//		IMarker marker = file.createMarker(
+//				IMarker.TASK);
+//		marker.setAttribute(IDE.EDITOR_ID_ATTR, MockEditorPart.ID1);
+//
+//		// open a regular text editor
+//		IEditorPart regularEditor = fActivePage.openEditor(new FileEditorInput(file), EditorsUI.DEFAULT_TEXT_EDITOR_ID);
+//		assertNotNull(regularEditor);
+//		assertTrue(regularEditor instanceof TextEditor);
+//
+//		// open the registered editor for the marker resource
+//		IEditorPart markerEditor = IDE.openEditor(fActivePage, marker);
+//		assertNotNull(markerEditor);
+//		assertTrue(markerEditor instanceof MockEditorPart);
+//
+//		// these shouldn't be the same, if they are it's a bug
+//		assertFalse(markerEditor == regularEditor);
+//		assertFalse(markerEditor.equals(regularEditor));
+//		assertEquals(2, fActivePage.getEditorReferences().length);
+//	}
+//
 //	public void testGetPerspective() throws Throwable {
 //		assertNotNull(fActivePage.getPerspective());
 //
@@ -698,11 +792,64 @@
 //		assertEquals(callTrace.contains("partBroughtToTop"), true);
 //	}
 //
+//	/**
+//	 * Test to ensure that a minimized view can be brought to the top and
+//	 * consequently made visible.
+//	 *
+//	 * @param hasEditors whether there should be editors open or not
+//	 */
+//	private void testBringToTop_MinimizedViewBug292966(boolean hasEditors) throws Throwable {
+//		// first show the view we're going to test
+//		IViewPart propertiesView = fActivePage.showView(IPageLayout.ID_PROP_SHEET);
+//		assertNotNull(propertiesView);
+//
+//		proj = FileUtil.createProject("testOpenEditor");
+//		// open an editor
+//		IEditorPart editor = IDE.openEditor(fActivePage, FileUtil.createFile(
+//				"a.mock1", proj));
+//		assertNotNull("The editor could not be opened", editor); //$NON-NLS-1$
+//		assertTrue("The editor is not visible", fActivePage.isPartVisible(editor)); //$NON-NLS-1$
+//
+//		if (!hasEditors) {
+//			// close editors if we don't want them opened for this test
+//			fActivePage.closeAllEditors(false);
+//			assertEquals("All the editors should have been closed", 0, fActivePage.getEditorReferences().length); //$NON-NLS-1$
+//		}
+//
+//		// minimize the view we're testing
+//		fActivePage.setPartState(fActivePage.getReference(propertiesView), IWorkbenchPage.STATE_MINIMIZED);
+//		assertFalse("A minimized view should not be visible", fActivePage.isPartVisible(propertiesView)); //$NON-NLS-1$
+//
+//		// open another view so that it now becomes the active part container
+//		IViewPart projectExplorer = fActivePage.showView(IPageLayout.ID_PROJECT_EXPLORER);
+//		// get the list of views that shares the stack with this other view
+//		IViewPart[] viewStack = fActivePage.getViewStack(projectExplorer);
+//		// make sure that we didn't inadvertently bring back the test view by mistake
+//		for (int i = 0; i < viewStack.length; i++) {
+//			assertFalse("The properties view should not be on the same stack as the project explorer", //$NON-NLS-1$
+//					viewStack[i].getSite().getId().equals(IPageLayout.ID_PROP_SHEET));
+//		}
+//
+//		// bring the test view back from its minimized state
+//		fActivePage.bringToTop(propertiesView);
+//		// the view should be visible
+//		assertTrue("Invoking bringToTop(IWorkbenchPart) should cause the part to be visible", //$NON-NLS-1$
+//				fActivePage.isPartVisible(propertiesView));
+//	}
+//
+//	public void testBringToTop_MinimizedViewWithEditorsBug292966() throws Throwable {
+//		testBringToTop_MinimizedViewBug292966(false);
+//	}
+//
+//	public void testBringToTop_MinimizedViewWithoutEditorsBug292966() throws Throwable {
+//		testBringToTop_MinimizedViewBug292966(true);
+//	}
+//
 //	public void testGetWorkbenchWindow() {
 //		/*
 //		 * Commented out because until test case can be updated to work with new
 //		 * window/page/perspective implementation
-//		 * 
+//		 *
 //		 * assertEquals(fActivePage.getWorkbenchWindow(), fWin); IWorkbenchPage
 //		 * page = openTestPage(fWin); assertEquals(page.getWorkbenchWindow(),
 //		 * fWin);
@@ -823,17 +970,16 @@
 //				new String[] { "init", "createPartControl", "setFocus" }));
 //		assertTrue(!view.equals(view2));
 //
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		IViewReference ref = (IViewReference) page.getReference(view);
-//		IViewReference ref2 = (IViewReference) page.getReference(view2);
-//		page.addFastView(ref);
-//		page.addFastView(ref2);
+//		IViewReference ref = (IViewReference) fActivePage.getReference(view);
+//		IViewReference ref2 = (IViewReference) fActivePage.getReference(view2);
+//		facade.addFastView(fActivePage, ref);
+//		facade.addFastView(fActivePage, ref2);
 //
-//		page.activate(view);
-//		assertEquals(view, page.getActivePart());
+//		fActivePage.activate(view);
+//		assertEquals(view, fActivePage.getActivePart());
 //
-//		page.activate(view2);
-//		assertEquals(view2, page.getActivePart());
+//		fActivePage.activate(view2);
+//		assertEquals(view2, fActivePage.getActivePart());
 //	}
 //
 //	/**
@@ -848,14 +994,13 @@
 //		MockViewPart view2 = (MockViewPart) fActivePage.showView(
 //				MockViewPart.IDMULT, "2", IWorkbenchPage.VIEW_ACTIVATE);
 //
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		IViewReference ref = (IViewReference) page.getReference(view);
-//		IViewReference ref2 = (IViewReference) page.getReference(view2);
-//		page.addFastView(ref);
-//		page.addFastView(ref2);
+//		IViewReference ref = (IViewReference) fActivePage.getReference(view);
+//		IViewReference ref2 = (IViewReference) fActivePage.getReference(view2);
+//		facade.addFastView(fActivePage, ref);
+//		facade.addFastView(fActivePage, ref2);
 //
 //		IMemento memento = XMLMemento.createWriteRoot("page");
-//		page.saveState(memento);
+//		facade.saveState(fActivePage, memento);
 //		IMemento persps = memento.getChild("perspectives");
 //		IMemento persp = persps.getChildren("perspective")[0];
 //		IMemento[] fastViews = persp.getChild("fastViews").getChildren("view");
@@ -938,7 +1083,7 @@
 //		assertEquals(fActivePage.findView(viewId), null);
 //
 //		try {
-//			SaveableHelper.testSetAutomatedResponse(1); // No
+//			facade.saveableHelperSetAutomatedResponse(1); // No
 //			view = (SaveableMockViewPart) fActivePage.showView(viewId);
 //			view.setDirty(true);
 //			fActivePage.hideView(view);
@@ -948,7 +1093,7 @@
 //			assertTrue(callTrace.contains("dispose"));
 //			assertEquals(fActivePage.findView(viewId), null);
 //
-//			SaveableHelper.testSetAutomatedResponse(2); // Cancel
+//			facade.saveableHelperSetAutomatedResponse(2); // Cancel
 //			view = (SaveableMockViewPart) fActivePage.showView(viewId);
 //			view.setDirty(true);
 //			fActivePage.hideView(view);
@@ -958,7 +1103,7 @@
 //			assertFalse(callTrace.contains("dispose"));
 //			assertEquals(fActivePage.findView(viewId), view);
 //
-//			SaveableHelper.testSetAutomatedResponse(0); // Yes
+//			facade.saveableHelperSetAutomatedResponse(0); // Yes
 //			view = (SaveableMockViewPart) fActivePage.showView(viewId);
 //			view.setDirty(true);
 //			fActivePage.hideView(view);
@@ -971,7 +1116,7 @@
 //			// don't leave the view showing, or the UI will block on window
 //			// close
 //		} finally {
-//			SaveableHelper.testSetAutomatedResponse(-1); // restore default
+//			facade.saveableHelperSetAutomatedResponse(-1); // restore default
 //			// (prompt)
 //		}
 //	}
@@ -979,7 +1124,7 @@
 //	/**
 //	 * Tests that a close will fall back to the default if the view returns
 //	 * ISaveable2.DEFAULT.
-//	 * 
+//	 *
 //	 * @throws Throwable
 //	 */
 //	public void testCloseWithSaveNeeded() throws Throwable {
@@ -996,7 +1141,7 @@
 //		assertEquals(fActivePage.findView(UserSaveableMockViewPart.ID), null);
 //
 //		try {
-//			SaveableHelper.testSetAutomatedResponse(3); // DEFAULT
+//			facade.saveableHelperSetAutomatedResponse(3); // DEFAULT
 //			view = (UserSaveableMockViewPart) fActivePage.showView(viewId);
 //			view.setDirty(true);
 //			view2 = (UserSaveableMockViewPart) fActivePage.showView(viewId,
@@ -1004,8 +1149,7 @@
 //			assertNotNull(view2);
 //			view2.setDirty(true);
 //
-//			WorkbenchPage page = (WorkbenchPage) fActivePage;
-//			page.getEditorManager().saveAll(true, false, false);
+//			fActivePage.saveAllEditors(true);
 //
 //			assertFalse(view.isDirty());
 //			assertFalse(view2.isDirty());
@@ -1021,8 +1165,8 @@
 //			// don't leave the view showing, or the UI will block on window
 //			// close
 //		} finally {
-//			SaveableHelper
-//					.testSetAutomatedResponse(SaveableHelper.USER_RESPONSE); // restore
+//			facade
+//					.saveableHelperSetAutomatedResponse(-1); // restore
 //			// default
 //			// (prompt)
 //		}
@@ -1031,7 +1175,7 @@
 //	/**
 //	 * Tests that a close will fall back to the default if the view returns
 //	 * ISaveable2.DEFAULT.
-//	 * 
+//	 *
 //	 * @throws Throwable
 //	 */
 //	public void testSaveEffectsSharedModel() throws Throwable {
@@ -1043,7 +1187,7 @@
 //		assertEquals(fActivePage.findView(UserSaveableSharedViewPart.ID), null);
 //
 //		try {
-//			SaveableHelper.testSetAutomatedResponse(3); // DEFAULT
+//			facade.saveableHelperSetAutomatedResponse(3); // DEFAULT
 //			UserSaveableSharedViewPart.SharedModel model = new UserSaveableSharedViewPart.SharedModel();
 //			view = (UserSaveableSharedViewPart) fActivePage.showView(viewId);
 //			view.setSharedModel(model);
@@ -1053,8 +1197,7 @@
 //			assertNotNull(view2);
 //			view2.setSharedModel(model);
 //
-//			WorkbenchPage page = (WorkbenchPage) fActivePage;
-//			page.getEditorManager().saveAll(true, false, false);
+//			fActivePage.saveAllEditors(true);
 //
 //			assertFalse(view.isDirty());
 //			assertFalse(view2.isDirty());
@@ -1074,8 +1217,8 @@
 //			// don't leave the view showing, or the UI will block on window
 //			// close
 //		} finally {
-//			SaveableHelper
-//					.testSetAutomatedResponse(SaveableHelper.USER_RESPONSE); // restore
+//			facade
+//					.saveableHelperSetAutomatedResponse(-1); // restore
 //			// default
 //			// (prompt)
 //			fActivePage.hideView(view);
@@ -1146,7 +1289,7 @@
 //		 * It is possible that some action may query the isDirty value of the
 //		 * editor to update its enabled state. There is nothing wrong in doing
 //		 * that, so do not test for no isDirty call here.
-//		 * 
+//		 *
 //		 * assertEquals(callTrace.contains( "isDirty"), false);
 //		 */
 //		assertEquals(callTrace.contains("doSave"), false);
@@ -1474,54 +1617,36 @@
 //
 //	public void testShowActionSet() {
 //		String id = MockActionDelegate.ACTION_SET_ID;
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
 //
-//		int totalBefore = page.getActionSets().length;
+//		int totalBefore = facade.getActionSetCount(fActivePage);
 //		fActivePage.showActionSet(id);
 //
-//		IActionSetDescriptor[] sets = ((WorkbenchPage) fActivePage)
-//				.getActionSets();
-//		boolean found = false;
-//		for (int i = 0; i < sets.length; i++)
-//			if (id.equals(sets[i].getId()))
-//				found = true;
-//		assertEquals(found, true);
+//		facade.assertActionSetId(fActivePage, id, true);
 //
 //		// check that the method does not add an invalid action set to itself
 //		id = IConstants.FakeID;
 //		fActivePage.showActionSet(id);
 //
-//		sets = ((WorkbenchPage) fActivePage).getActionSets();
-//		found = false;
-//		for (int i = 0; i < sets.length; i++)
-//			if (id.equals(sets[i].getId()))
-//				found = true;
-//		assertEquals(found, false);
-//		assertEquals(page.getActionSets().length, totalBefore + 1);
+//		facade.assertActionSetId(fActivePage, id, false);
+//		assertEquals(facade.getActionSetCount(fActivePage), totalBefore + 1);
 //	}
 //
 //	public void testHideActionSet() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		int totalBefore = page.getActionSets().length;
+//		int totalBefore = facade.getActionSetCount(fActivePage);
 //
 //		String id = MockWorkbenchWindowActionDelegate.SET_ID;
 //		fActivePage.showActionSet(id);
-//		assertEquals(page.getActionSets().length, totalBefore + 1);
+//		assertEquals(facade.getActionSetCount(fActivePage), totalBefore + 1);
 //
 //		fActivePage.hideActionSet(id);
-//		assertEquals(page.getActionSets().length, totalBefore);
+//		assertEquals(facade.getActionSetCount(fActivePage), totalBefore);
 //
-//		IActionSetDescriptor[] sets = page.getActionSets();
-//		boolean found = false;
-//		for (int i = 0; i < sets.length; i++)
-//			if (id.equals(sets[i].getId()))
-//				found = true;
-//		assertEquals(found, false);
+//		facade.assertActionSetId(fActivePage, id, false);
 //	}
 //
 //	/**
 //	 * Return whether or not the editor exists in the current page.
-//	 * 
+//	 *
 //	 * @param editor
 //	 * @return boolean
 //	 */
@@ -1536,7 +1661,7 @@
 //
 //	/**
 //	 * Return whether or not the view exists in the current page.
-//	 * 
+//	 *
 //	 * @param editor
 //	 * @return boolean
 //	 */
@@ -1549,140 +1674,117 @@
 //		return false;
 //	}
 //
-//	public void testStackOrder() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		try {
-//			IViewPart part1 = page.showView(MockViewPart.ID);
-//			IViewPart part2 = page.showView(MockViewPart.ID2);
-//			IViewPart part3 = page.showView(MockViewPart.ID3);
-//			IViewPart part4 = page.showView(MockViewPart.ID4);
+//	public void testStackOrder() throws PartInitException {
+//		IViewPart part1 = fActivePage.showView(MockViewPart.ID);
+//		IViewPart part2 = fActivePage.showView(MockViewPart.ID2);
+//		IViewPart part3 = fActivePage.showView(MockViewPart.ID3);
+//		IViewPart part4 = fActivePage.showView(MockViewPart.ID4);
 //
-//			IViewPart[] stack = page.getViewStack(part1);
-//			assertTrue(stack.length == 4);
-//			assertTrue(stack[0] == part4);
-//			assertTrue(stack[1] == part3);
-//			assertTrue(stack[2] == part2);
-//			assertTrue(stack[3] == part1);
+//		IViewPart[] stack = fActivePage.getViewStack(part1);
+//		assertTrue(stack.length == 4);
+//		assertTrue(stack[0] == part4);
+//		assertTrue(stack[1] == part3);
+//		assertTrue(stack[2] == part2);
+//		assertTrue(stack[3] == part1);
 //
-//			page.activate(part2);
-//			stack = page.getViewStack(part1);
-//			assertTrue(stack.length == 4);
-//			assertTrue(stack[0] == part2);
-//			assertTrue(stack[1] == part4);
-//			assertTrue(stack[2] == part3);
-//			assertTrue(stack[3] == part1);
+//		fActivePage.activate(part2);
+//		stack = fActivePage.getViewStack(part1);
+//		assertTrue(stack.length == 4);
+//		assertTrue(stack[0] == part2);
+//		assertTrue(stack[1] == part4);
+//		assertTrue(stack[2] == part3);
+//		assertTrue(stack[3] == part1);
 //
-//			page.activate(part1);
-//			stack = page.getViewStack(part1);
-//			assertTrue(stack.length == 4);
-//			assertTrue(stack[0] == part1);
-//			assertTrue(stack[1] == part2);
-//			assertTrue(stack[2] == part4);
-//			assertTrue(stack[3] == part3);
+//		fActivePage.activate(part1);
+//		stack = fActivePage.getViewStack(part1);
+//		assertTrue(stack.length == 4);
+//		assertTrue(stack[0] == part1);
+//		assertTrue(stack[1] == part2);
+//		assertTrue(stack[2] == part4);
+//		assertTrue(stack[3] == part3);
 //
-//			page.activate(part3);
-//			stack = page.getViewStack(part1);
-//			assertTrue(stack.length == 4);
-//			assertTrue(stack[0] == part3);
-//			assertTrue(stack[1] == part1);
-//			assertTrue(stack[2] == part2);
-//			assertTrue(stack[3] == part4);
-//		} catch (PartInitException e) {
-//			fail(e.getMessage());
-//		}
+//		fActivePage.activate(part3);
+//		stack = fActivePage.getViewStack(part1);
+//		assertTrue(stack.length == 4);
+//		assertTrue(stack[0] == part3);
+//		assertTrue(stack[1] == part1);
+//		assertTrue(stack[2] == part2);
+//		assertTrue(stack[3] == part4);
 //	}
 //
 //	/**
 //	 * Test the VIEW_CREATE parameter for showView. Ensures that the created
 //	 * view is not the active part.
-//	 * 
+//	 *
 //	 */
-//	public void testView_CREATE1() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		try {
-//
-//			page.setPerspective(WorkbenchPlugin.getDefault()
-//					.getPerspectiveRegistry().findPerspectiveWithId(
+//	public void testView_CREATE1() throws PartInitException {
+//		fActivePage.setPerspective(fActivePage.getWorkbenchWindow().getWorkbench()
+//				.getPerspectiveRegistry().findPerspectiveWithId(
 //							"org.eclipse.ui.tests.api.ViewPerspective"));
 //
-//			// create a part to be active
-//			IViewPart activePart = page.showView(MockViewPart.ID);
-//			IViewPart createdPart = page.showView(MockViewPart.ID2, null,
-//					IWorkbenchPage.VIEW_CREATE);
+//		// create a part to be active
+//		IViewPart activePart = fActivePage.showView(MockViewPart.ID);
+//		IViewPart createdPart = fActivePage.showView(MockViewPart.ID2, null,
+//				IWorkbenchPage.VIEW_CREATE);
 //
-//			IViewPart[] stack = page.getViewStack(activePart);
-//			assertEquals(2, stack.length);
+//		IViewPart[] stack = fActivePage.getViewStack(activePart);
+//		assertEquals(2, stack.length);
 //
-//			assertEquals(activePart, stack[0]);
-//			assertEquals(createdPart, stack[1]);
+//		assertEquals(activePart, stack[0]);
+//		assertEquals(createdPart, stack[1]);
 //
-//			assertFalse(page.isPartVisible(createdPart));
+//		assertFalse(fActivePage.isPartVisible(createdPart));
 //
-//			assertEquals(activePart, page.getActivePart());
-//		} catch (PartInitException e) {
-//			fail(e.getMessage());
-//		}
+//		assertEquals(activePart, fActivePage.getActivePart());
 //	}
 //
 //	/**
 //	 * Test the VIEW_CREATE parameter for showView. Ensures that the created
 //	 * view is not the active part and is not visible
 //	 */
-//	public void testView_CREATE2() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		try {
+//	public void testView_CREATE2() throws PartInitException {
+//		fActivePage.setPerspective(fActivePage.getWorkbenchWindow().getWorkbench()
+//				.getPerspectiveRegistry().findPerspectiveWithId(
+//						"org.eclipse.ui.tests.api.ViewPerspective"));
 //
-//			page.setPerspective(WorkbenchPlugin.getDefault()
-//					.getPerspectiveRegistry().findPerspectiveWithId(
-//							"org.eclipse.ui.tests.api.ViewPerspective"));
+//		// create a part to be active
+//		IViewPart activePart = fActivePage.showView(MockViewPart.ID3);
+//		IViewPart createdPart = fActivePage.showView(MockViewPart.ID2, null,
+//				IWorkbenchPage.VIEW_CREATE);
 //
-//			// create a part to be active
-//			IViewPart activePart = page.showView(MockViewPart.ID3);
-//			IViewPart createdPart = page.showView(MockViewPart.ID2, null,
-//					IWorkbenchPage.VIEW_CREATE);
+//		IViewPart[] stack = fActivePage.getViewStack(createdPart);
+//		assertEquals(2, stack.length);
 //
-//			IViewPart[] stack = page.getViewStack(createdPart);
-//			assertEquals(2, stack.length);
+//		assertEquals(fActivePage.findView(MockViewPart.ID), stack[0]);
+//		assertEquals(createdPart, stack[1]);
 //
-//			assertEquals(page.findView(MockViewPart.ID), stack[0]);
-//			assertEquals(createdPart, stack[1]);
+//		assertFalse(fActivePage.isPartVisible(createdPart));
 //
-//			assertFalse(page.isPartVisible(createdPart));
-//
-//			assertEquals(activePart, page.getActivePart());
-//		} catch (PartInitException e) {
-//			fail(e.getMessage());
-//		}
+//		assertEquals(activePart, fActivePage.getActivePart());
 //	}
 //
 //	/**
 //	 * Test the VIEW_CREATE parameter for showView. Ensures that the created
 //	 * view is not the active part and is visible.
 //	 */
-//	public void testView_CREATE3() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		try {
+//	public void testView_CREATE3() throws PartInitException {
+//		fActivePage.setPerspective(fActivePage.getWorkbenchWindow().getWorkbench()
+//				.getPerspectiveRegistry().findPerspectiveWithId(
+//						"org.eclipse.ui.tests.api.ViewPerspective"));
 //
-//			page.setPerspective(WorkbenchPlugin.getDefault()
-//					.getPerspectiveRegistry().findPerspectiveWithId(
-//							"org.eclipse.ui.tests.api.ViewPerspective"));
+//		// create a part to be active
+//		IViewPart activePart = fActivePage.showView(MockViewPart.ID3);
+//		IViewPart createdPart = fActivePage.showView(MockViewPart.ID4, null,
+//				IWorkbenchPage.VIEW_CREATE);
 //
-//			// create a part to be active
-//			IViewPart activePart = page.showView(MockViewPart.ID3);
-//			IViewPart createdPart = page.showView(MockViewPart.ID4, null,
-//					IWorkbenchPage.VIEW_CREATE);
+//		IViewPart[] stack = fActivePage.getViewStack(createdPart);
+//		assertEquals(1, stack.length);
 //
-//			IViewPart[] stack = page.getViewStack(createdPart);
-//			assertEquals(1, stack.length);
+//		assertEquals(createdPart, stack[0]);
 //
-//			assertEquals(createdPart, stack[0]);
+//		assertTrue(fActivePage.isPartVisible(createdPart));
 //
-//			assertTrue(page.isPartVisible(createdPart));
-//
-//			assertEquals(activePart, page.getActivePart());
-//		} catch (PartInitException e) {
-//			fail(e.getMessage());
-//		}
+//		assertEquals(activePart, fActivePage.getActivePart());
 //	}
 //
 //	/**
@@ -1690,29 +1792,24 @@
 //	 * stack containing the active view. Ensures that the created view is not
 //	 * the active part and is not visible.
 //	 */
-//	public void testView_VISIBLE1() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		try {
-//			page.setPerspective(WorkbenchPlugin.getDefault()
-//					.getPerspectiveRegistry().findPerspectiveWithId(
-//							"org.eclipse.ui.tests.api.ViewPerspective"));
+//	public void testView_VISIBLE1() throws PartInitException {
+//		fActivePage.setPerspective(fActivePage.getWorkbenchWindow().getWorkbench()
+//				.getPerspectiveRegistry().findPerspectiveWithId(
+//						"org.eclipse.ui.tests.api.ViewPerspective"));
 //
-//			// create a part to be active
-//			IViewPart activePart = page.showView(MockViewPart.ID);
-//			IViewPart createdPart = page.showView(MockViewPart.ID2, null,
-//					IWorkbenchPage.VIEW_VISIBLE);
-//			IViewPart[] stack = page.getViewStack(activePart);
-//			assertEquals(2, stack.length);
+//		// create a part to be active
+//		IViewPart activePart = fActivePage.showView(MockViewPart.ID);
+//		IViewPart createdPart = fActivePage.showView(MockViewPart.ID2, null,
+//				IWorkbenchPage.VIEW_VISIBLE);
+//		IViewPart[] stack = fActivePage.getViewStack(activePart);
+//		assertEquals(2, stack.length);
 //
-//			assertEquals(activePart, stack[0]);
-//			assertEquals(createdPart, stack[1]);
+//		assertEquals(activePart, stack[0]);
+//		assertEquals(createdPart, stack[1]);
 //
-//			assertFalse(page.isPartVisible(createdPart));
+//		assertFalse(fActivePage.isPartVisible(createdPart));
 //
-//			assertEquals(activePart, page.getActivePart());
-//		} catch (PartInitException e) {
-//			fail(e.getMessage());
-//		}
+//		assertEquals(activePart, fActivePage.getActivePart());
 //	}
 //
 //	/**
@@ -1720,36 +1817,30 @@
 //	 * stack. Ensures that the created view is not active part but is the top
 //	 * part in its stack.
 //	 */
-//	public void testView_VISIBLE3() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//		try {
-//			page.setPerspective(WorkbenchPlugin.getDefault()
+//	public void testView_VISIBLE3() throws PartInitException {
+//		fActivePage.setPerspective(fActivePage.getWorkbenchWindow().getWorkbench()
 //					.getPerspectiveRegistry().findPerspectiveWithId(
 //							"org.eclipse.ui.tests.api.ViewPerspective"));
 //
-//			// create a part to be active
-//			IViewPart activePart = page.showView(MockViewPart.ID3);
+//		// create a part to be active
+//		IViewPart activePart = fActivePage.showView(MockViewPart.ID3);
 //
-//			IViewPart createdPart = page.showView(MockViewPart.ID4, null,
-//					IWorkbenchPage.VIEW_VISIBLE);
-//			IViewPart[] stack = page.getViewStack(createdPart);
-//			assertEquals(1, stack.length);
+//		IViewPart createdPart = fActivePage.showView(MockViewPart.ID4, null,
+//				IWorkbenchPage.VIEW_VISIBLE);
+//		IViewPart[] stack = fActivePage.getViewStack(createdPart);
+//		assertEquals(1, stack.length);
 //
-//			assertEquals(createdPart, stack[0]);
+//		assertEquals(createdPart, stack[0]);
 //
-//			assertTrue(page.isPartVisible(createdPart));
+//		assertTrue(fActivePage.isPartVisible(createdPart));
 //
-//			assertEquals(activePart, page.getActivePart());
-//		} catch (PartInitException e) {
-//			fail(e.getMessage());
-//		}
+//		assertEquals(activePart, fActivePage.getActivePart());
 //	}
 //
 //	/**
 //	 * Test opening a perspective with a fast view.
 //	 */
 //	public void testOpenPerspectiveWithFastView() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
 //
 //		try {
 //			fWin.getWorkbench().showPerspective(
@@ -1758,22 +1849,23 @@
 //			fail("Unexpected WorkbenchException: " + e);
 //		}
 //
-//		assertEquals(page.getFastViews().length, 1);
-//		assertEquals(page.getFastViews()[0].getId(),
+//		IViewReference[] fastViews = facade.getFastViews(fActivePage);
+//		assertEquals(fastViews.length, 1);
+//		assertEquals(fastViews[0].getId(),
 //				"org.eclipse.ui.views.ResourceNavigator");
-//		assertEquals(page.getViewReferences().length, 1);
-//		assertTrue(page.getViewReferences()[0].isFastView());
-//		
-//		IPerspectiveDescriptor persp = page.getPerspective();
-//		
+//		assertEquals(fActivePage.getViewReferences().length, 1);
+//		assertTrue(fActivePage.getViewReferences()[0].isFastView());
+//
+//		IPerspectiveDescriptor persp = fActivePage.getPerspective();
+//
 //		ICommandService commandService = (ICommandService) fWorkbench.getService(ICommandService.class);
 //		Command command = commandService.getCommand("org.eclipse.ui.window.closePerspective");
-//		
+//
 //		HashMap parameters = new HashMap();
-//		parameters.put("org.eclipse.ui.window.closePerspective.perspectiveId", persp.getId());
-//		
+//		parameters.put(IWorkbenchCommandConstants.WINDOW_CLOSE_PERSPECTIVE_PARM_ID, persp.getId());
+//
 //		ParameterizedCommand pCommand = ParameterizedCommand.generateCommand(command, parameters);
-//		
+//
 //		IHandlerService handlerService = (IHandlerService) fWorkbench
 //				.getService(IHandlerService.class);
 //		try {
@@ -1789,11 +1881,10 @@
 //	/**
 //	 * Test opening a perspective with placeholders for multi instance views.
 //	 * The placeholders are added at top level (not in any folder).
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testOpenPerspectiveWithMultiViewPlaceholdersAtTopLevel() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
 //
 //		try {
 //			fWin.getWorkbench().showPerspective(
@@ -1803,8 +1894,7 @@
 //			fail("Unexpected WorkbenchException: " + e);
 //		}
 //
-//		PerspectiveState state = new PerspectiveState(page);
-//		ArrayList partIds = state.getPartIds(null);
+//		ArrayList partIds = facade.getPerspectivePartIds(fActivePage, null);
 //		assertTrue(partIds.contains("*"));
 //		assertTrue(partIds.contains(MockViewPart.IDMULT));
 //		assertTrue(partIds.contains(MockViewPart.IDMULT + ":secondaryId"));
@@ -1816,11 +1906,10 @@
 //	 * The placeholders are added in a placeholder folder. This is a regression
 //	 * test for bug 72383 [Perspectives] Placeholder folder error with multiple
 //	 * instance views
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testOpenPerspectiveWithMultiViewPlaceholdersInPlaceholderFolder() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
 //
 //		try {
 //			fWin
@@ -1832,8 +1921,7 @@
 //			fail("Unexpected WorkbenchException: " + e);
 //		}
 //
-//		PerspectiveState state = new PerspectiveState(page);
-//		ArrayList partIds = state.getPartIds("placeholderFolder");
+//		ArrayList partIds = facade.getPerspectivePartIds(fActivePage,"placeholderFolder");
 //		assertTrue(partIds.contains("*"));
 //		assertTrue(partIds.contains(MockViewPart.IDMULT));
 //		assertTrue(partIds.contains(MockViewPart.IDMULT + ":secondaryId"));
@@ -1843,12 +1931,10 @@
 //	/**
 //	 * Test opening a perspective with placeholders for multi instance views.
 //	 * The placeholders are added at top level (not in any folder).
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testOpenPerspectiveWithMultiViewPlaceholdersInFolder() {
-//		WorkbenchPage page = (WorkbenchPage) fActivePage;
-//
 //		try {
 //			fWin
 //					.getWorkbench()
@@ -1859,8 +1945,7 @@
 //			fail("Unexpected WorkbenchException: " + e);
 //		}
 //
-//		PerspectiveState state = new PerspectiveState(page);
-//		ArrayList partIds = state.getPartIds("folder");
+//		ArrayList partIds = facade.getPerspectivePartIds(fActivePage,"folder");
 //		assertTrue(partIds.contains("*"));
 //		assertTrue(partIds.contains(MockViewPart.IDMULT));
 //		assertTrue(partIds.contains(MockViewPart.IDMULT + ":secondaryId"));
@@ -1869,7 +1954,7 @@
 //
 //	/**
 //	 * Tests the getNewWizardShortcuts() method.
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testGetNewWizardShortcuts() {
@@ -1887,7 +1972,7 @@
 //
 //	/**
 //	 * Tests the getShowViewShortcuts() method.
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testGetShowViewShortcuts() {
@@ -1899,7 +1984,7 @@
 //		IWorkbenchPage page = win.getActivePage();
 //		shortcuts = page.getShowViewShortcuts();
 //		List shortcutList = Arrays.asList(shortcuts);
-//		assertTrue(shortcutList.contains(IPageLayout.ID_RES_NAV));
+//		assertTrue(shortcutList.contains(ProjectExplorer.VIEW_ID));
 //		assertTrue(shortcutList.contains(IPageLayout.ID_OUTLINE));
 //		assertTrue(shortcutList.contains(IPageLayout.ID_PROP_SHEET));
 //		assertTrue(shortcutList.contains(IPageLayout.ID_PROBLEM_VIEW));
@@ -1907,7 +1992,7 @@
 //
 //	/**
 //	 * Tests the getPerspectiveShortcuts() method.
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testGetPerspectiveShortcuts() {
@@ -1919,7 +2004,7 @@
 //
 //	/**
 //	 * Tests the getOpenPerspectives() method.
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testGetOpenPerspectives() {
@@ -1955,7 +2040,7 @@
 //
 //	/**
 //	 * Tests the getSortedPerspectives() method.
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testGetSortedPerspectives() {
@@ -1992,7 +2077,7 @@
 //
 //	/**
 //	 * Tests the closePerspective method.
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testClosePerspective() {
@@ -2028,9 +2113,81 @@
 //		assertNull(fWin.getActivePage()); // page closed
 //	}
 //
+// 	/**
+//	 * This tests that closing a perspective will not bring a prompt up for
+//	 * {@link org.eclipse.ui.ISaveablePart ISaveablePart} implementations that
+//	 * are returning false for their
+//	 * {@link org.eclipse.ui.ISaveablePart#isSaveOnCloseNeeded()
+//	 * isSaveOnCloseNeeded()} implementation.
+//	 *
+//	 * @see #testCloseAllPerspectivesDoesNotPromptBug272070()
+//	 */
+//	public void testClosePerspectiveDoesNotPromptBug272070() throws Exception {
+//		try {
+//			facade.saveableHelperSetAutomatedResponse(2);
+//			proj = FileUtil
+//					.createProject("testClosePerspectiveDoesNotPromptBug272070");
+//
+//			IPerspectiveRegistry reg = fWorkbench.getPerspectiveRegistry();
+//			IPerspectiveDescriptor resourcePersp = reg
+//					.findPerspectiveWithId(IDE.RESOURCE_PERSPECTIVE_ID);
+//
+//			// close all perspectives so we start fresh
+//			fActivePage.closeAllPerspectives(false, false);
+//			// set the page to the 'Resource' perspective
+//			fActivePage.setPerspective(resourcePersp);
+//
+//			// create a file and show an editor
+//			IEditorInput input = new FileEditorInput(FileUtil.createFile(
+//					"test.mock1", proj));
+//			MockEditorPart editor = (MockEditorPart) fActivePage.openEditor(
+//					input, MockEditorPart.ID1);
+//
+//			// mark the editor as being dirty but not requiring saving when
+//			// closed
+//			editor.setDirty(true);
+//			editor.setSaveNeeded(false);
+//
+//			// close the perspective
+//			fActivePage.closePerspective(resourcePersp, true, false);
+//			// mark the editor as not dirty, this is important because if the
+//			// editor is not closed, the test will fail and when JUnit tries to
+//			// tear down the workbench it will not shutdown because it will
+//			// prompt about the editor being dirty
+//			editor.setDirty(false);
+//			// the editor should have been closed when the perspective was
+//			// closed
+//			assertFalse("The editor should've been closed", fActivePage
+//					.isPartVisible(editor));
+//
+//			// set the page to the 'Resource' perspective
+//			fActivePage.setPerspective(resourcePersp);
+//
+//			// show a view
+//			SaveableMockViewPart view = (SaveableMockViewPart) fActivePage
+//					.showView(SaveableMockViewPart.ID);
+//
+//			// mark the view as being dirty but not requiring saving when closed
+//			view.setDirty(true);
+//			view.setSaveNeeded(false);
+//
+//			// close the perspective
+//			fActivePage.closePerspective(resourcePersp, true, false);
+//			// like the editor above, we need to mark the view as not being
+//			// dirty for the same reasons
+//			view.setDirty(false);
+//			// the view should have been hidden when the perspective was closed
+//			assertFalse("The view should be hidden", fActivePage
+//					.isPartVisible(view));
+//		} finally {
+//			facade
+//					.saveableHelperSetAutomatedResponse(-1);
+//		}
+//	}
+//
 //	/**
 //	 * Tests the closeAllPerspectives method.
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testCloseAllPerspectives() {
@@ -2059,6 +2216,79 @@
 //		openPersps = fActivePage.getOpenPerspectives();
 //		assertEquals(0, openPersps.length);
 //		assertNull(fWin.getActivePage()); // page closed
+//	}
+//
+// 	/**
+//	 * This tests that closing all perspectives will not bring a prompt up for
+//	 * {@link org.eclipse.ui.ISaveablePart ISaveablePart} implementations that
+//	 * are returning false for their
+//	 * {@link org.eclipse.ui.ISaveablePart#isSaveOnCloseNeeded()
+//	 * isSaveOnCloseNeeded()} implementation.
+//	 *
+//	 * @see #testClosePerspectiveDoesNotPromptBug272070()
+//	 */
+//	public void testCloseAllPerspectivesDoesNotPromptBug272070()
+//			throws Exception {
+//		try {
+//			facade.saveableHelperSetAutomatedResponse(2);
+//			proj = FileUtil
+//					.createProject("testCloseAllPerspectivesDoesNotPromptBug272070");
+//
+//			IPerspectiveRegistry reg = fWorkbench.getPerspectiveRegistry();
+//			IPerspectiveDescriptor resourcePersp = reg
+//					.findPerspectiveWithId(IDE.RESOURCE_PERSPECTIVE_ID);
+//
+//			// close all perspectives so we start fresh
+//			fActivePage.closeAllPerspectives(false, false);
+//			// set the page to the 'Resource' perspective
+//			fActivePage.setPerspective(resourcePersp);
+//
+//			// create a file and show an editor
+//			IEditorInput input = new FileEditorInput(FileUtil.createFile(
+//					"test.mock1", proj));
+//			MockEditorPart editor = (MockEditorPart) fActivePage.openEditor(
+//					input, MockEditorPart.ID1);
+//
+//			// mark the editor as being dirty but not requiring saving when
+//			// closed
+//			editor.setDirty(true);
+//			editor.setSaveNeeded(false);
+//
+//			// close all perspectives
+//			fActivePage.closeAllPerspectives(true, false);
+//			// mark the editor as not dirty, this is important because if the
+//			// editor is not closed, the test will fail and when JUnit tries to
+//			// tear down the workbench it will not shutdown because it will
+//			// prompt about the editor being dirty
+//			editor.setDirty(false);
+//			// the editor should have been closed when the perspective was
+//			// closed
+//			assertFalse("The editor should've been closed", fActivePage
+//					.isPartVisible(editor));
+//
+//			// set the page to the 'Resource' perspective
+//			fActivePage.setPerspective(resourcePersp);
+//
+//			// show a view
+//			SaveableMockViewPart view = (SaveableMockViewPart) fActivePage
+//					.showView(SaveableMockViewPart.ID);
+//
+//			// mark the view as being dirty but not requiring saving when closed
+//			view.setDirty(true);
+//			view.setSaveNeeded(false);
+//
+//			// close all perspectives
+//			fActivePage.closeAllPerspectives(true, false);
+//			// like the editor above, we need to mark the view as not being
+//			// dirty for the same reasons
+//			view.setDirty(false);
+//			// the view should have been hidden when the perspective was closed
+//			assertFalse("The view should be hidden", fActivePage
+//					.isPartVisible(view));
+//		} finally {
+//			facade
+//					.saveableHelperSetAutomatedResponse(-1);
+//		}
 //	}
 //
 //	/**
@@ -2099,7 +2329,7 @@
 //	 * Tests that IShowEditorInput.showEditorInput is called when a matching
 //	 * editor is found during openEditor, and is not called when a new editor is
 //	 * opened.
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public void testShowEditorInput() throws Exception {
@@ -2117,7 +2347,7 @@
 //	/**
 //	 * Tests that the openEditor and findEditor variants that accepts match
 //	 * flags work as expected.
-//	 * 
+//	 *
 //	 * @since 3.2
 //	 */
 //	public void testOpenAndFindEditorWithMatchFlags() throws Exception {
@@ -2223,4 +2453,553 @@
 //		assertEquals(1, refs.length);
 //		assertEquals(part4, refs[0].getPart(true));
 //	}
+//
+//
+//	/**
+//	 * Create and hide a single editor, and check it is reflected in the
+//	 * editor references.  Check that close still works.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor1() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a.mock1", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor instanceof MockEditorPart);
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//		fActivePage.hideEditor(editorRef);
+//		assertEquals(0, fActivePage.getEditorReferences().length);
+//		fActivePage.showEditor(editorRef);
+//		assertEquals(1, fActivePage.getEditorReferences().length);
+//		fActivePage.closeAllEditors(true);
+//		assertEquals(0, fActivePage.getEditorReferences().length);
+//		assertEquals(getMessage(), 0, logCount);
+//	}
+//
+//	/**
+//	 * Create and remove 2 editors.  Check that the removed editor
+//	 * is not returned in the list of references.  Check that
+//	 * close still works.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor2() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a.mock1", proj);
+//		IFile file2 = FileUtil.createFile("a.mock2", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor instanceof MockEditorPart);
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//		IEditorPart editor2 = IDE.openEditor(fActivePage, file2);
+//		assertTrue(editor2 instanceof MockEditorPart);
+//		IEditorReference editorRef2 = (IEditorReference) fActivePage.getReference(editor2);
+//
+//		fActivePage.hideEditor(editorRef);
+//		IEditorReference[] refs = fActivePage.getEditorReferences();
+//		assertEquals(1, refs.length);
+//		assertEquals(editorRef2, refs[0]);
+//		fActivePage.showEditor(editorRef);
+//		refs = fActivePage.getEditorReferences();
+//		assertEquals(2, refs.length);
+//
+//		fActivePage.hideEditor(editorRef2);
+//		refs = fActivePage.getEditorReferences();
+//		assertEquals(1, refs.length);
+//		fActivePage.hideEditor(editorRef);
+//		refs = fActivePage.getEditorReferences();
+//		assertEquals(0, refs.length);
+//		fActivePage.showEditor(editorRef);
+//		refs = fActivePage.getEditorReferences();
+//		assertEquals(editorRef, refs[0]);
+//		fActivePage.showEditor(editorRef2);
+//		refs = fActivePage.getEditorReferences();
+//		assertEquals(2, refs.length);
+//
+//		fActivePage.closeAllEditors(true);
+//		refs = fActivePage.getEditorReferences();
+//		assertEquals(0, refs.length);
+//		assertEquals(getMessage(), 0, logCount);
+//	}
+//
+//	/**
+//	 * Create 2 editors and hide one.  When added back and then closed, there
+//	 * should only be one editor.  Adding back the closed editor should
+//	 * generate a log message and not effect the list of editors.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor3() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a.mock1", proj);
+//		IFile file2 = FileUtil.createFile("a.mock2", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor instanceof MockEditorPart);
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//		IEditorPart editor2 = IDE.openEditor(fActivePage, file2);
+//		assertTrue(editor2 instanceof MockEditorPart);
+//		IEditorReference editorRef2 = (IEditorReference) fActivePage.getReference(editor2);
+//
+//		fActivePage.hideEditor(editorRef2);
+//		IEditorReference[] refs = fActivePage.getEditorReferences();
+//		assertEquals(1, refs.length);
+//		assertEquals(editorRef, refs[0]);
+//		fActivePage.showEditor(editorRef2);
+//		fActivePage.closeEditors(new IEditorReference[] { editorRef2 }, true);
+//		refs = fActivePage.getEditorReferences();
+//		assertEquals(1, refs.length);
+//		fActivePage.showEditor(editorRef2);
+//		assertEquals(1, refs.length);
+//		assertEquals(getMessage(), 1, logCount);
+//		assertNotNull(getMessage());
+//		assertTrue(getMessage().startsWith("adding a disposed part"));
+//	}
+//
+//	/**
+//	 * Create 2 editors, and remove and show one of them.  Trying to
+//	 * add it a second time should not effect the list of editor references.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor4() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a.mock1", proj);
+//		IFile file2 = FileUtil.createFile("a.mock2", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor instanceof MockEditorPart);
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//		IEditorPart editor2 = IDE.openEditor(fActivePage, file2);
+//		assertTrue(editor2 instanceof MockEditorPart);
+//		IEditorReference editorRef2 = (IEditorReference) fActivePage.getReference(editor2);
+//
+//		fActivePage.hideEditor(editorRef2);
+//		IEditorReference[] refs = fActivePage.getEditorReferences();
+//		assertEquals(1, refs.length);
+//		assertEquals(editorRef, refs[0]);
+//		fActivePage.showEditor(editorRef2);
+//		refs = fActivePage.getEditorReferences();
+//		assertEquals(2, refs.length);
+//		fActivePage.showEditor(editorRef2);
+//		refs = fActivePage.getEditorReferences();
+//		assertEquals(2, refs.length);
+//		assertEquals(getMessage(), 0, logCount);
+//	}
+//
+//	/**
+//	 * Create 2 editors that effect the Content Outline view.  Make
+//	 * sure that hiding and showing the active editor effects the
+//	 * outline view.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor5() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a1.java", proj);
+//		IFile file2 = FileUtil.createFile("a2.java", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor.getClass().getName().endsWith("CompilationUnitEditor"));
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//		IEditorPart editor2 = IDE.openEditor(fActivePage, file2);
+//		assertTrue(editor2.getClass().getName().endsWith("CompilationUnitEditor"));
+//
+//		ContentOutline outline = (ContentOutline) fActivePage.showView(IPageLayout.ID_OUTLINE);
+//		IPage page2 = outline.getCurrentPage();
+//		fActivePage.activate(editor);
+//		processEvents();
+//		IPage page = outline.getCurrentPage();
+//		assertFalse(page2==page);
+//
+//		assertEquals(getMessage(), 0, logCount);
+//
+//		fActivePage.hideEditor(editorRef);
+//		assertEquals(page2, outline.getCurrentPage());
+//		assertEquals(getMessage(), 0, logCount);
+//
+//		fActivePage.showEditor(editorRef);
+//		assertEquals(page2, outline.getCurrentPage());
+//		assertEquals(getMessage(), 0, logCount);
+//
+//		fActivePage.activate(editor);
+//		assertEquals(page, outline.getCurrentPage());
+//		assertEquals(getMessage(), 0, logCount);
+//	}
+//
+//	/**
+//	 * Create one editor.  Make sure hiding and showing it effects
+//	 * the outline view, and that when hidden the outline view
+//	 * reflects the default page.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor6() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a1.java", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor.getClass().getName().endsWith("CompilationUnitEditor"));
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//
+//		ContentOutline outline = (ContentOutline) fActivePage.showView(IPageLayout.ID_OUTLINE);
+//		IPage defaultPage = outline.getDefaultPage();
+//		assertNotNull(defaultPage);
+//
+//		processEvents();
+//		IPage page = outline.getCurrentPage();
+//		assertFalse(defaultPage==page);
+//
+//		assertEquals(getMessage(), 0, logCount);
+//		assertEquals(0, partHiddenCount);
+//		fActivePage.addPartListener(partListener2);
+//		fActivePage.hideEditor(editorRef);
+//		processEvents();
+//
+//		assertEquals(1, partHiddenCount);
+//		assertEquals(editorRef, partHiddenRef);
+//
+//		assertEquals(defaultPage, outline.getCurrentPage());
+//		//assertEquals(page, outline.getCurrentPage());
+//		assertEquals(getMessage(), 0, logCount);
+//
+//		assertEquals(0, partVisibleCount);
+//		fActivePage.showEditor(editorRef);
+//		processEvents();
+//		assertEquals(page, outline.getCurrentPage());
+//		assertEquals(getMessage(), 0, logCount);
+//		assertEquals(1, partVisibleCount);
+//		assertEquals(editorRef, partVisibleRef);
+//
+//		fActivePage.activate(editor);
+//		assertEquals(page, outline.getCurrentPage());
+//		assertEquals(getMessage(), 0, logCount);
+//	}
+//
+//	/**
+//	 * Create one editor.  Make sure hiding the editor updates
+//	 * the window title.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor7() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a1.java", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor.getClass().getName().endsWith("CompilationUnitEditor"));
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//
+//		processEvents();
+//
+//		String firstTitle = fWin.getShell().getText();
+//
+//		assertEquals(getMessage(), 0, logCount);
+//		assertEquals(0, partHiddenCount);
+//		fActivePage.addPartListener(partListener2);
+//		fActivePage.hideEditor(editorRef);
+//		processEvents();
+//
+//		assertEquals(1, partHiddenCount);
+//		assertEquals(editorRef, partHiddenRef);
+//
+//		String nextTitle = fWin.getShell().getText();
+//		String tooltip = editor.getTitleToolTip();
+//		assertNotNull(tooltip);
+//		String[] split = Util.split(nextTitle, '-');
+//		assertEquals(2, split.length);
+//		String nextTitleRebuilt = split[0] + "- " + tooltip + " -" + split[1];
+//		assertEquals(firstTitle, nextTitleRebuilt);
+//
+//		assertEquals(0, partVisibleCount);
+//		fActivePage.showEditor(editorRef);
+//		processEvents();
+//		assertEquals(getMessage(), 0, logCount);
+//		assertEquals(1, partVisibleCount);
+//		assertEquals(editorRef, partVisibleRef);
+//		nextTitle = fWin.getShell().getText();
+//		assertEquals(firstTitle, nextTitle);
+//
+//		fActivePage.activate(editor);
+//		assertEquals(getMessage(), 0, logCount);
+//	}
+//
+//	/**
+//	 * Create one editor.  Make sure hiding the editor that is the active part
+//	 * causes another part to become active.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor8() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a1.java", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor.getClass().getName().endsWith("CompilationUnitEditor"));
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//
+//		ContentOutline outline = (ContentOutline) fActivePage.showView(IPageLayout.ID_OUTLINE);
+//		IPage defaultPage = outline.getDefaultPage();
+//		assertNotNull(defaultPage);
+//		fActivePage.activate(editor);
+//
+//		processEvents();
+//		IPage page = outline.getCurrentPage();
+//		assertFalse(defaultPage==page);
+//
+//		partActiveCount = 0;
+//		partActiveRef = null;
+//		assertEquals(getMessage(), 0, logCount);
+//		assertEquals(0, partHiddenCount);
+//		fActivePage.addPartListener(partListener2);
+//		fActivePage.hideEditor(editorRef);
+//		processEvents();
+//
+//		assertEquals(1, partHiddenCount);
+//		assertEquals(editorRef, partHiddenRef);
+//		assertEquals(1, partActiveCount);
+//		assertFalse(partActiveRef == editorRef);
+//
+//		fActivePage.showEditor(editorRef);
+//
+//		assertEquals(getMessage(), 0, logCount);
+//	}
+//
+//	/**
+//	 * Create a java editor.  Make a change.  Validate the enabled state
+//	 * of some commands.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor9() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a1.java", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor.getClass().getName()
+//				.endsWith("CompilationUnitEditor"));
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//
+//		fActivePage.activate(editor);
+//
+//		processEvents();
+//		ICommandService cs = (ICommandService) fActivePage.getWorkbenchWindow()
+//				.getService(ICommandService.class);
+//		Command undo = cs.getCommand("org.eclipse.ui.edit.undo");
+//		assertTrue(undo.isDefined());
+//
+//		assertFalse(undo.isEnabled());
+//
+//		ITextEditor textEditor = (ITextEditor) editor;
+//		IDocument doc = textEditor.getDocumentProvider().getDocument(
+//				textEditor.getEditorInput());
+//		doc.replace(0, 1, "  ");
+//		fActivePage.saveEditor(editor, false);
+//
+//		processEvents();
+//		assertTrue(undo.isEnabled());
+//
+//		assertEquals(getMessage(), 0, logCount);
+//		fActivePage.hideEditor(editorRef);
+//		processEvents();
+//
+//		assertFalse(undo.isEnabled());
+//
+//		fActivePage.showEditor(editorRef);
+//
+//		assertTrue(undo.isEnabled());
+//
+//		assertEquals(getMessage(), 0, logCount);
+//	}
+//
+//	/**
+//	 * Create and hide a single editor, and check it is reflected in the
+//	 * editor references.  Check that closing the hidden editor still works.
+//	 *
+//	 * @throws Exception
+//	 */
+//	public void testOpenAndHideEditor10() throws Exception {
+//		proj = FileUtil.createProject("testOpenAndHideEditor");
+//		IFile file1 = FileUtil.createFile("a.mock1", proj);
+//		IEditorPart editor = IDE.openEditor(fActivePage, file1);
+//		assertTrue(editor instanceof MockEditorPart);
+//		IEditorReference editorRef = (IEditorReference) fActivePage
+//				.getReference(editor);
+//		fActivePage.hideEditor(editorRef);
+//		assertEquals(0, fActivePage.getEditorReferences().length);
+//		fActivePage.showEditor(editorRef);
+//		assertEquals(1, fActivePage.getEditorReferences().length);
+//		fActivePage.hideEditor(editorRef);
+//		processEvents();
+//		fActivePage.closeAllEditors(false);
+//		assertEquals(getMessage(), 0, logCount);
+//		assertEquals(0, fActivePage.getEditorReferences().length);
+//	}
+//
+//	/**
+//	 * Test opening multiple editors for an edge case: one input.
+//	 *
+//	 * openEditors(IWorkbenchPage page, IFile[] inputs)
+//	 */
+//	public void testOpenEditors1() throws Throwable {
+//		proj = FileUtil.createProject("testOpenEditors");
+//		IFile[] inputs = new IFile[1];
+//		String fileName0 = "test0.txt";
+//		inputs[0] = FileUtil.createFile(fileName0, proj);
+//
+//		// Check: editor references are returned for each file
+//		IEditorReference[] refs = IDE.openEditors(fActivePage, inputs);
+//		assertNotNull(refs);
+//		assertEquals(1, refs.length);
+//		assertNotNull(refs[0]);
+//
+//		// Check: the editor is materialized
+//		IEditorPart editor0 = refs[0].getEditor(false);
+//		assertNotNull(editor0);
+//
+//		// Check: the first file corresponds to the active editor
+//		assertEquals(fActivePage.getActiveEditor(), editor0);
+//
+//		// Check: created editor match its input
+//		assertEquals(editor0.getSite().getId(), fWorkbench.getEditorRegistry()
+//				.getDefaultEditor(inputs[0].getName()).getId());
+//
+//		// Check: reference's title matches the file name
+//		assertEquals(fileName0, refs[0].getTitle());
+//	}
+//
+//	/**
+//	 * Test opening multiple editors for three inputs. Only first editor
+//	 * should be materialized; it also should be the active editor.
+//	 *
+//	 * openEditors(IWorkbenchPage page, IFile[] inputs)
+//	 */
+//	public void testOpenEditors3() throws Throwable {
+//		proj = FileUtil.createProject("testOpenEditors");
+//		IFile[] inputs = new IFile[3];
+//		String fileName1 = "test1.txt";
+//		String fileName2 = "test2.txt";
+//		String fileName3 = "test3.txt";
+//		inputs[0] = FileUtil.createFile(fileName1, proj);
+//		inputs[1] = FileUtil.createFile(fileName2, proj);
+//		inputs[2] = FileUtil.createFile(fileName3, proj);
+//
+//		// Check: editor references are returned for each file
+//		IEditorReference[] refs = IDE.openEditors(fActivePage, inputs);
+//		assertNotNull(refs);
+//		assertEquals(3, refs.length);
+//		assertNotNull(refs[0]);
+//		assertNotNull(refs[1]);
+//		assertNotNull(refs[2]);
+//
+//		// Check: the first file got an editor materialized, rest of the files did not
+//		IEditorPart editor0 = refs[0].getEditor(false);
+//		assertNotNull(editor0);
+//		assertNull(refs[1].getEditor(false));
+//		assertNull(refs[2].getEditor(false));
+//
+//		// Check: the first file corresponds to the active editor
+//		assertEquals(fActivePage.getActiveEditor(), editor0);
+//
+//		// Check: created editors match their inputs
+//		assertEquals(editor0.getSite().getId(), fWorkbench.getEditorRegistry()
+//				.getDefaultEditor(inputs[0].getName()).getId());
+//
+//		// Check: rest of the editors can be materialized
+//		IEditorPart editor1 = refs[1].getEditor(true);
+//		assertNotNull(editor1);
+//
+//		// Check: those editors match their inputs too
+//		assertEquals(editor1.getSite().getId(), fWorkbench.getEditorRegistry()
+//				.getDefaultEditor(inputs[1].getName()).getId());
+//
+//		// Check: reference's title matches the file name
+//		assertEquals(fileName1, refs[0].getTitle());
+//		assertEquals(fileName2, refs[1].getTitle());
+//		assertEquals(fileName3, refs[2].getTitle());
+//	}
+//
+//	/**
+//	 * Test editor reuse when opening multiple editors. The internal editors
+//	 * with matching {id, input} should be reused.
+//	 *
+//	 * openEditors(IWorkbenchPage page, IFile[] inputs)
+//	 */
+//	public void testOpenEditorsReuse() throws Throwable {
+//		proj = FileUtil.createProject("testOpenEditors");
+//
+//		String fileName1 = "test1.txt";
+//		String fileName2 = "test2.txt";
+//		String fileName3 = "test3.txt";
+//		int flag = IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID; // use both matches
+//
+//		// open three files
+//		IFile[] inputs = new IFile[3];
+//		inputs[0] = FileUtil.createFile(fileName1, proj);
+//		inputs[1] = FileUtil.createFile(fileName2, proj);
+//		inputs[2] = FileUtil.createFile(fileName3, proj);
+//		IEditorReference[] refs = IDE.openEditors(fActivePage, inputs);
+//
+//		// open two of the same files in mixed order, 1st (materialized) and 3rd (not materialized)
+//		String editorID = fWorkbench.getEditorRegistry().getDefaultEditor(inputs[0].getName()).getId();
+//		IEditorInput[] inputs2 = new IEditorInput[] {
+//				new FileEditorInput(inputs[1]),
+//				new FileEditorInput(inputs[0]) };
+//		String[] editorIDs2 = new String [] { editorID, editorID} ;
+//
+//		IEditorReference[] refs2 = fActivePage.openEditors(inputs2, editorIDs2, flag);
+//		assertNotNull(refs2);
+//		assertEquals(2, refs2.length);
+//
+//		// now input1 is materialized and has focus
+//		IEditorPart editor = refs2[0].getEditor(false);
+//		assertNotNull(editor);
+//		assertEquals(fActivePage.getActiveEditor(), editor);
+//
+//		// check that the same editor was created
+//		assertEquals(refs2[0].getEditor(true), refs[1].getEditor(true));
+//		assertEquals(refs2[1].getEditor(true), refs[0].getEditor(true));
+//
+//		// open a file with different editor IDs, materialized (input0) and non-materialzed (input3)
+//		String editorIDAlt = fWorkbench.getEditorRegistry().getDefaultEditor("abc.log").getId();
+//		IEditorInput[] inputs3 = new IEditorInput[] {
+//				new FileEditorInput(inputs[0]),
+//				new FileEditorInput(inputs[2]) };
+//		String[] editorIDs3 = new String [] { editorIDAlt, editorIDAlt} ;
+//
+//		IEditorReference[] refs3 = fActivePage.openEditors(inputs3, editorIDs3, flag);
+//		assertNotNull(refs3);
+//		assertEquals(2, refs3.length);
+//
+//		assertFalse(refs2[0].equals(refs[0]));
+//		assertFalse(refs2[1].equals(refs[2]));
+//	}
+//
+//	/**
+//	 * A generic test to validate IWorkbenchPage's
+//	 * {@link IWorkbenchPage#setPartState(IWorkbenchPartReference, int)
+//	 * setPartState(IWorkbenchPartReference, int)} method which ensures the
+//	 * prevention of regressing on bug 209333.
+//	 */
+//	public void testSetPartState() throws Exception {
+//		// show a view
+//		IViewPart view = fActivePage.showView(MockViewPart.ID);
+//
+//		// now minimize it
+//		IViewReference reference = (IViewReference) fActivePage
+//				.getReference(view);
+//		fActivePage.setPartState(reference, IWorkbenchPage.STATE_MINIMIZED);
+//
+//		// since it's minimized, it should be a fast view
+//		assertTrue("A minimized view should be a fast view", facade
+//				.isFastView(fActivePage, reference));
+//
+//		// try to restore it
+//		fActivePage.setPartState(reference, IWorkbenchPage.STATE_RESTORED);
+//		// since it's maximized, it should not be a fast view
+//		assertFalse("A restored view should not be a fast view", facade
+//				.isFastView(fActivePage, reference));
+//	}
+//
 //}

@@ -117,7 +117,7 @@ public class ListView extends MockViewPart implements IMenuListener {
     public void addElement(ListElement el) {
         input.add(el);
         viewer.refresh();
-//        viewer.getControl().update();
+        viewer.getControl().update();
     }
 
     public void selectElement(ListElement el) {

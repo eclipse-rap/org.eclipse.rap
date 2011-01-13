@@ -83,6 +83,18 @@
             class="org.eclipse.ui.tests.internal.Bug78470Test$MyPerspective"
             id="org.eclipse.ui.tests.internal.Bug78470Test.MyPerspective"
             name="org.eclipse.ui.tests.internal.Bug78470Test.MyPerspective"/>
+      <perspective
+            class="org.eclipse.ui.tests.propertysheet.PropertySheetPerspectiveFactory"
+            id="org.eclipse.ui.tests.propertysheet.PropertySheetPerspectiveFactory"
+            name="UI Test Perspective for Properties view"/>
+      <perspective
+            class="org.eclipse.ui.tests.propertysheet.PropertySheetPerspectiveFactory2"
+            id="org.eclipse.ui.tests.propertysheet.PropertySheetPerspectiveFactory2"
+            name="UI Test Perspective for hidden Properties view instance"/>
+      <perspective
+            class="org.eclipse.ui.tests.propertysheet.PropertySheetPerspectiveFactory3"
+            id="org.eclipse.ui.tests.propertysheet.PropertySheetPerspectiveFactory3"
+            name="Second UI Test Perspective for hidden Properties view instance"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -93,7 +105,7 @@
 
       <view
        		name="ERROR: View that allocates all available graphics handles"
-       		icon="icons\view.gif"
+       		icon="icons/view.gif"
       		category="org.eclipse.ui.tests.errorhandling"
        		class="org.eclipse.ui.tests.api.workbenchpart.HeavyResourceView"
        		id="org.eclipse.ui.tests.api.workbenchpart.HeavyResourceView">
@@ -101,7 +113,7 @@
       
       <view
        		name="ERROR: View that throws PartInitException in init"
-       		icon="icons\view.gif"
+       		icon="icons/view.gif"
       		category="org.eclipse.ui.tests.errorhandling"
        		class="org.eclipse.ui.tests.api.workbenchpart.ViewWithInitException"
        		id="org.eclipse.ui.tests.api.workbenchpart.ViewWithInitException">
@@ -109,7 +121,7 @@
 
       <view
        		name="ERROR: View that throws RuntimeException in init"
-       		icon="icons\view.gif"
+       		icon="icons/view.gif"
       		category="org.eclipse.ui.tests.errorhandling"
        		class="org.eclipse.ui.tests.api.workbenchpart.ViewWithInitRuntimeException"
        		id="org.eclipse.ui.tests.api.workbenchpart.ViewWithInitRuntimeException">
@@ -117,21 +129,21 @@
       <view
        		name="ERROR: View pointing to invalid class"
        		category="org.eclipse.ui.tests.errorhandling"
-       		icon="icons\view.gif"
+       		icon="icons/view.gif"
        		class="org.eclipse.ui.tests.api.workbenchpart.ViewWithMissingClass"
        		id="org.eclipse.ui.tests.api.workbenchpart.ViewWithMissingClass">
       </view>
       <view
        		name="ERROR: View that throws exception in dispose"
        		category="org.eclipse.ui.tests.errorhandling"
-       		icon="icons\view.gif"
+       		icon="icons/view.gif"
        		class="org.eclipse.ui.tests.api.workbenchpart.ViewWithDisposeException"
        		id="org.eclipse.ui.tests.api.workbenchpart.ViewWithDisposeException">
       </view>
       <view
        		name="ERROR: View that throws exception in createPartControls"
       		category="org.eclipse.ui.tests.errorhandling"
-       		icon="icons\view.gif"
+       		icon="icons/view.gif"
        		class="org.eclipse.ui.tests.api.workbenchpart.ViewWithCreateControlsException"
        		id="org.eclipse.ui.tests.api.workbenchpart.ViewWithCreateControlsException">
       </view>
@@ -143,113 +155,123 @@
 
       <view
        		name="Title Test View"
-       		icon="icons\view.gif"
+       		icon="icons/view.gif"
        		class="org.eclipse.ui.tests.api.workbenchpart.TitleTestView"
        		id="org.eclipse.ui.tests.api.TitleTestView">
       </view>
 
       <view
             name="Mock View 1"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.MockViewPart"
             id="org.eclipse.ui.tests.api.MockViewPart">
       </view>
       <view
             name="Mock View 2"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.MockViewPart"
             id="org.eclipse.ui.tests.api.MockViewPart2">
       </view>
       <view
             name="Mock View 3"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.MockViewPart"
             id="org.eclipse.ui.tests.api.MockViewPart3">
       </view>
       <view
             name="Mock View 4"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.MockViewPart"
             id="org.eclipse.ui.tests.api.MockViewPart4">
       </view>
       <view
             name="Context Mock View 5"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.contexts.MockViewPart5"
             id="org.eclipse.ui.tests.contexts.MockViewPart5">
       </view>
       <view
             allowMultiple="true"
             name="Mock View Mult"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.MockViewPartMult"
             id="org.eclipse.ui.tests.api.MockViewPartMult">
       </view>
       <view
+            allowMultiple="true"
+            name="Mock View Mult"
+            icon="icons/view.gif"
+            class="org.eclipse.ui.tests.api.MockViewPartMult"
+            id="org.eclipse.ui.tests.api.MockViewPartMultSticky">
+      </view>
+      <stickyView
+            id="org.eclipse.ui.tests.api.MockViewPartMultSticky">
+      </stickyView>
+      <view
             name="Saveable Mock View"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.SaveableMockViewPart"
             id="org.eclipse.ui.tests.api.SaveableMockViewPart">
       </view>
       <view
             allowMultiple="true"
             class="org.eclipse.ui.tests.api.UserSaveableMockViewPart"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             id="org.eclipse.ui.tests.api.UserSaveableMockViewPart"
             name="User Saveable Mock View">
       </view>
       <view
             allowMultiple="true"
             class="org.eclipse.ui.tests.api.UserSaveableSharedViewPart"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             id="org.eclipse.ui.tests.api.UserSaveableSharedViewPart"
             name="User Shared Mock View">
       </view>
       <view
             name="Session Test View"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.SessionView"
             id="org.eclipse.ui.tests.api.SessionView">
       </view>
       <view
             name="IViewActionDelegateTest View"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.MockViewPart"
             id="org.eclipse.ui.tests.api.IViewActionDelegateTest">
       </view>
       <view
             name="Action Filter Test View 1"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.ListView:-staticMenu"
             id="org.eclipse.ui.tests.api.IActionFilterTest1">
       </view>
       <view
             name="Action Expression Test View"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.ListView"
             id="org.eclipse.ui.tests.internal.ActionExpressionTest">
       </view>
       <view
             name="Action Filter Test View 2"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.api.ListView:-dynamicMenu"
             id="org.eclipse.ui.tests.api.IActionFilterTest2">
       </view>
       <view
             name="Selection Provider Test View"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.SelectionProviderView"
             id="org.eclipse.ui.tests.SelectionProviderView">
       </view>
       <view
             name="Selection Provider Test View 2"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.SelectionProviderView"
             id="org.eclipse.ui.tests.SelectionProviderView2">
       </view>
       <view
             name="Adapted Resource Navigator"
-            icon="icons\view.gif"
+            icon="icons/view.gif"
             class="org.eclipse.ui.tests.adaptable.AdaptedResourceNavigator"
             id="org.eclipse.ui.tests.adaptable.adaptedHierarchy">
       </view>
@@ -459,6 +481,18 @@
             id="org.eclipse.ui.tests.layout.constraints.LayoutConstraintsView"
             name="Layout Constraints Test">
       </view>
+      <view
+            class="org.eclipse.ui.tests.session.NonRestorableView"
+            id="org.eclipse.ui.tests.session.NonRestorableView"
+            name="NonRestorableView"
+            restorable="false">
+      </view>
+      <view
+            class="org.eclipse.ui.tests.internal.TextControlView"
+            id="org.eclipse.ui.tests.textHandlerView"
+            name="Text Control view"
+            restorable="true">
+      </view>
 
    </extension>
    <extension
@@ -466,28 +500,35 @@
       <editor
             name="Mock Editor 1"
             extensions="mock1"
-            icon="icons\mockeditorpart1.gif"
+            icon="icons/mockeditorpart1.gif"
             class="org.eclipse.ui.tests.api.MockEditorPart"
             id="org.eclipse.ui.tests.api.MockEditorPart1">
       </editor>
       <editor
             name="Mock Editor 2"
             extensions="mock2"
-            icon="icons\mockeditorpart2.gif"
+            icon="icons/mockeditorpart2.gif"
             class="org.eclipse.ui.tests.api.MockEditorPart"
             id="org.eclipse.ui.tests.api.MockEditorPart2">
       </editor>
       <editor
+            name="Mock Reusable Editor 1"
+            extensions="mockr1"
+            icon="icons/mockeditorpart1.gif"
+            class="org.eclipse.ui.tests.api.MockReusableEditorPart"
+            id="org.eclipse.ui.tests.api.MockReusableEditorPart1">
+      </editor>
+      <editor
             name="Mock Editor Save"
             extensions="mocksave"
-            icon="icons\mockeditorpart1.gif"
+            icon="icons/mockeditorpart1.gif"
             class="org.eclipse.ui.tests.api.MockEditorWithState"
             id="org.eclipse.ui.tests.api.MockEditorStatePart">
       </editor>
       <editor
             name="IEditorActionBarContributorTest"
             extensions="mock3"
-            icon="icons\mockeditorpart2.gif"
+            icon="icons/mockeditorpart2.gif"
             class="org.eclipse.ui.tests.api.MockEditorPart"
             contributorClass="org.eclipse.ui.tests.api.MockEditorActionBarContributor"
             id="org.eclipse.ui.tests.api.IEditorActionBarContributorTest">
@@ -495,7 +536,7 @@
       <editor
             name="IEditorActionDelegateTest"
             extensions="mock3"
-            icon="icons\mockeditorpart2.gif"
+            icon="icons/mockeditorpart2.gif"
             class="org.eclipse.ui.tests.api.MockEditorPart"
             contributorClass="org.eclipse.ui.tests.api.MockEditorActionBarContributor"
             id="org.eclipse.ui.tests.api.IEditorActionDelegateTest">
@@ -503,7 +544,7 @@
       <editor
             name="IEditorActionBarsTest"
             extensions="mock3"
-            icon="icons\mockeditorpart2.gif"
+            icon="icons/mockeditorpart2.gif"
             class="org.eclipse.ui.tests.api.MockEditorPart"
             contributorClass="org.eclipse.ui.tests.api.MockEditorActionBarContributor"
             id="org.eclipse.ui.tests.internal.EditorActionBarsTest">
@@ -511,7 +552,7 @@
       <editor
             name="ExtendedTextEditor"
             extensions="exttxt"
-            icon="icons\mockeditorpart2.gif"
+            icon="icons/mockeditorpart2.gif"
             class="org.eclipse.ui.tests.internal.ExtendedTextEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             id="org.eclipse.ui.tests.ExtendedTextEditor">
@@ -519,7 +560,7 @@
       <editor
             name="Test Multi-Page Editor"
             extensions="multi"
-            icon="icons\mockeditorpart1.gif"
+            icon="icons/mockeditorpart1.gif"
             class="org.eclipse.ui.tests.multipageeditor.TestMultiPageEditor"
             id="org.eclipse.ui.tests.multipageeditor.TestMultiPageEditor">
       </editor>
@@ -594,7 +635,7 @@
             icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/obj16/class_obj.gif"
             default="true"
             name="Plugin Icon Test 2"
-            id="org.eclipse.ui.tests.IconTestEditor1"
+            id="org.eclipse.ui.tests.IconTestEditor2"
             extensions="icontest2"/>                      
        <editor
             class="org.eclipse.ui.tests.api.MockEditorPart"
@@ -620,7 +661,7 @@
              name="org.eclipse.ui.tests.contentType1Editor-fallback"/>       
       <editor
             name="Mock Matching Editor 1"
-            icon="icons\mockeditorpart1.gif"
+            icon="icons/mockeditorpart1.gif"
             class="org.eclipse.ui.tests.api.MockEditorPart"
             id="org.eclipse.ui.tests.api.MockMatchingEditorPart1"
             matchingStrategy="org.eclipse.ui.tests.api.MockEditorMatchingStrategy"/>
@@ -704,7 +745,7 @@
       <editor
             name="Context Menu Editor"
             extensions="cme"
-            icon="icons\mockeditorpart1.gif"
+            icon="icons/mockeditorpart1.gif"
             class="org.eclipse.ui.tests.leaks.ContextEditorPart"
             id="org.eclipse.ui.tests.leak.contextEditor">
       </editor>
@@ -1841,7 +1882,7 @@
          point="org.eclipse.ui.ide.markerImageProviders">
       <imageprovider
             class="org.eclipse.ui.tests.adaptable.TestMarkerImageProvider"
-            icon="icons\dynamic.gif"
+            icon="icons/dynamic.gif"
             id="testmarker.imageProvider2"
             markertype="org.eclipse.ui.tests.testmarker2">
       </imageprovider>
@@ -2012,6 +2053,53 @@
             activityId="org.eclipse.ui.tests.filter1.enabled"
             pattern="org/filter">
       </activityPatternBinding>
+      
+      <!-- Expression variable controlled activity -->
+      <activity
+            id="org.eclipse.ui.tests.filter2.enabled"
+            name="Enabled Activity Filter2">
+         <enabledWhen>
+            <with
+                  variable="arbitraryVariable">
+               <equals
+                     value="arbitraryValue">
+               </equals>
+            </with>
+         </enabledWhen>
+      </activity>
+      <activityPatternBinding
+            activityId="org.eclipse.ui.tests.filter2.enabled"
+            pattern="org/filter2">
+      </activityPatternBinding>
+      
+      <!-- This enabledWhen activity is always enabled.
+      	   The expression result is obviously always true.
+      	   Without the the "no-update" lock with 
+      	   <code>addingEvaluationListener</code> in MutableActivityManager this
+      	   would leed to an endless loop. Because the change in enablement from
+      	   false to true would leed to an update of the activity which adds
+      	   the activity evaluation listener which itself calls indirect an 
+      	   update of the activity: endless loop build finished.
+      	   
+      	   If this were variable dependent, the first result would've been 
+      	   false, so no update would've been called before the evaluation 
+      	   listener could've been fully installed. And in later updates of 
+      	   the activity the evaluation listener would've been already installed,
+      	   so the entrance to the endless loop would not be entered.
+      	   
+      	   (There is no corresponding test code in the UtilTest Unit Test for
+      	   this.)      	   
+       -->
+      <activity
+            id="org.eclipse.ui.tests.filter3.enabled"
+            name="Always Enabled Activity Filter3">
+         <enabledWhen>
+            <instanceof
+                  value="java.lang.Object">
+            </instanceof>
+         </enabledWhen>
+      </activity>  
+      
       <activityPatternBinding
             activityId="org.eclipse.activity3"
             pattern="org.eclipse.pattern1">
@@ -2093,6 +2181,46 @@
             isEqualityPattern="true"
             pattern="org.eclipse.ui.tests.activity{No{Reg(Exp[^d]">
       </activityPatternBinding>
+      
+      <!-- Expression should be never true, so it tests if it is an instance
+      		of java.lang.Double -->
+      <activity
+            id="org.eclipse.ui.tests.filter4.enabled"
+            name="Always Disabled Activity Filter4">
+         <enabledWhen>
+            <instanceof
+                  value="java.lang.Double">
+            </instanceof>
+         </enabledWhen>
+      </activity>
+      <activity
+            description="ActivityDependsOnExpressionActivity"
+            id="org.eclipse.ui.tests.filter5.enabled"
+            name="ActivityDependsOnExpressionActivity">
+      </activity>
+      <activityRequirementBinding
+            activityId="org.eclipse.ui.tests.filter5.enabled"
+            requiredActivityId="org.eclipse.ui.tests.filter4.enabled">
+      </activityRequirementBinding>
+      <activity
+            description="ExpressionActivityDependsOnActivity"
+            id="org.eclipse.ui.tests.filter7.enabled"
+            name="ExpressionActivityDependsOnActivity">
+         <enabledWhen>
+            <instanceof
+                  value="java.lang.Object">
+            </instanceof>
+         </enabledWhen>
+      </activity>
+      <activityRequirementBinding
+            activityId="org.eclipse.ui.tests.filter7.enabled"
+            requiredActivityId="org.eclipse.ui.tests.filter6.enabled">
+      </activityRequirementBinding>
+      <activity
+            description="ConventionalActivityControllingExpressionActivity"
+            id="org.eclipse.ui.tests.filter6.enabled"
+            name="ConventionalActivityControllingExpressionActivity">
+      </activity>         
    </extension>
 
   <extension
@@ -2714,6 +2842,11 @@
        </factory>
        <factory
              class="org.eclipse.ui.tests.menus.ObjectContributionClasses"
+             adaptableType="org.eclipse.ui.tests.menus.ObjectContributionClasses$E1">
+          <adapter type="org.eclipse.ui.tests.menus.ObjectContributionClasses$ICommon"/>
+       </factory>
+       <factory
+             class="org.eclipse.ui.tests.menus.ObjectContributionClasses"
              adaptableType="org.eclipse.ui.tests.menus.ObjectContributionClasses$IModelElement">
           <adapter type="org.eclipse.core.resources.IResource"/>
        </factory>
@@ -3039,13 +3172,13 @@
                 id="org.eclipse.ui.tests.taskGrouping"
                 label="Task Grouping">
           </markerGrouping>
-          <markerFieldFilterGrouping
+          <markerFieldConfiguration
                 enabled="false"
                 id="org.eclipse.ui.tests.fixmeTest"
                 name="FIX MEs"
                 scope="ON_SELECTED_AND_CHILDREN"
                 values="org.eclipse.ui.tests.markers.FIXMEParameters">
-          </markerFieldFilterGrouping>
+          </markerFieldConfiguration>
        </markerContentGeneratorExtension>
    </extension>
    <extension
@@ -3422,6 +3555,29 @@
             </visibleWhen>
             </command>
       </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.eclipse.ui.tests.anypopup.command1"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.eclipse.ui.tests.anypopup.command2"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.eclipse.ui.tests.anypopup.command3"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.contexts">
@@ -3533,6 +3689,10 @@
             handlerId="org.eclipse.ui.tests.statushandlers.TestStatusHandler"
             productId="org.eclipse.sdk.ide">
       </statusHandlerProductBinding>
+      <statusHandler
+            class="org.eclipse.ui.tests.statushandlers.FreeStatusHandler"
+            id="org.eclipse.ui.tests.statushandlers.FreeStatusHandler">
+      </statusHandler>
    </extension>
 <!-- Sample invalid extension ! (illegal child) --> 
    <extension
@@ -3562,6 +3722,12 @@
                name="Server"
                optional="false">
          </commandParameter>
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.window"
+            id="tests.commands.CCT.cmd3"
+            defaultHandler="org.eclipse.ui.tests.commands.DefaultHandler"
+            name="cmd3">
       </command>
    </extension>
    <extension
@@ -3739,7 +3905,24 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.tests.popup.testPrivatePopup?after=additions">
+            <command
+                  commandId="org.eclipse.ui.tests.menus.iconsDefault"
+                  style="push">
+            </command>
+      </menuContribution>
+      
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+            <command
+                  commandId="org.eclipse.ui.tests.menus.iconsAll"
+                  style="push">
+            </command>
+      </menuContribution>      
+      
    </extension>
+   
    <!-- END OF org.eclipse.ui.menus extension point test contributions -->
    
    <extension
@@ -3758,6 +3941,16 @@
             id="org.eclipse.ui.tests.commandEnabledVisibility"
             name="Command Enabled Visibility">
       </command>
+      <command
+            categoryId="org.eclipse.ui.category.window"
+            id="org.eclipse.ui.tests.simplyGo"
+            name="Test Window Action Delegate">
+      </command>
+      <command
+            categoryId="org.eclipse.ui.category.window"
+            id="org.eclipse.ui.tests.simplyStay"
+            name="Test Editor Action Delegate">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.viewActions">
@@ -3772,6 +3965,35 @@
                menubarPath="additions">
          </action>
       </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution 
+            id="org.eclipse.ui.tests.editorContribution"
+            targetID="org.eclipse.ui.DefaultTextEditor">
+         <action
+               class="org.eclipse.ui.tests.commands.EditorActionDelegate"
+               definitionId="org.eclipse.ui.tests.simplyStay"
+               id="org.eclipse.ui.tests.action.simplyStay"
+               label="Stay"
+               menubarPath="window/additions">
+         </action>
+      </editorContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.eclipse.ui.tests.delegateActionSet"
+            label="actionSet for delegates">
+         <action
+               class="org.eclipse.ui.tests.commands.SimplyGoActionDelegate"
+               definitionId="org.eclipse.ui.tests.simplyGo"
+               id="org.eclipse.ui.tests.action1"
+               label="Simply Go"
+               menubarPath="window/additions"
+               style="push">
+         </action>
+      </actionSet>
    </extension>
    <extension
          point="org.eclipse.ui.commandImages">
@@ -3793,6 +4015,10 @@
             icon="icons/view.gif"
             style="toolbar">
       </image>
+      <image
+            commandId="tests.commands.CCT.cmd3"
+            icon="icons/anything.gif">
+      </image>
    </extension>
    <extension
          point="org.eclipse.ui.services">
@@ -3809,7 +4035,31 @@
                priorityLevel="activeContexts">
          </variable>
       </sourceProvider>
-   </extension>   
+      <serviceFactory
+            factoryClass="org.eclipse.ui.tests.api.DummyServiceFactory">
+         <service
+               serviceClass="org.eclipse.ui.tests.api.DummyService"></service>
+      </serviceFactory>
+   </extension> 
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.ui.tests.services.checkHandler"
+            name="Check My Handler">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.ui.tests.services.CheckHandler"
+            commandId="org.eclipse.ui.tests.services.checkHandler">
+         <activeWhen>
+            <with variable="username">
+              <instanceof value="java.lang.Object"/>
+            </with>
+         </activeWhen>
+      </handler>
+   </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -3820,6 +4070,11 @@
             categoryId="org.eclipse.ui.tests.category.menuHarness"
             id="org.eclipse.ui.tests.enabledCount"
             name="Enabled Count">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ui.tests.propertysheet.TestNewPropertySheetHandler"
+            id="org.eclipse.ui.views.properties.NewPropertySheetCommandTest"
+            name="TestNewPropertySheetCommand">
       </command>
    </extension>
    <extension
@@ -3840,7 +4095,237 @@
             class="org.eclipse.ui.tests.api.BadElementFactory"
             id="org.eclipse.ui.tests.badFactory">
       </factory>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.eclipse.ui.tests.defWithPropertyTester">
+         <test
+               args="isEnabled"
+               property="org.eclipse.ui.tests.class.method">
+         </test>
+      </definition>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.eclipse.ui.tests.services.StaticVarPropertyTester"
+            id="org.eclipse.ui.tests.reflectionTester"
+            namespace="org.eclipse.ui.tests.class"
+            properties="method"
+            type="java.lang.Object">
+      </propertyTester>
+   </extension>
+   
+   <!-- bindings for the platform tests -->
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.ui.help.aboutAction"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+8 A">
+      </key>
+      <key
+            contextId="org.eclipse.ui.contexts.window"
+            platform="carbon"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+8 A">
+      </key>
+      <key
+            commandId="org.eclipse.ui.help.aboutAction"
+            contextId="org.eclipse.ui.contexts.window"
+            platform="carbon"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+8 B">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.tests.tooltipTest">
+         <command
+               commandId="org.eclipse.ui.tests.testToolTipCommand"
+               label="Testing Tooltip"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.tests.Bug264804?after=additions">
+         <command
+               commandId="org.eclipse.ui.file.close"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="java.lang.Object">
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.file"
+            id="org.eclipse.ui.tests.testToolTipCommand"
+            name="My Test Tooltip Command">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ui.tests.commands.ExceptionThrowingHandler"
+            id="org.eclipse.ui.tests.command.handlerException"
+            name="Handler Exception">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.ui.tests.testToolTipCommand"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+1">
+      </key>
    </extension>   
+      <extension
+         id="menu.dynamic.contribution"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.tests.dynamicMenuContribution">
+         <dynamic
+               class="org.eclipse.ui.tests.menus.DynamicContributionItemPopup"
+               id="popup:org.eclipse.ui.tests.dynamicMenuContribution">
+         </dynamic>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.tests.Bug275126">
+         <command
+               commandId="tests.commands.CCT.cmd3"
+               label="Contributed Label"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+         <sequenceModifier
+               find="M1+8"
+               platforms="carbon,cocoa,gtk,win32"
+               replace="M2+8">
+         </sequenceModifier>
+      <key
+            commandId="org.eclipse.ui.navigate.addToWorkingSet"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+8 W">
+      </key>
+      <key
+            commandId="org.eclipse.ui.file.import"
+            contextId="org.eclipse.ui.contexts.window"
+            platform="carbon,cocoa,gtk,win32"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+8 I">
+	  </key>
+   </extension>
+      <extension
+            point="org.eclipse.ui.bindings">
+         <key
+               commandId="org.eclipse.ui.file.export"
+               contextId="org.eclipse.ui.contexts.window"
+               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+               sequence="M1+8 E">
+         </key>
+      </extension>
+      <extension
+            point="org.eclipse.ui.bindings">
+         <key
+               commandId="org.eclipse.ui.navigate.back"
+               contextId="org.eclipse.ui.contexts.window"
+               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+               sequence="M1+8 Q">
+         </key>
+         <sequenceModifier
+               find="M1+8"
+               platforms="photon"
+               replace="M2+8">
+         </sequenceModifier>
+      </extension>
+      <extension
+            point="org.eclipse.ui.commands">
+         <command
+               defaultHandler="org.eclipse.ui.tests.commands.ToggleStateHandler"
+               id="org.eclipse.ui.tests.toggleStateCommand1"
+               name="toggleStateCommand1">
+            <state
+                  class="org.eclipse.ui.handlers.RegistryToggleState:true"
+                  id="org.eclipse.ui.commands.toggleState">
+            </state>
+         </command>
+         <command
+               defaultHandler="org.eclipse.ui.tests.commands.ToggleStateHandler"
+               id="org.eclipse.ui.tests.toggleStateCommand2"
+               name="toggleStateCommand2">
+            <state
+                  class="org.eclipse.ui.handlers.RegistryToggleState:false"
+                  id="org.eclipse.ui.commands.toggleState">
+            </state>
+         </command>
+         <command
+               defaultHandler="org.eclipse.ui.tests.commands.ToggleStateHandler"
+               id="org.eclipse.ui.tests.toggleStateCommand3"
+               name="toggleStateCommand3">
+         </command>
+         <command
+               defaultHandler="org.eclipse.ui.tests.commands.RadioStateHandler"
+               id="org.eclipse.ui.tests.radioStateCommand1"
+               name="radioStateCommand1">
+            <commandParameter
+                  id="org.eclipse.ui.commands.radioStateParameter"
+                  name="State"
+                  optional="true">
+            </commandParameter>
+            <state
+                  class="org.eclipse.ui.handlers.RadioState:value2"
+                  id="org.eclipse.ui.commands.radioState">
+            </state>
+         </command>
+         <command
+               id="org.eclipse.ui.tests.progressViewCommand"
+               name="Progress View Command">
+         </command>
+         <command
+               id="org.eclipse.ui.tests.anypopup.command1"
+               name="cmd1">
+         </command>
+         <command
+               id="org.eclipse.ui.tests.anypopup.command3"
+               name="cmd3">
+         </command>
+         <command
+               id="org.eclipse.ui.tests.anypopup.command2"
+               name="cmd2">
+         </command>
+      </extension>
+   <extension id="rcpSessionApplication" point="org.eclipse.core.runtime.applications">
+	   <application cardinality="singleton-global" thread="main" visible="true">
+	      <run class="org.eclipse.ui.tests.RCPSessionApplication"> </run>
+	   </application>
+   </extension>
+   <extension
+         id="windowLessRcpApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.ui.tests.WindowlessRCPApplication">
+         </run>
+      </application>
+   </extension>
    <!-- Interactiondesign API tests -->
    <extension
          point="org.eclipse.ui.presentationFactories">

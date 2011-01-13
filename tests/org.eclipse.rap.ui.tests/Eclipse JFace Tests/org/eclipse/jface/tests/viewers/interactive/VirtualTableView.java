@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,11 +73,15 @@ public class VirtualTableView extends ViewPart {
 			 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 			 */
 			public void widgetSelected(SelectionEvent e) {
-
-				viewer.remove(((IStructuredSelection) viewer.getSelection()).toArray());
+				Object[] selection = ((IStructuredSelection) viewer.getSelection()).toArray();
+				doRemove(selection, viewer.getTable().getSelectionIndices());
 			}
 		});
 
+	}
+
+	protected void doRemove(Object[] selection, int[] selectionIndices) {
+		viewer.remove(selection);
 	}
 
 	/**

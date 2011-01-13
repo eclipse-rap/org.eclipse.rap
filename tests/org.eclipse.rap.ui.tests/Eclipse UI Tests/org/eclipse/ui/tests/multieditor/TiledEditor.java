@@ -105,7 +105,7 @@ public class TiledEditor extends MultiEditor {
 			return;
 
 		label.setForeground(g.fgColor);
-//		label.setBackground(g.bgColors, g.bgPercents);
+		label.setBackground(g.bgColors, g.bgPercents);
 	}
 
 	/*
@@ -116,7 +116,7 @@ public class TiledEditor extends MultiEditor {
 		CLabel titleLabel = new CLabel(parent, SWT.SHADOW_NONE);
 		// hookFocus(titleLabel);
 		titleLabel.setAlignment(SWT.LEFT);
-//		titleLabel.setBackground(null, null);
+		titleLabel.setBackground(null, null);
 		parent.setTopLeft(titleLabel);
 		if (innerEditorTitle == null)
 			innerEditorTitle = new CLabel[getInnerEditors().length];

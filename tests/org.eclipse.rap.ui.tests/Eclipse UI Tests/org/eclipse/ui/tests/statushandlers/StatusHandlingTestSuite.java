@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,11 @@ import junit.framework.TestSuite;
 public class StatusHandlingTestSuite extends TestSuite {
 
 	public StatusHandlingTestSuite() {
-		addTest(new TestSuite(WizardsStatusHandlingTestCase.class));
+//		addTest(new TestSuite(WizardsStatusHandlingTestCase.class));
+		addTest(new TestSuite(StatusDialogManagerTest.class));
+		addTest(new TestSuite(LabelProviderWrapperTest.class));
+		addTest(new TestSuite(SupportTrayTest.class));
+		addTest(new TestSuite(WorkbenchStatusDialogManagerImplTest.class));
 	}
 
 	public static Test suite() {

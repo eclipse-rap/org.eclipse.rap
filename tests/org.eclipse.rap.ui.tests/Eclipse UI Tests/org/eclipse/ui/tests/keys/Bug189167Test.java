@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- ******************************************************************************/
+ *******************************************************************************/
 
 package org.eclipse.ui.tests.keys;
 
@@ -17,8 +17,8 @@ import org.eclipse.jface.bindings.Binding;
 
 /**
  * Tests Bug 189167
- *
- * @since 3.4
+ * 
+ * @since 3.4 
  */
 public class Bug189167Test extends TestCase {
 
@@ -39,7 +39,7 @@ public class Bug189167Test extends TestCase {
 		Binding b3  = new TestBinding("commandID", "schemeID", "contextID", "locale", "platform", 1, null);
 		assertEquals(one, two);
 		assertEquals(one.hashCode(), two.hashCode());
-
+		
 		assertFalse(one.equals(b3));
 	}
 }

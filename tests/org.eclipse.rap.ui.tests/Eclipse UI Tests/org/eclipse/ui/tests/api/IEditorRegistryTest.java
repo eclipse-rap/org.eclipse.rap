@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IFileEditorMapping;
 import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.internal.registry.EditorDescriptor;
 import org.eclipse.ui.internal.registry.EditorRegistry;
 import org.eclipse.ui.internal.registry.FileEditorMapping;
 import org.eclipse.ui.tests.TestPlugin;
@@ -206,7 +207,7 @@ public class IEditorRegistryTest extends TestCase {
 //		}
 		assertEquals(image1, image2);
 		assertEquals(image2, fReg.getImageDescriptor(file.getName()));
-		
+
 	}
 
 	public void testAddPropertyListener() throws Throwable {
@@ -327,7 +328,7 @@ public class IEditorRegistryTest extends TestCase {
 	}
 
 // RAP [if] Commented as it fails with RAP X
-// RAP [hs] fails because it uses stuff from org.eclipse.core.runtime.content	
+// RAP [hs] fails because it uses stuff from org.eclipse.core.runtime.content
 //	/**
 //	 * Assert that in the absence of content type, choose the content type
 //	 * editor based on content type guess.
@@ -395,5 +396,102 @@ public class IEditorRegistryTest extends TestCase {
 		}
 
 	}
+
+//	public void testSwitchDefaultToExternalBug236104() {
+//		IEditorDescriptor htmlDescriptor = fReg.getDefaultEditor("test.html");
+//		assertNotNull(htmlDescriptor);
+//
+//		IFileEditorMapping[] src = fReg.getFileEditorMappings();
+//		FileEditorMapping[] maps = new FileEditorMapping[src.length];
+//		System.arraycopy(src, 0, maps, 0, src.length);
+//		FileEditorMapping map = null;
+//
+//		for (int i = 0; i < maps.length; i++) {
+//			if (maps[i].getExtension().equals("html")) {
+//				map = maps[i];
+//				break;
+//			}
+//		}
+//
+//		assertNotNull(map);
+//
+//		EditorDescriptor replacementDescriptor = EditorDescriptor
+//				.createForProgram("notepad.exe");
+//
+//		try {
+//			map.setDefaultEditor(replacementDescriptor);
+//
+//			// invoke the same code that FileEditorsPreferencePage does
+//			((EditorRegistry) fReg).setFileEditorMappings(maps);
+//			((EditorRegistry) fReg).saveAssociations();
+//			PrefUtil.savePrefs();
+//
+//			IEditorDescriptor newDescriptor = fReg
+//					.getDefaultEditor("test.html");
+//
+//			assertEquals(replacementDescriptor, newDescriptor);
+//			assertFalse(replacementDescriptor.equals(htmlDescriptor));
+//		} finally {
+//			src = fReg.getFileEditorMappings();
+//			maps = new FileEditorMapping[src.length];
+//			System.arraycopy(src, 0, maps, 0, src.length);
+//			map = null;
+//
+//			for (int i = 0; i < maps.length; i++) {
+//				if (maps[i].getExtension().equals("html")) {
+//					map = maps[i];
+//					break;
+//				}
+//			}
+//
+//			assertNotNull(map);
+//
+//			map.setDefaultEditor((EditorDescriptor) htmlDescriptor);
+//			((EditorRegistry) fReg).setFileEditorMappings(maps);
+//			((EditorRegistry) fReg).saveAssociations();
+//			PrefUtil.savePrefs();
+//		}
+//	}
+//
+//	public void testBug308894() throws Throwable {
+//		FileEditorMapping newMapping = new FileEditorMapping("*.abc");
+//		assertNull(newMapping.getDefaultEditor());
+//
+//		FileEditorMapping[] src = (FileEditorMapping[]) fReg.getFileEditorMappings();
+//		FileEditorMapping[] maps = new FileEditorMapping[src.length + 1];
+//		System.arraycopy(src, 0, maps, 0, src.length);
+//		maps[maps.length - 1] = newMapping;
+//
+//		final Throwable[] thrownException = new Throwable[1];
+//		ILogListener listener = new ILogListener() {
+//			public void logging(IStatus status, String plugin) {
+//				Throwable throwable = status.getException();
+//				if (throwable == null) {
+//					thrownException[0] = new CoreException(status);
+//				} else {
+//					thrownException[0] = throwable;
+//				}
+//			}
+//		};
+//		Platform.addLogListener(listener);
+//
+//		try {
+//			// invoke the same code that FileEditorsPreferencePage does
+//			((EditorRegistry) fReg).setFileEditorMappings(maps);
+//			((EditorRegistry) fReg).saveAssociations();
+//			PrefUtil.savePrefs();
+//		} finally {
+//			// undo the change
+//			((EditorRegistry) fReg).setFileEditorMappings(src);
+//			((EditorRegistry) fReg).saveAssociations();
+//			PrefUtil.savePrefs();
+//
+//			Platform.removeLogListener(listener);
+//
+//			if (thrownException[0] != null) {
+//				throw thrownException[0];
+//			}
+//		}
+//	}
 
 }

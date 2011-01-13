@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,6 +98,16 @@ public class MenuManagerTest extends JFaceActionTest {
         
         menuBarMgr.dispose();
         assertTrue(menuBarMgr.isDirty());
+    }
+    
+    /**
+     * This is a test case for bug 255429 to ensure that a menu manager without any text
+     * set does not throw an NPE. 
+     */
+    public void testEmptyMenuManagerNPE() {
+    	Menu menu = new Menu(getShell());
+    	MenuManager manager = new MenuManager();
+    	manager.fill(menu, -1);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import junit.framework.TestSuite;
 
 /**
  * The suite of tests related to concurrency and deadlock.
- * 
+ *
  * @since 3.1
  */
 public final class ConcurrencyTestSuite extends TestSuite {
@@ -32,10 +32,15 @@ public final class ConcurrencyTestSuite extends TestSuite {
      * the relevant test cases.
      */
     public ConcurrencyTestSuite() {
-//       addTestSuite(NestedSyncExecDeadlockTest.class);
-//        addTestSuite(TestBug98621.class);
+    	addTestSuite(ModalContextCrashTest.class);
+//        addTestSuite(NestedSyncExecDeadlockTest.class);
+//        addTestSuite(SyncExecWhileUIThreadWaitsForRuleTest.class);
+//        addTestSuite(SyncExecWhileUIThreadWaitsForLock.class);
+//        addTestSuite(TestBug105491.class);
 //        addTestSuite(TestBug108162.class);
         addTestSuite(TestBug138695.class);
+//        addTestSuite(TestBug98621.class);
         addTestSuite(TransferRuleTest.class);
+//        addTestSuite(Bug_262032.class);
     }
 }

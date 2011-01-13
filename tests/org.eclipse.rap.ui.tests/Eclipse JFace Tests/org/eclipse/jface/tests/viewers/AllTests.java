@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,24 +42,29 @@ public class AllTests extends TestSuite {
 		addTestSuite(TableFontProviderTest.class);
 		addTestSuite(ListViewerTest.class);
 		addTestSuite(CheckboxTableViewerTest.class);
+		addTestSuite(CheckboxTableViewerTest.DeprecatedConstructor.class);
+		addTestSuite(CheckboxTableViewerTest.FactoryMethod.class);
 		addTestSuite(CheckboxTreeViewerTest.class);
 		addTestSuite(ComboViewerTest.class);
 		addTestSuite(CComboViewerTest.class);
 		addTestSuite(TreeViewerComparatorTest.class);
 		addTestSuite(ListViewerComparatorTest.class);
 		addTestSuite(TableViewerComparatorTest.class);
-		addTestSuite(Bug138608Test.class);
+//		addTestSuite(Bug138608Test.class);
 		addTestSuite(ComboViewerComparerTest.class);
 		addTestSuite(ListViewerRefreshTest.class);
 		addTestSuite(Bug200558Test.class);
 		addTestSuite(Bug201002TableViewerTest.class);
 //		addTestSuite(Bug201002TreeViewerTest.class);
 		addTestSuite(Bug200337TableViewerTest.class);
-		addTestSuite(Bug180504TableViewerTest.class);
-		addTestSuite(Bug180504TreeViewerTest.class);
 		addTestSuite(Bug203657TreeViewerTest.class);
 		addTestSuite(Bug203657TableViewerTest.class);
 		addTestSuite(Bug205700TreeViewerTest.class);
+		addTestSuite(Bug180504TableViewerTest.class);
+		addTestSuite(Bug180504TreeViewerTest.class);
+		addTestSuite(Bug256889TableViewerTest.class);
+		addTestSuite(Bug287765Test.class);
 //		addTestSuite(StyledStringBuilderTest.class);
+		addTestSuite(TreeManagerTest.class);
 	}
 }

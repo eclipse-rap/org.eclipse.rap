@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,15 +7,17 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Markus Alexander Kuppe (Versant Corp.) - https://bugs.eclipse.org/248103
  *******************************************************************************/
 package org.eclipse.ui.tests.propertysheet;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.eclipse.jface.viewers.StructuredSelection;
+//import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -27,15 +29,16 @@ import org.eclipse.ui.tests.harness.util.UITestCase;
 import org.eclipse.ui.views.properties.ColorPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  *  The class implements a test for the workbench's default
- * property sheet page. It does this by firing a sequence of 
- * selection events. The property sheet view receives these events 
+ * property sheet page. It does this by firing a sequence of
+ * selection events. The property sheet view receives these events
  * and displays the properties for the selected objects.
- * We are able to test the property sheet code which displays 
- * properties and handles the transition to another set of 
+ * We are able to test the property sheet code which displays
+ * properties and handles the transition to another set of
  * properties.
  */
 
@@ -85,7 +88,7 @@ public class PropertySheetAuto extends UITestCase {
             createDescriptors();
         }
 
-        /** 
+        /**
          * Creates the property descriptors.
          * If one of the properties has a "null" value then
          * that property is not included in the list of
@@ -202,7 +205,7 @@ public class PropertySheetAuto extends UITestCase {
         super(name);
     }
 
-    /** 
+    /**
      * Creates a array of car objects
      */
     private void createCars() {
@@ -241,48 +244,168 @@ public class PropertySheetAuto extends UITestCase {
         super.doSetUp();
         workbenchWindow = openTestWindow();
         activePage = workbenchWindow.getActivePage();
+        while (Display.getCurrent().readAndDispatch())
+            ;
     }
 
-    protected IWorkbenchPart createTestPart(IWorkbenchPage page)
+    protected IWorkbenchPart createTestParts(IWorkbenchPage page)
             throws Throwable {
-        IViewPart view = page.showView("org.eclipse.ui.views.PropertySheet");
+        IViewPart view = page.showView(IPageLayout.ID_PROP_SHEET);
         selectionProviderView = (SelectionProviderView) page
                 .showView(SelectionProviderView.ID);
+        while (Display.getCurrent().readAndDispatch())
+            ;
         return view;
 
     }
 
-    /** 
-     * Supply selection events with a random car selection
-     */
-    public void testInput() throws Throwable {
-        createTestPart(activePage);
-        createCars();
-        for (int i = 0; i < NUMBER_OF_SELECTIONS; i++) {
-            // create the selection
-            int numberToSelect = random.nextInt(NUMBER_OF_CARS - 2);
-            ArrayList selection = new ArrayList(numberToSelect);
-            while (selection.size() < numberToSelect) {
-                int j = random.nextInt(NUMBER_OF_CARS);
-                if (!selection.contains(cars[j]))
-                    selection.add(cars[j]);
-            }
-            StructuredSelection structuredSelection = new StructuredSelection(
-                    selection);
-            // fire the selection	
-            selectionProviderView.setSelection(structuredSelection);
-            while (Display.getCurrent().readAndDispatch())
-                ;
-        }
+//    /**
+//     * Supply selection events with a random car selection. All of these should go to
+//     * the properties view because it is visible.
+//     */
+//    public void testInput() throws Throwable {
+//        PropertySheetPerspectiveFactory.applyPerspective(activePage);
+//        PropertySheet propView = (PropertySheet) createTestParts(activePage);
+//        createCars();
+//
+//        assertTrue("'Property' view should be visible", activePage.isPartVisible(propView));
+//        assertTrue("'Selection provider' view should be visible", activePage
+//                .isPartVisible(selectionProviderView));
+//
+//        for (int i = 0; i < NUMBER_OF_SELECTIONS; i++) {
+//            // create the selection
+//            int numberToSelect = random.nextInt(NUMBER_OF_CARS - 2);
+//            ArrayList selection = new ArrayList(numberToSelect);
+//            while (selection.size() < numberToSelect) {
+//                int j = random.nextInt(NUMBER_OF_CARS);
+//                if (!selection.contains(cars[j]))
+//                    selection.add(cars[j]);
+//            }
+//            StructuredSelection structuredSelection = new StructuredSelection(
+//                    selection);
+//            // fire the selection
+//            selectionProviderView.setSelection(structuredSelection);
+//            while (Display.getCurrent().readAndDispatch())
+//                ;
+//            assertEquals(structuredSelection, propView.getShowInContext().getSelection());
+//        }
+//    }
+
+//    /**
+//     * Supply selection events with a random car selection. None of these should go to
+//     * the properties view because it is hidden.
+//     * <p>
+//     * This test invalidated by the fix for
+//     * https://bugs.eclipse.org/bugs/show_bug.cgi?id=267425
+//     * </p>
+//     */
+//    public void XtestInputIfHiddenBug69953() throws Throwable {
+//        PropertySheetPerspectiveFactory2.applyPerspective(activePage);
+//        PropertySheet propView = (PropertySheet) createTestParts(activePage);
+//        createCars();
+//
+//        assertFalse("'Property' view should be hidden", activePage.isPartVisible(propView));
+//        assertTrue("'Selection provider' view should be visible", activePage
+//                .isPartVisible(selectionProviderView));
+//
+//        for (int i = 0; i < NUMBER_OF_SELECTIONS; i++) {
+//            // create the selection
+//            int numberToSelect = random.nextInt(NUMBER_OF_CARS - 2);
+//            ArrayList selection = new ArrayList(numberToSelect);
+//            while (selection.size() < numberToSelect) {
+//                int j = random.nextInt(NUMBER_OF_CARS);
+//                if (!selection.contains(cars[j]))
+//                    selection.add(cars[j]);
+//            }
+//            StructuredSelection structuredSelection = new StructuredSelection(
+//                    selection);
+//            // fire the selection
+//            selectionProviderView.setSelection(structuredSelection);
+//            while (Display.getCurrent().readAndDispatch())
+//                ;
+//            assertNull("Selection should be null in properties view", propView.getShowInContext()
+//                    .getSelection());
+//        }
+//    }
+
+//    /**
+//     * Supply selection events with a random car selection after properties view
+//     * is hidden by the another view in the same stack but the original
+//     * selection source view is still visible. All of these selections should go
+//     * to the properties view even if it is hidden. After properties view became
+//     * visible again, it should show car selection from the (still visible)
+//     * original source view.
+//     */
+//    public void testInputIfHidden2Bug69953() throws Throwable {
+//        PropertySheetPerspectiveFactory3.applyPerspective(activePage);
+//        PropertySheet propView = (PropertySheet) createTestParts(activePage);
+//        // project explorer hides property view, because it is in the same stack
+//        createCars();
+//        for (int i = 0; i < 10; i++) {
+//            // bring project explorer view to front (hides property view from same stack)
+//            IViewPart projectExplorer = activePage.showView(IPageLayout.ID_PROJECT_EXPLORER);
+//            assertViewsVisibility1(propView, projectExplorer);
+//
+//            // activate now selectionProviderView (to became site selection provider again)
+//            activePage.activate(selectionProviderView);
+//            while (Display.getCurrent().readAndDispatch())
+//                ;
+//
+//            // create the selection
+//            int numberToSelect = random.nextInt(NUMBER_OF_CARS - 2);
+//            ArrayList selection = new ArrayList(numberToSelect);
+//            while (selection.size() < numberToSelect) {
+//                int j = random.nextInt(NUMBER_OF_CARS);
+//                if (!selection.contains(cars[j]))
+//                    selection.add(cars[j]);
+//            }
+//            StructuredSelection structuredSelection = new StructuredSelection(
+//                    selection);
+//            // fire the selection
+//            selectionProviderView.setSelection(structuredSelection);
+//            while (Display.getCurrent().readAndDispatch())
+//                ;
+//
+//            // props view hidden, but still tracks the selection from original source part
+//            assertEquals(structuredSelection, propView.getShowInContext().getSelection());
+//
+//            // unhide props view again
+//            activePage.showView(IPageLayout.ID_PROP_SHEET);
+//            assertViewsVisibility2(propView, projectExplorer);
+//
+//            // props view visible again and shows the last selection from original source part
+//            assertEquals(structuredSelection, propView.getShowInContext().getSelection());
+//        }
+//    }
+
+    private void assertViewsVisibility1(PropertySheet propView, IViewPart projectExplorer) {
+        while (Display.getCurrent().readAndDispatch())
+            ;
+        assertFalse("'Property' view should be hidden", activePage.isPartVisible(propView));
+        assertTrue("'Project Explorer' view should be visible", activePage
+                .isPartVisible(projectExplorer));
+        assertTrue("'Selection provider' view should be visible", activePage
+                .isPartVisible(selectionProviderView));
     }
-    
+
+    private void assertViewsVisibility2(PropertySheet propView, IViewPart projectExplorer) {
+        while (Display.getCurrent().readAndDispatch())
+            ;
+        assertTrue("'Property' view should be visible", activePage.isPartVisible(propView));
+        assertFalse("'Project Explorer' view should be hidden", activePage
+                .isPartVisible(projectExplorer));
+        assertTrue("'Selection provider' view should be visible", activePage
+                .isPartVisible(selectionProviderView));
+    }
+
     /**
      * Tests that the Properties view provides the source part for getAdapter(ISaveablePart.class)
-     * if it's saveable.  
+     * if it's saveable.
      * See  Bug 125386 [PropertiesView] Properties view should delegate Save back to source part
      */
     public void testSaveableRetargeting() throws Throwable {
-    	IWorkbenchPart propView = createTestPart(activePage);
+        PropertySheetPerspectiveFactory.applyPerspective(activePage);
+    	IWorkbenchPart propView = createTestParts(activePage);
     	assertNull(propView.getAdapter(ISaveablePart.class));
     	IViewPart saveableView = activePage.showView(SaveableMockViewPart.ID);
     	activePage.activate(propView);

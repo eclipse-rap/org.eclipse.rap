@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,8 +116,8 @@ public class SimpleVirtualLazyTreeViewerTest extends ViewerTestCase {
 		processEvents();
 		Tree tree = getTreeViewer().getTree();
 		getTreeViewer().expandToLevel("R-0", 1);
-		// force redrawing the tree - this will trigger the SetData event
-		tree.update();
+		// redraw the tree - this will trigger the SetData event
+		processEvents();
 		assertEquals(NUM_CHILDREN, tree.getItem(0).getItemCount());
 		TreeItem treeItem = tree.getItem(0).getItem(3);
 		expandAndNotify(treeItem);
@@ -137,7 +137,7 @@ public class SimpleVirtualLazyTreeViewerTest extends ViewerTestCase {
 			Event event = new Event();
 			event.item = treeItem;
 			event.type = SWT.Expand;
-//			tree.(SWT.Expand, event);
+			tree.notifyListeners(SWT.Expand, event);
 		} finally {
 			// callbacksEnabled = true;
 			tree.setRedraw(true);

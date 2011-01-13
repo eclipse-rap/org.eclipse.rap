@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -281,6 +281,17 @@ public class IWorkingSetManagerTest extends UITestCase {
 		assertEquals(fWorkingSet, sets[0]);
 		assertEquals(workingSet2, sets[2]);
 		assertEquals(workingSet3, sets[1]);
+		
+		IWorkingSet workingSet3a = fWorkingSetManager.createWorkingSet(
+				WORKING_SET_NAME_2 + "\u200b", new IAdaptable[] { fWorkspace.getRoot() });
+		workingSet3.setLabel(WORKING_SET_NAME_2); // reset the label - it
+
+		fWorkingSetManager.addWorkingSet(workingSet3a);
+		assertFalse(workingSet3a.equals(workingSet3));
+		
+		sets = fWorkingSetManager.getWorkingSets();
+		assertEquals(4, sets.length);
+		
     }
 
     public void testRemovePropertyChangeListener() throws Throwable {
@@ -310,6 +321,35 @@ public class IWorkingSetManagerTest extends UITestCase {
                 fWorkingSetManager.getWorkingSets()));
     }
 
+    public void testRemoveWorkingSetAfterRename() throws Throwable {
+    	/* get workingSetManager */
+    	IWorkingSetManager workingSetManager = 
+    		fWorkbench.getWorkingSetManager();
+
+    	workingSetManager.addWorkingSet(fWorkingSet);
+    	String origName=fWorkingSet.getName();
+
+    	/* check that workingSetManager contains "fWorkingSet"*/
+    	assertTrue(ArrayUtil.equals(
+    			new IWorkingSet[] {  fWorkingSet },
+    			workingSetManager.getWorkingSets()));
+
+    	fWorkingSet.setName(" ");
+    	assertEquals(" ", fWorkingSet.getName());
+
+    	/* remove "fWorkingSet" from working set manager */
+    	workingSetManager.removeWorkingSet(fWorkingSet);
+
+    	/* check that "fWorkingSet" was removed  after rename*/
+    	if(!ArrayUtil.equals(new IWorkingSet[] {},
+    			workingSetManager.getWorkingSets())){
+    		/*Test Failure, report after restoring state*/
+    		fWorkingSet.setName(origName);
+    		workingSetManager.removeWorkingSet(fWorkingSet);
+    		fail("expected that fWorkingSet has been removed");
+    	}
+
+    }
     /**
      * Tests to ensure that a misbehaving listener does not bring down the manager.
      *

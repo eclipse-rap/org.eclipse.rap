@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,9 +24,19 @@ public class TitleAreaDialogTest extends TestCase {
 
 	static ImageDescriptor descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.rap.ui.tests", "icons/anything.gif");
 
+	private TitleAreaDialog dialog;
+
+	protected void tearDown() throws Exception {
+		if (dialog != null) {
+			dialog.close();
+			dialog = null;
+		}
+		super.tearDown();
+	}
+
 	// Test setting the title image before creating the dialog.
 	public void testSetTitleImageEarly() {
-		final TitleAreaDialog dialog = new TitleAreaDialog(null);
+		dialog = new TitleAreaDialog(null);
 		dialog.setBlockOnOpen(false);
 		final Image image = descriptor.createImage();
 		dialog.setTitleImage(image);
@@ -40,9 +50,9 @@ public class TitleAreaDialogTest extends TestCase {
 		});
 		dialog.open();
 	}
-	
+
 	public void testSetTitleImageNull() {
-		TitleAreaDialog dialog = new TitleAreaDialog(null);
+		dialog = new TitleAreaDialog(null);
 		dialog.setBlockOnOpen(false);
 		dialog.setTitleImage(null);
 		dialog.open();

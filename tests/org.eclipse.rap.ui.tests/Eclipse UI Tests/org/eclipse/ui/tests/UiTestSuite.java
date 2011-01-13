@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import org.eclipse.ui.tests.commands.CommandsTestSuite;
 import org.eclipse.ui.tests.concurrency.ConcurrencyTestSuite;
 import org.eclipse.ui.tests.contexts.ContextsTestSuite;
 //import org.eclipse.ui.tests.datatransfer.DataTransferTestSuite;
-//import org.eclipse.ui.tests.decorators.DecoratorsTestSuite;
+import org.eclipse.ui.tests.decorators.DecoratorsTestSuite;
 import org.eclipse.ui.tests.dialogs.UIAutomatedSuite;
 //import org.eclipse.ui.tests.dnd.DragTestSuite;
 //import org.eclipse.ui.tests.dynamicplugins.DynamicPluginsTestSuite;
@@ -43,7 +43,7 @@ import org.eclipse.ui.tests.preferences.PreferencesTestSuite;
 import org.eclipse.ui.tests.propertysheet.PropertySheetTestSuite;
 //import org.eclipse.ui.tests.quickaccess.QuickAccessTestSuite;
 import org.eclipse.ui.tests.services.ServicesTestSuite;
-//import org.eclipse.ui.tests.statushandlers.StatusHandlingTestSuite;
+import org.eclipse.ui.tests.statushandlers.StatusHandlingTestSuite;
 //import org.eclipse.ui.tests.systeminplaceeditor.OpenSystemInPlaceEditorTest;
 import org.eclipse.ui.tests.themes.ThemesTestSuite;
 //import org.eclipse.ui.tests.zoom.ZoomTestSuite;
@@ -76,7 +76,7 @@ public class UiTestSuite extends TestSuite {
 //        addTest(new NavigatorTestSuite());
 // All test in DecoratorsTestSuite failed with ResourceException:
 // Resource '/TestProject' already exist.
-//        addTest(new DecoratorsTestSuite());
+        addTest(new DecoratorsTestSuite());
         addTest(new AdaptableTestSuite());
 //        addTest(new ZoomTestSuite());
 //        addTest(new DataTransferTestSuite());
@@ -101,7 +101,7 @@ public class UiTestSuite extends TestSuite {
 //        addTest(new MultiEditorTestSuite());
         addTest(new TestSuite(FilteredTreeTests.class));
         addTest(new ServicesTestSuite());
-//        addTest(new StatusHandlingTestSuite());
+        addTest(new StatusHandlingTestSuite());
 //        addTest(OpenSystemInPlaceEditorTest.suite());
     }
 }

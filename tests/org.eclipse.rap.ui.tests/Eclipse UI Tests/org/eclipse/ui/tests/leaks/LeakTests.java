@@ -16,15 +16,23 @@ import java.lang.ref.ReferenceQueue;
 
 //import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 //import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.StructuredSelection;
 //import org.eclipse.ui.IEditorInput;
 //import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 //import org.eclipse.ui.dialogs.SaveAsDialog;
 //import org.eclipse.ui.ide.IDE;
 //import org.eclipse.ui.internal.part.NullEditorInput;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.tests.api.MockViewPart;
 import org.eclipse.ui.tests.harness.util.FileUtil;
 import org.eclipse.ui.tests.harness.util.UITestCase;
@@ -33,7 +41,7 @@ import org.eclipse.ui.tests.harness.util.UITestCase;
  * Very simple leak tests to determine if any of our heavy objects are not being
  * disposed properly. Note that the results of these tests will in no way
  * actually assist you in tracking down the leak.
- * 
+ *
  * @since 3.1
  */
 public class LeakTests extends UITestCase {
@@ -125,7 +133,114 @@ public class LeakTests extends UITestCase {
             ref.clear();
         }
     }
-    
+
+	public void testBug255005ServiceLeak() throws Exception {
+		ReferenceQueue queue = new ReferenceQueue();
+		IViewPart view = fActivePage.showView(MockViewPart.ID);
+		assertNotNull(view);
+
+		// create a job to schedule
+		Job doNothingJob = new Job("Does Nothing") { //$NON-NLS-1$
+			protected IStatus run(IProgressMonitor monitor) {
+				return Status.OK_STATUS;
+			}
+		};
+
+		// retrieve the progress service
+		IWorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) view
+				.getSite().getService(IWorkbenchSiteProgressService.class);
+		// schedule it
+		service.schedule(doNothingJob);
+
+		// create a reference for our service
+		Reference ref = createReference(queue, service);
+
+		// wait for the job  to complete
+		doNothingJob.join();
+
+		try {
+			// hide the view
+			fActivePage.hideView(view);
+			// remove our references
+			service = null;
+			view = null;
+			// check for leaks
+			checkRef(queue, ref);
+		} finally {
+			ref.clear();
+		}
+	}
+
+	public void testBug255005SiteLeak() throws Exception {
+		ReferenceQueue queue = new ReferenceQueue();
+		IViewPart view = fActivePage.showView(MockViewPart.ID);
+		assertNotNull(view);
+
+		// create a job to schedule
+		Job doNothingJob = new Job("Does Nothing") { //$NON-NLS-1$
+			protected IStatus run(IProgressMonitor monitor) {
+				return Status.OK_STATUS;
+			}
+		};
+
+		// retrieve the progress service
+		IWorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) view
+				.getSite().getService(IWorkbenchSiteProgressService.class);
+		// schedule it
+		service.schedule(doNothingJob);
+
+		IWorkbenchPartSite site = view.getSite();
+		// create a reference for our site
+		Reference ref = createReference(queue, site);
+
+		// wait for the job  to complete
+		doNothingJob.join();
+
+		try {
+			// hide the view
+			fActivePage.hideView(view);
+			// remove our references
+			service = null;
+			site = null;
+			view = null;
+			// check for leaks
+			checkRef(queue, ref);
+		} finally {
+			ref.clear();
+		}
+	}
+
+	public void testBug265449PropertiesLeak() throws Exception {
+		// create a project to be selected by the 'Navigator'
+    	proj = FileUtil.createProject("projectToSelect");
+
+    	// show the 'Navigator'
+    	IViewPart navigator = fActivePage.showView(IPageLayout.ID_RES_NAV);
+    	// show the 'Properties' view
+    	IViewPart propertiesView = fActivePage.showView(IPageLayout.ID_PROP_SHEET);
+
+    	// select the project in the 'Navigator', this will cause the 'Properties'
+    	// view to show something, and create a PropertySheetPage, which was leaking
+    	navigator.getSite().getSelectionProvider().setSelection(new StructuredSelection(proj));
+
+		// create a reference for the 'Properties' view
+		ReferenceQueue queue = new ReferenceQueue();
+		Reference ref = createReference(queue, propertiesView);
+
+		try {
+			// hide the views
+	    	fActivePage.hideView(navigator);
+	    	fActivePage.hideView(propertiesView);
+			// remove our references
+			navigator = null;
+			propertiesView = null;
+			// check for leaks
+			checkRef(queue, ref);
+		} finally {
+			ref.clear();
+		}
+	}
+
 //    public void testTextEditorContextMenu() throws Exception {
 //    	proj = FileUtil.createProject("testEditorLeaks");
 //
@@ -134,15 +249,15 @@ public class LeakTests extends UITestCase {
 //        IEditorPart editor = IDE.openEditor(fActivePage, input, "org.eclipse.ui.tests.leak.contextEditor");
 //        assertTrue(editor instanceof ContextEditorPart);
 //        Reference ref = createReference(queue, editor);
-//        
+//
 //        ContextEditorPart contextMenuEditor = (ContextEditorPart) editor;
-//        
+//
 //        contextMenuEditor.showMenu();
 //        processEvents();
-//        
+//
 //        contextMenuEditor.hideMenu();
 //        processEvents();
-//        
+//
 //        try {
 //            contextMenuEditor = null;
 //            fActivePage.closeEditor(editor, false);
@@ -154,8 +269,8 @@ public class LeakTests extends UITestCase {
 //    }
 
       /**
-       * No idea why the following test is failing.  Doug has ran this through a 
-       * profiler and for some reason the window just isn't being GCd despite 
+       * No idea why the following test is failing.  Doug has ran this through a
+       * profiler and for some reason the window just isn't being GCd despite
        * there not being nay incoming references.
        */
     public void testSimpleWindowLeak() throws Exception {
@@ -180,7 +295,7 @@ public class LeakTests extends UITestCase {
             manageWindows(true);
         }
     }
-    
+
     /**
      * Test for leaks if dialog is disposed before it is closed.
      * This is really testing the framework rather than individual
@@ -191,7 +306,7 @@ public class LeakTests extends UITestCase {
 //  public void testDestroyedDialogLeaks() throws Exception {
 //	  ReferenceQueue queue = new ReferenceQueue();
 //	  // Use SaveAs dialog because it's simple to invoke and utilizes
-//	  // framework function such as storing dialog bounds.  
+//	  // framework function such as storing dialog bounds.
 //	  // We are really testing the framework itself here.
 //	  Dialog newDialog = new SaveAsDialog(fWin.getShell());
 //      newDialog.setBlockOnOpen(false);
@@ -199,7 +314,7 @@ public class LeakTests extends UITestCase {
 //      assertNotNull(newDialog);
 //      Reference ref = createReference(queue, newDialog);
 //      try {
-//      	  // Dispose the window before closing it.  
+//      	  // Dispose the window before closing it.
 //       	  newDialog.getShell().dispose();
 //       	  newDialog.close();
 //       	  newDialog = null;

@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Test case to assert proper styles have been set for ProgressIndicator.
- *
+ * 
  * @since 3.4
- *
+ * 
  */
 public class ProgressIndicatorStyleTest extends TestCase {
 
@@ -44,26 +44,24 @@ public class ProgressIndicatorStyleTest extends TestCase {
 		style = SWT.SMOOTH;
 		verifyIndicator();
 
-
 		style = SWT.VERTICAL;
-		verifyIndicator();
+		verifyIndicator();		
 
 		style = SWT.HORIZONTAL;
 		verifyIndicator();
-
+		
 	}
 
 	/**
 	 * Verify the indicator is working by opening it and doing something.
 	 */
 	private void verifyIndicator() {
-//		Shell shell = new Shell();
-	    Shell shell = new Shell( SWT.NONE );
+		Shell shell = new Shell();
 		progress = new ProgressIndicator(shell, style);
 		progress.setSize(175,175);
 		shell.setSize(200,200);
 		shell.open();
-//		shell.forceActive();
+		shell.forceActive();
 		progress.beginTask(100);
 		progress.worked(50);
 		loader("determinateProgressBar", deter);
