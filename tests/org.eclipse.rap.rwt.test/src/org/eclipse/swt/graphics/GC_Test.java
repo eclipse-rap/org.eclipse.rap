@@ -466,8 +466,7 @@ public class GC_Test extends TestCase {
     GC gc = new GC( control );
     gc.setAlpha( 777 );
     assertEquals( 255, gc.getAlpha() );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     assertEquals( 0, gcOperations.length );
   }
 
