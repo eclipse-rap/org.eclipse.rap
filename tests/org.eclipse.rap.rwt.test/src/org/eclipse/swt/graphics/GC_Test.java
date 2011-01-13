@@ -65,8 +65,7 @@ public class GC_Test extends TestCase {
     Shell shell = new Shell( display );
     gc = new GC( shell );
     gc.setFont( font );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     SetFont operation = ( SetFont )gcOperations[ 0 ];
     assertEquals( font, operation.font );
   }
@@ -348,8 +347,7 @@ public class GC_Test extends TestCase {
     Shell shell = new Shell( display );
     gc = new GC( shell );
     gc.setBackground( color );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.BACKGROUND, operation.id );
     assertEquals( color, operation.value );
@@ -398,8 +396,7 @@ public class GC_Test extends TestCase {
     Shell shell = new Shell( display );
     gc = new GC( shell );
     gc.setForeground( color );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.FOREGROUND, operation.id );
     assertEquals( color, operation.value );
@@ -454,8 +451,7 @@ public class GC_Test extends TestCase {
     GC gc = new GC( control );
     gc.setAlpha( 123 );
     assertEquals( 123, gc.getAlpha() );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.ALPHA, operation.id );
     assertEquals( new Integer( 123 ), operation.value );
@@ -475,8 +471,7 @@ public class GC_Test extends TestCase {
     GC gc = new GC( control );
     gc.setLineWidth( 5 );
     assertEquals( 5, gc.getLineWidth() );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.LINE_WIDTH, operation.id );
     assertEquals( new Integer( 5 ), operation.value );
@@ -487,8 +482,7 @@ public class GC_Test extends TestCase {
     GC gc = new GC( control );
     gc.setLineCap( SWT.CAP_ROUND );
     assertEquals( SWT.CAP_ROUND, gc.getLineCap() );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.LINE_CAP, operation.id );
     assertEquals( new Integer( SWT.CAP_ROUND ), operation.value );
@@ -505,8 +499,7 @@ public class GC_Test extends TestCase {
     GC gc = new GC( control );
     gc.setLineJoin( SWT.JOIN_ROUND );
     assertEquals( SWT.JOIN_ROUND, gc.getLineJoin() );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.LINE_JOIN, operation.id );
     assertEquals( new Integer( SWT.JOIN_ROUND ), operation.value );
@@ -530,8 +523,7 @@ public class GC_Test extends TestCase {
     assertEquals( 5, gc.getLineAttributes().width, 0 );
     assertEquals( SWT.CAP_ROUND, gc.getLineAttributes().cap );
     assertEquals( SWT.JOIN_BEVEL, gc.getLineAttributes().join );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.LINE_WIDTH, operation.id );
     assertEquals( new Integer( 5 ), operation.value );
@@ -553,8 +545,7 @@ public class GC_Test extends TestCase {
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawLine( 1, 2, 3, 4 );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawLine operation = ( DrawLine )gcOperations[ 0 ];
     assertEquals( 1, operation.x1 );
     assertEquals( 2, operation.y1 );
@@ -566,8 +557,7 @@ public class GC_Test extends TestCase {
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawPoint( 1, 2 );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawPoint operation = ( DrawPoint )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
     assertEquals( 2, operation.y );
@@ -577,18 +567,18 @@ public class GC_Test extends TestCase {
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawRectangle( 1, 2, 3, 4 );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawRectangle operation = ( DrawRectangle )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
     assertEquals( 2, operation.y );
     assertEquals( 3, operation.width );
     assertEquals( 4, operation.height );
     assertFalse( operation.fill );
+    IGCAdapter adapter = gc.getGCAdapter();
     adapter.clearGCOperations();
 
     gc.drawRectangle( 1, 2, -3, -4 );
-    gcOperations = adapter.getGCOperations();
+    gcOperations = getGCOperations( gc );
     operation = ( DrawRectangle )gcOperations[ 0 ];
     assertEquals( -2, operation.x );
     assertEquals( -2, operation.y );
@@ -608,8 +598,7 @@ public class GC_Test extends TestCase {
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.drawFocus( 1, 2, 3, 4 );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawRectangle operation = ( DrawRectangle )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
     assertEquals( 2, operation.y );
@@ -622,18 +611,18 @@ public class GC_Test extends TestCase {
     Control control = new Shell( display );
     GC gc = new GC( control );
     gc.fillRectangle( 1, 2, 3, 4 );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawRectangle operation = ( DrawRectangle )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
     assertEquals( 2, operation.y );
     assertEquals( 3, operation.width );
     assertEquals( 4, operation.height );
     assertTrue( operation.fill );
+    IGCAdapter adapter = gc.getGCAdapter();
     adapter.clearGCOperations();
 
     gc.fillRectangle( 1, 2, -3, -4 );
-    gcOperations = adapter.getGCOperations();
+    gcOperations = getGCOperations( gc );
     operation = ( DrawRectangle )gcOperations[ 0 ];
     assertEquals( -2, operation.x );
     assertEquals( -2, operation.y );
@@ -654,8 +643,7 @@ public class GC_Test extends TestCase {
     GC gc = new GC( control );
     gc.fillGradientRectangle( 1, 2, 3, 4, true );
     gc.fillGradientRectangle( 5, 6, 7, 8, false );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     FillGradientRectangle operation = ( FillGradientRectangle )gcOperations[ 0 ];
     assertEquals( 1, operation.x );
     assertEquals( 2, operation.y );
@@ -910,8 +898,7 @@ public class GC_Test extends TestCase {
     GC gc = new GC( control );
     int[] pointArray = new int[] { 1, 2, 3, 4 };
     gc.drawPolygon( pointArray );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawPolyline operation = ( DrawPolyline )gcOperations[ 0 ];
     assertTrue( Arrays.equals( pointArray, operation.points ) );
     assertTrue( operation.close );
@@ -923,8 +910,7 @@ public class GC_Test extends TestCase {
     GC gc = new GC( control );
     int[] pointArray = new int[] { 1, 2, 3, 4 };
     gc.fillPolygon( pointArray );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawPolyline operation = ( DrawPolyline )gcOperations[ 0 ];
     assertTrue( Arrays.equals( pointArray, operation.points ) );
     assertTrue( operation.close );
@@ -936,8 +922,7 @@ public class GC_Test extends TestCase {
     GC gc = new GC( control );
     int[] pointArray = new int[] { 1, 2, 3, 4 };
     gc.drawPolyline( pointArray );
-    IGCAdapter adapter = gc.getGCAdapter();
-    GCOperation[] gcOperations = adapter.getGCOperations();
+    GCOperation[] gcOperations = getGCOperations( gc );
     DrawPolyline operation = ( DrawPolyline )gcOperations[ 0 ];
     assertTrue( Arrays.equals( pointArray, operation.points ) );
     assertFalse( operation.close );
