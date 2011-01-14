@@ -84,9 +84,6 @@ Brandings can reside in a separate bundle, i.e. it is possible to brand applicat
 The value can be either the extension id of an application extension or the id of a registered entrypoint.
 &lt;/p&gt;
                </documentation>
-               <appInfo>
-                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.entrypoint/entrypoint/@id"/>
-               </appInfo>
             </annotation>
          </attribute>
          <attribute name="themeId" type="string">
