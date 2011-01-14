@@ -33,61 +33,61 @@ public final class InternalImageFactory {
   //            ImageDataFactory.
 
   public static InternalImage findInternalImage( final String fileName ) {
-    InternalImage internalImage;
+    InternalImage result;
     synchronized( cacheLock ) {
-      internalImage = ( InternalImage )cache.get( fileName );
-      if( internalImage == null ) {
-        internalImage = createInternalImage( fileName );
-        cache.put( fileName, internalImage );
+      result = ( InternalImage )cache.get( fileName );
+      if( result == null ) {
+        result = createInternalImage( fileName );
+        cache.put( fileName, result );
       }
     }
-    return internalImage;
+    return result;
   }
 
   public static InternalImage findInternalImage( final InputStream stream ) {
-    InternalImage internalImage;
+    InternalImage result;
     BufferedInputStream bufferedStream = new BufferedInputStream( stream );
     ImageData imageData = readImageData( bufferedStream );
     String path = createGeneratedImagePath( imageData );
     synchronized( cacheLock ) {
-      internalImage = ( InternalImage )cache.get( path );
-      if( internalImage == null ) {
-        internalImage = createInternalImage( path, bufferedStream, imageData );
-        cache.put( path, internalImage );
+      result = ( InternalImage )cache.get( path );
+      if( result == null ) {
+        result = createInternalImage( path, bufferedStream, imageData );
+        cache.put( path, result );
       }
     }
-    return internalImage;
+    return result;
   }
 
   public static InternalImage findInternalImage( final ImageData imageData ) {
-    InternalImage internalImage;
+    InternalImage result;
     String path = createGeneratedImagePath( imageData );
     synchronized( cacheLock ) {
-      internalImage = ( InternalImage )cache.get( path );
-      if( internalImage == null ) {
+      result = ( InternalImage )cache.get( path );
+      if( result == null ) {
         InputStream stream = createInputStream( imageData );
-        internalImage = createInternalImage( path, stream, imageData );
-        cache.put( path, internalImage );
+        result = createInternalImage( path, stream, imageData );
+        cache.put( path, result );
       }
     }
-    return internalImage;
+    return result;
   }
 
   public static InternalImage findInternalImage( final String key,
                                                  final InputStream inputStream )
   {
-    InternalImage internalImage;
+    InternalImage result;
     synchronized( cacheLock ) {
-      internalImage = ( InternalImage )cache.get( key );
-      if( internalImage == null ) {
+      result = ( InternalImage )cache.get( key );
+      if( result == null ) {
         BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
         ImageData imageData = readImageData( bufferedStream );
         String path = createGeneratedImagePath( imageData );
-        internalImage = createInternalImage( path, bufferedStream, imageData );
-        cache.put( key, internalImage );
+        result = createInternalImage( path, bufferedStream, imageData );
+        cache.put( key, result );
       }
     }
-    return internalImage;
+    return result;
   }
 
   private static InternalImage createInternalImage( final String fileName ) {
@@ -138,14 +138,14 @@ public final class InternalImageFactory {
     //                It would be nice to find a solution without reading the
     //                stream twice.
     stream.mark( Integer.MAX_VALUE );
-    ImageData data = new ImageData( stream );
+    ImageData result = new ImageData( stream );
     try {
       stream.reset();
     } catch( final IOException shouldNotHappen ) {
       String msg = "Could not reset input stream after reading image";
       throw new RuntimeException( msg, shouldNotHappen );
     }
-    return data;
+    return result;
   }
 
   static InputStream createInputStream( final ImageData imageData ) {
@@ -154,8 +154,7 @@ public final class InternalImageFactory {
     imageLoader.data = new ImageData[] { imageData };
     imageLoader.save( outputStream, getOutputFormat( imageData ) );
     byte[] bytes = outputStream.toByteArray();
-    InputStream inputStream = new ByteArrayInputStream( bytes );
-    return inputStream;
+    return new ByteArrayInputStream( bytes );
   }
 
   private static int getOutputFormat( final ImageData imageData ) {
