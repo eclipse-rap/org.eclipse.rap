@@ -195,13 +195,13 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     getEventPseudoTypes : qx.core.Variant.select( "qx.client", {
       "default" : function( event, keyCode, charCode ) {
         var result;
-        if( event.type === "keydown" ) { 
+        if( event.type === "keydown" ) {
           var printable = !this._isNonPrintableKeyCode( keyCode );
           if( this._isFirstKeyDown( keyCode ) ) {
             // add a "keypress" for non-printable keys:
             result = printable ? [ "keydown" ] : [ "keydown", "keypress" ];             
           } else {
-            // convert printable "keydown" to "keypress", suppress other:
+            // convert non-printable "keydown" to "keypress", suppress other:
             result = printable ? [] : [ "keypress" ]; 
           }
         } else {
