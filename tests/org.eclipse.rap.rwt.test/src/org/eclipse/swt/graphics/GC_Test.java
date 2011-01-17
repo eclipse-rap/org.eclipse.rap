@@ -553,11 +553,24 @@ public class GC_Test extends TestCase {
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.LINE_CAP, operation.id );
     assertEquals( new Integer( SWT.CAP_ROUND ), operation.value );
+  }
+  
+  public void testSetLineCapWithUnchangeValue() {
+    Control control = new Shell( display );
+    GC gc = new GC( control );
+    gc.setLineCap( SWT.CAP_ROUND );
+    gc.getGCAdapter().clearGCOperations();
+    gc.setLineCap( SWT.CAP_ROUND );
+    assertEquals( 0, getGCOperations( gc ).length );
+  }
+  
+  public void testSetLineCapWithInvalidValue() {
+    Control control = new Shell( display );
+    GC gc = new GC( control );
     try {
       gc.setLineCap( 500 );
       fail( "value not allowed" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -570,11 +583,24 @@ public class GC_Test extends TestCase {
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.LINE_JOIN, operation.id );
     assertEquals( new Integer( SWT.JOIN_ROUND ), operation.value );
+  }
+  
+  public void testSetLineJoinWithUnchangedValue() {
+    Control control = new Shell( display );
+    GC gc = new GC( control );
+    gc.setLineJoin( SWT.JOIN_ROUND );
+    gc.getGCAdapter().clearGCOperations();
+    gc.setLineJoin( SWT.JOIN_ROUND );
+    assertEquals( 0, getGCOperations( gc ).length );
+  }
+  
+  public void testSetLineJoinWithInvalidValue() {
+    Control control = new Shell( display );
+    GC gc = new GC( control );
     try {
       gc.setLineCap( 500 );
       fail( "value not allowed" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -601,7 +627,6 @@ public class GC_Test extends TestCase {
     assertEquals( SetProperty.LINE_JOIN, operation.id );
     assertEquals( new Integer( SWT.JOIN_BEVEL ), operation.value );
   }
-  
   
   public void testSetLineAttributesWithNullArgument() {
     GC gc = new GC( display );
