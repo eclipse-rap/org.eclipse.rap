@@ -185,7 +185,7 @@ final class GCOperationWriter {
     String result = WidgetLCAUtil.escapeText( text, drawMnemonic );
     String replacement = "";
     if( ( flags & SWT.DRAW_DELIMITER ) != 0 ) {
-      replacement = "</br>";
+      replacement = "<br/>";
     }
     result = EncodingUtil.replaceNewLines( result, replacement );
     replacement = "";
@@ -198,7 +198,7 @@ final class GCOperationWriter {
 
   private void setProperty( final SetProperty operation ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( control );
-    String jsProperty = null;
+    String jsProperty;
     switch( operation.id ) {
       case SetProperty.FOREGROUND:
         jsProperty = "foreground";
@@ -218,11 +218,12 @@ final class GCOperationWriter {
       case SetProperty.LINE_JOIN:
         jsProperty = "lineJoin";
       break;
+      default:
+        String msg = "Unsupported operation id: " + operation.id;
+        throw new RuntimeException( msg );
     }
-    if( jsProperty != null ) {
-      Object[] args = new Object[] { jsProperty, operation.value };
-      writer.call( GC_VAR, "setProperty", args );
-    }
+    Object[] args = new Object[] { jsProperty, operation.value };
+    writer.call( GC_VAR, "setProperty", args );
   }
 
   private void setFont( final SetFont operation ) throws IOException {

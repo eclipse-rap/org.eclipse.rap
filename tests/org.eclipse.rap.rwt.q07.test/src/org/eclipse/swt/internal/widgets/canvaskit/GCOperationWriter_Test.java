@@ -19,13 +19,13 @@ public class GCOperationWriter_Test extends TestCase {
     String text = "text with \ttab, \nnew line and &mnemonic";
     int flags = SWT.DRAW_TAB | SWT.DRAW_DELIMITER | SWT.DRAW_MNEMONIC;
     String expected
-      = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, </br>new line and mnemonic";
+      = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, <br/>new line and mnemonic";
     String result = GCOperationWriter.processText( text, flags );
     assertEquals( expected, result );
 
     flags = SWT.DRAW_TAB | SWT.DRAW_DELIMITER;
     expected
-      = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, </br>new line and &amp;mnemonic";
+      = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, <br/>new line and &amp;mnemonic";
     result = GCOperationWriter.processText( text, flags );
     assertEquals( expected, result );
 
