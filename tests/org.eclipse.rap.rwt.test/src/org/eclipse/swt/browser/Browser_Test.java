@@ -248,6 +248,13 @@ public class Browser_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
+  public void testGetWebBrowser() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    assertNull( browser.getWebBrowser() );
+  }
+
   private static String getText( final Browser browser ) {
     Object adapter = browser.getAdapter( IBrowserAdapter.class );
     IBrowserAdapter browserAdapter = ( IBrowserAdapter )adapter;

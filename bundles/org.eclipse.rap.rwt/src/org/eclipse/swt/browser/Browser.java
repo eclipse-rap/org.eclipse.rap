@@ -441,6 +441,24 @@ public class Browser extends Composite {
     return result;
   }
 
+  /**
+   * Returns the JavaXPCOM <code>nsIWebBrowser</code> for the receiver, or <code>null</code>
+   * if it is not available.  In order for an <code>nsIWebBrowser</code> to be returned all
+   * of the following must be true: <ul>
+   *    <li>the receiver's style must be <code>SWT.MOZILLA</code></li>
+   *    <li>the classes from JavaXPCOM &gt;= 1.8.1.2 must be resolvable at runtime</li>
+   *    <li>the version of the underlying XULRunner must be &gt;= 1.8.1.2</li>
+   * </ul>
+   *
+   * @return the receiver's JavaXPCOM <code>nsIWebBrowser</code> or <code>null</code>
+   *
+   * @since 1.4
+   */
+  public Object getWebBrowser() {
+    checkWidget();
+    return null;
+  }
+
   //////////////////////////////////////////
   // BrowserFunction support helping methods
 
