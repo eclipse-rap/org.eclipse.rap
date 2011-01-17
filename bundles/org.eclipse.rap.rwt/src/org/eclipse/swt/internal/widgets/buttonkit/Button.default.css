@@ -42,11 +42,6 @@ Button[PUSH]:disabled, Button[TOGGLE]:disabled {
   cursor: default;
 }
 
-Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
-  border: 1px black;
-  padding: 5px 6px;
-}
-
 Button[PUSH]:hover, Button[TOGGLE]:hover {
   background-image: gradient(
     linear, left top, left bottom,
@@ -85,11 +80,6 @@ Button[TOGGLE]:selected:hover {
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
   );
-}
-
-Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed, Button[TOGGLE][FLAT]:selected {
-  background-color: #e1e1e6;
-  padding: 5px 6px;
 }
 
 Button[CHECK], Button[RADIO] {
