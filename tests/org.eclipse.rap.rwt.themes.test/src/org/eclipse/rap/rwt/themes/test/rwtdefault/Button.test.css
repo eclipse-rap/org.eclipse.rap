@@ -21,7 +21,8 @@ Button {
   opacity: 1;
 }
 
-Button[PUSH], Button[TOGGLE], Button[BORDER] {
+Button[PUSH], Button[TOGGLE], Button[BORDER],
+Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
   border: 1px solid #A4A4A4;
   border-radius: 3px;
   padding: 2px 5px;
@@ -37,12 +38,14 @@ Button[PUSH], Button[TOGGLE], Button[BORDER] {
   opacity: 1;
 }
 
-Button[PUSH]:disabled, Button[TOGGLE]:disabled {
+Button[PUSH]:disabled, Button[TOGGLE]:disabled,
+Button[PUSH][FLAT]:disabled, Button[TOGGLE][FLAT]:disabled {
   cursor: default;
   opacity: 1;
 }
 
-Button[PUSH]:hover, Button[TOGGLE]:hover {
+Button[PUSH]:hover, Button[TOGGLE]:hover,
+Button[PUSH][FLAT]:hover, Button[TOGGLE][FLAT]:hover {
   background-image: gradient(
     linear, left top, left bottom,
     from( #ffffff ),
@@ -53,7 +56,8 @@ Button[PUSH]:hover, Button[TOGGLE]:hover {
   opacity: 1;
 }
 
-Button[PUSH]:pressed, Button[TOGGLE]:pressed {
+Button[PUSH]:pressed, Button[TOGGLE]:pressed,
+Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed {
   animation: none;
   background-image: gradient(
     linear, left top, left bottom,
