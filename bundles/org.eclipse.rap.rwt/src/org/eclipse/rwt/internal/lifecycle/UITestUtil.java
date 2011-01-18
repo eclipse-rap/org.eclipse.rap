@@ -62,6 +62,7 @@ public final class UITestUtil {
       char ch = id.charAt( i );
       result &= Character.isLetter( ch )
              || isNumber( ch )
+             || ch == '-'
              || ch == '.'
              || ch == '_'
              || ch == ':';

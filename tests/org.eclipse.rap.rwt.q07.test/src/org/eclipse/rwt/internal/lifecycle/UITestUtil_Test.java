@@ -27,6 +27,11 @@ public class UITestUtil_Test extends TestCase {
   public void testIsValidId() {
     // Test with legal id
     assertTrue( UITestUtil.isValidId( "customId" ) );
+    assertTrue( UITestUtil.isValidId( "custom-id" ) );
+    assertTrue( UITestUtil.isValidId( "custom_id" ) );
+    assertTrue( UITestUtil.isValidId( "custom:id" ) );
+    assertTrue( UITestUtil.isValidId( "custom.id" ) );
+    assertTrue( UITestUtil.isValidId( "custom123" ) );
     // Test with illegal id's
     assertFalse( UITestUtil.isValidId( null ) );
     assertFalse( UITestUtil.isValidId( "" ) );
