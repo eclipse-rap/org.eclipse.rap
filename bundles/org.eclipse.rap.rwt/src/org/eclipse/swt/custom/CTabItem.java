@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
@@ -226,7 +227,8 @@ public class CTabItem extends Item {
     checkWidget();
     Font result = font;
     if( font == null ) {
-      result = parent.getFont();
+      boolean isSelected = parent.indexOf( this ) == parent.getSelectionIndex();
+      result = parent.getItemFont( isSelected );
     }
     return result;
   }
@@ -420,13 +422,7 @@ public class CTabItem extends Item {
     Image image = getImage();
     int h = ( image == null ) ? 0 : image.getBounds().height;
     String text = getText();
-    // TODO [fappel]: check gc height calculation alternative
-    if( font == null ) {
-      Font parentFont = getParent().getFont();
-      h = Math.max( h, TextSizeDetermination.textExtent( parentFont, text, 0 ).y );
-    } else {
-      h = Math.max( h, TextSizeDetermination.textExtent( font, text, 0 ).y );
-    }
+    h = Math.max( h, TextSizeDetermination.textExtent( getFont(), text, 0 ).y );
     return h + parent.getItemPadding( isSelected ).height;
   }
 

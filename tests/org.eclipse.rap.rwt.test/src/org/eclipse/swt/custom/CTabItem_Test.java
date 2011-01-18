@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,14 @@
 
 package org.eclipse.swt.custom;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.theme.ThemeTestUtil;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
@@ -213,7 +217,7 @@ public class CTabItem_Test extends TestCase {
     assertTrue( adapter.showItemImage( item1 ) );
     assertFalse( adapter.showItemImage( item2 ) );
   }
-  
+
   public void testSetFont() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -235,10 +239,26 @@ public class CTabItem_Test extends TestCase {
     font.dispose();
     try {
       item.setFont( font );
-      fail( "Disposed Image must not be set." );
+      fail( "Disposed Font must not be set." );
     } catch( IllegalArgumentException e ) {
       // Expected Exception
     }
+  }
+
+  public void testGetFontFromCSS() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    String css = "CTabItem { font: 22px Verdana, sans-serif; }"
+               + "CTabItem:selected { font: 24px Verdana, sans-serif; }";
+    ThemeTestUtil.registerCustomTheme( "custom", css, null );
+    ThemeUtil.setCurrentThemeId( "custom" );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    Font font = item.getFont();
+    assertEquals( 22, font.getFontData()[ 0 ].getHeight() );
+    folder.setSelection( 0 );
+    font = item.getFont();
+    assertEquals( 24, font.getFontData()[ 0 ].getHeight() );
   }
 
   protected void setUp() throws Exception {

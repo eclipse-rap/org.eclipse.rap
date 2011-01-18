@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -53,7 +54,6 @@ public class ControlsDemo implements IEntryPoint {
     final CTabFolder topFolder = new CTabFolder( parent, style );
     topFolder.marginWidth = 5;
     topFolder.marginHeight = 5;
-    ensureMinTabHeight( topFolder );
 
     final ExampleTab[] tabs = new ExampleTab[] {
       new ButtonTab( topFolder ),
@@ -97,6 +97,7 @@ public class ControlsDemo implements IEntryPoint {
       new ControlDecoratorTab( topFolder ),
       new DNDExampleTab( topFolder )
     };
+    ensureMinTabHeight( topFolder );
     tabs[ 0 ].createContents();
     topFolder.setSelection( 0 );
     topFolder.addSelectionListener( new SelectionAdapter() {
@@ -108,7 +109,7 @@ public class ControlsDemo implements IEntryPoint {
   }
 
   private static void ensureMinTabHeight( final CTabFolder folder ) {
-    int result = Graphics.getCharHeight( folder.getFont() );
+    int result = Graphics.getCharHeight( folder.getItem( 0 ).getFont() );
     if( result < 18 ) {
       folder.setTabHeight( 18 );
     }
