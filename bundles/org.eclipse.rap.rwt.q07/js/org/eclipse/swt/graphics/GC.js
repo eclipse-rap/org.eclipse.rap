@@ -29,10 +29,10 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._context = this._canvas.getContext( "2d" );
     }
     this._textCanvas = document.createElement( "div" );
-    this._textCanvas.style.position = 'absolute';
-    this._textCanvas.style.overflow = 'hidden';
-    this._textCanvas.style.left = '0px';
-    this._textCanvas.style.top = '0px';
+    this._textCanvas.style.position = "absolute";
+    this._textCanvas.style.overflow = "hidden";
+    this._textCanvas.style.left = "0px";
+    this._textCanvas.style.top = "0px";
     if( this._control.isCreated() ) {
       this._addCanvasToDOM();
     }
@@ -80,9 +80,9 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       "default" : function( width, height, font, background, foreground  ) {
         this._initTextCanvas( width, height );
         this._canvas.width = width;
-        this._canvas.style.width = width + 'px';
+        this._canvas.style.width = width + "px";
         this._canvas.height = height;
-        this._canvas.style.height = height + 'px';
+        this._canvas.style.height = height + "px";
         this._context.clearRect( 0, 0, width, height );
         this._initFields( font, background, foreground );
       }
@@ -90,9 +90,9 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
     _initTextCanvas : function( width, height ) {
       this._textCanvas.width = width;
-      this._textCanvas.style.width = width + 'px';
+      this._textCanvas.style.width = width + "px";
       this._textCanvas.height = height;
-      this._textCanvas.style.height = height + 'px';
+      this._textCanvas.style.height = height + "px";
       this._textCanvas.innerHTML = "";
     },
 
@@ -101,8 +101,8 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._context.fillStyle = background;
       this._context.globalAlpha = 1.0;
       this._context.lineWidth = 1;
-      this._context.lineCap = 'butt';
-      this._context.lineJoin = 'miter';
+      this._context.lineCap = "butt";
+      this._context.lineJoin = "miter";
       this._context.font = font;
     },
 
@@ -123,26 +123,26 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         case "lineCap":
           switch( value ) {
             case 1:
-              this._context.lineCap = 'butt';
+              this._context.lineCap = "butt";
             break;
             case 2:
-              this._context.lineCap = 'round';
+              this._context.lineCap = "round";
             break;
             case 3:
-              this._context.lineCap = 'square';
+              this._context.lineCap = "square";
             break;
           }
         break;
         case "lineJoin":
           switch( value ) {
             case 1:
-              this._context.lineJoin = 'miter';
+              this._context.lineJoin = "miter";
             break;
             case 2:
-              this._context.lineJoin = 'round';
+              this._context.lineJoin = "round";
             break;
             case 3:
-              this._context.lineJoin = 'bevel';
+              this._context.lineJoin = "bevel";
             break;
           }
         break;
@@ -285,9 +285,9 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     drawText : function( text, x, y, fill ) {
       var textElement = document.createElement( "div" );
       var style = textElement.style;
-      style.position = 'absolute';
-      style.left = x + 'px';
-      style.top = y + 'px';
+      style.position = "absolute";
+      style.left = x + "px";
+      style.top = y + "px";
       style.color = this._context.strokeStyle;
       if( fill ) {
         style.backgroundColor = this._context.fillStyle;
