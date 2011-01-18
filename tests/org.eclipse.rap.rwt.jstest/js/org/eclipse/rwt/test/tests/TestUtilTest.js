@@ -436,6 +436,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       widget.destroy();
     },
 
+    testPressEnter : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      var log = [];
+      widget.addEventListener( "keypress", function( event ) {
+        log.push( event.getDomEvent().keyCode );
+        log.push( event.getDomEvent().charCode );
+      } );
+      widget.focus();
+      testUtil.press( widget, "Enter" );
+      var expected = qx.core.Variant.select( "qx.client", {
+        "webkit" : [ 13, 13 ],
+        "mshtml|opera" : [ 13, undefined ],
+        "default" : [ 13, 0 ]
+      } );
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+
     testShiftPress : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();

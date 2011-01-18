@@ -187,8 +187,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var expected = [ 120, "X" ];
       assertEquals( expected, log );
       widget.destroy();
-    },    
-    
+    },
+
+    testKeyPressEnter : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = [];
+      widget.addEventListener( "keypress", function( event ) {
+        log.push( event.getKeyCode() );
+        log.push( event.getCharCode() );
+        log.push( event.getKeyIdentifier() );
+      } );
+      testUtil.keyDown( widget._getTargetNode(), "Enter" );
+      var expected = [ 13, 0, "Enter" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+
     testKeyDownPrintable : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
@@ -282,7 +300,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var expected = [ "keydown", "keypress", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
-    },  
+    },
 
     testKeyDownPrintableSpecialCharNoKeyInput : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

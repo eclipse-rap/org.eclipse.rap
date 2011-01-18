@@ -49,7 +49,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         }
         return vNode;
       },
-      "default" : function(vDomEvent) {
+      "default" : function( vDomEvent ) {
         return vDomEvent.target;
       }
     } ),
@@ -160,17 +160,19 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         return result;
       },
       "default" : function( event ) {
-        // the value in "keyCode" on "keypress" is actually the charcode: 
-        return event.type !== "keypress" ? event.keyCode : 0;
+        // the value in "keyCode" on "keypress" is actually the charcode:
+        var hasKeyCode = event.type !== "keypress" || event.keyCode === 13;
+        return hasKeyCode ? event.keyCode : 0;
       } 
     } ),
 
     getCharCode : qx.core.Variant.select( "qx.client", {
       "default" : function( event ) {
-        return event.charCode;
+        return event.charCode !== 13 ? event.charCode : 0;
       },
-      "mshtml" : function( event ) { 
-        return event.type === "keypress" ? event.keyCode : 0;
+      "mshtml" : function( event ) {
+        var hasCharCode = event.type === "keypress" && event.keyCode !== 13;
+        return hasCharCode ? event.keyCode : 0;
       }, 
       "opera" : function( event ) {
         var result;
@@ -258,7 +260,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     },
 
     _isNonPrintableKeyCode : function( keyCode ) {
-      return this._keyCodeToIdentifierMap[keyCode] ? true : false;
+      return this._keyCodeToIdentifierMap[ keyCode ] ? true : false;
     },
 
     ///////////////
