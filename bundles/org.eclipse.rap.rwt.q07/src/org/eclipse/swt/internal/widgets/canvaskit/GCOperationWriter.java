@@ -25,10 +25,28 @@ final class GCOperationWriter {
   private static final JSVar GC_VAR = new JSVar( "gc" );
 
   private final Control control;
+  private JSWriter writer;
   private boolean initialized;
 
   GCOperationWriter( final Control control ) {
     this.control = control;
+  }
+
+  void initialize() throws IOException {
+    if( !initialized ) {
+      writer = JSWriter.getWriterFor( control );
+      writer.varAssignment( GC_VAR, "getGC" );
+      Point size = control.getSize();
+      Object[] args = new Object[] {
+        new Integer( size.x ),
+        new Integer( size.y ),
+        toCSSFont( control.getFont() ),
+        control.getBackground(),
+        control.getForeground()
+      };
+      writer.call( GC_VAR, "init", args );
+      initialized = true;
+    }
   }
 
   void write( final GCOperation operation ) throws IOException {
@@ -62,7 +80,6 @@ final class GCOperationWriter {
   }
 
   private void drawLine( final DrawLine operation ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Integer[] args = new Integer[] {
       new Integer( operation.x1 ),
       new Integer( operation.y1 ),
@@ -73,7 +90,6 @@ final class GCOperationWriter {
   }
 
   private void drawPoint( final DrawPoint operation ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Integer[] args = new Integer[] {
       new Integer( operation.x ),
       new Integer( operation.y )
@@ -83,7 +99,6 @@ final class GCOperationWriter {
 
   private void drawRectangle( final DrawRectangle operation ) throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Object[] args = new Object[] {
       new Integer( operation.x ),
       new Integer( operation.y ),
@@ -97,7 +112,6 @@ final class GCOperationWriter {
   private void fillGradientRectangle( final FillGradientRectangle operation )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Object[] args = new Object[] {
       new Integer( operation.x ),
       new Integer( operation.y ),
@@ -111,7 +125,6 @@ final class GCOperationWriter {
   private void drawRoundRectangle( final DrawRoundRectangle operation )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Object[] args = new Object[] {
       new Integer( operation.x ),
       new Integer( operation.y ),
@@ -125,7 +138,6 @@ final class GCOperationWriter {
   }
 
   private void drawArc( final DrawArc operation ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Object[] args = new Object[] {
       new Integer( operation.x ),
       new Integer( operation.y ),
@@ -139,7 +151,6 @@ final class GCOperationWriter {
   }
 
   private void drawPolyline( final DrawPolyline operation ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Integer[] points = new Integer[ operation.points.length ];
     for( int i = 0; i < operation.points.length; i++ ) {
       points[ i ] = new Integer( operation.points[ i ] );
@@ -153,7 +164,6 @@ final class GCOperationWriter {
   }
 
   private void drawImage( final DrawImage operation ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Object[] args = new Object[] {
       ResourceFactory.getImagePath( operation.image ),
       new Integer( operation.srcX ),
@@ -170,7 +180,6 @@ final class GCOperationWriter {
   }
 
   private void drawText( final DrawText operation ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Object[] args = new Object[] {
       processText( operation.text, operation.flags ),
       new Integer( operation.x ),
@@ -197,7 +206,6 @@ final class GCOperationWriter {
   }
 
   private void setProperty( final SetProperty operation ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
     String jsProperty;
     switch( operation.id ) {
       case SetProperty.FOREGROUND:
@@ -227,7 +235,6 @@ final class GCOperationWriter {
   }
 
   private void setFont( final SetFont operation ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
     Object[] args = new Object[] { "font", toCSSFont( operation.font ) };
     writer.call( GC_VAR, "setProperty", args );
   }
@@ -246,22 +253,5 @@ final class GCOperationWriter {
     String name = fontData.getName().replaceAll( "\"", "'" );
     result.append( name );
     return result.toString();
-  }
-
-  public void initialize() throws IOException {
-    if( !initialized ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      writer.varAssignment( GC_VAR, "getGC" );
-      Point size = control.getSize();
-      Object[] args = new Object[] {
-        new Integer( size.x ),
-        new Integer( size.y ),
-        toCSSFont( control.getFont() ),
-        control.getBackground(),
-        control.getForeground()
-      };
-      writer.call( GC_VAR, "init", args );
-      initialized = true;
-    }
   }
 }
