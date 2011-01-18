@@ -1512,7 +1512,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.initRequestLog();
       var node = tree._rows[ 0 ]._getTargetNode();
       testUtil.clickDOM( node );
-      testUtil.fakeKeyEventDOM( node, "keypress", 13 );
+      testUtil.keyDown( node, "Enter" );
       assertEquals( 2, testUtil.getRequestsSend() );
       var log = testUtil.getRequestLog();
       var expected1a = "org.eclipse.swt.events.widgetSelected=w1";
@@ -1547,7 +1547,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       testUtil.initRequestLog();
       tree.setFocusItem( child2 );
-      testUtil.fakeKeyEventDOM( tree._getTargetNode(), "keypress", 13 );
+      testUtil.keyDown( tree._getTargetNode(), "Enter" );
       assertEquals( 1, testUtil.getRequestsSend() );
       var message = testUtil.getMessage();
       var expected1a = "org.eclipse.swt.events.widgetDefaultSelected=w1";
