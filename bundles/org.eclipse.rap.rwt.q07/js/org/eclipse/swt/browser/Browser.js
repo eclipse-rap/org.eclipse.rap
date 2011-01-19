@@ -50,7 +50,24 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     }
     
   },
-
+  
+  statics : {
+    
+    getDomain : function( url ) {
+      var domain = null;
+      if(    url !== null 
+          && url.indexOf( "http://" ) === 0 
+          && url.indexOf( "/", 7 ) !== -1 ) 
+      {
+        domain = url.slice( 7 );
+        var pathStart = domain.indexOf( "/" );
+        domain = domain.slice( 0, pathStart );
+      }
+      return domain;
+    }
+    
+  },
+  
   members : {
 
     _onLoad : function( evt ) {
@@ -75,11 +92,11 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     execute : function( script ) {
       var success = true;
       var result = null;
+      this._checkIframeAccess();
       try {
         result = this._parseEvalResult( this._eval( script ) );
-      } catch( e ) {
+      } catch( ex ) {
         success = false;
-        this.warn( "Browser execute failed: " + e );
       }
       var req = org.eclipse.swt.Request.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -93,6 +110,18 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       }
     },
     
+    _checkIframeAccess : function( functionName ) {
+      var statics = org.eclipse.swt.browser.Browser;
+      var localDomain = statics.getDomain( document.URL );
+      var iframeDomain = statics.getDomain( this.getSource() );
+      if( localDomain !== iframeDomain && iframeDomain !== null ) {
+        var msg = "SecurityRestriction:\n";
+        msg += "Can not Access \"" + iframeDomain;
+        msg += "\" from \"" + localDomain + "\".";
+        throw new Error( msg );
+      }
+    },
+        
     _eval : function( script ) {
       var win = this.getContentWindow();
       if( !win.eval && win.execScript ) {
@@ -124,8 +153,8 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     },
 
     createFunction : function( name ) {
-      var win = this.getContentWindow();
-      if( win == null || !this.isLoaded() ) {
+      this._checkIframeAccess();
+      if( this.getContentWindow() === null || !this.isLoaded() ) {
         qx.client.Timer.once( function() {
           this.createFunction( name );
         }, this, 100 );
@@ -134,7 +163,12 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
           this._createFunctionImpl( name );
           this._createFunctionWrapper( name );
         } catch( e ) {
-          this.warn( "Unable to create function: " + name + " error: " + e );
+          var msg = "Unable to create function: \"" + name + "\".\n" + e;
+          if( org.eclipse.swt.EventUtil.getSuspended() ) {
+            throw msg;
+          } else {
+            org.eclipse.swt.Request.getInstance().processJavaScriptError( msg );
+          }
         }
       }
     },
@@ -239,4 +273,4 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       return result;
     }
   }
-});
+} );

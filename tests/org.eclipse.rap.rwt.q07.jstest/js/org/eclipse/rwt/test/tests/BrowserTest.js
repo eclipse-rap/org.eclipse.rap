@@ -15,10 +15,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     BLANK : "../org.eclipse.rap.rwt.q07/resources/resource/static/html/blank.html",
 
+    testGetDomain : function() {
+      var url1 = "http://google.de/";
+      var url2 = "http://www.sub.somedomain.com:84/"
+              + "example/document.html?param=value&param2=%20value2"
+      var domain1 = org.eclipse.swt.browser.Browser.getDomain( url1 );
+      var domain2 = org.eclipse.swt.browser.Browser.getDomain( url2 );
+      assertEquals( "google.de", domain1 );
+      assertEquals( "www.sub.somedomain.com:84", domain2 );
+    },
+
+    testGetDomainFails : function() {
+      var url1 = "htp://google.de/";
+      var url2 = "http://www.sub.somedomain.com:84";
+      var domain1 = org.eclipse.swt.browser.Browser.getDomain( url1 );
+      var domain2 = org.eclipse.swt.browser.Browser.getDomain( url2 );
+      var domain3 = org.eclipse.swt.browser.Browser.getDomain( null );
+      assertNull( domain1 );
+      assertNull( domain2 );
+      assertNull( domain3 );
+    },
+
     testExecute :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();      
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -46,7 +66,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEvaluate :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();      
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -66,7 +85,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testExecuteFailed :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();      
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -86,7 +104,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEvaluateReturnsRegexp :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();      
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -106,7 +123,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEvaluateReturnsMap :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();      
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -126,7 +142,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEvaluateReturnsArray :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();      
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -146,7 +161,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testEvaluateReturnsFunction :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();      
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -162,11 +176,50 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.destroy();
       }
     ],
-    
+
+    testExecuteSecurityException : [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var browser = this._createBrowser();
+        browser.setSource( "http://www.google.de/" );
+        testUtil.delayTest( 1000 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        var error = null;
+        try {
+          browser.execute( "alert(\" This should not happen\" );" );
+        } catch( ex ) {
+          error = ex;
+        }
+        assertTrue( error !== null );
+      }
+    ],
+
+    testBrowserFunctionSecurityExceptionInResponse : [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var browser = this._createBrowser();
+        browser.setSource( "http://www.google.de/" );
+        testUtil.delayTest( 1000 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        org.eclipse.swt.EventUtil.setSuspended( true );
+        var error = null;
+        try {
+          browser.createFunction( "abc" );
+        } catch( ex ) {
+          error = ex;
+        }
+        org.eclipse.swt.EventUtil.setSuspended( false );
+        assertTrue( error !== null );
+      }
+    ],
+
     testCreateDestroyBrowserFunction :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -189,7 +242,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testBrowserFunctionFailed :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -218,7 +270,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testBrowserFunctionSucceed  :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
         var browser = this._createBrowser();
         testUtil.delayTest( 100 );
         testUtil.store( browser );
@@ -249,7 +300,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         // See Bug 327440 - Memory leak problem with Iframe in Internet Explorer
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();      
         var browser = this._createBrowser();
         assertTrue( browser.isSeeable() );
         assertFalse( browser.isLoaded() );

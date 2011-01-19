@@ -601,6 +601,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       assertEquals( 1, x );
     },
     
+    testCatchErrorPage : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.clearErrorPage();
+      org.eclipse.swt.Request.getInstance()._writeErrorPage( "foobar" );
+      assertEquals( "foobar", testUtil.getErrorPage() );
+      testUtil.clearErrorPage();
+      assertNull( testUtil.getErrorPage() );
+    },
+    
     /////////
     // helper
     

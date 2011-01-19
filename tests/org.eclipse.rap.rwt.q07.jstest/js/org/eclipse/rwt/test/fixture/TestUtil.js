@@ -628,6 +628,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     
     _requestLog : [],
     _response : null,
+    _errorPage : null,
     
     initRequestLog : function() {
       var server = org.eclipse.rwt.test.fixture.RAPServer.getInstance();
@@ -659,9 +660,26 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     getMessage : function(){
       return this.getRequestLog()[ 0 ];
     },
-    
+
     scheduleResponse : function( func ) {
       this._response = func;
+    },
+
+    initErrorPageLog : function() {
+      var req = org.eclipse.swt.Request.getInstance();
+      org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
+      req._writeErrorPage = function( content ) {
+        testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil._errorPage = content;
+      };
+    },
+
+    clearErrorPage : function() {
+      this._errorPage = null;
+    },
+    
+    getErrorPage : function() {
+      return this._errorPage;
     },
     
     ////////

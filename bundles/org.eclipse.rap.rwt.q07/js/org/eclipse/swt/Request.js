@@ -491,6 +491,16 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
       document.write( content );
       document.close();
+    },
+    
+    processJavaScriptError : function( error ) {
+      var content
+      = "<html><head><title>Error Page</title></head><body>"
+      + "<p>Javascript error occurred:</p><pre>"
+      + error
+      + "</pre></body></html>";
+      this._writeErrorPage( content );
     }
+
   }
 });

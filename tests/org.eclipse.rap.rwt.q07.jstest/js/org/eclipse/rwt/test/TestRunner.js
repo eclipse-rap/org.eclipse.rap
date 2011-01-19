@@ -120,6 +120,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       this._disableAutoFlush();
       // prevent actual dom-events
       org.eclipse.rwt.EventHandler.detachEvents();
+      org.eclipse.rwt.test.fixture.TestUtil.initErrorPageLog();
       var that = this;
       this._loopWrapper = function(){ that._loop(); };
       this.info( "Found " + this._testClasses.length + " Tests.", false );
