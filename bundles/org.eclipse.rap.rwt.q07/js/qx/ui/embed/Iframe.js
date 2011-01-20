@@ -672,8 +672,9 @@ qx.Class.define("qx.ui.embed.Iframe",
     },
 
     destroy : function() {
+      var isMshtml =  qx.core.Variant.isSet( "qx.client", "mshtml" );
       var src = "javascript:false;";
-      if( this._iframeNode && this.getSource() !== src ) {
+      if( isMshtml && this._iframeNode && this.getSource() !== src ) {
         this.setStyleProperty( "visibility", "hidden" );
         this.addToDocument();
         this.addEventListener( "load", function() {
