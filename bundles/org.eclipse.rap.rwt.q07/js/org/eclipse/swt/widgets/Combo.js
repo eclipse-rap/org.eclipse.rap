@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -315,6 +315,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this.setCapture( !this._dropped );
         this._list.setDisplay( !this._dropped );
         this._dropped = !this._dropped;
+        if( this._dropped ) {
+          this._setListSelection( this._selected );
+        }
         this._updateListScrollBar();
         if( this.hasState( "rwt_CCOMBO" ) ) {
           this._updateListVisibleRequestParam();
@@ -334,6 +337,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._manager.deselectAll();
       this._manager.setLeadItem( null );
       this._manager.setAnchorItem( null );
+    },
+
+    _setListSelection : function( item ) {
+      this._manager.deselectAll();
+      this._manager.setLeadItem( item );
+      this._manager.setAnchorItem( item );
+      this._manager.setSelectedItem( item );
     },
 
     _onListAppear : function( evt ) {
@@ -361,8 +371,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
    
     _setSelected : function( value ) {
       this._selected = value;
-      this._manager.setLeadItem( value );
-      this._manager.setAnchorItem( value );
       if( value ) {
         var fieldValue = value.getLabel().toString();
         this._field.setValue( this._formatText( fieldValue ) );
@@ -372,7 +380,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
             this._handleSelectionChange();
           }
         }
-        this._manager.setSelectedItem( value );
+        this._setListSelection( value );
         this._manager.scrollItemIntoView( value );
       } else {
         if( !this._editable ) {
@@ -491,10 +499,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _onMouseOver : function( evt ) {
       var target = evt.getTarget();
       if( target instanceof qx.ui.form.ListItem ) {
-        this._manager.deselectAll();
-        this._manager.setLeadItem( target );
-        this._manager.setAnchorItem( target );
-        this._manager.setSelectedItem( target );
+        this._setListSelection( target );
       } else if( target == this._button ) {
         this._button.addState( "over" );
       }

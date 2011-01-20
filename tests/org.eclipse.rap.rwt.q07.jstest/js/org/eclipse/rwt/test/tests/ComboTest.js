@@ -49,7 +49,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       testUtil.flush();
       combo.select( 1 );
       assertEquals( "Java", combo._field.getValue() );
-      assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() )
+      assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() );
       combo.destroy();
     },
 
@@ -117,8 +117,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertTrue( combo._list.isSeeable() );
       combo.destroy();
     },
-    
-    
+   
     testOpenList : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
@@ -127,6 +126,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setListVisible( true );
       testUtil.flush();
       assertEquals( correctHeight, combo._list.getHeight() );
+    },
+
+    testListSelection : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.select( 1 );
+      combo._setListSelection( combo._list.getItems()[ 5 ] );
+      assertEquals( "Smalltalk", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      combo.setListVisible( true );
+      assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      combo.destroy();
     },
 
     //////////
