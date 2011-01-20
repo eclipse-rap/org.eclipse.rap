@@ -206,6 +206,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	  org.eclipse.rwt.test.fixture.TestUtil.restoreAppearance();
   	  org.eclipse.rwt.test.fixture.TestUtil.emptyDragCache();
   	  org.eclipse.rwt.test.fixture.TestUtil.resetEventHandler();
+  	  org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
   	  qx.ui.core.Widget.flushGlobalQueues();
   	},
   	

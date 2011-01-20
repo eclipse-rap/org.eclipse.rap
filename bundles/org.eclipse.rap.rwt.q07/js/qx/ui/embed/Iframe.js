@@ -76,20 +76,24 @@ qx.Class.define("qx.ui.embed.Iframe",
   {
     load : function(obj)
     {
-      if (!obj) {
-        throw new Error("Could not find iframe which was loaded [A]!");
-      }
-
-      // Non-MSHTML browsers will input an DOM event here
-      if (obj.currentTarget) {
-        obj = obj.currentTarget;
-      }
-
-      // Find iframe instance and call onload
-      if (obj._QxIframe) {
-        obj._QxIframe._onload();
-      } else {
-        throw new Error("Could not find iframe which was loaded [B]!");
+      try{
+        if (!obj) {
+          throw new Error("Could not find iframe which was loaded [A]!");
+        }
+  
+        // Non-MSHTML browsers will input an DOM event here
+        if (obj.currentTarget) {
+          obj = obj.currentTarget;
+        }
+  
+        // Find iframe instance and call onload
+        if (obj._QxIframe) {
+          obj._QxIframe._onload();
+        } else {
+          throw new Error("Could not find iframe which was loaded [B]!");
+        }
+      }catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }
     },
 

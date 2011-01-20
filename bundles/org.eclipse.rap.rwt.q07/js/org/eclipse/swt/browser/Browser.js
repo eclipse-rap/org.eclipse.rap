@@ -16,6 +16,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
   construct : function() {
     this.base( arguments );
     this._hasProgressListener = false;
+    this._browserFunctions = {};
     // TODO [rh] preliminary workaround to make Browser accessible by tab
     this.setTabIndex( 1 );
     this.setAppearance( "browser" );
@@ -55,13 +56,20 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     
     getDomain : function( url ) {
       var domain = null;
-      if(    url !== null 
-          && url.indexOf( "http://" ) === 0 
-          && url.indexOf( "/", 7 ) !== -1 ) 
-      {
-        domain = url.slice( 7 );
-        var pathStart = domain.indexOf( "/" );
-        domain = domain.slice( 0, pathStart );
+      if( url !== null ) {
+        var lowerCaseUrl = url.toLowerCase();
+        // Accepted limitation: In case of other protocls this detection fails. 
+        if(    lowerCaseUrl.indexOf( "http://" ) === 0 
+            || lowerCaseUrl.indexOf( "https://" ) === 0
+            || lowerCaseUrl.indexOf( "ftp://" ) === 0
+            || lowerCaseUrl.indexOf( "ftps://" ) === 0
+        ) {
+          var domain = lowerCaseUrl.slice( lowerCaseUrl.indexOf( "://" ) + 3 );
+          var pathStart = domain.indexOf( "/" );
+          if( pathStart !== -1 ) {
+            domain = domain.slice( 0, pathStart );            
+          }
+        }
       }
       return domain;
     }
@@ -72,6 +80,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
 
     _onLoad : function( evt ) {
       this.release();
+      this._attachBrowserFunctions();
       this._sendProgressEvent();
     },
     
@@ -109,17 +118,53 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         req.send();
       }
     },
-    
-    _checkIframeAccess : function( functionName ) {
+
+    _srcInLocalDomain : function() {
+      var src = this.getSource();
       var statics = org.eclipse.swt.browser.Browser;
       var localDomain = statics.getDomain( document.URL );
-      var iframeDomain = statics.getDomain( this.getSource() );
-      if( localDomain !== iframeDomain && iframeDomain !== null ) {
-        var msg = "SecurityRestriction:\n";
-        msg += "Can not Access \"" + iframeDomain;
-        msg += "\" from \"" + localDomain + "\".";
-        throw new Error( msg );
+      var srcDomain = statics.getDomain( src );
+      var isSameDomain = localDomain === srcDomain;
+      var isRelative = srcDomain === null; 
+      return isRelative || isSameDomain;
+    },
+    
+    _isContentAccessible : function() {
+      var accessible;
+      try{ 
+        this.getContentDocument().body.URL;
+        accessible = true;
+      } catch( ex ) {
+        accessible = false;
       }
+      return accessible && this._isLoaded;
+    },
+    
+    _checkIframeAccess : function( functionName ) {
+      if( !this._isContentAccessible() ) {
+        var isSameDomain = this._srcInLocalDomain();
+        if( !isSameDomain ) {
+          this._throwSecurityException( false );            
+        }
+        if( this._isLoaded && isSameDomain ) {
+          // not accessible when it appears it should be
+          // => user navigated to external site.
+          this._throwSecurityException( true );            
+        }
+      }
+    },
+    
+    _throwSecurityException : function( domainUnkown ) {
+      var statics = org.eclipse.swt.browser.Browser;
+      var localDomain = statics.getDomain( document.URL );
+      var srcDomain 
+        = domainUnkown ? null : statics.getDomain( this.getSource() );
+      var msg = "SecurityRestriction:\nBrowser-Widget can not access " 
+      msg +=   srcDomain !== null 
+             ? "\"" + srcDomain + "\"" 
+             : "unkown domain"; 
+      msg += " from \"" + localDomain + "\".";
+      throw new Error( msg );      
     },
         
     _eval : function( script ) {
@@ -153,12 +198,9 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     },
 
     createFunction : function( name ) {
+      this._browserFunctions[ name ] = true;
       this._checkIframeAccess();
-      if( this.getContentWindow() === null || !this.isLoaded() ) {
-        qx.client.Timer.once( function() {
-          this.createFunction( name );
-        }, this, 100 );
-      } else {
+      if( this.isLoaded() ) {
         try {
           this._createFunctionImpl( name );
           this._createFunctionWrapper( name );
@@ -172,7 +214,17 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         }
       }
     },
-
+    
+    _attachBrowserFunctions : function() {
+      // NOTE: In case the user navigates to a page outside the domain,
+      // this function will not be triggered due to the lack of a loading event.
+      // That also means that this is the only case were creating a browser
+      // function in a cross-domain scenario silently fails.
+      for( var name in this._browserFunctions ) {
+        this.createFunction( name );
+      }
+    },
+    
     _createFunctionImpl : function( name ) {
       var win = this.getContentWindow();
       var req = org.eclipse.swt.Request.getInstance();
@@ -223,6 +275,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     },
 
     destroyFunction : function( name ) {
+      delete this._browserFunctions[ name ];
       var win = this.getContentWindow();
       if( win != null ) {
 	      try {
