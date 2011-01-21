@@ -659,7 +659,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         new org.eclipse.rwt.widgets.TreeItem( tree );
       }
       testUtil.flush();
-      assertEquals( 2020, tree._vertScrollBar.getMaximum() );
+      assertEquals( 2000, tree._vertScrollBar.getMaximum() );
       tree.destroy();
     },
 
@@ -672,10 +672,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       }
       new org.eclipse.rwt.widgets.TreeItem( lastItem );
       testUtil.flush();
-      assertEquals( 2020, tree._vertScrollBar.getMaximum() );
+      assertEquals( 2000, tree._vertScrollBar.getMaximum() );
       lastItem.setExpanded( true );
       testUtil.flush();
-      assertEquals( 2040, tree._vertScrollBar.getMaximum() );
+      assertEquals( 2020, tree._vertScrollBar.getMaximum() );
       tree.destroy();
     },
     
@@ -687,10 +687,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         new org.eclipse.rwt.widgets.TreeItem( tree );
       }
       testUtil.flush();
-      assertEquals( 2020, tree._vertScrollBar.getMaximum() );
+      assertEquals( 2000, tree._vertScrollBar.getMaximum() );
       tree.setItemHeight( 40 );
       testUtil.flush();
-      assertEquals( 4040, tree._vertScrollBar.getMaximum() );
+      assertEquals( 4000, tree._vertScrollBar.getMaximum() );
       tree.destroy();
     },
     
@@ -730,7 +730,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       org.eclipse.swt.EventUtil.setSuspended( false );
       testUtil.flush();
       var itemNode = tree._clientArea._getTargetNode().firstChild;
-      assertEquals( "Test78", itemNode.firstChild.innerHTML );
+      assertEquals( "Test77", itemNode.firstChild.innerHTML );
       tree.destroy();
     },
     
@@ -996,7 +996,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         new org.eclipse.rwt.widgets.TreeItem( tree );
       }
       testUtil.flush();
-      assertEquals( 2020, tree._vertScrollBar.getMaximum() );
+      assertEquals( 2000, tree._vertScrollBar.getMaximum() );
       assertEquals( 0, tree._vertScrollBar.getValue() );
       testUtil.fakeWheel( tree._clientArea , -3 );
       assertEquals( 120, tree._vertScrollBar.getValue() );
@@ -2940,7 +2940,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isItemSelected( root.getChild( 55 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 55 ) ) );
       testUtil.press( tree, "End" );
-      assertIdentical( root.getChild( 76 ), tree._getTopItem() );
+      assertIdentical( root.getChild( 75 ), tree._getTopItem() );
       assertTrue( tree.isItemSelected( root.getChild( 99 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 99 ) ) );
       tree.destroy();

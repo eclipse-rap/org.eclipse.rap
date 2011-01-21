@@ -966,7 +966,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _updateScrollHeight : function() {
       var itemCount = this.getRootItem().getVisibleChildrenCount();
-      var height = ( itemCount + 1 ) * this._itemHeight;
+      var height = itemCount * this._itemHeight;
       // recalculating topItem can be expensive, therefore this simple check:
       if( this._vertScrollBar.getMaximum() != height ) {
         // Without the check, it may cause an error in FF when unloading doc
