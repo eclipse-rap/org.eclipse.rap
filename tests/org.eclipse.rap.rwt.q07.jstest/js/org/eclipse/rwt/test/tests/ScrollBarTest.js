@@ -68,6 +68,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 3, events.length );
       bar.destroy();
     },
+    
+    testFireEventOnSetMaximum : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = this._createScrollBar();
+      var events = this._getChangeLogger( bar );
+      bar.setValue( 250 );
+      bar.setMaximum( 200 );
+      assertEquals( 2, events.length );
+      bar.destroy();
+    },
 
     testSetInvalidValue : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

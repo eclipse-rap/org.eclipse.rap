@@ -188,7 +188,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
         }
         this._dispatchValueChanged();
       }
-      this._lastValue = this._selection;
     },
     
     ////////////
@@ -245,6 +244,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
 
     _getScrollBarWidth : function() {
       return org.eclipse.rwt.widgets.ScrollBar.BAR_WIDTH;
+    },
+    
+    _updateStepsize : function() {
+      var oldValue = this._selection;
+      this.base( arguments );
+      if( oldValue !== this._selection ) {
+        this._dispatchValueChanged();      
+      }
     }
 
   }
