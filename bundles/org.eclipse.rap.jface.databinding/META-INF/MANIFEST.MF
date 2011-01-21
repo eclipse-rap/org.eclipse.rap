@@ -8,6 +8,7 @@ Bundle-ClassPath: patch.jar,
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.jface.databinding.dialog,
+ org.eclipse.jface.databinding.fieldassist,
  org.eclipse.jface.databinding.preference,
  org.eclipse.jface.databinding.swt,
  org.eclipse.jface.databinding.util,
