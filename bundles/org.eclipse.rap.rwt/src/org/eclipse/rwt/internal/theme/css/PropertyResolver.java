@@ -243,7 +243,7 @@ public final class PropertyResolver {
   }
 
   static boolean isBoxDimensionProperty( final String property ) {
-    return "padding".equals( property )
+    return    "padding".equals( property )
            || "margin".equals( property )
            || "border-radius".equals( property );
   }
@@ -278,8 +278,8 @@ public final class PropertyResolver {
       }
     }
     if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse box dimensions "
-                                          + toString( unit ) );
+      String msg = "Failed to parse box dimensions " + toString( unit );
+      throw new IllegalArgumentException( msg );
     }
     return result;
   }
@@ -739,8 +739,8 @@ public final class PropertyResolver {
       } else if( type == LexicalUnit.SAC_MILLISECOND ) {
         duration = Math.round( nextUnit.getFloatValue() );
       } else {
-        String msg = "Invalid value for animation duration: "
-                     + toString( nextUnit );
+        String msg
+          = "Invalid value for animation duration: " + toString( nextUnit );
         throw new IllegalArgumentException( msg );
       }
       nextUnit = nextUnit.getNextLexicalUnit();
@@ -908,7 +908,7 @@ public final class PropertyResolver {
 
   private static final class NamedColor {
 
-    public NamedColor( int red, int green, int blue ) {
+    public NamedColor( final int red, final int green, final int blue ) {
       this.red = red;
       this.green = green;
       this.blue = blue;
