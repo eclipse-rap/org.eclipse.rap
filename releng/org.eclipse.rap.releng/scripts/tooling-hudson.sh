@@ -10,7 +10,7 @@ test -d "$WORKSPACE" && rm -rf "$WORKSPACE"/*
 
 runtimeDir=/home/build/rap/build-runtimes/eclipse-3.6
 
-rapTargets="/home/build/.hudson/jobs/RAP Runtime/lastSuccessful/archive"
+rapTargets="/home/build/.hudson/jobs/RAP 1.4 (Indigo) Runtime/lastSuccessful/archive"
 
 scriptsDir=`dirname $0`
 
