@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "tree", tree.getAppearance() );
       tree.destroy();
     },
-    
+
     testDefaultProperties : function() {
       var tree = new org.eclipse.rwt.widgets.Tree();
       assertEquals( "default", tree.getCursor() );
@@ -3111,6 +3111,62 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( [], tree._selection );
       tree.destroy();
     },
+
+    testTreeMultiSelectionDrag : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var tree = this._createDefaultTree();
+      tree.setHasMultiSelection( true );
+      var actions = [ "copy", "move", "alias" ];
+      dndSupport.registerDragSource( tree, actions );
+      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      var child0 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      testUtil.flush();
+      testUtil.click( tree._rows[ 0 ] );
+      testUtil.ctrlClick( tree._rows[ 1 ] );
+      assertTrue( tree.isItemSelected( child0 ) );
+      assertTrue( tree.isItemSelected( child1 ) );
+      tree._selectionTimestamp = null; // prevent double click detection
+      testUtil.fakeMouseEvent( tree._rows[ 1 ], "mousedown" );
+      assertTrue( "child0 selected", tree.isItemSelected( child0 ) );      
+      assertTrue( "child1 selected", tree.isItemSelected( child1 ) );      
+      testUtil.fakeMouseEvent( tree._rows[ 1 ], "mouseup" );      
+      testUtil.fakeMouseEvent( tree._rows[ 1 ], "click" );      
+      assertFalse( tree.isItemSelected( child0 ) );      
+      assertTrue( tree.isItemSelected( child1 ) );
+      tree.destroy();
+    },
+
+    testTreeMultiSelectionDragMouseOut : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var tree = this._createDefaultTree();
+      tree.setHasMultiSelection( true );
+      var actions = [ "copy", "move", "alias" ];
+      dndSupport.registerDragSource( tree, actions );
+      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      var child0 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      testUtil.flush();
+      testUtil.click( tree._rows[ 0 ] );
+      testUtil.ctrlClick( tree._rows[ 1 ] );
+      assertTrue( tree.isItemSelected( child0 ) );
+      assertTrue( tree.isItemSelected( child1 ) );
+      tree._selectionTimestamp = null; // prevent double click detection
+      testUtil.fakeMouseEvent( tree._rows[ 1 ], "mousedown" );
+      testUtil.mouseOut( tree._rows[ 1 ] );
+      testUtil.mouseOut( tree );
+      testUtil.mouseOver( tree );
+      testUtil.mouseOver( tree._rows[ 1 ] );
+      assertTrue( "child0 selected", tree.isItemSelected( child0 ) );      
+      assertTrue( "child1 selected", tree.isItemSelected( child1 ) );      
+      testUtil.fakeMouseEvent( tree._rows[ 1 ], "mouseup" );      
+      assertTrue( tree.isItemSelected( child0 ) );      
+      assertTrue( tree.isItemSelected( child1 ) );
+      tree.destroy();
+    },
+
 
     /////////
     // helper

@@ -35,6 +35,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._resizeLine = null;
     this._linesVisible = false;
     this._selectionTimestamp = null;
+    this._delayedSelection = false;
     // Metrics:
     this._headerHeight = 0;
     this._itemHeight = 16;
@@ -113,6 +114,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this.addEventListener( "changeTextColor", this._scheduleUpdate, this );
       this.addEventListener( "changeFont", this._scheduleUpdate, this );
       this.addEventListener( "mousedown", this._onMouseDown, this );
+      this.addEventListener( "mouseup", this._onMouseUp, this );
       this.addEventListener( "mouseover", this._onMouseOver, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
       this.addEventListener( "elementOver", this._onElementChange, this );
@@ -616,9 +618,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _onMouseDown : function( event ) {
+      this._delayedSelection = false;
       var target = event.getOriginalTarget();
       if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
         this._onRowMouseDown( target, event );
+      }
+    },
+    
+    _onMouseUp : function( event ) {
+      if( this._delayedSelection ) {
+        this._onMouseDown( event );
       }
     },
 
@@ -648,11 +657,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._sendSelectionEvent( item, true, null );
       } else {
         if( this._hasMultiSelection ) {
-          this._multiSelectItem( event, item );
+          if( !this._delayMultiSelect( event, item ) ) {
+            this._multiSelectItem( event, item );          
+          }
         } else {
           this._singleSelectItem( item );            
         }
       }      
+    },
+    
+    _delayMultiSelect : function( event, item ) {
+      if(    this._isDragSource() 
+          && this.isItemSelected( item ) 
+          && event.getType() === "mousedown" ) 
+      {
+        this._delayedSelection = true;
+      }
+      return this._delayedSelection;
     },
 
     _onMouseOver : function( event ) {
@@ -665,6 +686,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _onMouseOut : function( event ) {
       var target = event.getOriginalTarget();
+      this._delayedSelection = false;
       if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
         this._onRowOver( null );
       }      
@@ -1160,8 +1182,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _isDoubleClicked : function( event, item ) {
       var result = false;
+      var mousedown = event.getType() === "mousedown";
       var leftClick = event.getButton() === "left";
       if(    leftClick
+          && mousedown
           && this.isFocusItem( item ) 
           && this._selectionTimestamp != null ) 
       {
@@ -1171,7 +1195,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           result = true;
         }
       }
-      if( leftClick && !result ) {
+      if( mousedown && leftClick && !result ) {
         this._selectionTimestamp = new Date();
       } else {
         this._selectionTimestamp = null;
@@ -1625,6 +1649,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _inServerResponse : function() {
       return org.eclipse.swt.EventUtil.getSuspended();      
+    },
+    
+    _isDragSource : function() {
+      return this.hasEventListeners( "dragstart" ); 
     }
     
   }

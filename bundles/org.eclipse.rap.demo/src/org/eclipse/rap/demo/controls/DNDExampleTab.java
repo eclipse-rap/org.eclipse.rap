@@ -1137,7 +1137,7 @@ public class DNDExampleTab extends ExampleTab {
         return text;
       }
       case TREE: {
-        Tree tree = new Tree( parent, SWT.BORDER );
+        Tree tree = new Tree( parent, SWT.BORDER | SWT.MULTI );
         for( int i = 0; i < 3; i++ ) {
           TreeItem item = new TreeItem( tree, SWT.NONE );
           item.setText( prefix + " item " + i );
