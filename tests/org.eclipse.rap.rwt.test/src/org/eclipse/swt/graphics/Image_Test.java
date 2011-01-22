@@ -40,7 +40,7 @@ public class Image_Test extends TestCase {
 
   public void testStreamConstructorWithNullInputStream() {
     try {
-      new Image( new Display(), (InputStream)null );
+      new Image( new Display(), ( InputStream )null );
       fail( "Must provide input stream for constructor" );
     } catch( IllegalArgumentException e ) {
       assertEquals( "Argument cannot be null", e.getMessage() );
@@ -163,8 +163,18 @@ public class Image_Test extends TestCase {
 
   ////////////////////////
   // ImageData constructor
+  
+  public void testImageDataConstructor() {
+    Display display = new Display();
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    ImageData imageData = new ImageData( stream );
+    Image image = new Image( display, imageData );
+    assertEquals( 100, image.getBounds().width );
+    assertEquals( 50, image.getBounds().height );
+  }
 
-  public void testDataConstructorWithNullDevice() {
+  public void testImageDataConstructorWithNullDevice() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     ImageData imageData = new ImageData( stream );
@@ -176,23 +186,49 @@ public class Image_Test extends TestCase {
     }
   }
 
-  public void testDataConstructorWithNullImageData() {
+  public void testImageDataConstructorWithNullImageData() {
     try {
-      new Image( new Display(), (ImageData)null );
+      new Image( new Display(), ( ImageData )null );
       fail( "Must provide image data for constructor" );
     } catch( IllegalArgumentException e ) {
       assertEquals( "Argument cannot be null", e.getMessage() );
     }
   }
+  
+  ///////////////////////////
+  // Width/Height constructor
+  
+  public void testWidthHeightConstructor() {
+    Display device = new Display();
+    Image image = new Image( device, 1, 1 );
+    ImageData imageData = image.getImageData();
+    RGB[] rgbs = imageData.getRGBs();
+    assertEquals( new RGB( 255, 255, 255 ), rgbs[ 0 ] );
+    assertEquals( new Rectangle( 0, 0, 1, 1 ), image.getBounds() );
+  }
 
-  public void testImageDataConstructor() {
-    Display display = new Display();
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    ImageData imageData = new ImageData( stream );
-    Image image = new Image( display, imageData );
-    assertEquals( 100, image.getBounds().width );
-    assertEquals( 50, image.getBounds().height );
+  public void testWidthHeightConstructorWithNullDevice() {
+    try {
+      new Image( null, 1, 1 );
+      fail( "Must provide device for constructor" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testWidthHeightConstructorWithZeroWidth() {
+    try {
+      new Image( null, 0, 1 );
+      fail( "Width must be a positive value" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testWidthHeightConstructorWithZeroHeight() {
+    try {
+      new Image( null, 1, 0 );
+      fail( "Height must be a positive value" );
+    } catch( IllegalArgumentException expected ) {
+    }
   }
 
   ////////////////

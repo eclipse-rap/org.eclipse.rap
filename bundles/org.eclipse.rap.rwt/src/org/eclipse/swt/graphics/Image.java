@@ -247,6 +247,48 @@ public final class Image extends Resource {
   }
 
   /**
+   * Constructs an empty instance of this class with the
+   * specified width and height. The result may be drawn upon
+   * by creating a GC and using any of its drawing operations,
+   * as shown in the following example:
+   * <pre>
+   *    Image i = new Image(device, width, height);
+   *    GC gc = new GC(i);
+   *    gc.drawRectangle(0, 0, 50, 50);
+   *    gc.dispose();
+   * </pre>
+   * <p>
+   * Note: Some platforms may have a limitation on the size
+   * of image that can be created (size depends on width, height,
+   * and depth). For example, Windows 95, 98, and ME do not allow
+   * images larger than 16M.
+   * </p>
+   *
+   * @param device the device on which to create the image
+   * @param width the width of the new image
+   * @param height the height of the new image
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if either the width or height is negative or zero</li>
+   * </ul>
+   * @exception SWTError <ul>
+   *    <li>ERROR_NO_HANDLES if a handle could not be obtained for image creation</li>
+   * </ul>
+   * @since 1.4
+   */
+  public Image( final Device device, final int width, final int height ) {
+    super( checkDevice( device ) );
+    if( width <= 0 || height <= 0 ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    Color white = device.getSystemColor( SWT.COLOR_WHITE );
+    PaletteData palette = new PaletteData( new RGB[] { white.getRGB() } );
+    ImageData imageData = new ImageData( width, height, 24, palette );
+    internalImage = InternalImageFactory.findInternalImage( imageData );
+  }
+
+  /**
    * Returns the bounds of the receiver. The rectangle will always
    * have x and y values of 0, and the width and height of the
    * image.
