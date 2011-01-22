@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
 
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
@@ -1420,40 +1417,36 @@ public class Display extends Device implements Adaptable {
   public Image getSystemImage( final int id ) {
     checkDevice();
     Image result = null;
-    QxType value = null;
     switch( id ) {
       case SWT.ICON_ERROR:
-        value = ThemeUtil.getCssValue( "Display",
-                                       "rwt-error-image",
-                                       SimpleSelector.DEFAULT );
+        result = createSystemImage( "rwt-error-image" );
       break;
-      case SWT.ICON_WORKING:
       case SWT.ICON_INFORMATION:
-        value = ThemeUtil.getCssValue( "Display",
-                                       "rwt-information-image",
-                                       SimpleSelector.DEFAULT );
+        result = createSystemImage( "rwt-information-image" );
       break;
       case SWT.ICON_QUESTION:
-        value = ThemeUtil.getCssValue( "Display",
-                                       "rwt-question-image",
-                                       SimpleSelector.DEFAULT );
+        result = createSystemImage( "rwt-question-image" );
       break;
       case SWT.ICON_WARNING:
-        value = ThemeUtil.getCssValue( "Display",
-                                       "rwt-warning-image",
-                                       SimpleSelector.DEFAULT );
+        result = createSystemImage( "rwt-warning-image" );
+      break;
+      case SWT.ICON_WORKING:
+        result = createSystemImage( "rwt-working-image" );
       break;
     }
-    if( value != null ) {
-      QxImage image = ( QxImage )value;
+    return result;
+  }
+
+  private static Image createSystemImage( final String cssProperty ) {
+    Image result = null;
+    QxType cssValue = ThemeUtil.getCssValue( "Display",
+                                             cssProperty,
+                                             SimpleSelector.DEFAULT );
+    if( cssValue != null ) {
       try {
-        InputStream inStream = image.loader.getResourceAsStream( image.path );
-        result = Graphics.getImage( image.path, inStream );
-        inStream.close();
-      } catch( final IOException shouldNotHappen ) {
-        String txt = "Could not read system image from ''{0}''.";
-        String msg = MessageFormat.format( txt, new Object[] { image.path } );
-        throw new RuntimeException( msg, shouldNotHappen );
+        result = QxImage.createSwtImage( ( QxImage )cssValue );
+      } catch( final IOException ioe ) {
+        throw new RuntimeException( "Could not read system image", ioe );
       }
     }
     return result;

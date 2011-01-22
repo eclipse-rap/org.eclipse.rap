@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 
 public class QxImage_Test extends TestCase {
@@ -152,5 +156,42 @@ public class QxImage_Test extends TestCase {
     assertNull( image.getResourceName() );
     image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( "themes/images/cd56ce7d", image.getResourceName() );
+  }
+
+  public void testCreateSWTImageFromNone() throws IOException {
+    QxImage image = QxImage.NONE;
+    try {
+      QxImage.createSwtImage( image );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
+  public void testCreateSWTImageFromGradient() throws IOException {
+    String[] gradientColors = new String[] { "#FF0000", "#00FF00", "#0000FF" };
+    float[] gradientPercents = new float[] { 0f, 50f, 100f };
+    QxImage gradient = QxImage.createGradient( gradientColors,
+                                               gradientPercents,
+                                               true );
+    try {
+      QxImage.createSwtImage( gradient );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
+  public void testCreateSWTImage() throws IOException {
+    Fixture.setUp();
+    try {
+      Display display = new Display();
+      QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+      Image swtImage = QxImage.createSwtImage( image );
+      assertNotNull( swtImage );
+      assertSame( display, swtImage.getDevice() );
+    } finally {
+      Fixture.tearDown();
+    }
   }
 }

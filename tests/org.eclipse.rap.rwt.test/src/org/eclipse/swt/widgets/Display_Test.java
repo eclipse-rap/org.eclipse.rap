@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -650,20 +650,36 @@ public class Display_Test extends TestCase {
     assertEquals( 0, fontList.length );
   }
 
-  public void testSystemImage() {
+  public void testSystemImageSizes() {
+    Display display = new Display();
+    Rectangle expected = new Rectangle( 0, 0, 32, 32 );
+    Image errorImage = display.getSystemImage( SWT.ICON_ERROR );
+    assertEquals( expected, errorImage.getBounds() );
+    Image infoImage = display.getSystemImage( SWT.ICON_INFORMATION );
+    assertEquals( expected, infoImage.getBounds() );
+    Image questionImage = display.getSystemImage( SWT.ICON_QUESTION );
+    assertEquals( expected, questionImage.getBounds() );
+    Image warningImage = display.getSystemImage( SWT.ICON_WARNING );
+    assertEquals( expected, warningImage.getBounds() );
+    Image workImage = display.getSystemImage( SWT.ICON_WORKING );
+    assertEquals( expected, workImage.getBounds() );
+  }
+
+  public void testInvalidSystemImage() {
+    Display display = new Display();
+    assertNull( display.getSystemImage( SWT.VERTICAL ) );
+  }
+
+  public void testSystemImagesAreShared() {
     Display display = new Display();
     Image errorImage = display.getSystemImage( SWT.ICON_ERROR );
-    assertEquals( new Rectangle( 0, 0, 32, 32 ), errorImage.getBounds() );
+    assertSame( errorImage, display.getSystemImage( SWT.ICON_ERROR ) );
     Image infoImage = display.getSystemImage( SWT.ICON_INFORMATION );
-    assertEquals( new Rectangle( 0, 0, 32, 32 ), infoImage.getBounds() );
-    assertFalse( infoImage.equals( errorImage ) );
+    assertSame( infoImage, display.getSystemImage( SWT.ICON_INFORMATION ) );
+    assertNotSame( errorImage, infoImage );
     Image workImage = display.getSystemImage( SWT.ICON_WORKING );
-    assertEquals( new Rectangle( 0, 0, 32, 32 ), workImage.getBounds() );
-    assertTrue( infoImage.equals( workImage ) );
-    Image questionImage = display.getSystemImage( SWT.ICON_QUESTION );
-    assertEquals( new Rectangle( 0, 0, 32, 32 ), questionImage.getBounds() );
-    Image warningImage = display.getSystemImage( SWT.ICON_WARNING );
-    assertEquals( new Rectangle( 0, 0, 32, 32 ), warningImage.getBounds() );
+    // same icon is used in default theme
+    assertSame( infoImage, workImage );
   }
 
   public void testSystemColor() {

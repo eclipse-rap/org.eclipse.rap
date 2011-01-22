@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.swt.graphics.*;
 
 public final class QxImage implements QxType {
 
@@ -191,6 +191,21 @@ public final class QxImage implements QxType {
     }
     result.append( " }" );
     return result.toString();
+  }
+
+  public static Image createSwtImage( final QxImage image ) throws IOException {
+    Image result;
+    if( image.loader == null ) {
+      String message = "Cannot create image without resource loader";
+      throw new IllegalArgumentException( message );
+    }
+    InputStream inputStream = image.loader.getResourceAsStream( image.path );
+    try {
+      result = Graphics.getImage( image.path, inputStream );
+    } finally {
+      inputStream.close();
+    }
+    return result;
   }
 
   private static Point readImageSize( final String path,
