@@ -1571,6 +1571,22 @@ public class SWT {
   public static final int SMOOTH = 1 << 16;
 
   /**
+   * Style constant for no background behavior (value is 1&lt;&lt;18).
+   * <p>
+   * By default, before a widget paints, the client area is filled with the current background.
+   * When this style is specified, the background is not filled, and the application is responsible
+   * for filling every pixel of the client area.
+   * This style might be used as an alternative to "double-buffering" in order to reduce flicker.
+   * This style does not mean "transparent" - widgets that are obscured will not draw through.
+   * </p><p><b>Used By:</b><ul>
+   * <li><code>Composite</code></li>
+   * </ul></p>
+   *
+   * @since 1.4
+   */
+  public static final int NO_BACKGROUND = 1 << 18;
+  
+  /**
    * Style constant for no focus from the mouse behavior (value is 1&lt;&lt;19).
    * <br>Note that this is a <em>HINT</em>.
    * <p><b>Used By:</b><ul>
@@ -1578,6 +1594,34 @@ public class SWT {
    * </ul></p>
    */
   public static final int NO_FOCUS = 1 << 19;
+
+  /**
+   * Style constant for no redraw on resize behavior (value is 1&lt;&lt;20).
+   * <p>
+   * This style stops the entire client area from being invalidated when the size
+   * of the Canvas changes. Specifically, when the size of the Canvas gets smaller,
+   * the SWT.Paint event is not sent. When it gets bigger, an SWT.Paint event is
+   * sent with a GC clipped to only the new areas to be painted. Without this
+   * style, the entire client area will be repainted.
+   * 
+   * <br>Note that this is a <em>HINT</em>.
+   * </p><p><b>Used By:</b><ul>
+   * <li><code>Composite</code></li>
+   * </ul></p>
+   * 
+   * @since 1.4
+   */
+  public static final int NO_REDRAW_RESIZE = 1 << 20;
+
+  /**
+   * Style constant for no paint event merging behavior (value is 1&lt;&lt;21).
+   * 
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Composite</code></li>
+   * </ul></p>
+   */
+  public static final int NO_MERGE_PAINTS = 1 << 21;
 
   /**
    * Style constant for left to right orientation (value is 1&lt;&lt;25).
