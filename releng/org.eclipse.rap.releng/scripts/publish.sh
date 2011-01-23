@@ -1,5 +1,15 @@
 #!/bin/bash
 #
+#  Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+#  All rights reserved. This program and the accompanying materials
+#  are made available under the terms of the Eclipse Public License v1.0
+#  which accompanies this distribution, and is available at
+#  http://www.eclipse.org/legal/epl-v10.html
+# 
+#  Contributors:
+#      Innoopract Informationssysteme GmbH - initial API and implementation
+###############################################################################
+
 # This script is used to publish a new RAP build to the download server.
 #
 # Links:
@@ -376,11 +386,11 @@ echo "pack.excludes: `echo $EXCLUDE_BUNDLES | sed 's/ /, /g'`" > pack.properties
 echo "sign.excludes: `echo $EXCLUDE_BUNDLES | sed 's/ /, /g'`" >> pack.properties
 zip "$INPUT_ARCHIVE" pack.properties && rm pack.properties || exit 1
 
-# pack200 - normalize
+# pack200 - normalize jars to prepare for signing
 echo "=== normalize (pack200) $INPUT_ARCHIVE"
 packBuild normalize jarred-$INPUT_ARCHIVE normalized-$INPUT_ARCHIVE_NAME || exit 1
 
-# sign
+# sign jars
 echo "=== sign normalized $INPUT_ARCHIVE"
 signBuild normalized-$INPUT_ARCHIVE_NAME signed-$INPUT_ARCHIVE_NAME || exit 1
 
@@ -388,6 +398,7 @@ if [ -n "$ZIP_DOWNLOAD_PATH" ]; then
   # create a copy without pack.properties
   jarDirs unpack signed-$INPUT_ARCHIVE_NAME upload-$INPUT_ARCHIVE_NAME
   zip -d upload-$INPUT_ARCHIVE_NAME pack.properties 2> /dev/null
+
   # upload zip
   echo "=== upload zip file to $ZIP_DOWNLOAD_PATH/$INPUT_ARCHIVE_NAME"
   echo check local file before uploading: upload-$INPUT_ARCHIVE_NAME
@@ -400,9 +411,12 @@ if [ -n "$ZIP_DOWNLOAD_PATH" ]; then
 fi
 
 if [ -n "$REPOSITORY_PATH" ]; then
+  # rename jars that have been marked as "unpack", a repo can't contain unpacked content
+  jarDirs rename signed-$INPUT_ARCHIVE_NAME renamed-$INPUT_ARCHIVE_NAME
+
   # pack200 - pack
   echo "=== pack200 signed $INPUT_ARCHIVE_NAME"
-  packBuild pack signed-$INPUT_ARCHIVE_NAME packed-$INPUT_ARCHIVE_NAME || exit 1
+  packBuild pack renamed-$INPUT_ARCHIVE_NAME packed-$INPUT_ARCHIVE_NAME || exit 1
 
   # download old repo
   echo "=== merge repository dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/"
@@ -417,9 +431,8 @@ if [ -n "$REPOSITORY_PATH" ]; then
   echo -n "press Return to proceed "
   read c
   echo "merge new content into local copy of repository"
-  jarDirs rename packed-$INPUT_ARCHIVE_NAME renamed-$INPUT_ARCHIVE_NAME
-  rm -rf newSite && unzip -q renamed-$INPUT_ARCHIVE_NAME -d newSite || exit 1
-  rm renamed-$INPUT_ARCHIVE_NAME
+  rm -rf newSite && unzip -q packed-$INPUT_ARCHIVE_NAME -d newSite || exit 1
+  rm packed-$INPUT_ARCHIVE_NAME
   rsync -r newSite/eclipse/ $localCopy/ || exit 1
   rm -rf newSite
 
