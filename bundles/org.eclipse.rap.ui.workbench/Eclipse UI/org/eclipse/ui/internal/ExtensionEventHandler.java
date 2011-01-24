@@ -40,7 +40,7 @@ import org.eclipse.ui.themes.ITheme;
 import org.eclipse.ui.themes.IThemeManager;
 
 class ExtensionEventHandler implements IRegistryChangeListener {
-    
+
     private Workbench workbench;
 
     private List changeList = new ArrayList(10);
@@ -56,11 +56,11 @@ class ExtensionEventHandler implements IRegistryChangeListener {
                     .getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE);
             IExtension ext;
             IExtensionPoint extPt;
-// RAP [rh] fix for bug 290920            
+// RAP [rh] fix for bug 290920
 //            IWorkbenchWindow[] win = PlatformUI.getWorkbench()
 //                    .getWorkbenchWindows();
             IWorkbenchWindow[] win = workbench.getWorkbenchWindows();
-// End of fix            
+// End of fix
             if (win.length == 0) {
 				return;
 			}
@@ -74,9 +74,9 @@ class ExtensionEventHandler implements IRegistryChangeListener {
             int numPerspectives = 0;
             int numActionSetPartAssoc = 0;
 
-            // push action sets and perspectives to the top because incoming 
-            // actionSetPartAssociations and perspectiveExtensions may depend upon 
-            // them for their bindings.		
+            // push action sets and perspectives to the top because incoming
+            // actionSetPartAssociations and perspectiveExtensions may depend upon
+            // them for their bindings.
             for (int i = 0; i < delta.length; i++) {
                 id = delta[i].getExtensionPoint().getSimpleIdentifier();
                 if (delta[i].getKind() == IExtensionDelta.ADDED) {
@@ -137,7 +137,7 @@ class ExtensionEventHandler implements IRegistryChangeListener {
         };
         display.syncExec(run);
     }
-    
+
     private void appear(IExtensionPoint extPt, IExtension ext) {
         String name = extPt.getSimpleIdentifier();
         if (name.equalsIgnoreCase(IWorkbenchRegistryConstants.PL_FONT_DEFINITIONS)) {
@@ -204,15 +204,17 @@ class ExtensionEventHandler implements IRegistryChangeListener {
         if (changeList.isEmpty()) {
 			return;
 		}
-
+// RAP [if]: need session aware messages
         final StringBuffer message = new StringBuffer(
-                ExtensionEventHandlerMessages.ExtensionEventHandler_following_changes);
+//                ExtensionEventHandlerMessages.ExtensionEventHandler_following_changes);
+                ExtensionEventHandlerMessages.get().ExtensionEventHandler_following_changes);
 
         for (Iterator i = changeList.iterator(); i.hasNext();) {
             message.append(i.next());
         }
 
-        message.append(ExtensionEventHandlerMessages.ExtensionEventHandler_need_to_reset);
+//        message.append(ExtensionEventHandlerMessages.ExtensionEventHandler_need_to_reset);
+        message.append(ExtensionEventHandlerMessages.get().ExtensionEventHandler_need_to_reset);
 
         display.asyncExec(new Runnable() {
             public void run() {
@@ -230,7 +232,8 @@ class ExtensionEventHandler implements IRegistryChangeListener {
                 if (MessageDialog
                         .openQuestion(
                                 parentShell,
-                                ExtensionEventHandlerMessages.ExtensionEventHandler_reset_perspective, message.toString())) {
+//                                ExtensionEventHandlerMessages.ExtensionEventHandler_reset_perspective, message.toString())) {
+                                ExtensionEventHandlerMessages.get().ExtensionEventHandler_reset_perspective, message.toString())) {
                     IWorkbenchPage page = window.getActivePage();
                     if (page == null) {
 						return;
