@@ -81,7 +81,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
   private static void readVisible( ToolTip toolTip ) {
     String value = WidgetLCAUtil.readPropertyValue( toolTip, "visible" );
     if( value != null ) {
-      toolTip.setVisible( Boolean.parseBoolean( value ) );
+      toolTip.setVisible( new Boolean( value ).booleanValue() );
     }
   }
 
