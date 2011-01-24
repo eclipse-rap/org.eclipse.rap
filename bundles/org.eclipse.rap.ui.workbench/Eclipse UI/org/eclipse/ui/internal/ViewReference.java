@@ -43,7 +43,7 @@ import org.eclipse.ui.views.IViewRegistry;
 class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 	/**
-	 * 
+	 *
 	 */
 	private final ViewFactory factory;
 
@@ -93,7 +93,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.internal.WorkbenchPartReference#dispose()
 	 */
 	protected void doDisposePart() {
@@ -114,7 +114,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 					.getToolBarManager());
 			// 3.3 end
 			actionBars.dispose();
-			
+
 			// and now dispose the delegates since the
 			// PluginActionContributionItem
 			// can no longer do that
@@ -131,7 +131,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IWorkbenchPartReference#getPage()
 	 */
 	public IWorkbenchPage getPage() {
@@ -140,7 +140,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.internal.WorkbenchPartReference#getRegisteredName()
 	 */
 	public String getRegisteredName() {
@@ -167,7 +167,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 		if (part instanceof IWorkbenchPart2) {
 			return super.computeContentDescription();
 		}
-		
+
 		String rawTitle = getRawTitle();
 
 		if (!Util.equals(rawTitle, getRegisteredName())) {
@@ -179,7 +179,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IViewReference
 	 */
 	public String getSecondaryId() {
@@ -188,7 +188,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IViewReference#getView(boolean)
 	 */
 	public IViewPart getView(boolean restore) {
@@ -197,7 +197,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IViewReference#isFastView()
 	 */
 	public boolean isFastView() {
@@ -209,7 +209,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 	 * busyRestoreViewHelper to do the real work of restoring the view. If
 	 * unable to restore the view, this method tries to substitute an error part
 	 * and return success.
-	 * 
+	 *
 	 * @return the created part
 	 */
 	protected IWorkbenchPart createPart() {
@@ -361,8 +361,11 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 				Composite parent = (Composite) pane.getControl();
 				ViewDescriptor descriptor = (ViewDescriptor) this.factory.viewReg.find(getId());
 				if (descriptor != null && descriptor.getPluginId() != null) {
+// RAP [if]: need session aware messages
+//					parent.setData(new ContributionInfo(descriptor.getPluginId(),
+//							ContributionInfoMessages.ContributionInfo_View, null));
 					parent.setData(new ContributionInfo(descriptor.getPluginId(),
-							ContributionInfoMessages.ContributionInfo_View, null));
+					        ContributionInfoMessages.get().ContributionInfo_View, null));
 				}
 				content = new Composite(parent, style);
 				content.setLayout(new FillLayout());
@@ -396,7 +399,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 				actionBuilder = new ViewActionBuilder();
 				actionBuilder.readActionExtensions(view);
-// RAP [rh] IKeyBindingService not implemented				
+// RAP [rh] IKeyBindingService not implemented
 //				ActionDescriptor[] actionDescriptors = actionBuilder
 //						.getExtendedActions();
 //				IKeyBindingService keyBindingService = view.getSite()
@@ -441,7 +444,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 			if ((e instanceof Error) && !(e instanceof LinkageError)) {
 				throw (Error) e;
 			}
-			
+
 			// An exception occurred. First deallocate anything we've allocated
 			// in the try block (see the top
 			// of the try block for a list of objects that need to be explicitly
@@ -494,7 +497,7 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 	/**
 	 * The memento is that last view state saved by the workbench.
-	 * 
+	 *
 	 * @return the last state that was saved by the workbench. It can return
 	 *         <code>null</code>.
 	 * @since 3.1.1

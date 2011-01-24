@@ -32,7 +32,7 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * @since 3.6
- * 
+ *
  */
 public class PluginContributionAdapterFactory implements IAdapterFactory {
 
@@ -45,32 +45,46 @@ public class PluginContributionAdapterFactory implements IAdapterFactory {
 
 			String elementType;
 
+// RAP [if]: need session aware messages
 			if (contribution instanceof EditorDescriptor) {
-				elementType = ContributionInfoMessages.ContributionInfo_Editor;
+//				elementType = ContributionInfoMessages.ContributionInfo_Editor;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_Editor;
 			} else if (contribution instanceof ViewDescriptor) {
-				elementType = ContributionInfoMessages.ContributionInfo_View;
+//				elementType = ContributionInfoMessages.ContributionInfo_View;
+				elementType = ContributionInfoMessages.get().ContributionInfo_View;
 			} else if (contribution instanceof ActionSetDescriptor) {
-				elementType = ContributionInfoMessages.ContributionInfo_ActionSet;
+//				elementType = ContributionInfoMessages.ContributionInfo_ActionSet;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_ActionSet;
 			} else if (contribution instanceof Category) {
-				elementType = ContributionInfoMessages.ContributionInfo_Category;
+//				elementType = ContributionInfoMessages.ContributionInfo_Category;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_Category;
 			} else if (contribution instanceof IViewCategory) {
-				elementType = ContributionInfoMessages.ContributionInfo_Category;
+//				elementType = ContributionInfoMessages.ContributionInfo_Category;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_Category;
 			} else if (contribution instanceof ThemeElementCategory) {
-				elementType = ContributionInfoMessages.ContributionInfo_Category;
+//				elementType = ContributionInfoMessages.ContributionInfo_Category;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_Category;
 			} else if (contribution instanceof WizardCollectionElement) {
-				elementType = ContributionInfoMessages.ContributionInfo_Category;
+//				elementType = ContributionInfoMessages.ContributionInfo_Category;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_Category;
 			} else if (contribution instanceof ColorDefinition) {
-				elementType = ContributionInfoMessages.ContributionInfo_ColorDefinition;
+//				elementType = ContributionInfoMessages.ContributionInfo_ColorDefinition;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_ColorDefinition;
 			} else if (contribution instanceof WorkbenchWizardElement) {
-				elementType = ContributionInfoMessages.ContributionInfo_Wizard;
+//				elementType = ContributionInfoMessages.ContributionInfo_Wizard;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_Wizard;
 			} else if (contribution instanceof PerspectiveDescriptor) {
-				elementType = ContributionInfoMessages.ContributionInfo_Perspective;
+//				elementType = ContributionInfoMessages.ContributionInfo_Perspective;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_Perspective;
 			} else if (contribution instanceof WorkbenchPreferenceExpressionNode) {
-				elementType = ContributionInfoMessages.ContributionInfo_Page;
+//				elementType = ContributionInfoMessages.ContributionInfo_Page;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_Page;
 			} else if (contribution instanceof DecoratorDefinition) {
-				elementType = ContributionInfoMessages.ContributionInfo_LabelDecoration;
+//				elementType = ContributionInfoMessages.ContributionInfo_LabelDecoration;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_LabelDecoration;
 			} else {
-				elementType = ContributionInfoMessages.ContributionInfo_Unknown;
+//				elementType = ContributionInfoMessages.ContributionInfo_Unknown;
+			    elementType = ContributionInfoMessages.get().ContributionInfo_Unknown;
 			}
 
 			return new ContributionInfo(contribution.getPluginId(), elementType, null);
@@ -81,8 +95,10 @@ public class PluginContributionAdapterFactory implements IAdapterFactory {
 			if (job != null) {
 				Bundle bundle = FrameworkUtil.getBundle(job.getClass());
 				if (bundle != null) {
+//					return new ContributionInfo(bundle.getSymbolicName(),
+//							ContributionInfoMessages.ContributionInfo_Job, null);
 					return new ContributionInfo(bundle.getSymbolicName(),
-							ContributionInfoMessages.ContributionInfo_Job, null);
+					        ContributionInfoMessages.get().ContributionInfo_Job, null);
 				}
 			}
 		}

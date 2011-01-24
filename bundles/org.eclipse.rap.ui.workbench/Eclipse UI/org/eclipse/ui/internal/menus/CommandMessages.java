@@ -11,21 +11,36 @@
 
 package org.eclipse.ui.internal.menus;
 
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.rwt.RWT;
+
+//import org.eclipse.osgi.util.NLS;
 
 /**
- * 
+ *
  * @since 3.5
- * 
+ *
  */
-public class CommandMessages extends NLS {
+// RAP [if]: need session aware NLS
+//public class CommandMessages extends NLS {
+public class CommandMessages {
 
 	private static final String BUNDLE_NAME = "org.eclipse.ui.internal.menus.messages";//$NON-NLS-1$
 
-	static {
-		// load message values from bundle file
-		NLS.initializeMessages(BUNDLE_NAME, CommandMessages.class);
-	}
+// RAP [if]: need session aware NLS
+//	static {
+//		// load message values from bundle file
+//		NLS.initializeMessages(BUNDLE_NAME, CommandMessages.class);
+//	}
 
-	public static String Tooltip_Accelerator;
+	public String Tooltip_Accelerator;
+
+	/**
+     * Load message values from bundle file
+     * @return localized message
+     */
+    public static CommandMessages get() {
+      Class clazz = CommandMessages.class;
+      Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
+      return ( CommandMessages )result;
+    }
 }

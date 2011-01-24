@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Francis Upton - <francisu@ieee.org> - 
+ *     Francis Upton - <francisu@ieee.org> -
  *     		Fix for Bug 217777 [Workbench] Workbench event loop does not terminate if Display is closed
  *     Tasktop Technologies -  Bug 304716 -  [UX] [Progress] Show Eclipse startup progress in the Eclipse icon on the Windows 7 Task Bar
  *     Tom Schindl -  Bug 310153 -  Allow people to use CSS in 3.x plugins
@@ -225,7 +225,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //
 //		/*
 //		 * (non-Javadoc)
-//		 * 
+//		 *
 //		 * @see
 //		 * org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String,
 //		 * int)
@@ -239,7 +239,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //
 //		/*
 //		 * (non-Javadoc)
-//		 * 
+//		 *
 //		 * @see org.eclipse.core.runtime.IProgressMonitor#worked(int)
 //		 */
 //		public void worked(int work) {
@@ -258,7 +258,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //
 //		/*
 //		 * (non-Javadoc)
-//		 * 
+//		 *
 //		 * @see org.eclipse.core.runtime.IProgressMonitor#done()
 //		 */
 //		public void done() {
@@ -321,7 +321,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //
 //		/*
 //		 * (non-Javadoc)
-//		 * 
+//		 *
 //		 * @see org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
 //		 */
 //		public void internalWorked(double work) {
@@ -330,7 +330,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //
 //		/*
 //		 * (non-Javadoc)
-//		 * 
+//		 *
 //		 * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled()
 //		 */
 //		public boolean isCanceled() {
@@ -339,7 +339,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //
 //		/*
 //		 * (non-Javadoc)
-//		 * 
+//		 *
 //		 * @see org.eclipse.core.runtime.IProgressMonitor#setCanceled(boolean)
 //		 */
 //		public void setCanceled(boolean value) {
@@ -348,7 +348,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //
 //		/*
 //		 * (non-Javadoc)
-//		 * 
+//		 *
 //		 * @see
 //		 * org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String
 //		 * )
@@ -359,7 +359,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //
 //		/*
 //		 * (non-Javadoc)
-//		 * 
+//		 *
 //		 * @see
 //		 * org.eclipse.core.runtime.IProgressMonitor#subTask(java.lang.String)
 //		 */
@@ -368,19 +368,19 @@ public final class Workbench extends EventManager implements IWorkbench {
 //		}
 //
 //	}
-	
+
   // RAP [fappel]: key for storing workbench state into setting store
   private static final String KEY_WORKBENCH_STATE
     = Workbench.class.getName() + "#XMLMemento";
-  
+
     // RAP [fappel]: ensure that workbench is properly shutdown in case of session timeout
-      
+
   /**
-   * 
+   *
    */
     private boolean started;
       private boolean sessionInvalidated;
-      
+
       private static final class ShutdownHandler implements Listener {
         public void handleEvent( Event event ){
           if( Workbench.getInstance().started && Platform.isRunning() ) {
@@ -389,10 +389,10 @@ public final class Workbench extends EventManager implements IWorkbench {
           }
         }
       }
-      // RAPEND: [bm] 
+      // RAPEND: [bm]
 
 
-      // RAP [bm]: 
+      // RAP [bm]:
 //  private final class StartupProgressBundleListener implements
 //          SynchronousBundleListener {
 //
@@ -451,7 +451,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //          progressMonitor.subTask(taskName);
 //      }
 //  }
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
     /**
      * Family for the early startup job.
@@ -467,15 +467,15 @@ public final class Workbench extends EventManager implements IWorkbench {
 //   * Holds onto the only instance of Workbench.
 //   */
 //  private static Workbench instance;
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
     /**
      * The testable object facade.
      */
-    // RAP [bm]: 
+    // RAP [bm]:
 //  private static WorkbenchTestable testableObject;
     private WorkbenchTestable testableObject;
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
 
     // RAP [bm]: no splash today
@@ -489,7 +489,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //   * The splash handler.
 //   */
 //  private static AbstractSplashHandler splash;
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
     /**
      * The display used for all UI interactions with this workbench.
@@ -567,11 +567,11 @@ public final class Workbench extends EventManager implements IWorkbench {
             ListenerList.IDENTITY);
 
 	private ServiceRegistration workbenchService;
-	
+
     // RAP [bm]: see createAndRunWorkbench for initialization
 //  /**
 //   * Creates a new workbench.
-//   * 
+//   *
 //   * @param display
 //   *            the display to be used for all UI interactions with the
 //   *            workbench
@@ -639,11 +639,11 @@ public final class Workbench extends EventManager implements IWorkbench {
 		// added back for legacy reasons
 		serviceLocator.registerService(IWorkbench.class, this);
     }
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
     /**
      * Returns the one and only instance of the workbench, if there is one.
-     * 
+     *
      * @return the workbench, or <code>null</code> if the workbench has not
      *         been created, or has been created and already completed
      */
@@ -651,7 +651,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         // RAP [bm]: use SSB
 //      return instance;
         return ( Workbench ) SessionSingletonBase.getInstance( Workbench.class );
-        // RAPEND: [bm] 
+        // RAPEND: [bm]
     }
 
     /**
@@ -665,7 +665,7 @@ public final class Workbench extends EventManager implements IWorkbench {
      * <p>
      * The display passed in must be the default display.
      * </p>
-     * 
+     *
      * @param display
      *            the display to be used for all UI interactions with the
      *            workbench
@@ -681,23 +681,23 @@ public final class Workbench extends EventManager implements IWorkbench {
     public static final int createAndRunWorkbench(final Display display,
             final WorkbenchAdvisor advisor) {
         final int[] returnCode = new int[1];
-        
+
 		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
 			public void run() {
 				ULocale.setDefault(new ULocale(Platform.getNL()
 						+ Platform.getNLExtensions()));
                 // create the workbench instance
-                // RAP [bm]: 
+                // RAP [bm]:
 //              Workbench workbench = new Workbench(display, advisor);
                 Workbench workbench = getInstance();
                 workbench.display = display;
                 workbench.advisor = advisor;
-                // RAPEND: [bm] 
+                // RAPEND: [bm]
 
                 // run the workbench event loop
                 // RAP [rh]: cleanup when session terminates
                 display.addListener( SWT.Dispose, new ShutdownHandler() );
-                // RAPEND 
+                // RAPEND
 
                 returnCode[0] = workbench.runUI();
             }
@@ -707,7 +707,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Creates the <code>Display</code> to be used by the workbench.
-     * 
+     *
      * @return the display
      */
     public static Display createDisplay() {
@@ -723,10 +723,10 @@ public final class Workbench extends EventManager implements IWorkbench {
 		if (appVersion != null) {
 			Display.setAppVersion(appVersion);
 		}
-		
+
         // create the display
         Display newDisplay = Display.getCurrent();
-        // RAP [bm]: 
+        // RAP [bm]:
 //      if(newDisplay == null) {
 //          if (Policy.DEBUG_SWT_GRAPHICS || Policy.DEBUG_SWT_DEBUG) {
 //              DeviceData data = new DeviceData();
@@ -744,7 +744,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         if(newDisplay == null) {
             newDisplay = new Display();
         }
-        // RAPEND: [bm] 
+        // RAPEND: [bm]
 
         // workaround for 1GEZ9UR and 1GF07HN
         // RAP [bm]: Display#setWarnings
@@ -768,7 +768,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //      final Display display = getDisplay();
 //      String splashLoc = System.getProperty("org.eclipse.equinox.launcher.splash.location"); //$NON-NLS-1$
 //      final Image background = loadImage(splashLoc);
-//      
+//
 //      SafeRunnable run = new SafeRunnable() {
 //
 //          public void run() throws Exception {
@@ -776,18 +776,18 @@ public final class Workbench extends EventManager implements IWorkbench {
 //                  createSplash = false;
 //                  return;
 //              }
-//              
+//
 //              // create the splash
 //              getSplash();
 //              if (splash == null) {
 //                  createSplash = false;
 //                  return;
 //              }
-//              
+//
 //              Shell splashShell = splash.getSplash();
-//              if (splashShell == null) {                  
+//              if (splashShell == null) {
 //                  splashShell = WorkbenchPlugin.getSplashShell(display);
-//                  
+//
 //                  if (splashShell == null)
 //                      return;
 //                  if (background != null)
@@ -815,7 +815,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //              };
 //              registration[0] = context.registerService(StartupMonitor.class
 //                      .getName(), startupMonitor, properties);
-//              
+//
 //              splash.init(splashShell);
 //          }
 //          /* (non-Javadoc)
@@ -829,17 +829,17 @@ public final class Workbench extends EventManager implements IWorkbench {
 //              splash = null;
 //              if (background != null)
 //                  background.dispose();
-//              
+//
 //          }
 //          };
 //          SafeRunner.run(run);
 //  }
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
     // RAP [bm]: not used
 //  /**
 //   * Load an image from a filesystem path.
-//   * 
+//   *
 //   * @param splashLoc the location to load from
 //   * @return the image or <code>null</code>
 //   */
@@ -868,40 +868,40 @@ public final class Workbench extends EventManager implements IWorkbench {
 //		}
 //		return background;
 //	}
-// RAPEND: [bm] 
+// RAPEND: [bm]
 
 
     // RAP [bm]: no splash
 //  /**
 //   * Return the splash handler for this application. If none is specifically
 //   * provided the default Eclipse implementation is returned.
-//   * 
+//   *
 //   * @return the splash handler for this application or <code>null</code>
 //   */
 //  private static AbstractSplashHandler getSplash() {
 //      if (!createSplash)
 //          return null;
-//      
+//
 //      if (splash == null) {
-//          
+//
 //          IProduct product = Platform.getProduct();
-//          if (product != null) 
+//          if (product != null)
 //              splash = SplashHandlerFactory.findSplashHandlerFor(product);
-//          
+//
 //          if (splash == null)
 //              splash = new EclipseSplashHandler();
 //      }
 //      return splash;
 //  }
-    // RAPEND: [bm] 
+    // RAPEND: [bm]
 
     /**
      * Returns the testable object facade, for use by the test harness.
-     * 
+     *
      * @return the testable object facade
      */
     public static WorkbenchTestable getWorkbenchTestable() {
-        // RAP [bm]: 
+        // RAP [bm]:
 //      if (testableObject == null) {
 //          testableObject = new WorkbenchTestable();
 //      }
@@ -911,7 +911,7 @@ public final class Workbench extends EventManager implements IWorkbench {
             instance.testableObject = new WorkbenchTestable();
         }
         return instance.testableObject;
-        // RAPEND: [bm] 
+        // RAPEND: [bm]
     }
 
     /*
@@ -930,7 +930,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Fire workbench preShutdown event, stopping at the first one to veto
-     * 
+     *
      * @param forced
      *            flag indicating whether the shutdown is being forced
      * @return <code>true</code> to allow the workbench to proceed with
@@ -984,7 +984,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Fire window opened event.
-     * 
+     *
      * @param window
      *            The window which just opened; should not be <code>null</code>.
      */
@@ -1002,7 +1002,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Fire window closed event.
-     * 
+     *
      * @param window
      *            The window which just closed; should not be <code>null</code>.
      */
@@ -1025,7 +1025,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Fire window activated event.
-     * 
+     *
      * @param window
      *            The window which was just activated; should not be
      *            <code>null</code>.
@@ -1044,7 +1044,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Fire window deactivated event.
-     * 
+     *
      * @param window
      *            The window which was just deactivated; should not be
      *            <code>null</code>.
@@ -1063,7 +1063,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Closes the workbench. Assumes that the busy cursor is active.
-     * 
+     *
      * @param force
      *            true if the close is mandatory, and false if the close is
      *            allowed to fail
@@ -1087,7 +1087,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         // save any open editors if they are dirty
         // RAP [bm]: added session condition
         if(!sessionInvalidated) {
-        // RAPEND: [bm] 
+        // RAPEND: [bm]
             isClosing = saveAllEditors(!force);
             if (!force && !isClosing) {
                 return false;
@@ -1143,7 +1143,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         if (!force && !isClosing) {
             return false;
         }
-        
+
         // RAP [bm]: i18n
 //      SafeRunner.run(new SafeRunnable(WorkbenchMessages.ErrorClosing) {
         SafeRunner.run(new SafeRunnable(WorkbenchMessages.get().ErrorClosing) {
@@ -1164,7 +1164,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         return true;
     }
 
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbench#saveAllEditors(boolean)
      */
@@ -1233,7 +1233,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Opens a new workbench window and page with a specific perspective.
-     * 
+     *
      * Assumes that busy cursor is active.
      */
     private IWorkbenchWindow busyOpenWorkbenchWindow(final String perspID,
@@ -1247,7 +1247,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         });
 
         final WorkbenchWindow newWindow = newWindowArray[0];
-        
+
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
             public void runWithException() {
@@ -1269,7 +1269,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                         windowManager.remove(newWindow);
                         exceptions[0] = e;
                     }
-                }});    
+                }});
         }
         if (exceptions[0] != null)
             throw exceptions[0];
@@ -1279,7 +1279,7 @@ public final class Workbench extends EventManager implements IWorkbench {
             public void handleEvent(Event event) {
             }
         });
-        
+
         // Open window after opening page, to avoid flicker.
         StartupThreading.runWithWorkbenchExceptions(new StartupRunnable() {
 
@@ -1301,7 +1301,7 @@ public final class Workbench extends EventManager implements IWorkbench {
     /**
      * Closes the workbench, returning the given return code from the run
      * method. If forced, the workbench is closed no matter what.
-     * 
+     *
      * @param returnCode
      *            {@link PlatformUI#RETURN_OK RETURN_OK}for normal exit;
      *            {@link PlatformUI#RETURN_RESTART RETURN_RESTART}if the
@@ -1312,7 +1312,7 @@ public final class Workbench extends EventManager implements IWorkbench {
      *            {@link PlatformUI#RETURN_UNSTARTABLE RETURN_UNSTARTABLE}if
      *            the workbench could not be started; other values reserved for
      *            future use
-     * 
+     *
      * @param force
      *            true to force the workbench close, and false for a "soft"
      *            close that can be canceled
@@ -1477,7 +1477,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Returns the window manager for this workbench.
-     * 
+     *
      * @return the window manager
      */
     /* package */
@@ -1532,13 +1532,13 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Initializes the workbench now that the display is created.
-     * 
+     *
      * @return true if init succeeded.
      */
     private boolean init() {
         // RAP [fappel]: take care of the started flag
         started = true;
-        
+
         // setup debug mode if required.
         if (WorkbenchPlugin.getDefault().isDebugging()) {
             WorkbenchPlugin.DEBUG = true;
@@ -1573,7 +1573,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         // the services, and hooking them up in the correct order
         final EvaluationService restrictionService = new EvaluationService();
         final EvaluationService evaluationService = new EvaluationService();
-        
+
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
             public void runWithException() {
@@ -1581,7 +1581,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                         evaluationService);
             }
         });
-        
+
         // Initialize the activity support.
         workbenchActivitySupport = new WorkbenchActivitySupport();
         activityHelper = ActivityPersistanceHelper.getInstance();
@@ -1604,7 +1604,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                 advisor.internalBasicInitialize(getWorkbenchConfigurer());
             }
         });
-        
+
         // configure use of color icons in toolbars
         boolean useColorIcons = PrefUtil.getInternalPreferenceStore()
                 .getBoolean(IPreferenceConstants.COLOR_ICONS);
@@ -1612,7 +1612,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
         // initialize workbench single-click vs double-click behavior
         initializeSingleClickOption();
-        
+
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
             public void runWithException() {
@@ -1620,29 +1620,29 @@ public final class Workbench extends EventManager implements IWorkbench {
                         .init(getDisplay());
             }
         });
-        
+
 		StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
 			public void runWithException() {
 				startSourceProviders();
 			}
 		});
-		
+
         // attempt to restore a previous workbench state
         try {
             UIStats.start(UIStats.RESTORE_WORKBENCH, "Workbench"); //$NON-NLS-1$
 
-            final boolean bail [] = new boolean[1]; 
+            final boolean bail [] = new boolean[1];
             StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
                 public void runWithException() throws Throwable {
                     advisor.preStartup();
-                    
+
                     if (isClosing() || !advisor.openWindows()) {
                         bail[0] = true;
                     }
                 }});
-            
+
             if (bail[0])
                 return false;
 
@@ -1733,7 +1733,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * Initialize the workbench images.
-     * 
+     *
      * @param windowImages An array of the descriptors of the images to be used
      * in the corner of each window, or <code>null</code> if none. It is
      * expected that the array will contain the same icon, rendered at different
@@ -1762,9 +1762,9 @@ public final class Workbench extends EventManager implements IWorkbench {
         // RAP [bm]: Image#dispose
 //      Image[] images = Window.getDefaultImages();
 //      for (int i = 0; i < images.length; i++) {
-//          images[i].dispose();            
+//          images[i].dispose();
 //      }
-        // RAPEND: [bm] 
+        // RAPEND: [bm]
     }
 
     /*
@@ -1790,16 +1790,16 @@ public final class Workbench extends EventManager implements IWorkbench {
      * and hooks up all the required listeners.
      */
     private final void initializeDefaultServices() {
-                
+
         final IContributionService contributionService = new ContributionService(
                 getAdvisor());
         serviceLocator.registerService(IContributionService.class,
                 contributionService);
-        
+
         // TODO Correctly order service initialization
         // there needs to be some serious consideration given to
         // the services, and hooking them up in the correct order
-        
+
 
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
@@ -1807,7 +1807,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                 serviceLocator.registerService(ISaveablesLifecycleListener.class,
                         new SaveablesList());
             }});
-        
+
         /*
          * Phase 1 of the initialization of commands. When this phase completes,
          * all the services and managers will exist, and be accessible via the
@@ -1819,7 +1819,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                 Command.DEBUG_COMMAND_EXECUTION = Policy.DEBUG_COMMANDS;
                 commandManager = new CommandManager();
             }});
-        
+
         final CommandService [] commandService = new CommandService[1];
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
@@ -1829,28 +1829,28 @@ public final class Workbench extends EventManager implements IWorkbench {
                 serviceLocator.registerService(ICommandService.class, commandService[0]);
 
             }});
-        
+
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
             public void runWithException() {
                 ContextManager.DEBUG = Policy.DEBUG_CONTEXTS;
                 contextManager = new ContextManager();
                 }});
-        
+
         final IContextService contextService = new ContextService(
                 contextManager);
-        
+
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
             public void runWithException() {
                 contextService.readRegistry();
                 }});
-        
+
         serviceLocator.registerService(IContextService.class, contextService);
-    
+
 
         final IBindingService [] bindingService = new BindingService[1];
-        
+
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
             public void runWithException() {
@@ -1858,9 +1858,9 @@ public final class Workbench extends EventManager implements IWorkbench {
                 bindingManager = new BindingManager(contextManager, commandManager);
                 bindingService[0] = new BindingService(
                         bindingManager, commandService[0], Workbench.this);
-                
+
             }});
-        
+
         // RAP [bm] Bindings
 //        bindingService[0].readRegistryAndPreferences(commandService[0]);
 //        serviceLocator.registerService(IBindingService.class, bindingService[0]);
@@ -1871,9 +1871,9 @@ public final class Workbench extends EventManager implements IWorkbench {
         commandImageService.readRegistry();
         serviceLocator.registerService(ICommandImageService.class,
                 commandImageService);
-        
+
         final WorkbenchMenuService menuService = new WorkbenchMenuService(serviceLocator);
-        
+
         serviceLocator.registerService(IMenuService.class, menuService);
         // the service must be registered before it is initialized - its
         // initialization uses the service locator to address a dependency on
@@ -1887,7 +1887,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
 
 		// the source providers are now initialized in phase 3
-		
+
 		/*
 		 * Phase 2 of the initialization of commands. This handles the creation
 		 * of wrappers for legacy APIs. By the time this phase completes, any
@@ -1917,7 +1917,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Returns true if the Workbench is in the process of starting.
-     * 
+     *
      * @return <code>true</code> if the Workbench is starting, but not yet
      *         running the event loop.
      */
@@ -1927,7 +1927,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * Creates a new workbench window.
-     * 
+     *
      * @return the new workbench window
      */
     private WorkbenchWindow newWorkbenchWindow() {
@@ -1967,7 +1967,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         if (win == null) {
             win = getWorkbenchWindows()[0];
         }
-        
+
         final String threadPerspId = perspId;
         final IWorkbenchWindow threadWin = win;
         StartupThreading.runWithoutExceptions(new StartupRunnable() {
@@ -2012,7 +2012,7 @@ public final class Workbench extends EventManager implements IWorkbench {
             final Runnable runnable) {
         // RAP [bm]: no chance to show progress, just start up
         runnable.run();
-        
+
 //      progressCount = 0;
 //      final double cutoff = 0.95;
 //
@@ -2020,7 +2020,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //      IProgressMonitor progressMonitor = null;
 //      if (handler != null)
 //          progressMonitor = handler.getBundleProgressMonitor();
-//       
+//
 //      if (progressMonitor == null) {
 //          // cannot report progress (e.g. if the splash screen is not showing)
 //          // fall back to starting without showing progress.
@@ -2048,7 +2048,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //                      bundleListener);
 //          }
 //      }
-        // RAPEND: [bm] 
+        // RAPEND: [bm]
     }
 
     private void doOpenFirstTimeWindow() {
@@ -2059,7 +2059,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                 public void runWithException() throws Throwable {
                     input[0] = getDefaultPageInput();
                 }});
-            
+
             busyOpenWorkbenchWindow(getPerspectiveRegistry()
                     .getDefaultPerspective(), input[0]);
         } catch (final WorkbenchException e) {
@@ -2077,7 +2077,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * Restores the workbench UI from the workbench state file (workbench.xml).
-     * 
+     *
      * @return a status object indicating OK if a window was opened,
      * RESTORE_CODE_RESET if no window was opened but one should be, and
      * RESTORE_CODE_EXIT if the workbench should close immediately
@@ -2112,7 +2112,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 		final IStatus result[] = { Status.OK_STATUS };
         SafeRunner.run(new SafeRunnable(WorkbenchMessages.get().ErrorReadingState) {
             public void run() throws Exception {
-// RAP [fappel]: need solution that allows cluster support            
+// RAP [fappel]: need solution that allows cluster support
 //              FileInputStream input = new FileInputStream(stateFile);
 //              BufferedReader reader = new BufferedReader(
 //                      new InputStreamReader(input, "utf-8")); //$NON-NLS-1$
@@ -2134,7 +2134,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                     String msg = WorkbenchMessages.get().Invalid_workbench_state_ve;
                     MessageDialog.openError((Shell) null,
                             WorkbenchMessages.get().Restoring_Problems, msg);
-// RAP [fappel]: need solution that allows cluster support            
+// RAP [fappel]: need solution that allows cluster support
 //                  stateFile.delete();
                     settingStore.removeAttribute( KEY_WORKBENCH_STATE );
                     result[0] = new Status(IStatus.ERROR,
@@ -2155,7 +2155,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                                     IDialogConstants.get().CANCEL_LABEL }, 0).open() == 0;
                     // OK is the default
                     if (ignoreSavedState) {
-// RAP [fappel]: need solution that allows cluster support            
+// RAP [fappel]: need solution that allows cluster support
 //                        stateFile.delete();
                         settingStore.removeAttribute( KEY_WORKBENCH_STATE );
                         result[0] = new Status(IStatus.WARNING,
@@ -2200,7 +2200,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                         result[0] = new Status(IStatus.ERROR,
                                 WorkbenchPlugin.PI_WORKBENCH,
                                 IWorkbenchConfigurer.RESTORE_CODE_RESET, msg, e);
-// RAP [fappel]: need solution that allows cluster support            
+// RAP [fappel]: need solution that allows cluster support
 //                        stateFile.delete();
                         try {
                           settingStore.removeAttribute( KEY_WORKBENCH_STATE );
@@ -2209,7 +2209,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                         }
                     }});
             }
-            
+
             private void handle(final Throwable e) {
                 super.handleException(e);
             }
@@ -2260,7 +2260,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#restoreWorkbenchWindow(org.eclipse.ui.IMemento)
      */
     IWorkbenchWindow restoreWorkbenchWindow(IMemento memento)
@@ -2304,7 +2304,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                             WorkbenchMessages.get().Workbench_problemsSaving,
                             WorkbenchMessages.get().Workbench_problemsSavingMsg, status);
                 }});
-            
+
         }
         return memento;
     }
@@ -2365,7 +2365,7 @@ public final class Workbench extends EventManager implements IWorkbench {
     /**
      * Returns the contribution infos for plug-ins that extend the
      * <code>org.eclipse.ui.startup</code> extension point.
-     * 
+     *
      * @return the ids of all plug-ins containing 1 or more startup extensions
      */
     public ContributionInfo[] getEarlyActivatedPlugins() {
@@ -2382,8 +2382,11 @@ public final class Workbench extends EventManager implements IWorkbench {
         }
 		ContributionInfo[] result = new ContributionInfo[pluginIds.size()];
 		for (int i = 0; i < result.length; i++) {
+// RAP [if]: need session aware messages
+//			result[i] = new ContributionInfo((String) pluginIds.get(i),
+//					ContributionInfoMessages.ContributionInfo_EarlyStartupPlugin, null);
 			result[i] = new ContributionInfo((String) pluginIds.get(i),
-					ContributionInfoMessages.ContributionInfo_EarlyStartupPlugin, null);
+			        ContributionInfoMessages.get().ContributionInfo_EarlyStartupPlugin, null);
 
 		}
 		return result;
@@ -2392,7 +2395,7 @@ public final class Workbench extends EventManager implements IWorkbench {
     /**
      * Returns the ids of the early activated plug-ins that have been disabled
      * by the user.
-     * 
+     *
      * @return the ids of the early activated plug-ins that have been disabled
      *         by the user
      */
@@ -2477,7 +2480,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         Job job = new Job("Workbench early startup") { //$NON-NLS-1$
             protected IStatus run(final IProgressMonitor monitor) {
               final IStatus[] result = { Status.OK_STATUS };
-// RAP [rh] fake service context            
+// RAP [rh] fake service context
               UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
           public void run() {
             HashSet disabledPlugins = new HashSet(Arrays
@@ -2490,7 +2493,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                 return;
               }
               IExtension extension = extensions[i];
-              
+
               // if the plugin is not in the set of disabled plugins, then
               // execute the code to start it
               if (!disabledPlugins.contains(extension.getNamespace())) {
@@ -2516,7 +2519,7 @@ public final class Workbench extends EventManager implements IWorkbench {
     /**
      * Internal method for running the workbench UI. This entails processing and
      * dispatching events until the workbench is closed or restarted.
-     * 
+     *
      * @return return code {@link PlatformUI#RETURN_OK RETURN_OK}for normal
      *         exit; {@link PlatformUI#RETURN_RESTART RETURN_RESTART}if the
      *         workbench was terminated with a call to
@@ -2539,7 +2542,7 @@ public final class Workbench extends EventManager implements IWorkbench {
       }
 
       final UISynchronizer synchronizer;
-      
+
       if (avoidDeadlock) {
           UILockListener uiLockListener = new UILockListener(display);
           Job.getJobManager().setLockListener(uiLockListener);
@@ -2549,13 +2552,13 @@ public final class Workbench extends EventManager implements IWorkbench {
           // declare the main thread to be a startup thread.
           UISynchronizer.startupThread.set(Boolean.TRUE);
       }
-      else 
+      else
           synchronizer = null;
-      
+
 //      // prime the splash nice and early
 //      if (createSplash)
 //          createSplashWrapper();
-        // RAPEND: [bm] 
+        // RAPEND: [bm]
 
 		// activate styling if available
 		Bundle stylingBundle = Platform.getBundle("org.eclipse.e4.ui.css.swt.theme"); //$NON-NLS-1$
@@ -2573,7 +2576,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 		}
 
 
-// RAP [rh] workaround for bug #249630 
+// RAP [rh] workaround for bug #249630
 //       (IRunnableWithProgress in WorkbenchAdvisor does not show dialog)
 //      // ModalContext should not spin the event loop (there is no UI yet to
 //      // block)
@@ -2603,7 +2606,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //              event.doit = close();
 //          }
 //      };
-        // RAPEND: [bm] 
+        // RAPEND: [bm]
 
         // Initialize an exception handler.
         Window.IExceptionHandler handler = ExceptionHandler.getInstance();
@@ -2617,10 +2620,10 @@ public final class Workbench extends EventManager implements IWorkbench {
             Window.setExceptionHandler(handler);
 
             final boolean [] initOK = new boolean[1];
-            
+
             // RAP [bm]: no splash
 //          if (getSplash() != null) {
-//              
+//
 //              final boolean[] initDone = new boolean[]{false};
 //              Thread initThread = new Thread() {
 //              /* (non-Javadoc)
@@ -2628,7 +2631,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //               */
 //              public void run() {
 //                  try {
-//                      //declare us to be a startup thread so that our syncs will be executed 
+//                      //declare us to be a startup thread so that our syncs will be executed
 //                      UISynchronizer.startupThread.set(Boolean.TRUE);
 //                      initOK[0] = Workbench.this.init();
 //                  } finally {
@@ -2643,17 +2646,17 @@ public final class Workbench extends EventManager implements IWorkbench {
 //                          break;
 //                      display.sleep();
 //                  }
-//                  
+//
 //              }
 //          }
 //          else {
-            // RAPEND: [bm] 
+            // RAPEND: [bm]
 
                 // initialize workbench and restore or open one window
                 initOK[0] = init();
 
 //          }
-                
+
             // drop the splash screen now that a workbench window is up
             Platform.endSplash();
 
@@ -2713,7 +2716,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //          if (!display.isDisposed()) {
 //              display.removeListener(SWT.Close, closeListener);
 //          }
-            // RAPEND: [bm] 
+            // RAPEND: [bm]
 
         }
 
@@ -2789,7 +2792,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 //          FileOutputStream stream = new FileOutputStream(stateFile);
 //          OutputStreamWriter writer = new OutputStreamWriter(stream, "utf-8"); //$NON-NLS-1$
 //          memento.save(writer);
-//          writer.close();         
+//          writer.close();
 //      } catch (IOException e) {
 //          stateFile.delete();
 //          MessageDialog.openError((Shell) null,
@@ -3081,7 +3084,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         cancelEarlyStartup();
 		if (workbenchService != null)
 			workbenchService.unregister();
-		
+
         // for dynamic UI
         Platform.getExtensionRegistry().removeRegistryChangeListener(
                 extensionEventHandler);
@@ -3089,7 +3092,7 @@ public final class Workbench extends EventManager implements IWorkbench {
                 startupRegistryListener);
 
         ((GrabFocus) Tweaklets.get(GrabFocus.KEY)).dispose();
-        
+
         // Bring down all of the services.
         serviceLocator.dispose();
 
@@ -3195,7 +3198,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Returns the default perspective id, which may be <code>null</code>.
-     * 
+     *
      * @return the default perspective id, or <code>null</code>
      */
     public String getDefaultPerspectiveId() {
@@ -3204,7 +3207,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /**
      * Returns the default workbench window page input.
-     * 
+     *
      * @return the default window page input or <code>null</code> if none
      */
     public IAdaptable getDefaultPageInput() {
@@ -3214,7 +3217,7 @@ public final class Workbench extends EventManager implements IWorkbench {
     /**
      * Returns the id of the preference page that should be presented most
      * prominently.
-     * 
+     *
      * @return the id of the preference page, or <code>null</code> if none
      */
     public String getMainPreferencePageId() {
@@ -3224,7 +3227,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench
      */
     public IElementFactory getElementFactory(String factoryId) {
@@ -3234,7 +3237,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getProgressService()
      */
     public IProgressService getProgressService() {
@@ -3243,7 +3246,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     private WorkbenchActivitySupport workbenchActivitySupport;
 
-// RAP [rh] unused code: getCommandSupport is disabled  
+// RAP [rh] unused code: getCommandSupport is disabled
 //  private WorkbenchCommandSupport workbenchCommandSupport;
 
     private WorkbenchContextSupport workbenchContextSupport;
@@ -3276,7 +3279,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         return workbenchActivitySupport;
     }
 
-// RAP [rh] useless API: IWorkbenchCommandSupport heavily relies on keys    
+// RAP [rh] useless API: IWorkbenchCommandSupport heavily relies on keys
 //  public IWorkbenchCommandSupport getCommandSupport() {
 //      return workbenchCommandSupport;
 //  }
@@ -3284,10 +3287,10 @@ public final class Workbench extends EventManager implements IWorkbench {
     public IWorkbenchContextSupport getContextSupport() {
         return workbenchContextSupport;
     }
-    
+
     /**
      * This method should not be called outside the framework.
-     * 
+     *
      * @return The context manager.
      */
     public ContextManager getContextManager() {
@@ -3388,7 +3391,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getIntroManager()
      */
     public IIntroManager getIntroManager() {
@@ -3417,7 +3420,7 @@ public final class Workbench extends EventManager implements IWorkbench {
     /**
      * This method exists as a test hook. This method should <strong>NEVER</strong>
      * be called by clients.
-     * 
+     *
      * @param descriptor
      *            The intro descriptor to use.
      */
@@ -3440,7 +3443,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.eclipse.core.runtime.IRegistryChangeListener#registryChanged(org.eclipse.core.runtime.IRegistryChangeEvent)
          */
         public void registryChanged(IRegistryChangeEvent event) {
@@ -3477,7 +3480,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getThemeManager()
      */
     public IThemeManager getThemeManager() {
@@ -3487,7 +3490,7 @@ public final class Workbench extends EventManager implements IWorkbench {
     /**
      * Returns <code>true</code> if the workbench is running,
      * <code>false</code> if it has been terminated.
-     * 
+     *
      * @return <code>true</code> if the workbench is running,
      *         <code>false</code> if it has been terminated.
      */
@@ -3498,7 +3501,7 @@ public final class Workbench extends EventManager implements IWorkbench {
     /**
      * Return the presentation ID specified by the preference or the default ID
      * if undefined.
-     * 
+     *
      * @return the presentation ID
      * @see IWorkbenchPreferenceConstants#PRESENTATION_FACTORY_ID
      */
@@ -3578,7 +3581,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getExtensionTracker()
      */
     public IExtensionTracker getExtensionTracker() {
@@ -3598,7 +3601,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getHelpSystem()
      */
     public IWorkbenchHelpSystem getHelpSystem() {
@@ -3607,7 +3610,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getHelpSystem()
      */
     public IWorkbenchBrowserSupport getBrowserSupport() {
@@ -3616,7 +3619,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getViewRegistry()
      */
     public IViewRegistry getViewRegistry() {
@@ -3625,7 +3628,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getNewWizardRegistry()
      */
     public IWizardRegistry getNewWizardRegistry() {
@@ -3634,7 +3637,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getImportWizardRegistry()
      */
     public IWizardRegistry getImportWizardRegistry() {
@@ -3643,7 +3646,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbench#getExportWizardRegistry()
      */
     public IWizardRegistry getExportWizardRegistry() {
@@ -3684,12 +3687,12 @@ public final class Workbench extends EventManager implements IWorkbench {
         for (int i = 0; i < children.length; i++) {
             childMem = children[i];
             final WorkbenchWindow [] newWindow = new WorkbenchWindow[1];
-            
+
             StartupThreading.runWithoutExceptions(new StartupRunnable() {
 
                 public void runWithException() {
                     newWindow[0] = newWorkbenchWindow();
-                    newWindow[0].create();  
+                    newWindow[0].create();
                 }});
             createdWindows[i] = newWindow[0];
 
@@ -3764,7 +3767,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.services.IServiceLocator#getService(java.lang.Object)
      */
     public final Object getService(final Class key) {
@@ -3773,7 +3776,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.services.IServiceLocator#hasService(java.lang.Object)
      */
     public final boolean hasService(final Class key) {
@@ -3784,7 +3787,7 @@ public final class Workbench extends EventManager implements IWorkbench {
      * Registers a service with this locator. If there is an existing service
      * matching the same <code>api</code> and it implements
      * {@link IDisposable}, it will be disposed.
-     * 
+     *
      * @param api
      *            This is the interface that the service implements. Must not be
      *            <code>null</code>.
@@ -3809,7 +3812,7 @@ public final class Workbench extends EventManager implements IWorkbench {
      * Adds the ids of a menu that is now showing to the menu source provider.
      * This is used for legacy action-based handlers which need to become active
      * only for the duration of a menu being visible.
-     * 
+     *
      * @param menuIds
      *            The identifiers of the menu that is now showing; must not be
      *            <code>null</code>.
@@ -3818,7 +3821,7 @@ public final class Workbench extends EventManager implements IWorkbench {
      */
     public final void addShowingMenus(final Set menuIds,
             final ISelection localSelection, final ISelection localEditorInput) {
-        menuSourceProvider.addShowingMenus(menuIds, localSelection, 
+        menuSourceProvider.addShowingMenus(menuIds, localSelection,
                 localEditorInput);
     }
 
@@ -3826,7 +3829,7 @@ public final class Workbench extends EventManager implements IWorkbench {
      * Removes the ids of a menu that is now hidden from the menu source
      * provider. This is used for legacy action-based handlers which need to
      * become active only for the duration of a menu being visible.
-     * 
+     *
      * @param menuIds
      *            The identifiers of the menu that is now hidden; must not be
      *            <code>null</code>.
@@ -3835,7 +3838,7 @@ public final class Workbench extends EventManager implements IWorkbench {
      */
     public final void removeShowingMenus(final Set menuIds,
             final ISelection localSelection, final ISelection localEditorInput) {
-        menuSourceProvider.removeShowingMenus(menuIds, localSelection, 
+        menuSourceProvider.removeShowingMenus(menuIds, localSelection,
                 localEditorInput);
     }
 
@@ -3851,11 +3854,11 @@ public final class Workbench extends EventManager implements IWorkbench {
         List toSave = getFilteredSaveables(filter, saveables);
         if (toSave.isEmpty())
             return true;
-        
+
         if (!confirm) {
             return !saveablesList.saveModels(toSave, shellProvider, runnableContext);
         }
-        
+
         // We must negate the result since false is cancel saveAll
         return !saveablesList.promptForSaving(toSave, shellProvider, runnableContext, true, false);
     }
@@ -3884,7 +3887,7 @@ public final class Workbench extends EventManager implements IWorkbench {
         }
         return toSave;
     }
-    
+
     /*
      * Test whether the given filter matches the saveable
      */
@@ -3895,7 +3898,7 @@ public final class Workbench extends EventManager implements IWorkbench {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IWorkbench#getModalDialogShellProvider()
 	 */
 	public IShellProvider getModalDialogShellProvider() {
