@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
-import org.eclipse.osgi.util.NLS;
+//import org.eclipse.osgi.util.NLS;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * Message class for workbench messages.  These messages are used 
- * throughout the workbench. 
+ * Message class for workbench messages.  These messages are used
+ * throughout the workbench.
  *
  */
 // RAP [fappel]: need session aware NLS
@@ -60,7 +60,7 @@ public class WorkbenchMessages {
 	public String Workbench_CreatingWorkbenchTwice;
 
     public String StatusUtil_errorOccurred;
-    
+
 	// ==============================================================================
 	// Workbench Actions
 	// ==============================================================================
@@ -176,7 +176,7 @@ public class WorkbenchMessages {
 	public String ShowView_errorTitle;
 	public String ShowView_selectViewHelp;
 	public String ShowView_noDesc;
-	
+
 	public String ToggleEditor_hideEditors;
 	public String ToggleEditor_showEditors;
 	public String ToggleEditor_toolTip;
@@ -196,7 +196,7 @@ public class WorkbenchMessages {
 	public String Shortcuts_availableMenus;
 	public String Shortcuts_availableCategories;
 	public String Shortcuts_allShortcuts;
-	
+
 	public String ActionSetSelection_actionSetsTab;
 	public String ActionSetSelection_selectActionSetsLabel;
 	public String ActionSetSelection_availableActionSets;
@@ -204,8 +204,8 @@ public class WorkbenchMessages {
 	public String ActionSetSelection_toolbarActions;
 	public String ActionSetSelection_descriptionColumnHeader;
 	public String ActionSetSelection_menuColumnHeader;
-	
-	public String HideItems_itemInActionSet; 
+
+	public String HideItems_itemInActionSet;
 	public String HideItems_itemInUnavailableActionSet;
 	public String HideItems_unavailableChildCommandGroup;
 	public String HideItems_unavailableChildCommandGroups;
@@ -224,11 +224,11 @@ public class WorkbenchMessages {
 	public String HideItemsCannotMakeVisible_unavailableCommandGroupText;
 	public String HideItemsCannotMakeVisible_switchToCommandGroupTab;
 	public String HideItemsCannotMakeVisible_unavailableChildrenText;
-	
+
 	public String HideMenuItems_menuItemsTab;
 	public String HideMenuItems_chooseMenuItemsLabel;
 	public String HideMenuItems_menuStructure;
-	
+
 	public String HideToolBarItems_toolBarItemsTab;
 	public String HideToolBarItems_chooseToolBarItemsLabel;
 	public String HideToolBarItems_toolBarStructure;
@@ -404,7 +404,7 @@ public class WorkbenchMessages {
 
 	public String NewWizardsRegistryReader_otherCategory;
 	public String NewWizardDropDown_text;
-	
+
 	public String WorkbenchWizard_errorMessage;
 	public String WorkbenchWizard_errorTitle;
 	public String WizardTransferPage_selectAll;
@@ -417,7 +417,7 @@ public class WorkbenchMessages {
 	// --- Import/Export ---
 	public String ImportExportPage_chooseImportSource;
 	public String ImportExportPage_chooseExportDestination;
-	
+
 	// --- Import ---
 	public String ImportWizard_title;
 	public String ImportWizard_selectSource;
@@ -471,7 +471,7 @@ public class WorkbenchMessages {
 	public String ViewsPreference_useColoredLabels;
 	public String ViewsPreference_override;
 	public String ViewsPreference_restartRequestJobName;
-	
+
 	// --- File Editors ---
 	public String FileEditorPreference_fileTypes;
 	public String FileEditorPreference_add;
@@ -493,7 +493,7 @@ public class WorkbenchMessages {
 
 	public String FilteredPreferenceDialog_PreferenceSaveFailed;
 	public String FilteredPreferenceDialog_Resize;
-	
+
 	public String FileExtension_fileTypeMessage;
 	public String FileExtension_fileTypeLabel;
 	public String FileExtension_shellTitle;
@@ -580,7 +580,7 @@ public class WorkbenchMessages {
 
 
 	public String InstallationDialog_ShellTitle;
-	
+
 	public String Workbench_NeedsClose_Title;
 	public String Workbench_NeedsClose_Message;
 
@@ -627,7 +627,7 @@ public class WorkbenchMessages {
     public String EditorManager_create_element_returned_null;
     public String EditorManager_wrong_createElement_result;
     public String EditorManager_backgroundSaveJobName;
-    
+
 	public String EditorPane_pinEditor;
 
 	public String ExternalEditor_errorMessage;
@@ -825,7 +825,7 @@ public class WorkbenchMessages {
 	public String ToggleCoolbarVisibilityAction_show_text;
 	public String ToggleCoolbarVisibilityAction_hide_text;
 	public String ToggleCoolbarVisibilityAction_toolTip;
-	
+
 
 	// ==============================================================================
 	// Working Set Framework.
@@ -850,7 +850,7 @@ public class WorkbenchMessages {
 	public String WorkingSetSelectionDialog_detailsButton_label;
 	public String WorkingSetSelectionDialog_newButton_label;
 	public String WorkingSetSelectionDialog_removeButton_label;
-	
+
 	public String WorkbenchPage_workingSet_default_label;
 	public String WorkbenchPage_workingSet_multi_label;
 
@@ -953,7 +953,7 @@ public class WorkbenchMessages {
 
 	//==============================================================
 	// Undo/Redo Support
-	
+
 	public String Operations_undoCommand;
 	public String Operations_redoCommand;
 	public String Operations_undoTooltipCommand;
@@ -1003,7 +1003,7 @@ public class WorkbenchMessages {
     // ==============================================================================
     // Content Types preference page
     // ==============================================================================
-    
+
     public String ContentTypes_lockedFormat;
     public String ContentTypes_characterSetLabel;
     public String ContentTypes_characterSetUpdateLabel;
@@ -1030,11 +1030,11 @@ public class WorkbenchMessages {
     public String CommandService_AutogeneratedCategoryName;
     public String CommandService_AutogeneratedCategoryDescription;
     public String LegacyActionPersistence_AutogeneratedCommandName;
-	
+
     // ==============================================================================
     // Trim Common UI
     // ==============================================================================
-    
+
     // Trim Menu item labels
     public String TrimCommon_DockOn;
     public String TrimCommon_Left;
@@ -1051,7 +1051,7 @@ public class WorkbenchMessages {
     public String TrimCommon_IntroBar_TrimName;
     public String TrimCommon_Progress_TrimName;
     public String TrimCommon_StatusLine_TrimName;
-		
+
     // FilteredItemsSelectionDialog
     public String FilteredItemsSelectionDialog_cacheSearchJob_taskName;
     public String FilteredItemsSelectionDialog_menu;
@@ -1069,27 +1069,28 @@ public class WorkbenchMessages {
     public String FilteredItemsSelectionDialog_storeError;
     public String FilteredItemsSelectionDialog_restoreError;
     public String FilteredItemsSelectionDialog_nItemsSelected;
-	
+
     // AbstractSearcher
-    public String FilteredItemsSelectionDialog_jobLabel; 
+    public String FilteredItemsSelectionDialog_jobLabel;
     public String FilteredItemsSelectionDialog_jobError;
     public String FilteredItemsSelectionDialog_jobCancel;
-    
+
     // GranualProgressMonitor
     public String FilteredItemsSelectionDialog_taskProgressMessage;
     public String FilteredItemsSelectionDialog_subtaskProgressMessage;
-    	
-    static {
-		// load message values from bundle file
-		NLS.initializeMessages(BUNDLE_NAME, WorkbenchMessages.class);
-	}
+
+// RAP [if]: need session aware NLS
+//  static {
+//		// load message values from bundle file
+//		NLS.initializeMessages(BUNDLE_NAME, WorkbenchMessages.class);
+//	}
 
 
     public String FastViewBar_show_view;
-    
+
     // Content assist support
     public String ContentAssist_Cue_Description_Key;
-	
+
 	//Settings transfer
 	public String WorkbenchLayoutSettings_Name;
 	public String WorkbenchSettings_CouldNotCreateDirectories;
@@ -1112,29 +1113,29 @@ public class WorkbenchMessages {
 	public String WorkbenchStatusDialog_MultipleProblemsHaveOccured;
 	public String WorkbenchStatusDialog_ProblemOccurred;
 	public String WorkbenchStatusDialog_ProblemOccurredInJob;
-	
+
 	public String StackTraceSupportArea_NoStackTrace;
 	public String StackTraceSupportArea_CausedBy;
 	public String StackTraceSupportArea_Title;
-	
+
 	public String ErrorLogUtil_ShowErrorLogTooltip;
 	public String ErrorLogUtil_ShowErrorLogHyperlink;
 
 	// WorkingSetConfigurationBlock
 	public String WorkingSetConfigurationBlock_SelectWorkingSet_button;
 	public String WorkingSetConfigurationBlock_WorkingSetText_name;
-	
+
 	public String WorkingSetPropertyPage_ReadOnlyWorkingSet_description;
 	public String WorkingSetPropertyPage_ReadOnlyWorkingSet_title;
-	
+
 	public String WorkingSetGroup_WorkingSets_group;
 	public String WorkingSetGroup_WorkingSetSelection_message;
 	public String WorkingSetGroup_EnableWorkingSet_button;
-	
+
 	// Util
 	public String Util_List;
 	public String Util_listNull;
-	
+
 	/**
 	 * Load message values from bundle file
 	 * @return localized message
@@ -1144,7 +1145,7 @@ public class WorkbenchMessages {
       Object result = RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
       return ( WorkbenchMessages )result;
     }
-    
+
     public static WorkbenchMessages get( Display display ) {
       final WorkbenchMessages[] result = { null };
       UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
