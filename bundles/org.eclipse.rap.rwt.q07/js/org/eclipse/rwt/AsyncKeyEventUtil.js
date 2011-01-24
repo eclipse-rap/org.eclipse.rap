@@ -183,7 +183,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
     },
 
     _getEventInfo : function( event ) {
-      return {
+      result = {
         target: event.target || event.srcElement,
         type: event.type,
         bubbles: event.bubbles,
@@ -192,11 +192,12 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         altKey:  event.altKey,
         shiftKey: event.shiftKey,
         keyCode: event.keyCode,
-        charCode: event.charCode,
         isChar: event.isChar,
         pageX: event.pageX,
         pageY: event.pageY
       };
+      result.charCode = event.type === "keypress" ? event.charCode : 0;
+      return result;
     },
 
     _checkBufferedEvents : function() {
