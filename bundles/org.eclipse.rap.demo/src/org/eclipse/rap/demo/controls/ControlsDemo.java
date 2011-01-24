@@ -86,16 +86,17 @@ public class ControlsDemo implements IEntryPoint {
       new BrowserTab( topFolder ),
       new ScaleTab( topFolder ),
       new SliderTab( topFolder ),
+      new ProgressBarTab( topFolder ),
       new ScrolledCompositeTab( topFolder ),
+      new ToolTipTab( topFolder ),
+      new DNDExampleTab( topFolder ),
       new ContainmentTab( topFolder ),
       new ZOrderTab( topFolder ),
       new FocusTab( topFolder ),
-      new ProgressBarTab( topFolder ),
-      new ErrorHandlingTab( topFolder ),
-      new NLSTab( topFolder ),
       new VariantsTab( topFolder ),
       new ControlDecoratorTab( topFolder ),
-      new DNDExampleTab( topFolder )
+      new ErrorHandlingTab( topFolder ),
+      new NLSTab( topFolder ),
     };
     ensureMinTabHeight( topFolder );
     tabs[ 0 ].createContents();

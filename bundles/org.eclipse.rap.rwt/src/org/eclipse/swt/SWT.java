@@ -797,6 +797,16 @@ public class SWT {
   public static final int VERTICAL = 1 << 9;
 
   /**
+   * Style constant for balloon behavior (value is 1&lt;&lt;12).
+   * <p><b>Used By:</b><ul>
+   * <li><code>ToolTip</code></li>
+   * </ul></p>
+   *
+   * @since 1.4
+   */ 
+  public static final int BALLOON = 1 << 12;
+  
+  /**
    * Style constant for vertical alignment or orientation behavior (value is 1).
    * <p><b>Used By:</b><ul>
    * <li><code>GridLayout</code> type</li>
@@ -1547,6 +1557,30 @@ public class SWT {
    * </ul></p>
    */
   public static final int BORDER = 1 << 11;
+
+  /**
+   * Style constant indicating that the window manager should clip
+   * a widget's children with respect to its viewable area. (value is 1&lt;&lt;12).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code> and subclasses</li>
+   * </ul></p>
+   * 
+   * @sicne 1.4
+   */
+  public static final int CLIP_CHILDREN = 1 << 12; 
+
+  /**
+   * Style constant indicating that the window manager should clip
+   * a widget's siblings with respect to its viewable area. (value is 1&lt;&lt;13).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Control</code> and subclasses</li>
+   * </ul></p>
+   * 
+   * @sicne 1.4
+   */
+  public static final int CLIP_SIBLINGS = 1 << 13;
 
   /**
    * Style constant for flat appearance. (value is 1&lt;&lt;23).

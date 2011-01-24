@@ -174,6 +174,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ByteArrayTransfer_Test.class );
     suite.addTestSuite( Tree_Test.class );
     suite.addTestSuite( TreeItem_Test.class );
+    suite.addTestSuite( ToolTip_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );

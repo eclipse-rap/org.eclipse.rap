@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
+ *     Rüdiger Herrmann - bug 335112
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
@@ -262,7 +263,8 @@ final class QooxdooResourcesUtil {
     "org/eclipse/swt/widgets/Separator.js",
     "org/eclipse/swt/theme/AppearancesBase.js",
     "org/eclipse/rwt/widgets/ControlDecorator.js",
-    "org/eclipse/rwt/MobileWebkitSupport.js"
+    "org/eclipse/rwt/MobileWebkitSupport.js",
+    "org/eclipse/swt/widgets/ToolTip.js"
   };
 
   private static final String[] WIDGET_IMAGES = new String[]{

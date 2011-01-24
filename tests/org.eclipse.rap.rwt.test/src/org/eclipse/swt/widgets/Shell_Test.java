@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -736,7 +736,37 @@ public class Shell_Test extends TestCase {
     shell1.setFullScreen( true );
     assertEquals( shell1, display.getActiveShell() );
   }
+  
+  public void testGetToolTipsWhenNoToolTipWasCreated() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    IShellAdapter adapter
+      = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    assertNotNull( adapter.getToolTips() );
+    assertEquals( 0, adapter.getToolTips().length );
+  }
 
+  public void testGetToolTipsWhenToolTipWasCreated() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    ToolTip toolTip = new ToolTip( shell, SWT.NONE );
+    IShellAdapter adapter
+      = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    assertEquals( 1, adapter.getToolTips().length );
+    assertEquals( toolTip, adapter.getToolTips()[ 0 ] );
+  }
+  
+  public void testGetToolTipsAfterToolTipWasDisposed() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    ToolTip toolTip = new ToolTip( shell, SWT.NONE );
+    toolTip.dispose();
+    IShellAdapter adapter
+      = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    assertNotNull( adapter.getToolTips() );
+    assertEquals( 0, adapter.getToolTips().length );
+  }
+  
   private static IDisplayAdapter getDisplayAdapter( final Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;

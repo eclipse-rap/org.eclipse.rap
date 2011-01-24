@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
+ *     Rüdiger Herrmann - bug 335112
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -15,7 +16,8 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
@@ -139,6 +141,7 @@ public class Shell extends Decorations {
   private boolean modified;
   private int minWidth;
   private int minHeight;
+  private ToolTip[] toolTips;
 
   private Shell( final Display display,
                  final Shell parent,
@@ -598,6 +601,9 @@ public class Shell extends Decorations {
           }
           public void setBounds( final Rectangle bounds ) {
             Shell.this.setBounds( bounds, false );
+          }
+          public ToolTip[] getToolTips() {
+            return Shell.this.getToolTips();
           }
         };
       }
@@ -1068,6 +1074,13 @@ public class Shell extends Decorations {
     for( int i = 0; i < menus.length; i++ ) {
       menus[ i ].dispose();
     }
+    if( toolTips != null ) {
+      for( int i = 0; i < toolTips.length; i++ ) {
+        if( toolTips[ i ] != null ) {
+          toolTips[ i ].dispose();
+        }
+      }
+    }
   }
 
   void releaseParent() {
@@ -1363,6 +1376,58 @@ public class Shell extends Decorations {
   public boolean getFullScreen() {
     checkWidget();
     return ( mode & MODE_FULLSCREEN ) != 0;
+  }
+  
+  ///////////////////
+  // ToolTips support
+  
+  void createToolTip( ToolTip toolTip ) {
+    int id = 0;
+    if( toolTips == null ) {
+      toolTips = new ToolTip[ 4 ];
+    }
+    while( id < toolTips.length && toolTips[ id ] != null ) {
+      id++;
+    }
+    if( id == toolTips.length ) {
+      ToolTip[] newToolTips = new ToolTip[ toolTips.length + 4 ];
+      System.arraycopy( toolTips, 0, newToolTips, 0, toolTips.length );
+      toolTips = newToolTips;
+    }
+    toolTips[ id ] = toolTip;
+  }
+  
+  void destroyToolTip( ToolTip toolTip ) {
+    boolean found = false;
+    for( int i = 0; !found && i < toolTips.length; i++ ) {
+      if( toolTips[ i ] == toolTip ) {
+        toolTips[ i ] = null;
+        found = true;
+      }
+    }
+  }
+  
+  private ToolTip[] getToolTips() {
+    ToolTip[] result;
+    if( toolTips == null ) {
+      result = new ToolTip[ 0 ];
+    } else {
+      int count = 0;
+      for( int i = 0; i < toolTips.length; i++ ) {
+        if( toolTips[ i ] != null ) {
+          count++;
+        }
+      }
+      result = new ToolTip[ count ];
+      int index = 0;
+      for( int i = 0; i < toolTips.length; i++ ) {
+        if( toolTips[ i ] != null ) {
+          result[ index ] = toolTips[ i ];
+          index++;
+        }
+      }
+    }
+    return result;
   }
 
   ///////////////////

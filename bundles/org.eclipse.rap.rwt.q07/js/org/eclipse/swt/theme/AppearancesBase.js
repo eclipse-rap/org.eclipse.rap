@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,8 +8,8 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
+ *     Rüdiger Herrmann - bug 335112
  ******************************************************************************/
-
 
 qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 {
@@ -198,6 +198,61 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundImage = tv.getCssImage( "ToolTip", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "ToolTip", "background-image" );
       result.opacity = tv.getCssFloat( "ToolTip", "opacity" );
+      return result;
+    }
+  },
+
+  "tool-tip-widget" : {
+    include : "popup",
+
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.width = "auto";
+      result.height = "auto";
+      result.minWidth = 36;
+      result.minHeight = 36;
+      result.cursor = tv.getCssCursor( "ToolTipWidget", "cursor" );
+      result.font = tv.getCssFont( "ToolTipWidget", "font" );
+      result.textColor = tv.getCssColor( "ToolTipWidget", "color" );
+      result.padding = tv.getCssBoxDimensions( "ToolTipWidget", "padding" );      result.border = tv.getCssBorder( "ToolTipWidget", "border" );
+      result.backgroundColor = tv.getCssColor( "ToolTipWidget", "background-color" );
+      result.backgroundImage = tv.getCssImage( "ToolTipWidget", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ToolTipWidget", "background-image" );
+      result.animation = tv.getCssAnimation( "ToolTipWidget", "animation" );
+      result.opacity = tv.getCssFloat( "ToolTipWidget", "opacity" );
+      return result;
+    }
+  },
+
+  "tool-tip-widget-image" : {
+    include: "image",
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        source : tv.getCssImage( "ToolTipWidget-Image", "background-image" )
+      };
+    }
+  },
+
+  "tool-tip-widget-text" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
+        font : tv.getCssFont( "ToolTipWidget-Text", "font" ),
+        textColor : tv.getCssColor( "ToolTipWidget-Text", "color" )
+      };
+      return result;
+    }
+  },
+
+  "tool-tip-widget-message" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
+        font : tv.getCssFont( "ToolTipWidget-Message", "font" ),
+        textColor : tv.getCssColor( "ToolTipWidget-Message", "color" )
+      };
       return result;
     }
   },

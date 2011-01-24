@@ -38,7 +38,6 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
   
     _doMeasurement : function( item ) {
       var lbl = org.eclipse.swt.FontSizeCalculation.MEASUREMENT_LABEL;
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
       var measureNode = qx.ui.basic.Label._getMeasureNode();
       // [if] Move the measure node to the left to prevent text split on
       // small browser window - see bug 298798
@@ -49,6 +48,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         measureNode.style.width = "auto";
       }
       lbl.setText( item[ 1 ] );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.setFont( lbl, item[ 2 ], item[ 3 ], item[ 4 ], item[ 5 ] );
       var result =  [ lbl._computePreferredInnerWidth(), 
                       lbl._computePreferredInnerHeight() ];

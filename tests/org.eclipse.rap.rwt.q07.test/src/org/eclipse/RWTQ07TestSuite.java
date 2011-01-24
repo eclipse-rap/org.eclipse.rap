@@ -58,6 +58,7 @@ import org.eclipse.swt.internal.widgets.tableitemkit.TableItemLCA_Test;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCA_Test;
 import org.eclipse.swt.internal.widgets.textkit.TextLCA_Test;
 import org.eclipse.swt.internal.widgets.toolitemkit.ToolItemLCA_Test;
+import org.eclipse.swt.internal.widgets.tooltipkit.ToolTipLCA_Test;
 import org.eclipse.swt.internal.widgets.treecolumnkit.TreeColumnLCA_Test;
 import org.eclipse.swt.internal.widgets.treeitemkit.TreeItemLCA_Test;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA_Test;
@@ -143,7 +144,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( DNDSupport_Test.class );
     suite.addTestSuite( CanvasLCA_Test.class );
     suite.addTestSuite( GCOperationWriter_Test.class );
-
+    suite.addTestSuite( ToolTipLCA_Test.class );
     return suite;
   }
 }

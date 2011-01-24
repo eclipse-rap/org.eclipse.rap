@@ -1,0 +1,47 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Ruediger Herrmann and others. All rights reserved.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Ruediger Herrmann - initial API and implementation
+ ******************************************************************************/
+
+/* ToolTip default theme */
+
+ToolTipWidget {
+  cursor: default;
+  border: 1px solid #a4a4a4;
+  border-radius: 5px 5px 5px 5px;
+  padding: 3px 3px 3px 3px;
+  background-image: none; 
+  opacity: 1;
+  color: #464a4e;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: #fcfcfc;
+  animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
+}
+
+ToolTipWidget-Image[ICON_ERROR] {
+  background-image: url( resource/widget/rap/tooltip/error.png );
+}
+
+ToolTipWidget-Image[ICON_INFORMATION] {
+  background-image: url( resource/widget/rap/tooltip/information.png );
+}
+
+ToolTipWidget-Image[ICON_WARNING] {
+  background-image: url( resource/widget/rap/tooltip/warning.png );
+}
+
+ToolTipWidget-Text {
+  color: #a7a6aa;
+  font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+ToolTipWidget-Message {
+  color: #a7a6aa;
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}

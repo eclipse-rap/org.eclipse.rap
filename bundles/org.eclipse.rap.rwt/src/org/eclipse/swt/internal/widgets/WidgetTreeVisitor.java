@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
+ *     Rüdiger Herrmann - bug 335112
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -55,6 +56,7 @@ public class WidgetTreeVisitor {
         for( int i = 0; i < children.length; i++ ) {
           accept( children[ i ], visitor );
         }
+        handleToolTips( root, visitor );
       }
     } else if( ItemHolder.isItemHolder( root ) ) {
       if( visitor.visit( root ) ) {
@@ -127,6 +129,17 @@ public class WidgetTreeVisitor {
       decorations.toArray( widgets );
       for( int i = 0; i < widgets.length; i++ ) {
         visitor.visit( widgets[ i ] );
+      }
+    }
+  }
+
+  private static void handleToolTips( Widget root, WidgetTreeVisitor visitor ) {
+    Object adapter = root.getAdapter( IShellAdapter.class );
+    if( adapter != null ) {
+      IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+      ToolTip[] toolTips = shellAdapter.getToolTips();
+      for( int i = 0; i < toolTips.length; i++ ) {
+        visitor.visit( toolTips[ i ] );
       }
     }
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
+ *     Rüdiger Herrmann - bug 335112
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -92,6 +93,7 @@ public final class ThemeManager {
     org.eclipse.swt.widgets.ExpandBar.class,
     org.eclipse.swt.widgets.Sash.class,
     org.eclipse.swt.widgets.Slider.class,
+    org.eclipse.swt.widgets.ToolTip.class,
     org.eclipse.swt.custom.CCombo.class,
     org.eclipse.swt.custom.CLabel.class,
     org.eclipse.swt.browser.Browser.class
@@ -382,7 +384,8 @@ public final class ThemeManager {
 
   private boolean loadDefaultCss( final ThemeableWidget themeWidget,
                                   final String pkgName,
-                                  final String className ) throws IOException
+                                  final String className ) 
+    throws IOException
   {
     boolean result = false;
     String resPkgName = pkgName.replace( '.', '/' );
