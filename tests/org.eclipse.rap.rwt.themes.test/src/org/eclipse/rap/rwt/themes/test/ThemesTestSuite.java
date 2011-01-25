@@ -1,5 +1,5 @@
 /******************************************************************************* 
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* Copyright (c) 2011 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
 * available at http://www.eclipse.org/legal/epl-v10.html
@@ -21,17 +21,17 @@ import org.eclipse.rap.rwt.themes.test.rwtdefault.DefaultTheme_Test;
 public class ThemesTestSuite {
   
   public static Test suite() {
-    TestSuite cssSuite = new TestSuite( "Tests for RWT Themes" );
+    TestSuite result = new TestSuite( "Tests for RWT Themes" );
     // Add CSS Themes tests
-    cssSuite.addTest( new TestSuite( DefaultTheme_Test.class, 
-                      "Default Theme" ) );
-    cssSuite.addTest( new TestSuite( ClassicTheme_Test.class, 
-                                     "Classic Theme" ) );
-    cssSuite.addTest( new TestSuite( BusinessTheme_Test.class, 
-                                     "Business Theme" ) );
-    cssSuite.addTest( new TestSuite( FancyTheme_Test.class, 
-                                     "Fancy Theme" ) );   
-    return cssSuite;
+    result.addTest( new TestSuite( DefaultTheme_Test.class, 
+    						       "Default Theme" ) );
+    result.addTest( new TestSuite( ClassicTheme_Test.class, 
+                                   "Classic Theme" ) );
+    result.addTest( new TestSuite( BusinessTheme_Test.class, 
+                                   "Business Theme" ) );
+    result.addTest( new TestSuite( FancyTheme_Test.class, 
+                                   "Fancy Theme" ) );   
+    return result;
   }
   
 }
