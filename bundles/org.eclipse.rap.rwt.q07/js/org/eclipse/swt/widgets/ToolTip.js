@@ -17,6 +17,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     this._style = style;
     this.setAutoHide( false );
     this.setDisplay( true );
+    this.setVisibility( false );
     this.setAppearance( "tool-tip-widget" );
     var doc = qx.ui.core.ClientDocument.getInstance();
     this.setMaxWidth( doc.getClientWidth() / 2 );
