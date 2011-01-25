@@ -158,10 +158,9 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
 
     _onMouseDown : function( evt ) {
     	this._hide();
-    	var id = this._getWidgetId();
-      var req = org.eclipse.swt.Request.getInstance();
-      req.addParameter( id + ".visible", false );
       if( this._hasSelectionListener ) {
+	    	var id = this._getWidgetId();
+	      var req = org.eclipse.swt.Request.getInstance();
 	      req.addEvent( "org.eclipse.swt.events.widgetSelected", id ); 
 	      req.send();
       }
@@ -170,6 +169,8 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     _hide : function() {
     	this.setVisible( false );
     	qx.ui.core.Widget.flushGlobalQueues();
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addParameter( this._getWidgetId() + ".visible", false );
     },
     
     _getWidgetId : function() {
