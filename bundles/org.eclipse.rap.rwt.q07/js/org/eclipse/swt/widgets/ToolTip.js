@@ -46,38 +46,38 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
   },
   
   members : {
-  	
-  	setText : function( text ) {
-      this._text.setText( text );  		
+
+    setText : function( text ) {
+      this._text.setText( text );
       if( this.getVisibility() ) {
         this._update();
       }
-  	},
-  	
-  	setMessage : function( message ) {
-  		this._message.setText( message );
+    },
+
+    setMessage : function( message ) {
+      this._message.setText( message );
       if( this.getVisibility() ) {
-	  		this._update();
+        this._update();
       }
-  	},
-  	
+    },
+  
     setLocation : function( x, y ) {
       this.setLeft( x );
       this.setTop( y );
     },
     
     setHideAfterTimeout : function( value ) {
-    	this._hideAfterTimeout = value;
+      this._hideAfterTimeout = value;
     },
     
     setHasSelectionListener : function( value ) {
-    	this._hasSelectionListener = value;
+      this._hasSelectionListener = value;
     },
     
     setVisible : function( visible ) {
       this.setVisibility( visible );
       if( visible ) {
-	    	this._update();
+        this._update();
         this.bringToFront();
         if( this._hideAfterTimeout ) {
           qx.client.Timer.once( this._hide, this, 5 * 1000 );
@@ -96,16 +96,16 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     },
 
     _createControls : function() {
-    	this._contentArea = new qx.ui.layout.BoxLayout( "horizontal" );
-    	this._contentArea.setWidth( "100%" );
-    	this._contentArea.setHeight( "100%" );
-    	this._contentArea.setSpacing( 5 );
-    	this._contentArea.setParent( this );
+      this._contentArea = new qx.ui.layout.BoxLayout( "horizontal" );
+      this._contentArea.setWidth( "100%" );
+      this._contentArea.setHeight( "100%" );
+      this._contentArea.setSpacing( 5 );
+      this._contentArea.setParent( this );
       this._image = new qx.ui.basic.Image();
       this._image.setAppearance( "tool-tip-widget-image" );
       this._image.setParent( this._contentArea );
-    	this._textArea = new qx.ui.layout.BoxLayout( "vertical" );
-    	this._textArea.setParent( this._contentArea );
+      this._textArea = new qx.ui.layout.BoxLayout( "vertical" );
+      this._textArea.setParent( this._contentArea );
       this._textArea.setHeight( "100%" );
       this._textArea.setSpacing( 5 );
       this._text = new qx.ui.basic.Label();
@@ -119,7 +119,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     },
     
     _update : function() {
-    	var message = this._message.getText();
+      var message = this._message.getText();
       var textSize = this._getTextSize( this._text.getText(), -1 );
       var messageSize = this._getTextSize( message, -1 );
       var width = messageSize.x;
@@ -127,7 +127,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
         width -= 10;
         messageSize = this._getTextSize( message, width );
       }
-    	messageSize.x = this._max( messageSize.x, textSize.x );
+      messageSize.x = this._max( messageSize.x, textSize.x );
       this._message.setWidth( messageSize.x );
       this._message.setHeight( messageSize.y );
     },
@@ -137,38 +137,38 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     },
     
     _max : function( a, b ) {
-    	return a > b ? a : b;
+      return a > b ? a : b;
     },
     
-  	_getTextSize : function( text, width ) {
-  		var data = new Array();
-  		data[ 0 ] = "";
-  		data[ 1 ] = text;
-  		data[ 2 ] = this._messageFont.getFamily();
-  		data[ 3 ] = this._messageFont.getSize();
-  		data[ 4 ] = this._messageFont.getBold();
-  		data[ 5 ] = this._messageFont.getItalic();
-  		data[ 6 ] = width;
-  		var textSize = org.eclipse.swt.FontSizeCalculation._doMeasurement( data );
-  		return {
-	      x : textSize[ 0 ],
-	  		y : textSize[ 1 ]
-  		};
-  	},
+    _getTextSize : function( text, width ) {
+      var data = new Array();
+      data[ 0 ] = "";
+      data[ 1 ] = text;
+      data[ 2 ] = this._messageFont.getFamily();
+      data[ 3 ] = this._messageFont.getSize();
+      data[ 4 ] = this._messageFont.getBold();
+      data[ 5 ] = this._messageFont.getItalic();
+      data[ 6 ] = width;
+      var textSize = org.eclipse.swt.FontSizeCalculation._doMeasurement( data );
+      return {
+        x : textSize[ 0 ],
+        y : textSize[ 1 ]
+      };
+    },
 
     _onMouseDown : function( evt ) {
-    	this._hide();
+      this._hide();
       if( this._hasSelectionListener ) {
-	    	var id = this._getWidgetId();
-	      var req = org.eclipse.swt.Request.getInstance();
-	      req.addEvent( "org.eclipse.swt.events.widgetSelected", id ); 
-	      req.send();
+        var id = this._getWidgetId();
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addEvent( "org.eclipse.swt.events.widgetSelected", id ); 
+        req.send();
       }
     },
     
     _hide : function() {
-    	this.setVisible( false );
-    	qx.ui.core.Widget.flushGlobalQueues();
+      this.setVisible( false );
+      qx.ui.core.Widget.flushGlobalQueues();
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( this._getWidgetId() + ".visible", false );
     },
