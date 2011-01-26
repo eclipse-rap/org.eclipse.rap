@@ -357,8 +357,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         testUtil.store( browser );
       },
       function( browser ) {
-        // TODO: check for native load event to prevent false positive
-        assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
+        if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+          assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
+        }
         assertNull( testUtil.getErrorPage() );
         browser.destroy();
       }
@@ -382,7 +383,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         testUtil.store( browser );
       },
       function( browser ) {
-        assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
+        // NOTE: Some IE dont fire a load event for this scenario, 
+        //       therefore can not check that side is loaded,
+        //       could lead to false negative (red) test  
+        if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+          assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
+        }
         var error = null;
         try{ 
           browser.createFunction( "abc" );
