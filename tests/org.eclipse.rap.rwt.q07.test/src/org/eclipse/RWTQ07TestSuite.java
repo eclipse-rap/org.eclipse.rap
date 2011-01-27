@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -145,6 +145,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( CanvasLCA_Test.class );
     suite.addTestSuite( GCOperationWriter_Test.class );
     suite.addTestSuite( ToolTipLCA_Test.class );
+    suite.addTestSuite( KeyBindingUtil_Test.class );
     return suite;
   }
 }

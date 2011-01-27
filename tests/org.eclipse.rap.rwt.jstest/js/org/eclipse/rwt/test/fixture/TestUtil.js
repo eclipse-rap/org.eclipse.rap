@@ -335,23 +335,23 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     },
     
     keyDown : function( target, key, mod ) {
-      this.fakeKeyEventDOM( target, "keydown", key, mod );
+      this.fireFakeKeyDomEvent( target, "keydown", key, mod );
       if( this._sendKeyPress( key ) ) { 
-        this.fakeKeyEventDOM( target, "keypress", key, mod );
+        this.fireFakeKeyDomEvent( target, "keypress", key, mod );
       }
     },
     
     keyHold : function( target, key, mod ) {
       if( this._sendKeyDownOnHold( key ) ) {
-        this.fakeKeyEventDOM( target, "keydown", key, mod );
+        this.fireFakeKeyDomEvent( target, "keydown", key, mod );
       }
       if( this._sendKeyPress( key ) ) { 
-        this.fakeKeyEventDOM( target, "keypress", key, mod );
+        this.fireFakeKeyDomEvent( target, "keypress", key, mod );
       }
     },
     
     keyUp : function( target, key, mod ) {
-      this.fakeKeyEventDOM( target, "keyup", key, mod );
+      this.fireFakeKeyDomEvent( target, "keyup", key, mod );
     },
     
     _sendKeyDownOnHold : qx.core.Variant.select("qx.client", {
@@ -371,12 +371,20 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         return this._isPrintable( key ); 
       } 
     } ),
-
-    fakeKeyEventDOM : function( target, type, stringOrKeyCode, mod ) {
+    
+    createFakeDomKeyEvent : function( target, type, stringOrKeyCode, mod ) {
       var domEvent = this._createFakeDomEvent( target, type, mod );
       domEvent.keyCode = this._getKeyCode( type, stringOrKeyCode );
       domEvent.charCode = this._getCharCode( type, stringOrKeyCode );
       domEvent.isChar = stringOrKeyCode === "string"; // not always correct 
+      return domEvent;      
+    },
+
+    fireFakeKeyDomEvent : function( target, type, stringOrKeyCode, mod ) {
+      var domEvent = this.createFakeDomKeyEvent( target, 
+                                                 type, 
+                                                 stringOrKeyCode, 
+                                                 mod );
       this.fireFakeDomEvent( domEvent );
     },
 
@@ -806,6 +814,14 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     
     emptyDragCache : function() {
       qx.event.handler.DragAndDropHandler.__dragCache = null;
+    },
+
+    cleanUpKeyUtil : function() {
+      org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings( {} );
+      var instance = org.eclipse.rwt.KeyEventUtil.getInstance()._getDelegate();
+      if( instance instanceof org.eclipse.rwt.AsyncKeyEventUtil ) {
+        instance.cancelEvent();
+      }
     },
 
     /**

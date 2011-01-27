@@ -11,18 +11,24 @@
 package org.eclipse.ui.internal.keys;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.bindings.Binding;
 import org.eclipse.jface.bindings.BindingManager;
+import org.eclipse.jface.bindings.IBindingManagerListener;
 import org.eclipse.jface.bindings.Scheme;
 import org.eclipse.jface.bindings.TriggerSequence;
+import org.eclipse.jface.bindings.keys.SWTKeySupport;
+import org.eclipse.jface.bindings.keys.formatting.KeyFormatterFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.keys.IBindingService;
 
 /**
@@ -41,24 +47,22 @@ public final class BindingService implements IBindingService {
 	 */
 	private final BindingManager bindingManager;
 
-	// RAP [bm]: 
-//	/**
-//	 * The persistence class responsible for bindings.
-//	 */
-//	private final BindingPersistence bindingPersistence;
-//	
-//	/**
-//	 * The key binding support for the contexts. In the workbench, key bindings
-//	 * are intimately tied to the context mechanism.
-//	 */
-//	private WorkbenchKeyboard keyboard;
-	// RAPEND: [bm] 
+	/**
+	 * The persistence class responsible for bindings.
+	 */
+	private final BindingPersistence bindingPersistence;
+
+	/**
+	 * The key binding support for the contexts. In the workbench, key bindings
+	 * are intimately tied to the context mechanism.
+	 */
+	private WorkbenchKeyboard keyboard;
 
 	private IWorkbench workbench;
 	/**
 	 * Constructs a new instance of <code>BindingService</code> using a JFace
 	 * binding manager.
-	 * 
+	 *
 	 * @param bindingManager
 	 *            The bind ing manager to use; must not be <code>null</code>.
 	 * @param commandService
@@ -82,19 +86,17 @@ public final class BindingService implements IBindingService {
 
 		this.workbench = workbench;
 		// Hook up the key binding support.
-		// RAP [bm]: 
-//		this.bindingPersistence = new BindingPersistence(bindingManager,
-//				commandService);
-//		keyboard = new WorkbenchKeyboard(workbench);
-//		final Display display = workbench.getDisplay();
-//		final Listener listener = keyboard.getKeyDownFilter();
-//		display.addFilter(SWT.KeyDown, listener);
-//		display.addFilter(SWT.Traverse, listener);
-//		
-//		// Initialize the key formatter.
-//		KeyFormatterFactory.setDefault(SWTKeySupport
-//				.getKeyFormatterForPlatform());
-		// RAPEND: [bm] 
+		this.bindingPersistence = new BindingPersistence(bindingManager,
+				commandService);
+		keyboard = new WorkbenchKeyboard(workbench);
+		final Display display = workbench.getDisplay();
+		final Listener listener = keyboard.getKeyDownFilter();
+		display.addFilter(SWT.KeyDown, listener);
+		display.addFilter(SWT.Traverse, listener);
+
+		// Initialize the key formatter.
+		KeyFormatterFactory.setDefault(SWTKeySupport
+				.getKeyFormatterForPlatform());
 
 	}
 
@@ -108,26 +110,27 @@ public final class BindingService implements IBindingService {
 	 * <p>
 	 * This method completes in amortized <code>O(1)</code>.
 	 * </p>
-	 * 
+	 *
 	 * @param binding
 	 *            The binding to be added; must not be <code>null</code>.
 	 */
 	public final void addBinding(final Binding binding) {
 		bindingManager.addBinding(binding);
 	}
-	
+
 	public final void dispose() {
-		workbench = null;
-	// RAP [bm]: no keyboard
-//		final Listener listener = keyboard.getKeyDownFilter();
-//		final Display display = workbench.getDisplay();
-//		if (display != null) {
-//			display.removeFilter(SWT.KeyDown, listener);
-//			display.removeFilter(SWT.Traverse, listener);
-//		}
-//		keyboard = null;
-//		bindingPersistence.dispose();
-	// RAPEND: [bm] 
+	  // RAP [rst] safeguard against NPE
+	  if( keyboard == null || workbench == null ) return;
+	  // RAP [rst] move "workbench = null" down to prevent NPE
+		final Listener listener = keyboard.getKeyDownFilter();
+		final Display display = workbench.getDisplay();
+		if (display != null) {
+			display.removeFilter(SWT.KeyDown, listener);
+			display.removeFilter(SWT.Traverse, listener);
+		}
+        workbench = null;
+		keyboard = null;
+		bindingPersistence.dispose();
 	}
 
 	public final TriggerSequence[] getActiveBindingsFor(
@@ -146,7 +149,7 @@ public final class BindingService implements IBindingService {
 	public final TriggerSequence getBestActiveBindingFor(final String commandId) {
 		return bindingManager.getBestActiveBindingFor(commandId);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.keys.IBindingService#getBestActiveBindingFor(org.eclipse.core.commands.ParameterizedCommand)
 	 */
@@ -162,31 +165,28 @@ public final class BindingService implements IBindingService {
 		return bindingManager.getBindings();
 	}
 
-	// RAP [bm]: 
-//	public final TriggerSequence getBuffer() {
-//		return keyboard.getBuffer();
-//	}
-//
-//	public final String getDefaultSchemeId() {
-//		return BindingPersistence.getDefaultSchemeId();
-//	}
-	// RAPEND: [bm] 
+	public final TriggerSequence getBuffer() {
+		return keyboard.getBuffer();
+	}
+
+	public final String getDefaultSchemeId() {
+		return BindingPersistence.getDefaultSchemeId();
+	}
 
 	public final Scheme[] getDefinedSchemes() {
 		return bindingManager.getDefinedSchemes();
 	}
 
-	// RAP [bm]: Bindings
-//	/**
-//	 * Returns the key binding architecture for the workbench. This method is
-//	 * internal, and is only intended for testing. This must not be used by
-//	 * clients.
-//	 * 
-//	 * @return The key binding support; never <code>null</code>.
-//	 */
-//	public final WorkbenchKeyboard getKeyboard() {
-//		return keyboard;
-//	}
+	/**
+	 * Returns the key binding architecture for the workbench. This method is
+	 * internal, and is only intended for testing. This must not be used by
+	 * clients.
+	 *
+	 * @return The key binding support; never <code>null</code>.
+	 */
+	public final WorkbenchKeyboard getKeyboard() {
+		return keyboard;
+	}
 
 	public final String getLocale() {
 		return bindingManager.getLocale();
@@ -208,10 +208,9 @@ public final class BindingService implements IBindingService {
 		return bindingManager.getScheme(schemeId);
 	}
 
-	// RAP [bm]: 
-//	public final boolean isKeyFilterEnabled() {
-//		return keyboard.getKeyDownFilter().isEnabled();
-//	}
+	public final boolean isKeyFilterEnabled() {
+		return keyboard.getKeyDownFilter().isEnabled();
+	}
 
 	public final boolean isPartialMatch(final TriggerSequence sequence) {
 		return bindingManager.isPartialMatch(sequence);
@@ -221,22 +220,19 @@ public final class BindingService implements IBindingService {
 		return bindingManager.isPerfectMatch(sequence);
 	}
 
-	// RAP [bm]: Bindings
-//	public final void openKeyAssistDialog() {
-//		keyboard.openMultiKeyAssistShell();
-//	}
+	public final void openKeyAssistDialog() {
+		keyboard.openMultiKeyAssistShell();
+	}
 
 	public final void readRegistryAndPreferences(
 			final ICommandService commandService) {
-		// RAP [bm]: Bindings
-//		bindingPersistence.read();
-		// RAPEND: [bm] 
+		bindingPersistence.read();
 	}
 
 	/**
 	 * Remove the specific binding by identity. Does nothing if the binding is
 	 * not in the manager.
-	 * 
+	 *
 	 * @param binding
 	 *            The binding to be removed; must not be <code>null</code>.
 	 */
@@ -246,62 +242,58 @@ public final class BindingService implements IBindingService {
 
 	public final void savePreferences(final Scheme activeScheme,
 			final Binding[] bindings) throws IOException {
-		// RAP [bm]: 
-//		BindingPersistence.write(activeScheme, bindings);
-//		try {
-//			bindingManager.setActiveScheme(activeScheme);
-//		} catch (final NotDefinedException e) {
-//			WorkbenchPlugin.log("The active scheme is not currently defined.",  //$NON-NLS-1$
-//					WorkbenchPlugin.getStatus(e));
-//		}
-		// RAPEND: [bm] 
+		BindingPersistence.write(activeScheme, bindings);
+		try {
+			bindingManager.setActiveScheme(activeScheme);
+		} catch (final NotDefinedException e) {
+			WorkbenchPlugin.log("The active scheme is not currently defined.",  //$NON-NLS-1$
+					WorkbenchPlugin.getStatus(e));
+		}
 		bindingManager.setBindings(bindings);
 	}
 
-	// RAP [bm]: 
-//	public final void setKeyFilterEnabled(final boolean enabled) {
-//		keyboard.getKeyDownFilter().setEnabled(enabled);
-//	}
+	public final void setKeyFilterEnabled(final boolean enabled) {
+		keyboard.getKeyDownFilter().setEnabled(enabled);
+	}
 
-	// RAP [bm]: Bindings
-//	/**
-//	 * @return Returns the bindingPersistence.
-//	 */
-//	public BindingPersistence getBindingPersistence() {
-//		return bindingPersistence;
-//	}
-//	
-//	public BindingManager getBindingManager() {
-//		return bindingManager;
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see
-//	 * org.eclipse.ui.keys.IBindingService#addBindingManagerListener(org.eclipse
-//	 * .jface.bindings.IBindingManagerListener)
-//	 */
-//	public void addBindingManagerListener(IBindingManagerListener listener) {
-//		bindingManager.addBindingManagerListener(listener);
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see
-//	 * org.eclipse.ui.keys.IBindingService#removeBindingManagerListener(org.
-//	 * eclipse.jface.bindings.IBindingManagerListener)
-//	 */
-//	public void removeBindingManagerListener(IBindingManagerListener listener) {
-//		bindingManager.removeBindingManagerListener(listener);
-//	}
-//	
-//	/* (non-Javadoc)
-//	 * @see org.eclipse.ui.keys.IBindingService#getConflictsFor(org.eclipse.jface.bindings.TriggerSequence)
-//	 */
-//	public Collection getConflictsFor(TriggerSequence sequence) {
-//		return bindingManager.getConflictsFor(sequence);
-//	}
+	/**
+	 * @return Returns the bindingPersistence.
+	 */
+	public BindingPersistence getBindingPersistence() {
+		return bindingPersistence;
+	}
+
+	public BindingManager getBindingManager() {
+		return bindingManager;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.eclipse.ui.keys.IBindingService#addBindingManagerListener(org.eclipse
+	 * .jface.bindings.IBindingManagerListener)
+	 */
+	public void addBindingManagerListener(IBindingManagerListener listener) {
+		bindingManager.addBindingManagerListener(listener);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.eclipse.ui.keys.IBindingService#removeBindingManagerListener(org.
+	 * eclipse.jface.bindings.IBindingManagerListener)
+	 */
+	public void removeBindingManagerListener(IBindingManagerListener listener) {
+		bindingManager.removeBindingManagerListener(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.keys.IBindingService#getConflictsFor(org.eclipse.jface.bindings.TriggerSequence)
+	 */
+	public Collection getConflictsFor(TriggerSequence sequence) {
+		return bindingManager.getConflictsFor(sequence);
+	}
 
 }

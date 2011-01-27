@@ -1861,9 +1861,8 @@ public final class Workbench extends EventManager implements IWorkbench {
 
             }});
 
-        // RAP [bm] Bindings
-//        bindingService[0].readRegistryAndPreferences(commandService[0]);
-//        serviceLocator.registerService(IBindingService.class, bindingService[0]);
+        bindingService[0].readRegistryAndPreferences(commandService[0]);
+        serviceLocator.registerService(IBindingService.class, bindingService[0]);
 
         final CommandImageManager commandImageManager = new CommandImageManager();
         final CommandImageService commandImageService = new CommandImageService(

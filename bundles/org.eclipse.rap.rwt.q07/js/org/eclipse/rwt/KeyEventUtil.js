@@ -15,24 +15,43 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
   construct : function() {
     this.base( arguments );
     org.eclipse.rwt.EventHandler.setKeyEventFilter( this._onKeyEvent, this );
+    this._keyBindings = {};
   },
     
   members : {
 
     cancelEvent : function() {
-      this._getInstance().cancelEvent();
+      this._getDelegate().cancelEvent();
     },
 
     allowEvent : function() {
-      this._getInstance().allowEvent();
+      this._getDelegate().allowEvent();
     },
     
-    _onKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
-      var util = this._getInstance();
-      return !util.intercept( eventType, keyCode, charCode, domEvent );
+    setKeyBindings : function( value ) {
+      this._keyBindings = value;
     },
 
-    _getInstance : function() {
+    _onKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
+      var result;
+      if( this._isKeyBinding( domEvent, keyCode, charCode ) ) {
+        result = false;
+        if( eventType === "keydown" ) {
+          // TODO [tb] : use keypress (repeats) instead?
+          org.eclipse.rwt.EventHandlerUtil.stopDomEvent( domEvent ); 
+//          TODO [rst] Pass focused widget instead of null
+//          var widget = this._getTargetControl();
+          this._attachKeyDown( null, keyCode, charCode, domEvent );
+          org.eclipse.swt.Request.getInstance().send();
+        }
+      } else {
+        var util = this._getDelegate();
+        result = !util.intercept( eventType, keyCode, charCode, domEvent );
+      }
+      return result;
+    },
+
+    _getDelegate : function() {
       var util;
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
         util = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
@@ -44,6 +63,34 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
     
     //////////////////////////////////////////////////////////////
     // Helper, also used by AsyncKeyEventUtil and SyncKeyEventUtil
+    
+    _isKeyBinding : function( domEvent, keyCode, charCode ) {
+      var identifier 
+        = this._getKeyBindingIdentifier( domEvent, keyCode, charCode );
+      var result = this._keyBindings[ identifier ] === true;
+      return result;
+    },
+    
+    _getKeyBindingIdentifier : function( domEvent, keyCode, charCode ) {
+      var result = [];
+      if( domEvent.altKey ) {
+        result.push( "ALT" );
+      }
+      if( domEvent.ctrlKey ) {
+        result.push( "CTRL" );//TODO Command @ apple?
+      }
+      if( domEvent.shiftKey ) {
+        result.push( "SHIFT" );
+      }
+      if( !isNaN( keyCode ) && keyCode > 0 ) {
+        result.push( keyCode.toString() ); 
+      } else if( !isNaN( charCode ) && charCode > 0 ) {
+        // Usually, the keyCode matches the charcode of the upper-case character
+        var charStr = String.fromCharCode( charCode );
+        result.push( charStr.toUpperCase().charCodeAt( 0 ) );
+      }
+      return result.join( "+" );
+    },
     
     _isRelevantEvent : function( eventType, keyCode ) {
       var result;
@@ -94,11 +141,16 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       }
       return result;
     },
-    
+
     _attachKeyDown : function( widget, keyCode, charCode, domEvent ) {
       var req = org.eclipse.swt.Request.getInstance();
-      var id
-        = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
+      var id;
+      if( widget === null ) {
+      	id = "w1";
+      } else {
+      	var wm = org.eclipse.swt.WidgetManager.getInstance();
+        id = wm.findIdByWidget( widget );
+      }
       req.addEvent( "org.eclipse.swt.events.keyDown", id );
       req.addParameter( "org.eclipse.swt.events.keyDown.keyCode", keyCode );
       req.addParameter( "org.eclipse.swt.events.keyDown.charCode", charCode );
@@ -118,4 +170,3 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
 
   }
 } );
-

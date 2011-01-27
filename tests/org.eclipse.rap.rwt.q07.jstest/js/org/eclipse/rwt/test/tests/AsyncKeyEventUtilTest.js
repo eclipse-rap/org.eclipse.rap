@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ASyncKeyEventUtilTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.AsyncKeyEventUtilTest", {
 
   extend : qx.core.Object,
   
@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ASyncKeyEventUtilTest", {
     TARGETENGINE : [ "gecko" ],
     
     testGetInstance : function() {
-      var instance = org.eclipse.rwt.KeyEventUtil.getInstance()._getInstance();
+      var instance = org.eclipse.rwt.KeyEventUtil.getInstance()._getDelegate();
       assertTrue( instance instanceof org.eclipse.rwt.AsyncKeyEventUtil );
     },
 
@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ASyncKeyEventUtilTest", {
       assertNull( keyUtil._pendingEventInfo );
       assertEquals( 0, testUtil.getRequestsSend() );
       // cancel event
-      testUtil.fakeKeyEventDOM( node, "keypress", "x" );
+      testUtil.fireFakeKeyDomEvent( node, "keypress", "x" );
       var expected =   "org.eclipse.swt.events.keyDown.charCode=" 
                      + "x".charCodeAt( 0 );
       assertTrue( testUtil.getMessage().indexOf( expected ) != -1 );
@@ -57,7 +57,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ASyncKeyEventUtilTest", {
       assertNull( keyUtil._pendingEventInfo );
       assertEquals( 0, testUtil.getRequestsSend() );
       // cancel event
-      testUtil.fakeKeyEventDOM( node, "keypress", "x" );
+      testUtil.fireFakeKeyDomEvent( node, "keypress", "x" );
       var expected =   "org.eclipse.swt.events.keyDown.charCode=" 
                      + "x".charCodeAt( 0 );
       assertTrue( testUtil.getMessage().indexOf( expected ) != -1 );
@@ -80,14 +80,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ASyncKeyEventUtilTest", {
       var node = text._inputElement;
       assertEquals( "", text.getComputedValue() );
       assertNull( keyUtil._pendingEventInfo );
-      testUtil.fakeKeyEventDOM( node, "keypress", "x" );
+      testUtil.fireFakeKeyDomEvent( node, "keypress", "x" );
       assertEquals( 0, keyUtil._bufferedEvents.length );
       assertNotNull( keyUtil._pendingEventInfo );
       var pending = keyUtil._pendingEventInfo;
-      testUtil.fakeKeyEventDOM( node, "keypress", "y" );
+      testUtil.fireFakeKeyDomEvent( node, "keypress", "y" );
       assertEquals( 1, keyUtil._bufferedEvents.length );
       assertIdentical( pending, keyUtil._pendingEventInfo );
-      testUtil.fakeKeyEventDOM( node, "keypress", "z" );
+      testUtil.fireFakeKeyDomEvent( node, "keypress", "z" );
       assertIdentical( pending, keyUtil._pendingEventInfo );
       assertEquals( "", text.getComputedValue() );
       assertEquals( 2, keyUtil._bufferedEvents.length );
@@ -112,7 +112,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ASyncKeyEventUtilTest", {
       // cancel event
       assertNull( keyUtil._pendingEventInfo );
       assertEquals( 0, testUtil.getRequestsSend() );
-      testUtil.fakeKeyEventDOM( node, "keydown", 37 );
+      testUtil.fireFakeKeyDomEvent( node, "keydown", 37 );
       assertNull( keyUtil._pendingEventInfo );
       this._disposeTextWidget( text );
     },

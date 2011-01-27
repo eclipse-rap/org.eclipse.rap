@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -69,7 +69,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.RAPServer", {
       this.respond( request );
     },
     
-    respond : function(request) {
+    respond : function( request ) {
       var response = this.handleMessage( request.getData() );
       request.setResponse( response );
       if( request.getAsynchronous() ){
@@ -79,14 +79,16 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.RAPServer", {
       }
     },
     
-    handleMessage : function(message) {
+    handleMessage : function( message ) {
       this._requestCounter++;
       var response = "";
       if( this.getRequestHandler() ) {
         response += this.getRequestHandler()( message );
       }
-      response += "org.eclipse.swt.Request.getInstance()." + 
-                  "setRequestCounter("+this._requestCounter+");";
+      response +=   "org.eclipse.swt.Request.getInstance()."
+                  + "setRequestCounter("
+                  + this._requestCounter
+                  + ");";
       return response;        
     }
    

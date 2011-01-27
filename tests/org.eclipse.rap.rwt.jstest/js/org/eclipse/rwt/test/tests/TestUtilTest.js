@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -13,7 +13,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
   extend : qx.core.Object,
   
   members : {
-    
+
+    testSendSynchronousRequestsBug : function() {
+      var req = org.eclipse.swt.Request.getInstance();
+      req.send();
+      var counter = req.getRequestCounter();
+      req.sendSyncronous();
+      counter++;
+      assertEquals( counter, req.getRequestCounter() );
+      req.send();
+      counter++;
+      assertEquals( counter, req.getRequestCounter() );
+      req.send();
+      counter++;
+      assertEquals( counter, req.getRequestCounter() );
+    },
+
     testGetElementBounds : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = document.createElement( "div" );
@@ -610,8 +625,47 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       assertNull( testUtil.getErrorPage() );
     },
     
+    testCleanUpKeyUtil : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
+      var prevented = false;
+      var preventDefault = function() {
+        prevented = true;
+      };
+      var widget = this._createWidget();
+      widget.setUserData( "isControl", true );
+      widget.setUserData( "keyListener", true );
+      widget.focus();
+      var bindings = { "66" : true };
+      keyUtil.setKeyBindings( bindings );
+      var instance = keyUtil._getDelegate();
+      testUtil.press( widget, "a", false, 0 );
+      testUtil.press( widget, "b", false, 0 );
+      testUtil.press( widget, "c", false, 0 );
+      testUtil.forceTimerOnce();
+      if( instance instanceof org.eclipse.rwt.AsyncKeyEventUtil ) {
+        assertNotNull( instance._pendingEventInfo );
+      }
+      assertIdentical( bindings, keyUtil._keyBindings );
+      testUtil.cleanUpKeyUtil();
+      if( instance instanceof org.eclipse.rwt.AsyncKeyEventUtil ) {
+        assertNull( instance._pendingEventInfo );
+      }
+      assertEquals( {}, keyUtil._keyBindings );
+      widget.destroy();
+    },
+
     /////////
     // helper
+    
+    _createWidget : function() {
+      var result = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      result.addToDocument();
+      result.setLocation( 0, 0 );
+      result.setDimension( 100, 100 );
+      qx.ui.core.Widget.flushGlobalQueues();
+      return result;
+    },
     
     _addKeyLogger : function( widget, type, identifier, modifier ) {
       var log = [];

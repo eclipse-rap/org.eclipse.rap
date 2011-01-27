@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -146,6 +146,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       writeFocus( display );
       writeUICallBackActivation( display );
       markInitialized( display );
+      KeyBindingUtil.writeKeyBindings( display );
     }
   }
 
@@ -314,6 +315,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     readBounds( display );
     readCursorLocation( display );
     readFocusControl( display );
+    KeyBindingUtil.readKeyBindingEvents( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
         IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
@@ -429,7 +431,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static void writeUICallBackActivation( final Display display ) 
+  private static void writeUICallBackActivation( final Display display )
     throws IOException
   {
     if( !display.isDisposed() ) {

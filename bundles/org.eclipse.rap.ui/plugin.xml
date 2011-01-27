@@ -27,9 +27,7 @@
    <extension-point id="org.eclipse.ui.activitySupport" name="%ExtPoint.activitySupport" schema="schema/activitySupport.exsd"/>
    <extension-point id="org.eclipse.ui.actionSetPartAssociations" name="%ExtPoint.actionSetPartAssociations" schema="schema/actionSetPartAssociations.exsd"/>
    <extension-point id="org.eclipse.ui.actionSets" name="%ExtPoint.actionSets" schema="schema/actionSets.exsd"/>
-   <!-- RAP [bm] not used
    <extension-point id="org.eclipse.ui.bindings" name="%ExtPoint.bindings" schema="schema/bindings.exsd"/>
-   -->
    <extension-point id="org.eclipse.ui.commands" name="%ExtPoint.commands" schema="schema/commands.exsd"/>
    <extension-point id="org.eclipse.ui.commandImages" name="%ExtPoint.commandImages" schema="schema/commandImages.exsd"/>
    <extension-point id="org.eclipse.ui.contexts" name="%ExtPoint.contexts" schema="schema/contexts.exsd"/>
@@ -119,7 +117,6 @@
       </context>
    </extension>
    
-   <!-- RAP [bm] Bindings
    <extension point="org.eclipse.ui.bindings">
       <key
             commandId="org.eclipse.ui.newWizard"
@@ -300,7 +297,7 @@
             commandId="org.eclipse.ui.window.activateEditor"
             sequence="F12"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
-      < !- - F12 is the Dashboard on carbon - - >
+      <!-- F12 is the Dashboard on carbon -->
       <key
             platform="carbon"
             sequence="F12"
@@ -393,15 +390,15 @@
 	        commandId="org.eclipse.ui.edit.text.contentAssist.proposals"
 	        contextId="org.eclipse.ui.contexts.dialogAndWindow"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-	        sequence="CTRL+SPACE"/>	<!- - Command+SPACE+* is reserved on carbon, hardcode to CTRL - - >
+	        sequence="CTRL+SPACE"/>	<!-- Command+SPACE+* is reserved on carbon, hardcode to CTRL -->
 
 	  <key
 	        commandId="org.eclipse.ui.edit.text.contentAssist.contextInformation"
 	        contextId="org.eclipse.ui.contexts.dialogAndWindow"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-	        sequence="CTRL+M2+SPACE"/>	<!- - Command+SPACE+* is reserved on carbon, hardcode to CTRL - - >
+	        sequence="CTRL+M2+SPACE"/>	<!-- Command+SPACE+* is reserved on carbon, hardcode to CTRL -->
 
-      <!- - Special content assist key bindings for the Chinese language to prevent conflict with IME - - >
+      <!-- Special content assist key bindings for the Chinese language to prevent conflict with IME -->
       <key
             locale="zh"
    	        contextId="org.eclipse.ui.contexts.dialogAndWindow"
@@ -429,7 +426,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
 
-      <!- - Content assist key binding for the Japanese language to prevent conflict with IME on GTK - - >
+      <!-- Content assist key binding for the Japanese language to prevent conflict with IME on GTK -->
       <key
             locale="ja"
             platform="gtk"
@@ -462,7 +459,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
 
-      <!- - Content assist key binding for the Korean language to prevent conflict with IME on GTK - - >
+      <!-- Content assist key binding for the Korean language to prevent conflict with IME on GTK -->
       <key
             locale="ko"
             platform="gtk"
@@ -495,7 +492,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
             
-      < !- - Content assist key binding for the Japanese language to prevent conflict with IME on Motif - - >
+      <!-- Content assist key binding for the Japanese language to prevent conflict with IME on Motif -->
       <key
             locale="ja"
             platform="motif"
@@ -528,7 +525,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
 
-      <!- - Content assist key binding for the Korean language to prevent conflict with IME on Motif - - >
+      <!-- Content assist key binding for the Korean language to prevent conflict with IME on Motif -->
       <key
             locale="ko"
             platform="motif"
@@ -560,7 +557,7 @@
             commandId="org.eclipse.ui.edit.text.contentAssist.contextInformation"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
-      
+<!-- RAP [if] key sequences not supported (emacsAcceleratorConfiguration) 
       <key
             commandId="org.eclipse.ui.file.close"
             sequence="CTRL+X K"
@@ -663,17 +660,20 @@
             commandId="org.eclipse.ui.window.switchToEditor"
             sequence="CTRL+X CTRL+B"
             schemeId="org.eclipse.ui.emacsAcceleratorConfiguration" />
+-->
       <scheme
             name="%keyConfiguration.default.name"
             description="%keyConfiguration.default.description"
             id="org.eclipse.ui.defaultAcceleratorConfiguration">
       </scheme>
+<!-- RAP [if] key sequences not supported (emacsAcceleratorConfiguration) 
       <scheme
             name="%keyConfiguration.emacs.name"
             description="%keyConfiguration.emacs.description"
             parentId="org.eclipse.ui.defaultAcceleratorConfiguration"
             id="org.eclipse.ui.emacsAcceleratorConfiguration">
       </scheme>
+-->
       <key
             commandId="org.eclipse.ui.navigate.collapseAll"
             contextId="org.eclipse.ui.contexts.window"
@@ -709,7 +709,6 @@
             sequence="M2+M3+F7">
       </key>
    </extension>
-   -->
    <extension
          point="org.eclipse.ui.commands">
       <category
