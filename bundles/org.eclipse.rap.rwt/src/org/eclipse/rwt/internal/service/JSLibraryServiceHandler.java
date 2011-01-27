@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,6 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   public final static String CONTENT_ENCODING = "Content-Encoding";
   public final static String ENCODING_GZIP = "gzip";
   public final static String ACCEPT_ENCODING = "Accept-Encoding";
-  
 
   private static final String EXPIRES = "Expires";
   static final String EXPIRES_NEVER = "Sun, 17 Jan 2038 19:14:07 GMT";
@@ -80,7 +79,8 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   }
 
   private static void writeCompressedOutput() throws IOException {
-    RWT.getResponse().setHeader( JSLibraryServiceHandler.CONTENT_ENCODING, JSLibraryServiceHandler.ENCODING_GZIP );
+    RWT.getResponse().setHeader( JSLibraryServiceHandler.CONTENT_ENCODING,
+                                 JSLibraryServiceHandler.ENCODING_GZIP );
     HttpServletResponse response = RWT.getResponse();
     OutputStream out = new BufferedOutputStream( response.getOutputStream() );
     write( out, compressed );
@@ -122,14 +122,16 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   }
   
   private static boolean isAcceptEncoding() {
-    String encodings = RWT.getRequest().getHeader( JSLibraryServiceHandler.ACCEPT_ENCODING );
-    return encodings != null && encodings.indexOf( JSLibraryServiceHandler.ENCODING_GZIP ) != -1;
+    String encodings
+      = RWT.getRequest().getHeader( JSLibraryServiceHandler.ACCEPT_ENCODING );
+    return    encodings != null
+           && encodings.indexOf( JSLibraryServiceHandler.ENCODING_GZIP ) != -1;
   }
   
   private static IConfiguration getConfiguration() {
     return ConfigurationReader.getConfiguration();
   }
-  
+
   private static JsConcatenator getJsConcatenator() {
     IResourceManager manager = ResourceManager.getInstance();
     Adaptable adaptable = ( Adaptable )manager;
