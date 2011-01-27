@@ -71,6 +71,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this.add( this._clientArea );
     this.add( this._horzScrollBar );
     this.add( this._vertScrollBar );
+    // Cell tooltip
+    this._cellToolTip = null;
     // Configure:
     this.setCursor( "default" );
     this.setOverflow( "hidden" );
@@ -102,6 +104,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._hoverItem = null;
     this._hoverElement = null;
     this._resizeLine = null;
+    if( this._cellToolTip ) {
+      this._cellToolTip.destroy();
+      this._cellToolTip = null;
+    }
   },
 
   members : {
@@ -448,7 +454,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     getColumnCount : function() {
       return Math.max( 1, this._columnCount );
     },
-    
+
+    getColumns : function() {
+      return this._columnArea.getChildren().slice( 1 );
+    },
+
     getRootItem : function() {
       return this._rootItem;
     },
@@ -1653,6 +1663,57 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _isDragSource : function() {
       return this.hasEventListeners( "dragstart" ); 
+    },
+    
+    ////////////////////////
+    // Cell tooltip handling
+
+    setEnableCellToolTip : function( value ) {
+      if( value ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        this._cellToolTip = new org.eclipse.swt.widgets.TableCellToolTip( id );
+        this._clientArea.addEventListener( "mousemove",
+                                           this._onClientAreaMouseMove,
+                                           this );
+        this._clientArea.setToolTip( this._cellToolTip );
+      } else {
+        this._clientArea.removeEventListener( "mousemove",
+                                              this._onClientAreaMouseMove,
+                                              this );
+        this._clientArea.setToolTip( null );
+        this._cellToolTip.destroy();
+        this._cellToolTip = null;
+      }
+    },
+
+    _onClientAreaMouseMove : function( evt ) {
+      if( this._cellToolTip != null ) {
+        var pageX = evt.getPageX();
+        var pageY = evt.getPageY();
+        if( this._hoverItem ) {
+          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var itemId = widgetManager.findIdByWidget( this._hoverItem );
+          var columnIndex = -1;
+          var columns = this.getColumns();
+          var element = this._clientArea.getElement();
+          var leftOffset = qx.bom.element.Location.getLeft( element );
+          for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
+            var pageLeft = leftOffset + this._itemLeft[ i ];
+            if( pageX >= pageLeft && pageX < pageLeft + this._itemWidth[ i ] ) {
+              columnIndex = i;
+            }
+          }        
+          this._cellToolTip.setCell( itemId, columnIndex );
+        }
+      }
+    },
+
+    /** Only called by server-side */
+    setCellToolTipText : function( text ) {
+      if( this._cellToolTip != null ) {
+        this._cellToolTip.setText( text );
+      }
     }
     
   }

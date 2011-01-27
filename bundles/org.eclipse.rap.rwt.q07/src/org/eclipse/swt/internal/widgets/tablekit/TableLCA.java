@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,19 +22,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 
 public final class TableLCA extends AbstractWidgetLCA {
-
-  // Request cell tooltip text event
-  static final String EVENT_CELL_TOOLTIP_REQUESTED
-    = "org.eclipse.swt.events.cellToolTipTextRequested";
-  // Parameter names that specify further event details
-  static final String EVENT_CELL_TOOLTIP_DETAILS
-    = "org.eclipse.swt.events.cellToolTipTextRequested.cell";
 
   // Property names to preserve values
   static final String PROP_HEADER_HEIGHT = "headerHeight";
@@ -51,6 +43,8 @@ public final class TableLCA extends AbstractWidgetLCA {
   static final String PROP_LEFT_OFFSET = "leftOffset";
   static final String PROP_SCROLLBARS_SELECTION_LISTENER
     = "scrollBarsSelectionListeners";
+  static final String PROP_ENABLE_CELL_TOOLTIP
+    = "enableCellToolTip";
 
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
   private static final Integer DEFAULT_ITEM_COUNT = new Integer( 0 );
@@ -100,6 +94,8 @@ public final class TableLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_LEFT_OFFSET, getLeftOffset( table ) );
     adapter.preserve( PROP_SCROLLBARS_SELECTION_LISTENER,
                       hasScrollBarsSelectionListener( table ) );
+    adapter.preserve( PROP_ENABLE_CELL_TOOLTIP,
+                      isCellToolTipEnabled( table ) );
   }
 
   public void readData( final Widget widget ) {
@@ -126,9 +122,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
     if( ( table.getStyle() & SWT.MULTI ) != 0 ) {
       style += "|multi";
-    }
-    if( Boolean.TRUE.equals( table.getData( Table.ENABLE_CELL_TOOLTIP ) ) ) {
-      style += "|enableCellToolTip";
     }
     if( ( table.getStyle() & SWT.HIDE_SELECTION ) != 0 ) {
       style += "|hideSelection";
@@ -159,6 +152,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeAlwaysHideSelection( table );
     writeScrollBarsVisible( table );
     writeLeftOffset( table );
+    writeEnableCellToolTip( table );
     writeCellToolTipText( table );
     WidgetLCAUtil.writeCustomVariant( table );
   }
@@ -311,30 +305,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static void readCellToolTipTextRequested( final Table table ) {
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    tableAdapter.setToolTipText( null );
-    String event = EVENT_CELL_TOOLTIP_REQUESTED;
-    if( WidgetLCAUtil.wasEventSent( table, event ) ) {
-      ICellToolTipProvider provider = tableAdapter.getCellToolTipProvider();
-      if( provider != null ) {
-        HttpServletRequest request = ContextProvider.getRequest();
-        String cell = request.getParameter( EVENT_CELL_TOOLTIP_DETAILS );
-        String[] indices = cell.split( "," );
-        int itemIndex = Integer.parseInt( indices[ 0 ] );
-        int columnIndex = Integer.parseInt( indices[ 1 ] );
-        // Bug 321119: Sometimes the client can request tooltips for already
-        //             disposed cells.
-        if(    itemIndex < table.getItemCount()
-            && ( columnIndex == 0 || columnIndex < table.getColumnCount() ) )
-        {
-          provider.getToolTipText( itemIndex, columnIndex );
-        }
-      }
-    }
-  }
-
   ///////////////////////////////////////////
   // Helping methods to write JavaScript code
 
@@ -464,16 +434,77 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( PROP_LEFT_OFFSET, "leftOffset", newValue, DEFAULT_LEFT_OFFSET );
   }
 
-  private void writeCellToolTipText( final Table table ) throws IOException {
+  ////////////////
+  // Cell tooltips
+
+  private static Boolean isCellToolTipEnabled( final Table table ) {
+    Boolean result = Boolean.FALSE;
+    Object data = table.getData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP );
+    if( Boolean.TRUE.equals( data ) ) {
+      result = Boolean.TRUE;
+    }
+    return result;
+  }
+
+  private static void writeEnableCellToolTip( final Table table )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( table );
+    Boolean newValue = isCellToolTipEnabled( table );
+    Boolean defValue = Boolean.FALSE;
+    String prop = PROP_ENABLE_CELL_TOOLTIP;
+    writer.set( prop, "enableCellToolTip", newValue, defValue );
+  }
+
+  private static void readCellToolTipTextRequested( final Table table ) {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    tableAdapter.setToolTipText( null );
+    String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
+    if( WidgetLCAUtil.wasEventSent( table, event ) ) {
+      ICellToolTipProvider provider = tableAdapter.getCellToolTipProvider();
+      if( provider != null ) {
+        HttpServletRequest request = ContextProvider.getRequest();
+        String cell = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
+        String[] details = cell.split( "," );
+        String itemId = details[ 0 ];
+        int columnIndex = Integer.parseInt( details[ 1 ] );
+        TableItem item = getItemById( table, itemId );
+        // Bug 321119: Sometimes the client can request tooltips for already
+        //             disposed cells.
+        if(    item != null
+            && ( columnIndex == 0 || columnIndex < table.getColumnCount() ) )
+        {
+          provider.getToolTipText( item, columnIndex );
+        }
+      }
+    }
+  }
+
+  private static void writeCellToolTipText( final Table table )
+    throws IOException
+  {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     String text = tableAdapter.getToolTipText();
     if( text != null ) {
       JSWriter writer = JSWriter.getWriterFor( table );
       text = WidgetLCAUtil.escapeText( text, false );
-      text = WidgetLCAUtil.replaceNewLines( text, "<br>" );
+      text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
       writer.call( "setCellToolTipText", new String[]{ text } );
     }
+  }
+
+  private static TableItem getItemById( final Table table, final String itemId )
+  {
+    TableItem result = null;
+    TableItem[] items = table.getItems();
+    for( int i = 0; i < items.length && result == null; i++ ) {
+      if( WidgetUtil.getId( items[ i ] ).equals( itemId ) ) {
+        result = items[ i ];
+      }
+    }
+    return result;
   }
 
   //////////////////

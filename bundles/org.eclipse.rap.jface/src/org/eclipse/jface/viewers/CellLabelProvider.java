@@ -231,6 +231,9 @@ public abstract class CellLabelProvider extends BaseLabelProvider {
 	 * @since 1.1
 	 */
 	protected void initialize(ColumnViewer viewer, ViewerColumn column) {
+        // RAP: [if] Cell tooltips support
+        CellToolTipProvider.attach( viewer, this );
+        // RAPEND: [if]
 	}
 
 	/**
@@ -248,6 +251,9 @@ public abstract class CellLabelProvider extends BaseLabelProvider {
 	 */
 	public void dispose(ColumnViewer viewer, ViewerColumn column) {
 		dispose();
+        // RAP: [if] Cell tooltips support
+        CellToolTipProvider.attach( viewer, null );
+        // RAPEND: [if]
 	}
 	
 }

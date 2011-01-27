@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -114,8 +114,37 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       table.destroy();
     },
 
+    testEnableCellToolTip : function() {
+      var table = this._createDefaultTable();
+      assertNull( table._cellToolTip );
+      assertNull( table._clientArea.getToolTip() );
+      table.setEnableCellToolTip( true );
+      assertNotNull( table._cellToolTip );
+      assertNotNull( table._clientArea.getToolTip() );
+      table.setEnableCellToolTip( false );
+      assertNull( table._cellToolTip );
+      assertNull( table._clientArea.getToolTip() );
+      table.destroy();
+    },
 
-    
+    testRequestCellToolTipText : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var table = this._createDefaultTable();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      widgetManager.add( table, "w3", true );
+      table.setEnableCellToolTip( true );
+      testUtil.prepareTimerUse();
+      testUtil.initRequestLog();      
+      table._cellToolTip.setCell( "w45", 5 );
+      testUtil.forceInterval( table._cellToolTip._showTimer );
+      var msg = testUtil.getMessage();
+      var param1 = "org.eclipse.swt.events.cellToolTipTextRequested=w3";
+      var param2 = "org.eclipse.swt.events.cellToolTipTextRequested.cell=w45%2C5";
+      assertTrue( msg.indexOf( param1 ) != -1 );
+      assertTrue( msg.indexOf( param2 ) != -1 );
+      table.destroy();
+    },
+
     /////////
     // Helper
     

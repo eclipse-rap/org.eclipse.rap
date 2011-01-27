@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 public final class TreeLCA extends AbstractWidgetLCA {
@@ -42,6 +42,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
   static final String PROP_LINES_VISIBLE = "linesVisible";
   static final String PROP_SCROLLBARS_SELECTION_LISTENER
     = "scrollBarsSelectionListeners";
+  static final String PROP_ENABLE_CELL_TOOLTIP
+    = "enableCellToolTip";
 
   private static final Integer DEFAULT_SCROLL_LEFT = new Integer( 0 );
 
@@ -67,6 +69,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( tree ) );
     adapter.preserve( PROP_SCROLLBARS_SELECTION_LISTENER,
                       hasScrollBarsSelectionListener( tree ) );
+    adapter.preserve( PROP_ENABLE_CELL_TOOLTIP,
+                      isCellToolTipEnabled( tree ) );
     WidgetLCAUtil.preserveCustomVariant( tree );
   }
 
@@ -77,6 +81,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     readTopItemIndex( tree );
     processWidgetSelectedEvent( tree );
     processWidgetDefaultSelectedEvent( tree );
+    readCellToolTipTextRequested( tree );
     ControlLCAUtil.processMouseEvents( tree );
     ControlLCAUtil.processKeyEvents( tree );
     ControlLCAUtil.processMenuDetect( tree );
@@ -132,6 +137,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writeHeaderHeight( tree );
     writeHeaderVisible( tree );
     writeScrollLeft( tree );
+    writeEnableCellToolTip( tree );
+    writeCellToolTipText( tree );
     WidgetLCAUtil.writeCustomVariant( tree );
   }
 
@@ -364,6 +371,79 @@ public final class TreeLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( tree );
       writer.set( "hasScrollBarsSelectionListener", newValue );
     }
+  }
+
+  ////////////////
+  // Cell tooltips
+
+  private static Boolean isCellToolTipEnabled( final Tree tree ) {
+    Boolean result = Boolean.FALSE;
+    Object data = tree.getData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP );
+    if( Boolean.TRUE.equals( data ) ) {
+      result = Boolean.TRUE;
+    }
+    return result;
+  }
+
+  private static void writeEnableCellToolTip( final Tree tree )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( tree );
+    Boolean newValue = isCellToolTipEnabled( tree );
+    Boolean defValue = Boolean.FALSE;
+    String prop = PROP_ENABLE_CELL_TOOLTIP;
+    writer.set( prop, "enableCellToolTip", newValue, defValue );
+  }
+
+  private static void readCellToolTipTextRequested( final Tree tree ) {
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
+    treeAdapter.setToolTipText( null );
+    String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
+    if( WidgetLCAUtil.wasEventSent( tree, event ) ) {
+      ICellToolTipProvider provider = treeAdapter.getCellToolTipProvider();
+      if( provider != null ) {
+        HttpServletRequest request = ContextProvider.getRequest();
+        String cell = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
+        String[] details = cell.split( "," );
+        String itemId = details[ 0 ];
+        int columnIndex = Integer.parseInt( details[ 1 ] );
+        TreeItem item = getItemById( tree.getItems(), itemId );
+        if(    item != null
+            && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) )
+        {
+          provider.getToolTipText( item, columnIndex );
+        }
+      }
+    }
+  }
+
+  private static void writeCellToolTipText( final Tree tree )
+    throws IOException
+  {
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
+    String text = treeAdapter.getToolTipText();
+    if( text != null ) {
+      JSWriter writer = JSWriter.getWriterFor( tree );
+      text = WidgetLCAUtil.escapeText( text, false );
+      text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
+      writer.call( "setCellToolTipText", new String[]{ text } );
+    }
+  }
+
+  private static TreeItem getItemById( final TreeItem[] items,
+                                       final String itemId )
+  {
+    TreeItem result = null;
+    for( int i = 0; i < items.length && result == null; i++ ) {
+      if( WidgetUtil.getId( items[ i ] ).equals( itemId ) ) {
+        result = items[ i ];
+      } else if( items[ i ].getExpanded() ) {
+        result = getItemById( items[ i ].getItems(), itemId );
+      }
+    }
+    return result;
   }
 
   //////////////////

@@ -87,10 +87,4 @@ public final class TableViewerColumn extends ViewerColumn {
 		return column;
 	}
 
-// RAP: [if] Table cell tooltips support
-	public void setLabelProvider( final CellLabelProvider labelProvider ) {
-      super.setLabelProvider( labelProvider );
-      CellToolTipProvider.attach( ( TableViewer )getViewer(), labelProvider );
-    }
-// RAPEND: [if]
 }

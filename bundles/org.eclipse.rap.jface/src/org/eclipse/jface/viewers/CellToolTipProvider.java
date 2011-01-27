@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -9,43 +9,57 @@
  ******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Tree;
 
 /**
- * Support for table tool-tips in RAP
+ * Support for table/tree tool-tips in RAP
  */
 final class CellToolTipProvider implements ICellToolTipProvider {
-  private TableViewer viewer;
+  private ColumnViewer viewer;
 
-  CellToolTipProvider( final TableViewer viewer ) {
+  CellToolTipProvider( final ColumnViewer viewer ) {
     this.viewer = viewer;
   }
 
-  static void attach( final TableViewer tableViewer,
-                      final IBaseLabelProvider labelProvider )
+  static void attach( final ColumnViewer viewer,
+                      final CellLabelProvider labelProvider )
   {
-    Table table = tableViewer.getTable();
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    if( labelProvider instanceof CellLabelProvider ) {
-      CellToolTipProvider provider = new CellToolTipProvider( tableViewer );
-      tableAdapter.setCellToolTipProvider( provider );
+    ICellToolTipAdapter adapter = getAdapter( viewer );
+    if( labelProvider != null ) {
+      CellToolTipProvider provider = new CellToolTipProvider( viewer );
+      adapter.setCellToolTipProvider( provider );
     } else {
-      tableAdapter.setCellToolTipProvider( null );
+      adapter.setCellToolTipProvider( null );
     }
   }
 
-  public void getToolTipText( final int itemIndex, final int columnIndex ) {
-    Table table = viewer.getTable();
-    Object element =  table.getItem( itemIndex ).getData();
+  private static ICellToolTipAdapter getAdapter( final ColumnViewer viewer ) {
+    ICellToolTipAdapter result = null;
+    if( viewer instanceof TableViewer ) {
+      Table table = ( ( TableViewer )viewer ).getTable();
+      result = ( ICellToolTipAdapter )table.getAdapter( ITableAdapter.class );
+    } else if( viewer instanceof TreeViewer ) {
+      Tree tree = ( ( TreeViewer )viewer ).getTree();
+      result = ( ICellToolTipAdapter )tree.getAdapter( ITreeAdapter.class );
+    }
+    return result;
+  }
+
+  public void getToolTipText( final Item item, final int columnIndex ) {
+    Object element =  item.getData();
     ViewerColumn column = viewer.getViewerColumn( columnIndex );
     CellLabelProvider labelProvider = column.getLabelProvider();
-    String text = labelProvider.getToolTipText( element );
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    tableAdapter.setToolTipText( text );
+    if( labelProvider != null ) {
+      String text = labelProvider.getToolTipText( element );
+      ICellToolTipAdapter adapter = getAdapter( viewer );
+      adapter.setToolTipText( text );
+    }
   }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -272,6 +272,24 @@ public class TableLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( table );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
+    Fixture.clearPreserved();
+  }
+
+  public void testPreserveEnableCellToolTip() {
+    Table table = new Table( shell, SWT.BORDER );
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
+    Boolean preserved
+      = ( Boolean )adapter.getPreserved( TableLCA.PROP_ENABLE_CELL_TOOLTIP );
+    assertEquals( Boolean.FALSE, preserved );
+    Fixture.clearPreserved();
+    table.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
+    Fixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( table );
+    preserved
+      = ( Boolean )adapter.getPreserved( TableLCA.PROP_ENABLE_CELL_TOOLTIP );
+    assertEquals( Boolean.TRUE, preserved );
     Fixture.clearPreserved();
   }
 
@@ -816,17 +834,34 @@ public class TableLCA_Test extends TestCase {
     assertEquals( 0, table.getTopIndex() );
   }
 
+  public void testWriteEnableCellToolTip() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+    createTableItems( table, 5 );
+    Fixture.fakeNewRequest();
+    table.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
+    TableLCA tableLCA = new TableLCA();
+    tableLCA.renderChanges( table );
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setEnableCellToolTip( true )";
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
   public void testGetCellToolTipText() {
     Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 5 );
     Object adapter = table.getAdapter( ITableAdapter.class );
     final ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
-      public void getToolTipText( final int itemIndex,
+      public void getToolTipText( final Item item,
                                   final int columnIndex )
       {
-        String text = "[" + itemIndex + "," + columnIndex + "]";
-        tableAdapter.setToolTipText( text );
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( "[" );
+        buffer.append( WidgetUtil.getId( item ) );
+        buffer.append( "," );
+        buffer.append( columnIndex );
+        buffer.append( "]" );
+        tableAdapter.setToolTipText( buffer.toString() );
       }
     } );
     Fixture.fakeNewRequest();
@@ -834,9 +869,10 @@ public class TableLCA_Test extends TestCase {
     String markup = Fixture.getAllMarkup();
     String expected = "w.setCellToolTipText(";
     assertTrue( markup.indexOf( expected ) == -1 );
-    processCellToolTipRequest( table, 2, 0 );
+    String itemId = WidgetUtil.getId( table.getItem( 2 ) );
+    processCellToolTipRequest( table, itemId, 0 );
     markup = Fixture.getAllMarkup();
-    expected = "w.setCellToolTipText( \"[2,0]\" );";
+    expected = "w.setCellToolTipText( \"[" + itemId + ",0]\" );";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
@@ -848,25 +884,36 @@ public class TableLCA_Test extends TestCase {
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
 
-      public void getToolTipText( final int itemIndex, final int columnIndex ) {
-        log.append( "[" + itemIndex + "," + columnIndex + "]" );
+      public void getToolTipText( final Item item, final int columnIndex ) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( "[" );
+        buffer.append( WidgetUtil.getId( item ) );
+        buffer.append( "," );
+        buffer.append( columnIndex );
+        buffer.append( "]" );
+        log.append( buffer.toString() );
       }
     } );
-    processCellToolTipRequest( table, 0, 0 );
-    assertEquals( "[0,0]", log.toString() );
+    String itemId = WidgetUtil.getId( table.getItem( 0 ) );
+    processCellToolTipRequest( table, itemId, 0 );
+    String expected = "[" + itemId + ",0]";
+    assertEquals( expected, log.toString() );
     log.setLength( 0 );
-    processCellToolTipRequest( table, 2, 0 );
-    assertEquals( "[2,0]", log.toString() );
+    itemId = WidgetUtil.getId( table.getItem( 2 ) );
+    processCellToolTipRequest( table, itemId, 0 );
+    expected = "[" + itemId + ",0]";
+    assertEquals( expected, log.toString() );
     log.setLength( 0 );
-    processCellToolTipRequest( table, 3, 0 );
+    processCellToolTipRequest( table, "xyz", 0 );
     assertEquals( "", log.toString() );
-    processCellToolTipRequest( table, 2, 1 );
+    processCellToolTipRequest( table, itemId, 1 );
     assertEquals( "", log.toString() );
     createTableColumns( table, 2 );
-    processCellToolTipRequest( table, 2, 1 );
-    assertEquals( "[2,1]", log.toString() );
+    processCellToolTipRequest( table, itemId, 1 );
+    expected = "[" + itemId + ",1]";
+    assertEquals( expected, log.toString() );
     log.setLength( 0 );
-    processCellToolTipRequest( table, 2, 2 );
+    processCellToolTipRequest( table, itemId, 2 );
     assertEquals( "", log.toString() );
   }
 
@@ -921,16 +968,16 @@ public class TableLCA_Test extends TestCase {
   }
 
   private static void processCellToolTipRequest( final Table table,
-                                                 final int item,
+                                                 final String itemId,
                                                  final int column )
   {
     Fixture.fakeNewRequest();
     String displayId = DisplayUtil.getId( table.getDisplay() );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String tableId = WidgetUtil.getId( table );
-    Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_REQUESTED, tableId );
-    String cellString = item + "," + column;
-    Fixture.fakeRequestParam( TableLCA.EVENT_CELL_TOOLTIP_DETAILS, cellString );
+    Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_REQUESTED, tableId );
+    String cellString = itemId + "," + column;
+    Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_DETAILS, cellString );
     Fixture.executeLifeCycleFromServerThread();
   }
 

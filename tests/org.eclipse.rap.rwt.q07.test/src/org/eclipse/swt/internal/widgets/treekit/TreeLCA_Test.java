@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.widgets.ITreeAdapter;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
@@ -530,6 +529,24 @@ public class TreeLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
   }
+  
+  public void testPreserveEnableCellToolTip() {
+    Tree tree = new Tree( shell, SWT.BORDER );
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
+    Boolean preserved
+      = ( Boolean )adapter.getPreserved( TreeLCA.PROP_ENABLE_CELL_TOOLTIP );
+    assertEquals( Boolean.FALSE, preserved );
+    Fixture.clearPreserved();
+    tree.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
+    Fixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( tree );
+    preserved
+      = ( Boolean )adapter.getPreserved( TreeLCA.PROP_ENABLE_CELL_TOOLTIP );
+    assertEquals( Boolean.TRUE, preserved );
+    Fixture.clearPreserved();
+  }
 
   public void testSelectionEvent() {
     final StringBuffer log = new StringBuffer();
@@ -671,6 +688,149 @@ public class TreeLCA_Test extends TestCase {
     String markup = Fixture.getAllMarkup();
     String expected = "w.setHasScrollBarsSelectionListener( true );";
     assertTrue( markup.indexOf( expected ) != -1 );
+  }
+  
+  public void testWriteEnableCellToolTip() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    createTreeItems( tree, 5 );
+    Fixture.fakeNewRequest();
+    tree.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
+    TreeLCA treeLCA = new TreeLCA();
+    treeLCA.renderChanges( tree );
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setEnableCellToolTip( true )";
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
+  public void testGetCellToolTipText() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    createTreeItems( tree, 5 );
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    final ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
+    treeAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      public void getToolTipText( final Item item,
+                                  final int columnIndex )
+      {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( "[" );
+        buffer.append( WidgetUtil.getId( item ) );
+        buffer.append( "," );
+        buffer.append( columnIndex );
+        buffer.append( "]" );
+        treeAdapter.setToolTipText( buffer.toString() );
+      }
+    } );
+    Fixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setCellToolTipText(";
+    assertTrue( markup.indexOf( expected ) == -1 );
+    String itemId = WidgetUtil.getId( tree.getItem( 2 ) );
+    processCellToolTipRequest( tree, itemId, 0 );
+    markup = Fixture.getAllMarkup();
+    expected = "w.setCellToolTipText( \"[" + itemId + ",0]\" );";
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+  
+  public void testGetCellToolTipTextForSubitems() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    createTreeItems( tree, 5 );
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    final ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
+    treeAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      public void getToolTipText( final Item item,
+                                  final int columnIndex )
+      {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( "[" );
+        buffer.append( WidgetUtil.getId( item ) );
+        buffer.append( "," );
+        buffer.append( columnIndex );
+        buffer.append( "]" );
+        treeAdapter.setToolTipText( buffer.toString() );
+      }
+    } );
+    Fixture.fakeNewRequest();
+    Fixture.executeLifeCycleFromServerThread();
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setCellToolTipText(";
+    assertTrue( markup.indexOf( expected ) == -1 );
+    String itemId = WidgetUtil.getId( tree.getItem( 2 ).getItem( 1 ) );
+    processCellToolTipRequest( tree, itemId, 0 );
+    markup = Fixture.getAllMarkup();
+    expected = "w.setCellToolTipText( \"[" + itemId + ",0]\" );";
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
+  public void testCellTooltipRequestForMissingCells() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    createTreeItems( tree, 3 );
+    final StringBuffer log = new StringBuffer();
+    final ITreeAdapter treeAdapter
+      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    treeAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
+
+      public void getToolTipText( final Item item, final int columnIndex ) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( "[" );
+        buffer.append( WidgetUtil.getId( item ) );
+        buffer.append( "," );
+        buffer.append( columnIndex );
+        buffer.append( "]" );
+        log.append( buffer.toString() );
+      }
+    } );
+    String itemId = WidgetUtil.getId( tree.getItem( 0 ) );
+    processCellToolTipRequest( tree, itemId, 0 );
+    String expected = "[" + itemId + ",0]";
+    assertEquals( expected, log.toString() );
+    log.setLength( 0 );
+    itemId = WidgetUtil.getId( tree.getItem( 2 ) );
+    processCellToolTipRequest( tree, itemId, 0 );
+    expected = "[" + itemId + ",0]";
+    assertEquals( expected, log.toString() );
+    log.setLength( 0 );
+    processCellToolTipRequest( tree, "xyz", 0 );
+    assertEquals( "", log.toString() );
+    processCellToolTipRequest( tree, itemId, 1 );
+    assertEquals( "", log.toString() );
+    createTreeColumns( tree, 2 );
+    processCellToolTipRequest( tree, itemId, 1 );
+    expected = "[" + itemId + ",1]";
+    assertEquals( expected, log.toString() );
+    log.setLength( 0 );
+    processCellToolTipRequest( tree, itemId, 2 );
+    assertEquals( "", log.toString() );
+  }
+  
+  private static void createTreeColumns( final Tree tree, final int count ) {
+    for( int i = 0; i < count; i++ ) {
+      new TreeColumn( tree, SWT.NONE );
+    }
+  }
+
+  private static void createTreeItems( final Tree tree, final int count ) {
+    for( int i = 0; i < count; i++ ) {
+      TreeItem item = new TreeItem( tree, SWT.NONE );      
+      for( int j = 0; j < count; j++ ) {
+        new TreeItem( item, SWT.NONE );
+      }
+      item.setExpanded( true );
+    }
+  }
+
+  private static void processCellToolTipRequest( final Tree tree,
+                                                 final String itemId,
+                                                 final int column )
+  {
+    Fixture.fakeNewRequest();
+    String displayId = DisplayUtil.getId( tree.getDisplay() );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    String treeId = WidgetUtil.getId( tree );
+    Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_REQUESTED, treeId );
+    String cellString = itemId + "," + column;
+    Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_DETAILS, cellString );
+    Fixture.executeLifeCycleFromServerThread();
   }
 
   // TODO [tb] : Test for fake redraw calls checkAllData

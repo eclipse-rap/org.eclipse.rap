@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,6 +155,9 @@ public class Tree extends Composite {
   }
   private final class InternalTreeAdapter implements ITreeAdapter {
 
+    private String toolTipText;
+    private ICellToolTipProvider provider;
+
     public void setScrollLeft( final int left ) {
       Tree.this.scrollLeft = left;
     }
@@ -230,6 +233,22 @@ public class Tree extends Composite {
     public int getColumnLeft( final TreeColumn column ) {
       int index = Tree.this.indexOf( column );
       return Tree.this.getColumn( index ).getLeft();
+    }
+
+    public ICellToolTipProvider getCellToolTipProvider() {
+      return provider;
+    }
+
+    public void setCellToolTipProvider( final ICellToolTipProvider provider ) {
+      this.provider = provider;
+    }
+
+    public String getToolTipText() {
+      return toolTipText;
+    }
+
+    public void setToolTipText( final String toolTipText ) {
+      this.toolTipText = toolTipText;
     }
 
   }

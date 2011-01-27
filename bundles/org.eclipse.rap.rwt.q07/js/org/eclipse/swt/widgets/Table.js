@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -160,12 +160,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.add( this._clientArea );
     // Cell tooltip
     this._cellToolTip = null;
-    if( qx.lang.String.contains( style, "enableCellToolTip" ) ) {
-      this._cellToolTip = new org.eclipse.swt.widgets.TableCellToolTip();
-      this._cellToolTip.setTableId( id );
-      this._clientArea.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
-      this._clientArea.setToolTip( this._cellToolTip );
-    }
     // Disable scrolling (see bug 279460)
     qx.ui.core.Widget.disableScrolling( this );
     // Fix for bug Bug 297202
@@ -228,7 +222,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._clientArea = null;
     }
     if( this._cellToolTip ) {
-      this._cellToolTip.dispose();
+      this._cellToolTip.destroy();
       this._cellToolTip = null;
     }
     if( this._columnArea ) {
@@ -1730,26 +1724,46 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     ////////////////////////
     // Cell tooltip handling
 
+    setEnableCellToolTip : function( value ) {
+      if( value ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        this._cellToolTip = new org.eclipse.swt.widgets.TableCellToolTip( id );
+        this._clientArea.addEventListener( "mousemove",
+                                           this._onClientAreaMouseMove,
+                                           this );
+        this._clientArea.setToolTip( this._cellToolTip );
+      } else {
+        this._clientArea.removeEventListener( "mousemove",
+                                              this._onClientAreaMouseMove,
+                                              this );
+        this._clientArea.setToolTip( null );
+        this._cellToolTip.destroy();
+        this._cellToolTip = null;
+      }
+    },
+
     _onClientAreaMouseMove : function( evt ) {
       if( this._cellToolTip != null ) {
         var pageX = evt.getPageX();
         var pageY = evt.getPageY();
         var row = this._getRowAtPoint( pageX, pageY );
-        var rowIndex = this._rows.indexOf( row );
-        var itemIndex = this._getItemIndexFromRowIndex( rowIndex );
-        var columnIndex = -1;
-        var columns = this.getColumns();
-        for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
-          var element = this._clientArea.getElement();
-          var pageLeft = qx.bom.element.Location.getLeft( element )
-                       + this._itemLeft[ i ];
-          if(    pageX >= pageLeft
-              && pageX < pageLeft + this._itemWidth[ i ] )
-          {
-            columnIndex = i;
-          }
+        var itemIndex = row.getItemIndex();
+        if( itemIndex != -1 ) {
+	        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+	        var itemId = widgetManager.findIdByWidget( this._items[ itemIndex ] );
+	        var columnIndex = -1;
+	        var columns = this.getColumns();
+	        var element = this._clientArea.getElement();
+	        var leftOffset = qx.bom.element.Location.getLeft( element );
+	        for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
+	          var pageLeft = leftOffset + this._itemLeft[ i ];
+	          if( pageX >= pageLeft && pageX < pageLeft + this._itemWidth[ i ] ) {
+	            columnIndex = i;
+	          }
+	        }        
+	        this._cellToolTip.setCell( itemId, columnIndex );
         }
-        this._cellToolTip.setCell( itemIndex, columnIndex );
       }
     },
 

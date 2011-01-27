@@ -22,7 +22,7 @@ package org.eclipse.jface.viewers;
 //import org.eclipse.swt.graphics.Point;
 //import org.eclipse.swt.widgets.Composite;
 //import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
 
 /**
  * The ColumnViewerTooltipSupport is the class that provides tool tips for
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Table;
  * @since 1.3
  *
  */
-// RAP [rh] RAP provides tooltip support only for the table widget
+// RAP [rh] RAP provides tooltip support for the table and tree widgets
 //     In addition RAP cannot reuse the DefaultToolTip and ToolTip as these  
 //     classes make heavy use of mouse events 
 public class ColumnViewerToolTipSupport 
@@ -77,12 +77,11 @@ public class ColumnViewerToolTipSupport
 	 * @param viewer
 	 *            the viewer the support is attached to
 	 */
-//	public static void enableFor(ColumnViewer viewer) {
-//		new ColumnViewerToolTipSupport(viewer, ToolTip.NO_RECREATE, false);
-//	}
-public static void enableFor(AbstractTableViewer viewer) {
-  viewer.getControl().setData( Table.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
-}
+    public static void enableFor(ColumnViewer viewer) {
+//      new ColumnViewerToolTipSupport(viewer, dis, false);
+        viewer.getControl().setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP,
+                                     Boolean.TRUE );
+    }
 
 // RAP [rh] ToolTip style not supported 
 //	/**

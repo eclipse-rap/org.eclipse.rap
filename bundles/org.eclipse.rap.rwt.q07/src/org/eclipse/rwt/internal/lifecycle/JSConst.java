@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.lifecycle.JSVar;
-
-
 
 /**
  * Commonly used request parameter names and JavaScript names.
@@ -61,6 +59,9 @@ public final class JSConst {
   public static final String EVENT_MENU_DETECT
     = "org.eclipse.swt.events.menuDetect";
 
+  // Request cell tooltip text event
+  public static final String EVENT_CELL_TOOLTIP_REQUESTED
+    = "org.eclipse.swt.events.cellToolTipTextRequested";
 
   // Parameter names that specify further event details
   public static final String EVENT_WIDGET_SELECTED_DETAIL
@@ -113,6 +114,10 @@ public final class JSConst {
     = "org.eclipse.swt.events.menuDetect.x";
   public static final String EVENT_MENU_DETECT_Y
     = "org.eclipse.swt.events.menuDetect.y";
+
+  // Request cell tooltip text event details
+  public static final String EVENT_CELL_TOOLTIP_DETAILS
+    = "org.eclipse.swt.events.cellToolTipTextRequested.cell";
 
   // Indicates that a shell was closed on the client side. The parameter
   // value holds the id of the shell that was closed.
