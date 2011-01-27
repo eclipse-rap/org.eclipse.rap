@@ -47,7 +47,7 @@ public final class WidgetLCAUtil {
   private static final String PARAM_WIDTH = "bounds.width";
   private static final String PARAM_HEIGHT = "bounds.height";
 
-  private static final String PROP_TOOL_TIP_TEXT = "toolTip";
+  private static final String PROP_TOOL_TIP_TEXT = "toolTipText";
   private static final String PROP_FONT = "font";
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";

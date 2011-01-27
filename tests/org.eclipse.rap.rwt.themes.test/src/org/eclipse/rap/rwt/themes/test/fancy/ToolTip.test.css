@@ -10,7 +10,7 @@
 
 /* ToolTip */
 
-ToolTip {
+Widget-ToolTip {
   background-color: #e9f3d2;
   border: 1px solid #abe033;
   border-radius: 2px 2px 2px 2px;

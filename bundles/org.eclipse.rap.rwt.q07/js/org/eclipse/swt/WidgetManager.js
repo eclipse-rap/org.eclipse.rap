@@ -210,7 +210,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     setToolTip : function( widget, toolTipText ) {
       if( toolTipText != null && toolTipText != "" ) {
         widget.setUserData( "toolTipText", toolTipText );
-        var toolTip = org.eclipse.rwt.widgets.ToolTip.getInstance()
+        var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance()
         widget.setToolTip( toolTip );
         // make sure "boundToWidget" is initialized:
         if( toolTip.getParent() != null ) {  

@@ -18,7 +18,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     this.setAutoHide( false );
     this.setDisplay( true );
     this.setVisibility( false );
-    this.setAppearance( "tool-tip-widget" );
+    this.setAppearance( "tool-tip" );
     var doc = qx.ui.core.ClientDocument.getInstance();
     this.setMaxWidth( doc.getClientWidth() / 2 );
     this.setMaxHeight( doc.getClientHeight() / 2 );
@@ -102,17 +102,17 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
       this._contentArea.setSpacing( 5 );
       this._contentArea.setParent( this );
       this._image = new qx.ui.basic.Image();
-      this._image.setAppearance( "tool-tip-widget-image" );
+      this._image.setAppearance( "tool-tip-image" );
       this._image.setParent( this._contentArea );
       this._textArea = new qx.ui.layout.BoxLayout( "vertical" );
       this._textArea.setParent( this._contentArea );
       this._textArea.setHeight( "100%" );
       this._textArea.setSpacing( 5 );
       this._text = new qx.ui.basic.Label();
-      this._text.setAppearance( "tool-tip-widget-text" );
+      this._text.setAppearance( "tool-tip-text" );
       this._text.setParent( this._textArea );
       this._message = new qx.ui.basic.Label();
-      this._message.setAppearance( "tool-tip-widget-message" );
+      this._message.setAppearance( "tool-tip-message" );
       this._message.setHeight( "auto" );
       this._message.setWrap( true );
       this._message.setParent( this._textArea );
@@ -180,7 +180,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
     
     _getMessageFont : function() {
       var tv = new org.eclipse.swt.theme.ThemeValues( {} );
-      return tv.getCssFont( "ToolTipWidget-Message", "font" );
+      return tv.getCssFont( "ToolTip-Message", "font" );
     }
     
   }

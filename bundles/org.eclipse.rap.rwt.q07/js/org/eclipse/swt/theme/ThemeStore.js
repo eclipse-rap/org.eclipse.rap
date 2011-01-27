@@ -204,7 +204,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       ct.colors[ "widget.foreground" ]
         = this._getColor( "*", {}, "color", theme );
       ct.colors[ "widget.info.foreground" ]
-        = this._getColor( "ToolTip", {}, "color", theme );
+        = this._getColor( "Widget-ToolTip", {}, "color", theme );
     },
 
     _getColor : function( element, states, property, theme ) {

@@ -1167,7 +1167,7 @@ Sash:hover {
 
 /* Classic theme for all widgets */
 
-ToolTip {
+Widget-ToolTip {
   border: 1px solid;
   padding: 1px 3px 2px 3px;
   color: black;

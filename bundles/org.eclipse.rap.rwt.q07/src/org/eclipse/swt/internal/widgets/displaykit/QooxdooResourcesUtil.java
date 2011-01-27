@@ -192,7 +192,7 @@ final class QooxdooResourcesUtil {
     "org/eclipse/rwt/FadeAnimationMixin.js",
     "org/eclipse/rwt/AnimationRenderer.js",
     "org/eclipse/rwt/Animation.js",
-    "org/eclipse/rwt/widgets/ToolTip.js",
+    "org/eclipse/rwt/widgets/WidgetToolTip.js",
     "org/eclipse/rwt/RoundedBorder.js",
     "org/eclipse/rwt/SyncKeyEventUtil.js",
     "org/eclipse/rwt/GraphicsMixin.js",

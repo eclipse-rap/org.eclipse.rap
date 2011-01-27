@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
   extend : qx.core.Object,
   
   construct : function() {
@@ -18,7 +18,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolTipTest", {
     this.manager = qx.ui.popup.ToolTipManager.getInstance();
     this.wm = org.eclipse.swt.WidgetManager.getInstance();        
     this.testUtil.flush();
-    this.toolTip = org.eclipse.rwt.widgets.ToolTip.getInstance();
+    this.toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
   },
   
   members : {

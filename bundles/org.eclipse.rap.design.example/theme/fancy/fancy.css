@@ -812,7 +812,7 @@ Composite.inactiveButton {
 
 /* ToolTip */
 
-ToolTip {
+Widget-ToolTip {
   background-color: #e9f3d2;
   border: 1px solid #abe033;
 }

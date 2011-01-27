@@ -12,7 +12,7 @@
 
 <theme>
 
-  <element name="ToolTipWidget">
+  <element name="ToolTip">
     <description>
       ToolTip widgets represent popup windows that are used to inform or warn 
       the user
@@ -70,7 +70,7 @@
       </description>
     </property>
 
-    <element name="ToolTipWidget-Image" 
+    <element name="ToolTip-Image" 
         description="The image area.">
       
 	    <style name="ICON_ERROR"
@@ -87,7 +87,7 @@
         
     </element>
 
-    <element name="ToolTipWidget-Text" 
+    <element name="ToolTip-Text" 
         description="The title text area.">
       
       <property name="color"
@@ -98,7 +98,7 @@
 
     </element>
 
-    <element name="ToolTipWidget-Message" 
+    <element name="ToolTip-Message" 
         description="The message area.">
       
       <property name="color"

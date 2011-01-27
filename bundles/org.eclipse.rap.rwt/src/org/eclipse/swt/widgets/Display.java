@@ -1338,7 +1338,7 @@ public class Display extends Device implements Adaptable {
                                        SimpleSelector.SELECTED );
       break;
       case SWT.COLOR_INFO_FOREGROUND:
-        value = ThemeUtil.getCssValue( "ToolTip",
+        value = ThemeUtil.getCssValue( "Widget-ToolTip",
                                        "color",
                                        SimpleSelector.DEFAULT );
       break;

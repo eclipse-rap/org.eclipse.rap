@@ -39,7 +39,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( PROP_SELECTED ) );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( "", adapter.getPreserved( "toolTip" ) );
+    assertEquals( "", adapter.getPreserved( "toolTipText" ) );
     Fixture.clearPreserved();
     tabFolder.setSelection( 1 );
     item.setText( "some text" );
@@ -50,7 +50,7 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
     assertEquals( Graphics.getImage( Fixture.IMAGE1 ),
                   adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( "tooltip text", adapter.getPreserved( "toolTip" ) );
+    assertEquals( "tooltip text", adapter.getPreserved( "toolTipText" ) );
     display.dispose();
   }
 

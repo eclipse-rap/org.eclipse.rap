@@ -9,7 +9,7 @@
  *     EclipseSource - initial API and implementation
  ******************************************************************************/
  
-qx.Class.define( "org.eclipse.rwt.widgets.ToolTip", {
+qx.Class.define( "org.eclipse.rwt.widgets.WidgetToolTip", {
   type : "singleton",
   extend : qx.ui.popup.ToolTip,
   include : org.eclipse.rwt.FadeAnimationMixin,

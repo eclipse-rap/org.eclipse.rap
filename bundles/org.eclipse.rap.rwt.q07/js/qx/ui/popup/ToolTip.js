@@ -67,7 +67,7 @@ qx.Class.define("qx.ui.popup.ToolTip",
     appearance :
     {
       refine : true,
-      init : "tool-tip"
+      init : "widget-tool-tip"
     },
 
     /** Controls whether the tooltip is hidden when hovered across */

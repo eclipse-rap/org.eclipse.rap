@@ -128,7 +128,7 @@
 
   </element>
 
-  <element name="ToolTip">
+  <element name="Widget-ToolTip">
     <description>
       Tooltips on SWT widgets, as set using setTooltipText().
     </description>

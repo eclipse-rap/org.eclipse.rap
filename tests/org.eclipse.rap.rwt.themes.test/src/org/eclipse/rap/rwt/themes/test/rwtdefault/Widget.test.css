@@ -8,7 +8,7 @@
 *   EclipseSource - initial API and implementation
 *******************************************************************************/
 
-ToolTip {
+Widget-ToolTip {
   padding: 1px 3px 2px 3px;
   background-color: #dae9f7;
   border: 1px solid #00589f;

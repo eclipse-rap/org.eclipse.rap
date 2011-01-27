@@ -183,26 +183,26 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "popup" : {
   },
 
-  "tool-tip" : {
+  "widget-tool-tip" : {
     include : "popup",
 
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "ToolTip", "border" );
-      result.animation = tv.getCssAnimation( "ToolTip", "animation" );
-      result.padding = tv.getCssBoxDimensions( "ToolTip", "padding" );
-      result.textColor = tv.getCssColor( "ToolTip", "color" );
-      result.font = tv.getCssFont( "ToolTip", "font" );
-      result.backgroundColor = tv.getCssColor( "ToolTip", "background-color" );
-      result.backgroundImage = tv.getCssImage( "ToolTip", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "ToolTip", "background-image" );
-      result.opacity = tv.getCssFloat( "ToolTip", "opacity" );
+      result.border = tv.getCssBorder( "Widget-ToolTip", "border" );
+      result.animation = tv.getCssAnimation( "Widget-ToolTip", "animation" );
+      result.padding = tv.getCssBoxDimensions( "Widget-ToolTip", "padding" );
+      result.textColor = tv.getCssColor( "Widget-ToolTip", "color" );
+      result.font = tv.getCssFont( "Widget-ToolTip", "font" );
+      result.backgroundColor = tv.getCssColor( "Widget-ToolTip", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Widget-ToolTip", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Widget-ToolTip", "background-image" );
+      result.opacity = tv.getCssFloat( "Widget-ToolTip", "opacity" );
       return result;
     }
   },
 
-  "tool-tip-widget" : {
+  "tool-tip" : {
     include : "popup",
 
     style : function( states ) {
@@ -212,46 +212,46 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.height = "auto";
       result.minWidth = 36;
       result.minHeight = 36;
-      result.cursor = tv.getCssCursor( "ToolTipWidget", "cursor" );
-      result.font = tv.getCssFont( "ToolTipWidget", "font" );
-      result.textColor = tv.getCssColor( "ToolTipWidget", "color" );
-      result.padding = tv.getCssBoxDimensions( "ToolTipWidget", "padding" );      result.border = tv.getCssBorder( "ToolTipWidget", "border" );
-      result.backgroundColor = tv.getCssColor( "ToolTipWidget", "background-color" );
-      result.backgroundImage = tv.getCssImage( "ToolTipWidget", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "ToolTipWidget", "background-image" );
-      result.animation = tv.getCssAnimation( "ToolTipWidget", "animation" );
-      result.opacity = tv.getCssFloat( "ToolTipWidget", "opacity" );
+      result.cursor = tv.getCssCursor( "ToolTip", "cursor" );
+      result.font = tv.getCssFont( "ToolTip", "font" );
+      result.textColor = tv.getCssColor( "ToolTip", "color" );
+      result.padding = tv.getCssBoxDimensions( "ToolTip", "padding" );      result.border = tv.getCssBorder( "ToolTip", "border" );
+      result.backgroundColor = tv.getCssColor( "ToolTip", "background-color" );
+      result.backgroundImage = tv.getCssImage( "ToolTip", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ToolTip", "background-image" );
+      result.animation = tv.getCssAnimation( "ToolTip", "animation" );
+      result.opacity = tv.getCssFloat( "ToolTip", "opacity" );
       return result;
     }
   },
 
-  "tool-tip-widget-image" : {
+  "tool-tip-image" : {
     include: "image",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        source : tv.getCssImage( "ToolTipWidget-Image", "background-image" )
+        source : tv.getCssImage( "ToolTip-Image", "background-image" )
       };
     }
   },
 
-  "tool-tip-widget-text" : {
+  "tool-tip-text" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        font : tv.getCssFont( "ToolTipWidget-Text", "font" ),
-        textColor : tv.getCssColor( "ToolTipWidget-Text", "color" )
+        font : tv.getCssFont( "ToolTip-Text", "font" ),
+        textColor : tv.getCssColor( "ToolTip-Text", "color" )
       };
       return result;
     }
   },
 
-  "tool-tip-widget-message" : {
+  "tool-tip-message" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        font : tv.getCssFont( "ToolTipWidget-Message", "font" ),
-        textColor : tv.getCssColor( "ToolTipWidget-Message", "color" )
+        font : tv.getCssFont( "ToolTip-Message", "font" ),
+        textColor : tv.getCssColor( "ToolTip-Message", "color" )
       };
       return result;
     }

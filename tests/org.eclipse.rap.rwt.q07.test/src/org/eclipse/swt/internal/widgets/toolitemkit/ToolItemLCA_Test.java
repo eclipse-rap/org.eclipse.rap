@@ -213,7 +213,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-    assertEquals( "", adapter.getPreserved( "toolTip" ) );
+    assertEquals( "", adapter.getPreserved( "toolTipText" ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
     Fixture.clearPreserved();
@@ -233,7 +233,7 @@ public class ToolItemLCA_Test extends TestCase {
       assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
     }
     assertEquals( Boolean.TRUE, hasListeners );
-    assertEquals( "tooltip text", adapter.getPreserved( "toolTip" ) );
+    assertEquals( "tooltip text", adapter.getPreserved( "toolTipText" ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     assertEquals( contextMenu, adapter.getPreserved( Props.MENU ) );
   }

@@ -1160,7 +1160,7 @@ Tree-Indent:first:last:expanded {
   color: #a7a6aa;
 }
 
-ToolTip {
+Widget-ToolTip {
   border: 1px solid;
   padding: 1px 3px 2px 3px;
   color: black;

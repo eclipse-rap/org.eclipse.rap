@@ -69,6 +69,8 @@ public class DefaultTheme_Test extends ThemeTestCase {
     processCssTestFile( getClass(), "Scale.test.css" );
     createFakeTheme( "widgets/sashkit/Sash.default.css" );
     processCssTestFile( getClass(), "Sash.test.css" );
+    createFakeTheme( "widgets/tooltipkit/ToolTip.default.css" );
+    processCssTestFile( getClass(), "ToolTip.test.css" );
   }
 
 
