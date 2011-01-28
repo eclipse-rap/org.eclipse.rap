@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others.
+ * Copyright (c) 2009, 2011 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -145,6 +145,14 @@ public class EncodingUtil_Test extends TestCase {
     String stringToEscape = "abc\u2028abc\u2029abc";
     String expected = "abcabcabc";
     String result = EncodingUtil.removeNonDisplayableChars( stringToEscape );
+    assertEquals( expected, result );
+  }
+  
+  public void testTruncateAtZero() {
+    char[] stringToTruncate = new char[] { 'h', 'e', 'l', 0, 'l', 'o' };
+    String expected = "hel";
+    String result
+      = EncodingUtil.truncateAtZero( String.valueOf( stringToTruncate ) );
     assertEquals( expected, result );
   }
 }

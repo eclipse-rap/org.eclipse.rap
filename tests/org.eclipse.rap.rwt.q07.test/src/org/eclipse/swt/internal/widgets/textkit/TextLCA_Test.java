@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.textkit;
@@ -113,6 +114,23 @@ public class TextLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     textLCA.renderChanges( text );
     assertEquals( "", Fixture.getAllMarkup() );
+  }
+  
+  public void testRenderText_ZeroChar() throws IOException {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Text text = new Text( shell, SWT.NONE );
+    shell.open();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    TextLCA textLCA = new TextLCA();
+    char[] value = new char[] { 'h', 'e', 'l', 0, 'l', 'o' };
+    text.setText( String.valueOf( value ) );
+    textLCA.renderChanges( text );
+    assertTrue( Fixture.getAllMarkup().endsWith( "setValue( \"hel\" );" ) );
   }
 
   public void testModifyEvent() {

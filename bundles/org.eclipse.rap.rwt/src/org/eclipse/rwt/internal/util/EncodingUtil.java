@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -195,6 +195,15 @@ public final class EncodingUtil {
       }
     }
     return buffer.toString();
+  }
+
+  public static String truncateAtZero( final String text ) {
+    String result = text;
+    int index = result.indexOf( 0 );
+    if( index != -1 ) {
+      result = result.substring( 0, index );
+    }
+    return result;
   }
 
   public static boolean isNonDisplayableChar( final char ch ) {
