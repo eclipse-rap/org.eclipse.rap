@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1797,14 +1797,14 @@ public class Table_Test extends TestCase {
 
     // Test non virtual table
     Table table = new Table( shell, SWT.NONE );
-    Point expected = new Point( 28, 80 );
+    Point expected = new Point( 27, 79 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     for( int i = 0; i < 10; i++ ) {
       new TableItem( table, SWT.NONE ).setText( "Item " + i );
     }
     new TableItem( table, SWT.NONE ).setText( "Long long item 100" );
-    expected = new Point( 126, 225 );
+    expected = new Point( 125, 224 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     table = new Table( shell, SWT.BORDER );
@@ -1812,12 +1812,12 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE ).setText( "Item " + i );
     }
     new TableItem( table, SWT.NONE ).setText( "Long long item 10" );
-    expected = new Point( 122, 227 );
+    expected = new Point( 121, 226 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     table.setHeaderVisible( true );
     assertEquals( 14, table.getHeaderHeight() );
-    expected = new Point( 122, 241 );
+    expected = new Point( 121, 240 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     TableColumn col1 = new TableColumn( table, SWT.NONE );
@@ -1826,19 +1826,19 @@ public class Table_Test extends TestCase {
     col2.setText( "Column 2" );
     TableColumn col3 = new TableColumn( table, SWT.NONE );
     col3.setText( "Wider Column" );
-    expected = new Point( 82, 241 );
+    expected = new Point( 81, 240 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 245, 241 );
+    expected = new Point( 244, 240 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
     assertEquals( 73, col3.getWidth() );
-    expected = new Point( 111, 241 );
+    expected = new Point( 110, 240 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     table = new Table( shell, SWT.CHECK );
@@ -1846,10 +1846,10 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE ).setText( "Item " + i );
     }
     new TableItem( table, SWT.NONE ).setText( "Long long item 10" );
-    expected = new Point( 141, 225 );
+    expected = new Point( 140, 224 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 316, 316 );
+    expected = new Point( 315, 315 );
     assertEquals( expected, table.computeSize( 300, 300 ) );
   }
 
@@ -1869,12 +1869,12 @@ public class Table_Test extends TestCase {
     } );
     // 12 + srollbar (16) + 2 * border (`)
     assertEquals( 190, table.getItemCount() * table.getItemHeight() );
-    Point expected = new Point( 30, 208 );
+    Point expected = new Point( 29, 207 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     table.setHeaderVisible( true );
     assertEquals( 14, table.getHeaderHeight() );
-    expected = new Point( 30, 222 );
+    expected = new Point( 29, 221 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     TableColumn col1 = new TableColumn( table, SWT.NONE );
@@ -1883,23 +1883,23 @@ public class Table_Test extends TestCase {
     col2.setText( "Column 2" );
     TableColumn col3 = new TableColumn( table, SWT.NONE );
     col3.setText( "Wider Column" );
-    expected = new Point( 82, 222 );
+    expected = new Point( 81, 221 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // first table item is auto resolved
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 182, 222 );
+    expected = new Point( 181, 221 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
     assertEquals( 73, col3.getWidth() );
-    expected = new Point( 111, 222 );
+    expected = new Point( 110, 221 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    expected = new Point( 318, 318 );
+    expected = new Point( 317, 317 );
     assertEquals( expected, table.computeSize( 300, 300 ) );
   }
 
@@ -1920,7 +1920,7 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE ).setText( "Item " + i );
     }
     int itemHeight = table.getItemHeight();
-    int scrollBarHeight = 16;
+    int scrollBarHeight = 15;
     table.setSize( 100, 5 * itemHeight + scrollBarHeight );
     assertEquals( 5, table.getVisibleItemCount( true ) );
     assertEquals( 5, table.getVisibleItemCount( false ) );
@@ -2280,7 +2280,7 @@ public class Table_Test extends TestCase {
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     assertEquals( 0, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 8 ) );
-    assertEquals( 166, adapter.getLeftOffset() );
+    assertEquals( 165, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 1 ) );
     assertEquals( 50, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 3 ) );
@@ -2305,7 +2305,7 @@ public class Table_Test extends TestCase {
     table.showColumn( table.getColumn( 8 ) );
     assertEquals( 0, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 5 ) );
-    assertEquals( 116, adapter.getLeftOffset() );
+    assertEquals( 115, adapter.getLeftOffset() );
   }
 
   public void testScrollBars() {

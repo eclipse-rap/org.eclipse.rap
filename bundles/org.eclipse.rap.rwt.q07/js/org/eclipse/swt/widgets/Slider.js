@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH. All rights reserved.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -20,13 +20,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
     this.base( arguments, qx.lang.String.contains( style, "horizontal" ) );
     this._hasSelectionListener = false;
     this._requestScheduled = false;
-    this.setAppearance( "slider" );
-    this._thumb.setAppearance( "slider-thumb" );
-    this._minButton.setAppearance( "slider-min-button" );
-    this._maxButton.setAppearance( "slider-max-button" );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
-    this._setStates();
   },
 
   statics : {
@@ -43,6 +38,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
   },
 
   members : {
+
+    _configureAppearance : function() {
+      this.setAppearance( "slider" );
+      this._thumb.setAppearance( "slider-thumb" );
+      this._minButton.setAppearance( "slider-min-button" );
+      this._maxButton.setAppearance( "slider-max-button" );
+    },
 
     setSelection : function( value ) {
       this._setSelection( value );
@@ -82,17 +84,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Slider", {
 
     ////////////
     // Internals
-    
-    _setStates : function() {
-      var style = this._horizontal ? "rwt_HORIZONTAL" : "rwt_VERTICAL";
-      var state = this._horizontal ? "horizontal" : "vertical";
-      this.addState( style ); 
-      this._minButton.addState( style );
-      this._minButton.addState( state );
-      this._maxButton.addState( style );
-      this._maxButton.addState( state );
-      this._thumb.addState( style );
-    },
     
     _onContextMenu : function( evt ) {
       var menu = this.getContextMenu();

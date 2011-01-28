@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -171,7 +171,7 @@ public class ScrolledComposite_Test extends TestCase {
     sc.setSize( 100, 100 );
     assertEquals( new Rectangle( 0, 0, 100, 100), sc.getClientArea() );
     sc.setAlwaysShowScrollBars( true );
-    assertEquals( new Rectangle( 0, 0, 84, 84), sc.getClientArea() );
+    assertEquals( new Rectangle( 0, 0, 85, 85), sc.getClientArea() );
   }
   
   public void testNeedHScroll() {

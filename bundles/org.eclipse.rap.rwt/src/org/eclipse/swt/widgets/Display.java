@@ -183,7 +183,6 @@ public class Display extends Device implements Adaptable {
   private final ISessionStore session;
   private final Rectangle bounds;
   private final Point cursorLocation;
-  private int scrollBarSize;
   private Shell activeShell;
   private List filters;
   private Collection redrawControls;
@@ -238,7 +237,6 @@ public class Display extends Device implements Adaptable {
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
     bounds = readInitialBounds();
-    readScrollBarSize();
     register();
     synchronizer = new Synchronizer( this );
     scheduler = new TimerExecScheduler( this );
@@ -2177,16 +2175,6 @@ public class Display extends Device implements Adaptable {
     return new Rectangle( 0, 0, width, height );
   }
 
-  private void readScrollBarSize() {
-    scrollBarSize = 16;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String parameterName = DisplayUtil.getId( this ) + ".scrollbar.size" ;
-    String value = request.getParameter( parameterName );
-    if( value != null ) {
-      scrollBarSize = Integer.parseInt( value );
-    }
-  }
-
   private void notifyFilters( final Event event ) {
     IFilterEntry[] filterEntries = getFilterEntries();
     for( int i = 0; i < filterEntries.length; i++ ) {
@@ -2318,14 +2306,6 @@ public class Display extends Device implements Adaptable {
 
     public IFilterEntry[] getFilters() {
       return getFilterEntries();
-    }
-
-    public void setScrollBarSize( final int size ) {
-      Display.this.scrollBarSize = size;
-    }
-
-    public int getScrollBarSize() {
-      return Display.this.scrollBarSize;
     }
 
     public int getAsyncRunnablesCount() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.scrollbarkit.ScrollBarThemeAdapter;
 
 /**
  * Instances of this class are selectable user interface
@@ -303,9 +304,9 @@ public class ScrollBar extends Widget {
   public Point getSize() {
     Point result = parent.getSize();
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
-      result.y = getScrollBarSize();
+      result.y = getScrollBarWidth();
     } else {
-      result.x = getScrollBarSize();
+      result.x = getScrollBarWidth();
     }
     return result;
   }
@@ -516,9 +517,9 @@ public class ScrollBar extends Widget {
     return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }
 
-  private int getScrollBarSize() {
-    Object object = getDisplay().getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter adapter = ( IDisplayAdapter )object;
-    return adapter.getScrollBarSize();
+  private int getScrollBarWidth() {
+    ScrollBarThemeAdapter themeAdapter
+      = ( ScrollBarThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getScrollBarWidth( this );
   }
 }

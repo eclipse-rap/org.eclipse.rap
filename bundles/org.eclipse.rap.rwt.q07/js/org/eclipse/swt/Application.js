@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,14 +72,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
       req.addParameter( id + ".bounds.height", String( height ) );
     },
     
-    _appendScrollBarSize : function() {
-      var size = org.eclipse.rwt.widgets.ScrollBar.BAR_WIDTH;
-      // Append scrollbar size to request
-      var req = org.eclipse.swt.Request.getInstance();
-      var id = req.getUIRootId();
-      req.addParameter( id + ".scrollbar.size", String( size ) );
-    },
-
     _appendSystemDPI : function() {
       var dpi = [ 0, 0 ];
       if( typeof screen.systemXDPI == "number" ) {
@@ -176,7 +168,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
       history.addEventListener( "request", this._historyNavigated, this );
       // Initial request to obtain startup-shell
       org.eclipse.swt.Application._appendWindowSize();
-      org.eclipse.swt.Application._appendScrollBarSize();
       org.eclipse.swt.Application._appendSystemDPI();      
       org.eclipse.swt.Application._appendColorDepth();
       var req = org.eclipse.swt.Request.getInstance();

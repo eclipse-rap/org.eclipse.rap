@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1132,14 +1132,14 @@ public class List_Test extends TestCase {
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 72, 54 );
+    expected = new Point( 71, 54 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.H_SCROLL );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 56, 70 );
+    expected = new Point( 56, 69 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.BORDER );
@@ -1357,7 +1357,7 @@ public class List_Test extends TestCase {
     for( int i = 0; i < 10; i++ ) {
       list.add( "123" );
     }
-    assertEquals( new Point( 84, 18 ), list.getItemDimensions() );
+    assertEquals( new Point( 85, 18 ), list.getItemDimensions() );
     list.add( "Very long list item" );
     assertEquals( new Point( 119, 18 ), list.getItemDimensions() );
   }

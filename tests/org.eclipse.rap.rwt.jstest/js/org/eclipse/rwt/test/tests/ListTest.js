@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -165,7 +165,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var client = list._clientArea;
       var hbar = list._horzScrollBar;
       var vbar = list._vertScrollBar;
-      var barWidth = vbar._getScrollBarWidth();
+      var barWidth = 15;
       assertIdentical( list, client.getParent() );
       assertIdentical( list, hbar.getParent() );
       assertIdentical( list, vbar.getParent() );

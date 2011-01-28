@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -31,28 +31,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertTrue( timer.isDisposed() );
       assertNull( bar._eventTimer );
     },
-    
+
     testDimension : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( true, false );
       var hBar = this._createScrollBar( true, true );
       assertFalse( hBar.isSeeable() );
       assertFalse( vBar.isSeeable() );
-      var preferredWidth = vBar.getPreferredBoxWidth();
-      var preferredHeight = hBar.getPreferredBoxHeight();
-      assertTrue( preferredWidth > 0 );
-      assertTrue( preferredHeight > 0 );
-      assertEquals( 0, hBar.getPreferredBoxWidth() );
-      assertEquals( 0, vBar.getPreferredBoxHeight() );
       testUtil.flush();
       var hBounds = testUtil.getElementBounds( hBar.getElement() );
       var vBounds = testUtil.getElementBounds( vBar.getElement() );
       assertEquals( 100, hBounds.width );
       assertEquals( 100, vBounds.height );
-      assertEquals( preferredWidth, vBounds.width );
-      assertEquals( preferredHeight, hBounds.height );
-      hBar.destroy();      
-      vBar.destroy();      
+      assertEquals( 15, vBounds.width );
+      assertEquals( 15, hBounds.height );
+      var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
+      if( isMshtml ) {
+        var hTargetBounds = testUtil.getElementBounds( hBar._getTargetNode() );
+        var vTargetBounds = testUtil.getElementBounds( vBar._getTargetNode() );
+        assertEquals( 15, vTargetBounds.width );
+        assertEquals( 15, hTargetBounds.height );
+      }
+      hBar.destroy();
+      vBar.destroy();
     },
 
     testSetValidValue : function() {
@@ -103,8 +104,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( [ 0, 0 ], this._getRelativeKnobPosition( hBar ) );
       vBar.setValue( 100 );
       hBar.setValue( 100 );
-      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
-      assertEquals( [ 33, 0 ], this._getRelativeKnobPosition( hBar ) );
+      assertEquals( [ 0, 34 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 34, 0 ], this._getRelativeKnobPosition( hBar ) );
       hBar.setMaximum( 400 );
       vBar.setMaximum( 400 );
       assertEquals( [ 0, 25 ], this._getRelativeKnobPosition( vBar ) );
@@ -124,7 +125,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( [ 0, 50 ], this._getRelativeKnobPosition( vBar ) );
       vBar.setHeight( 200 );
       testUtil.flush();
-      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 0, 34 ], this._getRelativeKnobPosition( vBar ) );
       vBar.destroy();      
     },
     
@@ -148,18 +149,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       vBar.setValue( 100 );
       vBar.setVisibility( true );
       assertEquals( 100, vBar.getValue() );
-      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 0, 34 ], this._getRelativeKnobPosition( vBar ) );
       vBar.destroy();
     },
 
     testKnobSize : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
-      assertEquals( [ 0, 33 ], this._getRelativeThumbLength( vBar ) );
+      assertEquals( [ 0, 34 ], this._getRelativeThumbLength( vBar ) );
       vBar.setMaximum( 200 );
-      assertEquals( [ 0, 50 ], this._getRelativeThumbLength( vBar ) );
+      assertEquals( [ 0, 51 ], this._getRelativeThumbLength( vBar ) );
       vBar.setHeight( 50 );
-      assertEquals( [ 0, 25 ], this._getRelativeThumbLength( vBar ) );
+      assertEquals( [ 0, 28 ], this._getRelativeThumbLength( vBar ) );
       vBar.destroy();
     },  
     
@@ -352,7 +353,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( minSize, bar._thumb.getHeight() );
       bar.setMaximum( 400 );
       assertEquals( 100, bar._thumbLength );
-      assertEquals( 17, bar._thumb.getHeight() );
+      assertEquals( 18, bar._thumb.getHeight() );
       bar.setValue( 400 );
       assertEquals( 300, bar.getValue() );
       bar.destroy();
@@ -367,7 +368,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( minSize, bar._thumb.getHeight() );
       bar.setHeight( 500 );
       assertEquals( 500, bar._thumbLength );
-      assertEquals( 234, bar._thumb.getHeight() );
+      assertEquals( 235, bar._thumb.getHeight() );
       bar.setValue( 1000 );
       assertEquals( 500, bar.getValue() );
       bar.destroy();
@@ -438,12 +439,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.setTop( 10 );
       bar.setMaximum( 300 );
       if( horizontal === true ) {
-        var preferredHeight = bar.getPreferredBoxHeight();
-        bar.setHeight( preferredHeight );
         bar.setWidth( 100 );
       } else {
-        var preferredWidth = bar.getPreferredBoxWidth();
-        bar.setWidth( preferredWidth );
         bar.setHeight( 100 );
       }
       bar.addToDocument();
@@ -455,7 +452,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     
     _getRelativeKnobPosition : function( bar ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var button = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH; 
+      var button = 15; 
       var result = [ 0, 0 ];
       if( bar._horizontal ) {
         var length = bar.getWidth() - button * 2;
@@ -469,7 +466,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
     
     _getRelativeThumbLength : function( bar ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var button = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH; 
+      var button = 16; 
       var result = [ 0, 0 ];
       if( bar._horizontal ) {
         var length = bar.getWidth() - button * 2;

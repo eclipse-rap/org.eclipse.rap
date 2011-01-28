@@ -1,0 +1,156 @@
+/*******************************************************************************
+ * Copyright (c) 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     EclipseSource - initial API and implementation
+ ******************************************************************************/
+
+/* ScrollBar default theme */
+
+ScrollBar {
+  border: none;
+  background-color: #f3f3f4;
+  border-radius: 3px 3px 3px 3px;
+  width: 15px;
+}
+
+ScrollBar-Thumb {
+  background-color: transparent;
+  border: 1px solid #b4b4b4;
+  border-radius: 0px;
+  background-image: none;
+}
+
+ScrollBar-Thumb:pressed {
+  border: 1px solid #999999;
+}
+
+ScrollBar-UpButton, ScrollBar-DownButton {
+  background-color: transparent;
+  border: 1px solid #b4b4b4;
+  cursor: default;
+}
+
+/* Rounded Borders */
+
+ScrollBar-UpButton[HORIZONTAL] {
+  border-radius: 0px 3px 3px 0px;
+}
+
+ScrollBar-UpButton[VERTICAL] {
+  border-radius: 0px 0px 3px 3px;
+}
+
+ScrollBar-DownButton[HORIZONTAL] {
+  border-radius: 3px 0px 0px 3px;
+}
+
+ScrollBar-DownButton[VERTICAL] {
+  border-radius: 3px 3px 0px 0px;
+}
+
+/* Icons */
+
+ScrollBar-Thumb-Icon[VERTICAL] {
+  background-image: url( resource/widget/rap/scrollbar/v-knob.png );
+}
+
+ScrollBar-Thumb-Icon[HORIZONTAL] {
+  background-image: url( resource/widget/rap/scrollbar/h-knob.png );
+}
+
+ScrollBar-UpButton-Icon[VERTICAL] {
+  background-image: url( resource/widget/rap/spinner/down.png );
+}
+
+ScrollBar-UpButton-Icon[VERTICAL]:hover {
+  background-image: url( resource/widget/rap/spinner/down-hover.png );
+}
+
+ScrollBar-UpButton-Icon[HORIZONTAL] {
+  background-image: url( resource/widget/rap/scrollbar/right.png );
+}
+
+ScrollBar-UpButton-Icon[HORIZONTAL]:hover {
+  background-image: url( resource/widget/rap/scrollbar/right-hover.png );
+}
+
+ScrollBar-DownButton-Icon[VERTICAL] {
+  background-image: url( resource/widget/rap/spinner/up.png );
+}
+
+ScrollBar-DownButton-Icon[VERTICAL]:hover {
+  background-image: url( resource/widget/rap/spinner/up-hover.png );
+}
+
+ScrollBar-DownButton-Icon[HORIZONTAL] {
+  background-image: url( resource/widget/rap/scrollbar/left.png );
+}
+
+ScrollBar-DownButton-Icon[HORIZONTAL]:hover {
+  background-image: url( resource/widget/rap/scrollbar/left-hover.png );
+}
+
+/* Gradients */
+
+ScrollBar-Thumb[VERTICAL], ScrollBar-UpButton[VERTICAL], ScrollBar-DownButton[VERTICAL] {
+  background-image: gradient(
+    linear, left top, right top,
+    from( #ffffff ),
+    color-stop( 38%, #f0f0f0 ),
+    color-stop( 62%, #e0e0e0 ),
+    to( #ffffff )
+  );
+}
+
+ScrollBar-Thumb[VERTICAL]:hover, ScrollBar-UpButton[VERTICAL]:hover, ScrollBar-DownButton[VERTICAL]:hover {
+  background-image: gradient(
+    linear, left top, right top,
+    from( #ffffff ),
+    color-stop( 42%, #f0f0f0 ),
+    color-stop( 58%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+ScrollBar-Thumb[VERTICAL]:pressed, ScrollBar-UpButton[VERTICAL]:pressed, ScrollBar-DownButton[VERTICAL]:pressed {
+  background-image: gradient(
+    linear, left top, right top,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}
+
+ScrollBar-Thumb[HORIZONTAL], ScrollBar-UpButton[HORIZONTAL], ScrollBar-DownButton[HORIZONTAL] {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 38%, #f0f0f0 ),
+    color-stop( 62%, #e0e0e0 ),
+    to( #ffffff )
+  );
+}
+
+ScrollBar-Thumb[HORIZONTAL]:hover, ScrollBar-UpButton[HORIZONTAL]:hover, ScrollBar-DownButton[HORIZONTAL]:hover{
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    color-stop( 42%, #f0f0f0 ),
+    color-stop( 58%, #e0e0e0 ),
+    to( #cccccc )
+  );
+}
+
+ScrollBar-Thumb[HORIZONTAL]:pressed, ScrollBar-UpButton[HORIZONTAL]:pressed, ScrollBar-DownButton[HORIZONTAL]:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e0e0e0 ),
+    color-stop( 52%, #e0e0e0 ),
+    to( #b0b0b0 )
+  );
+}

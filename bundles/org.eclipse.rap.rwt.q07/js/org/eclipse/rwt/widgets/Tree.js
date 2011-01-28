@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010,2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,17 +142,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _configureScrollBars : function() {
       var dragBlocker = function( event ) { event.stopPropagation(); };
-      var preferredWidth = this._vertScrollBar.getPreferredBoxWidth()
-      var preferredHeight = this._horzScrollBar.getPreferredBoxHeight();
       this._horzScrollBar.setZIndex( 1e8 );
       this._horzScrollBar.setVisibility( false );
       this._horzScrollBar.setLeft( 0 );
       this._horzScrollBar.setMergeEvents( false );
-      this._horzScrollBar.setHeight( preferredHeight );
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
       this._vertScrollBar.setZIndex( 1e8 );
       this._vertScrollBar.setVisibility( false );
-      this._vertScrollBar.setWidth( preferredWidth );
       this._vertScrollBar.setIncrement( 16 );
       this._vertScrollBar.setMergeEvents( false );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );

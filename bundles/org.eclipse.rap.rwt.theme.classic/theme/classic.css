@@ -772,6 +772,46 @@ Slider-UpButton-Icon[VERTICAL] {
   background-image: url( theme/img/widget/rap/slider/v_btn_max.gif );
 }
 
+/* Slider Classic theme */
+
+ScrollBar {
+  background-color: #F0F0F8;
+  border: none;
+}
+
+ScrollBar-Thumb {
+  background-color: #F8F8FF;
+  border: 1px outset;
+  background-image: none;
+}
+
+ScrollBar-Thumb-Icon {
+  background-image: none;
+}
+
+ScrollBar-DownButton, ScrollBar-UpButton {
+  background-color: #F8F8FF;
+  border: 1px outset;
+  background-image: none;
+  cursor: default;
+}
+
+ScrollBar-DownButton-Icon[HORIZONTAL] {
+  background-image: url( theme/img/widget/rap/slider/h_btn_min.gif );
+}
+
+ScrollBar-DownButton-Icon[VERTICAL] {
+  background-image: url( theme/img/widget/rap/slider/v_btn_min.gif );
+}
+
+ScrollBar-UpButton-Icon[HORIZONTAL] {
+  background-image: url( theme/img/widget/rap/slider/h_btn_max.gif );
+}
+
+ScrollBar-UpButton-Icon[VERTICAL] {
+  background-image: url( theme/img/widget/rap/slider/v_btn_max.gif );
+}
+
 /* Spinner Classic theme */
 
 Spinner {

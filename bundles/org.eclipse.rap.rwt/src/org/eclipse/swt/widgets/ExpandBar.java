@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,6 +74,7 @@ public class ExpandBar extends Composite {
   private final ItemHolder itemHolder;
   private final IExpandBarAdapter expandBarAdapter;
   private final ResizeListener resizeListener;
+  private ScrollBar verticalBar;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -108,6 +109,7 @@ public class ExpandBar extends Composite {
     super( parent, checkStyle( style ) );
     spacing = 4;
     expandBarAdapter = new ExpandBarAdapter();
+    createScrollBars();
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
     itemHolder = new ItemHolder( ExpandItem.class );
@@ -198,7 +200,7 @@ public class ExpandBar extends Composite {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += getScrollBarSize();
+      width += verticalBar.getSize().x;
     }
     return new Point( width, height );
   }
@@ -382,7 +384,7 @@ public class ExpandBar extends Composite {
     }
     // Set items width based on scrollbar visibility
     int border = getBorderWidth();
-    int v_scroll = getScrollBarSize();
+    int v_scroll = getVScrollBarWidth();
     for( int i = 0; i < itemCount; i++ ) {
       ExpandItem item = getItem( i );
       if( isVScrollbarVisible() ) {
@@ -507,10 +509,19 @@ public class ExpandBar extends Composite {
   ////////////////////////////
   // Helping methods - various
 
-  int getScrollBarSize() {
-    Object object = getDisplay().getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter adapter = ( IDisplayAdapter )object;
-    return adapter.getScrollBarSize();
+  //TODO [if] move to Scrollable as in SWT
+  private void createScrollBars() {    
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      verticalBar = new ScrollBar( this, SWT.V_SCROLL );
+    }
+  }
+  
+  int getVScrollBarWidth() {
+    int result = 0;
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      result = verticalBar.getSize().x;
+    }
+    return result;
   }
 
   ///////////////////

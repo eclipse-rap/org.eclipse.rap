@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,10 +36,6 @@ import org.eclipse.swt.internal.widgets.*;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * <p><strong>Note:</strong> Setting only one of <code>H_SCROLL</code> or
- * <code>V_SCROLL</code> leads - at least in IE 7 - to unexpected behavior
- * (items are drawn outside list bounds). Setting none or both scroll style
- * flags works as expected. We will work on a solution for this.</p>
  * @since 1.0
  */
 public class List extends Scrollable {
@@ -59,6 +55,8 @@ public class List extends Scrollable {
   private IListAdapter listAdapter;
   private final ResizeListener resizeListener;
   private int topIndex = 0;
+  private ScrollBar verticalBar;
+  private ScrollBar horizontalBar;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
 
@@ -94,6 +92,7 @@ public class List extends Scrollable {
   public List( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
     model = new ListModel( ( style & SWT.SINGLE ) != 0 );
+    createScrollBars();
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
   }
@@ -1087,10 +1086,10 @@ public class List extends Scrollable {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += getScrollBarSize();
+      width += verticalBar.getSize().x;
     }
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      height += getScrollBarSize();
+      height += horizontalBar.getSize().y;
     }
     return new Point( width, height );
   }
@@ -1158,7 +1157,7 @@ public class List extends Scrollable {
   final int getVisibleItemCount() {
     int clientHeight = getBounds().height;
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      clientHeight -= getScrollBarSize();
+      clientHeight -= horizontalBar.getSize().y;
     }
     int result = 0;
     if( clientHeight >= 0 ) {
@@ -1181,19 +1180,29 @@ public class List extends Scrollable {
 
   ///////////////////////////////////////
   // Helping methods - dynamic scrollbars
+  
+  //TODO [if] move to Scrollable as in SWT
+  private void createScrollBars() {
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      horizontalBar = new ScrollBar( this, SWT.H_SCROLL );
+    }
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      verticalBar = new ScrollBar( this, SWT.V_SCROLL );
+    }
+  }
 
   boolean hasVScrollBar() {
-    return hasVScrollBar;
+    return ( style & SWT.V_SCROLL ) != 0 && hasVScrollBar;
   }
 
   boolean hasHScrollBar() {
-    return hasHScrollBar;
+    return ( style & SWT.H_SCROLL ) != 0 && hasHScrollBar;
   }
 
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
-      result = getScrollBarSize();
+      result = verticalBar.getSize().x;
     }
     return result;
   }
@@ -1201,7 +1210,7 @@ public class List extends Scrollable {
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {
-      result = getScrollBarSize();
+      result = horizontalBar.getSize().y;
     }
     return result;
   }
@@ -1225,13 +1234,5 @@ public class List extends Scrollable {
       hasVScrollBar = true;
       hasHScrollBar = needsHScrollBar();
     }
-    hasVScrollBar = ( style & SWT.V_SCROLL ) != 0 && hasVScrollBar;
-    hasHScrollBar = ( style & SWT.H_SCROLL ) != 0 && hasHScrollBar;
-  }
-
-  private int getScrollBarSize() {
-    Object object = getDisplay().getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter adapter = ( IDisplayAdapter )object;
-    return adapter.getScrollBarSize();
   }
 }

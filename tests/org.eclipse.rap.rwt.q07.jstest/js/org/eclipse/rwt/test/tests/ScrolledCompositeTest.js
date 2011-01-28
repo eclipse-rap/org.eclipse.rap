@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
-      var barWidth = org.eclipse.rwt.widgets.ScrollBar.BAR_WIDTH;
+      var barWidth = 15;
       assertIdentical( composite, client.getParent() );
       assertIdentical( composite, hbar.getParent() );
       assertIdentical( composite, vbar.getParent() );
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
       var barWidth 
-        = org.eclipse.rwt.widgets.ScrollBar.getNativeScrollBarWidth();
+        = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = testUtil.getElementBounds( client.getElement() );
@@ -338,7 +338,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
       var barWidth 
-        = org.eclipse.rwt.widgets.ScrollBar.getNativeScrollBarWidth();
+        = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = testUtil.getElementBounds( client.getElement() );

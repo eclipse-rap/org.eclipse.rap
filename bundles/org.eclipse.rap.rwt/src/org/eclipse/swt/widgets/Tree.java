@@ -1780,10 +1780,10 @@ public class Tree extends Composite {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += getScrollBarSize();
+      width += verticalBar.getSize().x;
     }
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      height += getScrollBarSize();
+      height += horizontalBar.getSize().y;
     }
     return new Point( width, height );
   }
@@ -2211,7 +2211,7 @@ public class Tree extends Composite {
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
-      result = getScrollBarSize();
+      result = verticalBar.getSize().x;
     }
     return result;
   }
@@ -2219,7 +2219,7 @@ public class Tree extends Composite {
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {
-      result = getScrollBarSize();
+      result = horizontalBar.getSize().y;
     }
     return result;
   }
@@ -2277,12 +2277,6 @@ public class Tree extends Composite {
       horizontalBar.setVisible( hasHScrollBar );
       verticalBar.setVisible( hasVScrollBar );
     }
-  }
-
-  private int getScrollBarSize() {
-    Object object = getDisplay().getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter adapter = ( IDisplayAdapter )object;
-    return adapter.getScrollBarSize();
   }
 
   ///////////////////

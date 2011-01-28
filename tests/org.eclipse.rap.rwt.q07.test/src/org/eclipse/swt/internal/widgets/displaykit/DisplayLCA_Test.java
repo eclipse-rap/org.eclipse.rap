@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -368,14 +368,6 @@ public class DisplayLCA_Test extends TestCase {
     IDisplayLifeCycleAdapter lca = DisplayUtil.getLCA( display );
     lca.readData( display );
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
-  }
-
-  public void testScrollBarSize() {
-    Fixture.fakeRequestParam( "w1.scrollbar.size", "99" );
-    Display display = new Display();
-    Object adapter = display.getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
-    assertEquals( 99, displayAdapter.getScrollBarSize() );
   }
 
   protected void setUp() throws Exception {

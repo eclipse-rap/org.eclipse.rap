@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -360,7 +360,7 @@ public class MouseEvent_Test extends TestCase {
         events.add( event );
       }
     } );
-    assertEquals( new Rectangle( 0, 0, 84, 100 ), table.getClientArea() );
+    assertEquals( new Rectangle( 0, 0, 85, 100 ), table.getClientArea() );
     String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
     // Simulate request that sends a mouseDown + mouseUp on scrollbar

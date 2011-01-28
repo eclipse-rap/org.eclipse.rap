@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -413,7 +413,7 @@ public class ExpandItem extends Item {
 
   private void updateBounds() {
     int parentWidth = parent.computeSize( SWT.DEFAULT, SWT.DEFAULT, false ).x;
-    int v_scroll = parent.getScrollBarSize();
+    int v_scroll = parent.getVScrollBarWidth();
     int availableWidth = parentWidth - 2 * parent.spacing - v_scroll;
     width = Math.max( getPreferredWidth(), availableWidth );
     setBounds( 0, 0, width, height, false, true );

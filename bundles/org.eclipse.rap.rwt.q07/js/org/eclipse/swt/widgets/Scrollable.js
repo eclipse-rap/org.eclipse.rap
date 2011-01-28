@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004-2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004,2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -43,6 +43,25 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
   
   events : {
     "userScroll" : "qx.event.type.Event"
+  },
+  
+  statics : {
+    _nativeWidth : null,
+    
+    getNativeScrollBarWidth : function() {
+      if( this._nativeWidth === null ) {
+        var dummy = document.createElement( "div" );
+        dummy.style.width = "100px";
+        dummy.style.height = "100px";
+        dummy.style.overflow = "scroll";
+        dummy.style.visibility = "hidden";
+        document.body.appendChild( dummy );
+        this._nativeWidth = dummy.offsetWidth - dummy.clientWidth;
+        document.body.removeChild(dummy);
+      }
+      return this._nativeWidth;
+    }
+
   },
 
   members : {
@@ -98,13 +117,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
     
     _configureScrollBars : function() {
       var dragBlocker = function( event ) { event.stopPropagation(); };
-      var preferredWidth = this._vertScrollBar.getPreferredBoxWidth();
-      var preferredHeight = this._horzScrollBar.getPreferredBoxHeight();
       this._horzScrollBar.setLeft( 0 );
-      this._horzScrollBar.setHeight( preferredHeight );
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
       this._vertScrollBar.setTop( 0 );
-      this._vertScrollBar.setWidth( preferredWidth );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
       this._horzScrollBar.addEventListener( "changeValue", 
                                             this._onHorzScrollBarChangeValue, 
@@ -158,7 +173,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
 
     _onClientLayout : function() {
       var barWidth 
-        = org.eclipse.rwt.widgets.ScrollBar.getNativeScrollBarWidth();
+        = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
       var node = this._clientArea._getTargetNode();
       var el = this._clientArea.getElement();
       var overflow = this._clientArea.getOverflow();

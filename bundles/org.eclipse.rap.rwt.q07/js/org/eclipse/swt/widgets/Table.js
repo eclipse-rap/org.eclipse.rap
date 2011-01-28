@@ -129,7 +129,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._horzScrollBar.setZIndex( 1e8 );
     this._horzScrollBar.setMergeEvents( true );
     this.add( this._horzScrollBar );
-    this._horzScrollBar.setHeight( this._horzScrollBar.getPreferredBoxHeight() );
     this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
     // Create vertical scrollBar
     this._vertScrollBar = new org.eclipse.rwt.widgets.ScrollBar( false );
@@ -137,7 +136,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._vertScrollBar.setZIndex( 1e8 );
     this._vertScrollBar.setMergeEvents( false );
     this.add( this._vertScrollBar );
-    this._vertScrollBar.setWidth( this._vertScrollBar.getPreferredBoxWidth() );
     this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
     // Listen to size changes to adjust client area size
     this.addEventListener( "changeWidth", this._onChangeSize, this );

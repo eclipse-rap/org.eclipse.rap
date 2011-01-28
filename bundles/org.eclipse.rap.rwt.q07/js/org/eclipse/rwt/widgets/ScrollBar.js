@@ -25,14 +25,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
     this._setMinimum( 0 );
     this._minThumbSize = org.eclipse.rwt.widgets.ScrollBar.MIN_THUMB_SIZE;
     this.setIncrement( 20 );
-    this.setAppearance( "slider" );
-    this._thumb.setAppearance( "slider-thumb" );
-    this._minButton.setAppearance( "slider-min-button" );
-    this._maxButton.setAppearance( "slider-max-button" );
     this.addEventListener( "click", this._stopEvent, this );
     this.addEventListener( "dblclick", this._stopEvent, this );
     this._eventTimer = null;
-    this._setStates();
   },
 
   destruct : function() {
@@ -43,25 +38,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
   },
 
   statics : {
-    BAR_WIDTH : 15,
     MERGE_THRESHOLD : 4,
-    MIN_THUMB_SIZE : 8,
-    
-    _nativeWidth : null,
-    
-    getNativeScrollBarWidth : function() {
-      if( this._nativeWidth === null ) {
-        var dummy = document.createElement( "div" );
-        dummy.style.width = "100px";
-        dummy.style.height = "100px";
-        dummy.style.overflow = "scroll";
-        dummy.style.visibility = "hidden";
-        document.body.appendChild( dummy );
-        this._nativeWidth = dummy.offsetWidth - dummy.clientWidth;
-        document.body.removeChild(dummy);
-      }
-      return this._nativeWidth;
-    }
+    MIN_THUMB_SIZE : 8
   },
   
   events: {
@@ -69,6 +47,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
   },
 
   members : {
+    
+    _configureAppearance : function() {
+      this.setAppearance( "scrollbar" );
+      this._thumb.setAppearance( "scrollbar-thumb" );
+      this._minButton.setAppearance( "scrollbar-min-button" );
+      this._maxButton.setAppearance( "scrollbar-max-button" );
+    },
     
     //////
     // API
@@ -156,6 +141,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
 
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
+      if( this._gfxLayoutEnabled ) {
+        if ( changes.paddingRight || changes.paddingBottom ) {
+          this.setGfxProperty( "borderLayouted", false ); 
+        }
+        this._layoutGfxBorder();
+      }
       if( changes[ "minThumbSize" ] ) {
         if( this._maximum > 0 && this._getLineSize() > 0 ) {
           var size = this._getThumbSize();
@@ -164,7 +155,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
             var newLength 
               = this._minThumbSize * this._maximum / this._getLineSize();
             this._setThumb( newLength );
-            this._selectionFactor = ( this._maximum - newLength ) / ( this._maximum - idealLength );
+            this._selectionFactor 
+              = ( this._maximum - newLength ) / ( this._maximum - idealLength );
           }
         }
       }
@@ -221,29 +213,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
     _dispatchValueChanged : function() {
       this._lastDispatchedValue = this._selection;
       this.createDispatchEvent( "changeValue" );
-    },
-
-    _setStates : function() {
-      var style = this._horizontal ? "rwt_HORIZONTAL" : "rwt_VERTICAL";
-      var state = this._horizontal ? "horizontal" : "vertical";
-      this.addState( style ); 
-      this._minButton.addState( style );
-      this._minButton.addState( state );
-      this._maxButton.addState( style );
-      this._maxButton.addState( state );
-      this._thumb.addState( style );
-    },
-
-    _computePreferredInnerWidth : function() {
-      return this._horizontal ? 0 : this._getScrollBarWidth();
-    },
-
-    _computePreferredInnerHeight : function() {
-      return this._horizontal ? this._getScrollBarWidth() : 0;
-    },
-
-    _getScrollBarWidth : function() {
-      return org.eclipse.rwt.widgets.ScrollBar.BAR_WIDTH;
     },
     
     _updateStepsize : function() {

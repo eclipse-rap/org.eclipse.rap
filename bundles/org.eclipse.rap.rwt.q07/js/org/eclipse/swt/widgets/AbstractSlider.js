@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH. All rights reserved.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -30,13 +30,15 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     this._mouseOffset = 0; // horizontal or vertical offset to slider start    
     this._repeatTimer = new qx.client.Timer( 100 ); // for auto-repeated actions
     // subwidgets:
-    this._thumb = new qx.ui.basic.Atom();
+    this._thumb = new org.eclipse.rwt.widgets.BasicButton( "push" );
     this._minButton = new org.eclipse.rwt.widgets.BasicButton( "push" );
     this._maxButton = new org.eclipse.rwt.widgets.BasicButton( "push" );
     this.add( this._thumb );
     this.add( this._minButton );
     this.add( this._maxButton );
     this._configureSubwidgets();
+    this._configureAppearance();
+    this._setStates();
     this._registerListeners();
   },
 
@@ -49,10 +51,6 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     this._thumb = null;
     this._minButton = null;
     this._maxButton = null;    
-  },
-
-  statics : {
-    BUTTON_WIDTH : 16 // TODO [tb] : make themeable?
   },
 
   members : {
@@ -228,6 +226,23 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       this._minButton.setTabIndex( null );
       this._maxButton.setTabIndex( null );
     },
+    
+    _setStates : function() {
+      var style = this._horizontal ? "rwt_HORIZONTAL" : "rwt_VERTICAL";
+      var state = this._horizontal ? "horizontal" : "vertical";
+      this.addState( style ); 
+      this._minButton.addState( style );
+      this._minButton.addState( state );
+      this._maxButton.addState( style );
+      this._maxButton.addState( state );
+      this._thumb.addState( style );
+      // We need to render appearance now because valid layout values
+      // (i.e. a number) might be needed by the constructor
+      this._renderAppearance();
+      this._minButton._renderAppearance();
+      this._maxButton._renderAppearance();
+      this._thumb._renderAppearance();
+    },
 
     // overwritten:
     _visualizeFocus : function() {
@@ -283,7 +298,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     },
 
     _updateThumbPosition : function() {
-      var pos = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH; 
+      var pos = this._getMinButtonWidth(); 
       pos += this._pxStep * ( this._selection - this._minimum );
       if( this._horizontal ) {
         this._thumb.setLeft( pos );
@@ -295,6 +310,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     _updateThumbSize : function() {
       var newSize =   this._thumbLength * this._getLineSize()
                     / ( this._maximum - this._minimum );
+      newSize = Math.round( newSize );
       if( this._horizontal ) {
         this._thumb.setWidth( newSize );
       } else {
@@ -306,7 +322,6 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     _updateStepsize : function() {
       var numSteps = this._maximum - this._minimum - this._thumbLength;
       if( numSteps != 0 ) {
-        var buttonSize = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH;
         var numPixels = this._getLineSize() - this._getThumbSize()
         this._pxStep = numPixels / numSteps;
       } else {
@@ -320,7 +335,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     // Helpers
 
     _getSelectionFromPosition : function( position ) {
-      var buttonSize = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH;
+      var buttonSize = this._getMinButtonWidth();
       var sel = ( position - buttonSize ) / this._pxStep + this._minimum;
       return this._limitSelection( Math.round( sel ) );
     },
@@ -368,10 +383,10 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     },
 
     _getLineSize : function() {
-      var buttonSize = org.eclipse.swt.widgets.AbstractSlider.BUTTON_WIDTH;
+      var buttonSize = this._getMinButtonWidth() + this._getMaxButtonWidth();
       var result =   this._getSliderSize()
                    - this.getFrameWidth()
-                   - 2 * buttonSize;
+                   - buttonSize;
       return result;
     },
 
@@ -381,6 +396,26 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
         result = this.getWidth();
       } else {
         result = this.getHeight();
+      }
+      return result;
+    },
+    
+    _getMinButtonWidth : function() {
+      var result;
+      if( this._horizontal ) {
+        result = this._minButton.getWidth();
+      } else {
+        result = this._minButton.getHeight();
+      }
+      return result;
+    },
+    
+    _getMaxButtonWidth : function() {
+      var result;
+      if( this._horizontal ) {
+        result = this._maxButton.getWidth();
+      } else {
+        result = this._maxButton.getHeight();
       }
       return result;
     }
