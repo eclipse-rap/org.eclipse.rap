@@ -9,8 +9,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
 
 public abstract class GCOperation {
 
@@ -26,9 +25,14 @@ public abstract class GCOperation {
     public final int id;
     public final Object value;
 
-    public SetProperty( final int id, final Object value ) {
+    public SetProperty( final int id, final Color value ) {
       this.id = id;
       this.value = value;
+    }
+
+    public SetProperty( final int id, final int value ) {
+      this.id = id;
+      this.value = new Integer( value );
     }
   }
 
@@ -75,16 +79,11 @@ public abstract class GCOperation {
     public final int height;
     public final boolean fill;
 
-    public DrawRectangle( final int x,
-                          final int y,
-                          final int width,
-                          final int height,
-                          final boolean fill )
-    {
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
+    public DrawRectangle( final Rectangle bounds, final boolean fill ) {
+      this.x = bounds.x;
+      this.y = bounds.y;
+      this.width = bounds.width;
+      this.height = bounds.height;
       this.fill = fill;
     }
   }
@@ -94,15 +93,12 @@ public abstract class GCOperation {
     public final int arcWidth;
     public final int arcHeight;
 
-    public DrawRoundRectangle( final int x,
-                               final int y,
-                               final int width,
-                               final int height,
+    public DrawRoundRectangle( final Rectangle bounds,
                                final int arcWidth,
                                final int arcHeight,
                                final boolean fill )
     {
-      super( x, y, width, height, fill );
+      super( bounds, fill );
       this.arcWidth = arcWidth;
       this.arcHeight = arcHeight;
     }
@@ -112,13 +108,10 @@ public abstract class GCOperation {
 
     public final boolean vertical;
 
-    public FillGradientRectangle( final int x,
-                                  final int y,
-                                  final int width,
-                                  final int height,
+    public FillGradientRectangle( final Rectangle bounds,
                                   final boolean vertical )
     {
-      super( x, y, width, height, true );
+      super( bounds, true );
       this.vertical = vertical;
     }
   }
@@ -133,18 +126,15 @@ public abstract class GCOperation {
     public final int arcAngle;
     public final boolean fill;
 
-    public DrawArc( final int x,
-                    final int y,
-                    final int width,
-                    final int height,
+    public DrawArc( final Rectangle bounds,
                     final int startAngle,
                     final int arcAngle,
                     final boolean fill )
     {
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
+      this.x = bounds.x;
+      this.y = bounds.y;
+      this.width = bounds.width;
+      this.height = bounds.height;
       this.startAngle = startAngle;
       this.arcAngle = arcAngle;
       this.fill = fill;
@@ -182,25 +172,19 @@ public abstract class GCOperation {
     public final boolean simple;
 
     public DrawImage( final Image image,
-                      final int srcX,
-                      final int srcY,
-                      final int srcWidth,
-                      final int srcHeight,
-                      final int destX,
-                      final int destY,
-                      final int destWidth,
-                      final int destHeight,
+                      final Rectangle src,
+                      final Rectangle dest,
                       final boolean simple )
     {
       this.image = image;
-      this.srcX = srcX;
-      this.srcY = srcY;
-      this.srcWidth = srcWidth;
-      this.srcHeight = srcHeight;
-      this.destX = destX;
-      this.destY = destY;
-      this.destWidth = destWidth;
-      this.destHeight = destHeight;
+      this.srcX = src.x;
+      this.srcY = src.y;
+      this.srcWidth = src.width;
+      this.srcHeight = src.height;
+      this.destX = dest.x;
+      this.destY = dest.y;
+      this.destWidth = dest.width;
+      this.destHeight = dest.height;
       this.simple = simple;
     }
   }

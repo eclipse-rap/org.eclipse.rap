@@ -119,8 +119,7 @@ public class CanvasLCA_Test extends TestCase {
     adapter.addGCOperation( new DrawLine( 5, 6, 7, 8 ) );
     Font font = new Font( display, "Arial", 15, SWT.NORMAL );
     adapter.addGCOperation( new SetFont( font ) );
-    SetProperty operation
-      = new SetProperty( SetProperty.LINE_WIDTH, new Integer( 5 ) );
+    SetProperty operation = new SetProperty( SetProperty.LINE_WIDTH, 5 );
     adapter.addGCOperation( operation );
     new CanvasLCA().renderChanges( canvas );
     String expected
@@ -146,8 +145,7 @@ public class CanvasLCA_Test extends TestCase {
     GCAdapter adapter = ( GCAdapter )canvas.getAdapter( IGCAdapter.class );
     Font font = new Font( display, "Arial", 15, SWT.NORMAL );
     adapter.addGCOperation( new SetFont( font ) );
-    SetProperty operation
-      = new SetProperty( SetProperty.LINE_WIDTH, new Integer( 5 ) );
+    SetProperty operation = new SetProperty( SetProperty.LINE_WIDTH, 5 );
     adapter.addGCOperation( operation );
     new CanvasLCA().renderChanges( canvas );
     assertEquals( "", Fixture.getAllMarkup() );

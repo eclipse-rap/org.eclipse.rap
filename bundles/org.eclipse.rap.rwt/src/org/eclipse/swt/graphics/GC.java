@@ -9,12 +9,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.*;
-import org.eclipse.swt.internal.graphics.*;
-import org.eclipse.swt.internal.graphics.GCOperation.*;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Class <code>GC</code> is provided to ease single-sourcing SWT and RWT code.
@@ -66,17 +62,8 @@ import org.eclipse.swt.widgets.Display;
  * -->
  * @since 1.3
  */
-
 public class GC extends Resource {
-  private final Control control;
-  private Font font;
-  private Color background;
-  private Color foreground;
-  private int alpha;
-  private int lineWidth;
-  private int lineCap;
-  private int lineJoin;
-  private int style;
+  private final GCDelegate delegate;
 
   /**
    * Constructs a new instance of this class which has been
@@ -134,19 +121,7 @@ public class GC extends Resource {
     if( drawable == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    // Assume that Drawable is either a Control or a Device
-    if( drawable instanceof Control ) {
-      control = ( Control )drawable;
-    } else {
-      control = null;
-    }
-    this.style = checkStyle( style );
-    font = determineFont( drawable );
-    background = determineBackground( drawable );
-    foreground = determineForeground( drawable );
-    alpha = 255;
-    lineCap = SWT.CAP_FLAT;
-    lineJoin = SWT.JOIN_MITER;
+    delegate = determineDelegate( drawable );
   }
 
   /**
@@ -169,13 +144,11 @@ public class GC extends Resource {
     if( font != null && font.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    Font newFont = font != null ? font : getDevice().getSystemFont();
-    if( !newFont.equals( this.font ) ) {
-      this.font = newFont;
-      SetFont operation
-        = new SetFont( new Font( getDevice(), newFont.getFontData() ) );
-      addGCOperation( operation );
+    Font newFont = font != null ? font : delegate.getDefaultFont();
+    if( !newFont.equals( delegate.getFont() ) ) {
+      delegate.setFont( newFont );
     }
+
   }
 
   /**
@@ -190,7 +163,7 @@ public class GC extends Resource {
    */
   public Font getFont() {
     checkDisposed();
-    return font;
+    return delegate.getFont();
   }
 
   /**
@@ -211,7 +184,7 @@ public class GC extends Resource {
    */
   public int getCharWidth( final char ch ) {
     checkDisposed();
-    return Graphics.stringExtent( font, Character.toString( ch ) ).x;
+    return delegate.stringExtent( Character.toString( ch ) ).x;
   }
 
   /**
@@ -234,11 +207,11 @@ public class GC extends Resource {
    * </ul>
    */
   public Point stringExtent( final String string ) {
+    checkDisposed();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    checkDisposed();
-    return Graphics.stringExtent( font, string );
+    return delegate.stringExtent( string );
   }
 
   /**
@@ -261,11 +234,11 @@ public class GC extends Resource {
    * </ul>
    */
   public Point textExtent( final String string ) {
+    checkDisposed();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    checkDisposed();
-    return Graphics.textExtent( font, string, 0 );
+    return delegate.textExtent( string, 0 );
   }
 
   /**
@@ -281,7 +254,7 @@ public class GC extends Resource {
    */
   public FontMetrics getFontMetrics() {
     checkDisposed();
-    return new FontMetrics( font );
+    return new FontMetrics( delegate.getFont() );
   }
 
   /**
@@ -307,11 +280,8 @@ public class GC extends Resource {
     if( color.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( !color.equals( background ) ) {
-      background = color;
-      SetProperty operation
-        = new SetProperty( SetProperty.BACKGROUND, background );
-      addGCOperation( operation );
+    if( !delegate.getBackground().equals( color ) ) {
+      delegate.setBackground( color );
     }
   }
 
@@ -326,7 +296,7 @@ public class GC extends Resource {
    */
   public Color getBackground() {
     checkDisposed();
-    return background;
+    return delegate.getBackground();
   }
 
   /**
@@ -351,11 +321,8 @@ public class GC extends Resource {
     if( color.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( !color.equals( foreground ) ) {
-      foreground = color;
-      SetProperty operation
-        = new SetProperty( SetProperty.FOREGROUND, foreground );
-      addGCOperation( operation );
+    if( !delegate.getForeground().equals( color ) ) {
+      delegate.setForeground( color );
     }
   }
 
@@ -370,7 +337,7 @@ public class GC extends Resource {
    */
   public Color getForeground() {
     checkDisposed();
-    return foreground;
+    return delegate.getForeground();
   }
 
   /**
@@ -387,13 +354,7 @@ public class GC extends Resource {
    */
   public Rectangle getClipping() {
     checkDisposed();
-    Rectangle result;
-    if( control != null ) {
-      result = control.getBounds();
-    } else {
-      result = device.getBounds();
-    }
-    return result;
+    return delegate.getClipping();
   }
 
   /**
@@ -413,11 +374,8 @@ public class GC extends Resource {
    */
   public void setAlpha( final int alpha ) {
     checkDisposed();
-    if( alpha >= 0 && alpha <= 255 && this.alpha != alpha ) {
-      this.alpha = alpha;
-      SetProperty operation
-        = new SetProperty( SetProperty.ALPHA, new Integer( alpha ) );
-      addGCOperation( operation );
+    if( alpha >= 0 && alpha <= 255 && delegate.getAlpha() != alpha ) {
+      delegate.setAlpha( alpha );
     }
   }
 
@@ -433,7 +391,7 @@ public class GC extends Resource {
    */
   public int getAlpha() {
     checkDisposed();
-    return alpha;
+    return delegate.getAlpha();
   }
 
   /**
@@ -450,11 +408,8 @@ public class GC extends Resource {
    */
   public void setLineWidth( final int lineWidth ) {
     checkDisposed();
-    if( this.lineWidth != lineWidth ) {
-      this.lineWidth = lineWidth;
-      SetProperty operation
-        = new SetProperty( SetProperty.LINE_WIDTH, new Integer( lineWidth ) );
-      addGCOperation( operation );
+    if( delegate.getLineWidth() != lineWidth ) {
+      delegate.setLineWidth( lineWidth );
     }
   }
 
@@ -472,7 +427,7 @@ public class GC extends Resource {
    */
   public int getLineWidth() {
     checkDisposed();
-    return lineWidth;
+    return delegate.getLineWidth();
   }
 
   /**
@@ -491,7 +446,7 @@ public class GC extends Resource {
    */
   public void setLineCap( final int lineCap ) {
     checkDisposed();
-    if( this.lineCap != lineCap ) {
+    if( delegate.getLineCap() != lineCap ) {
       switch( lineCap ) {
         case SWT.CAP_ROUND:
         case SWT.CAP_FLAT:
@@ -500,10 +455,7 @@ public class GC extends Resource {
         default:
           SWT.error( SWT.ERROR_INVALID_ARGUMENT );
       }
-      this.lineCap = lineCap;
-      SetProperty operation
-        = new SetProperty( SetProperty.LINE_CAP, new Integer( lineCap ) );
-      addGCOperation( operation );
+      delegate.setLineCap( lineCap );
     }
   }
 
@@ -520,7 +472,7 @@ public class GC extends Resource {
    */
   public int getLineCap() {
     checkDisposed();
-    return lineCap;
+    return delegate.getLineCap();
   }
 
   /**
@@ -539,7 +491,7 @@ public class GC extends Resource {
    */
   public void setLineJoin( final int lineJoin ) {
     checkDisposed();
-    if( this.lineJoin != lineJoin ) {
+    if( delegate.getLineJoin() != lineJoin ) {
       switch( lineJoin ) {
         case SWT.JOIN_MITER:
         case SWT.JOIN_ROUND:
@@ -548,10 +500,7 @@ public class GC extends Resource {
         default:
           SWT.error( SWT.ERROR_INVALID_ARGUMENT );
       }
-      this.lineJoin = lineJoin;
-      SetProperty operation
-        = new SetProperty( SetProperty.LINE_JOIN, new Integer( lineJoin ) );
-      addGCOperation( operation );
+      delegate.setLineJoin( lineJoin );
     }
   }
 
@@ -568,7 +517,7 @@ public class GC extends Resource {
    */
   public int getLineJoin() {
     checkDisposed();
-    return lineJoin;
+    return delegate.getLineJoin();
   }
 
   /**
@@ -612,6 +561,9 @@ public class GC extends Resource {
    */
   public LineAttributes getLineAttributes() {
     checkDisposed();
+    int lineWidth = delegate.getLineWidth();
+    int lineCap = delegate.getLineCap();
+    int lineJoin = delegate.getLineJoin();
     return new LineAttributes( lineWidth, lineCap, lineJoin );
   }
 
@@ -631,8 +583,7 @@ public class GC extends Resource {
   public void drawLine( final int x1, final int y1, final int x2, final int y2 )
   {
     checkDisposed();
-    DrawLine operation = new DrawLine( x1, y1, x2, y2 );
-    addGCOperation( operation );
+    delegate.drawLine( x1, y1, x2, y2 );
   }
 
   /**
@@ -678,6 +629,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
+    checkDisposed();
     drawRectangle( x, y, width, height, 0, 0, false );
   }
 
@@ -748,6 +700,7 @@ public class GC extends Resource {
                              final int width,
                              final int height )
   {
+    checkDisposed();
     drawRectangle( x, y, width, height, 0, 0, true );
   }
 
@@ -779,12 +732,10 @@ public class GC extends Resource {
   {
     checkDisposed();
     if( width != 0 && height != 0 ) {
-      if( background.equals( foreground  ) ) {
+      if( delegate.getBackground().equals( delegate.getForeground() ) ) {
         fillRectangle( x, y, width, height );
       } else {
-        FillGradientRectangle operation
-          = new FillGradientRectangle( x, y, width, height, vertical );
-        addGCOperation( operation );
+        fillGradientRect( x, y, width, height, vertical );
       }
     }
   }
@@ -817,6 +768,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
+    checkDisposed();
     drawRectangle( x, y, width, height, arcWidth, arcHeight, false );
   }
 
@@ -844,6 +796,7 @@ public class GC extends Resource {
                                   final int arcWidth,
                                   final int arcHeight )
   {
+    checkDisposed();
     drawRectangle( x, y, width, height, arcWidth, arcHeight, true );
   }
 
@@ -873,6 +826,7 @@ public class GC extends Resource {
                         final int width,
                         final int height )
   {
+    checkDisposed();
     drawArc( x, y, width, height, 0, 360, false );
   }
 
@@ -897,6 +851,7 @@ public class GC extends Resource {
                         final int width,
                         final int height )
   {
+    checkDisposed();
     drawArc( x, y, width, height, 0, 360, true );
   }
 
@@ -936,6 +891,7 @@ public class GC extends Resource {
                        final int startAngle,
                        final int arcAngle )
   {
+    checkDisposed();
     drawArc( x, y, width, height, startAngle, arcAngle, false );
   }
 
@@ -978,6 +934,7 @@ public class GC extends Resource {
                        final int startAngle,
                        final int arcAngle )
   {
+    checkDisposed();
     drawArc( x, y, width, height, startAngle, arcAngle, true );
   }
 
@@ -1003,8 +960,7 @@ public class GC extends Resource {
     if( pointArray == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    DrawPolyline operation = new DrawPolyline( pointArray, true, false );
-    addGCOperation( operation );
+    delegate.drawPolyline( pointArray, true, false );
   }
 
   /**
@@ -1031,8 +987,7 @@ public class GC extends Resource {
     if( pointArray == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    DrawPolyline operation = new DrawPolyline( pointArray, true, true );
-    addGCOperation( operation );
+    delegate.drawPolyline( pointArray, true, true );
   }
 
   /**
@@ -1057,8 +1012,7 @@ public class GC extends Resource {
     if( pointArray == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    DrawPolyline operation = new DrawPolyline( pointArray, false, false );
-    addGCOperation( operation );
+    delegate.drawPolyline( pointArray, false, false );
   }
 
   /**
@@ -1078,8 +1032,7 @@ public class GC extends Resource {
    */
   public void drawPoint( final int x, final int y ) {
     checkDisposed();
-    DrawPoint operation = new DrawPoint( x, y );
-    addGCOperation( operation );
+    delegate.drawPoint( x, y );
   }
 
   /**
@@ -1109,9 +1062,9 @@ public class GC extends Resource {
     if( image.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    DrawImage operation
-      = new DrawImage( image, 0, 0, -1, -1, x, y, -1, -1, true );
-    addGCOperation( operation );
+    Rectangle src = new Rectangle( 0, 0, -1, -1 );
+    Rectangle dest = new Rectangle( x, y, -1, -1 );
+    delegate.drawImage( image, src, dest, true );
   }
 
   /**
@@ -1165,7 +1118,7 @@ public class GC extends Resource {
           || destWidth < 0
           || destHeight < 0 )
       {
-        SWT.error (SWT.ERROR_INVALID_ARGUMENT);
+        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
       }
       if( image == null ) {
         SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1178,17 +1131,9 @@ public class GC extends Resource {
       if( srcX + srcWidth > imgWidth || srcY + srcHeight > imgHeight ) {
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );
       }
-      DrawImage operation = new DrawImage( image,
-                                           srcX,
-                                           srcY,
-                                           srcWidth,
-                                           srcHeight,
-                                           destX,
-                                           destY,
-                                           destWidth,
-                                           destHeight,
-                                           false );
-      addGCOperation( operation );
+      Rectangle src = new Rectangle( srcX, srcY, srcWidth, srcHeight );
+      Rectangle dest = new Rectangle( destX, destY, destWidth, destHeight );
+      delegate.drawImage( image, src, dest, false );
     }
   }
 
@@ -1341,8 +1286,7 @@ public class GC extends Resource {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( string.length() != 0 ) {
-      DrawText operation = new DrawText( string, x, y, flags );
-      addGCOperation( operation );
+      delegate.drawText( string, x, y, flags );
     }
   }
 
@@ -1364,60 +1308,11 @@ public class GC extends Resource {
    */
   public int getStyle() {
     checkDisposed();
-    return style;
+    return SWT.LEFT_TO_RIGHT;
   }
 
-  private void drawArc( final int x,
-                        final int y,
-                        final int width,
-                        final int height,
-                        final int startAngle,
-                        final int arcAngle,
-                        final boolean fill )
-  {
-    checkDisposed();
-    Rectangle bounds = checkBounds( x, y, width, height );
-    if( bounds.width != 0 && bounds.height != 0 && arcAngle != 0 ) {
-      DrawArc operation = new DrawArc( bounds.x,
-                                       bounds.y,
-                                       bounds.width,
-                                       bounds.height,
-                                       startAngle,
-                                       arcAngle,
-                                       fill );
-      addGCOperation( operation );
-    }
-  }
-
-  private void drawRectangle( final int x,
-                              final int y,
-                              final int width,
-                              final int height,
-                              final int arcWidth,
-                              final int arcHeight,
-                              final boolean fill )
-  {
-    checkDisposed();
-    Rectangle bounds = checkBounds( x, y, width, height );
-    if( bounds.width != 0 && bounds.height != 0 ) {
-      GCOperation operation;
-      if( arcWidth == 0 || arcHeight == 0 ) {
-        operation = new DrawRectangle( bounds.x,
-                                       bounds.y,
-                                       bounds.width,
-                                       bounds.height,
-                                       fill );
-      } else {
-        operation = new DrawRoundRectangle( bounds.x,
-                                            bounds.y,
-                                            bounds.width,
-                                            bounds.height,
-                                            Math.abs( arcWidth ),
-                                            Math.abs( arcHeight ),
-                                            fill );
-      }
-      addGCOperation( operation );
-    }
+  GCDelegate getGCDelegate() {
+    return delegate;
   }
 
   static Rectangle checkBounds( final int x,
@@ -1443,23 +1338,59 @@ public class GC extends Resource {
     }
   }
 
-  private static int checkStyle( final int style ) {
-    return SWT.LEFT_TO_RIGHT;
+  private void drawArc( final int x,
+                        final int y,
+                        final int width,
+                        final int height,
+                        final int startAngle,
+                        final int arcAngle,
+                        final boolean fill )
+  {
+    Rectangle bounds = checkBounds( x, y, width, height );
+    if( bounds.width != 0 && bounds.height != 0 && arcAngle != 0 ) {
+      delegate.drawArc( bounds, startAngle, arcAngle, fill );
+    }
   }
 
-  GCAdapter getGCAdapter() {
-    GCAdapter result = null;
-    if( control != null ) {
-      result = ( GCAdapter )control.getAdapter( IGCAdapter.class );
+  private void drawRectangle( final int x,
+                              final int y,
+                              final int width,
+                              final int height,
+                              final int arcWidth,
+                              final int arcHeight,
+                              final boolean fill )
+  {
+    Rectangle bounds = checkBounds( x, y, width, height );
+    if( bounds.width != 0 && bounds.height != 0 ) {
+      if( arcWidth == 0 || arcHeight == 0 ) {
+        delegate.drawRectangle( bounds, fill );
+      } else {
+        int absArcWidth = Math.abs( arcWidth );
+        int absArcHeight = Math.abs( arcHeight );
+        delegate.drawRoundRectangle( bounds, absArcWidth, absArcHeight, fill );
+      }
+    }
+  }
+
+  private void fillGradientRect( final int x,
+                                 final int y,
+                                 final int width,
+                                 final int height,
+                                 final boolean vertical )
+  {
+    Rectangle bounds = new Rectangle( x, y, width, height );
+    delegate.fillGradientRectangle( bounds, vertical );
+  }
+
+  private static GCDelegate determineDelegate( final Drawable drawable ) {
+    GCDelegate result = null;
+    // Assume that Drawable is either a Control or a Device
+    if( drawable instanceof Control ) {
+      result = new ControlGC( ( Control )drawable );
+    } else if( drawable instanceof Device ) {
+      result = new DeviceGC( ( Device )drawable );
     }
     return result;
-  }
-
-  private void addGCOperation( final GCOperation operation ) {
-    GCAdapter adapter = getGCAdapter();
-    if( adapter != null ) {
-      adapter.addGCOperation( operation );
-    }
   }
 
   private static Device determineDevice( final Drawable drawable ) {
@@ -1468,36 +1399,6 @@ public class GC extends Resource {
       result = ( ( Control )drawable ).getDisplay();
     } else if( drawable instanceof Device ) {
       result = ( Device )drawable;
-    }
-    return result;
-  }
-
-  private static Font determineFont( final Drawable drawable ) {
-    Font result = null;
-    if( drawable instanceof Control ) {
-      result = ( ( Control )drawable ).getFont();
-    } else if( drawable instanceof Display ) {
-      result = ( ( Display )drawable ).getSystemFont();
-    }
-    return result;
-  }
-
-  private static Color determineBackground( final Drawable drawable ) {
-    Color result = null;
-    if( drawable instanceof Control ) {
-      result = ( ( Control )drawable ).getBackground();
-    } else if( drawable instanceof Display ) {
-      result = ( ( Display )drawable ).getSystemColor( SWT.COLOR_WHITE );
-    }
-    return result;
-  }
-
-  private static Color determineForeground( final Drawable drawable ) {
-    Color result = null;
-    if( drawable instanceof Control ) {
-      result = ( ( Control )drawable ).getForeground();
-    } else if( drawable instanceof Display ) {
-      result = ( ( Display )drawable ).getSystemColor( SWT.COLOR_BLACK );
     }
     return result;
   }
