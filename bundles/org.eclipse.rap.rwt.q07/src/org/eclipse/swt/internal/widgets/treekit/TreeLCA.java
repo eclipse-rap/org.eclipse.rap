@@ -390,9 +390,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Boolean newValue = isCellToolTipEnabled( tree );
-    Boolean defValue = Boolean.FALSE;
     String prop = PROP_ENABLE_CELL_TOOLTIP;
-    writer.set( prop, "enableCellToolTip", newValue, defValue );
+    writer.set( prop, "enableCellToolTip", newValue, Boolean.FALSE );
   }
 
   private static void readCellToolTipTextRequested( final Tree tree ) {
@@ -404,7 +403,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
       ICellToolTipProvider provider = treeAdapter.getCellToolTipProvider();
       if( provider != null ) {
         HttpServletRequest request = ContextProvider.getRequest();
-        String cell = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
+        String cell
+          = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
         String[] details = cell.split( "," );
         String itemId = details[ 0 ];
         int columnIndex = Integer.parseInt( details[ 1 ] );
