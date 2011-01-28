@@ -401,7 +401,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( prop, "defaultColumnWidth", newValue, defValue );
   }
 
-  private void writeAlwaysHideSelection( final Table table ) throws IOException {
+  private static void writeAlwaysHideSelection( final Table table ) 
+    throws IOException 
+  {
     JSWriter writer = JSWriter.getWriterFor( table );
     Boolean newValue = alwaysHideSelection( table );
     Boolean defValue = Boolean.FALSE;
@@ -409,7 +411,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( prop, "alwaysHideSelection", newValue, defValue );
   }
 
-  private void writeScrollBarsVisible( final Table table ) throws IOException {
+  private static void writeScrollBarsVisible( final Table table )
+    throws IOException 
+  {
     boolean hasHChanged = WidgetLCAUtil.hasChanged( table,
                                                     PROP_HAS_H_SCROLL_BAR,
                                                     hasHScrollBar( table ),
@@ -428,7 +432,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeLeftOffset( final Table table ) throws IOException {
+  private static void writeLeftOffset( final Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = getLeftOffset( table );
     writer.set( PROP_LEFT_OFFSET, "leftOffset", newValue, DEFAULT_LEFT_OFFSET );
@@ -510,19 +514,19 @@ public final class TableLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private Boolean hasHScrollBar( final Table table ) {
+  private static Boolean hasHScrollBar( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return Boolean.valueOf( tableAdapter.hasHScrollBar() );
   }
 
-  private Boolean hasVScrollBar( final Table table ) {
+  private static Boolean hasVScrollBar( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return Boolean.valueOf( tableAdapter.hasVScrollBar() );
   }
 
-  private Integer getLeftOffset( final Table table ) {
+  private static Integer getLeftOffset( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return new Integer( tableAdapter.getLeftOffset() );

@@ -45,7 +45,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   static final String PROP_ENABLE_CELL_TOOLTIP
     = "enableCellToolTip";
 
-  private static final Integer DEFAULT_SCROLL_LEFT = new Integer( 0 );
+  private static final Integer ZERO = new Integer( 0 );
 
   public void preserveValues( final Widget widget ) {
     Tree tree = ( Tree )widget;
@@ -64,7 +64,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TREE_COLUMN, getTreeColumn( tree ) );
     adapter.preserve( PROP_ITEM_HEIGHT, new Integer( tree.getItemHeight() ) );
     adapter.preserve( PROP_SCROLL_LEFT, getScrollLeft( tree ) );
-    adapter.preserve( PROP_TOP_ITEM_INDEX, new Integer( getTopItemIndex( tree ) ) );
+    adapter.preserve( PROP_TOP_ITEM_INDEX, 
+                      new Integer( getTopItemIndex( tree ) ) );
     adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( tree ) );
     adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( tree ) );
     adapter.preserve( PROP_SCROLLBARS_SELECTION_LISTENER,
@@ -257,9 +258,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  public static void writeItemMetrics( final Tree tree )
-    throws IOException
-  {
+  static void writeItemMetrics( final Tree tree ) throws IOException {
     ItemMetrics[] itemMetrics = getItemMetrics( tree );
     if( hasItemMetricsChanged( tree, itemMetrics ) ) {
       JSWriter writer = JSWriter.getWriterFor( tree );
@@ -277,8 +276,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
       }
     }
   }
-  public static void writeIndentionWidth( final Tree tree )
-  throws IOException
+  
+  private static void writeIndentionWidth( final Tree tree )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tree );
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
@@ -291,27 +291,27 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.set( PROP_HEADER_HEIGHT, "headerHeight", newValue, null );
   }
 
-  private void writeColumnCount( final Tree tree ) throws IOException {
+  private static void writeColumnCount( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getColumnCount() );
     if( WidgetLCAUtil.hasChanged( tree, PROP_COLUMN_COUNT, newValue ) ) {
-      writer.set( PROP_COLUMN_COUNT, "columnCount", newValue, new Integer( 0 ) );
+      writer.set( PROP_COLUMN_COUNT, "columnCount", newValue, ZERO );
     }
   }
 
-  private void writeTreeColumn( final Tree tree ) throws IOException {
+  private static void writeTreeColumn( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = getTreeColumn( tree );
     if( WidgetLCAUtil.hasChanged( tree, PROP_TREE_COLUMN, newValue ) ) {
-      writer.set( PROP_TREE_COLUMN, "treeColumn", newValue, new Integer( 0 ) );
+      writer.set( PROP_TREE_COLUMN, "treeColumn", newValue, ZERO );
     }
   }
 
-  private void writeTopItem( final Tree tree ) throws IOException {
+  private static void writeTopItem( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( getTopItemIndex( tree ) );
     if( WidgetLCAUtil.hasChanged( tree, PROP_TOP_ITEM_INDEX, newValue ) ) {
-      writer.set( PROP_TOP_ITEM_INDEX, "topItemIndex", newValue, new Integer( 0 ) );
+      writer.set( PROP_TOP_ITEM_INDEX, "topItemIndex", newValue, ZERO );
     }
   }
 
@@ -321,10 +321,10 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.set( PROP_HEADER_VISIBLE, "headerVisible", newValue, Boolean.FALSE );
   }
 
-  private void writeScrollLeft( final Tree tree ) throws IOException {
+  private static void writeScrollLeft( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = getScrollLeft( tree );
-    writer.set( PROP_SCROLL_LEFT, "scrollLeft", newValue, DEFAULT_SCROLL_LEFT );
+    writer.set( PROP_SCROLL_LEFT, "scrollLeft", newValue, ZERO );
   }
 
   private static void writeScrollBars( final Tree tree ) throws IOException {
@@ -545,7 +545,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
 
-  public static ItemMetrics[] getItemMetrics( final Tree tree ) {
+  static ItemMetrics[] getItemMetrics( final Tree tree ) {
     int columnCount = Math.max( 1, tree.getColumnCount() );
     ItemMetrics[] result = new ItemMetrics[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
@@ -563,7 +563,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  public static void preserveItemMetrics( final Tree tree ) {
+  private static void preserveItemMetrics( final Tree tree ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     adapter.preserve( PROP_ITEM_METRICS, getItemMetrics( tree ) );
   }
