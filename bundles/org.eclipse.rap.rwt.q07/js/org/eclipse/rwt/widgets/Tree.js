@@ -1694,8 +1694,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         if( this._hoverItem ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var itemId = widgetManager.findIdByWidget( this._hoverItem );
-          var columnIndex = -1;
           var columns = this.getColumns();
+          var columnIndex = columns.length == 0 ? 0 : -1;
           var element = this._clientArea.getElement();
           var leftOffset = qx.bom.element.Location.getLeft( element );
           for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
@@ -1703,7 +1703,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
             if( pageX >= pageLeft && pageX < pageLeft + this._itemWidth[ i ] ) {
               columnIndex = i;
             }
-          }        
+          }
           this._cellToolTip.setCell( itemId, columnIndex );
         }
       }

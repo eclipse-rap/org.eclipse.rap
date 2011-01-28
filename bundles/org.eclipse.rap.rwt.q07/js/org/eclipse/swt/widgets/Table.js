@@ -1752,8 +1752,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if( itemIndex != -1 ) {
 	        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
 	        var itemId = widgetManager.findIdByWidget( this._items[ itemIndex ] );
-	        var columnIndex = -1;
 	        var columns = this.getColumns();
+	        var columnIndex = columns.length == 0 ? 0 : -1;
 	        var element = this._clientArea.getElement();
 	        var leftOffset = qx.bom.element.Location.getLeft( element );
 	        for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
