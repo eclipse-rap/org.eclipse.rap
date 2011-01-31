@@ -16,9 +16,13 @@ ToolTip {
   border: 1px solid #a4a4a4;
   border-radius: 5px 5px 5px 5px;
   padding: 3px 3px 3px 3px;
-  background-image: none; 
   opacity: 1;
-  color: #464a4e;
+  color: #000000;
+  background-image : gradient(
+    linear, left top, left bottom,
+    from( #ffffff ),
+    to( #e4e5f0 )
+  );
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #fcfcfc;
   animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
@@ -37,11 +41,11 @@ ToolTip-Image[ICON_WARNING] {
 }
 
 ToolTip-Text {
-  color: #a7a6aa;
+  color: #003399;
   font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 ToolTip-Message {
-  color: #a7a6aa;
+  color: #000000;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
