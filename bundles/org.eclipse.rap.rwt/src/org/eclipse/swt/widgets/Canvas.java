@@ -20,8 +20,6 @@ import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 
 /**
- * This class serves as a base class for custom widgets.
- * It does not yet provides any drawing capabilities.
  * Instances of this class provide a surface for drawing
  * arbitrary graphics.
  * <dl>
