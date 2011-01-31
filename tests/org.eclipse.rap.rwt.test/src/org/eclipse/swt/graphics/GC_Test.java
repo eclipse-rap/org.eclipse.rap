@@ -43,6 +43,7 @@ public class GC_Test extends TestCase {
     assertEquals( SWT.CAP_FLAT, lineAttributes.cap );
     assertEquals( SWT.JOIN_MITER, lineAttributes.join );
     assertEquals( 0, ( int )lineAttributes.width );
+    assertFalse( gc.getAdvanced() );
   }
   
   public void testSetFontWithDisposedFont() {
@@ -276,6 +277,18 @@ public class GC_Test extends TestCase {
     try {
       gc.getClipping();
       fail( "getClipping must not return if GC was disposed" );
+    } catch( SWTException e ) {
+      // expected
+    }
+    try {
+      gc.setAdvanced( false );
+      fail( "setAdvanced is not allowed if GC was disposed" );
+    } catch( SWTException e ) {
+      // expected
+    }
+    try {
+      gc.getAdvanced();
+      fail( "getAdvanced must not return if GC was disposed" );
     } catch( SWTException e ) {
       // expected
     }
@@ -544,7 +557,29 @@ public class GC_Test extends TestCase {
     gc = new GC( display, SWT.PUSH );
     assertEquals( SWT.LEFT_TO_RIGHT, gc.getStyle() );
   }
+  
+  public void testAdvanced() {
+    GC gc = new GC( display, SWT.NONE );
+    gc.setAdvanced( true );
+    assertTrue( gc.getAdvanced() );
+  }
 
+  public void testGetAdvancedAfterUsingSetAlpha() {
+    gc.setAlpha( 123 );
+    assertTrue( gc.getAdvanced() );
+  }
+  
+  public void testGetAdvancedAfterUsingSetLineAttributes() {
+    gc.setLineAttributes( new LineAttributes( 1 ) );
+    assertTrue( gc.getAdvanced() );
+  }
+  
+  public void testResetAdvancedAfterUsingAdvancedGrahpics() {
+    gc.setAlpha( 123 );
+    gc.setAdvanced( false );
+    assertFalse( gc.getAdvanced() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
