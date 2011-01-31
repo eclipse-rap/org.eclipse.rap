@@ -149,7 +149,36 @@ public class ToolTipLCA_Test extends TestCase {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     assertNull( ToolTipLCA.getImage( toolTip ) );
   }
+
+  public void testDontOverwriteBackgroundGradient() throws IOException {
+    ToolTipLCA lca = new ToolTipLCA();
+    Fixture.markInitialized( toolTip );
+    lca.preserveValues( toolTip );
+    lca.renderChanges( toolTip );
+    String notExpected = "wm.setBackgroundGradient";
+    assertTrue( Fixture.getAllMarkup().indexOf( notExpected ) == -1 );
+  }
   
+  public void testDontOverwriteBorderRadius() throws IOException {
+    ToolTipLCA lca = new ToolTipLCA();
+    Fixture.markInitialized( toolTip );
+    lca.preserveValues( toolTip );
+    lca.renderChanges( toolTip );
+    String notExpected = "wm.setRoundedBorder";
+    assertTrue( Fixture.getAllMarkup().indexOf( notExpected ) == -1 );
+  }
+  
+  public void testDontrerwriteCusotmVariant() throws IOException {
+    ToolTipLCA lca = new ToolTipLCA();
+    toolTip.setData( WidgetUtil.CUSTOM_VARIANT, "foo" );
+    Fixture.markInitialized( toolTip );
+    lca.preserveValues( toolTip );
+    lca.renderChanges( toolTip );
+    String notExpected = "w.addState";
+    assertTrue( Fixture.getAllMarkup().indexOf( notExpected ) == -1 );
+    toolTip.setData( WidgetUtil.CUSTOM_VARIANT, null );
+  }
+
   private Object getPreserved( String propertyName ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolTip );
     return adapter.getPreserved( propertyName );

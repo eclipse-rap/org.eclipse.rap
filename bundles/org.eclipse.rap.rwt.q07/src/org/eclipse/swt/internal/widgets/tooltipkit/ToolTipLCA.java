@@ -16,7 +16,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.ToolTip;
+import org.eclipse.swt.widgets.Widget;
 
 public final class ToolTipLCA extends AbstractWidgetLCA {
   static final String PROP_VISIBLE = "visible";
@@ -37,6 +38,9 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_LOCATION, getLocation( toolTip ) );
     Boolean hasListener = hasSelectionListener( toolTip );
     adapter.preserve( PROP_SELECTION_LISTENER, hasListener );
+    WidgetLCAUtil.preserveBackgroundGradient( widget );
+    WidgetLCAUtil.preserveRoundedBorder( widget );
+    WidgetLCAUtil.preserveCustomVariant( widget );
   }
 
   public void readData( final Widget widget ) {
