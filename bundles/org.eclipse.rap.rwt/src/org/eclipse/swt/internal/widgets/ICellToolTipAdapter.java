@@ -16,5 +16,4 @@ public interface ICellToolTipAdapter {
 
   String getToolTipText();
   void setToolTipText( String toolTipText );
-
 }

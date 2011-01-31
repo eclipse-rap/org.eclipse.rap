@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
-public interface ITreeAdapter extends ICellToolTipAdapter {
+public interface ITreeAdapter {
 
   void setScrollLeft( final int left );
   int getScrollLeft();

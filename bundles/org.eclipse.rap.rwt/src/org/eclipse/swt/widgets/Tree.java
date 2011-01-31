@@ -153,8 +153,10 @@ public class Tree extends Composite {
       return result;
     }
   }
-  private final class InternalTreeAdapter implements ITreeAdapter {
-
+  
+  private final class InternalTreeAdapter 
+    implements ITreeAdapter, ICellToolTipAdapter
+  {
     private String toolTipText;
     private ICellToolTipProvider provider;
 
@@ -315,6 +317,8 @@ public class Tree extends Composite {
     if( adapter == IItemHolderAdapter.class ) {
       result = new CompositeItemHolder();
     } else if( adapter == ITreeAdapter.class ) {
+      result = treeAdapter;
+    } else if( adapter == ICellToolTipAdapter.class ) {
       result = treeAdapter;
     } else {
       result = super.getAdapter( adapter );

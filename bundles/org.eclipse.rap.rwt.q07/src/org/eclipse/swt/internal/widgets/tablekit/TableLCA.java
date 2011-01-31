@@ -94,8 +94,8 @@ public final class TableLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_LEFT_OFFSET, getLeftOffset( table ) );
     adapter.preserve( PROP_SCROLLBARS_SELECTION_LISTENER,
                       hasScrollBarsSelectionListener( table ) );
-    adapter.preserve( PROP_ENABLE_CELL_TOOLTIP,
-                      isCellToolTipEnabled( table ) );
+    adapter.preserve( PROP_ENABLE_CELL_TOOLTIP, 
+                      new Boolean( CellToolTipUtil.isEnabledFor( table ) ) );
   }
 
   public void readData( final Widget widget ) {
@@ -441,32 +441,21 @@ public final class TableLCA extends AbstractWidgetLCA {
   ////////////////
   // Cell tooltips
 
-  private static Boolean isCellToolTipEnabled( final Table table ) {
-    Boolean result = Boolean.FALSE;
-    Object data = table.getData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP );
-    if( Boolean.TRUE.equals( data ) ) {
-      result = Boolean.TRUE;
-    }
-    return result;
-  }
-
   private static void writeEnableCellToolTip( final Table table )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( table );
-    Boolean newValue = isCellToolTipEnabled( table );
-    Boolean defValue = Boolean.FALSE;
     String prop = PROP_ENABLE_CELL_TOOLTIP;
-    writer.set( prop, "enableCellToolTip", newValue, defValue );
+    Boolean newValue = new Boolean( CellToolTipUtil.isEnabledFor( table ) );
+    writer.set( prop, "enableCellToolTip", newValue, Boolean.FALSE );
   }
 
   private static void readCellToolTipTextRequested( final Table table ) {
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    tableAdapter.setToolTipText( null );
+    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
+    adapter.setToolTipText( null );
     String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
     if( WidgetLCAUtil.wasEventSent( table, event ) ) {
-      ICellToolTipProvider provider = tableAdapter.getCellToolTipProvider();
+      ICellToolTipProvider provider = adapter.getCellToolTipProvider();
       if( provider != null ) {
         HttpServletRequest request = ContextProvider.getRequest();
         String cell = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
@@ -488,9 +477,8 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static void writeCellToolTipText( final Table table )
     throws IOException
   {
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    String text = tableAdapter.getToolTipText();
+    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
+    String text = adapter.getToolTipText();
     if( text != null ) {
       JSWriter writer = JSWriter.getWriterFor( table );
       text = WidgetLCAUtil.escapeText( text, false );

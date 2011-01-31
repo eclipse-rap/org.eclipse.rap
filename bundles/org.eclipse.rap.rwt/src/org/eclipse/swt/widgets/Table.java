@@ -108,8 +108,8 @@ public class Table extends Composite {
     }
   }
 
-  private final class TableAdapter implements ITableAdapter {
-
+  private final class TableAdapter implements ITableAdapter, ICellToolTipAdapter 
+  {
     private String toolTipText;
     private ICellToolTipProvider provider;
 
@@ -329,6 +329,8 @@ public class Table extends Composite {
     if( adapter == IItemHolderAdapter.class ) {
       result = itemHolder;
     } else if( adapter == ITableAdapter.class ) {
+      result = tableAdapter;
+    } else if( adapter == ICellToolTipAdapter.class ) {
       result = tableAdapter;
     } else {
       result = super.getAdapter( adapter );

@@ -705,9 +705,8 @@ public class TreeLCA_Test extends TestCase {
   public void testGetCellToolTipText() {
     Tree tree = new Tree( shell, SWT.NONE );
     createTreeItems( tree, 5 );
-    Object adapter = tree.getAdapter( ITreeAdapter.class );
-    final ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
-    treeAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
+    final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    adapter.setCellToolTipProvider( new ICellToolTipProvider() {
       public void getToolTipText( final Item item,
                                   final int columnIndex )
       {
@@ -717,7 +716,7 @@ public class TreeLCA_Test extends TestCase {
         buffer.append( "," );
         buffer.append( columnIndex );
         buffer.append( "]" );
-        treeAdapter.setToolTipText( buffer.toString() );
+        adapter.setToolTipText( buffer.toString() );
       }
     } );
     Fixture.fakeNewRequest();
@@ -731,13 +730,12 @@ public class TreeLCA_Test extends TestCase {
     expected = "w.setCellToolTipText( \"[" + itemId + ",0]\" );";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
-  
+
   public void testGetCellToolTipTextForSubitems() {
     Tree tree = new Tree( shell, SWT.NONE );
     createTreeItems( tree, 5 );
-    Object adapter = tree.getAdapter( ITreeAdapter.class );
-    final ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
-    treeAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
+    final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    adapter.setCellToolTipProvider( new ICellToolTipProvider() {
       public void getToolTipText( final Item item,
                                   final int columnIndex )
       {
@@ -747,7 +745,7 @@ public class TreeLCA_Test extends TestCase {
         buffer.append( "," );
         buffer.append( columnIndex );
         buffer.append( "]" );
-        treeAdapter.setToolTipText( buffer.toString() );
+        adapter.setToolTipText( buffer.toString() );
       }
     } );
     Fixture.fakeNewRequest();
@@ -766,10 +764,8 @@ public class TreeLCA_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.NONE );
     createTreeItems( tree, 3 );
     final StringBuffer log = new StringBuffer();
-    final ITreeAdapter treeAdapter
-      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-    treeAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
-
+    final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    adapter.setCellToolTipProvider( new ICellToolTipProvider() {
       public void getToolTipText( final Item item, final int columnIndex ) {
         StringBuffer buffer = new StringBuffer();
         buffer.append( "[" );

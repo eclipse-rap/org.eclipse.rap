@@ -849,9 +849,8 @@ public class TableLCA_Test extends TestCase {
   public void testGetCellToolTipText() {
     Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 5 );
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    final ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
+    final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
+    adapter.setCellToolTipProvider( new ICellToolTipProvider() {
       public void getToolTipText( final Item item,
                                   final int columnIndex )
       {
@@ -861,7 +860,7 @@ public class TableLCA_Test extends TestCase {
         buffer.append( "," );
         buffer.append( columnIndex );
         buffer.append( "]" );
-        tableAdapter.setToolTipText( buffer.toString() );
+        adapter.setToolTipText( buffer.toString() );
       }
     } );
     Fixture.fakeNewRequest();
@@ -880,8 +879,8 @@ public class TableLCA_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 3 );
     final StringBuffer log = new StringBuffer();
-    final ITableAdapter tableAdapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    final ICellToolTipAdapter tableAdapter
+      = ( ICellToolTipAdapter )table.getAdapter( ICellToolTipAdapter.class );
     tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
 
       public void getToolTipText( final Item item, final int columnIndex ) {

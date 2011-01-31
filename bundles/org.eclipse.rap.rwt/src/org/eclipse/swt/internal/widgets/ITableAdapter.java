@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.widgets;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-public interface ITableAdapter extends ICellToolTipAdapter {
+public interface ITableAdapter {
 
   int getCheckWidth();
   int getItemImageWidth( int columnIndex );

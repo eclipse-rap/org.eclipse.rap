@@ -71,7 +71,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SCROLLBARS_SELECTION_LISTENER,
                       hasScrollBarsSelectionListener( tree ) );
     adapter.preserve( PROP_ENABLE_CELL_TOOLTIP,
-                      isCellToolTipEnabled( tree ) );
+                      new Boolean( CellToolTipUtil.isEnabledFor( tree ) ) );
     WidgetLCAUtil.preserveCustomVariant( tree );
   }
 
@@ -376,31 +376,21 @@ public final class TreeLCA extends AbstractWidgetLCA {
   ////////////////
   // Cell tooltips
 
-  private static Boolean isCellToolTipEnabled( final Tree tree ) {
-    Boolean result = Boolean.FALSE;
-    Object data = tree.getData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP );
-    if( Boolean.TRUE.equals( data ) ) {
-      result = Boolean.TRUE;
-    }
-    return result;
-  }
-
   private static void writeEnableCellToolTip( final Tree tree )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tree );
-    Boolean newValue = isCellToolTipEnabled( tree );
     String prop = PROP_ENABLE_CELL_TOOLTIP;
+    Boolean newValue = new Boolean( CellToolTipUtil.isEnabledFor( tree ) );
     writer.set( prop, "enableCellToolTip", newValue, Boolean.FALSE );
   }
 
   private static void readCellToolTipTextRequested( final Tree tree ) {
-    Object adapter = tree.getAdapter( ITreeAdapter.class );
-    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
-    treeAdapter.setToolTipText( null );
+    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    adapter.setToolTipText( null );
     String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
     if( WidgetLCAUtil.wasEventSent( tree, event ) ) {
-      ICellToolTipProvider provider = treeAdapter.getCellToolTipProvider();
+      ICellToolTipProvider provider = adapter.getCellToolTipProvider();
       if( provider != null ) {
         HttpServletRequest request = ContextProvider.getRequest();
         String cell
@@ -421,9 +411,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static void writeCellToolTipText( final Tree tree )
     throws IOException
   {
-    Object adapter = tree.getAdapter( ITreeAdapter.class );
-    ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
-    String text = treeAdapter.getToolTipText();
+    ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    String text = adapter.getToolTipText();
     if( text != null ) {
       JSWriter writer = JSWriter.getWriterFor( tree );
       text = WidgetLCAUtil.escapeText( text, false );
