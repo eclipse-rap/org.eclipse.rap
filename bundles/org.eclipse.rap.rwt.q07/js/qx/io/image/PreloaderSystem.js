@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -180,8 +180,6 @@ qx.Class.define("qx.io.image.PreloaderSystem",
      */
     __oninterval : function(e)
     {
-      this.debug("Cannot preload: " + qx.lang.Object.getKeysAsString(this._list));
-
       this._stopped = true;
       this._timer.stop();
 
@@ -208,7 +206,6 @@ qx.Class.define("qx.io.image.PreloaderSystem",
         return;
       }
 
-      // this.debug("Check: " + qx.lang.Object.getKeysAsString(this._list));
       if (qx.lang.Object.isEmpty(this._list))
       {
         this._timer.stop();

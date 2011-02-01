@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,11 +94,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * registered for the given id exists.
      */
     findWidgetById : function( id ) {
-      var result = this._map[ id ];
-      if( result == null ) {
-        this.warn( "No widget registered for id " + id );
-      }
-      return result;
+      return this._map[ id ];
     },
 
     /**
@@ -183,8 +179,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( widget.setFont ) { // test if font property is supported
         var font = this._createFont( name, size, bold, italic );
         widget.setFont( font );
-      } else {
-        this.debug( widget.classname + " does not support fonts" );
       }
     },
 

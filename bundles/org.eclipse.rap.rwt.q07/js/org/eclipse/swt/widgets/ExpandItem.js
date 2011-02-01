@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
   construct : function( parent ) {
     this.base( arguments ); 
     if( parent.classname != "org.eclipse.swt.widgets.ExpandBar" ) {
-      this.error( "illegal parent, must be a ExpandBar" );
+      throw new Error( "illegal parent, must be a ExpandBar" );
     } 
     this.setAppearance( "expand-item" );    
     this._expandBar = parent; 

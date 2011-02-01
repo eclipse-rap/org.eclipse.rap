@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        Derrell Lipman,
  *                        and EclipseSource
  *
@@ -113,7 +113,6 @@ qx.Class.define("qx.io.remote.Response",
      */
      getData : function()
      {
-       qx.log.Logger.deprecatedMethodWarning(arguments.callee, "This method is no longer needed since the event object is now an instance of the Response class.");
        return this;
      }
   }

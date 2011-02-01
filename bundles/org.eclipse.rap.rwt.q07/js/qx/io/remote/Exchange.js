@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        Derrell Lipman,
  *                        STZ-IDA, Germany, http://www.stz-ida.de,
  *                        and EclipseSource
@@ -227,13 +227,6 @@ qx.Class.define("qx.io.remote.Exchange",
         switch(vStatusCode)
         {
           case -1: // Not Available (OK for readystates: MSXML<4=1-3, MSXML>3=1-2, Gecko=1)
-            if (qx.core.Variant.isSet("qx.debug", "on"))
-            {
-              if (qx.core.Setting.get("qx.ioRemoteDebug") && vReadyState > 3) {
-                qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Failed with statuscode: -1 at readyState " + vReadyState);
-              }
-            }
-
             return vReadyState < 4;
 
           case 200: // OK
@@ -248,13 +241,6 @@ qx.Class.define("qx.io.remote.Exchange",
             return true;
 
           case 206: // Partial Content
-            if (qx.core.Variant.isSet("qx.debug", "on"))
-            {
-              if (qx.core.Setting.get("qx.ioRemoteDebug") && vReadyState === 4) {
-                qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Failed with statuscode: 206 (Partial content while being complete!)");
-              }
-            }
-
             return vReadyState !== 4;
 
           case 300: // Multiple Choices
@@ -284,15 +270,7 @@ qx.Class.define("qx.io.remote.Exchange",
           case 503: // Out of Resources
           case 504: // Gateway Time-Out
           case 505: // HTTP Version not supported
-            if (qx.core.Variant.isSet("qx.debug", "on"))
-            {
-              if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-                qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Failed with typical HTTP statuscode: " + vStatusCode);
-              }
-            }
-
             return false;
-
 
             // The following case labels are wininet.dll error codes that may
             // be encountered.
@@ -309,13 +287,6 @@ qx.Class.define("qx.io.remote.Exchange",
           case 12152:
             // See above comments for variable status.
           case 13030:
-            if (qx.core.Variant.isSet("qx.debug", "on"))
-            {
-              if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-                qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Failed with MSHTML specific HTTP statuscode: " + vStatusCode);
-              }
-            }
-
             return false;
 
           default:
@@ -324,8 +295,6 @@ qx.Class.define("qx.io.remote.Exchange",
             if (vStatusCode > 206 && vStatusCode < 300) {
               return true;
             }
-
-            qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Unknown status code: " + vStatusCode + " (" + vReadyState + ")");
             return false;
         }
       }
@@ -535,7 +504,7 @@ qx.Class.define("qx.io.remote.Exchange",
       var vRequest = this.getRequest();
 
       if (!vRequest) {
-        return this.error("Please attach a request object first");
+        throw new Error( "Please attach a request object first" );
       }
 
       qx.io.remote.Exchange.initTypes();
@@ -587,13 +556,6 @@ qx.Class.define("qx.io.remote.Exchange",
 
           try
           {
-            if (qx.core.Variant.isSet("qx.debug", "on"))
-            {
-              if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-                this.debug("Using implementation: " + vTransportImpl.classname);
-              }
-            }
-
             vTransport = new vTransportImpl;
             this.setImplementation(vTransport);
 
@@ -604,13 +566,12 @@ qx.Class.define("qx.io.remote.Exchange",
           }
           catch(ex)
           {
-            this.error("Request handler throws error", ex);
-            return ex;
+            throw new Error( "Request handler throws error " + ex );
           }
         }
       }
 
-      this.error("There is no transport implementation available to handle this request: " + vRequest);
+      throw new Error( "There is no transport implementation available to handle this request: " + vRequest );
     },
 
 
@@ -627,24 +588,10 @@ qx.Class.define("qx.io.remote.Exchange",
 
       if (vImplementation)
       {
-        if (qx.core.Variant.isSet("qx.debug", "on"))
-        {
-          if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-            this.debug("Abort: implementation " + vImplementation.toHashCode());
-          }
-        }
-
         vImplementation.abort();
       }
       else
       {
-        if (qx.core.Variant.isSet("qx.debug", "on"))
-        {
-          if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-            this.debug("Abort: forcing state to be aborted");
-          }
-        }
-
         this.setState("aborted");
       }
     },
@@ -662,12 +609,10 @@ qx.Class.define("qx.io.remote.Exchange",
 
       if (vImplementation)
       {
-        this.warn("Timeout: implementation " + vImplementation.toHashCode());
         vImplementation.timeout();
       }
       else
       {
-        this.warn("Timeout: forcing state to timeout");
         this.setState("timeout");
       }
 
@@ -822,13 +767,6 @@ qx.Class.define("qx.io.remote.Exchange",
      */
     _applyState : function(value, old)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          this.debug("State: " + old + " => " + value);
-        }
-      }
-
       switch(value)
       {
         case "sending":
@@ -866,13 +804,6 @@ qx.Class.define("qx.io.remote.Exchange",
               if (vContent === null)
               {
                 // Nope.  Change COMPLETED to FAILED.
-                if (qx.core.Variant.isSet("qx.debug", "on"))
-                {
-                  if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-                    this.debug("Altered State: " + value + " => failed");
-                  }
-                }
-
                 value = "failed";
               }
             }

@@ -229,7 +229,7 @@ qx.Class.define("qx.event.type.DomEvent",
       "mshtml" : function(vValue)
       {
         if (!vValue) {
-          return this.error("It is not possible to set preventDefault to false if it was true before!", "setDefaultPrevented");
+          throw new Error( "It is not possible to set preventDefault to false if it was true before!" );
         }
 
         this.getDomEvent().returnValue = false;
@@ -240,7 +240,7 @@ qx.Class.define("qx.event.type.DomEvent",
       "default" : function(vValue)
       {
         if (!vValue) {
-          return this.error("It is not possible to set preventDefault to false if it was true before!", "setDefaultPrevented");
+          throw new Error( "It is not possible to set preventDefault to false if it was true before!" );
         }
 
         this.getDomEvent().preventDefault();

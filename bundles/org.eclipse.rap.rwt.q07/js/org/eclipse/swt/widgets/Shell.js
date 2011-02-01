@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -385,7 +385,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       if( !this.getActive() && !isFinite( this.getZIndex() ) ) {
         this.setZIndex( 1e8 );
         // TODO [rst] Obsoleted by rewrite. Let the warning here for safety.
-        this.warn( "--- INFINITE Z-ORDER ---" );
+        // TODO [tb] Logging is no more: Remove or throw error?
+        // this.warn( "--- INFINITE Z-ORDER ---" );
       }
       // end of workaround
       if( !org.eclipse.swt.EventUtil.getSuspended() && this.getActive() ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -261,41 +261,6 @@ qx.Class.define("qx.ui.basic.Label",
   members :
   {
     _content : "",
-    // TODO [rh] unused
-//    _isHtml : false,
-
-    /**
-     * Deprecated text setter.
-     *
-     * @param html {String} new value of the label.
-     *
-     * @deprecated please use {@link #setText} instead.
-     */
-// TODO [rh] unused     
-//    setHtml : function(html)
-//    {
-//      qx.log.Logger.deprecatedMethodWarning(arguments.callee, "please use setText() instead.");
-//      this.setText(html);
-//    },
-
-
-    /**
-     * Deprecated text getter.
-     *
-     * @return {String} current value of the label.
-     * @deprecated please use {@link #getText} instead.
-     */
-// TODO [rh] unused     
-//    getHtml : function()
-//    {
-//      qx.log.Logger.deprecatedMethodWarning(arguments.callee, "please use getText() instead.");
-//      return this.getText();
-//    },
-
-
-
-
-
 
     /*
     ---------------------------------------------------------------------------

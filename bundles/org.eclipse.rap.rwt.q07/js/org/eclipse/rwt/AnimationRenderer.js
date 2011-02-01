@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -164,8 +164,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
           if( this._context._isInGlobalElementQueue ) {
             qx.ui.core.Widget.flushGlobalQueues();
           } else {
-            this.printStackTrace();
-            throw "AnimationRenderer setup failed: Widget not ready.";
+            throw new Error( "AnimationRenderer setup failed: Widget not ready." );
           }
         }        
         if( this._setupFunction != null ) {
@@ -174,7 +173,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
         this._startValue = this._prepareValue( this._startValue );
         this._endValue = this._prepareValue( this._endValue );
         if( this._renderFunction == null || this._converterFunction == null ) {
-          throw "renderFunction or converterFunction missing";
+          throw new Error( "renderFunction or converterFunction missing" );
         } 
       }
     },

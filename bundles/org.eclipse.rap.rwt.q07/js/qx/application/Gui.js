@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -99,7 +99,6 @@ qx.Class.define("qx.application.Gui",
      */
     _preload : function()
     {
-      this.debug("preloading visible images...");
       this.__preloader = new qx.io.image.PreloaderSystem(qx.io.image.Manager.getInstance().getVisibleImages(), this._preloaderDone, this);
       this.__preloader.start();
     },
@@ -120,8 +119,6 @@ qx.Class.define("qx.application.Gui",
       // Show initial widgets
       qx.ui.core.Widget.flushGlobalQueues();
 
-      this.info("render runtime: " + (new Date - start) + "ms");
-
       // Finally attach event to make the GUI ready for the user
       org.eclipse.rwt.EventHandler.init();
       org.eclipse.rwt.EventHandler.attachEvents();
@@ -136,7 +133,6 @@ qx.Class.define("qx.application.Gui",
      */
     _postload : function()
     {
-      this.debug("preloading hidden images...");
       this.__postloader = new qx.io.image.PreloaderSystem(qx.io.image.Manager.getInstance().getHiddenImages(), this._postloaderDone, this);
       this.__postloader.start();
     },

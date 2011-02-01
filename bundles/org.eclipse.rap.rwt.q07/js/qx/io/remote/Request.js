@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        Derrell Lipman,
  *                        and EclipseSource
  *
@@ -211,7 +211,6 @@ qx.Class.define("qx.io.remote.Request",
     {
       check : [ "configured", "queued", "sending", "receiving", "completed", "aborted", "timeout", "failed" ],
       init : "configured",
-      apply : "_applyState",
       event : "changeState"
     },
 
@@ -372,7 +371,7 @@ qx.Class.define("qx.io.remote.Request",
       {
         case "sending":
         case "receiving":
-          this.error("Aborting already sent request!");
+          throw new Error( "Aborting already sent request!" );
 
           // no break
 
@@ -639,24 +638,6 @@ qx.Class.define("qx.io.remote.Request",
       APPLY ROUTINES
     ---------------------------------------------------------------------------
     */
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-    _applyState : function(value, old)
-    {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          this.debug("State: " + value);
-        }
-      }
-    },
-
 
     /**
      * TODOC

@@ -143,27 +143,15 @@ qx.Class.define("qx.core.Init",
 
       this.createDispatchEvent("load");
 
-      this.debug("qooxdoo 0.7.4 (r16878)" );
-
-      this.debug("loaded " + qx.Class.getTotalNumber() + " classes");
-      this.debug("loaded " + qx.Mixin.getTotalNumber() + " mixins");
-
-      if (qx.Theme) {
-        this.debug("loaded " + qx.Theme.getTotalNumber() + " themes");
-      }
-
-      // Print browser information
-      var cl = org.eclipse.rwt.Client;
-      this.debug("client: " + cl.getEngine() + "-" + cl.getMajor() + "." + cl.getMinor() + "/" + cl.getPlatform() + "/" + cl.getLocale());
-      this.debug("browser: " + cl.getBrowser() + "/" + (cl.supportsSvg() ? "svg" : cl.supportsVml() ? "vml" : "none"));
 
       // Box model warning
       if (qx.core.Variant.isSet("qx.debug", "on"))
       {
         if (qx.core.Variant.isSet("qx.client", "mshtml"))
         {
+          var cl = org.eclipse.rwt.Client;
           if (!cl.isInQuirksMode()) {
-            this.warn("Wrong box sizing: Please modify the document's DOCTYPE!");
+            throw new Error( "Wrong box sizing: Please modify the document's DOCTYPE!" );
           }
         }
       }
@@ -180,15 +168,10 @@ qx.Class.define("qx.core.Init",
       if (!this.getApplication()) {
         return;
       }
-
-      // Debug info
-      this.debug("application: " + this.getApplication().classname + "[" + this.getApplication().toHashCode() + "]");
-
       // Send onload
       var start = new Date;
 
       this.getApplication().main();
-      this.info("main runtime: " + (new Date - start) + "ms");
     },
 
 

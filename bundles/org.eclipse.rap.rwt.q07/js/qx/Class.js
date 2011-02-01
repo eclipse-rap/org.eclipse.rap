@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -844,17 +844,6 @@ qx.Class.define("qx.Class",
             qx.Mixin.checkCompatibility(config.include);
           } catch(ex) {
             throw new Error('Error in include definition of class "' + name + '"! ' + ex.message);
-          }
-        }
-
-        // Validate settings
-        if (config.settings)
-        {
-          for (var key in config.settings)
-          {
-            if (key.substr(0, key.indexOf(".")) != name.substr(0, name.indexOf("."))) {
-              qx.log.Logger.ROOT_LOGGER.error('Forbidden setting "' + key + '" found in "' + name + '". It is forbidden to define a default setting for an external namespace!');
-            }
           }
         }
 

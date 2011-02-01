@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -106,7 +106,6 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
 
       this._childrenFlexWidthComputed = true;
 
-      // this.debug("computeChildrenFlexWidth");
       var vWidget = this.getWidget();
       var vChildren = vWidget.getVisibleChildren();
       var vChildrenLength = vChildren.length;
@@ -138,8 +137,6 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
         }
       }
 
-      // this.debug("Width: " + vUsedWidth + "/" + vAvailWidth);
-      // this.debug("Flexible Count: " + vFlexibleChildren.length);
       // *************************************************************
       // 2. Compute the sum of all flexible children widths
       // *************************************************************
@@ -274,10 +271,6 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
             // Be sure that the adjustment is not bigger/smaller than diff
             vCurrentAllocationSum = Math.min(vFactorSum * vMinAllocationLoops, vAllocationDiff);
 
-            // this.debug("Diff: " + vAllocationDiff);
-            // this.debug("Min Loops: " + vMinAllocationLoops);
-            // this.debug("Sum: " + vCurrentAllocationSum);
-            // this.debug("Factor: " + vFactorSum);
             // Reducing diff by current sum
             vAllocationDiff -= vCurrentAllocationSum;
 

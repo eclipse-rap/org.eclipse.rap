@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -56,8 +56,6 @@ qx.Class.define("qx.io.image.Manager",
      */
     add : function(source)
     {
-      // this.debug("ADD: " + source);
-
       var data = this.__all;
 
       if (data[source] === undefined) {
@@ -78,8 +76,6 @@ qx.Class.define("qx.io.image.Manager",
      */
     remove : function(source)
     {
-      // this.debug("REMOVE: " + source);
-
       var data = this.__all;
 
       if (data[source] !== undefined) {
@@ -102,8 +98,6 @@ qx.Class.define("qx.io.image.Manager",
      */
     show : function(source)
     {
-      // this.debug("SHOW: " + source);
-
       var data = this.__visible;
       if (data[source] === undefined) {
         data[source] = 1;
@@ -123,8 +117,6 @@ qx.Class.define("qx.io.image.Manager",
      */
     hide : function(source)
     {
-      // this.debug("HIDE: " + source);
-
       var data = this.__visible;
 
       if (data[source] !== undefined) {

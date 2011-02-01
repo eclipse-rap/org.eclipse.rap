@@ -289,7 +289,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
 	        }
 	        this._eval( script.join( "" ) );
 	      } catch( e ) {
-	        this.warn( "Unable to destroy function: " + name + " error: " + e );
+	        throw new Error( "Unable to destroy function: " + name + " error: " + e );
 	      }
 	    }
     },

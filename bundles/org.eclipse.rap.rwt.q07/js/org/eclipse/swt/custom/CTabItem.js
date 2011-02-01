@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
   construct : function( parent, canClose ) {
     this.base( arguments );
     if( parent.classname != "org.eclipse.swt.custom.CTabFolder" ) {
-      this.error( "illegal parent, must be a CTabFolder" );
+      throw new Error( "illegal parent, must be a CTabFolder" );
     }
     this._parent = parent;
     this.setAppearance( "ctab-item" );

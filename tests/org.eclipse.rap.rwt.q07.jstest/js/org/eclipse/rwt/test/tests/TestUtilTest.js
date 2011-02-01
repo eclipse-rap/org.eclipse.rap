@@ -250,7 +250,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     testFakeAppearance : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
-      widget.setAppearance( "my-appearance" );
       testUtil.fakeAppearance( "my-appearance", {
         style : function( states ) {
           return {
@@ -258,6 +257,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
           };
         }
       } );
+      widget.setAppearance( "my-appearance" );
       widget._renderAppearance();
       assertEquals( "my-appearance.gif", widget.getBackgroundImage() );
       widget.destroy();
@@ -290,8 +290,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       } );
       testUtil.restoreAppearance();
       var widget = new qx.ui.basic.Terminator();
-      widget.setAppearance( "my-appearance" );
-      widget._renderAppearance();
+      try{
+        widget.setAppearance( "my-appearance" );
+        widget._renderAppearance();
+      }catch( ex ) {
+      }
       assertNull( widget.getBackgroundImage() );
       widget.destroy();
     },

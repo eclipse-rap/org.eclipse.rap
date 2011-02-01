@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -910,8 +910,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
      */
     _selectItemRange : function(vItem1, vItem2, vDeselect)
     {
-      // this.debug("SELECT_RANGE: " + vItem1.toText() + "<->" + vItem2.toText());
-      // this.debug("SELECT_RANGE: " + vItem1.pos + "<->" + vItem2.pos);
       // Pre-Check a revert call if vItem2 is before vItem1
       if (this.isBefore(vItem2, vItem1)) {
         return this._selectItemRange(vItem2, vItem1, vDeselect);
@@ -1309,20 +1307,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
     */
 
     /**
-     * TODOC
-     *
-     * @type member
-     * @param vDomEvent {var} TODOC
-     * @return {void}
-     */
-    handleKeyDown : function(vDomEvent)
-    {
-      this.warn("qx.ui.selection.SelectionManager.handleKeyDown is deprecated! " + "Use keypress insted and bind it to the onkeypress event.");
-      this.handleKeyPress(vDomEvent);
-    },
-
-
-    /**
      * Handles key event to perform selection and navigation
      *
      * @type member
@@ -1356,8 +1340,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
         var aIndex = this.getAnchorItem();
         var itemToSelect = this.getItemToSelect(vDomEvent);
 
-        // this.debug("Anchor: " + (aIndex ? aIndex.getLabel() : "null"));
-        // this.debug("ToSelect: " + (itemToSelect ? itemToSelect.getLabel() : "null"));
         if (itemToSelect && this.getItemEnabled(itemToSelect))
         {
           // Update lead item to this new last selected item
@@ -1723,7 +1705,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
         }
 
         // Update scrolling (this is normally the first step)
-        // this.debug("Scroll-Up: " + (vParentScrollTop + vParentClientHeight - 2 * this.getItemHeight(nextItem)));
         vBoundedWidget.setScrollTop(vParentScrollTop - vParentClientHeight - this.getItemHeight(nextItem));
 
         // Use the real applied value instead of the calulated above
@@ -1752,9 +1733,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
       var vParentScrollTop = vBoundedWidget.getScrollTop();
       var vParentClientHeight = vBoundedWidget.getClientHeight();
 
-      // this.debug("Bound: " + (vBoundedWidget._getTargetNode() != vBoundedWidget.getElement()));
-      // this.debug("ClientHeight-1: " + vBoundedWidget._getTargetNode().clientHeight);
-      // this.debug("ClientHeight-2: " + vBoundedWidget.getElement().clientHeight);
       // Find next item
       var nextItem = this.getLeadItem();
 
@@ -1768,9 +1746,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
 
       while (tryLoops < 2)
       {
-        // this.debug("Loop: " + tryLoops);
-        // this.debug("Info: " + nextItem + " :: " + (this.getItemTop(nextItem) + (2 * this.getItemHeight(nextItem))) + " <> " + (vParentScrollTop + vParentClientHeight));
-        // this.debug("Detail: " + vParentScrollTop + ", " + vParentClientHeight);
         // Find next
         while (nextItem && ((this.getItemTop(nextItem) + (2 * this.getItemHeight(nextItem))) <= (vParentScrollTop + vParentClientHeight))) {
           nextItem = this.getDown(nextItem);
@@ -1789,7 +1764,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
         }
 
         // Update scrolling (this is normally the first step)
-        // this.debug("Scroll-Down: " + (vParentScrollTop + vParentClientHeight - 2 * this.getItemHeight(nextItem)));
         vBoundedWidget.setScrollTop(vParentScrollTop + vParentClientHeight - 2 * this.getItemHeight(nextItem));
 
         // Use the real applied value instead of the calulated above
@@ -1799,7 +1773,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
         tryLoops++;
       }
 
-      // this.debug("Select: " + nextItem._labelObject.getText());
       return nextItem;
     }
   },

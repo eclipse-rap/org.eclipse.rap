@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -162,7 +162,6 @@ qx.Class.define("qx.ui.window.Manager",
     {
       this.base(arguments, vWindow);
 
-      // this.debug("Add: " + vWindow);
       this.setActiveWindow(vWindow);
     },
 
@@ -179,9 +178,7 @@ qx.Class.define("qx.ui.window.Manager",
      */
     remove : function(vWindow)
     {
-      this.base(arguments, vWindow);
-
-      // this.debug("Remove: " + vWindow);
+      this.base(arguments, vWindow)
       if (this.getActiveWindow() == vWindow)
       {
         var a = [];

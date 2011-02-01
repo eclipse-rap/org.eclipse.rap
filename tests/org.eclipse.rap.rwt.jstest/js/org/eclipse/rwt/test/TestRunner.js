@@ -14,7 +14,6 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
 
   construct : function() {
     this.base( arguments );
-    qx.log.Logger.ROOT_LOGGER.setMinLevel( qx.log.Logger.LEVEL_ERROR );
     this._FREEZEONFAIL = true; 
     this._NOTRYCATCH = this._getURLParam( "notry" ) !== null; 
     this._FULLSCREEN = true;
@@ -57,11 +56,6 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     getLog = function() {
       return org.eclipse.rwt.test.TestRunner.getInstance().getLog();
     }
-    // also stop on "this.error":
-    qx.core.Object.prototype.error = function( msg, exc ) {
-      this.getLogger().error(msg, this.toHashCode(), exc);
-      throw msg; 
-    };
   },
 
   members : {
@@ -214,8 +208,6 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	// called by Asserts.js
   	processAssert : function( assertType, expected, value, isFailed, message ) {  	  
       if( isFailed ) {
-        var trace = qx.dev.StackTrace.getStackTrace();
-        qx.lang.Array.removeAt( trace, 0 );
         var errorMessage =   'Assert "' 
                            + ( message ? message : this._asserts + 1 )
                            + '", type "' 
@@ -229,7 +221,6 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
           "assert" : true,
           "testClass" : this._testClasses[ this._currentClass ].classname, 
           "testFunction" : this._currentFunction, 
-          "trace" : trace,
           "expected" : expected,
           "actual" : value,
           "msg" : errorMessage,
@@ -273,19 +264,6 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       this._log.asserts = this._asserts;          
       this._log.obj = testInstance;          
       this._log.currentFunction = this._currentFunction;
-      try {
-        var trace = this._getStackTrace( e );          
-        this._log.trace = trace;
-        this.getLogger().log(
-          qx.log.Logger.LEVEL_INFO, 
-          "Stack trace:", 
-          "",
-          null,
-          trace
-        );
-      } catch( e ) {
-        this._log.trace = e;
-      }
   	},
   	
   	_checkFlushState : function() {
@@ -337,26 +315,6 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       }
       qx.ui.core.Widget.__allowFlushs = true;
     },
-    
-  	_getStackTrace : function( e ) {
-  	  var trace = null;
-      if( e.trace ) {
-        trace = e.trace;
-      } else {
-        var fromErr = [];
-        if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-          // this somehow crashes webkit          
-          fromErr = qx.dev.StackTrace.getStackTraceFromError( e );
-        }
-        if( fromErr.length > 0 ) {
-          trace = fromErr;
-        } else {
-          trace = qx.dev.StackTrace.getStackTrace();                
-        }
-      }
-      return trace;
-  	},
-  	
     
     getLog : function(){
     	return this._log;
@@ -463,7 +421,6 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     },
    
     info : function( text, indent ) {
-      this.base( arguments, text );
       this._presenter.log( text, indent );
     }
     

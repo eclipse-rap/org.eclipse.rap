@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -64,7 +64,6 @@ qx.Class.define("qx.ui.core.Parent",
     activeChild :
     {
       check : "qx.ui.core.Widget",
-      apply : "_applyActiveChild",
       event : "changeActiveChild",
       nullable : true
     },
@@ -203,19 +202,6 @@ qx.Class.define("qx.ui.core.Parent",
       }
     },
 
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-    _applyActiveChild : function(value, old) {
-      // this.debug("ActiveChild: " + value);
-    },
-
-
     /**
      * TODOC
      *
@@ -225,7 +211,6 @@ qx.Class.define("qx.ui.core.Parent",
      */
     _applyFocusedChild : function(value, old)
     {
-      // this.debug("FocusedChild: " + value);
       var vFocusValid = value != null;
       var vBlurValid = old != null;
 
@@ -1108,10 +1093,6 @@ qx.Class.define("qx.ui.core.Parent",
      */
     _addChildToChildrenQueue : function(vChild)
     {
-      if (!vChild._isInParentChildrenQueue && !vChild._isDisplayable) {
-        this.warn("Ignoring invisible child: " + vChild);
-      }
-
       if (!vChild._isInParentChildrenQueue && vChild._isDisplayable)
       {
         qx.ui.core.Widget.addToGlobalLayoutQueue(this);
@@ -1204,8 +1185,6 @@ qx.Class.define("qx.ui.core.Parent",
       // APPLY LAYOUT
       var vChanges = vChild._layoutChanges;
 
-      // this.debug("Layouting " + vChild + ": " + qx.lang.Object.getKeysAsString(vChanges));
-
       try
       {
         if (vChild.renderBorder)
@@ -1217,7 +1196,7 @@ qx.Class.define("qx.ui.core.Parent",
       }
       catch(ex)
       {
-        this.error("Could not apply border to child " + vChild, ex);
+        throw new Error( "Could not apply border to child " + vChild + " " + ex );
       }
 
       try
@@ -1231,21 +1210,21 @@ qx.Class.define("qx.ui.core.Parent",
       }
       catch(ex)
       {
-        this.error("Could not apply padding to child " + vChild, ex);
+        throw new Error( "Could not apply padding to child " + vChild + " " + ex);
       }
 
       // WRAP TO LAYOUT ENGINE
       try {
         this.getLayoutImpl().layoutChild(vChild, vChanges);
       } catch(ex) {
-        this.error("Could not layout child " + vChild + " through layout handler", ex);
+        throw new Error( "Could not layout child " + vChild + " through layout handler " + ex );
       }
 
       // POST LAYOUT
       try {
         vChild._layoutPost(vChanges);
       } catch(ex) {
-        this.error("Could not post layout child " + vChild, ex);
+        throw new Error( "Could not post layout child " + vChild + " " + ex );
       }
 
       // DISPLAY DOM NODE
@@ -1260,7 +1239,7 @@ qx.Class.define("qx.ui.core.Parent",
       }
       catch(ex)
       {
-        this.error("Could not handle display updates from layout flush for child " + vChild, ex);
+        throw new Error( "Could not handle display updates from layout flush for child " + vChild + " " + ex );
       }
 
       // CLEANUP

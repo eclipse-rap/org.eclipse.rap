@@ -288,7 +288,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   public static void writeAppScript( final String id ) throws IOException {
     StringBuffer initScript = new StringBuffer();
-    initScript.append( jsConfigureLogger( getClientLogLevel() ) );
     initScript.append( jsAppInitialization( id ) );
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
     out.writeText( initScript.toString(), null );
@@ -345,12 +344,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   /////////////////////////////
   // Helping methods for render
-
-  private static String jsConfigureLogger( final Level level ) {
-    String jsLevel = ( String )LOG_LEVEL_MAP.get( level );
-    String code = "qx.log.Logger.ROOT_LOGGER.setMinLevel( {0} );";
-    return MessageFormat.format( code, new Object[] { jsLevel } );
-  }
 
   private static String jsAppInitialization( final String displayId ) {
     StringBuffer code = new StringBuffer();

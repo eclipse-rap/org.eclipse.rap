@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -49,7 +49,7 @@ qx.Class.define("qx.lang.Array",
       var len = input.length;
 
       if (len > 4 || len == 0) {
-        this.error("Invalid number of arguments!");
+        throw new Error( "Invalid number of arguments!" );
       }
 
       var result = qx.lang.Array.copy(input);

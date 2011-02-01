@@ -804,14 +804,6 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       qx.ui.core.Widget.__allowFlushs = !value;
     },
     
-    printStackTrace : function( qxObject ) {
-      // Note: this works, regardless of current log-level
-      var level = qx.log.Logger.ROOT_LOGGER._getDefaultFilter().getMinLevel();
-      qx.log.Logger.ROOT_LOGGER.setMinLevel( qx.log.Logger.LEVEL_DEBUG );
-      qxObject.printStackTrace();
-      qx.log.Logger.ROOT_LOGGER.setMinLevel( level );
-    },
-    
     emptyDragCache : function() {
       qx.event.handler.DragAndDropHandler.__dragCache = null;
     },

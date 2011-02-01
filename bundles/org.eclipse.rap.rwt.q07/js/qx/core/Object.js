@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -23,7 +23,7 @@
 qx.Class.define("qx.core.Object",
 {
   extend : Object,
-  include : [ qx.log.MLogging, qx.core.MUserData ],
+  include : [ qx.core.MUserData ],
 
 
 
@@ -142,18 +142,8 @@ qx.Class.define("qx.core.Object",
       {
         vObject = vObjectDb[i];
 
-        if (vObject && vObject.__disposed === false)
-        {
-          try
-          {
-            vObject.dispose();
-          }
-          catch(ex)
-          {
-            if (qx.core.Variant.isSet("qx.debug", "on")) {
-              qx.log.Logger.ROOT_LOGGER.warn("Could not dispose: " + vObject + ": ", ex);
-            }
-          }
+        if (vObject && vObject.__disposed === false) {
+          vObject.dispose();
         }
       }
     },
@@ -300,7 +290,7 @@ qx.Class.define("qx.core.Object",
         {
           if (!this[setter[data]])
           {
-            this.warn("No such property: " + data);
+            throw new Error( "No such property: " + data );
             return;
           }
         }
@@ -315,7 +305,7 @@ qx.Class.define("qx.core.Object",
           {
             if (!this[setter[prop]])
             {
-              this.warn("No such property: " + prop);
+              throw new Error( "No such property: " + prop );
               continue;
             }
           }
@@ -344,7 +334,7 @@ qx.Class.define("qx.core.Object",
       {
         if (!this[getter[prop]])
         {
-          this.warn("No such property: " + prop);
+          throw new Error( "No such property: " + prop );
           return;
         }
       }
@@ -368,7 +358,7 @@ qx.Class.define("qx.core.Object",
       {
         if (!this[resetter[prop]])
         {
-          this.warn("No such property: " + prop);
+          throw new Error( "No such property: " + prop );
           return;
         }
       }
@@ -458,9 +448,40 @@ qx.Class.define("qx.core.Object",
       }
 
     },
-
-
-
+    
+    // Prevent old custom widgets using logging from crashing:
+    debug : qx.core.Variant.select("qx.debug", {
+      "on" : function( msg ) {
+        if( typeof console.log === "function" ) {
+          console.log( msg );
+        }
+      },
+      "off" : function( msg ) {
+      }
+    } ),
+    
+    info : function( msg ){
+      this.debug( "INFO: " + msg );
+    },
+    
+    warn : function(){
+      this.debug( "WARN: " + msg );
+    },
+    
+    error : function(){
+      this.debug( "ERROR: " + msg );
+    },
+    
+    printStackTrace : qx.core.Variant.select("qx.debug", {
+      "on" : function() {
+        if( typeof console.trace === "function" ) {
+          this.debug( "Current stack trace:" );
+          console.trace();
+        }
+      },
+      "off" : function() {
+      }
+    } ),
 
     /*
     ---------------------------------------------------------------------------

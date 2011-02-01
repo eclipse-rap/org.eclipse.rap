@@ -144,7 +144,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
             window.eval( text );
           }
         } catch( ex ) {
-          this.error( "Could not execute javascript: [" + text + "]", ex );
+          throw new Error( "Could not execute javascript: [" + text + "]", ex );
         }
       }
       // Transport is normally disposed of in RequestQueue but UICallBackReuests
@@ -196,7 +196,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
         // to the request
         this._inDelayedSend = false;
         this._copyParameters( request );
-        this._logSend();
         this._runningRequestCount++;
         // notify user when request takes longer than 500 ms
         if( this._runningRequestCount === 1 ) {
@@ -231,17 +230,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
       result.addEventListener( "completed", this._handleCompleted, this );
       result.addEventListener( "failed", this._handleFailed, this );
       return result;
-    },
-
-    _logSend : function() {
-      if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
-        var msg = "sending request [ ";
-        for( var parameterName in this._parameters ) {
-          msg += parameterName + "=" + this._parameters[ parameterName ] + "; ";
-        }
-        msg += "]";
-        this.debug( msg );
-      }
     },
 
     _sendStandalone : function( request ) {
@@ -335,7 +323,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
           this._runningRequestCount--;
           this._hideWaitHint();
         } catch( ex ) {
-          this.error( "Could not execute javascript: [" + text + "]", ex );
           var content
             = "<html><head><title>Error Page</title></head><body>"
             + "<p>Could not evaluate javascript response:</p><pre>"

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -157,16 +157,6 @@ qx.Class.define("qx.client.History",
 
   members :
   {
-
-    /**
-     * This function is only there to ensure compatibility with older
-     * qooxdoo versions
-     * @deprecated
-     */
-    init : function() {
-      qx.log.Logger.deprecatedMethodWarning(arguments.callee, "This method call is no longer needed.");
-    },
-
 
     /**
      * Adds an entry to the browser history.

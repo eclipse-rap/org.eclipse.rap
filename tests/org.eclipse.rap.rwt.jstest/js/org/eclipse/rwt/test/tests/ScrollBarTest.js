@@ -225,7 +225,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertFalse( bar._mergeEvents );
       bar.setMergeEvents( true );
       assertTrue( bar._mergeEvents );
-      bar.setMergeEvents( false );
+      var error = null;
+      try {
+        bar.setMergeEvents( false );
+      } catch( ex ) {
+        error = ex;
+      }
+      assertNotNull( error );
       assertTrue( bar._mergeEvents );
       bar.destroy();
     },

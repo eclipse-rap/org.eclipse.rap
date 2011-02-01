@@ -307,12 +307,11 @@ qx.Class.define("qx.ui.embed.Iframe",
           }
           catch(ex)
           {
-            this.warn("Could not reload iframe using location.replace()!", ex);
             this.getIframeNode().src = currentSource;
           }
         }
         catch(ex) {
-          this.warn("Iframe source could not be set! This may be related to AdBlock Plus Firefox Extension.");
+          throw new Error( "Iframe source could not be set! This may be related to AdBlock Plus Firefox Extension." );
         }
       }
     },
@@ -603,7 +602,7 @@ qx.Class.define("qx.ui.embed.Iframe",
         }
       }
       catch(ex) {
-        this.warn("Iframe source could not be set! This may be related to AdBlock Plus Firefox Extension.");
+        throw new Error( "Iframe source could not be set! This may be related to AdBlock Plus Firefox Extension." );
       }
     },
 

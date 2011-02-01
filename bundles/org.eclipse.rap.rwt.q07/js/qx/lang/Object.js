@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -209,7 +209,6 @@ qx.Class.define("qx.lang.Object",
      */
     carefullyMergeWith : function(target, source)
     {
-      qx.log.Logger.deprecatedMethodWarning(arguments.callee);
       return qx.lang.Object.mergeWith(target, source, false);
     },
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -214,8 +214,6 @@ qx.Class.define("qx.core.LegacyProperty",
      */
     addProperty : function(config, proto)
     {
-      qx.log.Logger.deprecatedMethodWarning(arguments.callee, "Legacy properties are deprecated");
-
       if (typeof config !== "object") {
         throw new Error("AddProperty: Param should be an object!");
       }
@@ -382,7 +380,7 @@ qx.Class.define("qx.core.LegacyProperty",
             }
             catch(ex)
             {
-              return this.error("Failed to check property " + config.name, ex);
+              throw new Error( "Failed to check property " + config.name + " " + ex );
             }
           }
 
@@ -398,7 +396,7 @@ qx.Class.define("qx.core.LegacyProperty",
             }
             catch(ex)
             {
-              return this.error("Modification of property \"" + config.name + "\" failed with exception", ex);
+              throw new Error( "Modification of property \"" + config.name + "\" failed with exception " + ex );
             }
           }
 
@@ -434,7 +432,6 @@ qx.Class.define("qx.core.LegacyProperty",
         // building setFoo(): Setup new value, do type and change detection, converting types, call unit detection, ...
         proto["set" + config.method] = function(newValue)
         {
-          // this.debug("Fast Setter: " + config.name);
           var oldValue = this[valueKey];
 
           if (newValue === oldValue) {
@@ -462,7 +459,7 @@ qx.Class.define("qx.core.LegacyProperty",
             }
             catch(ex)
             {
-              return this.error("Failed to check property " + config.name, ex);
+              throw new Error( "Failed to check property " + config.name + " " + ex );
             }
           }
 
@@ -479,7 +476,7 @@ qx.Class.define("qx.core.LegacyProperty",
             catch(ex)
             {
               var valueStr = new String(newValue).substring(0, 50);
-              this.error("Setting property \"" + config.name + "\" to \"" + valueStr + "\" failed with exception", ex);
+              throw new Error( "Setting property \"" + config.name + "\" to \"" + valueStr + "\" failed with exception " + ex );
             }
           }
 

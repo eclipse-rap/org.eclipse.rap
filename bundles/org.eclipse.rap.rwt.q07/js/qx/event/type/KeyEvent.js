@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -203,7 +203,6 @@ qx.Class.define("qx.event.type.KeyEvent",
      * @deprecated Will be removed with qooxdoo 0.7
      */
     getKeyCode : function() {
-      qx.log.Logger.deprecatedMethodWarning(arguments.callee, "Please use getKeyIdentifier() instead.");
       return this._keyCode;
     }
   },

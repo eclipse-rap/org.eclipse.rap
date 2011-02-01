@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -198,7 +198,7 @@ qx.Class.define("qx.io.remote.AbstractRemoteTransport",
       if (qx.core.Variant.isSet("qx.debug", "on"))
       {
         if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          this.warn("Aborting...");
+          throw new Error( "Aborting..." );
         }
       }
 
@@ -217,7 +217,7 @@ qx.Class.define("qx.io.remote.AbstractRemoteTransport",
       if (qx.core.Variant.isSet("qx.debug", "on"))
       {
         if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          this.warn("Timeout...");
+          throw new Error( "Timeout..." );
         }
       }
 
@@ -238,7 +238,7 @@ qx.Class.define("qx.io.remote.AbstractRemoteTransport",
       if (qx.core.Variant.isSet("qx.debug", "on"))
       {
         if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          this.warn("Failed...");
+          throw new Error( "Failed..." );
         }
       }
 
@@ -409,13 +409,6 @@ qx.Class.define("qx.io.remote.AbstractRemoteTransport",
      */
     _applyState : function(value, old)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          this.debug("State: " + value);
-        }
-      }
-
       switch(value)
       {
         case "created":

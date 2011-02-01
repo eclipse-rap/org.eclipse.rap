@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -210,27 +210,6 @@ qx.Class.define("qx.ui.basic.Image",
       this.setLoaded(true);
     },
 
-
-    /**
-     * Listener method of the "error" event
-     *
-     * @type member
-     * @return {void}
-     */
-    _onerror : function()
-    {
-      this.warn("Could not load: " + this.getSource());
-
-      this.setLoaded(false);
-
-      if (this.hasEventListeners("error")) {
-        this.dispatchEvent(new qx.event.type.Event("error"), true);
-      }
-    },
-
-
-
-
     /*
     ---------------------------------------------------------------------------
       DISPLAYBLE HANDLING
@@ -369,7 +348,6 @@ qx.Class.define("qx.ui.basic.Image",
       {
         // remove event connection
         old.removeEventListener("load", this._onload, this);
-        old.removeEventListener("error", this._onerror, this);
       }
 
       if (value)
@@ -378,15 +356,10 @@ qx.Class.define("qx.ui.basic.Image",
         // will not be executed (prevent recursion)
         this.setLoaded(false);
 
-        if (value.isErroneous()) {
-          this._onerror();
-        } else if (value.isLoaded()) {
+        if( !value.isErroneous() && value.isLoaded() ) {
           this.setLoaded(true);
-        }
-        else
-        {
-          value.addEventListener("load", this._onload, this);
-          value.addEventListener("error", this._onerror, this);
+        } else {
+          value.addEventListener( "load", this._onload, this );
         }
       }
       else
@@ -447,7 +420,7 @@ qx.Class.define("qx.ui.basic.Image",
             this._image.title = "";
           }
           catch(ex) {
-            this.error("Failed while creating image #1", ex);
+            throw new Error( "Failed while creating image #1 " + ex );
           }
 
           if (qx.core.Variant.isSet("qx.client", "gecko|opera|webkit")) {
@@ -664,7 +637,7 @@ qx.Class.define("qx.ui.basic.Image",
         }
         catch(ex)
         {
-          this.error("postApplyDimensions failed", ex);
+          throw new Error( "postApplyDimensions failed " + ex );
         }
       },
 
@@ -687,7 +660,7 @@ qx.Class.define("qx.ui.basic.Image",
         }
         catch(ex)
         {
-          this.error("postApplyDimensions failed", ex);
+          throw new Error( "postApplyDimensions failed " + ex );
         }
       }
     }),

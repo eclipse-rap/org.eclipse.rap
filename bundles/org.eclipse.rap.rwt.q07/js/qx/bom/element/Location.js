@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -458,9 +458,6 @@ qx.Class.define("qx.bom.element.Location",
         var left = offset.left + body.left - scroll.left;
         var top = offset.top + body.top - scroll.top;
       }
-
-      // qx.log.Logger.debug(this, "Details left: " + offset.left + " | " + body.left + " | " + scroll.left);
-      // qx.log.Logger.debug(this, "Details top: " + offset.top + " | " + body.top + " | " + scroll.top);
 
       var right = left + elem.offsetWidth;
       var bottom = top + elem.offsetHeight;

@@ -320,7 +320,6 @@ qx.Class.define("qx.ui.core.ClientDocument",
         }
         else
         {
-          this.debug("Window seems to be closed already! => Releasing Blocker");
           this.release(this._modalNativeWindow);
         }
       }
@@ -336,7 +335,6 @@ qx.Class.define("qx.ui.core.ClientDocument",
      */
     block : function(vActiveChild)
     {
-      // this.debug("BLOCK: " + vActiveChild.toHashCode());
       this._getBlocker().show();
 
       if (qx.Class.isDefined("qx.ui.window.Window") && vActiveChild instanceof qx.ui.window.Window)
@@ -364,7 +362,6 @@ qx.Class.define("qx.ui.core.ClientDocument",
      */
     release : function(vActiveChild)
     {
-      // this.debug("RELEASE: " + vActiveChild.toHashCode());
       if (vActiveChild)
       {
         if (qx.Class.isDefined("qx.client.NativeWindow") && vActiveChild instanceof qx.client.NativeWindow) {

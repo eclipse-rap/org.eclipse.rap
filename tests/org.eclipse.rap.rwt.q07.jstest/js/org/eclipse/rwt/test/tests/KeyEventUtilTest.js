@@ -33,7 +33,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventUtilTest", {
       var expected1 = "org.eclipse.swt.events.keyDown=w1"; 
       var expected2 = "org.eclipse.swt.events.keyDown.keyCode=66";
       var msg = testUtil.getMessage();
-      console.log( msg );
       assertTrue( msg.indexOf( expected1 ) != -1 );
       assertTrue( msg.indexOf( expected2 ) != -1 );
       widget.destroy();

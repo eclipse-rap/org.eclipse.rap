@@ -1112,9 +1112,6 @@ qx.Class.define("qx.ui.core.Widget",
       */
       for (var i=0; i<properties.length; i++)
       {
-        // to debug the values which will be applied use this instead of the
-        // first line:
-        // members[applyRuntime+propertiesUpper[i]] = new Function(parameter, "this.debug('v: ' + v); " + style + properties[i] + cssValue);
         members[applyRuntime + propertiesUpper[i]] = new Function(parameter, style + properties[i] + cssValue);
         members[resetRuntime + propertiesUpper[i]] = new Function(style + properties[i] + "=''");
       }
@@ -2831,14 +2828,8 @@ qx.Class.define("qx.ui.core.Widget",
 
             // DOM action
             var parentNode = this.getElement().parentNode;
-            if (parentNode)
-            {
+            if (parentNode){
               parentNode.removeChild(this.getElement())
-
-              // DOM element check
-              if (parentNode && parentNode !== vParent._getTargetNode()) {
-                this.warn("Unexpected parent node: " + parentNode);
-              }
             }
 
             // After Remove DOM Event
@@ -2884,7 +2875,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _beforeAppear : function()
     {
-      // this.debug("_beforeAppear");
       this.createDispatchEvent("beforeAppear");
     },
 
@@ -2897,7 +2887,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _afterAppear : function()
     {
-      // this.debug("_afterAppear");
       this._isSeeable = true;
       this.createDispatchEvent("appear");
     },
@@ -2911,7 +2900,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _beforeDisappear : function()
     {
-      // this.debug("_beforeDisappear");
       // Remove any hover/pressed styles
       this.removeState("over");
 
@@ -2921,7 +2909,6 @@ qx.Class.define("qx.ui.core.Widget",
         this.removeState("abandoned");
       }
 
-      // this.debug("_beforeDisappear");
       this.createDispatchEvent("beforeDisappear");
     },
 
@@ -2934,7 +2921,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _afterDisappear : function()
     {
-      // this.debug("_afterDisappear");
       this._isSeeable = false;
       this.createDispatchEvent("disappear");
     },
@@ -2984,7 +2970,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _beforeInsertDom : function()
     {
-      // this.debug("_beforeInsertDom");
       this.createDispatchEvent("beforeInsertDom");
     },
 
@@ -2997,7 +2982,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _afterInsertDom : function()
     {
-      // this.debug("_afterInsertDom");
       this.createDispatchEvent("insertDom");
     },
 
@@ -3010,7 +2994,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _beforeRemoveDom : function()
     {
-      // this.debug("_beforeRemoveDom");
       this.createDispatchEvent("beforeRemoveDom");
     },
 
@@ -3023,7 +3006,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _afterRemoveDom : function()
     {
-      // this.debug("_afterRemoveDom");
       this.createDispatchEvent("removeDom");
     },
 
@@ -3300,7 +3282,7 @@ qx.Class.define("qx.ui.core.Widget",
       }
       catch(ex)
       {
-        this.error("Flushing job queue (prechecks#1) failed", ex);
+        throw new Error( "Flushing job queue (prechecks#1) failed " + ex );
       }
 
       /* --------------------------------------------------------------------------------
@@ -3373,7 +3355,7 @@ qx.Class.define("qx.ui.core.Widget",
       }
       catch(ex)
       {
-        this.error("Flushing job queue (recompute#2) failed", ex);
+        throw new Error( "Flushing job queue (recompute#2) failed " + ex );
       }
 
       /* --------------------------------------------------------------------------------
@@ -3404,7 +3386,7 @@ qx.Class.define("qx.ui.core.Widget",
       }
       catch(ex)
       {
-        this.error("Flushing job queue (parentsignals#3) failed", ex);
+        throw new Error( "Flushing job queue (parentsignals#3) failed " + ex );
       }
 
       /* --------------------------------------------------------------------------------
@@ -3423,7 +3405,7 @@ qx.Class.define("qx.ui.core.Widget",
       }
       catch(ex)
       {
-        this.error("Flushing job queue (addjobs#4) failed", ex);
+        throw new Error( "Flushing job queue (addjobs#4) failed " + ex );
       }
 
       /* --------------------------------------------------------------------------------
@@ -3483,7 +3465,7 @@ qx.Class.define("qx.ui.core.Widget",
       }
       catch(ex)
       {
-        this.error("Flushing job queue (childrensignals#5) failed", ex);
+        throw new Error( "Flushing job queue (childrensignals#5) failed " + ex );
       }
 
       /* --------------------------------------------------------------------------------
@@ -4316,7 +4298,6 @@ qx.Class.define("qx.ui.core.Widget",
 
         case "auto":
           // This seems to be really hard to implement
-          // this.debug("Check Auto Scroll-X: " + this.getPreferredBoxHeight() + " :: " + this.getBoxHeight());
           break;
       }
 
@@ -4343,7 +4324,6 @@ qx.Class.define("qx.ui.core.Widget",
 
         case "auto":
           // This seems to be really hard to implement
-          // this.debug("Check Auto Scroll-Y: " + this.getPreferredBoxWidth() + " :: " + this.getBoxWidth());
           break;
       }
 
@@ -4388,7 +4368,7 @@ qx.Class.define("qx.ui.core.Widget",
       try {
         return Math.max(0, this.getPreferredInnerWidth() + this.getFrameWidth());
       } catch(ex) {
-        this.error("_computePreferredBoxWidth failed", ex);
+        throw new Error( "_computePreferredBoxWidth failed " + ex);
       }
     },
 
@@ -4404,7 +4384,7 @@ qx.Class.define("qx.ui.core.Widget",
       try {
         return Math.max(0, this.getPreferredInnerHeight() + this.getFrameHeight());
       } catch(ex) {
-        this.error("_computePreferredBoxHeight failed", ex);
+        throw new Error( "_computePreferredBoxHeight failed " + ex );
       }
     },
 
@@ -5175,7 +5155,6 @@ qx.Class.define("qx.ui.core.Widget",
       if (!this.__states) {
         this.__states = {};
       }
-
       if (!this.__states[vState])
       {
         this.__states[vState] = true;
@@ -5306,7 +5285,7 @@ qx.Class.define("qx.ui.core.Widget",
         }
         catch(ex)
         {
-          this.error("Could not apply state appearance", ex);
+          throw new Error( "Could not apply state appearance " + ex );
         }
       }
     },
@@ -5451,7 +5430,7 @@ qx.Class.define("qx.ui.core.Widget",
       try {
         this._resetAppearanceThemeWrapper(vNewAppearanceTheme, vOldAppearanceTheme);
       } catch(ex) {
-        this.error("Failed to update appearance theme", ex);
+        throw new Error( "Failed to update appearance theme " + ex );
       }
     },
 
@@ -5585,7 +5564,6 @@ qx.Class.define("qx.ui.core.Widget",
 
       if (vProperties)
       {
-        // this.debug("HTML-Properties: " + qx.lang.Object.getLength(vProperties));
         var propName;
 
         for (propName in vProperties) {
@@ -5608,7 +5586,6 @@ qx.Class.define("qx.ui.core.Widget",
       //var id = this.classname + "#" + this.toHashCode(); // not stable across machines
       var id = this.classname + "." + qx.ui.core.Widget._idCounter++;
 
-      this.debug("setting autogenerated HTML id to " + id);
       this.setHtmlProperty("id", id);
     },
 
@@ -5632,8 +5609,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     setHtmlAttribute : function(propName, value)
     {
-      qx.log.Logger.deprecatedMethodWarning(arguments.callee, "Use setHtmlProperty instead");
-
       if (!this._htmlAttributes) {
         this._htmlAttributes = {};
       }
@@ -5658,8 +5633,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     removeHtmlAttribute : function(propName)
     {
-      qx.log.Logger.deprecatedMethodWarning(arguments.callee, "Use removeHtmlProperty instead");
-
       if (!this._htmlAttributes) {
         return;
       }
@@ -5706,7 +5679,6 @@ qx.Class.define("qx.ui.core.Widget",
 
       if (vAttributes)
       {
-        // this.debug("HTML-Attributes: " + qx.lang.Object.getLength(vAttributes));
         var propName;
 
         for (propName in vAttributes) {
@@ -5968,7 +5940,6 @@ qx.Class.define("qx.ui.core.Widget",
 
       var vFocusRoot = this.getFocusRoot();
 
-      // this.debug("Focused: " + value);
       if (vFocusRoot)
       {
         // may be undefined if this widget has been removed
@@ -6040,7 +6011,6 @@ qx.Class.define("qx.ui.core.Widget",
      */
     _visualizeFocus : function()
     {
-      // this.info("_visualizeFocus: " + qx.event.handler.FocusHandler.mouseFocus);
       if (!qx.event.handler.FocusHandler.mouseFocus && this.getEnableElementFocus())
       {
         try {
@@ -7339,7 +7309,6 @@ qx.Class.define("qx.ui.core.Widget",
     scrollIntoViewX : function(alignLeft)
     {
       if (!this._isCreated || !this._isDisplayable) {
-        this.warn("The function scrollIntoViewX can only be called after the widget is created!");
         return false;
       }
 
@@ -7360,7 +7329,6 @@ qx.Class.define("qx.ui.core.Widget",
     scrollIntoViewY : function(alignTop)
     {
       if (!this._isCreated || !this._isDisplayable) {
-        this.warn("The function scrollIntoViewY can only be called after the widget is created!");
         return false;
       }
 
@@ -7498,96 +7466,7 @@ qx.Class.define("qx.ui.core.Widget",
         }
       };
     }
-
     statics.__initLayoutProperties(statics);
-
-    // TODO there must be a better way to define this
-    if (qx.core.Variant.isSet("qx.debug", "on"))
-    {
-      if (qx.core.Setting.get("qx.widgetQueueDebugging"))
-      {
-        statics.flushGlobalQueues = function()
-        {
-          if (statics._inFlushGlobalQueues || !qx.core.Init.getInstance().getApplication().getUiReady()) {
-            return;
-          }
-
-          if (!(statics._globalWidgetQueue.length > 0 ||
-                statics._globalElementQueue.length > 0 ||
-                statics._globalStateQueue.length > 0 ||
-                statics._globalJobQueue.length > 0 ||
-                statics._globalLayoutQueue.length > 0 ||
-                statics._globalDisposeQueue.length > 0 ||
-                statics._fastGlobalDisplayQueue.length > 0 ||
-                !qx.lang.Object.isEmpty(statics._lazyGlobalDisplayQueue))) {
-            return;
-          }
-
-          var globalWidgetQueueLength = statics._globalWidgetQueue.length;
-          var globalElementQueueLength = statics._globalElementQueue.length;
-          var globalStateQueueLength = statics._globalStateQueue.length;
-          var globalJobQueueLength = statics._globalJobQueue.length;
-          var globalLayoutQueueLength = statics._globalLayoutQueue.length;
-          var globalDisposeQueueLength = statics._globalDisposeQueue.length;
-          var fastGlobalDisplayQueueLength = statics._fastGlobalDisplayQueue.length;
-          var lazyGlobalDisplayQueueLength = statics._lazyGlobalDisplayQueue ? statics._lazyGlobalDisplayQueue.length : 0;
-
-          // Also used for inline event handling to seperate 'real' events
-          statics._inFlushGlobalQueues = true;
-
-          var start;
-
-          start = (new Date).valueOf();
-          statics.flushGlobalWidgetQueue();
-          var vWidgetDuration = (new Date).valueOf() - start;
-
-          start = (new Date).valueOf();
-          statics.flushGlobalStateQueue();
-          var vStateDuration = (new Date).valueOf() - start;
-
-          start = (new Date).valueOf();
-          statics.flushGlobalElementQueue();
-          var vElementDuration = (new Date).valueOf() - start;
-
-          start = (new Date).valueOf();
-          statics.flushGlobalJobQueue();
-          var vJobDuration = (new Date).valueOf() - start;
-
-          start = (new Date).valueOf();
-          statics.flushGlobalLayoutQueue();
-          var vLayoutDuration = (new Date).valueOf() - start;
-
-          start = (new Date).valueOf();
-          statics.flushGlobalDisposeQueue();
-          var vDisposeDuration = (new Date).valueOf() - start;
-
-
-          start = (new Date).valueOf();
-          statics.flushGlobalDisplayQueue();
-          var vDisplayDuration = (new Date).valueOf() - start;
-
-          var vSum = vWidgetDuration + vStateDuration + vElementDuration + vJobDuration + vLayoutDuration + vDisplayDuration;
-
-          if (vSum > 0)
-          {
-            var logger = qx.log.Logger.getClassLogger(qx.ui.core.Widget);
-            logger.debug("Flush Global Queues");
-            logger.debug("Widgets: " + vWidgetDuration + "ms (" + globalWidgetQueueLength + ")");
-            logger.debug("State: " + vStateDuration + "ms (" + globalStateQueueLength + ")");
-            logger.debug("Element: " + vElementDuration + "ms (" + globalElementQueueLength + ")");
-            logger.debug("Job: " + vJobDuration + "ms (" + globalJobQueueLength + ")");
-            logger.debug("Layout: " + vLayoutDuration + "ms (" + globalLayoutQueueLength + ")");
-            logger.debug("Dispose: " + vDisposeDuration + "ms (" + globalDisposeQueueLength + ")");
-            logger.debug("Display: " + vDisplayDuration + "ms (fast:" + fastGlobalDisplayQueueLength + ",lazy:" + lazyGlobalDisplayQueueLength + ")");
-
-            window.status = "Flush: Widget:" + vWidgetDuration + " State:" + vStateDuration + " Element:" + vElementDuration + " Job:" + vJobDuration + " Layout:" + vLayoutDuration + " Dispose:" + vDisposeDuration + " Display:" + vDisplayDuration;
-          }
-
-          delete statics._inFlushGlobalQueues;
-        };
-      }
-    }
-
   },
 
 

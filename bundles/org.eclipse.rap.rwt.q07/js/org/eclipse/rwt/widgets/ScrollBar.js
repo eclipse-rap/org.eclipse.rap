@@ -86,7 +86,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
 
     setMergeEvents : function( value ) {
       if( !value && this._mergeEvents ) {
-        this.warn( "mergeEvents can not be set to false" );
+        throw new Error( "mergeEvents can not be set to false" );
       } else if( value ) {
         this._mergeEvents = true;
         this._eventTimer = new qx.client.Timer( 125 );

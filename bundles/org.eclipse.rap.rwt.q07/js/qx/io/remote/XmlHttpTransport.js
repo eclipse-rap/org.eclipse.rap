@@ -277,14 +277,6 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
       // --------------------------------------
       try
       {
-        if (qx.core.Variant.isSet("qx.debug", "on"))
-        {
-          if (qx.core.Setting.get("qx.ioRemoteDebugData"))
-          {
-            this.debug("Request: " + this.getData());
-          }
-        }
-
         vRequest.send(this.getData());
       }
       catch(ex)
@@ -294,7 +286,7 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
         }
         else
         {
-          this.error("Failed to send data: " + ex, ex);
+          throw new Error( "Failed to send data: " + ex );
           this.failed();
         }
 
@@ -326,9 +318,6 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
         return;
       }
 
-      // should only occur on "file://" access
-      this.warn("Could not load from file: " + this.getUrl());
-
       this.failed();
     },
 
@@ -357,14 +346,7 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
         case "aborted":
         case "failed":
         case "timeout":
-          if (qx.core.Variant.isSet("qx.debug", "on"))
-          {
-            if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-              this.warn("Ignore Ready State Change");
-            }
-          }
-
-          return;
+        return;
       }
 
       // Checking status code
@@ -689,13 +671,6 @@ qx.Class.define("qx.io.remote.XmlHttpTransport",
      */
     _applyState : function(value, old)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          this.debug("State: " + value);
-        }
-      }
-
       switch(value)
       {
         case "created":

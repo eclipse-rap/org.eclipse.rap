@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -50,9 +50,6 @@ qx.Class.define("qx.io.image.Preloader",
   {
     if (qx.io.image.PreloaderManager.getInstance().has(imageUrl))
     {
-      this.debug("Reuse qx.io.image.Preloader in old-style!");
-      this.debug("Please use qx.io.image.PreloaderManager.getInstance().create(source) instead!");
-
       return qx.io.image.PreloaderManager.getInstance().get(imageUrl);
     }
 
@@ -238,8 +235,6 @@ qx.Class.define("qx.io.image.Preloader",
       if (this._isLoaded || this._isErroneous) {
         return;
       }
-
-      this.debug("Could not load: " + this._source);
 
       this._isLoaded = false;
       this._isErroneous = true;

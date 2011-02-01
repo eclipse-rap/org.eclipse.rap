@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -126,8 +126,6 @@ qx.Class.define("qx.io.remote.RequestQueue",
           var vText =
             this._active.length + "/" +
             (this._queue.length + this._active.length);
-
-          this.debug("Progress: " + vText);
           window.status = "Request-Queue Progress: " + vText;
         }
       }
@@ -260,8 +258,6 @@ qx.Class.define("qx.io.remote.RequestQueue",
         {
           this._activeCount++;
           e.getTarget()._counted = true;
-
-          this.debug("ActiveCount: " + this._activeCount);
         }
       }
 
@@ -299,7 +295,6 @@ qx.Class.define("qx.io.remote.RequestQueue",
           if (e.getTarget()._counted)
           {
             this._activeCount--;
-            this.debug("ActiveCount: " + this._activeCount);
           }
         }
       }
@@ -375,8 +370,6 @@ qx.Class.define("qx.io.remote.RequestQueue",
 
           if (vTime > vTimeout)
           {
-            this.warn("Timeout: transport " + vTransport.toHashCode());
-            this.warn(vTime + "ms > " + vTimeout + "ms");
             vTransport.timeout();
           }
         }
