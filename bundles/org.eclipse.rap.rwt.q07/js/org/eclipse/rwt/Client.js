@@ -293,8 +293,9 @@ qx.Class.define( "org.eclipse.rwt.Client", {
           vEngineBoxSizingAttr.push( "-khtml-box-sizing" );
           vEngineBoxSizingAttr.push( "-webkit-box-sizing" );
         break;
+        default:
+          vEngineBoxSizingAttr.push( "box-sizing" );
       }
-      vEngineBoxSizingAttr.push( "box-sizing" );
       this._engineBoxSizingAttributes = vEngineBoxSizingAttr;
     },    
     
