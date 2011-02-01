@@ -235,6 +235,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
     },    
     
     testKeyUp : function() {
+      // See Bug 335753
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
@@ -244,6 +245,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var log = this._addKeyLogger( widget, true, false, false );
       testUtil.keyUp( widget._getTargetNode(), "x" );
       var expected = [ "keyup" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },    
+
+    testKeyUpNumber : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      testUtil.keyDown( widget._getTargetNode(), "1" );
+      var log = this._addKeyLogger( widget, true, true, false );
+      testUtil.keyUp( widget._getTargetNode(), "1" );
+      var expected = [ "keyup", "1" ];
       assertEquals( expected, log );
       widget.destroy();
     },    

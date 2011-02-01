@@ -294,7 +294,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 600 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -304,7 +304,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.createFunction( "abc" );
         browser.destroyFunction( "abc" );
         browser.reload();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 600 );
         testUtil.store( browser );
       },
       function( browser ) {

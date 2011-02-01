@@ -244,7 +244,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         result = this._keyCodeToIdentifierMap[ keyCode ];
       } else if( this._specialCharCodeMap[ keyCode ] !== undefined ) {
         result = this._specialCharCodeMap[ keyCode ];
-      } else if( keyCode >= this._charCodeA && keyCode <= this._charCodeZ ) {
+      } else if( this._isAlphaNumericKeyCode( keyCode ) ) {
         result = String.fromCharCode( keyCode );
       }
       return result;
@@ -262,6 +262,15 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
 
     _isNonPrintableKeyCode : function( keyCode ) {
       return this._keyCodeToIdentifierMap[ keyCode ] ? true : false;
+    },
+    
+    _isAlphaNumericKeyCode : function( keyCode ) {
+      var result = false;
+      if(    ( keyCode >= this._charCodeA && keyCode <= this._charCodeZ ) 
+          || ( keyCode >= this._charCode0 && keyCode <= this._charCode9 ) ) {
+        result = true;
+      }
+      return result;
     },
 
     ///////////////
