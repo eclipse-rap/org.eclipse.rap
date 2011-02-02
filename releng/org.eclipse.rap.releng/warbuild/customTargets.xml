@@ -83,7 +83,7 @@
     <mkdir dir="${warDirectory}/WEB-INF/lib" />
     <copy todir="${warDirectory}/WEB-INF/lib">
       <fileset
-          file="${buildDirectory}/plugins/org.eclipse.equinox.servletbridge.template/templates/rootfiles/lib/org.eclipse.equinox.servletbridge_*.jar" />
+          file="${buildDirectory}/plugins/org.eclipse.equinox.servletbridge_*.jar" />
     </copy>
 
     <property name="featureDir" value="${buildDirectory}/${buildLabel}/" />
@@ -94,14 +94,12 @@
     </unzip>
     
     <!-- 
-      Delete org.eclipse.equinox.servletbridge and ...servletbridge.template
-      before packaging the WAR file. They are only necessary while building 
+      Delete org.eclipse.equinox.servletbridge before packaging the WAR file. 
+      They are only necessary while building 
     -->
     <delete>
       <fileset 
         file="${warDirectory}/WEB-INF/eclipse/plugins/org.eclipse.equinox.servletbridge_*.jar" />
-      <fileset 
-        file="${warDirectory}/WEB-INF/eclipse/plugins/org.eclipse.equinox.servletbridge.template_*.jar" />
     </delete>  
 
     <mkdir dir="${outputDirectory}" />
