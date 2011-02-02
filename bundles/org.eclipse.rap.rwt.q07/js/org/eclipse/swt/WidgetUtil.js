@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,19 +33,6 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
         widget.setStyleProperty( "fontSize", "0" );
         widget.setStyleProperty( "lineHeight", "0" );
       }
-    },
-
-    /**
-     * Calls function "func" for all children of given Widget, as well
-     * as the childrens children and so forth.
-     */
-    forAllChildren : function( widget, func ) {
-      widget.forEachChild( function() {
-        func.call( this );
-        if( this instanceof qx.ui.core.Parent ) {     
-          org.eclipse.swt.WidgetUtil.forAllChildren( this, func );
-        }
-      } );
     },
     
     /**

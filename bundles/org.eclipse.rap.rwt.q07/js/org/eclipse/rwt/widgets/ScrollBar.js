@@ -141,12 +141,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
 
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
-      if( this._gfxLayoutEnabled ) {
-        if ( changes.paddingRight || changes.paddingBottom ) {
-          this.setGfxProperty( "borderLayouted", false ); 
-        }
-        this._layoutGfxBorder();
-      }
       if( changes[ "minThumbSize" ] ) {
         if( this._maximum > 0 && this._getLineSize() > 0 ) {
           var size = this._getThumbSize();

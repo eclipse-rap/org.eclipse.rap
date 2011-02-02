@@ -245,17 +245,6 @@ qx.Class.define("qx.ui.core.ClientDocument",
      */
     getToolTip : qx.lang.Function.returnNull,
 
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @signature function()
-     * @return {boolean}
-     */
-    isMaterialized : qx.lang.Function.returnTrue,
-
-
     /**
      * TODOC
      *

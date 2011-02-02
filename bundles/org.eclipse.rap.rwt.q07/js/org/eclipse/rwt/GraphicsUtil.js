@@ -56,7 +56,8 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
      * This must be called after the canvas has been (directly or inderectly)
      * inserted into the DOM, i.e. after it becomes visible. It has not to 
      * be called if the canvas was made visible by other means, e.g. the
-     * "visibility" or "opacity" properties, but it won't do any damage.
+     * "visibility", "display" or "opacity" css-properties, but it won't 
+     * do any damage.
      */
     handleAppear : function( canvas ) {
       this._renderClass.handleAppear( canvas );

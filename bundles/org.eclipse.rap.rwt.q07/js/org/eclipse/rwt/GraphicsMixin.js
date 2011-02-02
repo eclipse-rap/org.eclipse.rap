@@ -33,7 +33,6 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     _gfxBorderEnabled : false,
     _gfxBackgroundEnabled : false,
     _gfxCanvasAppended : false,
-    _gfxLayoutEnabled : false,
 
     //////////
     // GFX-API
@@ -140,7 +139,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     _handleGfxBorder : function() {
       var useBorder =      this.getGfxProperty( "borderRadii" ) != null
                         && this.getGfxProperty( "borderWidths" ) != null
-                        && this.getGfxProperty( "borderColor") != null;
+                        && this.getGfxProperty( "borderColor" ) != null;
       var toggle = ( this._gfxBorderEnabled != useBorder );
       if( toggle ) {
         if( useBorder ) {
@@ -289,7 +288,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         parentNode.insertBefore( gfxNode, parentNode.firstChild );
       }
       this._gfxCanvasAppended = true;
-      this.addEventListener( "appear", this._onCanvasAppear );
+      this.addEventListener( "insertDom", this._onCanvasAppear );
       if( this.isSeeable() ) {
         this._onCanvasAppear();
       }
@@ -301,66 +300,17 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       if( gfxNode != null ) {
         gfxNode.parentNode.removeChild( gfxNode );
         this._gfxCanvasAppended = false;
-        this.removeEventListener( "appear", this._onCanvasAppear );
+        this.removeEventListener( "insertDom", this._onCanvasAppear );
       }
     },
 
     // overwritten
     prepareEnhancedBorder : function() {
-      //a precaution:
       if( !this._innerStyle && !this._innerStyleHidden ) {
-        //This is mostly the same code as in the original "Widget"
-        //class, but it is defined regardless of the browser
-        //that is used, since the "enhanced border" function is needed
-        //by the gfxBorder in every browser, including gecko
-        var elem = this.getElement();
-        var cl = this._borderElement = document.createElement("div");
-        var es = elem.style;
-        var cs = this._innerStyle = cl.style;
-        if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-          cs.width = cs.height = "100%";
-        }
-        cs.position = "absolute";
-        for( var i in this._styleProperties ) {
-          switch( i ) {
-            case "zIndex":
-            case "filter":
-            case "opacity":
-            case "MozOpacity":
-            case "display":
-            case "cursor":
-              break;
-            default:
-              cs[i] = this._styleProperties[i];
-              es[i] = "";
-          }
-        }
-        // [if] Fix for bug 279800: Some focused widgets look strange in webkit
-        es.outline = "none";
-        // The next line is needed for clipping in IE. Overflow is an
-        // "outerStyle" property, so this this css-value will never be set or 
-        // reset. Therefore, this widget also no longer has the ability to 
-        // show overflow:
-        es.overflow = "hidden";
-        for( var i in this._htmlProperties ) {
-          switch( i ) {
-            case "unselectable":
-              cl.unselectable = this._htmlProperties[i];
-          }
-        }
-        while( elem.firstChild ) {
-          cl.appendChild( elem.firstChild );
-        }
-        elem.appendChild( cl );
-        if( this instanceof qx.ui.core.Parent ) {
-          org.eclipse.swt.WidgetUtil.forAllChildren( this, function() {
-            if( this._onCanvasAppear && this.isSeeable() ) {
-              this._onCanvasAppear();
-            }
-          } );
-        }
+        this.base( arguments );
       } else {
         if( this._innerStyleHidden ) {
+          // Reveal hidden style object for (non-rounded) border rendering
           this._setSimulatedPadding();
         }
       }
@@ -543,7 +493,11 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     },
 
     _enableGfxLayout : function( value ) {
-      this._gfxLayoutEnabled = value;
+      if( value ) {
+        this.addEventListener( "flush", this._gfxOnFlush, this );
+      } else {
+        this.removeEventListener( "flush", this._gfxOnFlush, this );      
+      }
     },
     
     ////////////////////////////////////
@@ -587,21 +541,14 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       }
     },
 
-    //overwritten:
-    _layoutPost : function( changes ) {
-      // This function is also implemented in "Terminator" and "Parent",
-      // therefore the mixin can not be applied to "Widget" itself. 
-      // For any widget that implements "_layoutPost", rounded corners will
-      // not work unless the widget implements the code below itself:
-      this.base( arguments, changes );
-      if( this._gfxLayoutEnabled ) {
-        if ( changes.paddingRight || changes.paddingBottom ) {
-          this.setGfxProperty( "borderLayouted", false ); 
-        }
-        this._layoutGfxBorder();
+    _gfxOnFlush : function( event ) {
+      var changes = event.getData();
+      if ( changes.paddingRight || changes.paddingBottom ) {
+        this.setGfxProperty( "borderLayouted", false ); 
       }
+      this._layoutGfxBorder();
     }
         
   }
 
-});
+} );

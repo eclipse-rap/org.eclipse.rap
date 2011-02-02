@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -272,30 +272,73 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       shell.destroy();
       testUtil.flush();
     },
-    
-    testOnCanvasAppear : function() {
+
+    testOnCanvasAppearOnWidgetInsert : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget1 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget2 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var log = [];
+      widget1._onCanvasAppear = function(){ log.push( "widget1" ); };
+      widget2._onCanvasAppear = function(){ log.push( "widget2" ); };
+      widget1.addToDocument();
+      widget2.addToDocument();
+      widget1.setBorder( this.gfxBorder );
+      widget2.setBorder( this.gfxBorder );
+      widget2.setVisibility( false );
+      testUtil.flush();
+      assertEquals( [ "widget1", "widget2" ], log );
+      widget1.destroy();
+      widget2.destroy();
+    },
+
+    testOnCanvasAppearOnSetDisplay : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget1 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget2 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var log = [];
+      widget1._onCanvasAppear = function(){ log.push( "widget1" ); };
+      widget2._onCanvasAppear = function(){ log.push( "widget2" ); };
+      widget1.addToDocument();
+      widget2.addToDocument();
+      widget1.setBorder( this.gfxBorder );
+      widget2.setBorder( this.gfxBorder );
+      widget2.setVisibility( false );
+      testUtil.flush();
+      assertEquals( [ "widget1", "widget2" ], log );
+      widget1.setDisplay( false );
+      widget2.setDisplay( false );
+      testUtil.flush();
+      widget1.setDisplay( true );
+      widget2.setDisplay( true );
+      testUtil.flush();
+      assertEquals( [ "widget1", "widget2", "widget1", "widget2" ], log );
+      testUtil.flush();
+    },
+
+    testOnCanvasAppearOnEnhancedBorder : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
-      var widget1 = new qx.ui.basic.Terminator();
-      var widget2 = new qx.ui.basic.Terminator();
+      var widget1 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
+      var widget2 = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
       var log = [];
-      widget1.setParent( shell );
-      widget2.setParent( shell );
-      widget2.setVisibility( false );
-      widget1._gfxCanvasAppended = true;
-      widget2._gfxCanvasAppended = true;
       widget1._onCanvasAppear = function(){ log.push( "widget1" ); };
       widget2._onCanvasAppear = function(){ log.push( "widget2" ); };
+      widget1.setParent( shell );
+      widget2.setParent( shell );
+      widget1.setBorder( this.gfxBorder );
+      widget2.setBorder( this.gfxBorder );
+      widget2.setVisibility( false );
       testUtil.flush();
+      assertEquals( [ "widget1", "widget2" ], log );
       shell.setBackgroundColor( "green" );
       shell.setBorder( this.gfxBorder );
       testUtil.flush();
-      assertEquals( [ "widget1" ], log );
+      assertEquals( [ "widget1", "widget2", "widget1", "widget2" ], log );
       shell.destroy();
       testUtil.flush();
     },
-    
+
     testOpacityWidthEnhancedBorder : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
@@ -404,7 +447,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var result = new org.eclipse.swt.widgets.Shell();
       result.addToDocument();
       result.setBackgroundColor( null );
-      result.open();      
+      result.open();
       qx.ui.core.Widget.flushGlobalQueues();
       return result;      
     },

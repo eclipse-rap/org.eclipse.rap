@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -98,6 +98,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertTrue( edge == "" || edge == "none"  );            
       bar.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
+    },
+
+
+    testOnCanvasAppearOnEnhancedBorder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var shell = new org.eclipse.swt.widgets.Shell();
+      shell.addToDocument();
+      shell.setBackgroundColor( null );
+      shell.open();
+      var log = [];      
+      var bar = new org.eclipse.swt.widgets.ProgressBar();
+      bar._onCanvasAppear = function(){ log.push( "bar" ); };
+      bar.setDimension( 200, 30 );
+      bar.setBorder( this._gfxBorder );
+      bar.setSelection( 50 );
+      bar.setParent( shell );
+      testUtil.flush();
+      assertEquals( 1, log.length );
+      shell.setBackgroundColor( "green" );
+      shell.setBorder( new org.eclipse.rwt.RoundedBorder( 1, "black", 0 ) );
+      testUtil.flush();
+      assertEquals( 2, log.length );
+      shell.destroy();
+      testUtil.flush();
     },
     
     testRoundedBorderIndicatorMinLength : function() {

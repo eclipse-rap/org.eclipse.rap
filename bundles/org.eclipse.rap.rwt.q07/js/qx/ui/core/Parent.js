@@ -943,69 +943,26 @@ qx.Class.define("qx.ui.core.Parent",
     },
 
 
-
-
-    /*
-    ---------------------------------------------------------------------------
-      INSERTDOM/REMOVEDOM MESSAGES FOR CHILDREN
-    ---------------------------------------------------------------------------
-    */
-
     // overridden
-    _beforeInsertDom : function()
-    {
-      this.base(arguments);
-
-      this.forEachVisibleChild(function()
-      {
-        if (this.isAppearRelevant()) {
-          this._beforeInsertDom();
-        }
-      });
-    },
-
-
-    // overridden
-    _afterInsertDom : function()
-    {
-      this.base(arguments);
-
-      this.forEachVisibleChild(function()
-      {
-        if (this.isAppearRelevant()) {
+    _afterInsertDom : function() {
+      this.base( arguments );
+      // NOTE: a "visible" Child is actually every "displayable" child here  
+      this.forEachVisibleChild( function() {
+        //if( this.getElement() ) {
           this._afterInsertDom();
-        }
-      });
+        //}
+      } );
     },
+
 
 
     // overridden
-    _beforeRemoveDom : function()
-    {
-      this.base(arguments);
-
-      this.forEachVisibleChild(function()
-      {
-        if (this.isAppearRelevant()) {
-          this._beforeRemoveDom();
-        }
-      });
+    _afterRemoveDom : function() {
+      this.base( arguments );
+      this.forEachVisibleChild( function() {
+        this._afterRemoveDom();
+      } );
     },
-
-
-    // overridden
-    _afterRemoveDom : function()
-    {
-      this.base(arguments);
-
-      this.forEachVisibleChild(function()
-      {
-        if (this.isAppearRelevant()) {
-          this._afterRemoveDom();
-        }
-      });
-    },
-
 
 
 
@@ -1249,11 +1206,9 @@ qx.Class.define("qx.ui.core.Parent",
       delete this._childrenQueue[vChild.toHashCode()];
     },
 
-    /**
-     * @signature function()
-     */
-    _layoutPost : qx.lang.Function.returnTrue,
-
+    _layoutPost : function( changes ) {
+      this.createDispatchDataEvent( "flush", changes );
+    },
 
 
 

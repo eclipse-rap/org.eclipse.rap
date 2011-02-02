@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,10 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
   construct : function() {
     this.base( arguments );
     this.setOverflow( "hidden" );
-    this.setAppearance( "progressbar" );        
-    // this._gfxCanvasAppended must be present for 
-    // org.eclipse.rwt.GraphicsMixin#prepareEnhancedBorder
+    this.setAppearance( "progressbar" );
     this._timer = null;
     this._gfxCanvasAppended = false;
+    // TODO [tb] : Create a superclass for vector-based widgets (canvas?)
     this._canvas = null;
     this._backgroundShape = null;
     this._indicatorShape = null;    
@@ -267,7 +266,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       this._canvas = gfxUtil.createCanvas();
       this._getTargetNode().appendChild( gfxUtil.getCanvasNode( this._canvas ) );
       this._gfxCanvasAppended = true;
-      this.addEventListener( "appear", this._onCanvasAppear );
+      this.addEventListener( "insertDom", this._onCanvasAppear );
       this._backgroundShape = gfxUtil.createShape( "roundrect" );
       this._indicatorShape = gfxUtil.createShape( "roundrect" );
       gfxUtil.addToCanvas( this._canvas, this._backgroundShape );

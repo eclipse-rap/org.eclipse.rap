@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -172,6 +172,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       "mshtml" : null
     } ),
     
+//    testMissingMouseUp : function() {
+//      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+//      var widget = this.createDefaultWidget();
+//      var targetNode = widget._getTargetNode();
+//      var log = [];
+//      var handler = function( event ) {
+//        log.push( event.getType() );
+//      };
+//      widget.addEventListener( "mousedown", handler );
+//      widget.addEventListener( "mouseup", handler );
+//      widget.addEventListener( "mousemove", handler );
+//      testUtil.fakeMouseEventDOM( targetNode, "mousedown" );
+//      testUtil.fakeMouseEventDOM( targetNode, "mousemove", 0 );
+//      assertEquals( [ "mousedown", "mouseup", "mousemove" ], log );
+//      widget.destroy();
+//    },
+//    
     testKeyDownCharCode : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
