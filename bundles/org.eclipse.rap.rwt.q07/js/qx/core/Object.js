@@ -464,11 +464,11 @@ qx.Class.define("qx.core.Object",
       this.debug( "INFO: " + msg );
     },
     
-    warn : function(){
+    warn : function( msg ){
       this.debug( "WARN: " + msg );
     },
     
-    error : function(){
+    error : function( msg ){
       this.debug( "ERROR: " + msg );
     },
     
