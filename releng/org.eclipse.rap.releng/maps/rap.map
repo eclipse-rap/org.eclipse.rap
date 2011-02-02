@@ -74,10 +74,6 @@ plugin@org.eclipse.rap.examples.pages=HEAD,:pserver:anonymous@dev.eclipse.org:/c
 # war build demo feature
 feature@org.eclipse.rap.releng.warbuild.demo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/warbuild/demo-feature
 
-plugin@org.eclipse.equinox.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge
-fragment@org.eclipse.equinox.servletbridge.extensionbundle=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.servletbridge.extensionbundle
-plugin@org.eclipse.equinox.http.servletbridge=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.equinox/server-side/bundles/org.eclipse.equinox.http.servletbridge
-
 # rms
 feature@org.eclipse.rap.rms.feature=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/rms/org.eclipse.rap.rms.feature
 
