@@ -83,7 +83,7 @@
     <mkdir dir="${warDirectory}/WEB-INF/lib" />
     <copy todir="${warDirectory}/WEB-INF/lib">
       <fileset
-          file="${buildDirectory}/plugins/org.eclipse.equinox.servletbridge_*.jar" />
+          file="${warDirectory}/WEB-INF/eclipse/plugins/org.eclipse.equinox.servletbridge_*.jar" />
     </copy>
 
     <property name="featureDir" value="${buildDirectory}/${buildLabel}/" />
