@@ -1749,15 +1749,14 @@ qx.Class.define( "qx.ui.core.Widget", {
     // DOM ELEMENT HANDLING
 
     _isCreated : false,
+    _element : null,
+    _targetNode : null,
+    _style : null,
+    _innerStyle : null,
 
-    _getTargetNode : qx.core.Variant.select("qx.client", {
-      "gecko" : function() {
-        return this._element;
-      },
-      "default" : function() {
-        return this._borderElement || this._element;
-      }
-    } ),
+    _getTargetNode : function() {
+      return this._targetNode || this._element;
+    },
 
     addToDocument : function() {
       qx.ui.core.ClientDocument.getInstance().add(this);
@@ -3632,6 +3631,8 @@ qx.Class.define( "qx.ui.core.Widget", {
     _cachedBorderRight : 0,
     _cachedBorderBottom : 0,
     _cachedBorderLeft : 0,
+    _usesComplexBorder : false,
+    _layoutTargetNode : false,
 
     _applyBorder : function(value, old) {
       qx.theme.manager.Border.getInstance().connect(this._queueBorder, this, value);
@@ -3737,14 +3738,16 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     prepareEnhancedBorder : function() {
-      var elem = this.getElement();
-      var targetNode = this._borderElement = document.createElement( "div" );
-      var es = elem.style;
-      var cs = this._innerStyle = targetNode.style;
+      this._targetNode = document.createElement( "div" );
+      this._innerStyle = this._targetNode.style;
+      this._layoutTargetNode = true;
       if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        cs.width = cs.height = "100%";
+        this._innerStyle.width = this._innerStyle.height = "100%";
+      } else {
+        this.addToQueue( "width" );
+        this.addToQueue( "height" );
       }
-      cs.position = "absolute";
+      this._innerStyle.position = "absolute";
       for( var i in this._styleProperties ) {
         switch( i ) {
           case "zIndex":
@@ -3755,27 +3758,27 @@ qx.Class.define( "qx.ui.core.Widget", {
           case "cursor":
           break;
           default:
-            cs[i] = this._styleProperties[i];
-            es[i] = "";
+            this._innerStyle[i] = this._styleProperties[i];
+            this._style[i] = "";
         }
       }
       // [if] Fix for bug 279800: Some focused widgets look strange in webkit
-      es.outline = "none";
+      this._style.outline = "none";
       // The next line is needed for clipping in IE. Overflow is an
       // "outerStyle" property, so this this css-value will never be set or 
       // reset. Therefore, this widget also no longer has the ability to 
       // show overflow:
-      es.overflow = "hidden";
+      this._style.overflow = "hidden";
       for( var i in this._htmlProperties ) {
         switch( i ) {
           case "unselectable":
-            targetNode.unselectable = this._htmlProperties[ i ];
+            this._targetNode.unselectable = this._htmlProperties[ i ];
         }
       }
-      while( elem.firstChild ) {
-        targetNode.appendChild( elem.firstChild );
+      while( this._element.firstChild ) {
+        this._targetNode.appendChild( this._element.firstChild );
       }
-      elem.appendChild( targetNode );
+      this._element.appendChild( this._targetNode );
       if( this.isInDom() ) {
         // TODO [tb] : check if this works for ProgressBar
         this._afterRemoveDom(); 
@@ -3956,7 +3959,24 @@ qx.Class.define( "qx.ui.core.Widget", {
       }
       // Default behavior is to allow drop only if not dropping onto self
       return (this != dragCache.sourceWidget);
+    },
+    
+    //////////////////
+    // Adapter Support
+    
+    getAdapter : function( clazz ) {
+      if( this._adapters === undefined ) {
+        this._adapters = {};
+      }
+      var key = clazz.classname;
+      var result = this._adapters[ key ];
+      if( result == null ) {
+        new clazz( this );
+        result = this._adapters[ key ];
+      }
+      return result;
     }
+    
   },
 
   ///////////
@@ -3989,27 +4009,27 @@ qx.Class.define( "qx.ui.core.Widget", {
     if (qx.core.Variant.isSet("qx.client", "mshtml")) {
       members._renderRuntimeWidth = function(v) {
         this._style.pixelWidth = (v==null)?0:v;
-        if (this._innerStyle) {
+        if( this._layoutTargetNode ) {
           var innerValue = this._usesComplexBorder && v != null ? v - 2 : v; 
           this._innerStyle.pixelWidth = innerValue == null ? 0 : innerValue;
         }
       };
       members._renderRuntimeHeight = function(v) {
         this._style.pixelHeight = (v==null)?0:v;
-        if (this._innerStyle) {
+        if( this._layoutTargetNode ) {
           var innerValue = this._usesComplexBorder && v != null ? v - 2 : v;
           this._innerStyle.pixelHeight = innerValue == null ? 0 : innerValue;
         }
       };
       members._resetRuntimeWidth = function() {
         this._style.width = "";
-        if (this._innerStyle) {
+        if( this._layoutTargetNode ) {
           this._innerStyle.width = "";
         }
       };
       members._resetRuntimeHeight = function() {
         this._style.height = "";
-        if (this._innerStyle) {
+        if( this._layoutTargetNode ) {
           this._innerStyle.height = "";
         }
       };
@@ -4025,8 +4045,9 @@ qx.Class.define( "qx.ui.core.Widget", {
     if (elem) {
       elem.qx_Widget = null;
     }
+    this._disposeObjectDeep( "_adapters", 1 );
     this._disposeFields("_isCreated", "_inlineEvents", "_element", "_style",
-      "_borderElement", "_innerStyle", "_oldParent", "_styleProperties",
+      "_targetNode", "_innerStyle", "_oldParent", "_styleProperties",
       "_htmlProperties", "_htmlAttributes", "__states", "_jobQueue",
       "_layoutChanges", "__borderObject");
   }

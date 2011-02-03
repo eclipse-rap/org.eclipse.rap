@@ -201,7 +201,7 @@ qx.Class.define("qx.ui.basic.Terminator",
         return true;
       }
 
-      if (this._borderElement) {
+      if (this._targetNode) {
         return true;
       }
 
@@ -232,7 +232,7 @@ qx.Class.define("qx.ui.basic.Terminator",
         return true;
       }
 
-      if (this._borderElement) {
+      if (this._targetNode) {
         return true;
       }
 

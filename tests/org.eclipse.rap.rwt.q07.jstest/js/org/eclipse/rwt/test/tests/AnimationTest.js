@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010,2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -459,7 +459,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       var typeChange = org.eclipse.rwt.AnimationRenderer.ANIMATION_CHANGE;
       renderer.animate( widget, "opacity", typeChange );
       assertFalse( widget._applyVisibility == proto._applyVisibility );
-      assertEquals( renderer.__onVisibilityChange, widget._applyVisibility );
       assertFalse( proto._applyOpacity == widget._applyOpacity );
       assertEquals( widget._applyOpacity, renderer.__onOriginalRenderer );
       renderer.clearAnimation();

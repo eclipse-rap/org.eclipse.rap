@@ -266,10 +266,6 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
           }
         }
         this.prepareEnhancedBorder();
-        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-          this.addToQueue( "width" );
-          this.addToQueue( "height" );
-        }
         if( outline ) {
           this.setStyleProperty( "outline", outline );
         }
@@ -304,21 +300,9 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       }
     },
 
-    // overwritten
-    prepareEnhancedBorder : function() {
-      if( !this._innerStyle && !this._innerStyleHidden ) {
-        this.base( arguments );
-      } else {
-        if( this._innerStyleHidden ) {
-          // Reveal hidden style object for (non-rounded) border rendering
-          this._setSimulatedPadding();
-        }
-      }
-    },
-
     //overwritten, analog to the above function:
     _getTargetNode : function() {
-        return this._borderElement || this._element;
+        return this._targetNode || this._element;
     },
 
     ////////////////////
@@ -398,7 +382,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     _renderGfxBorder : function() {
       this._style.borderWidth = 0;
-      var inner = this._innerStyle || this._innerStyleHidden;
+      var inner = this._innerStyle;
       inner.borderWidth = 0;
       this._prepareGfxShape();
       var shape = this._gfxData.currentShape;
@@ -463,21 +447,12 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       var width = this.getGfxProperty( "borderWidths" );
       if( width ) {
         var rect = this.getGfxProperty( "rectDimension" );
-        if( isMshtml && this._innerStyle  ) {
-          //don't let ie know there is an inner element!
-          this._innerStyleHidden = this._innerStyle;
-          delete this._innerStyle;
-        }
-        var style = this._innerStyle || this._innerStyleHidden;
+        var style = this._innerStyle;
         style.top = width[ 0 ] + "px";
         style.left = width[ 3 ] + "px";
         style.width = Math.max( 0, rect[ 0 ] - width[ 3 ] - width[ 1 ] ) + "px";
         style.height = Math.max( 0, rect[ 1 ] - width[ 0 ] - width[ 2 ] ) + "px";
       } else {
-        if( this._innerStyleHidden ) {
-          this._innerStyle = this._innerStyleHidden;
-          delete this._innerStyleHidden;
-        }
         this._innerStyle.left = "0px";
         this._innerStyle.top = "0px";
         if( isMshtml ) {
@@ -493,6 +468,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     },
 
     _enableGfxLayout : function( value ) {
+      this._layoutTargetNode = !value;
       if( value ) {
         this.addEventListener( "flush", this._gfxOnFlush, this );
       } else {

@@ -236,16 +236,20 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	
   	_getObjectSummary : function( value ) {
   	  var result = value;
-  	  if( value instanceof Array ) {
-  	    result = value.join();
-  	  } else if(    value instanceof Object 
-  	             && !( value instanceof qx.core.Object ) )
-  	  {
-  	    var arr = [];
-  	    for( var key in value ) {
-  	      arr.push( " " + key + " : " + value[ key ] ); 
-  	    }
-  	    result = "{" + arr.join() + " }";
+  	  try{ 
+    	  if( value instanceof Array ) {
+    	    result = value.join();
+    	  } else if(    value instanceof Object 
+    	             && !( value instanceof qx.core.Object ) )
+    	  {
+    	    var arr = [];
+    	    for( var key in value ) {
+    	      arr.push( " " + key + " : " + value[ key ] ); 
+    	    }
+    	    result = "{" + arr.join() + " }";
+    	  }
+  	  }catch( ex ) {
+  	    //do nothing
   	  }
   	  return result;
   	},

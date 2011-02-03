@@ -34,6 +34,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     this._fullVisibilityValue = null;
     this._autoStartEnabled = true;
     this._renderType = null;
+    this._renderAdapter = null;
     this._animationType = 0;
     this._autoCheck = true;
   },
@@ -249,6 +250,8 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
         this.clearAnimation();
       } 
       this._context = widget;
+      this._renderAdapter 
+        = widget.getAdapter( org.eclipse.rwt.WidgetRenderAdapter );
       this._renderType = renderType;
       this._animationType = animationType;
       this._renderFunction = widget[ this._getRenderFunctionName() ];
@@ -263,6 +266,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
         this._handleAnimationType();
         this._renderType = null;
         this.setRenderFunction( null, null );
+        this._renderAdapter = null;
       }
     },
 
@@ -380,14 +384,14 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     
     _overwriteApplyVisibility : function( value ) {
       if( value ) {
-        if( !this.__onVisibilityChange ) {
-          this.__onVisibilityChange
-            = qx.lang.Function.bind( this._onVisibilityChange, this ); 
-        }
-        this._context._applyVisibility = this.__onVisibilityChange;
+        this._renderAdapter.addRenderListener( "visibility",
+                                               this._onVisibilityChange,
+                                               this ); 
       } else {
-        delete this._context._applyVisibility;
-      } 
+        this._renderAdapter.removeRenderListener( "visibility",
+                                                  this._onVisibilityChange,
+                                                  this ); 
+      }
     },
     
     _overwriteWidgetRenderer : function( value ) {
@@ -409,15 +413,15 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     //////////////////////////////////////
     // Widget integration - event handlers
 
-    _onVisibilityChange : function( value ) {
+    _onVisibilityChange : function( event ) {
       var allow;
-      if( value ) {
+      if( event.getData() ) {
         allow = this._onBeforeAppear();
       } else {
         allow = this._onBeforeDisappear();
       }
-      if( allow ) {
-        this._updateWidgetVisibility(); 
+      if( !allow ) {
+        event.preventDefault(); 
       }
     },
 
@@ -542,8 +546,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
     // calls the original "_applyVisibility".
     _updateWidgetVisibility : function() {
       var value = this._context.getVisibility();
-      var proto = this._context.constructor.prototype;
-      proto._applyVisibility.call( this._context, value );
+      this._renderAdapter.forceRender( "visibility", value );
     },
 
     _renderStartValueOnCreate : function() {
