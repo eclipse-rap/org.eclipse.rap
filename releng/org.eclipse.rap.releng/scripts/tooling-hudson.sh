@@ -14,10 +14,6 @@ rapTargets="/home/build/.hudson/jobs/RAP 1.4 (Indigo) Runtime/lastSuccessful/arc
 
 scriptsDir=`dirname $0`
 
-# detect latest runtime target archive
-latestTargetQualifier=`find "$rapTargets" -name '*runtime*.zip' -printf "%f\n" | cut -f5,6 -d"-" | sort | tail -n 1`
-latestTarget=`find "$rapTargets" -name *${latestTargetQualifier}`
-
 $scriptsDir/build-common.sh \
   --cvs-tag "$CVS_TAG" \
   --build-type "$BUILD_TYPE" \
@@ -25,4 +21,3 @@ $scriptsDir/build-common.sh \
   --runtime "$runtimeDir" \
   --base-platform "$PLATFORM_DIR" \
   --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/tooling" \
-  --rap-target "$latestTarget"
