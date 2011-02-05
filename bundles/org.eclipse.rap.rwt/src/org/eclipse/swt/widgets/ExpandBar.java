@@ -383,15 +383,16 @@ public class ExpandBar extends Composite {
       allItemsHeight = lastItem.y + lastItem.getBounds().height;
     }
     // Set items width based on scrollbar visibility
+    Rectangle bounds = getBounds();
     int border = getBorderWidth();
-    int v_scroll = getVScrollBarWidth();
+    int scrollBarWidth = getVScrollBarWidth();
     for( int i = 0; i < itemCount; i++ ) {
       ExpandItem item = getItem( i );
       if( isVScrollbarVisible() ) {
-        int width = getBounds().width - v_scroll - 2 * border - 2 * spacing;
+        int width = bounds.width - scrollBarWidth - 2 * border - 2 * spacing;
         item.setBounds( 0, 0, width, item.height, false, true );
       } else {
-        int width = getBounds().width - 2 * border - 2 * spacing;
+        int width = bounds.width - 2 * border - 2 * spacing;
         item.setBounds( 0, 0, width, item.height, false, true );
       }
     }

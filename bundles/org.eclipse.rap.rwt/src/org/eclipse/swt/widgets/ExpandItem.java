@@ -413,8 +413,8 @@ public class ExpandItem extends Item {
 
   private void updateBounds() {
     int parentWidth = parent.computeSize( SWT.DEFAULT, SWT.DEFAULT, false ).x;
-    int v_scroll = parent.getVScrollBarWidth();
-    int availableWidth = parentWidth - 2 * parent.spacing - v_scroll;
+    int scrollBarWidth = parent.getVScrollBarWidth();
+    int availableWidth = parentWidth - 2 * parent.spacing - scrollBarWidth;
     width = Math.max( getPreferredWidth(), availableWidth );
     setBounds( 0, 0, width, height, false, true );
   }
