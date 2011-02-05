@@ -18,13 +18,13 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     // TODO [tb] : integrate qx.html.EventRegistration
     _lastUpDownType : {},
     _lastKeyCode : null,
-    
+
     cleanUp : function() {
       delete this.__onKeyEvent;
       delete this._lastUpDownType;
-      delete this._lastKeyCode;      
+      delete this._lastKeyCode;
     },
-    
+
     /////////////////////////
     // GENERAL EVENT HANDLING
 
@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         return args[ 0 ];
       }
     } ),
-    
+
     getDomTarget : qx.core.Variant.select("qx.client", {
       "mshtml" : function( vDomEvent ) {
         return vDomEvent.target || vDomEvent.srcElement;
@@ -53,7 +53,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         return vDomEvent.target;
       }
     } ),
-    
+
     stopDomEvent : function( vDomEvent ) {
       if( vDomEvent.preventDefault ) {
         vDomEvent.preventDefault();
@@ -95,10 +95,10 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       // 'vWindow' is the window reference then
       if( vWindow ) {
         var vDocument = vWindow.document;
-        if(    vNode == vWindow 
-            || vNode == vDocument 
-            || vNode == vDocument.documentElement 
-            || vNode == vDocument.body ) 
+        if(    vNode == vWindow
+            || vNode == vDocument
+            || vNode == vDocument.documentElement
+            || vNode == vDocument.body )
         {
           return vDocument.body.qx_Widget;
         }
@@ -136,7 +136,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         vObject = vObject.getParent();
       }
       return vObject;
-    },    
+    },
 
     ///////////////
     // KEY HANDLING
@@ -163,7 +163,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         // the value in "keyCode" on "keypress" is actually the charcode:
         var hasKeyCode = event.type !== "keypress" || event.keyCode === 13;
         return hasKeyCode ? event.keyCode : 0;
-      } 
+      }
     } ),
 
     getCharCode : qx.core.Variant.select( "qx.client", {
@@ -174,7 +174,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       "mshtml" : function( event ) {
         var hasCharCode = event.type === "keypress" && event.keyCode !== 13;
         return hasCharCode ? event.keyCode : 0;
-      }, 
+      },
       "opera" : function( event ) {
         var result;
         if( event.type === "keypress" ) {
@@ -202,10 +202,10 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
           var printable = !this._isNonPrintableKeyCode( keyCode );
           if( this._isFirstKeyDown( keyCode ) ) {
             // add a "keypress" for non-printable keys:
-            result = printable ? [ "keydown" ] : [ "keydown", "keypress" ];             
+            result = printable ? [ "keydown" ] : [ "keydown", "keypress" ];
           } else {
             // convert non-printable "keydown" to "keypress", suppress other:
-            result = printable ? [] : [ "keypress" ]; 
+            result = printable ? [] : [ "keypress" ];
           }
         } else {
           result = [ event.type ];
@@ -214,18 +214,18 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       },
       "gecko" : function( event, keyCode, charCode ) {
         var result;
-        if(    event.type === "keydown" 
-            && !this._isFirstKeyDown( keyCode )  
+        if(    event.type === "keydown"
+            && !this._isFirstKeyDown( keyCode )
         ) {
           // suppress unwanted "keydown":
-          result = []; 
+          result = [];
         } else {
           result = [ event.type ];
         }
-        return result; 
+        return result;
       },
       "opera" : function( event, keyCode, charCode ) {
-        return [ event.type ]; 
+        return [ event.type ];
       }
     } ),
 
@@ -263,11 +263,12 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     _isNonPrintableKeyCode : function( keyCode ) {
       return this._keyCodeToIdentifierMap[ keyCode ] ? true : false;
     },
-    
+
     _isAlphaNumericKeyCode : function( keyCode ) {
       var result = false;
-      if(    ( keyCode >= this._charCodeA && keyCode <= this._charCodeZ ) 
-          || ( keyCode >= this._charCode0 && keyCode <= this._charCode9 ) ) {
+      if(    ( keyCode >= this._charCodeA && keyCode <= this._charCodeZ )
+          || ( keyCode >= this._charCode0 && keyCode <= this._charCode9 ) )
+      {
         result = true;
       }
       return result;
@@ -277,13 +278,13 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     // Helper-maps:
 
     _specialCharCodeMap : {
-      13  : "Enter", 
-      27  : "Escape", 
-      32 : "Space" 
+      13  : "Enter",
+      27  : "Escape",
+      32 : "Space"
     },
 
     _keyCodeToIdentifierMap : {
-      8   : "Backspace", 
+      8   : "Backspace",
       9   : "Tab",
       16  : "Shift",
       17  : "Control",
