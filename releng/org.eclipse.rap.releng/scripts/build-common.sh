@@ -10,7 +10,6 @@ basePlatformDir=
 workDir=./work
 outputDir=./output
 builderCvsPath=
-rapTarget=
 
 # Print usage info
 print_usage() {
@@ -48,7 +47,6 @@ do
     --base-platform|-p) shift; basePlatformDir=$1; shift;;
     --work|-w) shift; workDir=$1; shift;;
     --output|-o) shift; outputDir=$1; shift;;
-    --rap-target|-t) shift; rapTarget=$1; shift;;
     --help|-h) shift; print_usage; exit 1; shift;;
   esac
 done
@@ -65,9 +63,6 @@ runtimeDir=`readlink -f $runtimeDir`
 basePlatformDir=`readlink -f $basePlatformDir`
 workDir=`readlink -f "$workDir"`
 outputDir=`readlink -f "$outputDir"`
-if [ -n "$rapTarget" ]; then
-  rapTarget=`readlink -f "$rapTarget"`
-fi
 
 # Create base working directory
 if [ ! -d "$workDir" ]; then
@@ -88,9 +83,6 @@ echo "  Runtime Inst.:      $runtimeDir"
 echo "  Platform Inst.:     $basePlatformDir"
 echo "  Working Dir:        $workDir"
 echo "  Output Dir:         $outputDir"
-if [ -n "$rapTarget" ]; then
-  echo "  RAP Target:         $rapTarget"
-fi
 echo ""
 
 # Checkout releng project
@@ -110,11 +102,6 @@ echo "Using PDE Build: $pdeBuild"
 launcher=$runtimeDir/plugins/`ls -1 $runtimeDir/plugins | grep launcher_ | tail -n 1`
 echo "Using Equinox launcher: $launcher"
 
-if [ -z "$rapTarget" ]; then
-#  rapTargetArg="\"-DrapTarget=$rapTarget\""
-  rapTarget=none
-fi
-
 java -cp $launcher org.eclipse.core.launcher.Main \
     -application org.eclipse.ant.core.antRunner \
     -buildfile "$runtimeDir/plugins/$pdeBuild/scripts/build.xml" \
@@ -126,7 +113,6 @@ java -cp $launcher org.eclipse.core.launcher.Main \
     -DmapsCheckoutTag=$cvsTag \
     -DfetchTag=$cvsTag \
     -DbaseLocation="$basePlatformDir" \
-    -DrapTarget="$rapTarget" \
     -Dfile.encoding=UTF-8 \
   || fail
 

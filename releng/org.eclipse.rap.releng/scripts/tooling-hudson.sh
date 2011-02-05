@@ -10,8 +10,6 @@ test -d "$WORKSPACE" && rm -rf "$WORKSPACE"/*
 
 runtimeDir=/home/build/rap/build-runtimes/eclipse-3.6
 
-rapTargets="/home/build/.hudson/jobs/RAP 1.4 (Indigo) Runtime/lastSuccessful/archive"
-
 scriptsDir=`dirname $0`
 
 $scriptsDir/build-common.sh \
@@ -20,4 +18,5 @@ $scriptsDir/build-common.sh \
   --work "$WORKSPACE" \
   --runtime "$runtimeDir" \
   --base-platform "$PLATFORM_DIR" \
-  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/tooling" \
+  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/tooling"
+
