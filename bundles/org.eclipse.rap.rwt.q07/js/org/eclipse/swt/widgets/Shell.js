@@ -98,7 +98,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       }
       org.eclipse.swt.widgets.Shell._upperModalShell = upperModalShell;
     },
-    
+
     _copyStates : function( source, target ) {
       target.__states = {};
       for( var state in source.__states ) {
@@ -184,7 +184,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
                                                   this.__onwindowmousedown );
       this.removeEventListener( "create", this._onCreate, this );
     },
-    
+
     // [if] Override to prevent the new open shell to automaticaly become
     // an active shell (see bug 297167).
     _beforeAppear : function() {
@@ -194,7 +194,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       this.getWindowManager().add( this );
       this.getWindowManager().setActiveWindow( activeWindow );
     },
-    
+
     setDefaultButton : function( value ) {
       this._defaultButton = value;
     },
@@ -214,7 +214,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         parentShell.addEventListener( "close", listener, this );
       }
     },
-    
+
     // Fix for bug 306042
     setSpace : function( left, width, top, height ) {
       if( !this._disableResize ) {
@@ -271,17 +271,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         }
       }
     },
-    
+
     _getClientDocumentBlocker : function() {
       var result = null;
-      if(    this._appModal 
-          && org.eclipse.swt.widgets.Shell._upperModalShell == this ) 
+      if(    this._appModal
+          && org.eclipse.swt.widgets.Shell._upperModalShell == this )
       {
         result = this.getTopLevelWidget()._getBlocker();
       }
       return result;
     },
-    
+
     _isRelevantState : function( state ) {
       var result =    state == "active"
                    || state == "maximized"
@@ -371,7 +371,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         }
       }
     },
-    
+
     _onChangeFocusedChild : function( evt ) {
       if( org.eclipse.swt.EventUtil.getSuspended() ) {
         this._focusControl = this.getFocusedChild();
@@ -384,9 +384,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       //      See http://bugzilla.qooxdoo.org/show_bug.cgi?id=345
       if( !this.getActive() && !isFinite( this.getZIndex() ) ) {
         this.setZIndex( 1e8 );
-        // TODO [rst] Obsoleted by rewrite. Let the warning here for safety.
-        // TODO [tb] Logging is no more: Remove or throw error?
-        // this.warn( "--- INFINITE Z-ORDER ---" );
       }
       // end of workaround
       if( !org.eclipse.swt.EventUtil.getSuspended() && this.getActive() ) {
@@ -415,7 +412,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( id + ".mode", value );
     },
-        
+
     _onChangeSize : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -443,7 +440,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       req.send();
       }
     },
-    
+
     _onKeydown : function( evt ) {
       var keyId = evt.getKeyIdentifier();
       if(    keyId == "Enter"
@@ -469,7 +466,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var focusedChildId = widgetManager.findIdByWidget( focusedChild );
           var req = org.eclipse.swt.Request.getInstance();
-          req.addParameter( req.getUIRootId() + ".focusControl", focusedChildId );    
+          req.addParameter( req.getUIRootId() + ".focusControl", focusedChildId );
         }
       }
     },
@@ -540,13 +537,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       org.eclipse.swt.widgets.Shell.reorderShells( this.getWindowManager() );
       this._setRenderZIndex( true );
     },
-    
+
     _applyZIndex : function( newValue, oldValue ) {
       if( this._renderZIndex ) {
         this.base( arguments, newValue, oldValue );
       }
     },
-    
+
     _setRenderZIndex : function( value ) {
        // Needed to prevent flickering during display-overlay animations.
       this._renderZIndex = value;
@@ -591,7 +588,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         }
       }
     },
-    
+
     setFullScreen : function( fullScreen ) {
       if( fullScreen ) {
         this._captionBar.setDisplay( false );
