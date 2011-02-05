@@ -1,4 +1,4 @@
-/******************************************************************************* 
+/*******************************************************************************
 * Copyright (c) 2010 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
@@ -6,11 +6,12 @@
 *
 * Contributors:
 *   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*******************************************************************************/
 package org.eclipse.rap.rwt.themes.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -26,15 +27,14 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 public class ThemesTestUtil {
 
   public static final String CLASSIC_PATH = "theme/classic.css";
-  
+
   public static final String BUSINESS_PATH = "theme/business/business.css";
 
   public static final String FANCY_PATH = "theme/fancy/fancy.css";
-  
+
   public static final String DEFAULT_PREFIX = "org/eclipse/swt/internal/";
 
-  static final ResourceLoader RESOURCE_LOADER
-    = createResourceLoader( ThemesTestUtil.class );
+  static final ResourceLoader RESOURCE_LOADER = getDefaultResourceLoader();
 
   private static final String BUNDLE_ID = "org.eclipse.rap.rwt.themes.test";
 
@@ -55,18 +55,18 @@ public class ThemesTestUtil {
     }
   }
 
-  private static String getBundlePath( final URLClassLoader classLoader, 
-                                       final String bundleId ) 
+  private static String getBundlePath( final URLClassLoader classLoader,
+                                       final String bundleId )
   {
     URL[] urls = classLoader.getURLs();
     String path = null;
     for( int i = 0; i < urls.length && path == null; i++ ) {
-      String tempPath = urls[ i ].getPath();    
+      String tempPath = urls[ i ].getPath();
       if( tempPath.indexOf( bundleId ) != -1
-          && tempPath.indexOf( BUNDLE_ID ) == -1 ) 
+          && tempPath.indexOf( BUNDLE_ID ) == -1 )
       {
         int indexOfBin = tempPath.indexOf( "bin" );
-        if( indexOfBin != -1 ) {            
+        if( indexOfBin != -1 ) {
           String protocol = urls[ i ].getProtocol();
           path = protocol + ":" + tempPath.substring( 0, indexOfBin );
         }
@@ -88,12 +88,12 @@ public class ThemesTestUtil {
         method.invoke( classLoader, url );
       } catch( final Throwable e ) {
         e.printStackTrace();
-      } 
+      }
     }
   }
 
-  public static void createAndActivateTheme( final String path, 
-                                             final String themeId ) 
+  public static void createAndActivateTheme( final String path,
+                                             final String themeId )
   {
     StyleSheet styleSheet;
     try {
@@ -106,19 +106,19 @@ public class ThemesTestUtil {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.registerTheme( theme );
     themeManager.initialize();
-    ThemeUtil.setCurrentThemeId( themeId );  
+    ThemeUtil.setCurrentThemeId( themeId );
   }
-  
-  public static ResourceLoader createResourceLoader( final Class clazz ) {
-    final ClassLoader classLoader = clazz.getClassLoader();
-    ResourceLoader resLoader = new ResourceLoader() {
-      public InputStream getResourceAsStream( final String resourceName )
-        throws IOException
-      {
-        return classLoader.getResourceAsStream( resourceName );
-      }
-    };
-    return resLoader;
+
+  private static ResourceLoader getDefaultResourceLoader() {
+    ResourceLoader result;
+    try {
+      String name = "STANDARD_RESOURCE_LOADER";
+      Field field = ThemeManager.class.getDeclaredField( name );
+      field.setAccessible( true );
+      result = ( ResourceLoader )field.get( null );
+    } catch( Exception e ) {
+      throw new RuntimeException( "Failed to obtain default resource loader" );
+    }
+    return result;
   }
-  
 }

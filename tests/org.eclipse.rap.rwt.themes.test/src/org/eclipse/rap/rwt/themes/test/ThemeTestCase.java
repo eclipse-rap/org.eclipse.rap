@@ -18,6 +18,7 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;
 
+
 public abstract class ThemeTestCase extends TestCase {
 
   protected void setUp() {
@@ -60,11 +61,13 @@ public abstract class ThemeTestCase extends TestCase {
       QxType actual = ThemeUtil.getCssValue( selector.getElementName(),
                                              property,
                                              config );
-      String message = "Css test failed for "
-                       + createSelectorString( selector )
-                       + ", property "
-                       + property;
-      assertEquals( message, expected, actual );
+      if( !actual.equals( expected ) ) {
+        String message =   "Css test failed for "
+                         + createSelectorString( selector )
+                         + ", property "
+                         + property;
+        assertEquals( message, expected, actual );
+      }
     }
   }
 
