@@ -134,7 +134,7 @@ public final class QxImage implements QxType {
     boolean result = false;
     if( object == this ) {
       result = true;
-    } else if( object instanceof QxImage ) {
+    } else if( object.getClass() == QxImage.class ) {
       QxImage other = ( QxImage )object;
       result =    ( path == null
                     ? other.path == null
