@@ -19,7 +19,7 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.SessionHandler;
 
 /**
- * Configure Jetty to not use cookies for session managment. This allows RAP
+ * Configure Jetty to not use cookies for session management. This allows RAP
  * applications to run in multiple tabs of the same browser instance.
  */
 public final class SessionCookieCustomizer extends JettyCustomizer {
