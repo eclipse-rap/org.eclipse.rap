@@ -32,7 +32,7 @@ public class TableViewerTab extends ExampleTab {
   private static final int AGE = 2;
   private static final int EDITABLE = 3;
   private static final String[] LAST_NAMES = {
-    "Hövl&lt;_'><'&amp;",
+    "HÃ¶vl&lt;_'><'&amp;",
     "Panther",
     "Marx",
     "Loren",
@@ -395,7 +395,7 @@ public class TableViewerTab extends ExampleTab {
 
   private void initPersons() {
     persons.clear();
-    persons.add( new Person( "Rögn\"íy&", LAST_NAMES[ 0 ], 1, false ) );
+    persons.add( new Person( "RÃ¶gn\"Ã­y&", LAST_NAMES[ 0 ], 1, false ) );
     persons.add( new Person( "Paul", LAST_NAMES[ 1 ], 1, false ) );
     persons.add( new Person( "Karl", LAST_NAMES[ 2 ], 2, false ) );
     persons.add( new Person( "Sofia", LAST_NAMES[ 3 ], 3, true ) );

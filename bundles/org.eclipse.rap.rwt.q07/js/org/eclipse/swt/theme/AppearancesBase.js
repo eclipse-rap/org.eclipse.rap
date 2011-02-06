@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
- *     Rüdiger Herrmann - bug 335112
+ *     RÃ¼diger Herrmann - bug 335112
  ******************************************************************************/
 
 qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",

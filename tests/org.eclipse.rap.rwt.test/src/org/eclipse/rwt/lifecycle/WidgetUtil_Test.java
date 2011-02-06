@@ -46,7 +46,7 @@ public class WidgetUtil_Test extends TestCase {
     String withLeadingDash = "-Foo-Bar-23-42";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withLeadingDash );
     assertEquals( withLeadingDash, WidgetUtil.getVariant( shell ) );
-    String withNonAscii = "Foo-üäöæ-23-42";
+    String withNonAscii = "Foo-Ã¼Ã¤Ã¶Ã¦-23-42";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withNonAscii );
     assertEquals( withNonAscii, WidgetUtil.getVariant( shell ) );
     String withSpaces = "Foo Bar 23 42 ";

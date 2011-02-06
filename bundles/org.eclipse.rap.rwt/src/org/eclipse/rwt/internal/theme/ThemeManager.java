@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
- *     Rüdiger Herrmann - bug 335112
+ *     RÃ¼diger Herrmann - bug 335112
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 

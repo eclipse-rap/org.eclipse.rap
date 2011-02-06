@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
- *     Rüdiger Herrmann - bug 334511
+ *     RÃ¼diger Herrmann - bug 334511
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 

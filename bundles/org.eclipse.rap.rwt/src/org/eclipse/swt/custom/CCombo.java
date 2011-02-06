@@ -867,7 +867,7 @@ public final class CCombo extends Composite {
     }
     if( height != 0 ) {
       height += fieldPadding.height;
-      // TODO [rst] Workaround for two missing pixels (Ö, p are cut off), revise
+      // TODO [rst] Workaround for two missing pixels (Ã–, p are cut off), revise
       height += 2;
     }
     if( width == 0 ) {

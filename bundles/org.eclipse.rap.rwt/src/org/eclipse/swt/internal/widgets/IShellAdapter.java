@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     Rüdiger Herrmann - bug 335112
+ *     RÃ¼diger Herrmann - bug 335112
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 

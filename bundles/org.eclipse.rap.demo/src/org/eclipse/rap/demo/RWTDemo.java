@@ -352,7 +352,7 @@ public class RWTDemo implements IEntryPoint {
     Label label = new Label( composite, SWT.NONE );
     label.setText( "FillLayout" );
     final Text text = new Text( composite, SWT.MULTI | SWT.BORDER );
-    text.setText( "None ASCII characters: äöüß@, select the Sash or press the button" );
+    text.setText( "None ASCII characters: Ã¤Ã¶Ã¼ÃŸ@, select the Sash or press the button" );
     Sash sash = new Sash( composite, SWT.NONE );
     sash.addSelectionListener( new SelectionAdapter() {
 

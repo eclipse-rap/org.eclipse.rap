@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     Rüdiger Herrmann - bug 316961: Exception handling may fail in AdapterFactoryRegistry
+ *     RÃ¼diger Herrmann - bug 316961: Exception handling may fail in AdapterFactoryRegistry
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
