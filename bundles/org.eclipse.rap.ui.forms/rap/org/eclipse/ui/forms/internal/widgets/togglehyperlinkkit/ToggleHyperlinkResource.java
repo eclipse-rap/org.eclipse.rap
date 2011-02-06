@@ -19,7 +19,7 @@ import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 public final class ToggleHyperlinkResource implements IResource {
 
   public String getCharset() {
-    return "ISO-8859-1"; //$NON-NLS-1$
+    return "UTF-8"; //$NON-NLS-1$
   }
 
   public ClassLoader getLoader() {
