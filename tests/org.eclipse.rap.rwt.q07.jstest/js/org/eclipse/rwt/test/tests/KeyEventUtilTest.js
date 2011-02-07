@@ -21,6 +21,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventUtilTest", {
     
     testKeyBindingSingleCharacter : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.initRequestLog();
       var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
       var widget = this._createWidget();
       keyUtil.setKeyBindings( {

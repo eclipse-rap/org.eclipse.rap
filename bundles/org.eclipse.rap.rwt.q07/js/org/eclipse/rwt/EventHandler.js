@@ -149,15 +149,19 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     // KEY EVENTS:
     
     _onKeyEvent : function() {
-      var util = org.eclipse.rwt.EventHandlerUtil;
-      var event = util.getDomEvent( arguments );
-      var keyCode = util.getKeyCode( event );
-      var charCode = util.getCharCode( event );
-      var pseudoTypes = util.getEventPseudoTypes( event, keyCode, charCode );
-      for( var i = 0; i < pseudoTypes.length; i++ ) {
-        this._onkeyevent_post( event, pseudoTypes[ i ], keyCode, charCode );
+      try {
+        var util = org.eclipse.rwt.EventHandlerUtil;
+        var event = util.getDomEvent( arguments );
+        var keyCode = util.getKeyCode( event );
+        var charCode = util.getCharCode( event );
+        var pseudoTypes = util.getEventPseudoTypes( event, keyCode, charCode );
+        for( var i = 0; i < pseudoTypes.length; i++ ) {
+          this._onkeyevent_post( event, pseudoTypes[ i ], keyCode, charCode );
+        }
+        util.saveData( event, keyCode, charCode );
+      } catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }
-      util.saveData( event, keyCode, charCode );
     },
 
     
@@ -234,13 +238,17 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     // MOUSE EVENTS
  
     _onmouseevent : function( event ) {
-      var process = true;
-      if( typeof this._filter[ "mouseevent" ] !== "undefined" ) {
-        var context = this._filter[ "mouseevent" ][ 1 ];
-        process = this._filter[ "mouseevent" ][ 0 ].call( context, event );
-      }
-      if( process ) {
-        this._processMouseEvent( event ); 
+      try{ 
+        var process = true;
+        if( typeof this._filter[ "mouseevent" ] !== "undefined" ) {
+          var context = this._filter[ "mouseevent" ][ 1 ];
+          process = this._filter[ "mouseevent" ][ 0 ].call( context, event );
+        }
+        if( process ) {
+          this._processMouseEvent( event ); 
+        }
+      } catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }
     },
 
@@ -461,61 +469,81 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     },
 
     _ondragevent : function( vEvent ) {
-      var util = org.eclipse.rwt.EventHandlerUtil;
-      if( !vEvent ) {
-        vEvent = window.event;
+      try {
+        var util = org.eclipse.rwt.EventHandlerUtil;
+        if( !vEvent ) {
+          vEvent = window.event;
+        }
+        util.stopDomEvent( vEvent );
+      } catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }
-      util.stopDomEvent( vEvent );
     },
 
     ////////////////
     // SELECT EVENTS
 
     _onselectevent : function( ) {
-      var util = org.eclipse.rwt.EventHandlerUtil;
-      var e = util.getDomEvent( arguments );
-      var target = util.getOriginalTargetObjectFromEvent( e );
-      while( target )       {
-        if( target.getSelectable() != null ) {
-          if ( !target.getSelectable() ) {
-           util.stopDomEvent( e );
+      try {
+        var util = org.eclipse.rwt.EventHandlerUtil;
+        var e = util.getDomEvent( arguments );
+        var target = util.getOriginalTargetObjectFromEvent( e );
+        while( target )       {
+          if( target.getSelectable() != null ) {
+            if ( !target.getSelectable() ) {
+             util.stopDomEvent( e );
+            }
+            break;
           }
-          break;
+          target = target.getParent();
         }
-        target = target.getParent();
+      } catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }
     },
 
     _onwindowblur : function( e ) {
-      if (    !this._focused 
-           || this._ignoreWindowBlur 
-           || e.originalTarget != window ) {
-        return;
+      try {
+        if (    !this._focused 
+             || this._ignoreWindowBlur 
+             || e.originalTarget != window ) {
+          return;
+        }
+        this._focused = false;
+        this.setCaptureWidget( null );
+        if( qx.Class.isDefined( "qx.ui.popup.PopupManager" ) ) {
+          qx.ui.popup.PopupManager.getInstance().update();
+        }
+        if ( this._menuManager ) {
+          this._menuManager.update();
+        }
+        if( qx.Class.isDefined( "qx.event.handler.DragAndDropHandler" ) ) {
+          qx.event.handler.DragAndDropHandler.getInstance().globalCancelDrag();
+        }
+        qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowblur" );
+      } catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }
-      this._focused = false;
-      this.setCaptureWidget( null );
-      if( qx.Class.isDefined( "qx.ui.popup.PopupManager" ) ) {
-        qx.ui.popup.PopupManager.getInstance().update();
-      }
-      if ( this._menuManager ) {
-        this._menuManager.update();
-      }
-      if( qx.Class.isDefined( "qx.event.handler.DragAndDropHandler" ) ) {
-        qx.event.handler.DragAndDropHandler.getInstance().globalCancelDrag();
-      }
-      qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowblur" );
     },
 
     _onwindowfocus : function( e ) {
-      if( this._focused ) {
-        return;
+      try {
+        if( this._focused ) {
+          return;
+        }
+        this._focused = true;
+        qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowfocus" );
+      } catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }
-      this._focused = true;
-      qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowfocus" );
     },
 
     _onwindowresize : function( e ) {
-      qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+      try {
+        qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+      } catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+      }
     },
 
     ///////////////

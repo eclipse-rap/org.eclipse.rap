@@ -395,6 +395,39 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
  
+    testCatchMouseEventError : function(){
+      var widget = new qx.ui.basic.Terminator();
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      widget.addToDocument();
+      widget.addEventListener( "click", function() {
+        var foo = null;
+        foo.bar();
+      } );
+      testUtil.flush();
+      testUtil.initErrorPageLog();
+      testUtil.click( widget );
+      assertNotNull( testUtil.getErrorPage() );
+      widget.destroy();
+    },
+ 
+    testCatchKeyEventError : function(){
+      var widget = new qx.ui.basic.Terminator();
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      widget.addToDocument();
+      widget.addEventListener( "keydown", function() {
+        var foo = null;
+        foo.bar();
+      } );
+      testUtil.flush();
+      testUtil.initErrorPageLog();
+      testUtil.press( widget, "a" );
+      assertNotNull( testUtil.getErrorPage() );
+      widget.destroy();
+    },
+
+    /////////
+    // Helper
+
     _addKeyLogger : function( widget, type, identifier, modifier ) {
       var log = [];
       var logger = function( event ) {
@@ -413,9 +446,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.addEventListener( "keyup", logger );
       return log;
     },
-
-    /////////
-    // Helper
 
     createDefaultWidget : function() {
       var widget = new org.eclipse.rwt.widgets.MultiCellWidget( 

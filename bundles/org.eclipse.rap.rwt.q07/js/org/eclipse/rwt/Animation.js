@@ -259,18 +259,22 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
     },
 
     _mainLoop : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var time = new Date().getTime();
-        var queue = org.eclipse.rwt.Animation._queue;
-        try{
-          for ( var i=0, len = queue.length; i < len; i++ ) {        
-            queue[ i ] && queue[ i ]._loop( time );
+      try {
+        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+          var time = new Date().getTime();
+          var queue = org.eclipse.rwt.Animation._queue;
+          try{
+            for ( var i=0, len = queue.length; i < len; i++ ) {
+              queue[ i ] && queue[ i ]._loop( time );
+            }
+          } catch( e ) {
+            // prevent endless error-messages:
+            org.eclipse.rwt.Animation._stopLoop();
+            throw "Animation aborted: " + e;
           }
-        } catch( e ) {
-          // prevent endless error-messages:
-          org.eclipse.rwt.Animation._stopLoop();
-          throw "Animation aborted: " + e;
         }
+      } catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }
     },
     

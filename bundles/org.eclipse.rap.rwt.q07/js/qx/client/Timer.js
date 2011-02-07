@@ -281,10 +281,13 @@ qx.Class.define("qx.client.Timer",
      *
      * @type member
      */
-    _oninterval : function()
-    {
-      if (this.getEnabled() && this.hasEventListeners("interval")) {
-        this.dispatchEvent(this.__event, false);
+    _oninterval : function() {
+      try {
+        if (this.getEnabled() && this.hasEventListeners("interval")) {
+          this.dispatchEvent(this.__event, false);
+        }
+      } catch( ex ) {
+        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }
     }
   },
