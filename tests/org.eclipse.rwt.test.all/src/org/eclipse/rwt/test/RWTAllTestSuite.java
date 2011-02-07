@@ -1,5 +1,5 @@
 /******************************************************************************* 
-* Copyright (c) 2010, 2011 EclipseSource and others.
+* Copyright (c) 2009, 2011 EclipseSource and others.
 * All rights reserved.
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -15,6 +15,7 @@ import junit.framework.TestSuite;
 
 import org.eclipse.RWTHostTestSuite;
 import org.eclipse.RWTQ07TestSuite;
+import org.eclipse.rap.rwt.themes.test.ThemesTestSuite;
 
 
 public class RWTAllTestSuite {
@@ -24,6 +25,7 @@ public class RWTAllTestSuite {
     // $JUnit-BEGIN$
     suite.addTest( RWTHostTestSuite.suite() );
     suite.addTest( RWTQ07TestSuite.suite() );
+    suite.addTest( ThemesTestSuite.suite() );
     // $JUnit-END$
     return suite;
   }
