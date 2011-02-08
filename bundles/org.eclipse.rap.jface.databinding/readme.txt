@@ -1,1 +1,1 @@
-org.eclipse.jface.databinding base version: v20100927
+Based on code from dev.eclipse.org:/cvsroot/eclipse/org.eclipse.jface.databinding, 3.7M5 v20110204

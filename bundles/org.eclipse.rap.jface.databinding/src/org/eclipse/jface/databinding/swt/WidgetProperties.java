@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolItem;
-//import org.eclipse.swt.widgets.ToolTip;
+import org.eclipse.swt.widgets.ToolTip;
 //import org.eclipse.swt.widgets.TrayItem;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.Widget;

@@ -13,7 +13,7 @@ package org.eclipse.jface.internal.databinding.swt;
 
 import org.eclipse.core.databinding.property.value.IValueProperty;
 import org.eclipse.swt.widgets.Text;
-//import org.eclipse.swt.widgets.ToolTip;
+import org.eclipse.swt.widgets.ToolTip;
 
 /**
  * @since 3.3
@@ -21,8 +21,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class WidgetMessageProperty extends WidgetDelegatingValueProperty {
 	private IValueProperty text;
-// RAP [rh] ToolTip not implemented		
-//	private IValueProperty toolTip;
+	private IValueProperty toolTip;
 
 	/**
 	 * 
@@ -37,12 +36,11 @@ public class WidgetMessageProperty extends WidgetDelegatingValueProperty {
 				text = new TextMessageProperty();
 			return text;
 		}
-// RAP [rh] ToolTip not implemented		
-//		if (source instanceof ToolTip) {
-//			if (toolTip == null)
-//				toolTip = new ToolTipMessageProperty();
-//			return toolTip;
-//		}
+		if (source instanceof ToolTip) {
+			if (toolTip == null)
+				toolTip = new ToolTipMessageProperty();
+			return toolTip;
+		}
 		throw notSupported(source);
 	}
 }

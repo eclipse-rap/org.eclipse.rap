@@ -99,21 +99,20 @@ public class SWTUtil {
 			if (result == null) {
 				// If none, create new queue
 				result = new WorkQueue(d);
-				// final WorkQueue q = result;
+				final WorkQueue q = result;
 				getInstance().mapDisplayOntoWorkQueue.put(d, result);
-				// RAP [rh] Display#disposeExec(Runnable) not supported
-				// d.asyncExec(new Runnable() {
-				// public void run() {
-				// d.disposeExec(new Runnable() {
-				// public void run() {
-				// synchronized (mapDisplayOntoWorkQueue) {
-				// q.cancelAll();
-				// mapDisplayOntoWorkQueue.remove(d);
-				// }
-				// }
-				// });
-				// }
-				// });
+				d.asyncExec(new Runnable() {
+					public void run() {
+						d.disposeExec(new Runnable() {
+							public void run() {
+								synchronized (getInstance().mapDisplayOntoWorkQueue) {
+									q.cancelAll();
+									getInstance().mapDisplayOntoWorkQueue.remove(d);
+								}
+							}
+						});
+					}
+				});
 			}
 			return result;
 		}
