@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -177,6 +178,13 @@ public class Menu_Test extends TestCase {
     dropDownMenu.addListener( SWT.Show, listener );
     dropDownMenu.setVisible( true );
     assertEquals( 0, log.size() );
+  }
+  
+  public void testOrientation() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    assertEquals( SWT.LEFT_TO_RIGHT, menu.getOrientation() );
   }
   
   protected void setUp() throws Exception {
