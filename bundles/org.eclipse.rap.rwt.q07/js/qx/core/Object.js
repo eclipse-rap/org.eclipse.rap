@@ -450,36 +450,36 @@ qx.Class.define("qx.core.Object",
     },
     
     // Prevent old custom widgets using logging from crashing:
-    debug : qx.core.Variant.select("qx.debug", {
+    debug : qx.core.Variant.select( "qx.debug", {
       "on" : function( msg ) {
-        if( typeof console.log === "function" ) {
+        if( console && typeof console.log === "function" ) {
           console.log( msg );
         }
       },
-      "off" : function( msg ) {
+      "default" : function( msg ) {
       }
     } ),
     
-    info : function( msg ){
+    info : function( msg ) {
       this.debug( "INFO: " + msg );
     },
     
-    warn : function( msg ){
+    warn : function( msg ) {
       this.debug( "WARN: " + msg );
     },
     
-    error : function( msg ){
+    error : function( msg ) {
       this.debug( "ERROR: " + msg );
     },
     
-    printStackTrace : qx.core.Variant.select("qx.debug", {
+    printStackTrace : qx.core.Variant.select( "qx.debug", {
       "on" : function() {
-        if( typeof console.trace === "function" ) {
+        if( console && typeof console.trace === "function" ) {
           this.debug( "Current stack trace:" );
           console.trace();
         }
       },
-      "off" : function() {
+      "default" : function() {
       }
     } ),
 
