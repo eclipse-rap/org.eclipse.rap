@@ -1308,6 +1308,11 @@ public class Display_Test extends TestCase {
     assertNull( display.getSystemTray() );
   }
   
+  public void testGetAppMenuBar() {
+    Display display = new Display();
+    assertNull( display.getAppMenuBar() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
