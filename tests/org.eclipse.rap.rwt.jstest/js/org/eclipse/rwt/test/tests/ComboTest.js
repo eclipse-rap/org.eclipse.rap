@@ -150,7 +150,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setEditable( false );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
       combo.setMaxListHeight( 95 ); 
-      combo.addToDocument(),
+      combo.addToDocument();
       testUtil.flush();
       return combo;
     },
