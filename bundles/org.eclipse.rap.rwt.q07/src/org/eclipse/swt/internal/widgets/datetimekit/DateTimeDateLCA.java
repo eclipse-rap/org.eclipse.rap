@@ -45,17 +45,13 @@ final class DateTimeDateLCA extends AbstractDateTimeLCADelegate {
   }
 
   void readData( final DateTime dateTime ) {
-    String value = WidgetLCAUtil.readPropertyValue( dateTime, PROP_DAY );
-    if( value != null ) {
-      dateTime.setDay( Integer.parseInt( value ) );
-    }
-    value = WidgetLCAUtil.readPropertyValue( dateTime, PROP_MONTH );
-    if( value != null ) {
-      dateTime.setMonth( Integer.parseInt( value ) );
-    }
-    value = WidgetLCAUtil.readPropertyValue( dateTime, PROP_YEAR );
-    if( value != null ) {
-      dateTime.setYear( Integer.parseInt( value ) );
+    String day = WidgetLCAUtil.readPropertyValue( dateTime, PROP_DAY );
+    String month = WidgetLCAUtil.readPropertyValue( dateTime, PROP_MONTH );
+    String year = WidgetLCAUtil.readPropertyValue( dateTime, PROP_YEAR );
+    if( day != null && month != null && year != null ) {
+      dateTime.setDate( Integer.parseInt( year ),
+                        Integer.parseInt( month ),
+                        Integer.parseInt( day ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
     ControlLCAUtil.processMouseEvents( dateTime );
