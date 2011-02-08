@@ -1,24 +1,25 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.rwt.test.TestRunner", {
+qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
   extend : qx.core.Target,
   type : "singleton",
 
   construct : function() {
     this.base( arguments );
-    this._FREEZEONFAIL = true; 
-    this._NOTRYCATCH = this._getURLParam( "notry" ) !== null; 
+    this._FREEZEONFAIL = true;
+    this._NOTRYCATCH = this._getURLParam( "notry" ) !== null;
     this._FULLSCREEN = true;
     this._presenter = org.eclipse.rwt.test.Presenter.getInstance();
-    this._presenter.setFullScreen( this._FULLSCREEN );    
+    this._presenter.setFullScreen( this._FULLSCREEN );
     this._testClasses = [];
     this._testFunctions = [];
     this._currentClass = 0;
@@ -42,12 +43,12 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
         } else {
           var msg = "TestClass " + clazz + " does not match filename.";
           this._criticalFail( msg );
-        }       
+        }
         if( filter( clazz ) ) {
           this._testClasses.push( classes[ clazz ] );
         }
       }
-    }    
+    }
     for( var script in testScripts ) {
       this._criticalFail( "File " + script + ".js could not be parsed. " +
       		                "Probably the file contains corrupted JavaScript." );
@@ -59,13 +60,13 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   },
 
   members : {
-  	
+
   	run : function() {
   	  this._prepare();
   	  this._initTest();
       this._loopWrapper();
   	},
-  	
+
   	pause : function( value ) {
   	  this._pause = value;
   	},
@@ -73,10 +74,10 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     setArguments : function( args ) {
       this._args = args;
     },
-  	
+
   	////////////
   	// Internals
-  	
+
   	_loop : function() {
       this._executeTestFunction();
     	if( this._iterate() ) {
@@ -86,9 +87,9 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
     	    this._pause = null;
     	  }
     	  window.setTimeout( this._loopWrapper, time );
-    	}                  
+    	}
   	},
-  	
+
   	_iterate : function() {
   	  var result = true;
   	  if( this._failed ) {
@@ -108,7 +109,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	  }
   	  return result;
   	},
-  	
+
   	_prepare : function() {
       // prevent flush by timer
       this._disableAutoFlush();
@@ -122,53 +123,53 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	},
 
   	_initTest : function() {
-      this._presenter.setNumberTestsFinished( this._currentClass + 0.5 , 
+      this._presenter.setNumberTestsFinished( this._currentClass + 0.5 ,
                                               this._testClasses.length );
       var className = this._testClasses[ this._currentClass ].classname;
       this._presenter.log( '', false );
       this.info( "+ " + className, false );
       this._currentInstance = null;
       this._createTestInstance();
-      this._testFunctions = this._getTestFunctions( this._currentInstance );      
+      this._testFunctions = this._getTestFunctions( this._currentInstance );
       this._currentFunction = 0;
   	},
-  	
+
   	_testFinished : function() {
       this._args = [];
       this._currentInstance.dispose();
-      this._presenter.setNumberTestsFinished( this._currentClass, 
-                                                this._testClasses.length );  	
+      this._presenter.setNumberTestsFinished( this._currentClass,
+                                              this._testClasses.length );
     },
-    
+
     _allFinished : function() {
       this.info( '', false );
-      this.info( "Tests done.", false );      
+      this.info( "Tests done.", false );
     },
-  	
+
   	_executeTestFunction : function() {
       this._asserts = 0;
       var test = this._testFunctions[ this._currentFunction ];
       var fun;
       if( test instanceof Array ) {
-        var fun = this._currentInstance[ test[ 0 ] ][ test[ 1 ] ];        
+        var fun = this._currentInstance[ test[ 0 ] ][ test[ 1 ] ];
       }  else {
         var fun = this._currentInstance[ test ];
       }
       if( this._NOTRYCATCH ) {
         fun.apply( this._currentInstance, this._args );
         this._cleanUp();
-        this.info( test + " - OK ", true );  	  
+        this.info( test + " - OK ", true );
       } else {
         try {
           fun.apply( this._currentInstance, this._args );
           this._cleanUp();
-          this.info( test + " - OK ", true );  	  
+          this.info( test + " - OK ", true );
         } catch( e ) {
           this._handleException( e );
         }
-      }    
+      }
   	},
-  	
+
   	_createTestInstance : function() {
       if( this._NOTRYCATCH ) {
         this._currentInstance = new this._testClasses[ this._currentClass ]();
@@ -177,18 +178,18 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
           this._currentInstance = new this._testClasses[ this._currentClass ]();
         } catch( e ) {
           this._handleException( e );
-        }          
-      }  	  
+        }
+      }
   	},
-  	
+
   	_handleException : function( e ) {
       if( this._FREEZEONFAIL ) this._freezeQooxdoo();
       this._presenter.setFailed( true );
       this._failed = true;
       var classname = this._testFunctions[ this._currentFunction ];
       this.info( classname + " failed:", true );
-      this.info( e, false );          
-      this.info( this._asserts + " asserts succeeded.", false );          
+      this.info( e, false );
+      this.info( this._asserts + " asserts succeeded.", false );
       this._createFailLog( e, this._currentInstance );
       this._checkFlushState();
       this.info( "Tests aborted!", false );
@@ -204,13 +205,13 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	  org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
   	  qx.ui.core.Widget.flushGlobalQueues();
   	},
-  	
+
   	// called by Asserts.js
-  	processAssert : function( assertType, expected, value, isFailed, message ) {  	  
+  	processAssert : function( assertType, expected, value, isFailed, message ) {
       if( isFailed ) {
-        var errorMessage =   'Assert "' 
+        var errorMessage =   'Assert "'
                            + ( message ? message : this._asserts + 1 )
-                           + '", type "' 
+                           + '", type "'
                            + assertType
                            + '" failed : Expected "'
                            + this._getObjectSummary( expected )
@@ -219,41 +220,41 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
                            + '"';
         var error = {
           "assert" : true,
-          "testClass" : this._testClasses[ this._currentClass ].classname, 
-          "testFunction" : this._currentFunction, 
+          "testClass" : this._testClasses[ this._currentClass ].classname,
+          "testFunction" : this._currentFunction,
           "expected" : expected,
           "actual" : value,
           "msg" : errorMessage,
           toString : function() {
             return this.msg;
-          }        
-        };        
+          }
+        };
         throw( error );
       } else {
         this._asserts++;
       }
   	},
-  	
+
   	_getObjectSummary : function( value ) {
   	  var result = value;
-  	  try{ 
+  	  try {
     	  if( value instanceof Array ) {
     	    result = value.join();
-    	  } else if(    value instanceof Object 
+    	  } else if(    value instanceof Object
     	             && !( value instanceof qx.core.Object ) )
     	  {
     	    var arr = [];
     	    for( var key in value ) {
-    	      arr.push( " " + key + " : " + value[ key ] ); 
+    	      arr.push( " " + key + " : " + value[ key ] );
     	    }
     	    result = "{" + arr.join() + " }";
     	  }
-  	  }catch( ex ) {
-  	    //do nothing
+  	  } catch( ex ) {
+  	    // iterating over Objects might fail, keep result as is
   	  }
   	  return result;
   	},
-  	
+
   	_criticalFail : function( msg ) {
   	  this._presenter.log( "Critical error: " + msg, false );
   	  this._presenter.log( "Testrunner aborted." , false );
@@ -261,15 +262,15 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
   	  this._presenter.setNumberTestsFinished( 0, 0 );
   	  throw msg;
   	},
-  	
+
   	_createFailLog : function( e, testInstance ) {
       this._log = {};
       this._log.error = e;
-      this._log.asserts = this._asserts;          
-      this._log.obj = testInstance;          
+      this._log.asserts = this._asserts;
+      this._log.obj = testInstance;
       this._log.currentFunction = this._currentFunction;
   	},
-  	
+
   	_checkFlushState : function() {
       if( qx.ui.core.Widget._inFlushGlobalQueues ) {
         this.info( "Error occurred during Flush!");
@@ -299,18 +300,18 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
         }
       }
   	},
-  	
+
   	_freezeQooxdoo : function() {
       qx.ui.core.Widget.__allowFlushs = false;
       org.eclipse.rwt.EventHandler.detachEvents();
       qx.core.Target.prototype.dispatchEvent = function(){};
       org.eclipse.rwt.Animation._stopLoop();
   	},
-  	
+
     _disableAutoFlush : function() {
       qx.ui.core.Widget._removeAutoFlush();
       qx.ui.core.Widget._initAutoFlush = function(){};
-      qx.ui.core.Widget.__orgFlushGlobalQueues 
+      qx.ui.core.Widget.__orgFlushGlobalQueues
        = qx.ui.core.Widget.flushGlobalQueues;
       qx.ui.core.Widget.flushGlobalQueues = function() {
         if( this.__allowFlushs ) {
@@ -319,11 +320,11 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       }
       qx.ui.core.Widget.__allowFlushs = true;
     },
-    
+
     getLog : function(){
     	return this._log;
     },
-    
+
     _getTestFunctions : function( obj ){
       var testFunctions = [];
       for ( var key in obj ) {
@@ -337,12 +338,12 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
                 testFunctions.push( [ key, i ] );
               }
             }
-          } 
+          }
         }
       }
       return testFunctions;
     },
-    
+
     _getTestScripts : function() {
       var result = {};
       var head = document.documentElement.firstChild;
@@ -355,12 +356,12 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
           var src = node.getAttribute( "src" );
           if( src && src.indexOf( "Test.js" ) == ( src.length - 7) ) {
             result[ this._getShortClassName( src ) ] = true;
-          } 
+          }
         }
       }
       return result;
     },
-    
+
     _getShortClassName : function( src ) {
       var result = src;
       var separator = ".";
@@ -372,7 +373,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       result = splitted.pop();
       return result;
     },
-   
+
     _createTestClassFilter : function() {
       var classes = qx.Class.__registry;
       var engine = org.eclipse.rwt.Client.getEngine();
@@ -401,7 +402,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       }
       return filter;
     },
-    
+
     _getURLParam : function( name ) {
       var result = null;
       var href = window.location.href;
@@ -414,7 +415,7 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       }
       return result;
     },
-    
+
     _getFilterParam : function() {
       var result = null;
       var param = this._getURLParam( "filter" );
@@ -423,10 +424,10 @@ qx.Class.define("org.eclipse.rwt.test.TestRunner", {
       }
       return result;
     },
-   
+
     info : function( text, indent ) {
       this._presenter.log( text, indent );
     }
-    
+
   }
-});
+} );
