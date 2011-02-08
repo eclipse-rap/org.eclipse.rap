@@ -175,7 +175,7 @@ public abstract class ResourceManager {
     /**
      * Creates an image, given an image descriptor. Images allocated in this manner must
      * be disposed by {@link #destroyImage(ImageDescriptor)}, and never by calling 
-     * Image#dispose()}.
+     * {@link Image#dispose()}.
      * 
      * @since 1.0 
      *

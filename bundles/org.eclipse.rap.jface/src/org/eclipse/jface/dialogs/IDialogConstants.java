@@ -350,27 +350,47 @@ public class IDialogConstants {
      * @return an <code>IDialogConstants</code> implementation for the current locale
      */
     public static IDialogConstants get() {
-      IDialogConstants dialogConstants = new IDialogConstants(); 
-      dialogConstants.OK_LABEL = JFaceResources.getString("ok"); //$NON-NLS-1$
-      dialogConstants.CANCEL_LABEL = JFaceResources.getString("cancel"); //$NON-NLS-1$
-      dialogConstants.YES_LABEL = JFaceResources.getString("yes"); //$NON-NLS-1$
-      dialogConstants.NO_LABEL = JFaceResources.getString("no"); //$NON-NLS-1$
-      dialogConstants.NO_TO_ALL_LABEL = JFaceResources.getString("notoall"); //$NON-NLS-1$
-      dialogConstants.YES_TO_ALL_LABEL = JFaceResources.getString("yestoall"); //$NON-NLS-1$
-      dialogConstants.SKIP_LABEL = JFaceResources.getString("skip"); //$NON-NLS-1$
-      dialogConstants.STOP_LABEL = JFaceResources.getString("stop"); //$NON-NLS-1$
-      dialogConstants.ABORT_LABEL = JFaceResources.getString("abort"); //$NON-NLS-1$
-      dialogConstants.RETRY_LABEL = JFaceResources.getString("retry"); //$NON-NLS-1$
-      dialogConstants.IGNORE_LABEL = JFaceResources.getString("ignore"); //$NON-NLS-1$
-      dialogConstants.PROCEED_LABEL = JFaceResources.getString("proceed"); //$NON-NLS-1$
-      dialogConstants.OPEN_LABEL = JFaceResources.getString("open"); //$NON-NLS-1$
-      dialogConstants.CLOSE_LABEL = JFaceResources.getString("close"); //$NON-NLS-1$
-      dialogConstants.SHOW_DETAILS_LABEL = JFaceResources.getString("showDetails"); //$NON-NLS-1$
-      dialogConstants.HIDE_DETAILS_LABEL = JFaceResources.getString("hideDetails"); //$NON-NLS-1$
-      dialogConstants.BACK_LABEL = JFaceResources.getString("backButton"); //$NON-NLS-1$
-      dialogConstants.NEXT_LABEL = JFaceResources.getString("nextButton"); //$NON-NLS-1$
-      dialogConstants.FINISH_LABEL = JFaceResources.getString("finish"); //$NON-NLS-1$
-      dialogConstants.HELP_LABEL = JFaceResources.getString("help"); //$NON-NLS-1$
-      return dialogConstants;
+      IDialogConstants result = new IDialogConstants(); 
+      result.OK_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.OK_LABEL_KEY );
+      result.CANCEL_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.CANCEL_LABEL_KEY );
+      result.YES_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.YES_LABEL_KEY );
+      result.NO_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.NO_LABEL_KEY );
+      result.NO_TO_ALL_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.NO_TO_ALL_LABEL_KEY );
+      result.YES_TO_ALL_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.YES_TO_ALL_LABEL_KEY );
+      result.SKIP_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.SKIP_LABEL_KEY );
+      result.STOP_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.STOP_LABEL_KEY );
+      result.ABORT_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.ABORT_LABEL_KEY );
+      result.RETRY_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.RETRY_LABEL_KEY );
+      result.IGNORE_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.IGNORE_LABEL_KEY );
+      result.PROCEED_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.PROCEED_LABEL_KEY );
+      result.OPEN_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.OPEN_LABEL_KEY );
+      result.CLOSE_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.CLOSE_LABEL_KEY );
+      result.SHOW_DETAILS_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.SHOW_DETAILS_LABEL_KEY );
+      result.HIDE_DETAILS_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.HIDE_DETAILS_LABEL_KEY );
+      result.BACK_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.BACK_LABEL_KEY );
+      result.NEXT_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.NEXT_LABEL_KEY );
+      result.FINISH_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.FINISH_LABEL_KEY );
+      result.HELP_LABEL
+        = JFaceResources.getString( IDialogLabelKeys.HELP_LABEL_KEY );
+      return result;
     }
 }

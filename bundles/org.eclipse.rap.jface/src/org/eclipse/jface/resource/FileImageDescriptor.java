@@ -192,4 +192,65 @@ class FileImageDescriptor extends ImageDescriptor {
     public String toString() {
         return "FileImageDescriptor(location=" + location + ", name=" + name + ")";//$NON-NLS-3$//$NON-NLS-2$//$NON-NLS-1$
     }
+
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.eclipse.jface.resource.ImageDescriptor#createImage(boolean,
+//	 *      org.eclipse.swt.graphics.Device)
+//	 */
+//	public Image createImage(boolean returnMissingImageOnError, Device device) {
+//		String path = getFilePath();
+//		if (path == null)
+//			return createDefaultImage(returnMissingImageOnError, device);
+//		try {			
+//			return new Image(device, path);
+//		} catch (SWTException exception) {
+//			//if we fail try the default way using a stream
+//		}
+//		return super.createImage(returnMissingImageOnError, device);
+//	}
+//
+//	/**
+//	 * Return default image if returnMissingImageOnError is true.
+//	 * 
+//	 * @param device
+//	 * @return Image or <code>null</code>
+//	 */
+//	private Image createDefaultImage(boolean returnMissingImageOnError,
+//			Device device) {
+//		try {
+//			if (returnMissingImageOnError)
+//				return new Image(device, DEFAULT_IMAGE_DATA);
+//		} catch (SWTException nextException) {
+//			return null;
+//		}
+//		return null;
+//	}
+//
+//	/**
+//	 * Returns the filename for the ImageData.
+//	 * 
+//	 * @return {@link String} or <code>null</code> if the file cannot be found
+//	 */
+//	private String getFilePath() {
+//
+//		if (location == null)
+//			return new Path(name).toOSString();
+//
+//		URL resource = location.getResource(name);
+//
+//		if (resource == null)
+//			return null;
+//		try {
+//			if (!InternalPolicy.OSGI_AVAILABLE) {// Stand-alone case
+//
+//				return new Path(resource.getFile()).toOSString();
+//			}
+//			return new Path(FileLocator.toFileURL(resource).getPath()).toOSString();
+//		} catch (IOException e) {
+//			Policy.logException(e);
+//			return null;
+//		}
+//	}
 }

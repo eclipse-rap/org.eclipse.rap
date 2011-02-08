@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,9 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+//import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -108,6 +111,8 @@ import org.eclipse.swt.widgets.ToolItem;
 	/** stop image descriptor */
 	protected static ImageDescriptor fgStopImage = ImageDescriptor
 			.createFromFile(StatusLine.class, "images/stop.gif");//$NON-NLS-1$
+	// RAP [if] Clipboard
+//	private MenuItem copyMenuItem;
 	static {
 		JFaceResources.getImageRegistry().put(
 				"org.eclipse.jface.parts.StatusLine.stopImage", fgStopImage);//$NON-NLS-1$
@@ -278,13 +283,27 @@ import org.eclipse.swt.widgets.ToolItem;
 		setLayout(new StatusLineLayout());
 
 		fMessageLabel = new CLabel(this, SWT.NONE);// SWT.SHADOW_IN);
-		// Color[] colors = new Color[2];
-		// colors[0] =
-		// parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-		// colors[1] = fMessageLabel.getBackground();
-		// int[] gradient = new int[] {JFaceColors.STATUS_PERCENT};
-		// fMessageLabel.setBackground(colors, gradient);
 
+		// RAP [if] Clipboard
+//		// this would need extra work to make this accessible
+//		// from the workbench command framework.
+//		Menu menu = new Menu(fMessageLabel);
+//		fMessageLabel.setMenu(menu);
+//		copyMenuItem = new MenuItem(menu, SWT.PUSH);
+//		copyMenuItem.setText(JFaceResources.getString("copy")); //$NON-NLS-1$
+//		copyMenuItem.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent e) {
+//				String text = fMessageLabel.getText();
+//				if (text != null && text.length() > 0) {
+//					text = LegacyActionTools.removeMnemonics(text);
+//					Clipboard cp = new Clipboard(e.display);
+//					cp.setContents(new Object[] { text },
+//							new Transfer[] { TextTransfer.getInstance() });
+//					cp.dispose();
+//				}
+//			}
+//		});
+		
 		fProgressIsVisible = false;
 		fCancelEnabled = false;
 
@@ -676,6 +695,11 @@ import org.eclipse.swt.widgets.ToolItem;
 				fMessageLabel.setText(fMessageText == null ? "" : fMessageText); //$NON-NLS-1$
 				fMessageLabel.setImage(fMessageImage);
 			}
+			// RAP [if] Clipboard
+//			if (copyMenuItem != null && !copyMenuItem.isDisposed()) {
+//				String text = fMessageLabel.getText();
+//				copyMenuItem.setEnabled(text != null && text.length() > 0);
+//			}
 		}
 	}
 

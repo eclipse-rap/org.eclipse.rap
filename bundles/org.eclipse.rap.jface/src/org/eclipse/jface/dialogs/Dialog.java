@@ -450,7 +450,7 @@ public abstract class Dialog extends Window {
 	 * 
 	 * @param buttonId
 	 *            the id of the button that was pressed (see
-	 *            <code>IDialogConstants.get().*_ID</code> constants)
+	 *            <code>IDialogConstants.*_ID</code> constants)
 	 */
 	protected void buttonPressed(int buttonId) {
 		if (IDialogConstants.OK_ID == buttonId) {
@@ -572,9 +572,9 @@ public abstract class Dialog extends Window {
 	 * a standard push button, registers it for selection events including
 	 * button presses, and registers default buttons with its shell. The button
 	 * id is stored as the button's client data. If the button id is
-	 * <code>IDialogConstants.get().CANCEL_ID</code>, the new button will be
+	 * <code>IDialogConstants.CANCEL_ID</code>, the new button will be
 	 * accessible from <code>getCancelButton()</code>. If the button id is
-	 * <code>IDialogConstants.get().OK_ID</code>, the new button will be accesible
+	 * <code>IDialogConstants.OK_ID</code>, the new button will be accesible
 	 * from <code>getOKButton()</code>. Note that the parent's layout is
 	 * assumed to be a <code>GridLayout</code> and the number of columns in
 	 * this layout is incremented. Subclasses may override.
@@ -583,7 +583,7 @@ public abstract class Dialog extends Window {
 	 * @param parent
 	 *            the parent composite
 	 * @param id
-	 *            the id of the button (see <code>IDialogConstants.get().*_ID</code>
+	 *            the id of the button (see <code>IDialogConstants.*_ID</code>
 	 *            constants for standard dialog button ids)
 	 * @param label
 	 *            the label from the button
@@ -823,7 +823,7 @@ public abstract class Dialog extends Window {
 
 	/**
 	 * Returns the button created when <code>createButton</code> is called
-	 * with an ID of <code>IDialogConstants.get().CANCEL_ID</code>. If
+	 * with an ID of <code>IDialogConstants.CANCEL_ID</code>. If
 	 * <code>createButton</code> was never called with this parameter, or if
 	 * <code>createButton</code> is overridden, <code>getCancelButton</code>
 	 * will return <code>null</code>.
@@ -831,7 +831,7 @@ public abstract class Dialog extends Window {
 	 * @return the cancel button or <code>null</code>
 	 * 
 	 * @see #createButton(Composite, int, String, boolean)
-	 * @deprecated Use <code>getButton(IDialogConstants.get().CANCEL_ID)</code>
+	 * @deprecated Use <code>getButton(IDialogConstants.CANCEL_ID)</code>
 	 *             instead. This method will be removed soon.
 	 */
 	protected Button getCancelButton() {
@@ -875,7 +875,7 @@ public abstract class Dialog extends Window {
 
 	/**
 	 * Returns the button created when <code>createButton</code> is called
-	 * with an ID of <code>IDialogConstants.get().OK_ID</code>. If
+	 * with an ID of <code>IDialogConstants.OK_ID</code>. If
 	 * <code>createButton</code> was never called with this parameter, or if
 	 * <code>createButton</code> is overridden, <code>getOKButton</code>
 	 * will return <code>null</code>.
@@ -883,7 +883,7 @@ public abstract class Dialog extends Window {
 	 * @return the OK button or <code>null</code>
 	 * 
 	 * @see #createButton(Composite, int, String, boolean)
-	 * @deprecated Use <code>getButton(IDialogConstants.get().OK_ID)</code> instead.
+	 * @deprecated Use <code>getButton(IDialogConstants.OK_ID)</code> instead.
 	 *             This method will be removed soon.
 	 */
 	protected Button getOKButton() {

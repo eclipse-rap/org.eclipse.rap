@@ -889,7 +889,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
                             char character = Character.toUpperCase(text
                                     .charAt(index + 1));
 
-                            if (callback.isAcceleratorInUse(SWT.ALT | character)) {
+                            if (callback.isAcceleratorInUse(SWT.ALT | character) && isTopLevelMenu()) {
                                 if (index == 0) {
     								text = text.substring(1);
     							} else {
@@ -911,6 +911,16 @@ public class MenuManager extends ContributionManager implements IMenuManager {
         	}
         }
     }
+
+	private boolean isTopLevelMenu() {
+		if (menu != null && !menu.isDisposed() && menuItem != null
+				&& !menuItem.isDisposed()) {
+			Menu parentMenu = menuItem.getParent();
+			return parentMenu != null
+					&& ((parentMenu.getStyle() & SWT.BAR) == SWT.BAR);
+		}
+		return false;
+	}
 
 	/**
 	 * Dispose any images allocated for this menu
