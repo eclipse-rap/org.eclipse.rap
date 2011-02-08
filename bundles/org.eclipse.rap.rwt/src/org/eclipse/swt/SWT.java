@@ -3170,6 +3170,30 @@ public class SWT {
    * @since 1.1.1
    */
   public static final int LONG = 1 << 28;
+  
+  /**
+   * Style constant specifying that a Browser should use a Mozilla GRE
+   * for rendering its content (value is 1&lt;&lt;15).
+   * <p>
+   * <p><b>Used By:</b><ul>
+   * <li><code>Browser</code></li>
+   * </ul></p>
+   * 
+   * @since 1.4
+   */
+  public static final int MOZILLA = 1 << 15;
+
+  /**
+   * Style constant specifying that a Browser should use WebKit
+   * for rendering its content (value is 1&lt;&lt;16).
+   * <p>
+   * <p><b>Used By:</b><ul>
+   * <li><code>Browser</code></li>
+   * </ul></p>
+   * 
+   * @since 1.4
+   */
+  public static final int WEBKIT = 1 << 16;
 
   /**
    * Key value for setting and getting the skin class of a widget.

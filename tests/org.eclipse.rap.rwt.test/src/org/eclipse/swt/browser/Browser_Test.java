@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -40,6 +41,25 @@ public class Browser_Test extends TestCase {
 
     assertEquals( "", browser.getUrl() );
     assertEquals( "", getText( browser ) );
+  }
+  
+  public void testMozillaWebkitStyleFlags() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    try {
+      new Browser( shell, SWT.MOZILLA );
+      fail( "SWT.MOZILLA not allowed" );
+    } catch( SWTError error ) {
+      assertEquals( SWT.ERROR_NO_HANDLES, error.code);
+      assertEquals( "Unsupported Browser type", error.getMessage() );
+    }
+    try {
+      new Browser( shell, SWT.WEBKIT );
+      fail( "SWT.WEBKIT not allowed" );
+    } catch( SWTError error ) {
+      assertEquals( SWT.ERROR_NO_HANDLES, error.code);
+      assertEquals( "Unsupported Browser type", error.getMessage() );
+    }
   }
 
   public void testUrlAndText() {
