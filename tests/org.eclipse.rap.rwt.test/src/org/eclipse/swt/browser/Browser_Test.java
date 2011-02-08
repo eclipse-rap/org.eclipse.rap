@@ -26,8 +26,14 @@ import org.eclipse.swt.widgets.Shell;
 
 public class Browser_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -35,17 +41,13 @@ public class Browser_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
 
     assertEquals( "", browser.getUrl() );
     assertEquals( "", getText( browser ) );
   }
   
-  public void testMozillaWebkitStyleFlags() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
+  public void testMozillaStyleFlags() {
     try {
       new Browser( shell, SWT.MOZILLA );
       fail( "SWT.MOZILLA not allowed" );
@@ -53,6 +55,9 @@ public class Browser_Test extends TestCase {
       assertEquals( SWT.ERROR_NO_HANDLES, error.code);
       assertEquals( "Unsupported Browser type", error.getMessage() );
     }
+  }
+  
+  public void testWebkitStyleFlag() {
     try {
       new Browser( shell, SWT.WEBKIT );
       fail( "SWT.WEBKIT not allowed" );
@@ -63,8 +68,6 @@ public class Browser_Test extends TestCase {
   }
 
   public void testUrlAndText() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
 
     browser.setUrl( "http://eclipse.org/rap" );
@@ -89,11 +92,8 @@ public class Browser_Test extends TestCase {
   }
 
   public void testLocationEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     final String[] expectedLocation = new String[ 1 ];
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = new LocationListener() {
       public void changing( final LocationEvent event ) {
@@ -173,16 +173,12 @@ public class Browser_Test extends TestCase {
   }
 
   public void testProgressEvent_setTextAllowed() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final ArrayList log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {
       public void changed( final ProgressEvent event ) {
         log.add( "changed" );
       }
-
       public void completed( final ProgressEvent event ) {
         log.add( "completed" );
       }
@@ -193,25 +189,19 @@ public class Browser_Test extends TestCase {
   }
 
   public void testProgressEvent_setTextNotAllowed() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final ArrayList log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addLocationListener( new LocationListener() {
       public void changing( final LocationEvent event ) {
         event.doit = false;
       }
-
       public void changed( final LocationEvent event ) {
       }
-
     } );
     browser.addProgressListener( new ProgressListener() {
       public void changed( final ProgressEvent event ) {
         log.add( "changed" );
       }
-
       public void completed( final ProgressEvent event ) {
         log.add( "completed" );
       }
@@ -221,16 +211,12 @@ public class Browser_Test extends TestCase {
   }
 
   public void testProgressEvent_setUrlAllowed() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final ArrayList log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {
       public void changed( final ProgressEvent event ) {
         log.add( "changed" );
       }
-
       public void completed( final ProgressEvent event ) {
         log.add( "completed" );
       }
@@ -241,25 +227,19 @@ public class Browser_Test extends TestCase {
   }
 
   public void testProgressEvent_setUrlNotAllowed() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final ArrayList log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addLocationListener( new LocationListener() {
       public void changing( final LocationEvent event ) {
         event.doit = false;
       }
-
       public void changed( final LocationEvent event ) {
       }
-
     } );
     browser.addProgressListener( new ProgressListener() {
       public void changed( final ProgressEvent event ) {
         log.add( "changed" );
       }
-
       public void completed( final ProgressEvent event ) {
         log.add( "completed" );
       }
@@ -269,8 +249,6 @@ public class Browser_Test extends TestCase {
   }
 
   public void testGetWebBrowser() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
     assertNull( browser.getWebBrowser() );
   }
