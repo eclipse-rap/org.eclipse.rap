@@ -23,10 +23,22 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
 public class Menu_Test extends TestCase {
+  
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testMenuBarConstructor() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
     assertSame( shell, menuBar.getParent() );
@@ -67,8 +79,6 @@ public class Menu_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     assertEquals( SWT.BAR, menuBar.getStyle() );
     Menu menuDropDown = new Menu( shell, SWT.DROP_DOWN );
@@ -78,8 +88,6 @@ public class Menu_Test extends TestCase {
   }
   
   public void testVisibility() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     assertFalse( menuBar.getVisible() );
     assertFalse( menuBar.isVisible() );
@@ -98,8 +106,6 @@ public class Menu_Test extends TestCase {
   }
 
   public void testItems() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menu = new Menu( shell, SWT.BAR );
     assertEquals( 0, menu.getItemCount() );
     MenuItem item = new MenuItem( menu, SWT.CASCADE );
@@ -130,8 +136,6 @@ public class Menu_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menu = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menu );
     MenuItem fileMenuItem = new MenuItem( menu, SWT.CASCADE );
@@ -148,17 +152,14 @@ public class Menu_Test extends TestCase {
       }
     } );
   }
-  
+
   public void testUntypedShowEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     // popup menus fire show events
     Menu popupMenu = new Menu( shell, SWT.POP_UP );
     popupMenu.addListener( SWT.Show, listener );
@@ -179,19 +180,17 @@ public class Menu_Test extends TestCase {
     dropDownMenu.setVisible( true );
     assertEquals( 0, log.size() );
   }
-  
+
   public void testOrientation() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menu = new Menu( shell, SWT.POP_UP );
     assertEquals( SWT.LEFT_TO_RIGHT, menu.getOrientation() );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testDefaultItem() {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+    menu.setDefaultItem( item );
+    assertNull( menu.getDefaultItem() );
   }
+  
 }

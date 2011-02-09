@@ -581,6 +581,45 @@ public class Menu extends Widget {
     return itemHolder.indexOf( menuItem );
   }
 
+  /**
+   * Sets the default menu item to the argument or removes
+   * the default emphasis when the argument is <code>null</code>.
+   * 
+   * @param item the default menu item or null
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the menu item has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.4
+   */
+  public void setDefaultItem( final MenuItem item ) {
+    checkWidget();
+  }
+
+  /**
+   * Returns the default menu item or null if none has
+   * been previously set.
+   *
+   * @return the default menu item.
+   *
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.4
+   */
+  public MenuItem getDefaultItem() {
+    checkWidget();
+    return null;
+  }
+
   ////////////////////
   // Widget overrides
 
