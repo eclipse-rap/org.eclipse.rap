@@ -48,7 +48,7 @@ public class TaskBar extends Widget {
    */
   public TaskItem getItem( final int index ) {
     checkWidget();
-    if( !( 0 <= index && index < getItemCount() ) ) {
+    if( index < 0 || index >= getItemCount() ) {
       error( SWT.ERROR_INVALID_RANGE );
     }
     return null;
