@@ -1312,7 +1312,12 @@ public class Display_Test extends TestCase {
     Display display = new Display();
     assertNull( display.getAppMenuBar() );
   }
-  
+
+  public void testGetSystemTaskBar() {
+    Display display = new Display();
+    assertNull( display.getSystemTaskBar() );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

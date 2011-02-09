@@ -1276,6 +1276,23 @@ public class Display extends Device implements Adaptable {
   }
 
   /**
+   * Returns the single instance of the system taskBar or null
+   * when there is no system taskBar available for the platform.
+   *
+   * @return the system taskBar or <code>null</code>
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @since 1.4
+   */
+  public TaskBar getSystemTaskBar() {
+    checkDevice();
+    return null;
+  }
+
+  /**
    * Returns the matching standard color for the given
    * constant, which should be one of the color constants
    * specified in class <code>SWT</code>. Any value other
