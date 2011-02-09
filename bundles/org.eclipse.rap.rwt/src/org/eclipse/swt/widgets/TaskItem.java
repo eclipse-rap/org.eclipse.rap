@@ -1,14 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 EclipseSource and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
- *     Tasktop Technologies - initial API and implementation
- *******************************************************************************/
+ *   EclipseSource - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 
@@ -32,15 +30,8 @@ import org.eclipse.swt.graphics.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class TaskItem extends Item {
-  TaskBar parent;
-  Shell shell;
-  int progress, progressState = SWT.DEFAULT;
-  Image overlayImage;
-  String overlayText = "";
-  boolean showingText = false;
-  Menu menu;
   
-  static final int PROGRESS_MAX = 100;
+  private TaskBar parent;
   
   /**
    * Constructs a new instance of this class given its parent
@@ -75,20 +66,8 @@ public class TaskItem extends Item {
   TaskItem( final TaskBar parent, final int style ) {
     super( parent, style );
     this.parent = parent;
-    parent.createItem (this, -1);
   }
-
-  protected void checkSubclass() {
-    if( !isValidSubclass() ) {
-      error( SWT.ERROR_INVALID_SUBCLASS );
-    }
-  }
-  
-  void destroyWidget() {
-    parent.destroyItem( this );
-    releaseHandle();
-  }
-  
+        
   /**
    * Returns the receiver's pop up menu if it has one, or null
    * if it does not.
@@ -102,7 +81,7 @@ public class TaskItem extends Item {
    */
   public Menu getMenu() {
     checkWidget();
-    return menu;
+    return null;
   } 
   
   /**
@@ -118,7 +97,7 @@ public class TaskItem extends Item {
    */
   public Image getOverlayImage() {
     checkWidget();
-    return overlayImage;
+    return null;
   }
   
   /**
@@ -134,7 +113,7 @@ public class TaskItem extends Item {
    */
   public String getOverlayText() {
     checkWidget();
-    return overlayText;
+    return "";
   }
   
   /**
@@ -165,7 +144,7 @@ public class TaskItem extends Item {
    */
   public int getProgress() {
     checkWidget();
-    return progress;
+    return 0;
   }
   
   /**
@@ -180,35 +159,7 @@ public class TaskItem extends Item {
    */
   public int getProgressState() {
     checkWidget();
-    return progressState;
-  }
-  
-  void recreate() {
-    if( showingText ) {
-      if( overlayText.length() != 0 ) {
-        updateText();
-      }
-    } else {
-      if( overlayImage != null ) {
-        updateImage();
-      }
-    }
-    if( progress != 0 ) {
-      updateProgress();
-    }
-    if( progressState != SWT.DEFAULT ) {
-      updateProgressState();
-    }
-  }
-  
-  void releaseHandle() {
-    parent = null;
-  }
-  
-  void releaseWidget() {
-    super.releaseWidget();
-    overlayImage = null;
-    overlayText = null;
+    return 0;
   }
   
   /**
@@ -244,18 +195,6 @@ public class TaskItem extends Item {
    */
   public void setMenu( final Menu menu ) {
     checkWidget();
-    if( menu != null ) {
-      if( menu.isDisposed() ) {
-        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
-      }
-      if( ( menu.style & SWT.POP_UP ) == 0 ) {
-        error( SWT.ERROR_MENU_NOT_POP_UP );
-      }
-    }
-    if( shell != null ) {
-      this.menu = menu;
-      parent.setMenu( menu );
-    }
   }
   
   /**
@@ -287,19 +226,6 @@ public class TaskItem extends Item {
    */
   public void setOverlayImage( final Image overlayImage ) {
     checkWidget();
-    if( overlayImage != null && overlayImage.isDisposed() ) {
-      error( SWT.ERROR_INVALID_ARGUMENT );
-    }
-    if( shell != null ) {
-      this.overlayImage = overlayImage;
-      if( overlayImage != null ) {
-        updateImage();
-      } else {
-        if( overlayText.length() != 0 ) {
-          updateText();
-        }
-      }
-    }
   }
   
   /**
@@ -330,19 +256,6 @@ public class TaskItem extends Item {
    */
   public void setOverlayText( final String overlayText ) {
     checkWidget();
-    if( overlayText == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    if( shell != null ) {
-      this.overlayText = overlayText;
-      if( overlayText.length() != 0 ) {
-        updateText();
-      } else {
-        if( overlayImage != null ) {
-          updateImage();
-        }
-      }
-    }
   }
   
   /**
@@ -372,13 +285,6 @@ public class TaskItem extends Item {
    */
   public void setProgress( final int progress ) {
     checkWidget();
-    if( shell != null ) {
-      int newProgress = Math.max( 0, Math.min( progress, PROGRESS_MAX ) );
-      if( this.progress != newProgress ) {
-        this.progress = newProgress;
-        updateProgress();
-      }
-    }
   }
   
   /**
@@ -418,35 +324,6 @@ public class TaskItem extends Item {
    */
   public void setProgressState( final int progressState ) {
     checkWidget();
-    if( shell != null ) {
-      if( this.progressState != progressState ) {
-        this.progressState = progressState;
-        updateProgressState();
-      }
-    }
-  }
-  
-  void setShell( final Shell shell ) {
-    this.shell = shell;
-    shell.addListener( SWT.Dispose, new Listener() {
-      public void handleEvent( final Event event ) {
-        if( !isDisposed() ) {
-          dispose();
-        }
-      }
-    });
-  }
-  
-  void updateImage() {
-  }
-  
-  void updateProgress() {
-  }
-  
-  void updateProgressState() {    
-  }
-  
-  void updateText() {
   }
 
 }

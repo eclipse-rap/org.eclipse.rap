@@ -1,14 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 EclipseSource and others. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
- *     Tasktop Technologies - initial API and implementation
- *******************************************************************************/
+ *   EclipseSource - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 
@@ -32,62 +30,7 @@ import org.eclipse.swt.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class TaskBar extends Widget {
-  int itemCount;
-  TaskItem[] items = new TaskItem[ 4 ];
-  int /*long*/ mTaskbarList3;
-
-  TaskBar( final Display barDisplay, final int style ) {
-    Display display = barDisplay;
-    if( display == null ) {
-      display = Display.getCurrent();
-    }
-    if( display == null ) {
-      display = Display.getDefault();
-    }
-    if( !display.isValidThread() ) {
-      error( SWT.ERROR_THREAD_INVALID_ACCESS );
-    }
-    this.display = display;
-    reskinWidget();
-  }
-  
-  void createItem( final TaskItem item, final int itemIndex ) {
-    int index = itemIndex;
-    if( index == -1 ) {
-      index = itemCount;
-    }
-    if( !( 0 <= index && index <= itemCount ) ) {
-      error( SWT.ERROR_INVALID_RANGE );
-    }
-    if( itemCount == items.length ) {
-      TaskItem[] newItems = new TaskItem[ items.length + 4 ];
-      System.arraycopy( items, 0, newItems, 0, items.length );
-      items = newItems;
-    }
-    System.arraycopy( items, index, items, index + 1, itemCount++ - index );
-    items[ index ] = item;
-  }
-  
-  void createItems() {
-    Shell[] shells = display.getShells();
-    for( int i = 0; i < shells.length; i++ ) {
-      getItem( shells[ i ] );
-    }
-    getItem( null );
-  }
-  
-  void destroyItem( final TaskItem item ) {
-    int index = 0;
-    while( index < itemCount ) {
-      if( items[ index ] == item ) break;
-      index++;
-    }
-    if( index != itemCount ) {
-      System.arraycopy( items, index + 1, items, index, --itemCount - index );
-      items[ itemCount ] = null;
-    }
-  }  
-  
+    
   /**
    * Returns the item at the given, zero-relative index in the
    * receiver. Throws an exception if the index is out of range.
@@ -105,11 +48,10 @@ public class TaskBar extends Widget {
    */
   public TaskItem getItem( final int index ) {
     checkWidget();
-    createItems();
-    if( !( 0 <= index && index < itemCount ) ) {
+    if( !( 0 <= index && index < getItemCount() ) ) {
       error( SWT.ERROR_INVALID_RANGE );
     }
-    return items[ index ];
+    return null;
   }
   
   /**
@@ -127,16 +69,7 @@ public class TaskBar extends Widget {
    */
   public TaskItem getItem( final Shell shell ) {
     checkWidget();
-    for( int i = 0; i < items.length; i++ ) {
-      if( items[ i ] != null && items[ i ].shell == shell ) {
-        return items[ i ];
-      }
-    }
-    TaskItem item = new TaskItem( this, SWT.NONE );
-    if( shell != null ) {
-      item.setShell( shell );
-    }
-    return item;
+    return new TaskItem( this, SWT.NONE );
   }
   
   /**
@@ -151,8 +84,7 @@ public class TaskBar extends Widget {
    */
   public int getItemCount() {
     checkWidget();
-    createItems();
-    return itemCount;
+    return 0;
   }
   
   /**
@@ -173,52 +105,7 @@ public class TaskBar extends Widget {
    */
   public TaskItem[] getItems() {
     checkWidget();
-    createItems();
-    TaskItem[] result = new TaskItem[ itemCount ];
-    System.arraycopy( items, 0, result, 0, result.length );
-    return result;
-  }
-  
-  void releaseChildren( final boolean destroy ) {
-    if( items != null ) {
-      for( int i = 0; i < items.length; i++ ) {
-        TaskItem item = items[ i ];
-        if( item != null && !item.isDisposed() ) {
-          item.releaseWidget();
-        }
-      }
-      items = null;
-    }
-    super.releaseChildren();
-  }
-  
-  void releaseParent () {
-    super.releaseParent ();
-//    if( display.taskBar == this ) {
-//      display.taskBar = null;
-//    }
-  }
-  
-  void releaseWidget() {
-    super.releaseWidget();
-    if( mTaskbarList3 != 0 ) {
-      mTaskbarList3 = 0;
-    }
-  }
-  
-  void reskinChildren( final int flags ) { 
-    if( items != null ) {
-      for( int i = 0; i < items.length; i++ ) {
-        TaskItem item = items[ i ];
-        if( item != null ) {
-          item.reskin( flags );
-        }
-      }
-    }
-    super.reskinChildren( flags );
-  }
-  
-  void setMenu( final Menu menu ) {    
+    return new TaskItem[ 0 ];
   }
 
 }
