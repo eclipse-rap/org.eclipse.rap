@@ -9,14 +9,10 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,12 +49,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private final static String PATTERN_REQUEST_COUNTER
     =   "var req = org.eclipse.swt.Request.getInstance();"
       + "req.setRequestCounter( \"{0,number,#}\" );";
-
-  private static final String CLIENT_LOG_LEVEL
-    = "org.eclipse.rwt.clientLogLevel";
-
-  // Maps Java Level to the closest qooxdoo log level
-  private static final Map LOG_LEVEL_MAP = new HashMap( 8 + 1, 1f );
 
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_CURR_THEME = "currTheme";
@@ -101,20 +91,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         adapter.clearRenderRunnable();
       }
     }
-  }
-
-  static {
-    // Available qooxdoo log level:
-    //   LEVEL_OFF, LEVEL_ALL,
-    //   LEVEL_DEBUG, LEVEL_INFO, LEVEL_WARN, LEVEL_ERROR, LEVEL_FATAL
-    LOG_LEVEL_MAP.put( Level.OFF, "qx.log.Logger.LEVEL_OFF" );
-    LOG_LEVEL_MAP.put( Level.ALL, "qx.log.Logger.LEVEL_ALL" );
-    LOG_LEVEL_MAP.put( Level.WARNING, "qx.log.Logger.LEVEL_WARN" );
-    LOG_LEVEL_MAP.put( Level.INFO, "qx.log.Logger.LEVEL_INFO" );
-    LOG_LEVEL_MAP.put( Level.SEVERE, "qx.log.Logger.LEVEL_ERROR" );
-    LOG_LEVEL_MAP.put( Level.FINE, "qx.log.Logger.LEVEL_DEBUG" );
-    LOG_LEVEL_MAP.put( Level.FINER, "qx.log.Logger.LEVEL_DEBUG" );
-    LOG_LEVEL_MAP.put( Level.FINEST, "qx.log.Logger.LEVEL_DEBUG" );
   }
 
   ////////////////////////////////////////////////////////
@@ -448,22 +424,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static void markInitialized( final Display display ) {
     WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
     adapter.setInitialized( true );
-  }
-
-  private static Level getClientLogLevel() {
-    Level result = Level.OFF;
-    String logLevel = System.getProperty( CLIENT_LOG_LEVEL );
-    if( logLevel != null ) {
-      logLevel = logLevel.toUpperCase();
-      Level[] knownLogLevels = new Level[ LOG_LEVEL_MAP.size() ];
-      LOG_LEVEL_MAP.keySet().toArray( knownLogLevels );
-      for( int i = 0; i < knownLogLevels.length; i++ ) {
-        if( knownLogLevels[ i ].getName().equals( logLevel ) ) {
-          result = knownLogLevels[ i ];
-        }
-      }
-    }
-    return result;
   }
 
   static void readBounds( final Display display ) {
