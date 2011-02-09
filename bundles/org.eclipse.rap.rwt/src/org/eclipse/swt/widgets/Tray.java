@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -9,10 +9,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.Vector;
-
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 
 /**
  * Instances of this class represent the system tray that is part of the task
@@ -31,27 +28,6 @@ import org.eclipse.swt.SWTException;
  * @since 1.4
  */
 public class Tray extends Widget {
-
-  private Vector items = new Vector();
-
-  Tray( final Display display, final int style ) {
-    if( display == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    if( !display.isValidThread() ) {
-      error( SWT.ERROR_THREAD_INVALID_ACCESS );
-    }
-    this.display = display;
-    final Display tmp = display;
-    this.display.addListener( SWT.Dispose, new Listener() {
-
-      public void handleEvent( final Event event ) {
-        if( event.display == tmp ) {
-          dispose();
-        }
-      }
-    } );
-  }
 
   /**
    * Returns the item at the given, zero-relative index in the receiver. Throws
@@ -72,10 +48,10 @@ public class Tray extends Widget {
    */
   public TrayItem getItem( final int index ) {
     checkWidget();
-    if( index < 0 || index >= items.size() ) {
+    if( index < 0 || index >= getItemCount() ) {
       SWT.error( SWT.ERROR_INVALID_RANGE );
     }
-    return ( TrayItem )items.get( index );
+    return null;
   }
 
   /**
@@ -91,7 +67,7 @@ public class Tray extends Widget {
    */
   public int getItemCount() {
     checkWidget();
-    return items.size();
+    return 0;
   }
 
   /**
@@ -112,35 +88,7 @@ public class Tray extends Widget {
    */
   public TrayItem[] getItems() {
     checkWidget();
-    TrayItem[] result = new TrayItem[ items.size() ];
-    items.toArray( result );
-    return result;
+    return new TrayItem[ 0 ];
   }
-
-  public void dispose() {
-    for( int i = items.size() - 1; i >= 0; i-- ) {
-      TrayItem item = ( TrayItem )items.get( i );
-      item.dispose();
-    }
-    items.clear();
-    super.dispose();
-  }
-
-  protected void internal_createHandle( final int index ) {
-    checkWidget();
-  }
-
-  boolean hasNativeEvents() {
-    return false;
-  }
-
-  void addItem( final TrayItem item ) {
-    if( !items.contains( item ) ) {
-      items.add( item );
-    }
-  }
-
-  void removeItem( final TrayItem item ) {
-    items.remove( item );
-  }
+  
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -10,10 +10,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.events.*;
 
 /**
  * Instances of this class represent icons that can be placed on the system tray
@@ -33,10 +30,8 @@ import org.eclipse.swt.graphics.Image;
  * @since 1.4
  */
 public class TrayItem extends Item {
-
-  private Tray tray;
-  private String toolTip;
-  private boolean visible = true;
+  
+  private Tray parent;
 
   /**
    * Constructs a new instance of this class given its parent (which must be a
@@ -74,9 +69,25 @@ public class TrayItem extends Item {
     if( parent == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    this.tray = parent;
+    this.parent = parent;
     checkWidget();
-    parent.addItem( this );
+  }
+  
+  /**
+   * Returns the receiver's parent, which must be a <code>Tray</code>.
+   *
+   * @return the receiver's parent
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.4
+   */
+  public Tray getParent() {
+    checkWidget ();
+    return parent;
   }
 
   /**
@@ -109,7 +120,6 @@ public class TrayItem extends Item {
     if( listener == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    SelectionEvent.addListener( this, listener );
   }
 
   /**
@@ -125,7 +135,7 @@ public class TrayItem extends Item {
    */
   public String getToolTipText() {
     checkWidget();
-    return toolTip;
+    return null;
   }
 
   /**
@@ -142,7 +152,7 @@ public class TrayItem extends Item {
    */
   public boolean getVisible() {
     checkWidget();
-    return visible;
+    return true;
   }
 
   /**
@@ -165,28 +175,6 @@ public class TrayItem extends Item {
   public void removeSelectionListener( final SelectionListener listener ) {
     checkWidget();
     if( listener == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
-    }
-    SelectionEvent.removeListener( this, listener );
-  }
-
-  /**
-   * Sets the receiver's image.
-   *
-   * @param image the new image
-   * @exception IllegalArgumentException <ul>
-   *              <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
-   *              </ul>
-   * @exception SWTException <ul>
-   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-   *              thread that created the receiver</li>
-   *              </ul>
-   * @since 1.4
-   */
-  public void setImage( final Image image ) {
-    checkWidget();
-    if( image == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
   }
@@ -222,17 +210,95 @@ public class TrayItem extends Item {
   public void setVisible( final boolean visible ) {
     checkWidget();
   }
-
-  public void dispose() {
-    tray.removeItem( this );
-    super.dispose();
+  
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the platform-specific context menu trigger
+   * has occurred, by sending it one of the messages defined in
+   * the <code>MenuDetectListener</code> interface.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see MenuDetectListener
+   * @see #removeMenuDetectListener
+   *
+   * @since 1.4
+   */
+  public void addMenuDetectListener( final MenuDetectListener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
   }
-
-  protected void internal_createHandle( final int index ) {
+  
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the platform-specific context menu trigger has
+   * occurred.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see MenuDetectListener
+   * @see #addMenuDetectListener
+   *
+   * @since 1.4
+   */
+  public void removeMenuDetectListener( final MenuDetectListener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+  }
+  
+  /**
+   * Sets the receiver's tool tip to the argument, which
+   * may be null indicating that no tool tip should be shown.
+   *
+   * @param toolTip the new tool tip (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.4
+   */
+  public void setToolTip( final ToolTip toolTip ) {
     checkWidget();
   }
-
-  void TrayItemCallback( final int type, final int x, int y ) {
+  
+  /**
+   * Returns the receiver's tool tip, or null if it has
+   * not been set.
+   *
+   * @return the receiver's tool tip text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.4
+   */
+  public ToolTip getToolTip() {
     checkWidget();
+    return null;
   }
+  
 }
