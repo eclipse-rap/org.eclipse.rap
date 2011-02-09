@@ -732,7 +732,7 @@ public class Control_Test extends TestCase {
     assertEquals( SWT.LEFT_TO_RIGHT, shell.getOrientation() );
     assertTrue( "default orientation inherited: SWT.LEFT_TO_RIGHT",
                 ( childDefault.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
-    
+    assertEquals( SWT.LEFT_TO_RIGHT, childDefault.getOrientation() );
   }
 
   public void testShowEvent() {
