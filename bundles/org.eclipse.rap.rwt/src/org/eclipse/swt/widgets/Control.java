@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2027,6 +2027,47 @@ public abstract class Control extends Widget implements Drawable {
   public boolean isReparentable() {
     checkWidget();
     return false;
+  }
+
+  /**
+   * Sets the orientation of the receiver, which must be one
+   * of the constants <code>SWT.LEFT_TO_RIGHT</code> or <code>SWT.RIGHT_TO_LEFT</code>.
+   * <p>
+   * Note: Currently RWT does not support SWT.RIGHT_TO_LEFT.
+   * </p>
+   *
+   * @param orientation new orientation style
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.4  
+   */
+  public void setOrientation( final int orientation ) { 
+    checkWidget();
+  }
+
+  /**
+   * Returns the orientation of the receiver, which will be one of the
+   * constants <code>SWT.LEFT_TO_RIGHT</code> or <code>SWT.RIGHT_TO_LEFT</code>.
+   * <p>
+   * Note: Currently RWT does not support SWT.RIGHT_TO_LEFT.
+   * </p>
+   *
+   * @return the orientation style
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.4
+   */
+  public int getOrientation() {
+    checkWidget();
+    return style & (SWT.LEFT_TO_RIGHT /*| SWT.RIGHT_TO_LEFT*/);
   }
 
   ////////////

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,10 +78,15 @@ public class Control_Test extends TestCase {
     public void renderDispose( Widget widget ) throws IOException {
     }
   }
+  
+  private Display display;
+  private Shell shell;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -89,8 +94,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.NONE );
     assertTrue( ( control.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
     control = new Button( shell, SWT.BORDER );
@@ -98,8 +101,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testBounds() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Rectangle controlBounds = control.getBounds();
     Rectangle expected = new Rectangle( 0, 0, 0, 0 );
@@ -135,8 +136,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testLocation() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Point expectedLocation = new Point( 10, 20 );
     control.setLocation( expectedLocation );
@@ -158,8 +157,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testSize() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Point expectedSize = new Point( 10, 20 );
     control.setSize( expectedSize );
@@ -183,22 +180,18 @@ public class Control_Test extends TestCase {
   }
 
   public void testGetShell() {
-    Display display = new Display();
-    Composite shell1 = new Shell( display, SWT.NONE );
-    Button button1 = new Button( shell1, SWT.PUSH );
+    Button button1 = new Button( shell, SWT.PUSH );
     Composite shell2 = new Shell( display, SWT.NONE );
     Button button2 = new Button( shell2, SWT.PUSH );
-    assertSame( shell1, shell1.getShell() );
-    assertSame( shell1, button1.getShell() );
+    assertSame( shell, shell.getShell() );
+    assertSame( shell, button1.getShell() );
     assertSame( shell2, shell2.getShell() );
     assertSame( shell2, button2.getShell() );
-    assertNotSame( shell2, shell1.getShell() );
+    assertNotSame( shell2, shell.getShell() );
     assertNotSame( shell2, button1.getShell() );
   }
 
   public void testToolTipText() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     control1.setToolTipText( null );
     assertEquals( null, control1.getToolTipText() );
@@ -211,8 +204,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testMenu() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Menu menu = new Menu( control );
     control.setMenu( menu );
@@ -246,8 +237,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testDisposeWithMenu() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Menu menu = new Menu( control );
     control.setMenu( menu );
@@ -263,8 +252,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testFont() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
 
@@ -286,8 +273,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testForeground() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Composite comp = new Composite( shell, SWT.NONE );
     Control control = new Label( comp, SWT.PUSH );
 
@@ -312,8 +297,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testBackground() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Composite comp = new Composite( shell, SWT.NONE );
     Control control = new Label( comp, SWT.PUSH );
 
@@ -338,12 +321,10 @@ public class Control_Test extends TestCase {
   }
 
   public void testBackgroundMode() {
-    Display display = new Display();
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     Color widgetBg = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
-    Shell shell = new Shell( display );
     Composite comp = new Composite( shell, SWT.NONE );
     Control control = new Label( comp, SWT.NONE );
 
@@ -373,10 +354,8 @@ public class Control_Test extends TestCase {
   }
 
   public void testBackgroundModeMultiLevel() {
-    Display display = new Display();
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
-    Shell shell = new Shell( display );
     Composite comp = new Composite( shell, SWT.NONE );
     Label label = new Label( comp, SWT.NONE );
 
@@ -392,8 +371,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testBackgroundTransparency() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Composite comp = new Composite( shell, SWT.NONE );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     comp.setBackground( blue );
@@ -436,8 +413,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testEnabled() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
 
@@ -460,8 +435,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testUserForeground() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Label( composite, SWT.NONE );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
@@ -493,8 +466,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testVisible() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     shell.open();
@@ -518,8 +489,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testZOrder() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     Control control2 = new Button( shell, SWT.PUSH );
     Control control3 = new Button( shell, SWT.PUSH );
@@ -556,8 +525,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testFocus() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     // When shell is closed, creating a control does not affect its focus
     assertSame( null, display.getFocusControl() );
@@ -568,8 +535,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testFocusOnClosedShell() {
-    Display display = new Display();
-    final Shell shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     final Control control2 = new Button( shell, SWT.PUSH );
     final StringBuffer log = new StringBuffer();
@@ -609,8 +574,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testNoFocusControls() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.NONE );
     control.forceFocus();
     Control noFocusControl = new Label( shell, SWT.NONE );
@@ -626,8 +589,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testDisposeOfFocused() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control2 = new Button( composite, SWT.PUSH );
@@ -650,8 +611,6 @@ public class Control_Test extends TestCase {
   // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=265634
   public void testNoFocusOutOnDispose() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Control control = new Button( shell, SWT.PUSH );
     control.addFocusListener( new FocusAdapter() {
       public void focusLost( FocusEvent event ) {
@@ -664,8 +623,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testHideFocusedControl() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     shell.setLayout( new FillLayout() );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
@@ -703,8 +660,6 @@ public class Control_Test extends TestCase {
 
   public void testFocusEventsForForceFocus() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Control control1 = new Button( shell, SWT.PUSH );
     control1.addFocusListener( new FocusAdapter() {
       public void focusGained( final FocusEvent event ) {
@@ -727,13 +682,11 @@ public class Control_Test extends TestCase {
 
   // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=323570
   public void testFocusOnBlockedShell() {
-    Display display = new Display();
-    Shell shell1 = new Shell( display, SWT.NONE );
-    Control button1 = new Button( shell1, SWT.PUSH );
-    Shell shell2 = new Shell( shell1, SWT.APPLICATION_MODAL );
-    shell1.open();
+    Control button1 = new Button( shell, SWT.PUSH );
+    Shell shell2 = new Shell( shell, SWT.APPLICATION_MODAL );
+    shell.open();
     assertEquals( button1, display.getFocusControl() );
-    assertEquals( shell1, display.getActiveShell() );
+    assertEquals( shell, display.getActiveShell() );
     shell2.open();
     button1.setFocus();
     assertEquals( shell2, display.getFocusControl() );
@@ -741,8 +694,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testToControl() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Point controlCoords = control.toControl( 0, 0 );
     assertEquals( new Point( 0, 0 ), control.toDisplay( controlCoords.x,
@@ -757,8 +708,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testToDisplay() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Control control = new Button( shell, SWT.PUSH );
     Point displayCoords = control.toDisplay( 0, 0 );
     assertEquals( new Point( 0, 0 ), control.toControl( displayCoords.x,
@@ -777,13 +726,13 @@ public class Control_Test extends TestCase {
    * orientation to SWT.LEFT_TO_RIGHT
    */
   public void testOrientation() {
-    Display display = new Display();
-    Shell shellDefault = new Shell( display, SWT.NONE );
-    Composite childDefault = new Composite( shellDefault, SWT.NONE );
+    Composite childDefault = new Composite( shell, SWT.NONE );
     assertTrue( "default orientation: SWT.LEFT_TO_RIGHT",
-                ( shellDefault.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
+                ( shell.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
+    assertEquals( SWT.LEFT_TO_RIGHT, shell.getOrientation() );
     assertTrue( "default orientation inherited: SWT.LEFT_TO_RIGHT",
                 ( childDefault.getStyle() & SWT.LEFT_TO_RIGHT ) != 0 );
+    
   }
 
   public void testShowEvent() {
@@ -793,8 +742,6 @@ public class Control_Test extends TestCase {
         log.add( event );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.addListener( SWT.Show, showListener );
     Control control = new Button( shell, SWT.NONE );
     control.addListener( SWT.Show, showListener );
@@ -823,8 +770,6 @@ public class Control_Test extends TestCase {
         assertFalse( ( ( Control )event.widget ).getVisible() );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.addListener( SWT.Show, ensureInvisible );
     shell.setVisible( true );
   }
@@ -836,8 +781,6 @@ public class Control_Test extends TestCase {
         log.add( event );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.addListener( SWT.Hide, showListener );
     Control control = new Button( shell, SWT.NONE );
     control.addListener( SWT.Hide, showListener );
@@ -862,8 +805,6 @@ public class Control_Test extends TestCase {
   }
 
   public void testCursor() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Control control = new Button( shell, SWT.PUSH );
     assertNull( control.getCursor() );
     Cursor handCursor = display.getSystemCursor( SWT.CURSOR_HAND );
@@ -877,9 +818,7 @@ public class Control_Test extends TestCase {
   }
 
   public void testGetMonitor() {
-    Display display = new Display();
-    Control control = new Shell( display );
-    Monitor monitor = control.getMonitor();
+    Monitor monitor = shell.getMonitor();
     assertNotNull( monitor );
     assertEquals( display.getPrimaryMonitor(), monitor );
   }
@@ -887,43 +826,34 @@ public class Control_Test extends TestCase {
 
   public void testUntypedHelpListener() {
     final Event[] untypedHelpEvent = { null };
-    Display display = new Display();
-    Control control = new Shell( display );
-    control.addListener( SWT.Help, new Listener() {
+    shell.addListener( SWT.Help, new Listener() {
       public void handleEvent( final Event event ) {
         untypedHelpEvent[ 0 ] = event;
       }
     } );
-    control.notifyListeners( SWT.Help, new Event() );
+    shell.notifyListeners( SWT.Help, new Event() );
     assertNotNull( untypedHelpEvent[ 0 ] );
   }
   
   public void testSetRedraw() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    control.setRedraw( true );
-    assertTrue( display.needsRedraw( control ) );
-    control.setRedraw( false );
-    assertFalse( display.needsRedraw( control ) );
+    shell.setRedraw( true );
+    assertTrue( display.needsRedraw( shell ) );
+    shell.setRedraw( false );
+    assertFalse( display.needsRedraw( shell ) );
   }
 
   public void testRedraw() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    control.redraw();
-    assertTrue( display.needsRedraw( control ) );
+    shell.redraw();
+    assertTrue( display.needsRedraw( shell ) );
   }
   
   public void testRedrawWithBounds() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    control.redraw( 0, 0, -1, 0, true );
-    assertFalse( display.needsRedraw( control ) );
+    shell.redraw( 0, 0, -1, 0, true );
+    assertFalse( display.needsRedraw( shell ) );
   }
   
   public void testRedrawTriggersLCAInOrder() {
     final List log = new ArrayList();
-    Display display = new Display();
     Composite control0 = new RedrawLogginShell( display, log );
     Composite control1 = new RedrawLogginShell( display, log );
     control0.redraw();
@@ -938,28 +868,24 @@ public class Control_Test extends TestCase {
   }
   
   public void testRedrawDisposed() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    control.redraw();
-    control.dispose();
-    assertFalse( display.needsRedraw( control ) );
+    shell.redraw();
+    shell.dispose();
+    assertFalse( display.needsRedraw( shell ) );
   }
   
   public void testSetBackground() {
-    Display display = new Display();
-    Composite control = new Shell( display );
     Color color = display.getSystemColor( SWT.COLOR_RED );
-    control.setBackground( color );
-    assertEquals( color, control.getBackground() );
-    control.setBackground( null );
+    shell.setBackground( color );
+    assertEquals( color, shell.getBackground() );
+    shell.setBackground( null );
     IControlThemeAdapter themeAdapter
-      = ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
-    assertEquals( themeAdapter.getBackground( control ), 
-                  control.getBackground() );
+      = ( IControlThemeAdapter )shell.getAdapter( IThemeAdapter.class );
+    assertEquals( themeAdapter.getBackground( shell ), 
+                  shell.getBackground() );
     Color color2 = new Color( display, 0, 0, 0 );
     color2.dispose();
     try {
-      control.setBackground( color2 );
+      shell.setBackground( color2 );
       fail( "Disposed Image must not be set." );
     } catch( IllegalArgumentException e ) {
       // Expected Exception
@@ -969,12 +895,10 @@ public class Control_Test extends TestCase {
   public void testSetBackgroundImage() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Display display = new Display();
-    Composite control = new Shell( display );
     Image image = new Image( display, stream );
     image.dispose();
     try {
-      control.setBackgroundImage( image );
+      shell.setBackgroundImage( image );
       fail( "Disposed Image must not be set." );
     } catch( IllegalArgumentException e ) {
       // Expected Exception
@@ -990,16 +914,14 @@ public class Control_Test extends TestCase {
   }
 
   public void testSetCursor() {
-    Display display = new Display();
-    Composite control = new Shell( display );
     Cursor cursor = new Cursor( display, SWT.NONE );
-    control.setCursor( cursor );
-    assertEquals( cursor, control.getCursor() );
-    control.setCursor( null );
-    assertEquals( null, control.getCursor() );
+    shell.setCursor( cursor );
+    assertEquals( cursor, shell.getCursor() );
+    shell.setCursor( null );
+    assertEquals( null, shell.getCursor() );
     cursor.dispose();
     try {
-      control.setCursor( cursor );
+      shell.setCursor( cursor );
       fail( "Disposed Image must not be set." );
     } catch( IllegalArgumentException e ) {
       // Expected Exception
@@ -1007,25 +929,23 @@ public class Control_Test extends TestCase {
   }
 
   public void testSetFont() {
-    Display display = new Display();
-    Composite control = new Shell( display );
     Font controlFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
                                          15,
                                          SWT.BOLD );
-    control.setFont( controlFont );
-    assertSame( controlFont, control.getFont() );
+    shell.setFont( controlFont );
+    assertSame( controlFont, shell.getFont() );
     Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
-    control.setFont( itemFont );
-    assertSame( itemFont, control.getFont() );
-    control.setFont( null );
+    shell.setFont( itemFont );
+    assertSame( itemFont, shell.getFont() );
+    shell.setFont( null );
     IControlThemeAdapter themeAdapter
-      = ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
-    assertSame( themeAdapter.getFont( control ), control.getFont() );
+      = ( IControlThemeAdapter )shell.getAdapter( IThemeAdapter.class );
+    assertSame( themeAdapter.getFont( shell ), shell.getFont() );
     // Test with images, that should appear on unselected tabs
     Font font = new Font( display, "Testfont", 10, SWT.BOLD );
     font.dispose();
     try {
-      control.setFont( font );
+      shell.setFont( font );
       fail( "Disposed font must not be set." );
     } catch( IllegalArgumentException e ) {
       // Expected Exception
@@ -1033,20 +953,18 @@ public class Control_Test extends TestCase {
   }
 
   public void testSetForeground() {
-    Display display = new Display();
-    Composite control = new Shell( display );
     Color color = display.getSystemColor( SWT.COLOR_RED );
-    control.setForeground( color );
-    assertEquals( color, control.getForeground() );
-    control.setForeground( null );
+    shell.setForeground( color );
+    assertEquals( color, shell.getForeground() );
+    shell.setForeground( null );
     IControlThemeAdapter themeAdapter
-      = ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
-    assertEquals( themeAdapter.getForeground( control ), 
-                  control.getForeground() );
+      = ( IControlThemeAdapter )shell.getAdapter( IThemeAdapter.class );
+    assertEquals( themeAdapter.getForeground( shell ), 
+                  shell.getForeground() );
     Color color2 = new Color( display, 255, 0, 0 );
     color2.dispose();
     try {
-      control.setForeground( color2 );
+      shell.setForeground( color2 );
       fail( "Disposed color must not be set." );
     } catch( IllegalArgumentException e ) {
       // Expected Exception
