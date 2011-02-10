@@ -38,8 +38,8 @@ public final class SettingStoreManager {
     ISettingStore result
       = ( ISettingStore )session.getAttribute( storeId );
     if( result == null ) {
-        result = factory.createSettingStore( storeId );
-        session.setAttribute( storeId, result );
+      result = factory.createSettingStore( storeId );
+      session.setAttribute( storeId, result );
     }
     return result;
   }
