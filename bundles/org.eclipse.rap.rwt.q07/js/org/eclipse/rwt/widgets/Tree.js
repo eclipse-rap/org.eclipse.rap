@@ -1203,7 +1203,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       if( mousedown && leftClick && !result ) {
         this._selectionTimestamp = new Date();
-      } else {
+      } else if( mousedown ) {
         this._selectionTimestamp = null;
       }
       return result;

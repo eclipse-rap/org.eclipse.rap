@@ -1476,6 +1476,45 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( log[ 1 ].indexOf( expected3 ) == -1 );            
       tree.destroy();
     },
+    
+    testSendDefaultSelectionEventOnDragSource : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var tree = this._createDefaultTree();
+      tree.setHasSelectionListeners( true );
+      tree.setHasMultiSelection( true );
+      var actions = [ "copy", "move", "alias" ];
+      dndSupport.registerDragSource( tree, actions );
+      dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
+      var child0 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( tree );
+      wm.add( tree, "w1", true );
+      wm.add( child0, "w2", false );
+      tree.selectItem( child0 );
+      testUtil.flush();
+      testUtil.initRequestLog();
+      testUtil.doubleClick( tree._rows[ 0 ] );
+      assertEquals( 2, testUtil.getRequestsSend() );
+      var log = testUtil.getRequestLog();
+      var expected1a = "org.eclipse.swt.events.widgetSelected=w1";
+      var expected1b = "org.eclipse.swt.events.widgetSelected.item=w2";
+      var expected2a = "org.eclipse.swt.events.widgetDefaultSelected=w1";
+      var expected2b = "org.eclipse.swt.events.widgetDefaultSelected.item=w2";
+      var expected3 = "w1.selection=" + encodeURIComponent( "w2" );
+      console.log( log[ 1 ] );
+      assertTrue( log[ 0 ].indexOf( expected1a ) != -1 );            
+      assertTrue( log[ 0 ].indexOf( expected1b ) != -1 );            
+      assertTrue( log[ 0 ].indexOf( expected2a ) == -1 );            
+      assertTrue( log[ 0 ].indexOf( expected2b ) == -1 );            
+      assertTrue( log[ 0 ].indexOf( expected3 ) != -1 );            
+      assertTrue( log[ 1 ].indexOf( expected1a ) == -1 );            
+      assertTrue( log[ 1 ].indexOf( expected1b ) == -1 );            
+      assertTrue( log[ 1 ].indexOf( expected2a ) != -1 );            
+      assertTrue( log[ 1 ].indexOf( expected2b ) != -1 );            
+      assertTrue( log[ 1 ].indexOf( expected3 ) == -1 );            
+      tree.destroy();
+    },
 
     testDontSendDefaultSelectionEventOnDoubleRightClick : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
