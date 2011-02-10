@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.dynamichelpers.ExtensionTracker;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -61,7 +62,10 @@ public class ActionSetRegistry implements IExtensionChangeHandler {
     /**
      * Creates the action set registry.
      */
-    public ActionSetRegistry() {
+	// RAP [if]: see getInstance
+//    public ActionSetRegistry() {
+	private ActionSetRegistry() {
+    // RAPEND: [if] 
     	contextService = (IContextService) PlatformUI
 				.getWorkbench().getService(IContextService.class);
 		PlatformUI.getWorkbench().getExtensionTracker().registerHandler(
@@ -72,6 +76,16 @@ public class ActionSetRegistry implements IExtensionChangeHandler {
                                 getActionSetPartAssociationExtensionPoint() }));
         readFromRegistry();
     }
+	
+	// RAP [if]: 
+    /**
+     * Returns a session scoped ActionSetRegistry
+     * @return
+     */
+    public static ActionSetRegistry getInstance() {
+        return ( ActionSetRegistry )SessionSingletonBase.getInstance( ActionSetRegistry.class );  
+    }
+    // RAPEND: [if]
 
     /**
      * Return the action set part association extension point.

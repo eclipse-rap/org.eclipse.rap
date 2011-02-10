@@ -303,7 +303,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 // RAP [rh] PerspectiveRegistry has session scope    
 //    private PerspectiveRegistry perspRegistry;
 
-    private ActionSetRegistry actionSetRegistry;
+// RAP [if] ActionSetRegistry has session scope 
+//    private ActionSetRegistry actionSetRegistry;
 
     private SharedImages sharedImages;
 
@@ -376,7 +377,8 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //            perspRegistry = null;
 //        }
         
-        actionSetRegistry = null;
+// RAP [if] actionSetRegistry field is unused, ActionsetRegistry has session scope 
+//        actionSetRegistry = null;
         sharedImages = null;
 
         productInfo = null;
@@ -579,10 +581,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * @return the workbench action set registry
      */
     public ActionSetRegistry getActionSetRegistry() {
-        if (actionSetRegistry == null) {
-            actionSetRegistry = new ActionSetRegistry();
-        }
-        return actionSetRegistry;
+        // RAP [if]
+//        if (actionSetRegistry == null) {
+//            actionSetRegistry = new ActionSetRegistry();
+//        }
+//        return actionSetRegistry;
+        return ActionSetRegistry.getInstance();
+        // RAPEND: [if]
     }
 
     /**
