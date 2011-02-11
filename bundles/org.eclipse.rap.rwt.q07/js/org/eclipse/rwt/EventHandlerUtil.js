@@ -116,7 +116,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
           target = vDomEvent.toElement;
         }
       }
-      return util.getTargetObject(target);
+      return util.getTargetObject( target );
     },
 
     getTargetObject : function( vNode, vObject, allowDisabled ) {
