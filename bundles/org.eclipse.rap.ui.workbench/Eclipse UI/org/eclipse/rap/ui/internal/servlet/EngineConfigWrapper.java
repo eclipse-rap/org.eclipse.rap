@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2006, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,6 +94,9 @@ final class EngineConfigWrapper implements IEngineConfig {
     registerCustomServiceHandlers();
   }
 
+  public File getServerContextDir() {
+    return engineConfig.getServerContextDir();
+  }
 
   public File getClassDir() {
     return engineConfig.getClassDir();
@@ -102,15 +105,6 @@ final class EngineConfigWrapper implements IEngineConfig {
   public File getLibDir() {
     return engineConfig.getLibDir();
   }
-
-  public File getServerContextDir() {
-    return engineConfig.getServerContextDir();
-  }
-
-  public File getSourceDir() {
-    return engineConfig.getSourceDir();
-  }
-
 
   //////////////////
   // helping methods

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import javax.servlet.http.*;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.service.*;
+
 
 public class RWTDelegate extends HttpServlet {
 
@@ -82,18 +83,18 @@ public class RWTDelegate extends HttpServlet {
 
   //////////////////
   // Helping methods
-  
+
   private IEngineConfig getEngineConfig() {
     String name = IEngineConfig.class.getName();
-    ServletContext servleContext = getServletContext();
-    IEngineConfig result = ( IEngineConfig )servleContext.getAttribute( name );
+    ServletContext servletContext = getServletContext();
+    IEngineConfig result = ( IEngineConfig )servletContext.getAttribute( name );
     if( result == null ) {
-      result = new EngineConfig( servleContext.getRealPath( "/" ) );
-      servleContext.setAttribute( name, result );
+      result = new EngineConfig( servletContext.getRealPath( "/" ) );
+      servletContext.setAttribute( name, result );
     }
     return result;
   }
-  
+
   private void createResourceManagerInstance() {
     IConfiguration configuration = ConfigurationReader.getConfiguration();
     String resources = configuration.getResources();
