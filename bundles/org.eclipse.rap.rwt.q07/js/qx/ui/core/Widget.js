@@ -834,6 +834,17 @@ qx.Class.define( "qx.ui.core.Widget", {
       themeable : true,
       init : null
     },
+    
+    /**
+     * Enables/disables overflow on the outer element for enhanced borders.
+     */
+    containerOverflow : {
+      check : "Boolean",
+      nullable : false,
+      apply : "_applyContainerOverflow",
+      themeable : true,
+      init : true
+    },
 
     /** Clipping of the widget (left) */
     clipLeft : {
@@ -3604,6 +3615,12 @@ qx.Class.define( "qx.ui.core.Widget", {
       var vOverflow = this.getOverflow();
       return vOverflow == "scrollX" ? "hidden" : vOverflow;
     },
+    
+    _applyContainerOverflow : function( value, oldValue ) {
+      if( this._innerStyle ) {
+        this._style.overflow = value ? "" : "hidden";
+      }
+    },
 
     /////////////////////////
     // FONT AND COLOR SUPPORT
@@ -3764,11 +3781,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       }
       // [if] Fix for bug 279800: Some focused widgets look strange in webkit
       this._style.outline = "none";
-      // The next line is needed for clipping in IE. Overflow is an
-      // "outerStyle" property, so this this css-value will never be set or 
-      // reset. Therefore, this widget also no longer has the ability to 
-      // show overflow:
-      this._style.overflow = "hidden";
+      this._applyContainerOverflow( this.getContainerOverflow() );
       for( var i in this._htmlProperties ) {
         switch( i ) {
           case "unselectable":

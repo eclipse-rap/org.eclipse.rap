@@ -1502,7 +1502,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var expected2a = "org.eclipse.swt.events.widgetDefaultSelected=w1";
       var expected2b = "org.eclipse.swt.events.widgetDefaultSelected.item=w2";
       var expected3 = "w1.selection=" + encodeURIComponent( "w2" );
-      console.log( log[ 1 ] );
       assertTrue( log[ 0 ].indexOf( expected1a ) != -1 );            
       assertTrue( log[ 0 ].indexOf( expected1b ) != -1 );            
       assertTrue( log[ 0 ].indexOf( expected2a ) == -1 );            

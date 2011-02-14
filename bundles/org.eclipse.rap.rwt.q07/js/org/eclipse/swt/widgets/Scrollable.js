@@ -166,6 +166,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
 
     _onClientCreate : function( evt ) {
       this._clientArea.prepareEnhancedBorder();
+      this._clientArea.setContainerOverflow( false );
       var el = this._clientArea._getTargetNode();
       var eventUtil = qx.html.EventRegistration;
       eventUtil.addEventListener( el, "scroll", this.__onscroll );

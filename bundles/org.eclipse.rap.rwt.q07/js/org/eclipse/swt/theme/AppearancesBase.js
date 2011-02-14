@@ -1582,6 +1582,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( rounded && states.selected ) {
         result.border = new org.eclipse.rwt.RoundedBorder( 0, color );
         result.border.setRadii( radii );
+        result.containerOverflow = false;
       } else {
         result.border = new qx.ui.core.Border( 0, "solid", color );
       }

@@ -412,8 +412,9 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
           var borderBottom = 0;
           var borderLeft = 0;
           // TODO [tb] : This hides the edges with width "0" by drawing
-          // them outside the element so they are hidden. However this does 
-          // not always work in IE. See bug 306820.  
+          // them outside the element so they are hidden. ("ContainerOverflow"
+          // must be set to false.) However this does not always work in IE. 
+          // See bug 306820.  
           if( maxWidth > 0 ) {
             borderTop = ( borderWidth[ 0 ] == 0 ? -maxWidth - 1 : maxWidth );
             borderRight = ( borderWidth[ 1 ] == 0 ? -maxWidth - 1 : maxWidth );
