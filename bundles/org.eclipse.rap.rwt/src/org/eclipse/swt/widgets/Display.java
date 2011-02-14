@@ -1550,7 +1550,7 @@ public class Display extends Device implements Adaptable {
    * over top of, or null if it is not currently over one of the
    * controls built by the currently running application.
    *
-   * @return the control under the cursor
+ * @return the control under the cursor or <code>null</code>
    *
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
