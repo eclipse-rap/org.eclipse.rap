@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -169,7 +170,10 @@ public abstract class WorkbenchPartReference implements IWorkbenchPartReference,
 
     private static DisposeListener prematureDisposeListener = new DisposeListener() {
         public void widgetDisposed(DisposeEvent e) {
-            WorkbenchPlugin.log(new RuntimeException("Widget disposed too early!")); //$NON-NLS-1$
+// RAP[if] Check if platform is running to prevent bug 336852          
+            if( Platform.isRunning() ) {
+                WorkbenchPlugin.log(new RuntimeException("Widget disposed too early!")); //$NON-NLS-1$
+            }
         }    
     };
     
