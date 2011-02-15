@@ -29,9 +29,15 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 public class TextLCA_Test extends TestCase {
+  
+  private Display display;
+  private Shell shell;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -39,26 +45,18 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testMultiPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.MULTI );
-    testPreserveValues( display, text );
-    display.dispose();
+    testPreserveValues( text );
   }
 
   public void testPasswordPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.PASSWORD );
-    testPreserveValues( display, text );
-    display.dispose();
+    testPreserveValues( text );
   }
 
   public void testSinglePreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.SINGLE );
-    testPreserveValues( display, text );
+    testPreserveValues( text );
     //Selection_Listener
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
@@ -74,13 +72,9 @@ public class TextLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( propSelectionLsnr );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testReadData() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     String textId = WidgetUtil.getId( text );
     // read changed text
@@ -97,8 +91,6 @@ public class TextLCA_Test extends TestCase {
 
   public void testRenderChanges() throws IOException {
     Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     shell.open();
     Fixture.markInitialized( display );
@@ -118,8 +110,6 @@ public class TextLCA_Test extends TestCase {
   
   public void testRenderText_ZeroChar() throws IOException {
     Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     shell.open();
     Fixture.markInitialized( display );
@@ -135,8 +125,6 @@ public class TextLCA_Test extends TestCase {
 
   public void testModifyEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
 
@@ -158,8 +146,6 @@ public class TextLCA_Test extends TestCase {
 
   public void testVerifyEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
     text.addVerifyListener( new VerifyListener() {
       public void verifyText( final VerifyEvent event ) {
@@ -185,8 +171,6 @@ public class TextLCA_Test extends TestCase {
     // register preserve-values phase-listener
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
     shell.open();
     String displayId = DisplayUtil.getId( display );
@@ -268,8 +252,6 @@ public class TextLCA_Test extends TestCase {
   public void testPreserveText() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Text text = new Text( shell, SWT.SINGLE );
     shell.open();
     Fixture.markInitialized( display );
@@ -295,8 +277,6 @@ public class TextLCA_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     // set up widgets to be tested
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
     shell.open();
     String displayId = DisplayUtil.getId( display );
@@ -326,8 +306,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testTextLimit() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     TextLCA lca = new TextLCA();
     // run LCA one to dump the here uninteresting prolog
@@ -358,8 +336,6 @@ public class TextLCA_Test extends TestCase {
   }
   
   public void testEchoCharMultiLine() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -373,8 +349,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testEchoCharSingleLine() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     String displayId = DisplayUtil.getId( display );
     Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
@@ -398,8 +372,6 @@ public class TextLCA_Test extends TestCase {
   }
   
   public void testEchoCharPassword() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     String displayId = DisplayUtil.getId( display );
     Text text = new Text( shell, SWT.PASSWORD );
     Fixture.markInitialized( display );
@@ -422,7 +394,7 @@ public class TextLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
   }
   
-  private void testPreserveValues( final Display display, final Text text ) {
+  private void testPreserveValues( final Text text ) {
     Boolean hasListeners;
     //text
     text.setText( "some text" );
@@ -551,5 +523,22 @@ public class TextLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( text );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
+  }
+  
+  // bug 337130
+  public void testWriteVerifyOrModifyListener() throws IOException {
+    Fixture.fakeResponseWriter();
+    Text text = new Text( shell, SWT.READ_ONLY );
+    TextLCA lca = new TextLCA();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    text.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+      }
+    } );
+    lca.renderChanges( text );
+    String expected
+      = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener( w, true )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != 0 );
   }
 }

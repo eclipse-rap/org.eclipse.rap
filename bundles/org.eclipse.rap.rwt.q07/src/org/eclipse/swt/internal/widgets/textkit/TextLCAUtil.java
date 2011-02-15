@@ -203,14 +203,12 @@ final class TextLCAUtil {
   static void writeVerifyAndModifyListener( final Text text )
     throws IOException
   {
-    if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
-      Boolean newValue = Boolean.valueOf( hasVerifyOrModifyListener( text ) );
-      if( WidgetLCAUtil.hasChanged( text, PROP_VERIFY_MODIFY_LISTENER, newValue ) )
-      {
-        JSWriter writer = JSWriter.getWriterFor( text );
-        writer.callStatic( "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener",
-                           new Object[] { text, newValue } );
-      }
+    Boolean newValue = Boolean.valueOf( hasVerifyOrModifyListener( text ) );
+    String prop = PROP_VERIFY_MODIFY_LISTENER;
+    if( WidgetLCAUtil.hasChanged( text, prop, newValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( text );
+      writer.callStatic( "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener",
+                         new Object[] { text, newValue } );
     }
   }
 
