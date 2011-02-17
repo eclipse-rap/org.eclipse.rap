@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -11,13 +11,9 @@
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("qx.ui.pageview.AbstractBar",
-{
+qx.Class.define( "qx.ui.pageview.AbstractBar", {
   type : "abstract",
   extend : qx.ui.layout.BoxLayout,
-
-
-
 
   /*
   *****************************************************************************
@@ -25,17 +21,10 @@ qx.Class.define("qx.ui.pageview.AbstractBar",
   *****************************************************************************
   */
 
-  construct : function()
-  {
-    this.base(arguments);
-
-    this._manager = new qx.ui.selection.RadioManager;
-
-    this.addEventListener("mousewheel", this._onmousewheel);
+  construct : function() {
+    this.base( arguments );
+    this._manager = new qx.ui.selection.RadioManager();
   },
-
-
-
 
   /*
   *****************************************************************************
@@ -43,8 +32,8 @@ qx.Class.define("qx.ui.pageview.AbstractBar",
   *****************************************************************************
   */
 
-  members :
-  {
+  members : {
+
     /**
      * Get the selection manager.
      *
@@ -53,77 +42,9 @@ qx.Class.define("qx.ui.pageview.AbstractBar",
      */
     getManager : function() {
       return this._manager;
-    },
-
-
-    _lastDate : (new Date(0)).valueOf(),
-
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param e {Event} TODOC
-     * @return {void}
-     */
-    _onmousewheel : function(e)
-    {
-      // prevents scrolling the parent
-      e.preventDefault();
-      e.stopPropagation();
-      // Make it a bit lazier than it could be
-      // Hopefully this is a better behaviour for fast scrolling users
-      var vDate = (new Date).valueOf();
-
-      if ((vDate - 50) < this._lastDate) {
-        return;
-      }
-
-      this._lastDate = vDate;
-
-      var vManager = this.getManager();
-      var vItems = vManager.getEnabledItems();
-      var vPos = vItems.indexOf(vManager.getSelected());
-
-      if (this.getWheelDelta(e) > 0)
-      {
-        var vNext = vItems[vPos + 1];
-
-        if (!vNext) {
-          vNext = vItems[0];
-        }
-      }
-      else if (vPos > 0)
-      {
-        var vNext = vItems[vPos - 1];
-
-        if (!vNext) {
-          vNext = vItems[0];
-        }
-      }
-      else
-      {
-        vNext = vItems[vItems.length - 1];
-      }
-
-      vManager.setSelected(vNext);
-    },
-
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param e {Event} TODOC
-     * @return {var} TODOC
-     */
-    getWheelDelta : function(e) {
-      return e.getWheelDelta();
     }
+    
   },
-
-
-
 
   /*
   *****************************************************************************
@@ -132,6 +53,6 @@ qx.Class.define("qx.ui.pageview.AbstractBar",
   */
 
   destruct : function() {
-    this._disposeObjects("_manager");
+    this._disposeObjects( "_manager" );
   }
 });
