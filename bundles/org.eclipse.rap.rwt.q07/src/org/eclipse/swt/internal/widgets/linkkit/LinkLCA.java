@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -163,7 +164,7 @@ public class LinkLCA extends AbstractWidgetLCA {
       HttpServletRequest request = ContextProvider.getRequest();
       String indexStr
         = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_INDEX );
-      int index = Integer.parseInt( indexStr );
+      int index = NumberFormatUtil.parseInt( indexStr );
       ILinkAdapter adapter
         = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
       String[] ids = adapter.getIds();

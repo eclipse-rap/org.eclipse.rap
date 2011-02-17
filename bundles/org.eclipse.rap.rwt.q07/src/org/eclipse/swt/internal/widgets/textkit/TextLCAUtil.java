@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.textkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.util.EncodingUtil;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -96,10 +97,10 @@ final class TextLCAUtil {
     if( selStart != null || selLength != null ) {
       result = new Point( 0, 0 );
       if( selStart != null ) {
-        result.x = Integer.parseInt( selStart );
+        result.x = NumberFormatUtil.parseInt( selStart );
       }
       if( selLength != null ) {
-        result.y = result.x + Integer.parseInt( selLength );
+        result.y = result.x + NumberFormatUtil.parseInt( selLength );
       }
     }
     return result;

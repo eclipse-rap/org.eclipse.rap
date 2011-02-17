@@ -25,6 +25,7 @@ import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.swt.dnd.DragSource;
@@ -490,7 +491,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     if( value == null ) {
       result = defaultValue;
     } else {
-      result = Integer.parseInt( value );
+      result = NumberFormatUtil.parseInt( value );
     }
     return result;
   }

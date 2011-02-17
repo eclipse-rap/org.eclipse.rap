@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -12,6 +12,7 @@ package org.eclipse.swt.internal.custom.ccombokit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.util.EncodingUtil;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -76,7 +77,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     final CCombo ccombo = ( CCombo )widget;
     String value = WidgetLCAUtil.readPropertyValue( ccombo, "selectedItem" );
     if( value != null ) {
-      ccombo.select( Integer.parseInt( value ) );
+      ccombo.select( NumberFormatUtil.parseInt( value ) );
     }
     String listVisible
       = WidgetLCAUtil.readPropertyValue( ccombo, "listVisible" );
@@ -166,10 +167,10 @@ public final class CComboLCA extends AbstractWidgetLCA {
     if( selStart != null || selLength != null ) {
       result = new Point( 0, 0 );
       if( selStart != null ) {
-        result.x = Integer.parseInt( selStart );
+        result.x = NumberFormatUtil.parseInt( selStart );
       }
       if( selLength != null ) {
-        result.y = result.x + Integer.parseInt( selLength );
+        result.y = result.x + NumberFormatUtil.parseInt( selLength );
       }
     }
     return result;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.treecolumnkit;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -70,7 +72,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
       // TODO [rh] HACK: force width to have changed when client-side changes
       //      it. Since this is done while a column resize we must re-layout
       //      all columns including the resized one.
-      final int newWidth = Integer.parseInt( value );
+      final int newWidth = NumberFormatUtil.parseInt( value );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           column.setWidth( newWidth );
@@ -82,7 +84,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     // controlMoved event
     value = WidgetLCAUtil.readPropertyValue( column, "left" );
     if( value != null ) {
-      final int newLeft = Integer.parseInt( value );
+      final int newLeft = NumberFormatUtil.parseInt( value );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           moveColumn( column, newLeft );

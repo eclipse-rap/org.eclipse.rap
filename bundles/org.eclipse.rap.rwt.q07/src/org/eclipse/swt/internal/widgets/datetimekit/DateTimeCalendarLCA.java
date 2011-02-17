@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.datetimekit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -48,9 +49,9 @@ final class DateTimeCalendarLCA extends AbstractDateTimeLCADelegate {
     String month = WidgetLCAUtil.readPropertyValue( dateTime, PROP_MONTH );
     String year = WidgetLCAUtil.readPropertyValue( dateTime, PROP_YEAR );
     if( day != null && month != null && year != null ) {
-      dateTime.setDate( Integer.parseInt( year ),
-                        Integer.parseInt( month ),
-                        Integer.parseInt( day ) );
+      dateTime.setDate( NumberFormatUtil.parseInt( year ),
+                        NumberFormatUtil.parseInt( month ),
+                        NumberFormatUtil.parseInt( day ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
     ControlLCAUtil.processMouseEvents( dateTime );

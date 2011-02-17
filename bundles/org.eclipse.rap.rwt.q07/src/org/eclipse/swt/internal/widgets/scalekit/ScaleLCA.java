@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,13 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.scalekit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -60,7 +62,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     Scale scale = ( Scale )widget;
     String value = WidgetLCAUtil.readPropertyValue( scale, PROP_SELECTION );
     if( value != null ) {
-      scale.setSelection( Integer.parseInt( value ) );
+      scale.setSelection( NumberFormatUtil.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( scale, null, true );
     ControlLCAUtil.processKeyEvents( scale );

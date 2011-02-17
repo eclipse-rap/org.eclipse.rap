@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.util.EncodingUtil;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -85,7 +86,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     final Combo combo = ( Combo )widget;
     String value = WidgetLCAUtil.readPropertyValue( widget, "selectedItem" );
     if( value != null ) {
-      combo.select( Integer.parseInt( value ) );
+      combo.select( NumberFormatUtil.parseInt( value ) );
     }
     String listVisible
       = WidgetLCAUtil.readPropertyValue( combo, "listVisible" );
@@ -173,10 +174,10 @@ public class ComboLCA extends AbstractWidgetLCA {
     if( selStart != null || selLength != null ) {
       result = new Point( 0, 0 );
       if( selStart != null ) {
-        result.x = Integer.parseInt( selStart );
+        result.x = NumberFormatUtil.parseInt( selStart );
       }
       if( selLength != null ) {
-        result.y = result.x + Integer.parseInt( selLength );
+        result.y = result.x + NumberFormatUtil.parseInt( selLength );
       }
     }
     return result;

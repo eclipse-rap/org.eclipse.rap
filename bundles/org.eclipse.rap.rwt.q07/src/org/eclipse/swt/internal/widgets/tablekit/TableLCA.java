@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -182,7 +183,7 @@ public final class TableLCA extends AbstractWidgetLCA {
         String[] selectedIndices = value.split( "," );
         newSelection = new int[ selectedIndices.length ];
         for( int i = 0; i < selectedIndices.length; i++ ) {
-          newSelection[ i ] = Integer.parseInt( selectedIndices[ i ] );
+          newSelection[ i ] = NumberFormatUtil.parseInt( selectedIndices[ i ] );
         }
       }
       table.deselectAll();
@@ -193,7 +194,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static void readTopIndex( final Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "topIndex" );
     if( value != null ) {
-      int topIndex = Integer.parseInt( value );
+      int topIndex = NumberFormatUtil.parseInt( value );
       int topOffset = topIndex * table.getItemHeight();
       table.setTopIndex( topIndex );
       processScrollBarSelection( table.getVerticalBar(), topOffset );
@@ -205,14 +206,14 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( value != null ) {
       ITableAdapter adapter
         = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
-      adapter.setFocusIndex( Integer.parseInt( value ) );
+      adapter.setFocusIndex( NumberFormatUtil.parseInt( value ) );
     }
   }
 
   private static void readLeftOffset( final Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "leftOffset" );
     if( value != null ) {
-      int leftOffset = Integer.parseInt( value );
+      int leftOffset = NumberFormatUtil.parseInt( value );
       Object adapter = table.getAdapter( ITableAdapter.class );
       ITableAdapter tableAdapter = ( ITableAdapter )adapter;
       tableAdapter.setLeftOffset( leftOffset );
@@ -228,7 +229,7 @@ public final class TableLCA extends AbstractWidgetLCA {
       Object adapter = table.getAdapter( ITableAdapter.class );
       ITableAdapter tableAdapter = ( ITableAdapter )adapter;
       for( int i = 0; i < indices.length; i++ ) {
-        int index = Integer.parseInt( indices[ i ] );
+        int index = NumberFormatUtil.parseInt( indices[ i ] );
         if( index > -1 && index < table.getItemCount() ) {
           tableAdapter.checkData( index );
         }
@@ -290,7 +291,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static int getWidgetSelectedIndex() {
     HttpServletRequest request = ContextProvider.getRequest();
     String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_INDEX );
-    return Integer.parseInt( value );
+    return NumberFormatUtil.parseInt( value );
   }
 
   private static TableItem getFocusedItem( final Table table ) {
@@ -461,7 +462,7 @@ public final class TableLCA extends AbstractWidgetLCA {
         String cell = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
         String[] details = cell.split( "," );
         String itemId = details[ 0 ];
-        int columnIndex = Integer.parseInt( details[ 1 ] );
+        int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
         TableItem item = getItemById( table, itemId );
         // Bug 321119: Sometimes the client can request tooltips for already
         //             disposed cells.

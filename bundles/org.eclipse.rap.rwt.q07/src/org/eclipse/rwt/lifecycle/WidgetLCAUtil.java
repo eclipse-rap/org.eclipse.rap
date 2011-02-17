@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.EncodingUtil;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.HelpEvent;
@@ -1004,7 +1005,7 @@ public final class WidgetLCAUtil {
   private static int readBoundsValue( final String value, final int current ) {
     int result;
     if( value != null && !"null".equals( value ) ) {
-      result = Integer.parseInt( value );
+      result = NumberFormatUtil.parseInt( value );
     } else {
       result = current;
     }

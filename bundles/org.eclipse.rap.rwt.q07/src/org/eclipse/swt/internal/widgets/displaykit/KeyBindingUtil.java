@@ -17,6 +17,7 @@ import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.events.EventLCAUtil;
@@ -93,7 +94,7 @@ public final class KeyBindingUtil {
 
   private static String getModifierKeys( final String keyBinding ) {
     String modifierPart = keyBinding.substring( 0, keyBinding.indexOf( ',' ) );
-    int modifierKeys = Integer.parseInt( modifierPart );
+    int modifierKeys = NumberFormatUtil.parseInt( modifierPart );
     StringBuffer result = new StringBuffer();
     if( ( modifierKeys & SWT.ALT ) != 0 ) {
       result.append( "ALT+" );
@@ -109,7 +110,7 @@ public final class KeyBindingUtil {
 
   private static int getNaturalKey( final String keyBinding ) {
     String keyPart = keyBinding.substring( keyBinding.indexOf( ',' ) + 1 );
-    int naturalKey = Integer.parseInt( keyPart );
+    int naturalKey = NumberFormatUtil.parseInt( keyPart );
     return translateNaturalKey( naturalKey );
   }
 
@@ -157,7 +158,7 @@ public final class KeyBindingUtil {
 
   private static int readIntParam( final String paramName ) {
     String value = readStringParam( paramName );
-    return Integer.parseInt( value );
+    return NumberFormatUtil.parseInt( value );
   }
 
   private static String readStringParam( final String paramName ) {

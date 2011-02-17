@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -1067,7 +1068,7 @@ public class ControlLCAUtil {
 
   private static int readIntParam( final String paramName ) {
     String value = readStringParam( paramName );
-    return Integer.parseInt( value );
+    return NumberFormatUtil.parseInt( value );
   }
 
   private static Point readXYParams( final Control control,

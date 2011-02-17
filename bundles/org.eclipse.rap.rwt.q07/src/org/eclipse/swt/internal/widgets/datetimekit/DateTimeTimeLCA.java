@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.datetimekit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -47,15 +48,15 @@ final class DateTimeTimeLCA extends AbstractDateTimeLCADelegate {
   void readData( final DateTime dateTime ) {
     String value = WidgetLCAUtil.readPropertyValue( dateTime, PROP_HOURS );
     if( value != null ) {
-      dateTime.setHours( Integer.parseInt( value ) );
+      dateTime.setHours( NumberFormatUtil.parseInt( value ) );
     }
     value = WidgetLCAUtil.readPropertyValue( dateTime, PROP_MINUTES );
     if( value != null ) {
-      dateTime.setMinutes( Integer.parseInt( value ) );
+      dateTime.setMinutes( NumberFormatUtil.parseInt( value ) );
     }
     value = WidgetLCAUtil.readPropertyValue( dateTime, PROP_SECONDS );
     if( value != null ) {
-      dateTime.setSeconds( Integer.parseInt( value ) );
+      dateTime.setSeconds( NumberFormatUtil.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( dateTime, null, true );
     ControlLCAUtil.processMouseEvents( dateTime );

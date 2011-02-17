@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.listkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -231,7 +232,7 @@ public class ListLCA extends AbstractWidgetLCA {
       }
       int[] indices = new int[ indiceStrings.length ];
       for( int i = 0; i < indices.length; i++ ) {
-        indices[ i ] = Integer.parseInt( indiceStrings[ i ] );
+        indices[ i ] = NumberFormatUtil.parseInt( indiceStrings[ i ] );
       }
       list.setSelection( indices );
     }
@@ -240,14 +241,14 @@ public class ListLCA extends AbstractWidgetLCA {
   private static void readTopIndex( final List list ) {
     String value = WidgetLCAUtil.readPropertyValue( list, "topIndex" );
     if( value != null ) {
-      list.setTopIndex( Integer.parseInt( value ) );
+      list.setTopIndex( NumberFormatUtil.parseInt( value ) );
     }
   }
 
   private static void readFocusIndex( final List list ) {
     String paramValue = WidgetLCAUtil.readPropertyValue( list, "focusIndex" );
     if( paramValue != null ) {
-      int focusIndex = Integer.parseInt( paramValue );
+      int focusIndex = NumberFormatUtil.parseInt( paramValue );
       Object adapter = list.getAdapter( IListAdapter.class );
       IListAdapter listAdapter = ( IListAdapter )adapter;
       listAdapter.setFocusIndex( focusIndex );

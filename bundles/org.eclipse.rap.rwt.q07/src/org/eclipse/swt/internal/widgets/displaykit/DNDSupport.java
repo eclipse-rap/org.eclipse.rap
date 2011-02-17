@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.dnd.*;
@@ -535,7 +536,7 @@ public final class DNDSupport {
 
   private static int readIntParam( final String paramName ) {
     String value = readStringParam( paramName );
-    return Integer.parseInt( value );
+    return NumberFormatUtil.parseInt( value );
   }
 
   private static Control readControlParam( final String paramName ) {
@@ -562,7 +563,7 @@ public final class DNDSupport {
     value = "null".equals( value ) ? null : value;
     if( value != null ) {
       result = new TransferData();
-      result.type = Integer.parseInt( value );
+      result.type = NumberFormatUtil.parseInt( value );
     }
     return result;
   }
@@ -633,7 +634,7 @@ public final class DNDSupport {
     String enter = readStringParam( EVENT_DRAG_ENTER_TIME );
     String leave = readStringParam( EVENT_DRAG_LEAVE_TIME );
     if( enter != null && leave != null ) {
-      result = Integer.parseInt( leave ) <= Integer.parseInt( enter );
+      result = NumberFormatUtil.parseInt( leave ) <= NumberFormatUtil.parseInt( enter );
     }
     return result;
   }

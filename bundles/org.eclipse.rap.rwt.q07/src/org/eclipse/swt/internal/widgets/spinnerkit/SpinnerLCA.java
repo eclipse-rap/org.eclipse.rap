@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.text.DecimalFormatSymbols;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -77,7 +78,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     Spinner spinner = ( Spinner )widget;
     String value = WidgetLCAUtil.readPropertyValue( widget, "selection" );
     if( value != null ) {
-      spinner.setSelection( Integer.parseInt( value ) );
+      spinner.setSelection( NumberFormatUtil.parseInt( value ) );
     }
     ControlLCAUtil.processSelection( widget, null, false );
     ControlLCAUtil.processMouseEvents( spinner );

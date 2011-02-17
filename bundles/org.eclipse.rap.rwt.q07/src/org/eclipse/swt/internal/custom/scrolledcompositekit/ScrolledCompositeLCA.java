@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.custom.scrolledcompositekit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
@@ -73,13 +74,13 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
       = WidgetLCAUtil.readPropertyValue( widget, PARAM_H_BAR_SELECTION );
     ScrollBar hScroll = composite.getHorizontalBar();
     if( value != null && hScroll != null ) {
-      origin.x = Integer.parseInt( value );
+      origin.x = NumberFormatUtil.parseInt( value );
       processSelection( hScroll );
     }
     value = WidgetLCAUtil.readPropertyValue( widget, PARAM_V_BAR_SELECTION );
     ScrollBar vScroll = composite.getVerticalBar();
     if( value != null && vScroll != null ) {
-      origin.y = Integer.parseInt( value );
+      origin.y = NumberFormatUtil.parseInt( value );
       processSelection( vScroll );
     }
     composite.setOrigin( origin );

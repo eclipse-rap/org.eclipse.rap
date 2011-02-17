@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -397,7 +398,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
           = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
         String[] details = cell.split( "," );
         String itemId = details[ 0 ];
-        int columnIndex = Integer.parseInt( details[ 1 ] );
+        int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
         TreeItem item = getItemById( tree.getItems(), itemId );
         if(    item != null
             && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) )

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -50,7 +51,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     String movedWidgetId = request.getParameter( JSConst.EVENT_WIDGET_MOVED );
     if( WidgetUtil.getId( coolItem ).equals( movedWidgetId ) ) {
       String value = WidgetLCAUtil.readPropertyValue( coolItem, "bounds.x" );
-      final int x = Integer.parseInt( value );
+      final int x = NumberFormatUtil.parseInt( value );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           moveItem( coolItem, x );
