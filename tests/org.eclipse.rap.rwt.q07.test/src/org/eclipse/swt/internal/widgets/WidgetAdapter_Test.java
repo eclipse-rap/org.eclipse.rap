@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,11 @@ import org.eclipse.swt.widgets.*;
 
 public class WidgetAdapter_Test extends TestCase {
 
+  private Display display;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
   }
 
   protected void tearDown() throws Exception {
@@ -34,7 +37,6 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testGetAdapterForDisplay() {
-    Display display = new Display();
     Object adapter1 = display.getAdapter( IWidgetAdapter.class );
     assertTrue( adapter1 instanceof IWidgetAdapter );
     Object adapter2 = display.getAdapter( IWidgetAdapter.class );
@@ -47,7 +49,6 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testGetAdapterForShell() {
-    Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Object adapter1 = shell.getAdapter( IWidgetAdapter.class );
     assertTrue( adapter1 instanceof IWidgetAdapter );
@@ -58,7 +59,6 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testGetAdapterForButton() {
-    Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Button button1 = new Button( shell, SWT.PUSH );
     Object adapter1 = button1.getAdapter( IWidgetAdapter.class );
@@ -70,7 +70,6 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testId() {
-    Display display = new Display();
     IWidgetAdapter adapter1
       = ( IWidgetAdapter )display.getAdapter( IWidgetAdapter.class );
     display.dispose();
@@ -84,7 +83,6 @@ public class WidgetAdapter_Test extends TestCase {
   public void testInitializedForShell() throws IOException {
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
-    Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
     assertEquals( false, adapter.isInitialized() );
@@ -93,7 +91,6 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testInitializedForDisplay() throws IOException {
-    Display display = new Display();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Fixture.fakeResponseWriter();
     DisplayUtil.getLCA( display ).render( display );
@@ -107,7 +104,6 @@ public class WidgetAdapter_Test extends TestCase {
   
   public void testRenderRunnable() throws IOException {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( shell );
     IRenderRunnable runnable = new IRenderRunnable() {
@@ -145,7 +141,6 @@ public class WidgetAdapter_Test extends TestCase {
   public void testMarkDisposed() {
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
-    Display display = new Display();
     
     // dispose un-initialized widget: must not occur in list of disposed widgets
     Widget widget = new Shell( display );

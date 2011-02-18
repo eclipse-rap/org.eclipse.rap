@@ -24,15 +24,17 @@ import org.eclipse.swt.widgets.*;
 
 public class Decorator_Test extends TestCase {
 
+  private Shell shell;
+
   public void testCreate() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    List decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
+    List decorations 
+      = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
     assertNull( decorations );
 
-    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    ControlDecorator decoration 
+      = new ControlDecorator( control, SWT.RIGHT, null );
     assertSame( control, decoration.getControl() );
     assertEquals( control.getParent(), decoration.getParent() );
     assertNull( decoration.getImage() );
@@ -56,13 +58,12 @@ public class Decorator_Test extends TestCase {
   }
 
   public void testDispose() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
-    List decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
+    ControlDecorator decoration 
+      = new ControlDecorator( control, SWT.RIGHT, null );
+    List decorations 
+      = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
     assertNotNull( decorations );
     assertEquals( 1, decorations.size() );
     control.dispose();
@@ -87,8 +88,6 @@ public class Decorator_Test extends TestCase {
   }
 
   public void testImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
@@ -105,8 +104,6 @@ public class Decorator_Test extends TestCase {
   }
 
   public void testDescriptionText() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
@@ -118,8 +115,6 @@ public class Decorator_Test extends TestCase {
   }
 
   public void testMarginWidth() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
@@ -129,8 +124,6 @@ public class Decorator_Test extends TestCase {
   }
 
   public void testShowOnlyOnFocus() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
@@ -145,8 +138,6 @@ public class Decorator_Test extends TestCase {
   }
   
   public void testShowOnlyOnFocusCalledTwice() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     decoration.setShowOnlyOnFocus( true );
@@ -157,24 +148,21 @@ public class Decorator_Test extends TestCase {
   }
 
   public void testShowHover() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    ControlDecorator decoration 
+      = new ControlDecorator( control, SWT.RIGHT, null );
     assertTrue( decoration.getShowHover() );
     decoration.setShowHover( false );
     assertFalse( decoration.getShowHover() );
   }
 
   public void testVisible() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     Control button = new Button( composite, SWT.PUSH );
-    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    ControlDecorator decoration 
+      = new ControlDecorator( control, SWT.RIGHT, null );
     assertFalse( decoration.isVisible() );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     decoration.setImage( image );
@@ -198,6 +186,9 @@ public class Decorator_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display , SWT.NONE );
   }
 
   protected void tearDown() throws Exception {

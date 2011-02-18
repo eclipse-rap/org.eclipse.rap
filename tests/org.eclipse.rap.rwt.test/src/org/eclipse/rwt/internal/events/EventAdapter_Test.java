@@ -15,7 +15,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.*;
@@ -23,9 +22,14 @@ import org.eclipse.swt.widgets.*;
 
 public class EventAdapter_Test extends TestCase {
   
+  private Widget widget;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.createContext( true );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    widget = new Shell( display );
   }
   
   protected void tearDown() throws Exception {
@@ -34,14 +38,10 @@ public class EventAdapter_Test extends TestCase {
   }
   
   public void testActionPerformed()  {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Button button = new Button( shell, SWT.PUSH );
     IEventAdapter eventAdapter
-      = ( IEventAdapter )button.getAdapter( IEventAdapter.class );
+      = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
     assertNotNull( eventAdapter );
-    assertSame( eventAdapter, button.getAdapter( IEventAdapter.class ) );
+    assertSame( eventAdapter, widget.getAdapter( IEventAdapter.class ) );
     assertFalse( eventAdapter.hasListener( SelectionListener.class ) );
     try {
       eventAdapter.hasListener( Object.class );
@@ -63,9 +63,6 @@ public class EventAdapter_Test extends TestCase {
   }
   
   public void testAddListenerWithIllegalArguments() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Widget widget = new Shell( display );
     IEventAdapter eventAdapter
       = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
     try {
@@ -87,6 +84,5 @@ public class EventAdapter_Test extends TestCase {
     }
     Object[] listeners = eventAdapter.getListener( SelectionListener.class );
     assertEquals( 0, listeners.length );
-    
   }
 }

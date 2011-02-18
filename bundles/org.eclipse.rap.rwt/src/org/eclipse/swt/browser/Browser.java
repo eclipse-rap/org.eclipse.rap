@@ -467,15 +467,13 @@ public class Browser extends Composite {
 
   private BrowserFunction[] getBrowserFunctions() {
     BrowserFunction[] result = new BrowserFunction[ functions.size() ];
-    for( int i = 0; i < functions.size(); i++ ) {
-      result[ i ] = ( BrowserFunction )functions.get( i );
-    }
+    functions.toArray( result );
     return result;
   }
 
   void createFunction( final BrowserFunction function ) {
     boolean removed = false;
-    for( int i = 0; i < functions.size() && !removed; i++ ) {
+    for( int i = 0; !removed && i < functions.size(); i++ ) {
       BrowserFunction current = ( BrowserFunction )functions.get( i );
       if( current.name.equals( function.name ) ) {
         functions.remove( current );
