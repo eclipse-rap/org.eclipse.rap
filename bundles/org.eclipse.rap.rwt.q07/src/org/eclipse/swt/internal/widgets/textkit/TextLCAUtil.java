@@ -29,7 +29,7 @@ final class TextLCAUtil {
   static final String PROP_TEXT = "text";
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_SELECTION = "selection";
-  static final String PROP_READONLY = "readonly";
+  static final String PROP_READ_ONLY = "readonly";
   static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
   static final String PROP_SELECTION_LISTENER = "selectionListener";
   static final String PROP_PASSWORD_MODE = "passwordMode";
@@ -52,7 +52,7 @@ final class TextLCAUtil {
     adapter.preserve( PROP_TEXT, text.getText() );
     adapter.preserve( PROP_SELECTION, text.getSelection() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
-    adapter.preserve( PROP_READONLY, Boolean.valueOf( ! text.getEditable() ) );
+    adapter.preserve( PROP_READ_ONLY, Boolean.valueOf( ! text.getEditable() ) );
   }
 
   static void readTextAndSelection( final Text text ) {
@@ -126,7 +126,7 @@ final class TextLCAUtil {
   static void writeReadOnly( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     Boolean newValue = Boolean.valueOf( !text.getEditable() );
-    writer.set( PROP_READONLY, JS_PROP_READ_ONLY, newValue, Boolean.FALSE );
+    writer.set( PROP_READ_ONLY, JS_PROP_READ_ONLY, newValue, Boolean.FALSE );
   }
 
   static void writeTextLimit( final Text text ) throws IOException {
@@ -206,10 +206,10 @@ final class TextLCAUtil {
   {
     Boolean newValue = Boolean.valueOf( hasVerifyOrModifyListener( text ) );
     String prop = PROP_VERIFY_MODIFY_LISTENER;
-    if( WidgetLCAUtil.hasChanged( text, prop, newValue ) ) {
+    if( WidgetLCAUtil.hasChanged( text, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( text );
-      writer.callStatic( "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener",
-                         new Object[] { text, newValue } );
+      String function = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener";
+      writer.callStatic( function, new Object[] { text, newValue } );
     }
   }
 
@@ -239,9 +239,13 @@ final class TextLCAUtil {
   }
 
   private static boolean hasVerifyOrModifyListener( final Text text ) {
-    boolean hasVerifyListener = VerifyEvent.hasListener( text );
-    boolean hasModifyListener = ModifyEvent.hasListener( text );
-    return hasModifyListener || hasVerifyListener;
+    boolean result = false;
+    if( text.getEditable() ) {
+      boolean hasVerifyListener = VerifyEvent.hasListener( text );
+      boolean hasModifyListener = ModifyEvent.hasListener( text );
+      result = hasModifyListener || hasVerifyListener;
+    }
+    return result;
   }
 
   private static ITextAdapter getTextAdapter( final Text text ) {
