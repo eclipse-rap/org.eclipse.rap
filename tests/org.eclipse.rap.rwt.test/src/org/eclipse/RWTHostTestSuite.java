@@ -192,6 +192,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ControlGC_Test.class );
     suite.addTestSuite( DeviceGC_Test.class );
     suite.addTestSuite( FontMetrics_Test.class );
+    suite.addTestSuite( LineAttributes_Test.class );
     suite.addTestSuite( TextSizeEstimation_Test.class );
     suite.addTestSuite( TextSizeDetermination_Test.class );
     suite.addTestSuite( ResourceFactory_Test.class );
