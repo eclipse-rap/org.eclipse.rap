@@ -506,16 +506,16 @@ public class TextLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     Object preserved 
       = getPreserved( text, TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
-    assertEquals( Boolean.FALSE, preserved );
+    assertEquals( Boolean.TRUE, preserved );
   }
   
   public void testWriteModifyListenerWhenReadOnly() throws IOException {
     String setHasModifyListener
-      = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener";
+      = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener( w, true )";
     Text text = new Text( shell, SWT.READ_ONLY );
     text.addModifyListener( createModifyListener() );
     new TextLCA().renderChanges( text );
-    assertTrue( Fixture.getAllMarkup().indexOf( setHasModifyListener ) == -1 );
+    assertTrue( Fixture.getAllMarkup().indexOf( setHasModifyListener ) != -1 );
   }
   
   // bug 337130

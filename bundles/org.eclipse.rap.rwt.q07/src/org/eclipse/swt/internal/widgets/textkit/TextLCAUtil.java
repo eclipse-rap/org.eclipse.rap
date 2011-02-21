@@ -239,13 +239,9 @@ final class TextLCAUtil {
   }
 
   private static boolean hasVerifyOrModifyListener( final Text text ) {
-    boolean result = false;
-    if( text.getEditable() ) {
-      boolean hasVerifyListener = VerifyEvent.hasListener( text );
-      boolean hasModifyListener = ModifyEvent.hasListener( text );
-      result = hasModifyListener || hasVerifyListener;
-    }
-    return result;
+    boolean hasVerifyListener = VerifyEvent.hasListener( text );
+    boolean hasModifyListener = ModifyEvent.hasListener( text );
+    return hasModifyListener || hasVerifyListener;
   }
 
   private static ITextAdapter getTextAdapter( final Text text ) {
