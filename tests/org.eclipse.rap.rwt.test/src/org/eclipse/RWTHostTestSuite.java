@@ -25,6 +25,7 @@ import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.*;
+import org.eclipse.rwt.internal.widgets.JSExecutor_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
 import org.eclipse.rwt.widgets.BrowserHistory_Test;
@@ -150,6 +151,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Group_Test.class );
     suite.addTestSuite( Text_Test.class );
     suite.addTestSuite( Spinner_Test.class );
+    suite.addTestSuite( JSExecutor_Test.class );
     suite.addTestSuite( ExternalBrowser_Test.class );
     suite.addTestSuite( BrowserHistory_Test.class );
     suite.addTestSuite( ProgressBar_Test.class );
