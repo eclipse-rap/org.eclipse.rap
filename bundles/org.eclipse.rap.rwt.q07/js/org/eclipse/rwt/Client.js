@@ -219,7 +219,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
             if( userAgent.indexOf( "Android" ) != -1 ) {
               this._browserName = "chrome";
             } else {
-              this._browserName = "safari";              
+              this._browserName = "safari";
             }
           } else if( userAgent.indexOf( "OmniWeb" ) != -1 ) {
             this._browserName = "omniweb";
@@ -229,6 +229,9 @@ qx.Class.define( "org.eclipse.rwt.Client", {
             this._browserName = "netnewswire";
           } else if( userAgent.indexOf( "RealPlayer" ) != -1 ) {
             this._browserName = "realplayer";
+          } else if( userAgent.indexOf( "Mobile" ) != -1 ) {
+            // iPad reports this in fullscreen mode
+            this._browserName = "safari";          
           } else {
             this._browserName = "other webkit";
           }
