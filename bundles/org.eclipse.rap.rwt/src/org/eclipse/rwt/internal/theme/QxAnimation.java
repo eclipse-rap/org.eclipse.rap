@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class QxAnimation implements QxType {
 
-  public final class Animation {
+  public static final class Animation {
 
     private final String[] PREDEFINED_NAMES = new String[] {
       "hoverIn",
