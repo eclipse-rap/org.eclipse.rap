@@ -384,7 +384,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     } else if( argument.equals( "true" ) || argument.equals( "false" ) ) {
       result = new Boolean( argument );
     } else if( argument.startsWith( "\"" ) ) {
-      result = new String( argument.substring( 1, argument.length() - 1 ) );
+      result = argument.substring( 1, argument.length() - 1 );
     } else {
       try {
         result = Double.valueOf( argument );
