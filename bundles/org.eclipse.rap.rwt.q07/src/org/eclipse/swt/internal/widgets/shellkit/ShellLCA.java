@@ -164,11 +164,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private void writeAlpha( final Shell shell ) throws IOException {
     int alpha = shell.getAlpha();
-    if( WidgetLCAUtil.hasChanged( shell,
-                                  PROP_ALPHA,
-                                  new Integer( alpha ),
-                                  new Integer( 0xFF ) ) )
-    {
+    if( WidgetLCAUtil.hasChanged( shell, PROP_ALPHA, new Integer( alpha ), new Integer( 0xFF ) ) ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
       float opacity = ( alpha & 0xFF ) * 1000 / 0xFF / 1000.0f;
       writer.set( "opacity", opacity );
