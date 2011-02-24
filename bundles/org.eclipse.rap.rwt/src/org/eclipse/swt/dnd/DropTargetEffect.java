@@ -120,8 +120,7 @@ public class DropTargetEffect extends DropTargetAdapter {
 			Rectangle area = tree.getClientArea();
 			if (area.contains(point)) {
 				int treeBottom = area.y + area.height;
-// TODO [rh] Tree#getTopItem() is missing				
-//				item = tree.getTopItem();
+				item = tree.getTopItem();
 				while (item != null) {
 					Rectangle rect = item.getBounds();
 					int itemBottom = rect.y + rect.height;
