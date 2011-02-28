@@ -116,13 +116,12 @@ final class TextLCAUtil {
     String newValue = text.getText();
     JSWriter writer = JSWriter.getWriterFor( text );
     if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
-      String value = newValue;
       if( replaceNewLines ) {
-        value = WidgetLCAUtil.replaceNewLines( newValue, " " );
+        newValue = WidgetLCAUtil.replaceNewLines( newValue, " " );
       }
-      value = EncodingUtil.removeNonDisplayableChars( value );
-      value = EncodingUtil.truncateAtZero( value );
-      writer.set( JS_PROP_VALUE, value );
+      newValue = EncodingUtil.removeNonDisplayableChars( newValue );
+      newValue = EncodingUtil.truncateAtZero( newValue );
+      writer.set( JS_PROP_VALUE, newValue );
     }
   }
 
