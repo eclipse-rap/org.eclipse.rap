@@ -519,8 +519,7 @@ public class TextLCA_Test extends TestCase {
   }
   
   // bug 337130
-  public void testWriteModifyListenerAfterBecomingEditable() throws IOException 
-  {
+  public void testWriteModifyListenerAfterBecomingEditable() throws IOException {
     String setHasModifyListener
       = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener( w, true )";
     Text text = new Text( shell, SWT.READ_ONLY );
@@ -530,6 +529,36 @@ public class TextLCA_Test extends TestCase {
     text.setEditable( true );
     new TextLCA().renderChanges( text );
     assertTrue( Fixture.getAllMarkup().indexOf( setHasModifyListener ) != -1 );
+  }
+
+  public void testWriteSingleText_RemoveNonDisplayableChars() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+    text.setText( "abc\u2028abc\u2029abc" );
+    new TextLCA().renderChanges( text );
+    String expected = "w.setValue( \"abcabcabc\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testWriteMultiText_RemoveNonDisplayableChars() throws IOException {
+    Text text = new Text( shell, SWT.MULTI );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+    text.setText( "abc\u2028abc\u2029abc" );
+    new TextLCA().renderChanges( text );
+    String expected = "w.setValue( \"abcabcabc\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testWritePasswordText_RemoveNonDisplayableChars() throws IOException {
+    Text text = new Text( shell, SWT.PASSWORD );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+    text.setText( "abc\u2028abc\u2029abc" );
+    new TextLCA().renderChanges( text );
+    String expected = "w.setValue( \"abcabcabc\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   private static Object getPreserved( final Text text, final String property ) {

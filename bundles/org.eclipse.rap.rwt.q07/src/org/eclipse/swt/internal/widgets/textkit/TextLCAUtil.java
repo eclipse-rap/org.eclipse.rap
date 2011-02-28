@@ -112,11 +112,14 @@ final class TextLCAUtil {
                        new Object[] { text } );
   }
 
-  static void writeText( final Text text ) throws IOException {
+  static void writeText( final Text text, final boolean replaceNewLines ) throws IOException {
     String newValue = text.getText();
     JSWriter writer = JSWriter.getWriterFor( text );
     if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
-      String value = WidgetLCAUtil.replaceNewLines( newValue, " " );
+      String value = newValue;
+      if( replaceNewLines ) {
+        value = WidgetLCAUtil.replaceNewLines( newValue, " " );
+      }
       value = EncodingUtil.removeNonDisplayableChars( value );
       value = EncodingUtil.truncateAtZero( value );
       writer.set( JS_PROP_VALUE, value );
