@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.*;
 
-final class PNGFileFormat extends FileFormat {
+public final class PNGFileFormat extends FileFormat {
 	static final int SIGNATURE_LENGTH = 8;
 	static final int PRIME = 65521;
 	PngIhdrChunk headerChunk;
@@ -252,9 +252,6 @@ void setPixelData(byte[] data, ImageData imageData) {
 			imageData.alphaData = alphaData;
 			break;
 		}		
-		case PngIhdrChunk.COLOR_TYPE_RGB:
-			imageData.data = data;
-			break;
 		case PngIhdrChunk.COLOR_TYPE_PALETTE:
 			imageData.data = data;
 			if (alphaPalette != null) {
@@ -268,8 +265,23 @@ void setPixelData(byte[] data, ImageData imageData) {
 				imageData.alphaData = alphaData;
 			}
 			break;
+		case PngIhdrChunk.COLOR_TYPE_RGB:
 		default:
-			imageData.data = data;
+			int height = imageData.height;
+			int destBytesPerLine = imageData.bytesPerLine;
+			int srcBytesPerLine = getAlignedBytesPerRow();
+			/*
+			* If the image uses 16-bit depth, it is converted
+			* to an 8-bit depth image.
+			*/
+			if (headerChunk.getBitDepth() > 8) srcBytesPerLine /= 2;
+			if (destBytesPerLine != srcBytesPerLine) {
+				for (int y = 0; y < height; y++) {
+					System.arraycopy(data, y * srcBytesPerLine, imageData.data, y * destBytesPerLine, srcBytesPerLine);
+				}
+			} else {
+				imageData.data = data;
+			}
 			break;
 	}
 }
@@ -294,7 +306,7 @@ void readPixelData(PngIdatChunk chunk, PngChunkReader chunkReader) throws IOExce
 	boolean use3_2 = System.getProperty("org.eclipse.swt.internal.image.PNGFileFormat_3.2") != null;
 	InputStream inflaterStream = use3_2 ? null : Compatibility.newInflaterInputStream(stream);
 	if (inflaterStream != null) {
-		stream = new BufferedInputStream(inflaterStream);
+		stream = inflaterStream;
 	} else {
 		stream = new PngDecodingDataStream(stream);
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.swt.internal.image;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 
 public class JPEGDecoder {
@@ -2301,16 +2300,16 @@ static void jinit_d_coef_controller (jpeg_decompress_struct cinfo, boolean need_
 		/* Allocate a full-image virtual array for each component, */
 		/* padded to a multiple of samp_factor DCT blocks in each direction. */
 		/* Note we ask for a pre-zeroed array. */
-		int ci, access_rows;
+		int ci; //, access_rows;
 		jpeg_component_info compptr;
 
 		for (ci = 0; ci < cinfo.num_components; ci++) {
 			compptr = cinfo.comp_info[ci];
-			access_rows = compptr.v_samp_factor;
+			//access_rows = compptr.v_samp_factor;
 //#ifdef BLOCK_SMOOTHING_SUPPORTED
 			/* If block smoothing could be used, need a bigger window */
-			if (cinfo.progressive_mode)
-				access_rows *= 3;
+			//if (cinfo.progressive_mode)
+				//access_rows *= 3;
 //#endif
 			coef.whole_image[ci] = 
 				new short
@@ -2457,11 +2456,6 @@ static void jpeg_calc_output_dimensions (jpeg_decompress_struct cinfo)
 			cinfo.out_color_components = 1;
 			break;
 		case JCS_RGB:
-			if (RGB_PIXELSIZE != 3) {
-				cinfo.out_color_components = RGB_PIXELSIZE;
-				break;
-			}
-			//FALLTHROUGH
 		case JCS_YCbCr:
 			cinfo.out_color_components = 3;
 			break;
@@ -2619,7 +2613,7 @@ static void jinit_color_deconverter (jpeg_decompress_struct cinfo) {
 				build_ycc_rgb_table(cinfo);
 			} else if (cinfo.jpeg_color_space == JCS_GRAYSCALE) {
 				cconvert.color_convert = GRAY_RGB_CONVERT;
-			} else if (cinfo.jpeg_color_space == JCS_RGB && RGB_PIXELSIZE == 3) {
+			} else if (cinfo.jpeg_color_space == JCS_RGB) {
 				cconvert.color_convert = NULL_CONVERT;
 			} else
 				error();
@@ -3827,7 +3821,7 @@ static int decompress_smooth_data (jpeg_decompress_struct cinfo, byte[][][] outp
 	jpeg_d_coef_controller coef = cinfo.coef;
 	int last_iMCU_row = cinfo.total_iMCU_rows - 1;
 	int block_num, last_block_column;
-	int ci, block_row, block_rows, access_rows;
+	int ci, block_row, block_rows; //, access_rows;
 	short[][][] buffer;
 	short[][] buffer_ptr, prev_block_row, next_block_row;
 	byte[][] output_ptr;
@@ -3868,19 +3862,19 @@ static int decompress_smooth_data (jpeg_decompress_struct cinfo, byte[][][] outp
 		/* Count non-dummy DCT block rows in this iMCU row. */
 		if (cinfo.output_iMCU_row < last_iMCU_row) {
 			block_rows = compptr.v_samp_factor;
-			access_rows = block_rows * 2; /* this and next iMCU row */
+			//access_rows = block_rows * 2; /* this and next iMCU row */
 			last_row = false;
 		} else {
 			/* NB: can't use last_row_height here; it is input-side-dependent! */
 			block_rows = (compptr.height_in_blocks % compptr.v_samp_factor);
 			if (block_rows == 0) block_rows = compptr.v_samp_factor;
-			access_rows = block_rows; /* this iMCU row only */
+			//access_rows = block_rows; /* this iMCU row only */
 			last_row = true;
 		}
 		/* Align the virtual buffer for this component. */
 		int buffer_offset;
 		if (cinfo.output_iMCU_row > 0) {
-			access_rows += compptr.v_samp_factor; /* prior iMCU row too */
+			//access_rows += compptr.v_samp_factor; /* prior iMCU row too */
 			buffer = coef.whole_image[ci];
 			buffer_offset = (cinfo.output_iMCU_row - 1) * compptr.v_samp_factor;
 			buffer_offset += compptr.v_samp_factor;	/* point to current iMCU row */

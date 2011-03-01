@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,17 +12,14 @@ package org.eclipse.swt.internal.image;
 
 
 import org.eclipse.swt.*;
-//import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
-
+import org.eclipse.swt.graphics.*;
 import java.io.*;
 
 /**
  * Baseline TIFF decoder revision 6.0
  * Extension T4-encoding CCITT T.4 1D
  */
-final class TIFFFileFormat extends FileFormat {
+public final class TIFFFileFormat extends FileFormat {
 
 boolean isFileFormat(LEDataInputStream stream) {
 	try {
@@ -56,11 +53,17 @@ ImageData[] loadFromByteStream() {
 		int offset = isLittleEndian ? 
 			(header[4] & 0xFF) | ((header[5] & 0xFF) << 8) | ((header[6] & 0xFF) << 16) | ((header[7] & 0xFF) << 24) :
 			(header[7] & 0xFF) | ((header[6] & 0xFF) << 8) | ((header[5] & 0xFF) << 16) | ((header[4] & 0xFF) << 24);
-		file.seek(offset);
-		TIFFDirectory directory = new TIFFDirectory(file, isLittleEndian, loader);
-		ImageData image = directory.read();
-		/* A baseline reader is only expected to read the first directory */
-		images = new ImageData[] {image};
+		while (offset != 0) {
+			file.seek(offset);
+			TIFFDirectory directory = new TIFFDirectory(file, isLittleEndian, loader);
+			int [] nextIFDOffset = new int[1];
+			ImageData image = directory.read(nextIFDOffset);
+			offset = nextIFDOffset[0];
+			ImageData[] oldImages = images;
+			images = new ImageData[oldImages.length + 1];
+			System.arraycopy(oldImages, 0, images, 0, oldImages.length);
+			images[images.length - 1] = image;
+		}
 	} catch (IOException e) {
 		SWT.error(SWT.ERROR_IO, e);
 	}

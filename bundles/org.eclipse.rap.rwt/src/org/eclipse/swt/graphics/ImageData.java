@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,9 @@
 package org.eclipse.swt.graphics;
 
 
-import java.io.InputStream;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
+import java.io.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.internal.CloneableCompatibility;
 
 /**
  * Instances of this class are device-independent descriptions
@@ -33,7 +32,7 @@ import org.eclipse.swt.SWTException;
  * @since 1.3
  */
 
-public final class ImageData implements Cloneable { // implements CloneableCompatibility {
+public final class ImageData implements CloneableCompatibility {
     
     /**
      * The width of the image, in pixels.
@@ -246,7 +245,7 @@ public final class ImageData implements Cloneable { // implements CloneableCompa
  * @param palette the palette of the image (must not be null)
  *
  * @exception IllegalArgumentException <ul>
- *    <li>ERROR_INVALID_ARGUMENT - if the width or height is negative, or if the depth is not
+ *    <li>ERROR_INVALID_ARGUMENT - if the width or height is zero or negative, or if the depth is not
  *          one of 1, 2, 4, 8, 16, 24 or 32</li>
  *    <li>ERROR_NULL_ARGUMENT - if the palette is null</li>
  * </ul>
@@ -270,8 +269,8 @@ public ImageData(int width, int height, int depth, PaletteData palette) {
  * @param data the data of the image
  *
  * @exception IllegalArgumentException <ul>
- *    <li>ERROR_INVALID_ARGUMENT - if the width or height is negative, or if the depth is not
- *          one of 1, 2, 4, 8, 16, 24 or 32</li>
+ *    <li>ERROR_INVALID_ARGUMENT - if the width or height is zero or negative, or if the depth is not
+ *        	one of 1, 2, 4, 8, 16, 24 or 32, or the data array is too small to contain the image data</li>
  *    <li>ERROR_NULL_ARGUMENT - if the palette or data is null</li>
  *    <li>ERROR_CANNOT_BE_ZERO - if the scanlinePad is zero</li>
  * </ul>
@@ -427,6 +426,17 @@ ImageData(
 
     int bytesPerLine = (((width * depth + 7) / 8) + (scanlinePad - 1))
         / scanlinePad * scanlinePad;
+	
+	/*
+	 * When the image is being loaded from a PNG, we need to use the theoretical minimum
+	 * number of bytes per line to check whether there is enough data, because the actual
+	 * number of bytes per line is calculated based on the given depth, which may be larger
+	 * than the actual depth of the PNG.
+	 */
+	int minBytesPerLine = type == SWT.IMAGE_PNG ? ((((width + 7) / 8) + 3) / 4) * 4 : bytesPerLine;
+	if (data != null && data.length < minBytesPerLine * height) {
+		SWT.error(SWT.ERROR_INVALID_ARGUMENT);
+	}
     setAllFields(
         width,
         height,
@@ -493,6 +503,8 @@ void setAllFields(int width, int height, int depth, int scanlinePad,
  * <p>
  * This method is for internal use, and is not described further.
  * </p>
+ * 
+ * @noreference This method is not intended to be referenced by clients.
  */
 public static ImageData internal_new(
     int width, int height, int depth, PaletteData palette,
@@ -572,6 +584,8 @@ public Object clone() {
 /**
  * Returns the alpha value at offset <code>x</code> in
  * scanline <code>y</code> in the receiver's alpha data.
+ * The alpha value is between 0 (transparent) and
+ * 255 (opaque).
  *
  * @param x the x coordinate of the pixel to get the alpha value of
  * @param y the y coordinate of the pixel to get the alpha value of
@@ -591,7 +605,9 @@ public int getAlpha(int x, int y) {
 /**
  * Returns <code>getWidth</code> alpha values starting at offset
  * <code>x</code> in scanline <code>y</code> in the receiver's alpha
- * data starting at <code>startIndex</code>.
+ * data starting at <code>startIndex</code>. The alpha values
+ * are unsigned, between <code>(byte)0</code> (transparent) and
+ * <code>(byte)255</code> (opaque).
  *
  * @param x the x position of the pixel to begin getting alpha values
  * @param y the y position of the pixel to begin getting alpha values
@@ -1142,6 +1158,8 @@ public ImageData scaledTo(int width, int height) {
 /**
  * Sets the alpha value at offset <code>x</code> in
  * scanline <code>y</code> in the receiver's alpha data.
+ * The alpha value must be between 0 (transparent)
+ * and 255 (opaque).
  *
  * @param x the x coordinate of the alpha value to set
  * @param y the y coordinate of the alpha value to set
@@ -1163,7 +1181,8 @@ public void setAlpha(int x, int y, int alpha) {
  * Sets the alpha values starting at offset <code>x</code> in
  * scanline <code>y</code> in the receiver's alpha data to the
  * values from the array <code>alphas</code> starting at
- * <code>startIndex</code>.
+ * <code>startIndex</code>. The alpha values must be between
+ * <code>(byte)0</code> (transparent) and <code>(byte)255</code> (opaque)
  *
  * @param x the x coordinate of the pixel to being setting the alpha values
  * @param y the y coordinate of the pixel to being setting the alpha values
@@ -1759,7 +1778,7 @@ static void blit(int op,
     if ((destWidth <= 0) || (destHeight <= 0) || (alphaMode == ALPHA_TRANSPARENT)) return;
 
     // these should be supplied as params later
-    final int srcAlphaMask = 0, destAlphaMask = 0;
+	int srcAlphaMask = 0, destAlphaMask = 0;
 
     /*** Prepare scaling data ***/
     final int dwm1 = destWidth - 1;
@@ -1900,6 +1919,37 @@ static void blit(int op,
         }
         return;
     }
+	/*Fast 32 to 32 blit */
+	if (alphaMode == 0x10000 && stype == TYPE_GENERIC_32_MSB && dtype == TYPE_GENERIC_32_MSB) {
+		if (srcRedMask == 0xFF00 && srcGreenMask == 0xff0000 && srcBlueMask == 0xff000000 && destRedMask == 0xFF0000 && destGreenMask == 0xff00 && destBlueMask == 0xff) {
+			for (int dy = destHeight, sfy = sfyi; dy > 0; --dy, sp = spr += (sfy >>> 16) * srcStride, sfy = (sfy & 0xffff) + sfyi, dp = dpr += dpryi) {
+				for (int dx = destWidth, sfx = sfxi; dx > 0; --dx, dp += dprxi, sfx = (sfx & 0xffff) + sfxi) {
+					destData[dp] = srcData[sp + 3];
+					destData[dp + 1] = srcData[sp + 2];
+					destData[dp + 2] = srcData[sp + 1];
+					destData[dp + 3] = srcData[sp];
+					sp += (sfx >>> 16) * 4;
+				}
+			}
+			return;
+		}
+	}
+	/*Fast 24 to 32 blit */
+	if (alphaMode == 0x10000 && stype == TYPE_GENERIC_24 && dtype == TYPE_GENERIC_32_MSB) {
+		if (srcRedMask == 0xFF && srcGreenMask == 0xff00 && srcBlueMask == 0xff0000 && destRedMask == 0xFF0000 && destGreenMask == 0xff00 && destBlueMask == 0xff) {
+			for (int dy = destHeight, sfy = sfyi; dy > 0; --dy, sp = spr += (sfy >>> 16) * srcStride, sfy = (sfy & 0xffff) + sfyi, dp = dpr += dpryi) {
+				for (int dx = destWidth, sfx = sfxi; dx > 0; --dx, dp += dprxi, sfx = (sfx & 0xffff) + sfxi) {
+					destData[dp] = 0;
+					destData[dp + 1] = srcData[sp + 2];
+					destData[dp + 2] = srcData[sp + 1];
+					destData[dp + 3] = srcData[sp];
+					sp += (sfx >>> 16) * 3;
+				}
+			}
+			return;
+		}
+	}
+
     /*** Comprehensive blit (apply transformations) ***/
     final int srcRedShift = getChannelShift(srcRedMask);
     final byte[] srcReds = ANY_TO_EIGHT[getChannelWidth(srcRedMask, srcRedShift)];
@@ -2710,7 +2760,33 @@ static void blit(int op,
     boolean flipX, boolean flipY) {
     if ((destWidth <= 0) || (destHeight <= 0) || (alphaMode == ALPHA_TRANSPARENT)) return;
 
-    // these should be supplied as params later
+	/*** Fast blit (straight copy) ***/
+	if (srcX == 0 && srcY == 0 && destX == 0 && destY == 0 && destWidth == srcWidth && destHeight == srcHeight) {
+		if (destDepth == 24 && srcDepth == 8 && (op & BLIT_ALPHA) == 0 && destRedMask == 0xFF0000 && destGreenMask == 0xFF00 && destBlueMask == 0xFF) {
+			for (int y = 0, sp = 0, dp = 0, spad = srcStride - srcWidth, dpad = destStride - (destWidth * 3); y < destHeight; y++, sp += spad, dp += dpad) {
+				for (int x = 0; x < destWidth; x++) {
+					int index = srcData[sp++] & 0xff;
+					destData[dp++] = srcReds[index];
+					destData[dp++] = srcGreens[index];
+					destData[dp++] = srcBlues[index];
+				}
+			}
+			return;
+		}
+		if (destDepth == 32 && destOrder == MSB_FIRST && srcDepth == 8 && (op & BLIT_ALPHA) == 0 && destRedMask == 0xFF0000 && destGreenMask == 0xFF00 && destBlueMask == 0xFF) {
+			for (int y = 0, sp = 0, dp = 0, spad = srcStride - srcWidth, dpad = destStride - (destWidth * 4); y < destHeight; y++, sp += spad, dp += dpad) {
+				for (int x = 0; x < destWidth; x++) {
+					int index = srcData[sp++] & 0xff;
+					dp++;
+					destData[dp++] = srcReds[index];
+					destData[dp++] = srcGreens[index];
+					destData[dp++] = srcBlues[index];
+				}
+			}
+			return;
+		}
+	}
+	// these should be supplied as params later
     final int destAlphaMask = 0;
 
     /*** Prepare scaling data ***/

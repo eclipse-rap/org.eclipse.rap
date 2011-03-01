@@ -8,22 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.swt.internal;
+package org.eclipse.swt.internal; 
 
-
-import java.util.EventListener;
 
 /**
  * This interface is the cross-platform version of the
- * java.util.EventListener interface.
+ * java.lang.Cloneable interface.
  * <p>
  * It is part of our effort to provide support for both J2SE
  * and J2ME platforms. Under this scheme, classes need to 
- * implement SWTEventListener instead of java.util.EventListener.
+ * implement CloneableCompatibility instead of java.lang.Cloneable.
  * </p>
  * <p>
- * Note: java.util.EventListener is not part of CDC and CLDC.
+ * Note: java.lang.Cloneable is not part of CLDC.
  * </p>
  */
-public interface SWTEventListener extends EventListener {
+public interface CloneableCompatibility extends Cloneable {
 }

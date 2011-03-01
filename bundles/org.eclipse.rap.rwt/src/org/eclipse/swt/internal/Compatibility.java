@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.zip.InflaterInputStream;
+import java.util.zip.DeflaterOutputStream;
 
 import org.eclipse.swt.SWT;
 
@@ -149,6 +150,19 @@ public static int pow2(int n) {
 }
 
 /**
+ * Create an DeflaterOutputStream if such things are supported.
+ * 
+ * @param stream the output stream
+ * @return a deflater stream or <code>null</code>
+ * @exception IOException
+ * 
+ * @since 1.4
+ */
+public static OutputStream newDeflaterOutputStream(OutputStream stream) throws IOException {
+	return new DeflaterOutputStream(stream);
+}
+
+/**
  * Open a file if such things are supported.
  * 
  * @param filename the name of the file to open
@@ -180,7 +194,7 @@ public static OutputStream newFileOutputStream(String filename) throws IOExcepti
  * @since 1.1
  */
 public static InputStream newInflaterInputStream(InputStream stream) throws IOException {
-	return new InflaterInputStream(stream);
+	return new BufferedInputStream(new InflaterInputStream(stream));
 }
 
 /**

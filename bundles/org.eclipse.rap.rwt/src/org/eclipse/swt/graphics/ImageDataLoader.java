@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import java.io.InputStream;
-
+import java.io.*;
 
 /**
  * Internal class that separates ImageData from ImageLoader

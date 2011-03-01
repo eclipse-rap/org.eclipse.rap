@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -259,73 +259,62 @@ public class Link extends Control {
   }
 
   /* verbatim copy from SWT */
-  String parse( String string ) {
-    int length = string.length();
-    offsets = new Point[ length / 4 ];
-    ids = new String[ length / 4 ];
-    mnemonics = new int[ length / 4 + 1 ];
-    StringBuffer result = new StringBuffer();
-    char[] buffer = new char[ length ];
-    string.getChars( 0, string.length(), buffer, 0 );
+  String parse (String string) {
+    int length = string.length ();
+    offsets = new Point [length / 4];
+    ids = new String [length / 4];
+    mnemonics = new int [length / 4 + 1];
+    StringBuffer result = new StringBuffer ();
+    char [] buffer = new char [length];
+    string.getChars (0, string.length (), buffer, 0);
     int index = 0, state = 0, linkIndex = 0;
     int start = 0, tagStart = 0, linkStart = 0, endtagStart = 0, refStart = 0;
-    while( index < length ) {
-      char c = Character.toLowerCase( buffer[ index ] );
-      switch( state ) {
-        case 0:
-          if( c == '<' ) {
+    while (index < length) {
+      char c = Character.toLowerCase (buffer [index]);
+      switch (state) {
+        case 0: 
+          if (c == '<') {
             tagStart = index;
             state++;
           }
-        break;
+          break;
         case 1:
-          if( c == 'a' )
-            state++;
-        break;
+          if (c == 'a') state++;
+          break;
         case 2:
-          switch( c ) {
+          switch (c) {
             case 'h':
               state = 7;
-            break;
+              break;
             case '>':
-              linkStart = index + 1;
+              linkStart = index  + 1;
               state++;
-            break;
+              break;
             default:
-              if( Character.isWhitespace( c ) )
-                break;
-              else
-                state = 13;
+              if (Character.isWhitespace(c)) break;
+              else state = 13;
           }
-        break;
+          break;
         case 3:
-          if( c == '<' ) {
+          if (c == '<') {
             endtagStart = index;
             state++;
           }
-        break;
+          break;
         case 4:
-          state = c == '/'
-                          ? state + 1
-                          : 3;
-        break;
+          state = c == '/' ? state + 1 : 3;
+          break;
         case 5:
-          state = c == 'a'
-                          ? state + 1
-                          : 3;
-        break;
+          state = c == 'a' ? state + 1 : 3;
+          break;
         case 6:
-          if( c == '>' ) {
-            mnemonics[ linkIndex ] = parseMnemonics( buffer,
-                                                     start,
-                                                     tagStart,
-                                                     result );
-            int offset = result.length();
-            parseMnemonics( buffer, linkStart, endtagStart, result );
-            offsets[ linkIndex ] = new Point( offset, result.length() - 1 );
-            if( ids[ linkIndex ] == null ) {
-              ids[ linkIndex ] = new String( buffer, linkStart, endtagStart
-                                                                - linkStart );
+          if (c == '>') {
+            mnemonics [linkIndex] = parseMnemonics (buffer, start, tagStart, result);
+            int offset = result.length ();
+            parseMnemonics (buffer, linkStart, endtagStart, result);
+            offsets [linkIndex] = new Point (offset, result.length () - 1);
+            if (ids [linkIndex] == null) {
+              ids [linkIndex] = new String (buffer, linkStart, endtagStart - linkStart);
             }
             linkIndex++;
             start = tagStart = linkStart = endtagStart = refStart = index + 1;
@@ -333,102 +322,87 @@ public class Link extends Control {
           } else {
             state = 3;
           }
-        break;
+          break;
         case 7:
-          state = c == 'r'
-                          ? state + 1
-                          : 0;
-        break;
+          state = c == 'r' ? state + 1 : 0;
+          break;
         case 8:
-          state = c == 'e'
-                          ? state + 1
-                          : 0;
-        break;
+          state = c == 'e' ? state + 1 : 0;
+          break;
         case 9:
-          state = c == 'f'
-                          ? state + 1
-                          : 0;
-        break;
+          state = c == 'f' ? state + 1 : 0;
+          break;
         case 10:
-          state = c == '='
-                          ? state + 1
-                          : 0;
-        break;
+          state = c == '=' ? state + 1 : 0;
+          break;
         case 11:
-          if( c == '"' ) {
+          if (c == '"') {
             state++;
             refStart = index + 1;
           } else {
             state = 0;
           }
-        break;
+          break;
         case 12:
-          if( c == '"' ) {
-            ids[ linkIndex ] = new String( buffer, refStart, index - refStart );
+          if (c == '"') {
+            ids[linkIndex] = new String (buffer, refStart, index - refStart);
             state = 2;
           }
-        break;
+          break;
         case 13:
-          if( Character.isWhitespace( c ) ) {
+          if (Character.isWhitespace (c)) {
             state = 0;
-          } else if( c == '=' ) {
+          } else if (c == '='){
             state++;
           }
-        break;
+          break;
         case 14:
-          state = c == '"'
-                          ? state + 1
-                          : 0;
-        break;
+          state = c == '"' ? state + 1 : 0;
+          break;
         case 15:
-          if( c == '"' )
-            state = 2;
-        break;
+          if (c == '"') state = 2;
+          break;
         default:
           state = 0;
-        break;
+          break;
       }
       index++;
     }
-    if( start < length ) {
-      int tmp = parseMnemonics( buffer, start, tagStart, result );
-      int mnemonic = parseMnemonics( buffer,
-                                     Math.max( tagStart, linkStart ),
-                                     length,
-                                     result );
-      if( mnemonic == -1 )
-        mnemonic = tmp;
-      mnemonics[ linkIndex ] = mnemonic;
+    if (start < length) {
+      int tmp = parseMnemonics (buffer, start, tagStart, result);
+      int mnemonic = parseMnemonics (buffer, Math.max (tagStart, linkStart), length, result);
+      if (mnemonic == -1) mnemonic = tmp;
+      mnemonics [linkIndex] = mnemonic;
     } else {
-      mnemonics[ linkIndex ] = -1;
+      mnemonics [linkIndex] = -1;
     }
-    if( offsets.length != linkIndex ) {
-      Point[] newOffsets = new Point[ linkIndex ];
-      System.arraycopy( offsets, 0, newOffsets, 0, linkIndex );
+    if (offsets.length != linkIndex) {
+      Point [] newOffsets = new Point [linkIndex];
+      System.arraycopy (offsets, 0, newOffsets, 0, linkIndex);
       offsets = newOffsets;
-      String[] newIDs = new String[ linkIndex ];
-      System.arraycopy( ids, 0, newIDs, 0, linkIndex );
+      String [] newIDs = new String [linkIndex];
+      System.arraycopy (ids, 0, newIDs, 0, linkIndex);
       ids = newIDs;
-      int[] newMnemonics = new int[ linkIndex + 1 ];
-      System.arraycopy( mnemonics, 0, newMnemonics, 0, linkIndex + 1 );
-      mnemonics = newMnemonics;
+      int [] newMnemonics = new int [linkIndex + 1];
+      System.arraycopy (mnemonics, 0, newMnemonics, 0, linkIndex + 1);
+      mnemonics = newMnemonics;   
     }
-    return result.toString();
+    return result.toString ();
   }
 
   /* verbatim copy from SWT */
-  int parseMnemonics( char[] buffer, int start, int end, StringBuffer result ) {
+  int parseMnemonics (char[] buffer, int start, int end, StringBuffer result) {
     int mnemonic = -1, index = start;
-    while( index < end ) {
-      if( buffer[ index ] == '&' ) {
-        if( index + 1 < end && buffer[ index + 1 ] == '&' ) {
-          result.append( buffer[ index ] );
+    while (index < end) {
+      if (buffer [index] == '&') {
+        if (index + 1 < end && buffer [index + 1] == '&') {
+          result.append (buffer [index]);
           index++;
         } else {
           mnemonic = result.length();
         }
       } else {
-        result.append( buffer[ index ] );
+        result.append (buffer [index]);
       }
       index++;
     }

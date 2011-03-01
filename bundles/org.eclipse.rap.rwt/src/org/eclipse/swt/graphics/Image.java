@@ -285,7 +285,7 @@ public final class Image extends Resource {
     }
     Color white = device.getSystemColor( SWT.COLOR_WHITE );
     PaletteData palette = new PaletteData( new RGB[] { white.getRGB() } );
-    ImageData imageData = new ImageData( width, height, 24, palette );
+    ImageData imageData = new ImageData( width, height, 8, palette );
     internalImage = InternalImageFactory.findInternalImage( imageData );
   }
 

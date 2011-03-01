@@ -554,34 +554,30 @@ public abstract class Control extends Widget implements Drawable {
    * Checks whether parent background should be applied to this control and and
    * sets PARENT_BACKGROUND state if so.
    */
-  // verbatim copy of SWT 3.4.0 GTK
-  private void checkBackground() {
-    Shell shell = getShell();
-    if( this == shell ) {
-      return;
-    }
+  // verbatim copy of SWT 3.7.0 GTK
+  void checkBackground () {
+    Shell shell = getShell ();
+    if (this == shell) return;
     state &= ~PARENT_BACKGROUND;
     Composite composite = parent;
     do {
       int mode = composite.backgroundMode;
-      if( mode != 0 ) {
-        if( mode == SWT.INHERIT_DEFAULT ) {
+      if (mode != SWT.INHERIT_NONE) {
+        if (mode == SWT.INHERIT_DEFAULT) {
           Control control = this;
           do {
-            if( ( control.state & THEME_BACKGROUND ) == 0 ) {
+            if ((control.state & THEME_BACKGROUND) == 0) {
               return;
             }
             control = control.parent;
-          } while( control != composite );
+          } while (control != composite);
         }
         state |= PARENT_BACKGROUND;
         return;
       }
-      if( composite == shell ) {
-        break;
-      }
+      if (composite == shell) break;    
       composite = composite.parent;
-    } while( true );
+    } while (true);
   }
 
   /**

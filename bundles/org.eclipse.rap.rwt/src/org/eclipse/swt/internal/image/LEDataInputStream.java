@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -148,9 +148,9 @@ final class LEDataInputStream extends InputStream {
 	public int readInt() throws IOException {
 		byte[] buf = new byte[4];
 		read(buf);
-		return ((((((buf[3] & 0xFF) << 24) | 
-			(buf[2] & 0xFF)) << 16) | 
-			(buf[1] & 0xFF)) << 8) | 
+		return ((buf[3] & 0xFF) << 24) | 
+			((buf[2] & 0xFF) << 16) | 
+			((buf[1] & 0xFF) << 8) | 
 			(buf[0] & 0xFF);
 	}
 	
