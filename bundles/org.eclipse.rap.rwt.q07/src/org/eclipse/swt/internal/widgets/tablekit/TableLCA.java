@@ -138,12 +138,14 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     Table table = ( Table )widget;
+    // Important: Order matters. Always call writeItemCount first.
+    // See bug 326941.
+    writeItemCount( table );
     ControlLCAUtil.writeChanges( table );
     writeHeaderHeight( table );
     writeHeaderVisible( table );
     writeItemHeight( table );
     TableLCAUtil.writeItemMetrics( table );
-    writeItemCount( table );
     writeTopIndex( table );
     writeFocusIndex( table );
     writeLinesVisible( table );

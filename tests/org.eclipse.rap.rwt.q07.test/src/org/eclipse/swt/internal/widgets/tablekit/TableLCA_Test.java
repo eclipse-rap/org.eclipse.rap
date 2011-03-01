@@ -943,6 +943,21 @@ public class TableLCA_Test extends TestCase {
                   table.getVerticalBar().getSelection());
   }
 
+  // Ensures that writeItemCount is called first
+  // see bug 326941
+  public void testWriteItemCount() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
+    createTableItems( table, 5 );
+    table.setBounds( 10, 10, 10, 10 );
+    Fixture.fakeNewRequest();
+    TableLCA tableLCA = new TableLCA();
+    tableLCA.renderChanges( table );
+    String markup = Fixture.getAllMarkup();
+    int index1 = markup.indexOf( "w.setItemCount( 5 )" );
+    int index2 = markup.indexOf( "w.setSpace( 10, 10, 10, 10 )" );
+    assertTrue( index1 < index2 );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
