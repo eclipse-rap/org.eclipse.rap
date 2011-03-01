@@ -253,14 +253,15 @@ public final class WorkbenchKeyboard {
 	 *         <code>false</code> otherwise.
 	 */
 	private static boolean isOutOfOrderKey(List keyStrokes) {
-		// Compare to see if one of the possible key strokes is out of order.
-		final KeyStroke[] outOfOrderKeyStrokes = outOfOrderKeys.getKeyStrokes();
-		final int outOfOrderKeyStrokesLength = outOfOrderKeyStrokes.length;
-		for (int i = 0; i < outOfOrderKeyStrokesLength; i++) {
-			if (keyStrokes.contains(outOfOrderKeyStrokes[i])) {
-				return true;
-			}
-		}
+// RAP [if] Out-of-order key processing not supported
+//		// Compare to see if one of the possible key strokes is out of order.
+//		final KeyStroke[] outOfOrderKeyStrokes = outOfOrderKeys.getKeyStrokes();
+//		final int outOfOrderKeyStrokesLength = outOfOrderKeyStrokes.length;
+//		for (int i = 0; i < outOfOrderKeyStrokesLength; i++) {
+//			if (keyStrokes.contains(outOfOrderKeyStrokes[i])) {
+//				return true;
+//			}
+//		}
 		return false;
 	}
 
