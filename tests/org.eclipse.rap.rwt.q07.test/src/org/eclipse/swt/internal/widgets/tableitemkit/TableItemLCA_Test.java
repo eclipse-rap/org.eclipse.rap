@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,9 +31,14 @@ import org.eclipse.swt.widgets.*;
 
 public class TableItemLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.RENDER );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -41,8 +46,6 @@ public class TableItemLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.BORDER );
     new TableColumn( table, SWT.CENTER );
     new TableColumn( table, SWT.CENTER );
@@ -184,8 +187,6 @@ public class TableItemLCA_Test extends TestCase {
   }
 
   public void testFontIsEffectivelyPreserved() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.BORDER );
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( item );
@@ -201,8 +202,6 @@ public class TableItemLCA_Test extends TestCase {
   }
 
   public void testCheckPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
@@ -226,8 +225,6 @@ public class TableItemLCA_Test extends TestCase {
   }
 
   public void testItemTextWithoutColumn() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     // Ensure that even though there are no columns, the first text of an item
@@ -244,8 +241,6 @@ public class TableItemLCA_Test extends TestCase {
 
   public void testDisposeSelected() {
     final boolean[] executed = { false };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Table table = new Table( shell, SWT.CHECK );
     new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -268,8 +263,6 @@ public class TableItemLCA_Test extends TestCase {
   }
 
   public void testDispose() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Table table = new Table( shell, SWT.CHECK );
     TableItem itemOnlyDisposed = new TableItem( table, SWT.NONE );
     TableItem itemWithTableDisposed = new TableItem( table, SWT.NONE );
@@ -297,8 +290,6 @@ public class TableItemLCA_Test extends TestCase {
   }
 
   public void testWriteChangesForVirtualItem() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 100 );
     // Ensure that nothing is written for an item that is virtual and whose
@@ -324,8 +315,6 @@ public class TableItemLCA_Test extends TestCase {
 
   public void testCheckAndGrayedAccess() throws IOException {
     final String[] lcaMethod = { "" };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE ) {
       public boolean getChecked() {
@@ -354,8 +343,6 @@ public class TableItemLCA_Test extends TestCase {
   }
 
   public void testEscape() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.fakeResponseWriter();
@@ -364,15 +351,26 @@ public class TableItemLCA_Test extends TestCase {
     tableItemLCA.preserveValues( item );
     item.setText( "char test: &<>.,'\"&lt;" );
     tableItemLCA.renderChanges( item );
-    String expected
-      = "w.setTexts( [ \"char test: &#038;&#060;&#062;.,'&#034;&#038;lt;\" ] )";
+    String expected = "w.setTexts( [ \"char test: &amp;&lt;&gt;.,'&quot;&amp;lt;\" ] )";
+    String result = Fixture.getAllMarkup();
+    assertTrue( result.indexOf( expected ) != -1 );
+  }
+
+  public void testEscapeNonDisplayableChars() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.fakeResponseWriter();
+    TableItemLCA tableItemLCA = new TableItemLCA();
+    Fixture.markInitialized( item );
+    tableItemLCA.preserveValues( item );
+    item.setText( "abc\u2028abc\u2029abc" );
+    tableItemLCA.renderChanges( item );
+    String expected = "w.setTexts( [ \"abc&#8232;abc&#8233;abc\" ] )";
     String result = Fixture.getAllMarkup();
     assertTrue( result.indexOf( expected ) != -1 );
   }
 
   public void testDynamicColumns() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -383,4 +381,5 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
   }
+
 }

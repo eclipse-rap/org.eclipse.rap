@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -174,9 +174,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     boolean result = WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts );
     if( result ) {
       for( int i = 0; i < texts.length; i++ ) {
-        // TODO [rh] for some reason doesn't work with escapeText
-//        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
-        texts[ i ] = encodeHTML( item.getText( i ) );
+        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
         texts[ i ] = EncodingUtil.replaceWhiteSpaces( texts[ i ] );
       }
       JSWriter writer = JSWriter.getWriterFor( item );
@@ -353,14 +351,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static void writeUpdate( final TableItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     writer.call( "update", null );
-  }
-
-  private static String encodeHTML( final String text ) {
-    String result = text.replaceAll( "&", "&#038;" );
-    result = result.replaceAll( "\"", "&#034;" );
-    result = result.replaceAll( ">", "&#062;" );
-    result = result.replaceAll( "<", "&#060;" );
-    return result;
   }
 
   private static String toCss( final Font font ) {
