@@ -3071,6 +3071,34 @@ public class SWT {
    */
   public static final int IMAGE_OS2_BMP = 7;
 
+
+  /**
+   * GIF image disposal method constants indicating that the
+   * disposal method is unspecified (value is 0).
+   */
+  public static final int DM_UNSPECIFIED = 0x0;
+
+  /**
+   * GIF image disposal method constants indicating that the
+   * disposal method is to do nothing; that is, to leave the 
+   * previous image in place (value is 1).
+   */
+  public static final int DM_FILL_NONE = 0x1;
+
+  /**
+   * GIF image disposal method constants indicating that the
+   * the previous images should be covered with the background
+   * color before displaying the next image (value is 2).
+   */
+  public static final int DM_FILL_BACKGROUND = 0x2;
+
+  /**
+   * GIF image disposal method constants indicating that the
+   * disposal method is to restore the previous picture
+   * (value is 3).
+   */
+  public static final int DM_FILL_PREVIOUS = 0x3;
+  
   /**
    * Image transparency constant indicating that the image
    * contains no transparency information (value is 0).
