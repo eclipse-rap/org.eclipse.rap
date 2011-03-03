@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -218,6 +218,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( QxImage_Test.class );
     suite.addTestSuite( QxCursor_Test.class );
     suite.addTestSuite( QxAnimation_Test.class );
+    suite.addTestSuite( QxIdentifier_Test.class );
     suite.addTestSuite( CssFileReader_Test.class );
     suite.addTestSuite( PropertyResolver_Test.class );
     suite.addTestSuite( JsonArray_Test.class );
