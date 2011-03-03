@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
     this._variant = null;
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
+    this.addEventListener( "changeFont", this._onChangeFont, this );
     var states = {};
     states[ "over" ] = true;
     var themeValues = new org.eclipse.swt.theme.ThemeValues( states );
@@ -37,10 +38,23 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
   destruct : function() {
     this.removeEventListener( "mouseover", this._onMouseOver, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
+    this.removeEventListener( "changeFont", this._onChangeFont, this );
   },
   
   events : {
     "changeOverState" : "qx.event.type.ChangeEvent"
+  },
+
+  properties : {
+    
+    textDecoration : {
+      check : "String",
+      nullable : false,
+      init : "",
+      themeable : true,
+      apply : "_applyTextDecoration"
+    }
+    
   },
 
   members : {
@@ -100,7 +114,15 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
     hasHoverColorsDefined : function() {
       return this._hasHoverColorsDefined;
     },
-    
+
+    _applyTextDecoration : function( value, old ) {
+      this.setStyleProperty( "textDecoration", value === "none" ? "" : value );
+    },
+
+    _onChangeFont : function( evt ) {
+      this._applyTextDecoration( this.getTextDecoration() );
+    },
+
     _onMouseOver : function( evt ) {
       if( this._itemIndex != -1 ) {
         this.addState( "over" );

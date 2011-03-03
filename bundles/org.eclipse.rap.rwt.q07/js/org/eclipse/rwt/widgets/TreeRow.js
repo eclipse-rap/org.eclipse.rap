@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     ////////////
     // internals
-    
+
     _renderStates : function( item, selection ) {
       this._setState( "checked", item.isChecked() );      
       this._setState( "grayed", item.isGrayed() );
@@ -331,6 +331,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._setBounds( element, left, 0, width, this._tree.getItemHeight() );
         this._setFont( element, this._getCellFont( item, cell ) );
         element.style.lineHeight = element.style.height;
+        var decoration = this._styleMap.textDecoration;
+        element.style.textDecoration = decoration === "none" ? "" : decoration;
       }
       return element;
     },

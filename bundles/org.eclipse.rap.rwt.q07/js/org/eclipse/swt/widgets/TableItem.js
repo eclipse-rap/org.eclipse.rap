@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -334,6 +334,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       node.style.textAlign = align;
       node.style.verticalAlign = "middle";
       node.style.whiteSpace = "nowrap";
+      if( qx.core.Variant.isSet( "qx.client", "opera" ) ) {
+        node.style.textDecoration = "inherit";
+      }
       node.style.left = left + org.eclipse.swt.widgets.TableItem.PX;
       node.style.width = width + org.eclipse.swt.widgets.TableItem.PX;
       node.style.height = height + org.eclipse.swt.widgets.TableItem.PX;

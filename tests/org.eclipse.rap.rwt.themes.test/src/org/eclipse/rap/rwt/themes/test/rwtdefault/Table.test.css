@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
 * available at http://www.eclipse.org/legal/epl-v10.html
@@ -24,38 +24,46 @@ Table[BORDER] {
 TableItem {
   background-color: transparent;
   color: inherit;
+  text-decoration: none;
 }
 
 TableItem:hover {
   background-color: #dae9f7;
+  text-decoration: none;
 }
 
 TableItem:selected {
   color: white;
   background-color: #00589f;
+  text-decoration: none;
 }
 
 TableItem:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
+  text-decoration: none;
 }
 
 TableItem:linesvisible:even {
   background-color: #f3f3f4;
+  text-decoration: none;
 }
 
 TableItem:linesvisible:even:hover {
   background-color: #dae9f7;
+  text-decoration: none;
 }
 
 TableItem:linesvisible:even:selected {
   background-color: #00589f;
   color: white;
+  text-decoration: none;
 }
 
 TableItem:linesvisible:even:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
+  text-decoration: none;
 }
 
 TableColumn {

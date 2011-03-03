@@ -954,6 +954,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.itemBackground = tv.getCssColor( "TreeItem", "background-color" );
       result.itemForeground = tv.getCssColor( "TreeItem", "color" );
+      result.textDecoration = tv.getCssIdentifier( "TreeItem", "text-decoration" );
       return result; 
     }
   },
@@ -1403,6 +1404,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.textColor = "inherit";
       }
       result.backgroundColor = tv.getCssColor( "TableItem", "background-color" );
+      result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
       return result;
     }
   },
