@@ -193,6 +193,7 @@
             sequence="M1+M2+Z"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" 
             platform="carbon"/>
+<!-- RAP [if] Clipboard
       <key
             commandId="org.eclipse.ui.edit.cut"
             contextId="org.eclipse.ui.contexts.dialogAndWindow"
@@ -208,6 +209,8 @@
             contextId="org.eclipse.ui.contexts.dialogAndWindow"
             sequence="M1+V"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+-->
+<!-- RAP [if] Disabled as conflicting with Text widget
       <key
             commandId="org.eclipse.ui.edit.selectAll"
             contextId="org.eclipse.ui.contexts.dialogAndWindow"
@@ -217,6 +220,7 @@
             commandId="org.eclipse.ui.edit.delete"
             sequence="DEL"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
+-->
       <key
             commandId="org.eclipse.ui.edit.findReplace"
             sequence="M1+F"
