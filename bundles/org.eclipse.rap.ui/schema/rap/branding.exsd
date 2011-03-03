@@ -212,6 +212,13 @@ Exit confirmations are not supported by some browsers.
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="href" type="string">
+            <annotation>
+               <documentation>
+                  The href attribute of the LINK tag.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

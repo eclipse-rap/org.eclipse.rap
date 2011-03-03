@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.branding;
 
@@ -60,6 +61,8 @@ public final class BrandingExtension {
     = "content"; //$NON-NLS-1$
   private static final String ATT_REL 
     = "rel"; //$NON-NLS-1$
+  private static final String ATT_HREF 
+    = "href"; //$NON-NLS-1$
   private static final String ATT_VALUE 
     = "value"; //$NON-NLS-1$
   
@@ -192,6 +195,7 @@ public final class BrandingExtension {
         attributes.put( ATT_CONTENT, header.getAttribute( ATT_CONTENT ) );
       } else if( TAG_LINK.equals( tagName ) ) {
         attributes.put( ATT_REL, header.getAttribute( ATT_REL ) );
+        attributes.put( ATT_HREF, header.getAttribute( ATT_HREF ) );
       }
       // add additional attributes
       IConfigurationElement[] addAttrs = header.getChildren( ELEM_ATTRIBUTE );
