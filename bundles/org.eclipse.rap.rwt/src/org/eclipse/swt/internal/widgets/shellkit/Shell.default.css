@@ -33,6 +33,7 @@ Shell[BORDER]:inactive, Shell[TITLE]:inactive {
 
 Shell:maximized, Shell:maximized:inactive {
   border: none;
+  border-radius: 0px 0px 0px 0px;
 }
 
 Shell-DisplayOverlay {
