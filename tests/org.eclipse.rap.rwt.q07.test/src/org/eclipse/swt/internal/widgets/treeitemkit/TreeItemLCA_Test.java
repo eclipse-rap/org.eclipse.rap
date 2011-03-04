@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,21 @@ import org.eclipse.swt.widgets.*;
 
 public class TreeItemLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    Fixture.fakeResponseWriter();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
@@ -138,8 +150,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testCheckPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
@@ -162,9 +172,23 @@ public class TreeItemLCA_Test extends TestCase {
     display.dispose();
   }
 
+  public void testPreserveVariant() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.preserveWidgets();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
+    Object variant = adapter.getPreserved( TreeItemLCA.PROP_VARIANT );
+    assertNull( variant );
+    Fixture.clearPreserved();
+    treeItem.setData( WidgetUtil.CUSTOM_VARIANT, "abc" );
+    Fixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( treeItem );
+    variant = adapter.getPreserved( TreeItemLCA.PROP_VARIANT );
+    assertEquals( "abc", variant );
+  }
+
   public void testMaterializedPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
@@ -177,9 +201,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
   
   public void testLcaDoesNotMaterializeItem() {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.setItemCount( 100 );
     tree.setSize( 100, 100 );
@@ -192,8 +213,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testTreeEvent() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     final Tree tree = new Tree( shell, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
@@ -237,8 +256,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testExpandCollapse() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     new TreeItem( treeItem, SWT.NONE );
@@ -253,8 +270,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testChecked() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     String displayId = DisplayUtil.getId( display );
@@ -267,9 +282,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testRenderChanges() throws IOException {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     shell.open();
@@ -295,9 +307,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
   
   public void testRenderSelection() throws IOException {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     String treeRef = "wm.findWidgetById( \"" + WidgetUtil.getId( tree ) +"\" )";
@@ -326,9 +335,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
   
   public void testRenderDeselection() throws IOException {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setSelection( treeItem );
@@ -351,9 +357,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
   
   public void testDontRenderDeselectionOnMaterialize() throws IOException {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     shell.open();
@@ -371,9 +374,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testRenderMultiSelection() throws IOException {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.MULTI );
     TreeItem treeItem1 = new TreeItem( tree, SWT.NONE );
     TreeItem treeItem2 = new TreeItem( tree, SWT.NONE );
@@ -403,9 +403,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testTextEscape() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
     col1.setText( "<x>&Col1" );
@@ -419,9 +416,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testInitialization() throws Exception {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     TreeItem item2 = new TreeItem( item1, SWT.NONE  );
@@ -442,14 +436,5 @@ public class TreeItemLCA_Test extends TestCase {
     assertTrue( markup.indexOf( expected1 ) != -1 );
     assertTrue( markup.indexOf( expected2 ) != -1 );
     assertTrue( markup.indexOf( expected3 ) != -1 );
-  }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 }

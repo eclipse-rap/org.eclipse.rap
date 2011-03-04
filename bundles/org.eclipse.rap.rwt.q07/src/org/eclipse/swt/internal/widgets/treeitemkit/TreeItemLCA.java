@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,19 +24,20 @@ import org.eclipse.swt.widgets.*;
 
 public final class TreeItemLCA extends AbstractWidgetLCA {
 
-  public static final String PROP_CHECKED = "checked";
-  public static final String PROP_EXPANDED = "expanded";
-  public static final String PROP_SELECTION = "selection";
-  public static final String PROP_BACKGROUND = "background";
-  public static final String PROP_FOREGROUND = "foreground";
-  public static final String PROP_FONT = "font";
-  public static final String PROP_CELL_BACKGROUNDS = "backgrounds";
-  public static final String PROP_CELL_FOREGROUNDS = "foregrounds";
-  public static final String PROP_CELL_FONTS = "fonts";
-  public static final String PROP_GRAYED = "grayed";
-  public static final String PROP_TEXTS = "texts";
-  public static final String PROP_IMAGES = "images";
-  public static final String PROP_MATERIALIZED = "materialized";
+  static final String PROP_CHECKED = "checked";
+  static final String PROP_EXPANDED = "expanded";
+  static final String PROP_SELECTION = "selection";
+  static final String PROP_BACKGROUND = "background";
+  static final String PROP_FOREGROUND = "foreground";
+  static final String PROP_FONT = "font";
+  static final String PROP_CELL_BACKGROUNDS = "backgrounds";
+  static final String PROP_CELL_FOREGROUNDS = "foregrounds";
+  static final String PROP_CELL_FONTS = "fonts";
+  static final String PROP_GRAYED = "grayed";
+  static final String PROP_TEXTS = "texts";
+  static final String PROP_IMAGES = "images";
+  static final String PROP_MATERIALIZED = "materialized";
+  static final String PROP_VARIANT = "variant";
 
   public void preserveValues( final Widget widget ) {
     TreeItem treeItem = ( TreeItem )widget;
@@ -72,7 +73,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     }
     adapter.preserve( PROP_MATERIALIZED,
                       Boolean.valueOf( treeAdapter.isCached( treeItem ) ) );
-    WidgetLCAUtil.preserveCustomVariant( treeItem );
+    adapter.preserve( PROP_VARIANT, WidgetUtil.getVariant( treeItem ) );
   }
 
   public void readData( final Widget widget ) {
@@ -135,7 +136,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       writeChecked( treeItem );
       writeGrayed( treeItem );
     }
-    WidgetLCAUtil.writeCustomVariant( treeItem );
+    writeVariant( treeItem );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -146,6 +147,14 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       // The tree disposes the items itself on the client (faster)
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.call( "dispose", null );
+    }
+  }
+
+  private static void writeVariant( final TreeItem item ) throws IOException {
+    String variant = WidgetUtil.getVariant( item );
+    if( WidgetLCAUtil.hasChanged( item, PROP_VARIANT, variant, null ) ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( "variant", new Object[] { "variant_" + variant } );
     }
   }
 

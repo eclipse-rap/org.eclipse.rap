@@ -29,6 +29,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     this._checkBoxElement = null;
     this._selectionElements = [];
     this._styleMap = null;
+    this._variant = null;
   },
 
   destruct : function() {
@@ -88,14 +89,27 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     // internals
 
     _renderStates : function( item, selection ) {
-      this._setState( "checked", item.isChecked() );      
+      this._setState( "checked", item.isChecked() );
       this._setState( "grayed", item.isGrayed() );
       this._setState( "parent_unfocused", this._renderAsUnfocused() );
       this._setState( "selected", selection && this._renderAsSelected( item ) );
+      this._renderVariant( item.getVariant() );
       this._renderOverState( item );
       this._styleMap = this._getStyleMap();
     },
-    
+
+    _renderVariant : function( variant ) {
+      if( this._variant != variant ) {
+        if( this._variant != null ) {
+          this._setState( this._variant, false );
+        }
+        this._variant = variant;
+        if( this._variant != null ) {
+          this._setState( this._variant, true );
+        }
+      }
+    },
+
     _renderOverState : function( item ) {
       this._setState( "over", this._tree.isHoverItem( item ) );
     },

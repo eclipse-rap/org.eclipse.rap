@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -925,6 +925,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertTrue( row.hasState( "parent_unfocused" ) );
       item.setChecked( true );
       item.setGrayed( true );
+      item.setVariant( "testVariant" );
       tree.selectItem( item );
       tree._hoverItem = item;
       tree.focus();
@@ -936,6 +937,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertTrue( row.hasState( "selected" ) );
       assertTrue( row.hasState( "grayed" ) );
       assertFalse( row.hasState( "parent_unfocused" ) );
+      assertTrue( row.hasState( "testVariant" ) );
       tree.destroy();
       row.destroy();
     },
