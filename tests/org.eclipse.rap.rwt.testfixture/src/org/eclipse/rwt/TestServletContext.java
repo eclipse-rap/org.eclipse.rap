@@ -1,11 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt;
 
@@ -90,8 +92,8 @@ public final class TestServletContext implements ServletContext {
     }
   }
 
-  public String getRealPath( final String arg0 ) {
-    return null;
+  public String getRealPath( final String path ) {
+    return Fixture.WEB_CONTEXT_DIR + path;
   }
 
   public String getServerInfo() {
@@ -123,6 +125,7 @@ public final class TestServletContext implements ServletContext {
   }
 
   public void removeAttribute( final String arg0 ) {
+    attributes.remove( arg0 );
   }
 
   public String getServletContextName() {

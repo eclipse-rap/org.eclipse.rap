@@ -1,27 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContextEvent;
-
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.*;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener;
+import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.AdapterManager;
+import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Device;
@@ -46,8 +45,9 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    Fixture.fakeContext();
+    Fixture.setUp();
     Fixture.fakeNewRequest();
+    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
   }
 
   protected void tearDown() throws Exception {
@@ -57,15 +57,6 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   public void testInitialization() throws Exception {
     // ensures that the default WidgetCopyPhaseListener is registered
     // and executes at the designated phases
-    Fixture.fakeResponseWriter();
-    Fixture.registerAdapterFactories();
-    Fixture.createContextWithoutResourceManager();
-    RWTServletContextListener listener = new RWTServletContextListener();
-    TestServletContext servletContext = new TestServletContext();
-    listener.contextInitialized( new ServletContextEvent( servletContext ) );
-    Fixture.deregisterResourceManager();
-    Fixture.registerResourceManager();
-    ThemeManager.getInstance().initialize();
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
@@ -95,15 +86,11 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     } );
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "copy created", log.toString() );
-    // clean up
-    Fixture.removeContext();
   }
 
   public void testExecutionOrder() {
-    // Build test environment:
     final StringBuffer log = new StringBuffer();
     Fixture.fakeResponseWriter();
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
     AdapterFactory lifeCycleAdapterFactory = new AdapterFactory() {
 
       private AdapterFactory factory = new LifeCycleAdapterFactory();
@@ -158,10 +145,12 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
         return factory.getAdapterList();
       }
     };
+    Fixture.disposeOfServiceContext();
+    Fixture.createServiceContext();
     AdapterManager manager = AdapterManagerImpl.getInstance();
     manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
     manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
-    Fixture.registerResourceManager();
+
     // Create test widget hierarchy
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -178,11 +167,6 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   public void testStartup() throws Exception {
     // Simulate startup with no startup entry point set
     // First request: (renders html skeletion that contains 'application')
-    Fixture.createContextWithoutResourceManager();
-    Fixture.fakeResponseWriter();
-    Fixture.registerResourceManager();
-    ThemeManager.getInstance().initialize();
-    Fixture.registerAdapterFactories();
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestEntryPointWithShell.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();

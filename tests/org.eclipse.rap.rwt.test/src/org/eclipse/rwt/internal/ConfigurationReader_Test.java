@@ -6,12 +6,15 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
 
 
 public class ConfigurationReader_Test extends TestCase {
@@ -24,5 +27,13 @@ public class ConfigurationReader_Test extends TestCase {
     assertEquals( false, compression );
     String resources = configuration.getResources();
     assertEquals( IConfiguration.RESOURCES_DELIVER_FROM_DISK, resources );
+  }
+  
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+  
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
   }
 }

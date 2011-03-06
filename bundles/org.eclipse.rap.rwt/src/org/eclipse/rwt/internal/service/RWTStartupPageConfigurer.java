@@ -1,19 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
 import java.io.*;
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
+import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
@@ -41,11 +43,11 @@ public final class RWTStartupPageConfigurer
   
   // TODO [fappel]: think about clusters
   // cache control variables
-  private static int probeCount;
-  private static long lastModified = System.currentTimeMillis();
+  private int probeCount;
+  private long lastModified = System.currentTimeMillis();
 
-  private static StartupPageTemplateHolder template;
-  private static final List registeredBrandings = new ArrayList();
+  private StartupPageTemplateHolder template;
+  private final List registeredBrandings = new LinkedList();
   
   ////////////////////////////////////////////////////
   // ILifeCycleServiceHandlerConfigurer implementation 
@@ -97,7 +99,7 @@ public final class RWTStartupPageConfigurer
   ///////////////////////////////////////
   // Helping methods to load startup page 
   
-  private static void readContent() throws IOException {
+  private void readContent() throws IOException {
     if( template == null ) {
       InputStream stream = loadTemplateFile();
       InputStreamReader isr 
@@ -118,7 +120,7 @@ public final class RWTStartupPageConfigurer
     }
   }
   
-  private static InputStream loadTemplateFile() throws IOException {
+  private InputStream loadTemplateFile() throws IOException {
     InputStream result = null;
     IResourceManager manager = ResourceManager.getInstance();
     ClassLoader buffer = manager.getContextLoader();
@@ -141,7 +143,7 @@ public final class RWTStartupPageConfigurer
   /////////////////////////////////////////
   // Helping methods to adjust startup page
   
-  private static String getAppScript() throws IOException {
+  private String getAppScript() throws IOException {
     fakeWriter();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter writer = stateInfo.getResponseWriter();
@@ -158,7 +160,7 @@ public final class RWTStartupPageConfigurer
     }
   }
   
-  private static void fakeWriter() {
+  private void fakeWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter original = stateInfo.getResponseWriter();
     String key = RWTStartupPageConfigurer.class.getName();
@@ -167,7 +169,7 @@ public final class RWTStartupPageConfigurer
     stateInfo.setResponseWriter( fake );
   }
   
-  private static void restoreWriter() {
+  private void restoreWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String key = RWTStartupPageConfigurer.class.getName();
     HtmlResponseWriter writer
@@ -175,7 +177,7 @@ public final class RWTStartupPageConfigurer
     stateInfo.setResponseWriter( writer );
   }
 
-  private static String getLibraries() throws IOException {
+  private String getLibraries() throws IOException {
     fakeWriter();
     try {
       DisplayUtil.writeLibraries();
@@ -185,7 +187,7 @@ public final class RWTStartupPageConfigurer
     }
   }
 
-  private static String getContent( final HtmlResponseWriter writer ) {
+  private String getContent( final HtmlResponseWriter writer ) {
     StringBuffer msg = new StringBuffer();
     for( int i = 0; i < writer.getBodySize(); i ++ ) {
       msg.append( writer.getBodyToken( i ) );
@@ -196,7 +198,7 @@ public final class RWTStartupPageConfigurer
   //////////////////////////
   // Branding helper methods
 
-  private static void applyBranding() throws IOException {
+  private void applyBranding() throws IOException {
     AbstractBranding branding = BrandingUtil.findBranding();
     registerBrandingResources( branding );
     HttpServletRequest request = ContextProvider.getRequest();
@@ -231,7 +233,7 @@ public final class RWTStartupPageConfigurer
                                      noScriptWarning );
   }
 
-  private static void registerBrandingResources( 
+  private void registerBrandingResources( 
     final AbstractBranding branding )
     throws IOException
   {
@@ -241,5 +243,15 @@ public final class RWTStartupPageConfigurer
         registeredBrandings.add( branding );
       }
     }
+  }
+  
+  public static RWTStartupPageConfigurer getInstance() {
+    Class singletonType = RWTStartupPageConfigurer.class;
+    Object singleton = RWTContext.getSingleton( singletonType );
+    return ( RWTStartupPageConfigurer )singleton;
+  }
+  
+  private RWTStartupPageConfigurer() {
+    // prevent instance creation
   }
 }

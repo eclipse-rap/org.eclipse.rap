@@ -1,20 +1,25 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.RWTContextUtil;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
+
 
 /** 
  * <p>This encapsulates access to the currently processed request,
@@ -31,6 +36,7 @@ public final class ServiceContext {
   private IServiceStateInfo stateInfo;
   private boolean disposed;
   private ISessionStore sessionStore;
+  private RWTContext rwtContext;
   
   /**
    * creates a new instance of <code>ServiceContext</code>
@@ -45,6 +51,7 @@ public final class ServiceContext {
   {
     ParamCheck.notNull( request, "request" );
     ParamCheck.notNull( response, "response" );
+    
     this.request = request;
     this.response = response;
   }
@@ -136,11 +143,50 @@ public final class ServiceContext {
     stateInfo = null;
     disposed = true;
     sessionStore = null;
+    rwtContext = null;
   }
   
+  public RWTContext getRWTContext() {
+    checkState();
+    // TODO [RWTContext]: Revise performance improvement with buffering
+    //                    mechanism in place.
+    if( !isBuffered() ) {
+      getRWTContextFromSession();
+      if( !isBuffered() ) {
+        getRWTContextFromServletContext();
+        bufferRWTContextInSession();
+      }
+    }
+    return rwtContext;
+  }
+
   
   //////////////////
   // helping methods
+
+  private boolean isBuffered() {
+    return rwtContext != null;
+  }
+  
+  private void bufferRWTContextInSession() {
+    if( sessionStore != null ) {
+      RWTContextUtil.registerRWTContext( sessionStore, rwtContext );
+    }
+  }
+
+  private void getRWTContextFromServletContext() {
+    // Note [fappel]: Yourkit analysis showed that the following line is
+    //                expensive. Because of this the RWTContext is 
+    //                buffered in a field.
+    ServletContext servletContext = request.getSession().getServletContext();
+    rwtContext = RWTContextUtil.getRWTContext( servletContext );
+  }
+
+  private void getRWTContextFromSession() {
+    if( sessionStore != null ) {
+      rwtContext = RWTContextUtil.getRWTContext( sessionStore );
+    }
+  }
   
   private void checkState() {
     if( disposed ) {

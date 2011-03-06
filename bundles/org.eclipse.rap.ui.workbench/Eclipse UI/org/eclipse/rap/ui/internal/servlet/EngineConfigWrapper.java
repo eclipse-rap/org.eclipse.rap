@@ -1,22 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2006, 2011 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.servlet;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.MessageFormat;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
+import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
@@ -24,9 +26,7 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.theme.ResourceLoader;
-import org.eclipse.rwt.internal.theme.Theme;
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -45,7 +45,7 @@ import org.osgi.framework.Bundle;
  * for the library.
  */
 // TODO: [fappel] clean replacement mechanism that is anchored in W4Toolkit core
-final class EngineConfigWrapper implements IEngineConfig {
+final public class EngineConfigWrapper implements IEngineConfig, Runnable {
 
   //  extension point id for adapter factory registration
   private static final String ID_ADAPTER_FACTORY
@@ -77,10 +77,13 @@ final class EngineConfigWrapper implements IEngineConfig {
 
   private final EngineConfig engineConfig;
 
-  EngineConfigWrapper() {
+  public EngineConfigWrapper() {
     engineConfig = new EngineConfig( findContextPath().toString() );
+  }
+
+  public void run() {
+    ConfigurationReader.setEngineConfig( this );
     registerPhaseListener();
-    registerRWTLifeCycle();
     registerResourceManagerFactory();
     registerSettingStoreFactory();
     registerWorkbenchEntryPoint();
@@ -92,8 +95,10 @@ final class EngineConfigWrapper implements IEngineConfig {
     registerUICallBackServiceHandler();
     registerJSLibraryServiceHandler();
     registerCustomServiceHandlers();
+    registerApplicationEntryPoints();
+    registerBrandings();
   }
-
+  
   public File getServerContextDir() {
     return engineConfig.getServerContextDir();
   }
@@ -342,19 +347,6 @@ final class EngineConfigWrapper implements IEngineConfig {
     return result;
   }
 
-  private static void registerRWTLifeCycle() {
-    // TODO: [fappel] ugly, ugly, ugly - replace this.
-    //                Create the only valid lifecycle for RAP
-    try {
-      Class clazz = LifeCycleFactory.class;
-      Field field = clazz.getDeclaredField( "globalLifeCycle" );
-      field.setAccessible( true );
-      field.set( null, new RWTLifeCycle() );
-    } catch( final Throwable shouldNotHappen ) {
-      throw new RuntimeException( shouldNotHappen );
-    }
-  }
-
   // determine a faked context directory
   private static IPath findContextPath() {
     Bundle bundle = Platform.getBundle( PlatformUI.PLUGIN_ID );
@@ -405,4 +397,15 @@ final class EngineConfigWrapper implements IEngineConfig {
     }
   }
 
+  private void registerBrandings() {
+    try {
+      BrandingExtension.read();
+    } catch( final IOException ioe ) {
+      throw new RuntimeException( "Unable to read branding extension", ioe );
+    }
+  }
+
+  private void registerApplicationEntryPoints() {
+    ApplicationRegistry.registerApplicationEntryPoints();
+  }
 }

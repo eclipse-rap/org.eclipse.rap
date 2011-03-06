@@ -1,11 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt;
 
@@ -17,15 +19,21 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.*;
 
+
 public final class TestRequest implements HttpServletRequest {
-  
+  public static final int PORT = 8080;
+  public static final String SERVLET_PATH = "/W4TDelegate";
+  public static final String REQUEST_URI = "/fooapp/W4TDelegate";
+  public static final String CONTEX_PATH = "/fooapp";
+  public static final String SERVER_NAME = "fooserver";
+
   private HttpSession session;
   private String scheme = "http";
-  private String serverName = "fooserver";
-  private String contextPath = "/fooapp";
-  private String requestURI = "/fooapp/W4TDelegate";
+  private String serverName = SERVER_NAME;
+  private String contextPath = CONTEX_PATH;
+  private String requestURI = REQUEST_URI;
   private final StringBuffer requestURL = new StringBuffer();
-  private String servletPath = "/W4TDelegate";
+  private String servletPath = SERVLET_PATH;
   private String pathInfo;
   private Map parameters = new HashMap();
   private Map headers = new HashMap();
@@ -281,7 +289,7 @@ public final class TestRequest implements HttpServletRequest {
   }
   
   public int getServerPort() {
-    return 8080;
+    return PORT;
   }
   
   public BufferedReader getReader() throws IOException {

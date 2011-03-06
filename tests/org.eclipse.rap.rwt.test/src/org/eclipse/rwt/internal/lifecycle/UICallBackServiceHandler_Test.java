@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -17,7 +18,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServiceStateInfo;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.swt.widgets.Display;
 
@@ -46,8 +46,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
     final String[] otherSession = new String[ 1 ];
     Thread thread = new Thread( new Runnable() {
       public void run() {
-        Fixture.fakeContext();
-        ContextProvider.getContext().setStateInfo( new ServiceStateInfo() );
+        Fixture.createServiceContext();
         new Display();
         Fixture.fakeResponseWriter();
         try {

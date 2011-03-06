@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
@@ -19,6 +20,7 @@ import java.util.*;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.IEngineConfig;
+import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -36,25 +38,43 @@ import org.eclipse.rwt.resources.IResourceManager;
  * This class is not intended to be used by clients.
  * </p>
  */
-public class ResourceManagerImpl
-  extends ResourceBase
-  implements IResourceManager, Adaptable
-{
+public class ResourceManagerImpl implements IResourceManager, Adaptable {
+  
+  /** 
+   * <p>denotes a mode in which resources are delivered: resources 
+   *  are written to disk and delivered as static files.</p>
+   */
+  public static final String DELIVER_FROM_DISK  = "deliverFromDisk";
+  /** 
+   * <p>denotes a mode in which resources are delivered: resources 
+   * libraries delivered by the Delegates servlet dynamically.</p>
+   */
+  public static final String DELIVER_BY_SERVLET = "deliverByServlet";
+  /** 
+   * <p>denotes a mode in which resources are delivered: resources 
+   * libraries delivered by the Delegates servlet dynamically, but
+   * user defined resources will be copied to the temporary directory
+   * given by the system property value of 'java.io.tmpdir' plus 
+   * '/w4toolkit/&lt;username&gt;', where <em>username<em> is the 
+   * value of the system property 'user.name'.</p>
+   * 
+   * <p>For internal use only</p>
+   */  
+  public static final String DELIVER_BY_SERVLET_AND_TEMP_DIR 
+    = "deliverByServletAndTempDir";
 
   public static final String RESOURCES = "rwt-resources";
 
   final static String RESOURCE = "w4t_resource";
   final static String RESOURCE_VERSION = "w4t_res_version";
-
-  /** the singleton instance of IResourceManager */
-  private static IResourceManager _instance;
-
-  private final String webAppRoot;
+  
   private final Map repository;
   private final Map cache;
+  private String webAppRoot;
   private ClassLoader loader;
   private ThreadLocal contextLoader;
   private JsConcatenator jsConcatenator;
+  private String deliveryMode = DELIVER_BY_SERVLET;
 
   private static final class Resource {
 
@@ -89,32 +109,21 @@ public class ResourceManagerImpl
     }
   }
 
-  private ResourceManagerImpl( final String webAppRoot ) {
-    this.webAppRoot = webAppRoot;
+  private ResourceManagerImpl() {
     repository = new Hashtable();
     cache = new Hashtable();
     contextLoader = new ThreadLocal();
   }
 
-  /**
-   * Returns the singleton instance of ResourceManager.
-   */
-  public static synchronized IResourceManager createInstance(
-    final String webAppRoot,
-    final String mode )
-  {
-    if( _instance == null ) {
-      _instance = new ResourceManagerImpl( webAppRoot );
-      setDeliveryMode( mode );
-    }
-    return _instance;
-  }
-
-  /**
-   * Returns the singleton instance of <code>IResourceManager</code>.
-   */
   public static IResourceManager getInstance() {
-    return _instance;
+    Class instanceType = ResourceManagerImpl.class;
+    Object instance = RWTContext.getSingleton( instanceType );
+    ResourceManagerImpl result = ( ResourceManagerImpl )instance;
+    String resources = ConfigurationReader.getConfiguration().getResources();
+    File ctxDir = ConfigurationReader.getEngineConfig().getServerContextDir();
+    result.webAppRoot = ctxDir.toString();
+    result.deliveryMode = resources;
+    return result;
   }
 
   /**
@@ -125,7 +134,7 @@ public class ResourceManagerImpl
    */
   public static String load( final String resource ) {
     ParamCheck.notNull( resource, "resource" );
-    return ( ( ResourceManagerImpl )_instance ).doLoad( resource );
+    return ( ( ResourceManagerImpl )getInstance() ).doLoad( resource );
   }
 
   /**
@@ -141,7 +150,7 @@ public class ResourceManagerImpl
   public static int[] findResource( final String name, final Integer version ) {
     ParamCheck.notNull( name, "name" );
     int[] result = null;
-    ResourceManagerImpl manager = ( ResourceManagerImpl )_instance;
+    ResourceManagerImpl manager = ( ResourceManagerImpl )getInstance();
     Resource resource = ( Resource )manager.cache.get( createKey( name ) );
     if( resource != null ) {
       if(    ( version == null && resource.getVersion() == null )
@@ -166,13 +175,42 @@ public class ResourceManagerImpl
   public static Integer findVersion( final String name ) {
     ParamCheck.notNull( name, "name" );
     Integer result = null;
-    ResourceManagerImpl manager = ( ResourceManagerImpl )_instance;
+    ResourceManagerImpl manager = ( ResourceManagerImpl )getInstance();
     Resource resource = ( Resource )manager.cache.get( createKey( name ) );
     if( resource != null ) {
       result = resource.getVersion();
     }
     return result;
   }
+
+  /** <p>returns whether the application runs in the mode specified by the 
+    * passed String.</p> */
+  public static boolean isDeliveryMode( final String deliveryMode ) {
+    return getDeliveryMode().equals( deliveryMode );
+  }
+  
+  /** <p>Sets which mode is used for delivering the resources at runtime.
+   *  DELIVER_BY_SERVLET could be useful if running on a server which is
+   *  permittedto to write to the webapp home.</p>
+   *  @param newDeliveryMode <code>ResourceBase .DELIVER_BY_SERVLET</code> or
+   *  <code>ResourceBase.DELIVER_FROM_DISK</code>
+   */
+  public static void setDeliveryMode( final String newDeliveryMode ) {
+    if(    newDeliveryMode.equals( DELIVER_BY_SERVLET )
+        || newDeliveryMode.equals( DELIVER_FROM_DISK )
+        || newDeliveryMode.equals( DELIVER_BY_SERVLET_AND_TEMP_DIR ) )
+    {
+      ( ( ResourceManagerImpl )getInstance() ).deliveryMode = newDeliveryMode;
+    }
+  }
+  
+  /** <p>Returns which mode is used for delivering the resources at runtime.
+   *  DELIVER_BY_SERVLET could be useful if running on a server which has
+   *  no grant writing to webapp home.</p>
+   */
+  public static String getDeliveryMode() {
+    return ( ( ResourceManagerImpl )getInstance() ).deliveryMode;
+  } 
 
   //////////////////////
   // interface Adaptable

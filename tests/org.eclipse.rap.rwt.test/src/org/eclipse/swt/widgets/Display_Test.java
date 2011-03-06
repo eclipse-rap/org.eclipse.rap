@@ -6,8 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -20,7 +21,8 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.*;
@@ -1282,8 +1284,7 @@ public class Display_Test extends TestCase {
     final Display[] otherDisplay = new Display[ 1 ];
     Thread otherThread = new Thread( new Runnable() {
       public void run() {
-        Fixture.fakeContext();
-        ContextProvider.getContext().setStateInfo( new ServiceStateInfo() );
+        Fixture.createServiceContext();
         otherDisplay[ 0 ] = new Display();
       }
     } );

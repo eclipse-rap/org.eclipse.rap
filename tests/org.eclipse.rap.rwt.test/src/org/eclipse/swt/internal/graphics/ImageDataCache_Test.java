@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
@@ -17,25 +18,12 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.ImageData;
 
 
 public class ImageDataCache_Test extends TestCase {
-
-  protected void setUp() throws Exception {
-    // we do need the resource manager for this test
-    Fixture.setUpWithoutResourceManager();
-    Fixture.createContext( false );
-    // registration of real resource manager
-    ResourceManager.register( new DefaultResourceManagerFactory() );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 
   public void testSmallImageIsCached() {
     ImageDataCache cache = new ImageDataCache();
@@ -77,6 +65,16 @@ public class ImageDataCache_Test extends TestCase {
     originalData.setPixel( 0, 0, 23 );
     ImageData copyData2 = cache.getImageData( internalImage );
     assertEqualsImageData( copyData1, copyData2 );
+  }
+
+  protected void setUp() throws Exception {
+    Fixture.createRWTContext();
+    Fixture.createServiceContext();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfRWTContext();
   }
 
   private static ImageData getImageData( final String resource ) {

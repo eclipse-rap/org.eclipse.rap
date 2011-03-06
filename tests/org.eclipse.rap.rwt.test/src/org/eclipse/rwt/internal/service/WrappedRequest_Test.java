@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -95,16 +96,14 @@ public class WrappedRequest_Test extends TestCase {
   
   public void testStartupRequestWithParameter() throws Exception {
     System.setProperty( "lifecycle", RWTLifeCycle.class.getName() );
-    StartupPage.IStartupPageConfigurer bufferedConfigurer 
-      = StartupPage.configurer;
-    StartupPage.configurer = new StartupPage.IStartupPageConfigurer() {
+    StartupPage.setConfigurer( new StartupPage.IStartupPageConfigurer() {
       public StartupPageTemplateHolder getTemplate() throws IOException {
         return new StartupPageTemplateHolder( "Startup Page" );
       }
       public boolean isModifiedSince() {
         return true;
       }
-    };
+    } );
 
     String p1 = "p1";
     String v1 = "v1";
@@ -124,20 +123,16 @@ public class WrappedRequest_Test extends TestCase {
     ServiceManager.getHandler().service();
 
     assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );
-    StartupPage.configurer = bufferedConfigurer;
     System.getProperties().remove( "lifecycle" );
-    EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.createContext( false );
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     response.setOutputStream( new TestServletOutputStream() );
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-    Fixture.removeContext();
   }
 }

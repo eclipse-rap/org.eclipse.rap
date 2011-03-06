@@ -1,12 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSoure - ongoing implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.branding;
@@ -72,8 +74,6 @@ public class BrandingManager_Test extends TestCase {
     BrandingManager.register( branding );
     assertEquals( 1, BrandingManager.getAll().length );
     assertSame( branding, BrandingManager.getAll()[ 0 ] );
-    // clean up
-    BrandingManager.deregister( branding );
   }
 
   public void testDeregister() {
@@ -93,8 +93,6 @@ public class BrandingManager_Test extends TestCase {
     BrandingManager.register( branding );
     BrandingManager.deregister( new TestBranding() );
     assertEquals( 1, BrandingManager.getAll().length );
-    // clean up
-    BrandingManager.deregister( branding );
   }
   
   public void testGet() {
@@ -194,14 +192,12 @@ public class BrandingManager_Test extends TestCase {
     // check precondition
     assertEquals( 0, branding.registerResourcesCallCount );
     // access branding for the first time: registerResources must be called
-    configurer = new RWTStartupPageConfigurer();
+    configurer = RWTStartupPageConfigurer.getInstance();
     configurer.getTemplate();
     assertEquals( 1, branding.registerResourcesCallCount );
     // access branding another time: registerResources must *not* be called
     configurer.getTemplate();
     assertEquals( 1, branding.registerResourcesCallCount );
-    // clean up
-    BrandingManager.deregister( branding );
   }
   
   protected void setUp() throws Exception {

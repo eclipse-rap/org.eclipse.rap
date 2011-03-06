@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
@@ -17,8 +18,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
@@ -264,7 +263,7 @@ public class Image_Test extends TestCase {
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
     Device device = new Display();
-    Image image = new Image( device , imageData );
+    Image image = new Image( device, imageData );
     ImageData imageDataFromImage = image.getImageData();
     assertEquals( 100, imageDataFromImage.width );
     assertEquals( 50, imageDataFromImage.height );
@@ -402,15 +401,12 @@ public class Image_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    // we do need the resource manager for this test
-    Fixture.setUpWithoutResourceManager();
-    Fixture.registerAdapterFactories();
-    Fixture.createContext( false );
-    // registration of real resource manager
-    ResourceManager.register( new DefaultResourceManagerFactory() );
+    Fixture.createRWTContext();
+    Fixture.createServiceContext();
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfRWTContext();
   }
 }

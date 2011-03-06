@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.controlkit;
 
@@ -21,7 +22,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -33,17 +33,6 @@ import org.eclipse.swt.widgets.*;
 
 
 public class ControlLCA_Test extends TestCase {
-
-  protected void setUp() throws Exception {
-    Fixture.setUpWithoutResourceManager();
-    ThemeManager.getInstance().initialize();
-  }
-
-  protected void tearDown() throws Exception {
-// TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
-//    ThemeManager.getInstance().deregisterAll();
-    Fixture.tearDown();
-  }
 
   public void testPreserveValues() {
     Display display = new Display();
@@ -303,4 +292,13 @@ public class ControlLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( "renderDispose", log.toString() );
   }
+  
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
 }

@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
 
@@ -26,7 +27,6 @@ public class EventAdapter_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.createContext( true );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     widget = new Shell( display );
@@ -34,7 +34,6 @@ public class EventAdapter_Test extends TestCase {
   
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-    Fixture.removeContext();
   }
   
   public void testActionPerformed()  {

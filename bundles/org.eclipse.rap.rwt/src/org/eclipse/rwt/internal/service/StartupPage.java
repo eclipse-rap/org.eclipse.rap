@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
+import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.theme.*;
@@ -29,16 +31,31 @@ import org.eclipse.rwt.internal.util.*;
  * bootstrap the client-side session.</p>
  */
 public final class StartupPage {
+  private IStartupPageConfigurer configurer;
 
   public interface IStartupPageConfigurer {
     StartupPageTemplateHolder getTemplate() throws IOException;
     boolean isModifiedSince();
   }
+  
+  private static StartupPage getInstance() {
+    return ( StartupPage )RWTContext.getSingleton( StartupPage.class );
+  }
 
-  public static IStartupPageConfigurer configurer
-    = new RWTStartupPageConfigurer();
-
+  public static void setConfigurer( final IStartupPageConfigurer configurer ) {
+    getInstance().configurer = configurer;
+  }
+  
+  public static IStartupPageConfigurer getConfigurer() {
+    return getInstance().configurer;
+  }
+  
   static void send() throws IOException {
+    getInstance().doSend();
+  }
+
+  private void doSend() throws IOException {
+    ensureConfigurer();
     if( configurer.isModifiedSince() ) {
       // send out the survey
       render();
@@ -50,7 +67,13 @@ public final class StartupPage {
     }
   }
 
-  private static String getBgImage() {
+  private void ensureConfigurer() {
+    if( configurer == null ) {
+      configurer = RWTStartupPageConfigurer.getInstance();
+    }
+  }
+
+  private String getBgImage() {
     String result = "";
     QxType cssValue = ThemeUtil.getCssValue( "Display",
                                              "background-image",
@@ -66,7 +89,7 @@ public final class StartupPage {
     return result;
   }
 
-  private static void render() throws IOException {
+  private void render() throws IOException {
     ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
     StartupPageTemplateHolder template = configurer.getTemplate();
     template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE, 
@@ -85,7 +108,7 @@ public final class StartupPage {
     }
   }
 
-  private static String getEntryPoint() {
+  private String getEntryPoint() {
     HttpServletRequest request = ContextProvider.getRequest();
     String result = request.getParameter( RequestParams.STARTUP );
     if( result == null ) {
@@ -94,8 +117,12 @@ public final class StartupPage {
     return result;
   }
 
-  private static HtmlResponseWriter getResponseWriter() {
+  private HtmlResponseWriter getResponseWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return stateInfo.getResponseWriter();
+  }
+  
+  private StartupPage() {
+    // prevent instance creation
   }
 }

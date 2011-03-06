@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
@@ -19,7 +20,7 @@ import java.util.*;
 import javax.servlet.*;
 
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
@@ -67,39 +68,90 @@ public final class RWTServletContextListener implements ServletContextListener {
   private static final String REGISTERED_BRANDINGS
     = RWTServletContextListener.class.getName() + "registeredBrandings";
   
+  
+  public static class ContextDestroyer implements Runnable {
+    protected final ServletContext servletContext;
+
+    public ContextDestroyer( ServletContext servletContext ) {
+      this.servletContext = servletContext;
+    }
+
+    public void run() {
+/////////////////////////////////////////////////////////////////////////
+// TODO [fappel]: check which deregistration methods are really necessary
+//                since all singletons get destroyed at the end of 
+//                the context lifecycle. Commented deregisteredThemes
+//                since this causes performance problems of tests...  
+//      deregisterThemes( servletContext );
+      deregisterBrandings( servletContext );
+      deregisterEntryPoints( servletContext );
+      deregisterPhaseListeners( servletContext );
+      deregisterResources( servletContext );
+      deregisterUICallBackServiceHandler();
+      deregisterJSLibraryServiceHandler();
+      LifeCycleFactory.destroy();
+    }
+  }
+
+  public static class ContextInitializer implements Runnable {
+    protected final ServletContext servletContext;
+
+    public ContextInitializer( ServletContext servletContext ) {
+      this.servletContext = servletContext;
+    }
+
+    public void run() {
+      registerEngineConfig( servletContext );
+      registerResourceManagerFactory( servletContext );
+      registerThemes( servletContext );
+      registerBrandings( servletContext );
+      registerEntryPoints( servletContext );
+      registerSettingStoreFactory( servletContext );
+      registerAdapterFactories( servletContext );
+      registerPhaseListener( servletContext );
+      registerResources( servletContext );
+      registerUICallBackServiceHandler();
+      registerJSLibraryServiceHandler();
+      ResourceUtil.startJsConcatenation();
+    }
+  }
+
   ///////////////////////////////////////////
   // implementation of ServletContextListener
 
   public void contextInitialized( final ServletContextEvent evt ) {
-    registerThemes( evt.getServletContext() );
-    registerBrandings( evt.getServletContext() );
-    registerEntryPoints( evt.getServletContext() );
-    registerResourceManagerFactory( evt.getServletContext() );
-    registerSettingStoreFactory( evt.getServletContext() );
-    registerAdapterFactories( evt.getServletContext() );
-    registerPhaseListener( evt.getServletContext() );
-    registerResources( evt.getServletContext() );
-    registerUICallBackServiceHandler();
-    registerJSLibraryServiceHandler();
-    StartupPage.configurer = new RWTStartupPageConfigurer();
-    ResourceUtil.startJsConcatenation();
+    ServletContext servletContext = evt.getServletContext();
+    RWTContext rwtContext = registerDefaultRWTContext( servletContext );
+    ContextInitializer initializer = new ContextInitializer( servletContext );
+    RWTContextUtil.runWithInstance( rwtContext, initializer );
   }
 
   public void contextDestroyed( final ServletContextEvent evt ) {
-    deregisterThemes( evt.getServletContext() );
-    deregisterBrandings( evt.getServletContext() );
-    deregisterEntryPoints( evt.getServletContext() );
-    deregisterPhaseListeners( evt.getServletContext() );
-    deregisterResources( evt.getServletContext() );
-    deregisterUICallBackServiceHandler();
-    deregisterJSLibraryServiceHandler();
-    LifeCycleFactory.destroy();
+    ServletContext servletContext = evt.getServletContext();
+    RWTContext rwtContext = RWTContextUtil.getRWTContext( servletContext );
+    ContextDestroyer destroyer = new ContextDestroyer( servletContext );
+    RWTContextUtil.runWithInstance( rwtContext, destroyer );
+    deregisterDefaultRWTContext( servletContext );
   }
 
   ////////////////////////////////////////////////////////////
   // helping methods - entry point registration/deregistration
+  
+  private RWTContext registerDefaultRWTContext( ServletContext servletContext ) {
+    return RWTContextUtil.registerDefaultRWTContext( servletContext );
+  }
+  
+  void deregisterDefaultRWTContext( ServletContext servletContext ) {
+    RWTContextUtil.deregisterRWTContext( servletContext );
+  }
 
-  private static void registerEntryPoints( final ServletContext context ) {
+  public static void registerEngineConfig( ServletContext servletContext ) {
+    String realPath = servletContext.getRealPath( "/" );
+    EngineConfig engineConfig = new EngineConfig( realPath );
+    ConfigurationReader.setEngineConfig( engineConfig );
+  }
+
+  public static void registerEntryPoints( final ServletContext context ) {
     Set registeredEntryPoints = new HashSet();
     String value = context.getInitParameter( ENTRY_POINTS_PARAM );
     if( value != null ) {
@@ -127,7 +179,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     setRegisteredEntryPoints( context, registeredEntryPoints );
   }
 
-  private static void deregisterEntryPoints( final ServletContext context ) {
+  public static void deregisterEntryPoints( final ServletContext context ) {
     String[] entryPoints = getRegisteredEntryPoints( context );
     if( entryPoints != null ) {
       for( int i = 0; i < entryPoints.length; i++ ) {
@@ -136,22 +188,22 @@ public final class RWTServletContextListener implements ServletContextListener {
     }
   }
 
-  private static void setRegisteredEntryPoints( final ServletContext ctx,
-                                                final Set entryPoints )
+  public static void setRegisteredEntryPoints( final ServletContext ctx,
+                                               final Set entryPoints )
   {
     String[] value = new String[ entryPoints.size() ];
     entryPoints.toArray( value );
     ctx.setAttribute( REGISTERED_ENTRY_POINTS, value );
   }
 
-  private static String[] getRegisteredEntryPoints( final ServletContext ctx ) {
+  public static String[] getRegisteredEntryPoints( final ServletContext ctx ) {
     return ( String[] )ctx.getAttribute( REGISTERED_ENTRY_POINTS );
   }
 
   //////////////////////////////////////////////////
   // Helping methods - resource manager registration
 
-  private static void registerResourceManagerFactory(
+  public static void registerResourceManagerFactory(
     final ServletContext context )
   {
     String factoryName
@@ -175,7 +227,7 @@ public final class RWTServletContextListener implements ServletContextListener {
   ///////////////////////////////////////////////////////
   // Helping methods - setting store factory registration
   
-  private static void registerSettingStoreFactory(
+  public static void registerSettingStoreFactory(
     final ServletContext context ) 
   {
     if( !SettingStoreManager.hasFactory() ) {
@@ -201,7 +253,7 @@ public final class RWTServletContextListener implements ServletContextListener {
   /////////////////////////////////////////////////
   // Helping methods - adapter factory registration
 
-  private static void registerAdapterFactories( final ServletContext context ) {
+  public static void registerAdapterFactories( final ServletContext context ) {
     String initParam = context.getInitParameter( ADAPTER_FACTORIES_PARAM );
     if( initParam != null ) {
       String[] factoryParams = initParam.split( SEPARATOR );
@@ -237,7 +289,7 @@ public final class RWTServletContextListener implements ServletContextListener {
   ///////////////////////////////////////////////////////////////
   // Helping methods - phase listener registration/deregistration
 
-  private static void registerPhaseListener( final ServletContext context ) {
+  public static void registerPhaseListener( final ServletContext context ) {
     List phaseListeners = new ArrayList();
     String initParam = context.getInitParameter( PHASE_LISTENERS_PARAM );
     if( initParam != null ) {
@@ -267,7 +319,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     context.setAttribute( REGISTERED_PHASE_LISTENERS, registeredListeners );
   }
 
-  private static void deregisterPhaseListeners( final ServletContext context ) {
+  public static void deregisterPhaseListeners( final ServletContext context ) {
     PhaseListener[] listeners = getRegisteredPhaseListeners( context );
     if( listeners != null ) {
       for( int i = 0; i < listeners.length; i++ ) {
@@ -285,7 +337,7 @@ public final class RWTServletContextListener implements ServletContextListener {
   //////////////////////////////////////////
   // Helping methods - resource registration
   
-  private static void registerResources( final ServletContext context ) {
+  public static void registerResources( final ServletContext context ) {
     List resources = new ArrayList();
     String initParam = context.getInitParameter( RESOURCES_PARAM );
     if( initParam != null ) {
@@ -312,14 +364,14 @@ public final class RWTServletContextListener implements ServletContextListener {
     context.setAttribute( REGISTERED_RESOURCES, registeredResources );
   }
 
-  private static void deregisterResources( final ServletContext context ) {
+  public static void deregisterResources( final ServletContext context ) {
     ResourceRegistry.clear();
   }
 
   ///////////////////////////////////////
   // Helping methods - theme registration
 
-  private static void registerThemes( final ServletContext context ) {
+  public static void registerThemes( final ServletContext context ) {
     ThemeManager manager = ThemeManager.getInstance();
     String value = context.getInitParameter( THEMES_PARAM );
     ResourceLoader loader = new ResourceLoader() {
@@ -358,19 +410,19 @@ public final class RWTServletContextListener implements ServletContextListener {
     manager.initialize();
   }
 
-  private static void deregisterThemes( final ServletContext servletContext ) {
+  public static void deregisterThemes( final ServletContext servletContext ) {
     ThemeManager.resetInstance();
   }
 
   ////////////////////////////////////////////////
   // Helping methods - UI callback service handler
   
-  private static void registerUICallBackServiceHandler() {
+  public static void registerUICallBackServiceHandler() {
     ServiceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID,
                                            new UICallBackServiceHandler() );
   }
 
-  private static void deregisterUICallBackServiceHandler() {
+  public static void deregisterUICallBackServiceHandler() {
     String id = UICallBackServiceHandler.HANDLER_ID;
     ServiceManager.unregisterServiceHandler( id );
   }
@@ -378,7 +430,7 @@ public final class RWTServletContextListener implements ServletContextListener {
   //////////////////////////////////////////
   // Helping methods - branding registration
   
-  private static void registerBrandings( final ServletContext servletContext ) {
+  public static void registerBrandings( final ServletContext servletContext ) {
     String value = servletContext.getInitParameter( BRANDINGS_PARAM );
     if( value != null ) {
       List registeredBrandings = new ArrayList(); 
@@ -400,8 +452,8 @@ public final class RWTServletContextListener implements ServletContextListener {
     }
   }
   
-  private static void setRegisteredBrandings( final ServletContext context, 
-                                              final List brandings ) 
+  public static void setRegisteredBrandings( final ServletContext context, 
+                                             final List brandings ) 
   {
     AbstractBranding[] registeredBrandings
       = new AbstractBranding[ brandings.size() ];
@@ -409,7 +461,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     context.setAttribute( REGISTERED_BRANDINGS, registeredBrandings );
   }
   
-  private static void deregisterBrandings( final ServletContext context ) {
+  public static void deregisterBrandings( final ServletContext context ) {
     AbstractBranding[] brandings 
       = ( AbstractBranding[] )context.getAttribute( REGISTERED_BRANDINGS );
     if( brandings != null ) {
@@ -422,12 +474,12 @@ public final class RWTServletContextListener implements ServletContextListener {
   ////////////////////////////////////////////////
   // Helping methods - JS Library service handler
   
-  private static void registerJSLibraryServiceHandler() {
+  public static void registerJSLibraryServiceHandler() {
     ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID,
                                            new JSLibraryServiceHandler() );
   }
-  
-  private static void deregisterJSLibraryServiceHandler() {
+
+  public static void deregisterJSLibraryServiceHandler() {
     String id = JSLibraryServiceHandler.HANDLER_ID;
     ServiceManager.unregisterServiceHandler( id );
   }

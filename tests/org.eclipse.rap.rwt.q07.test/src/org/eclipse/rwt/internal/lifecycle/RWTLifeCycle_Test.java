@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -427,7 +428,6 @@ public class RWTLifeCycle_Test extends TestCase {
     // Simulate new session and run lifecycle
     newSession();
     Fixture.fakeResponseWriter();
-    Fixture.registerAdapterFactories();
     callbackHandler[ 0 ] = null;
     RWTLifeCycle lifeCycle2 = new RWTLifeCycle();
     lifeCycle2.execute();
@@ -840,8 +840,7 @@ public class RWTLifeCycle_Test extends TestCase {
     // create new context to ensure that phase order is stored in context
     ServiceContext bufferedContext = ContextProvider.getContext();
     ContextProvider.releaseContextHolder();
-    Fixture.fakeContext();
-    ContextProvider.getContext().setStateInfo( new ServiceStateInfo() );
+    Fixture.createServiceContext();
     assertNull( lifeCycle.getPhaseOrder() );
     // clean up
     ContextProvider.releaseContextHolder();
@@ -1012,10 +1011,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   private static void newSession() {
     ContextProvider.disposeContext();
-    TestResponse response = new TestResponse();
-    TestRequest request = new TestRequest();
-    request.setSession( new TestSession() );
-    Fixture.fakeContextProvider( response, request );
+    Fixture.createServiceContext();
   }
 
   private static UIThread getUIThread() {

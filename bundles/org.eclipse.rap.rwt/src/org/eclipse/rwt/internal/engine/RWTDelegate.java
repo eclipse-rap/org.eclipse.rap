@@ -6,20 +6,18 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import javax.servlet.*;
+import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.internal.*;
-import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.service.*;
 
 
@@ -29,17 +27,6 @@ public class RWTDelegate extends HttpServlet {
 
   ////////////////////
   // Servlet overrides
-  
-  public void init( final ServletConfig config ) throws ServletException {  
-    super.init( config );
-    IEngineConfig engineConfig = getEngineConfig();
-    try {
-      ConfigurationReader.setEngineConfig( engineConfig );
-      createResourceManagerInstance();
-    } catch( Exception e ) {
-      throw new ServletException( e );
-    }
-  }
 
   public void doGet( final HttpServletRequest request,
                      final HttpServletResponse response )
@@ -54,9 +41,8 @@ public class RWTDelegate extends HttpServlet {
   {
     request.setCharacterEncoding( "UTF-8" );
     if( request.getPathInfo() == null ) {
-      HttpServletRequest wrappedRequest = getWrappedRequest( request );
       try {
-        ServiceContext context = new ServiceContext( wrappedRequest, response );
+        ServiceContext context = new ServiceContext( request, response );
         ContextProvider.setContext( context );
         createSessionStore();
         ServiceManager.getHandler().service();
@@ -72,39 +58,8 @@ public class RWTDelegate extends HttpServlet {
     return "RAP Servlet Delegate";
   }
   
-  /////////////////////////////////////////
-  // Methods to be overridden by subclasses
-
-  protected HttpServletRequest getWrappedRequest( final HttpServletRequest req )
-    throws ServletException
-  {
-    return req;
-  }
-
   //////////////////
   // Helping methods
-
-  private IEngineConfig getEngineConfig() {
-    String name = IEngineConfig.class.getName();
-    ServletContext servletContext = getServletContext();
-    IEngineConfig result = ( IEngineConfig )servletContext.getAttribute( name );
-    if( result == null ) {
-      result = new EngineConfig( servletContext.getRealPath( "/" ) );
-      servletContext.setAttribute( name, result );
-    }
-    return result;
-  }
-
-  private void createResourceManagerInstance() {
-    IConfiguration configuration = ConfigurationReader.getConfiguration();
-    String resources = configuration.getResources();
-    ResourceManagerImpl.createInstance( getWebAppBase().toString(), resources );
-  }
-
-  private File getWebAppBase() {
-    IEngineConfig engineConfig = ConfigurationReader.getEngineConfig();
-    return engineConfig.getServerContextDir();
-  }
 
   private void createSessionStore() {
     // Ensure that there is exactly one ISessionStore per session created

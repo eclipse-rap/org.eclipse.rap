@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSoure - ongoing implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-
 package org.eclipse.rwt;
 
 import java.util.Locale;
@@ -69,11 +70,11 @@ public class NLS_Test extends TestCase {
   protected void setUp() throws Exception {
     localeBuffer = Locale.getDefault();
     Locale.setDefault( Locale.ENGLISH );
-    Fixture.fakeContext();
+    Fixture.setUp();
   }
   
   protected void tearDown() throws Exception {
-    ContextProvider.disposeContext();
+    Fixture.tearDown();
     Locale.setDefault( localeBuffer );
   }
   

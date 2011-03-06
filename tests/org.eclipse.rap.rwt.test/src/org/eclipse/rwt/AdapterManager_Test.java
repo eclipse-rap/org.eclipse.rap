@@ -6,7 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt;
 
@@ -19,7 +21,8 @@ import org.eclipse.rwt.internal.AdapterManagerImpl;
 public class AdapterManager_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    Fixture.fakeContext();
+    Fixture.createRWTContext();
+    Fixture.createServiceContext();
   }
   
   protected void tearDown() throws Exception {

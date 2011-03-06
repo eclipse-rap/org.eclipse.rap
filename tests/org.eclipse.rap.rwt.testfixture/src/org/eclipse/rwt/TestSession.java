@@ -1,11 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt;
 
@@ -14,10 +16,11 @@ import java.util.*;
 import javax.servlet.ServletContext;
 import javax.servlet.http.*;
 
+
 public final class TestSession implements HttpSession {
   
   private final Map attributes = new HashMap();
-  private final ServletContext servletContext = new TestServletContext();
+  private ServletContext servletContext = new TestServletContext();
   private boolean isInvalidated;
   private boolean newSession;
   
@@ -40,6 +43,10 @@ public final class TestSession implements HttpSession {
   
   public ServletContext getServletContext() {
     return servletContext ;
+  }
+  
+  public void setServletContext( ServletContext servletContext ) {
+    this.servletContext = servletContext;
   }
   
   public void setMaxInactiveInterval( final int arg0 ) {

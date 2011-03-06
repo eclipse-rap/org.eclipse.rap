@@ -6,8 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
@@ -19,10 +20,9 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -37,11 +37,68 @@ import org.eclipse.swt.widgets.*;
 
 public class DisplayLCA_Test extends TestCase {
 
-  private AdapterFactory lifeCycleAdapterFactory;
-  private final List log = new ArrayList();
-  private final List renderInitLog = new ArrayList();
-  private final List renderChangesLog = new ArrayList();
-  private final List renderDisposeLog = new ArrayList();
+  private static final List log = new ArrayList();
+  private static final List renderInitLog = new ArrayList();
+  private static final List renderChangesLog = new ArrayList();
+  private static final List renderDisposeLog = new ArrayList();
+
+  public static class DisplayTestLifeCycleAdapterFactory
+    implements AdapterFactory
+  {
+    
+    private AdapterFactory factory = new LifeCycleAdapterFactory();
+
+    public Object getAdapter( final Object adaptable, final Class adapter ) {
+      Object result = null;
+      if( adaptable instanceof Display && adapter == ILifeCycleAdapter.class )
+      {
+        result = factory.getAdapter( adaptable, adapter );
+      } else {
+        result = new AbstractWidgetLCA() {
+
+          public void preserveValues( final Widget widget ) {
+          }
+
+          public void readData( final Widget widget ) {
+            log.add( widget );
+            if( widget instanceof DisposeTestButton ) {
+              SelectionEvent event
+                = new SelectionEvent( widget,
+                                      null,
+                                      SelectionEvent.WIDGET_SELECTED );
+              event.processEvent();
+            }
+          }
+
+          public void renderInitialization( final Widget widget )
+            throws IOException
+          {
+            renderInitLog.add( widget );
+          }
+
+          public void renderChanges( final Widget widget ) throws IOException
+          {
+            if( widget.getClass().equals( Composite.class ) ) {
+              throw new IOException();
+            }
+            log.add( widget );
+            renderChangesLog.add( widget );
+          }
+
+
+          public void renderDispose( final Widget widget ) throws IOException
+          {
+            renderDisposeLog.add( widget );
+          }
+        };
+      }
+      return result;
+    }
+
+    public Class[] getAdapterList() {
+      return factory.getAdapterList();
+    }
+  }
 
   public static final class TestRenderInitiallyDisposedEntryPoint
     implements IEntryPoint
@@ -370,76 +427,34 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.fakeContext();
-    Fixture.fakeNewRequest();
-    ThemeManager.getInstance().initialize();
-    AdapterManager manager = AdapterManagerImpl.getInstance();
-    lifeCycleAdapterFactory = new AdapterFactory() {
 
-      private AdapterFactory factory = new LifeCycleAdapterFactory();
-
-      public Object getAdapter( final Object adaptable, final Class adapter ) {
-        Object result = null;
-        if( adaptable instanceof Display && adapter == ILifeCycleAdapter.class )
-        {
-          result = factory.getAdapter( adaptable, adapter );
-        } else {
-          result = new AbstractWidgetLCA() {
-
-            public void preserveValues( final Widget widget ) {
-            }
-
-            public void readData( final Widget widget ) {
-              log.add( widget );
-              if( widget instanceof DisposeTestButton ) {
-                SelectionEvent event
-                  = new SelectionEvent( widget,
-                                        null,
-                                        SelectionEvent.WIDGET_SELECTED );
-                event.processEvent();
-              }
-            }
-
-            public void renderInitialization( final Widget widget )
-              throws IOException
-            {
-              renderInitLog.add( widget );
-            }
-
-            public void renderChanges( final Widget widget ) throws IOException
-            {
-              if( widget.getClass().equals( Composite.class ) ) {
-                throw new IOException();
-              }
-              log.add( widget );
-              renderChangesLog.add( widget );
-            }
-
-
-            public void renderDispose( final Widget widget ) throws IOException
-            {
-              renderDisposeLog.add( widget );
-            }
-          };
-        }
-        return result;
-      }
-
-      public Class[] getAdapterList() {
-        return factory.getAdapterList();
-      }
-    };
-    manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
-    manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
-    clearLogs();
-    Fixture.registerResourceManager();
-    PhaseListenerRegistry.add( new CurrentPhase.Listener() );
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
+  private void registerAdapterFactories() {
+    String initParam = RWTServletContextListener.ADAPTER_FACTORIES_PARAM;
+    String value = createLifeCycleAdapterRegistration();
+    Fixture.setInitParameter( initParam, value );
   }
 
+  private String createLifeCycleAdapterRegistration() {
+    return   createLifeCycleAdapterRegistration( Display.class )
+           + ","
+           + createLifeCycleAdapterRegistration( Widget.class ); 
+  }
+
+  private String createLifeCycleAdapterRegistration( Class adaptableType ) {
+    String factoryName = DisplayTestLifeCycleAdapterFactory.class.getName();
+    return factoryName + "#" + adaptableType.getName();
+  }
+
+  protected void setUp() throws Exception {
+    clearLogs();
+    registerAdapterFactories();
+    Fixture.setUp();
+    Fixture.fakeNewRequest();
+  }
+  
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+    clearLogs();
   }
 
   private void clearLogs() {

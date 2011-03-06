@@ -6,9 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
- *     Rüdiger Herrmann - bug 335112
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Rüdiger Herrmann - bug 335112
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -16,13 +17,15 @@ import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
 
+import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.internal.theme.css.*;
+import org.eclipse.rwt.internal.theme.css.CssElementHolder;
+import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.swt.widgets.Widget;
@@ -39,7 +42,10 @@ public final class ThemeManager {
 
   private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
 
-  private static final ResourceLoader STANDARD_RESOURCE_LOADER
+  // TODO [RWTContext]: made field public to replace with a performance
+  //                    optimized solution for tests. Think about a less
+  //                    intrusive solution.
+  public static ResourceLoader STANDARD_RESOURCE_LOADER
     = new ResourceLoader()
   {
     ClassLoader classLoader = getClass().getClassLoader();
@@ -100,8 +106,6 @@ public final class ThemeManager {
     org.eclipse.swt.widgets.ScrollBar.class
   };
 
-  private static ThemeManager instance;
-
   private final Set customAppearances;
   private final Map themes;
   private final Set registeredThemeFiles;
@@ -112,7 +116,7 @@ public final class ThemeManager {
   private final CssElementHolder registeredCssElements;
 
 
-  private ThemeManager() {
+  ThemeManager() {
     // prevent instantiation from outside
     initialized = false;
     widgetsInitialized = false;
@@ -129,10 +133,7 @@ public final class ThemeManager {
    * Returns the sole instance of the ThemeManager.
    */
   public static ThemeManager getInstance() {
-    if( instance == null ) {
-      instance = new ThemeManager();
-    }
-    return instance;
+    return getSingletonHolder().getInstance();
   }
 
   /**
@@ -140,9 +141,9 @@ public final class ThemeManager {
    * call to create a new instance.
    */
   public static void resetInstance() {
-    instance = null;
+    getSingletonHolder().resetInstance();
   }
-
+  
   /**
    * Initializes the ThemeManager. Theming-relevant files are loaded for all
    * themeable widgets, resources are registered. If the ThemeManager has
@@ -593,5 +594,10 @@ public final class ThemeManager {
     if( DEBUG ) {
       System.out.println( mesg );
     }
+  }
+
+  private static ThemeManagerInstance getSingletonHolder() {
+    Class singletonType = ThemeManagerInstance.class;
+    return ( ThemeManagerInstance )RWTContext.getSingleton( singletonType );
   }
 }

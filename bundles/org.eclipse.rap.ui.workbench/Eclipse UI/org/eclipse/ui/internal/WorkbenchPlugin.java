@@ -6,12 +6,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ *    IBM Corporation - initial API and implementation
+ *    EclipseSource - adaptation for RAP
+ *    Frank Appel - Refactoring for bug 337787
  *******************************************************************************/
 
 package org.eclipse.ui.internal;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,7 +25,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.equinox.http.registry.HttpContextExtensionService;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -32,8 +32,6 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.service.localization.LocaleProvider;
 import org.eclipse.rap.ui.internal.SessionLocaleProvider;
-import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
-import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.progress.JobManagerAdapter;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
 import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
@@ -84,9 +82,10 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.SynchronousBundleListener;
-import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.framework.Version;
 
 import com.ibm.icu.text.MessageFormat;
+
 
 /**
  * This class represents the TOP of the workbench UI world
@@ -1095,26 +1094,9 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         // RAP [fappel]: initialize session aware job management
         JobManagerAdapter.getInstance();
         
-        // RAP [fappel]: ensure that the rap http context was loaded before
-        //               the mapping of servlets from branding takes place
-        String serviceName = HttpContextExtensionService.class.getName();
-        ServiceTracker httpContextExtensionServiceTracker
-          = new ServiceTracker( context, serviceName, null )
-        {
-          public Object addingService( final ServiceReference reference ) {
-            Object result = super.addingService( reference );
-            httpServiceTracker = new HttpServiceTracker(context);
-            ApplicationRegistry.registerApplicationEntryPoints();
-            try {
-              BrandingExtension.read();
-            } catch( final IOException ioe ) {
-              WorkbenchPlugin.log( "Unable to read branding extension", ioe ); //$NON-NLS-1$
-            }
-            httpServiceTracker.open();
-            return result;
-          }
-        };
-        httpContextExtensionServiceTracker.open();
+        // initialize RWT context and register RWT servlet
+        httpServiceTracker = new HttpServiceTracker( context );
+        httpServiceTracker.open();
 
         
 // RAP [fappel]: as workbench instances in RAP run in session scope the

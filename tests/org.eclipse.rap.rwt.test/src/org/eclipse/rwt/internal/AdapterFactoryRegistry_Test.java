@@ -1,24 +1,23 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 
 package org.eclipse.rwt.internal;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpSession;
-
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -37,17 +36,6 @@ public class AdapterFactoryRegistry_Test extends TestCase {
       }
       return 0;
     }
-  }
-
-  protected void setUp() throws Exception {
-    System.setProperty( IConfiguration.PARAM_LIFE_CYCLE,
-                        RWTLifeCycle.class.getName() );
-    Fixture.fakeContext();
-    Fixture.fakeNewRequest();
-  }
-  
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
   
   public void testRegistration() {
@@ -102,9 +90,6 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     // AdapterFactory implementation.
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestEntryPoint.class );
-    Fixture.registerAdapterFactories();
-    Fixture.registerResourceManager();
-
     TestAdapterFactory.log = "";
     AdapterFactoryRegistry.add( TestAdapterFactory.class, TestAdaptable.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
@@ -114,16 +99,22 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     assertEquals( TestAdapterFactory.CREATED, TestAdapterFactory.log );
 
     ContextProvider.disposeContext();
-    HttpSession session = new TestSession();
-    TestResponse response = new TestResponse();
-    TestRequest request = new TestRequest();
-    request.setSession( session );
-    Fixture.fakeContextProvider( response, request );
+    Fixture.createServiceContext();
     Fixture.fakeResponseWriter();
-    Fixture.registerAdapterFactories();
     
     TestAdapterFactory.log = "";
     lifeCycle.execute();
     assertEquals( TestAdapterFactory.CREATED, TestAdapterFactory.log );
   }
+
+  protected void setUp() throws Exception {
+    Fixture.createRWTContext();
+    Fixture.createServiceContext();
+    Fixture.fakeNewRequest();
+  }
+  
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
 }

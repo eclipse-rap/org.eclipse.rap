@@ -1,11 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.swt.dnd;
 
@@ -13,8 +15,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -166,17 +166,14 @@ public class Transfer_Test extends TestCase {
     int barType = Transfer.registerType( "bar" );
     assertTrue( fooType != barType );
   }
-  
+
   protected void setUp() throws Exception {
-    // we do need the ressource manager for this test
-    Fixture.setUpWithoutResourceManager();
-    Fixture.registerAdapterFactories();
-    Fixture.createContext( false );
-    // registration of real resource manager
-    ResourceManager.register( new DefaultResourceManagerFactory() );
+    Fixture.createRWTContext();
+    Fixture.createServiceContext();
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfRWTContext();
   }
 }

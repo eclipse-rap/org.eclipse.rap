@@ -6,10 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
@@ -377,13 +377,13 @@ public class TextLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
-    text.setEchoChar( (char) 0 );
+    text.setEchoChar( ( char )0 );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.executeLifeCycleFromServerThread();
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
-    text.setEchoChar( (char) 27 );
+    text.setEchoChar( ( char )27 );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.executeLifeCycleFromServerThread();

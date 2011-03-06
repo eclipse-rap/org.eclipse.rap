@@ -6,8 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -21,13 +22,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
@@ -175,8 +179,6 @@ public class Display extends Device implements Adaptable {
       && RWTLifeCycle.getUIThreadHolder().getThread() != null
       && Thread.currentThread() == RWTLifeCycle.getUIThreadHolder().getThread();
   }
-
-  private static WeakReference[] displays = new WeakReference[ 4 ];
 
   private final List shells;
   private final Thread thread;
@@ -876,6 +878,18 @@ public class Display extends Device implements Adaptable {
 
   //////////////////////
   // Information methods
+  
+  private static WeakReference[] getDisplays() {
+    return getDisplaysHolder().getDisplays();
+  }
+  
+  private static void setDisplays( WeakReference[] displays ) {
+    getDisplaysHolder().setDisplays( displays );
+  }
+
+  private static DisplaysHolder getDisplaysHolder() {
+    return ( DisplaysHolder )RWTContext.getSingleton( DisplaysHolder.class );
+  }
 
   /**
    * Returns the display which the given thread is the
@@ -891,6 +905,7 @@ public class Display extends Device implements Adaptable {
    */
   public static Display findDisplay( final Thread thread ) {
     synchronized( Device.class ) {
+      WeakReference[] displays = getDisplays();
       Display result = null;
       for( int i = 0; result == null && i < displays.length; i++ ) {
         WeakReference current = displays[ i ];
@@ -2118,6 +2133,7 @@ public class Display extends Device implements Adaptable {
   private void register() {
     synchronized( Device.class ) {
       boolean registered = false;
+      WeakReference[] displays = getDisplays();
       for( int i = 0; !registered && i < displays.length; i++ ) {
         if( canDisplayRefBeReplaced( displays[ i ] ) ) {
           displays[ i ] = new WeakReference( this );
@@ -2128,7 +2144,7 @@ public class Display extends Device implements Adaptable {
         WeakReference[] newDisplays = new WeakReference[ displays.length + 4 ];
         System.arraycopy( displays, 0, newDisplays, 0, displays.length );
         newDisplays[ displays.length ] = new WeakReference( this );
-        displays = newDisplays;
+        setDisplays( newDisplays );
       }
     }
   }
@@ -2148,6 +2164,7 @@ public class Display extends Device implements Adaptable {
 
   private void deregister() {
     synchronized( Device.class ) {
+      WeakReference[] displays = getDisplays();
       for( int i = 0; i < displays.length; i++ ) {
         WeakReference current = displays[ i ];
         if( current != null && this == current.get() ) {

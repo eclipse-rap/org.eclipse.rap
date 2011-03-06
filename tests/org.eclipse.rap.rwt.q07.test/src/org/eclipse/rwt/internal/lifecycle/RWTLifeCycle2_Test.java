@@ -1,17 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing implementation
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.LinkedList;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -20,15 +22,15 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
+import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.resources.IResourceManagerFactory;
 import org.eclipse.rwt.service.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -37,7 +39,6 @@ import org.eclipse.swt.widgets.*;
  * different setUp/tearDown implementations.
  */
 public class RWTLifeCycle2_Test extends TestCase {
-
   private static final String TEST_SESSION_ATTRIBUTE = "testSessionAttr";
   private static final String EXCEPTION_MSG = "Error in readAndDispatch";
 
@@ -47,8 +48,20 @@ public class RWTLifeCycle2_Test extends TestCase {
   private static java.util.List eventLog;
   private static PhaseId currentPhase;
 
-  private StartupPage.IStartupPageConfigurer bufferedConfigurer;
   private TestSession session;
+
+  public static class FakeResourceManagerFactory
+    implements IResourceManagerFactory
+  {
+
+    public IResourceManager create() {
+      return new TestResourceManager() {
+        public Enumeration getResources( String name ) {
+          return null;
+        }
+      };
+    }
+  }
 
   public static final class ExceptionInReadAndDispatchEntryPoint 
     implements IEntryPoint 
@@ -298,28 +311,25 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
+    Fixture.setSystemProperties();
+    registerResourceManagerFactory();
+    Fixture.createRWTContext();
+    Fixture.createServiceContext();
+
     maliciousButtonId = null;
     createUIEntered = false;
     createUIExited = false;
-    bufferedConfigurer = StartupPage.configurer;
-    eventLog = new ArrayList();
-    StartupPage.configurer = new RWTStartupPageConfigurer();
-    Fixture.clearSingletons();
-    ThemeManager.getInstance().initialize();
-    Fixture.registerResourceManager();
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
-    PhaseListenerRegistry.add( new CurrentPhase.Listener() );
-    AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
-                                Widget.class );
-    AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
-                                Display.class );
-    session = new TestSession();
+    eventLog = new LinkedList();
+    registerTestLogger();
+  }
+
+  private void registerTestLogger() {
+    session = ( TestSession )ContextProvider.getSession().getHttpSession();
     ServletContext servletContext = session.getServletContext();
     TestServletContext servletContextImpl
       = ( TestServletContext )servletContext;
     servletContextImpl.setLogger( new TestLogger() {
       public void log( final String message, final Throwable throwable ) {
-        System.err.println( message );
         if( throwable != null ) {
           throwable.printStackTrace();
         }
@@ -327,21 +337,25 @@ public class RWTLifeCycle2_Test extends TestCase {
     } );
   }
 
+  private void registerResourceManagerFactory() {
+    // [fappel]: This solves a class loader problem caused by the project 
+    //           dependencies:
+    //           ServiceManager tries to load a configured service handler 
+    //           which is not reachable from the q07 project. The 
+    //           service.xml is located in the fixture project and the 
+    //           handler implementation is in the rwt.test project, which
+    //           is not on this tests classpath. Note that this problem
+    //           didn't show up running the RWTAllTestSuite, since
+    //           in that case all projects are available on the classpath.
+    String initParam = RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM;
+    String initValue = FakeResourceManagerFactory.class.getName();
+    Fixture.setInitParameter( initParam, initValue );
+  }
+
   protected void tearDown() throws Exception {
-    session.invalidate();
     session = null;
-    AdapterFactoryRegistry.clear();
-    Fixture.deregisterResourceManager();
-    ResourceFactory.clear();
-    // remove all registered PhaseListener
-    PhaseListenerRegistry.clear();
-    // remove all registered entry points
-    String[] entryPoints = EntryPointManager.getEntryPoints();
-    for( int i = 0; i < entryPoints.length; i++ ) {
-      EntryPointManager.deregister( entryPoints[ i ] );
-    }
-    LifeCycleFactory.destroy();
-    Fixture.clearSingletons();
-    StartupPage.configurer = bufferedConfigurer;
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfRWTContext();
+    Fixture.unsetSystemProperties();
   }
 }

@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
@@ -16,7 +17,8 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.resources.*;
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -65,14 +67,12 @@ public class ImageFactory_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    Fixture.setUpWithoutResourceManager();
-    Fixture.createContext( false );
-    // registration of real resource manager
-    ResourceManager.register( new DefaultResourceManagerFactory() );
+    Fixture.createRWTContext();
+    Fixture.createServiceContext();
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
-    ResourceFactory.clear();
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfRWTContext();
   }
 }

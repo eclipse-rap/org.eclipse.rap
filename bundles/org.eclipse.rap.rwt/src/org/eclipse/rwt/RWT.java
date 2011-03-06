@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing implementation
- *     Ralf Zahn (ARS) - browser history support (Bug 283291)
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing implementation
+ *    Ralf Zahn (ARS) - browser history support (Bug 283291)
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt;
 
@@ -18,6 +19,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.ResourceManager;
@@ -174,18 +176,6 @@ public final class RWT {
     }
   }
   
-  private static final IServiceManager serviceManager = new IServiceManager() {
-    public void registerServiceHandler( final String id, 
-                                        final IServiceHandler serviceHandler ) 
-    {
-      ServiceManager.registerServiceHandler( id, serviceHandler );
-    }
-    public void unregisterServiceHandler( final String id ) 
-    {
-      ServiceManager.unregisterServiceHandler( id );
-    }
-  };
-  
   /**
    * Returns the instance of the life cycle which is currently processed.
    * 
@@ -211,7 +201,8 @@ public final class RWT {
    * @return the {@link IServiceManager}
    */
   public static IServiceManager getServiceManager() {
-    return serviceManager;
+    Class singletonType = ServiceManagerImpl.class;
+    return ( IServiceManager )RWTContext.getSingleton( singletonType );
   }
   
   /**

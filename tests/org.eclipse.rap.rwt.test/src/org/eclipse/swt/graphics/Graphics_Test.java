@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
@@ -19,8 +20,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -100,7 +101,7 @@ public class Graphics_Test extends TestCase {
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     String registerPath = getRegisterPath( image1 );
     assertTrue( manager.isRegistered( registerPath ) );
-    File contextDir = new File( Fixture.CONTEXT_DIR,
+    File contextDir = new File( Fixture.WEB_CONTEXT_DIR,
                                 ResourceManagerImpl.RESOURCES );
     assertTrue( new File( contextDir, registerPath ).exists() );
     Image image1a = Graphics.getImage( Fixture.IMAGE1 );
@@ -116,9 +117,9 @@ public class Graphics_Test extends TestCase {
   }
 
   public void testGetImageWithClassLoader() throws IOException {
-    File testGif = new File( Fixture.CONTEXT_DIR, "test.gif" );
+    File testGif = new File( Fixture.WEB_CONTEXT_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE3, testGif );
-    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURI().toURL() };
+    URL[] urls = new URL[] { Fixture.WEB_CONTEXT_DIR.toURI().toURL() };
     URLClassLoader classLoader = new URLClassLoader( urls, null );
     IResourceManager manager = ResourceManager.getInstance();
     assertFalse( manager.isRegistered( Fixture.IMAGE3 ) );
@@ -134,9 +135,9 @@ public class Graphics_Test extends TestCase {
 
   public void testGetImageWithInputStream() throws IOException {
     String imageName = "testIS.gif";
-    File testGif = new File( Fixture.CONTEXT_DIR, imageName );
+    File testGif = new File( Fixture.WEB_CONTEXT_DIR, imageName );
     Fixture.copyTestResource( Fixture.IMAGE3, testGif );
-    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURI().toURL() };
+    URL[] urls = new URL[] { Fixture.WEB_CONTEXT_DIR.toURI().toURL() };
     URLClassLoader classLoader = new URLClassLoader( urls, null );
     IResourceManager manager = ResourceManager.getInstance();
     assertFalse( manager.isRegistered( Fixture.IMAGE3 ) );
@@ -232,16 +233,12 @@ public class Graphics_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    // we do need the resource manager for this test
-    Fixture.setUpWithoutResourceManager();
-    Fixture.registerAdapterFactories();
-    Fixture.createContext( false );
-    ThemeManager.getInstance().initialize();
-    // registration of real resource manager
-    ResourceManager.register( new DefaultResourceManagerFactory() );
+    Fixture.createRWTContext();
+    Fixture.createServiceContext();
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfRWTContext();
   }
 }
