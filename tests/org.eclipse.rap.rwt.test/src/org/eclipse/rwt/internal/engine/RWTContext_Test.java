@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
@@ -56,27 +57,21 @@ public class RWTContext_Test extends TestCase {
   }
   
   public void testRegisterInstanceTypes() {
-    RWTContext rwtContext = new RWTContext();
-    rwtContext.registerInstanceTypes( new Class[] { TestInstanceType.class } );
-    
+    RWTContext rwtContext = new RWTContext( new Class[] { TestInstanceType.class } );
     Object instance = rwtContext.getInstance( TestInstanceType.class );
-
     assertTrue( instance instanceof TestInstanceType );
   }
   
   public void testGetInstanceReturnsAlwaysSameInstance() {
-    RWTContext rwtContext = new RWTContext();
-    rwtContext.registerInstanceTypes( new Class[] { TestInstanceType.class } );
-    
+    RWTContext rwtContext = new RWTContext( new Class[] { TestInstanceType.class } );
     Object instance1 = rwtContext.getInstance( TestInstanceType.class );
     Object instance2 = rwtContext.getInstance( TestInstanceType.class );
-    
     assertSame( instance1, instance2 );
   }
   
   public void testRegisterInstanceTypesWithNull() {
     try {
-      new RWTContext().registerInstanceTypes( null );
+      new RWTContext( null );
       fail();
     } catch( NullPointerException expected ) {
     }    
@@ -84,64 +79,40 @@ public class RWTContext_Test extends TestCase {
 
   public void testRegisterAbstractClass() {
     try {
-      Class[] instanceTypes = new Class[] { AbstractClass.class };
-      new RWTContext().registerInstanceTypes( instanceTypes );
+      new RWTContext( new Class[] { AbstractClass.class } );
       fail();
     } catch( IllegalArgumentException expected ) {
     }    
   }
   
-  public void testOneTimeOnlyRegistration() {
-    RWTContext rwtContext = new RWTContext();
-    Class[] instanceTypes = new Class[] { TestInstanceType.class };
-    rwtContext.registerInstanceTypes( instanceTypes );
-
-    try {
-      rwtContext.registerInstanceTypes( instanceTypes );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-  }
-  
   public void testRegisterInstanceFactory() {
-    RWTContext context = new RWTContext();
-    Class[] instanceTypes = new Class[] { TestInstanceTypeFactory.class };
-    context.registerInstanceTypes( instanceTypes );
-    
+    RWTContext context = new RWTContext( new Class[] { TestInstanceTypeFactory.class } );
     Object instance = context.getInstance( TestInstanceType.class );
-
     assertTrue( instance instanceof TestInstanceType );
   }
   
   public void testRegisterInstanceTypeFactoryWithNonMatchingType() {
-    RWTContext rwtContext = new RWTContext();
-    
     try {
-      Class type = WrongTypeFactory.class;
-      rwtContext.registerInstanceTypes( new Class[] { type } );
+      new RWTContext( new Class[] { WrongTypeFactory.class } );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
   
   public void testDuplicateTypeRegistration() {
-    RWTContext rwtContext = new RWTContext();
-    Class[] instanceTypes = new Class[]{
+    Class[] instanceTypes = new Class[] {
       TestInstanceTypeFactory.class,
       TestInstanceTypeFactory.class
     };
-    
     try {
-      rwtContext.registerInstanceTypes( instanceTypes );
+      new RWTContext( instanceTypes );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
   
   public void testGetInstanceOfNonRegisterType() {
-    RWTContext rwtContext = new RWTContext();
-    rwtContext.registerInstanceTypes( new Class[] { TestInstanceType.class } );
-
+    RWTContext rwtContext = new RWTContext( new Class[] { TestInstanceType.class } );
     try {
       rwtContext.getInstance( Runnable.class );
       fail();

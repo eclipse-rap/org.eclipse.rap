@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
@@ -63,9 +64,7 @@ public class RWTContextUtil {
   }
 
   public static RWTContext createRWTContext() {
-    RWTContext result = new RWTContext();
-    result.registerInstanceTypes( INSTANCE_TYPES );
-    return result;
+    return new RWTContext( INSTANCE_TYPES );
   }
 
   public static void registerRWTContext( ServletContext servletContext,
