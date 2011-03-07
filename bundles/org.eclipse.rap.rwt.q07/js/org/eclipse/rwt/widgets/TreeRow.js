@@ -344,9 +344,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._setForeground( element, this._getCellColor( item, cell ) );
         this._setBounds( element, left, 0, width, this._tree.getItemHeight() );
         this._setFont( element, this._getCellFont( item, cell ) );
+        this._setTextDecoration( element, this._styleMap.textDecoration );
         element.style.lineHeight = element.style.height;
-        var decoration = this._styleMap.textDecoration;
-        element.style.textDecoration = decoration === "none" ? "" : decoration;
       }
       return element;
     },
@@ -427,7 +426,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         }
       }
     },
-    
+
+    _setTextDecoration : function( element, decoration ) {
+      if( decoration == null || decoration === "none" ) {
+        element.style.textDecoration = "";
+      } else {
+        element.style.textDecoration = decoration;
+      }
+    },
+
     _setBounds : function( element, x, y, width, height ) {
       try{ 
         element.style.left = x + "px";

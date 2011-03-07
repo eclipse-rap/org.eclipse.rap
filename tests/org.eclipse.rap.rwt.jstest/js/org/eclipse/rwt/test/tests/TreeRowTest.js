@@ -127,7 +127,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
-    
+
+    testLabelDecoration : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree();
+      testUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {};
+          result.itemBackground = "blue";
+          result.itemForeground = "white";
+          result.textDecoration = "line-through";
+          return result;
+        }
+      } );
+      var row = new org.eclipse.rwt.widgets.TreeRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      row.renderItem( item );
+      node = row._getTargetNode().childNodes[ 1 ];
+      assertEquals( "line-through", node.style.textDecoration );
+      tree.destroy();
+      row.destroy();
+    },
+
     testRenderNoElementForEmptyText : function() {
       var tree = this._createTree();
       tree._columnCount = 2;
@@ -242,7 +265,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
   
-    
     testIndentSymbolsNotEnoughSpace : function() {
       var tree = this._createTree();
       var row = new org.eclipse.rwt.widgets.TreeRow( tree );
@@ -1141,7 +1163,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           }
           return result;
         }
-      } );  
+      } );
       tree.setHasFullSelection( false );
       var row = new org.eclipse.rwt.widgets.TreeRow( tree );
       this._addToDom( row );
