@@ -16,43 +16,37 @@ import org.eclipse.swt.internal.SWTEventObject;
 /**
  * Instances of this class are sent as a result of
  * accessibility clients sending messages to controls
- * asking for information about the control instance.
+ * asking for detailed information about the implementation
+ * of the control instance. Typically, only implementors
+ * of custom controls need to listen for this event.
  * <p>
- * Note: The meaning of the result field depends
- * on the message that was sent.
+ * Note: The meaning of each field depends on the
+ * message that was sent.
  * </p>
  *
- * @see AccessibleListener
- * @see AccessibleAdapter
+ * @see AccessibleControlListener
+ * @see AccessibleControlAdapter
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * 
  * @since 1.4
  */
-public class AccessibleEvent extends SWTEventObject {
-	/**
-	 * The value of this field is set by an accessibility client
-	 * before the accessible listener method is called.
-	 * ChildID can be CHILDID_SELF, representing the control itself,
-	 * or a 0-based integer representing a specific child of the control.
-	 */
-	public int childID;
+public class AccessibleControlEvent extends SWTEventObject {
+	public int childID;			// IN/OUT
+	public Accessible accessible;	// OUT
+	public int x, y;				// IN/OUT
+	public int width, height;		// OUT
+	public int detail;			// IN/OUT
+	public String result;			// OUT
+	public Object children[];		// [OUT]
 	
-	/**
-	 * The value of this field must be set in the accessible listener
-	 * method before returning.
-	 * What to set it to depends on the listener method called, and
-	 * the childID specified by the client.
-	 */
-	public String result;
-	
-	static final long serialVersionUID = 3257567304224026934L;
+	static final long serialVersionUID = 3257281444169529141L;
 	
 /**
  * Constructs a new instance of this class.
  *
  * @param source the object that fired the event
  */
-public AccessibleEvent(Object source) {
+public AccessibleControlEvent(Object source) {
 	super(source);
 }
 
@@ -63,6 +57,14 @@ public AccessibleEvent(Object source) {
  * @return a string representation of the event
  */
 public String toString () {
-	return "AccessibleEvent {childID=" + childID + " result=" + result + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	return "AccessibleControlEvent {childID=" + childID +  //$NON-NLS-1$
+		" accessible=" + accessible +  //$NON-NLS-1$
+		" x=" + x +  //$NON-NLS-1$
+		" y=" + y +  //$NON-NLS-1$
+		" width=" + width +  //$NON-NLS-1$
+		" height=" + height +  //$NON-NLS-1$
+		" detail=" + detail +  //$NON-NLS-1$
+		" result=" + result +  //$NON-NLS-1$
+		"}"; //$NON-NLS-1$
 }	
 }

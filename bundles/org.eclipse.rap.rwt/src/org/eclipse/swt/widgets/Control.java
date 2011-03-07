@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ShowEvent;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.accessibility.*;
 
 
 /**
@@ -109,6 +110,7 @@ public abstract class Control extends Widget implements Drawable {
   private Font font;
   private Cursor cursor;
   private Rectangle bufferedPadding;
+  private Accessible accessible;
 
   Control( final Composite parent ) {
     // prevent instantiation from outside this package; only called by Shell
@@ -2066,6 +2068,37 @@ public abstract class Control extends Widget implements Drawable {
     return style & (SWT.LEFT_TO_RIGHT /*| SWT.RIGHT_TO_LEFT*/);
   }
 
+  ////////////////
+  // Accessibility
+
+  /**
+   * Returns the accessible object for the receiver.
+   * <p>
+   * If this is the first time this object is requested,
+   * then the object is created and returned. The object
+   * returned by getAccessible() does not need to be disposed.
+   * </p>
+   *
+   * @return the accessible object
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see Accessible#addAccessibleListener
+   * @see Accessible#addAccessibleControlListener
+   * 
+   * @since 1.4
+   */
+  public Accessible getAccessible() {
+    checkWidget();
+    if( accessible == null ) {
+      accessible = Accessible.internal_new_Accessible( this );
+    }
+    return accessible;
+  }
+
   ////////////
   // Disposal
 
@@ -2098,6 +2131,10 @@ public abstract class Control extends Widget implements Drawable {
       shell.setSavedFocus( null );
     }
     internalSetRedraw( false );
+    if( accessible != null ) {
+      accessible.internal_dispose_Accessible();
+    }
+    accessible = null;
     super.releaseWidget();
   }
 
