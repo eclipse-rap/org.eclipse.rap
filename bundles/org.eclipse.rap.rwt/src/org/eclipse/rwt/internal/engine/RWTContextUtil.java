@@ -18,6 +18,7 @@ import org.eclipse.rwt.internal.branding.BrandingManagerInstance;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.rwt.internal.theme.ThemeManagerInstance;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
@@ -51,7 +52,8 @@ public class RWTContextUtil {
     ConfigurationReaderInstance.class,
     ResourceRegistryInstance.class,
     ServiceManagerImpl.class,
-    DisplaysHolder.class
+    DisplaysHolder.class,
+    ThemeAdapterUtil.class
   };
 
   public static RWTContext registerDefaultRWTContext( ServletContext context ) {

@@ -22,6 +22,7 @@ import org.eclipse.rwt.internal.branding.BrandingManagerInstance;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.rwt.internal.theme.ThemeManagerInstance;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.*;
@@ -103,6 +104,9 @@ public class RWTContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( DisplaysHolder.class ) );
     assertSame( rwtContext.getInstance( DisplaysHolder.class ),
                 getSingleton( DisplaysHolder.class ) );
+    assertNotNull( getSingleton( ThemeAdapterUtil.class ) );
+    assertSame( rwtContext.getInstance( ThemeAdapterUtil.class ),
+                getSingleton( ThemeAdapterUtil.class ) );
     
     RWTContextUtil.deregisterRWTContext( servletContext );
     try {
@@ -212,11 +216,11 @@ public class RWTContextUtil_Test extends TestCase {
     }
   }
 
-  private Object getSingleton( Class singletonType ) {
+  private static Object getSingleton( Class singletonType ) {
     return RWTContext.getSingleton( singletonType );
   }
 
-  private RuntimeException runWithExceptionExpected( Runnable runnable ) {
+  private static RuntimeException runWithExceptionExpected( Runnable runnable ) {
     RuntimeException actual = null;
     try {
       RWTContextUtil.runWithInstance( new RWTContext(), runnable );

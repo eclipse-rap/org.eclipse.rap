@@ -1,25 +1,34 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
+ *    Frank Appel - removed singletons and static fields (Bug 227787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.swt.widgets.Widget;
 
+
 public final class ThemeAdapterUtil {
 
-  private static final Map themeAdapters = new HashMap();
+  private final Map themeAdapters;
 
   public static IThemeAdapter getThemeAdapter( final Widget widget ) {
+    return getInstance().doGetThemeAdapter( widget );
+  }
+
+  private IThemeAdapter doGetThemeAdapter( final Widget widget ) {
     Class widgetClass = widget.getClass();
     IThemeAdapter result;
     synchronized( themeAdapters ) {
@@ -82,5 +91,13 @@ public final class ThemeAdapterUtil {
       throw new ThemeManagerException( message, e );
     }
     return result;
+  }
+
+  private static ThemeAdapterUtil getInstance() {
+    return ( ThemeAdapterUtil )RWTContext.getSingleton( ThemeAdapterUtil.class );
+  }
+
+  private ThemeAdapterUtil() {
+    themeAdapters = new HashMap();
   }
 }
