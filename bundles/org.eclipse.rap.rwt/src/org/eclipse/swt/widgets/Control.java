@@ -2099,6 +2099,148 @@ public abstract class Control extends Widget implements Drawable {
     return accessible;
   }
 
+  ////////////////////
+  // Touch and Gesture
+
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when gesture events are generated for the control,
+   * by sending it one of the messages defined in the
+   * <code>GestureListener</code> interface.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see GestureListener
+   * @see #removeGestureListener
+   * 
+   * @since 1.4
+   */
+  public void addGestureListener( GestureListener listener ) {
+    checkWidget();
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when gesture events are generated for the control.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see GestureListener
+   * @see #addGestureListener
+   * 
+   * @since 1.4
+   */
+  public void removeGestureListener( GestureListener listener ) {
+    checkWidget();
+  }
+
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when touch events occur, by sending it
+   * one of the messages defined in the <code>TouchListener</code>
+   * interface.
+   * <p>
+   * NOTE: You must also call <code>setTouchEnabled</code> to notify the 
+   * windowing toolkit that you want touch events to be generated.
+   * </p>
+   * 
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see TouchListener
+   * @see #removeTouchListener
+   * 
+   * @since 1.4
+   */
+  public void addTouchListener( TouchListener listener ) {
+    checkWidget();
+  }
+
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when touch events occur.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see TouchListener
+   * @see #addTouchListener
+   * 
+   * @since 1.4
+   */
+  public void removeTouchListener( TouchListener listener ) {
+    checkWidget();
+  }
+
+  /**
+   * Sets whether the receiver should accept touch events. By default, a Control does not accept
+   * touch events. No error or exception is thrown if the underlying hardware does not support touch
+   * input.
+   * 
+   * @param enabled the new touch-enabled state
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    
+   * @since 1.4
+   */
+  public void setTouchEnabled( boolean enabled ) {
+    checkWidget();
+  }
+
+  /**
+   * Returns <code>true</code> if this control is receiving OS-level touch events,
+   * otherwise <code>false</code>
+   * <p>
+   * Note that this method will return false if the current platform does not support touch-based
+   * input. If this method does return true, gesture events will not be sent to the control.
+   *
+   * @return <code>true</code> if the widget is currently receiving touch events; <code>false</code>
+   * otherwise.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.4
+   */
+  public boolean getTouchEnabled() {
+    checkWidget();
+    return false;
+  }
+
   ////////////
   // Disposal
 

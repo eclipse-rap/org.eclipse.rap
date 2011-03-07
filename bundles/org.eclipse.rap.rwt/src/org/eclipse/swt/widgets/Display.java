@@ -2130,6 +2130,17 @@ public class Display extends Device implements Adaptable {
     checkDevice();
   }
 
+  /**    
+   * Returns true if a touch-aware input device is attached to the system,
+   * enabled, and ready for use.
+   * 
+   * @since 1.4
+   */
+  public boolean getTouchEnabled() {
+    checkDevice();
+    return false;
+  }
+
   private void register() {
     synchronized( Device.class ) {
       boolean registered = false;

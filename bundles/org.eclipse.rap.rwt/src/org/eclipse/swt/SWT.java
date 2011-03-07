@@ -602,6 +602,82 @@ public class SWT {
 //  public static final int TRAVERSE_PAGE_NEXT = 1 << 9;
 
   /**
+   * Gesture event detail field value indicating that a continuous
+   * gesture is about to begin.
+   * 
+   * @since 1.4
+   */
+  public static final int GESTURE_BEGIN = 1 << 1;
+
+  /**
+   * Gesture event detail field value indicating that a continuous 
+   * gesture has ended.
+   * 
+   * @since 1.4
+   */
+  public static final int GESTURE_END = 1 << 2;
+
+  /**
+   * Gesture event detail field value indicating that a 
+   * rotation gesture has happened. Only the rotation field
+   * of the event is valid.
+   * 
+   * @since 1.4
+   */
+  public static final int GESTURE_ROTATE = 1 << 3;
+  
+  /**
+   * Gesture event detail field value indicating that a 
+   * swipe gesture has happened.
+   * 
+   * @since 1.4
+   */
+  public static final int GESTURE_SWIPE = 1 << 4;
+  
+  /**
+   * Gesture event detail field value indicating that a 
+   * magnification gesture has happened.
+   * 
+   * @since 1.4
+   */
+  public static final int GESTURE_MAGNIFY = 1 << 5;
+  
+  /**
+   * Gesture event detail field value indicating that a 
+   * panning (two-finger scroll) gesture has happened.
+   * 
+   * @since 1.4
+   */
+  public static final int GESTURE_PAN = 1 << 6;
+  
+  /**
+   * A constant indicating that a finger touched the device.  
+   * 
+   * @see org.eclipse.swt.widgets.Touch#state
+   * 
+   * @since 1.4
+   */
+  public static final int TOUCHSTATE_DOWN = 1 << 0;
+
+  /**
+   * A constant indicating that a finger moved on the device.
+   * 
+   * @see org.eclipse.swt.widgets.Touch#state
+   * 
+   * @since 1.4
+   */
+  public static final int TOUCHSTATE_MOVE = 1 << 1;
+
+  /**
+   * A constant indicating that a finger was lifted from the device. 
+   * 
+   * @see org.eclipse.swt.widgets.Touch#state
+   * 
+   * @since 1.4
+   */
+  public static final int TOUCHSTATE_UP = 1 << 2;
+
+  /**
    * A constant indicating that a given operation should be performed on
    * all widgets (value is 1&lt;&lt;0).
    *
