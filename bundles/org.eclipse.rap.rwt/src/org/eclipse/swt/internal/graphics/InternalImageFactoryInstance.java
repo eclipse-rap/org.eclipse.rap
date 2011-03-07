@@ -159,7 +159,7 @@ public class InternalImageFactoryInstance {
     return new ByteArrayInputStream( bytes );
   }
 
-  private int getOutputFormat( final ImageData imageData ) {
+  private static int getOutputFormat( ImageData imageData ) {
     int result = imageData.type;
     if( imageData.type == SWT.IMAGE_UNDEFINED ) {
       result = SWT.IMAGE_PNG;
@@ -167,12 +167,12 @@ public class InternalImageFactoryInstance {
     return result;
   }
 
-  private String createGeneratedImagePath( final ImageData data ) {
+  private static String createGeneratedImagePath( ImageData data ) {
     int hashCode = getHashCode( data );
     return "generated/" + Integer.toHexString( hashCode );
   }
 
-  private int getHashCode( final ImageData imageData ) {
+  private static int getHashCode( ImageData imageData ) {
     int result;
     if( imageData.data  == null ) {
       result = 0;

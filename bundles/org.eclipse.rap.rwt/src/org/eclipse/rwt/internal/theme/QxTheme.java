@@ -163,7 +163,7 @@ public final class QxTheme {
     tailWritten = true;
   }
 
-  private int checkType( final int type ) {
+  private static int checkType( int type ) {
     if(    type != META
         && type != FONT
         && type != COLOR

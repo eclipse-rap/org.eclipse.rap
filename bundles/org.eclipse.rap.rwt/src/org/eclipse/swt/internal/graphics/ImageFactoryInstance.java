@@ -79,9 +79,7 @@ public class ImageFactoryInstance {
     return createImage( null, path, inputStream );
   }
 
-  private Image createImageInstance( final Device device,
-                                     final InternalImage internalImage )
-  {
+  private static Image createImageInstance( Device device, InternalImage internalImage ) {
     Image result;
     try {
       Class imageClass = Image.class;
@@ -96,9 +94,7 @@ public class ImageFactoryInstance {
     return result;
   }
 
-  private InputStream getInputStream( final String path,
-                                      final ClassLoader imageLoader )
-  {
+  private static InputStream getInputStream( String path, ClassLoader imageLoader ) {
     IResourceManager manager = ResourceManager.getInstance();
     ClassLoader loaderBuffer = manager.getContextLoader();
     if( imageLoader != null ) {

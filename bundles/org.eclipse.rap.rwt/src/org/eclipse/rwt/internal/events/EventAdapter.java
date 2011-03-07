@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
 
@@ -15,6 +16,7 @@ import java.util.*;
 
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.SWT;
+
 
 public class EventAdapter implements IEventAdapter {
 
@@ -165,9 +167,7 @@ public class EventAdapter implements IEventAdapter {
     return result;
   }
   
-  private void checkTypeCompatibility( final Class listenerType, 
-                                       final Object listener ) 
-  {
+  private static void checkTypeCompatibility( Class listenerType, Object listener ) {
     if( !listenerType.isAssignableFrom( listener.getClass() ) ) {
       String msg =   "Parameter 'listener' must be of type '" 
                    + listenerType.getName() 

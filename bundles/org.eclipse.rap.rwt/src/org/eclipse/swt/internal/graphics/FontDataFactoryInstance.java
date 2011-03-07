@@ -43,7 +43,7 @@ public class FontDataFactoryInstance {
     cache.clear();
   }
 
-  private FontData cloneFontData( final FontData fontData ) {
+  private static FontData cloneFontData( FontData fontData ) {
     String name = fontData.getName();
     int height = fontData.getHeight();
     int style = fontData.getStyle();

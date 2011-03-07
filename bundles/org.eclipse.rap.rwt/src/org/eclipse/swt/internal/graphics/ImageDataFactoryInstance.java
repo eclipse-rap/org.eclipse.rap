@@ -41,7 +41,7 @@ public class ImageDataFactoryInstance {
     return result;
   }
 
-  private ImageData createImageData( final InternalImage internalImage ) {
+  private static ImageData createImageData( InternalImage internalImage ) {
     ImageData result = null;
     String imagePath = internalImage.getResourceName();
     try {

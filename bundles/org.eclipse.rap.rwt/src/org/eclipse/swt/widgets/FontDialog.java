@@ -268,7 +268,7 @@ public class FontDialog extends Dialog {
     createFontColorGroup( rightArea );
   }
 
-  private Composite createVerticalArea( final Composite parent ) {
+  private static Composite createVerticalArea( Composite parent ) {
     Composite result = new Composite( parent, SWT.NONE );
     result.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
     GridLayout layout = new GridLayout();
@@ -426,7 +426,7 @@ public class FontDialog extends Dialog {
     } );
   }
 
-  private Button createButton( final Composite parent, final String text ) {
+  private static Button createButton( final Composite parent, final String text ) {
     Button result = new Button( parent, SWT.PUSH );
     result.setText( text );
     GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );

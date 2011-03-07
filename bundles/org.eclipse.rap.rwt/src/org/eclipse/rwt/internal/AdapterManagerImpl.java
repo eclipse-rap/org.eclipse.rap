@@ -73,7 +73,7 @@ public class AdapterManagerImpl
     return result;
   }
   
-  private Object calculateHash( final Object adaptable, final Class adapter ) {
+  private static Object calculateHash( Object adaptable, Class adapter ) {
     Class adaptableClass = adaptable.getClass();
     int hash = 23273 + adaptableClass.hashCode() * 37 + adapter.hashCode();
     return new Integer( hash );
