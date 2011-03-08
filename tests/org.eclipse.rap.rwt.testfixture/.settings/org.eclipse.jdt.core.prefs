@@ -1,4 +1,4 @@
-#Mon Mar 07 14:58:49 CET 2011
+#Tue Mar 08 23:09:18 CET 2011
 eclipse.preferences.version=1
 instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=disabled
@@ -50,7 +50,7 @@ org.eclipse.jdt.core.compiler.problem.rawTypeReference=ignore
 org.eclipse.jdt.core.compiler.problem.redundantNullCheck=warning
 org.eclipse.jdt.core.compiler.problem.redundantSuperinterface=ignore
 org.eclipse.jdt.core.compiler.problem.reportMethodCanBePotentiallyStatic=ignore
-org.eclipse.jdt.core.compiler.problem.reportMethodCanBeStatic=warning
+org.eclipse.jdt.core.compiler.problem.reportMethodCanBeStatic=ignore
 org.eclipse.jdt.core.compiler.problem.specialParameterHidingField=disabled
 org.eclipse.jdt.core.compiler.problem.staticAccessReceiver=warning
 org.eclipse.jdt.core.compiler.problem.suppressOptionalErrors=disabled

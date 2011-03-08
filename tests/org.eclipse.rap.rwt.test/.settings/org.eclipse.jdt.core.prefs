@@ -1,4 +1,4 @@
-#Mon Mar 07 14:57:38 CET 2011
+#Tue Mar 08 23:08:48 CET 2011
 eclipse.preferences.version=1
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=disabled
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.2
@@ -49,7 +49,7 @@ org.eclipse.jdt.core.compiler.problem.rawTypeReference=ignore
 org.eclipse.jdt.core.compiler.problem.redundantNullCheck=warning
 org.eclipse.jdt.core.compiler.problem.redundantSuperinterface=ignore
 org.eclipse.jdt.core.compiler.problem.reportMethodCanBePotentiallyStatic=ignore
-org.eclipse.jdt.core.compiler.problem.reportMethodCanBeStatic=warning
+org.eclipse.jdt.core.compiler.problem.reportMethodCanBeStatic=ignore
 org.eclipse.jdt.core.compiler.problem.specialParameterHidingField=disabled
 org.eclipse.jdt.core.compiler.problem.staticAccessReceiver=warning
 org.eclipse.jdt.core.compiler.problem.suppressOptionalErrors=disabled
