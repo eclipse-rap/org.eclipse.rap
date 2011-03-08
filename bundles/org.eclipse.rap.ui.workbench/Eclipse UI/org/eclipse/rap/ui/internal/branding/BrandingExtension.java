@@ -18,54 +18,43 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Filter;
+
 
 public final class BrandingExtension {
 
-  private static final String EP_BRANDING 
-    = "org.eclipse.rap.ui.branding"; //$NON-NLS-1$
-  private static final String ATT_ID 
-    = "id"; //$NON-NLS-1$
-  private static final String ATT_DEFAULT_ENTRYPOINT_ID 
-    = "defaultEntrypointId"; //$NON-NLS-1$
-  private static final String ATT_EXIT_CONFIRMATION_CLASS
-    = "exitConfirmationClass"; //$NON-NLS-$
-  private static final String ATT_THEME_ID 
-    = "themeId"; //$NON-NLS-1$
-  private static final String ATT_FAVICON 
-    = "favicon"; //$NON-NLS-1$
-  private static final String ATT_SERVLET_NAME 
-    = "servletName"; //$NON-NLS-1$
-  private static final String ATT_TITLE 
-    = "title"; //$NON-NLS-1$
-  private static final String ATT_BODY 
-    = "body"; //$NON-NLS-1$
-  private static final String ELEM_ADITIONAL_HEADERS 
-    = "additionalHeaders"; //$NON-NLS-1$
-  private static final String ELEM_ENTRYPOINTS 
-    = "associatedEntrypoints"; //$NON-NLS-1$
-  private static final String TAG_META 
-    = "meta"; //$NON-NLS-1$
-  private static final String TAG_LINK 
-    = "link"; //$NON-NLS-1$
-  private static final String ELEM_ATTRIBUTE 
-    = "attribute"; //$NON-NLS-1$
-  private static final String ATT_NAME 
-    = "name"; //$NON-NLS-1$
-  private static final String ATT_CONTENT 
-    = "content"; //$NON-NLS-1$
-  private static final String ATT_REL 
-    = "rel"; //$NON-NLS-1$
-  private static final String ATT_HREF 
-    = "href"; //$NON-NLS-1$
-  private static final String ATT_VALUE 
-    = "value"; //$NON-NLS-1$
-  
+  private static final String EP_BRANDING = "org.eclipse.rap.ui.branding"; //$NON-NLS-1$
+  private static final String ATT_ID = "id"; //$NON-NLS-1$
+  private static final String ATT_DEFAULT_ENTRYPOINT_ID = "defaultEntrypointId"; //$NON-NLS-1$
+  private static final String ATT_EXIT_CONFIRMATION_CLASS = "exitConfirmationClass"; //$NON-NLS-$
+  private static final String ATT_THEME_ID = "themeId"; //$NON-NLS-1$
+  private static final String ATT_FAVICON = "favicon"; //$NON-NLS-1$
+  private static final String ATT_SERVLET_NAME = "servletName"; //$NON-NLS-1$
+  private static final String ATT_TITLE = "title"; //$NON-NLS-1$
+  private static final String ATT_BODY = "body"; //$NON-NLS-1$
+  private static final String ELEM_ADITIONAL_HEADERS = "additionalHeaders"; //$NON-NLS-1$
+  private static final String ELEM_ENTRYPOINTS = "associatedEntrypoints"; //$NON-NLS-1$
+  private static final String TAG_META = "meta"; //$NON-NLS-1$
+  private static final String TAG_LINK = "link"; //$NON-NLS-1$
+  private static final String ELEM_ATTRIBUTE = "attribute"; //$NON-NLS-1$
+  private static final String ATT_NAME = "name"; //$NON-NLS-1$
+  private static final String ATT_CONTENT = "content"; //$NON-NLS-1$
+  private static final String ATT_REL = "rel"; //$NON-NLS-1$
+  private static final String ATT_HREF = "href"; //$NON-NLS-1$
+  private static final String ATT_VALUE = "value"; //$NON-NLS-1$
+  private static final String ELEM_SERVICE_SELECTOR = "httpServiceFilter"; //$NON-NLS-1$
+  private static final String ATT_CLASS = "class"; //$NON-NLS-1$
+
   public static void read() throws IOException {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( EP_BRANDING );
@@ -79,10 +68,8 @@ public final class BrandingExtension {
 
   //////////////////
   // Helping methods
-  
-  private static void readBranding( final IConfigurationElement element )
-    throws IOException
-  {
+
+  private static void readBranding( IConfigurationElement element ) throws IOException {
     String contributor = element.getContributor().getName();
     String defEntryPointId = element.getAttribute( ATT_DEFAULT_ENTRYPOINT_ID );
     String id = element.getAttribute( ATT_ID );
@@ -102,15 +89,13 @@ public final class BrandingExtension {
     branding.setExitConfirmation( exitConfirmation );
     branding.setDefaultEntryPointId( defEntryPointId );
     // loop through all additional headers
-    IConfigurationElement[] additionalHeaders 
-      = element.getChildren( ELEM_ADITIONAL_HEADERS );
+    IConfigurationElement[] additionalHeaders = element.getChildren( ELEM_ADITIONAL_HEADERS );
     if( additionalHeaders.length > 0 ) {
       IConfigurationElement additionalHeader = additionalHeaders[ 0 ];
       readAdditionalHeader( branding, additionalHeader );
     }
     // loop through all whitelisted entrypoints
-    IConfigurationElement[] entryPoints 
-      = element.getChildren( ELEM_ENTRYPOINTS );
+    IConfigurationElement[] entryPoints = element.getChildren( ELEM_ENTRYPOINTS );
     if( entryPoints.length > 0 ) {
       entryPoints = entryPoints[ 0 ].getChildren();
       for( int i = 0; i < entryPoints.length; i++ ) {
@@ -118,13 +103,33 @@ public final class BrandingExtension {
         branding.addEntryPointId( entryPointId );
       }
     }
-    registerServletName( servletName );
+    Filter serviceFilter = readServiceFilter( element, branding );
+    registerServletName( servletName, serviceFilter );
     BrandingManager.register( branding );
   }
 
-  private static IExitConfirmation findExitConfirmationImpl(
-    final IConfigurationElement element )
-  {
+  // EXPERIMENTAL, see bug 241210
+  private static Filter readServiceFilter( IConfigurationElement element, Branding branding ) {
+    Filter serviceFilter = null;
+    IConfigurationElement[] serviceFilterElements = element.getChildren( ELEM_SERVICE_SELECTOR );
+    if( serviceFilterElements.length > 0 ) {
+      IConfigurationElement serviceFilterElement = serviceFilterElements[ 0 ];
+      String filterClass = serviceFilterElement.getAttribute( ATT_CLASS );
+      if( filterClass != null ) {
+        try {
+          serviceFilter = ( Filter )serviceFilterElement.createExecutableExtension( ATT_CLASS );
+        } catch( CoreException exception ) {
+          String text = "Could not instantiate http service filter for branding ''{0}'': ''{1}''";
+          Object[] param = new Object[] { branding.getId(), exception.getMessage() };
+          String message = MessageFormat.format( text, param );
+          throw new IllegalArgumentException( message );
+        }
+      }
+    }
+    return serviceFilter;
+  }
+
+  private static IExitConfirmation findExitConfirmationImpl( IConfigurationElement element ) {
     IExitConfirmation result = null;
     String className = element.getAttribute( ATT_EXIT_CONFIRMATION_CLASS );
     if( className != null ) {
@@ -159,12 +164,6 @@ public final class BrandingExtension {
     return result;
   }
 
-  private static void registerServletName( final String servletName ) {
-    WorkbenchPlugin workbench = WorkbenchPlugin.getDefault();
-    HttpServiceTracker httpServiceTracker = workbench.getHttpServiceTracker();
-    httpServiceTracker.addServletAlias( servletName );
-  }
-  
   private static void registerDefaultServletName() {
     boolean found = false;
     IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -177,13 +176,17 @@ public final class BrandingExtension {
       }
     }
     if( !found ) {
-      registerServletName( BrandingManager.DEFAULT_SERVLET_NAME );
+      registerServletName( BrandingManager.DEFAULT_SERVLET_NAME, null );
     }
   }
 
-  private static void readAdditionalHeader( final Branding branding,
-                                            final IConfigurationElement elem )
-  {
+  private static void registerServletName( String servletName, Filter filter ) {
+    WorkbenchPlugin workbench = WorkbenchPlugin.getDefault();
+    HttpServiceTracker httpServiceTracker = workbench.getHttpServiceTracker();
+    httpServiceTracker.addServletAlias( servletName, filter );
+  }
+
+  private static void readAdditionalHeader( Branding branding, IConfigurationElement elem ) {
     IConfigurationElement[] headers = elem.getChildren();
     for( int i = 0; i < headers.length; i++ ) {
       IConfigurationElement header = headers[ i ];
@@ -208,9 +211,7 @@ public final class BrandingExtension {
     }
   }
 
-  private static String readBody( final String contributor, final String path ) 
-    throws IOException 
-  {
+  private static String readBody( String contributor, String path ) throws IOException {
     String result = null;
     if( path != null ) {
       URL url = Platform.getBundle( contributor ).getResource( path );

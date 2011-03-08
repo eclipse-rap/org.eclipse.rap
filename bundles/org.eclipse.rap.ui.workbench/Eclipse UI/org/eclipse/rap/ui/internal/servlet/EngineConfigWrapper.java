@@ -45,7 +45,7 @@ import org.osgi.framework.Bundle;
  * for the library.
  */
 // TODO: [fappel] clean replacement mechanism that is anchored in W4Toolkit core
-final public class EngineConfigWrapper implements IEngineConfig, Runnable {
+public final class EngineConfigWrapper implements IEngineConfig {
 
   //  extension point id for adapter factory registration
   private static final String ID_ADAPTER_FACTORY
@@ -79,9 +79,25 @@ final public class EngineConfigWrapper implements IEngineConfig, Runnable {
 
   public EngineConfigWrapper() {
     engineConfig = new EngineConfig( findContextPath().toString() );
+    init();
   }
 
-  public void run() {
+  public File getServerContextDir() {
+    return engineConfig.getServerContextDir();
+  }
+
+  public File getClassDir() {
+    return engineConfig.getClassDir();
+  }
+
+  public File getLibDir() {
+    return engineConfig.getLibDir();
+  }
+
+  //////////////////
+  // helping methods
+
+  private void init() {
     ConfigurationReader.setEngineConfig( this );
     registerPhaseListener();
     registerResourceManagerFactory();
@@ -98,21 +114,6 @@ final public class EngineConfigWrapper implements IEngineConfig, Runnable {
     registerApplicationEntryPoints();
     registerBrandings();
   }
-  
-  public File getServerContextDir() {
-    return engineConfig.getServerContextDir();
-  }
-
-  public File getClassDir() {
-    return engineConfig.getClassDir();
-  }
-
-  public File getLibDir() {
-    return engineConfig.getLibDir();
-  }
-
-  //////////////////
-  // helping methods
 
   private static void registerPhaseListener() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();

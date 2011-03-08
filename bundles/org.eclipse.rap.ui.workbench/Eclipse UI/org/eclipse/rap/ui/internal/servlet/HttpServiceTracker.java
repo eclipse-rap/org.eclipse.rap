@@ -16,8 +16,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +36,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
@@ -80,35 +81,34 @@ public class HttpServiceTracker extends ServiceTracker {
   public static final String DEFAULT_SERVLET = "rap";
   public static final String ID_HTTP_CONTEXT = "org.eclipse.rap.httpcontext";
 
-  private final List servletAliases;
+  private final Map servletAliases;
   private final String resourceAlias;
   private HttpContextExtensionService httpCtxExtService;
 
   public HttpServiceTracker( BundleContext context ) {
     super( context, HttpService.class.getName(), null );
-    servletAliases = new LinkedList();
+    servletAliases = new LinkedHashMap();
     resourceAlias = ResourceManagerImpl.RESOURCES;
   }
 
   public Object addingService( ServiceReference reference ) {
     HttpService httpService = getHttpService( reference );
-    HttpContext httpContext = getHttpContext( reference );
-    HttpContext wrappedHttpContext = createContextWrapper( httpService, httpContext );
+    HttpContext httpContext = getHttpContext( reference, httpService );
     RWTContext rwtContext = createAndInitializeRWTContext();
-    registerServlets( httpService, wrappedHttpContext, rwtContext );
-    registerResourceDir( httpService, wrappedHttpContext, rwtContext );
+    registerServlets( reference, httpService, httpContext, rwtContext );
+    registerResourceDir( httpService, httpContext, rwtContext );
     return httpService;
   }
 
   public void removedService( ServiceReference reference, Object service ) {
     HttpService httpService = ( HttpService )service;
     deregisterResourceDir( httpService );
-    deregisterServlets( httpService );
+    deregisterServlets( reference, httpService );
     super.removedService( reference, service );
   }
 
-  public void addServletAlias( String name ) {
-    servletAliases.add( name );
+  public void addServletAlias( String name, Filter filter ) {
+    servletAliases.put( name, filter );
   }
 
   public void open() {
@@ -132,23 +132,30 @@ public class HttpServiceTracker extends ServiceTracker {
     httpContextTracker.open();
   }
 
-  private void registerServlets( HttpService httpService,
+  private void registerServlets( ServiceReference reference,
+                                 HttpService httpService,
                                  HttpContext httpContext,
                                  RWTContext rwtContext )
   {
     ensureDefaultAlias();
-    Iterator aliases = servletAliases.iterator();
+    Iterator aliases = servletAliases.keySet().iterator();
     while( aliases.hasNext() ) {
       String alias = ( String )aliases.next();
-      registerServlet( alias, httpService, httpContext, rwtContext );
+      Filter serviceFilter = ( Filter )servletAliases.get( alias );
+      if( serviceFilter == null || serviceFilter.match( reference ) ) {
+        registerServlet( alias, httpService, httpContext, rwtContext );
+      }
     }
   }
 
-  private void deregisterServlets( HttpService httpService ) {
-    Iterator aliases = servletAliases.iterator();
+  private void deregisterServlets( ServiceReference reference, HttpService httpService ) {
+    Iterator aliases = servletAliases.keySet().iterator();
     while( aliases.hasNext() ) {
       String alias = ( String )aliases.next();
-      deregisterAlias( alias, httpService );
+      Filter serviceFilter = ( Filter )servletAliases.get( alias );
+      if( serviceFilter == null || serviceFilter.match( reference ) ) {
+        deregisterAlias( alias, httpService );
+      }
     }
   }
 
@@ -196,26 +203,38 @@ public class HttpServiceTracker extends ServiceTracker {
 
   private void ensureDefaultAlias() {
     if( servletAliases.size() == 0 ) {
-      servletAliases.add( DEFAULT_SERVLET );
+      servletAliases.put( DEFAULT_SERVLET, null );
     }
-  }
-
-  private HttpContext getHttpContext( ServiceReference httpServiceReference ) {
-    return httpCtxExtService.getHttpContext( httpServiceReference, ID_HTTP_CONTEXT );
-  }
-
-  private static RWTContext createAndInitializeRWTContext() {
-    RWTContext result = RWTContextUtil.createRWTContext();
-    RWTContextUtil.runWithInstance( result, new EngineConfigWrapper() );
-    return result;
   }
 
   private HttpService getHttpService( ServiceReference reference ) {
     return ( HttpService )context.getService( reference );
   }
 
+  private HttpContext getHttpContext( ServiceReference reference, HttpService httpService ) {
+    HttpContext result;
+    HttpContext httpContext = httpCtxExtService.getHttpContext( reference, ID_HTTP_CONTEXT );
+    if( httpContext != null ) {
+      result = new HttpContextWrapper( httpContext );
+    } else {
+      HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
+      result = new HttpContextWrapper( defaultHttpContext );
+    }
+    return result;
+  }
+
   private HttpContextExtensionService createHttpCtxExtService( ServiceReference reference ) {
     return ( HttpContextExtensionService )context.getService( reference );
+  }
+
+  private static RWTContext createAndInitializeRWTContext() {
+    RWTContext result = RWTContextUtil.createRWTContext();
+    RWTContextUtil.runWithInstance( result, new Runnable() {
+      public void run() {
+        new EngineConfigWrapper();
+      }
+    } );
+    return result;
   }
 
   private static String getContextRoot( RWTContext rwtContext ) {
@@ -227,19 +246,6 @@ public class HttpServiceTracker extends ServiceTracker {
       }
     } );
     return result[ 0 ];
-  }
-
-  private static HttpContext createContextWrapper( HttpService httpService,
-                                                   HttpContext httpContext )
-  {
-    HttpContext result;
-    if( httpContext != null ) {
-      result = new HttpContextWrapper( httpContext );
-    } else {
-      HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
-      result = new HttpContextWrapper( defaultHttpContext );
-    }
-    return result;
   }
 
   private static void logError( String message, Exception exception ) {
