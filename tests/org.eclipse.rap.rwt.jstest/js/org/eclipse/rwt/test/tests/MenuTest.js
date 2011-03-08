@@ -486,7 +486,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertContains( "w1.selection=false",  this.testUtil.getMessage() );
       this.disposeMenu();
     },
-    
 
     testExecuteRadioButton : function() {
       this.createSimpleMenu( "radio" );
@@ -534,6 +533,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertContains( "w2.selection=true", msg );
       this.testUtil.clearRequestLog();
       this.disposeMenu();
+    },
+
+    testExecuteRadioButton_NoRadioGroup : function() {
+      this.createSimpleMenu( "radio" );
+      this.menuItem.setUserData( "id", "w1" );
+      this.menuItem.setNoRadioGroup( true );
+      this.menuItem.setHasSelectionListener( true );
+      var menuItem2 = new this._menuItemClass( "radio" );
+      this.menu.addMenuItemAt( menuItem2, 0 );
+      menuItem2.setUserData( "id", "w2" );
+      menuItem2.setNoRadioGroup( true );
+      menuItem2.setHasSelectionListener( true );
+      this.testUtil.clearRequestLog();
+      this.testUtil.flush();
+      this.testUtil.click( this.menuItem );
+      assertTrue( this.menuItem.hasState( "selected" ) );
+      assertFalse( menuItem2.hasState( "selected" ) );
+      assertEquals( 1, this.testUtil.getRequestsSend() );      
+      var msg = this.testUtil.getMessage();      
+      assertContains( "w1.selection=true", msg );
+      assertContainsNot( "w2.selection", msg );
+      this.testUtil.clearRequestLog();
+      this.testUtil.click( menuItem2 );
+      assertTrue( this.menuItem.hasState( "selected" ) );
+      assertTrue( menuItem2.hasState( "selected" ) );
+      assertEquals( 1, this.testUtil.getRequestsSend() );      
+      var msg = this.testUtil.getMessage();      
+      assertContainsNot( "w1.selection", msg );
+      assertContains( "w2.selection=true", msg );
+      this.testUtil.clearRequestLog();
+      this.testUtil.click( menuItem2 );
+      assertTrue( this.menuItem.hasState( "selected" ) );
+      assertFalse( menuItem2.hasState( "selected" ) );
+      assertEquals( 1, this.testUtil.getRequestsSend() );      
+      var msg = this.testUtil.getMessage();      
+      assertContainsNot( "w1.selection", msg );
+      assertContains( "w2.selection=false", msg );
     },
 
     testKeyboardControl : function() {

@@ -1734,6 +1734,17 @@ public class SWT {
   public static final int NO_MERGE_PAINTS = 1 << 21;
 
   /**
+   * Style constant for preventing child radio group behavior (value is 1&lt;&lt;22).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Composite</code></li>
+   * <li><code>Menu</code></li>
+   * </ul></p>
+   * 
+   * @since 1.4
+   */
+  public static final int NO_RADIO_GROUP = 1 << 22;
+
+  /**
    * Style constant for left to right orientation (value is 1&lt;&lt;25).
    * <p>
    * When orientation is not explicitly specified, orientation is

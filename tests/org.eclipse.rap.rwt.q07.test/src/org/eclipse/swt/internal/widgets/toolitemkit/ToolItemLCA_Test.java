@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,10 +28,22 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 public class ToolItemLCA_Test extends TestCase {
+  
+  private Display display;
+  private Shell shell;
+  
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testCheckPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( toolBar, SWT.CHECK );
     Fixture.markInitialized( display );
@@ -49,8 +61,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testDropDownPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.DROP_DOWN );
     Fixture.markInitialized( display );
@@ -59,8 +69,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testPushPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -69,8 +77,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRadioPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.RADIO );
     Fixture.markInitialized( display );
@@ -89,8 +95,6 @@ public class ToolItemLCA_Test extends TestCase {
 
   public void testCheckItemSelected() {
     final boolean[] wasEventFired = { false };
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
     final ToolItem item = new ToolItem( toolBar, SWT.CHECK );
     item.addSelectionListener( new SelectionAdapter() {
@@ -117,8 +121,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRadioItemSelected() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     ToolBar toolBar = new ToolBar( shell, SWT.NONE );
     ToolItem item0 = new ToolItem( toolBar, SWT.RADIO );
     item0.setSelection( true );
@@ -135,9 +137,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderChanges() throws IOException {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     final ToolItem item = new ToolItem( tb, SWT.CHECK );
     shell.open();
@@ -163,8 +162,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testReadData() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( toolBar, SWT.CHECK );
     String itemId = WidgetUtil.getId( item );
@@ -180,8 +177,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testGetImage() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( toolBar, SWT.CHECK );
 
@@ -203,8 +198,7 @@ public class ToolItemLCA_Test extends TestCase {
     assertSame( enabledImage, ToolItemLCAUtil.getImage( item ) );
   }
 
-  private void testPreserveValues( final Display display, final ToolItem item )
-  {
+  private void testPreserveValues( Display display, ToolItem item ) {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     Boolean hasListeners;
@@ -237,13 +231,14 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     assertEquals( contextMenu, adapter.getPreserved( Props.MENU ) );
   }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  
+  public void testRenderNoRadioGroupForRadioToolItem() throws Exception {
+    ToolBar toolBar = new ToolBar( shell, SWT.NO_RADIO_GROUP );
+    ToolItem radioItem = new ToolItem( toolBar, SWT.RADIO );
     Fixture.fakeResponseWriter();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    RadioToolItemLCA radioLCA = new RadioToolItemLCA();
+    radioLCA.renderInitialization( radioItem );
+    String allMarkup = Fixture.getAllMarkup();
+    assertTrue( allMarkup.indexOf( "w.setNoRadioGroup( true );" ) != -1 );
   }
 }

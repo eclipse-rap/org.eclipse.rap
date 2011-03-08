@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -209,7 +209,47 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertContains( "w1.selection=true", msg );
       assertContains( "w2.selection=false", msg );
     },
-    
+
+    testExecuteRadioButton_NoRadioGroup : function() {
+      var button1 = new org.eclipse.rwt.widgets.Button( "radio" );
+      button1.addState( "rwt_RADIO" );
+      button1.setUserData( "id", "w1" );
+      button1.setNoRadioGroup( true );
+      button1.setHasSelectionListener( true );
+      button1.addToDocument();
+      var button2 = new org.eclipse.rwt.widgets.Button( "radio" );
+      button2.addState( "rwt_RADIO" );
+      button2.setUserData( "id", "w2" );
+      button2.setNoRadioGroup( true );
+      button2.setHasSelectionListener( true );
+      button2.addToDocument();
+      qx.ui.core.Widget.flushGlobalQueues();
+      this.testUtil.clearRequestLog();
+      this.testUtil.click( button1 );
+      assertTrue( button1.hasState( "selected" ) );
+      assertFalse( button2.hasState( "selected" ) );
+      assertEquals( 1, this.testUtil.getRequestsSend() );      
+      var msg = this.testUtil.getMessage();      
+      assertContains( "w1.selection=true", msg );
+      assertContainsNot( "w2.selection", msg );
+      this.testUtil.clearRequestLog();
+      this.testUtil.click( button2 );
+      assertTrue( button1.hasState( "selected" ) );
+      assertTrue( button2.hasState( "selected" ) );
+      assertEquals( 1, this.testUtil.getRequestsSend() );      
+      var msg = this.testUtil.getMessage();      
+      assertContainsNot( "w1.selection", msg );
+      assertContains( "w2.selection=true", msg );
+      this.testUtil.clearRequestLog();
+      this.testUtil.click( button2 );
+      assertTrue( button1.hasState( "selected" ) );
+      assertFalse( button2.hasState( "selected" ) );
+      assertEquals( 1, this.testUtil.getRequestsSend() );      
+      var msg = this.testUtil.getMessage();      
+      assertContainsNot( "w1.selection", msg );
+      assertContains( "w2.selection=false", msg );
+    },
+
     testExecutePushButton : function() {
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       button.addState( "rwt_PUSH" );

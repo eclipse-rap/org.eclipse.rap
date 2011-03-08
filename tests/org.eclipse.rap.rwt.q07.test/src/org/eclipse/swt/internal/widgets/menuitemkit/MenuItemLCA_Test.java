@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,14 @@ import org.eclipse.swt.widgets.*;
 
 public class MenuItemLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -40,8 +45,6 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   public void testBarPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Menu menu = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menu );
     final MenuItem menuItem = new MenuItem( menu, SWT.BAR );
@@ -52,8 +55,6 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   public void testPushPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menu = new Menu( shell, SWT.BAR );
     MenuItem fileItem = new MenuItem( menu, SWT.CASCADE );
     Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
@@ -69,8 +70,6 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   public void testRadioPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menu = new Menu( shell, SWT.BAR );
     MenuItem fileItem = new MenuItem( menu, SWT.CASCADE );
     Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
@@ -95,8 +94,6 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   public void testCheckPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menu = new Menu( shell, SWT.BAR );
     MenuItem fileItem = new MenuItem( menu, SWT.CASCADE );
     Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
@@ -120,8 +117,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testWidgetSelected() {
     final boolean[] wasEventFired = { false };
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menu = new Menu( shell, SWT.POP_UP );
     shell.setMenu( menu );
     final MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
@@ -147,8 +142,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testCheckItemSelected() {
     final boolean[] wasEventFired = { false };
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
     Menu menu = new Menu( menuBar );
@@ -178,8 +171,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testRadioSelectionEvent() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -225,8 +216,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testRadioTypedSelectionEventOrder() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -260,8 +249,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testRadioUntypedSelectionEventOrder() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -295,8 +282,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testRemoveKeyShortcutText() throws IOException {
     String shortcut = "Some shortcut";
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -310,8 +295,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testArmEvent() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -343,6 +326,16 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( log.contains( radioItem2 ) );
     assertTrue( log.contains( radioItem3 ) );
     assertTrue( log.contains( checkItem ) );
+  }
+
+  public void testRenderNoRadioGroupForRadioItem() throws Exception {
+    Menu menu = new Menu( shell, SWT.POP_UP | SWT.NO_RADIO_GROUP );
+    MenuItem radioItem = new MenuItem( menu, SWT.RADIO );
+    Fixture.fakeResponseWriter();
+    RadioMenuItemLCA radioLCA = new RadioMenuItemLCA();
+    radioLCA.renderInitialization( radioItem );
+    String allMarkup = Fixture.getAllMarkup();
+    assertTrue( allMarkup.indexOf( "w.setNoRadioGroup( true );" ) != -1 );
   }
 
   private void testPreserveSelectionListener( final MenuItem menuItem ) {

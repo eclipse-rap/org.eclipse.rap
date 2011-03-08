@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -40,8 +40,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
      break;
      case "radio":
       this._isSelectable = true;
-      this._isDeselectable = false;
       this._sendEvent = false;
+      this.setNoRadioGroup( false );
       org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
       org.eclipse.rwt.RadioButtonUtil.registerKeypress( this );
      break;
@@ -138,6 +138,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
       }
     },
 
+    setNoRadioGroup : function( value ) {
+      if( this.hasState( "radio") ) {
+        this._noRadioGroup = value;
+        this._isDeselectable = value;
+      }
+    },
+
+    getNoRadioGroup : function() {
+      return this._noRadioGroup;
+    },
+
     execute : function() {
       this.base( arguments );
       if( this._isSelectable ) {
@@ -147,7 +158,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
     },
     
     setSelection : function( value ) {
-      if( this._selected != value ) {
+      if( this._selected != value || this._selected ) {
         this._selected = value;
         if( this._selected ) {
           this.addState( "selected" );

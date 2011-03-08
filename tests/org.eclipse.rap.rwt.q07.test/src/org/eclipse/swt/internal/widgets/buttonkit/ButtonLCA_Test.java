@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,20 @@ import org.eclipse.swt.widgets.*;
 // TODO [rst] Split into different test classes for button types
 public class ButtonLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testPushPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     testPreserveValues( display, button );
@@ -58,8 +69,6 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testRadioPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.RADIO );
     Fixture.markInitialized( display );
     testPreserveValues( display, button );
@@ -73,8 +82,6 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testCheckPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.CHECK );
     Fixture.markInitialized( display );
     testPreserveValues( display, button );
@@ -91,8 +98,6 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testArrowPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.ARROW );
     Fixture.markInitialized( display );
     testPreserveValues( display, button );
@@ -130,8 +135,6 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testTogglePreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.TOGGLE );
     Fixture.markInitialized( display );
     testPreserveValues( display, button );
@@ -295,8 +298,6 @@ public class ButtonLCA_Test extends TestCase {
   public void testDisabledButtonSelection() {
     final StringBuffer log = new StringBuffer();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Button button = new Button( shell, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     ActivateEvent.addListener( button, new ActivateAdapter() {
@@ -324,8 +325,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testSelectionEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -349,8 +348,6 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testEscape() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Button pushButton = new Button( shell, SWT.PUSH );
     pushButton.setText( "PUSH &E<s>ca'pe\" && me" );
     Button checkButton = new Button( shell, SWT.CHECK );
@@ -373,8 +370,6 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testDefaultButton() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Button button = new Button( shell, SWT.PUSH );
     assertFalse( PushButtonDelegateLCA.isDefaultButton( button ) );
     shell.setDefaultButton( button );
@@ -384,8 +379,6 @@ public class ButtonLCA_Test extends TestCase {
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
   public void testRadioSelectionEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Button button1 = new Button( shell, SWT.RADIO );
     button1.setText( "1" );
     final Button button2 = new Button( shell, SWT.RADIO );
@@ -429,8 +422,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRadioTypedSelectionEventOrder() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Button button1 = new Button( shell, SWT.RADIO );
     button1.setText( "1" );
     Button button2 = new Button( shell, SWT.RADIO );
@@ -460,8 +451,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRadioUntypedSelectionEventOrder() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Button button1 = new Button( shell, SWT.RADIO );
     button1.setText( "1" );
     Button button2 = new Button( shell, SWT.RADIO );
@@ -490,8 +479,6 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testRenderTextAndImageForPushButton() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Button button = new Button( shell, SWT.PUSH );
     button.setText( "Test" );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
@@ -516,8 +503,6 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testRenderTextAndImageForCheckAndRadioButton() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Button checkButton = new Button( shell, SWT.CHECK );
     Button radioButton = new Button( shell, SWT.RADIO );
     checkButton.setText( "Test" );
@@ -539,12 +524,14 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
     assertTrue( allMarkup.indexOf( "w.setImage(" ) != -1 );
   }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  
+  public void testRenderNoRadioGroupForRadioButton() throws Exception {
+    Composite composite = new Composite( shell, SWT.NO_RADIO_GROUP );
+    Button radioButton = new Button( composite, SWT.RADIO );
+    Fixture.fakeResponseWriter();
+    RadioButtonDelegateLCA radioLCA = new RadioButtonDelegateLCA();
+    radioLCA.renderInitialization( radioButton );
+    String allMarkup = Fixture.getAllMarkup();
+    assertTrue( allMarkup.indexOf( "w.setNoRadioGroup( true );" ) != -1 );
   }
 }

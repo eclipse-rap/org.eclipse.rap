@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,11 +27,11 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
   private static final String QX_TYPE = "org.eclipse.rwt.widgets.Button";
   private static final Object[] PARAM_RADIO = new Object[] { "radio" };
 
-  void preserveValues( final Button button ) {
+  void preserveValues( Button button ) {
     ButtonLCAUtil.preserveValues( button );
   }
 
-  void readData( final Button button ) {
+  void readData( Button button ) {
     // [if] The selection event is based on the request "selection" parameter
     // and not on the selection event, because it is not possible to fire the
     // same event (Id) from javascript for two widgets (selected and unselected
@@ -45,18 +45,21 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     WidgetLCAUtil.processHelp( button );
   }
 
-  void renderInitialization( final Button button ) throws IOException {
+  void renderInitialization( Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( QX_TYPE, PARAM_RADIO );
     ControlLCAUtil.writeStyleFlags( button );
     WidgetLCAUtil.writeStyleFlag( button, SWT.RADIO, "RADIO" );
+    if( ( button.getParent().getStyle() & SWT.NO_RADIO_GROUP ) != 0 ) {
+      writer.set( "noRadioGroup", true );
+    }
   }
 
-  void renderChanges( final Button button ) throws IOException {
+  void renderChanges( Button button ) throws IOException {
     ButtonLCAUtil.writeChanges( button );
   }
 
-  private static void processSelectionEvent( final Button button ) {
+  private static void processSelectionEvent( Button button ) {
     if( SelectionEvent.hasListener( button ) ) {
       int type = SelectionEvent.WIDGET_SELECTED;
       SelectionEvent event;
@@ -65,8 +68,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
       } else {
         event = new DeselectionEvent( button, null, type );
       }
-      event.stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();
     }
   }

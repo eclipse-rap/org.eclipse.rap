@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,9 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.events.DeselectionEvent;
 import org.eclipse.swt.internal.events.EventLCAUtil;
@@ -32,7 +34,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     ToolItemLCAUtil.preserveSelection( toolItem );
   }
 
-  void readData( final ToolItem toolItem ) {
+  void readData( ToolItem toolItem ) {
     String value = WidgetLCAUtil.readPropertyValue( toolItem, PARAM_SELECTION );
     if( value != null ) {
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
@@ -40,16 +42,20 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
     }
   }
 
-  void renderInitialization( final ToolItem toolItem ) throws IOException {
+  void renderInitialization( ToolItem toolItem ) throws IOException {
     ToolItemLCAUtil.renderInitialization( toolItem, PARAM_RADIO );
+    if( ( toolItem.getParent().getStyle() & SWT.NO_RADIO_GROUP ) != 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( toolItem );
+      writer.set( "noRadioGroup", true );
+    }
   }
 
-  void renderChanges( final ToolItem toolItem ) throws IOException {
+  void renderChanges( ToolItem toolItem ) throws IOException {
     ToolItemLCAUtil.renderChanges( toolItem );
     ToolItemLCAUtil.writeSelection( toolItem );
   }
 
-  private static void processSelectionEvent( final ToolItem toolItem ) {
+  private static void processSelectionEvent( ToolItem toolItem ) {
     if( SelectionEvent.hasListener( toolItem ) ) {
       int type = SelectionEvent.WIDGET_SELECTED;
       SelectionEvent event;
@@ -58,8 +64,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
       } else {
         event = new DeselectionEvent( toolItem, null, type );
       }
-      event.stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();
     }
 

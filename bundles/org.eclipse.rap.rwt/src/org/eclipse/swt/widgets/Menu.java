@@ -142,6 +142,7 @@ public class Menu extends Widget {
    * @see SWT#BAR
    * @see SWT#DROP_DOWN
    * @see SWT#POP_UP
+   * @see SWT#NO_RADIO_GROUP
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */

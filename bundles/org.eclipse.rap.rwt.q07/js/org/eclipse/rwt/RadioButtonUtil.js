@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,32 +63,32 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
     
     _getRadioGroup: function( widget ) {
       var group = [];
-      var siblings = widget.getParent().getChildren();
-      var length = siblings.length;
-      // For Radio-Buttons all Radio-items of the group count, 
-      // else the group is bounded by any non-radio items   
-      if( widget.classname == "org.eclipse.rwt.widgets.Button" ) {
-        for( var i = 0; i < length; i++ ) {
-          if( this._isRadioElement( siblings[ i ] ) ) {
-            group.push( siblings[ i ] );          
+      if( !widget.getNoRadioGroup() ) {
+        var siblings = widget.getParent().getChildren();
+        var length = siblings.length;
+        // For Radio-Buttons all Radio-items of the group count,
+        // else the group is bounded by any non-radio items
+        if( widget.classname == "org.eclipse.rwt.widgets.Button" ) {
+          for( var i = 0; i < length; i++ ) {
+            if( this._isRadioElement( siblings[ i ] ) ) {
+              group.push( siblings[ i ] );
+            }
           }
+        } else {
+          var isCurrentGroup = false;
+          var i = 0;
+          while( i < length && ( !isCurrentGroup || this._isRadioElement( siblings[ i ] ) ) ) {
+            if( !isCurrentGroup ) {
+              isCurrentGroup = siblings[ i ] == widget;
+            }
+            if( this._isRadioElement( siblings[ i ] ) ) {
+              group.push( siblings[ i ] );
+            } else {
+              group = [];
+            }
+            i++;
+          };
         }
-      } else {
-        var isCurrentGroup = false;
-        var i = 0;
-        while(   i < length 
-              && (!isCurrentGroup || this._isRadioElement( siblings[ i ] ) ) ) 
-        {
-          if( !isCurrentGroup ) {
-            isCurrentGroup = siblings[ i ] == widget;
-          }
-          if( this._isRadioElement( siblings[ i ] ) ) {
-            group.push( siblings[ i ] );          
-          } else {
-            group = [];
-          }
-          i++;
-        };
       }
       return group;
     },
@@ -97,31 +97,33 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
     // radio button of the same group, after a corresponding key press.
     _setNextOrPrevious : function( widget, command ) {
       var allRadioButtons = this._getRadioGroup( widget );
-      var currentRbIndex;
-      for( var j = 0; j < allRadioButtons.length; j++ ) {
-        if( allRadioButtons[ j ] == widget ) {
-          currentRbIndex = j;
+      if( allRadioButtons.length > 0 ) {
+        var currentRbIndex;
+        for( var j = 0; j < allRadioButtons.length; j++ ) {
+          if( allRadioButtons[ j ] == widget ) {
+            currentRbIndex = j;
+          }
         }
-      }
-      // assign a value to 'nextSelectedRbIndex',
-      // in case the 'command' is unrecognizable
-      var nextSelectedRbIndex = currentRbIndex;
-      if ( command == "next" ) {
-        nextSelectedRbIndex = currentRbIndex + 1;
-        if( nextSelectedRbIndex >= allRadioButtons.length ) {
-          nextSelectedRbIndex = 0;
+        // assign a value to 'nextSelectedRbIndex',
+        // in case the 'command' is unrecognizable
+        var nextSelectedRbIndex = currentRbIndex;
+        if ( command == "next" ) {
+          nextSelectedRbIndex = currentRbIndex + 1;
+          if( nextSelectedRbIndex >= allRadioButtons.length ) {
+            nextSelectedRbIndex = 0;
+          }
         }
-      }
-      if ( command == "previous" ) {
-        nextSelectedRbIndex = currentRbIndex - 1;
-        if( nextSelectedRbIndex < 0 ) {
-          nextSelectedRbIndex = allRadioButtons.length - 1;
+        if ( command == "previous" ) {
+          nextSelectedRbIndex = currentRbIndex - 1;
+          if( nextSelectedRbIndex < 0 ) {
+            nextSelectedRbIndex = allRadioButtons.length - 1;
+          }
         }
+        var nextRb = allRadioButtons[ nextSelectedRbIndex ];
+        this._unselectSiblings( nextRb );
+        nextRb.setSelection( true );
+        nextRb.setFocused( true );
       }
-      var nextRb = allRadioButtons[ nextSelectedRbIndex ];
-      this._unselectSiblings( nextRb );
-      nextRb.setSelection( true );
-      nextRb.setFocused( true );
     },
 
     _unselectSiblings : function( widget ) {

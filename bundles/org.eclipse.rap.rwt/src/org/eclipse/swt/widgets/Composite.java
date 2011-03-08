@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
  * of containing other controls.
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>NO_FOCUS</dd>
+ * <dd>NO_FOCUS, NO_RADIO_GROUP</dd>
  * <dt><b>Events:</b></dt>
  * <dd>(none)</dd>
  * </dl>
@@ -69,6 +69,7 @@ public class Composite extends Scrollable {
    * </ul>
    *
    * @see SWT#NO_FOCUS
+   * @see SWT#NO_RADIO_GROUP
    * @see Widget#getStyle
    */
   public Composite( final Composite parent, final int style ) {

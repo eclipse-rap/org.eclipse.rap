@@ -20,7 +20,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     this._parentMenu = null;
     this._subMenu = null;
     this._subMenuOpen = false;
-    this._preferredCellWidths = null;    
+    this._preferredCellWidths = null;
     this.initTabIndex();
     this.set( {
       width : "auto", 
@@ -57,8 +57,8 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
      break;
      case "radio":
       this._isSelectable = true;
-      this._isDeselectable = false;
-      this._sendEvent = false;     
+      this._sendEvent = false;
+      this.setNoRadioGroup( false );
       org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
      break;
      default:
@@ -206,6 +206,17 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     setSubMenu : function( value ) {
       this._subMenu = value;
     },
+
+    setNoRadioGroup : function( value ) {
+      if( this.hasState( "radio") ) {
+        this._noRadioGroup = value;
+        this._isDeselectable = value;
+      }
+    },
+
+    getNoRadioGroup : function() {
+      return this._noRadioGroup;
+    },
     
     // TODO [tb] "execute", "setSelection", "_sendChanges" and possibly more
     // could be shared between Button, MenuItem and (future) ToolItem.
@@ -238,9 +249,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     
     // Not using EventUtil since no event should be sent (for radio at least)
     _sendChanges : function() {
-      if(    !org.eclipse.swt.EventUtil.getSuspended()  
-          && this._hasSelectionListener ) 
-      {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener ) {
         var req = org.eclipse.swt.Request.getInstance();
         if( this._sendEvent ) {        
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
