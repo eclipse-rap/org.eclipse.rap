@@ -25,7 +25,7 @@ public class InputExample implements IExamplePage {
     createMultiline( parent );
   }
 
-  private void createForm( final Composite parent ) {
+  private static void createForm( Composite parent ) {
     GridData gridData;
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Simple Form" );
@@ -98,7 +98,7 @@ public class InputExample implements IExamplePage {
     } );
   }
 
-  private void createMultiline( final Composite parent ) {
+  private static void createMultiline( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Multiline" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );

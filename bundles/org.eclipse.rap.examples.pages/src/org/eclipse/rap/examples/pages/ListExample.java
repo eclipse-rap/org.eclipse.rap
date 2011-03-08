@@ -112,7 +112,7 @@ public class ListExample implements IExamplePage {
     return result;
   }
 
-  private void moveSelectedItems( final List srcList, final List dstList ) {
+  private static void moveSelectedItems( List srcList, List dstList ) {
     String[] selection = srcList.getSelection();
     for( int i = 0; i < selection.length; i++ ) {
       String item = selection[ i ];
@@ -126,7 +126,7 @@ public class ListExample implements IExamplePage {
     }
   }
 
-  private void sortItems( final List srcList ) {
+  private static void sortItems( List srcList ) {
     String[] items = srcList.getItems();
     Arrays.sort( items );
     srcList.setItems( items );

@@ -42,10 +42,7 @@ public class ThemingExample implements IExamplePage {
     createButton( group, "Fancy animated", "fancyAnimated" );
   }
 
-  private Button createButton( final Composite parent,
-                               final String text,
-                               final String variant )
-  {
+  private static Button createButton( Composite parent, String text, String variant ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( text );
     button.setToolTipText( "Animated ToolTip" );
@@ -99,10 +96,7 @@ public class ThemingExample implements IExamplePage {
     });
   }
 
-  private Group createGroup( final Composite parent,
-                             final String title,
-                             final int columns )
-  {
+  private static Group createGroup( Composite parent, String title, int columns ) {
     Group group = new Group( parent, SWT.NONE );
     group.setText( title );
     GridLayout layout = new GridLayout( columns, true );

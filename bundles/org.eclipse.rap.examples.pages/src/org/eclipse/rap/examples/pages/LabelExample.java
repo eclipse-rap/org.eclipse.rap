@@ -31,7 +31,7 @@ public class LabelExample implements IExamplePage {
     createLinks( parent );
   }
 
-  private void createTextLabels( final Composite parent ) {
+  private static void createTextLabels( Composite parent ) {
     Group textGroup = new Group( parent, SWT.NONE );
     textGroup.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     textGroup.setText( "Text Labels" );
@@ -49,7 +49,7 @@ public class LabelExample implements IExamplePage {
     borderLabel.setText( "A label with a border." );
   }
 
-  private void createAlignedLabels( final Composite parent ) {
+  private static void createAlignedLabels( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     group.setText( "Alignment" );
@@ -114,7 +114,7 @@ public class LabelExample implements IExamplePage {
     cLabel3.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
   }
 
-  private void createLinks( final Composite parent ) {
+  private static void createLinks( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Links" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );

@@ -62,9 +62,7 @@ public class TreeViewerExample implements IExamplePage {
     tableTree = createTableTree( topRight );
   }
 
-  private Composite createComposite( final Composite parent,
-                                     final int position )
-  {
+  private static Composite createComposite( Composite parent, int position ) {
     Composite result = new Composite( parent, SWT.NONE );
     FormAttachment zero = new FormAttachment( 0 );
     FormAttachment hFull = new FormAttachment( 100 );
@@ -171,7 +169,7 @@ public class TreeViewerExample implements IExamplePage {
   //////////////
   // Drag & Drop
 
-  private void addDNDSupport( final TreeViewer viewer ) {
+  private static void addDNDSupport( TreeViewer viewer ) {
     Transfer[] types = new Transfer[] { TreeObjectTransfer.getInstance() };
     TreeDragListener dragListener = new TreeDragListener( viewer );
     viewer.addDragSupport( DND.DROP_MOVE, types, dragListener );
@@ -723,7 +721,7 @@ public class TreeViewerExample implements IExamplePage {
       return Graphics.getImage( name, classLoader );
     }
 
-    private String getUTCOffset( final City city ) {
+    private static String getUTCOffset( City city ) {
       String sign = city.getOffset() >= 0 ? "-" : "";
       return "UTC " + sign + String.valueOf( city.getOffset() );
     }

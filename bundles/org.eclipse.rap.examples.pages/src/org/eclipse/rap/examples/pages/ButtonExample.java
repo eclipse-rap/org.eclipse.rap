@@ -90,7 +90,7 @@ public class ButtonExample implements IExamplePage {
     } );
   }
 
-  private void createRadioAndCheckButtons( final Composite parent ) {
+  private static void createRadioAndCheckButtons( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Checkboxes and Radiobuttons" );
     GridLayout layout = new GridLayout( 2, true );

@@ -277,7 +277,7 @@ public class TableViewerExample implements IExamplePage {
       return result;
     }
 
-    private int compare( final int number1, final int number2 ) {
+    private static int compare( int number1, int number2 ) {
       int result;
       if( number1 < number2 ) {
         result = -1;
