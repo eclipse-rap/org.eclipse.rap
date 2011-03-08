@@ -162,6 +162,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
     drawPoint : function( x, y ) {
       this._context.save();
+      this._context.fillStyle = this._context.strokeStyle;
       this._context.beginPath();
       this._context.lineWidth = 1;
       this._context.rect( x, y, 1, 1 );
