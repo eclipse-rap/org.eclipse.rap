@@ -53,10 +53,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       gc.drawLine( 10, 10, 20, 10 );
       var context = gc._context;
       context.lineTo( 15, 15 );
-      assertFalse( context.isPointInPath( 9.9, 10 ) );
-      assertTrue( context.isPointInPath( 11, 10 ) );
-      assertTrue( context.isPointInPath( 15, 10 ) );
-      assertTrue( context.isPointInPath( 20, 10 ) );
+      assertFalse( context.isPointInPath( 10, 10 ) );
+      assertTrue( context.isPointInPath( 11, 11 ) );
+      assertTrue( context.isPointInPath( 16, 11 ) );
+      assertTrue( context.isPointInPath( 19, 11 ) );
       assertFalse( context.isPointInPath( 21, 10 ) );
       canvas.destroy();
       testUtil.flush();
@@ -93,13 +93,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawRectangle( 10, 20, 30, 40 );      
       var context = gc._context;
-      assertTrue( context.isPointInPath( 10.1, 20.1 ) );
-      assertTrue( context.isPointInPath( 40, 30 ) );
-      assertTrue( context.isPointInPath( 10, 60 ) );
+      assertTrue( context.isPointInPath( 11, 21 ) );
+      assertTrue( context.isPointInPath( 40.5, 30.5 ) );
+      assertTrue( context.isPointInPath( 11, 60 ) );
       assertTrue( context.isPointInPath( 40, 60 ) );
-      assertFalse( context.isPointInPath( 40.1, 30 ) );
-      assertFalse( context.isPointInPath( 10, 60.1 ) );
-      assertFalse( context.isPointInPath( 40.1, 60.1 ) );
+      assertFalse( context.isPointInPath( 40.6, 30 ) );
+      assertFalse( context.isPointInPath( 10, 60.6 ) );
+      assertFalse( context.isPointInPath( 40.6, 60.6 ) );
       canvas.destroy();
       testUtil.flush();
     },

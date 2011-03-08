@@ -12,6 +12,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
   extend : qx.core.Object,
 
   members : {
+    // NOTE: Testing is only possible very limited
 
     TARGETENGINE : [ "mshtml" ],
     
@@ -101,7 +102,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       var gc = canvas.getGC();
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawLine( 10, 10, 20, 10 );
-      assertEquals( "m95,95 l195,95 e", this._getLastPath( gc ) );
+      assertEquals( "m100,100 l200,100 e", this._getLastPath( gc ) );
       canvas.destroy();
       testUtil.flush();
     },
@@ -117,7 +118,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawPoint( 40, 30 );
       var expected = "m395,295 l405,295,405,305,395,305 xe";
-      assertEquals( expected, this._getLastPath( gc ) );
+      var path = this._getLastPath( gc );
+      
+      assertEquals( expected, path );
+      assertTrue( gc._canvas.lastChild.fill.on );
       canvas.destroy();
       testUtil.flush();
     },
@@ -132,7 +136,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       context = gc._context;
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawRectangle( 10, 20, 30, 40 );      
-      var expected = "m95,195 l395,195,395,595,95,595 xe";
+      var expected = "m100,200 l400,200,400,600,100,600 xe";
       assertEquals( expected, this._getLastPath( gc ) );
       canvas.destroy();
       testUtil.flush();
@@ -148,9 +152,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
       context = gc._context;
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawRoundRectangle( 2, 4, 20, 30, 4, 10, true  );      
-      var expected =   "m15,135 l15,235 qb15,335 l55,335,175,335 " 
-                     + "qb215,335 l215,235,215,135 qb215,35 l175,35,55,35 "
-                     + "qb15,35 l15,135 e";
+      var expected =   "m15,95 l15,275 qb15,335 l45,335,185,335 qb215,335 l215,275,215,95 qb215,35 l185,35,45,35 qb15,35 l15,95 e";
       assertEquals( expected, this._getLastPath( gc ) );
       canvas.destroy();
       testUtil.flush();
@@ -280,7 +282,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     },
 
     _getLastPath : function( gc ) {
-      var result = gc._context._canvas.node.lastChild.path.v.toLowerCase();
+      try {
+        var result = gc._context._canvas.node.lastChild.path.v.toLowerCase();
+      } catch( ex ) {
+        // NOTE: Due to a ie-bug, filles paths cant be read from DOM.
+        throw new Error( "_getLastPath failed" );
+      }
       if( result.charAt( 0 ) == " " ) {
         result = result.slice( 1 );
       }

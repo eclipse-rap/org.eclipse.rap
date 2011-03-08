@@ -153,9 +153,10 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     },
 
     drawLine : function( x1, y1, x2, y2 ) {
+      var offset = this._getOffset( false );
       this._context.beginPath();
-      this._context.moveTo( x1, y1 );
-      this._context.lineTo( x2, y2 );
+      this._context.moveTo( x1 + offset, y1 + offset );
+      this._context.lineTo( x2 + offset, y2 + offset );
       this._stroke( false );
     },
 
@@ -164,37 +165,46 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._context.beginPath();
       this._context.lineWidth = 1;
       this._context.rect( x, y, 1, 1 );
-      this._stroke( false );
+      this._stroke( true );
       this._context.restore();
     },
 
     drawRectangle : function( x, y, width, height, fill ) {
+      // TODO [tb] : IE differs from other browser and SWT in that it does not apply the lineJoin 
+      // attribute to a rectangle. Apparently due to VMLCanvas "closepath" call in "rect()". 
+      var offset = this._getOffset( fill );
       this._context.beginPath();
-      this._context.rect( x, y, width, height );
+      this._context.rect( x + offset, y + offset, width, height );
       this._stroke( fill );
     },
 
-    drawRoundRectangle : function( x,
-                                   y,
+    drawRoundRectangle : function( targetX,
+                                   targetY,
                                    width,
                                    height,
                                    arcWidth,
                                    arcHeight,
                                    fill )
     {
+      var offset = this._getOffset( fill );
+      var x = targetX + offset;
+      var y = targetY + offset;
+      // NOTE: the added "+1" in arcSize is the result of a visual comparison of RAP to SWT/Win.  
+      var arcWidthHalf = arcWidth / 2 + 1;
+      var arcHeightHalf = arcHeight / 2 + 1;
       this._context.beginPath();
-      this._context.moveTo( x, y + arcHeight );
-      this._context.lineTo( x, y + height - arcHeight );
-      this._context.quadraticCurveTo( x, y + height, x + arcWidth, y + height );
-      this._context.lineTo( x + width - arcWidth, y + height );
+      this._context.moveTo( x, y + arcHeightHalf );
+      this._context.lineTo( x, y + height - arcHeightHalf );
+      this._context.quadraticCurveTo( x, y + height, x + arcWidthHalf, y + height );
+      this._context.lineTo( x + width - arcWidthHalf, y + height );
       this._context.quadraticCurveTo( x + width,
                                       y + height,
                                       x + width,
-                                      y + height - arcHeight );
-      this._context.lineTo( x + width, y + arcHeight );
-      this._context.quadraticCurveTo( x + width, y, x + width - arcWidth, y );
-      this._context.lineTo( x + arcWidth, y );
-      this._context.quadraticCurveTo( x, y, x, y + arcHeight );
+                                      y + height - arcHeightHalf );
+      this._context.lineTo( x + width, y + arcHeightHalf );
+      this._context.quadraticCurveTo( x + width, y, x + width - arcWidthHalf, y );
+      this._context.lineTo( x + arcWidthHalf, y );
+      this._context.quadraticCurveTo( x, y, x, y + arcHeightHalf );
       this._stroke( fill );
     },
 
@@ -235,10 +245,11 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       "mshtml" : function( x, y, width, height, startAngle, arcAngle, fill ) {
         var radiusX = width / 2;
         var radiusY = height / 2;
+        var offset = this._getOffset( fill );
         this._context.save();
         this._context.beginPath();
-        this._context.arc( x + radiusX,
-                           y + radiusY,
+        this._context.arc( x + radiusX + offset,
+                           y + radiusY + offset,
                            radiusX,
                            radiusY,
                            - startAngle * Math.PI / 180,
@@ -251,9 +262,11 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         if( width > 0 && height > 0 ) {
           var halfWidth = width / 2;
           var halfHeight = height / 2;
+          var offset = this._getOffset( fill );
           this._context.save();
           this._context.beginPath();
-          this._context.translate( x + halfWidth, y + halfHeight );
+          this._context.translate( x + halfWidth + offset, y + halfHeight + offset);
+          // TODO [tb] : using scale here changes the stroke-width also, looks wrong
           this._context.scale( 1, height / width );
           this._context.arc( 0,
                              0,
@@ -268,16 +281,17 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     } ),
 
     drawPolyline : function( points, close, fill ) {
+      var offset = this._getOffset( fill );
       this._context.beginPath();
       for( var i = 1; i < points.length; i += 2 ) {
         if( i == 1 ) {
-          this._context.moveTo( points[ i - 1 ], points[ i ] );
+          this._context.moveTo( points[ i - 1 ] + offset, points[ i ] + offset );
         } else {
-          this._context.lineTo( points[ i - 1 ], points[ i ] );
+          this._context.lineTo( points[ i - 1 ] + offset, points[ i ] + offset );
         }
       }
       if( points.length > 1 && close ) {
-        this._context.lineTo( points[ 0 ], points[ 1 ] );
+        this._context.lineTo( points[ 0 ] + offset, points[ 1 ] + offset );
       }
       this._stroke( fill && close );
     },
@@ -360,6 +374,14 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       } else {
         this._context.stroke();
       }
+    },
+    
+    _getOffset : function( fill ) {
+      var result = 0;
+      if( !fill && this._context.lineWidth % 2 !== 0 ) {
+        result = 0.5
+      }
+      return result;
     }
 
   }
