@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<servicehandler>
+  <handler 
+    class="org.eclipse.rwt.service.ServiceHandler_Test$CustomHandler" 
+    requestparameter="org.eclipse.rwt.service.ServiceHandler_Test.CustomHandler" />
+</servicehandler>
