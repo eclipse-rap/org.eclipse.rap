@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -127,7 +127,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.destroy();
     },
     
-    testKeyboardControlActivate: function() {
+    testKeyboardControlActivate : function() {
       this.createDefaultToolBar();
       assertFalse( this.toolBar.isFocused() );
       assertFalse( this.toolItem1.hasState( "over" ) );
@@ -207,7 +207,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertTrue( executed );
       this.disposeToolBar();      
     },
-    
+
+    testKeyboardControlExecuteWithTextWidget : function() {
+      this.createDefaultToolBar();
+      this.toolBar.setSpace( 0, 100, 0, 20 );
+      this.toolItem1.setSpace( 0, 10, 0, 20 );
+      this.toolItem2.setSpace( 11, 10, 0, 20 );
+      this.separator.setSpace( 21, 30, 0, 20 );
+      this.toolItem3.setSpace( 51, 10, 0, 20 );
+      var text = new org.eclipse.rwt.widgets.Text( false );
+      this.toolBar.addAt( text, 4 );
+      text.setSpace( 21, 30, 0, 20 );
+      this.testUtil.flush();
+      this.toolBar.focus();
+      assertTrue( this.toolItem1.hasState( "over" ) );
+      var executed = false;
+      this.toolItem1.addEventListener( "execute", function( event ) {
+        executed = true;
+      } );
+      text.focus();
+      this.testUtil.pressOnce( text, "Enter" );
+      assertFalse( executed );
+      text.dispose();
+      this.disposeToolBar();
+    },
+
     /////////
     // Helper
     

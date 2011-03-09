@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -25,43 +25,45 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
     }
     this._separatorBorder = null;
     this.setAppearance( "toolbar-button" );
+    this.removeEventListener( "keydown", this._onKeyDown );
+    this.removeEventListener( "keyup", this._onKeyUp );
     if( flat ) {
       this.addState( "rwt_FLAT" );
     }
   },
-  
+
   properties : {
-    
+
     dropDownArrow : {
       apply : "_applyDropDownArrow",
       nullable : true,
       themeable : true
     },
-    
+
     separatorBorder : {
       nullable : true,
       init : null,
       apply : "_applySeparatorBorder",
       themeable : true
     }
-    
+
   },
-  
+
   members : {
     // overwritten:
     _CELLORDER : [ "image", "image", "label", "label", "image" ],
-        
+
     // overwritten:
     _onKeyPress : function( event ) {
       // give to toolBar for keyboard control (left/right keys):
-      this.getParent().dispatchEvent( event );     
-      this.base( arguments, event ); 
+      this.getParent().dispatchEvent( event );
+      this.base( arguments, event );
     },
-    
+
     ////////////////////
     // Dropdown-support
 
-    // overwritten: 
+    // overwritten:
     _onMouseDown : function( event ) {
       if ( event.getTarget() == this && event.isLeftButtonPressed() ) {
         this.removeState( "abandoned" );
@@ -70,14 +72,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
           this._sendChanges();
         } else {
           this.addState( "pressed" );
-        }        
+        }
       }
     },
 
     _isDropdownClick : function( event ) {
       var result = false;
       var node = this.getCellNode( 3 );
-      if( node != null ) { 
+      if( node != null ) {
         var nodeLeft = qx.bom.element.Location.getLeft( node );
         var clickLeft = event.getClientX();
         result = clickLeft > nodeLeft;
@@ -86,47 +88,43 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
     },
 
     _onDropDownClick : function() {
-      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener )
-      {
+      if( !org.eclipse.swt.EventUtil.getSuspended() && this._hasSelectionListener ) {
         var req = org.eclipse.swt.Request.getInstance();
         if( this._sendEvent ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( this );
-          req.addEvent( "org.eclipse.swt.events.widgetSelected.detail", 
-                        "arrow" );
+          req.addEvent( "org.eclipse.swt.events.widgetSelected.detail", "arrow" );
         }
       }
     },
-        
+
     _applyDropDownArrow : function( value, oldValue ) {
       var url = value ? value[ 0 ] : null;
       var width = value ? value[ 1 ] : 0;
-      var height = value ? value[ 2 ] : 0;      
+      var height = value ? value[ 2 ] : 0;
       this.setCellContent( 4, url );
-      this.setCellDimension( 4, width, height );      
+      this.setCellDimension( 4, width, height );
     },
-    
+
     _applySeparatorBorder : function( value, oldValue ) {
-      qx.theme.manager.Border.getInstance().connect( this._queueSeparatorBorder, 
-                                                     this, 
-                                                     value);
+      qx.theme.manager.Border.getInstance().connect( this._queueSeparatorBorder, this, value);
     },
-    
+
     _queueSeparatorBorder : function( value ) {
-      this._separatorBorder = value;      
+      this._separatorBorder = value;
       this.addToQueue( "separatorBorder" );
     },
-    
+
     // overwritten:
     _beforeRenderLayout : function( changes ) {
       if( this._isDropDown ) {
         if( changes.layoutY ) {
-          // the cell used for the line needs to have 100% height 
-          var padding = this.getPaddingTop() + this.getPaddingBottom(); 
+          // the cell used for the line needs to have 100% height
+          var padding = this.getPaddingTop() + this.getPaddingBottom();
           this._setCellHeight( 3, this.getInnerHeight() + padding );
         }
         if( changes.layoutX ) {
-          // uses cell 0 (unused for tool-items) and 2 (text) 
+          // uses cell 0 (unused for tool-items) and 2 (text)
           // to force the dropdown-area to the right
           var inner = this.getInnerWidth();
           this.setCellWidth( 0, 0 );
@@ -135,18 +133,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
           var diff = inner - preferred;
           if( diff > 0 ) {
             var space = this.getSpacing();
-            if(    ( diff > ( space * 2 ) ) 
-                && this.getHorizontalChildrenAlign() != "left" ) 
-            {
-              var spaceLeft = Math.round( diff * 0.5 ) - space; 
+            if( ( diff > ( space * 2 ) ) && this.getHorizontalChildrenAlign() != "left" ) {
+              var spaceLeft = Math.round( diff * 0.5 ) - space;
               var spaceRight = Math.round( diff * 0.5 );
               this.setCellWidth( 0, spaceLeft );
               this.setCellWidth( 2, this.getCellWidth( 2 ) + spaceRight );
             } else {
               this.setCellWidth( 2, this.getCellWidth( 2 ) + diff );
             }
-          } 
-        }        
+          }
+        }
         if( changes.separatorBorder ) {
           // apply the separator-border (currently verly limited)
           var style = this.getCellNode( 3 ).style;
@@ -160,15 +156,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
         }
       }
     },
-    
+
     // overwritten:
     _renderCellLayoutY : function( cell ) {
-      this.base( arguments, cell );       
+      this.base( arguments, cell );
       if( this._isDropDown && cell == 3 ) {
         this.getCellNode( cell ).style.top = 0;
       }
     }
 
   }
-  
+
 } );

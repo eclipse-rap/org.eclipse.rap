@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -25,33 +25,39 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolBar", {
     this.addEventListener( "keydown", this._onKeyDown );
     this.addEventListener( "keyup", this._onKeyUp );
   },
-  
+
   properties : {
 
     tabIndex : {
       refine : true,
       init : 1
     }
-        
+
   },
-  
+
   members : {
-    
-    _onMouseOver : function( event ) {
-      var item = event.getTarget();
-      if( item.getParent() == this && this._hoverItem != item ) {
-        if( this._hoverItem ) {
-          this._hoverItem.removeState( "over" );
-        }
-        if( item instanceof org.eclipse.rwt.widgets.ToolItem ) {
-          this._hoverItem = item;
-          this._hoverItem.addState( "over" );
-        } else {
-          this._hoverItem = null;
-        }
-      }      
+
+    _isRelevantEvent : function( event ) {
+      var target = event.getTarget();
+      return this._isToolItem( target ) || target === this;
     },
-    
+
+    _isToolItem : function( item ) {
+      return item instanceof org.eclipse.rwt.widgets.ToolItem && item.getParent() === this;
+    },
+
+    _onMouseOver : function( event ) {
+      var target = event.getTarget();
+      if( this._hoverItem != null && this._hoverItem != target ) {
+        this._hoverItem.removeState( "over" );
+        this._hoverItem = null;
+      }
+      if( this._isToolItem( target ) ) {
+        this._hoverItem = target;
+        this._hoverItem.addState( "over" );
+      }
+    },
+
     _onFocus : function( event ) {
       if( this._hoverItem == null ) {
         this._hoverItem = this.getFirstChild();
@@ -60,59 +66,58 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolBar", {
         this._hoverItem.addState( "over" );
       }
     },
-    
+
     _onBlur : function( event ) {
       if( this._hoverItem != null ) {
         this._hoverItem.removeState( "over" );
       }
     },
-    
+
     _onKeyPress : function( event ) {
-      switch( event.getKeyIdentifier() ) {
-        case "Left":
-          this._hoverNext( true );
-        break;      
-        case "Right":
-          this._hoverNext( false );
-        break;
+      if( this._isRelevantEvent( event ) ) {
+	      switch( event.getKeyIdentifier() ) {
+	        case "Left":
+	          this._hoverNext( true );
+	        break;
+	        case "Right":
+	          this._hoverNext( false );
+	        break;
+	      }
       }
     },
-    
+
     _onKeyDown : function( event ) {
-      if( this._hoverItem != null ) {
+      if( this._hoverItem != null && this._isRelevantEvent( event ) ) {
         this._hoverItem._onKeyDown( event );
       }
     },
-    
+
     _onKeyUp : function( event ) {
-      if( this._hoverItem != null ) {
+      if( this._hoverItem != null && this._isRelevantEvent( event ) ) {
         this._hoverItem._onKeyUp( event );
-      }      
+      }
     },
-    
+
     _hoverNext : function( backwards ) {
       if( this._hoverItem != null ) {
         this._hoverItem.removeState( "over" );
-        var isToolItem;
         do {
           if( backwards ) {
             this._hoverItem = this._hoverItem.getPreviousSibling();
             if( this._hoverItem == null ) {
               this._hoverItem = this.getLastChild();
-            } 
+            }
           } else {
             this._hoverItem = this._hoverItem.getNextSibling();
             if( this._hoverItem == null ) {
               this._hoverItem = this.getFirstChild();
-            }             
+            }
           }
-          isToolItem 
-            = this._hoverItem instanceof org.eclipse.rwt.widgets.ToolItem;
-        } while( !( isToolItem && this._hoverItem.isEnabled() ) );
+        } while( !( this._isToolItem( this._hoverItem ) && this._hoverItem.isEnabled() ) );
         this._hoverItem.addState( "over" );
       }
     }
-    
+
   }
-  
+
 } );
