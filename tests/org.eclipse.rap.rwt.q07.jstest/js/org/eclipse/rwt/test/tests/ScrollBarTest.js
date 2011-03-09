@@ -214,7 +214,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.setValue( 200 );
       bar.setValue( 199 );
       assertEquals( 0, events.length );
+      assertTrue( bar._eventTimer.isEnabled() ); 
       testUtil.forceInterval( bar._eventTimer );
+      assertFalse( bar._eventTimer.isEnabled() );
       assertEquals( 1, events.length );
       bar.destroy();
     },

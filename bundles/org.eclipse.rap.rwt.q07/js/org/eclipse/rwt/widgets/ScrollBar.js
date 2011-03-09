@@ -169,9 +169,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
         this._eventTimer.stop();
         this._eventTimer.start();
       } else {
-        if( this._mergeEvents ) {
-          this._eventTimer.stop();
-        }
         this._dispatchValueChanged();
       }
     },
@@ -205,6 +202,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
     },
     
     _dispatchValueChanged : function() {
+      if( this._mergeEvents ) {
+        this._eventTimer.stop();
+      }
       this._lastDispatchedValue = this._selection;
       this.createDispatchEvent( "changeValue" );
     },
