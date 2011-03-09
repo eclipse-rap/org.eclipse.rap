@@ -16,21 +16,19 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 
 public class KeyBindingUtil_Test extends TestCase {
 
+  private Display display;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
   }
 
   protected void tearDown() throws Exception {
@@ -39,7 +37,6 @@ public class KeyBindingUtil_Test extends TestCase {
 
   public void testNoKeyEventsForIllegalWidgetId() {
     final ArrayList log = new ArrayList();
-    Display display = new Display();
     display.addFilter( SWT.KeyDown, new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -56,7 +53,6 @@ public class KeyBindingUtil_Test extends TestCase {
 
   public void testReadKeyBindingEvents() {
     final ArrayList log = new ArrayList();
-    Display display = new Display();
     display.addFilter( SWT.KeyDown, new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -91,7 +87,6 @@ public class KeyBindingUtil_Test extends TestCase {
   }
 
   public void testWriteKeyBindings() throws IOException {
-    Display display = new Display();
     String[] keyBindings = new String[] {
       "65536,39",
       "262144,16777225",
@@ -99,8 +94,7 @@ public class KeyBindingUtil_Test extends TestCase {
       "458752,49"
     };
     Fixture.fakeNewRequest();
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( KeyBindingUtil.KEYBINDING_LIST, keyBindings );
+    display.setData( Display.KEYBINDING_LIST, keyBindings );
     KeyBindingUtil.writeKeyBindings( display );
     String expected
       =   "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({"
@@ -110,13 +104,14 @@ public class KeyBindingUtil_Test extends TestCase {
         + "\"ALT+CTRL+SHIFT+49\":true"
         + "});";
     assertEquals( expected, Fixture.getAllMarkup() );
+    assertNull( display.getData( Display.KEYBINDING_LIST ) );
     Fixture.fakeNewRequest();
     keyBindings = new String[ 0 ];
-    stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( KeyBindingUtil.KEYBINDING_LIST, keyBindings );
+    display.setData( Display.KEYBINDING_LIST, keyBindings );
     KeyBindingUtil.writeKeyBindings( display );
     expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
     assertEquals( expected, Fixture.getAllMarkup() );
+    assertNull( display.getData( Display.KEYBINDING_LIST ) );
     Fixture.fakeNewRequest();
     KeyBindingUtil.writeKeyBindings( display );
     expected = "";

@@ -46,7 +46,7 @@ import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.contexts.IContextIds;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.Util;
-import org.eclipse.swt.internal.widgets.displaykit.KeyBindingUtil;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * <p>
@@ -2198,7 +2198,11 @@ public final class BindingManager extends HandleObjectManager implements
 	    }
 	    String[] array = new String[ keyBindingList.size() ];
         keyBindingList.toArray( array );
-        KeyBindingUtil.setKeyBindings( array );
+        Display display = Display.getCurrent();
+        if( display == null ) {
+          throw new IllegalStateException();
+        }
+        display.setData( Display.KEYBINDING_LIST, array );
 	  }
 	}
 	// ENDRAP [if]

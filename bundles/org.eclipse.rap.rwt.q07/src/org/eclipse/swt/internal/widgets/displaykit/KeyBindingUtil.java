@@ -32,24 +32,15 @@ public final class KeyBindingUtil {
   private static final String JSFUNC_SET_KEYBINDING_LIST
     = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings";
 
-  static final String KEYBINDING_LIST
-    = Display.class.getName() + "#keyBindingList";
-
   private KeyBindingUtil() {
     // prevent instantiation
-  }
-
-  public static void setKeyBindings( final String[] keyBindings ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( KEYBINDING_LIST, keyBindings );
   }
 
   static void readKeyBindingEvents( final Display display ) {
     if( wasEventSent( JSConst.EVENT_KEY_DOWN ) ) {
       final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
       final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
-      final int stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
+      final int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           Event event = createEvent( display, keyCode, charCode, stateMask );
@@ -59,24 +50,24 @@ public final class KeyBindingUtil {
     }
   }
 
-  static void writeKeyBindings( final Display display )
-    throws IOException
-  {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    String[] keyBindingList
-      = ( String[] )stateInfo.getAttribute( KEYBINDING_LIST );
-    if( keyBindingList != null ) {
-      HtmlResponseWriter writer = stateInfo.getResponseWriter();
-      StringBuffer content = new StringBuffer();
-      content.append( JSFUNC_SET_KEYBINDING_LIST );
-      content.append( "(" );
-      content.append( toJson( keyBindingList ) );
-      content.append( ");" );
-      writer.write( content.toString() );
+  static void writeKeyBindings( Display display ) throws IOException {
+    if( !display.isDisposed() ) {
+      String[] keyBindingList = ( String[] )display.getData( Display.KEYBINDING_LIST );
+      if( keyBindingList != null ) {
+        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+        HtmlResponseWriter writer = stateInfo.getResponseWriter();
+        StringBuffer content = new StringBuffer();
+        content.append( JSFUNC_SET_KEYBINDING_LIST );
+        content.append( "(" );
+        content.append( toJson( keyBindingList ) );
+        content.append( ");" );
+        writer.write( content.toString() );
+        display.setData( Display.KEYBINDING_LIST, null );
+      }
     }
   }
 
-  private static String toJson( final String[] keyBindingList ) {
+  private static String toJson( String[] keyBindingList ) {
     StringBuffer json = new StringBuffer();
     json.append( "{" );
     for( int i = 0; i < keyBindingList.length; i++ ) {
@@ -92,7 +83,7 @@ public final class KeyBindingUtil {
     return json.toString();
   }
 
-  private static String getModifierKeys( final String keyBinding ) {
+  private static String getModifierKeys( String keyBinding ) {
     String modifierPart = keyBinding.substring( 0, keyBinding.indexOf( ',' ) );
     int modifierKeys = NumberFormatUtil.parseInt( modifierPart );
     StringBuffer result = new StringBuffer();
@@ -108,17 +99,13 @@ public final class KeyBindingUtil {
     return result.toString();
   }
 
-  private static int getNaturalKey( final String keyBinding ) {
+  private static int getNaturalKey( String keyBinding ) {
     String keyPart = keyBinding.substring( keyBinding.indexOf( ',' ) + 1 );
     int naturalKey = NumberFormatUtil.parseInt( keyPart );
     return translateNaturalKey( naturalKey );
   }
 
-  private static Event createEvent( final Display display,
-                                    final int keyCode,
-                                    final int charCode,
-                                    final int stateMask )
-  {
+  private static Event createEvent( Display display, int keyCode, int charCode, int stateMask ) {
     Event event = new Event();
     event.display = display;
     event.type = SWT.KeyDown;
@@ -135,7 +122,7 @@ public final class KeyBindingUtil {
     return event;
   }
 
-  private static void processEvent( final Display display, final Event event ) {
+  private static void processEvent( Display display, Event event ) {
     IFilterEntry[] filters = getFilterEntries( display );
     for( int i = 0; i < filters.length; i++ ) {
       if( filters[ i ].getType() == event.type ) {
@@ -144,30 +131,30 @@ public final class KeyBindingUtil {
     }
   }
 
-  private static IFilterEntry[] getFilterEntries( final Display display ) {
+  private static IFilterEntry[] getFilterEntries( Display display ) {
     IDisplayAdapter adapter
       = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
     return adapter.getFilters();
   }
 
-  private static boolean wasEventSent( final String eventName ) {
+  private static boolean wasEventSent( String eventName ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String widgetId = request.getParameter( eventName );
     return "w1".equals( widgetId );
   }
 
-  private static int readIntParam( final String paramName ) {
+  private static int readIntParam( String paramName ) {
     String value = readStringParam( paramName );
     return NumberFormatUtil.parseInt( value );
   }
 
-  private static String readStringParam( final String paramName ) {
+  private static String readStringParam( String paramName ) {
     HttpServletRequest request = ContextProvider.getRequest();
     return request.getParameter( paramName );
   }
 
   // translates key code qooxdoo -> SWT
-  private static int translateKeyCode( final int keyCode ) {
+  private static int translateKeyCode( int keyCode ) {
     int result;
     switch( keyCode ) {
       case 20:
@@ -327,7 +314,7 @@ public final class KeyBindingUtil {
   }
 
   // translate key codes SWT -> qooxdoo
-  private static int translateNaturalKey( final int naturalKey ) {
+  private static int translateNaturalKey( int naturalKey ) {
     int result;
     switch( naturalKey ) {
       case SWT.CAPS_LOCK:
@@ -486,7 +473,7 @@ public final class KeyBindingUtil {
     return result;
   }
 
-  private static char translateCharacter( final int keyCode ) {
+  private static char translateCharacter( int keyCode ) {
     char result = ( char )0;
     if( Character.isDefined( ( char )keyCode ) ) {
       result = ( char )keyCode;
