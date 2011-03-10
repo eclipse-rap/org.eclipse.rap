@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
@@ -95,7 +96,7 @@ public class KeyBindingUtil_Test extends TestCase {
       "458752,49"
     };
     Fixture.fakeNewRequest();
-    display.setData( Display.KEYBINDING_LIST, keyBindings );
+    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
     KeyBindingUtil.writeKeyBindings( display );
     String expected
       =   "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({"
@@ -105,14 +106,14 @@ public class KeyBindingUtil_Test extends TestCase {
         + "\"ALT+CTRL+SHIFT+49\":true"
         + "});";
     assertEquals( expected, Fixture.getAllMarkup() );
-    assertNull( display.getData( Display.KEYBINDING_LIST ) );
+    assertNull( display.getData( DisplayUtil.KEYBINDING_LIST ) );
     Fixture.fakeNewRequest();
     keyBindings = new String[ 0 ];
-    display.setData( Display.KEYBINDING_LIST, keyBindings );
+    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
     KeyBindingUtil.writeKeyBindings( display );
     expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
     assertEquals( expected, Fixture.getAllMarkup() );
-    assertNull( display.getData( Display.KEYBINDING_LIST ) );
+    assertNull( display.getData( DisplayUtil.KEYBINDING_LIST ) );
     Fixture.fakeNewRequest();
     KeyBindingUtil.writeKeyBindings( display );
     expected = "";

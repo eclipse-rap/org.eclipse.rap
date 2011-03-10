@@ -19,7 +19,9 @@ import org.eclipse.swt.widgets.Display;
 
 
 public final class DisplayUtil {
-  
+
+  public static final String KEYBINDING_LIST = Display.class.getName() + "#keyBindingList";
+
   private DisplayUtil() {
     // prevent instance creation
   }

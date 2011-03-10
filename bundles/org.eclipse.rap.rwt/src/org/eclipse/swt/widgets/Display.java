@@ -126,14 +126,6 @@ public class Display extends Device implements Adaptable {
     = DisplayAdapter.class.getName() + "#invalidateFocus";
   private static final String APP_NAME = Display.class.getName() + "#appName";
   private static final String APP_VERSION = Display.class.getName() + "#appVersion";
-  
-  /**
-   * <strong>IMPORTANT:</strong> This field is <em>not</em> part of the SWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by SWT. It should never be accessed from
-   * application code.
-   */
-  public static final String KEYBINDING_LIST = Display.class.getName() + "#keyBindingList";
 
   /* Package Name */
   static final String PACKAGE_PREFIX = "org.eclipse.swt.widgets.";

@@ -14,8 +14,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
-import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
@@ -53,7 +52,7 @@ public final class KeyBindingUtil {
 
   static void writeKeyBindings( Display display ) throws IOException {
     if( !display.isDisposed() ) {
-      String[] keyBindingList = ( String[] )display.getData( Display.KEYBINDING_LIST );
+      String[] keyBindingList = ( String[] )display.getData( DisplayUtil.KEYBINDING_LIST );
       if( keyBindingList != null ) {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         HtmlResponseWriter writer = stateInfo.getResponseWriter();
@@ -63,7 +62,7 @@ public final class KeyBindingUtil {
         content.append( toJson( keyBindingList ) );
         content.append( ");" );
         writer.write( content.toString() );
-        display.setData( Display.KEYBINDING_LIST, null );
+        display.setData( DisplayUtil.KEYBINDING_LIST, null );
       }
     }
   }
