@@ -31,6 +31,7 @@ import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 
 public final class RWTStartupPageConfigurer
   implements StartupPage.IStartupPageConfigurer
@@ -153,7 +154,7 @@ public final class RWTStartupPageConfigurer
     try {
       // TODO: [fappel] this works only as long as only one display per
       //                session is supported...
-      DisplayUtil.writeAppScript( "w1" );
+      DisplayLCAFacade.writeAppScript( "w1" );
       return getContent( writer );
     } finally {
       restoreWriter();
@@ -180,7 +181,7 @@ public final class RWTStartupPageConfigurer
   private String getLibraries() throws IOException {
     fakeWriter();
     try {
-      DisplayUtil.writeLibraries();
+      DisplayLCAFacade.writeLibraries();
       return getContent( ContextProvider.getStateInfo().getResponseWriter() );
     } finally {
       restoreWriter();
