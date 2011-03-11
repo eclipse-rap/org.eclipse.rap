@@ -47,3 +47,4 @@ Import-Package: javax.xml.parsers,
  org.xml.sax
 Bundle-Activator: org.eclipse.jface.internal.JFaceActivator
 Bundle-ActivationPolicy: lazy
+Eclipse-PlatformFilter: (osgi.ws=rap)

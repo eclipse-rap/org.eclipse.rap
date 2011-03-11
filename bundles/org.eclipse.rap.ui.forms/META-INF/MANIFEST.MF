@@ -24,3 +24,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: patch.jar,
  .
+Eclipse-PlatformFilter: (osgi.ws=rap)
