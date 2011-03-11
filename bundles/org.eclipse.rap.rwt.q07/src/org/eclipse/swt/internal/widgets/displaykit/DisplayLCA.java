@@ -103,6 +103,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     adapter.preserve( PROP_CURR_THEME, ThemeUtil.getCurrentThemeId() );
     adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
+    KeyBindingUtil.preserveKeyBindings( display );
   }
 
   public void render( final Display display ) throws IOException {

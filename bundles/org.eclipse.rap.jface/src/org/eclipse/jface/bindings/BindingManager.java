@@ -2190,10 +2190,7 @@ public final class BindingManager extends HandleObjectManager implements
 	        KeySequence keySequence = keyBinding.getKeySequence();
 	        KeyStroke[] keyStroke = keySequence.getKeyStrokes();
 	        if( keyStroke.length > 0 ) {
-	          String stroke = keyStroke[ 0 ].getModifierKeys()
-	                        + ","  //$NON-NLS-1$
-	                        + keyStroke[ 0 ].getNaturalKey();
-	          keyBindingList.add( stroke );
+	          keyBindingList.add( keyStroke[ 0 ].toString() );
 	        }
 	      }
 	    }

@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +19,7 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -28,12 +29,87 @@ import org.eclipse.swt.widgets.Event;
 
 
 public final class KeyBindingUtil {
-  
+
   private static final String JSFUNC_SET_KEYBINDING_LIST
     = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings";
 
+  private static final Map KEY_MAP = new HashMap();
+  static {
+    KEY_MAP.put( "BACKSPACE", new Integer( 8 ) );
+    KEY_MAP.put( "BS", new Integer( 8 ) );
+    KEY_MAP.put( "TAB", new Integer( 9 ) );
+    KEY_MAP.put( "RETURN", new Integer( 13 ) );
+    KEY_MAP.put( "ENTER", new Integer( 13 ) );
+    KEY_MAP.put( "CR", new Integer( 13 ) );
+    KEY_MAP.put( "PAUSE", new Integer( 19 ) );
+    KEY_MAP.put( "BREAK", new Integer( 19 ) );
+    KEY_MAP.put( "CAPS_LOCK", new Integer( 20 ) );
+    KEY_MAP.put( "ESCAPE", new Integer( 27 ) );
+    KEY_MAP.put( "ESC", new Integer( 27 ) );
+    KEY_MAP.put( "SPACE", new Integer( 32 ) );
+    KEY_MAP.put( "PAGE_UP", new Integer( 33 ) );
+    KEY_MAP.put( "PAGE_DOWN", new Integer( 34 ) );
+    KEY_MAP.put( "END", new Integer( 35 ) );
+    KEY_MAP.put( "HOME", new Integer( 36 ) );
+    KEY_MAP.put( "ARROW_LEFT", new Integer( 37 ) );
+    KEY_MAP.put( "ARROW_UP", new Integer( 38 ) );
+    KEY_MAP.put( "ARROW_RIGHT", new Integer( 39 ) );
+    KEY_MAP.put( "ARROW_DOWN", new Integer( 40 ) );
+    KEY_MAP.put( "PRINT_SCREEN", new Integer( 44 ) );
+    KEY_MAP.put( "INSERT", new Integer( 45 ) );
+    KEY_MAP.put( "DEL", new Integer( 46 ) );
+    KEY_MAP.put( "DELETE", new Integer( 46 ) );
+    KEY_MAP.put( "F1", new Integer( 112 ) );
+    KEY_MAP.put( "F2", new Integer( 113 ) );
+    KEY_MAP.put( "F3", new Integer( 114 ) );
+    KEY_MAP.put( "F4", new Integer( 115 ) );
+    KEY_MAP.put( "F5", new Integer( 116 ) );
+    KEY_MAP.put( "F6", new Integer( 117 ) );
+    KEY_MAP.put( "F7", new Integer( 118 ) );
+    KEY_MAP.put( "F8", new Integer( 119 ) );
+    KEY_MAP.put( "F9", new Integer( 120 ) );
+    KEY_MAP.put( "F10", new Integer( 121 ) );
+    KEY_MAP.put( "F11", new Integer( 122 ) );
+    KEY_MAP.put( "F12", new Integer( 123 ) );
+    KEY_MAP.put( "NUMPAD_0", new Integer( 96 ) );
+    KEY_MAP.put( "NUMPAD_1", new Integer( 97 ) );
+    KEY_MAP.put( "NUMPAD_2", new Integer( 98 ) );
+    KEY_MAP.put( "NUMPAD_3", new Integer( 99 ) );
+    KEY_MAP.put( "NUMPAD_4", new Integer( 100 ) );
+    KEY_MAP.put( "NUMPAD_5", new Integer( 101 ) );
+    KEY_MAP.put( "NUMPAD_6", new Integer( 102 ) );
+    KEY_MAP.put( "NUMPAD_7", new Integer( 103 ) );
+    KEY_MAP.put( "NUMPAD_8", new Integer( 104 ) );
+    KEY_MAP.put( "NUMPAD_9", new Integer( 105 ) );
+    KEY_MAP.put( "NUMPAD_MULTIPLY", new Integer( 106 ) );
+    KEY_MAP.put( "NUMPAD_ADD", new Integer( 107 ) );
+    KEY_MAP.put( "NUMPAD_SUBTRACT", new Integer( 109 ) );
+    KEY_MAP.put( "NUMPAD_DECIMAL", new Integer( 110 ) );
+    KEY_MAP.put( "NUMPAD_DIVIDE", new Integer( 111 ) );
+    KEY_MAP.put( "NUM_LOCK", new Integer( 144 ) );
+    KEY_MAP.put( "SCROLL_LOCK", new Integer( 145 ) );
+    KEY_MAP.put( ",", new Integer( 188 ) );
+    KEY_MAP.put( ".", new Integer( 190 ) );
+    KEY_MAP.put( "/", new Integer( 191 ) );
+    KEY_MAP.put( "`", new Integer( 192 ) );
+    KEY_MAP.put( "[", new Integer( 219 ) );
+    KEY_MAP.put( "\\", new Integer( 220 ) );
+    KEY_MAP.put( "]", new Integer( 221 ) );
+    KEY_MAP.put( "'", new Integer( 222 ) );
+  }
+  private final static String ALT = "ALT+";
+  private final static String CTRL = "CTRL+";
+  private final static String SHIFT = "SHIFT+";
+
+  final static String PROP_KEYBINDING_LIST = "keyBindingList";
+
   private KeyBindingUtil() {
     // prevent instantiation
+  }
+
+  static void preserveKeyBindings( Display display ) {
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    adapter.preserve( PROP_KEYBINDING_LIST, getKeyBindingList( display ) );
   }
 
   static void readKeyBindingEvents( final Display display ) {
@@ -52,57 +128,106 @@ public final class KeyBindingUtil {
 
   static void writeKeyBindings( Display display ) throws IOException {
     if( !display.isDisposed() ) {
-      String[] keyBindingList = ( String[] )display.getData( DisplayUtil.KEYBINDING_LIST );
-      if( keyBindingList != null ) {
+      String[] newValue = getKeyBindingList( display );
+      if( hasKeyBindingListChanged( display, newValue ) ) {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         HtmlResponseWriter writer = stateInfo.getResponseWriter();
         StringBuffer content = new StringBuffer();
         content.append( JSFUNC_SET_KEYBINDING_LIST );
         content.append( "(" );
-        content.append( toJson( keyBindingList ) );
+        content.append( toJson( newValue ) );
         content.append( ");" );
         writer.write( content.toString() );
-        display.setData( DisplayUtil.KEYBINDING_LIST, null );
       }
     }
+  }
+
+  private static boolean hasKeyBindingListChanged( Display display, String[] newValue ) {
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    String[] oldValue = ( String[] )adapter.getPreserved( PROP_KEYBINDING_LIST );
+    return !Arrays.equals( oldValue, newValue );
+  }
+
+  private static String[] getKeyBindingList( Display display ) {
+    String[] result = null;
+    Object data = display.getData( DisplayUtil.KEYBINDING_LIST );
+    if( data != null ) {
+      if( data instanceof String[] ) {
+        String[] keyBindingList = ( String[] )data;
+        result = new String[ keyBindingList.length ];
+        System.arraycopy( keyBindingList, 0, result, 0, keyBindingList.length );
+      } else {
+        throw new IllegalArgumentException( "Key binding list should be a string array" );
+      }
+    }
+    return result;
   }
 
   private static String toJson( String[] keyBindingList ) {
     StringBuffer json = new StringBuffer();
     json.append( "{" );
-    for( int i = 0; i < keyBindingList.length; i++ ) {
-      json.append( "\"" );
-      json.append( getModifierKeys( keyBindingList[ i ] ) );
-      json.append( getNaturalKey( keyBindingList[ i ] ) );
-      json.append( "\":true" );
-      if( i < keyBindingList.length - 1 ) {
-        json.append( "," );
+    if( keyBindingList != null ) {
+      for( int i = 0; i < keyBindingList.length; i++ ) {
+        json.append( "\"" );
+        json.append( translateKeyBinding( keyBindingList[ i ] ) );
+        json.append( "\":true" );
+        if( i < keyBindingList.length - 1 ) {
+          json.append( "," );
+        }
       }
     }
     json.append( "}" );
     return json.toString();
   }
 
-  private static String getModifierKeys( String keyBinding ) {
-    String modifierPart = keyBinding.substring( 0, keyBinding.indexOf( ',' ) );
-    int modifierKeys = NumberFormatUtil.parseInt( modifierPart );
+  private static String translateKeyBinding( String keyBinding ) {
+    if( keyBinding == null ) {
+      throw new NullPointerException( "Null argument" );
+    }
+    if( keyBinding.trim().length() == 0 ) {
+      throw new IllegalArgumentException( "Empty key binding definition" );
+    }
+    int lastPlusIndex = keyBinding.lastIndexOf( "+" );
+    String modifierPart = "";
+    String keyPart = "";
+    if( lastPlusIndex != -1 ) {
+      modifierPart = keyBinding.substring( 0, lastPlusIndex + 1 );
+      keyPart = keyBinding.substring( lastPlusIndex + 1 );
+    } else {
+      keyPart = keyBinding;
+    }
+    return getModifierKeys( modifierPart ) + getKeyCode( keyPart );
+  }
+
+  private static String getModifierKeys( String modifier ) {
     StringBuffer result = new StringBuffer();
-    if( ( modifierKeys & SWT.ALT ) != 0 ) {
-      result.append( "ALT+" );
+    // order modifiers
+    if( modifier.indexOf( ALT ) != -1 ) {
+      result.append( ALT );
     }
-    if( ( modifierKeys & SWT.CTRL ) != 0 ) {
-      result.append( "CTRL+" );
+    if( modifier.indexOf( CTRL ) != -1 ) {
+      result.append( CTRL );
     }
-    if( ( modifierKeys & SWT.SHIFT ) != 0 ) {
-      result.append( "SHIFT+" );
+    if( modifier.indexOf( SHIFT ) != -1 ) {
+      result.append( SHIFT );
+    }
+    if( modifier.length() != result.length() ) {
+      throw new IllegalArgumentException( "Unrecognized modifier: " + modifier );
     }
     return result.toString();
   }
 
-  private static int getNaturalKey( String keyBinding ) {
-    String keyPart = keyBinding.substring( keyBinding.indexOf( ',' ) + 1 );
-    int naturalKey = NumberFormatUtil.parseInt( keyPart );
-    return translateNaturalKey( naturalKey );
+  private static int getKeyCode( String key ) {
+    int result = -1;
+    Object value = KEY_MAP.get( key );
+    if( value instanceof Integer ) {
+      result = ( ( Integer )value ).intValue();
+    } else if( key.length() == 1 ) {
+      result = key.charAt( 0 );
+    } else {
+      throw new IllegalArgumentException( "Unrecognized key: " + key );
+    }
+    return result;
   }
 
   private static Event createEvent( Display display, int keyCode, int charCode, int stateMask ) {
@@ -309,166 +434,6 @@ public final class KeyBindingUtil {
       break;
       default:
         result = keyCode;
-    }
-    return result;
-  }
-
-  // translate key codes SWT -> qooxdoo
-  private static int translateNaturalKey( int naturalKey ) {
-    int result;
-    switch( naturalKey ) {
-      case SWT.CAPS_LOCK:
-        result = 20;
-      break;
-      case SWT.ARROW_UP:
-        result = 38;
-      break;
-      case SWT.ARROW_LEFT:
-        result = 37;
-      break;
-      case SWT.ARROW_RIGHT:
-        result = 39;
-      break;
-      case SWT.ARROW_DOWN:
-        result = 40;
-      break;
-      case SWT.PAGE_UP:
-        result = 33;
-      break;
-      case SWT.PAGE_DOWN:
-        result = 34;
-      break;
-      case SWT.END:
-        result = 35;
-      break;
-      case SWT.HOME:
-        result = 36;
-      break;
-      case SWT.INSERT:
-        result = 45;
-      break;
-      case SWT.DEL:
-        result = 46;
-      break;
-      case SWT.F1:
-        result = 112;
-      break;
-      case SWT.F2:
-        result = 113;
-      break;
-      case SWT.F3:
-        result = 114;
-      break;
-      case SWT.F4:
-        result = 115;
-      break;
-      case SWT.F5:
-        result = 116;
-      break;
-      case SWT.F6:
-        result = 117;
-      break;
-      case SWT.F7:
-        result = 118;
-      break;
-      case SWT.F8:
-        result = 119;
-      break;
-      case SWT.F9:
-        result = 120;
-      break;
-      case SWT.F10:
-        result = 121;
-      break;
-      case SWT.F11:
-        result = 122;
-      break;
-      case SWT.F12:
-        result = 123;
-      break;
-      case SWT.NUM_LOCK:
-        result = 144;
-      break;
-      case SWT.PRINT_SCREEN:
-        result = 44;
-      break;
-      case SWT.SCROLL_LOCK:
-        result = 145;
-      break;
-      case SWT.PAUSE:
-        result = 19;
-      break;
-      case SWT.KEYPAD_0:
-        result = 96;
-      break;
-      case SWT.KEYPAD_1:
-        result = 97;
-      break;
-      case SWT.KEYPAD_2:
-        result = 98;
-      break;
-      case SWT.KEYPAD_3:
-        result = 99;
-      break;
-      case SWT.KEYPAD_4:
-        result = 100;
-      break;
-      case SWT.KEYPAD_5:
-        result = 101;
-      break;
-      case SWT.KEYPAD_6:
-        result = 102;
-      break;
-      case SWT.KEYPAD_7:
-        result = 103;
-      break;
-      case SWT.KEYPAD_8:
-        result = 104;
-      break;
-      case SWT.KEYPAD_9:
-        result = 105;
-      break;
-      case SWT.KEYPAD_MULTIPLY:
-        result = 106;
-      break;
-      case SWT.KEYPAD_ADD:
-        result = 107;
-      break;
-      case SWT.KEYPAD_SUBTRACT:
-        result = 109;
-      break;
-      case SWT.KEYPAD_DECIMAL:
-        result = 110;
-      break;
-      case SWT.KEYPAD_DIVIDE:
-        result = 111;
-      break;
-      case ',':
-        result = 188;
-      break;
-      case '.':
-        result = 190;
-      break;
-      case '/':
-        result = 191;
-      break;
-      case '`':
-        result = 192;
-      break;
-      case '[':
-        result = 219;
-      break;
-      case '\\':
-        result = 220;
-      break;
-      case ']':
-        result = 221;
-      break;
-      case '\'':
-        result = 222;
-      break;
-      default:
-        result = naturalKey;
     }
     return result;
   }
