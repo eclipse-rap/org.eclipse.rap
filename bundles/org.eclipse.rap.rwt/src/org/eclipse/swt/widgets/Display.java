@@ -1283,7 +1283,7 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.4
    */
-  public Menu getAppMenuBar() {
+  public Menu getMenuBar() {
     checkDevice();
     return null;
   }

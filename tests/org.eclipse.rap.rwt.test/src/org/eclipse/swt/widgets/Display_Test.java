@@ -1309,9 +1309,9 @@ public class Display_Test extends TestCase {
     assertNull( display.getSystemTray() );
   }
   
-  public void testGetAppMenuBar() {
+  public void testGetMenuBar() {
     Display display = new Display();
-    assertNull( display.getAppMenuBar() );
+    assertNull( display.getMenuBar() );
   }
 
   public void testGetSystemTaskBar() {
