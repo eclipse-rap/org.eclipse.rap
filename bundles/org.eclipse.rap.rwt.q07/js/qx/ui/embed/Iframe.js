@@ -400,13 +400,14 @@ qx.Class.define("qx.ui.embed.Iframe",
      * @type static
      * @param vFrameName {String} Name of the iframe.
      */
-    _generateIframeElement : function(vFrameName)
+    _generateIframeElement : function()
     {
+      var frameName = this.getFrameName()
       if (qx.core.Variant.isSet("qx.client", "mshtml"))
       {
-        var nameStr = vFrameName ? 'name="' + vFrameName + '"' : '';
+        var nameStr = frameName ? 'name="' + frameName + '"' : '';
         var frameEl = qx.ui.embed.Iframe._element = document.createElement(
-          "<iframe" + nameStr + "></iframe>");
+          "<iframe " + nameStr + " ></iframe>");
         frameEl.attachEvent("onload", function() {
           qx.ui.embed.Iframe.load(frameEl);
         });
@@ -417,8 +418,8 @@ qx.Class.define("qx.ui.embed.Iframe",
 
         frameEl.onload = qx.ui.embed.Iframe.load;
 
-        if (vFrameName) {
-          frameEl.name = vFrameName;
+        if (frameName) {
+          frameEl.name = frameName;
         }
       }
 

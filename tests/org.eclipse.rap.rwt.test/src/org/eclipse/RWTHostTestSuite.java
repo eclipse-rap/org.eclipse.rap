@@ -31,6 +31,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
 import org.eclipse.rwt.widgets.BrowserHistory_Test;
 import org.eclipse.rwt.widgets.ExternalBrowser_Test;
+import org.eclipse.rwt.widgets.FileUpload_Test;
 import org.eclipse.swt.browser.BrowserFunction_Test;
 import org.eclipse.swt.browser.Browser_Test;
 import org.eclipse.swt.custom.*;
@@ -181,6 +182,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Tree_Test.class );
     suite.addTestSuite( TreeItem_Test.class );
     suite.addTestSuite( ToolTip_Test.class );
+    suite.addTestSuite( FileUpload_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( ImageData_Test.class );

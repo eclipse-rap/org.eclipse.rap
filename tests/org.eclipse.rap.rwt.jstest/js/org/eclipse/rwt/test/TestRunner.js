@@ -209,14 +209,23 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
   	// called by Asserts.js
   	processAssert : function( assertType, expected, value, isFailed, message ) {
       if( isFailed ) {
+        var expectedString;
+        var valueString;
+        if( assertType === "assertEquals" ) {
+          var expectedString = this._getObjectSummary( expected );
+          var valueString = this._getObjectSummary( value );
+        } else {
+          var expectedString = expected + "";
+          var valueString = value + "";
+        }
         var errorMessage =   'Assert "'
                            + ( message ? message : this._asserts + 1 )
                            + '", type "'
                            + assertType
                            + '" failed : Expected "'
-                           + this._getObjectSummary( expected )
+                           + expectedString
                            + '" but found "'
-                           + this._getObjectSummary( value )
+                           + valueString
                            + '"';
         var error = {
           "assert" : true,

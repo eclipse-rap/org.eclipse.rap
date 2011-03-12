@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-( function(){
+( function() {
 
   var getURLParam = function( name ) {
     var result = null;
@@ -250,6 +251,7 @@
     "org/eclipse/swt/widgets/Calendar.js",
     "org/eclipse/swt/widgets/CoolItem.js",
     "org/eclipse/rwt/widgets/Button.js",
+    "org/eclipse/rwt/widgets/FileUpload.js",
     "org/eclipse/swt/widgets/DateTimeTime.js",
     "org/eclipse/swt/widgets/Slider.js",
     "org/eclipse/swt/widgets/Spinner.js",

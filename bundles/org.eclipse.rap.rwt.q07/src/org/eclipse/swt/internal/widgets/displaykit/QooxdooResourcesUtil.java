@@ -241,6 +241,7 @@ final class QooxdooResourcesUtil {
     "org/eclipse/swt/widgets/Calendar.js",
     "org/eclipse/swt/widgets/CoolItem.js",
     "org/eclipse/rwt/widgets/Button.js",
+    "org/eclipse/rwt/widgets/FileUpload.js",
     "org/eclipse/swt/widgets/DateTimeTime.js",
     "org/eclipse/swt/widgets/Slider.js",
     "org/eclipse/swt/widgets/Spinner.js",

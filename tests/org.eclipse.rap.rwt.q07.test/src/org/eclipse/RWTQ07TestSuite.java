@@ -16,6 +16,7 @@ import junit.framework.TestSuite;
 
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.StartupPage_Test;
+import org.eclipse.rwt.internal.widgets.fileuploadkit.FileUploadLCA_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.browser.browserkit.BrowserLCA_Test;
@@ -146,6 +147,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( GCOperationWriter_Test.class );
     suite.addTestSuite( ToolTipLCA_Test.class );
     suite.addTestSuite( KeyBindingUtil_Test.class );
+    suite.addTestSuite( FileUploadLCA_Test.class );
     return suite;
   }
 }
