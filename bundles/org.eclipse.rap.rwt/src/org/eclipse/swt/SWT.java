@@ -1862,6 +1862,7 @@ public class SWT {
    * <li><code>ToolItem</code></li>
    * <li><code>CoolItem</code></li>
    * <li><code>Combo</code></li>
+   * <li><code>DateTime</code></li>
    * </ul></p>
    */
   public static final int DROP_DOWN = 1 << 2;
