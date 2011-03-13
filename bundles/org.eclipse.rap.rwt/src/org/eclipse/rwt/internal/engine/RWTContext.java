@@ -11,11 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
-import java.lang.reflect.Constructor;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
@@ -51,7 +51,7 @@ public class RWTContext {
 
   private void createInstances( Class[] instanceTypes ) {
     for( int i = 0; i < instanceTypes.length; i++ ) {
-      Object instance = createInstance( instanceTypes[ i ] );
+      Object instance = ClassUtil.newInstance( instanceTypes[ i ] );
       bufferInstance( instanceTypes[ i ], instance );
     }
   }
@@ -77,18 +77,6 @@ public class RWTContext {
     }
   }
 
-  private static Object createInstance( Class instanceType ) {
-    Object result = null;
-    try {
-      Constructor constructor = instanceType.getDeclaredConstructor( null );
-      constructor.setAccessible( true );
-      result = constructor.newInstance( null );
-    } catch( Exception shouldNotHappen ) {
-      handleCreationProblem( instanceType, shouldNotHappen );
-    }
-    return result;
-  }
-
   private static Object createInstanceFromFactory( Object instance ) {
     Object result = instance;
     if( instance instanceof InstanceTypeFactory ) {
@@ -105,18 +93,6 @@ public class RWTContext {
       result = factory.getInstanceType();
     }
     return result;
-  }
-
-  private static void handleCreationProblem( Class instanceType, final Exception cause ) {
-    String pattern = "Could not create instance of type ''{0}''.";
-    Object[] arguments = new Object[] { instanceType.getName() };
-    String msg = MessageFormat.format( pattern, arguments );
-    throw new IllegalArgumentException( msg ) {
-      private static final long serialVersionUID = 1L;
-      public Throwable getCause() {
-        return cause;
-      }
-    };
   }
 
   private static void checkRegistered( Class instanceType, Object instance ) {

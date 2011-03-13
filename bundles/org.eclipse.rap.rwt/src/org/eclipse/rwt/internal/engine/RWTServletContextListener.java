@@ -28,6 +28,8 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rwt.internal.util.ClassInstantiationException;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
@@ -40,22 +42,14 @@ import org.eclipse.swt.widgets.Widget;
 public final class RWTServletContextListener implements ServletContextListener {
 
   private static final String PREFIX = "org.eclipse.rwt.";
-  public static final String ENTRY_POINTS_PARAM
-    = PREFIX + "entryPoints";
-  public static final String THEMES_PARAM
-    = PREFIX + "themes";
-  public static final String RESOURCE_MANAGER_FACTORY_PARAM
-    = PREFIX + "resourceManagerFactory";
-  public static final String SETTING_STORE_FACTORY_PARAM
-    = PREFIX + "settingStoreFactory";
-  public static final String ADAPTER_FACTORIES_PARAM
-    = PREFIX + "adapterFactories";
-  public static final String PHASE_LISTENERS_PARAM
-    = PREFIX + "phaseListeners";
-  public static final String RESOURCES_PARAM
-    = PREFIX + "resources";
-  public static final String BRANDINGS_PARAM
-    = PREFIX + "brandings";
+  public static final String ENTRY_POINTS_PARAM = PREFIX + "entryPoints";
+  public static final String THEMES_PARAM = PREFIX + "themes";
+  public static final String RESOURCE_MANAGER_FACTORY_PARAM = PREFIX + "resourceManagerFactory";
+  public static final String SETTING_STORE_FACTORY_PARAM = PREFIX + "settingStoreFactory";
+  public static final String ADAPTER_FACTORIES_PARAM = PREFIX + "adapterFactories";
+  public static final String PHASE_LISTENERS_PARAM = PREFIX + "phaseListeners";
+  public static final String RESOURCES_PARAM = PREFIX + "resources";
+  public static final String BRANDINGS_PARAM = PREFIX + "brandings";
 
   private static final String SEPARATOR = ",";
 
@@ -68,6 +62,7 @@ public final class RWTServletContextListener implements ServletContextListener {
   private static final String REGISTERED_BRANDINGS
     = RWTServletContextListener.class.getName() + "registeredBrandings";
   
+  private static final ClassLoader CLASS_LOADER = RWTServletContextListener.class.getClassLoader();
   
   public static class ContextDestroyer implements Runnable {
     protected final ServletContext servletContext;
@@ -206,15 +201,13 @@ public final class RWTServletContextListener implements ServletContextListener {
   public static void registerResourceManagerFactory(
     final ServletContext context )
   {
-    String factoryName
-      = context.getInitParameter( RESOURCE_MANAGER_FACTORY_PARAM );
+    String factoryName = context.getInitParameter( RESOURCE_MANAGER_FACTORY_PARAM );
     if( factoryName != null ) {
       try {
-        Class clazz = Class.forName( factoryName );
-        IResourceManagerFactory factory;
-        factory = ( IResourceManagerFactory )clazz.newInstance();
+        IResourceManagerFactory factory
+          = ( IResourceManagerFactory )ClassUtil.newInstance( CLASS_LOADER, factoryName );
         ResourceManager.register( factory );
-      } catch( final Exception ex ) {
+      } catch( ClassInstantiationException ex ) {
         String text = "Failed to register resource manager factory ''{0}''.";
         String msg = MessageFormat.format( text, new Object[] { factoryName } );
         context.log( msg, ex );
@@ -235,14 +228,13 @@ public final class RWTServletContextListener implements ServletContextListener {
         = context.getInitParameter( SETTING_STORE_FACTORY_PARAM );
       if( factoryName != null ) {
         try {
-          Class clazz = Class.forName( factoryName );
-          ISettingStoreFactory factory; 
-          factory = ( ISettingStoreFactory )clazz.newInstance();
+          ISettingStoreFactory factory
+            = ( ISettingStoreFactory )ClassUtil.newInstance( CLASS_LOADER, factoryName ); 
           SettingStoreManager.register( factory );
-        } catch( final Exception ex ) {
+        } catch( ClassInstantiationException cie ) {
           String text = "Failed to register setting store factory ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { factoryName } );
-          context.log( msg, ex );
+          context.log( msg, cie );
         }
       } else {
         SettingStoreManager.register( new RWTFileSettingStoreFactory() );
@@ -297,13 +289,12 @@ public final class RWTServletContextListener implements ServletContextListener {
       for( int i = 0; i < listenerNames.length; i++ ) {
         String className = listenerNames[ i ].trim();
         try {
-          Class clazz = Class.forName( className );
-          PhaseListener listener = ( PhaseListener )clazz.newInstance();
+          PhaseListener listener = ( PhaseListener )ClassUtil.newInstance( CLASS_LOADER, className );
           phaseListeners.add( listener );
-        } catch( final Throwable thr ) {
+        } catch( ClassInstantiationException cie ) {
           String text = "Failed to register phase listener ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { className } );
-          context.log( msg, thr );
+          context.log( msg, cie );
         }
       }
     } else {
@@ -345,13 +336,12 @@ public final class RWTServletContextListener implements ServletContextListener {
       for( int i = 0; i < resourceClassNames.length; i++ ) {
         String className = resourceClassNames[ i ].trim();
         try {
-          Class clazz = Class.forName( className );
-          IResource resource = ( IResource )clazz.newInstance();
+          IResource resource = ( IResource )ClassUtil.newInstance( CLASS_LOADER, className );
           resources.add( resource );
-        } catch( final Throwable thr ) {
+        } catch( ClassInstantiationException cie ) {
           String text = "Failed to register resource ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { className } );
-          context.log( msg, thr );
+          context.log( msg, cie );
         }
       }
     }
@@ -393,13 +383,11 @@ public final class RWTServletContextListener implements ServletContextListener {
           String fileName = parts[ 1 ];
           try {
             String themeName = "Unnamed Theme: " + themeId;
-            StyleSheet styleSheet
-              = CssFileReader.readStyleSheet( fileName, loader );
+            StyleSheet styleSheet = CssFileReader.readStyleSheet( fileName, loader );
             Theme theme = new Theme( themeId, themeName, styleSheet );
             manager.registerTheme( theme );
           } catch( Exception e ) {
-            String text = "Failed to register custom theme ''{0}'' "
-                          + "from resource ''{1}''";
+            String text = "Failed to register custom theme ''{0}'' from resource ''{1}''";
             Object[] args = new Object[] { themeId, fileName };
             String msg = MessageFormat.format( text, args );
             context.log( msg, e );
@@ -438,14 +426,14 @@ public final class RWTServletContextListener implements ServletContextListener {
       for( int i = 0; i < brandings.length; i++ ) {
         String className = brandings[ i ].trim();
         try {
-          Object newInstance = Class.forName( className ).newInstance();
-          AbstractBranding branding = ( AbstractBranding )newInstance;
+          AbstractBranding branding
+            = ( AbstractBranding )ClassUtil.newInstance( CLASS_LOADER, className );
           BrandingManager.register( branding );
           registeredBrandings.add( branding );
-        } catch( Exception e ) {
+        } catch( ClassInstantiationException cie ) {
           String text = "Failed to register branding ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { className } );
-          servletContext.log( msg, e );
+          servletContext.log( msg, cie );
         }
       }
       setRegisteredBrandings( servletContext, registeredBrandings );

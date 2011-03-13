@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
@@ -80,18 +81,9 @@ public class ImageFactoryInstance {
   }
 
   private static Image createImageInstance( Device device, InternalImage internalImage ) {
-    Image result;
-    try {
-      Class imageClass = Image.class;
-      Class[] paramList = new Class[] { Device.class, InternalImage.class };
-      Constructor constructor = imageClass.getDeclaredConstructor( paramList );
-      constructor.setAccessible( true );
-      Object[] args = new Object[] { device, internalImage };
-      result = ( Image )constructor.newInstance( args );
-    } catch( final Exception e ) {
-      throw new RuntimeException( "Failed to instantiate Image", e );
-    }
-    return result;
+    Class[] paramTypes = new Class[] { Device.class, InternalImage.class };
+    Object[] paramValues = new Object[] { device, internalImage };
+    return ( Image )ClassUtil.newInstance( Image.class, paramTypes, paramValues );
   }
 
   private static InputStream getInputStream( String path, ClassLoader imageLoader ) {

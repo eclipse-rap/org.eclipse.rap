@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -60,9 +60,9 @@ public class EntryPointManagerInstance {
   }
   
   int createUI( final String name ) {
+    ParamCheck.notNull( name, "name" );
     IEntryPoint entryPoint;
     Class clazz;
-    ParamCheck.notNull( name, "name" );
     synchronized( registry ) {
       if( !registry.containsKey( name ) ) {
         String text = "An entry point named ''{0}'' does not exist.";
@@ -73,14 +73,7 @@ public class EntryPointManagerInstance {
     }
     // no synchronization during instance creation to avoid lock in case
     // of expensive constructor operations
-    try {
-      entryPoint = ( IEntryPoint )clazz.newInstance();
-    } catch( Exception e ) {
-      String text = "Failed to instantiate ''{0}''.";
-      Object[] args = new Object[] { clazz.getName() };
-      String msg = MessageFormat.format( text, args );
-      throw new EntryPointInstantiationException( msg, e ) ;
-    }      
+    entryPoint = ( IEntryPoint )ClassUtil.newInstance( clazz );
     ISessionStore session = ContextProvider.getSession();
     session.setAttribute( EntryPointManager.CURRENT_ENTRY_POINT, name );
     return entryPoint.createUI();

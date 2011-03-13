@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.engine;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.engine.RWTContext.InstanceTypeFactory;
+import org.eclipse.rwt.internal.util.ClassInstantiationException;
 
 
 public class RWTContext_Test extends TestCase {
@@ -81,7 +82,7 @@ public class RWTContext_Test extends TestCase {
     try {
       new RWTContext( new Class[] { AbstractClass.class } );
       fail();
-    } catch( IllegalArgumentException expected ) {
+    } catch( ClassInstantiationException expected ) {
     }    
   }
   

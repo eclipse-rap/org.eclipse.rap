@@ -24,6 +24,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.w3c.dom.*;
@@ -72,8 +73,7 @@ public class ServiceManagerInstance {
         Enumeration resources = manager.getResources( SERVICEHANDLER_XML );
         while( resources != null && resources.hasMoreElements() ) {
           URL url = ( URL )resources.nextElement();
-          DocumentBuilderFactory factory
-            = DocumentBuilderFactory.newInstance();
+          DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
           DocumentBuilder builder = factory.newDocumentBuilder();
           URLConnection con = url.openConnection();
           con.setUseCaches( false );
@@ -92,8 +92,7 @@ public class ServiceManagerInstance {
             String name = attributes.getNamedItem( "class" ).getNodeValue();
             String param = "requestparameter";
             String id = attributes.getNamedItem( param ).getNodeValue();
-            Class clazz = getClass().getClassLoader().loadClass( name );
-            Object handlerInstance = clazz.newInstance();
+            Object handlerInstance = ClassUtil.newInstance( getClass().getClassLoader(), name );
             customHandlers.put( id, handlerInstance );
           }
         }

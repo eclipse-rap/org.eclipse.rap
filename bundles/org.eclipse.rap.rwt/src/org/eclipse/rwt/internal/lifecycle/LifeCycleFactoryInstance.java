@@ -12,10 +12,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.text.MessageFormat;
-
-import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.internal.ConfigurationReader;
+import org.eclipse.rwt.internal.IConfiguration;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -41,20 +41,12 @@ public class LifeCycleFactoryInstance {
   public ILifeCycle loadLifeCycle() {
     LifeCycle result = globalLifeCycle;
     if( result == null ) {
-      String lifeCycleClassName = null;
-      try {
-        IConfiguration configuration = ConfigurationReader.getConfiguration();
-        lifeCycleClassName = configuration.getLifeCycle();
-        Class lifeCycleClass = Class.forName( lifeCycleClassName );
-        result = ( LifeCycle )lifeCycleClass.newInstance();
-        if( result.getScope().equals( Scope.APPLICATION ) ) {
-          globalLifeCycle = result;
-        }
-      } catch( Exception ex ) {
-        String text = "Could not load life cycle implementation {0}: {1}";
-        Object[] args = new Object[] { lifeCycleClassName, ex.toString() };
-        String msg = MessageFormat.format( text, args );
-        throw new IllegalStateException( msg );
+      IConfiguration configuration = ConfigurationReader.getConfiguration();
+      String lifeCycleClassName = configuration.getLifeCycle();
+      ClassLoader classLoader = LifeCycleFactoryInstance.class.getClassLoader();
+      result = ( LifeCycle )ClassUtil.newInstance( classLoader, lifeCycleClassName );
+      if( result.getScope().equals( Scope.APPLICATION ) ) {
+        globalLifeCycle = result;
       }
     }
     return result;

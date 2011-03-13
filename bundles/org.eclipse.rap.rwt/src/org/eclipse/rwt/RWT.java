@@ -24,6 +24,7 @@ import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.internal.widgets.BrowserHistory;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -133,13 +134,7 @@ public final class RWT {
       synchronized( map ) {
         result = map.get( bundle );
         if( result == null ) {
-          try {
-            Constructor constructor = clazz.getDeclaredConstructor( null );
-            constructor.setAccessible( true );
-            result = constructor.newInstance( null );
-          } catch( final Exception ex ) {
-            throw new IllegalStateException( ex.getMessage() );
-          }
+          result = ClassUtil.newInstance( clazz );
           Field[] fields = clazz.getDeclaredFields();
           for( int i = 0; i < fields.length; i++ ) {
             String fieldName = fields[ i ].getName();
@@ -161,12 +156,8 @@ public final class RWT {
                 }
               }
             } catch( final Exception ex ) {
-              String msg
-                = "Failed to load localized message for: " 
-                + clazz.getName() 
-                + "#" 
-                + fieldName;
-              ServletLog.log( msg, ex );
+              String qualifiedName = clazz.getName() + "#" + fieldName;
+              ServletLog.log( "Failed to load localized message for: " + qualifiedName, ex );
             }
           }
           map.put( bundle, result );

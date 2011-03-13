@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
+import org.eclipse.rwt.internal.util.ClassInstantiationException;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -77,18 +79,9 @@ public final class ThemeAdapterUtil {
   {
     IThemeAdapter result = null;
     try {
-      Class adapterClass = classLoader.loadClass( className );
-      result = ( IThemeAdapter )adapterClass.newInstance();
-    } catch( final ClassNotFoundException e ) {
+      result = ( IThemeAdapter )ClassUtil.newInstance( classLoader, className );
+    } catch( ClassInstantiationException cie ) {
       // ignore, try to load from next package name variant
-    } catch( final InstantiationException e ) {
-      String message =   "Failed to instantiate theme adapter class "
-                       + className;
-      throw new ThemeManagerException( message, e );
-    } catch( final IllegalAccessException e ) {
-      String message =   "Failed to instantiate theme adapter class "
-                       + className;
-      throw new ThemeManagerException( message, e );
     }
     return result;
   }

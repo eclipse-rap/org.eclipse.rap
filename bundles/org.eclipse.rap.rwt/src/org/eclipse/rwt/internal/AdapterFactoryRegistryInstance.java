@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.service.ServletLog;
-import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.internal.util.*;
 
 
 public class AdapterFactoryRegistryInstance {
@@ -64,13 +64,11 @@ public class AdapterFactoryRegistryInstance {
           factoryClass.getName(),
           adaptableClass.getName()
         };
-        String text
-          = "The factory ''{0}'' was already added for the adaptable ''{1}''.";
+        String text = "The factory ''{0}'' was already added for the adaptable ''{1}''.";
         String msg = MessageFormat.format( text, params );
         throw new IllegalArgumentException( msg );
       }
     }
-    
     FactoryEntry factoryEntry = new FactoryEntry();
     factoryEntry.factoryClass = factoryClass;
     factoryEntry.adaptableClass = adaptableClass;
@@ -82,13 +80,12 @@ public class AdapterFactoryRegistryInstance {
     for( int i = 0; i < entries.length; i++ ) {
       Class clazz = entries[ i ].factoryClass;
       try {
-        AdapterFactory factory = ( AdapterFactory )clazz.newInstance();
-        AdapterManager manager = AdapterManagerImpl.getInstance();
-        manager.registerAdapters( factory, entries[ i ].adaptableClass );
-      } catch( Throwable thr ) {
+        AdapterFactory factory = ( AdapterFactory )ClassUtil.newInstance( clazz );
+        AdapterManagerImpl.getInstance().registerAdapters( factory, entries[ i ].adaptableClass );
+      } catch( ClassInstantiationException cie ) {
         String text = "Could not create an instance of ''{0}''.";
         String msg = MessageFormat.format( text, new Object[] { clazz } );
-        ServletLog.log( msg, thr );
+        ServletLog.log( msg, cie );
       }
     }
   }

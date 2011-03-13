@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.swt.graphics.*;
 
 
@@ -90,45 +91,20 @@ public class ResourceFactoryInstance {
   }
 
   private static Color createColorInstance( final int colorNr ) {
-    Color result = null;
-    try {
-      Class[] paramList = new Class[] { int.class };
-      Constructor constr = Color.class.getDeclaredConstructor( paramList );
-      constr.setAccessible( true );
-      Object[] args = new Object[] { new Integer( colorNr ) };
-      result = ( Color )constr.newInstance( args );
-    } catch( final Exception e ) {
-      throw new RuntimeException( "Failed to instantiate Color", e );
-    }
-    return result;
+    Class[] paramTypes = new Class[] { int.class };
+    Object[] paramValues = new Object[] { new Integer( colorNr ) };
+    return ( Color )ClassUtil.newInstance( Color.class, paramTypes, paramValues );
   }
 
   private static Font createFontInstance( final FontData fontData ) {
-    Font result = null;
-    try {
-      Class[] paramList = new Class[] { FontData.class };
-      Constructor constr = Font.class.getDeclaredConstructor( paramList );
-      constr.setAccessible( true );
-      result = ( Font )constr.newInstance( new Object[] { fontData } );
-    } catch( final Exception e ) {
-      throw new RuntimeException( "Failed to instantiate Font", e );
-    }
-    return result;
+    Class[] paramTypes = new Class[] { FontData.class };
+    Object[] paramValues = new Object[] { fontData };
+    return ( Font )ClassUtil.newInstance( Font.class, paramTypes, paramValues );
   }
 
   private static Cursor createCursorInstance( final int style ) {
-    Cursor result = null;
-    try {
-      Class cursorClass = Cursor.class;
-      Class[] paramList = new Class[] { int.class };
-      Constructor constr = cursorClass.getDeclaredConstructor( paramList );
-      constr.setAccessible( true );
-      result = ( Cursor )constr.newInstance( new Object[] {
-        new Integer( style )
-      } );
-    } catch( final Exception e ) {
-      throw new RuntimeException( "Failed to instantiate Cursor", e );
-    }
-    return result;
+    Class[] paramTypes = new Class[] { int.class };
+    Object[] paramValues = new Object[] { new Integer( style ) };
+    return ( Cursor )ClassUtil.newInstance( Cursor.class, paramTypes, paramValues );
   }
 }

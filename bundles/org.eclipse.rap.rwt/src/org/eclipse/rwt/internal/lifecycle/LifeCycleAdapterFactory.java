@@ -15,6 +15,8 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.internal.util.ClassInstantiationException;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetLifeCycleAdapter;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
@@ -110,9 +112,8 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
       String classToLoad = buffer.toString();
       ClassLoader loader = clazz.getClassLoader();
       try {
-        Class adapterClass = loader.loadClass( classToLoad );
-        result = ( IWidgetLifeCycleAdapter )adapterClass.newInstance();
-      } catch( final Throwable thr ) {
+        result = ( IWidgetLifeCycleAdapter )ClassUtil.newInstance( loader, classToLoad );
+      } catch( ClassInstantiationException thr ) {
         // ignore and try to load next package name variant
       }
     }

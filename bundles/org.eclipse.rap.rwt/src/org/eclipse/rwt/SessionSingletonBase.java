@@ -10,13 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.service.ISessionStore;
 
 
@@ -61,8 +60,6 @@ public abstract class SessionSingletonBase {
    */
   private final static String PREFIX = "com_w4t_session_singleton_";
   private static final String LOCK_POSTFIX = "#typeLock";
-  
-  private final static Class[] EMPTY_PARAMS = new Class[ 0 ];
   
   private final static Map instanceKeyMap = new Hashtable();
   private final static Map lockKeyMap = new Hashtable();
@@ -145,49 +142,7 @@ public abstract class SessionSingletonBase {
   private static Object getInstanceInternal( final Class type ) {
     Object result = getAttribute( getInstanceKey( type ) ); 
     if( result == null ) {
-      try {
-        Constructor constructor = type.getDeclaredConstructor( EMPTY_PARAMS );
-        if( constructor.isAccessible() ) {
-          result = type.newInstance();
-        } else {
-          constructor.setAccessible( true );
-          result = constructor.newInstance( null );
-        }
-      } catch( final SecurityException ex ) {
-        String msg =   "Could not created the session singleton instance of '"
-                     + type.getName() 
-                     + "' due to security restrictions that probably do "
-                     + "not allow reflection.";
-        throw new RuntimeException( msg, ex );
-      } catch( final IllegalArgumentException iae ) {
-        String msg =   "Could not create the session singleton instance of '"
-                     + type.getName() 
-                     + "'. Probably there is no parameterless constructor.";
-        throw new RuntimeException( msg, iae );
-      } catch( final NoSuchMethodException nsme ) {
-        String msg =   "Could not create the session singleton instance of '"
-                     + type.getName() 
-                     + "'. Probably there is no parameterless constructor.";
-        throw new RuntimeException( msg, nsme );
-      } catch( final InstantiationException ise ) {
-        String msg =   "Could not create the session singleton instance of '"
-                     + type.getName() 
-                     + "'. Unable to create an instance.";
-        throw new RuntimeException( msg, ise );
-      } catch( final IllegalAccessException iae ) {
-        String msg =   "Could not create the session singleton instance of '"
-                      + type.getName() 
-                      + "'. Not allowed to access the constructor "
-                      + "for unknown reasons.";
-        throw new RuntimeException( msg, iae );
-      } catch( final InvocationTargetException ite ) {
-        String msg =   "Could not create the session singleton instance of '"
-                     + type.getName() 
-                     + "' because an Exception was thrown by the constructor:\n"
-                     + ite.getCause().getMessage()
-                     + ".";
-        throw new RuntimeException( msg, ite );
-      }
+      result = ClassUtil.newInstance( type );
       setAttribute( getInstanceKey( type ), result );
     }
     return result;
