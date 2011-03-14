@@ -313,24 +313,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       upload.destroy(); 
     },
 
-// TODO [rst] Fix and re-enable
-//    testSubmit : [
-//      function() {
-//        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-//        var upload = this._createFileUpload();
-//        this._setFileName( upload, "foo" );
-//        upload.submit( this.BLANK );
-//        testUtil.delayTest( 600 );
-//        testUtil.store( upload );
-//      },
-//      function( upload ) {
-//        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-//        var iframe = upload._iframe;
-//        assertTrue( iframe.isLoaded() );
-//        assertTrue( iframe.queryCurrentUrl().indexOf( "blank.html" ) != -1 );
-//        upload.destroy(); 
-//      }
-//    ],
+    // NOTE [tb] : Has been reported to sometimes fail under unkown conditions (FF 3.6 on Linux),
+    //             currently no way to reproduce.
+    testSubmit : [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var upload = this._createFileUpload();
+        this._setFileName( upload, "foo" );
+        upload.submit( this.BLANK );
+        testUtil.delayTest( 600 );
+        testUtil.store( upload );
+      },
+      function( upload ) {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var iframe = upload._iframe;
+        assertTrue( iframe.isLoaded() );
+        assertTrue( iframe.queryCurrentUrl().indexOf( "blank.html" ) != -1 );
+        upload.destroy(); 
+      }
+    ],
 
     /////////
     // Helper
