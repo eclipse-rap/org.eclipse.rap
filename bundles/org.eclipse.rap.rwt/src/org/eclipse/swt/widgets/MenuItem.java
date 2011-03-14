@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ public class MenuItem extends Item {
   private Menu menu;
   private DisposeListener menuDisposeListener;
   private boolean selection;
+  private int userId;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -209,6 +210,42 @@ public class MenuItem extends Item {
   public Menu getMenu() {
     checkWidget();
     return menu;
+  }
+
+  /**
+   * Sets the identifier associated with the receiver to the argument.
+   *
+   * @param id the new identifier. This must be a non-negative value. System-defined identifiers are negative values.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if called with an negative-valued argument.</li>
+   * </ul>
+   * 
+   * @since 1.4
+   */
+  public void setID( int id ) {
+    checkWidget();
+    if( id < 0 ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    userId = id;
+  }
+
+  /**
+   * Gets the identifier associated with the receiver.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.4
+   */
+  public int getID() {
+    checkWidget();
+    return userId;
   }
 
   /**

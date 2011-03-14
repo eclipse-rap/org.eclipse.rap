@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -21,9 +22,21 @@ import org.eclipse.swt.graphics.Image;
 
 public class MenuItem_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testConstructor() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menu = new Menu( shell );
     MenuItem item = new MenuItem( menu, SWT.CASCADE );
     assertEquals( "", item.getText() );
@@ -38,8 +51,6 @@ public class MenuItem_Test extends TestCase {
   }
 
   public void testSetMenu() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
     MenuItem fileMenuItem = new MenuItem( menuBar, SWT.CASCADE );
@@ -86,8 +97,6 @@ public class MenuItem_Test extends TestCase {
   }
 
   public void testSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -122,8 +131,6 @@ public class MenuItem_Test extends TestCase {
   }
 
   public void testImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -138,8 +145,6 @@ public class MenuItem_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menu = new Menu( shell, SWT.BAR );
     MenuItem fileMenuItem = new MenuItem( menu, SWT.CASCADE );
     Menu fileMenu = new Menu( fileMenuItem );
@@ -152,20 +157,27 @@ public class MenuItem_Test extends TestCase {
   }
 
   public void testDisplay() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menu = new Menu( shell, SWT.BAR );
     MenuItem item = new MenuItem( menu, SWT.CASCADE );
     assertSame( display, item.getDisplay() );
     assertSame( menu.getDisplay(), item.getDisplay() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+  public void testId() {
+    Menu menu = new Menu( shell, SWT.BAR );
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    item.setID( 123 );
+    assertEquals( 123, item.getID() );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testId_InvalidValue() {
+    Menu menu = new Menu( shell, SWT.BAR );
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    try {
+      item.setID( -100 );
+      fail( "negative ids not allowed" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 }
