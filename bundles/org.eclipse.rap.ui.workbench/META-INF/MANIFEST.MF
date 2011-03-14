@@ -116,4 +116,3 @@ Import-Package: com.ibm.icu.text;version="[3.4.0,4.3.0)",
  org.xml.sax
 Bundle-RequiredExecutionEnvironment: J2SE-1.4,
  CDC-1.1/Foundation-1.1
-Eclipse-PlatformFilter: (osgi.ws=rap)
