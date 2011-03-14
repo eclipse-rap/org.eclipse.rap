@@ -1505,17 +1505,22 @@ public abstract class FilteredItemsSelectionDialog extends
 		 * 
 		 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
 		 */
-		protected IStatus run(IProgressMonitor monitor) {
+		protected IStatus run(final IProgressMonitor monitor) {
 			if (monitor.isCanceled()) {
 				return new Status(IStatus.CANCEL, WorkbenchPlugin.PI_WORKBENCH,
 						IStatus.CANCEL, EMPTY_STRING, null);
 			}
 
 			if (FilteredItemsSelectionDialog.this != null) {
-				GranualProgressMonitor wrappedMonitor = new GranualProgressMonitor(
-						monitor);
-				FilteredItemsSelectionDialog.this.reloadCache(true,
-						wrappedMonitor);
+// RAP [if] fake context
+			  UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+			    public void run() {
+				  GranualProgressMonitor wrappedMonitor = new GranualProgressMonitor(
+						  monitor);
+				  FilteredItemsSelectionDialog.this.reloadCache(true,
+						  wrappedMonitor);
+			    }
+			  } );
 			}
 
 			if (!monitor.isCanceled()) {
