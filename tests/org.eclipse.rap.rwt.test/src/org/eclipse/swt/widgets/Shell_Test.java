@@ -28,34 +28,46 @@ import org.eclipse.swt.layout.FillLayout;
 
 public class Shell_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testMenuBar() {
-    Display display = new Display();
-    Shell shell1 = new Shell( display, SWT.NONE );
     Shell shell2 = new Shell( display, SWT.NONE );
-    Menu menu = new Menu( shell1, SWT.BAR );
-    shell1.setMenuBar( menu );
+    Menu menu = new Menu( shell, SWT.BAR );
+    shell.setMenuBar( menu );
     // Ensure that getMenuBar returns the very same shell that was set
-    assertSame( menu, shell1.getMenuBar() );
+    assertSame( menu, shell.getMenuBar() );
     // Allow to 'reset' the menuBar
-    shell1.setMenuBar( null );
-    assertEquals( null, shell1.getMenuBar() );
+    shell.setMenuBar( null );
+    assertEquals( null, shell.getMenuBar() );
     // Ensure that shell does not return a disposed of menuBar
-    shell1.setMenuBar( menu );
+    shell.setMenuBar( menu );
     menu.dispose();
-    assertNull( shell1.getMenuBar() );
+    assertNull( shell.getMenuBar() );
     // Ensure that the shell does not 'react' when disposing of a formerly
     // owned menuBar
-    Menu shortTimeMenu = new Menu( shell1, SWT.BAR );
-    shell1.setMenuBar( shortTimeMenu );
-    Menu replacementMenu = new Menu( shell1, SWT.BAR );
-    shell1.setMenuBar( replacementMenu );
+    Menu shortTimeMenu = new Menu( shell, SWT.BAR );
+    shell.setMenuBar( shortTimeMenu );
+    Menu replacementMenu = new Menu( shell, SWT.BAR );
+    shell.setMenuBar( replacementMenu );
     shortTimeMenu.dispose();
-    assertSame( replacementMenu, shell1.getMenuBar() );
+    assertSame( replacementMenu, shell.getMenuBar() );
     // Shell must initially have no menu bar
     assertEquals( null, shell2.getMenuBar() );
     // setMenuBar allows only a menu that whose parent is *this* shell
     try {
-      Menu shell1Menu = new Menu( shell1, SWT.BAR );
+      Menu shell1Menu = new Menu( shell, SWT.BAR );
       shell2.setMenuBar( shell1Menu );
       fail( "Must not allow to set menu from different shell" );
     } catch( IllegalArgumentException e ) {
@@ -83,8 +95,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testClientArea() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Rectangle clientAreaWithoutMenuBar = shell.getClientArea();
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
@@ -93,9 +103,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testConstructor() throws Exception {
-    Shell shell;
-    Display display = new Display();
-    shell = new Shell();
+    Shell shell = new Shell();
     assertSame( display, shell.getDisplay() );
     shell = new Shell( ( Display )null, SWT.NONE );
     assertSame( display, shell.getDisplay() );
@@ -134,8 +142,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     // Must return the display it was created with
     assertSame( display, shell.getDisplay() );
     // Active control must be null
@@ -157,15 +163,11 @@ public class Shell_Test extends TestCase {
   }
 
   public void testInitialSize() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Point empty = new Point( 0, 0 );
     assertFalse( empty.equals( shell.getSize() ) );
   }
 
   public void testAlpha() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     assertEquals( 255, shell.getAlpha() );
     shell.setAlpha( 23 );
     assertEquals( 23, shell.getAlpha() );
@@ -174,8 +176,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testOpen() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     shell.open();
     assertEquals( true, shell.getVisible() );
     assertEquals( true, shell.isVisible() );
@@ -184,10 +184,7 @@ public class Shell_Test extends TestCase {
   public void testLayoutOnSetVisible() {
     // ensure that layout is trigered while opening a shell, more specifically
     // during setVisible( true )
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     shell.setLayout( new Layout() {
       protected Point computeSize( final Composite composite,
                                    final int hint,
@@ -213,8 +210,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testCloseChildShells() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     shell.open();
     Shell childShell = new Shell( shell );
     shell.close();
@@ -222,8 +217,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testDisposeChildShell() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     shell.open();
     Shell childShell = new Shell( shell );
     childShell.dispose();
@@ -234,24 +227,18 @@ public class Shell_Test extends TestCase {
   }
 
   public void testDisposeMenu() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Menu menu = new Menu( shell, SWT.BAR );
     shell.dispose();
     assertTrue( menu.isDisposed() );
   }
 
   public void testCreateDescendantShell() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Shell descendantShell = new Shell( shell );
     assertEquals( 0, shell.getChildren().length );
     assertSame( shell, descendantShell.getParent() );
   }
 
   public void testFocusAfterReEnable() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Control focusedWhileDisabled = new Button( shell, SWT.PUSH );
     Control focusedControl = new Button( shell, SWT.PUSH );
     shell.open();
@@ -263,8 +250,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testSavedFocus() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Control control = new Button( shell, SWT.PUSH );
     shell.open();
     control.setFocus();
@@ -275,8 +260,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testInvalidDefaultButton() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Shell anotherShell = new Shell( display );
     Button anotherButton = new Button( anotherShell, SWT.PUSH );
 
@@ -315,8 +298,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testSaveDefaultButton() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Button button1 = new Button( shell, SWT.PUSH );
     Button button2 = new Button( shell, SWT.PUSH );
 
@@ -337,8 +318,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testDefaultButtonDisposed() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Button defaultButton = new Button( shell, SWT.PUSH );
     shell.setDefaultButton( defaultButton );
     defaultButton.dispose();
@@ -346,8 +325,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testForceActive() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Shell secondShell = new Shell( display );
     shell.open();
     secondShell.open();
@@ -357,8 +334,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testActivateInvisible() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 50, 50 );
     shell.setVisible( false );
     shell.setActive();
@@ -367,8 +342,6 @@ public class Shell_Test extends TestCase {
 
   public void testSetActive() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.open();
     assertSame( shell, display.getActiveShell() );
     shell.addShellListener( new ShellAdapter() {
@@ -385,10 +358,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testActiveShellOnFocusControl() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Shell secondShell = new Shell( display );
     shell.open();
     secondShell.open();
@@ -422,9 +392,6 @@ public class Shell_Test extends TestCase {
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=278996
    */
   public void testCloseOnDeactivateWithSingleShell() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    final Shell shell = new Shell( display );
     shell.addShellListener( new ShellAdapter() {
       public void shellDeactivated( final ShellEvent event ) {
         shell.close();
@@ -440,9 +407,6 @@ public class Shell_Test extends TestCase {
    *             listener
    */
   public void testCloseOnDeactivateWithMultipleShells() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.open();
     final Shell dialog = new Shell( shell );
     dialog.setLayout( new FillLayout() );
@@ -457,10 +421,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testNoDeactivateEventOnDispose() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.addShellListener( new ShellAdapter() {
       public void shellActivated( final ShellEvent event ) {
         log.append( "shell activated" );
@@ -475,8 +436,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testMaximized() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
     assertTrue( shell.getMaximized() );
@@ -484,8 +443,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testSetBoundsResetMaximized() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
     Rectangle bounds = new Rectangle( 10, 10, 100, 100 );
@@ -495,8 +452,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testSetLocationResetMaximized() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
     shell.setLocation( 10, 10 );
@@ -504,8 +459,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testSetSizeResetMaximized() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
     shell.setSize( 6, 6 );
@@ -516,8 +469,6 @@ public class Shell_Test extends TestCase {
     final boolean[] maximized = {
       true
     };
-    Display display = new Display();
-    final Shell shell = new Shell( display );
     shell.setBounds( 1, 2, 3, 4 );
     shell.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
@@ -531,8 +482,6 @@ public class Shell_Test extends TestCase {
 
   public void testShellAdapterSetBounds() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
     shell.addControlListener( new ControlAdapter() {
@@ -549,8 +498,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testSetBoundsResetMinimized() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMinimized( true );
     Rectangle bounds = new Rectangle( 10, 10, 100, 100 );
@@ -560,8 +507,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testModified() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     assertFalse( shell.getModified() );
     shell.setModified( true );
     assertTrue( shell.getModified() );
@@ -571,8 +516,6 @@ public class Shell_Test extends TestCase {
 
   public void testMinimumSize() {
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
         log.add( event );
@@ -604,12 +547,9 @@ public class Shell_Test extends TestCase {
   }
 
   public void testFullScreen() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
-    Display display = new Display();
     Rectangle displayBounds = new Rectangle( 0, 0, 800, 600 );
     getDisplayAdapter( display ).setBounds( displayBounds );
-    Shell shell = new Shell( display );
     Rectangle shellBounds = new Rectangle( 10, 10, 100, 100 );
     shell.setBounds( shellBounds );
     shell.addControlListener( new ControlListener() {
@@ -725,21 +665,17 @@ public class Shell_Test extends TestCase {
   }
 
   public void testActiveShellOnFullScreen() {
-    Display display = new Display();
-    Shell shell1 = new Shell( display );
-    shell1.setBounds( 20, 20, 200, 200 );
-    shell1.open();
+    shell.setBounds( 20, 20, 200, 200 );
+    shell.open();
     Shell shell2 = new Shell( display );
     shell2.setBounds( 20, 20, 200, 200 );
     shell2.open();
     assertEquals( shell2, display.getActiveShell() );
-    shell1.setFullScreen( true );
-    assertEquals( shell1, display.getActiveShell() );
+    shell.setFullScreen( true );
+    assertEquals( shell, display.getActiveShell() );
   }
   
   public void testGetToolTipsWhenNoToolTipWasCreated() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     IShellAdapter adapter
       = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
     assertNotNull( adapter.getToolTips() );
@@ -747,8 +683,6 @@ public class Shell_Test extends TestCase {
   }
 
   public void testGetToolTipsWhenToolTipWasCreated() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     IShellAdapter adapter
       = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
@@ -757,8 +691,6 @@ public class Shell_Test extends TestCase {
   }
   
   public void testGetToolTipsAfterToolTipWasDisposed() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     toolTip.dispose();
     IShellAdapter adapter
@@ -766,18 +698,13 @@ public class Shell_Test extends TestCase {
     assertNotNull( adapter.getToolTips() );
     assertEquals( 0, adapter.getToolTips().length );
   }
-  
+
+  public void testGetToolBar() {
+    assertNull( shell.getToolBar() );
+  }
+
   private static IDisplayAdapter getDisplayAdapter( final Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 }
