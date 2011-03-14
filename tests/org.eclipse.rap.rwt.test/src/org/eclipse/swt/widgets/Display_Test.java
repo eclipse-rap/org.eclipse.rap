@@ -1319,6 +1319,11 @@ public class Display_Test extends TestCase {
     assertNull( display.getSystemTaskBar() );
   }
 
+  public void testGetSystemMenu() {
+    Display display = new Display();
+    assertNull( display.getSystemMenu() );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
