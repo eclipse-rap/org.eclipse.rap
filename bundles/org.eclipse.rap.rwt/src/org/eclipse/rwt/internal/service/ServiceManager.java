@@ -17,12 +17,12 @@ import org.eclipse.rwt.service.IServiceHandler;
 
 
 /** <p>provides the appropriate HttpServlet request service handler for the
- *  given runtime mode.</p> 
+ *  given runtime mode.</p>
  */
 public final class ServiceManager {
 
-  public static void registerServiceHandler( final String id, 
-                                             final IServiceHandler handler ) 
+  public static void registerServiceHandler( final String id,
+                                             final IServiceHandler handler )
   {
     getInstance().registerServiceHandler( id, handler );
   }
@@ -30,35 +30,30 @@ public final class ServiceManager {
   public static void unregisterServiceHandler( final String id ) {
     getInstance().unregisterServiceHandler( id );
   }
-  
-  
-  public static void setHandler( final IServiceHandler serviceHandler ) {
-    getInstance().setHandler( serviceHandler );
-  }
-  
+
   /** <p>returns the appropriate service handler.</p> */
   public static IServiceHandler getHandler() {
     return getInstance().getHandler();
   }
-  
+
   public static boolean isCustomHandler() {
     return getInstance().isCustomHandler();
   }
-  
+
   public static IServiceHandler getCustomHandler() {
     return getInstance().getCustomHandler();
   }
-  
+
   public static IServiceHandler getCustomHandler( final String id ) {
     return getInstance().getCustomHandler( id );
   }
-  
+
   private static ServiceManagerInstance getInstance() {
     Class singletonType = ServiceManagerInstance.class;
     Object singleton = RWTContext.getSingleton( singletonType );
     return ( ServiceManagerInstance )singleton;
   }
-  
+
   private ServiceManager() {
     // prevent instance creation
   }

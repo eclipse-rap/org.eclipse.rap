@@ -33,14 +33,13 @@ import org.w3c.dom.*;
 public class ServiceManagerInstance {
   private static final String SERVICEHANDLER_XML = "servicehandler.xml";
 
-  private IServiceHandler lifeCycleRequestHandler;
-  private IServiceHandler handlerDispatcher;
   private final Map customHandlers;
+  private final IServiceHandler handlerDispatcher;
+  private IServiceHandler lifeCycleRequestHandler;
   private boolean initialized;
-  
-  
+
   private final class HandlerDispatcher implements IServiceHandler {
-    
+
     public void service() throws ServletException, IOException {
       if( isCustomHandler() ) {
         IServiceHandler customHandler = getCustomHandler();
@@ -50,8 +49,7 @@ public class ServiceManagerInstance {
       }
     }
   }
-  
-  
+
   private ServiceManagerInstance() {
     handlerDispatcher = new HandlerDispatcher();
     customHandlers = new HashMap();
@@ -65,7 +63,7 @@ public class ServiceManagerInstance {
       }
     }
   }
-  
+
   private void init() {
     try {
       IResourceManager manager = ResourceManager.getInstance();
@@ -104,8 +102,8 @@ public class ServiceManagerInstance {
       throw new RuntimeException( msg, exception );
     }
   }
-  
-  void registerServiceHandler( final String id, final IServiceHandler handler ) 
+
+  void registerServiceHandler( final String id, final IServiceHandler handler )
   {
     ensureInitialization();
     synchronized( customHandlers ) {
@@ -119,44 +117,40 @@ public class ServiceManagerInstance {
       customHandlers.remove( id );
     }
   }
-  
-  void setHandler( final IServiceHandler serviceHandler ) {
-    handlerDispatcher = serviceHandler;
-  }
-  
+
   IServiceHandler getHandler() {
     return handlerDispatcher;
   }
-  
+
   boolean isCustomHandler() {
     ensureInitialization();
     synchronized( customHandlers ) {
       return customHandlers.containsKey( getCustomHandlerId() );
     }
   }
-  
+
   IServiceHandler getCustomHandler() {
     ensureInitialization();
     synchronized( customHandlers ) {
       return ( IServiceHandler )customHandlers.get( getCustomHandlerId() );
     }
   }
-  
+
   IServiceHandler getCustomHandler( final String id ) {
     ensureInitialization();
     synchronized( customHandlers ) {
       return ( IServiceHandler )customHandlers.get( id );
     }
   }
-  
+
   //////////////////
   // helping methods
-  
+
   private String getCustomHandlerId() {
     HttpServletRequest request = ContextProvider.getRequest();
     return request.getParameter( IServiceHandler.REQUEST_PARAM );
   }
-  
+
   private IServiceHandler getLifeCycleRequestHandler() {
     if( lifeCycleRequestHandler == null ) {
       lifeCycleRequestHandler = new LifeCycleServiceHandler();
