@@ -369,6 +369,22 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
+  public void testReplaceLinkeBreaks() throws Exception {
+    Button normalButton = new Button( shell, SWT.PUSH );
+    normalButton.setText( "Some\nText" );
+    Button wrapButton = new Button( shell, SWT.WRAP );
+    wrapButton.setText( "Some\nText" );
+    Fixture.fakeResponseWriter();
+    ButtonDelegateLCA pushLCA = new PushButtonDelegateLCA();
+    pushLCA.renderChanges( normalButton );
+    String expected = "\"Some\\nText\"";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    Fixture.fakeResponseWriter();
+    pushLCA.renderChanges( wrapButton );
+    expected = "\"Some<br/>Text\"";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+  
   public void testDefaultButton() {
     Button button = new Button( shell, SWT.PUSH );
     assertFalse( PushButtonDelegateLCA.isDefaultButton( button ) );
@@ -500,6 +516,15 @@ public class ButtonLCA_Test extends TestCase {
     allMarkup = Fixture.getAllMarkup();
     expected = "w.setImage( null, 0, 0 );";
     assertTrue( allMarkup.indexOf( expected ) != -1 );
+  }
+  
+  public void testRenderWrap() throws Exception {
+    Button button = new Button( shell, SWT.PUSH | SWT.WRAP );
+    Fixture.fakeResponseWriter();
+    PushButtonDelegateLCA lca = new PushButtonDelegateLCA();
+    lca.renderInitialization( button );
+    String allMarkup = Fixture.getAllMarkup();
+    assertTrue( allMarkup.indexOf( "w.setWrap( true );" ) != -1 );
   }
 
   public void testRenderTextAndImageForCheckAndRadioButton() throws Exception {

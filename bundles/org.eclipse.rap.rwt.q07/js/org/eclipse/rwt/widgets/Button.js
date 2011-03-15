@@ -41,6 +41,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Button", {
   
   members : {
 
+    setWrap : function( value ) {
+      if( value ) {
+        this.setFlexibleCell( 2 );
+      }
+    },
+
     //overwritten:
     _afterRenderLayout : function( changes ) {
       if( this.hasState( "focused" ) ) {

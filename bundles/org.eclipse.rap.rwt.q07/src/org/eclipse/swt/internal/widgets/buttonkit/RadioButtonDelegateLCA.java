@@ -53,6 +53,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     if( ( button.getParent().getStyle() & SWT.NO_RADIO_GROUP ) != 0 ) {
       writer.set( "noRadioGroup", true );
     }
+    ButtonLCAUtil.writeWrap( button );
   }
 
   void renderChanges( Button button ) throws IOException {

@@ -69,6 +69,9 @@ final class ButtonLCAUtil {
     String text = button.getText();     
     if( WidgetLCAUtil.hasChanged( button, Props.TEXT, text, null ) ) {
       text = WidgetLCAUtil.escapeText( text, true );
+      if( ( button.getStyle() & SWT.WRAP ) != 0 ) {
+        text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
+      }
       writer.set( "text", text.equals( "" ) ? null : text );
     }
   }
@@ -139,5 +142,13 @@ final class ButtonLCAUtil {
     writeSelection( button );
     writeSelectionListener( button );
     WidgetLCAUtil.writeCustomVariant( button );
+  }
+
+  public static void writeWrap( Button button ) throws IOException {
+    boolean wrap = ( button.getStyle() & SWT.WRAP ) != 0;
+    if( wrap ) {
+      JSWriter writer = JSWriter.getWriterFor( button );
+      writer.set( "wrap", new Boolean( true ) );
+    }
   }
 }

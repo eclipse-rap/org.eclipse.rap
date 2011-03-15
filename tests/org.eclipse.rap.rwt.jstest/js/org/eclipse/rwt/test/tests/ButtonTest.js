@@ -274,7 +274,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertEquals( 1, this.testUtil.getRequestsSend() );
       var msg = this.testUtil.getMessage();
       assertContains( "widgetSelected=w1",  msg );      
+    },
+    
+    testWrap : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      button.addState( "rwt_PUSH" );
+      button.addToDocument();
+      button.setWrap( true );
+      testUtil.flush();
+      assertEquals( 2, button._flexibleCell );
+      button.destroy();
     }
+    
   }
   
 } );

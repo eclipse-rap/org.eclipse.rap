@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
     );
     eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
   },
-  
+
   destruct : function() {
     var doc = qx.ui.core.ClientDocument.getInstance();
     doc.removeEventListener( "windowresize", 
@@ -47,6 +47,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
   },
 
   statics : {
+
     _onResize : function( evt ) {
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();

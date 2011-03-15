@@ -387,7 +387,12 @@ public class Button extends Control {
       height = imageBounds.height;
     }
     if( hasText ) {
-      Point extent = Graphics.stringExtent( getFont(), text );
+      Point extent;
+      if( ( style & SWT.WRAP ) != 0 ) {        
+        extent = Graphics.textExtent( getFont(), text, wHint );        
+      } else {
+        extent = Graphics.stringExtent( getFont(), text );        
+      }
       width += extent.x;
       height = Math.max( height, extent.y );
     }

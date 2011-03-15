@@ -299,6 +299,28 @@ public class Button_Test extends TestCase {
     assertEquals( expected, button.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
+  public void testComputeSizeWithWrap() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    String text = "Click me!";
+    String textWithBreak = "Click\nme!";    
+    Button buttonNoWrap = new Button( shell, SWT.NONE );
+    Button buttonWrap = new Button( shell, SWT.WRAP );
+    buttonWrap.setText( text );
+    buttonNoWrap.setText( text );
+    assertEquals( new Point( 64, 20 ), buttonNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    // NOTE : Different calculation due to WRAP flag causes slightly different result in height:
+    assertEquals( new Point( 64, 21 ), buttonWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    buttonWrap.setText( textWithBreak );
+    buttonNoWrap.setText( textWithBreak );
+    assertEquals( new Point( 64, 20 ), buttonNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 41, 36 ), buttonWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    buttonWrap.setText( text );
+    buttonNoWrap.setText( text );    
+    assertEquals( new Point( 47, 20 ), buttonNoWrap.computeSize( 45, SWT.DEFAULT ) );
+    assertEquals( new Point( 47, 36 ), buttonWrap.computeSize( 45, SWT.DEFAULT ) );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

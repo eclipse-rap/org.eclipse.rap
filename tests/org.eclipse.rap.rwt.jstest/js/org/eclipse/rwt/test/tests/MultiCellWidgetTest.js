@@ -22,7 +22,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       var widget = this.createDefaultWidget();
       this.initWidget( widget, true );      
       assertTrue( widget.isCreated() );
-      assertTrue( widget.isSeeable() );      
+      assertTrue( widget.isSeeable() );
       this.disposeWidget( widget );
     },
 
@@ -198,6 +198,63 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals( 12, cell0.height ); 
       assertEquals( 13, cell1.width ); 
       assertEquals( 14, cell1.height ); 
+      this.disposeWidget( widget );
+    },    
+    
+    
+    testFlexibleCellLimit : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      widget.setWidth( 100 );
+      widget.setHeight( 100 );
+      widget.setPadding( 5 );
+      widget.setSpacing( 6 );
+      widget.setFlexibleCell( 1 );
+      widget.setCellDimension( 1, 30, 30 );
+      this.flush();
+      // Flexible cell has maximal value
+      assertEquals( 52, widget.getPreferredInnerWidth() );
+      assertEquals( 30, widget.getPreferredInnerHeight() );
+      assertEquals( [ 16, 16 ], widget.getCellDimension( 0 ) );
+      assertEquals( [ 30, 30 ], widget.getCellDimension( 1 ) );
+      // Flexible cell is reduced
+      widget.setCellDimension( 0, 80, 80 );
+      assertEquals( 116, widget.getPreferredInnerWidth() );
+      assertEquals( 80, widget.getPreferredInnerHeight() );
+      assertEquals( [ 80, 80 ], widget.getCellDimension( 0 ) );
+      assertEquals( [ 4, 30 ], widget.getCellDimension( 1 ) );
+      // Flexible cell is zero
+      widget.setCellDimension( 0, 110, 110 );
+      assertEquals( 146, widget.getPreferredInnerWidth() ); 
+      assertEquals( 110, widget.getPreferredInnerHeight() );
+      assertEquals( [ 110, 110 ], widget.getCellDimension( 0 ) );
+      assertEquals( [ 0, 30 ], widget.getCellDimension( 1 ) );
+      this.disposeWidget( widget );
+    },    
+    
+    testFlexibleCellWrap : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      widget.setWidth( 400 );
+      widget.setHeight( 100 );
+      widget.setPadding( 5 );
+      widget.setSpacing( 6 );
+      widget.setFlexibleCell( 1 );
+      widget.setCellContent( 1, "some longer text that wraps" );
+      this.flush();
+      var originalTextDimension = widget.getCellDimension( 1 );
+      widget.setWidth( 80 );
+      this.flush();
+      var newTextDimension = widget.getCellDimension( 1 );
+      console.log( originalTextDimension );
+      console.log( newTextDimension );
+      assertTrue( originalTextDimension[ 0 ] > newTextDimension[ 0 ] );
+      assertTrue( originalTextDimension[ 1 ] < newTextDimension[ 1 ] );
+      widget.setWidth( 400 );
+      this.flush();
+      var newTextDimension = widget.getCellDimension( 1 );
+      console.log( newTextDimension );
+      assertEquals( originalTextDimension, newTextDimension );
       this.disposeWidget( widget );
     },    
     

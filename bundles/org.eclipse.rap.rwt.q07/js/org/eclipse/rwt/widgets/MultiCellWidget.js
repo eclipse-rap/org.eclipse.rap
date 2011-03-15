@@ -21,10 +21,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
    */
   construct : function( cells ) {
     this.base( arguments );
+    this.__cellData = null;
+    this.__cellNodes = null;
+    this.__cellCount = null;
+    this.__computedTotalSpacing = null;
+    this.__styleRegExp = /([a-z])([A-Z])/g;
     this.__createCellData( cells );
     this.__paddingCache = [ 0, 0, 0, 0 ];
     this.__fontCache = {};
     this.__colorCache = "";
+    this._flexibleCell = -1;
     this.initWidth();
     this.initHeight();
     this.addToQueue( "createContent" );
@@ -127,17 +133,108 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
   },
 
   members : {
-    __cellData : null,
-    __cellNodes : null,
-    __cellCount : null,
-    __computedTotalSpacing : null,
-    __paddingCache : null,
-    __fontCache : null,
-    __styleRegExp : /([a-z])([A-Z])/g,
+    // TODO [tb] : clean up api (private/public, order)
 
-    _applyEnabled : function( value, old ) {
-      this.base( arguments, value, old );
-      this._styleAllImagesEnabled();
+    /*
+    ---------------------------------------------------------------------------
+      LAYOUT : public api
+    ---------------------------------------------------------------------------
+    */
+    
+    /**
+     * This is either the URL (image) or the text (label)
+     */ 
+    setCellContent : function( cell, value ) { 
+      this.__updateComputedCellDimension( cell );
+      if( this._cellHasContent( cell ) != ( value != null ) ) {
+        this._invalidateTotalSpacing();
+        this.addToQueue( "createContent" );
+      } else {
+        this.addToQueue( "updateContent" );
+      }
+      var newValue = value;
+      if( this._isImageCell( cell ) ) {
+        newValue = qx.io.Alias.getInstance().resolve( newValue );
+      }
+      this.__cellData[ cell ][ 1 ] = newValue;
+    },
+     
+    /**
+     * The dimensions for the cell. Is mandatory for images (or 0x0 will
+     * be assumed), optional for labels. Set a dimension to "null" to use the
+     * computed value.
+     */ 
+    setCellDimension : function( cell, width, height ) {
+      this.setCellWidth( cell, width );
+      this.setCellHeight( cell, height );
+    },    
+    
+    getCellNode : function( cell ) {
+      return this.__cellNodes[ cell ];
+    },
+    
+    getCellContent : function( cell ) {
+      return this.__cellData[ cell ][ 1 ];
+    },
+    
+    setCellWidth : function( cell, width ) {
+      this._setCellWidth( cell, width );
+      this._invalidateTotalSpacing(); 
+      this._invalidatePreferredInnerWidth(); 
+      this._scheduleLayoutX(); 
+    },
+    
+    setCellHeight : function( cell, height ) {
+      this._setCellHeight( cell, height );
+      this._invalidateTotalSpacing(); 
+      this._invalidatePreferredInnerHeight();  
+      this._scheduleLayoutY();
+    },
+    
+    setFlexibleCell : function( value ) {
+      this._flexibleCell = value;
+    },
+    
+    // TODO [tb] : Only needed by Tests, remove
+    getCellDimension : function( cell ) { 
+      var width = this.getCellWidth( cell );
+      var height = this.getCellHeight( cell );
+      return [ width, height ];
+    },    
+    
+    /**
+     * Returns the user-set value for width if it exists, else the computed
+     */
+    getCellWidth : function( cell, ignoreFlexible ) {
+      var cellEntry = this.__cellData[ cell ];
+      var isFlexible = this._flexibleCell === cell && ignoreFlexible !== true; 
+      var width = ( cellEntry[ 2 ] != null ? cellEntry[ 2 ] : cellEntry[ 4 ] );
+      if( width == null || ( isFlexible && cellEntry[ 3 ] === null ) ) {
+        var computed = this.__computeCellDimension( cellEntry );
+        width = computed[ 0 ];
+      }
+      if( isFlexible ) {
+        width = this._limitCellWidth( cell, width );
+      }
+      return width;      
+    },
+    
+    /**
+     * Returns the user-set value for height if it exists, else the computed
+     */
+    getCellHeight : function( cell, ignoreFlexible ) {
+      var cellEntry = this.__cellData[ cell ];
+      var isFlexible = this._flexibleCell === cell && ignoreFlexible !== true; 
+      var height = ( cellEntry[ 3 ] != null ? cellEntry[ 3 ] : cellEntry[ 5 ] );
+      if( height == null || ( isFlexible && cellEntry[ 3 ] === null ) ) {
+        var wrapWidth = isFlexible ? this.getCellWidth( cell ) : null;
+        var computed = this.__computeCellDimension( cellEntry, wrapWidth );
+        height = computed[ 1 ];
+      }
+      if( isFlexible ) {
+        height = this._limitCellHeight( cell, height );
+      }
+      return height;      
     },
 
     /*
@@ -226,92 +323,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       this._invalidateFrameWidth();
     },
 
-    /*
-    ---------------------------------------------------------------------------
-      LAYOUT : public api
-    ---------------------------------------------------------------------------
-    */
-    
-    /**
-     * This is either the URL (image) or the text (label)
-     */ 
-    setCellContent : function( cell, value ) { 
-      this.__updateComputedCellDimension( cell );
-      if( this._cellHasContent( cell ) != ( value != null ) ) {
-        this._invalidateTotalSpacing();
-        this.addToQueue( "createContent" );
-      } else {
-        this.addToQueue( "updateContent" );
-      }
-      var newValue = value;
-      if( this._isImageCell( cell ) ) {
-        newValue = qx.io.Alias.getInstance().resolve( newValue );
-      }
-      this.__cellData[ cell ][ 1 ] = newValue;
-    },
-     
-    /**
-     * The dimensions for the cell. Is mandatory for images (or 0x0 will
-     * be assumed), optional for labels. Set a dimension to "null" to use the
-     * computed value.
-     */ 
-    setCellDimension : function( cell, width, height ) {
-      this.setCellWidth( cell, width );
-      this.setCellHeight( cell, height );
-    },    
-    
-    getCellNode : function( cell ) {
-      return this.__cellNodes[ cell ];
-    },
-    
-    getCellContent : function( cell ) {
-      return this.__cellData[ cell ][ 1 ];
-    },
-    
-    setCellWidth : function( cell, width ) {
-      this._setCellWidth( cell, width );
-      this._invalidateTotalSpacing(); 
-      this._invalidatePreferredInnerWidth(); 
-      this._scheduleLayoutX(); 
-    },
-    
-    setCellHeight : function( cell, height ) {
-      this._setCellHeight( cell, height );
-      this._invalidateTotalSpacing(); 
-      this._invalidatePreferredInnerHeight();  
-      this._scheduleLayoutY();
-    },
-    
-    getCellDimension : function( cell ) { 
-      var width = this.getCellWidth( cell );
-      var height = this.getCellHeight( cell );
-      return [ width, height ];
-    },    
-    
-    /**
-     * Returns the user-set value for width if it exists, else the computed
-     */
-    getCellWidth : function( cell ) {
-      var cellEntry = this.__cellData[ cell ]; 
-      var width = ( cellEntry[ 2 ] != null ? cellEntry[ 2 ] : cellEntry[ 4 ] );
-      if( width == null ) {
-        var computed = this.__computeCellDimension( cellEntry );
-        width = computed[ 0 ];
-      }
-      return width;      
-    },
-    
-    /**
-     * Returns the user-set value for height if it exists, else the computed
-     */
-    getCellHeight : function( cell ) {
-      var cellEntry = this.__cellData[ cell ]; 
-      var height = ( cellEntry[ 3 ] != null ? cellEntry[ 3 ] : cellEntry[ 5 ] );
-      if( height == null ) {
-        var computed = this.__computeCellDimension( cellEntry );
-        height = computed[ 1 ];
-      }
-      return height;      
+    _applyEnabled : function( value, old ) {
+      this.base( arguments, value, old );
+      this._styleAllImagesEnabled();
     },
 
     /*
@@ -399,10 +413,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       }
     },
 
-    __computeCellDimension : function( cellEntry ) {
+    __computeCellDimension : function( cellEntry, wrapWidth ) {
       var dimension;
       if( cellEntry[ 0 ] == "label" && cellEntry[ 1 ] != null ) {
-        dimension = this._computeTextDimensions( cellEntry[ 1 ] );
+        dimension = this._computeTextDimensions( cellEntry[ 1 ], wrapWidth );
       } else {
         dimension = [ 0, 0 ];
       }
@@ -415,22 +429,76 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     _isHeightEssential : qx.lang.Function.returnTrue,    
 
     _computePreferredInnerWidth : function() {
-      this._beforeComputeInnerWidth();
-      var space = this.getTotalSpacing();
-      var content = 0;
-      for( var i = 0; i < this.__cellCount; i++ ) {
-        content += this.getCellWidth( i );
-      }
-      return space + content;
+      return this._getContentWidth( "ignoreFlexible" );
     },
-
+    
+    _limitCellWidth : function( cell, preferredCellWidth ) {
+      // NOTE: Will assume current width as valid, not to be used for widget size calculation 
+      var inner = this.getInnerWidth(); 
+      var contentWidth = this._getContentWidth( "skipFlexible" );
+      var maxCellWidth = Math.max( 0, inner - contentWidth );
+      var result;
+      if( preferredCellWidth > maxCellWidth ) {
+        result = maxCellWidth;
+      }  else {
+        result = preferredCellWidth;
+      }
+      return result;
+    },
+    
+    // TODO [tb] : refactor
+    _getContentWidth : function( hint ) {
+      this._beforeComputeInnerWidth();
+      var result = 0;
+      if( hint === "ignoreFlexible" ) {
+        var space = this.getTotalSpacing();
+        var content = 0;
+        for( var i = 0; i < this.__cellCount; i++ ) {
+          content += this.getCellWidth( i, true );
+        }
+        result = space + content;
+      } else if( hint === "skipFlexible" ) {
+        var spacing = this.getSpacing()
+        for( var i = 0; i < this.__cellCount; i++ ) {
+          if( i !== this._flexibleCell ) {
+            var cellWidth = this.getCellWidth( i )
+            result += cellWidth;
+            if( cellWidth > 0 ) {
+              result += spacing;
+            }
+          }
+        }
+      } else if( hint === "flexible" ) {
+        var space = this.getTotalSpacing();
+        var content = 0;
+        for( var i = 0; i < this.__cellCount; i++ ) {
+          content += this.getCellWidth( i );
+        }
+        result = space + content;        
+      } else {
+        throw new Error( "unkown hint" );
+      }
+      return result;
+    },
+    
     _computePreferredInnerHeight : function() {
       this._beforeComputeInnerHeight();
       var maxHeight = 0;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        maxHeight = Math.max( maxHeight, this.getCellHeight( i ) );
+        maxHeight = Math.max( maxHeight, this.getCellHeight( i, true ) );
       }
       return maxHeight;
+    },
+    
+    _limitCellHeight : function( cell, preferredCellHeight ) {
+      var inner = this.getInnerHeight(); 
+      var result;
+      if( preferredCellHeight > inner ) {
+        result = inner;
+      } else {
+        result = preferredCellHeight;
+      }
+      return result;
     },
 
     getTotalSpacing : function() {
@@ -456,7 +524,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
      * it either has a content set, or at least one dimension 
      */      
     cellIsVisible : function( cell ) {
-      return ( this.getCellWidth( cell ) > 0 );      
+      return ( this.getCellWidth( cell, true ) > 0 );      
     },
 
     _invalidateTotalSpacing : function() {
@@ -498,7 +566,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       var space = this.getSpacing();
       var pad = this.__paddingCache;
       var align = this.getHorizontalChildrenAlign();
-      var total = this.getPreferredInnerWidth();
+      var total = this._getContentWidth( "flexible" )
       var inner = this.getInnerWidth();
       var firstCellLeft  = null;
       switch( align ) {
@@ -549,7 +617,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
           top = pad[ 0 ];
         break;
         case "middle":
-          top = Math.round( pad[ 0 ] + inner * 0.5 - height * 0.5 );      
+          top = Math.round( pad[ 0 ] + inner * 0.5 - height * 0.5 );
         break;
         case "bottom":
           top = pad[ 0 ] + inner - height;
@@ -678,7 +746,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     _getLabelHtml : function( cell ) {
       return   "<div style='position:absolute;border:0 none;overflow:hidden;"
              + this._joinStyleProperties( this.__fontCache )
-             + "white-space:nowrap;'>"
+             + "'>"
              + this.getCellContent( cell )
              + "</div>";
     },
@@ -744,7 +812,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       }
     },
 
-    _computeTextDimensions : function( text ) {
+    _computeTextDimensions : function( text, wrapWidth ) {
         var element = qx.ui.basic.Label._getMeasureNode();
         var style = element.style;
         var source = this.__fontCache;
@@ -753,8 +821,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
         style.fontWeight = source.fontWeight || "";
         style.fontStyle = source.fontStyle || "";
         element.innerHTML = text;
-        return [ element.scrollWidth, element.scrollHeight ];
+        if( wrapWidth ) {
+          style.width = wrapWidth + "px";
+        }
+        var result = [ element.scrollWidth, element.scrollHeight ];
+        style.width = "auto";
+        return result;
     }
   }
   
-});
+} );

@@ -47,6 +47,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     writer.newWidget( QX_TYPE, PARAM_CHECK );
     ControlLCAUtil.writeStyleFlags( button );
     WidgetLCAUtil.writeStyleFlag( button, SWT.CHECK, "CHECK" );
+    ButtonLCAUtil.writeWrap( button );
   }
 
   void renderChanges( final Button button ) throws IOException {

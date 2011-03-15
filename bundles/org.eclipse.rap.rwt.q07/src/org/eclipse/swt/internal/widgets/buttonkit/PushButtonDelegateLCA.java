@@ -52,6 +52,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     WidgetLCAUtil.writeStyleFlag( button, SWT.PUSH, "PUSH" );
     WidgetLCAUtil.writeStyleFlag( button, SWT.FLAT, "FLAT" );
     WidgetLCAUtil.writeStyleFlag( button, SWT.TOGGLE, "TOGGLE" );
+    ButtonLCAUtil.writeWrap( button );
   }
 
   // TODO [rh] highlight default button (e.g. with thick border as in Windows)
