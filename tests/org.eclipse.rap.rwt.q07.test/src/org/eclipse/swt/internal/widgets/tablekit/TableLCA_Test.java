@@ -958,6 +958,18 @@ public class TableLCA_Test extends TestCase {
     assertTrue( index1 < index2 );
   }
 
+  public void testRenderNonNegativeImageWidth() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    item.setImage( image );
+    column.setWidth( 2 );
+    ItemMetrics[] metrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 1, metrics.length );
+    assertEquals( 0, metrics[ 0 ].imageWidth );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
