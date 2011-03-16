@@ -116,9 +116,7 @@ public final class TableLCAUtil {
   //////////////////
   // Helping methods
 
-  private static boolean hasItemMetricsChanged( final Table table,
-                                                final ItemMetrics[] metrics  )
-  {
+  private static boolean hasItemMetricsChanged( Table table, ItemMetrics[] metrics  ) {
     return WidgetLCAUtil.hasChanged( table, PROP_ITEM_METRICS, metrics );
   }
 
@@ -140,10 +138,9 @@ public final class TableLCAUtil {
         // If in column mode, cut image width if image exceeds right cell border
         int imageWidth = tableAdapter.getItemImageWidth( i );
         if( table.getColumnCount() > 0 ) {
-          int maxImageWidth
-            = bounds.width - ( ( imageBounds.x - checkWidth ) - bounds.x );
+          int maxImageWidth = bounds.width - ( ( imageBounds.x - checkWidth ) - bounds.x );
           if( imageWidth > maxImageWidth ) {
-            imageWidth = maxImageWidth;
+            imageWidth = Math.max( 0, maxImageWidth );
           }
         }
         result[ i ].left = bounds.x + leftOffset;
