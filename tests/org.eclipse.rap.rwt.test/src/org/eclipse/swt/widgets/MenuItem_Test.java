@@ -163,6 +163,12 @@ public class MenuItem_Test extends TestCase {
     assertSame( menu.getDisplay(), item.getDisplay() );
   }
 
+  public void testDefaultId() {
+    Menu menu = new Menu( shell, SWT.BAR );
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    assertEquals( 0, item.getID() );
+  }
+
   public void testId() {
     Menu menu = new Menu( shell, SWT.BAR );
     MenuItem item = new MenuItem( menu, SWT.CASCADE );
