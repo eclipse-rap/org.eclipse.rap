@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
@@ -82,6 +84,10 @@ import org.eclipse.swt.widgets.Shell;
  * </p>
  */
 public abstract class Window implements IShellProvider {
+
+// RAP [if] Session scoped defaultModalParent
+    private static final String DEFAULT_MODAL_PARENT
+      = Window.class.getName() + "#defaultModalParent"; //$NON-NLS-1$
 
 	/**
 	 * Standard return code constant (value 0) indicating that the window was
@@ -641,7 +647,9 @@ public abstract class Window implements IShellProvider {
         if ((getShellStyle() & modal) != 0) {
             // If this is a modal shell with no parent, pick a shell using defaultModalParent.
             if (parent == null) {
-                parent = defaultModalParent.getShell();
+// RAP [if] Session scoped defaultModalParent
+//                parent = defaultModalParent.getShell();
+                parent = getDefaultModalParent().getShell();
             }
         }
         
@@ -1048,7 +1056,20 @@ public abstract class Window implements IShellProvider {
      * @since 1.0
      */
     public static void setDefaultModalParent(IShellProvider provider) {
-        defaultModalParent = provider;
+// RAP [if] Session scoped defaultModalParent
+//        defaultModalParent = provider;
+        ISessionStore session = ContextProvider.getSession();
+        session.setAttribute( DEFAULT_MODAL_PARENT, provider );
+    }
+
+// RAP [if] Session scoped defaultModalParent
+    private static IShellProvider getDefaultModalParent() {
+        ISessionStore session = ContextProvider.getSession();
+        IShellProvider result = ( IShellProvider )session.getAttribute( DEFAULT_MODAL_PARENT );
+        if( result == null ) {
+          result = defaultModalParent;
+        }
+        return result;
     }
     
 	// RAP [bm]: SWT.RIGHT_TO_LEFT
