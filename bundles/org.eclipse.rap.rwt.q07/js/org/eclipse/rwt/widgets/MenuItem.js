@@ -184,7 +184,6 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     
     _beforeComputeInnerWidth : function() {
       if( this._parentMenu instanceof org.eclipse.rwt.widgets.Menu ) {
-        this._invalidateTotalSpacing();
         for( var i = 0; i < 4; i++ ) {
           this._setCellWidth( i, this._parentMenu.getMaxCellWidth( i ) )
         }

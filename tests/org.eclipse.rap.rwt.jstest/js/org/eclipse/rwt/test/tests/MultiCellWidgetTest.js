@@ -246,14 +246,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       widget.setWidth( 80 );
       this.flush();
       var newTextDimension = widget.getCellDimension( 1 );
-      console.log( originalTextDimension );
-      console.log( newTextDimension );
       assertTrue( originalTextDimension[ 0 ] > newTextDimension[ 0 ] );
       assertTrue( originalTextDimension[ 1 ] < newTextDimension[ 1 ] );
       widget.setWidth( 400 );
       this.flush();
       var newTextDimension = widget.getCellDimension( 1 );
-      console.log( newTextDimension );
       assertEquals( originalTextDimension, newTextDimension );
       this.disposeWidget( widget );
     },    

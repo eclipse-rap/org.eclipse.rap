@@ -74,12 +74,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var menuNode = this.menu.getElement();
       var itemNode = this.menuItem.getElement();
       var oldMenuBounds = this.testUtil.getElementBounds( menuNode );
-      this.oldMenuBounds = oldMenuBounds;
-      //throw( "setop" );
-       
+      assertTrue( this.menuItem.getWidth() === "auto" );
       this.menuItem.setText( "bla! " );
       this.testUtil.flush();
-      var newMenuBounds = this.testUtil.getElementBounds( menuNode );      
+      var newMenuBounds = this.testUtil.getElementBounds( menuNode );
+      // Theory: Fore some reason the _cachedPreferredInnerWidth is invalidated before/during(?)
+      // initial flush, then not recomputed, leaving it null without a jobQueue entry...?
       assertLarger( oldMenuBounds.width, newMenuBounds.width );
       oldMenuBounds = newMenuBounds;       
       var item2 = new this._menuItemClass( "push" );
