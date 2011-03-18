@@ -11,6 +11,7 @@
 package org.eclipse.ui.internal;
 
 import org.eclipse.jface.window.Window;
+import org.eclipse.rwt.SessionSingletonBase;
 
 /**
  * This handler will pass along to the workbench advisor exceptions
@@ -20,7 +21,8 @@ import org.eclipse.jface.window.Window;
  */
 public final class ExceptionHandler implements Window.IExceptionHandler {
 
-    private static final ExceptionHandler instance = new ExceptionHandler();
+//RAP [if] Session scoped ExceptionHandler
+//    private static final ExceptionHandler instance = new ExceptionHandler();
 
     /**
      * Returns the singleton exception handler.
@@ -28,7 +30,9 @@ public final class ExceptionHandler implements Window.IExceptionHandler {
      * @return the singleton exception handler
      */
     public static ExceptionHandler getInstance() {
-        return instance;
+// RAP [if] Session scoped ExceptionHandler
+//        return instance;
+        return ( ExceptionHandler )SessionSingletonBase.getInstance( ExceptionHandler.class );
     }
 
     private int exceptionCount = 0; // To avoid recursive errors
