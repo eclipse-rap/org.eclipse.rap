@@ -6,12 +6,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
- *     Ruediger Herrmann - bug 314453: Disable spell checking in Chrome
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Ruediger Herrmann - bug 314453: Disable spell checking in Chrome
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.Application", {
+
   extend : qx.application.Gui,
 
   construct : function() {
