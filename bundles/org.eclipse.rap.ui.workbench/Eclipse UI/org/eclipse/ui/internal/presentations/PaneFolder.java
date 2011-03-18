@@ -287,7 +287,9 @@ public final class PaneFolder {
 					if (!inLayout && !PaneFolder.this.isDisposed()
 							&& viewForm!=null && contentProxy!=null) {
 						PaneFolder.this.aboutToResize();
-						PaneFolder.this.layout(false);
+// RAP [if] TextSizeDetermination workaround - see bug 339334
+//						PaneFolder.this.layout(false);
+						PaneFolder.this.layout(true);
 					}
                 }
             });
