@@ -89,6 +89,10 @@ public abstract class Window implements IShellProvider {
     private static final String DEFAULT_MODAL_PARENT
       = Window.class.getName() + "#defaultModalParent"; //$NON-NLS-1$
 
+// RAP [if] Session scoped exceptionHandler
+    private static final String EXCEPTION_HANDLER
+      = Window.class.getName() + "#exceptionHandler"; //$NON-NLS-1$
+
 	/**
 	 * Standard return code constant (value 0) indicating that the window was
 	 * opened.
@@ -837,7 +841,9 @@ public abstract class Window implements IShellProvider {
 					display.sleep();
 				}
 			} catch (Throwable e) {
-				exceptionHandler.handleException(e);
+// RAP [if] Session scoped exceptionHandler
+//				exceptionHandler.handleException(e);
+			    getExceptionHandler().handleException( e );
 			}
 		}
 		if (!display.isDisposed()) display.update();
@@ -1042,9 +1048,24 @@ public abstract class Window implements IShellProvider {
 	 *            the exception handler for the application.
 	 */
 	public static void setExceptionHandler(IExceptionHandler handler) {
-		if (exceptionHandler instanceof DefaultExceptionHandler) {
-			exceptionHandler = handler;
-		}
+// RAP [if] Session scoped exceptionHandler
+//		if (exceptionHandler instanceof DefaultExceptionHandler) {
+//			exceptionHandler = handler;
+//		}
+	    if( getExceptionHandler() instanceof DefaultExceptionHandler ) {
+	      ISessionStore session = ContextProvider.getSession();
+	      session.setAttribute( EXCEPTION_HANDLER, handler );
+	    }
+	}
+
+// RAP [if] Session scoped exceptionHandler
+	private static IExceptionHandler getExceptionHandler() {
+	  ISessionStore session = ContextProvider.getSession();
+	  IExceptionHandler result = ( IExceptionHandler )session.getAttribute( EXCEPTION_HANDLER );
+      if( result == null ) {
+        result = exceptionHandler;
+      }
+      return result;
 	}
     
     /**
