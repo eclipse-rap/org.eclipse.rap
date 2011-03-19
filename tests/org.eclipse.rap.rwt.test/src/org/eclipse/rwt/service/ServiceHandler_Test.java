@@ -32,8 +32,17 @@ public class ServiceHandler_Test extends TestCase {
     = "programmaticServiceHandlerId";
   private static final String SERVICE_DONE = "service done";
   private static String log = "";
+  private static boolean throwException = false;
+  
   
   public static class CustomHandler implements IServiceHandler {
+
+    public CustomHandler() {
+      if( throwException ) {
+        throw new IllegalStateException();
+      }
+    }
+    
     public void service() throws ServletException, IOException {
       log = SERVICE_DONE;
     }    
@@ -68,8 +77,20 @@ public class ServiceHandler_Test extends TestCase {
     assertEquals( "", log );
   }
 
+  public void testCustomServiceHandlerCausingProblem() {
+    prepareCustomHandlerThatThrowsExceptionInConstructor();
+
+    try {
+      registerCustomHandler();
+      fail();
+    } catch( IllegalStateException expected ) {
+      doTestEnvironmentCleanup();
+    }
+  }
+  
   protected void setUp() throws Exception {
-    Fixture.setUp();
+    throwException = false;
+    registerCustomHandler();
     initResponseOutputStream();
   }
 
@@ -83,4 +104,18 @@ public class ServiceHandler_Test extends TestCase {
     TestResponse testResponse = ( TestResponse )response;
     testResponse.setOutputStream( new TestServletOutputStream() );
   }
+
+  private void registerCustomHandler() {
+    Fixture.setUp();
+  }
+
+  private void prepareCustomHandlerThatThrowsExceptionInConstructor() {
+    Fixture.tearDown();
+    throwException = true;
+  }
+
+  private void doTestEnvironmentCleanup() {
+    throwException = false;
+    registerCustomHandler();
+  }  
 }

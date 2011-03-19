@@ -21,13 +21,11 @@ import org.eclipse.rwt.service.IServiceHandler;
  */
 public final class ServiceManager {
 
-  public static void registerServiceHandler( final String id,
-                                             final IServiceHandler handler )
-  {
+  public static void registerServiceHandler( String id, IServiceHandler handler ) {
     getInstance().registerServiceHandler( id, handler );
   }
 
-  public static void unregisterServiceHandler( final String id ) {
+  public static void unregisterServiceHandler( String id ) {
     getInstance().unregisterServiceHandler( id );
   }
 
@@ -36,22 +34,8 @@ public final class ServiceManager {
     return getInstance().getHandler();
   }
 
-  public static boolean isCustomHandler() {
-    return getInstance().isCustomHandler();
-  }
-
-  public static IServiceHandler getCustomHandler() {
-    return getInstance().getCustomHandler();
-  }
-
-  public static IServiceHandler getCustomHandler( final String id ) {
-    return getInstance().getCustomHandler( id );
-  }
-
   private static ServiceManagerInstance getInstance() {
-    Class singletonType = ServiceManagerInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
-    return ( ServiceManagerInstance )singleton;
+    return ( ServiceManagerInstance )RWTContext.getSingleton( ServiceManagerInstance.class );
   }
 
   private ServiceManager() {
