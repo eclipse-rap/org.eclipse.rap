@@ -15,29 +15,20 @@ package org.eclipse.rap.ui.internal.servlet;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
-import org.eclipse.rwt.internal.engine.RWTContext;
-import org.eclipse.rwt.internal.engine.RWTContextUtil;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
@@ -92,12 +83,12 @@ public class HttpServiceTracker extends ServiceTracker {
   }
 
   public Object addingService( ServiceReference reference ) {
-    HttpService httpService = getHttpService( reference );
-    HttpContext httpContext = getHttpContext( reference, httpService );
+    HttpService result = getHttpService( reference );
+    HttpContext httpContext = getHttpContext( reference, result );
     RWTContext rwtContext = createAndInitializeRWTContext();
-    registerServlets( reference, httpService, httpContext, rwtContext );
-    registerResourceDir( httpService, httpContext, rwtContext );
-    return httpService;
+    registerServlets( reference, result, httpContext, rwtContext );
+    registerResourceDir( result, httpContext, rwtContext );
+    return result;
   }
 
   public void removedService( ServiceReference reference, Object service ) {
@@ -212,15 +203,11 @@ public class HttpServiceTracker extends ServiceTracker {
   }
 
   private HttpContext getHttpContext( ServiceReference reference, HttpService httpService ) {
-    HttpContext result;
     HttpContext httpContext = httpCtxExtService.getHttpContext( reference, ID_HTTP_CONTEXT );
-    if( httpContext != null ) {
-      result = new HttpContextWrapper( httpContext );
-    } else {
-      HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
-      result = new HttpContextWrapper( defaultHttpContext );
+    if( httpContext == null ) {
+      httpContext = httpService.createDefaultHttpContext();
     }
-    return result;
+    return new HttpContextWrapper( httpContext );
   }
 
   private HttpContextExtensionService createHttpCtxExtService( ServiceReference reference ) {
