@@ -1029,7 +1029,7 @@ public class Shell extends Decorations {
    * @since 1.4
    */
   public ToolBar getToolBar() {
-    //checkWidget(); // [if] missing in SWT
+    checkWidget();
     return null;
   }
 
