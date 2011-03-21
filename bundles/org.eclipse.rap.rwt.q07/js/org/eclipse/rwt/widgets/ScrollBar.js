@@ -115,7 +115,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
           this.setMergeEvents( true );
         }
       }
-    },  
+    },
 
     //////////////
     // Overwritten
@@ -136,6 +136,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
         this.addToQueue( "minThumbSize" );
       } else {
         this._selectionFactor = 1;
+      }
+      if( this._horizontal ) {
+        var iconWidth = this._thumb.getCellWidth( 1 );
+        var iconVisible = size >= ( iconWidth + 6 );
+        this._thumb.setCellVisible( 1, iconVisible );        
+      } else {
+        var iconHeight = this._thumb.getCellHeight( 1 );
+        var iconVisible = size >= ( iconHeight + 6 );
+        this._thumb.setCellVisible( 1, iconVisible );
       }
     },
 
@@ -177,7 +186,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
     // Internals
 
     _updateThumbLength : function() {
-      this._setThumb( this._getSliderSize() );      
+      this._setThumb( this._getSliderSize() );
     },
 
     _updatePageIncrement : function() {

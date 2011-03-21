@@ -22,6 +22,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
    */
   construct : function( cells ) {
     this.base( arguments );
+    // cellData for a single cell is: 
+    // [ type, content, width, height, computedWidth, computedHeight, visible ]
     this.__cellData = null;
     this.__cellNodes = null;
     this.__cellCount = null;
@@ -47,12 +49,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     this._disposeObjectDeep( "__paddingCache", 0 );
     this._disposeObjectDeep( "_fontCache", 0 );
   },
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
 
   properties : {
 
@@ -136,11 +132,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
   members : {
     // TODO [tb] : clean up api (private/public, order)
 
-    /*
-    ---------------------------------------------------------------------------
-      LAYOUT : public api
-    ---------------------------------------------------------------------------
-    */
+    ///////////////////////
+    // LAYOUT : public api
     
     /**
      * This is either the URL (image) or the text (label)
@@ -168,7 +161,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     setCellDimension : function( cell, width, height ) {
       this.setCellWidth( cell, width );
       this.setCellHeight( cell, height );
-    },    
+    },
+    
+    /**
+     * Setting visibility for a cell to false causes the element to have display:none, 
+     * but still to be created and layouted.
+     */
+    setCellVisible : function( cell, value ) {
+      this.__cellData[ cell ][ 6 ] = value;
+      if( this.getCellNode( cell ) ) {
+        this.getCellNode( cell ).style.display = value ? "" : "none";
+      }
+    },
+    
+    isCellVisible : function( cell ) {
+      return this.__cellData[ cell ][ 6 ];
+    },
     
     getCellNode : function( cell ) {
       return this.__cellNodes[ cell ];
@@ -382,6 +390,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     __setCellNode : function( cell, node ) {
       this.__cellNodes[ cell ] = node;
+      if( node !== null && !this.isCellVisible( cell ) ) {
+        node.style.display = "none";
+      }
     },
 
     __cellHasNode : function( cell ) {
@@ -394,7 +405,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       this.__cellCount = cells.length;
       for( var i = 0; i < this.__cellCount; i++ ) {
         nodes[ i ] = null;
-        data[ i ] = [ cells[ i ], null, null, null, null, null ];
+        data[ i ] = [ cells[ i ], null, null, null, null, null, true ];
       }
       this.__cellNodes = nodes;
       this.__cellData = data;
@@ -513,7 +524,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     getTotalVisibleCells : function() {
       var ret = 0;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this.cellIsVisible( i ) ) {
+        if( this.cellIsDisplayable( i ) ) {
           ret++;
         }
       }
@@ -521,10 +532,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     },
 
     /**
-     * a cell is "visible" ( i.e. counts for the layout) if
+     * a cell is "displayable" ( i.e. counts for the layout) if
      * it either has a content set, or at least one dimension 
      */      
-    cellIsVisible : function( cell ) {
+    cellIsDisplayable : function( cell ) {
       return ( this.getCellWidth( cell, true ) > 0 );      
     },
 
@@ -586,7 +597,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       var width = null;
       var style = null;
       for( var i = 0; i < this.__cellCount; i++ ) {
-        if( this.cellIsVisible( i ) ) {
+        if( this.cellIsDisplayable( i ) ) {
           width = this.getCellWidth( i );
           if( this._cellHasContent( i ) ) {
             style = this.getCellNode( i ).style;

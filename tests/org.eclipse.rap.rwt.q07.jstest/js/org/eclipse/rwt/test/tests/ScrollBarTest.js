@@ -10,14 +10,14 @@
 
 qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
   extend : qx.core.Object,
-  
+
   construct : function() {
     var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
     testUtil.prepareTimerUse();
   },
-    
+
   members : {
-    
+
     testCreateDispose : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar();
@@ -69,7 +69,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 3, events.length );
       bar.destroy();
     },
-    
+
     testFireEventOnSetMaximum : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar();
@@ -92,7 +92,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 200, bar.getValue() );
       bar.destroy();
     },
-        
+
     testRelativeKnobPosition : function() {
       // TODO [tb] : with new ScrollBar change to test absolute values
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -117,7 +117,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       hBar.destroy();      
       vBar.destroy();      
     },
-    
+
     testResizeReducesValue : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
@@ -128,7 +128,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( [ 0, 34 ], this._getRelativeKnobPosition( vBar ) );
       vBar.destroy();      
     },
-    
+
     testResizeLargerThanMaximum : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
@@ -139,7 +139,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( [ 0, 0 ], this._getRelativeKnobPosition( vBar ) );
       vBar.destroy();      
     },
-        
+
     testChangeValueWhileInvisible : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
@@ -163,7 +163,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( [ 0, 28 ], this._getRelativeThumbLength( vBar ) );
       vBar.destroy();
     },  
-    
+
+    testKnobVisibility : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var vBar = this._createScrollBar( false, false );
+      vBar._thumb.setImage( "bla.jpg", 10, 17 );
+      assertEquals( 23, vBar._thumb.getHeight() );
+      assertTrue( vBar._thumb.isCellVisible( 1 ) );
+      vBar.setHeight( 95 );
+      assertEquals( 21, vBar._thumb.getHeight() );
+      assertFalse( vBar._thumb.isCellVisible( 1 ) );
+      vBar.destroy();
+    },
+
     testIdealValue : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
@@ -177,7 +189,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 650, vBar.getValue() );
       vBar.destroy();
     },
-    
+
     testClearIdealValue : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
@@ -190,7 +202,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 200, vBar.getValue() );
       vBar.destroy();
     },
-    
+
     testStopPropagation : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
@@ -204,7 +216,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertTrue( ok );
       vBar.destroy();
     },
-    
+
     testMergeEventsFastScroll : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -220,7 +232,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 1, events.length );
       bar.destroy();
     },
-    
+
     testTurnMergeEventsOff : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -237,7 +249,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertTrue( bar._mergeEvents );
       bar.destroy();
     },
-    
+
     testMergeEventsSlowScroll : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -253,7 +265,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 4, events.length );
       bar.destroy();
     },
-    
+
     testMergeEventsBackAndForth : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -267,7 +279,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertFalse( bar._eventTimer.getEnabled() );
       bar.destroy();
     },
-    
+
     testIncrement : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -275,7 +287,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 30, bar._increment );
       bar.destroy();
     },
-    
+ 
     testPageIncrement : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -285,7 +297,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 170, bar._pageIncrement );
       bar.destroy();      
     },
-    
+
     testAutoEnableMergeEvents : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -337,7 +349,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 4900, bar.getValue() );
       bar.destroy();
     },
-    
+
     testMinThumbSizeBySliderSize : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -351,7 +363,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 900, bar.getValue() );
       bar.destroy();
     },
-    
+
     testMinThumbSizeUndoBySetMaximum : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
@@ -408,7 +420,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.destroy();
     },
 
-
     testMaximumZero : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       bar = this._createScrollBar( false, false );
@@ -420,7 +431,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 0, bar.getValue() );
       bar.destroy();
     },
-    
+
     testMouseWheel : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       bar = this._createScrollBar( false, false );
@@ -433,7 +444,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( 40, bar._selection );
       bar.destroy();
     },
-
 
     // test div increment
     
@@ -457,7 +467,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       }
       return bar;
     },
-    
+
     _getRelativeKnobPosition : function( bar ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var button = 15; 
@@ -471,7 +481,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       }
       return result;
     },
-    
+
     _getRelativeThumbLength : function( bar ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var button = 16; 
@@ -485,7 +495,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       }
       return result;
     },
-    
+
     _getChangeLogger : function( bar ) {
       var events = [];
       bar.addEventListener( "changeValue", function( event ) {
@@ -493,7 +503,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       }, this );
       return events;
     }
-    
+
   }
-  
+
 } );

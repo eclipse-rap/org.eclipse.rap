@@ -65,6 +65,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.disposeWidget( widget );
     },
     
+    testSetCellVisible : function() {
+      var widget = this.createDefaultWidget();
+      widget.setCellVisible( 0, false );
+      this.initWidget( widget, true );
+      var node0 = widget._getTargetNode().firstChild;
+      var node1 = widget._getTargetNode().lastChild;
+      assertEquals( "", node1.style.display );
+      assertEquals( "none", node0.style.display );
+      widget.setCellVisible( 0, true );
+      widget.setCellVisible( 1, false );
+      assertEquals( "", node0.style.display );
+      assertEquals( "none", node1.style.display );
+      this.disposeWidget( widget );
+    },
+    
     testSpacing : function() {
       var widget = new org.eclipse.rwt.widgets.MultiCellWidget(
         [ "image", "label", "image", "label", "image" ] );
