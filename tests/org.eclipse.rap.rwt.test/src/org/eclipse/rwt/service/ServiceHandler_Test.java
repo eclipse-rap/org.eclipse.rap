@@ -14,6 +14,7 @@
 package org.eclipse.rwt.service;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.util.ClassInstantiationException;
 
 
 public class ServiceHandler_Test extends TestCase {
@@ -83,9 +85,17 @@ public class ServiceHandler_Test extends TestCase {
     try {
       registerCustomHandler();
       fail();
-    } catch( IllegalStateException expected ) {
+    } catch( ClassInstantiationException expected ) {
+      InvocationTargetException ite = ( InvocationTargetException )expected.getCause();
+      assertTrue( ite.getCause() instanceof IllegalStateException );
       doTestEnvironmentCleanup();
     }
+/////////////////////////////////////
+//    TODO [fappel]: Replace catch clause with this code once patch of bug #340482 is applied,
+//                   or remove this comment in case patch is declined.    
+//  } catch( IllegalStateException expected ) {
+//    doTestEnvironmentCleanup();
+//  }
   }
   
   protected void setUp() throws Exception {
