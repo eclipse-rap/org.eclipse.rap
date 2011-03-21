@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.rwt.test.tests.CalendarTest", {
+qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeCalendarTest", {
   extend : qx.core.Object,
 
   members : {

@@ -37,13 +37,44 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       assertEquals( 10, req._parameters[ "w3.month" ] );
       assertEquals( 2010, req._parameters[ "w3.year" ] );
     },
+    
+    testDropDownCalendar : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dateTime = this._createDefaultDateTime( true );
+      testUtil.click( dateTime._dropDownButton );
+      testUtil.flush();
+      var calendar = dateTime._calendar;
+      assertTrue( dateTime._calendar.isSeeable() );
+      assertEquals( 3, calendar.getLeft() );
+      assertEquals( "May fail if browser-window not high enough", 23, calendar.getTop() );
+      dateTime.destroy();
+    },
+    
+    testDropDownCalendarNotEnoughSpace : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dateTime = this._createDefaultDateTime( true );
+      var browserHeight = qx.html.Window.getInnerHeight( window );
+      dateTime.setTop( browserHeight - 40 );
+      testUtil.flush();
+      testUtil.click( dateTime._dropDownButton );
+      testUtil.flush();
+      var calendar = dateTime._calendar;
+      assertTrue( dateTime._calendar.isSeeable() );
+      assertEquals( 3, calendar.getLeft() );
+      var expectedTop = dateTime.getTop() - calendar.getHeightValue();
+      assertEquals( expectedTop, calendar.getTop() );
+      dateTime.destroy();
+    },
 
     //////////
     // Helpers
 
-    _createDefaultDateTime : function() {
+    _createDefaultDateTime : function( dropdown ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var style = "medium";
+      if( dropdown ) {
+        style +=  "|drop_down";
+      }
       var monthNames = [ "January",
                          "February",
                          "March",

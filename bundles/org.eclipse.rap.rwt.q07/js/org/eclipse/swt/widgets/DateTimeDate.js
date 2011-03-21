@@ -887,8 +887,13 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     _setCalendarLocation : function() {
       if( this.getElement() && this._calendar != null ){
         var elementPos = qx.bom.element.Location.get( this.getElement() );
-        this._calendar.setLocation( elementPos.left,
-                                    elementPos.top + this.getHeight() );
+        var browserHeight = qx.html.Window.getInnerHeight( window );
+        var top = elementPos.top + this.getHeight();
+        var height = this._calendar.getHeightValue();
+        if( top + height > browserHeight ) {
+          top = elementPos.top - height;
+        }
+        this._calendar.setLocation( elementPos.left, top );
       }
     },
 
