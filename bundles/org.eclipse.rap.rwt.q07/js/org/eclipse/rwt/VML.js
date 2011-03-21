@@ -32,6 +32,8 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       node.style.height = "100%";
       node.style.top = "0";
       node.style.left = "0";
+      node.style.fontSize = "0";
+      node.style.lineHeight = "0";
       result.node = node;
       result.children = {};
       return result;

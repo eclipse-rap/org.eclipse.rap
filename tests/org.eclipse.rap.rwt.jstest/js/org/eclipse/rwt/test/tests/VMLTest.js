@@ -15,6 +15,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
 
     TARGETENGINE : [ "mshtml" ],
 
+    testCreateCanvas : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      var canvas = gfxUtil.createCanvas();
+      var canvasNode = gfxUtil.getCanvasNode( canvas );
+      assertEquals( "DIV", canvasNode.tagName );
+      assertEquals( "0", canvasNode.style.lineHeight );
+      assertEquals( "0px", canvasNode.style.fontSize );
+      testUtil.flush();
+    },
+
     testDrawRectInWidget : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil
@@ -30,7 +41,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );      
       var canvasNode = parentNode.firstChild;
-      assertEquals( "DIV", canvasNode.tagName );
       assertEquals( "rect", canvasNode.firstChild.tagName );
       assertEquals( null, gfxUtil.getFillType( shape ) );
       assertTrue( gfxUtil.getDisplay( shape ) );
