@@ -25,6 +25,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
 
     // Has selection listener
     this._hasSelectionListener = false;
+    this._requestTimer = null;
 
     // Add listener for font change
     this.addEventListener( "changeFont", this._rwt_onChangeFont, this );
@@ -367,12 +368,19 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
         req.addParameter( id + ".seconds",
                           this._removeLeadingZero( this._secondsTextField.getText() ) );
         if( this._hasSelectionListener ) {
-          req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
-          org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-          req.send();
+          this._requestTimer.restart();
         }
-        this._readyToSendChanges = true;
       }
+    },
+
+    _onInterval : function() {
+      this._requestTimer.stop()
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
+      req.send();
     },
 
     setHours : function( value ) {
@@ -398,6 +406,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
 
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
+      this._requestTimer = new qx.client.Timer( 110 );
+      this._requestTimer.addEventListener( "interval", this._onInterval, this );
     },
 
     setBounds : function( ind, x, y, width, height ) {

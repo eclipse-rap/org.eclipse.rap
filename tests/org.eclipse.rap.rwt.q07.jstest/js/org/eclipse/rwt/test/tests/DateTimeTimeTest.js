@@ -44,8 +44,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
       dateTime.setMinutes( 34 );
       dateTime.setSeconds( 55 );
       testUtil.clearRequestLog();
-      dateTime._sendChanges();
+      dateTime._sendChanges(); 
+      // this should restart the timer, though there is currently no way to test it:
+      dateTime._sendChanges(); 
+      assertEquals( 0, testUtil.getRequestsSend() );
+      testUtil.forceInterval( dateTime._requestTimer );
+      assertFalse( dateTime._requestTimer.getEnabled() );
       assertEquals( 1, testUtil.getRequestsSend() );
+      dateTime.destroy();
+
     },
     
 

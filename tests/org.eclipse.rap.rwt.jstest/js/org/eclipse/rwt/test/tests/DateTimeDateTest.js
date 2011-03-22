@@ -33,6 +33,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       assertEquals( 10, req._parameters[ "w3.day" ] );
       assertEquals( 10, req._parameters[ "w3.month" ] );
       assertEquals( 2010, req._parameters[ "w3.year" ] );
+      dateTime.destroy();
     },
 
     testSendEvent : function() {
@@ -45,9 +46,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       dateTime.setYear( 2010 );
       testUtil.clearRequestLog();
       dateTime._sendChanges();
+      // this should restart the timer, though there is currently no way to test it:
+      dateTime._sendChanges(); 
+      assertEquals( 0, testUtil.getRequestsSend() );
+      testUtil.forceInterval( dateTime._requestTimer );
+      assertFalse( dateTime._requestTimer.getEnabled() );
       assertEquals( 1, testUtil.getRequestsSend() );
+      dateTime.destroy();
     },
-    
+
     testDropDownCalendar : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dateTime = this._createDefaultDateTime( true );
