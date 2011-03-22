@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -367,10 +367,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         this._setWeekday();
 
         var newValue = this._focusedTextField.getText();
-        if( oldValue != newValue && this._readyToSendChanges ) {
-          this._readyToSendChanges = false;
-          // Send changes
-          qx.client.Timer.once( this._sendChanges, this, 500 );
+        if( oldValue != newValue ) {
+          this._sendChanges();
         }
       }
     },
@@ -389,11 +387,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             case "PageUp": case "PageDown":
               var date = this._calendar.getDate();
               this._setDate( date );
-              if( this._readyToSendChanges ) {
-                this._readyToSendChanges = false;
-                // Send changes
-                qx.client.Timer.once( this._sendChanges, this, 500 );
-              }
+              this._sendChanges();
               evt.preventDefault();
               evt.stopPropagation();
             break;
@@ -406,11 +400,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             case "PageUp": case "PageDown":
               var date = this._calendar.getDate();
               this._setDate( date );
-              if( this._readyToSendChanges ) {
-                this._readyToSendChanges = false;
-                // Send changes
-                qx.client.Timer.once( this._sendChanges, this, 500 );
-              }
+              this._sendChanges();
               evt.preventDefault();
               evt.stopPropagation();
             break;
@@ -703,7 +693,6 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
         }
-        this._readyToSendChanges = true;
       }
     },
 
@@ -834,11 +823,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
           this._setDate( date );
           this._toggleCalendarVisibility();
           this.setFocused( true );
-          if( this._readyToSendChanges ) {
-            this._readyToSendChanges = false;
-            // Send changes
-            qx.client.Timer.once( this._sendChanges, this, 500 );
-          }
+          this._sendChanges();
         } else if( target.getUserData( "calendar-button" ) ) {
           this._calendar._onNavButtonClicked( evt );
         } else if( target === this._dropDownButton ) {

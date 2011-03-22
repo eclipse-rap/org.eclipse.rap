@@ -10,11 +10,6 @@
 qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
   extend : qx.core.Object,
 
-  construct : function() {
-    this.base( arguments );
-    this.testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-  },
-
   members : {
 
     testCreateDateTimeDate : function() {
@@ -25,17 +20,32 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
     },
 
     testSendAllFieldsTogether : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.prepareTimerUse();
       var dateTime = this._createDefaultDateTime();
       dateTime.setDay( 10 );
       dateTime.setMonth( 10 );
       dateTime.setYear( 2010 );
-      this.testUtil.clearRequestLog();
+      testUtil.clearRequestLog();
       dateTime._sendChanges();
-      assertEquals( 0, this.testUtil.getRequestsSend() );
+      assertEquals( 0, testUtil.getRequestsSend() );
       var req = org.eclipse.swt.Request.getInstance();
       assertEquals( 10, req._parameters[ "w3.day" ] );
       assertEquals( 10, req._parameters[ "w3.month" ] );
       assertEquals( 2010, req._parameters[ "w3.year" ] );
+    },
+
+    testSendEvent : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.prepareTimerUse();
+      var dateTime = this._createDefaultDateTime();
+      dateTime.setHasSelectionListener( true );
+      dateTime.setDay( 10 );
+      dateTime.setMonth( 10 );
+      dateTime.setYear( 2010 );
+      testUtil.clearRequestLog();
+      dateTime._sendChanges();
+      assertEquals( 1, testUtil.getRequestsSend() );
     },
     
     testDropDownCalendar : function() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,9 +25,6 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
 
     // Has selection listener
     this._hasSelectionListener = false;
-
-    // Flag that indicates that the next request can be sent
-    this._readyToSendChanges = true;
 
     // Add listener for font change
     this.addEventListener( "changeFont", this._rwt_onChangeFont, this );
@@ -222,10 +219,8 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeTime", {
         var oldValue = this._focusedTextField.getText();
         var newValue = this._addLeadingZero( this._spinner.getValue() );
         this._focusedTextField.setText( newValue );
-        if( oldValue != newValue && this._readyToSendChanges ) {
-          this._readyToSendChanges = false;
-          // Send changes
-          qx.client.Timer.once( this._sendChanges, this, 500 );
+        if( oldValue != newValue ) {
+          this._sendChanges();
         }
       }
     },
