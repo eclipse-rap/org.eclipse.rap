@@ -1122,6 +1122,7 @@ public class Tree extends Composite {
     if( hasCheckBoxes( 0 )) {
       result = Math.max( getCheckImageOuterSize().y, result );
     }
+    result += 1; // The space needed for horizontal gridline is always added, even if not visible
     result = Math.max( result, MIN_ITEM_HEIGHT );
     return result;
   }

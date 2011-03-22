@@ -306,6 +306,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         var left = this._tree.getItemLeft( item, cell, false );
         var width = this._tree.getItemWidth( item, cell, false );
         var height = this._tree.getItemHeight();
+        if( this._tree.getLinesVisible() ) {
+          height -= 1;
+        }
         this._setBounds( element, left, 0, width, height );
       }
     },

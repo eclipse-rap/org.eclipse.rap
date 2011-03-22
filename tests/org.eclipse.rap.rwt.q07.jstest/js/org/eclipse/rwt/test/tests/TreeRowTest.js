@@ -599,6 +599,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
+    testRenderCellBackgroundBoundsWithLinesVisible : function() {
+      var tree = this._createTree();
+      tree.setLinesVisible( true );
+      var row = new org.eclipse.rwt.widgets.TreeRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      item.setCellBackgrounds( [ "red" ] ); 
+      row.renderItem( item );
+      var node = row._getTargetNode().childNodes[ 1 ];
+      assertEquals( "red", node.style.backgroundColor );
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bounds = testUtil.getElementBounds( node );
+      assertEquals( 4, bounds.left );
+      assertEquals( 14, bounds.height );
+      assertEquals( 66, bounds.width );
+      assertEquals( 0, bounds.top );
+      tree.destroy();
+      row.destroy();
+    },
+
     testRenderImagesOnly : function() {
       var tree = this._createTree();
       tree.setItemMetrics( 1, 50, 40, 50, 12, 65, 12 );

@@ -44,7 +44,7 @@ TreeColumn-SortIndicator {
 
 Tree-Cell {
   spacing: 3px;
-  padding: 3px;
+  padding: 2px 3px 3px 3px;
 }
 
 Tree-GridLine {
