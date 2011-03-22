@@ -179,8 +179,10 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     _parseEvalResult : function( value ) {
       var result = null;
       var win; 
-      if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-        // in gecko the prototypes from the parent-frame are used
+      if( qx.core.Variant.isSet( "qx.client", "gecko" ) 
+          && org.eclipse.rwt.Client.getVersion() < 2 
+      ) {
+        // in older gecko the prototypes from the parent-frame are used
         win = window;
       } else {
         win = this.getContentWindow();
