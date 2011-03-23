@@ -314,6 +314,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         }
         this.setCapture( !this._dropped );
         this._list.setDisplay( !this._dropped );
+        if( this._list.getDisplay() ) {
+          this._setListBounds();
+        }
         this._dropped = !this._dropped;
         if( this._dropped ) {
           this._setListSelection( this._selected );
@@ -347,9 +350,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
 
     _onListAppear : function( evt ) {
-      this._setListBounds();
       if( this._selected ) {
         this._selected.scrollIntoView();
+        this._list._syncScrollBars();
       }
     },
 

@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
       testUtil.flush();
       assertTrue( combo.isDisposed() );
+      combo.destroy();
     },
     
     testOpenList : function() {
@@ -29,6 +30,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       testUtil.flush();
       assertTrue( combo._list.isSeeable() );
       assertEquals( "hidden", combo._list.getOverflow() );
+      combo.destroy();
     },
 
     testItems : function() {
@@ -40,6 +42,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( 6, items.length );
       assertEquals( "Eiffel", items[ 0 ].getLabel() );
       assertEquals( "Smalltalk", items[ 5 ].getLabel() );
+      combo.destroy();
     },
 
     testSelectItem : function() {
@@ -118,7 +121,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
    
-    testOpenList : function() {
+    testListHeight : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
       combo.setItems( [ "Eiffel", "Java", "Python" ] );
@@ -126,6 +129,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setListVisible( true );
       testUtil.flush();
       assertEquals( correctHeight, combo._list.getHeight() );
+      combo.destroy();
     },
 
     testListSelection : function() {
@@ -136,6 +140,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       assertEquals( "Smalltalk", combo._list.getSelectedItems()[ 0 ].getLabel() );
       combo.setListVisible( true );
       assertEquals( "Java", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      combo.destroy();
+    },
+
+    testScrollToSelectedItem : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.select( 5 );
+      combo.setListVisible( true );
+      testUtil.flush();
+      assertTrue( combo._list._clientArea.isSeeable() );
+      console.log( combo._list.getHeight() );
+      console.log( combo._list.getElement().style.height );
+      assertEquals( "Smalltalk", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      assertEquals( 19, combo._list._clientArea.getScrollTop() );
       combo.destroy();
     },
 
