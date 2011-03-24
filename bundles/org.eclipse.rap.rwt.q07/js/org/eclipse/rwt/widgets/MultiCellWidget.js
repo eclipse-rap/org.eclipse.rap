@@ -836,7 +836,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
         if( wrapWidth ) {
           style.width = wrapWidth + "px";
         }
-        var result = [ element.scrollWidth, element.scrollHeight ];
+        var result;
+        if( org.eclipse.rwt.Client.isGecko() ) {
+          // See Bug 340841
+          var bounds = element.getBoundingClientRect();
+          var result = [ Math.ceil( bounds.width ), Math.ceil( bounds.height ) ];
+        } else {
+          var result = [ element.scrollWidth, element.scrollHeight ];
+        }
         style.width = "auto";
         return result;
     }
