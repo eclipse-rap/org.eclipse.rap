@@ -150,8 +150,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.setListVisible( true );
       testUtil.flush();
       assertTrue( combo._list._clientArea.isSeeable() );
-      console.log( combo._list.getHeight() );
-      console.log( combo._list.getElement().style.height );
       assertEquals( "Smalltalk", combo._list.getSelectedItems()[ 0 ].getLabel() );
       assertEquals( 19, combo._list._clientArea.getScrollTop() );
       combo.destroy();
