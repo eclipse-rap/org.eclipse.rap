@@ -30,6 +30,7 @@ import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabitemkit.CTabItemLCA;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -511,6 +512,21 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
+  public void testWriteSelectionBackgroundImage() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
+    Fixture.fakeResponseWriter();
+    CTabFolderLCA lca = new CTabFolderLCA();
+    lca.preserveValues( folder );
+    Image image = Graphics.getImage( Fixture.IMAGE_50x100 );
+    folder.setSelectionBackground( image );
+    lca.renderChanges( folder );
+    String imagePath = ResourceFactory.getImagePath( image );
+    String expected = "w.setSelectionBackgroundImage( [ \"" + imagePath + "\",50,100 ] );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+  
   private static Menu getShowListMenu( final CTabFolder folder ) {
     Menu result = null;
     try {

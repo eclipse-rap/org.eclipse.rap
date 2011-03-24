@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -446,14 +446,17 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( tabFolder );
     ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
     Image selBgImage = adapter.getUserSelectionBackgroundImage();
-    String selBgImagePath = null;
+    Object[] args = null;
     if( selBgImage != null ) {
-      selBgImagePath = ResourceFactory.getImagePath( selBgImage );
+      String selBgImagePath = ResourceFactory.getImagePath( selBgImage );
+      Rectangle selBgImageBounds = selBgImage.getBounds();
+        args = new Object[]{
+          selBgImagePath, 
+          new Integer( selBgImageBounds.width ),
+          new Integer( selBgImageBounds.height )
+        };
     }
-    writer.set( PROP_SELECTION_BG_IMAGE,
-                "selectionBackgroundImage",
-                selBgImagePath,
-                null );
+    writer.set( PROP_SELECTION_BG_IMAGE, "selectionBackgroundImage", args, null );
   }
 
   private static void writeSelectionBgGradient( final CTabFolder tabFolder )

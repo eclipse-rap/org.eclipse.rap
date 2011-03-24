@@ -20,6 +20,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
       folder.setBackgroundImage( "bla.jpg" );
       assertEquals( "bla.jpg", folder._body.getBackgroundImage() );
       assertEquals( [ 50, 50 ], folder._body.getUserData( "backgroundImageSize" ) );
+    },
+            
+    testSetSelectionBackgroundImage : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var folder = new org.eclipse.swt.custom.CTabFolder();
+      folder.setSelectionBackgroundImage( [ "bla.jpg", 50, 50 ] );
+      var item = new org.eclipse.swt.custom.CTabItem( folder, false );
+      assertFalse( "bla.jpg" == item.getBackgroundImage() );
+      item.setSelected( true );
+      assertEquals( "bla.jpg", item.getBackgroundImage() );
+      assertEquals( [ 50, 50 ], item.getUserData( "backgroundImageSize" ) );
     }
 
   }

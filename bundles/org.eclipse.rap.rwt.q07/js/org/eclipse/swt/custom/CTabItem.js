@@ -80,6 +80,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
   },
 
   members : {
+
     setTabPosition : function( tabPosition ) {
       if( tabPosition === "top" ) {
         this.addState( "barTop" );
@@ -163,7 +164,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
         image = this._parent.getSelectionBackgroundImage();
       }
       if( image != null ) {
-        this.setBackgroundImage( image );
+        this.setUserData( "backgroundImageSize", image.slice( 1 ) );
+        this.setBackgroundImage( image[ 0 ] );
       } else {
         this.resetBackgroundImage();
       }
