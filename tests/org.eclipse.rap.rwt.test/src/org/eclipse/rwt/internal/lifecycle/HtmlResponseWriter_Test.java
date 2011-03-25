@@ -52,302 +52,59 @@ public class HtmlResponseWriter_Test extends TestCase {
     }
     assertTrue( result.equals( "|Token 1|Token 2|ab|cd|Token 3|Token 4" ) );
   }
-  
-  public void testInputTagCreationXHTML() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    writer.startElement( "input", null );
-    writer.writeAttribute( "type", "text", null );
-    writer.endElement( "input" );
-    String expected = "<input type=\"text\" />";
-    assertEquals( expected, getContent( writer ) );
-  }
-
-  public void testScriptTagCreation() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    writer.startElement( "script", null );
-    writer.writeText( new char[] { '<', '>' }, 0, 2 );
-    writer.writeText( "<>", null );
-    writer.endElement( "script" );
-    String expected = "<script><><></script>";
-    assertEquals( expected, getContent( writer ) );
-  }
-
-  public void testClose() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    String element = "element";
-    writer.startElement( element, null );
-    writer.close();
-    String expected = "<" + element + ">";
-    assertEquals( expected, getContent( writer ) );
-  }
-
-//  private String assertWriteURIAttribute( final HtmlResponseWriter tokenBuffer, 
-//                                          final ResponseWriter writer, 
-//                                          final String out )
-//    throws IOException 
-//  {
-//    String element = "element";
-//    writer.endElement( element );
-//    String result = out + "></" + element + ">";
-//    try {
-//      writer.writeURIAttribute( null, null, null );
-//      fail();
-//    } catch( NullPointerException npe ) {
-//    }
-//    String uriAttribute1 = "uriAttribute1";
-//    try {
-//      writer.writeURIAttribute( uriAttribute1, "trallala", "hopsasa" );
-//      fail();
-//    } catch( IllegalStateException ise ) {
-//    }
-//    writer.startElement( element, null );
-//    result += "<" + element;
-//    assertEquals( result, RendererTestUtil.getContent( tokenBuffer ) );
-//    final String uriValue1 = "http://server:port/path/my action?param=+ <>";
-//    String uriValueExpected1 
-//      = "http://server:port/path/my+action?param=+%20%3C%3E";
-//    writer.writeURIAttribute( uriAttribute1, new Object() {
-//      public String toString() {
-//        return uriValue1;
-//      }
-//    }, null );
-//    result += " " + uriAttribute1 + "=\"" + uriValueExpected1 + "\"";
-//    assertEquals( result, RendererTestUtil.getContent( tokenBuffer ) );
-//    
-//    String uriAttribute2 = "uriAttribute2";
-//    String javaScript = "javascript:";
-//    writer.writeURIAttribute( uriAttribute2, javaScript, null );
-//    result += " " + uriAttribute2 + "=\""+ javaScript + "\"";    
-//    assertEquals( result, RendererTestUtil.getContent( tokenBuffer ) );
-//    return result;
-//  }
-
-  public void testWriteAttribute() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    String element = "element";
-    try {
-      writer.writeAttribute( null, null, null );
-      fail();
-    } catch( NullPointerException npe ) {
-    }
-    String attribute1 = "attribute1";
-    try {
-      writer.writeAttribute( attribute1, "trallala", "hopsasa" );
-      fail();
-    } catch( IllegalStateException ise ) {
-    }
-    writer.startElement( element, null );
-    String expected = "<" + element;
-    assertEquals( expected, getContent( writer ) );
-    final String value1 = "<value1>";
-    String valueExpected = "&lt;value1&gt;";
-    writer.writeAttribute( attribute1, new Object() {
-      public String toString() {
-        return value1;
-      }
-    }, null );
-    expected += " " + attribute1 + "=\"" + valueExpected + "\"";
-    assertEquals( expected, getContent( writer ) );
-    String enabled = "enabled";
-    writer.writeAttribute( enabled, null, null );
-    expected += " enabled=\"enabled\"";
-    assertEquals( expected, getContent( writer ) );
-  }
-  
-  public void testWriteAttributeXHTML() throws Exception {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    String element = "element";
-    writer.startElement( element, null );
-    String attribute = "enabled";
-    writer.writeAttribute( attribute, null, null );
-    String expected 
-      = "<" + element + " " + attribute + "=\"" + attribute + "\"";
-    assertEquals( expected, getContent( writer ) );
-  }
-
-  public void testEndDocument() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    String element = "element";
-    writer.startElement( element, null );
-    String result = "<" + element;
-    assertEquals( result, getContent( writer ) );
-    writer.endDocument();
-    result += ">";
-    assertEquals( result, getContent( writer ) );
-  }
-
-  public void testWriteWithoutEscape() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    String element = "element";
-    writer.startElement( element, null );
-    String result = "<" + element;
-    assertEquals( result, getContent( writer ) );
-    String unescaped = "</tag>";
-    writer.write( unescaped );
-    result += ">" + unescaped;
-    assertEquals( result, getContent( writer ) );
-    
-    writer.startElement( element, null );
-    result += "<" + element;
-    assertEquals( result, getContent( writer ) );
-    unescaped = "</tag>";
-    writer.write( unescaped.toCharArray(), 0, unescaped.length() );
-    result += ">" + unescaped;
-    assertEquals( result, getContent( writer ) );
-  }
-  
 
   public void testFlush() throws IOException {
     HtmlResponseWriter writer = new HtmlResponseWriter();
-    String element = "element";
-    writer.startElement( element, null );
-    String expected = "<" + element;
-    assertEquals( expected, getContent( writer ) );
+    writer.write( "foo" );
+    assertEquals( "foo", getContent( writer ) );
     writer.flush();
-    expected += ">";
-    assertEquals( expected, getContent( writer ) );
+    assertEquals( "foo", getContent( writer ) );
   }
 
-  public void testEndElement() throws IOException {
+  public void testWriteEncoding() throws IOException {
     HtmlResponseWriter writer = new HtmlResponseWriter();
-    String element = "element";
-    writer.startElement( element, null );
-    String expected = "<" + element;
-    assertEquals( expected, getContent( writer ) );
-    
-    try {
-      writer.endElement( null );
-      fail();
-    } catch( NullPointerException npe ) {
-    }
-    
-    writer.endElement( element );
-    expected += "></" + element + ">";
-    assertEquals( expected, getContent( writer ) );
-  }
-  
-  public void testEndElementForXHTML() throws Exception {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    writer.startElement( "img", null );
-    writer.writeAttribute( "src", "image.gif", null );
-    writer.endElement( "img" );
-    String expected = "<img src=\"image.gif\" />";
-    assertEquals( expected, getContent( writer ) );
+    writer.writeText( "äöü?", null );
+    assertEquals( "&auml;&ouml;&uuml;?", getContent( writer ) );
   }
 
-  public void testWrite() throws IOException {
-    HtmlResponseWriter writer;
-    // script & style tags must not be encoded
-    writer = new HtmlResponseWriter();
-    writer.startElement( "style", null );
-    writer.writeText( "äöü?", null );
-    writer.endElement( "style" );
-    assertEquals( "<style>äöü?</style>", getContent( writer ) );
-    writer = new HtmlResponseWriter();
-    writer.startElement( "script", null );
-    writer.writeText( "äöü?", null );
-    writer.endElement( "script" );
-    assertEquals( "<script>äöü?</script>", getContent( writer ) );
-    // all other elements must be encoded 
-    writer = new HtmlResponseWriter();
-    writer.startElement( "whaetever", null );
-    writer.writeText( "äöü?", null );
-    writer.endElement( "whaetever" );
-    assertEquals( "<whaetever>&auml;&ouml;&uuml;?</whaetever>", 
-                  getContent( writer ) );
-  }
-  
   public void testWriteTextWithObject() throws IOException {
     HtmlResponseWriter writer = new HtmlResponseWriter();
-    String element3 = "element3";
-    writer.startElement( element3, null );
-    String expected = "<" + element3;
-    assertEquals( expected, getContent( writer ) );
-
     try {
       writer.writeText( null, null );
       fail();
     } catch( NullPointerException npe ) {
     }
     final String text2 = "my <text>";
-    writer.writeText( new Object() { 
+    writer.writeText( new Object() {
       public String toString() {
         return text2;
-      } 
+      }
     }, null );
-    
-    final String expectedText2 = "my &lt;text&gt;";
-    expected += ">" + expectedText2;
-    assertEquals( expected, getContent( writer ) );
+    assertEquals( "my &lt;text&gt;", getContent( writer ) );
   }
 
   public void testWriteTextWithArray() throws IOException {
     HtmlResponseWriter writer = new HtmlResponseWriter();
-    String element2 = "element2";
-    writer.startElement( element2, null );
-    String expected = "<" + element2;
-    assertEquals( expected, getContent( writer ) );
-    
     try {
       writer.writeText( null, 0, 0 );
       fail();
     } catch( NullPointerException npe ) {
     }
-    
-    char[] text1 = new char[] { '|', '<', 'a', '>', '|' };
-    writer.writeText( text1, 1, 3 );
-    expected += ">&lt;" + text1[ 2 ] + "&gt;";
+    char[] text = new char[] { '|', '<', 'a', '>', '|' };
+    writer.writeText( text, 1, 3 );
+    String expected = "&lt;" + text[ 2 ] + "&gt;";
     assertEquals( expected, getContent( writer ) );
-    
     try {
-      writer.writeText( text1, -1, 0 );
+      writer.writeText( text, -1, 0 );
       fail();
     } catch( IndexOutOfBoundsException ioobe ) {
     }
     try {
-      writer.writeText( text1, 1, 7 );
+      writer.writeText( text, 1, 7 );
       fail();
     } catch( IndexOutOfBoundsException ioobe ) {
     }
     assertEquals( expected, getContent( writer ) );
-  }
-
-  public void testWriteComment() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    final String comment = "my <comment>";
-    final String expectedComment = "my &lt;comment&gt;";
-    writer.writeComment( new Object() { 
-      public String toString() {
-        return comment;
-      } 
-    } );
-    String result = "<!-- " + expectedComment + " -->";
-    assertEquals( result, getContent( writer ) );
-  }
-  
-  public void testStartElement() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    try {
-      writer.startElement( null, null );
-      fail();
-    } catch( NullPointerException npe ) {
-    }
-    
-    String root = "root";
-    writer.startElement( root, null  );
-    String expected = "<" + root;
-    assertEquals( expected, getContent( writer ) );
-    
-    String element1 = "element1";
-    writer.startElement( element1, null );
-    expected += "><" + element1;
-    assertEquals( expected, getContent( writer ) );
-    
-    try {
-      writer.writeComment( null );
-      fail();
-    } catch( NullPointerException npe ) {
-    }
   }
 
   public void testClosedAssertions() throws IOException {
@@ -364,27 +121,7 @@ public class HtmlResponseWriter_Test extends TestCase {
     } catch( IllegalStateException ioe ) {
     }
     try {
-      writer.endDocument();
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.endElement( "xxx" );
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
       writer.flush();
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.startDocument();
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.startElement( "xxx", null );
       fail();
     } catch( IllegalStateException ioe ) {
     }
@@ -414,16 +151,6 @@ public class HtmlResponseWriter_Test extends TestCase {
     } catch( IllegalStateException ioe ) {
     }
     try {
-      writer.writeAttribute( "xxx", "trallala", "xyz" );
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.writeComment( "xxx" );
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
       writer.writeText( new char[] { 'X' }, 0, 1 );
       fail();
     } catch( IllegalStateException ioe ) {
@@ -433,35 +160,8 @@ public class HtmlResponseWriter_Test extends TestCase {
       fail();
     } catch( IllegalStateException ioe ) {
     }
-    try {
-      writer.writeNBSP();
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
   }
 
-  public void testWriteNBSP() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    writer.writeNBSP();
-    assertEquals( "&nbsp;", Fixture.getAllMarkup( writer ) );
-    writer = new HtmlResponseWriter();
-    writer.startElement( "span",  null );
-    writer.writeNBSP();
-    assertEquals( "<span>&nbsp;", Fixture.getAllMarkup( writer ) );
-    writer = new HtmlResponseWriter();
-    writer.startElement( "span",  null );
-    writer.writeAttribute( "id", "p2", null );
-    writer.writeNBSP();
-    assertEquals( "<span id=\"p2\">&nbsp;", Fixture.getAllMarkup( writer ) );
-    writer = new HtmlResponseWriter();
-    writer.startElement( "span",  null );
-    writer.writeAttribute( "id", "p2", null );
-    writer.writeNBSP();
-    writer.endElement( "span" );
-    String expected = "<span id=\"p2\">&nbsp;</span>";
-    assertEquals( expected, Fixture.getAllMarkup( writer ) );
-  }
-  
   public void testUseJSLibrary() {
     HtmlResponseWriter writer = new HtmlResponseWriter();
     try {

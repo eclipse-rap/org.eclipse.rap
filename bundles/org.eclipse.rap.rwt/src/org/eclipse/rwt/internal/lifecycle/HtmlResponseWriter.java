@@ -63,17 +63,6 @@ public class HtmlResponseWriter extends Writer {
     body.add( token );
   }
 
-  /**
-   * <p>Append a HtmlResponseWriter's body token list to the
-   * token list of the body's token.</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void append( final HtmlResponseWriter responseWriter ) {
-    for( int i = 0; i < responseWriter.getBodySize(); i++ ) {
-      body.add( responseWriter.getBodyToken( i ) );
-    }
-  }
-
  /**
    * <p>Returns the number of tokens in the body list.</p>
    * <p>This method is not inteded to be used by clients.</p>
@@ -190,106 +179,6 @@ public class HtmlResponseWriter extends Writer {
   }
   
   /**
-   * <p>Starts the element given by <code>name</code>. An eventually still
-   * opened element will be closed first.</p>
-   * @param name the elements name, must not be <code>null</code>.
-   * @param component <em>currently not used, must be <code>null</code></em>.
-   * @throws IOException if an I/O error occurs
-   */
-  public void startElement( final String name, final Object component ) 
-    throws IOException
-  {
-    checkIfWriterClosed();
-    ParamCheck.notNull( name, "name" );
-    closeElementIfStarted();
-    // checking first with charAt for performance, since equalsIgnoreCase check
-    // takes twice as long
-    char firstChar = name.charAt( 0 );
-    if( ( firstChar == 's' ) || ( firstChar == 'S' ) ) {
-      if(    "script".equalsIgnoreCase( name ) 
-          || "style".equalsIgnoreCase( name ) ) 
-      {
-        avoidEscape = true;
-      }
-    }
-
-    doWrite( "<" );
-    doWrite( name );
-    elementStarted = name;
-  }
-
-  /**
-   * <p>Writes an attribute to the currently started element. Characters
-   * not allowed in (X)HTML will be encoded.</p>
-   * <p>Example:
-   * <pre>
-   * writer.startElement("input",null);
-   * writer.writeAttribute("hidden",null,null);
-   * writer.endElement("input");
-   * // results in &lt;input hidden="hidden" /&gt; 
-   * </pre>
-   * </p>
-   * @param name the attribtues name, must not be <code>null</code>.
-   * @param value the attributes value. If <code>null</code> it is considered
-   * a 'minimized' attribute.
-   * @param property <em>currently not used, must be <code>null</code></em>.
-   * @throws IOException if an I/O error occurs
-   * @throws IllegalStateException when there is no started element
-   */
-  public void writeAttribute( final String name, 
-                              final Object value, 
-                              final String property )
-    throws IOException
-  {
-    checkIfWriterClosed();
-    ParamCheck.notNull( name, "name" );
-    if( elementStarted == null ) {
-      String msg = "There is no started element to add an attribute.";
-      throw new IllegalStateException( msg );
-    }
-    if( value == null ) {
-      doWrite( " " );
-      doWrite( name );
-      doWrite( "=\"" );
-      doWrite( name );
-      doWrite( "\"" );        
-    } else {
-      doWrite( " " );
-      doWrite( name );
-      doWrite( "=\"" );
-      doWrite( HtmlResponseWriterUtil.encode( value.toString() ) );
-      doWrite( "\"" );
-    }
-  }
-
-  /**
-   * <p>Writes the closing tag for element <code>name</code> to the response 
-   * stream.</p>
-   * @param name the elements name, must not be <code>null</code>. 
-   * @throws IOException if an I/O error occurs
-   */
-  public void endElement( final String name ) throws IOException {
-    checkIfWriterClosed();
-    ParamCheck.notNull( name, "name" );
-    closeElementIfStarted();
-    avoidEscape = false;
-    if( !HtmlResponseWriterUtil.isEmptyTag( name ) ) {
-      doWrite( "</" );
-      doWrite( name );
-      doWrite( ">" );
-    }
-  }
-  
-  /**
-   * <p>Ends the document. An eventually opened element is closed.</p>
-   * @throws IOException if an I/O error occurs
-   */
-  public void endDocument() throws IOException {
-    checkIfWriterClosed();
-    closeElementIfStarted();
-  }
-  
-  /**
    * <p>Writes the <em>toString</em> of the given <code>text</code> to the 
    * response stream, characters not allowed in HTML will be encoded. Use 
    * this method only to write 'inside' an element.</p>
@@ -340,41 +229,6 @@ public class HtmlResponseWriter extends Writer {
       char[] encoded = buffer.toString().toCharArray();
       write( encoded );
     }
-  }
-  
-  /**
-   * <p>Writes the given <code>comment</code>, surrounded by opening and
-   * closing comment tags (&lt;!-- --&gt;), to the response stream.</p>
-   * @param comment the comment to be written, must not be <code>null</code>.
-   * @throws IOException if an I/O error occurs
-   */
-  // TODO [rh] We could check whether 'elementStarted' is null, since comments 
-  //      are not allowed inside element tags in XHTML 'mode'
-  public void writeComment( final Object comment ) throws IOException {
-    checkIfWriterClosed();
-    ParamCheck.notNull( comment, "comment" ); 
-    closeElementIfStarted();
-    doWrite( "<!-- " );
-    doWrite( HtmlResponseWriterUtil.encode( comment.toString() ) );
-    doWrite( " -->" );
-  }
-
-  /**
-   * <p>Writes a non-breaking space (&amp;nbsp;) to the response stream.</p>
-   * @throws IOException if an I/O error occurs
-   */
-  public void writeNBSP() throws IOException { 
-    checkIfWriterClosed();
-    closeElementIfStarted();
-    doWrite( "&nbsp;" );
-  }
-  
-  /**
-   * <p>Starts the document</p>
-   * @throws IOException if an I/O error occurs
-   */
-  public void startDocument() throws IOException {
-    checkIfWriterClosed();
   }
 
   /**
