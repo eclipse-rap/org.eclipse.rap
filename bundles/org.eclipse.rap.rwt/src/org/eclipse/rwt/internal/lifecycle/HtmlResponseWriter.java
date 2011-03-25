@@ -1,21 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.*;
 
 import org.eclipse.rwt.internal.util.*;
-
 
 
 /** 
@@ -56,7 +55,6 @@ public class HtmlResponseWriter extends Writer {
     * the content which was rendered into this HtmlResponseWriter. */
   private List jsLibraries = new ArrayList();
   
-  
   /** 
    * <p>Append a token to the token list of the body's token</p>
    * <p>This method is not inteded to be used by clients.</p>
@@ -74,15 +72,6 @@ public class HtmlResponseWriter extends Writer {
     for( int i = 0; i < responseWriter.getBodySize(); i++ ) {
       body.add( responseWriter.getBodyToken( i ) );
     }
-  }
-
-  /**
-   * <p>Removes all of the tokens from the body list. The body list will be
-   * empty after this call returns</p>
-   * <p>This method is not inteded to be used by clients.</p>
-   */
-  public void clearBody() {
-    body.clear();
   }
 
  /**
@@ -142,27 +131,6 @@ public class HtmlResponseWriter extends Writer {
       jsLibraries.add( libraryName );
     }
   }
-  
-  /**
-   * <p>Removes the given <code>libraryName</code> from the list of JavaScript 
-   * libraries.</p>
-   * <p>An attempt to remove a not previously registered 
-   * (using <code>useJSLibrary(String)</code>) library will be ignored silently.
-   * </p>
-   * @param libraryName the name of the library to be removed
-   */
-  public void removeJSLibraries( final String libraryName ) {
-    jsLibraries.remove( libraryName );
-  }
-    
-  /**
-   * <p>Returns the number of JavaScript libraries that were registered by
-   * calls to <code>useJSLibrary(String)</code>.</p>
-   */
-  public int getJSLibrariesCount() {
-    return jsLibraries.size();
-  }
-
 
   //////////////////
   // response writer

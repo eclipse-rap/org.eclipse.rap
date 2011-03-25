@@ -10,7 +10,6 @@
  *    EclipseSoure - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.branding;
 
 import java.io.IOException;
@@ -181,10 +180,10 @@ public class BrandingManager_Test extends TestCase {
     BrandingManager.register( branding );
     actualBranding = BrandingManager.get( defaultServletName, "defEP" );
     assertSame( branding, actualBranding );
-    
   }
   
   public void testRegisterResources() throws IOException {
+    Fixture.fakeResponseWriter();
     String servletName = URLHelper.getSerlvetName();
     TestBranding branding = new TestBranding( servletName, null, "default" );
     BrandingManager.register( branding );

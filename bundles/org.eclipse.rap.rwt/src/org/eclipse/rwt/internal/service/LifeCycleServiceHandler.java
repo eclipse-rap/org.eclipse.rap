@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -60,6 +60,15 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
   }
 
+  public static void initializeSession() {
+    if( !isSessionInitialized() ) {
+      if( getRequest().getParameter( RWT_INITIALIZE ) != null ) {
+        ISessionStore session = ContextProvider.getSession();
+        session.setAttribute( SESSION_INITIALIZED, Boolean.TRUE );
+      }
+    }
+  }
+
   private static void runLifeCycle() throws ServletException, IOException {
     checkRequest();
     initializeSession();
@@ -89,13 +98,14 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   }
 
   private static void initializeStateInfo() {
-    if( ContextProvider.getStateInfo() == null ) {
-      IServiceStateInfo stateInfo = new ServiceStateInfo();
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    if( stateInfo == null ) {
+      stateInfo = new ServiceStateInfo();
       ContextProvider.getContext().setStateInfo( stateInfo );
     }
-    if( ContextProvider.getStateInfo().getResponseWriter() == null ) {
-      HtmlResponseWriter htmlResponseWriter = new HtmlResponseWriter();
-      ContextProvider.getStateInfo().setResponseWriter( htmlResponseWriter );
+    if( stateInfo.getResponseWriter() == null ) {
+      HtmlResponseWriter responseWriter = new HtmlResponseWriter();
+      stateInfo.setResponseWriter( responseWriter );
     }
   }
 
@@ -118,15 +128,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     return Boolean.TRUE.equals( session.getAttribute( SESSION_INITIALIZED ) );
   }
 
-  public static void initializeSession() {
-    if( !isSessionInitialized() ) {
-      if(  getRequest().getParameter( RWT_INITIALIZE ) != null ) {
-        ISessionStore session = ContextProvider.getSession();
-        session.setAttribute( SESSION_INITIALIZED, Boolean.TRUE );
-      }
-    }
-  }
-
   private static void checkRequest() {
     if( isSessionRestart() ) {
       clearSessionStore();
@@ -143,7 +144,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     sessionStore.setAttribute( SessionSingletonBase.LOCK, new Object() );
   }
 
-  public static void writeOutput() throws IOException {
+  private static void writeOutput() throws IOException {
     if( !ContextProvider.getContext().isDisposed() ) {
       HtmlResponseWriter content
         = ContextProvider.getStateInfo().getResponseWriter();

@@ -398,9 +398,9 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testRender() throws IOException {
-    EntryPointManager.register( EntryPointManager.DEFAULT,
-                                TestEntryPoint.class );
+    EntryPointManager.register( EntryPointManager.DEFAULT, TestEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     lifeCycle.execute();
     assertTrue( Fixture.getAllMarkup().length() > 0 );
   }

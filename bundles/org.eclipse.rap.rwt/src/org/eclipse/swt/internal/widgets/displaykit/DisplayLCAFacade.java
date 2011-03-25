@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
@@ -28,12 +28,8 @@ public abstract class DisplayLCAFacade {
   private final static DisplayLCAFacade FACADE_IMPL
     = ( DisplayLCAFacade )FacadesInitializer.load( DisplayLCAFacade.class );
 
-  public static void writeAppScript( final String id ) throws IOException {
-    FACADE_IMPL.writeAppScriptInternal( id );
-  }
-
-  public static void writeLibraries() throws IOException {
-    FACADE_IMPL.writeLibrariesInternal();
+  public static void registerResources() {
+    FACADE_IMPL.registerResourcesInternal();
   }
 
   public static IDisplayLifeCycleAdapter getDisplayLCA() {
@@ -46,12 +42,14 @@ public abstract class DisplayLCAFacade {
     FACADE_IMPL.writeTestWidgetIdInternal( widget, id );
   }
 
-  abstract void writeAppScriptInternal( String id ) throws IOException;
-  abstract void writeLibrariesInternal() throws IOException;
+  abstract void registerResourcesInternal();
+
   abstract IDisplayLifeCycleAdapter getDisplayLCAInternal();
-  abstract void writeTestWidgetIdInternal( Widget widget, String id )
-    throws IOException;
+  
+  abstract void writeTestWidgetIdInternal( Widget widget, String id ) throws IOException;
+
   abstract void readBounds( Display display );
+  
   abstract void readFocusControl( Display display );
 
   static void doReadData( final Display display ) {

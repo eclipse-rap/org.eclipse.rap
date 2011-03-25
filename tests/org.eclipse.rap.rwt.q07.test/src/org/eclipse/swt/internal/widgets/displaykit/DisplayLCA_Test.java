@@ -154,14 +154,10 @@ public class DisplayLCA_Test extends TestCase {
     Display display = new Display();
     Object adapter = display.getAdapter( ILifeCycleAdapter.class );
     IDisplayLifeCycleAdapter lcAdapter = ( IDisplayLifeCycleAdapter )adapter;
-    // first request: render html to load JavaScript "application"
+    // first request: LCA must not render anything, the startup page is rendered by StartupPage
     lcAdapter.render( display );
     String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "<html" ) != -1 );
-    assertTrue( allMarkup.indexOf( "<body" ) != -1 );
-    String expected = "var req = org.eclipse.swt.Request.getInstance();";
-    assertTrue( allMarkup.indexOf( expected ) != -1 );
-    assertTrue( allMarkup.indexOf( "req.setUIRootId( \"w1\" )" ) != -1 );
+    assertEquals( "", allMarkup );
   }
 
   public void testRenderProcessing() throws IOException {

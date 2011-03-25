@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
@@ -21,32 +21,24 @@ import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.resources.IResource;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.TextSizeDeterminationFacadeImpl;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
 
+
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
-  private final static String PATTERN_APP_STARTUP
-    =    "var req = org.eclipse.swt.Request.getInstance();"
-       + "req.setUrl( \"{0}\" );"
-       + "req.setUIRootId( \"{1}\" );"
-       + "var app = new org.eclipse.swt.Application();"
-       + "qx.core.Init.getInstance().setApplication( app );";
   private final static String PATTERN_REQUEST_COUNTER
     =   "var req = org.eclipse.swt.Request.getInstance();"
       + "req.setRequestCounter( \"{0,number,#}\" );";
@@ -108,10 +100,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   public void render( final Display display ) throws IOException {
     HttpServletRequest request = ContextProvider.getRequest();
-    // TODO [rh] should be replaced by requestCounter == 0
-    if( request.getParameter( RequestParams.UIROOT ) == null ) {
-      writeClientDocument( display );
-    } else {
+    // Note [rst] Startup page created in LifecycleServiceHandler#runLifeCycle
+    // TODO [rh] should be replaced by requestCounter != 0
+    if( request.getParameter( RequestParams.UIROOT ) != null ) {
       HttpServletResponse response = ContextProvider.getResponse();
       response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
       disposeWidgets();
@@ -231,61 +222,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     return result;
   }
 
-  private static void writeClientDocument( final Display display )
-    throws IOException
-  {
-    HttpServletResponse response = ContextProvider.getResponse();
-    response.setContentType( HTML.CONTENT_TEXT_HTML_UTF_8 );
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter out = stateInfo.getResponseWriter();
-    out.startElement( HTML.HTML, null );
-    out.startElement( HTML.HEAD, null );
-    out.startElement( HTML.META, null );
-    out.writeAttribute( HTML.HTTP_EQUIV, HTML.CONTENT_TYPE, null );
-    out.writeAttribute( HTML.CONTENT, HTML.CONTENT_TEXT_HTML_UTF_8, null );
-    out.startElement( HTML.TITLE, null );
-    out.endElement( HTML.TITLE );
-
-    writeLibraries();
-
-    out.endElement( HTML.HEAD );
-    out.startElement( HTML.BODY, null );
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    String id = adapter.getId();
-    out.startElement( HTML.SCRIPT, null );
-    out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
-
-    writeAppScript( id );
-    writeErrorPages( display );
-    writeExitConfirmation( display );
-
-    out.endElement( HTML.SCRIPT );
-    out.endElement( HTML.BODY );
-    out.endElement( HTML.HTML );
-  }
-
-  public static void writeAppScript( final String id ) throws IOException {
-    StringBuffer initScript = new StringBuffer();
-    initScript.append( jsAppInitialization( id ) );
-    HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
-    out.writeText( initScript.toString(), null );
-  }
-
-  public static void writeLibraries() throws IOException {
+  static void registerResources() {
     QooxdooResourcesUtil.registerResources();
     ThemeManager.getInstance().registerResources();
-    writeJSLibraries();
-  }
-
-  private static void writeJSLibraries() throws IOException {
-    HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
-    IResource[] resources = ResourceRegistry.get();
-    for( int i = 0; i < resources.length; i++ ) {
-      if( resources[ i ].isExternal() && resources[ i ].isJSLibrary() ) {
-        writeScriptTag( out, resources[ i ].getLocation() );
-      }
-    }
-    writeScriptTag( out, JSLibraryServiceHandler.getRequestURL() );
   }
 
   public void readData( final Display display ) {
@@ -323,21 +262,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   /////////////////////////////
   // Helping methods for render
 
-  private static String jsAppInitialization( final String displayId ) {
-    StringBuffer code = new StringBuffer();
-    // font size measurment
-    code.append( TextSizeDeterminationFacadeImpl.getStartupProbeCode() );
-    // application
-    HttpServletRequest request = ContextProvider.getRequest();
-    String url = request.getServletPath().substring( 1 );
-    Object[] param = new Object[] {
-      ContextProvider.getResponse().encodeURL( url ),
-      displayId
-    };
-    code.append( MessageFormat.format( PATTERN_APP_STARTUP, param ) );
-    return code.toString();
-  }
-
   private static void disposeWidgets() throws IOException {
     Widget[] disposedWidgets = DisposedWidgets.getAll();
     // TODO [rh] get rid of dependency on DragSource/DropTarget
@@ -364,17 +288,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         lca.renderDispose( toDispose );
       }
     }
-  }
-
-  private static void writeScriptTag( final HtmlResponseWriter out,
-                                      final String library )
-    throws IOException
-  {
-    out.startElement( HTML.SCRIPT, null );
-    out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
-    out.writeAttribute( HTML.SRC, library, null );
-    out.writeAttribute( HTML.CHARSET, HTML.CHARSET_NAME_UTF_8, null );
-    out.endElement( HTML.SCRIPT );
   }
 
   private static void writeFocus( final Display display ) throws IOException {

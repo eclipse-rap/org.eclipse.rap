@@ -24,14 +24,17 @@ import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.engine.RWTContext;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
+
 
 public final class RWTStartupPageConfigurer
   implements StartupPage.IStartupPageConfigurer
@@ -56,7 +59,8 @@ public final class RWTStartupPageConfigurer
   public StartupPageTemplateHolder getTemplate() throws IOException {
     readContent();
     template.reset();
-    template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getLibraries() );
+    DisplayLCAFacade.registerResources();
+    template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getJsLibraries() );
     template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, getAppScript() );
     applyBranding();
     return template;
@@ -143,57 +147,27 @@ public final class RWTStartupPageConfigurer
 
   /////////////////////////////////////////
   // Helping methods to adjust startup page
-  
-  private String getAppScript() throws IOException {
-    fakeWriter();
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter writer = stateInfo.getResponseWriter();
-    writer.startElement( HTML.SCRIPT, null );
-    writer.writeText( "safd", null );
-    writer.clearBody();
-    try {
-      // TODO: [fappel] this works only as long as only one display per
-      //                session is supported...
-      DisplayLCAFacade.writeAppScript( "w1" );
-      return getContent( writer );
-    } finally {
-      restoreWriter();
-    }
-  }
-  
-  private void fakeWriter() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter original = stateInfo.getResponseWriter();
-    String key = RWTStartupPageConfigurer.class.getName();
-    stateInfo.setAttribute( key, original );
-    HtmlResponseWriter fake = new HtmlResponseWriter();
-    stateInfo.setResponseWriter( fake );
-  }
-  
-  private void restoreWriter() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    String key = RWTStartupPageConfigurer.class.getName();
-    HtmlResponseWriter writer
-      = ( HtmlResponseWriter )stateInfo.getAttribute( key );
-    stateInfo.setResponseWriter( writer );
+
+  public static String getAppScript() {
+    StringBuffer code = new StringBuffer();
+    code.append( getTextSizeProbeCode() );
+    code.append( getApplicationJsCode( "w1" ) );
+    return code.toString();
   }
 
-  private String getLibraries() throws IOException {
-    fakeWriter();
-    try {
-      DisplayLCAFacade.writeLibraries();
-      return getContent( ContextProvider.getStateInfo().getResponseWriter() );
-    } finally {
-      restoreWriter();
-    }
+  private static String getTextSizeProbeCode() {
+    return TextSizeDetermination.getStartupProbeCode();
   }
 
-  private String getContent( final HtmlResponseWriter writer ) {
-    StringBuffer msg = new StringBuffer();
-    for( int i = 0; i < writer.getBodySize(); i ++ ) {
-      msg.append( writer.getBodyToken( i ) );
-    }
-    return msg.toString();
+  private static String getApplicationJsCode( String id ) {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String url = request.getServletPath().substring( 1 );
+    String encodedURL = ContextProvider.getResponse().encodeURL( url );
+    return "var req = org.eclipse.swt.Request.getInstance();"
+       + "req.setUrl( \"" + encodedURL + "\" );"
+       + "req.setUIRootId( \"" + id + "\" );"
+       + "var app = new org.eclipse.swt.Application();"
+       + "qx.core.Init.getInstance().setApplication( app );";
   }
 
   //////////////////////////
@@ -245,13 +219,33 @@ public final class RWTStartupPageConfigurer
       }
     }
   }
-  
+
   public static RWTStartupPageConfigurer getInstance() {
     Class singletonType = RWTStartupPageConfigurer.class;
     Object singleton = RWTContext.getSingleton( singletonType );
     return ( RWTStartupPageConfigurer )singleton;
   }
-  
+
+  private static String getJsLibraries() throws IOException {
+    StringBuffer buffer = new StringBuffer();
+    IResource[] resources = ResourceRegistry.get();
+    for( int i = 0; i < resources.length; i++ ) {
+      if( resources[ i ].isExternal() && resources[ i ].isJSLibrary() ) {
+        writeScriptTag( buffer, resources[ i ].getLocation() );
+      }
+    }
+    writeScriptTag( buffer, JSLibraryServiceHandler.getRequestURL() );
+    return buffer.toString();
+  }
+
+  private static void writeScriptTag( StringBuffer buffer, String library ) {
+    buffer.append( "<script type=\"text/javascript\" src=\"" );
+    buffer.append( library );
+    buffer.append( "\" charset=\"" );
+    buffer.append( HTML.CHARSET_NAME_UTF_8 );
+    buffer.append( "\"></script>" );
+  }
+
   private RWTStartupPageConfigurer() {
     // prevent instance creation
   }
