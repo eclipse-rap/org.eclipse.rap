@@ -127,6 +127,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       table.destroy();
     },
 
+    testMoveableColumnMenuDetect : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.initRequestLog();      
+      var table = this._createDefaultTable();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      widgetManager.add( table, "w3", true );
+      var column = new org.eclipse.swt.widgets.TableColumn( table );
+      column.setWidth( 150 );
+      column.setMoveable( true );
+      table.addEventListener( "mouseup", org.eclipse.swt.EventUtil.menuDetectedByMouse );
+      testUtil.flush();
+      testUtil.rightClick( column );
+      assertEquals( 1, testUtil.getRequestsSend() );
+      var msg = testUtil.getMessage();
+      column.destroy();
+      table.destroy();
+    },
+
     testRequestCellToolTipText : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var table = this._createDefaultTable();
@@ -161,7 +179,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       }
       return result;
     }
-    
 
   }
   

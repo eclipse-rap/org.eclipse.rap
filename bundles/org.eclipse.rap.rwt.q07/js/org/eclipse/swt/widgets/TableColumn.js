@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -144,7 +144,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     // Mouse listeners for resize
     
     _onMouseDown : function( evt ) {
-      if( !this._inMove && !this._inResize ) {
+      if( !this._inMove && !this._inResize && evt.getButton() === "left" ) {
         var widgetUtil = org.eclipse.swt.WidgetUtil;
         if( this._isResizeLocation( evt.getPageX() ) ) {
           this._inResize = true;
