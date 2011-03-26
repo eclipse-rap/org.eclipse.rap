@@ -38,7 +38,7 @@ public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
       public void render( final Display display ) throws IOException {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         HtmlResponseWriter out = stateInfo.getResponseWriter();
-        out.writeText( "Render Fake", null );
+        out.write( "Render Fake" );
       }
     };
   }

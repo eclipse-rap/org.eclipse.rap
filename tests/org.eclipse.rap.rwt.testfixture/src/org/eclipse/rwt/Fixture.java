@@ -281,15 +281,7 @@ public class Fixture {
   public static String getAllMarkup() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter writer = stateInfo.getResponseWriter();
-    return getAllMarkup( writer );
-  }
-  
-  public static String getAllMarkup( final HtmlResponseWriter writer ) {
-    StringBuffer buffer = new StringBuffer();
-    for( int i = 0; i < writer.getBodySize(); i++ ) {
-      buffer.append( writer.getBodyToken( i ) );
-    }
-    return buffer.toString();
+    return writer.getContents();
   }
   
   public static void fakeNewRequest() {

@@ -69,7 +69,6 @@ public class RWTHostTestSuite {
     suite.addTestSuite( NLS_Test.class );
     suite.addTestSuite( AdapterManager_Test.class );
     suite.addTestSuite( HtmlResponseWriter_Test.class );
-    suite.addTestSuite( HtmlResponseWriterUtil_Test.class );
     suite.addTestSuite( SessionSingleton_Test.class );
     suite.addTestSuite( LifeCycleFactory_Test.class );
     suite.addTestSuite( PhaseId_Test.class );
