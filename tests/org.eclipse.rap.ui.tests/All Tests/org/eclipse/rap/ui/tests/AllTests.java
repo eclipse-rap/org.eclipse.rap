@@ -18,6 +18,8 @@ public class AllTests {
 
     public static Test suite() {
       TestSuite suite = new TestSuite( "Test for org.eclipse.rap.ui" );      
+      // Cleanup
+      suite.addTestSuite( Cleanup.class );
       // Eclipse UI Tests
       suite.addTest( new org.eclipse.ui.tests.UiTestSuite() );
       // Eclipse JFace Tests

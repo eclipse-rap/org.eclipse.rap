@@ -11,22 +11,45 @@
 
 package org.eclipse.rap.ui.tests;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.ui.tests.impl.ServiceHandler1;
 import org.eclipse.rap.ui.tests.impl.ServiceHandler2;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.service.IServiceHandler;
 
 public class ServiceHandlerExtensionTest extends TestCase {
   
-  public void testServieHandlerRegistration() {
-    IServiceHandler handler = ServiceManager.getCustomHandler( "myHandler1" );
-    assertNotNull( handler );
-    assertTrue( handler instanceof ServiceHandler1 );
-    handler = ServiceManager.getCustomHandler( "myHandler2" );
-    assertNotNull( handler );
-    assertTrue( handler instanceof ServiceHandler2 );
+  public static String log = "";
+  
+  public void testServiceHandler1Registration() throws IOException, ServletException {
+    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, "myHandler1" );
+    
+    ServiceManager.getHandler().service();
+
+    assertEquals( log, ServiceHandler1.class.getName() );
+  }
+
+  public void testServiceHandler2Registration() throws IOException, ServletException {
+    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, "myHandler2" );
+    
+    ServiceManager.getHandler().service();
+
+    assertEquals( log, ServiceHandler2.class.getName() );
+  }
+
+  protected void setUp() {
+    Fixture.fakeNewRequest();
+    log = "";
   }
   
+  protected void tearDown() {
+    Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, null );
+    log = "";
+  }
 }
