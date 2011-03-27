@@ -6,11 +6,12 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.browser.Browser", {
+
   extend : qx.ui.embed.Iframe,
 
   construct : function() {
@@ -178,10 +179,10 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     
     _parseEvalResult : function( value ) {
       var result = null;
-      var win; 
-      if( qx.core.Variant.isSet( "qx.client", "gecko" ) 
-          && org.eclipse.rwt.Client.getVersion() < 2 
-      ) {
+      var win;
+      if(    qx.core.Variant.isSet( "qx.client", "gecko" )
+          && org.eclipse.rwt.Client.getVersion() < 2 )
+      {
         // in older gecko the prototypes from the parent-frame are used
         win = window;
       } else {
