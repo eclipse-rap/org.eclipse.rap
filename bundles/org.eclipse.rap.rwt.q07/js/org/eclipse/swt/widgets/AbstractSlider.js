@@ -26,8 +26,9 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     // state:
     this._pxStep = 1.38; // ratio of virtual units to real (pixel) length
     this._thumbDragOffset = 0; 
-    this._autoRepeat = null; // string indicating to auto-repeat an action  
+    this._autoRepeat = ""; // string indicating to auto-repeat an action  
     this._mouseOffset = 0; // horizontal or vertical offset to slider start    
+    this._delayTimer = new qx.client.Timer( 250 ); // delay auto-repeated actions
     this._repeatTimer = new qx.client.Timer( 100 ); // for auto-repeated actions
     // subwidgets:
     this._thumb = new org.eclipse.rwt.widgets.BasicButton( "push" );
@@ -43,10 +44,11 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
   },
 
   destruct : function() {
-    if( this._repeatTimer != null ) {
-      this._repeatTimer.stop();
-      this._repeatTimer.dispose();
-    }
+    this._delayTimer.stop();
+    this._delayTimer.dispose();
+    this._delayTimer = null;
+    this._repeatTimer.stop();
+    this._repeatTimer.dispose();
     this._repeatTimer = null;
     this._thumb = null;
     this._minButton = null;
@@ -93,33 +95,31 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     // Eventhandlers
 
     _registerListeners : function() {
-      this._repeatTimer.addEventListener( "interval",
-                                          this._onRepeatTimerInterval, 
-                                          this );
+      this._repeatTimer.addEventListener( "interval", this._onRepeatTimerInterval, this );
+      this._delayTimer.addEventListener( "interval", this._repeatTimerStart, this );
       this.addEventListener( "changeWidth", this._onChangeSize, this );
       this.addEventListener( "changeHeight", this._onChangeSize, this );
       this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
-      this.addEventListener( "mousedown", this._onLineMouseDown, this );
-      this.addEventListener( "mouseup", this._onMouseUpOut, this );
-      this.addEventListener( "mouseout",  this._onMouseUpOut, this );
-      this.addEventListener( "mousemove", this._onLineMouseMove, this );
+      this.addEventListener( "mousedown", this._onMouseDown, this );
+      this.addEventListener( "mouseup", this._onMouseUp, this );
+      this.addEventListener( "mouseout",  this._onMouseOut, this );
+      this.addEventListener( "mouseover",  this._onMouseOver, this );
+      this.addEventListener( "mousemove", this._onMouseMove, this );
       this.addEventListener( "mousewheel", this._onMouseWheel, this );
       this._thumb.addEventListener( "mousedown", this._onThumbMouseDown, this );
       this._thumb.addEventListener( "mousemove", this._onThumbMouseMove, this );
       this._thumb.addEventListener( "mouseup", this._onThumbMouseUp, this );
-      this._minButton.addEventListener( "mousedown", 
-                                        this._onMinButtonMouseDown,
-                                        this );
-      this._maxButton.addEventListener( "mousedown", 
-                                        this._onMaxButtonMouseDown,
-                                        this );
+      this._minButton.addEventListener( "mousedown", this._onMinButtonMouseEvent, this );
+      this._maxButton.addEventListener( "mousedown", this._onMaxButtonMouseEvent, this );
+      this._minButton.addEventListener( "stateOverChanged", this._onMinButtonMouseEvent, this );
+      this._maxButton.addEventListener( "stateOverChanged", this._onMaxButtonMouseEvent, this );
 
     },
     
     _selectionChanged : function() {
       this._updateThumbPosition();
-      if( this._autoRepeat !== null && !this._repeatTimer.isEnabled() ) {
-        qx.client.Timer.once( this._repeatTimerStart, this, 250 );
+      if( this._autoRepeat !== "" && !this._repeatTimer.isEnabled() ) {
+        this._delayTimer.start();
       }
     },
     
@@ -132,50 +132,74 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     },
     
     _onMouseWheel : function( event ) {
-      event.preventDefault();
-      event.stopPropagation();
-      var data = event.getWheelDelta();
-      var change = ( data / Math.abs( data ) ) * this._increment;
-      var sel = this._selection - change;
-      if( sel < this._minimum ) {
-        sel = this._minimum;
-      } 
-      if( sel > ( this._maximum - this._thumbWidth ) ) {
-        sel = this._maximum - this._thumbWidth;
-      } 
-      this._setSelection( sel );
+      if ( event.getTarget() === this ) {
+        event.preventDefault();
+        event.stopPropagation();
+        var data = event.getWheelDelta();
+        var change = ( data / Math.abs( data ) ) * this._increment;
+        var sel = this._selection - change;
+        if( sel < this._minimum ) {
+          sel = this._minimum;
+        } 
+        if( sel > ( this._maximum - this._thumbWidth ) ) {
+          sel = this._maximum - this._thumbWidth;
+        } 
+        this._setSelection( sel );
+      }
     },
 
-    _onLineMouseDown : function( event ) {
+    _onMouseDown : function( event ) {
       if( event.isLeftButtonPressed() ) {
         this._mouseOffset = this._getMouseOffset( event );
         this._handleLineMouseDown();
       }
     },
 
-    _onLineMouseMove : function( event ) {
+    _onMouseUp : function( event ) {
+      this.setCapture( false );
+      this._autoRepeat = "";
+      this._delayTimer.stop();
+      this._repeatTimer.stop();
+    },
+
+    _onMouseOver : function( event ) {
+      var target = event.getOriginalTarget();
+      if ( target === this && this._autoRepeat.slice( 0, 4 ) === "line" ) {
+        this.setCapture( false );
+        this._repeatTimerStart();
+      }
+    },
+
+    _onMouseOut : function( event ) {
+      if( this._autoRepeat.slice( 0, 4 ) === "line" ) {
+        this.setCapture( true );
+        this._delayTimer.stop();
+        this._repeatTimer.stop();
+      }
+    },
+
+    _onMouseMove : function( event ) {
       this._mouseOffset = this._getMouseOffset( event );
     },
 
-    _onMinButtonMouseDown : function( event ) {
+    _onMinButtonMouseEvent : function( event ) {
       event.stopPropagation();
-      if( event.isLeftButtonPressed() ) {
+      if( this._minButton.hasState( "pressed" ) ) {
         this._autoRepeat = "minButton";
         this._setSelection( this._selection - this._increment );
+      } else {
+        this._autoRepeat = "";
       }
     },
 
-    _onMaxButtonMouseDown : function( event ) {
+    _onMaxButtonMouseEvent : function( event ) {
       event.stopPropagation();
-      if( event.isLeftButtonPressed() ) {
+      if( this._maxButton.hasState( "pressed" ) ) {
         this._autoRepeat = "maxButton";
         this._setSelection( this._selection + this._increment );
+      } else {
+        this._autoRepeat = "";
       }
-    },
-
-    _onMouseUpOut : function( event ) {
-      this._autoRepeat = null;
-      this._repeatTimer.stop();
     },
 
     _onThumbMouseDown : function( event ) {
@@ -257,7 +281,8 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     },
 
     _repeatTimerStart : function() {
-      if( this._autoRepeat != null ) {
+      this._delayTimer.stop();
+      if( this._autoRepeat !== "" ) {
         this._repeatTimer.start();
       }
     },
@@ -270,31 +295,30 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
         case "maxButton":
           this._setSelection( this._selection + this._increment );
         break;
-        case "line":
+        case "linePlus":
+        case "lineMinus":
           this._handleLineMouseDown();
-          if( this._autoRepeat === null ) {
-            this._repeatTimer.stop();
-          }
         break;
       }
     },
 
     _handleLineMouseDown : function() {
+      var mode;
       var thumbHalf = this._getThumbSize() / 2;
       var pxSel = this._getThumbPosition() + thumbHalf;
       var newSelection;
       if( this._mouseOffset > pxSel ) {
         newSelection = this._selection + this._pageIncrement;
+        mode = "linePlus";
       } else {
+        mode = "lineMinus";
         newSelection = this._selection - this._pageIncrement;
       }
-      var thumbMove = this._pageIncrement * this._pxStep + thumbHalf;
-      if( Math.abs( this._mouseOffset - pxSel ) > thumbMove ) {
-        this._autoRepeat = "line";
-      } else {
-        this._autoRepeat = null;
+      if( this._autoRepeat === "" || this._autoRepeat === mode ) {
+        this._autoRepeat = mode;
+        var thumbMove = this._pageIncrement * this._pxStep + thumbHalf;
+        this._setSelection( newSelection );
       }
-      this._setSelection( newSelection );
     },
 
     _updateThumbPosition : function() {
