@@ -189,7 +189,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
         req.send();
       }
     },
-    
+
     _onMouseOver : function( event ) {
       // [tb] Firefox can sometimes fire false "over" events.
       if ( event.getTarget() == this && !this.hasState( "over" ) ) {
