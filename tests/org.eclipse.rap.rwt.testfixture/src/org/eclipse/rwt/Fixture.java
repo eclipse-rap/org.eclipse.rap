@@ -281,9 +281,11 @@ public class Fixture {
   public static String getAllMarkup() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter writer = stateInfo.getResponseWriter();
-    return writer.getContents();
+    StringWriter recorder = new StringWriter();
+    writer.printContents( new PrintWriter( recorder ) );
+    return recorder.getBuffer().toString();
   }
-  
+
   public static void fakeNewRequest() {
     HttpSession session = ContextProvider.getRequest().getSession();
     TestRequest request = new TestRequest();

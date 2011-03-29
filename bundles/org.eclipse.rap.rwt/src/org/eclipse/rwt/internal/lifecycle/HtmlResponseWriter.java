@@ -12,9 +12,10 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.rwt.internal.util.*;
+import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 public class HtmlResponseWriter extends Writer {
@@ -25,31 +26,13 @@ public class HtmlResponseWriter extends Writer {
 
   private List jsLibraries = new ArrayList();
 
-  public void append( String token ) {
-    body.add( token );
-  }
-
-  public int getBodySize() {
-    return body.size();
-  }
-
-  public String getBodyToken( int index ) {
-    return body.get( index ).toString();
-  }
-
-  public String getContents() {
-    StringBuffer buffer = new StringBuffer();
-    for( int i = 0; i < getBodySize(); i++ ) {
-      buffer.append( getBodyToken( i ) );
-    }
-    return buffer.toString();
-  }
-
   ///////////////////////////////////////////////////
   // control methods for javascript library rendering
 
-  /** <p>Returns the names of the JavaScript libraries that the components
-    * which were rendered into this HtmlResponseWriter need.</p> */
+  /**
+   * Returns the names of the JavaScript libraries that the components which were rendered into this
+   * HtmlResponseWriter need.
+   */
   public String[] getJSLibraries() {
     String[] result = new String[ jsLibraries.size() ];
     jsLibraries.toArray( result );
@@ -57,19 +40,20 @@ public class HtmlResponseWriter extends Writer {
   }
 
   /**
-   * <p>Informs the HtmlResponseWriter that the given library is needed. This
-   * will cause a &lt;script&gt;-tag referencing the library to be rendered at
-   * the adequate place.</p>
-   * <p>Prior to calling this methid, the given <code>libraryName</code> must
-   * be registered with the {@link org.eclipse.rwt.resources.IResourceManager
-   * IResourceManager} using one of these two register-methods:
-   * {@link org.eclipse.rwt.resources.IResourceManager#register(String, String)
+   * Informs the HtmlResponseWriter that the given library is needed. This will cause a
+   * &lt;script&gt;-tag referencing the library to be rendered at the adequate place.
+   * <p>
+   * Prior to calling this method, the given <code>libraryName</code> must be registered with the
+   * {@link org.eclipse.rwt.resources.IResourceManager IResourceManager} using one of these two
+   * register-methods: {@link org.eclipse.rwt.resources.IResourceManager#register(String, String)
    * register(String, String)},
-   * {@link org.eclipse.rwt.resources.IResourceManager#register(String, String,
-   * org.eclipse.rwt.resources.IResourceManager.RegisterOptions)
-   * register(String, String, RegisterOptions)}</p>
-   * <p>Calling this method for an already registered <code>libraryName</code>
-   * has no effect.</p>
+   * {@link org.eclipse.rwt.resources.IResourceManager#register(String, String, org.eclipse.rwt.resources.IResourceManager.RegisterOptions)
+   * register(String, String, RegisterOptions)}
+   * </p>
+   * <p>
+   * Calling this method for an already registered <code>libraryName</code> has no effect.
+   * </p>
+   * 
    * @param libraryName the name of the library, must not be <code>null</code>.
    */
   public void useJSLibrary( String libraryName ) {
@@ -82,24 +66,13 @@ public class HtmlResponseWriter extends Writer {
   //////////////////
   // response writer
 
-  public void close() throws IOException {
-    checkIfWriterClosed();
-    closed = true;
-  }
-
-  public void flush() throws IOException {
-    checkIfWriterClosed();
-  }
-
   public void write( char[] cbuf, int off, int len ) throws IOException {
     checkIfWriterClosed();
-    // TODO [rh] replace with doWrite(String) ?
     append( String.valueOf( cbuf, off, len ) );
   }
 
   public void write( int c ) throws IOException {
     checkIfWriterClosed();
-    // TODO [rh] replace with doWrite(String) ?
     append( new String( new char[] { ( char )c } ) );
   }
 
@@ -110,12 +83,33 @@ public class HtmlResponseWriter extends Writer {
 
   public void write( String str, int off, int len ) throws IOException {
     checkIfWriterClosed();
-    // TODO [rh] replace with doWrite(String) ?
     append( str.substring( off, off + len ) );
+  }
+
+  public void flush() throws IOException {
+    checkIfWriterClosed();
+  }
+
+  public void close() throws IOException {
+    checkIfWriterClosed();
+    closed = true;
+  }
+
+  ///////////////////
+  // content delivery
+
+  public void printContents( PrintWriter writer ) {
+    for( int i = 0; i < body.size(); i++ ) {
+      writer.print( body.get( i ).toString() );
+    }
   }
 
   // helping methods
   //////////////////
+
+  private void append( String token ) {
+    body.add( token );
+  }
 
   private void checkIfWriterClosed() {
     if( closed ) {

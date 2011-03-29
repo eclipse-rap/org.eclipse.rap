@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.IOException;
+import java.io.*;
 
 import junit.framework.TestCase;
 
@@ -32,25 +32,23 @@ public class HtmlResponseWriter_Test extends TestCase {
   //////////////////////
   // actual testing code
 
-  public void testTokenAppending() throws Exception {
-    HtmlResponseWriter tokenBuffer = new HtmlResponseWriter();
-    tokenBuffer.append( "|Token 1" );
-    tokenBuffer.append( "|Token 2" );
-    tokenBuffer.write( new char[] { '|', 'a', 'b' } );
-    tokenBuffer.write( new char[] { 'a', 'b', '|', 'c', 'd' }, 2, 3 );
-    tokenBuffer.write( 124 );
-    tokenBuffer.write( "Token 3" );
-    tokenBuffer.write( "my|Token 4|trallala", 2, 8 );
-    String result = tokenBuffer.getContents();
-    assertEquals( "|Token 1|Token 2|ab|cd|Token 3|Token 4", result );
+  public void testWriteMethods() throws Exception {
+    HtmlResponseWriter writer = new HtmlResponseWriter();
+    writer.write( new char[] { 'a', 'b' } );
+    writer.write( new char[] { 'a', 'b', '|', 'c', 'd' }, 2, 3 );
+    writer.write( 124 );
+    writer.write( "Token 3" );
+    writer.write( "my|Token 4|trallala", 2, 8 );
+    String result = getContents( writer );
+    assertEquals( "ab|cd|Token 3|Token 4", result );
   }
 
   public void testFlush() throws IOException {
     HtmlResponseWriter writer = new HtmlResponseWriter();
     writer.write( "foo" );
-    assertEquals( "foo", writer.getContents() );
+    assertEquals( "foo", getContents( writer ) );
     writer.flush();
-    assertEquals( "foo", writer.getContents() );
+    assertEquals( "foo", getContents( writer ) );
   }
 
   public void testClosedAssertions() throws IOException {
@@ -118,10 +116,19 @@ public class HtmlResponseWriter_Test extends TestCase {
     }
   }
 
-  public void testGetResults() throws IOException {
+  public void testPrintContents() throws IOException {
     HtmlResponseWriter writer = new HtmlResponseWriter();
-    assertEquals( "", writer.getContents() );
+    StringWriter stringWriter = new StringWriter();
+    writer.printContents( new PrintWriter( stringWriter ) );
+    assertEquals( "", stringWriter.getBuffer().toString() );
     writer.write( "Test" );
-    assertEquals( "Test", writer.getContents() );
+    writer.printContents( new PrintWriter( stringWriter ) );
+    assertEquals( "Test", stringWriter.getBuffer().toString() );
+  }
+
+  private static String getContents( HtmlResponseWriter writer ) {
+    StringWriter recorder = new StringWriter();
+    writer.printContents( new PrintWriter( recorder ) );
+    return recorder.getBuffer().toString();
   }
 }

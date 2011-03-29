@@ -146,16 +146,12 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
   private static void writeOutput() throws IOException {
     if( !ContextProvider.getContext().isDisposed() ) {
-      HtmlResponseWriter content
-        = ContextProvider.getStateInfo().getResponseWriter();
-      PrintWriter out = getOutputWriter();
+      HtmlResponseWriter responseWriter = ContextProvider.getStateInfo().getResponseWriter();
+      PrintWriter outputWriter = getOutputWriter();
       try {
-        // send the body to the client
-        for( int i = 0; i < content.getBodySize(); i++ ) {
-          out.print( content.getBodyToken( i ) );
-        }
+        responseWriter.printContents( outputWriter );
       } finally {
-        out.close();
+        outputWriter.close();
       }
     }
   }
