@@ -74,7 +74,7 @@ public final class ResourceUtil {
         for( int i = 0; i < content.length; i++ ) {
           out.write( content[ i ] );
           if(    jsConcatenationBuffer != null
-              && toWrite.getName().endsWith( "js" ) )
+              && toWrite.getName().endsWith( ".js" ) )
           {
             jsConcatenationBuffer.write( content[ i ] );
             if( i == content.length - 1 ) {

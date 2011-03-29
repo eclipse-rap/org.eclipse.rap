@@ -18,6 +18,7 @@ import java.util.*;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
+import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -96,7 +97,8 @@ public class WrappedRequest_Test extends TestCase {
   
   public void testStartupRequestWithParameter() throws Exception {
     System.setProperty( "lifecycle", RWTLifeCycle.class.getName() );
-    StartupPage.setConfigurer( new StartupPage.IStartupPageConfigurer() {
+    StartupPage startupPage = ( StartupPage )RWTContext.getSingleton( StartupPage.class );
+    startupPage.setConfigurer( new StartupPage.IStartupPageConfigurer() {
       public StartupPageTemplateHolder getTemplate() throws IOException {
         return new StartupPageTemplateHolder( "Startup Page" );
       }

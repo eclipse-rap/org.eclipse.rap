@@ -27,8 +27,7 @@ import org.eclipse.rwt.internal.util.*;
 
 
 /**
- * <p>A helping class that loads a special html page in order to
- * bootstrap the client-side session.</p>
+ * A helping class that delivers the initial HTML page in order to bootstrap the client side.
  */
 public final class StartupPage {
   private IStartupPageConfigurer configurer;
@@ -38,20 +37,16 @@ public final class StartupPage {
     boolean isModifiedSince();
   }
 
+  static void send() throws IOException {
+    getInstance().doSend();
+  }
+
   private static StartupPage getInstance() {
     return ( StartupPage )RWTContext.getSingleton( StartupPage.class );
   }
 
-  public static void setConfigurer( final IStartupPageConfigurer configurer ) {
-    getInstance().configurer = configurer;
-  }
-
-  public static IStartupPageConfigurer getConfigurer() {
-    return getInstance().configurer;
-  }
-
-  static void send() throws IOException {
-    getInstance().doSend();
+  void setConfigurer( IStartupPageConfigurer configurer ) {
+    this.configurer = configurer;
   }
 
   private void doSend() throws IOException {
@@ -69,7 +64,28 @@ public final class StartupPage {
 
   private void ensureConfigurer() {
     if( configurer == null ) {
-      configurer = RWTStartupPageConfigurer.getInstance();
+      Class instanceType = RWTStartupPageConfigurer.class;
+      configurer = ( IStartupPageConfigurer )RWTContext.getSingleton( instanceType );
+    }
+  }
+
+  private void render() throws IOException {
+    ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
+    StartupPageTemplateHolder template = configurer.getTemplate();
+    template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE,
+                      getBgImage() );
+    // TODO [fappel]: check whether servletName has to be url encoded
+    //                in case the client has switched of cookies
+    template.replace( StartupPageTemplateHolder.VAR_SERVLET,
+                      URLHelper.getServletName() );
+    template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
+                      EncodingUtil.encodeHTMLEntities( getEntryPoint() ) );
+    String[] tokens = template.getTokens();
+    Writer responseWriter = getResponseWriter();
+    for( int i = 0; i < tokens.length; i++ ) {
+      if( tokens[ i ] != null ) {
+        responseWriter.write( tokens[ i ] );
+      }
     }
   }
 
@@ -87,25 +103,6 @@ public final class StartupPage {
       }
     }
     return result;
-  }
-
-  private void render() throws IOException {
-    ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
-    StartupPageTemplateHolder template = configurer.getTemplate();
-    template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE,
-                      getBgImage() );
-    // TODO [fappel]: check whether servletName has to be url encoded
-    //                in case the client has switched of cookies
-    template.replace( StartupPageTemplateHolder.VAR_SERVLET,
-                      URLHelper.getServletName() );
-    template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
-                      EncodingUtil.encodeHTMLEntities( getEntryPoint() ) );
-    String[] tokens = template.getTokens();
-    for( int i = 0; i < tokens.length; i++ ) {
-      if( tokens[ i ] != null ) {
-        getResponseWriter().write( tokens[ i ] );
-      }
-    }
   }
 
   private String getEntryPoint() {

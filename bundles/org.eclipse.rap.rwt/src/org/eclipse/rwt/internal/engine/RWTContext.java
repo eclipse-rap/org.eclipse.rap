@@ -41,7 +41,7 @@ public class RWTContext {
     return RWTContextUtil.getInstance().getInstance( instanceType );
   }
 
-  public Object getInstance( Class instanceType ) {
+  Object getInstance( Class instanceType ) {
     ParamCheck.notNull( instanceType, "instanceType" );
     Object result = findInstance( instanceType );
     // do param check here to avoid duplicate map access
