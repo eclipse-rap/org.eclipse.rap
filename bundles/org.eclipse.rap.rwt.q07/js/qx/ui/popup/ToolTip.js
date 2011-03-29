@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -213,7 +213,6 @@ qx.Class.define("qx.ui.popup.ToolTip",
     _beforeDisappear : function()
     {
       this.base(arguments);
-
       this._stopHideTimer();
     },
 
@@ -409,7 +408,6 @@ qx.Class.define("qx.ui.popup.ToolTip",
     {
       this.setLeft(qx.event.type.MouseEvent.getPageX() + this.getMousePointerOffsetX());
       this.setTop(qx.event.type.MouseEvent.getPageY() + this.getMousePointerOffsetY());
-
       this.show();
     },
 

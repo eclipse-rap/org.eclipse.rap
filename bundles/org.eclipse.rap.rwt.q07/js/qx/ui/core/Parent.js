@@ -272,13 +272,10 @@ qx.Class.define("qx.ui.core.Parent",
 
         old.dispatchEvent(vEventObject);
 
-        if (qx.Class.isDefined("qx.ui.popup.ToolTipManager"))
-        {
-          var vMgr = qx.ui.popup.ToolTipManager.getInstance();
+        var vMgr = qx.ui.popup.ToolTipManager.getInstance();
 
-          if (vMgr) {
-            vMgr.handleBlur(vEventObject);
-          }
+        if (vMgr) {
+          vMgr.handleBlur(vEventObject);
         }
 
         vEventObject.dispose();
@@ -299,13 +296,10 @@ qx.Class.define("qx.ui.core.Parent",
 
         value.dispatchEvent(vEventObject);
 
-        if (qx.Class.isDefined("qx.ui.popup.ToolTipManager"))
-        {
-          var vMgr = qx.ui.popup.ToolTipManager.getInstance();
+        var vMgr = qx.ui.popup.ToolTipManager.getInstance();
 
-          if (vMgr) {
-            vMgr.handleFocus(vEventObject);
-          }
+        if (vMgr) {
+          vMgr.handleFocus(vEventObject);
         }
 
         vEventObject.dispose();

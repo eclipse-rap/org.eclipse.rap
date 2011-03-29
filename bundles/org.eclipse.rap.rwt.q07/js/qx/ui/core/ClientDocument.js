@@ -550,18 +550,10 @@ qx.Class.define("qx.ui.core.ClientDocument",
      * @param e {Event} TODOC
      * @return {void}
      */
-    _onwindowresize : function(e)
-    {
-      // Hide popups, tooltips, ...
-      if (qx.Class.isDefined("qx.ui.popup.PopupManager")) {
-        qx.ui.popup.PopupManager.getInstance().update();
-      }
-
-      // Update children
+    _onwindowresize : function(e) {
+      qx.ui.popup.PopupManager.getInstance().update();
       this._recomputeInnerWidth();
       this._recomputeInnerHeight();
-
-      // Flush queues
       qx.ui.core.Widget.flushGlobalQueues();
     },
 

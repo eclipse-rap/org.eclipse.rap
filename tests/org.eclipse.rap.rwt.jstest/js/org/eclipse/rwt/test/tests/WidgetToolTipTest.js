@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -33,22 +33,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       this.wm.setToolTip( this.widget2, "test2" );            
       var widget = this.widget1;
       var event = {
-        getTarget : function() { return widget; }
+        getTarget : function() { return widget; },
+        getType : function() { return "mouseover" }
       };            
-      this.manager.handleMouseOver( event );
+      this.manager.handleMouseEvent( event );
       assertEquals( "test1", this.toolTip._atom.getLabel() );
       var widget = this.widget2;
       var event = {
-        getTarget : function() { return widget; }
+        getTarget : function() { return widget; },
+        getType : function() { return "mouseover" }
       };            
-      this.manager.handleMouseOver( event );
+      this.manager.handleMouseEvent( event );
       assertEquals( "test2", this.toolTip._atom.getLabel() );
       this.wm.setToolTip( this.widget1, "test3" );
       var widget = this.widget1;
       var event = {
-        getTarget : function() { return widget; }
+        getTarget : function() { return widget; },
+        getType : function() { return "mouseover" }
       };            
-      this.manager.handleMouseOver( event );
+      this.manager.handleMouseEvent( event );
       assertEquals( "test3", this.toolTip._atom.getLabel() );
       this.widget1.setParent( null );
       this.widget2.setParent( null );
@@ -64,9 +67,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
       this.wm.setToolTip( this.widget1, "test1" );            
       var widget = this.widget1;
       var event = {
-        getTarget : function() { return widget; }
+        getTarget : function() { return widget; },
+        getType : function() { return "mouseover" }
       };            
-      this.manager.handleMouseOver( event );
+      this.manager.handleMouseEvent( event );
       assertEquals( "test1", this.toolTip._atom.getLabel() );
       this.wm.setToolTip( this.widget1, "test2" );
       assertEquals( "test2", this.toolTip._atom.getLabel() );      

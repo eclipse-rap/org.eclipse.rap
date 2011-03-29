@@ -385,10 +385,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
                                          vEventObject, 
                                          vDomEvent );
       } else if( vType == "mouseover" ) {
-        if( qx.Class.isDefined( "qx.ui.popup.ToolTipManager" ) ) {
-          var toolTipManager = qx.ui.popup.ToolTipManager.getInstance();
-          toolTipManager.handleMouseOver( vEventObject );
-        }
+        var toolTipManager = qx.ui.popup.ToolTipManager.getInstance();
+        toolTipManager.handleMouseEvent( vEventObject );
       }
       vEventObject.dispose();
       qx.ui.core.Widget.flushGlobalQueues();
@@ -430,15 +428,11 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     {
       switch( vType ) {
         case "mousedown":
-          if( qx.Class.isDefined( "qx.ui.popup.PopupManager" ) ) {
-            qx.ui.popup.PopupManager.getInstance().update( vTarget );
-          }
+          qx.ui.popup.PopupManager.getInstance().update( vTarget );
           if( this._menuManager != null ) {
             this._menuManager.update( vTarget, vType );
           }
-          if( qx.Class.isDefined( "qx.ui.embed.IframeManager" ) ) {
-            qx.ui.embed.IframeManager.getInstance().handleMouseDown( vEventObject );
-          }
+          qx.ui.embed.IframeManager.getInstance().handleMouseDown( vEventObject );
         break;
         case "mouseup":
           // Mouseup event should always hide, independed of target,
@@ -450,17 +444,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
             qx.ui.embed.IframeManager.getInstance().handleMouseUp( vEventObject );
           }
         break;
-        case "mouseover":
-          if( qx.Class.isDefined("qx.ui.popup.ToolTipManager" ) ) {
-            qx.ui.popup.ToolTipManager.getInstance().handleMouseOver( vEventObject );
-          }
-        break;
-        case "mouseout":
-          if( qx.Class.isDefined("qx.ui.popup.ToolTipManager" ) ) {
-            qx.ui.popup.ToolTipManager.getInstance().handleMouseOut( vEventObject );
-          }
-        break;
       }
+      qx.ui.popup.ToolTipManager.getInstance().handleMouseEvent( vEventObject );
       this._ignoreWindowBlur = vType === "mousedown";
       if( qx.Class.isDefined("qx.event.handler.DragAndDropHandler" ) 
           && vTarget ) {
@@ -540,7 +525,15 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _onwindowresize : function( e ) {
       try {
-        qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+        var clientDocument = qx.ui.core.ClientDocument.getInstance();
+        // Catch redundant resize events, fired for example by iPad:
+        var oldWidth = clientDocument.getInnerWidth();
+        var oldHeight = clientDocument.getInnerHeight();
+        var width = clientDocument._computeInnerWidth();
+        var height = clientDocument._computeInnerHeight();
+        if( width !== oldWidth || height !== oldHeight ) {
+          qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
+        }
       } catch( ex ) {
         org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
       }

@@ -310,6 +310,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.resetMobileWebkitSupport();
     },
     
+    testTouchToolTips : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      widget.setToolTip( toolTip );
+      widget.setUserData( "toolTipText", "foo" );
+      testUtil.flush();
+      var node = widget._getTargetNode();
+      this.touch( node, "touchstart" );
+      testUtil.forceInterval( toolTip._showTimer );
+      assertTrue( toolTip.getVisibility() );
+      this.touch( node, "touchend" );
+      assertFalse( toolTip.getVisibility() );
+      this.touch( node, "touchstart" );
+      testUtil.forceInterval( toolTip._showTimer );
+      assertTrue( toolTip.getVisibility() );
+      this.touch( node, "touchend" );
+      assertFalse( toolTip.getVisibility() );
+      widget.destroy();
+      this.resetMobileWebkitSupport();
+
+    },
+    
     testMouseOver : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();

@@ -40,6 +40,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
 
     init : function() {
       if( org.eclipse.rwt.Client.isMobileSafari() ) {
+        this._configureToolTip();
         this._hideTabHighlight();
         this._bindListeners();
         this._registerListeners();
@@ -61,6 +62,23 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       var vertical = window.orientation % 180 === 0;
       var width = vertical ? screen.width : screen.height;
       return window.innerWidth !== width;
+    },
+    
+    _configureToolTip : function() {
+      var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
+      toolTip.setShowInterval( 200 );
+      toolTip.setHideInterval( 15000 );
+      toolTip.setMousePointerOffsetX( -35 );
+      toolTip.setMousePointerOffsetY( -60 );
+      var manager = qx.ui.popup.ToolTipManager.getInstance();
+      manager.handleMouseEvent = function( event ) {
+        var type = event.getType();
+        if( type === "mousedown" ) {
+          this._handleMouseOver( event );
+        } else if ( type === "mouseup" ) {
+          this.setCurrentToolTip( null );
+        }
+      };
     },
     
     _hideTabHighlight : function() {
@@ -96,7 +114,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     
     _filterMouseEvents : function( event ) {
       var allowedMap = this._allowedMouseEvents;
-      var result = typeof event.originalEvent === "object";
+      var result = typeof event.originalEvent === "object"; // faked event?
       if( !result ) {
         result = allowedMap[ "*" ][ event.type ] === true;
       } 
@@ -164,8 +182,8 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         var oldPos = this._lastMouseDownPosition;
         var touch = this._getTouch( domEvent );
         var pos = [ touch.clientX, touch.clientY ];
-        if(    Math.abs( oldPos[ 0 ] - pos[ 0 ] ) >= 9
-            || Math.abs( oldPos[ 1 ] - pos[ 1 ] ) >= 9 ) {
+        if(    Math.abs( oldPos[ 0 ] - pos[ 0 ] ) >= 15
+            || Math.abs( oldPos[ 1 ] - pos[ 1 ] ) >= 15 ) {
           this._cancelMouseSession( domEvent );
         }
       }
@@ -285,9 +303,15 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
                             false, //metaKey 
                             qx.event.type.MouseEvent.buttons.left, 
                             null );
-     event.originalEvent = originalEvent;
-     target.dispatchEvent( event );
-    } 
+      event.originalEvent = originalEvent;
+      target.dispatchEvent( event );
+    },
+    
+    _postMouseEvent : function( type ) {
+      if( type === "mouseup" ) {
+        qx.ui.popup.ToolTipManager.getInstance().setCurrentToolTip( null );
+      }
+    }
 
   }
     

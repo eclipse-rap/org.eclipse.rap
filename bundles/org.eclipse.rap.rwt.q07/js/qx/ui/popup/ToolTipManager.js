@@ -93,6 +93,15 @@ qx.Class.define("qx.ui.popup.ToolTipManager",
       EVENT INTERFACE: MOUSE
     ---------------------------------------------------------------------------
     */
+    
+    handleMouseEvent : function( event ) {
+      var type = event.getType();
+      if( type === "mouseover" ) {
+        this._handleMouseOver( event );
+      } else if ( type === "mouseout" ) {
+        this._handleMouseOut( event );
+      }
+    },
 
     /**
      * Searches for the tooltip of the target widget. If any tooltip instance
@@ -103,8 +112,7 @@ qx.Class.define("qx.ui.popup.ToolTipManager",
      * @param e {qx.event.type.MouseEvent} mouseOver event
      * @return {void}
      */
-    handleMouseOver : function(e)
-    {
+    _handleMouseOver : function( e ) {
       var vTarget = e.getTarget();
       var vToolTip;
 
@@ -136,8 +144,7 @@ qx.Class.define("qx.ui.popup.ToolTipManager",
      * @param e {qx.event.type.MouseEvent} mouseOut event
      * @return {void}
      */
-    handleMouseOut : function(e)
-    {
+    _handleMouseOut : function( e ) {
       var vTarget = e.getTarget();
       var vRelatedTarget = e.getRelatedTarget();
 
