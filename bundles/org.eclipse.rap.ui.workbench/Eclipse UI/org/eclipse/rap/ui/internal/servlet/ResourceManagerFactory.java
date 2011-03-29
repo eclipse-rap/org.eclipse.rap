@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.servlet;
 
@@ -23,8 +23,7 @@ final class ResourceManagerFactory implements IResourceManagerFactory {
   public IResourceManager create() {
     IResourceManager result = ResourceManagerImpl.getInstance();
     Adaptable adaptable = ( Adaptable )result;
-    JsConcatenator jsConcatenator = ( JsConcatenator )adaptable.getAdapter( JsConcatenator.class );
-    jsConcatenator.startJsConcatenation();
+    adaptable.getAdapter( JsConcatenator.class );
     return result;
   }
 }

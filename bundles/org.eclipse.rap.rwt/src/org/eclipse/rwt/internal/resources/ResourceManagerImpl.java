@@ -25,6 +25,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.resources.IResourceManager;
 
+
 /**
  * The resource manager is responsible for registering resources like images,
  * CSS files etc. which are available on the application's classpath. The
@@ -39,35 +40,35 @@ import org.eclipse.rwt.resources.IResourceManager;
  * </p>
  */
 public class ResourceManagerImpl implements IResourceManager, Adaptable {
-  
-  /** 
-   * <p>denotes a mode in which resources are delivered: resources 
+
+  /**
+   * <p>denotes a mode in which resources are delivered: resources
    *  are written to disk and delivered as static files.</p>
    */
   public static final String DELIVER_FROM_DISK  = "deliverFromDisk";
-  /** 
-   * <p>denotes a mode in which resources are delivered: resources 
+  /**
+   * <p>denotes a mode in which resources are delivered: resources
    * libraries delivered by the Delegates servlet dynamically.</p>
    */
   public static final String DELIVER_BY_SERVLET = "deliverByServlet";
-  /** 
-   * <p>denotes a mode in which resources are delivered: resources 
+  /**
+   * <p>denotes a mode in which resources are delivered: resources
    * libraries delivered by the Delegates servlet dynamically, but
    * user defined resources will be copied to the temporary directory
-   * given by the system property value of 'java.io.tmpdir' plus 
-   * '/w4toolkit/&lt;username&gt;', where <em>username<em> is the 
+   * given by the system property value of 'java.io.tmpdir' plus
+   * '/w4toolkit/&lt;username&gt;', where <em>username<em> is the
    * value of the system property 'user.name'.</p>
-   * 
+   *
    * <p>For internal use only</p>
-   */  
-  public static final String DELIVER_BY_SERVLET_AND_TEMP_DIR 
+   */
+  public static final String DELIVER_BY_SERVLET_AND_TEMP_DIR
     = "deliverByServletAndTempDir";
 
   public static final String RESOURCES = "rwt-resources";
 
   final static String RESOURCE = "w4t_resource";
   final static String RESOURCE_VERSION = "w4t_res_version";
-  
+
   private final Map repository;
   private final Map cache;
   private String webAppRoot;
@@ -128,7 +129,7 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
 
   /**
    * Loads the given <code>resource</code> from the class path.
-   * 
+   *
    * @param resource the name of the resource to be loaded, must not be
    *          <code>null</code>
    */
@@ -139,7 +140,7 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
 
   /**
    * Returns the content of the resource denoted by <code>name</code>.
-   * 
+   *
    * @param name the name of the resource to find, must not be <code>null</code>
    * @param version the version (can be obtained by
    *          <code>findVersion(String)</code>) of the resource or
@@ -165,7 +166,7 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
   /**
    * Returns the version number for the previously
    * {@link #register(String, String, RegisterOptions) registered} resource.
-   * 
+   *
    * @param name the name of the resource for which the version number should be
    *          obtained. Must not be <code>null</code>.
    * @return the version number or <code>null</code> if either no such resource
@@ -183,12 +184,12 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
     return result;
   }
 
-  /** <p>returns whether the application runs in the mode specified by the 
+  /** <p>returns whether the application runs in the mode specified by the
     * passed String.</p> */
   public static boolean isDeliveryMode( final String deliveryMode ) {
     return getDeliveryMode().equals( deliveryMode );
   }
-  
+
   /** <p>Sets which mode is used for delivering the resources at runtime.
    *  DELIVER_BY_SERVLET could be useful if running on a server which is
    *  permittedto to write to the webapp home.</p>
@@ -203,14 +204,14 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
       ( ( ResourceManagerImpl )getInstance() ).deliveryMode = newDeliveryMode;
     }
   }
-  
+
   /** <p>Returns which mode is used for delivering the resources at runtime.
    *  DELIVER_BY_SERVLET could be useful if running on a server which has
    *  no grant writing to webapp home.</p>
    */
   public static String getDeliveryMode() {
     return ( ( ResourceManagerImpl )getInstance() ).deliveryMode;
-  } 
+  }
 
   //////////////////////
   // interface Adaptable
@@ -219,27 +220,10 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
     Object result = null;
     if( adapter == JsConcatenator.class ) {
       if( jsConcatenator == null ) {
+        ResourceUtil.startJsConcatenation();
         jsConcatenator = new JsConcatenator() {
 
           private String content;
-          private boolean registered = false;
-
-          public String getLocation() {
-            String concatedName = "rap.js";
-            if( !registered ) {
-              byte[] content = getContent().getBytes();
-              register( concatedName,
-                        new ByteArrayInputStream( content ),
-                        HTML.CHARSET_NAME_UTF_8,
-                        RegisterOptions.VERSION );
-              registered = true;
-            }
-            return ResourceManagerImpl.this.getLocation( concatedName );
-          }
-
-          public void startJsConcatenation() {
-            ResourceUtil.startJsConcatenation();
-          }
 
           public String getContent() {
             if( content == null ) {
@@ -314,7 +298,7 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
     }
     repository.put( key, name );
   }
-  
+
   public boolean unregister( final String name ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;

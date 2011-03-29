@@ -28,12 +28,7 @@ public class TestResourceManager
 
   public Object getAdapter( final Class adapter ) {
     return new JsConcatenator() {
-      public void startJsConcatenation() {
-      }
       public String getContent() {
-        return "";
-      }
-      public String getLocation() {
         return "";
       }
     };
