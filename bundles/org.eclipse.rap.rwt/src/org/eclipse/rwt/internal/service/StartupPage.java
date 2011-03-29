@@ -97,7 +97,7 @@ public final class StartupPage {
     // TODO [fappel]: check whether servletName has to be url encoded
     //                in case the client has switched of cookies
     template.replace( StartupPageTemplateHolder.VAR_SERVLET,
-                      URLHelper.getSerlvetName() );
+                      URLHelper.getServletName() );
     template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
                       EncodingUtil.encodeHTMLEntities( getEntryPoint() ) );
     String[] tokens = template.getTokens();

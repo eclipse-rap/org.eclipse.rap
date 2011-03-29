@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.internal.service.ContextProvider;
 
 
-/**<p>Utility class to construct URL's.</p> */
 public final class URLHelper {
   
   public static final String EQUAL = "=";
@@ -29,7 +28,7 @@ public final class URLHelper {
     // no instance creation
   }
 
-  public static String getSerlvetName() {
+  public static String getServletName() {
     String result = ContextProvider.getRequest().getServletPath();
     if( result.startsWith( "/" ) ) {
       result = result.substring( 1 );

@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.branding;
 
@@ -48,7 +49,7 @@ public final class BrandingUtil {
   
   public static AbstractBranding findBranding() {
     HttpServletRequest request = ContextProvider.getRequest();
-    String servletName = URLHelper.getSerlvetName();
+    String servletName = URLHelper.getServletName();
     String entryPoint = request.getParameter( RequestParams.STARTUP );
     AbstractBranding branding = BrandingManager.get( servletName, entryPoint );
     RWT.getSessionStore().setAttribute( ATTR_BRANDING_ID, branding.getId() );

@@ -184,7 +184,7 @@ public class BrandingManager_Test extends TestCase {
   
   public void testRegisterResources() throws IOException {
     Fixture.fakeResponseWriter();
-    String servletName = URLHelper.getSerlvetName();
+    String servletName = URLHelper.getServletName();
     TestBranding branding = new TestBranding( servletName, null, "default" );
     BrandingManager.register( branding );
     RWTStartupPageConfigurer configurer;
