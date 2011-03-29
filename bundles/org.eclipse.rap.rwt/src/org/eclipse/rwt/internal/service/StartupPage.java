@@ -13,6 +13,7 @@
 package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,7 +22,6 @@ import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.*;
 
@@ -37,7 +37,7 @@ public final class StartupPage {
     StartupPageTemplateHolder getTemplate() throws IOException;
     boolean isModifiedSince();
   }
-  
+
   private static StartupPage getInstance() {
     return ( StartupPage )RWTContext.getSingleton( StartupPage.class );
   }
@@ -45,11 +45,11 @@ public final class StartupPage {
   public static void setConfigurer( final IStartupPageConfigurer configurer ) {
     getInstance().configurer = configurer;
   }
-  
+
   public static IStartupPageConfigurer getConfigurer() {
     return getInstance().configurer;
   }
-  
+
   static void send() throws IOException {
     getInstance().doSend();
   }
@@ -92,18 +92,18 @@ public final class StartupPage {
   private void render() throws IOException {
     ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
     StartupPageTemplateHolder template = configurer.getTemplate();
-    template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE, 
+    template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE,
                       getBgImage() );
     // TODO [fappel]: check whether servletName has to be url encoded
     //                in case the client has switched of cookies
-    template.replace( StartupPageTemplateHolder.VAR_SERVLET, 
+    template.replace( StartupPageTemplateHolder.VAR_SERVLET,
                       URLHelper.getSerlvetName() );
     template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
                       EncodingUtil.encodeHTMLEntities( getEntryPoint() ) );
     String[] tokens = template.getTokens();
     for( int i = 0; i < tokens.length; i++ ) {
       if( tokens[ i ] != null ) {
-        getResponseWriter().append( tokens[ i ] );
+        getResponseWriter().write( tokens[ i ] );
       }
     }
   }
@@ -117,11 +117,11 @@ public final class StartupPage {
     return result;
   }
 
-  private HtmlResponseWriter getResponseWriter() {
+  private Writer getResponseWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return stateInfo.getResponseWriter();
   }
-  
+
   private StartupPage() {
     // prevent instance creation
   }
