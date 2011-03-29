@@ -21,8 +21,6 @@ public final class URLHelper {
   public static final String EQUAL = "=";
   public static final String AMPERSAND = "&";
   public static final String QUESTION_MARK = "?";
-  
-  private final static String ENCODING_DUMMY = "w4t_enc";
 
   private URLHelper() {
     // no instance creation
@@ -36,27 +34,20 @@ public final class URLHelper {
     return result;
   }
 
-  /** returns the servlets URL of the current W4Toolkit installation. */
-  public static String getURLString( final boolean addEncodingDummy ) {
+  /**
+   * Returns the servlet's URL of the current RWT installation.
+   */
+  public static String getURLString() {
     HttpServletRequest request = ContextProvider.getRequest();
     StringBuffer result = new StringBuffer();
     result.append( getContextURLString() );
     result.append( request.getServletPath() );
-    
-    ///////////////////////////////////////////////////////////////////////
-    // add a dummy parameter to create a complete session id encoding
-    // if cookies are disabled
-    if( addEncodingDummy ) {
-      result.append( QUESTION_MARK );
-      result.append( URLHelper.ENCODING_DUMMY );
-      result.append( "=no" );
-    }
-    ///////////////////////////////////////////////////////////////////////
     return result.toString();
   }
 
-  /** returns the url to the webapps context root of the current W4Toolkit 
-   *  installation. */
+  /**
+   * Returns the URL to the webapp's context root of the current RWT installation.
+   */
   public static String getContextURLString() {
     HttpServletRequest request = ContextProvider.getRequest();
     StringBuffer result = new StringBuffer();
@@ -67,6 +58,28 @@ public final class URLHelper {
 
   //////////////////
   // helping methods
+
+  /**
+   * Appends the given <code>key</code> and <code>value</code> to the given buffer by prepending a
+   * question mark and separating key and value with an equals sign.
+   */
+  public static void appendFirstParam( StringBuffer buffer, String key, String value ) {
+    buffer.append( QUESTION_MARK );
+    buffer.append( key );
+    buffer.append( EQUAL );
+    buffer.append( value );
+  }
+
+  /**
+   * Appends the given <code>key</code> and <code>value</code> to the given buffer by prepending an
+   * ampersand and separating key and value with an equals sign.
+   */
+  public static void appendParam( StringBuffer buffer, String key, String value ) {
+    buffer.append( AMPERSAND );
+    buffer.append( key );
+    buffer.append( EQUAL );
+    buffer.append( value );
+  }
 
   private static String getServerURL() {
     // TODO: [fappel] remove the creation of absolute addresses with
@@ -97,35 +110,5 @@ public final class URLHelper {
       result = "";
     }
     return result;
-  }
-
-  /**
-   * <p>Appends the given <code>key</code> and <code>value</code> to the given 
-   * buffer by prepending a question mark and separating key and value with an 
-   * equals sign.</p>
-   */
-  public static void appendFirstParam( final StringBuffer buffer, 
-                                       final String key, 
-                                       final String value ) 
-  {
-    buffer.append( QUESTION_MARK );
-    buffer.append( key );
-    buffer.append( EQUAL );
-    buffer.append( value );
-  }
-  
-  /**
-   * <p>Appends the given <code>key</code> and <code>value</code> to the given 
-   * buffer by prepending an ampersand and separating key and value with an 
-   * equals sign.</p>
-   */
-  public static void appendParam( final StringBuffer buffer, 
-                                     final String key, 
-                                     final String value ) 
-  {
-    buffer.append( AMPERSAND );
-    buffer.append( key );
-    buffer.append( EQUAL );
-    buffer.append( value );
   }
 }

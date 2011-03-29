@@ -437,7 +437,7 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
       result = url.toString();
     } else {
       StringBuffer url = new StringBuffer();
-      url.append( URLHelper.getURLString( false ) );
+      url.append( URLHelper.getURLString() );
       URLHelper.appendFirstParam( url, RESOURCE, newFileName );
       if( version != null ) {
         URLHelper.appendParam( url,
