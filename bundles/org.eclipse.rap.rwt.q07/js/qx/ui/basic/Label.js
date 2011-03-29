@@ -457,8 +457,15 @@ qx.Class.define("qx.ui.basic.Label",
 */
 
       // store values
-      this._cachedPreferredInnerWidth = element.scrollWidth;
-      this._cachedPreferredInnerHeight = element.scrollHeight;
+      if( org.eclipse.rwt.Client.isGecko() ) {
+        // See Bug 264448, 340841
+        var bounds = element.getBoundingClientRect();
+        this._cachedPreferredInnerWidth = Math.ceil( bounds.width );
+        this._cachedPreferredInnerHeight = Math.ceil( bounds.height );
+      } else {
+        this._cachedPreferredInnerWidth = element.scrollWidth;
+        this._cachedPreferredInnerHeight = element.scrollHeight;
+      }
     },
 
 
