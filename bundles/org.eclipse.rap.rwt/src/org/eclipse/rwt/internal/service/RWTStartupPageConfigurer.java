@@ -107,9 +107,8 @@ public final class RWTStartupPageConfigurer
   private void readContent() throws IOException {
     if( template == null ) {
       InputStream stream = loadTemplateFile();
-      InputStreamReader isr 
-        = new InputStreamReader( stream, HTML.CHARSET_NAME_ISO_8859_1 );
-      BufferedReader reader = new BufferedReader( isr );
+      InputStreamReader streamReader = new InputStreamReader( stream, HTML.CHARSET_NAME_UTF_8 );
+      BufferedReader reader = new BufferedReader( streamReader );
       try {
         String line = reader.readLine();
         StringBuffer buffer = new StringBuffer();
@@ -148,7 +147,7 @@ public final class RWTStartupPageConfigurer
   /////////////////////////////////////////
   // Helping methods to adjust startup page
 
-  public static String getAppScript() {
+  private static String getAppScript() {
     StringBuffer code = new StringBuffer();
     code.append( getTextSizeProbeCode() );
     code.append( getApplicationJsCode( "w1" ) );
