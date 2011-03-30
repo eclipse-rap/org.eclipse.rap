@@ -154,7 +154,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var hasItemBackground = item !== null && item.getBackground() !== null;
       var result =    !hasItemBackground 
                    || renderFullSelection 
-                   || this._hasHoverBackground(); 
+                   || this._hasHoverBackground() 
+                   || this._tree.getEnabled() === false; 
       return result;
     },
     
@@ -356,6 +357,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _getCellBackground : function( item, cell ) {
       var result;
       if(    this.hasState( "selected" ) 
+          || this._tree.getEnabled() === false 
           || this._hasHoverBackground() 
       ) {
         result = "undefined";
@@ -369,6 +371,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var result = item.getCellForeground( cell )
       if(    result === null 
           || result === "" 
+          || this._tree.getEnabled() === false 
           || this.hasState( "selected" ) 
           || this._hasHoverBackground()
       ) {
@@ -453,14 +456,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       element.style.color = color != null ? color : "";
     },
 
-    _setImage : function( element, src, center ) {
-      if( src !== null ) {
-        element.style.backgroundImage = "url( " + src + ")";
-      } else {
-        element.style.backgroundImage = "";
-      }
-      element.style.backgroundRepeat = "no-repeat";
-      element.style.backgroundPosition = center ? "center" : "";
+    _setImage : function( element, src ) {
+      var opacity = this._tree.getEnabled() ? 1 : 0.3;
+      org.eclipse.rwt.HtmlUtil.setBackgroundImage( element, src, opacity );
     },
         
     _getNextElement : function( zIndex ) {

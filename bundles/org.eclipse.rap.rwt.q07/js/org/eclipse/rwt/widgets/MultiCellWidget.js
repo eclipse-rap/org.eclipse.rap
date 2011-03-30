@@ -673,54 +673,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       }
     } ),
 
-    _updateImage : qx.core.Variant.select( "qx.client", {
-      "mshtml" : function( cell ) {
-        var version = org.eclipse.rwt.Client.getVersion();
-        var node = this.getCellNode( cell );
-        var content = this.getCellContent( cell );
-        if( version >= 8 ) {
-          if( content ) {
-            node.style.filter
-              = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
-              + content
-              + "',sizingMethod='crop')";
-            if ( !this.getEnabled() ) {
-              node.style.filter
-                += "progid:DXImageTransform.Microsoft.Alpha(opacity = 30)";
-            }
-          } else {
-            node.style.filter = "";
-            node.style.backgroundImage = "none";
-          }
-        } else {
-          if( content ) {
-            if ( this.getEnabled() ) {
-              node.style.backgroundImage = "none";
-              node.style.filter
-                = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"
-                + this.getCellContent( cell )
-                + "',sizingMethod='crop')";
-            } else {
-              node.style.backgroundImage
-                =   "URL("
-                  + this.getCellContent( cell )
-                  + ")";
-              node.style.backgroundRepeat = "no-repeat";
-              // removed Gray()
-              node.style.filter = this.getEnabled() ? "" : "Alpha(Opacity=30)";
-            }
-          } else {
-            node.style.filter = "";
-            node.style.backgroundImage = "none";
-          }
-        }
-      },
-      "default" : function( cell ) {
-        var content = this.getCellContent( cell );
-        var cssImageStr = content ? "URL(" + content + ")" : "none"; 
-        this.getCellNode( cell ).style.backgroundImage = cssImageStr;
-      }
-    }),
+    _updateImage : function( cell ) {
+      var node = this.getCellNode( cell );
+      var source = this.getCellContent( cell );
+      var opacity = this.getEnabled() ? 1 : 0.3;
+      org.eclipse.rwt.HtmlUtil.setBackgroundImage( node, source, opacity );
+    },
 
     _updateAllImages : function() {
       for( var i = 0; i < this.__cellCount; i++ ) {
@@ -730,21 +688,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
       }
     },
 
-    _styleImageEnabled : qx.core.Variant.select( "qx.client", {
-      "default" : function( cell ) {
-        var opacity = ( this.getEnabled() === false ) ? 0.3 : "";
-        var style = this.getCellNode( cell ).style;
-        style.opacity = style.KhtmlOpacity = style.MozOpacity = opacity;
-      },
-      "mshtml" : function( cell ) {
-        this._updateImage( cell );
-      }
-    }),
-
     _styleAllImagesEnabled : function() {
       for( var i = 0; i < this.__cellCount; i++ ) {
         if( this._isImageCell( i ) && this.__cellHasNode( i ) ) {
-          this._styleImageEnabled( i );
+          this._updateImage( i );
         }
       }
     },

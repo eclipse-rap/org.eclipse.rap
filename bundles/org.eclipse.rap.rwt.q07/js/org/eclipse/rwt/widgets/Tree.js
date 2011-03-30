@@ -119,6 +119,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._rootItem.addEventListener( "update", this._onItemUpdate, this );
       this.addEventListener( "changeTextColor", this._scheduleUpdate, this );
       this.addEventListener( "changeFont", this._scheduleUpdate, this );
+      this.addEventListener( "changeEnabled", this._scheduleUpdate, this );
       this.addEventListener( "mousedown", this._onMouseDown, this );
       this.addEventListener( "mouseup", this._onMouseUp, this );
       this.addEventListener( "mouseover", this._onMouseOver, this );
@@ -924,7 +925,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._renderQueue = {};
       }
     },
-    
+
     _updateRowCount : function() {
       var height = this._clientArea.getHeight()
       var rowsNeeded = Math.ceil( height / this._itemHeight );
