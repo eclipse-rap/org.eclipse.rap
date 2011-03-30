@@ -166,7 +166,7 @@ Control[] getControls(boolean onlyVisible) {
   Control[] result = new Control[0];
   for (int i = 0; i < children.length; i++) {
     if (children[i] instanceof Sash) continue;
-//    if (onlyVisible && !children[i].getVisible()) continue;
+    if (onlyVisible && !children[i].getVisible()) continue;
 
     Control[] newResult = new Control[result.length + 1];
     System.arraycopy(result, 0, newResult, 0, result.length);
