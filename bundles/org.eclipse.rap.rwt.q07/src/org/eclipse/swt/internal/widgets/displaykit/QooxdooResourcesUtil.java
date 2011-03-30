@@ -14,11 +14,7 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.InputStream;
 
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
-import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.*;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
@@ -347,9 +343,7 @@ final class QooxdooResourcesUtil {
             manager.register( location, charset, options );
           }
           if( resources[ i ].isJSLibrary() ) {
-            IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-            HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
-            responseWriter.useJSLibrary( location );
+            ResourceUtil.useJsLibrary( location );
           }
         }
       }
@@ -358,18 +352,13 @@ final class QooxdooResourcesUtil {
     }
   }
 
-  private static void register( final String libraryName,
-                                final boolean compress )
-  {
+  private static void register( String libraryName, boolean compress ) {
     IResourceManager manager = ResourceManager.getInstance();
-    RegisterOptions option = RegisterOptions.VERSION;
-    if( compress ) {
-      option = RegisterOptions.VERSION_AND_COMPRESS;
-    }
+    RegisterOptions option =   compress
+                             ? RegisterOptions.VERSION_AND_COMPRESS
+                             : RegisterOptions.VERSION;
     manager.register( libraryName, HTTP.CHARSET_UTF_8, option );
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
-    responseWriter.useJSLibrary( libraryName );
+    ResourceUtil.useJsLibrary( libraryName );
   }
 
   private static boolean isDebug() {

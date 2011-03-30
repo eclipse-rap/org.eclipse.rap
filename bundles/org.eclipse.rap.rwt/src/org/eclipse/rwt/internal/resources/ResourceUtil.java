@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.eclipse.rwt.internal.util.HTTP;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResourceManager;
 
 public final class ResourceUtil {
@@ -89,6 +90,11 @@ public final class ResourceUtil {
     } finally {
       fos.close();
     }
+  }
+
+  public static void useJsLibrary( String libraryName ) {
+    ParamCheck.notNull( libraryName, "libraryName" );
+    // TODO [rst] Add to concatenation buffer
   }
 
   public static void startJsConcatenation() {

@@ -18,12 +18,8 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import org.eclipse.rwt.internal.engine.RWTContext;
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
-import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -517,15 +513,11 @@ public final class ThemeManager {
     }
   }
 
-  private static void registerJsLibrary( final String name,
-                                         final String code,
-                                         final boolean compress )
-  {
+  private static void registerJsLibrary( String name, String code, boolean compress ) {
     IResourceManager manager = ResourceManager.getInstance();
-    RegisterOptions option = RegisterOptions.VERSION;
-    if( compress ) {
-      option = RegisterOptions.VERSION_AND_COMPRESS;
-    }
+    RegisterOptions option =   compress
+                             ? RegisterOptions.VERSION_AND_COMPRESS
+                             : RegisterOptions.VERSION;
     if( code != null ) {
       byte[] buffer;
       try {
@@ -538,9 +530,7 @@ public final class ThemeManager {
     } else {
       manager.register( name, CHARSET, option );
     }
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
-    responseWriter.useJSLibrary( name );
+    ResourceUtil.useJsLibrary( name );
   }
 
   private String createQxThemes( final Theme theme ) {

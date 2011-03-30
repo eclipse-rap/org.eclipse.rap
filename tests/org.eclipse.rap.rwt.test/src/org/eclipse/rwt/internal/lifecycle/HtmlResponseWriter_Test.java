@@ -96,26 +96,6 @@ public class HtmlResponseWriter_Test extends TestCase {
     }
   }
 
-  public void testUseJSLibrary() {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
-    try {
-      writer.useJSLibrary( null );
-      fail( "NullPointerException expected" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    writer.useJSLibrary( "z" );
-    writer.useJSLibrary( "a" );
-    writer.useJSLibrary( "b" );
-    writer.useJSLibrary( "a" );
-    String[] libraries = writer.getJSLibraries();
-    assertEquals( 3, libraries.length );
-    String[] expected = new String[] { "z", "a", "b" };
-    for( int i = 0; i < expected.length; i++ ) {
-      assertEquals( expected[ i ], libraries[ i ] );
-    }
-  }
-
   public void testPrintContents() throws IOException {
     HtmlResponseWriter writer = new HtmlResponseWriter();
     StringWriter stringWriter = new StringWriter();
