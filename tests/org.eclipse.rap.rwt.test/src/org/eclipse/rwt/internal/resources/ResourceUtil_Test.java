@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
@@ -59,5 +60,29 @@ public class ResourceUtil_Test extends TestCase {
       fail( "Should not throw exception" );
     }
     assertEquals( expected, javaScript.toString() );
+  }
+
+  public void testConcatenationEmpty() {
+    ResourceUtil.startJsConcatenation();
+    String result = ResourceUtil.getJsConcatenationContentAsString();
+    assertEquals( "", result );
+  }
+
+  public void testConcatenation() throws IOException {
+    ResourceUtil.startJsConcatenation();
+    File file = File.createTempFile( "test", ".js" );
+    ResourceUtil.write( file, getStringAsIntArray( "foo" ) );
+    ResourceUtil.write( file, getStringAsIntArray( "bar" ) );
+    String result = ResourceUtil.getJsConcatenationContentAsString();
+    assertEquals( "foo\nbar\n", result );
+  }
+
+  private static int[] getStringAsIntArray( String string ) {
+    byte[] bytes = string.getBytes();
+    int[] content = new int[ bytes.length ];
+    for( int i = 0; i < content.length; i++ ) {
+      content[ i ] = ( bytes[ i ] & 0x0ff );
+    }
+    return content;
   }
 }

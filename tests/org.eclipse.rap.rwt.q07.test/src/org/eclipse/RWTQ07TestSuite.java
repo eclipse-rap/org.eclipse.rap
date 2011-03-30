@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse;
 
@@ -148,6 +148,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ToolTipLCA_Test.class );
     suite.addTestSuite( KeyBindingUtil_Test.class );
     suite.addTestSuite( FileUploadLCA_Test.class );
+    suite.addTestSuite( QooxdooResourceUtil_Test.class );
     return suite;
   }
 }

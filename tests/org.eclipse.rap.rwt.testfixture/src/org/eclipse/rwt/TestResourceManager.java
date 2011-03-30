@@ -14,7 +14,7 @@ package org.eclipse.rwt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Enumeration;
+import java.util.*;
 
 import org.eclipse.rwt.internal.resources.JsConcatenator;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
@@ -25,6 +25,12 @@ public class TestResourceManager
   implements IResourceManager, Adaptable
 {
   private ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+  private final Set registeredResources;
+
+  public TestResourceManager() {
+    registeredResources = new HashSet();
+  }
 
   public Object getAdapter( final Class adapter ) {
     return new JsConcatenator() {
@@ -70,34 +76,32 @@ public class TestResourceManager
     return result;
   }
 
-  public boolean isRegistered( final String name ) {
-    return false;
+  public boolean isRegistered( String name ) {
+    return registeredResources.contains( name );
   }
 
-  public void register( final String name ) {
+  public void register( String name ) {
+    registeredResources.add( name );
   }
 
-  public void register( final String name, final InputStream is ) {
+  public void register( String name, InputStream is ) {
+    registeredResources.add( name );
   }
 
-  public void register( final String name, final String charset ) {
+  public void register( String name, String charset ) {
+    registeredResources.add( name );
   }
 
-  public void register( final String name,
-                        final String charset,
-                        final RegisterOptions options )
-  {
+  public void register( String name, String charset, RegisterOptions options ) {
+    registeredResources.add( name );
   }
 
-  public void register( String name,
-                        InputStream is,
-                        String charset,
-                        RegisterOptions options )
-  {
+  public void register( String name, InputStream is, String charset, RegisterOptions options ) {
+    registeredResources.add( name );
   }
   
   public boolean unregister( String name ) {
-    return false;
+    return registeredResources.remove( name );
   }
 
   public void setContextLoader( final ClassLoader contextLoader ) {
