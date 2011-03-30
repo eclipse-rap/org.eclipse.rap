@@ -6,9 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
- *     Rüdiger Herrmann - bug 335112
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Rüdiger Herrmann - bug 335112
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
@@ -19,7 +19,7 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.*;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
@@ -294,8 +294,7 @@ final class QooxdooResourcesUtil {
     manager.setContextLoader( loader );
     try {
       // TODO [rst] Needed by qx.js - can we get rid of it?
-      manager.register( "resource/static/html/blank.html",
-                        HTML.CHARSET_NAME_ISO_8859_1 );
+      manager.register( "resource/static/html/blank.html", HTTP.CHARSET_UTF_8 );
       registerJavascriptFiles();
     } finally {
       manager.setContextLoader( bufferedLoader );
@@ -367,7 +366,7 @@ final class QooxdooResourcesUtil {
     if( compress ) {
       option = RegisterOptions.VERSION_AND_COMPRESS;
     }
-    manager.register( libraryName, HTML.CHARSET_NAME_ISO_8859_1, option );
+    manager.register( libraryName, HTTP.CHARSET_UTF_8, option );
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
     responseWriter.useJSLibrary( libraryName );

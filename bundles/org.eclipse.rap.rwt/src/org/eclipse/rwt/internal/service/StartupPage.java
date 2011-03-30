@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
@@ -70,7 +71,9 @@ public final class StartupPage {
   }
 
   private void render() throws IOException {
-    ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
+    HttpServletResponse response = ContextProvider.getResponse();
+    response.setContentType( HTTP.CONTENT_TEXT_HTML );
+    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
     StartupPageTemplateHolder template = configurer.getTemplate();
     template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE,
                       getBgImage() );

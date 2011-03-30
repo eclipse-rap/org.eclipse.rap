@@ -23,7 +23,7 @@ import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.dnd.DragSource;
@@ -104,7 +104,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // TODO [rh] should be replaced by requestCounter != 0
     if( request.getParameter( RequestParams.UIROOT ) != null ) {
       HttpServletResponse response = ContextProvider.getResponse();
-      response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
+      response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
+      response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
       disposeWidgets();
       writeRequestCounter();
       writeTheme( display );

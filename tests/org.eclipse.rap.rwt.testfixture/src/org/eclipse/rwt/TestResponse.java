@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt;
 
@@ -21,6 +22,7 @@ public final class TestResponse implements HttpServletResponse {
 
   private ServletOutputStream outStream;
   private String contentType;
+  private String characterEncoding;
   private Map cookies = new HashMap();
   private Map headers = new HashMap();
   private int errorStatus;
@@ -105,10 +107,6 @@ public final class TestResponse implements HttpServletResponse {
   public void setStatus( final int arg0, final String arg1 ) {
   }
 
-  public String getCharacterEncoding() {
-    return null;
-  }
-
   public ServletOutputStream getOutputStream() throws IOException {
     return outStream;
   }
@@ -124,12 +122,22 @@ public final class TestResponse implements HttpServletResponse {
   public void setContentLength( final int arg0 ) {
   }
 
-  public void setContentType( final String contentType ) {
+  public void setContentType( String contentType ) {
     this.contentType = contentType;
+    setHeader( "Content-Type", contentType );
   }
 
   public String getContentType() {
     return contentType;
+  }
+
+  public void setCharacterEncoding( String charset ) {
+    characterEncoding = charset;
+    setHeader( "Content-Type", contentType + "; charset=" + charset );
+  }
+
+  public String getCharacterEncoding() {
+    return characterEncoding;
   }
 
   public void setBufferSize( final int arg0 ) {
@@ -157,8 +165,5 @@ public final class TestResponse implements HttpServletResponse {
 
   public Locale getLocale() {
     return null;
-  }
-
-  public void setCharacterEncoding( String charset ) {
   }
 }

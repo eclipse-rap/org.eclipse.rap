@@ -22,7 +22,7 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -137,7 +137,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
   static void writeResponse() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
-    response.setHeader( HTML.CONTENT_TYPE, HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
+    response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
+    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
     PrintWriter writer = response.getWriter();
     writer.print( jsUICallBack() );
     writer.flush();

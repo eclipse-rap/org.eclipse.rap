@@ -29,7 +29,7 @@ import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.EncodingUtil;
-import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
@@ -107,7 +107,7 @@ public final class RWTStartupPageConfigurer
   private void readContent() throws IOException {
     if( template == null ) {
       InputStream stream = loadTemplateFile();
-      InputStreamReader streamReader = new InputStreamReader( stream, HTML.CHARSET_NAME_UTF_8 );
+      InputStreamReader streamReader = new InputStreamReader( stream, HTTP.CHARSET_UTF_8 );
       BufferedReader reader = new BufferedReader( streamReader );
       try {
         String line = reader.readLine();
@@ -241,7 +241,7 @@ public final class RWTStartupPageConfigurer
     buffer.append( "<script type=\"text/javascript\" src=\"" );
     buffer.append( library );
     buffer.append( "\" charset=\"" );
-    buffer.append( HTML.CHARSET_NAME_UTF_8 );
+    buffer.append( HTTP.CHARSET_UTF_8 );
     buffer.append( "\"></script>" );
   }
 

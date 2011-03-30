@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
@@ -14,7 +15,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResourceManager;
 
 public final class ResourceUtil {
@@ -97,7 +98,7 @@ public final class ResourceUtil {
   static String getJsConcatenationContentAsString() {
     String result = "";
     try {
-      result = jsConcatenationBuffer.toString( HTML.CHARSET_NAME_UTF_8 );
+      result = jsConcatenationBuffer.toString( HTTP.CHARSET_UTF_8 );
     } catch( UnsupportedEncodingException e ) {
       // ignore
     }
@@ -146,8 +147,7 @@ public final class ResourceUtil {
     byte[] bytes;
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     try {
-      OutputStreamWriter osw
-        = new OutputStreamWriter( baos, HTML.CHARSET_NAME_UTF_8 );
+      OutputStreamWriter osw = new OutputStreamWriter( baos, HTTP.CHARSET_UTF_8 );
       try {
         osw.write( buffer.toString() );
         osw.flush();

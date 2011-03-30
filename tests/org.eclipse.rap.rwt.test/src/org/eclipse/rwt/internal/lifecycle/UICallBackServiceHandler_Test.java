@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -125,7 +124,6 @@ public class UICallBackServiceHandler_Test extends TestCase {
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     response.setOutputStream( new TestServletOutputStream() );
     UICallBackServiceHandler.writeResponse();
-    assertEquals( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8, 
-                  response.getHeader( "Content-Type" ) );
+    assertEquals( "text/javascript; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 }

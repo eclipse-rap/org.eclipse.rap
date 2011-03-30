@@ -28,18 +28,15 @@ public class RWTDelegate extends HttpServlet {
   ////////////////////
   // Servlet overrides
 
-  public void doGet( final HttpServletRequest request,
-                     final HttpServletResponse response )
+  public void doGet( HttpServletRequest request, HttpServletResponse response )
     throws ServletException, IOException
   {
     doPost( request, response );
   }
 
-  public void doPost( final HttpServletRequest request,
-                      final HttpServletResponse response )
-    throws ServletException, IOException 
+  public void doPost( HttpServletRequest request, HttpServletResponse response )
+    throws ServletException, IOException
   {
-    request.setCharacterEncoding( "UTF-8" );
     if( request.getPathInfo() == null ) {
       try {
         ServiceContext context = new ServiceContext( request, response );
@@ -48,7 +45,7 @@ public class RWTDelegate extends HttpServlet {
         ServiceManager.getHandler().service();
       } finally {
         ContextProvider.disposeContext();
-      }                                                         
+      }
     } else {
       handleInvalidRequest( request, response );
     }
@@ -57,7 +54,7 @@ public class RWTDelegate extends HttpServlet {
   public String getServletInfo() {
     return "RAP Servlet Delegate";
   }
-  
+
   //////////////////
   // Helping methods
 
@@ -69,7 +66,7 @@ public class RWTDelegate extends HttpServlet {
   }
 
   static void handleInvalidRequest( final HttpServletRequest request,
-                                    final HttpServletResponse response )  
+                                    final HttpServletResponse response )
     throws IOException
   {
     if( "/".equals( request.getPathInfo() ) ) {

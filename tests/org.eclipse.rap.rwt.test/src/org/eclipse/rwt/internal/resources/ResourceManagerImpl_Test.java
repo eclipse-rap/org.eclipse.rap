@@ -20,16 +20,14 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.TestRequest;
 import org.eclipse.rwt.internal.IConfiguration;
-import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class ResourceManagerImpl_Test extends TestCase {
-  private static final String DELIVER_FROM_DISK
-    = ResourceManagerImpl.DELIVER_FROM_DISK;
-  private static final String DELIVER_BY_SERVLET
-    = ResourceManagerImpl.DELIVER_BY_SERVLET;
+  private static final String DELIVER_FROM_DISK = ResourceManagerImpl.DELIVER_FROM_DISK;
+  private static final String DELIVER_BY_SERVLET = ResourceManagerImpl.DELIVER_BY_SERVLET;
   private static final String DELIVER_BY_SERVLET_AND_TEMP_DIR
     = ResourceManagerImpl.DELIVER_BY_SERVLET_AND_TEMP_DIR;
   
@@ -232,9 +230,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     String doesNotExist = "doesNotExist";
   
     try {
-      manager.register( doesNotExist,
-                        "UTF-8",
-                        RegisterOptions.NONE );
+      manager.register( doesNotExist, HTTP.CHARSET_UTF_8, RegisterOptions.NONE );
       fail();
     } catch( ResourceRegistrationException expected ) {
     }
@@ -246,9 +242,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     IResourceManager manager = getManager( DELIVER_FROM_DISK );
     String resource = TEST_RESOURCE_1;
 
-    manager.register( resource,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      IResourceManager.RegisterOptions.VERSION );
+    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
 
     File resourceFile = getResourceCopyFile( TEST_RESOURCE_1_VERSIONED );
     assertTrue( "Resource not registered", manager.isRegistered( resource ) );
@@ -262,14 +256,10 @@ public class ResourceManagerImpl_Test extends TestCase {
     System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "true" );
     IResourceManager manager = getManager( DELIVER_FROM_DISK );
     String resource = TEST_RESOURCE_1;
-    manager.register( resource,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      IResourceManager.RegisterOptions.VERSION );
+    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
     clearTempFile();
 
-    manager.register( resource,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      IResourceManager.RegisterOptions.VERSION );
+    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
 
     File resourceFile = getResourceCopyFile( TEST_RESOURCE_1_VERSIONED );
     assertFalse( "Resource must not be written twice", resourceFile.exists() );
@@ -280,9 +270,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     IResourceManager manager = getManager( DELIVER_FROM_DISK );
     String resource = TEST_RESOURCE_1;
 
-    manager.register( resource,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      IResourceManager.RegisterOptions.COMPRESS );
+    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
 
     File resourceFile = getResourceCopyFile( resource );
     int[] origin = read( openStream( resource ) );
@@ -296,14 +284,10 @@ public class ResourceManagerImpl_Test extends TestCase {
     System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "false" );
     IResourceManager manager = getManager( DELIVER_FROM_DISK );
     String resource = TEST_RESOURCE_1;
-    manager.register( resource,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      IResourceManager.RegisterOptions.COMPRESS );
+    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
     clearTempFile();
 
-    manager.register( resource,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      IResourceManager.RegisterOptions.COMPRESS );
+    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
     
     File resourceFile = getResourceCopyFile( resource );
     assertFalse( "file must not be written twice", resourceFile.exists() );
@@ -343,9 +327,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     Integer version = ResourceManagerImpl.findVersion( testResource );
     String versionedResourceName
       = ResourceManagerImpl.versionedResourceName( testResource, version );
-    manager.register( TEST_RESOURCE_1,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      RegisterOptions.VERSION );
+    manager.register( TEST_RESOURCE_1, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
     
     boolean unregistered = manager.unregister( TEST_RESOURCE_1 );
     
@@ -366,9 +348,7 @@ public class ResourceManagerImpl_Test extends TestCase {
     IResourceManager manager = getManager( DELIVER_FROM_DISK );
     manager = getManager( DELIVER_FROM_DISK );
 
-    manager.register( TEST_RESOURCE_1,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      IResourceManager.RegisterOptions.VERSION );
+    manager.register( TEST_RESOURCE_1, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
     
     String loc = manager.getLocation( TEST_RESOURCE_1 );
     assertEquals( "Different locations", TEST_LOCATION_VERSIONED_DISK, loc );
@@ -384,9 +364,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   public void testVersionedLocationRetrievalServlet() {
     System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "true" );
     IResourceManager manager = getManager( DELIVER_BY_SERVLET );
-    manager.register( TEST_RESOURCE_1,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      IResourceManager.RegisterOptions.VERSION );
+    manager.register( TEST_RESOURCE_1, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
 
     String loc = manager.getLocation( TEST_RESOURCE_1 );
     assertEquals( "Different locations", TEST_LOCATION_VERSIONED_SERVLET, loc );
@@ -395,9 +373,7 @@ public class ResourceManagerImpl_Test extends TestCase {
   public void testFindResourceDisk() {
     IResourceManager manager = getManager( DELIVER_FROM_DISK );
     manager.register( TEST_RESOURCE_1 );
-    manager.register( TEST_RESOURCE_2,
-                      HTML.CHARSET_NAME_ISO_8859_1,
-                      IResourceManager.RegisterOptions.VERSION );
+    manager.register( TEST_RESOURCE_2, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
     
     assertNull( ResourceManagerImpl.findResource( TEST_RESOURCE_1, null ) );
     assertNull( ResourceManagerImpl.findResource( "not registered", null ) );

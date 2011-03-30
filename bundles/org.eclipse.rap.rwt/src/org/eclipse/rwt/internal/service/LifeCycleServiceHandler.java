@@ -22,7 +22,7 @@ import javax.servlet.http.*;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.ISessionStore;
 
 
@@ -119,7 +119,8 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     // Note: [rst] Do not use writeText as umlauts must not be encoded here
     out.write( MessageFormat.format( PATTERN_RELOAD, args ) );
     HttpServletResponse response = ContextProvider.getResponse();
-    response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
+    response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
+    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
     LifeCycleServiceHandler.writeOutput();
   }
 

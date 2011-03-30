@@ -13,21 +13,16 @@ package org.eclipse.rwt.internal.util;
 
 
 /**
- * 'Static' class which provides commonly used constants used to generate markup.
+ * Constant utility class which provides commonly used strings for HTTP.
  */
-public final class HTML {
-
-  public final static String CONTENT_TYPE = "Content-Type";
-  public final static String HTTP_EQUIV = "http-equiv";
+public final class HTTP {
 
   public final static String CONTENT_TEXT_HTML = "text/html";
   public final static String CONTENT_TEXT_JAVASCRIPT = "text/javascript";
-  public final static String CONTENT_TEXT_JAVASCRIPT_UTF_8 = "text/javascript; charset=UTF-8";
 
-  public final static String CHARSET_NAME_UTF_8 = "UTF-8";
-  public final static String CHARSET_NAME_ISO_8859_1 = "ISO-8859-1";
+  public final static String CHARSET_UTF_8 = "UTF-8";
 
-  private HTML() {
+  private HTTP() {
     // prevent instantiation
   }
 }

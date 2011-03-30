@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.IConfiguration;
-import org.eclipse.rwt.internal.util.HTML;
 
 
 public class JSLibraryServiceHandler_Test extends TestCase {
@@ -42,11 +41,10 @@ public class JSLibraryServiceHandler_Test extends TestCase {
     response.setOutputStream( new TestServletOutputStream() );
     JSLibraryServiceHandler handler = new JSLibraryServiceHandler();
     handler.service();
-    String encoding
-      = response.getHeader( JSLibraryServiceHandler.CONTENT_ENCODING );
+    String encoding = response.getHeader( JSLibraryServiceHandler.CONTENT_ENCODING );
     assertNull( encoding );
-    String contentType = response.getHeader( HTML.CONTENT_TYPE );
-    assertEquals( HTML.CONTENT_TEXT_JAVASCRIPT, contentType );
+    String contentType = response.getHeader( "Content-Type" );
+    assertEquals( "text/javascript; charset=UTF-8", contentType );
     String expires = response.getHeader( "Expires" );
     assertEquals( JSLibraryServiceHandler.EXPIRES_NEVER, expires );
     

@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -23,7 +23,7 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.resources.JsConcatenator;
 import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.IServiceHandler;
 
@@ -68,9 +68,9 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   public void service() throws IOException, ServletException {
     initializeOutput();
     HttpServletResponse response = RWT.getResponse();
-    response.setHeader( HTML.CONTENT_TYPE, HTML.CONTENT_TEXT_JAVASCRIPT );
+    response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
+    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
     response.setHeader( EXPIRES, EXPIRES_NEVER );
-    response.setCharacterEncoding( HTML.CHARSET_NAME_UTF_8 );
     if( isAcceptEncoding() && getConfiguration().isCompression()) {
       writeCompressedOutput();
     } else {
@@ -109,7 +109,7 @@ public class JSLibraryServiceHandler implements IServiceHandler {
     synchronized( JSLibraryServiceHandler.class ) {
       if( unCompressed == null ) {
         String content = getJsConcatenator().getContent();
-        unCompressed = content.getBytes( HTML.CHARSET_NAME_UTF_8 );
+        unCompressed = content.getBytes( HTTP.CHARSET_UTF_8 );
         hashCode = "H" + content.hashCode();
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
