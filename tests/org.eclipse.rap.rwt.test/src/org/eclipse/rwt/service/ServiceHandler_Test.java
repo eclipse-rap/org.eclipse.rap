@@ -10,11 +10,9 @@
  *    EclipseSource - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-
 package org.eclipse.rwt.service;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -24,19 +22,18 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServiceManager;
-import org.eclipse.rwt.internal.util.ClassInstantiationException;
 
 
 public class ServiceHandler_Test extends TestCase {
-  private final static String HANDLER_ID 
+
+  private static final String HANDLER_ID
     = "org.eclipse.rwt.service.ServiceHandler_Test.CustomHandler";
-  private final static String PROGRAMATIC_HANDLER_ID 
-    = "programmaticServiceHandlerId";
+  private static final String PROGRAMATIC_HANDLER_ID = "programmaticServiceHandlerId";
   private static final String SERVICE_DONE = "service done";
+
   private static String log = "";
-  private static boolean throwException = false;
-  
-  
+  private static boolean throwException;
+
   public static class CustomHandler implements IServiceHandler {
 
     public CustomHandler() {
@@ -44,30 +41,30 @@ public class ServiceHandler_Test extends TestCase {
         throw new IllegalStateException();
       }
     }
-    
+
     public void service() throws ServletException, IOException {
       log = SERVICE_DONE;
-    }    
+    }
   }
 
   public void testCustomServiceHandler() throws Exception {
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, HANDLER_ID );
-   
+
     ServiceManager.getHandler().service();
-    
+
     assertEquals( SERVICE_DONE, log );
   }
-  
+
   public void testProgramaticallyRegsiteredHandler() throws Exception {
     String id = PROGRAMATIC_HANDLER_ID;
     RWT.getServiceManager().registerServiceHandler( id, new CustomHandler() );
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, id );
 
     ServiceManager.getHandler().service();
-    
+
     assertEquals( SERVICE_DONE, log );
   }
-    
+
   public void testProgramaticallyUnRegsiteredHandler() throws Exception {
     String id = PROGRAMATIC_HANDLER_ID;
     RWT.getServiceManager().registerServiceHandler( id, new CustomHandler() );
@@ -85,19 +82,11 @@ public class ServiceHandler_Test extends TestCase {
     try {
       registerCustomHandler();
       fail();
-    } catch( ClassInstantiationException expected ) {
-      InvocationTargetException ite = ( InvocationTargetException )expected.getCause();
-      assertTrue( ite.getCause() instanceof IllegalStateException );
+    } catch( IllegalStateException expected ) {
       doTestEnvironmentCleanup();
     }
-/////////////////////////////////////
-//    TODO [fappel]: Replace catch clause with this code once patch of bug #340482 is applied,
-//                   or remove this comment in case patch is declined.    
-//  } catch( IllegalStateException expected ) {
-//    doTestEnvironmentCleanup();
-//  }
   }
-  
+
   protected void setUp() throws Exception {
     throwException = false;
     registerCustomHandler();
@@ -105,10 +94,11 @@ public class ServiceHandler_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
+    throwException = false;
     Fixture.tearDown();
     log = "";
   }
-  
+
   private void initResponseOutputStream() {
     HttpServletResponse response = ContextProvider.getResponse();
     TestResponse testResponse = ( TestResponse )response;
@@ -127,5 +117,5 @@ public class ServiceHandler_Test extends TestCase {
   private void doTestEnvironmentCleanup() {
     throwException = false;
     registerCustomHandler();
-  }  
+  }
 }

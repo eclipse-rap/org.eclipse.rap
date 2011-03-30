@@ -7,10 +7,11 @@
  *
  * Contributors:
  *    Rüdiger Herrmann - initial API and implementation
+ *    Frank Appel - improved exception handling (bug 340482)
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
@@ -31,6 +32,7 @@ public class ClassUtil_Test extends TestCase {
     String stringParam;
     Long longParam;
     public PublicClass() {
+      this( null ); // avoid unused private constructor marker 
     }
     private PublicClass( Object objectParam ) {
       this.objectParam = objectParam;
@@ -46,9 +48,15 @@ public class ClassUtil_Test extends TestCase {
     }
   }
   
-  static class ClassWithExceptionInConstructor {
-    ClassWithExceptionInConstructor() {
+  static class ClassWithRuntimeExceptionInConstructor {
+    ClassWithRuntimeExceptionInConstructor() {
       throw new ConstructorException();
+    }
+  }
+
+  static class ClassWithCheckedExceptionInConstructor {
+    ClassWithCheckedExceptionInConstructor() throws IOException {
+      throw new IOException();
     }
   }
   
@@ -86,12 +94,20 @@ public class ClassUtil_Test extends TestCase {
     assertEquals( instance.getClass(), PublicClass.class );
   }
   
-  public void testNewInstanceWithEceptionInConstructor() {
+  public void testNewInstanceWithRuntimeExceptionInConstructor() {
     try {
-      ClassUtil.newInstance( ClassWithExceptionInConstructor.class );
+      ClassUtil.newInstance( ClassWithRuntimeExceptionInConstructor.class );
       fail();
-    } catch( ClassInstantiationException e ) {
-      assertEquals( e.getCause().getClass(), InvocationTargetException.class );
+    } catch( ConstructorException expected ) {
+    }
+  }
+
+  public void testNewInstanceWithCheckedExceptionInConstructor() {
+    try {
+      ClassUtil.newInstance( ClassWithCheckedExceptionInConstructor.class );
+      fail();
+    } catch( ClassInstantiationException expected ) {
+      assertEquals( expected.getCause().getClass(), IOException.class );
     }
   }
   

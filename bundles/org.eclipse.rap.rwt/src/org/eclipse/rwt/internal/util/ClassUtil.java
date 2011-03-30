@@ -7,10 +7,12 @@
  *
  * Contributors:
  *    Rüdiger Herrmann - initial API and implementation
+ *    Frank Appel - improved exception handling (bug 340482)
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 
 public final class ClassUtil {
@@ -33,12 +35,18 @@ public final class ClassUtil {
 
   public static Object newInstance( Class type, Class[] paramTypes, Object[] paramValues ) {
     ParamCheck.notNull( type, "type" );
+    Object result = null;
     try {
-      return createInstance( type, paramTypes, paramValues );
-    } catch( Exception e ) {
-      String msg = "Failed to create instance of type: " + type.getName();
-      throw new ClassInstantiationException( msg, e );
+      result = createInstance( type, paramTypes, paramValues );
+    } catch( RuntimeException rte ) {
+      throw rte;
+    } catch( InvocationTargetException ite ) {
+      rethrowRuntimeExceptions( ite );
+      throwInstantiationException( type, ite.getCause() );
+    } catch( Exception exception ) {
+      throwInstantiationException( type, exception );
     }
+    return result;
   }
 
   private static Object createInstance( Class type, Class[] paramTypes, Object[] paramValues ) 
@@ -47,8 +55,19 @@ public final class ClassUtil {
     Constructor constructor = type.getDeclaredConstructor( paramTypes );
     if( !constructor.isAccessible() ) {
       constructor.setAccessible( true );
-    } 
+    }
     return constructor.newInstance( paramValues );
+  }
+
+  private static void rethrowRuntimeExceptions( InvocationTargetException ite ) {
+    if( ite.getCause() instanceof RuntimeException ) {
+      throw ( RuntimeException )ite.getCause();
+    }
+  }
+
+  private static void throwInstantiationException( Class type, Throwable cause ) {
+    String msg = "Failed to create instance of type: " + type.getName();
+    throw new ClassInstantiationException( msg, cause );
   }
 
   private ClassUtil() {
