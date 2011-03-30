@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -130,14 +131,14 @@ public final class KeyBindingUtil {
     if( !display.isDisposed() ) {
       String[] newValue = getKeyBindingList( display );
       if( hasKeyBindingListChanged( display, newValue ) ) {
-        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        HtmlResponseWriter writer = stateInfo.getResponseWriter();
         StringBuffer content = new StringBuffer();
         content.append( JSFUNC_SET_KEYBINDING_LIST );
         content.append( "(" );
         content.append( toJson( newValue ) );
         content.append( ");" );
-        writer.write( content.toString() );
+        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+        Writer responseWriter = stateInfo.getResponseWriter();
+        responseWriter.write( content.toString() );
       }
     }
   }

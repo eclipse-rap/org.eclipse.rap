@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 
 
-public class HtmlResponseWriter_Test extends TestCase {
+public class JavaScriptResponseWriter_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
@@ -33,7 +33,7 @@ public class HtmlResponseWriter_Test extends TestCase {
   // actual testing code
 
   public void testWriteMethods() throws Exception {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
+    JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
     writer.write( new char[] { 'a', 'b' } );
     writer.write( new char[] { 'a', 'b', '|', 'c', 'd' }, 2, 3 );
     writer.write( 124 );
@@ -44,7 +44,7 @@ public class HtmlResponseWriter_Test extends TestCase {
   }
 
   public void testFlush() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
+    JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
     writer.write( "foo" );
     assertEquals( "foo", getContents( writer ) );
     writer.flush();
@@ -52,7 +52,7 @@ public class HtmlResponseWriter_Test extends TestCase {
   }
 
   public void testClosedAssertions() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
+    JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
     writer.close();
     try {
       writer.close();
@@ -97,7 +97,7 @@ public class HtmlResponseWriter_Test extends TestCase {
   }
 
   public void testPrintContents() throws IOException {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
+    JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
     StringWriter stringWriter = new StringWriter();
     writer.printContents( new PrintWriter( stringWriter ) );
     assertEquals( "", stringWriter.getBuffer().toString() );
@@ -106,7 +106,7 @@ public class HtmlResponseWriter_Test extends TestCase {
     assertEquals( "Test", stringWriter.getBuffer().toString() );
   }
 
-  private static String getContents( HtmlResponseWriter writer ) {
+  private static String getContents( JavaScriptResponseWriter writer ) {
     StringWriter recorder = new StringWriter();
     writer.printContents( new PrintWriter( recorder ) );
     return recorder.getBuffer().toString();

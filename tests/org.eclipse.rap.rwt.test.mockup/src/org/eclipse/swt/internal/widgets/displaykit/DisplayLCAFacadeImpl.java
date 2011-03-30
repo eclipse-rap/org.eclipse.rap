@@ -12,8 +12,8 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
+import java.io.Writer;
 
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -26,19 +26,19 @@ public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
 
   IDisplayLifeCycleAdapter getDisplayLCAInternal() {
     return new IDisplayLifeCycleAdapter() {
-      public void preserveValues( final Display display ) {
+      public void preserveValues( Display display ) {
       }
-      public void processAction( final Device display ) {
+      public void processAction( Device display ) {
         doProcessAction( display );
       }
-      public void readData( final Display display ) {
+      public void readData( Display display ) {
         doReadData( display );
       }
 
-      public void render( final Display display ) throws IOException {
+      public void render( Display display ) throws IOException {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        HtmlResponseWriter out = stateInfo.getResponseWriter();
-        out.write( "Render Fake" );
+        Writer responseWriter = stateInfo.getResponseWriter();
+        responseWriter.write( "Render Fake" );
       }
     };
   }
@@ -46,12 +46,12 @@ public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
   void registerResourcesInternal() {
   }
 
-  void readBounds( final Display display ) {
+  void readBounds( Display display ) {
   }
 
-  void readFocusControl( final Display display ) {
+  void readFocusControl( Display display ) {
   }
 
-  void writeTestWidgetIdInternal( final Widget widget, final String id ) {
+  void writeTestWidgetIdInternal( Widget widget, String id ) {
   }
 }

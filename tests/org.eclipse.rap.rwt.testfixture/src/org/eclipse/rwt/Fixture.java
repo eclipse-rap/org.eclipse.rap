@@ -280,7 +280,7 @@ public class Fixture {
   
   public static String getAllMarkup() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter writer = stateInfo.getResponseWriter();
+    JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
     StringWriter recorder = new StringWriter();
     writer.printContents( new PrintWriter( recorder ) );
     return recorder.getBuffer().toString();
@@ -305,9 +305,8 @@ public class Fixture {
   }
 
   public static void fakeResponseWriter() {
-    HtmlResponseWriter writer = new HtmlResponseWriter();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setResponseWriter( writer );
+    stateInfo.setResponseWriter( new JavaScriptResponseWriter() );
   }
 
   public static void fakePhase( final PhaseId phase ) {

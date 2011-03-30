@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HtmlResponseWriter extends Writer {
+public class JavaScriptResponseWriter extends Writer {
 
   private final List body = new ArrayList();
 

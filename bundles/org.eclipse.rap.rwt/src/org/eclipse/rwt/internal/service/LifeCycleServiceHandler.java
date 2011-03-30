@@ -11,10 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -104,8 +103,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       ContextProvider.getContext().setStateInfo( stateInfo );
     }
     if( stateInfo.getResponseWriter() == null ) {
-      HtmlResponseWriter responseWriter = new HtmlResponseWriter();
-      stateInfo.setResponseWriter( responseWriter );
+      stateInfo.setResponseWriter( new JavaScriptResponseWriter() );
     }
   }
 
@@ -113,11 +111,10 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     throws IOException
   {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter out = stateInfo.getResponseWriter();
+    Writer responseWriter = stateInfo.getResponseWriter();
     String message = RWTMessages.getMessage( "RWT_MultipleInstancesError" );
     Object[] args = new Object[] { message };
-    // Note: [rst] Do not use writeText as umlauts must not be encoded here
-    out.write( MessageFormat.format( PATTERN_RELOAD, args ) );
+    responseWriter.write( MessageFormat.format( PATTERN_RELOAD, args ) );
     HttpServletResponse response = ContextProvider.getResponse();
     response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
@@ -147,7 +144,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
   private static void writeOutput() throws IOException {
     if( !ContextProvider.getContext().isDisposed() ) {
-      HtmlResponseWriter responseWriter = ContextProvider.getStateInfo().getResponseWriter();
+      JavaScriptResponseWriter responseWriter = ContextProvider.getStateInfo().getResponseWriter();
       PrintWriter outputWriter = getOutputWriter();
       try {
         responseWriter.printContents( outputWriter );

@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
@@ -131,9 +132,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void writeRequestCounter() throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter out = stateInfo.getResponseWriter();
+    Writer responseWriter = stateInfo.getResponseWriter();
     Object[] args = new Object[] { RWTRequestVersionControl.nextRequestId() };
-    out.write( MessageFormat.format( PATTERN_REQUEST_COUNTER, args ) );
+    responseWriter.write( MessageFormat.format( PATTERN_REQUEST_COUNTER, args ) );
   }
 
   private static void writeTheme( final Display display ) throws IOException {
@@ -147,8 +148,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       buffer.append( theme.getJsId() );
       buffer.append( " );" );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      HtmlResponseWriter out = stateInfo.getResponseWriter();
-      out.write( buffer.toString() );
+      Writer responseWriter = stateInfo.getResponseWriter();
+      responseWriter.write( buffer.toString() );
     }
   }
 
@@ -164,8 +165,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       Object[] param = new Object[] { timeoutPage };
       String jsCode = MessageFormat.format( pattern, param );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      HtmlResponseWriter out = stateInfo.getResponseWriter();
-      out.write( jsCode );
+      Writer responseWriter = stateInfo.getResponseWriter();
+      responseWriter.write( jsCode );
     }
   }
 
@@ -206,8 +207,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
                     + exitConfirmationStr
                     + " );";
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      HtmlResponseWriter out = stateInfo.getResponseWriter();
-      out.write( code );
+      Writer responseWriter = stateInfo.getResponseWriter();
+      responseWriter.write( code );
     }
   }
 
@@ -304,13 +305,14 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         Control focusControl = display.getFocusControl();
         if( focusControl != null ) {
           // TODO [rh] use JSWriter to output focus JavaScript
+          StringBuffer buffer = new StringBuffer();
+          buffer.append( "org.eclipse.swt.WidgetManager.getInstance()." );
+          buffer.append( "focus( \"" );
+          buffer.append( WidgetUtil.getId( display.getFocusControl() ) );
+          buffer.append( "\" );" );
           IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-          HtmlResponseWriter out = stateInfo.getResponseWriter();
-          String id = WidgetUtil.getId( display.getFocusControl() );
-          out.write( "org.eclipse.swt.WidgetManager.getInstance()." );
-          out.write( "focus( \"" );
-          out.write( id );
-          out.write( "\" );" );
+          Writer responseWriter = stateInfo.getResponseWriter();
+          responseWriter.write( buffer.toString() );
         }
       }
     }
