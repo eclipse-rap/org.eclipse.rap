@@ -4,7 +4,8 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.rwt
 Bundle-Version: 1.4.0.qualifier
 Bundle-ClassPath: patch.jar,
- .
+ .,
+ rhino/
 Eclipse-ExtensibleAPI: true
 Bundle-Localization: plugin
 Bundle-Vendor: %Bundle-Vendor
@@ -13,7 +14,8 @@ Import-Package: javax.servlet;version="[2.3.0,3.0.0]",
  javax.xml.parsers,
  org.w3c.dom,
  org.xml.sax
-Export-Package: org.eclipse.rwt,
+Export-Package: com.yahoo.platform.yui.compressor;x-internal:=true,
+ org.eclipse.rwt,
  org.eclipse.rwt.apache.batik.css.parser;x-internal:=true,
  org.eclipse.rwt.apache.batik.util.io;x-internal:=true,
  org.eclipse.rwt.branding,
@@ -72,6 +74,7 @@ Export-Package: org.eclipse.rwt,
  org.eclipse.swt.internal.widgets.menukit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.swt.internal.widgets.progressbarkit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.swt.internal.widgets.sashkit;x-friends:="org.eclipse.rap.rwt.test",
+ org.eclipse.swt.internal.widgets.scrollbarkit,
  org.eclipse.swt.internal.widgets.shellkit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.swt.internal.widgets.spinnerkit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.swt.internal.widgets.tabfolderkit;x-friends:="org.eclipse.rap.rwt.test",
