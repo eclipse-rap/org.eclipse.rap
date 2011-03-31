@@ -21,6 +21,8 @@ public interface IBrowserAdapter {
   void setExecuteResult( boolean executeResult, Object evalResult );
   void setExecutePending( boolean executePending );
   boolean getExecutePending();
+  // FIXME [rh] is getAndRest... a typo or intended? A method that does two things is most likely 
+  //       bad design. How about getUrlChanged() and resetUrlChanged()? 
   boolean getAndRestUrlChanged();
 
   BrowserFunction[] getBrowserFunctions();
