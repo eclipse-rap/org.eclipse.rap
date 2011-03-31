@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -13,6 +13,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
   extend : qx.core.Object,
 
   members : {
+
+    testRenderPaddingWithRoundedBorder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new org.eclipse.rwt.widgets.Text( false );
+      org.eclipse.swt.TextUtil.initialize( text );
+      text.setPadding( 3 );
+      text.setBorder( new org.eclipse.rwt.RoundedBorder( 1, "black", 0 ) );
+      text.addToDocument();
+      testUtil.flush();
+      assertEquals( "", text._style.paddingLeft );
+      assertEquals( "3px", text._innerStyle.paddingLeft );
+      text.destroy();
+    },
 
     testCreateAsTextSetPasswordMode : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -38,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       testUtil.flush();
       testUtil.clearTimerOnceLog();
     },
-          
+
     testCreateAsPasswordSetTextMode : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.prepareTimerUse();

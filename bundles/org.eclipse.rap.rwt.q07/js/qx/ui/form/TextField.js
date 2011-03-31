@@ -327,7 +327,8 @@ qx.Class.define("qx.ui.form.TextField",
         // to overwrite the margin, which is not possible in IE.
         // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=73817
         if (qx.core.Variant.isSet("qx.client", "gecko|opera|webkit")) {
-          istyle.margin = "1px 0"
+          // NOTE [tb] : Non-IE browser also shift text 1px to the right, correcting with margin: 
+          istyle.margin = "1px 0 1px -1px";
         }
 
         // Sync font, color, textAlign and cursor
@@ -848,20 +849,15 @@ qx.Class.define("qx.ui.form.TextField",
         if (!this._firstInputFixApplied && this._inputElement) {
           qx.client.Timer.once(this._ieFirstInputFix, this, 1);
         }
-// RAP [if] Centered text field vertically
         this._centerFieldVertically();
-// RAPEND [if]
       },
 
       "default" : function() {
         this.base(arguments);
-// RAP [if] Centered text field vertically
         this._centerFieldVertically();
-// RAPEND [if]
       }
     }),
 
-// RAP [if] Centered text field vertically
     _centerFieldVertically : function() {
       if( this._inputTag === "input" && this._inputElement ) {
         var innerHeight = this.getInnerHeight();
@@ -882,7 +878,6 @@ qx.Class.define("qx.ui.form.TextField",
         }
       }
     },
-// RAPEND [if]
 
     _firstInputFixApplied : false,
 

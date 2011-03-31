@@ -496,17 +496,10 @@ qx.Class.define( "qx.ui.core.Widget", {
       var applyPadding = applyRuntime + "Padding";
       var resetPadding = resetRuntime + "Padding";
       var stylePadding = style + "padding";
-      if (qx.core.Variant.isSet("qx.client", "gecko")) {
-        for (var i=0; i<4; i++) {
-          members[applyPadding + propertiesUpper[i]] = new Function(parameter, stylePadding + propertiesUpper[i] + cssValue);
-          members[resetPadding + propertiesUpper[i]] = new Function(stylePadding + propertiesUpper[i] + "=''");
-        }
-      } else {
-        // need to use setStyleProperty to keep compatibility with enhanced cross browser borders
-        for (var i=0; i<4; i++) {
-          members[applyPadding + propertiesUpper[i]] = new Function(parameter, "this.setStyleProperty('padding" + propertiesUpper[i] + "', ((v==null)?0:v)+'px')");
-          members[resetPadding + propertiesUpper[i]] = new Function("this.removeStyleProperty('padding" + propertiesUpper[i] + "')");
-        }
+      // need to use setStyleProperty to keep compatibility with enhanced cross browser borders
+      for (var i=0; i<4; i++) {
+        members[applyPadding + propertiesUpper[i]] = new Function(parameter, "this.setStyleProperty('padding" + propertiesUpper[i] + "', ((v==null)?0:v)+'px')");
+        members[resetPadding + propertiesUpper[i]] = new Function("this.removeStyleProperty('padding" + propertiesUpper[i] + "')");
       }
 
       /*
@@ -3758,11 +3751,12 @@ qx.Class.define( "qx.ui.core.Widget", {
       this._targetNode = document.createElement( "div" );
       this._innerStyle = this._targetNode.style;
       this._layoutTargetNode = true;
-      if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        this._innerStyle.width = this._innerStyle.height = "100%";
-      } else {
+      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
         this.addToQueue( "width" );
         this.addToQueue( "height" );
+      } else {
+        this._innerStyle.width = "100%";
+        this._innerStyle.height = "100%";
       }
       this._innerStyle.position = "absolute";
       for( var i in this._styleProperties ) {
