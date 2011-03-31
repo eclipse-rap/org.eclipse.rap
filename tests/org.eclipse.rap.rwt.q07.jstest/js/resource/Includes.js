@@ -23,13 +23,6 @@
     }
     return result;
   };
-  
-  if(    typeof console === "object" 
-      && typeof console.log === "function"
-      && getURLParam( "debug" ) === "off" ) 
-  {
-    console.log( "debug is OFF" );
-  }
 
   qxsettings = {};
   qxsettings[ "qx.application" ] = "org.eclipse.rwt.test.Application";
@@ -289,12 +282,8 @@
     document.write( output.join( "" ) );
   };
   
-  if( getURLParam( "debug" ) === "off" ) {
-    include( "../org.eclipse.rap.rwt.q07/resources/client.js" );
-  } else {
-    for( var i = 0; i < clientClasses.length; i++ ) {
-      include( "../org.eclipse.rap.rwt.q07/js/" + clientClasses[ i ] );
-    }
+  for( var i = 0; i < clientClasses.length; i++ ) {
+    include( "../org.eclipse.rap.rwt.q07/js/" + clientClasses[ i ] );
   }
 
   for( var i = 0; i < testRunnerClasses.length; i++ ) {
