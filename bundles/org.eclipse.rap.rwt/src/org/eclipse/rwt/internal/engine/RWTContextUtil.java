@@ -54,7 +54,8 @@ public class RWTContextUtil {
     ResourceRegistryInstance.class,
     ServiceManagerImpl.class,
     DisplaysHolder.class,
-    ThemeAdapterUtil.class
+    ThemeAdapterUtil.class,
+    JSLibraryConcatenator.class
   };
 
   public static RWTContext registerDefaultRWTContext( ServletContext context ) {

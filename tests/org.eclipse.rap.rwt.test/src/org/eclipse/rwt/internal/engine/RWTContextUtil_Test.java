@@ -107,6 +107,9 @@ public class RWTContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( ThemeAdapterUtil.class ) );
     assertSame( rwtContext.getInstance( ThemeAdapterUtil.class ),
                 getSingleton( ThemeAdapterUtil.class ) );
+    assertNotNull( getSingleton( JSLibraryConcatenator.class ) );
+    assertSame( rwtContext.getInstance( JSLibraryConcatenator.class ),
+                getSingleton( JSLibraryConcatenator.class ) );
     
     RWTContextUtil.deregisterRWTContext( servletContext );
     try {

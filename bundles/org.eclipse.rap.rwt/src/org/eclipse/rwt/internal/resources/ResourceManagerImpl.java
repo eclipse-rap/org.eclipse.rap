@@ -17,12 +17,12 @@ import java.net.*;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.IEngineConfig;
 import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.*;
+import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.internal.util.URLHelper;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
@@ -39,7 +39,7 @@ import org.eclipse.rwt.resources.IResourceManager;
  * This class is not intended to be used by clients.
  * </p>
  */
-public class ResourceManagerImpl implements IResourceManager, Adaptable {
+public class ResourceManagerImpl implements IResourceManager {
 
   /**
    * <p>denotes a mode in which resources are delivered: resources
@@ -74,7 +74,6 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
   private String webAppRoot;
   private ClassLoader loader;
   private ThreadLocal contextLoader;
-  private JsConcatenator jsConcatenator;
   private String deliveryMode = DELIVER_BY_SERVLET;
 
   private static final class Resource {
@@ -211,31 +210,6 @@ public class ResourceManagerImpl implements IResourceManager, Adaptable {
    */
   public static String getDeliveryMode() {
     return ( ( ResourceManagerImpl )getInstance() ).deliveryMode;
-  }
-
-  //////////////////////
-  // interface Adaptable
-
-  public Object getAdapter( final Class adapter ) {
-    Object result = null;
-    if( adapter == JsConcatenator.class ) {
-      if( jsConcatenator == null ) {
-        ResourceUtil.startJsConcatenation();
-        jsConcatenator = new JsConcatenator() {
-
-          private String content;
-
-          public String getContent() {
-            if( content == null ) {
-              content = ResourceUtil.getJsConcatenationContentAsString();
-            }
-            return content;
-          }
-        };
-      }
-      result = jsConcatenator;
-    }
-    return result;
   }
 
   /////////////////////////////

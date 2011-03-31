@@ -16,6 +16,8 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
+
 
 public class ResourceUtil_Test extends TestCase {
 
@@ -63,17 +65,19 @@ public class ResourceUtil_Test extends TestCase {
   }
 
   public void testConcatenationEmpty() {
-    ResourceUtil.startJsConcatenation();
-    String result = ResourceUtil.getJsConcatenationContentAsString();
+    JSLibraryConcatenator jsConcatenator = JSLibraryConcatenator.getInstance();
+    jsConcatenator.startJSConcatenation();
+    String result = jsConcatenator.getContent();
     assertEquals( "", result );
   }
 
   public void testConcatenation() throws IOException {
-    ResourceUtil.startJsConcatenation();
+    JSLibraryConcatenator jsConcatenator = JSLibraryConcatenator.getInstance();
+    jsConcatenator.startJSConcatenation();
     File file = File.createTempFile( "test", ".js" );
     ResourceUtil.write( file, getStringAsIntArray( "foo" ) );
     ResourceUtil.write( file, getStringAsIntArray( "bar" ) );
-    String result = ResourceUtil.getJsConcatenationContentAsString();
+    String result = jsConcatenator.getContent();
     assertEquals( "foo\nbar\n", result );
   }
 
@@ -84,5 +88,15 @@ public class ResourceUtil_Test extends TestCase {
       content[ i ] = ( bytes[ i ] & 0x0ff );
     }
     return content;
+  }
+
+  protected void setUp() throws Exception {
+    Fixture.createRWTContext();
+    Fixture.createServiceContext();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfRWTContext();
   }
 }

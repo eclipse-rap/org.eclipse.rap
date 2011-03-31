@@ -16,28 +16,17 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.rwt.internal.resources.JsConcatenator;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
-public class TestResourceManager
-  implements IResourceManager, Adaptable
-{
+public class TestResourceManager implements IResourceManager {
   private ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
   private final Set registeredResources;
 
   public TestResourceManager() {
     registeredResources = new HashSet();
-  }
-
-  public Object getAdapter( final Class adapter ) {
-    return new JsConcatenator() {
-      public String getContent() {
-        return "";
-      }
-    };
   }
 
   public String getCharset( final String name ) {

@@ -23,9 +23,9 @@ import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.resources.*;
+import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.service.SettingStoreManager;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
@@ -131,7 +131,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
   }
 
   private static void registerResourceManagerFactory() {
-    ResourceManager.register( new ResourceManagerFactory() );
+    ResourceManager.register( new DefaultResourceManagerFactory() );
   }
 
   private static void registerSettingStoreFactory() {
@@ -376,8 +376,10 @@ public final class EngineConfigWrapper implements IEngineConfig {
   }
 
   private void registerJSLibraryServiceHandler() {
-    ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID,
-                                           new JSLibraryServiceHandler() );
+    JSLibraryServiceHandler handler = new JSLibraryServiceHandler();
+    ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, handler );
+    // TODO [SystemStart]: move this to where the actual system initialization takes place
+    JSLibraryConcatenator.getInstance().startJSConcatenation();
   }
 
   private void registerCustomServiceHandlers() {

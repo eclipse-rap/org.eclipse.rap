@@ -25,8 +25,7 @@ import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.resources.ResourceRegistry;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.HTTP;
@@ -225,7 +224,7 @@ public final class RWTStartupPageConfigurer
     return ( RWTStartupPageConfigurer )singleton;
   }
 
-  private static String getJsLibraries() throws IOException {
+  private static String getJsLibraries() {
     StringBuffer buffer = new StringBuffer();
     IResource[] resources = ResourceRegistry.get();
     for( int i = 0; i < resources.length; i++ ) {

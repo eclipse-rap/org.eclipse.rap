@@ -24,7 +24,8 @@ import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.service.SettingStoreManager;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
@@ -107,7 +108,6 @@ public final class RWTServletContextListener implements ServletContextListener {
       registerResources( servletContext );
       registerUICallBackServiceHandler();
       registerJSLibraryServiceHandler();
-      ResourceUtil.startJsConcatenation();
     }
   }
 
@@ -463,8 +463,10 @@ public final class RWTServletContextListener implements ServletContextListener {
   // Helping methods - JS Library service handler
   
   public static void registerJSLibraryServiceHandler() {
-    ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID,
-                                           new JSLibraryServiceHandler() );
+    JSLibraryServiceHandler handler = new JSLibraryServiceHandler();
+    ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, handler );
+    // TODO [SystemStart]: move this to where the actual system initialization takes place
+    JSLibraryConcatenator.getInstance().startJSConcatenation();
   }
 
   public static void deregisterJSLibraryServiceHandler() {

@@ -21,8 +21,6 @@ import org.eclipse.rwt.resources.IResourceManager;
 
 public final class ResourceUtil {
 
-  private static ByteArrayOutputStream jsConcatenationBuffer = null;
-
   static int[] read( final String name,
                      final String charset,
                      final boolean compress )
@@ -58,12 +56,6 @@ public final class ResourceUtil {
       try {
         for( int i = 0; i < content.length; i++ ) {
           out.write( content[ i ] );
-          if( jsConcatenationBuffer != null && toWrite.getName().endsWith( ".js" ) ) {
-            jsConcatenationBuffer.write( content[ i ] );
-            if( i == content.length - 1 ) {
-              jsConcatenationBuffer.write( '\n' );
-            }
-          }
         }
       } finally {
         out.close();
@@ -71,26 +63,12 @@ public final class ResourceUtil {
     } finally {
       fos.close();
     }
+    JSLibraryConcatenator.getInstance().appendJSLibrary( toWrite, content );
   }
 
   public static void useJsLibrary( String libraryName ) {
     ParamCheck.notNull( libraryName, "libraryName" );
     // TODO [rst] Add to concatenation buffer
-  }
-
-  public static void startJsConcatenation() {
-    jsConcatenationBuffer = new ByteArrayOutputStream();
-  }
-
-  static String getJsConcatenationContentAsString() {
-    String result = "";
-    try {
-      result = jsConcatenationBuffer.toString( HTTP.CHARSET_UTF_8 );
-    } catch( UnsupportedEncodingException e ) {
-      // ignore
-    }
-    jsConcatenationBuffer = null;
-    return result;
   }
 
   private static int[] readText( final String name,
@@ -197,8 +175,7 @@ public final class ResourceUtil {
     }
     URLConnection con = resource.openConnection();
     con.setUseCaches( false );
-    InputStream result = con.getInputStream();
-    return result;
+    return con.getInputStream();
   }
 
   static void compress( final StringBuffer javaScript ) throws IOException {

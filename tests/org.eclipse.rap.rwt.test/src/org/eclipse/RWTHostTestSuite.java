@@ -27,6 +27,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.*;
 import org.eclipse.rwt.internal.util.ClassUtil_Test;
+import org.eclipse.rwt.internal.util.StreamWritingUtil_Test;
 import org.eclipse.rwt.internal.widgets.JSExecutor_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
@@ -114,10 +115,12 @@ public class RWTHostTestSuite {
     suite.addTestSuite( UICallBackManager_Test.class );
     suite.addTestSuite( UICallBackServiceHandler_Test.class );
     suite.addTestSuite( JSLibraryServiceHandler_Test.class);
+    suite.addTestSuite( JSLibraryConcatenator_Test.class);
     suite.addTestSuite( LifeCycleServiceHandler_Test.class );
     suite.addTestSuite( StartupPageTemplateHolder_Test.class );
     suite.addTestSuite( EncodingUtil_Test.class );
     suite.addTestSuite( ClassUtil_Test.class );
+    suite.addTestSuite( StreamWritingUtil_Test.class );
 
     suite.addTestSuite( Display_Test.class );
     suite.addTestSuite( Monitor_Test.class );
