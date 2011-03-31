@@ -31,13 +31,13 @@ public class RWTDelegate_Test extends TestCase {
     TestRequest request = new TestRequest();
     request.setPathInfo( "/" );
     String url = RWTDelegate.createRedirectUrl( request );
-    assertEquals( "/fooapp/W4TDelegate", url );
+    assertEquals( "/fooapp/rap", url );
     request.setParameter( "param1", "value1" );
     url = RWTDelegate.createRedirectUrl( request );
-    assertEquals( "/fooapp/W4TDelegate?param1=value1", url );
+    assertEquals( "/fooapp/rap?param1=value1", url );
     request.setParameter( "param2", "value2" );
     url = RWTDelegate.createRedirectUrl( request );
-    assertTrue(    "/fooapp/W4TDelegate?param1=value1&param2=value2".equals( url )
-                || "/fooapp/W4TDelegate?param2=value2&param1=value1".equals( url ) );
+    assertTrue(    "/fooapp/rap?param1=value1&param2=value2".equals( url )
+                || "/fooapp/rap?param2=value2&param1=value1".equals( url ) );
   }
 }

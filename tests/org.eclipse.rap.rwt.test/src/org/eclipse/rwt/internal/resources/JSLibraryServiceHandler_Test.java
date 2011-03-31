@@ -44,10 +44,9 @@ public class JSLibraryServiceHandler_Test extends TestCase {
     String encoding = response.getHeader( JSLibraryServiceHandler.CONTENT_ENCODING );
     assertEquals( JSLibraryServiceHandler.ENCODING_GZIP, encoding );
   }
-  
 
   public void testRequestURLCreation() {
-    String expected =   "W4TDelegate?custom_service_handler"
+    String expected =   "rap?custom_service_handler"
                       + "=org.eclipse.rwt.internal.resources.JSLibraryServiceHandler"
                       + "&hash=H0";
     

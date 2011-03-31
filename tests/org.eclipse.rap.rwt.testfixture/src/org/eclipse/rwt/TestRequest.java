@@ -22,8 +22,8 @@ import javax.servlet.http.*;
 
 public final class TestRequest implements HttpServletRequest {
   public static final int PORT = 8080;
-  public static final String SERVLET_PATH = "/W4TDelegate";
-  public static final String REQUEST_URI = "/fooapp/W4TDelegate";
+  public static final String SERVLET_PATH = "/rap";
+  public static final String REQUEST_URI = "/fooapp/rap";
   public static final String CONTEX_PATH = "/fooapp";
   public static final String SERVER_NAME = "fooserver";
 

@@ -44,7 +44,7 @@ public class BrandingUtil_Test extends TestCase {
       return headers;
     }
     public String getServletName() {
-      return "W4TDelegate";
+      return "rap";
     }
     public String getId() {
       return TestBranding.class.getName();
