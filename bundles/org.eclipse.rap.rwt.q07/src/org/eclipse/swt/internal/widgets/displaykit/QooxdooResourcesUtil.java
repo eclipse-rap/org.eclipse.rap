@@ -29,8 +29,6 @@ final class QooxdooResourcesUtil {
     = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
-  private static final String CLIENT_JS = "client.js";
-
   private static final String[] JAVASCRIPT_FILES = new String[]{
     "debug-settings.js",
     "qx/core/Bootstrap.js",
@@ -300,13 +298,9 @@ final class QooxdooResourcesUtil {
   }
 
   private static void registerJavascriptFiles() {
-    if( isDebug() ) {
-      for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
-        String resource = JAVASCRIPT_FILES[ i ];
-        register( resource, false );
-      }
-    } else {
-      register( CLIENT_JS, false );
+    for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
+      String resource = JAVASCRIPT_FILES[ i ];
+      register( resource, !isDebug() );
     }
   }
 
