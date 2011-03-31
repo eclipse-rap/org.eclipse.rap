@@ -1635,8 +1635,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
-//     TODO : png-ie6-support.
-
      /////////
      // Helper
 
