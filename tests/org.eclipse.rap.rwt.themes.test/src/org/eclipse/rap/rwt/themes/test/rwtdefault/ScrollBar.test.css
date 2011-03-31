@@ -29,6 +29,7 @@ ScrollBar-Thumb[VERTICAL] {
     color-stop( 62%, #e0e0e0 ),
     to( #ffffff )
   );
+  min-height: 20px;
 }
 
 ScrollBar-Thumb[HORIZONTAL] {
@@ -42,6 +43,7 @@ ScrollBar-Thumb[HORIZONTAL] {
     color-stop( 62%, #e0e0e0 ),
     to( #ffffff )
   );
+  min-height: 20px;
 }
 
 ScrollBar-Thumb[VERTICAL]:hover {
@@ -55,6 +57,7 @@ ScrollBar-Thumb[VERTICAL]:hover {
     color-stop( 58%, #e0e0e0 ),
     to( #cccccc )
   );
+  min-height: 20px;
 }
 
 ScrollBar-Thumb[HORIZONTAL]:hover {
@@ -68,6 +71,7 @@ ScrollBar-Thumb[HORIZONTAL]:hover {
     color-stop( 58%, #e0e0e0 ),
     to( #cccccc )
   );
+  min-height: 20px;
 }
 
 ScrollBar-Thumb[VERTICAL]:pressed {
@@ -80,6 +84,7 @@ ScrollBar-Thumb[VERTICAL]:pressed {
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
   );
+  min-height: 20px;
 }
 
 ScrollBar-Thumb[HORIZONTAL]:pressed {
@@ -92,6 +97,7 @@ ScrollBar-Thumb[HORIZONTAL]:pressed {
     color-stop( 52%, #e0e0e0 ),
     to( #b0b0b0 )
   );
+  min-height: 20px;
 }
 
 /* Buttons */

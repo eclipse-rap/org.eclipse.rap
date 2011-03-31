@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -666,6 +666,13 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testIsFontProperty() {
     assertTrue( PropertyResolver.isFontProperty( "font" ) );
+  }
+
+  public void testIsDimensionProperty() {
+    assertTrue( PropertyResolver.isDimensionProperty( "spacing" ) );
+    assertTrue( PropertyResolver.isDimensionProperty( "width" ) );
+    assertTrue( PropertyResolver.isDimensionProperty( "height" ) );
+    assertTrue( PropertyResolver.isDimensionProperty( "min-height" ) );
   }
 
   public void testIsBoxDimProperty() {

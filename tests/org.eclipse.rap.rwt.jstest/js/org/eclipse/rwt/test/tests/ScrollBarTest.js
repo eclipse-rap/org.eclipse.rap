@@ -14,6 +14,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
   construct : function() {
     var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
     testUtil.prepareTimerUse();
+    org.eclipse.rwt.widgets.ScrollBar.prototype._getMinThumbSize = function() { return 8; };
   },
 
   members : {

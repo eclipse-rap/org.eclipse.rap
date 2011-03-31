@@ -23,6 +23,7 @@ ScrollBar-Thumb {
   border: 1px solid #b4b4b4;
   border-radius: 0px;
   background-image: none;
+  min-height: 20px;
 }
 
 ScrollBar-Thumb:pressed {

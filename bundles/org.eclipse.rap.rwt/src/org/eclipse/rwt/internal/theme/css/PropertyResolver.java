@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -186,7 +186,8 @@ public final class PropertyResolver {
   static boolean isDimensionProperty( final String property ) {
     return    "spacing".equals( property )
            || "width".equals( property )
-           || "height".equals( property );
+           || "height".equals( property )
+           || "min-height".equals( property );
   }
 
   static QxDimension readDimension( final LexicalUnit unit ) {

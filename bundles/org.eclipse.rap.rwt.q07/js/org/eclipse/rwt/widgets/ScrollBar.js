@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
     this._renderSamples = 0;
     this._eventTimerId = null;
     this._setMinimum( 0 );
-    this._minThumbSize = org.eclipse.rwt.widgets.ScrollBar.MIN_THUMB_SIZE;
+    this._minThumbSize = this._getMinThumbSize();
     this.setIncrement( 20 );
     this.addEventListener( "click", this._stopEvent, this );
     this.addEventListener( "dblclick", this._stopEvent, this );
@@ -38,8 +38,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
   },
 
   statics : {
-    MERGE_THRESHOLD : 4,
-    MIN_THUMB_SIZE : 8
+    
+    MERGE_THRESHOLD : 4
+
   },
   
   events: {
@@ -184,6 +185,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
     
     ////////////
     // Internals
+    
+    _getMinThumbSize : function() {
+      var themeValues = new org.eclipse.swt.theme.ThemeValues( this.__states );
+      return themeValues.getCssDimension( "ScrollBar-Thumb", "min-height" );
+    },    
 
     _updateThumbLength : function() {
       this._setThumb( this._getSliderSize() );
