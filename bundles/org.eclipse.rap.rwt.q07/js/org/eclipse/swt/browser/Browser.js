@@ -78,6 +78,17 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
   },
   
   members : {
+    
+    syncSource : function() {
+      if( this.isCreated() ) {
+        this._syncSource();
+      }
+    },
+    
+    // overwritten
+    _applySource : function( value, oldValue ) {
+      // server syncs manually
+    },
 
     _onLoad : function( evt ) {
       this.release();

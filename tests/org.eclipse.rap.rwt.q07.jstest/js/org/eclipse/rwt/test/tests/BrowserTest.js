@@ -190,6 +190,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         browser.setSource( "http://www.google.de/" );
+        browser.syncSource();
         testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
@@ -209,6 +210,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         browser.setSource( "http://www.google.de/" );
+        browser.syncSource();
         testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
@@ -326,6 +328,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         assertTrue( "slow connection?", browser._isLoaded );
         browser.createFunction( "abc" );
         browser.setSource( "http://www.google.com/" );
+        browser.syncSource();
         testUtil.delayTest( 2500 );
         testUtil.store( browser );
       },
@@ -516,6 +519,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       browser.addToDocument();
       browser.setSpace( 10, 576, 57, 529 );
       browser.setSource( this.BLANK );
+      browser.syncSource();
       var wm = org.eclipse.swt.WidgetManager.getInstance();      
       wm.add( browser, "w6", true );
       testUtil.flush();

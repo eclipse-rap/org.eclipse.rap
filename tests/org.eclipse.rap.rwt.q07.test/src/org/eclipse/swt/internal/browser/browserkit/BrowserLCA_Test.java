@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public class BrowserLCA_Test extends TestCase {
 
-  public void testUrl() throws IOException {
+  public void testTextChanged() throws IOException {
     Display display = new Display();
     Fixture.markInitialized( display );
     Shell shell = new Shell( display );
@@ -54,25 +54,65 @@ public class BrowserLCA_Test extends TestCase {
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( "GoodBye".hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
-
-    browser = new Browser( shell, SWT.NONE );
-    browser.setUrl( "http://eclipse.org/rap" );
-    assertTrue( BrowserLCA.hasUrlChanged( browser ) );
-    assertEquals( "http://eclipse.org/rap", BrowserLCA.getUrl( browser ) );
-
-    Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
-    browser.setUrl( "http://eclipse.org/rip" );
+    browser.setText( "GoodBye" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
-    assertEquals( "http://eclipse.org/rip", BrowserLCA.getUrl( browser ) );
-
+    expected = String.valueOf( "GoodBye".hashCode() );
+    assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
+    
     browser = new Browser( shell, SWT.NONE );
     browser.setText( "" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
   }
+  
+  public void testUrlChanged() throws IOException {
+    Display display = new Display();
+    Fixture.markInitialized( display );
+    Shell shell = new Shell( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    
+    assertTrue( BrowserLCA.hasUrlChanged( browser ) );
+    String expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
+    assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
+    
+    Fixture.markInitialized( browser );
+    Fixture.preserveWidgets();
+    assertFalse( BrowserLCA.hasUrlChanged( browser ) );
+    
+    browser = new Browser( shell, SWT.NONE );
+    browser.setUrl( "http://eclipse.org/rap" );
+    assertTrue( BrowserLCA.hasUrlChanged( browser ) );
+    assertEquals( "http://eclipse.org/rap", BrowserLCA.getUrl( browser ) );
+    
+    Fixture.markInitialized( browser );
+    Fixture.preserveWidgets();
+    browser.setUrl( "http://eclipse.org/rip" );
+    assertTrue( BrowserLCA.hasUrlChanged( browser ) );
+    assertEquals( "http://eclipse.org/rip", BrowserLCA.getUrl( browser ) );
+    Fixture.preserveWidgets();
+    browser.setUrl( "http://eclipse.org/rip" );
+    assertTrue( BrowserLCA.hasUrlChanged( browser ) );
+    assertEquals( "http://eclipse.org/rip", BrowserLCA.getUrl( browser ) );
+  }
 
+  public void testRenderUrl() throws IOException {
+    Display display = new Display();
+    Fixture.markInitialized( display );
+    Shell shell = new Shell( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    browser.setUrl( "http://eclipse.org/rap" );
+    BrowserLCA lca = new BrowserLCA();
+    Fixture.markInitialized( browser );
+    Fixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    lca.renderChanges( browser );
+    String expected = "w.setSource( \"http://eclipse.org/rap\" );";
+    expected += "w.syncSource()";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+  
   public void testExecuteFunction() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();

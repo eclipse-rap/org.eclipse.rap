@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,16 +54,11 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   private static final String FUNCTIONS_TO_DESTROY
     = Browser.class.getName() + "#functionsToDestroy.";
 
-  private static final String PROP_URL = "url";
-  private static final String PROP_TEXT = "text";
-
 
   public void preserveValues( final Widget widget ) {
     Browser browser = ( Browser )widget;
     ControlLCAUtil.preserveValues( browser );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( browser );
-    adapter.preserve( PROP_URL, browser.getUrl() );
-    adapter.preserve( PROP_TEXT, getText( browser ) );
     boolean hasListeners = ProgressEvent.hasListener( browser );
     adapter.preserve( PARAM_PROGRESS_LISTENERS,
                       Boolean.valueOf( hasListeners ) );
@@ -72,37 +67,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     Browser browser = ( Browser )widget;
-    String executeValue
-      = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_RESULT );
-    if( executeValue != null ) {
-      String evalValue
-        = WidgetLCAUtil.readPropertyValue( browser, PARAM_EVALUATE_RESULT );
-      boolean executeResult = Boolean.valueOf( executeValue ).booleanValue();
-      Object evalResult = null;
-      if( evalValue != null ) {
-        Object[] parsedValues = parseArguments( evalValue );
-        if( parsedValues.length == 1 ) {
-          evalResult = parsedValues[ 0 ];
-        }
-      }
-      getAdapter( browser ).setExecuteResult( executeResult, evalResult );
-    }
+    readExecuteResult( browser );
     executeFunction( browser );
-    if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {
-      ProgressEvent changedEvent
-        = new ProgressEvent( browser, ProgressEvent.CHANGED );
-      changedEvent.processEvent();
-      ProgressEvent completedEvent
-        = new ProgressEvent( browser, ProgressEvent.COMPLETED );
-      completedEvent.processEvent();
-    }
-  }
-
-  public void renderInitialization( final Widget widget ) throws IOException {
-    Browser browser = ( Browser )widget;
-    JSWriter writer = JSWriter.getWriterFor( browser );
-    writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( browser );
+    fireProgressEvent( browser );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -124,20 +91,53 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
+  public void fireProgressEvent( Browser browser ) {
+    if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {
+      ProgressEvent changedEvent
+        = new ProgressEvent( browser, ProgressEvent.CHANGED );
+      changedEvent.processEvent();
+      ProgressEvent completedEvent
+        = new ProgressEvent( browser, ProgressEvent.COMPLETED );
+      completedEvent.processEvent();
+    }
+  }
+
+  public void readExecuteResult( Browser browser ) {
+    String executeValue = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_RESULT );
+    if( executeValue != null ) {
+      String evalValue = WidgetLCAUtil.readPropertyValue( browser, PARAM_EVALUATE_RESULT );
+      boolean executeResult = Boolean.valueOf( executeValue ).booleanValue();
+      Object evalResult = null;
+      if( evalValue != null ) {
+        Object[] parsedValues = parseArguments( evalValue );
+        if( parsedValues.length == 1 ) {
+          evalResult = parsedValues[ 0 ];
+        }
+      }
+      getAdapter( browser ).setExecuteResult( executeResult, evalResult );
+    }
+  }
+
+  public void renderInitialization( final Widget widget ) throws IOException {
+    Browser browser = ( Browser )widget;
+    JSWriter writer = JSWriter.getWriterFor( browser );
+    writer.newWidget( QX_TYPE );
+    ControlLCAUtil.writeStyleFlags( browser );
+  }
+
   private static void writeUrl( final Browser browser )
     throws IOException
   {
     if( hasUrlChanged( browser ) ) {
       JSWriter writer = JSWriter.getWriterFor( browser );
       writer.set( QX_FIELD_SOURCE, getUrl( browser ) );
+      writer.call( "syncSource", null );
     }
   }
 
   static boolean hasUrlChanged( final Browser browser ) {
     boolean initialized = WidgetUtil.getAdapter( browser ).isInitialized();
-    return    !initialized
-           || WidgetLCAUtil.hasChanged( browser, PROP_TEXT, getText( browser ) )
-           || WidgetLCAUtil.hasChanged( browser, PROP_URL, browser.getUrl() );
+    return !initialized || getAdapter( browser ).getAndRestUrlChanged();
   }
 
   static String getUrl( final Browser browser ) throws IOException {

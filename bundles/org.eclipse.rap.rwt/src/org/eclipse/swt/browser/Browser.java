@@ -48,12 +48,15 @@ import org.eclipse.swt.widgets.Display;
 public class Browser extends Composite {
 
   private final class BrowserAdapter implements IBrowserAdapter {
+
     public String getText() {
       return Browser.this.html;
     }
+
     public String getExecuteScript() {
       return Browser.this.executeScript;
     }
+
     public void setExecuteResult( final boolean result, final Object value ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
@@ -62,15 +65,25 @@ public class Browser extends Composite {
         }
       } );
     }
+
     public void setExecutePending( final boolean executePending ) {
       Browser.this.executePending = executePending;
     }
+
     public boolean getExecutePending() {
       return Browser.this.executePending;
     }
+
     public BrowserFunction[] getBrowserFunctions() {
       return Browser.this.getBrowserFunctions();
     }
+
+    public boolean getAndRestUrlChanged() {
+      boolean result = Browser.this.urlChanged;
+      Browser.this.urlChanged = false;
+      return result;
+    }
+
   }
 
   private static final String FUNCTIONS_TO_CREATE
@@ -82,6 +95,7 @@ public class Browser extends Composite {
 
   private String url;
   private String html;
+  private boolean urlChanged = false;
   public String executeScript;
   private Boolean executeResult;
   private boolean executePending;
@@ -157,6 +171,7 @@ public class Browser extends Composite {
     boolean result = event.doit;
     if( result ) {
       this.url = url;
+      urlChanged = true;
       html = "";
       event = new LocationEvent( this, LocationEvent.CHANGED, url );
       event.top = true;
@@ -221,6 +236,7 @@ public class Browser extends Composite {
     if( result ) {
       this.html = html;
       url = "";
+      urlChanged = true;
       event = new LocationEvent( this, LocationEvent.CHANGED, ABOUT_BLANK );
       event.top = true;
       event.processEvent();
