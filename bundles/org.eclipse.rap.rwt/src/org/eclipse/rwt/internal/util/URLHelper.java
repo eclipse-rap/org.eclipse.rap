@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
@@ -21,7 +21,7 @@ public final class URLHelper {
   public static final String EQUAL = "=";
   public static final String AMPERSAND = "&";
   public static final String QUESTION_MARK = "?";
-
+  
   private URLHelper() {
     // no instance creation
   }
@@ -99,7 +99,7 @@ public final class URLHelper {
     return result.toString();
   }
   
-  private static String createPortPattern( final HttpServletRequest request ) {
+  private static String createPortPattern( HttpServletRequest request ) {
     String result = String.valueOf( request.getServerPort() );
     if( result != null && !result.equals( "" ) ) {
       StringBuffer buffer = new StringBuffer();

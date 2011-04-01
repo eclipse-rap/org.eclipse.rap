@@ -15,9 +15,7 @@ import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
-public final class DefaultResourceManagerFactory 
-  implements IResourceManagerFactory 
-{
+public final class DefaultResourceManagerFactory implements IResourceManagerFactory {
 
   public IResourceManager create() {
     return ResourceManagerImpl.getInstance();
