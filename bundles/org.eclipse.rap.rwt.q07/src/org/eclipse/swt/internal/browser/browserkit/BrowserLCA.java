@@ -137,7 +137,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   static boolean hasUrlChanged( final Browser browser ) {
     boolean initialized = WidgetUtil.getAdapter( browser ).isInitialized();
-    return !initialized || getAdapter( browser ).getAndRestUrlChanged();
+    return !initialized || getAdapter( browser ).getAndResetUrlChanged();
   }
 
   static String getUrl( final Browser browser ) throws IOException {

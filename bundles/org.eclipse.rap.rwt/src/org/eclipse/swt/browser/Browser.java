@@ -78,7 +78,7 @@ public class Browser extends Composite {
       return Browser.this.getBrowserFunctions();
     }
 
-    public boolean getAndRestUrlChanged() {
+    public boolean getAndResetUrlChanged() {
       boolean result = Browser.this.urlChanged;
       Browser.this.urlChanged = false;
       return result;
