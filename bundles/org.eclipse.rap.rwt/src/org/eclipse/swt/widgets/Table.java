@@ -108,8 +108,7 @@ public class Table extends Composite {
     }
   }
 
-  private final class TableAdapter implements ITableAdapter, ICellToolTipAdapter 
-  {
+  private final class TableAdapter implements ITableAdapter, ICellToolTipAdapter {
     private String toolTipText;
     private ICellToolTipProvider provider;
 
@@ -1324,10 +1323,7 @@ public class Table extends Composite {
    */
   public void select( final int start, final int end ) {
     checkWidget();
-    if(    end >= 0
-        && start <= end
-        && ( ( style & SWT.SINGLE ) == 0 || start == end ) )
-    {
+    if( end >= 0 && start <= end && ( ( style & SWT.SINGLE ) == 0 || start == end ) ) {
       if( itemCount != 0 && start < itemCount ) {
         int adjustedStart = Math.max( 0, start );
         int adjustedEnd = Math.min( end, itemCount - 1 );
@@ -1843,8 +1839,7 @@ public class Table extends Composite {
     checkWidget();
     int result = 0;
     if( headerVisible ) {
-      TableThemeAdapter themeAdapter
-        = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
       Font headerFont = themeAdapter.getHeaderFont( this );
       int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
@@ -1949,7 +1944,6 @@ public class Table extends Composite {
     checkWidget();
     int width = 0;
     int height = 0;
-
     if( getColumnCount() > 0 ) {
       for( int i = 0; i < getColumnCount(); i++ ) {
         width += getColumn( i ).getWidth();
@@ -1959,7 +1953,6 @@ public class Table extends Composite {
     }
     height += getHeaderHeight();
     height += getItemCount() * getItemHeight();
-
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
     }
@@ -1990,9 +1983,9 @@ public class Table extends Composite {
     // dont't access virtual items, they would get resolved unintentionally
     TableItem[] items = getCachedItems();
     for( int i = 0; i < items.length; i++ ) {
-      int itemWidth
-        = items[ i ].getCheckWidth( columnIndex )
-        + items[ i ].getPackWidth( columnIndex );
+      int checkWidth = items[ i ].getCheckWidth( columnIndex );
+      int packWidth = items[ i ].getPackWidth( columnIndex );
+      int itemWidth = checkWidth + packWidth;
       if( itemWidth > width ) {
         width = itemWidth;
       }
@@ -2014,11 +2007,7 @@ public class Table extends Composite {
       }
       int[] newColumnOrder = new int[ length + 1 ];
       System.arraycopy( columnOrder, 0, newColumnOrder, 0, index );
-      System.arraycopy( columnOrder,
-                        index,
-                        newColumnOrder,
-                        index + 1,
-                        length - index );
+      System.arraycopy( columnOrder, index, newColumnOrder, index + 1, length - index );
       columnOrder = newColumnOrder;
       columnOrder[ index ] = index;
     }
@@ -2028,11 +2017,7 @@ public class Table extends Composite {
       int length = columnImageCount.length;
       int[] newColumnImageCount = new int[ length + 1 ];
       System.arraycopy( columnImageCount, 0, newColumnImageCount, 0, index );
-      System.arraycopy( columnImageCount,
-                        index,
-                        newColumnImageCount,
-                        index + 1,
-                        length - index );
+      System.arraycopy( columnImageCount, index, newColumnImageCount, index + 1, length - index );
       columnImageCount = newColumnImageCount;
     }
     updateScrollBars();
@@ -2099,8 +2084,7 @@ public class Table extends Composite {
        * reduce memory usage.
        */
       boolean small = /* drawCount == 0 && */isVisible();
-      int length
-        = small ? items.length + 4 : Math.max( 4, items.length * 3 / 2 );
+      int length = small ? items.length + 4 : Math.max( 4, items.length * 3 / 2 );
       TableItem[] newItems = new TableItem[ length ];
       System.arraycopy( items, 0, newItems, 0, items.length );
       items = newItems;
@@ -2289,9 +2273,7 @@ public class Table extends Composite {
   }
 
   final boolean hasColumnImages( final int columnIndex ) {
-    return columnImageCount == null
-      ? false
-      : columnImageCount[ columnIndex ] > 0;
+    return columnImageCount == null ? false : columnImageCount[ columnIndex ] > 0;
   }
 
   final void updateItemImageSize( final Image image ) {
@@ -2311,8 +2293,7 @@ public class Table extends Composite {
 
   Rectangle getCellPadding() {
     if( bufferedCellPadding == null ) {
-      TableThemeAdapter themeAdapter
-        = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
       bufferedCellPadding = themeAdapter.getCellPadding( this );
     }
     return bufferedCellPadding;
@@ -2320,8 +2301,7 @@ public class Table extends Composite {
 
   int getCellSpacing() {
     if( bufferedCellSpacing < 0 ) {
-      TableThemeAdapter themeAdapter
-        = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
       bufferedCellSpacing = themeAdapter.getCellSpacing( parent );
     }
     return bufferedCellSpacing;
@@ -2427,8 +2407,7 @@ public class Table extends Composite {
     Point result = new Point( 0, 0 );
     if( ( style & SWT.CHECK ) != 0 ) {
       Rectangle zeroMargin = new Rectangle( 0, 0, 0, 0 );
-      TableThemeAdapter themeAdapter
-        = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
       Point checkImageSize = themeAdapter.getCheckBoxImageSize( this );
       Rectangle margin = themeAdapter.getCheckBoxMargin( this );
       result.x = themeAdapter.getCheckBoxWidth( this );
@@ -2454,9 +2433,7 @@ public class Table extends Composite {
   }
 
   final int getVisibleItemCount( final boolean includePartlyVisible ) {
-    int clientHeight = getBounds().height
-                     - getHeaderHeight()
-                     - getHScrollBarHeight();
+    int clientHeight = getBounds().height - getHeaderHeight() - getHScrollBarHeight();
     int result = 0;
     if( clientHeight >= 0 ) {
       int itemHeight = getItemHeight();
@@ -2641,7 +2618,7 @@ public class Table extends Composite {
       }
     }
     TableColumn[] columns = getColumns();
-    if (columns != null) {
+    if( columns != null ) {
       for( int i = 0; i < columns.length; i++ ) {
         TableColumn column = columns[ i ];
         if( !column.isDisposed() ) {

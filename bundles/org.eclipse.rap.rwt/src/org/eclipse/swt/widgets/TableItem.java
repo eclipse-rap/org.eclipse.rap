@@ -180,11 +180,7 @@ public class TableItem extends Item {
     this( parent, style, index, true );
   }
 
-  TableItem( final Table parent,
-             final int style,
-             final int index,
-             final boolean create )
-  {
+  TableItem( final Table parent, final int style, final int index, final boolean create ) {
     super( parent, style );
     this.parent = parent;
     this.index = index;
@@ -423,11 +419,7 @@ public class TableItem extends Item {
 
   Image getImageInternal( final int index ) {
     Image result = null;
-    if(    data != null
-        && index >= 0
-        && index < data.length
-        && data[ index ] != null )
-    {
+    if( data != null && index >= 0 && index < data.length && data[ index ] != null ) {
       result = data[ index ].image;
     }
     return result;
@@ -1003,11 +995,7 @@ public class TableItem extends Item {
         imageWidth = parent.getItemImageSize().x;
         spacing = getSpacing( 0 );
       }
-      left =   getLeft( 0 )
-             + cellPadding.x
-             + imageWidth
-             + spacing;
-      top = getTop( itemIndex );
+      left = getLeft( 0 ) + cellPadding.x + imageWidth + spacing; top = getTop( itemIndex );
       Font font = getFont();
       width = Graphics.stringExtent( font, getText( 0 ) ).x;
     } else if( itemIndex != -1 && index < parent.getColumnCount() ) {
@@ -1016,15 +1004,9 @@ public class TableItem extends Item {
         imageWidth = parent.getItemImageSize().x;
       }
       int spacing = getSpacing( index );
-      left =   getLeft( index )
-             + cellPadding.x
-             + imageWidth
-             + spacing;
+      left = getLeft( index ) + cellPadding.x + imageWidth + spacing;
       top = getTop( itemIndex );
-      width =   getColumnWidth( index )
-              - cellPadding.width
-              - imageWidth
-              - spacing;
+      width = getColumnWidth( index ) - cellPadding.width - imageWidth - spacing;
       if( width < 0 ) {
         width = 0;
       }

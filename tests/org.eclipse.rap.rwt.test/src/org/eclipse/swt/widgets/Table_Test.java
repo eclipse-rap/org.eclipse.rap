@@ -9,7 +9,9 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.widgets;import junit.framework.TestCase;
+package org.eclipse.swt.widgets;import java.util.LinkedList;
+
+import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
@@ -2365,7 +2367,7 @@ public class Table_Test extends TestCase {
     assertEquals( 33, table.getItemsPreferredWidth( 0 ) );
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
   }
-
+  
   public void testRemoveArrayDuplicates() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -2376,14 +2378,30 @@ public class Table_Test extends TestCase {
       items[ i ] = new TableItem( table, 0 );
     }
     assertEquals( 5, table.getItemCount() );
-    table.remove( new int[]{
-      1, 1
-    } );
+    table.remove( new int[]{ 1, 1 } );
     assertEquals( 4, table.getItemCount() );
-    table.remove( new int[]{
-      0, 2, 1, 1
-    } );
+    table.remove( new int[]{ 0, 2, 1, 1 } );
     assertEquals( 1, table.getItemCount() );
+  }
+
+  public void testReskinDoesNotResolveVirtualItems() {
+    final java.util.List eventLog = new LinkedList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 1000 );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    redrawTable( table );
+    eventLog.clear();
+    
+    table.reskin( SWT.ALL );
+    
+    assertEquals( 0, eventLog.size() );
   }
 
   private static boolean find( final int element, final int[] array ) {
@@ -2414,5 +2432,10 @@ public class Table_Test extends TestCase {
     while( table.getColumnCount() > 0 ) {
       table.getColumn( 0 ).dispose();
     }
+  }
+
+  private static void redrawTable( Table table ) {
+    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    tableAdapter.checkData();
   }
 }
