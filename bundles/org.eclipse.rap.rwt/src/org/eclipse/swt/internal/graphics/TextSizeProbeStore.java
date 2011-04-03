@@ -88,8 +88,7 @@ final class TextSizeProbeStore {
   }
    
   static TextSizeProbeStore getInstance() {
-    Object instance
-      = SessionSingletonBase.getInstance( TextSizeProbeStore.class );
+    Object instance = SessionSingletonBase.getInstance( TextSizeProbeStore.class );
     return ( TextSizeProbeStore )instance;
   }
   
