@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import org.eclipse.rwt.internal.engine.RWTContext;
+
 // TODO [fappel]: Finish implementation and revise this. This class is meant to 
 //                be initialized once at application startup. Because of this
 //                there should no need for synchronization. Due to the 
@@ -18,21 +20,37 @@ package org.eclipse.swt.internal.graphics;
 //                also performance problems.
 public class TextSizeStorageRegistry {
   
-  private static ITextSizeStorage storage;
+  
+  public static class TextSizeStorageRegistryInstance {
+    private ITextSizeStorage storage;
+
+    public void register( ITextSizeStorage textSizeStorage ) {
+      if( storage != null ) {
+        String msg
+          = "A textsize storage implementation has already been registered.";
+        throw new IllegalStateException( msg );
+      }
+      storage = textSizeStorage;
+    }
+
+    public ITextSizeStorage obtain() {
+      if( storage == null ) {
+        storage = new DefaultTextSizeStorage();
+      }
+      return storage;
+    }
+  }
   
   public static void register( final ITextSizeStorage textSizeStorage ) {
-    if( storage != null ) {
-      String msg
-        = "A textsize storage implementation has already been registered.";
-      throw new IllegalStateException( msg );
-    }
-    storage = textSizeStorage;
+    getInstance().register( textSizeStorage );
   }
   
   public static ITextSizeStorage obtain() {
-    if( storage == null ) {
-      storage = new DefaultTextSizeStorage();
-    }
-    return storage;
+    return getInstance().obtain();
+  }
+  
+  private static TextSizeStorageRegistryInstance getInstance() {
+    Object singleton = RWTContext.getSingleton( TextSizeStorageRegistryInstance.class );
+    return ( TextSizeStorageRegistryInstance )singleton;
   }
 }

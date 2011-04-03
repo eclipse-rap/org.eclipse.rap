@@ -24,6 +24,7 @@ import org.eclipse.rwt.internal.theme.ThemeManagerInstance;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.internal.graphics.TextSizeStorageRegistry.TextSizeStorageRegistryInstance;
 import org.eclipse.swt.widgets.DisplaysHolder;
 
 
@@ -55,7 +56,8 @@ public class RWTContextUtil {
     ServiceManagerImpl.class,
     DisplaysHolder.class,
     ThemeAdapterUtil.class,
-    JSLibraryConcatenator.class
+    JSLibraryConcatenator.class,
+    TextSizeStorageRegistryInstance.class,
   };
 
   public static RWTContext registerDefaultRWTContext( ServletContext context ) {

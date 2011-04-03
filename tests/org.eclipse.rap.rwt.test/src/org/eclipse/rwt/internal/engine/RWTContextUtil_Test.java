@@ -26,6 +26,7 @@ import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.rwt.internal.theme.ThemeManagerInstance;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.internal.graphics.TextSizeStorageRegistry.TextSizeStorageRegistryInstance;
 import org.eclipse.swt.widgets.DisplaysHolder;
 
 
@@ -110,6 +111,9 @@ public class RWTContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( JSLibraryConcatenator.class ) );
     assertSame( rwtContext.getInstance( JSLibraryConcatenator.class ),
                 getSingleton( JSLibraryConcatenator.class ) );
+    assertNotNull( getSingleton( TextSizeStorageRegistryInstance.class ) );
+    assertSame( rwtContext.getInstance( TextSizeStorageRegistryInstance.class ),
+                getSingleton( TextSizeStorageRegistryInstance.class ) );
     
     RWTContextUtil.deregisterRWTContext( servletContext );
     try {
