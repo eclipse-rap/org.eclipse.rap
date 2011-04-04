@@ -55,8 +55,7 @@ public final class UICallBack {
    * needs a session unique identifier as a kind of reference pointer to be able
    * to decide when all background threads are finished.
    * 
-   * <p>Note: this method can only be called in the UI-Thread of a RWT 
-   *          application.</p>
+   * <p>Note: this method can only be called in the UI-Thread of an RWT application.</p>
    * 
    * @param id A session unique identifier to trace the activation and
    *           deactivation. Must not be <code>null</code>.
@@ -83,8 +82,7 @@ public final class UICallBack {
    * activation needs a session unique identifier as a kind of reference pointer
    * to be able to decide when all background threads are finished.
    * 
-   * <p>Note: this method can only be called in the UI-Thread of a RWT 
-   *          application.</p>
+   * <p>Note: this method can only be called in the UI-Thread of an RWT application.</p>
    *          
    * @param id A session unique identifier to trace the activation and
    *           deactivation. Must not be <code>null</code>
