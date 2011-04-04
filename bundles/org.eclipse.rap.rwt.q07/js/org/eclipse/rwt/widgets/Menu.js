@@ -46,6 +46,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
     this._closeTimer = new qx.client.Timer( 250 );
     this._closeTimer.addEventListener( "interval", this._onclosetimer, this );
     this._renderAppearance();
+    this.setContainerOverflow( false );
     this.addToDocument();    
   },
 
@@ -603,7 +604,6 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
 
     _applyAnimation : function( newValue, oldValue ) {
       // TODO [tb] : Rounded borders are not relayouted during the animation.
-      // TODO [tb] : Fade can not be supported at the same time as slide.
       var animationType = 0;
       if( newValue[ "slideIn" ] ) {
         animationType |= org.eclipse.rwt.AnimationRenderer.ANIMATION_APPEAR; 
