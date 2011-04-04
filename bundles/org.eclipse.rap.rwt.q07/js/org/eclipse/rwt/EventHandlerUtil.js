@@ -79,12 +79,12 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         vNode = document.body;
       }
       // Walk up the tree and search for an qx.ui.core.Widget
-      while( vNode != null && vNode.qx_Widget == null )       {
-        try {
+      try {
+        while( vNode != null && vNode.qx_Widget == null )       {
           vNode = vNode.parentNode;
-        } catch( vDomEvent ) {
-          vNode = null;
         }
+      } catch( vDomEvent ) {
+        vNode = null;
       }
       return vNode ? vNode.qx_Widget : null;
     },
