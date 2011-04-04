@@ -324,6 +324,15 @@ public class Shell_Test extends TestCase {
     assertNull( shell.getDefaultButton() );
   }
 
+  public void testResetDefaultButton() {
+    Button defaultButton = new Button( shell, SWT.PUSH );
+    shell.setDefaultButton( defaultButton );
+    shell.setDefaultButton( null );
+    assertSame( defaultButton, shell.getDefaultButton() );
+    shell.setDefaultButton( null );
+    assertNull( shell.getDefaultButton() );
+  }
+
   public void testForceActive() {
     Shell secondShell = new Shell( display );
     shell.open();

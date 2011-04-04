@@ -805,7 +805,7 @@ public class Shell extends Decorations {
   }
 
   // TODO [rst] move to class Decorations as soon as it exists
-  void setDefaultButton( final Button button, final boolean save ) {
+  void setDefaultButton( Button button, boolean save ) {
     if( button == null ) {
       if( defaultButton == saveDefault ) {
         if( save ) {
@@ -818,6 +818,9 @@ public class Shell extends Decorations {
         return;
       }
       if( button == defaultButton ) {
+        if( save ) {
+          saveDefault = defaultButton;
+        }
         return;
       }
     }
