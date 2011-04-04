@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -42,17 +42,17 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   private static final String PROP_CONTROL = "control";
   private static final String PROP_TRANSFER = "transfer";
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     DragSource dragSource = ( DragSource )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dragSource );
     adapter.preserve( PROP_CONTROL, dragSource.getControl() );
     adapter.preserve( PROP_TRANSFER, dragSource.getTransfer() );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
     JSWriter writer = JSWriter.getWriterFor( dragSource );
     String[] operations = DNDLCAUtil.convertOperations( dragSource.getStyle() );
@@ -60,7 +60,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     writer.callStatic( JSFUNC_REGISTER, args );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
     writeTransfer( dragSource );
     writeDetail( dragSource );
@@ -69,7 +69,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     writeCancel( dragSource );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dragSource );
     Control control = ( Control )adapter.getPreserved( PROP_CONTROL );
@@ -77,15 +77,9 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     writer.callStatic( JSFUNC_DEREGISTER, new Object[]{ control } );
   }
 
-  private static void writeTransfer( final DragSource dragSource )
-    throws IOException
-  {
+  private static void writeTransfer( DragSource dragSource ) throws IOException {
     Transfer[] newValue = dragSource.getTransfer();
-    if( WidgetLCAUtil.hasChanged( dragSource,
-                                  PROP_TRANSFER,
-                                  newValue,
-                                  DEFAULT_TRANSFER ) )
-    {
+    if( WidgetLCAUtil.hasChanged( dragSource, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
         JSWriter writer = JSWriter.getWriterFor( dragSource );
         Object[] args = new Object[]{
           dragSource.getControl(),
@@ -95,9 +89,8 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeDetail( final DragSource dragSource ) throws IOException {
-    IDNDAdapter dndAdapter
-      = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+  private void writeDetail( DragSource dragSource ) throws IOException {
+    IDNDAdapter dndAdapter = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
     if( dndAdapter.hasDetailChanged() ) {
       JSWriter writer = JSWriter.getWriterFor( dragSource );
       Object[] args = new Object[]{
@@ -108,9 +101,8 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeFeedback( final DragSource dragSource ) throws IOException {
-    IDNDAdapter dndAdapter
-      = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+  private void writeFeedback( DragSource dragSource ) throws IOException {
+    IDNDAdapter dndAdapter = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
     if( dndAdapter.hasFeedbackChanged() ) {
       JSWriter writer = JSWriter.getWriterFor( dragSource );
       int value = dndAdapter.getFeedbackChangedValue();
@@ -123,9 +115,8 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeDataType( final DragSource dragSource ) throws IOException {
-    IDNDAdapter dndAdapter
-      = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+  private void writeDataType( DragSource dragSource ) throws IOException {
+    IDNDAdapter dndAdapter = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
     if( dndAdapter.hasDataTypeChanged() ) {
       JSWriter writer = JSWriter.getWriterFor( dragSource );
       TransferData value = dndAdapter.getDataTypeChangedValue();
@@ -137,18 +128,15 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     }
   }
   
-  private static void writeCancel( final DragSource dragSource )
-    throws IOException
-  {
-    IDNDAdapter dndAdapter
-      = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+  private static void writeCancel( DragSource dragSource ) throws IOException {
+    IDNDAdapter dndAdapter = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
     if( dndAdapter.isCanceled() ) {
       JSWriter writer = JSWriter.getWriterFor( dragSource );
       writer.callStatic( JSFUNC_CANCEL, null );
     }
   }
 
-  private static String convertOperation( final int operation ) {
+  private static String convertOperation( int operation ) {
     String result = "none";
     switch( operation ) {
       case DND.DROP_COPY:
@@ -164,7 +152,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static String[] convertFeedback( final int feedback ) {
+  private static String[] convertFeedback( int feedback ) {
     List list = new ArrayList();
     if( ( feedback & DND.FEEDBACK_EXPAND ) != 0 ) {
       list.add( "expand" );
@@ -187,6 +175,4 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-
-
 }
