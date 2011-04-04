@@ -338,6 +338,12 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         result = String( object );
       }
       return result;
+    },
+    
+    destroy : function() {
+      this.base( arguments );
+      this.syncSource();
     }
+    
   }
 } );
