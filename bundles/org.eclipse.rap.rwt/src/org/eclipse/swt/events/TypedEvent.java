@@ -114,7 +114,7 @@ public class TypedEvent extends Event {
    *
    * @since 1.3
    */
-  public TypedEvent( final Object source ) {
+  public TypedEvent( Object source ) {
     this( source, SWT.None );
   }
 
@@ -127,7 +127,7 @@ public class TypedEvent extends Event {
    * from application code.
    * </p>
    */
-  public TypedEvent( final Object source, final int id ) {
+  public TypedEvent( Object source, int id ) {
     super( source, id );
     widget = ( Widget )source;
     display = widget.getDisplay();
@@ -213,8 +213,7 @@ public class TypedEvent extends Event {
 
   private org.eclipse.swt.widgets.Event processFilters() {
     IFilterEntry[] filters = getFilterEntries();
-    org.eclipse.swt.widgets.Event result
-      = new org.eclipse.swt.widgets.Event();
+    org.eclipse.swt.widgets.Event result = new org.eclipse.swt.widgets.Event();
     result.widget = widget;
     result.type = getID();
     for( int i = 0; !isFiltered( result ) && i < filters.length; i++ ) {
@@ -225,21 +224,20 @@ public class TypedEvent extends Event {
     return result;
   }
 
-  private boolean isFiltered( final org.eclipse.swt.widgets.Event event ) {
+  private static boolean isFiltered( org.eclipse.swt.widgets.Event event ) {
     return event.type == SWT.None;
   }
 
   private IFilterEntry[] getFilterEntries() {
-    Display display = Display.getCurrent();
-    IDisplayAdapter adapter
-      = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    Display display = widget.getDisplay();
+    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
     return adapter.getFilters();
   }
 
   ///////////////////////////////////////////////
   // Methods to maintain list of scheduled events
 
-  private static void addToScheduledEvents( final TypedEvent event ) {
+  private static void addToScheduledEvents( TypedEvent event ) {
     getScheduledEventList().add( event );
   }
 
@@ -282,7 +280,7 @@ public class TypedEvent extends Event {
   }
 
   // Exception to get rid of abstract TypedEvent
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
   	String msg = "Derived classes must override dispatchToObserver.";
   	throw new UnsupportedOperationException( msg );
   }

@@ -180,4 +180,48 @@ public class TypedEvent_Test extends TestCase {
     assertEquals( FocusEvent.class, eventLog.get( 0 ).getClass() );
     assertEquals( MouseEvent.class, eventLog.get( 1 ).getClass() );
   }
+  
+  public void testSourceConstructor() {
+    TypedEvent event = new TypedEvent( shell );
+    assertSame( shell, event.widget );
+    assertSame( shell.getDisplay(), event.display );
+  }
+
+  public void testEventConstructor() {
+    Event event = new Event();
+    event.widget = shell;
+    event.display = shell.getDisplay();
+    event.data = new Object();
+    TypedEvent typedEvent = new TypedEvent( event );
+    assertSame( event.widget, typedEvent.widget );
+    assertSame( event.display, typedEvent.display );
+    assertSame( event.data, typedEvent.data );
+  }
+  
+  public void testEventConstructorWithNullWidget() {
+    Event event = new Event();
+    try {
+      new TypedEvent( event );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testSourceConstructorWithNullWidget() {
+    try {
+      new TypedEvent( ( Object )null );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testSourceIdConstructorWithNullWidget() {
+    try {
+      new TypedEvent( null, SWT.Arm );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  
 }
