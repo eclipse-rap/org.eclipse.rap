@@ -34,8 +34,7 @@ public class PhaseId implements Comparable {
    * {@link PhaseListener} to signal interest in the <em>Prepare UI Root</em>
    * phase.
    */
-  public static final PhaseId PREPARE_UI_ROOT
-    = new PhaseId( "PREPARE_UI_ROOT" );
+  public static final PhaseId PREPARE_UI_ROOT = new PhaseId( "PREPARE_UI_ROOT" );
   
   /**
    * The PhaseId <code>READ_DATA</code> is used by the {@link PhaseListener}
@@ -67,8 +66,7 @@ public class PhaseId implements Comparable {
   /**
    * A list containing the instances of this enumeration.
    */
-  public static final List VALUES
-    = Collections.unmodifiableList( Arrays.asList( values ) );
+  public static final List VALUES = Collections.unmodifiableList( Arrays.asList( values ) );
   
   private final String name;
   private final int ordinal;
