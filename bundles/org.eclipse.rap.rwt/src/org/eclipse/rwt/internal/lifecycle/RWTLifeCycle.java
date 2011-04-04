@@ -50,13 +50,6 @@ public class RWTLifeCycle extends LifeCycle {
   private static final String REQUEST_THREAD_RUNNABLE
     = RWTLifeCycle.class.getName() + "#requestThreadRunnable";
 
-  private final static IPhase[] PHASES = new IPhase[] {
-    new PrepareUIRoot(),
-    new ReadData(),
-    new ProcessAction(),
-    new Render()
-  };
-
   private static final IPhase[] PHASE_ORDER_STARTUP = new IPhase[] {
     new IInterruptible() {
       public PhaseId execute() throws IOException {
@@ -384,11 +377,8 @@ public class RWTLifeCycle extends LifeCycle {
     }
   }
 
-  private static boolean mustNotify( final PhaseId currentId,
-                                     final PhaseId listenerId )
-  {
-    return    listenerId == PhaseId.ANY
-           || listenerId == PHASES[ currentId.getOrdinal() - 1 ].getPhaseID();
+  private static boolean mustNotify( PhaseId currentId, PhaseId listenerId ) {
+    return listenerId == PhaseId.ANY || listenerId == currentId;
   }
 
   private PhaseListener[] getPhaseListeners() {
