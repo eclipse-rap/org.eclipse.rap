@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.lifecycle;
 
@@ -71,7 +72,7 @@ public class PhaseId implements Comparable {
   private final String name;
   private final int ordinal;
 
-  private PhaseId( final String name ) {
+  private PhaseId( String name ) {
     this.name = name;
     this.ordinal = nextOrdinal++;
   }
@@ -80,7 +81,7 @@ public class PhaseId implements Comparable {
     return name;
   }
 
-  public int compareTo( final Object toCompare ) {
+  public int compareTo( Object toCompare ) {
     return this.ordinal - ( ( PhaseId )toCompare ).ordinal;
   }
   
