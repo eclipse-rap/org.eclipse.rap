@@ -38,9 +38,9 @@ public class RWTDelegate extends HttpServlet {
     throws ServletException, IOException
   {
     if( request.getPathInfo() == null ) {
+      ServiceContext context = new ServiceContext( request, response );
+      ContextProvider.setContext( context );
       try {
-        ServiceContext context = new ServiceContext( request, response );
-        ContextProvider.setContext( context );
         createSessionStore();
         ServiceManager.getHandler().service();
       } finally {
@@ -65,8 +65,7 @@ public class RWTDelegate extends HttpServlet {
     }
   }
 
-  static void handleInvalidRequest( final HttpServletRequest request,
-                                    final HttpServletResponse response )
+  static void handleInvalidRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException
   {
     if( "/".equals( request.getPathInfo() ) ) {
@@ -80,7 +79,7 @@ public class RWTDelegate extends HttpServlet {
     }
   }
 
-  static String createRedirectUrl( final HttpServletRequest request ) {
+  static String createRedirectUrl( HttpServletRequest request ) {
     String result = request.getContextPath() + request.getServletPath();
     Enumeration parameterNames = request.getParameterNames();
     if( parameterNames.hasMoreElements() ) {
