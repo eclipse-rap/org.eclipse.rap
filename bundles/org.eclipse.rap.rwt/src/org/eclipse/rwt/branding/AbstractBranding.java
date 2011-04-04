@@ -173,8 +173,10 @@ public abstract class AbstractBranding {
    * browser window or tab or to navigate to another URL. Usually, browsers
    * pop up a dialog that allows the user to cancel the operation.
    * </p>
-   * </p>
-   * Note that this is a <em>hint</em> that is not supported by every browser.
+   * <p>
+   * Note that this is a <em>hint</em> that some browsers do not support at all and others only 
+   * partly (i.e. showing a generic message instead of the one provided by 
+   * <code>getExitConfirmationText()</code>).
    * </p>
    *
    * @return <code>true</code> if an exit confirmation should be shown
