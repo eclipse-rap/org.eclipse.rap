@@ -657,7 +657,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
             + content
             + "',sizingMethod='crop')";           
         }
-        return    '<div style="position:absolute;border:0 none;'
+        return    '<div style="position:absolute;border:0 none;line-height:0px;font-size:0px;'
                 + cssImageStr 
                 + '"></div>';
       },

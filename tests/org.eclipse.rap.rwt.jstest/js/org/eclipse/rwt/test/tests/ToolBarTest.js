@@ -50,6 +50,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.destroy();
       this.item = null;
     },
+    
+    testDropDownLayoutBug : function() {
+      if( org.eclipse.rwt.Client.isMshtml() ) {
+        var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
+        this.item = item; 
+        item.setLeft( 100 );
+        item.setTop( 100 );
+        item.setWidth( 100 );
+        item.setHeight( 100 );
+        item.setText( "hallo" );
+        item.setDropDownArrow( [ "bla.jpg", 13, 13 ] );
+        this._currentItem = item;
+        item.addToDocument();
+        qx.ui.core.Widget.flushGlobalQueues();
+        var down = item.getCellNode( 4 );
+        assertEquals( "0px", down.style.lineHeight );
+        this.testUtil.hoverFromTo( document.body, item.getElement() );
+        qx.ui.core.Widget.flushGlobalQueues();
+        assertEquals( "0px", down.style.lineHeight );
+        item.destroy();
+        this.item = null;
+      }
+    },
 
     testDropDownLineHeight : function() {
       var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
