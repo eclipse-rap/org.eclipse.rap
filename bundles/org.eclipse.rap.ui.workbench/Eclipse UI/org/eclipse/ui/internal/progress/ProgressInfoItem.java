@@ -49,6 +49,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
@@ -179,7 +180,9 @@ public class ProgressInfoItem extends Composite {
 		// Mac has different Gamma value
 		int shift = Util.isMac() ? -25 : -10;
 
-		Color lightColor = PlatformUI.getWorkbench().getDisplay()
+// RAP [if] Fix for bug 341816		
+//		Color lightColor = PlatformUI.getWorkbench().getDisplay()
+		Color lightColor = Display.getCurrent()
 				.getSystemColor(SWT.COLOR_LIST_BACKGROUND);
 
 		// Determine a dark color by shifting the list color
