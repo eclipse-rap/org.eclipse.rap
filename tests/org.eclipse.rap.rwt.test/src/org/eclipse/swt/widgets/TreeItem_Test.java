@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
@@ -90,9 +89,7 @@ public class TreeItem_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
-    Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
-                                      15,
-                                      SWT.BOLD );
+    Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     tree.setFont( treeFont );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     assertSame( treeFont, item.getFont() );
@@ -260,21 +257,19 @@ public class TreeItem_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    final String TestString = "test";
-    final String TestStrings[] = new String[]{
-      TestString, TestString + "1", TestString + "2"
-    };
+    String testString = "test";
+    String testStrings[] = new String[]{ testString, testString + "1", testString + "2" };
     /*
      * Test the getText/setText API with a Tree that has only the default
      * column.
      */
     assertEquals( 0, treeItem.getText( 1 ).length() );
-    treeItem.setText( 1, TestString );
+    treeItem.setText( 1, testString );
     assertEquals( 0, treeItem.getText( 1 ).length() );
     assertEquals( 0, treeItem.getText( 0 ).length() );
-    treeItem.setText( 0, TestString );
-    assertEquals( TestString, treeItem.getText( 0 ) );
-    treeItem.setText( -1, TestStrings[ 1 ] );
+    treeItem.setText( 0, testString );
+    assertEquals( testString, treeItem.getText( 0 ) );
+    treeItem.setText( -1, testStrings[ 1 ] );
     assertEquals( 0, treeItem.getText( -1 ).length() );
     /*
      * Test the getText/setText API with a Tree that enough columns to fit all
@@ -291,16 +286,16 @@ public class TreeItem_Test extends TestCase {
       }
     }
     TreeColumn[] columns = tree.getColumns();
-    for( int i = 0; i < TestStrings.length; i++ ) {
-      columns[ i ].setText( TestStrings[ i ] );
+    for( int i = 0; i < testStrings.length; i++ ) {
+      columns[ i ].setText( testStrings[ i ] );
     }
     assertEquals( 0, treeItem.getText( 1 ).length() );
-    treeItem.setText( 1, TestString );
-    assertEquals( TestString, treeItem.getText( 1 ) );
+    treeItem.setText( 1, testString );
+    assertEquals( testString, treeItem.getText( 1 ) );
     assertEquals( 0, treeItem.getText( 0 ).length() );
-    treeItem.setText( 0, TestString );
-    assertEquals( TestString, treeItem.getText( 0 ) );
-    treeItem.setText( -1, TestStrings[ 1 ] );
+    treeItem.setText( 0, testString );
+    assertEquals( testString, treeItem.getText( 0 ) );
+    treeItem.setText( -1, testStrings[ 1 ] );
     assertEquals( 0, treeItem.getText( -1 ).length() );
     try {
       treeItem.setText( -1, null );
@@ -429,13 +424,11 @@ public class TreeItem_Test extends TestCase {
       fail( "No exception thrown for a disposed image" );
     } catch( IllegalArgumentException e ) {
       // expected
-    }
-    finally {
+    } finally {
       try {
         stream.close();
-      }
-      catch(IOException e) {
-        fail("Unable to close input stream.");
+      } catch( IOException e ) {
+        fail( "Unable to close input stream." );
       }
     }
   }
@@ -450,15 +443,12 @@ public class TreeItem_Test extends TestCase {
     assertEquals( color, treeItem.getForeground() );
     treeItem.setForeground( null );
     assertEquals( tree.getForeground(), treeItem.getForeground() );
-    Color color2 = new Color(display, 255, 0, 0);
+    Color color2 = new Color( display, 255, 0, 0 );
     color2.dispose();
-    try{
+    try {
       treeItem.setForeground( color2 );
-      fail("Disposed Image must not be set.");
-    }
-    catch (IllegalArgumentException e)
-    {
-      //Expected Exception
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -478,8 +468,7 @@ public class TreeItem_Test extends TestCase {
     try {
       treeItem.setBackground( color2 );
       fail( "Disposed color must not be set." );
-    } catch( IllegalArgumentException e ) {
-      // Expected Exception
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -517,13 +506,10 @@ public class TreeItem_Test extends TestCase {
     assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
     Color color2 = new Color(display, 255, 0, 0);
     color2.dispose();
-    try{
-      treeItem.setForeground(0,  color2 );
-      fail("Disposed Image must not be set.");
-    }
-    catch (IllegalArgumentException e)
-    {
-      //Expected Exception
+    try {
+      treeItem.setForeground( 0, color2 );
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -563,37 +549,34 @@ public class TreeItem_Test extends TestCase {
     Font font3 = new Font( display, "Testfont", 10, SWT.BOLD );
     font3.dispose();
     try {
-      treeItem.setFont(0, font3 );
+      treeItem.setFont( 0, font3 );
       fail( "Disposed font must not be set." );
-    } catch( IllegalArgumentException e ) {
-      // Expected Exception
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testSetFont() {
-      Display display = new Display();
-      Shell shell = new Shell( display, SWT.NONE );
-      Tree tree = new Tree( shell, SWT.NONE );
-      Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
-                                        15,
-                                        SWT.BOLD );
-      tree.setFont( treeFont );
-      TreeItem item = new TreeItem( tree, SWT.NONE );
-      assertSame( treeFont, item.getFont() );
-      Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
-      item.setFont( itemFont );
-      assertSame( itemFont, item.getFont() );
-      item.setFont( null );
-      assertSame( treeFont, item.getFont() );
-   // Test with a disposed font
-      Font font = new Font( display, "Testfont", 10, SWT.BOLD );
-      font.dispose();
-      try {
-        item.setFont( font );
-        fail( "Disposed font must not be set." );
-      } catch( IllegalArgumentException e ) {
-        // Expected Exception
-      }
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
+    tree.setFont( treeFont );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    assertSame( treeFont, item.getFont() );
+    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    item.setFont( itemFont );
+    assertSame( itemFont, item.getFont() );
+    item.setFont( null );
+    assertSame( treeFont, item.getFont() );
+    // Test with a disposed font
+    Font font = new Font( display, "Testfont", 10, SWT.BOLD );
+    font.dispose();
+    try {
+      item.setFont( font );
+      fail( "Disposed font must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
+    }
   }
 
   public void testSetBackgroundI() {
@@ -634,8 +617,7 @@ public class TreeItem_Test extends TestCase {
     try {
       treeItem.setBackground( 0, color );
       fail( "Disposed color must not be set." );
-    } catch( IllegalArgumentException e ) {
-      // Expected Exception
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -691,8 +673,7 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(),
-                                                             string );
+    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(), string );
     TreeItem subItem = new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( true );
     subItem.setText( string );
@@ -711,8 +692,7 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(),
-                                                             string );
+    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(), string );
     treeItem.setText( string );
     Rectangle withTextBounds = treeItem.getBounds( 0 );
     treeItem.setText( "" );
@@ -751,8 +731,7 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(),
-                                                             string );
+    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(), string );
     treeItem.setText( string );
     Rectangle boundsTextOnly = treeItem.getBounds( 0 );
     treeItem.setImage( image );
@@ -765,7 +744,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsSubsequentRootItems() {
-    final Rectangle NULL_RECT = new Rectangle( 0, 0, 0, 0 );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -775,33 +753,10 @@ public class TreeItem_Test extends TestCase {
     Rectangle b1 = rootItem.getBounds();
     Rectangle b2 = rootItem2.getBounds();
     assertTrue( b2.y > b1.y );
-    assertEquals( NULL_RECT, subItem.getBounds() );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), subItem.getBounds() );
     rootItem.setExpanded( true );
-    assertTrue( subItem.getBounds().y >= rootItem.getBounds().y
-                                         + rootItem.getBounds().height );
-    assertTrue( rootItem2.getBounds().y >= subItem.getBounds().y
-                                           + subItem.getBounds().height );
-  }
-
-  public void testGetBoundsWithScrolling() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem rootItem = new TreeItem( tree, 0 );
-    TreeItem rootItem2 = new TreeItem( tree, 0 );
-    TreeItem rootItem3 = new TreeItem( tree, 0 );
-    Tree.checkAllData( tree );
-    assertEquals( 0, rootItem.getBounds().y );
-    assertEquals( 18, rootItem2.getBounds().y );
-    assertEquals( 36, rootItem3.getBounds().y );
-    Fixture.fakeNewRequest();
-    String treeId = WidgetUtil.getId( tree );
-    Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
-    Fixture.fakeRequestParam( treeId + ".topItemIndex", "2" );
-    Fixture.executeLifeCycleFromServerThread();
-    assertEquals( -36, rootItem.getBounds().y );
-    assertEquals( -18, rootItem2.getBounds().y );
-    assertEquals( 0, rootItem3.getBounds().y );
+    assertTrue( subItem.getBounds().y >= rootItem.getBounds().y + rootItem.getBounds().height );
+    assertTrue( rootItem2.getBounds().y >= subItem.getBounds().y + subItem.getBounds().height );
   }
 
   public void testGetBoundsWithColumns() {
@@ -821,7 +776,7 @@ public class TreeItem_Test extends TestCase {
     TreeItem rootItem2 = new TreeItem( tree, 0 );
     TreeItem rootItem3 = new TreeItem( tree, 0 );
     TreeItem subItem = new TreeItem( rootItem, 0 );
-    final int rootItemWidth = rootItem.getBounds( 0 ).width;
+    int rootItemWidth = rootItem.getBounds( 0 ).width;
     assertTrue( rootItemWidth < 100 ); // swt substracts indent
     assertEquals( 100, rootItem2.getBounds( 1 ).width );
     assertEquals( 100, rootItem3.getBounds( 2 ).width );
@@ -1448,9 +1403,6 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 10, log.size() );
   }
 
-  /////////
-  // Helper
-
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
@@ -1459,8 +1411,7 @@ public class TreeItem_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  private static TreeColumn[] createColumns( final Tree tree, final int count )
-  {
+  private static TreeColumn[] createColumns( Tree tree, int count ) {
     TreeColumn[] result = new TreeColumn[ count ];
     for( int i = 0; i < count; i++ ) {
       TreeColumn column = new TreeColumn( tree, SWT.NONE );

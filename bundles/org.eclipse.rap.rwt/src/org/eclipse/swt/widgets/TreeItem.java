@@ -358,7 +358,7 @@ public class TreeItem extends Item {
       this.expanded = expanded;
       parent.updateFlatIndices();
       parent.updateScrollBars();
-      Tree.checkAllData( parent );
+      parent.checkAllData();
     }
   }
 

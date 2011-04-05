@@ -277,7 +277,7 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( treeItemId + ".checked", "true" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( true, treeItem.getChecked() );
   }
 
@@ -400,6 +400,26 @@ public class TreeItemLCA_Test extends TestCase {
     assertTrue( markup.indexOf( expectedSelect1 ) != -1 );
     assertTrue( markup.indexOf( expectedFocus ) != -1 );
     assertTrue( markup.indexOf( expectedSelect2 ) != -1 );
+  }
+
+  public void testGetBoundsWithScrolling() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem rootItem = new TreeItem( tree, 0 );
+    TreeItem rootItem2 = new TreeItem( tree, 0 );
+    TreeItem rootItem3 = new TreeItem( tree, 0 );
+    ITreeAdapter treeAdapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    treeAdapter.checkAllData( tree );
+    assertEquals( 0, rootItem.getBounds().y );
+    assertEquals( 18, rootItem2.getBounds().y );
+    assertEquals( 36, rootItem3.getBounds().y );
+    Fixture.fakeNewRequest();
+    String treeId = WidgetUtil.getId( tree );
+    Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
+    Fixture.fakeRequestParam( treeId + ".topItemIndex", "2" );
+    Fixture.executeLifeCycleFromServerThread();
+    assertEquals( -36, rootItem.getBounds().y );
+    assertEquals( -18, rootItem2.getBounds().y );
+    assertEquals( 0, rootItem3.getBounds().y );
   }
 
   public void testTextEscape() throws Exception {

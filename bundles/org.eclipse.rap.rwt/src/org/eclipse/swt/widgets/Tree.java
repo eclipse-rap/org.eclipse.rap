@@ -173,7 +173,7 @@ public class Tree extends Composite {
     }
 
     public void checkAllData( final Tree tree ) {
-      Tree.checkAllData( tree );
+      tree.checkAllData();
     }
 
     public boolean hasHScrollBar() {
@@ -259,7 +259,7 @@ public class Tree extends Composite {
     public void controlResized( final ControlEvent event ) {
       Tree tree = ( Tree )event.widget;
       if( tree.isVirtual() ) {
-        checkAllData( tree );
+        tree.checkAllData();
       }
       tree.updateScrollBars();
     }
@@ -619,7 +619,7 @@ public class Tree extends Composite {
   private void setTopItemIndex( final int index ) {
     if( index != topItemIndex ) {
       topItemIndex = index;
-      checkAllData( this );
+      checkAllData();
     }
   }
 
@@ -1156,7 +1156,7 @@ public class Tree extends Composite {
       }
     }
     if( isVirtual() ) {
-      checkAllData( this );
+      checkAllData();
     }
   }
 
@@ -2032,7 +2032,7 @@ public class Tree extends Composite {
   // Helping methods
 
 
-  static void checkAllData( final Tree tree ) {
+  void checkAllData() {
     // TODO [tb] : call only in doRedrawFake?
     ProcessActionRunner.add( new Runnable() {
       public void run() {
@@ -2048,18 +2048,18 @@ public class Tree extends Composite {
               if( parentItem != null ) {
                 index = parentItem.indexOf( item );
               } else {
-                index = tree.indexOf( item );
+                index = Tree.this.indexOf( item );
               }
               item.flatIndex = flatIndex;
               flatIndex++;
-              if( !item.isCached() && tree.isItemVisible( item ) ) {
-                tree.checkData( item, index );
+              if( !item.isCached() && Tree.this.isItemVisible( item ) ) {
+                Tree.this.checkData( item, index );
               }
             }
             return result;
           }
         };
-        WidgetTreeVisitor.accept( tree, visitor );
+        WidgetTreeVisitor.accept( Tree.this, visitor );
       }
     } );
   }
