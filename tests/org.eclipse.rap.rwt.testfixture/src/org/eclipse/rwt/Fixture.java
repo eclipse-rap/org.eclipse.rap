@@ -311,8 +311,7 @@ public class Fixture {
 
   public static void fakePhase( final PhaseId phase ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( CurrentPhase.class.getName() + "#value",
-                            phase );
+    stateInfo.setAttribute( CurrentPhase.class.getName() + "#value", phase );
   }
   
   public static void executeLifeCycleFromServerThread() {

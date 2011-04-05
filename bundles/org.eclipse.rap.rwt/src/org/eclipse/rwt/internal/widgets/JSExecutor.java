@@ -23,8 +23,7 @@ import org.eclipse.swt.widgets.Display;
 
 public final class JSExecutor {
 
-  private static final String JS_EXECUTOR
-    = JSExecutor.class.getName() + "#instance";
+  private static final String JS_EXECUTOR = JSExecutor.class.getName() + "#instance";
 
   public static void executeJS( String code ) {
     JSExecutorPhaseListener jsExecutor = getJSExecutor();

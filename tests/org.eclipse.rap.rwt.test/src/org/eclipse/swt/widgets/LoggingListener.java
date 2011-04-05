@@ -27,8 +27,8 @@ class LoggingListener implements Listener {
     return log.size();
   }
 
-  public Event get( final int i ) {
-    return ( Event )log.get( i );
+  public Event get( int index ) {
+    return ( Event )log.get( index );
   }
 
   public List getItems() {
