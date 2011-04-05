@@ -55,11 +55,22 @@ qx.Class.define("qx.Class",
 {
   statics :
   {
-    /*
-    ---------------------------------------------------------------------------
-       PUBLIC METHODS
-    ---------------------------------------------------------------------------
-    */
+
+    _normalizeConfig : function( config ) {
+      if (!config) {
+        var config = {};
+      }
+      if (config.include && !(config.include instanceof Array)) {
+        config.include = [config.include];
+      }
+      if (config.implement && !(config.implement instanceof Array)) {
+        config.implement = [config.implement];
+      }
+      if (!config.hasOwnProperty("extend") && !config.type) {
+        config.type = "static";
+      }
+      return config;
+    },
 
     /**
      * Define a new class using the qooxdoo class system. This sets up the
@@ -133,95 +144,87 @@ qx.Class.define("qx.Class",
      * @return {void}
      * @throws TODOC
      */
-    define : function(name, config)
-    {
-      if (!config) {
-        var config = {};
-      }
-
-      // Normalize include to array
-      if (config.include && !(config.include instanceof Array)) {
-        config.include = [config.include];
-      }
-
-      // Normalize implement to array
-      if (config.implement && !(config.implement instanceof Array)) {
-        config.implement = [config.implement];
-      }
-
-      // Normalize type
-      if (!config.hasOwnProperty("extend") && !config.type) {
-        config.type = "static";
-      }
-
-      // Validate incoming data
-      if (qx.core.Variant.isSet("qx.debug", "on")) {
-        this.__validateConfig(name, config);
-      }
-
-      // Create the class
-      var clazz = this.__createClass(name, config.type, config.extend, config.statics, config.construct, config.destruct);
-
-      // Members, properties, events and mixins are only allowed for non-static classes
-      if (config.extend)
-      {
-        // Attach properties
-        if (config.properties) {
-          this.__addProperties(clazz, config.properties, true);
+    define : function(name, config) {
+      config = this._normalizeConfig( config );
+      this.__validateConfig( name, config );
+      var clazz;
+      if( !config.extend ) {
+        clazz = config.statics || {};
+      } else {
+        if( !config.construct ) {
+          config.construct = this.__createDefaultConstructor();
         }
-
-        // Attach members
-        if (config.members) {
-          this.__addMembers(clazz, config.members, true, true, false);
-        }
-
-        // Process events
-        if (config.events) {
-          this.__addEvents(clazz, config.events, true);
-        }
-
-        // Include mixins.
-        // Must be the last here to detect conflicts
-        if (config.include)
-        {
-          for (var i=0, l=config.include.length; i<l; i++) {
-            this.__addMixin(clazz, config.include[i], false);
+        clazz = this.__wrapConstructor(config.construct, name, config.type);
+        if( config.statics ) {
+          var key;
+          for(var i=0, a=qx.lang.Object.getKeys(config.statics), l=a.length; i<l; i++) {
+            key = a[i];
+            clazz[key] = config.statics[key];
           }
         }
       }
+      var basename = this.createNamespace(name, clazz, false);
+      clazz.name = clazz.classname = name;
+      clazz.basename = basename;
+      this.__registry[ name ] = clazz;
 
-      // Process settings
-      if (config.settings)
-      {
+      // Attach toString
+      if (!clazz.hasOwnProperty("toString")) {
+        clazz.toString = this.genericToString;
+      }
+
+      if( config.extend ) {
+        var superproto = config.extend.prototype;
+        var helper = this.__createEmptyFunction();
+        helper.prototype = superproto;
+        var proto = new helper;
+        clazz.prototype = proto;
+        proto.name = proto.classname = name;
+        proto.basename = basename;
+        config.construct.base = clazz.superclass = config.extend;
+        config.construct.self = clazz.constructor = proto.constructor = clazz;
+        if( config.destruct ) {
+          clazz.$$destructor = config.destruct;
+        }
+        var that = this;
+        clazz.$$initializer = function() {
+          //console.log( "init " + name );
+          if( config.properties ) {
+            that.__addProperties(clazz, config.properties, true);
+          }
+          if( config.members ) {
+            that.__addMembers(clazz, config.members, true, true, false);
+          }
+          if( config.events ) {
+            that.__addEvents(clazz, config.events, true);
+          }
+          if( config.include ) {
+            for (var i=0, l=config.include.length; i<l; i++) {
+              that.__addMixin(clazz, config.include[i], false);
+            }
+          }
+        }
+      }
+      if( config.settings ) {
         for (var key in config.settings) {
           qx.core.Setting.define(key, config.settings[key]);
         }
       }
-
-      // Process variants
-      if (config.variants)
-      {
+      if( config.variants ) {
         for (var key in config.variants) {
           qx.core.Variant.define(key, config.variants[key].allowedValues, config.variants[key].defaultValue);
         }
       }
-
-      // Process defer
-      if (config.defer)
-      {
+      if( config.defer ) {
+        this.__initializeClass( clazz );
         config.defer.self = clazz;
-        config.defer(clazz, clazz.prototype,
-        {
-          add : function(name, config)
-          {
-            // build pseudo properties map
+        config.defer(clazz, clazz.prototype, {
+          add : function( name, config ) {
             var properties = {};
             properties[name] = config;
-
-            // execute generic property handler
             qx.Class.__addProperties(clazz, properties, true);
           }
-        });
+        } );
       }
 
     },
@@ -863,122 +866,6 @@ qx.Class.define("qx.Class",
     }),
 
 
-    /**
-     * Creates a class by type. Supports modern inheritance etc.
-     *
-     * @type static
-     * @param name {String} Full name of the class
-     * @param type {String} type of the class, i.e. "static", "abstract" or "singleton"
-     * @param extend {Class} Superclass to inherit from
-     * @param statics {Map} Static methods or fields
-     * @param construct {Function} Constructor of the class
-     * @param destruct {Function} Destructor of the class
-     * @return {Class} The generated class
-     */
-    __createClass : function(name, type, extend, statics, construct, destruct)
-    {
-      var clazz;
-
-      if (!extend)
-      {
-        // Create empty/non-empty class
-        clazz = statics || {};
-      }
-      else
-      {
-        clazz = {};
-
-        if (extend)
-        {
-          // Create default constructor
-          if (!construct) {
-            construct = this.__createDefaultConstructor();
-          }
-
-          // Wrap constructor to handle mixin constructors and property initialization
-          clazz = this.__wrapConstructor(construct, name, type);
-        }
-
-        // Copy statics
-        if (statics)
-        {
-          var key;
-
-          for (var i=0, a=qx.lang.Object.getKeys(statics), l=a.length; i<l; i++)
-          {
-            key = a[i];
-            clazz[key] = statics[key];
-          }
-        }
-      }
-
-      // Create namespace
-      var basename = this.createNamespace(name, clazz, false);
-
-      // Store names in constructor/object
-      clazz.name = clazz.classname = name;
-      clazz.basename = basename;
-
-      // Attach toString
-      if (!clazz.hasOwnProperty("toString")) {
-        clazz.toString = this.genericToString;
-      }
-
-      if (extend)
-      {
-        var superproto = extend.prototype;
-
-        // Use helper function/class to save the unnecessary constructor call while
-        // setting up inheritance.
-        var helper = this.__createEmptyFunction();
-        helper.prototype = superproto;
-        var proto = new helper;
-
-        // Apply prototype to new helper instance
-        clazz.prototype = proto;
-
-        // Store names in prototype
-        proto.name = proto.classname = name;
-        proto.basename = basename;
-
-        /*
-          - Store base constructor to constructor-
-          - Store reference to extend class
-        */
-        construct.base = clazz.superclass = extend;
-
-        /*
-          - Store statics/constructor onto constructor/prototype
-          - Store correct constructor
-          - Store statics onto prototype
-        */
-        construct.self = clazz.constructor = proto.constructor = clazz;
-
-        // Store destruct onto class
-        if (destruct) {
-          clazz.$$destructor = destruct;
-        }
-      }
-
-      // Compatibility to qooxdoo 0.6.6
-      if (qx.core.Variant.isSet("qx.compatibility", "on"))
-      {
-        qx.Clazz = clazz;
-        qx.Proto = proto || null;
-        qx.Super = extend || null;
-      }
-
-      // Store class reference in global class registry
-      this.__registry[name] = clazz;
-
-      // Return final class object
-      return clazz;
-    },
-
-
-
-
-
 
     /*
     ---------------------------------------------------------------------------
@@ -1062,7 +949,7 @@ qx.Class.define("qx.Class",
 
         // Check incoming configuration
         if (qx.core.Variant.isSet("qx.debug", "on")) {
-          this.__validateProperty(clazz, name, config, patch);
+          //this.__validateProperty(clazz, name, config, patch);
         }
 
         // Store name into configuration
@@ -1389,6 +1276,22 @@ qx.Class.define("qx.Class",
     __createEmptyFunction : function() {
       return function() {};
     },
+    
+    __initializeClass : function( clazz ) {
+      if( clazz.$$initializer ) {
+        var inits = [];
+        var target = clazz;
+        while( target.$$initializer ) {
+          inits.push( target );
+          target = target.superclass;
+        }
+        while( inits.length > 0 ) {
+          target = inits.pop();
+          target.$$initializer();
+          delete target.$$initializer; 
+        }
+      }
+    },
 
 
     /**
@@ -1401,11 +1304,13 @@ qx.Class.define("qx.Class",
      */
     __wrapConstructor : function(construct, name, type)
     {
+      var init = this.__initializeClass;
       var wrapper = function() {
 
         // We can access the class/statics using arguments.callee
         var clazz=arguments.callee.constructor;
-  
+        init( clazz );
+
         if (qx.core.Variant.isSet("qx.debug", "on"))
         {
           // new keyword check

@@ -37,6 +37,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     var shortName;
     for( var clazz in classes ) {
       if( clazz.substr( clazz.length - 4 ) == "Test" ) {
+        qx.Class.__initializeClass( classes[ clazz ] );
         shortName = this._getShortClassName( clazz );
         if( testScripts[ shortName ] ) {
           delete testScripts[ shortName ];
