@@ -1505,7 +1505,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var radii = tv.getCssBoxDimensions( "CTabFolder", "border-radius" );
       if( radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0 )
       {
-        result.border = new org.eclipse.rwt.RoundedBorder( 0, color, 0 );
+        result.border = new org.eclipse.rwt.RoundedBorder( 0, color );
         if( states.barTop ) {
           result.border.setRadii( [ radii[ 0 ], radii[ 1 ], 0, 0 ] );
         } else {

@@ -12,9 +12,8 @@
 
 
 /**
- * An adapter class for accessing theme values in appearance definitions. The
- * values are read from the respective qooxdoo theme or the RAP ThemeStore.
- * Values for the actual widget variant are selected if available.
+ * An adapter class for accessing theme values. 
+ * Values for the widget state given in the construtor are selected if available.
  */
 qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
 
@@ -38,138 +37,57 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
   },
 
   members : {
-    
-    hasValue : function( element, key ) {
-      var result = false;
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      for( var slot in values ) {
-        if( typeof values[ slot ][ vkey ] != "undefined" ) {
-          result = true;
-        }
-      }
-      return result;
-    },
 
     getCssBorder : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.borders[ vkey ];
-      // construct rounded border if "border-radius" is set
-      vkey = this._store.getCssValue( element, this._states, "border-radius" );
-      var radius = values.boxdims[ vkey ];
-      if(    radius != null
-          && (    radius[ 0 ] > 0
-               || radius[ 1 ] > 0
-               || radius[ 2 ] > 0
-               || radius[ 3 ] > 0 )
-          && result instanceof qx.ui.core.Border )
-      {
-        var width = result.getWidthTop();
-        var color = result.getColorTop();
-        result = new org.eclipse.rwt.RoundedBorder( width );
-        result.setRadii( radius );
-        result.setColor( color );
-      }
-      return result;
+      return this._store.getBorder( element, this._states, key );
     },
 
     getCssColor : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.colors[ vkey ];
-      return result;
+      return this._store.getColor( element, this._states, key );
     },
 
     getCssFont : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.fonts[ vkey ];
-      return result;
+      return this._store.getFont( element, this._states, key );
     },
 
     getCssDimension : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.dimensions[ vkey ];
-      return result;
+      return this._store.getDimension( element, this._states, key );
     },
 
     getCssBoxDimensions : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.boxdims[ vkey ];
-      return result;
+      return this._store.getBoxDimensions( element, this._states, key );
     },
 
     getCssBoolean : function( element, key ) {
-      var result = this._store.getCssValue( element, this._states, key );
-      return result;
+      return this._store.getBoolean( element, this._states, key );
     },
 
     getCssFloat : function( element, key ) {
-      var result = this._store.getCssValue( element, this._states, key );
-      return parseFloat( result );
+      return this._store.getFloat( element, this._states, key );
     },
 
     getCssIdentifier : function( element, key ) {
-      var result = this._store.getCssValue( element, this._states, key );
-      return result;
+      return this._store.getIdentifier( element, this._states, key );
     },
 
     getCssImage : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.images[ vkey ];
-      if( result != null ) {
-        // TODO [rh] remove hard-coded path (first segment is defined by 
-        //      resource-manager)
-        result = "rwt-resources/themes/images/" + result[ 0 ];
-      } else {
-        // TODO [rst] Handle null values - currently, both null and the string
-        // "undefined" lead to a js error for icon property
-        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE;
-      }
-      return result;
+      return this._store.getImage( element, this._states, key );      
     },
 
     getCssSizedImage : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var image = this._store.getThemeValues().images[ vkey ];
-      var result;
-      if( image != null ) {
-        // TODO [tb] : Revise hardcoded path
-        result = [ "rwt-resources/themes/images/" + image[ 0 ], 
-                   image[ 1 ], 
-                   image[ 2 ] ];
-      } else {
-        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE_SIZED;        
-      } 
-      return result; 
+      return this._store.getSizedImage( element, this._states, key );      
     },
 
     getCssGradient : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.gradients[ vkey ];
-      return result;
+      return this._store.getGradient( element, this._states, key );
     },
-    
+
     getCssCursor : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.cursors[ vkey ];
-      if( vkey === result ) {
-        result = "rwt-resources/themes/cursors/" + result;
-      }
-      return result;
+      return this._store.getCursor( element, this._states, key );
     },
 
     getCssAnimation : function( element, key ) {
-      var vkey = this._store.getCssValue( element, this._states, key );
-      var values = this._store.getThemeValues();
-      var result = values.animations[ vkey ];      
-      return result;
+      return this._store.getAnimation( element, this._states, key );
     }
 
   }

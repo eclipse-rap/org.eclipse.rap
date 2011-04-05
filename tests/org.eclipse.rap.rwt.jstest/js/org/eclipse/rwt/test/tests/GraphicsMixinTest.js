@@ -12,7 +12,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
   extend : qx.core.Object,
 
 	construct : function(){
-	  this.gfxBorder = new org.eclipse.rwt.RoundedBorder( 1, "black", 0 );
+	  this.gfxBorder = new org.eclipse.rwt.RoundedBorder( 1, "black" );
 	  this.cssBorder = new qx.ui.core.Border( 1, "solid", "black" );
 	  this.gradient = [ [ 0, "red" ], [ 1, "yellow" ] ];
 	},

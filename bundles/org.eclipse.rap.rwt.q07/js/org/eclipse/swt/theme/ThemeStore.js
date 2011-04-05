@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,12 +82,8 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
 
   members : {
 
-    /**
-     * Returns the values container.
-     */
-    getThemeValues : function() {
-      return this._values;
-    },
+    /////////////
+    // Server API
 
     defineValues : function( values ) {
       for( var type in this._values ) {
@@ -96,78 +92,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
             if( !( key in this._values[ type ] ) ) {
               this._values[ type ][ key ] = values[ type ][ key ];
             }
-          }
-        }
-      }
-      this._resolveFonts();
-      this._resolveBorders();
-      this._resolveGradients();
-    },
-
-    _resolveFonts : function() {
-      for( var key in this._values.fonts ) {
-        var value = this._values.fonts[ key ];
-        // TODO [rst] remove this check when values are rendered only once
-        if( !( value instanceof qx.ui.core.Font ) ) {
-          var font = new qx.ui.core.Font();
-          font.setSize( value.size );
-          font.setFamily( value.family );
-          font.setBold( value.bold );
-          font.setItalic( value.italic );
-          this._values.fonts[ key ] = font;
-        }
-      }
-    },
-
-    _resolveBorders : function() {
-      for( var key in this._values.borders ) {
-        var value = this._values.borders[ key ];
-        // TODO [rst] remove this check when values are rendered only once
-        if( !( value instanceof qx.ui.core.Border ) && typeof( value ) != "string" ) {
-          var border = null;
-          if( value.color == null ) {
-            if( value.width == 1 ) {
-              if( value.style == "outset" ) {
-                border = "thinOutset";
-              } else if( value.style == "inset" ) {
-                border = "thinInset";
-              }
-            } else if( value.width == 2 ) {
-              if( value.style == "outset" ) {
-                border = "outset";
-              } else if( value.style == "inset" ) {
-                border = "inset";
-              } else if( value.style == "ridge" ) {
-                border = "ridget";
-              } else if( value.style == "groove" ) {
-                border = "groove";
-              }
-            }
-          }
-          if( border == null ) {
-            border = new qx.ui.core.Border( value.width, value.style );
-            if( value.color ) {
-              border.setColor( value.color );
-            }
-          }
-          this._values.borders[ key ] = border;
-        }
-      }
-    },
-    
-    _resolveGradients : function() {
-      for( var key in this._values.gradients ) {
-        var value = this._values.gradients[ key ];
-        if( value != null ) {
-          // TODO [if] remove this check when values are rendered only once
-          if( value.colors && value.percents ) {
-            var gradient = new Array();
-            for( var i = 0; i < value.colors.length; i++ ) {
-              gradient[ i ] = [ value.percents[ i ] / 100, 
-                                value.colors[ i ] ];
-            }
-            gradient.horizontal = !value.vertical;
-            this._values.gradients[ key ] = gradient;
           }
         }
       }
@@ -183,36 +107,151 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       this._fillColors( theme );
     },
 
-    // Fills qx color theme with some named colors necessary for BordersBase
-    _fillColors : function( theme ) {
-      var ct = qx.Theme.getByName( theme + "Colors" );
-      ct.colors[ "widget.darkshadow" ]
-        = this._getColor( "Display", {}, "rwt-darkshadow-color", theme );
-      ct.colors[ "widget.highlight" ]
-        = this._getColor( "Display", {}, "rwt-highlight-color", theme );
-      ct.colors[ "widget.lightshadow" ]
-        = this._getColor( "Display", {}, "rwt-lightshadow-color", theme );
-      ct.colors[ "widget.shadow" ]
-        = this._getColor( "Display", {}, "rwt-shadow-color", theme );
-      ct.colors[ "widget.thinborder" ]
-        = this._getColor( "Display", {}, "rwt-thinborder-color", theme );
-      // TODO [rst] eliminate these properties
-      ct.colors[ "widget.selection-marker" ]
-        = this._getColor( "Display", {}, "rwt-selectionmarker-color", theme );
-      ct.colors[ "widget.background" ]
-        = this._getColor( "*", {}, "background-color", theme );
-      ct.colors[ "widget.foreground" ]
-        = this._getColor( "*", {}, "color", theme );
-      ct.colors[ "widget.info.foreground" ]
-        = this._getColor( "Widget-ToolTip", {}, "color", theme );
+    /////////////
+    // Client API
+
+    getColor : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      return this._values.colors[ key ];
+    },
+    
+    getDimension : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      return this._values.dimensions[ key ];
+    },
+    
+    getBoxDimensions : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      return this._values.boxdims[ key ];
     },
 
-    _getColor : function( element, states, property, theme ) {
-      var vkey = this.getCssValue( element, states, property, theme );
-      return this._values.colors[ vkey ];
+    getBoolean : function( element, states, property, theme ) {
+      return this._getCssValue( element, states, property, theme );
     },
 
-    getCssValue : function( element, states, property, theme ) {
+    getFloat : function( element, states, property, theme ) {
+      return parseFloat( this._getCssValue( element, states, property, theme ) );
+    },
+
+    getIdentifier : function( element, states, property, theme ) {
+      return this._getCssValue( element, states, property, theme );
+    },
+    
+    getImage : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      var imageArray = this._values.images[ key ];
+      if( imageArray != null ) {
+        // TODO [rh] remove hard-coded path (first segment is defined by 
+        //      resource-manager)
+        result = "rwt-resources/themes/images/" + imageArray[ 0 ];
+      } else {
+        // TODO [rst] Handle null values - currently, both null and the string
+        // "undefined" lead to a js error for icon property
+        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE;
+      }
+      return result;
+    },
+    
+    getSizedImage : function( element, states, property, theme ) {
+      var key = this._getCssValue(  element, states, property, theme );
+      var imageArray = this._values.images[ key ];
+      var result;
+      if( imageArray != null ) {
+        // TODO [tb] : Revise hardcoded path
+        result = imageArray.concat(); // creates copy
+        result[ 0 ] = "rwt-resources/themes/images/" + result[ 0 ];
+      } else {
+        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE_SIZED;        
+      } 
+      return result; 
+    },
+    
+    getCursor : function( element, states, property, theme ) {
+      var key = this._getCssValue(  element, states, property, theme );
+      var result = this._values.cursors[ key ];
+      if( key === result ) {
+        result = "rwt-resources/themes/cursors/" + result;
+      }
+      return result;
+    },
+
+    getAnimation : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      return this._values.animations[ key ];
+    },
+
+    getFont : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      var value = this._values.fonts[ key ];
+      if( !( value instanceof qx.ui.core.Font ) ) {
+        var font = new qx.ui.core.Font();
+        font.setSize( value.size );
+        font.setFamily( value.family );
+        font.setBold( value.bold );
+        font.setItalic( value.italic );
+        this._values.fonts[ key ] = font;
+      }
+      return this._values.fonts[ key ];
+    },
+
+    getBorder : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      var value = this._values.borders[ key ];
+      var border;
+      if( !( value instanceof qx.ui.core.Border ) && typeof( value ) !== "string" ) {
+        border = this._convertBorderValueToPreset( value );
+        if( border === null ) {
+          border = new qx.ui.core.Border( value.width, value.style, value.color );
+          this._values.borders[ key ] = border;
+        }
+      } else {
+        border = value;
+      }
+      if( typeof( border ) !== "string" ) {
+        var radiiKey = this._getCssValue( element, states, "border-radius", theme );
+        var radii = this._values.boxdims[ radiiKey ];
+        if( radii != null && ( radii.join( "" ) !== "0000" ) ) {
+          // TODO [tb]: Rounded borders can currently not be easily cached 
+          //            due to their dependence on (independently usable) non-rounded border.
+          var width = border.getWidthTop();
+          var color = border.getColorTop();
+          border = new org.eclipse.rwt.RoundedBorder( width, color, radii );
+        }
+      }
+      return border;
+    },
+
+    getGradient : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      var value = this._values.gradients[ key ];
+      if( value != null ) {
+        // TODO [if] remove this check when values are rendered only once
+        if( value.colors && value.percents ) {
+          var gradient = new Array();
+          for( var i = 0; i < value.colors.length; i++ ) {
+            gradient[ i ] = [ value.percents[ i ] / 100, 
+                              value.colors[ i ] ];
+          }
+          gradient.horizontal = !value.vertical;
+          this._values.gradients[ key ] = gradient;
+        }
+      }
+      return this._values.gradients[ key ];
+    },
+    
+
+    // Used by GraphicsMixin:
+    getImageSize : function( source ) {
+      var key = source.slice( "rwt-resources/themes/images/".length );
+      var image = this._values.images[ key ];      
+      return image != null ? [ image[ 1 ], image[ 2 ] ] : [ 0, 0 ];
+    },
+
+    
+    ////////////
+    // Internals
+    
+    _getCssValue : function( element, states, property, theme ) {
       var result;
       if( theme == null ) {
         theme = qx.theme.manager.Meta.getInstance().getTheme().name;
@@ -231,17 +270,11 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         }
       }
       if( result === undefined && theme != this.defaultTheme ) {
-        result = this.getCssValue( element, states, property, this.defaultTheme );
+        result = this._getCssValue( element, states, property, this.defaultTheme );
       }
       return result;
     },
     
-    getImageSize : function( source ) {
-      var key = source.slice( "rwt-resources/themes/images/".length );
-      var image = this._values.images[ key ];      
-      return image != null ? [ image[ 1 ], image[ 2 ] ] : [ 0, 0 ];
-    },
-
     _matches : function( states, element, constraints ) {
       var result = true;
       for( var i = 0; i < constraints.length && result; i++ ) {
@@ -273,6 +306,55 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         result = this._statesMap[ "*" ][ state ];
       }
       return result;
+    },
+    
+    // Fills qx color theme with some named colors necessary for BordersBase
+    _fillColors : function( theme ) {
+      var ct = qx.Theme.getByName( theme + "Colors" );
+      ct.colors[ "widget.darkshadow" ]
+        = this.getColor( "Display", {}, "rwt-darkshadow-color", theme );
+      ct.colors[ "widget.highlight" ]
+        = this.getColor( "Display", {}, "rwt-highlight-color", theme );
+      ct.colors[ "widget.lightshadow" ]
+        = this.getColor( "Display", {}, "rwt-lightshadow-color", theme );
+      ct.colors[ "widget.shadow" ]
+        = this.getColor( "Display", {}, "rwt-shadow-color", theme );
+      ct.colors[ "widget.thinborder" ]
+        = this.getColor( "Display", {}, "rwt-thinborder-color", theme );
+      // TODO [rst] eliminate these properties
+      ct.colors[ "widget.selection-marker" ]
+        = this.getColor( "Display", {}, "rwt-selectionmarker-color", theme );
+      ct.colors[ "widget.background" ]
+        = this.getColor( "*", {}, "background-color", theme );
+      ct.colors[ "widget.foreground" ]
+        = this.getColor( "*", {}, "color", theme );
+      ct.colors[ "widget.info.foreground" ]
+        = this.getColor( "Widget-ToolTip", {}, "color", theme );
+    },
+    
+    _convertBorderValueToPreset : function( value ) {
+      var result = null;
+      if( value.color == null ) {
+        if( value.width == 1 ) {
+          if( value.style == "outset" ) {
+            result = "thinOutset";
+          } else if( value.style == "inset" ) {
+            result = "thinInset";
+          }
+        } else if( value.width == 2 ) {
+          if( value.style == "outset" ) {
+            result = "outset";
+          } else if( value.style == "inset" ) {
+            result = "inset";
+          } else if( value.style == "ridge" ) {
+            result = "ridget";
+          } else if( value.style == "groove" ) {
+            result = "groove";
+          }
+        }
+      }
+      return result;
     }
+
   }
 } );

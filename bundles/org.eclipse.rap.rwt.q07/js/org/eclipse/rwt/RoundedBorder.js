@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.rwt.RoundedBorder",
+qx.Class.define( "org.eclipse.rwt.RoundedBorder",
 {
   extend : qx.ui.core.Border,
 
@@ -17,7 +17,7 @@ qx.Class.define("org.eclipse.rwt.RoundedBorder",
    * @param color {Color} The border color, see also {@link #color}
    * @param radius {Number} The corner radius.
    */
-  construct : function( width, color, radius ) {
+  construct : function( width, color, radii ) {
     this.base( arguments );
     this.__width = [ 0, 0, 0, 0 ];
     if ( width !== undefined ) {
@@ -26,8 +26,8 @@ qx.Class.define("org.eclipse.rwt.RoundedBorder",
     if ( color !== undefined ) {
       this.setColor( color );
     }
-    if ( radius !== undefined ) {
-      this.setRadius( radius );
+    if ( radii !== undefined ) {
+      this.setRadii( radii );
     }
   },
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010,2011 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -421,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AnimationTest", {
       var animation = new org.eclipse.rwt.Animation();
       var renderer = new org.eclipse.rwt.AnimationRenderer( animation );
       var widget = this._createWidget();
-      var border = new org.eclipse.rwt.RoundedBorder( 1, "black", 0 );
+      var border = new org.eclipse.rwt.RoundedBorder( 1, "black" );
       border.setRadius( 4 );
       widget.setBorder( border );
       widget.setBackgroundColor( "#FF0000" );
