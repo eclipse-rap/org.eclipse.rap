@@ -66,7 +66,7 @@ public final class RWTServletContextListener implements ServletContextListener {
   private static final ClassLoader CLASS_LOADER = RWTServletContextListener.class.getClassLoader();
   
   public static class ContextDestroyer implements Runnable {
-    protected final ServletContext servletContext;
+    private final ServletContext servletContext;
 
     public ContextDestroyer( ServletContext servletContext ) {
       this.servletContext = servletContext;
