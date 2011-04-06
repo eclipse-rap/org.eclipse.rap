@@ -224,18 +224,16 @@ public class ControlLCA_Test extends TestCase {
     Label label = new Label( shell, SWT.NONE );
     final java.util.List log = new ArrayList();
     label.addMenuDetectListener( new MenuDetectListener() {
-      public void menuDetected( final MenuDetectEvent event ) {
+      public void menuDetected( MenuDetectEvent event ) {
         log.add( event );
       }
     });
-    String displayId = DisplayUtil.getId( display );
     String labelId = WidgetUtil.getId( label );
     Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT, labelId );
     Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_X, "10" );
     Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_Y, "30" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     MenuDetectEvent event = ( MenuDetectEvent )log.get( 0 );
     assertSame( label, event.widget );
     assertEquals( 10, event.x );

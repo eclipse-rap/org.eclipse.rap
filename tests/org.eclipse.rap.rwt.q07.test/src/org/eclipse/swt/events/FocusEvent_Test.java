@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,11 +29,16 @@ public class FocusEvent_Test extends TestCase {
   
   private Display display;
   private Shell shell;
+  private String displayId;
+  private List events;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
+    displayId = DisplayUtil.getId( display );
     shell = new Shell( display );
+    shell.open();
+    events = new ArrayList();
   }
   
   protected void tearDown() throws Exception {
@@ -42,11 +47,10 @@ public class FocusEvent_Test extends TestCase {
   }
 
   public void testCopyFieldsFromUntypedEvent() {
-    final List log = new ArrayList();
     Button button = new Button( shell, SWT.PUSH );
     button.addFocusListener( new FocusAdapter() {
       public void focusGained( final FocusEvent event ) {
-        log.add( event );
+        events.add( event );
       }
     } );
     Object data = new Object();
@@ -54,8 +58,8 @@ public class FocusEvent_Test extends TestCase {
     event.data = data;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     button.notifyListeners( SWT.FocusIn, event );
-    assertEquals( 1, log.size() );
-    FocusEvent focusEvent = ( FocusEvent )log.get( 0 );
+    assertEquals( 1, events.size() );
+    FocusEvent focusEvent = ( FocusEvent )events.get( 0 );
     assertSame( button, focusEvent.getSource() );
     assertSame( button, focusEvent.widget );
     assertSame( display, focusEvent.display );
@@ -64,54 +68,50 @@ public class FocusEvent_Test extends TestCase {
   }
 
   public void testFocusLost() {
-    final StringBuffer log = new StringBuffer();
-    final Control unfocusControl = new Button( shell, SWT.PUSH );
-    shell.open();
+    Control unfocusControl = new Button( shell, SWT.PUSH );
     unfocusControl.setFocus();
     unfocusControl.addFocusListener( new FocusAdapter() {
-      public void focusLost( final FocusEvent event ) {
-        log.append( "focusLost" );
-        assertSame( unfocusControl, event.getSource() );
+      public void focusLost( FocusEvent event ) {
+        events.add( event );
       }
-      public void focusGained( final FocusEvent e ) {
+      public void focusGained( FocusEvent event ) {
         fail( "Unexpected event: focusGained" );
       }
     } );
     Control focusControl = new Button( shell, SWT.PUSH );
-    String displayId = DisplayUtil.getId( display );
     String focusControlId = WidgetUtil.getId( focusControl );
 
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", focusControlId );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.focusLost", 
-                              focusControlId );
-    Fixture.executeLifeCycleFromServerThread( );
-    assertEquals( "focusLost", log.toString() );
+    Fixture.fakeRequestParam( "org.eclipse.swt.events.focusLost", focusControlId );
+    Fixture.readDataAndProcessAction( display );
+    assertEquals( 1, events.size() );
+    FocusEvent event = ( FocusEvent )events.get( 0 );
+    assertEquals( FocusEvent.FOCUS_LOST, event.getID() );
+    assertSame( unfocusControl, event.getSource() );
   }
   
   public void testFocusGained() {
-    final StringBuffer log = new StringBuffer();
-    shell.open();
-    final Control control = new Button( shell, SWT.PUSH );
+    Control control = new Button( shell, SWT.PUSH );
     control.addFocusListener( new FocusAdapter() {
-      public void focusLost( final FocusEvent e ) {
+      public void focusLost( FocusEvent event ) {
         fail( "Unexpected event: focusLost" );
       }
-      public void focusGained( final FocusEvent event ) {
-        log.append( "focusGained" );
-        assertSame( control, event.getSource() );
+      public void focusGained( FocusEvent event ) {
+        events.add( event );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
     String controlId = WidgetUtil.getId( control );
     
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.focusGained", 
-                              controlId );
-    Fixture.executeLifeCycleFromServerThread( );
-    assertEquals( "focusGained", log.toString() );
+    Fixture.fakeRequestParam( "org.eclipse.swt.events.focusGained", controlId );
+    Fixture.readDataAndProcessAction( display );
+    assertEquals( 1, events.size() );
+    FocusEvent event = ( FocusEvent )events.get( 0 );
+    assertEquals( FocusEvent.FOCUS_GAINED, event.getID() );
+    assertSame( control, event.getSource() );
   }
 }

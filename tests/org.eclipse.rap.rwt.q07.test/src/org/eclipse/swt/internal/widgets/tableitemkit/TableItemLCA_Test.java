@@ -258,7 +258,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertTrue( executed[ 0 ] );
   }
 

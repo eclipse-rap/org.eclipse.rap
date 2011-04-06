@@ -416,7 +416,7 @@ public class TreeItemLCA_Test extends TestCase {
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
     Fixture.fakeRequestParam( treeId + ".topItemIndex", "2" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( -36, rootItem.getBounds().y );
     assertEquals( -18, rootItem2.getBounds().y );
     assertEquals( 0, rootItem3.getBounds().y );

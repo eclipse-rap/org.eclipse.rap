@@ -138,7 +138,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "new text" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( "modifyText", log.toString() );
   }
 
@@ -160,7 +160,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( "verifyText", log.toString() );
   }
   
@@ -297,7 +297,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
     assertTrue( log.get( 0 ) instanceof VerifyEvent );
     assertTrue( log.get( 1 ) instanceof ModifyEvent );

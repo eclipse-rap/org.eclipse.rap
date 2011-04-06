@@ -19,14 +19,17 @@ public class JSExecutor_Test extends TestCase {
   
   private static final String EXECUTE_1 = "execute_1";
   private static final String EXECUTE_2 = "execute_2";
+  
+  private Display display;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
-    new Display();
+    display = new Display();
   }
   
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
   

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
 import java.util.ArrayList;
@@ -32,8 +32,9 @@ import org.eclipse.swt.widgets.*;
 
 public class TabFolderLCA_Test extends TestCase {
 
+  private Display display;
+
   public void testPreserveValues() {
-    Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     TabFolder tabfolder = new TabFolder( shell, SWT.NONE );
     Boolean hasListeners;
@@ -86,14 +87,7 @@ public class TabFolderLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    tabfolder.addControlListener( new ControlListener() {
-
-      public void controlMoved( final ControlEvent e ) {
-      }
-
-      public void controlResized( final ControlEvent e ) {
-      }
-    } );
+    tabfolder.addControlListener( new ControlAdapter() { } );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tabfolder );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
@@ -138,14 +132,7 @@ public class TabFolderLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    tabfolder.addFocusListener( new FocusListener() {
-
-      public void focusGained( final FocusEvent event ) {
-      }
-
-      public void focusLost( final FocusEvent event ) {
-      }
-    } );
+    tabfolder.addFocusListener( new FocusAdapter() { } );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tabfolder );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -163,11 +150,9 @@ public class TabFolderLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testSelectionWithoutListener() {
-    Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
@@ -184,19 +169,13 @@ public class TabFolderLCA_Test extends TestCase {
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String folderId = WidgetUtil.getId( folder );
     String item1Id = WidgetUtil.getId( item1 );
-    // Run life cycle once to reduce markup that is written for the actual
-    // request under test
-    Fixture.fakeNewRequest();
-    Fixture.executeLifeCycleFromServerThread( );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.executeLifeCycleFromServerThread( );
 
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
+    
     assertEquals( 1, folder.getSelectionIndex() );
     assertFalse( control0.getVisible() );
     assertTrue( control1.getVisible() );
@@ -204,7 +183,6 @@ public class TabFolderLCA_Test extends TestCase {
 
   public void testSelectionWithListener() {
     final java.util.List events = new ArrayList();
-    Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
@@ -216,12 +194,10 @@ public class TabFolderLCA_Test extends TestCase {
     item1.setControl( control1 );
     shell.open();
     folder.addSelectionListener( new SelectionListener() {
-
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         events.add( event );
       }
-
-      public void widgetDefaultSelected( final SelectionEvent event ) {
+      public void widgetDefaultSelected( SelectionEvent event ) {
         events.add( event );
       }
     } );
@@ -231,21 +207,12 @@ public class TabFolderLCA_Test extends TestCase {
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String item1Id = WidgetUtil.getId( item1 );
     String folderId = WidgetUtil.getId( folder );
-    // Run life cycle once to reduce markup that is written for the actual
-    // request under test
-    Fixture.fakeNewRequest();
-    Fixture.executeLifeCycleFromServerThread( );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.executeLifeCycleFromServerThread( );
-
-    events.clear();
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
 
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 1, folder.getSelectionIndex() );
     assertFalse( control0.getVisible() );
     assertTrue( control1.getVisible() );
@@ -264,9 +231,11 @@ public class TabFolderLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
 }

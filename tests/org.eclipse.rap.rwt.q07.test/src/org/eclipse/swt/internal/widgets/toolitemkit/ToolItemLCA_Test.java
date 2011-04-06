@@ -98,7 +98,7 @@ public class ToolItemLCA_Test extends TestCase {
     ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
     final ToolItem item = new ToolItem( toolBar, SWT.CHECK );
     item.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
         assertSame( item, event.getSource() );
@@ -116,7 +116,7 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( toolItemId + ".selection", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, toolItemId );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
@@ -131,7 +131,7 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( item1Id + ".selection", "true" );
     Fixture.fakeRequestParam( item0Id + ".selection", "false" );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertFalse( item0.getSelection() );
     assertTrue( item1.getSelection() );
   }

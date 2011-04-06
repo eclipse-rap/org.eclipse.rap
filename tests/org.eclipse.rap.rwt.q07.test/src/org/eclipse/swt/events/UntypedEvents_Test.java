@@ -28,24 +28,26 @@ public class UntypedEvents_Test extends TestCase {
 
   private static final String WIDGET_SELECTED = "widgetSelected";
   private static final String WIDGET_DEFAULT_SELECTED = "widgetSelected";
+  
   private String log = "";
   private Display display;
   private Shell shell;
+  private Button widget;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display, SWT.SHELL_TRIM );
+    widget = new Button( shell, SWT.PUSH );
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
 
   public void testUntypedEventInvocation() {
-    final Widget widget = new Button( shell, SWT.PUSH );
-
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         assertSame( widget, event.widget );
@@ -108,20 +110,19 @@ public class UntypedEvents_Test extends TestCase {
         executed[ 0 ] = true;
       }
     } );
-    Button button = new Button( shell, SWT.PUSH );
-    button.addSelectionListener( new SelectionAdapter() {
+    widget.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
         throw new RuntimeException( "This should never be called." );
       }
     } );
     String displayId = DisplayUtil.getId( display );
-    String buttonId = WidgetUtil.getId( button );
+    String buttonId = WidgetUtil.getId( widget );
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
 
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertTrue( executed[ 0 ] );
   }
 }

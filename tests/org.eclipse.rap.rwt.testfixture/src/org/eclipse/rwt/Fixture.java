@@ -87,7 +87,7 @@ public class Fixture {
     servletContextListener.contextInitialized( event );
   }
   
-  public static void triggerServletContextdestroyed() {
+  public static void triggerServletContextDestroyed() {
     ServletContextEvent event = new ServletContextEvent( servletContext );
     servletContextListener.contextDestroyed( event );
   }

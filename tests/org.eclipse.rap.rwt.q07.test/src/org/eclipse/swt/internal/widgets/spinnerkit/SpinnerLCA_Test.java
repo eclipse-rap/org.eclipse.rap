@@ -229,20 +229,21 @@ public class SpinnerLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
+    spinner.setMaximum( 100 );
     String displayId = DisplayUtil.getId( display );
     String spinnerId = WidgetUtil.getId( spinner );
     // simulate valid client-side selection
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "77" );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 77, spinner.getSelection() );
     // simulate invalid client-side selection
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "777" );
     spinner.setSelection( 1 );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( spinner.getMaximum(), spinner.getSelection() );
   }
 

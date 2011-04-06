@@ -491,7 +491,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "27" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 3, eventLog.size() );
     Event traverseEvent = ( Event )eventLog.get( 0 );
     assertEquals( SWT.Traverse, traverseEvent.type );

@@ -57,7 +57,7 @@ public class DragSourceLCA_Test extends TestCase {
     assertTrue( unregisterPos < disposePos );
   }
 
-  public void testDisposeDragsourceAndControl() {
+  public void testDisposeDragSourceAndControl() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Control dragSourceControl = new Label( shell, SWT.NONE );

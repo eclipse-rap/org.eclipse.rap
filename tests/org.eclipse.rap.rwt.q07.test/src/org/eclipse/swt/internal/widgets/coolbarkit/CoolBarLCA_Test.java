@@ -260,7 +260,7 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "483" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
     assertEquals( 0, bar.getItemOrder()[ 1 ] );
 
@@ -271,7 +271,7 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "2000" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 1, bar.getItemOrder()[ 0 ] );
     assertEquals( 0, bar.getItemOrder()[ 1 ] );
   }
@@ -316,8 +316,8 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
     assertEquals( 1, bar.getItemOrder()[ 1 ] );
     String expected
-    = "var w = wm.findWidgetById( \"" + item0Id + "\" );"
-    + "w.setSpace(";
+      = "var w = wm.findWidgetById( \"" + item0Id + "\" );"
+      + "w.setSpace(";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 

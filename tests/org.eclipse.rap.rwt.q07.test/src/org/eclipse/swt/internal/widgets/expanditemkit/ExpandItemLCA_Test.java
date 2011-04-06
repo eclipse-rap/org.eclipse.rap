@@ -82,7 +82,6 @@ public class ExpandItemLCA_Test extends TestCase {
     final ExpandItem expandItem = createExpandItems( expandBar );
     final StringBuffer log = new StringBuffer();
     ExpandListener listener = new ExpandListener() {
-
       public void itemCollapsed( final ExpandEvent event ) {
         assertEquals( expandBar, event.getSource() );
         assertEquals( expandItem, event.item );

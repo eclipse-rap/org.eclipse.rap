@@ -373,7 +373,7 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( control, display.getFocusControl() );
 
     // Request parameter focusControl with value 'null' is ignored
@@ -381,7 +381,7 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( previousFocusControl, display.getFocusControl() );
   }
 

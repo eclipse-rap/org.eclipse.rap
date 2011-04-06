@@ -169,7 +169,7 @@ public class MouseEvent_Test extends TestCase {
     fakeUIRootRequestParam( );
     fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, events.size() );
     MouseEvent mouseDown = ( ( MouseEvent )events.get( 0 ) );
     assertEquals( MouseEvent.MOUSE_DOWN, mouseDown.getID() );
@@ -198,7 +198,7 @@ public class MouseEvent_Test extends TestCase {
     fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseDoubleClickRequest( shell, shellX + 30, shellY + 30 );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 3, events.size() );
     MouseEvent mouseDown = ( ( MouseEvent )events.get( 0 ) );
     assertEquals( MouseEvent.MOUSE_DOWN, mouseDown.getID() );
@@ -236,7 +236,7 @@ public class MouseEvent_Test extends TestCase {
     fakeUIRootRequestParam( );
     fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, events.size() );
     Event mouseEvent = ( ( Event )events.get( 0 ) );
     assertEquals( SWT.MouseDown, mouseEvent.type );
@@ -266,7 +266,7 @@ public class MouseEvent_Test extends TestCase {
     fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseDoubleClickRequest( shell, shellX + 30, shellY + 30 );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 3, events.size() );
     Event mouseDown = ( ( Event )events.get( 0 ) );
     assertEquals( SWT.MouseDown, mouseDown.type );
@@ -301,7 +301,7 @@ public class MouseEvent_Test extends TestCase {
     fakeUIRootRequestParam( );
     fakeMouseDownRequest( shell, shellX + 1, shellY + 1 );
     fakeMouseUpRequest( shell, shellX + 1, shellY + 1 );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, shell.getBorderWidth() );
     assertEquals( 0, events.size() );
     events.clear();
@@ -310,7 +310,7 @@ public class MouseEvent_Test extends TestCase {
     fakeUIRootRequestParam( );
     fakeMouseDownRequest( shell, shellX + 10, shellY + 10 );
     fakeMouseUpRequest( shell, shellX + 10, shellY + 10 );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 0, events.size() );
     events.clear();
     // Simulate request that sends a mouseDown + mouseUp on shell menubar
@@ -318,7 +318,7 @@ public class MouseEvent_Test extends TestCase {
     fakeUIRootRequestParam( );
     fakeMouseDownRequest( shell, shellX + 24, shellY + 24 );
     fakeMouseUpRequest( shell, shellX + 24, shellY + 24 );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 0, events.size() );
   }
 
@@ -335,7 +335,7 @@ public class MouseEvent_Test extends TestCase {
     fakeUIRootRequestParam( );
     fakeMouseDownRequest( table, 90, 10 );
     fakeMouseUpRequest( table, 90, 10 );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 0, events.size() );
   }
 

@@ -45,6 +45,7 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
 
@@ -341,9 +342,8 @@ public class ButtonLCA_Test extends TestCase {
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.widgetSelected",
-                              buttonId );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.fakeRequestParam( "org.eclipse.swt.events.widgetSelected", buttonId );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( "widgetSelected", log.toString() );
   }
 
@@ -419,7 +419,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertTrue( log.indexOf( "1:true" ) != -1 );
     assertTrue( log.indexOf( "2:" ) == -1 );
     assertTrue( log.indexOf( "3:" ) == -1 );
@@ -430,7 +430,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( button1Id + ".selection", "false" );
     Fixture.fakeRequestParam( button2Id + ".selection", "true" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertTrue( log.indexOf( "1:false" ) != -1 );
     assertTrue( log.indexOf( "2:true" ) != -1 );
     assertTrue( log.indexOf( "3:" ) == -1 );
@@ -443,7 +443,7 @@ public class ButtonLCA_Test extends TestCase {
     Button button2 = new Button( shell, SWT.RADIO );
     button2.setText( "2" );
     SelectionAdapter listener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.add( event );
       }
     };
@@ -457,7 +457,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
     Fixture.fakeRequestParam( button2Id + ".selection", "false" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
     SelectionEvent event = ( SelectionEvent )log.get( 0 );
     assertSame( button2, event.widget );
@@ -486,7 +486,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
     Fixture.fakeRequestParam( button2Id + ".selection", "false" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
     Event event = ( Event )log.get( 0 );
     assertSame( button2, event.widget );

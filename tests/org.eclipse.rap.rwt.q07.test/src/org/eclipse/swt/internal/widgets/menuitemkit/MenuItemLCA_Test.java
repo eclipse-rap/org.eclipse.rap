@@ -136,7 +136,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String menuItemId = WidgetUtil.getId( menuItem );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
@@ -147,8 +147,7 @@ public class MenuItemLCA_Test extends TestCase {
     Menu menu = new Menu( menuBar );
     final MenuItem menuItem = new MenuItem( menu, SWT.CHECK );
     menuItem.addSelectionListener( new SelectionAdapter() {
-
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
         assertSame( menuItem, event.getSource() );
@@ -165,7 +164,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( menuItemId + ".selection", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
@@ -194,7 +193,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( radio1Id + ".selection", "true" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     SelectionEvent event = ( SelectionEvent )log.get( 0 );
     assertSame( radioItem1, event.widget );
     assertTrue( radioItem1.getSelection() );
@@ -204,7 +203,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( radio1Id + ".selection", "false" );
     Fixture.fakeRequestParam( radio2Id + ".selection", "true" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
     event = ( SelectionEvent )log.get( 0 );
     assertSame( radioItem1, event.widget );
@@ -239,7 +238,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( item1Id + ".selection", "true" );
     Fixture.fakeRequestParam( item2Id + ".selection", "false" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
     SelectionEvent event = ( SelectionEvent )log.get( 0 );
     assertSame( radioItem2, event.widget );
@@ -272,7 +271,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( item1Id + ".selection", "true" );
     Fixture.fakeRequestParam( item2Id + ".selection", "false" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
     Event event = ( Event )log.get( 0 );
     assertSame( radioItem2, event.widget );
@@ -319,7 +318,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_MENU_SHOWN, menuId );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.readDataAndProcessAction( display );
     assertEquals( 5, log.size() );
     assertTrue( log.contains( pushItem ) );
     assertTrue( log.contains( radioItem1 ) );

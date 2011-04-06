@@ -22,17 +22,21 @@ import org.eclipse.swt.widgets.*;
 
 public class ControlEvent_Test extends TestCase {
 
+  private Display display;
+  private Control control;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    control = new Shell( display, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
 
   public void testResize() {
-    Display display = new Display();
-    Control control = new Shell( display, SWT.NONE );
     final Control[] source = new Control[ 1 ];
     control.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
@@ -55,8 +59,6 @@ public class ControlEvent_Test extends TestCase {
   }
 
   public void testMoved() {
-    Display display = new Display();
-    Control control = new Shell( display , SWT.NONE );
     final Control[] source = new Control[ 1 ];
     control.addControlListener( new ControlAdapter() {
       public void controlMoved( final ControlEvent event ) {

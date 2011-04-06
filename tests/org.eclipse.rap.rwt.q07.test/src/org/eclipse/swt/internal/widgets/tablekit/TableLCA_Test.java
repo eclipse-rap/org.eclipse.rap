@@ -310,7 +310,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "1" );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, ItemHolder.getItems( table ).length );
     assertEquals( "SetDataEvent", log.toString() );
     String tableItemCtor = "org.eclipse.swt.widgets.TableItem";
@@ -342,7 +342,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "check" );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -377,7 +377,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -397,7 +397,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -418,7 +418,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -438,7 +438,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -471,7 +471,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId  );
-    Fixture.executeLifeCycleFromServerThread( );
+    Fixture.executeLifeCycleFromServerThread();
 
     assertFalse( isItemVirtual( table[ 0 ], 0  ) );
   }
@@ -616,8 +616,7 @@ public class TableLCA_Test extends TestCase {
 
     Fixture.fakePhase( PhaseId.READ_DATA );
     table.setItemCount( 1 );
-    ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     adapter.checkData( 0 );
 
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
