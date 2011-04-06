@@ -42,8 +42,16 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       return this._store.getBorder( element, this._states, key );
     },
 
+    getCssNamedBorder : function( name ) {
+      return this._store.getNamedBorder( name );
+    },
+
     getCssColor : function( element, key ) {
       return this._store.getColor( element, this._states, key );
+    },
+
+    getCssNamedColor : function( name ) {
+      return this._store.getNamedColor( name );
     },
 
     getCssFont : function( element, key ) {

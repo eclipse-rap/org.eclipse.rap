@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ public class QxTheme_Test extends TestCase {
 
   public void testTailAlreadyWritten() {
     QxTheme theme;
-    theme = new QxTheme( "my.theme.Foo", "Foo Theme", QxTheme.COLOR, null );
+    theme = new QxTheme( "my.theme.Foo", "Foo Theme", QxTheme.ICON, null );
     theme.appendUri( "foo" );
     theme.getJsCode();
     theme.getJsCode(); // calling getJsCode twice is ok

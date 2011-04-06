@@ -159,9 +159,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundColor = tv.getCssColor( "CLabel", "background-color" );
       result.font = tv.getCssFont( "CLabel", "font" );
       if( states.rwt_SHADOW_IN ) {
-        result.border = "thinInset";
+        result.border = tv.getCssNamedBorder( "thinInset" );
       } else if( states.rwt_SHADOW_OUT ) {
-        result.border = "thinOutset";
+        result.border = tv.getCssNamedBorder( "thinOutset" );
       } else {
         result.border = tv.getCssBorder( "CLabel", "border" );
       }
@@ -260,9 +260,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "iframe" : {
     style : function( states ) {
-      return {
-        border : "inset"
-      };
+      return { };
     }
   },
 
@@ -381,20 +379,21 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "toolbar-separator-line" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = null;
       if( states.vertical ) {
         result = {
           left   : 2,
           height : 2,
           right  : 2,
-          border : "verticalDivider"
+          border : tv.getCssNamedBorder( "verticalDivider" )
         };        
       } else {
         result = {
           top    : 2,
           width  : 2,
           bottom : 2,
-          border : "horizontalDivider"
+          border : tv.getCssNamedBorder( "horizontalDivider" )
         };                
       }
       return result;
@@ -487,8 +486,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "window-resize-frame" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : "shadow"
+        border : tv.getCssNamedBorder( "shadow" )
       };
     }
   },
@@ -548,19 +548,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "window-statusbar" : {
     style : function( states ) {
-      return {
-        border : "thinInset",
-        height : "auto"
-      };
+      return {};
     }
   },
 
   "window-statusbar-text" : {
     style : function( states ) {
-      return {
-        padding       : [ 1, 4 ],
-        cursor        : "default"
-      };
+      return {};
     }
   },
 
@@ -574,16 +568,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "resizer" : {
     style : function( states ) {
-      return {
-        border : "outset"
-      };
+      return {};
     }
   },
 
   "resizer-frame" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        border : "shadow"
+        border : tv.getCssNamedBorder( "shadow" )
       };
     }
   },
@@ -671,11 +664,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
   "menu-separator-line" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         right  : 0,
         left   : 0,
         height : 0,
-        border : "verticalDivider"
+        border : tv.getCssNamedBorder( "verticalDivider" )
       };
     }
   },
@@ -1063,7 +1057,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 //    result.height = "1*";
       result.overflow = "hidden";
       result.backgroundColor = tv.getCssColor( "*", "background-color" );
-      result.border = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      result.border = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
       result.padding = 10;
       return result;
     }
@@ -1088,18 +1082,22 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
 
-      var border_top_normal = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      var border_top_normal 
+        = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
       border_top_normal.setWidthBottom( 0 );
 
-      var border_top_checked = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      var border_top_checked 
+        = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
       border_top_checked.setWidthBottom( 0 );
       var top_color = tv.getCssColor( "TabItem", "border-top-color" );
       border_top_checked.setTop( 3, "solid", top_color );
 
-      var border_bottom_normal = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      var border_bottom_normal 
+        = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
       border_bottom_normal.setWidthTop( 0 );
 
-      var border_bottom_checked = new qx.ui.core.Border( 1, "solid", "widget.thinborder" );
+      var border_bottom_checked 
+        = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
       border_bottom_checked.setWidthTop( 0 );
       var bottom_color = tv.getCssColor( "TabItem", "border-bottom-color" );
       border_bottom_checked.setBottom( 3, "solid", bottom_color );
@@ -1679,9 +1677,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "scrolledcomposite" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
-        border : states.rwt_BORDER ? "shadow" : tv.getCssBorder( "*", "border" )
+      var result = {};
+      if( states.rwt_BORDER ) {
+        result.border = tv.getCssNamedBorder( "shadow" );
+      } else {
+        result.border = tv.getCssBorder( "*", "border" );
       }
+      return result;
     }
   },
 
@@ -1767,11 +1769,16 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
       result.border = tv.getCssBorder( "Label-SeparatorLine", "border" );      
       var orient = states.rwt_VERTICAL ? "vertical" : "horizontal";
-      if( result.border === "thinInset" ) {          
-        result.border = "separator.shadowin." + orient + ".border";
-      } else if( result.border === "thinOutset" ) {
-        result.border = "separator.shadowout." + orient + ".border";
-      }     
+      // TODO [tb] : Can we prevent creating a potentially useless border instance?
+      var borderName;
+      if( result.border === tv.getCssNamedBorder( "thinInset" ) ) {       
+        borderName = "separator.shadowin." + orient + ".border";
+      } else if( result.border === tv.getCssNamedBorder( "thinOutset" ) ) {
+        borderName = "separator.shadowout." + orient + ".border";
+      } 
+      if( borderName ) {
+        result.border = tv.getCssNamedBorder( borderName );
+      }
       result.backgroundColor = tv.getCssColor( "Label-SeparatorLine", 
                                                "background-color" );
       result.backgroundImage = tv.getCssImage( "Label-SeparatorLine",

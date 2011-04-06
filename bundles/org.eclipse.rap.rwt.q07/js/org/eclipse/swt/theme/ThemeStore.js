@@ -78,6 +78,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         "selected" : "checked"
       }
     };
+    this._namedColors = {};
   },
 
   members : {
@@ -104,7 +105,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       if( isDefault ) {
         this.defaultTheme = theme;
       }
-      this._fillColors( theme );
+      this._fillNamedColors( theme );
     },
 
     /////////////
@@ -113,6 +114,11 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     getColor : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
       return this._values.colors[ key ];
+    },
+    
+    getNamedColor : function( name ) {
+      var result = this._namedColors[ name ];
+      return result ? result : name;
     },
     
     getDimension : function( element, states, property, theme ) {
@@ -198,16 +204,13 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       var key = this._getCssValue( element, states, property, theme );
       var value = this._values.borders[ key ];
       var border;
-      if( !( value instanceof qx.ui.core.Border ) && typeof( value ) !== "string" ) {
-        border = this._convertBorderValueToPreset( value );
-        if( border === null ) {
-          border = new qx.ui.core.Border( value.width, value.style, value.color );
-          this._values.borders[ key ] = border;
-        }
+      if( !( value instanceof qx.ui.core.Border ) ) {
+        border = this._getBorderFromValue( value );
+        this._values.borders[ key ] = border;
       } else {
         border = value;
       }
-      if( typeof( border ) !== "string" ) {
+      if( !this._isComplexBorder( border ) ) {
         var radiiKey = this._getCssValue( element, states, "border-radius", theme );
         var radii = this._values.boxdims[ radiiKey ];
         if( radii != null && ( radii.join( "" ) !== "0000" ) ) {
@@ -219,6 +222,30 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         }
       }
       return border;
+    },
+    
+    // TODO [tb] : move to border & refactor
+    _isComplexBorder : function( border ) {
+      return border.getStyleTop() !== "solid" || border.getUserData( "isComplex" );
+    },
+    
+    getNamedBorder : function( name ) {
+      var key = "_" + name;
+      var result = this._values.borders[ key ];
+      if( !result ) {
+        var borderDef = org.eclipse.swt.theme.BorderDefinitions.getDefinition( name );
+        if( borderDef ) {
+          var color = this._resolveNamedColors( borderDef.color );
+          var innerColor = this._resolveNamedColors( borderDef.innerColor );
+          result = new qx.ui.core.Border( borderDef.width, "solid", color );
+          result.setInnerColor( innerColor );
+          result.setUserData( "isComplex", true );
+          this._values.borders[ key ] = result;
+        } else {
+          result = null;
+        }
+      }
+      return result;
     },
 
     getGradient : function( element, states, property, theme ) {
@@ -308,50 +335,55 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       return result;
     },
     
-    // Fills qx color theme with some named colors necessary for BordersBase
-    _fillColors : function( theme ) {
-      var ct = qx.Theme.getByName( theme + "Colors" );
-      ct.colors[ "widget.darkshadow" ]
+    _resolveNamedColors : function( colorArr ) {
+      var result = null;
+      if( colorArr ) {
+        result = [];
+        for( var i = 0; i < colorArr.length; i++ ) {
+          result[ i ] = this.getNamedColor( colorArr[ i ] );
+        }
+      }
+      return result
+    },
+    
+    // Fills a map with named colors necessary for border-definitions
+    _fillNamedColors : function( theme ) {
+      this._namedColors[ "darkshadow" ]
         = this.getColor( "Display", {}, "rwt-darkshadow-color", theme );
-      ct.colors[ "widget.highlight" ]
+      this._namedColors[ "highlight" ]
         = this.getColor( "Display", {}, "rwt-highlight-color", theme );
-      ct.colors[ "widget.lightshadow" ]
+      this._namedColors[ "lightshadow" ]
         = this.getColor( "Display", {}, "rwt-lightshadow-color", theme );
-      ct.colors[ "widget.shadow" ]
+      this._namedColors[ "shadow" ]
         = this.getColor( "Display", {}, "rwt-shadow-color", theme );
-      ct.colors[ "widget.thinborder" ]
+      this._namedColors[ "thinborder" ]
         = this.getColor( "Display", {}, "rwt-thinborder-color", theme );
       // TODO [rst] eliminate these properties
-      ct.colors[ "widget.selection-marker" ]
+      this._namedColors[ "selection-marker" ]
         = this.getColor( "Display", {}, "rwt-selectionmarker-color", theme );
-      ct.colors[ "widget.background" ]
+      this._namedColors[ "background" ]
         = this.getColor( "*", {}, "background-color", theme );
-      ct.colors[ "widget.foreground" ]
+      this._namedColors[ "foreground" ]
         = this.getColor( "*", {}, "color", theme );
-      ct.colors[ "widget.info.foreground" ]
+      this._namedColors[ "info.foreground" ]
         = this.getColor( "Widget-ToolTip", {}, "color", theme );
     },
     
-    _convertBorderValueToPreset : function( value ) {
+    _getBorderFromValue : function( value ) {
       var result = null;
       if( value.color == null ) {
         if( value.width == 1 ) {
           if( value.style == "outset" ) {
-            result = "thinOutset";
+            result = this.getNamedBorder( "thinOutset" );
           } else if( value.style == "inset" ) {
-            result = "thinInset";
+            result = this.getNamedBorder( "thinInset" );
           }
         } else if( value.width == 2 ) {
-          if( value.style == "outset" ) {
-            result = "outset";
-          } else if( value.style == "inset" ) {
-            result = "inset";
-          } else if( value.style == "ridge" ) {
-            result = "ridget";
-          } else if( value.style == "groove" ) {
-            result = "groove";
-          }
+          result = this.getNamedBorder( value.style );
         }
+      }
+      if( result === null ) {
+        result = new qx.ui.core.Border( value.width, value.style, value.color );
       }
       return result;
     }

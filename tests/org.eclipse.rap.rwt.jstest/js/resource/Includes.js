@@ -228,7 +228,7 @@
     "org/eclipse/swt/TextUtil.js",
     "org/eclipse/swt/widgets/Scale.js",
     "org/eclipse/rwt/widgets/ToolSeparator.js",
-    "org/eclipse/swt/theme/BordersBase.js",
+    "org/eclipse/swt/theme/BorderDefinitions.js",
     "org/eclipse/rwt/widgets/BasicList.js",
     "org/eclipse/swt/widgets/Combo.js",
     "org/eclipse/rwt/FocusIndicator.js",

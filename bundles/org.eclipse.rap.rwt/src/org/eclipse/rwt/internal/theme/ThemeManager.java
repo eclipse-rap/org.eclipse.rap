@@ -535,9 +535,6 @@ public final class ThemeManager {
 
   private String createQxThemes( final Theme theme ) {
     StringBuffer buffer = new StringBuffer();
-    buffer.append( createQxTheme( theme, QxTheme.COLOR ) );
-    buffer.append( createQxTheme( theme, QxTheme.BORDER ) );
-    buffer.append( createQxTheme( theme, QxTheme.FONT ) );
     buffer.append( createQxTheme( theme, QxTheme.ICON ) );
     buffer.append( createQxTheme( theme, QxTheme.WIDGET ) );
     buffer.append( createQxTheme( theme, QxTheme.APPEARANCE ) );
@@ -548,9 +545,7 @@ public final class ThemeManager {
   private String createQxTheme( final Theme theme, final int type ) {
     String jsId = theme.getJsId();
     String base = null;
-    if( type == QxTheme.BORDER ) {
-      base = "org.eclipse.swt.theme.BordersBase";
-    } else if( type == QxTheme.APPEARANCE ) {
+    if( type == QxTheme.APPEARANCE ) {
       base = "org.eclipse.swt.theme.AppearancesBase";
     }
     QxTheme qxTheme = new QxTheme( jsId, theme.getName(), type, base );
@@ -565,9 +560,6 @@ public final class ThemeManager {
         qxTheme.appendValues( appearance );
       }
     } else if( type == QxTheme.META ) {
-      qxTheme.appendTheme( "color", jsId  + "Colors" );
-      qxTheme.appendTheme( "border", jsId + "Borders" );
-      qxTheme.appendTheme( "font", jsId + "Fonts" );
       qxTheme.appendTheme( "icon", jsId + "Icons" );
       qxTheme.appendTheme( "widget", jsId + "Widgets" );
       qxTheme.appendTheme( "appearance", jsId + "Appearances" );

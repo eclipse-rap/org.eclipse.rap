@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertFalse( bar._isVertical() );
       bar.setDimension( 200, 30 );
       bar.addToDocument();
-      bar.setBorder( "inset" );
+      bar.setBorder( new qx.ui.core.Border( 2, "inset" ) );
       bar.setSelection( 50 );
       qx.ui.core.Widget.flushGlobalQueues();
       assertNotNull( bar._getTargetNode() );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,23 +22,14 @@ public final class QxTheme {
   /** Type for qooxdoo meta themes */
   public static final int META = 1;
 
-  /** Type for qooxdoo font themes */
-  public static final int FONT = 2;
-
-  /** Type for qooxdoo color themes */
-  public static final int COLOR = 3;
-
-  /** Type for qooxdoo border themes */
-  public static final int BORDER = 4;
-
   /** Type for qooxdoo icon themes */
-  public static final int ICON = 5;
+  public static final int ICON = 2;
 
   /** Type for qooxdoo widget themes */
-  public static final int WIDGET = 6;
+  public static final int WIDGET = 3;
 
   /** Type for qooxdoo apearance themes */
-  public static final int APPEARANCE = 7;
+  public static final int APPEARANCE = 4;
 
   private final String id;
   private final String title;
@@ -165,9 +156,6 @@ public final class QxTheme {
 
   private static int checkType( int type ) {
     if(    type != META
-        && type != FONT
-        && type != COLOR
-        && type != BORDER
         && type != ICON
         && type != WIDGET
         && type != APPEARANCE )
@@ -179,13 +167,7 @@ public final class QxTheme {
 
   private String getNameSuffix() {
     String result = "";
-    if( type == FONT ) {
-      result = "Fonts";
-    } else if( type == COLOR ) {
-      result = "Colors";
-    } else if( type == BORDER ) {
-      result = "Borders";
-    } else if( type == ICON ) {
+    if( type == ICON ) {
       result = "Icons";
     } else if( type == WIDGET ) {
       result = "Widgets";
@@ -199,12 +181,6 @@ public final class QxTheme {
     String result = null;
     if( type == META ) {
       result = "meta";
-    } else if( type == FONT ) {
-      result = "fonts";
-    } else if( type == COLOR ) {
-      result = "colors";
-    } else if( type == BORDER ) {
-      result = "borders";
     } else if( type == ICON ) {
       result = "icons";
     } else if( type == WIDGET ) {
