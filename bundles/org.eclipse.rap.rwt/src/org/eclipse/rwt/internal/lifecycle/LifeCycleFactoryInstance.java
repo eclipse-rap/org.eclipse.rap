@@ -52,7 +52,7 @@ public class LifeCycleFactoryInstance {
     return result;
   }
 
- private LifeCycleFactoryInstance() {
+  private LifeCycleFactoryInstance() {
     // prevent instance creation
   }
 }
