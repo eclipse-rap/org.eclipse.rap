@@ -20,7 +20,6 @@ import org.eclipse.rwt.lifecycle.ILifeCycle;
 /** <p>Supplies a factory method for lifecycle managers for various 
   * <code>LifeCycle</code> implementations.</p>
   */
-// TODO [w4t] revise: introduced getLifeCycle, made loadLifeCycle package private
 public final class LifeCycleFactory {
   
   public static ILifeCycle getLifeCycle() {
@@ -29,10 +28,6 @@ public final class LifeCycleFactory {
   
   public static void destroy() {
     getInstance().destroy(); 
-  }
-  
-  public static ILifeCycle loadLifeCycle() {
-    return getInstance().loadLifeCycle();
   }
   
   private static LifeCycleFactoryInstance getInstance() {

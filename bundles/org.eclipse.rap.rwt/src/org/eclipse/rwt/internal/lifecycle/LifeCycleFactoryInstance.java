@@ -38,7 +38,7 @@ public class LifeCycleFactoryInstance {
     globalLifeCycle = null;
   }
   
-  public ILifeCycle loadLifeCycle() {
+  private ILifeCycle loadLifeCycle() {
     LifeCycle result = globalLifeCycle;
     if( result == null ) {
       IConfiguration configuration = ConfigurationReader.getConfiguration();
