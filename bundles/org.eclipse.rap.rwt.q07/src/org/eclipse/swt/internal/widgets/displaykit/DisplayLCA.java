@@ -29,8 +29,6 @@ import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -254,11 +252,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       }
     }
     DNDSupport.processEvents();
-  }
-
-  public void processAction( final Device display ) {
-    ProcessActionRunner.execute();
-    TypedEvent.processScheduledEvents();
   }
 
   /////////////////////////////

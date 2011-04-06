@@ -239,7 +239,8 @@ public class Fixture {
     displayLCA.readData( display );
     Fixture.preserveWidgets();
     fakePhase( PhaseId.PROCESS_ACTION );
-    displayLCA.processAction( display );
+    while( Display.getCurrent().readAndDispatch() ) {
+    }
   }
 
   public static void readDataAndProcessAction( final Widget widget ) {
@@ -247,9 +248,8 @@ public class Fixture {
     fakePhase( PhaseId.READ_DATA );
     widgetLCA.readData( widget );
     fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = widget.getDisplay();
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
-    displayLCA.processAction( display );
+    while( Display.getCurrent().readAndDispatch() ) {
+    }
   }
 
   public static void markInitialized( final Widget widget ) {

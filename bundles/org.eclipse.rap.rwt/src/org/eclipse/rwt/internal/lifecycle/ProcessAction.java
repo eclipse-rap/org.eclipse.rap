@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,8 @@ final class ProcessAction implements IPhase {
 
   public PhaseId execute() {
     Display display = RWTLifeCycle.getSessionDisplay();
-    DisplayUtil.getLCA( display ).processAction( display );
+    while( display.readAndDispatch() ) {
+    }
     return PhaseId.RENDER;
   }
 }
