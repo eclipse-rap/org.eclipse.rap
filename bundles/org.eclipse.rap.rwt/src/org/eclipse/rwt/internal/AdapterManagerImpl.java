@@ -20,10 +20,7 @@ import org.eclipse.rwt.SessionSingletonBase;
  * <p>Implementation of the <code>AdapterManager</code> protocol.</p>
  * <p>Implementation as Singleton.</p>
  */
-public class AdapterManagerImpl
-  extends SessionSingletonBase
-  implements AdapterManager
-{
+public class AdapterManagerImpl implements AdapterManager {
 
   /** <p>the internal datastructure of <code>AdapterManagerImpl</code></p>*/
   private final Map registry;
@@ -50,7 +47,7 @@ public class AdapterManagerImpl
   /** <p>returns the singleton instance of this
    *  <code>AdapterManager</code> implementation.</p> */
   public static AdapterManager getInstance() {
-    return ( AdapterManager )getInstance( AdapterManagerImpl.class );
+    return ( AdapterManager )SessionSingletonBase.getInstance( AdapterManagerImpl.class );
   }
   
   
