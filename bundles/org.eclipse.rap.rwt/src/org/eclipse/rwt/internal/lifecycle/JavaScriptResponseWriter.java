@@ -18,9 +18,13 @@ import java.util.List;
 
 public class JavaScriptResponseWriter extends Writer {
 
-  private final List body = new ArrayList();
-
+  private final List elements;
   private boolean closed;
+  
+  
+  public JavaScriptResponseWriter() {
+    elements = new ArrayList();
+  }
 
   public void write( char[] cbuf, int off, int len ) throws IOException {
     checkIfWriterClosed();
@@ -52,13 +56,13 @@ public class JavaScriptResponseWriter extends Writer {
   }
 
   public void printContents( PrintWriter writer ) {
-    for( int i = 0; i < body.size(); i++ ) {
-      writer.print( body.get( i ).toString() );
+    for( int i = 0; i < elements.size(); i++ ) {
+      writer.print( elements.get( i ).toString() );
     }
   }
 
   private void append( String token ) {
-    body.add( token );
+    elements.add( token );
   }
 
   private void checkIfWriterClosed() {
