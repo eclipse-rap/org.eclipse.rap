@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved. This
+* Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
 * available at http://www.eclipse.org/legal/epl-v10.html
@@ -48,7 +48,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.IWorkbench;
@@ -166,7 +165,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       text.getChars( text.length()-1, text.length(), starArray, 0);
       return starArray[ 0 ];
     }
-  };
+  }
 
   public ViewStackPresentation() {
     activeState = AS_INACTIVE;
@@ -221,7 +220,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     parent.addControlListener( new ControlAdapter() {
       public void controlResized( ControlEvent e ) {
         setBounds( parent.getBounds() );
-      };
+      }
     } );
     parent.setData( WidgetUtil.CUSTOM_VARIANT, "compGray" ); //$NON-NLS-1$
     String setID = ILayoutSetConstants.SET_ID_STACKPRESENTATION;
@@ -308,7 +307,7 @@ public class ViewStackPresentation extends ConfigurableStack {
               int height = viewMenuButton.getSize().y;
               Point newLoc = display.map( viewMenuButton, null, 0, height );
               viewMenu.showMenu( newLoc );
-            };
+            }
           } );
         }
       } else if( viewMenuButton != null ) {
@@ -422,7 +421,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         if( toolBar != null ) {
           toolBar.moveAbove( null );
         }
-      };
+      }
     } );
     partButton.addListener( SWT.MouseDoubleClick, new Listener() {
       public void handleEvent( final Event event ) {
@@ -514,8 +513,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       Composite buttonArea = ( Composite ) object;
       buttonArea.setData( WidgetUtil.CUSTOM_VARIANT, "tabInactive" ); //$NON-NLS-1$
       checkHideSeparator( buttonArea );
-      Color bg
-        = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE );
+      Color bg = stackBuilder.getColor( ILayoutSetConstants.STACK_BUTTON_INACTIVE );
       buttonArea.setBackground( bg );
       Control[] children = buttonArea.getChildren();
       buttonArea.setLayout( new FormLayout() );
@@ -552,7 +550,7 @@ public class ViewStackPresentation extends ConfigurableStack {
                   site.close( new IPresentablePart[] { part } );
                   showPartButton( currentPart );
                 }
-              };
+              }
             } );
             FormData fdClose = new FormData();
             close.setLayoutData( fdClose );
@@ -566,15 +564,9 @@ public class ViewStackPresentation extends ConfigurableStack {
         }
       }
       buttonArea.getParent().layout();
-      preventButtonOfOverflow();
-    }
-
-  }
-
-  private void preventButtonOfOverflow() {
-    if( isOverflowNecessary() ) {
       showPartButton( currentPart );
     }
+
   }
 
   private void checkHideSeparator( final Composite buttonArea ) {
@@ -671,7 +663,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       presentationControl.addControlListener( new ControlAdapter() {
         public void controlResized( final ControlEvent e ) {
           manageOverflow();
-        };
+        }
       } );
     }
   }
@@ -730,7 +722,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       overflowButton.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent e ) {
           performOverflow();
-        };
+        }
       } );
     }
     if( tabBgHasInvisibleButtons() ) {
@@ -753,7 +745,7 @@ public class ViewStackPresentation extends ConfigurableStack {
           public void widgetSelected( final SelectionEvent e ) {
             activatePart( part );
             showPartButton( part );
-          };
+          }
         } );
       }
     }
@@ -767,14 +759,14 @@ public class ViewStackPresentation extends ConfigurableStack {
 
   private void showPartButton( final IPresentablePart part ) {
     Control button = ( Control ) partButtonMap.get( part );
-    Control hiddenButton = hideLastVisibleButton();
-    if( button != null && !button.isDisposed() ) {
-      button.setVisible( true );
+    if( button != null && !button.isDisposed() && !button.isVisible() ) {
+      Control hiddenButton = hideLastVisibleButton();
       overflowButtons.remove( button );
+      button.setVisible( true );
       button.moveAbove( hiddenButton );
-      tabBg.layout( true, true );
-      manageOverflow();
     }
+    tabBg.layout( true, true );
+    manageOverflow();
   }
 
   private void showLastChildIfNecessary( final int recursionCount ) {
@@ -935,7 +927,7 @@ public class ViewStackPresentation extends ConfigurableStack {
         public void widgetSelected( SelectionEvent e ) {
           activatePart( getSite().getSelectedPart() );
           configAction.run();
-        };
+        }
       } );
     } else {
       // make tabarea full width if no confarea exist.
