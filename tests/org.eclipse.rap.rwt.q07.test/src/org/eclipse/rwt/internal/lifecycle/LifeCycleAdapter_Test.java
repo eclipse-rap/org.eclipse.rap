@@ -28,14 +28,19 @@ import org.eclipse.swt.widgets.*;
 public class LifeCycleAdapter_Test extends TestCase {
 
   public static class CustomComposite extends Composite {
-
-    public CustomComposite( final Composite parent ) {
+    public CustomComposite( Composite parent ) {
       super( parent, SWT.NONE );
     }
   }
+  
   public static class TestControl extends Control {
-
-    public TestControl( final Composite parent ) {
+    public TestControl( Composite parent ) {
+      super( parent, SWT.NONE );
+    }
+  }
+  
+  public static class TestWidget extends Widget {
+    public TestWidget( Widget parent ) {
       super( parent, SWT.NONE );
     }
   }
@@ -71,12 +76,10 @@ public class LifeCycleAdapter_Test extends TestCase {
     Object buttonLCA = button.getAdapter( ILifeCycleAdapter.class );
     assertTrue( buttonLCA instanceof IWidgetLifeCycleAdapter );
     CustomComposite customComposite = new CustomComposite( shell2 );
-    Object customComposite1LCA
-      = customComposite.getAdapter( ILifeCycleAdapter.class );
+    Object customComposite1LCA = customComposite.getAdapter( ILifeCycleAdapter.class );
     assertTrue( customComposite1LCA.getClass().equals( CompositeLCA.class ) );
     CustomComposite customComposite2 = new CustomComposite( shell2 );
-    Object customComposite2LCA
-      = customComposite2.getAdapter( ILifeCycleAdapter.class );
+    Object customComposite2LCA = customComposite2.getAdapter( ILifeCycleAdapter.class );
     assertSame( customComposite1LCA, customComposite2LCA );
     Composite composite = new Composite( shell2, SWT.NONE );
     Object compositeLCA = composite.getAdapter( ILifeCycleAdapter.class );
@@ -87,9 +90,20 @@ public class LifeCycleAdapter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     display = new Display();
     Composite otherSessionShell = new Shell( display, SWT.NONE );
-    Object otherSessionAdapter
-      = otherSessionShell.getAdapter( ILifeCycleAdapter.class );
+    Object otherSessionAdapter = otherSessionShell.getAdapter( ILifeCycleAdapter.class );
     assertSame( shell1LCA, otherSessionAdapter );
+    display.dispose();
+  }
+  
+  public void testGetAdapterWithMissingWidgetLCA() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Widget widget = new TestWidget( shell );
+    try {
+      widget.getAdapter( ILifeCycleAdapter.class );
+      fail();
+    } catch( LifeCycleAdapterException expected ) {
+    }
   }
 
   public void testTreeItemLifeCycleAdapter() {
@@ -107,7 +121,7 @@ public class LifeCycleAdapter_Test extends TestCase {
     }
   }
 
-  private void removeDisplay() {
+  private static void removeDisplay() {
     ISessionStore session = ContextProvider.getSession();
     Enumeration attributeNames = session.getAttributeNames();
     String toRemove = null;
