@@ -136,6 +136,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
     },
     
     main : function( evt ) {
+
       this.base( arguments );
       // Reduce scroll-event delay to 80ms (default is 250ms)
       // All scroll events that arrive in shorter time will be merged
@@ -174,7 +175,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
       org.eclipse.swt.Application._appendColorDepth();
       var req = org.eclipse.swt.Request.getInstance();
       req.addEventListener( "send", this._onSend, this );
-      req.send();
+      req._sendImmediate( true );
     },
     
     close : function( evt ) {

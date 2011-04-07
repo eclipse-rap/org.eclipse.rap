@@ -10,6 +10,7 @@
 
 
 qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
+
   extend : org.eclipse.rwt.widgets.MultiCellWidget,
 
   construct : function( buttonType ) {
@@ -346,4 +347,4 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
     }    
     
   }
-});
+} );

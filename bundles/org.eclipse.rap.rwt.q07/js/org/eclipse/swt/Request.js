@@ -50,6 +50,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
   },
 
   members : {
+
     setUrl : function( url ) {
       this._url = url;
     },
