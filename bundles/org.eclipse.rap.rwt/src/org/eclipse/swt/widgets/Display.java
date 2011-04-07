@@ -751,7 +751,7 @@ public class Display extends Device implements Adaptable {
     Object result = null;
     if( adapter == IDisplayAdapter.class ) {
       if( displayAdapter == null ) {
-        displayAdapter = new DisplayAdapter( session );
+        displayAdapter = new DisplayAdapter();
       }
       result = displayAdapter;
     } else if( adapter == IWidgetAdapter.class ) {
@@ -2336,11 +2336,6 @@ public class Display extends Device implements Adaptable {
   }
 
   private final class DisplayAdapter implements IDisplayAdapter {
-    private final ISessionStore session;
-
-    private DisplayAdapter( final ISessionStore session ) {
-      this.session = session;
-    }
 
     public void setBounds( final Rectangle bounds ) {
       Display.this.bounds.x = bounds.x;
@@ -2379,7 +2374,7 @@ public class Display extends Device implements Adaptable {
     }
 
     public ISessionStore getSession() {
-      return session;
+      return Display.this.session;
     }
 
     public IFilterEntry[] getFilters() {
