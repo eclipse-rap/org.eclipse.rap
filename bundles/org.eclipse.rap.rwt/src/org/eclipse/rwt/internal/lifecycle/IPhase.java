@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
@@ -16,10 +15,6 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.PhaseId;
 
 
-/**
- * TODO [rh] JavaDoc
- * <p></p>
- */
 interface IPhase {
 
   interface IInterruptible extends IPhase {
