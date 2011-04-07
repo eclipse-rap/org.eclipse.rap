@@ -17,6 +17,7 @@ package org.eclipse.jface.internal.databinding.swt;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IVetoableValue;
 import org.eclipse.core.databinding.observable.value.ValueChangingEvent;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -60,6 +61,8 @@ public class SWTDelayedObservableValueDecorator extends
 			control = (Control) widget;
 			WidgetListenerUtil.asyncAddListener(control, SWT.FocusOut, this);
 		}
+// RAP [if] Fix for bug 333735
+		UICallBack.activate( SWTDelayedObservableValueDecorator.class.getName() + hashCode() );
 	}
 
 	public void handleEvent(Event event) {
@@ -71,6 +74,8 @@ public class SWTDelayedObservableValueDecorator extends
 	}
 
 	public synchronized void dispose() {
+// RAP [if] Fix for bug 333735
+		UICallBack.deactivate( SWTDelayedObservableValueDecorator.class.getName() + hashCode() );
 		if (control != null) {
 			WidgetListenerUtil.asyncRemoveListener(control, SWT.FocusOut, this);
 			control = null;
