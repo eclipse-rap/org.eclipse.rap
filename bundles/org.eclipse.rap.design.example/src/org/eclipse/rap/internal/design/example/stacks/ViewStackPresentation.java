@@ -29,6 +29,8 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -657,6 +659,45 @@ public class ViewStackPresentation extends ConfigurableStack {
           manageOverflow();
         }
       } );
+      addPartActivationListners();
+    }
+  }
+
+  private void addPartActivationListners() {
+    addPartActivationListnerToControl( tabBg );
+    Map cornerMap = ( Map )stackBuilder.getAdapter( Map.class );
+    Object corner = cornerMap.get( StackPresentationBuider.LEFT );
+    addPartActivationListenerToCorner( corner );    
+    corner = cornerMap.get( StackPresentationBuider.RIGHT );
+    addPartActivationListenerToCorner( corner );    
+  }
+
+  private void addPartActivationListenerToCorner( Object corner ) {
+    if( corner != null && corner instanceof Label ) {
+      Label cornerLabel = ( Label )corner;
+      addPartActivationListnerToControl( cornerLabel );
+    }
+  }
+
+  private void addPartActivationListnerToControl( Control control ) {
+    control.addMouseListener( new MouseAdapter() {
+      public void mouseUp( MouseEvent e ) {
+        activatePartWithTabbar();
+      }
+      
+      public void mouseDoubleClick( MouseEvent e ) {
+        handleToggleZoom( currentPart );
+      }
+    } );
+  }
+
+  private void activatePartWithTabbar() {
+    activatePart( currentPart );
+    // move the toolbar on top
+    currentPart.getControl().moveAbove( null );
+    Control toolBar = currentPart.getToolBar();
+    if( toolBar != null ) {
+      toolBar.moveAbove( null );
     }
   }
 
@@ -888,6 +929,7 @@ public class ViewStackPresentation extends ConfigurableStack {
       fdConfArea.width = 28;
       fdTabBg.right = new FormAttachment( confArea );
       confCorner = new Label( confArea, SWT.NONE );
+      addPartActivationListnerToControl( confCorner );
       Image cornerImage = stackBuilder.getImage( ILayoutSetConstants.STACK_INACTIVE_CORNER );
       confCorner.setImage( cornerImage );
       FormData fdCorner = new FormData();
@@ -903,9 +945,9 @@ public class ViewStackPresentation extends ConfigurableStack {
       confButton.setLayoutData( fdConfButton );
       FormData fdConfPos = stackBuilder.getPosition( ILayoutSetConstants.STACK_CONF_POS );
       fdConfButton.right = fdConfPos.right;
+      addPartActivationListnerToControl( confButton );
       confButton.addSelectionListener( new SelectionAdapter(){
         public void widgetSelected( SelectionEvent e ) {
-          activatePart( getSite().getSelectedPart() );
           configAction.run();
         }
       } );
