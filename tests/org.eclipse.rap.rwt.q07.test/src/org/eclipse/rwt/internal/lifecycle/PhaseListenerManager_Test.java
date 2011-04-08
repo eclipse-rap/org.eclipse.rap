@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.IOError;
 import java.util.*;
 
 import javax.servlet.http.HttpSession;
@@ -24,6 +23,10 @@ import org.eclipse.rwt.lifecycle.*;
 
 public class PhaseListenerManager_Test extends TestCase {
   
+  private static class TestError extends Error {
+    private static final long serialVersionUID = 1L;
+  }
+
   private static class TestLifeCycle implements ILifeCycle {
     public void removePhaseListener( PhaseListener listener ) {
     }
@@ -216,7 +219,7 @@ public class PhaseListenerManager_Test extends TestCase {
     phaseListenerManager.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public void beforePhase( PhaseEvent event ) {
-        throw new IOError( null );
+        throw new TestError();
       }
       public void afterPhase( PhaseEvent event ) {
       }
@@ -227,7 +230,7 @@ public class PhaseListenerManager_Test extends TestCase {
     try {
       phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA );
       fail();
-    } catch( IOError expected ) {
+    } catch( TestError expected ) {
     }
   }
   
