@@ -13,10 +13,21 @@ package org.eclipse.rwt.internal.theme;
 
 import java.util.Locale;
 
+import org.eclipse.rwt.Fixture;
+import org.eclipse.swt.graphics.Color;
+
 import junit.framework.TestCase;
 
 
 public class QxColor_Test extends TestCase {
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testIllegalArguments() {
     try {
@@ -157,5 +168,29 @@ public class QxColor_Test extends TestCase {
     } finally {
       Locale.setDefault( originalLocale );
     }
+  }
+
+  public void testCreateColor_WithoutAlpha() {
+    QxColor color = QxColor.valueOf( "100, 23, 42" );
+    Color result = QxColor.createColor( color );
+    assertNotNull( result );
+    assertEquals( 100, result.getRed() );
+    assertEquals( 23, result.getGreen() );
+    assertEquals( 42, result.getBlue() );
+  }
+
+  public void testCreateColor_WithAlpha() {
+    QxColor color = QxColor.valueOf( "100, 23, 42, 0.5" );
+    Color result = QxColor.createColor( color );
+    assertNotNull( result );
+    assertEquals( 100, result.getRed() );
+    assertEquals( 23, result.getGreen() );
+    assertEquals( 42, result.getBlue() );
+  }
+
+  public void testCreateColor_FullyTransparent() {
+    QxColor color = QxColor.valueOf( "100, 23, 42, 0" );
+    Color result = QxColor.createColor( color );
+    assertNull( result );
   }
 }

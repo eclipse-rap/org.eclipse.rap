@@ -239,7 +239,7 @@ public class QxColor implements QxType {
 
   public static Color createColor( final QxColor color ) {
     Color result = null;
-    if( color.alpha == 1f ) {
+    if( color.alpha != 0f ) {
       result = Graphics.getColor( color.red, color.green, color.blue );
     }
     return result;
