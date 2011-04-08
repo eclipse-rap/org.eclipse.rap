@@ -794,8 +794,10 @@ public class ViewStackPresentation extends ConfigurableStack {
       button.setVisible( true );
       button.moveAbove( hiddenButton );
     }
-    tabBg.layout( true, true );
-    manageOverflow();
+    if( tabBg != null && !tabBg.isDisposed() ) {
+      tabBg.layout( true, true );
+      manageOverflow();
+    }
   }
 
   private void showLastChildIfNecessary( final int recursionCount ) {
