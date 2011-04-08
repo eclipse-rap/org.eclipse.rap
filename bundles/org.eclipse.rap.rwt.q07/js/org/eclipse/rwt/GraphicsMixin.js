@@ -393,21 +393,22 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       if( this._gfxBackgroundEnabled ) {
         var usePath = this._gfxBorderEnabled;
         if( backgroundShape === undefined ) {
-          this._gfxData.backgroundShape
-             = this._createBackgroundShape( usePath );
+          this._gfxData.backgroundShape = this._createBackgroundShape( usePath );
         } else {
           if( usePath && backgroundShape === this._gfxData.rectShape ) {
             util.removeFromCanvas( this._gfxCanvas, backgroundShape );
             this._gfxData.backgroundInsert = false;
             delete this._gfxData.rectShape;
-            this._gfxData.backgroundShape
-               = this._createBackgroundShape( usePath );
+            this._gfxData.backgroundShape = this._createBackgroundShape( usePath );
           } else if( !usePath && backgroundShape === this._gfxData.pathElement ) {
-            util.removeFromCanvas( this._gfxCanvas, backgroundShape );
+            try{
+              util.removeFromCanvas( this._gfxCanvas, backgroundShape );
+            }catch(ex) {
+              // TODO [tb] : unkown problem, possibly related to shadows. Fix asap.
+            }
             this._gfxData.backgroundInsert = false;
             delete this._gfxData.pathElement;
-            this._gfxData.backgroundShape
-              = this._createBackgroundShape( usePath );
+            this._gfxData.backgroundShape = this._createBackgroundShape( usePath );
           }
         }
         if( !this._gfxData.backgroundInsert ) {
