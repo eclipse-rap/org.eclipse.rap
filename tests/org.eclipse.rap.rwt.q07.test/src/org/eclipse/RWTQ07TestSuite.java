@@ -95,6 +95,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ControlLCAUtil_Test.class );
     suite.addTestSuite( EventLCAUtil_Test.class );
     suite.addTestSuite( UITestUtil_Test.class );
+    suite.addTestSuite( PhaseListenerManager_Test.class );
     suite.addTestSuite( RWTLifeCycle_Test.class );
     suite.addTestSuite( RWTLifeCycle2_Test.class );
     suite.addTestSuite( ThemeAdapter_Test.class );

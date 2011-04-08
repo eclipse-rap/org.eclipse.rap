@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,16 +19,12 @@ import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.widgets.Display;
 
-/**
- * TODO: [fappel] comment
- * <p></p>
- */
 public class RWTLifeCycle extends LifeCycle {
 
   public static final String UI_THREAD
@@ -122,11 +116,11 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   Runnable uiRunnable;
-  private final Set listeners;
+  private final PhaseListenerManager phaseListenerManager;
 
   public RWTLifeCycle() {
-    listeners = new HashSet();
-    listeners.addAll( Arrays.asList( PhaseListenerRegistry.get() ) );
+    phaseListenerManager = new PhaseListenerManager( this );
+    phaseListenerManager.addPhaseListeners( PhaseListenerRegistry.get() );
     uiRunnable = new UIThreadController();
   }
 
@@ -149,17 +143,11 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   public void addPhaseListener( final PhaseListener listener ) {
-    ParamCheck.notNull( listener, "listener" );
-    synchronized( listeners ) {
-      listeners.add( listener );
-    }
+    phaseListenerManager.addPhaseListener( listener );
   }
 
   public void removePhaseListener( final PhaseListener listener ) {
-    ParamCheck.notNull( listener, "listener" );
-    synchronized( listeners ) {
-      listeners.remove( listener );
-    }
+    phaseListenerManager.removePhaseListener( listener );
   }
 
   public Scope getScope() {
@@ -195,13 +183,13 @@ public class RWTLifeCycle extends LifeCycle {
         // A non-null currentPhase indicates that an IInterruptible phase
         // was executed before. In this case we now need to execute the
         // AfterPhase events
-        afterPhaseExecution( phaseOrder[ phaseIndex ].getPhaseID() );
+        phaseListenerManager.notifyAfterPhase( phaseOrder[ phaseIndex ].getPhaseID() );
         start = currentPhase.intValue() + 1;
       }
       boolean interrupted = false;
       for( int i = start; !interrupted && i < phaseOrder.length; i++ ) {
         IPhase phase = phaseOrder[ i ];
-        beforePhaseExecution( phase.getPhaseID() );
+        phaseListenerManager.notifyBeforePhase( phase.getPhaseID() );
         if( phase instanceof IInterruptible ) {
           // IInterruptible phases return control to the user code, thus
           // they don't call Phase#execute()
@@ -216,7 +204,7 @@ public class RWTLifeCycle extends LifeCycle {
             // the application call stack
             throw new PhaseExecutionError( e );
           }
-          afterPhaseExecution( phase.getPhaseID() );
+          phaseListenerManager.notifyAfterPhase( phase.getPhaseID() );
         }
       }
       if( !interrupted ) {
@@ -325,48 +313,10 @@ public class RWTLifeCycle extends LifeCycle {
     return result;
   }
 
-  private static void setShutdownAdapter(
-    final ISessionShutdownAdapter adapter )
-  {
+  private static void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
     ISessionStore sessionStore = ContextProvider.getSession();
     SessionStoreImpl sessionStoreImpl = ( SessionStoreImpl )sessionStore;
     sessionStoreImpl.setShutdownAdapter( adapter );
-  }
-
-  private void beforePhaseExecution( final PhaseId current ) {
-    PhaseListener[] phaseListeners = getPhaseListeners();
-    PhaseEvent evt = new PhaseEvent( this, current );
-    for( int i = 0; i < phaseListeners.length; i++ ) {
-      PhaseId listenerId = phaseListeners[ i ].getPhaseId();
-      if( mustNotify( current, listenerId ) ) {
-        try {
-          phaseListeners[ i ].beforePhase( evt );
-        } catch( final Throwable thr ) {
-          String text
-            = "Could not execute PhaseListener before phase ''{0}''.";
-          String msg = MessageFormat.format( text, new Object[] { current } );
-          ServletLog.log( msg, thr );
-        }
-      }
-    }
-  }
-
-  void afterPhaseExecution( final PhaseId current ) {
-    PhaseListener[] phaseListeners = getPhaseListeners();
-    PhaseEvent evt = new PhaseEvent( this, current );
-    for( int i = 0; i < phaseListeners.length; i++ ) {
-      PhaseId listenerId = phaseListeners[ i ].getPhaseId();
-      if( mustNotify( current, listenerId ) ) {
-        try {
-          phaseListeners[ i ].afterPhase( evt );
-        } catch( final Throwable thr ) {
-          String text
-            = "Could not execute PhaseListener after phase ''{0}''.";
-          String msg = MessageFormat.format( text, new Object[] { current } );
-          ServletLog.log( msg, thr );
-        }
-      }
-    }
   }
 
   private static void initialize() {
@@ -374,18 +324,6 @@ public class RWTLifeCycle extends LifeCycle {
     if( session.getAttribute( INITIALIZED ) == null ) {
       AdapterFactoryRegistry.register();
       session.setAttribute( INITIALIZED, Boolean.TRUE );
-    }
-  }
-
-  private static boolean mustNotify( PhaseId currentId, PhaseId listenerId ) {
-    return listenerId == PhaseId.ANY || listenerId == currentId;
-  }
-
-  private PhaseListener[] getPhaseListeners() {
-    synchronized( listeners ) {
-      PhaseListener[] result = new PhaseListener[ listeners.size() ];
-      listeners.toArray( result );
-      return result;
     }
   }
 
