@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -45,7 +45,8 @@ public class ThemeStoreWriter_Test extends TestCase {
     expected = "\"cd56ce7d\": [ \"cd56ce7d\", 50, 100 ]";
     assertTrue( output.indexOf( expected ) != -1 );
     // conditional colors
-    expected = "\"color\": [ [ [ \"[BORDER\" ], \"ff\" ], [ [], \"0\" ] ]";
+    expected = "\"color\": [ [ [ \"[BORDER\" ], "
+             + "\"400339c0\" ], [ [], \"3fe41900\" ] ]";
     assertTrue( output.indexOf( expected ) != -1 );
     // conditional background-images
     expected = "\"background-image\": "
@@ -72,7 +73,7 @@ public class ThemeStoreWriter_Test extends TestCase {
                       + "\"slideIn\": [ 2000, \"easeIn\" ],\n"
                       + "\"slideOut\": [ 2000, \"easeOut\" ]\n"
                       + "}\n"
-                      + "}\n";
+                      + "},\n";
     assertTrue( output.indexOf( expected ) != -1 );
     expected = "\"Menu\": {\n"
                + "\"animation\": [ [ [], \"2e5f3d63\" ] ]\n"
@@ -142,6 +143,30 @@ public class ThemeStoreWriter_Test extends TestCase {
     assertTrue( output.indexOf( expected ) != -1 );
     expected = "\"Button\": {\n"
                + "\"background-image\": [ [ [], \"df000025\" ] ]\n"
+               + "}";
+    assertTrue( output.indexOf( expected ) != -1 );
+  }
+
+  public void testWriteShadow() throws Exception {
+    ThemeCssElement element = new ThemeCssElement( "Shell" );
+    element.addProperty( "box-shadow" );
+    IThemeCssElement[] elements = new IThemeCssElement[] { element };
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
+    String themeId = "myTheme";
+    String cssCode
+      = "Shell { box-shadow: 10px 10px 3px 0 rgba( 0, 0, 0, 0.5 ); }\n";
+    ResourceLoader loader
+      = ThemeTestUtil.createResourceLoader( Fixture.class );
+    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
+    Theme theme = ThemeManager.getInstance().getTheme( themeId );
+    storeWriter.addTheme( theme, true );
+    String output = storeWriter.createJs();
+    String expected = "\"shadows\": {\n"
+      + "\"2aedfabd\": [ false, 10, 10, 3, 0, \"#000000\", 0.5 ]\n"
+      + "}\n";
+    assertTrue( output.indexOf( expected ) != -1 );
+    expected = "\"Shell\": {\n"
+               + "\"box-shadow\": [ [ [], \"2aedfabd\" ] ]\n"
                + "}";
     assertTrue( output.indexOf( expected ) != -1 );
   }

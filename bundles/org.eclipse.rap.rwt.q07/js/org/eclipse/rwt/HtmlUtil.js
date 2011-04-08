@@ -1,6 +1,6 @@
 /*******************************************************************************
- *  Copyright: 2004-2011 1&1 Internet AG, Germany, http://www.1und1.de,
- *                       and EclipseSource
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       if( org.eclipse.rwt.Client.isMshtml() && org.eclipse.rwt.Client.getVersion() < 7 ) {
         result = function( target, value, opacity ) {
           if( opacity != null && opacity < 1 ) {
-            this._removeCssFilter( target );
+            this.removeCssFilter( target );
             this._setCssBackgroundImage( target, value );
             this.setOpacity( target, opacity );
           } else {
@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
     setOpacity  : qx.core.Variant.select("qx.client", {
       "mshtml" : function( target, value ) {
         if( value == null || value >= 1 || value < 0 ) {
-          this._removeCssFilter( target );
+          this.removeCssFilter( target );
         } else {
           var valueStr = "Alpha(opacity=" + Math.round( value * 100 ) + ")";
           this.setStyleProperty( target, "filter", valueStr );
@@ -73,6 +73,21 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       }
     } ),
     
+    setPointerEvents : function( target, value ) {
+      var version = org.eclipse.rwt.Client.getVersion();
+      var ffSupport 
+        = org.eclipse.rwt.Client.getEngine() === "gecko" && version >= 1.9;
+      // NOTE: chrome does not support pointerEvents, but not on svg-nodes
+      var webKitSupport 
+        = org.eclipse.rwt.Client.getBrowser() === "safari" && version >= 530;
+      if( ffSupport || webKitSupport ) {
+        this.setStyleProperty( target, "pointerEvents", value );
+        target.setAttribute( "pointerEvents", value );
+      } else {
+        this._passEventsThrough( target, value );
+      }
+    },
+
     setStyleProperty : function( target, property, value ) {
       if( target instanceof qx.ui.core.Widget ) {
         target.setStyleProperty( property, value );          
@@ -80,12 +95,30 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
         target.style[ property ] = value;          
       }
     },
-    
+
     removeStyleProperty : function( target, property ) {
       if( target instanceof qx.ui.core.Widget ) {
         target.removeStyleProperty( property );
       } else {
         target.style[ property ] = "";
+      }
+    },
+    
+    removeCssFilter : function( target ) {
+      var element = null;
+      if( target instanceof qx.ui.core.Widget ) {
+        if( target.isCreated() ) {
+          element = target.getElement();
+        } else {
+          target.removeStyleProperty( "filter" );
+        }
+      } else {
+        element = target;
+      }
+      if( element !== null ) {
+        var cssText = element.style.cssText;
+        cssText = cssText.replace( /FILTER:[^;]*(;|$)/, "" );
+        element.style.cssText = cssText;
       }
     },
     
@@ -106,27 +139,81 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
                           + "',sizingMethod='crop')";
         this.setStyleProperty( target, "filter", cssImageStr );
       } else {
-        this._removeCssFilter( target );
+        this.removeCssFilter( target );
+      }
+    },
+   
+    /////////
+    // Helper
+    
+    _passEventsThrough : function( target, value ) {
+      // TODO [tb] : This is a very limited implementation that allowes
+      // to click "through" the elmement, but won't handle hover and cursor.
+      var util = qx.html.EventRegistration;
+      var types = org.eclipse.rwt.EventHandler._mouseEventTypes;
+      var handler = this._passEventThroughHandler;
+      if( value === "none" ) {
+        this.setStyleProperty( target, "cursor", "default" );
+        for( var i = 0; i < types.length; i++ ) {
+          util.addEventListener( target, types[ i ], handler );
+        }
+      } else {
+        // TODO
       }
     },
     
-    _removeCssFilter : function( target ) {
-      var element = null;
-      if( target instanceof qx.ui.core.Widget ) {
-        if( target.isCreated() ) {
-          element = target.getElement();
-        } else {
-          target.removeStyleProperty( "filter" );
+    _passEventThroughHandler : function() {
+      var util = org.eclipse.rwt.EventHandlerUtil;
+      var domEvent = util.getDomEvent( arguments );
+      var domTarget = util.getDomTarget( domEvent );
+      var type = domEvent.type;
+      domTarget.style.display = "none";
+      var newTarget 
+        = document.elementFromPoint( domEvent.clientX, domEvent.clientY );
+      domEvent.cancelBubble = true;
+      util.stopDomEvent( domEvent );
+      if(    newTarget
+          && type !== "mousemove" 
+          && type !== "mouseover" 
+          && type !== "mouseout" )  
+      {
+        if( type === "mousedown" ) {
+          org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, "mouseover", domEvent );
+        } 
+        org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, type, domEvent );
+        if( type === "mouseup" ) {
+          org.eclipse.rwt.HtmlUtil._refireEvent( newTarget, "mouseout", domEvent );          
         }
-      } else {
-        element = target;
       }
-      if( element !== null ) {
-        var cssText = element.style.cssText;
-        cssText = cssText.replace( /FILTER:[^;]*(;|$)/, "" );
-        element.style.cssText = cssText;
+      domTarget.style.display = "";
+    },
+    
+    _refireEvent : qx.core.Variant.select("qx.client", {
+      "mshtml" : function( target, type, originalEvent ) { 
+        var newEvent = document.createEventObject( originalEvent );
+        target.fireEvent( "on" + type , newEvent );
+      }, 
+      "default" : function( target, type, originalEvent ) {
+        var newEvent = document.createEvent( "MouseEvents" );
+        newEvent.initMouseEvent( type, 
+                                 true,  /* can bubble */
+                                 true, /*cancelable */
+                                 originalEvent.view, 
+                                 originalEvent.detail, 
+                                 originalEvent.screenX, 
+                                 originalEvent.screenY, 
+                                 originalEvent.clientX, 
+                                 originalEvent.clientY, 
+                                 originalEvent.ctrlKey, 
+                                 originalEvent.altKey, 
+                                 originalEvent.shiftKey, 
+                                 originalEvent.metaKey, 
+                                 originalEvent.button, 
+                                 originalEvent.relatedTarget);
+        console.log( "dispatch " + event.type );
+        target.dispatchEvent( newEvent );
       }
-    }    
+    } )
 
   }
 

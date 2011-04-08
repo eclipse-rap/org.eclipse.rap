@@ -119,6 +119,8 @@ public final class PropertyResolver {
       result = readFloat( unit );
     } else if( isAnimationProperty( name ) ) {
       result = readAnimation( unit );
+    } else if( isShadowProperty( name ) ) {
+      result = readShadow( unit );
     } else {
       throw new IllegalArgumentException( "Unknown property " + name );
     }
@@ -179,6 +181,61 @@ public final class PropertyResolver {
     if( result == null ) {
       throw new IllegalArgumentException( "Failed to parse color "
                                           + toString( unit ) );
+    }
+    return result;
+  }
+
+  static QxColor readColorWithAlpha( final LexicalUnit unit ) {
+    QxColor result = null;
+    int[] values = new int[ 3 ];
+    float alpha = 1f;
+    short type = unit.getLexicalUnitType();
+    if(    type == LexicalUnit.SAC_FUNCTION
+        && "rgba".equals( unit.getFunctionName() )  )
+    {
+      LexicalUnit nextUnit = unit.getParameters();
+      boolean ok = nextUnit != null;
+      boolean mixedTypes = false;
+      short previousType = -1;
+      int pos = 0;
+      while( ok ) {
+        type = nextUnit.getLexicalUnitType();
+        if( pos == 0 || pos == 2 || pos == 4 ) {
+          // color number
+          if( type == LexicalUnit.SAC_INTEGER ) {
+            values[ pos / 2 ] = normalizeRGBValue( nextUnit.getIntegerValue() );
+          } else if( type == LexicalUnit.SAC_PERCENTAGE ) {
+            float percentValue
+              = normalizePercentValue( nextUnit.getFloatValue() );
+            values[ pos / 2 ] = ( int )( 255 * percentValue / 100 );
+          } else {
+            ok = false;
+          }
+          mixedTypes = previousType != -1 && previousType != type;
+          previousType = type;
+        } else if( pos == 1 || pos == 3 || pos == 5 ) {
+          // comma
+          if( type != LexicalUnit.SAC_OPERATOR_COMMA ) {
+            ok = false;
+          }
+        } else if( pos == 6 ) {
+          // alpha number
+          if( type == LexicalUnit.SAC_REAL ) {
+            alpha = normalizeAlphaValue( nextUnit.getFloatValue() );
+          } else {
+            ok = false;
+          }
+        }
+        pos++;
+        nextUnit = nextUnit.getNextLexicalUnit();
+        ok &= nextUnit != null && pos < 7 && !mixedTypes;
+      }
+      if( pos == 7 ) {
+        result = QxColor.create( values[ 0 ], values[ 1 ], values[ 2 ], alpha );
+      }
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse rgba color" );
     }
     return result;
   }
@@ -772,6 +829,75 @@ public final class PropertyResolver {
     return result;
   }
 
+  static boolean isShadowProperty( final String property ) {
+    return "box-shadow".equals( property );
+  }
+
+  static QxShadow readShadow( final LexicalUnit unit ) {
+    QxShadow result = null;
+    boolean inset = false;
+    Integer offsetX = null;
+    Integer offsetY = null;
+    int blur = 0;
+    int spread = 0;
+    QxColor color = QxColor.BLACK;
+    LexicalUnit nextUnit = unit;
+    short type = nextUnit.getLexicalUnitType();
+    if( type == LexicalUnit.SAC_IDENT ) {
+      String value = nextUnit.getStringValue();
+      if( NONE.equals( value ) ) {
+        result = QxShadow.NONE;
+      } else if( INSET.equals( value ) ) {
+        inset = true;
+      }
+      nextUnit = nextUnit.getNextLexicalUnit();
+    }
+    if( result == null ) {
+      boolean ok = true;
+      int pos = 0;
+      while( nextUnit != null && ok ) {
+        pos++;
+        Integer nextValue = readSingleLengthUnit( nextUnit );
+        ok &= nextValue != null && pos <= 4; 
+        if( ok ) {
+          if( pos == 1 ) {
+            offsetX = nextValue;
+          } else if( pos == 2 ) {
+            offsetY = nextValue;
+          } else if( pos == 3 ) {
+            blur = nextValue.intValue();
+          } else if( pos == 4 ) {
+            spread = nextValue.intValue();
+          }
+          nextUnit = nextUnit.getNextLexicalUnit();
+        }
+      }
+      if( nextUnit != null ) {
+        type = nextUnit.getLexicalUnitType();
+        if(    type == LexicalUnit.SAC_FUNCTION
+            && "rgba".equals( nextUnit.getFunctionName() )  )
+        {
+          color = readColorWithAlpha( nextUnit );
+        } else {
+          color = readColor( nextUnit );
+        }
+      }
+    }
+    if( offsetX != null && offsetY != null ) {
+      result = QxShadow.create( inset,
+                                offsetX.intValue(),
+                                offsetY.intValue(),
+                                blur,
+                                spread,
+                                color );
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Failed to parse shadow "
+                                          + toString( unit ) );
+    }
+    return result;
+  }
+
   private static Integer readSingleLengthUnit( final LexicalUnit unit ) {
     Integer result = null;
     short type = unit.getLexicalUnitType();
@@ -792,6 +918,16 @@ public final class PropertyResolver {
       result = 0;
     } else if( input > 255 ) {
       result = 255;
+    }
+    return result;
+  }
+
+  private static float normalizeAlphaValue( final float input ) {
+    float result = input;
+    if( input < 0 ) {
+      result = 0f;
+    } else if( input > 1 ) {
+      result = 1f;
     }
     return result;
   }

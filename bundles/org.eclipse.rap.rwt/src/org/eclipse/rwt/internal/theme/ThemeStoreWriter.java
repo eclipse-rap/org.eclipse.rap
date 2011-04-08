@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -54,6 +54,7 @@ public final class ThemeStoreWriter {
     JsonObject borderMap = new JsonObject();
     JsonObject cursorMap = new JsonObject();
     JsonObject animationMap = new JsonObject();
+    JsonObject shadowMap = new JsonObject();
     QxType[] values = new QxType[ valueSet.size() ];
     valueSet.toArray( values );
     for( int i = 0; i < values.length; i++ ) {
@@ -94,7 +95,7 @@ public final class ThemeStoreWriter {
         }
       } else if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;
-        if( color.transparent ) {
+        if( color.isTransparent() ) {
           colorMap.append( key, "undefined" );
         } else {
           colorMap.append( key, QxColor.toHtmlString( color.red,
@@ -137,6 +138,21 @@ public final class ThemeStoreWriter {
                                   currentAnimationArray );
         }
         animationMap.append( key, animationObject );
+      } else if( value instanceof QxShadow ) {
+        QxShadow shadow = ( QxShadow )value;        
+        if( shadow.equals( QxShadow.NONE ) ) {
+          shadowMap.append( key, JsonValue.NULL );
+        } else {
+          JsonArray shadowArray = new JsonArray();
+          shadowArray.append( shadow.inset );
+          shadowArray.append( shadow.offsetX );
+          shadowArray.append( shadow.offsetY );
+          shadowArray.append( shadow.blur );
+          shadowArray.append( shadow.spread );
+          shadowArray.append( shadow.color );
+          shadowArray.append( shadow.opacity );
+          shadowMap.append( key, shadowArray );
+        }
       }
     }
     JsonObject valuesMap = new JsonObject();
@@ -149,6 +165,7 @@ public final class ThemeStoreWriter {
     valuesMap.append( "borders", borderMap );
     valuesMap.append( "cursors", cursorMap );
     valuesMap.append( "animations", animationMap );
+    valuesMap.append( "shadows", shadowMap );
     return valuesMap;
   }
 

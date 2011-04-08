@@ -454,6 +454,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.minWidth = states.rwt_TITLE ? 80 : 5;
       result.minHeight = states.rwt_TITLE ? 25 : 5;
       result.opacity = tv.getCssFloat( "Shell", "opacity" );
+      result.shadow = tv.getCssShadow( "Shell", "box-shadow" );
       return result;
     }
   },

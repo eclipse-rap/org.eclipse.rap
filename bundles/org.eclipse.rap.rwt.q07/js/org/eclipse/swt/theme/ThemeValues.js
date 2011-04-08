@@ -96,6 +96,10 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
 
     getCssAnimation : function( element, key ) {
       return this._store.getAnimation( element, this._states, key );
+    },
+
+    getCssShadow : function( element, key ) {
+      return this._store.getShadow( element, this._states, key );
     }
 
   }

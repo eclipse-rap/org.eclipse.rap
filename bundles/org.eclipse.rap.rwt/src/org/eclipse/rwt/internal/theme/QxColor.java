@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.theme;
@@ -24,9 +25,9 @@ public class QxColor implements QxType {
 
   private static final Map NAMED_COLORS = new HashMap();
 
-  public static final QxColor BLACK = new QxColor( 0, 0, 0 );
+  public static final QxColor BLACK = new QxColor( 0, 0, 0, 1f );
 
-  public static final QxColor WHITE = new QxColor( 255, 255, 255 );
+  public static final QxColor WHITE = new QxColor( 255, 255, 255, 1f );
 
   public static final QxColor TRANSPARENT = new QxColor();
 
@@ -35,8 +36,8 @@ public class QxColor implements QxType {
   public final int green;
 
   public final int blue;
-
-  public final boolean transparent;
+  
+  public final float alpha;
 
   static {
     // register 16 standard HTML colors
@@ -62,14 +63,18 @@ public class QxColor implements QxType {
     this.red = 0;
     this.green = 0;
     this.blue = 0;
-    this.transparent = true;
+    this.alpha = 0f;
   }
 
-  private QxColor( final int red, final int green, final int blue ) {
+  private QxColor( final int red,
+                   final int green,
+                   final int blue,
+                   final float alpha )
+  {
     this.red = red;
     this.green = green;
     this.blue = blue;
-    this.transparent = false;
+    this.alpha = alpha;
   }
 
   public static QxColor create( final int red, final int green, final int blue )
@@ -80,9 +85,31 @@ public class QxColor implements QxType {
     } else if( red == 255 && green == 255 && blue == 255 ) {
       result = WHITE;
     } else {
-      result = new QxColor( red, green, blue );
+      result = new QxColor( red, green, blue, 1f );
     }
     return result;
+  }
+  
+  public static QxColor create( final int red,
+                                final int green,
+                                final int blue,
+                                final float alpha )
+  {
+    checkAlpha( alpha );
+    QxColor result;
+    if( alpha == 1f ) {
+      result = create( red, green, blue );
+    } else {
+      result = new QxColor( red, green, blue, alpha );
+    }
+    return result;
+  }
+
+  private static void checkAlpha( final float alpha ) {
+    if( alpha < 0 || alpha > 1 ) {
+      String msg = "Alpha out of range [ 0, 1 ]: " + alpha;
+      throw new IllegalArgumentException( msg );
+    }
   }
 
   public static QxColor valueOf( final String input ) {
@@ -94,6 +121,7 @@ public class QxColor implements QxType {
       result = TRANSPARENT;
     } else {
       int red, green, blue;
+      float alpha = 1f;
       String lowerCaseInput = input.toLowerCase( Locale.ENGLISH );
       if( input.startsWith( "#" ) ) {
         try {
@@ -124,11 +152,14 @@ public class QxColor implements QxType {
         blue = values[ 2 ];
       } else {
         String[] parts = input.split( "\\s*,\\s*" );
-        if( parts.length == 3 ) {
+        if( parts.length >= 3 && parts.length <= 4 ) {
           try {
             red = Integer.parseInt( parts[ 0 ] );
             green = Integer.parseInt( parts[ 1 ] );
             blue = Integer.parseInt( parts[ 2 ] );
+            if( parts.length == 4 ) {
+              alpha = Float.parseFloat( parts[ 3 ] );
+            }
           } catch( final NumberFormatException e ) {
             String pattern = "Illegal number format in color definition ''{0}''";
             Object[] arguments = new Object[] { input };
@@ -142,13 +173,25 @@ public class QxColor implements QxType {
           throw new IllegalArgumentException( message );
         }
       }
-      result = create( red, green, blue );
+      result = create( red, green, blue, alpha );
     }
     return result;
   }
 
+  public boolean isTransparent() {
+    return alpha == 0f;
+  }
+
   public String toDefaultString() {
-    return transparent ? TRANSPARENT_STR : toHtmlString( red, green, blue );
+    String result;
+    if( isTransparent() ) {
+      result = TRANSPARENT_STR;
+    } else if( alpha == 1f ) {
+      result = toHtmlString( red, green, blue );
+    } else {
+      result = toRgbaString( red, green, blue, alpha );
+    }
+    return result;
   }
 
   public boolean equals( final Object obj ) {
@@ -159,18 +202,27 @@ public class QxColor implements QxType {
       QxColor other = ( QxColor )obj;
       result =  other.red == red
              && other.green == green
-             && other.blue == blue;
+             && other.blue == blue
+             && other.alpha == alpha;
     }
     return result;
   }
 
   public int hashCode() {
-    return transparent ? -1 : red + green * 256 + blue * 65536;
+    int result = -1;
+    if( !isTransparent() ) {
+      result = 41;
+      result += 19 * result + red;
+      result += 19 * result + green;
+      result += 19 * result + blue;
+      result += 19 * result + Float.floatToIntBits( alpha );
+    }
+    return result;
   }
 
   public String toString() {
-    String colors = red + ", " + green + ", " + blue;
-    return "QxColor{ " + ( transparent ? TRANSPARENT_STR : colors ) + " }";
+    String colors = red + ", " + green + ", " + blue + ", " + alpha;
+    return "QxColor{ " + ( isTransparent() ? TRANSPARENT_STR : colors ) + " }";
   }
 
   public static String toHtmlString( final int red,
@@ -187,7 +239,7 @@ public class QxColor implements QxType {
 
   public static Color createColor( final QxColor color ) {
     Color result = null;
-    if( !color.transparent ) {
+    if( color.alpha == 1f ) {
       result = Graphics.getColor( color.red, color.green, color.blue );
     }
     return result;
@@ -196,5 +248,23 @@ public class QxColor implements QxType {
   private static String getHexStr( final int value ) {
     String hex = Integer.toHexString( value );
     return hex.length() == 1 ? "0" + hex : hex;
+  }
+
+  private static String toRgbaString( final int red,
+                                      final int green,
+                                      final int blue,
+                                      final float alpha )
+  {
+    StringBuffer sb = new StringBuffer();
+    sb.append( "rgba(" );
+    sb.append( red );
+    sb.append( "," );
+    sb.append( green );
+    sb.append( "," );
+    sb.append( blue );
+    sb.append( "," );
+    sb.append( alpha );
+    sb.append( ")" );
+    return sb.toString();
   }
 }

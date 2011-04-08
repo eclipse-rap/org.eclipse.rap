@@ -64,6 +64,15 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
     },
     
     /**
+     * Grants the canvas at least 50 px overflow in every direction.
+     * The overflow captures events, so HtmlUtil.setPointerEvents should be 
+     * used on canvas. Not setting this does not mean that overflow is hidden.
+     */
+    enableOverflow : function( canvas, x, y, width, height ) {
+      this._renderClass.enableOverflow( canvas, x, y, width, height );
+    },
+    
+    /**
      * Returns a handle for a shape. This objects members are considered
      * package-private and should not be accessed outside the renderclass. 
      * Currently supported types: "rect", "roundrect"
@@ -78,8 +87,8 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
     
     // TODO [tb] : There might currently be a glitch in IE if a shape is added
     //             to an alreadey visible canvas.
-    addToCanvas : function( canvas, shape ) {
-      this._renderClass.addToCanvas( canvas, shape );
+    addToCanvas : function( canvas, shape, beforeShape ) {
+      this._renderClass.addToCanvas( canvas, shape, beforeShape );
     },
     
     removeFromCanvas : function( canvas, shape ) {
@@ -202,7 +211,23 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
      */
     setOpacity : function( shape, opacity ) {
       this._renderClass.setOpacity( shape, opacity );
+    },
+    
+    getOpacity : function( shape ) {
+      return this._renderClass.getOpacity( shape );
+    },
+    
+    /**
+     * radius is 0 or greater
+     */
+    setBlur : function( shape, radius ) {
+      this._renderClass.setBlur( shape, radius );
+    },
+    
+    getBlur : function( shape ) {
+      return this._renderClass.getBlur( shape );
     }
+
 
   }
 

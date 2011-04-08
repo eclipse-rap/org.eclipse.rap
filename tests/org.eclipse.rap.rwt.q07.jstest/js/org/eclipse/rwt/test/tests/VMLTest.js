@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -241,10 +241,80 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       gfxUtil.setOpacity( shape, 0.5 );
       assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) != -1 );
       assertTrue( shape.node.style.filter.indexOf( "opacity=50" ) != -1 );
+      assertEquals( 0.5, gfxUtil.getOpacity( shape ) ); 
       gfxUtil.setOpacity( shape, 1 );
       // It is important for some issues that filter is completely removed:
       assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) == -1 );
+      assertEquals( 1, gfxUtil.getOpacity( shape ) ); 
       parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+
+    testBlur : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      gfxUtil.setBlur( shape, 4 );
+      assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) != -1 );
+      var filter = shape.node.style.filter;
+      var expected = "progid:DXImageTransform.Microsoft.Blur(pixelradius=4)";
+      assertTrue( filter.indexOf( expected ) != -1 );
+      assertEquals( 4, gfxUtil.getBlur( shape ) ); 
+      gfxUtil.setBlur( shape, 0 );
+      // It is important for some issues that filter is completely removed:
+      assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) == -1 );
+      assertEquals( 0, gfxUtil.getBlur( shape ) ); 
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );
+    },
+
+    testBlurWithOpacity : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      gfxUtil.setBlur( shape, 4 );
+      gfxUtil.setOpacity( shape, 0.5 );
+      assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) != -1 );
+      var alpha = "Alpha(opacity=50)";
+      var blur = "progid:DXImageTransform.Microsoft.Blur(pixelradius=4)";
+      assertEquals( alpha+blur, shape.node.style.filter );
+      gfxUtil.setBlur( shape, 0 );
+      assertEquals( alpha, shape.node.style.filter );
+      gfxUtil.setBlur( shape, 4 );
+      assertEquals( alpha+blur, shape.node.style.filter );
+      gfxUtil.setOpacity( shape, 1 );
+      assertEquals( blur, shape.node.style.filter );
+      gfxUtil.setBlur( shape, 0 );
+      assertTrue( shape.node.style.cssText.indexOf( "FILTER:" ) == -1 );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );
+    },
+    
+    testNodeOrder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      var parent = document.body;
+      canvas = gfxUtil.createCanvas();
+      parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
+      var shape1 = gfxUtil.createShape( "rect" );
+      var shape2 = gfxUtil.createShape( "rect" );
+      var shape3 = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape1 );
+      gfxUtil.addToCanvas( canvas, shape3 );
+      gfxUtil.addToCanvas( canvas, shape2, shape3 );
+      var nodes = canvas.node.childNodes;
+      assertIdentical( nodes[ 0 ], shape1.node );
+      assertIdentical( nodes[ 1 ], shape2.node );
+      assertIdentical( nodes[ 2 ], shape3.node );
+      testUtil.flush();
     }
 
 

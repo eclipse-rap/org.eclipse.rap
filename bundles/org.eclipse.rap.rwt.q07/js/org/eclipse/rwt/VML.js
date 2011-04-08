@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -66,6 +66,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         case "roundrect":
         case "custom":
           result = this._createCustomShape();
+          result.blurRadius = 0;
         break;
         case "image":
           result = this._createImage();
@@ -86,12 +87,21 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       return result;
     },
     
-    addToCanvas : function( canvas, shape ) {
+    addToCanvas : function( canvas, shape, beforeShape ) {
       var hash = qx.core.Object.toHashCode( shape );
       canvas.children[ hash ] = shape;
-      canvas.node.appendChild( shape.node );
+      //canvas.node.appendChild( shape.node );
+      if( beforeShape ) {
+        canvas.node.insertBefore( shape.node, beforeShape.node );
+      } else {
+        canvas.node.appendChild( shape.node );
+      }
     },
     
+    enableOverflow : function( canvas ) {
+      // nothing to do
+    },
+
     removeFromCanvas : function( canvas, shape ) {
       var hash = qx.core.Object.toHashCode( shape );
       delete canvas.children[ hash ];
@@ -140,10 +150,11 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       var radiusTopRight = this._convertNumeric( radii[ 1 ], false );
       var radiusRightBottom = this._convertNumeric( radii[ 2 ], false );
       var radiusBottomLeft = this._convertNumeric( radii[ 3 ], false );
-      var rectLeft = this._convertNumeric( x, true );
-      var rectTop = this._convertNumeric( y, true )
-      var rectWidth = this._convertNumeric( width, false );
-      var rectHeight = this._convertNumeric( height, false );
+      var bluroffsets = this._getBlurOffsets( shape.blurRadius );
+      var rectLeft = this._convertNumeric( x - bluroffsets[ 1 ], true );
+      var rectTop = this._convertNumeric( y - bluroffsets[ 1 ], true )
+      var rectWidth = this._convertNumeric( width - bluroffsets[ 2 ], false );
+      var rectHeight = this._convertNumeric( height - bluroffsets[ 2 ], false );
       if(    ( radiusLeftTop + radiusTopRight ) > rectWidth
           || ( radiusRightBottom  + radiusBottomLeft ) > rectWidth
           || ( radiusLeftTop + radiusBottomLeft ) > rectHeight
@@ -338,8 +349,53 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     },
     
     setOpacity : function( shape, opacity ) {
-      org.eclipse.rwt.HtmlUtil.setOpacity( shape.node, opacity );
+      shape.opacity = opacity;
+      this._renderFilter( shape );
       this._setAntiAlias( shape, opacity < 1 );
+    },
+    
+    getOpacity : function( shape ) {
+      var result = 1;
+      if( typeof shape.opacity === "number" && shape.opacity < 1 ) {
+        result = shape.opacity;
+      }
+      return result;
+    },
+    
+    setBlur : function( shape, radius ) {
+      // NOTE: IE shifts the shape to the bottom-right, 
+      // compensated ONLY in setRoundRectLayout
+      shape.blurRadius = radius;
+      this._renderFilter( shape );
+    },
+    
+    getBlur : function( shape, radius ) {
+      var result = 0;
+      if( typeof shape.blurRadius === "number" && shape.blurRadius > 0 ) {
+        result = shape.blurRadius;
+      }
+      return result;
+    },
+    
+    _renderFilter : function( shape ) {
+      var filterStr = [];
+      var opacity = this.getOpacity( shape );
+      var blurRadius = this.getBlur( shape );
+      if( opacity < 1 ) {
+        filterStr.push( "Alpha(opacity=" );
+        filterStr.push( Math.round( opacity * 100 ) );
+        filterStr.push( ")" );
+      }
+      if( blurRadius > 0 ) {
+        filterStr.push( "progid:DXImageTransform.Microsoft.Blur(pixelradius=" ); 
+        filterStr.push( this._getBlurOffsets( blurRadius )[ 0 ] );
+        filterStr.push( ")" );
+      }
+      if( filterStr.length > 0 ) {
+        shape.node.style.filter = filterStr.join( "" );
+      } else {
+        org.eclipse.rwt.HtmlUtil.removeCssFilter( shape.node );
+      }
     },
     
     /////////
@@ -519,19 +575,28 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       shape.node.style.antialias = value;
     },
     
-    _removeFilter : function( shape ) {
-      var str = shape.node.style.cssText;
-      var start = str.indexOf( "FILTER:" );
-      if( start != -1 ) {
-        var end = str.indexOf( ";", start ) + 1;
-        var newStr = str.slice( 0, start );
-        if( end !== -1 ) {
-           newStr += str.slice( end );
-        }
-        shape.node.style.cssText = newStr;
+    _getBlurOffsets : function( blurradius ) {
+      // returns [ blurradius, location-offset, dimension-offset ]
+      var result;
+      var offsets = this._BLUROFFSETS[ blurradius ];
+      if( offsets !== undefined ) {
+        result = offsets;
+      } else {
+        result = [ blurradius, blurradius, 1 ];
       }
-    }
-
+      return result;
+    },
+    
+    _BLUROFFSETS : [
+      // NOTE: these values are chosen to resemble the blur-effect on css3-shadows
+      // as closely as possible, but in doubt going for the stronger effect. In IE9
+      // the effect does not seem consistent: Sometimes its like in IE7/8, but most of the time
+      // much weaker (around 1/3). Would be solved if we use CSS3 in IE9.
+      [ 0, 0, 0 ],
+      [ 2, 2, 1 ],
+      [ 3, 3, 1 ], 
+      [ 4, 4, 1 ] 
+    ]
   }
 
 } );

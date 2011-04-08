@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
 * available at http://www.eclipse.org/legal/epl-v10.html
@@ -30,6 +30,7 @@ Shell-Titlebar:inactive {
 
 Shell {
   background-color: white;
+  box-shadow: none;
 }
 
 Shell-DisplayOverlay {
@@ -44,11 +45,13 @@ Shell[BORDER], Shell[TITLE] {
   border: 2px solid #99c92c;
   border-radius: 6px;
   padding: 5px;
+  box-shadow: 5px 5px 3px rgba( 0, 0, 0, 0.5 );
 }
 
 Shell[BORDER]:inactive, Shell[TITLE]:inactive {
   background-color: white;
   border: 2px solid #4b4b4b;
+  box-shadow: none;
 }
 
 Shell-CloseButton {

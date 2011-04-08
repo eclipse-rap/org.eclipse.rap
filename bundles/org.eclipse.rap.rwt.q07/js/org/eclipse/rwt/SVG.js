@@ -11,36 +11,66 @@
 qx.Class.define( "org.eclipse.rwt.SVG", {
 
   statics : {
-    
+
     init : function(){ 
       // nothing to do
     },
-    
+
     createCanvas : function() {
       var result = {};
       var node = this._createNode( "svg" );
       node.style.position = "absolute"
       node.style.left = "0px";
-      node.style.right = "0px";
+      node.style.top = "0px";
       node.style.width = "100%";
-      node.style.height = "100%"
-      node.style.overflow = "hidden";
+      node.style.height = "100%";
       var defs = this._createNode( "defs" );
       node.appendChild( defs );
       result.type = "svgCanvas";
       result.node = node;     
+      result.group = node;
       result.defsNode = defs;
       return result;
     },
-    
+
     getCanvasNode : function( canvas ) {
       return canvas.node;
     },
-    
+
     handleAppear : function( canvas ) {
       // nothing to do
     },
-       
+    
+    enableOverflow : function( canvas, x, y, width, height ) {
+      // Supported in firefox 3.0+, safari and chrome (with limitations)
+      if( canvas.group === canvas.node ) {
+        var node = canvas.node;
+        var group = this._createNode( "g" );
+        canvas.group = group;
+        while( node.firstChild ) {
+          group.appendChild( node.firstChild );
+        }
+        node.appendChild( group );
+      }
+      canvas.node.style.left = ( x * -1 ) + "px";
+      canvas.node.style.top = ( y * -1 ) + "px";
+      if( width ) {
+        canvas.node.style.width = ( x + width ) + "px";
+      } else {
+        canvas.node.style.width = "100%";        
+      }
+      if( height ) {
+        canvas.node.style.height = ( y + height ) + "px";
+      } else {
+        canvas.node.style.height = "100%";
+      }
+      if( x === 0 && y === 0 ) {
+        canvas.group.setAttribute( "transform", "" );
+      } else {
+        canvas.group.setAttribute( "transform", "translate(" + x + "," + y + ")" );        
+      }
+    },
+
     createShape : function( type ) {
       var result;
       switch( type ) {
@@ -61,23 +91,27 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       result.parent = null
       return result;
     },
-    
-    addToCanvas : function( canvas, shape ) {
+
+    addToCanvas : function( canvas, shape, beforeShape ) {
       shape.parent = canvas;
-      canvas.node.appendChild( shape.node );
+      if( beforeShape ) {
+        canvas.group.insertBefore( shape.node, beforeShape.node );
+      } else {
+        canvas.group.appendChild( shape.node );
+      }
       this._attachDefinitions( shape );
     },
-    
+
     removeFromCanvas : function( canvas, shape ) {
       this._detachDefinitions( shape );
-      canvas.node.removeChild( shape.node );
+      canvas.group.removeChild( shape.node );
       shape.parent = null;
     },
-    
+
     setDisplay : function( shape, value ) {
       shape.node.setAttribute( "display", value ? "inline" : "none" );
     },
-    
+
     getDisplay : function( shape ) {
       var display = shape.node.getAttribute( "display" );
       var result = display == "none" ? false : true;
@@ -91,7 +125,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       node.setAttribute( "x", this._convertNumeric( x ) );
       node.setAttribute( "y", this._convertNumeric( y ) );
     },
-    
+
     setRoundRectLayout : function( shape, x, y, width, height, radii ) {
       var radiusLeftTop = radii[ 0 ];
       var radiusTopRight = radii[ 1 ];
@@ -140,7 +174,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         shape.node.setAttribute( "fill", "none" );
       }
     },
-    
+
     getFillColor : function( shape ) {
       var result = null;
       if( this.getFillType( shape ) == "color" ) {
@@ -148,7 +182,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       }
       return result;
     },
-    
+
     setFillGradient : function( shape, gradient ) {
       if( gradient != null ) {
         var id = "gradient_" + qx.core.Object.toHashCode( shape );
@@ -230,7 +264,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         shape.node.setAttribute( "fill", "none" );
       }
     },
-    
+
     getFillType : function( shape ) {
       var result = shape.node.getAttribute( "fill" );     
       if( result.search( "pattern_") != -1 ) {
@@ -259,14 +293,49 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       // this assumes that only px can be set, which is true within this class
       return parseFloat( shape.node.getAttribute( "stroke-width" ) );
     },
-    
+
     setOpacity : function( shape, opacity ) {
       shape.node.setAttribute( "opacity", opacity );
+    },
+    
+    getOpacity : function( shape ) {
+      var result = shape.node.getAttribute( "opacity" );
+      return result ? result : 0;
+    },
+
+    setBlur : function( shape, blurRadius ) {
+      if( blurRadius > 0 ) {
+        var id = "filter_" + qx.core.Object.toHashCode( shape );
+        var filterNode;
+        if( typeof shape.defNodes[ id ] === "undefined" ) {
+          filterNode = this._createNode( "filter" ); 
+          filterNode.setAttribute( "id", id );
+          filterNode.appendChild( this._createNode( "feGaussianBlur" ) );
+          this._addNewDefinition( shape, filterNode, id );
+        } else {
+          filterNode = shape.defNodes[ id ];
+        }
+        filterNode.firstChild.setAttribute( "stdDeviation", blurRadius / 2 );
+        shape.node.setAttribute( "filter", "url(#" + id + ")" );
+      } else {
+        shape.node.setAttribute( "filter", "none" );
+      }
+    },
+    
+    getBlur : function( shape ) {
+      var result = 0;
+      var filter = shape.node.getAttribute( "filter" );
+      if( filter && filter !== "none" ) {
+        var id = "filter_" + qx.core.Object.toHashCode( shape );
+        var filterNode = shape.defNodes[ id ];
+        result = filterNode.firstChild.getAttribute( "stdDeviation" ) * 2;
+      }
+      return result;
     },
 
     /////////
     // helper
-    
+
     _onImageLoad : function( source, func ) {
       var loader = new Image();
       loader.src = source;
@@ -280,11 +349,11 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         }
       };
     },
-        
+
     _createNode : function( type ) {
       return document.createElementNS( "http://www.w3.org/2000/svg", type );
     },    
-    
+
     _createRect : function() {
       var result = {};
       result.type = "svgRect";
@@ -296,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       result.node = node;
       return result;      
     },
-    
+
     _setXLink : function( node, value ) {
       node.setAttributeNS( "http://www.w3.org/1999/xlink", "href", value );
     },
@@ -308,14 +377,14 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       result.node = node;
       return result;      
     },
-    
+
     _addNewDefinition : function( shape, node, id ) {
       shape.defNodes[ id ] = node;
       if( shape.parent != null ) {     
         shape.parent.defsNode.appendChild( node );
       }
     },
-    
+
     // TODO [tb] : optimize so only the currently needed defs. are attached?
     _attachDefinitions : function( shape ) {
       for( var id in shape.defNodes ) {
@@ -323,18 +392,18 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         shape.parent.defsNode.appendChild( node );
       }
     },
-    
+
     _detachDefinitions : function( shape ) {
       for( var id in shape.defNodes ) {
         var node = shape.defNodes[ id ];
         node.parentNode.removeChild( node );
       }
     },
-    
+
     _convertNumeric : function( value ) {
       return typeof value == "string" ? value : value + "px";
     },
-   
+
     _redrawWebkit : function( shape ) {      
       var wrapper = function() {
         org.eclipse.rwt.SVG._redrawWebkitCore( shape );
@@ -347,18 +416,18 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         shape.node.style.webkitTransform = "scale(1)"; 
       }
     },
-    
+
     // TODO [tb] : remove if no longer needed:
-    
+
     _dummyNode : null,
-    
+
     _getDummyNode : function() {
       if( this._dummyNode == null ) {
         this._dummyNode = this._createNode( "rect" );
       }
       return this._dummyNode;
     }
-    
+
   }
 
 } );

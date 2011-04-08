@@ -31,7 +31,8 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       colors : {},
       borders : {},
       cursors : {},
-      animations : {}
+      animations : {},
+      shadows : {}
     };
     this._cssValues = {};
     this._statesMap = {
@@ -224,6 +225,11 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       return border;
     },
     
+    getShadow : function( element, states, property, theme ) {
+      var key = this._getCssValue( element, states, property, theme );
+      return this._values.shadows[ key ];
+    },
+ 
     // TODO [tb] : move to border & refactor
     _isComplexBorder : function( border ) {
       return border.getStyleTop() !== "solid" || border.getUserData( "isComplex" );

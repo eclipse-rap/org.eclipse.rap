@@ -77,6 +77,78 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  public void testColorWithAlpha() throws Exception {
+    String input = "rgba( 1, 2, 3, 0.25 )";
+    QxColor result
+      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.red );
+    assertEquals( 2, result.green );
+    assertEquals( 3, result.blue );
+    assertEquals( 0.25, result.alpha, 0 );
+  }
+
+  public void testColorWithAlpha_Percents() throws Exception {
+    String input = "rgba( 0%, 50%, 100%, 0.25 )";
+    QxColor result
+      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 0, result.red );
+    assertEquals( 127, result.green );
+    assertEquals( 255, result.blue );
+    assertEquals( 0.25, result.alpha, 0 );
+  }
+  
+  public void testColorWithAlpha_NoTransparency() throws Exception {
+    String input = "rgba( 0, 0, 0, 1 )";
+    QxColor result
+      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    assertSame( QxColor.BLACK, result );
+  }
+
+  public void testColorWithAlpha_NormalizeNegativeAlpha() throws Exception {
+    String input = "rgba( 1, 2, 3, -0.1 )";
+    QxColor result
+      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.red );
+    assertEquals( 2, result.green );
+    assertEquals( 3, result.blue );
+    assertEquals( 0f, result.alpha, 0 );
+  }
+
+  public void testColorWithAlpha_NormalizePositiveAlpha() throws Exception {
+    String input = "rgba( 1, 2, 3, 1.1 )";
+    QxColor result
+      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.red );
+    assertEquals( 2, result.green );
+    assertEquals( 3, result.blue );
+    assertEquals( 1f, result.alpha, 0 );
+  }
+
+  public void testColorWithAlpha_NormalizeColorValue() throws Exception {
+    String input = "rgba( -10, 127, 300, 0.25 )";
+    QxColor result
+      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 0, result.red );
+    assertEquals( 127, result.green );
+    assertEquals( 255, result.blue );
+    assertEquals( 0.25, result.alpha, 0 );
+  }
+
+  public void testColorWithAlpha_MixedValues() throws Exception {
+    String input = "rgba( 0%, 50, 100, 0.25 )";
+    try {
+      PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
   public void testDimension() throws Exception {
     QxDimension zero = PropertyResolver.readDimension( parseProperty( "0px" ) );
     assertNotNull( zero );
@@ -652,6 +724,119 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
+  public void testShadow_XYOffsetOnlyNotation() throws Exception {
+    String input = "1px 2px";
+    QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.offsetX );
+    assertEquals( 2, result.offsetY );
+    assertEquals( 0, result.blur );
+    assertEquals( 0, result.spread );
+    assertEquals( "#000000", result.color );
+    assertEquals( 1f, result.opacity, 0 );
+  }
+
+  public void testShadow_OffsetXYBlurNotation() throws Exception {
+    String input = "1px 2px 3px";
+    QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.offsetX );
+    assertEquals( 2, result.offsetY );
+    assertEquals( 3, result.blur );
+    assertEquals( 0, result.spread );
+    assertEquals( "#000000", result.color );
+    assertEquals( 1f, result.opacity, 0 );
+  }
+
+  public void testShadow_XYOffsetBlurSpreadNotation() throws Exception {
+    String input = "1px 2px 0 0";
+    QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.offsetX );
+    assertEquals( 2, result.offsetY );
+    assertEquals( 0, result.blur );
+    assertEquals( 0, result.spread );
+    assertEquals( "#000000", result.color );
+    assertEquals( 1f, result.opacity, 0 );
+  }
+
+  public void testShadow_FullNotation_NamedColor() throws Exception {
+    String input = "1px 2px 0px 0 red";
+    QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.offsetX );
+    assertEquals( 2, result.offsetY );
+    assertEquals( 0, result.blur );
+    assertEquals( 0, result.spread );
+    assertEquals( "#ff0000", result.color );
+    assertEquals( 1f, result.opacity, 0 );
+  }
+
+  public void testShadow_FullNotation_HexColor() throws Exception {
+    String input = "1px 2px 0px 0 #FF0000";
+    QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.offsetX );
+    assertEquals( 2, result.offsetY );
+    assertEquals( 0, result.blur );
+    assertEquals( 0, result.spread );
+    assertEquals( "#ff0000", result.color );
+    assertEquals( 1f, result.opacity, 0 );
+  }
+
+  public void testShadow_FullNotation_RgbColor() throws Exception {
+    String input = "1px 2px 3px 0 rgb( 1, 2, 3 )";
+    QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.offsetX );
+    assertEquals( 2, result.offsetY );
+    assertEquals( 3, result.blur );
+    assertEquals( 0, result.spread );
+    assertEquals( "#010203", result.color );
+    assertEquals( 1f, result.opacity, 0 );
+  }
+
+  public void testShadow_FullNotation_RgbaColor() throws Exception {
+    String input = "1px 2px 0px 0 rgba( 1, 2, 3, 0.25 )";
+    QxShadow result = PropertyResolver.readShadow( parseProperty( input ) );
+    assertNotNull( result );
+    assertEquals( 1, result.offsetX );
+    assertEquals( 2, result.offsetY );
+    assertEquals( 0, result.blur );
+    assertEquals( 0, result.spread );
+    assertEquals( "#010203", result.color );
+    assertEquals( 0.25, result.opacity, 0 );
+  }
+
+  public void testShadow_WithoutOffsetY() throws Exception {
+    try {
+      PropertyResolver.readShadow( parseProperty( "1px" ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
+  public void testShadow_MissingRgbaParameters() throws Exception {
+    String input = "1px 2px 0px 0 rgba( 1, 2, 0.25 )";
+    try {
+      PropertyResolver.readShadow( parseProperty( input ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
+  public void testShadow_NonZeroSpread() throws Exception {
+    String input = "1px 2px 3px 3px rgba( 1, 2, 3, 0.25 )";
+    try {
+      PropertyResolver.readShadow( parseProperty( input ) );
+      fail();
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
   public void testIsColorProperty() {
     assertFalse( PropertyResolver.isColorProperty( "border" ) );
     assertTrue( PropertyResolver.isColorProperty( "color" ) );
@@ -690,6 +875,10 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testIsAnimationProperty() {
     assertTrue( PropertyResolver.isAnimationProperty( "animation" ) );
+  }
+
+  public void testIsShadowProperty() {
+    assertTrue( PropertyResolver.isShadowProperty( "box-shadow" ) );
   }
 
   public void testResolveProperty() throws Exception {

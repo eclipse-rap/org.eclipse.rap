@@ -250,6 +250,112 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       }
       assertEquals( "pattern", gfxUtil.getFillType( shape ) );
       parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
+    },
+
+    testBlurFilter : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      var canvas = gfxUtil.createCanvas();
+      var parent = document.body;
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.setRectBounds( shape, 10, 10, 100, 100 );
+      gfxUtil.setBlur( shape, 4 );
+      gfxUtil.addToCanvas( canvas, shape );
+      parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
+      var hash = qx.core.Object.toHashCode( shape );
+      var expected = "url(#filter_" + hash + ")"; 
+      assertEquals( expected, shape.node.getAttribute( "filter" ) );
+      var filterNode = canvas.defsNode.firstChild;
+      assertEquals( "filter", filterNode.tagName ); 
+      assertEquals( "filter_" + hash, filterNode.getAttribute( "id" ) ); 
+      assertEquals( "feGaussianBlur", filterNode.firstChild.tagName ); 
+      assertEquals( "2", filterNode.firstChild.getAttribute( "stdDeviation" ) ); 
+      assertEquals( "4", gfxUtil.getBlur( shape ) ); 
+      gfxUtil.setBlur( shape, 0 );
+      assertEquals( "none", shape.node.getAttribute( "filter" ) );
+      assertEquals( "0", gfxUtil.getBlur( shape ) ); 
+      gfxUtil.setBlur( shape, 2 );
+      assertEquals( expected, shape.node.getAttribute( "filter" ) );
+      assertEquals( "1", filterNode.firstChild.getAttribute( "stdDeviation" ) );
+      assertEquals( "2", gfxUtil.getBlur( shape ) ); 
+      gfxUtil.setBlur( shape, 2 );
+      parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
+    },
+
+    testOpacity : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      var canvas = gfxUtil.createCanvas();
+      var parent = document.body;
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.setRectBounds( shape, 10, 10, 100, 100 );
+      assertEquals( 0, gfxUtil.getOpacity( shape ) );
+      gfxUtil.setOpacity( shape, 0.4 );
+      gfxUtil.addToCanvas( canvas, shape );
+      parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
+      assertEquals( 0.4, shape.node.getAttribute( "opacity" ) );
+      assertEquals( 0.4, gfxUtil.getOpacity( shape ) );
+      parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
+    },
+    
+    testNodeOrder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      var parent = document.body;
+      canvas = gfxUtil.createCanvas();
+      parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
+      var shape1 = gfxUtil.createShape( "rect" );
+      var shape2 = gfxUtil.createShape( "rect" );
+      var shape3 = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape1 );
+      gfxUtil.addToCanvas( canvas, shape3 );
+      gfxUtil.addToCanvas( canvas, shape2, shape3 );
+      var nodes = canvas.node.childNodes;
+      assertIdentical( nodes[ 1 ], shape1.node );
+      assertIdentical( nodes[ 2 ], shape2.node );
+      assertIdentical( nodes[ 3 ], shape3.node );
+      parent.removeChild( canvas.node );
+    },
+    
+    testEnableOverflow : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      var parent = document.body;
+      canvas = gfxUtil.createCanvas();
+      parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      assertIdentical( canvas.node, canvas.group );
+      assertIdentical( canvas.node, shape.node.parentNode );
+      gfxUtil.enableOverflow( canvas, 50, 30, 150, 140 );
+      assertEquals( "-50px", canvas.node.style.left );
+      assertEquals( "-30px", canvas.node.style.top );
+      assertEquals( "200px", canvas.node.style.width );
+      assertEquals( "170px", canvas.node.style.height );
+      assertIdentical( canvas.node, canvas.group.parentNode );
+      assertIdentical( canvas.group, shape.node.parentNode );
+      var transform = canvas.group.getAttribute( "transform" );
+      transform = transform.split( " " ).join( "" );
+      assertEquals( "translate(50,30)", transform );
+      gfxUtil.enableOverflow( canvas, 0, 0, 110, 120 );
+      assertEquals( "0px", canvas.node.style.left );
+      assertEquals( "0px", canvas.node.style.top );
+      assertEquals( "110px", canvas.node.style.width );
+      assertEquals( "120px", canvas.node.style.height );
+      assertIdentical( canvas.node, canvas.group.parentNode );
+      assertIdentical( canvas.group, shape.node.parentNode );
+      var transform = canvas.group.getAttribute( "transform" );
+      assertEquals( "", transform );
+      gfxUtil.enableOverflow( canvas, 0, 0, null, null );
+      assertEquals( "0px", canvas.node.style.left );
+      assertEquals( "0px", canvas.node.style.top );
+      assertEquals( "100%", canvas.node.style.width );
+      assertEquals( "100%", canvas.node.style.height );
+      parent.removeChild( canvas.node );
     }
 
   }
