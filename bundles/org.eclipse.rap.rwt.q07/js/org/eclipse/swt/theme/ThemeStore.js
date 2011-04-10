@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 
@@ -116,17 +116,17 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       var key = this._getCssValue( element, states, property, theme );
       return this._values.colors[ key ];
     },
-    
+
     getNamedColor : function( name ) {
       var result = this._namedColors[ name ];
       return result ? result : name;
     },
-    
+
     getDimension : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
       return this._values.dimensions[ key ];
     },
-    
+
     getBoxDimensions : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
       return this._values.boxdims[ key ];
@@ -143,14 +143,14 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     getIdentifier : function( element, states, property, theme ) {
       return this._getCssValue( element, states, property, theme );
     },
-    
+
     getImage : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
       var imageArray = this._values.images[ key ];
       if( imageArray != null ) {
-        // TODO [rh] remove hard-coded path (first segment is defined by 
+        // TODO [rh] remove hard-coded path (first segment is defined by
         //      resource-manager)
-        result = "rwt-resources/themes/images/" + imageArray[ 0 ];
+        result = "rwt-resources/themes/images/" + key;
       } else {
         // TODO [rst] Handle null values - currently, both null and the string
         // "undefined" lead to a js error for icon property
@@ -158,26 +158,25 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       }
       return result;
     },
-    
+
     getSizedImage : function( element, states, property, theme ) {
       var key = this._getCssValue(  element, states, property, theme );
       var imageArray = this._values.images[ key ];
       var result;
       if( imageArray != null ) {
         // TODO [tb] : Revise hardcoded path
-        result = imageArray.concat(); // creates copy
-        result[ 0 ] = "rwt-resources/themes/images/" + result[ 0 ];
+        result = [ "rwt-resources/themes/images/" + key ].concat( imageArray );
       } else {
-        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE_SIZED;        
-      } 
-      return result; 
+        result = org.eclipse.swt.theme.ThemeValues.NONE_IMAGE_SIZED;
+      }
+      return result;
     },
-    
+
     getCursor : function( element, states, property, theme ) {
-      var key = this._getCssValue(  element, states, property, theme );
+      var key = this._getCssValue( element, states, property, theme );
       var result = this._values.cursors[ key ];
-      if( key === result ) {
-        result = "rwt-resources/themes/cursors/" + result;
+      if( key === null ) {
+        result = "rwt-resources/themes/cursors/" + key;
       }
       return result;
     },
@@ -215,7 +214,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         var radiiKey = this._getCssValue( element, states, "border-radius", theme );
         var radii = this._values.boxdims[ radiiKey ];
         if( radii != null && ( radii.join( "" ) !== "0000" ) ) {
-          // TODO [tb]: Rounded borders can currently not be easily cached 
+          // TODO [tb]: Rounded borders can currently not be easily cached
           //            due to their dependence on (independently usable) non-rounded border.
           var width = border.getWidthTop();
           var color = border.getColorTop();
@@ -224,17 +223,17 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       }
       return border;
     },
-    
+
     getShadow : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
       return this._values.shadows[ key ];
     },
- 
+
     // TODO [tb] : move to border & refactor
     _isComplexBorder : function( border ) {
       return border.getStyleTop() !== "solid" || border.getUserData( "isComplex" );
     },
-    
+
     getNamedBorder : function( name ) {
       var key = "_" + name;
       var result = this._values.borders[ key ];
@@ -255,42 +254,41 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     },
 
     getGradient : function( element, states, property, theme ) {
+      var result = null;
       var key = this._getCssValue( element, states, property, theme );
       var value = this._values.gradients[ key ];
-      if( value != null ) {
+      if( value ) {
         // TODO [if] remove this check when values are rendered only once
         if( value.colors && value.percents ) {
           var gradient = new Array();
           for( var i = 0; i < value.colors.length; i++ ) {
-            gradient[ i ] = [ value.percents[ i ] / 100, 
-                              value.colors[ i ] ];
+            gradient[ i ] = [ value.percents[ i ] / 100, value.colors[ i ] ];
           }
           gradient.horizontal = !value.vertical;
           this._values.gradients[ key ] = gradient;
         }
+        result = this._values.gradients[ key ];
       }
-      return this._values.gradients[ key ];
+      return result;
     },
-    
 
     // Used by GraphicsMixin:
     getImageSize : function( source ) {
       var key = source.slice( "rwt-resources/themes/images/".length );
-      var image = this._values.images[ key ];      
-      return image != null ? [ image[ 1 ], image[ 2 ] ] : [ 0, 0 ];
+      var image = this._values.images[ key ];
+      return image != null ? [ image[ 0 ], image[ 1 ] ] : [ 0, 0 ];
     },
 
-    
     ////////////
     // Internals
-    
+
     _getCssValue : function( element, states, property, theme ) {
       var result;
       if( theme == null ) {
         theme = qx.theme.manager.Meta.getInstance().getTheme().name;
       }
       if(    this._cssValues[ theme ] !== undefined
-          && this._cssValues[ theme ][ element ] !== undefined 
+          && this._cssValues[ theme ][ element ] !== undefined
           && this._cssValues[ theme ][ element ][ property ] !== undefined )
       {
         var values = this._cssValues[ theme ][ element ][ property ];
@@ -307,7 +305,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       }
       return result;
     },
-    
+
     _matches : function( states, element, constraints ) {
       var result = true;
       for( var i = 0; i < constraints.length && result; i++ ) {
@@ -340,7 +338,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       }
       return result;
     },
-    
+
     _resolveNamedColors : function( colorArr ) {
       var result = null;
       if( colorArr ) {
@@ -351,7 +349,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       }
       return result
     },
-    
+
     // Fills a map with named colors necessary for border-definitions
     _fillNamedColors : function( theme ) {
       this._namedColors[ "darkshadow" ]
@@ -374,7 +372,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       this._namedColors[ "info.foreground" ]
         = this.getColor( "Widget-ToolTip", {}, "color", theme );
     },
-    
+
     _getBorderFromValue : function( value ) {
       var result = null;
       if( value.color == null ) {

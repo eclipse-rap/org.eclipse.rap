@@ -6,10 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import java.text.MessageFormat;
@@ -66,19 +65,14 @@ public class QxColor implements QxType {
     this.alpha = 0f;
   }
 
-  private QxColor( final int red,
-                   final int green,
-                   final int blue,
-                   final float alpha )
-  {
+  private QxColor( int red, int green, int blue, float alpha ) {
     this.red = red;
     this.green = green;
     this.blue = blue;
     this.alpha = alpha;
   }
 
-  public static QxColor create( final int red, final int green, final int blue )
-  {
+  public static QxColor create( int red, int green, int blue ) {
     QxColor result;
     if( red == 0 && green == 0 && blue == 0 ) {
       result = BLACK;
@@ -90,11 +84,7 @@ public class QxColor implements QxType {
     return result;
   }
   
-  public static QxColor create( final int red,
-                                final int green,
-                                final int blue,
-                                final float alpha )
-  {
+  public static QxColor create( int red, int green, int blue, float alpha ) {
     checkAlpha( alpha );
     QxColor result;
     if( alpha == 1f ) {
@@ -105,14 +95,14 @@ public class QxColor implements QxType {
     return result;
   }
 
-  private static void checkAlpha( final float alpha ) {
+  private static void checkAlpha( float alpha ) {
     if( alpha < 0 || alpha > 1 ) {
       String msg = "Alpha out of range [ 0, 1 ]: " + alpha;
       throw new IllegalArgumentException( msg );
     }
   }
 
-  public static QxColor valueOf( final String input ) {
+  public static QxColor valueOf( String input ) {
     QxColor result;
     if( input == null ) {
       throw new NullPointerException( "null argument" );
@@ -139,7 +129,7 @@ public class QxColor implements QxType {
             String message = MessageFormat.format( pattern, arguments );
             throw new IllegalArgumentException( message );
           }
-        } catch( final NumberFormatException e ) {
+        } catch( NumberFormatException e ) {
           String pattern = "Illegal number format in color definition ''{0}''";
           Object[] arguments = new Object[] { input };
           String message = MessageFormat.format( pattern, arguments );
@@ -160,7 +150,7 @@ public class QxColor implements QxType {
             if( parts.length == 4 ) {
               alpha = Float.parseFloat( parts[ 3 ] );
             }
-          } catch( final NumberFormatException e ) {
+          } catch( NumberFormatException e ) {
             String pattern = "Illegal number format in color definition ''{0}''";
             Object[] arguments = new Object[] { input };
             String message = MessageFormat.format( pattern, arguments );
@@ -194,16 +184,16 @@ public class QxColor implements QxType {
     return result;
   }
 
-  public boolean equals( final Object obj ) {
+  public boolean equals( Object obj ) {
     boolean result = false;
     if( obj == this ) {
       result = true;
     } else if( obj instanceof QxColor ) {
       QxColor other = ( QxColor )obj;
-      result =  other.red == red
-             && other.green == green
-             && other.blue == blue
-             && other.alpha == alpha;
+      result =    other.red == red
+               && other.green == green
+               && other.blue == blue
+               && other.alpha == alpha;
     }
     return result;
   }
@@ -225,10 +215,7 @@ public class QxColor implements QxType {
     return "QxColor{ " + ( isTransparent() ? TRANSPARENT_STR : colors ) + " }";
   }
 
-  public static String toHtmlString( final int red,
-                                     final int green,
-                                     final int blue )
-  {
+  public static String toHtmlString( int red, int green, int blue ) {
     StringBuffer sb = new StringBuffer();
     sb.append( "#" );
     sb.append( getHexStr( red ) );
@@ -237,7 +224,7 @@ public class QxColor implements QxType {
     return sb.toString();
   }
 
-  public static Color createColor( final QxColor color ) {
+  public static Color createColor( QxColor color ) {
     Color result = null;
     if( color.alpha != 0f ) {
       result = Graphics.getColor( color.red, color.green, color.blue );
@@ -245,16 +232,12 @@ public class QxColor implements QxType {
     return result;
   }
 
-  private static String getHexStr( final int value ) {
+  private static String getHexStr( int value ) {
     String hex = Integer.toHexString( value );
     return hex.length() == 1 ? "0" + hex : hex;
   }
 
-  private static String toRgbaString( final int red,
-                                      final int green,
-                                      final int blue,
-                                      final float alpha )
-  {
+  private static String toRgbaString( int red, int green, int blue, float alpha ) {
     StringBuffer sb = new StringBuffer();
     sb.append( "rgba(" );
     sb.append( red );

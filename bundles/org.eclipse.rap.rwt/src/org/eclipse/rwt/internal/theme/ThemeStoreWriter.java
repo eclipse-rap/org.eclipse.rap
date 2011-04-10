@@ -1,204 +1,166 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
 import java.util.*;
+import java.util.Map.Entry;
 
-import org.eclipse.rwt.internal.theme.QxAnimation.Animation;
+import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 
 
 public final class ThemeStoreWriter {
 
-  private Set valueSet = new LinkedHashSet();
-  private final IThemeCssElement[] elements;
-  private StringBuffer cssValuesBuffer;
+  private final IThemeCssElement[] allThemeableWidgetElements;
+  private final List themes;
 
-  public ThemeStoreWriter( final IThemeCssElement[] elements ) {
-    this.elements = elements;
-    cssValuesBuffer = new StringBuffer();
+  public ThemeStoreWriter( IThemeCssElement[] elements ) {
+    allThemeableWidgetElements = elements;
+    themes = new ArrayList();
   }
 
-  public void addTheme( final Theme theme, boolean isDefault ) {
-    QxType[] values = theme.getValuesMap().getAllValues();
-    for( int i = 0; i < values.length; i++ ) {
-      valueSet.add( values[ i ] );
-    }
-    createThemeStoreCss( theme, isDefault );
+  public void addTheme( Theme theme, boolean isDefault ) {
+    themes.add( new ThemeEntry( theme, isDefault ) );
   }
 
   public String createJs() {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append( "ts = org.eclipse.swt.theme.ThemeStore.getInstance();\n" );
-    JsonObject valuesMap = createValues();
-    buffer.append( "ts.defineValues(" + valuesMap + ");\n" );
-    buffer.append( cssValuesBuffer );
-    buffer.append( "delete ts;\n" );
-    return buffer.toString();
+    QxType[] allValues = getValuesFromAllThemes();
+    Map valuesMap = createValuesMap( allValues );
+    StringBuffer jsCode = new StringBuffer();
+    jsCode.append( "( function( ts ) {\n" );
+    jsCode.append( "ts.defineValues( " );
+    jsCode.append( createJsonFromValuesMap( valuesMap ) );
+    jsCode.append( " );\n" );
+    Iterator iterator = themes.iterator();
+    while( iterator.hasNext() ) {
+      ThemeEntry themeEntry = ( ThemeEntry )iterator.next();
+      jsCode.append( "ts.setThemeCssValues( " );
+      jsCode.append( JsonValue.quoteString( themeEntry.theme.getJsId() ) );
+      jsCode.append( ", " );
+      jsCode.append( createThemeJson( themeEntry.theme ) );
+      jsCode.append( ", " );
+      jsCode.append( themeEntry.isDefault );
+      jsCode.append( " );\n" );
+    }
+    jsCode.append( "} )( org.eclipse.swt.theme.ThemeStore.getInstance() );\n" );
+    return jsCode.toString();
   }
 
-  private JsonObject createValues() {
-    JsonObject dimensionMap = new JsonObject();
-    JsonObject boxDimensionMap = new JsonObject();
-    JsonObject imageMap = new JsonObject();
-    JsonObject gradientMap = new JsonObject();
-    JsonObject colorMap = new JsonObject();
-    JsonObject fontMap = new JsonObject();
-    JsonObject borderMap = new JsonObject();
-    JsonObject cursorMap = new JsonObject();
-    JsonObject animationMap = new JsonObject();
-    JsonObject shadowMap = new JsonObject();
+  private JsonObject createThemeJson( Theme theme ) {
+    JsonObject result = new JsonObject();
+    ThemeCssValuesMap valuesMap = theme.getValuesMap();
+    for( int i = 0; i < allThemeableWidgetElements.length; i++ ) {
+      IThemeCssElement element = allThemeableWidgetElements[ i ];
+      String elementName = element.getName();
+      JsonObject elementObj = createThemeJsonForElement( valuesMap, element );
+      result.append( elementName, elementObj );
+    }
+    return result;
+  }
+
+  private JsonObject createThemeJsonForElement( ThemeCssValuesMap valuesMap,
+                                                IThemeCssElement element )
+  {
+    JsonObject result = new JsonObject();
+    String[] properties = element.getProperties();
+    ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+    for( int i = 0; i < properties.length; i++ ) {
+      String propertyName = properties[ i ];
+      JsonArray valuesArray = new JsonArray();
+      String elementName = element.getName();
+      ConditionalValue[] values = valuesMap.getValues( elementName, propertyName );
+      for( int j = 0; j < values.length; j++ ) {
+        ConditionalValue conditionalValue = values[ j ];
+        JsonArray array = new JsonArray();
+        array.append( JsonArray.valueOf( conditionalValue.constraints ) );
+        QxType value = conditionalValue.value;
+        ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
+        String cssKey = adapter.getKey( value );
+        array.append( cssKey );
+        valuesArray.append( array );
+      }
+      result.append( propertyName, valuesArray );
+    }
+    return result;
+  }
+
+  private QxType[] getValuesFromAllThemes() {
+    Set valueSet = new LinkedHashSet();
+    Iterator iterator = themes.iterator();
+    while( iterator.hasNext() ) {
+      ThemeEntry themeEntry = ( ThemeEntry )iterator.next();
+      QxType[] values = themeEntry.theme.getValuesMap().getAllValues();
+      for( int i = 0; i < values.length; i++ ) {
+        valueSet.add( values[ i ] );
+      }
+    }
     QxType[] values = new QxType[ valueSet.size() ];
     valueSet.toArray( values );
-    for( int i = 0; i < values.length; i++ ) {
-      QxType value = values[ i ];
-      String key = Theme.createCssKey( value );
-      if( value instanceof QxDimension ) {
-        QxDimension dim = ( QxDimension )value;
-        dimensionMap.append( key, dim.value );
-      } else if( value instanceof QxBoxDimensions ) {
-        QxBoxDimensions boxdim = ( QxBoxDimensions )value;
-        JsonArray boxArray = new JsonArray();
-        boxArray.append( boxdim.top );
-        boxArray.append( boxdim.right );
-        boxArray.append( boxdim.bottom );
-        boxArray.append( boxdim.left );
-        boxDimensionMap.append( key, boxArray );
-      } else if( value instanceof QxImage ) {
-        QxImage image = ( QxImage )value;
-        if( image.none ) {
-          JsonObject gradientObject = null;
-          if( image.gradientColors != null && image.gradientPercents != null ) {
-            gradientObject = new JsonObject();
-            JsonArray percents = JsonArray.valueOf( image.gradientPercents );
-            gradientObject.append( "percents", percents );
-            JsonArray colors = JsonArray.valueOf( image.gradientColors );
-            gradientObject.append( "colors", colors );
-            gradientObject.append( "vertical", image.vertical );
-          }
-          imageMap.append( key, JsonValue.NULL );
-          gradientMap.append( key, gradientObject );
-        } else {
-          JsonArray imageArray = new JsonArray();
-          imageArray.append( key );
-          imageArray.append( image.width );
-          imageArray.append( image.height );
-          imageMap.append( key, imageArray );
-          gradientMap.append( key, JsonValue.NULL );
-        }
-      } else if( value instanceof QxColor ) {
-        QxColor color = ( QxColor )value;
-        if( color.isTransparent() ) {
-          colorMap.append( key, "undefined" );
-        } else {
-          colorMap.append( key, QxColor.toHtmlString( color.red,
-                                                      color.green,
-                                                      color.blue ) );
-        }
-      } else if( value instanceof QxFont && true ) {
-        QxFont font = ( QxFont )value;
-        JsonObject fontObject = new JsonObject();
-        fontObject.append( "family", JsonArray.valueOf( font.family ) );
-        fontObject.append( "size", font.size );
-        fontObject.append( "bold", font.bold );
-        fontObject.append( "italic", font.italic );
-        fontMap.append( key, fontObject );
-      } else if( value instanceof QxBorder && true ) {
-        QxBorder border = ( QxBorder )value;
-        JsonObject borderObject = new JsonObject();
-        borderObject.append( "width", border.width );
-        borderObject.append( "style", border.style );
-        borderObject.append( "color", border.color );
-        borderMap.append( key, borderObject );
-      } else if( value instanceof QxCursor ) {
-        QxCursor cursor = ( QxCursor )value;
-        if( cursor.isCustomCursor() ) {
-          cursorMap.append( key, key );
-        } else {
-          cursorMap.append( key, cursor.value );
-        }
-      } else if( value instanceof QxAnimation ) {
-        QxAnimation animation = ( QxAnimation )value;
-        JsonObject animationObject = new JsonObject();
-        for( int j = 0; j < animation.animations.length; j++ ) {
-          Animation currentAnimation = animation.animations[ j ];
-          JsonArray currentAnimationArray = new JsonArray();
-          currentAnimationArray.append( currentAnimation.duration );
-          String timingFunction
-            = QxAnimation.toCamelCaseString( currentAnimation.timingFunction );
-          currentAnimationArray.append( timingFunction );
-          animationObject.append( currentAnimation.name,
-                                  currentAnimationArray );
-        }
-        animationMap.append( key, animationObject );
-      } else if( value instanceof QxShadow ) {
-        QxShadow shadow = ( QxShadow )value;        
-        if( shadow.equals( QxShadow.NONE ) ) {
-          shadowMap.append( key, JsonValue.NULL );
-        } else {
-          JsonArray shadowArray = new JsonArray();
-          shadowArray.append( shadow.inset );
-          shadowArray.append( shadow.offsetX );
-          shadowArray.append( shadow.offsetY );
-          shadowArray.append( shadow.blur );
-          shadowArray.append( shadow.spread );
-          shadowArray.append( shadow.color );
-          shadowArray.append( shadow.opacity );
-          shadowMap.append( key, shadowArray );
-        }
-      }
-    }
-    JsonObject valuesMap = new JsonObject();
-    valuesMap.append( "dimensions", dimensionMap );
-    valuesMap.append( "boxdims", boxDimensionMap );
-    valuesMap.append( "images", imageMap );
-    valuesMap.append( "gradients", gradientMap );
-    valuesMap.append( "colors", colorMap );
-    valuesMap.append( "fonts", fontMap );
-    valuesMap.append( "borders", borderMap );
-    valuesMap.append( "cursors", cursorMap );
-    valuesMap.append( "animations", animationMap );
-    valuesMap.append( "shadows", shadowMap );
-    return valuesMap;
+    return values;
   }
 
-  private void createThemeStoreCss( final Theme theme, boolean isDefault ) {
-    ThemeCssValuesMap valuesMap = theme.getValuesMap();
-    JsonObject mainObject = new JsonObject();
-    for( int i = 0; i < elements.length; i++ ) {
-      IThemeCssElement element = elements[ i ];
-      String elementName = element.getName();
-      JsonObject elementObj = new JsonObject();
-      String[] properties = element.getProperties();
-      for( int j = 0; j < properties.length; j++ ) {
-        String propertyName = properties[ j ];
-        JsonArray valuesArray = new JsonArray();
-        ConditionalValue[] values
-          = valuesMap.getValues( elementName, propertyName );
-        for( int k = 0; k < values.length; k++ ) {
-          ConditionalValue conditionalValue = values[ k ];
-          JsonArray array = new JsonArray();
-          array.append( JsonArray.valueOf( conditionalValue.constraints ) );
-          array.append( Theme.createCssKey( conditionalValue.value ) );
-          valuesArray.append( array );
-        }
-        elementObj.append( propertyName, valuesArray );
-      }
-      mainObject.append( elementName, elementObj );
+  private static Map createValuesMap( QxType[] values ) {
+    Map result = new HashMap();
+    for( int i = 0; i < values.length; i++ ) {
+      appendValueToMap( values[ i ], result );
     }
-    cssValuesBuffer.append( "ts.setThemeCssValues( " );
-    cssValuesBuffer.append( JsonValue.quoteString( theme.getJsId() ) );
-    cssValuesBuffer.append( ", " );
-    cssValuesBuffer.append( mainObject );
-    cssValuesBuffer.append( ", " );
-    cssValuesBuffer.append( isDefault );
-    cssValuesBuffer.append( " );\n" );
+    return result;
+  }
+
+  private static void appendValueToMap( QxType propertyValue, Map valuesMap ) {
+    ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+    ThemePropertyAdapter adapter = registry.getPropertyAdapter( propertyValue.getClass() );
+    if( adapter != null ) {
+      String slot = adapter.getSlot( propertyValue );
+      if( slot != null ) {
+        String key = adapter.getKey( propertyValue );
+        JsonValue value = adapter.getValue( propertyValue );
+        if( value != null ) {
+          JsonObject slotObject = getSlot( valuesMap, slot );
+          slotObject.append( key, value );
+        }
+      }
+    }
+  }
+
+  private static JsonValue createJsonFromValuesMap( Map valuesMap ) {
+    JsonObject result = new JsonObject();
+    Set entrySet = valuesMap.entrySet();
+    Iterator keyIterator = entrySet.iterator();
+    while( keyIterator.hasNext() ) {
+      Entry entry = ( Entry )keyIterator.next();
+      String key = ( String )entry.getKey();
+      JsonValue value = ( JsonValue )entry.getValue();
+      result.append( key, value );
+    }
+    return result;
+  }
+
+  private static JsonObject getSlot( Map valuesMap, String name ) {
+    JsonObject result = ( JsonObject )valuesMap.get( name );
+    if( result == null ) {
+      result = new JsonObject();
+      valuesMap.put( name, result );
+    }
+    return result;
+  }
+
+  private static final class ThemeEntry {
+  
+    final Theme theme;
+    final boolean isDefault;
+  
+    ThemeEntry( Theme theme, boolean isDefault ) {
+      this.theme = theme;
+      this.isDefault = isDefault;
+    }
   }
 }

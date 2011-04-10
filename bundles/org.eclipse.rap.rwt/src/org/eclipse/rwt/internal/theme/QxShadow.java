@@ -1,20 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
 
 public class QxShadow implements QxType {
-  
-  public static final QxShadow NONE
-    = new QxShadow( false, 0 , 0, 0, 0, null, 0 );
-  
+
+  public static final QxShadow NONE = new QxShadow( false, 0 , 0, 0, 0, null, 0 );
+
   public final boolean inset;
   public final int offsetX;
   public final int offsetY;
@@ -22,14 +22,14 @@ public class QxShadow implements QxType {
   public final int spread;
   public final String color;
   public final float opacity;
-  
-  private QxShadow( final boolean inset,
-                    final int offsetX,
-                    final int offsetY,
-                    final int blur,
-                    final int spread,
-                    final String color,
-                    final float opacity )
+
+  private QxShadow( boolean inset,
+                    int offsetX,
+                    int offsetY,
+                    int blur,
+                    int spread,
+                    String color,
+                    float opacity )
   {
     this.inset = inset;
     this.offsetX = offsetX;
@@ -39,13 +39,13 @@ public class QxShadow implements QxType {
     this.color = color;
     this.opacity = opacity;
   }
-  
-  public static QxShadow create( final boolean inset,
-                                 final int offsetX,
-                                 final int offsetY,
-                                 final int blur,
-                                 final int spread,
-                                 final QxColor color )
+
+  public static QxShadow create( boolean inset,
+                                 int offsetX,
+                                 int offsetY,
+                                 int blur,
+                                 int spread,
+                                 QxColor color )
   {
     String msg;
     if( inset ) {
@@ -63,9 +63,7 @@ public class QxShadow implements QxType {
     if( color == null ) {
       throw new NullPointerException( "null argument" );
     }
-    String htmlColor = QxColor.toHtmlString( color.red,
-                                             color.green,
-                                             color.blue );
+    String htmlColor = QxColor.toHtmlString( color.red, color.green, color.blue );
     return new QxShadow( inset,
                          offsetX,
                          offsetY,
@@ -75,25 +73,23 @@ public class QxShadow implements QxType {
                          color.alpha );
   }
 
-  public boolean equals( final Object obj ) {
+  public boolean equals( Object obj ) {
     boolean result = false;
     if( obj == this ) {
       result = true;
     } else if( obj instanceof QxShadow ) {
       QxShadow other = ( QxShadow )obj;
-      result =  other.inset == inset
-             && other.offsetX == offsetX
-             && other.offsetY == offsetY
-             && other.blur == blur
-             && other.spread == spread
-             && ( color == null
-                  ? other.color == null
-                  : color.equals( other.color ) )
-             && other.opacity == opacity;
+      result =     other.inset == inset
+                && other.offsetX == offsetX
+                && other.offsetY == offsetY
+                && other.blur == blur
+                && other.spread == spread
+                && ( color == null ? other.color == null : color.equals( other.color ) )
+                && other.opacity == opacity;
     }
     return result;
   }
-  
+
   public int hashCode() {
     int result = 17;
     result += 11 * result + offsetX;
@@ -137,7 +133,7 @@ public class QxShadow implements QxType {
     }
     return buffer.toString();
   }
-  
+
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     buffer.append( inset );
@@ -149,7 +145,7 @@ public class QxShadow implements QxType {
     buffer.append( blur );
     buffer.append( ", " );
     buffer.append( spread );
-    buffer.append( ", " );    
+    buffer.append( ", " );
     buffer.append( color );
     buffer.append( ", " );
     buffer.append( opacity );

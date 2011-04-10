@@ -16,14 +16,15 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.swt.graphics.*;
+
 
 public final class QxImage implements QxType {
 
   private static final String NONE_INPUT = "none";
 
-  public static final QxImage NONE
-    = new QxImage( true, null, null, null, null, true );
+  public static final QxImage NONE = new QxImage( true, null, null, null, null, true );
 
   public final boolean none;
   public final String path;
@@ -46,12 +47,12 @@ public final class QxImage implements QxType {
    * @param vertical if true sweeps from top to bottom, else
    *        sweeps from left to right
    */
-  private QxImage( final boolean none,
-                   final String path,
-                   final ResourceLoader loader,
-                   final String[] gradientColors,
-                   final float[] gradientPercents,
-                   final boolean vertical )
+  private QxImage( boolean none,
+                   String path,
+                   ResourceLoader loader,
+                   String[] gradientColors,
+                   float[] gradientPercents,
+                   boolean vertical )
   {
     this.none = none;
     this.path = path;
@@ -66,24 +67,18 @@ public final class QxImage implements QxType {
       try {
         Point size = readImageSize( path, loader );
         if( size == null ) {
-          throw new IllegalArgumentException( "Failed to read image '"
-                                              + path
-                                              + "'" );
+          throw new IllegalArgumentException( "Failed to read image from " + path );
         }
         width = size.x;
         height = size.y;
       } catch( IOException e ) {
-        throw new IllegalArgumentException( "Failed to read image "
-                                            + path
-                                            + ": "
-                                            + e.getMessage() );
+        throw new IllegalArgumentException(   "Failed to read image from " + path
+                                            + ": " + e.getMessage() );
       }
     }
   }
 
-  public static QxImage valueOf( final String input,
-                                 final ResourceLoader loader )
-  {
+  public static QxImage valueOf( String input, ResourceLoader loader ) {
     QxImage result;
     if( NONE_INPUT.equals( input ) ) {
       result = NONE;
@@ -99,27 +94,29 @@ public final class QxImage implements QxType {
     return result;
   }
 
-  public static QxImage createGradient( final String[] gradientColors,
-                                        final float[] gradientPercents,
-                                        final boolean vertical )
+  public static QxImage createGradient( String[] gradientColors,
+                                        float[] gradientPercents,
+                                        boolean vertical )
   {
     QxImage result;
     if( gradientColors == null || gradientPercents == null ) {
       throw new NullPointerException( "null argument" );
     }
-    result = new QxImage( true,
-                          null,
-                          null,
-                          gradientColors,
-                          gradientPercents,
-                          vertical );
+    result = new QxImage( true, null, null, gradientColors, gradientPercents, vertical );
     return result;
+  }
+
+  public boolean isGradient() {
+    return gradientColors != null && gradientPercents != null;
   }
 
   public String getResourceName() {
     String result = null;
     if( path != null ) {
-      result = ThemeManager.IMAGE_DEST_PATH + "/" + Theme.createCssKey( this );
+      ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+      ThemePropertyAdapter adapter = registry.getPropertyAdapter( QxImage.class );
+      String cssKey = adapter.getKey( this );
+      result = ThemeManager.IMAGE_DEST_PATH + "/" + cssKey;
     }
     return result;
   }
@@ -193,7 +190,7 @@ public final class QxImage implements QxType {
     return result.toString();
   }
 
-  public static Image createSwtImage( final QxImage image ) throws IOException {
+  public static Image createSwtImage( QxImage image ) throws IOException {
     Image result;
     if( image.loader == null ) {
       String message = "Cannot create image without resource loader";
@@ -208,10 +205,7 @@ public final class QxImage implements QxType {
     return result;
   }
 
-  private static Point readImageSize( final String path,
-                                      final ResourceLoader loader )
-    throws IOException
-  {
+  private static Point readImageSize( String path, ResourceLoader loader ) throws IOException {
     Point result = null;
     InputStream inputStream = loader.getResourceAsStream( path );
     if( inputStream != null ) {
