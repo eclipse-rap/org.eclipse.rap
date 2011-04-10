@@ -48,10 +48,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
         Fixture.createServiceContext();
         new Display();
         Fixture.fakeResponseWriter();
-        try {
-          UICallBackServiceHandler.writeActivation();
-        } catch( IOException e ) {
-        }
+        UICallBackServiceHandler.writeActivation();
         otherSession[ 0 ] = Fixture.getAllMarkup();
       } 
     } );

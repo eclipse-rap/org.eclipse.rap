@@ -114,13 +114,13 @@ public class UICallBackServiceHandler implements IServiceHandler {
     }
   }
 
-  public static void writeActivation() throws IOException {
+  public static void writeActivation() {
     if( needsActivation() ) {
       ISessionStore session = ContextProvider.getSession();
       session.setAttribute( NEED_UI_CALLBACK_ACTIVATOR, Boolean.FALSE );
       UICallBackManager.getInstance().setActive( true );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      Writer writer = stateInfo.getResponseWriter();
+      JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
       writer.write( JS_SEND_CALLBACK_REQUEST );
     }
   }

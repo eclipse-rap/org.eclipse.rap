@@ -13,7 +13,6 @@
 package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
-import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +22,7 @@ import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.*;
 
@@ -84,7 +84,7 @@ public final class StartupPage {
     template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
                       EncodingUtil.encodeHTMLEntities( getEntryPoint() ) );
     String[] tokens = template.getTokens();
-    Writer responseWriter = getResponseWriter();
+    JavaScriptResponseWriter responseWriter = getResponseWriter();
     for( int i = 0; i < tokens.length; i++ ) {
       if( tokens[ i ] != null ) {
         responseWriter.write( tokens[ i ] );
@@ -117,7 +117,7 @@ public final class StartupPage {
     return result;
   }
 
-  private Writer getResponseWriter() {
+  private JavaScriptResponseWriter getResponseWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return stateInfo.getResponseWriter();
   }

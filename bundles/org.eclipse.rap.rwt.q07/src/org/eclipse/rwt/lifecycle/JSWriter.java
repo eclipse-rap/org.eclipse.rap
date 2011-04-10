@@ -12,12 +12,12 @@
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.EncodingUtil;
@@ -512,17 +512,11 @@ public final class JSWriter {
     updateListener( null, info, javaListener, hasListeners );
   }
 
-  public void removeListener( final String eventType, final String listener )
-    throws IOException
-  {
+  public void removeListener( String eventType, String listener ) {
     removeListener( null, eventType, listener );
   }
 
-  public void removeListener( final String property,
-                              final String eventType,
-                              final String listener )
-    throws IOException
-  {
+  public void removeListener( String property, String eventType, String listener ) {
     ensureWidgetRef();
     if( property == null ) {
       // TODO [rh] HACK to allow 'instance' listener instead of static listener
@@ -604,17 +598,13 @@ public final class JSWriter {
     writeCall( target, function, params );
   }
 
-  public void startCall( final JSVar target,
-                         final String function,
-                         final Object[] args )
-    throws IOException
-  {
+  public void startCall( JSVar target, String function, Object[] args ) {
     ensureWidgetManager();
     String params = createParamList( " ", args, "", false );
     write( "{0}.{1}({2}", target, function, params );
   }
 
-  public void endCall( final Object[] args ) throws IOException {
+  public void endCall( Object[] args ) {
     getWriter().write( createParamList( "", args, "", false )  );
     getWriter().write( " );" );
   }
@@ -641,18 +631,11 @@ public final class JSWriter {
     getWriter().write( buffer.toString() );
   }
 
-  public void callFieldAssignment( final JSVar target,
-                                   final String field,
-                                   final String value )
-    throws IOException
-  {
+  public void callFieldAssignment( JSVar target, String field, String value ) {
     write( "{0}.{1} = {2};", target, field, value );
   }
   
-  public void varAssignment( final JSVar var, 
-                             final String method )
-    throws IOException
-  {
+  public void varAssignment( JSVar var, String method ) {
     ensureWidgetManager();
     ensureWidgetRef();
     String value = WIDGET_REF + "." + method + "()";
@@ -762,7 +745,7 @@ public final class JSWriter {
     return result;
   }
 
-  private void ensureWidgetManager() throws IOException {
+  private void ensureWidgetManager() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     if(    currentPhaseIsRender()
         && widget != null
@@ -784,7 +767,7 @@ public final class JSWriter {
         && CurrentPhase.get() != PhaseId.READ_DATA;
   }
 
-  private void ensureWidgetRef() throws IOException {
+  private void ensureWidgetRef() {
     ensureWidgetManager();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Object currentWidgetRef = stateInfo.getAttribute( CURRENT_WIDGET_REF );
@@ -1004,11 +987,7 @@ public final class JSWriter {
   /////////////////////////////////////////////////////////
   // Helping methods to write to the actual response writer
 
-  private void writeCall( final JSVar target,
-                          final String function,
-                          final String params )
-    throws IOException
-  {
+  private void writeCall( JSVar target, String function, String params ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( target.toString() );
     buffer.append( '.' );
@@ -1019,9 +998,7 @@ public final class JSWriter {
     getWriter().write( buffer.toString() );
   }
 
-  private void writeVarAssignment( final JSVar var, final String value )
-    throws IOException
-  {
+  private void writeVarAssignment( JSVar var, String value ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( "var " );
     buffer.append( var.toString() );
@@ -1037,26 +1014,17 @@ public final class JSWriter {
     return MessageFormat.format( pattern, arguments );
   }
 
-  private static void write( final String pattern,
-                             final Object arg1,
-                             final Object arg2 )
-    throws IOException
-  {
+  private static void write( String pattern, Object arg1, Object arg2 ) {
     Object[] args = new Object[] { arg1, arg2 };
     getWriter().write( format( pattern, args ) );
   }
 
-  private static void write( final String pattern,
-                             final Object arg1,
-                             final Object arg2,
-                             final Object arg3 )
-  throws IOException
-  {
+  private static void write( String pattern, Object arg1, Object arg2, Object arg3 ) {
     Object[] args = new Object[] { arg1, arg2, arg3 };
     getWriter().write( format( pattern, args ) );
   }
 
-  private static Writer getWriter() {
+  private static JavaScriptResponseWriter getWriter() {
     return ContextProvider.getStateInfo().getResponseWriter();
   }
 }

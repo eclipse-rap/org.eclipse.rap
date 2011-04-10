@@ -107,11 +107,9 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
   }
 
-  private static void handleInvalidRequestCounter()
-    throws IOException
-  {
+  private static void handleInvalidRequestCounter() throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Writer responseWriter = stateInfo.getResponseWriter();
+    JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
     String message = RWTMessages.getMessage( "RWT_MultipleInstancesError" );
     Object[] args = new Object[] { message };
     responseWriter.write( MessageFormat.format( PATTERN_RELOAD, args ) );

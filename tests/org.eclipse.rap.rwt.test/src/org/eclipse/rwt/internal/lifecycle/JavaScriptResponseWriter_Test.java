@@ -29,74 +29,14 @@ public class JavaScriptResponseWriter_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  //////////////////////
-  // actual testing code
-
   public void testWriteMethods() throws Exception {
     JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
-    writer.write( new char[] { 'a', 'b' } );
-    writer.write( new char[] { 'a', 'b', '|', 'c', 'd' }, 2, 3 );
-    writer.write( 124 );
-    writer.write( "Token 3" );
-    writer.write( "my|Token 4|trallala", 2, 8 );
+    writer.write( " Text " );
     String result = getContents( writer );
-    assertEquals( "ab|cd|Token 3|Token 4", result );
+    assertEquals( " Text ", result );
   }
 
-  public void testFlush() throws IOException {
-    JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
-    writer.write( "foo" );
-    assertEquals( "foo", getContents( writer ) );
-    writer.flush();
-    assertEquals( "foo", getContents( writer ) );
-  }
-
-  public void testClosedAssertions() throws IOException {
-    JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
-    writer.close();
-    try {
-      writer.close();
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.close();
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.flush();
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.write( new char[]{ 'X' } );
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.write( new char[]{ 'X' }, 0, 1 );
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.write( 13 );
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.write( "xxx" );
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-    try {
-      writer.write( "xxx", 0, 3 );
-      fail();
-    } catch( IllegalStateException ioe ) {
-    }
-  }
-
-  public void testPrintContents() throws IOException {
+  public void testPrintContents() {
     JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
     StringWriter stringWriter = new StringWriter();
     writer.printContents( new PrintWriter( stringWriter ) );

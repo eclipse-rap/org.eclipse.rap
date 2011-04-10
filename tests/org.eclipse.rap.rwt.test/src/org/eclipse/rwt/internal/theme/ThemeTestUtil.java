@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -61,12 +62,10 @@ public final class ThemeTestUtil {
     StyleSheet result = null;
     byte[] bytes = css.getBytes( "UTF-8" );
     InputStream inStream = new ByteArrayInputStream( bytes );
-    if( inStream != null ) {
-      try {
-        result = CssFileReader.readStyleSheet( inStream, "css", null );
-      } finally {
-        inStream.close();
-      }
+    try {
+      result = CssFileReader.readStyleSheet( inStream, "css", null );
+    } finally {
+      inStream.close();
     }
     return result;
   }

@@ -10,11 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.widgets;
 
-import java.io.IOException;
-import java.io.Writer;
-
-import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.*;
@@ -71,11 +67,9 @@ public final class JSExecutor {
     public void afterPhase( PhaseEvent event ) {
       if( display == RWTLifeCycle.getSessionDisplay() ) {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        Writer writer = stateInfo.getResponseWriter();
+        JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
         try {
-          writer.write( code.toString(), 0, code.length() );
-        } catch( IOException e ) {
-          throw new RuntimeException( e );
+          writer.write( code.toString() );
         } finally {
           LifeCycleFactory.getLifeCycle().removePhaseListener( this );
         }

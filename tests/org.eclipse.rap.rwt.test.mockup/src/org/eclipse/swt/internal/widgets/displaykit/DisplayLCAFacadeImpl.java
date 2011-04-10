@@ -12,9 +12,9 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
-import java.io.Writer;
 
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.Device;
@@ -37,7 +37,7 @@ public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
 
       public void render( Display display ) throws IOException {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        Writer responseWriter = stateInfo.getResponseWriter();
+        JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
         responseWriter.write( "Render Fake" );
       }
     };

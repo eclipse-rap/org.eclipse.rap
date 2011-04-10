@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +18,8 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -127,7 +126,7 @@ public final class KeyBindingUtil {
     }
   }
 
-  static void writeKeyBindings( Display display ) throws IOException {
+  static void writeKeyBindings( Display display ) {
     if( !display.isDisposed() ) {
       String[] newValue = getKeyBindingList( display );
       if( hasKeyBindingListChanged( display, newValue ) ) {
@@ -137,7 +136,7 @@ public final class KeyBindingUtil {
         content.append( toJson( newValue ) );
         content.append( ");" );
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        Writer responseWriter = stateInfo.getResponseWriter();
+        JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
         responseWriter.write( content.toString() );
       }
     }

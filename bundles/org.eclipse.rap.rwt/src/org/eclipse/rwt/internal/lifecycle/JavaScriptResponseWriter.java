@@ -16,59 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class JavaScriptResponseWriter extends Writer {
+public class JavaScriptResponseWriter {
 
   private final List elements;
-  private boolean closed;
-  
-  
+
   public JavaScriptResponseWriter() {
     elements = new ArrayList();
   }
 
-  public void write( char[] cbuf, int off, int len ) throws IOException {
-    checkIfWriterClosed();
-    append( String.valueOf( cbuf, off, len ) );
-  }
-
-  public void write( int c ) throws IOException {
-    checkIfWriterClosed();
-    append( new String( new char[] { ( char )c } ) );
-  }
-
-  public void write( String content ) throws IOException {
-    checkIfWriterClosed();
-    append( content );
-  }
-
-  public void write( String str, int off, int len ) throws IOException {
-    checkIfWriterClosed();
-    append( str.substring( off, off + len ) );
-  }
-
-  public void flush() throws IOException {
-    checkIfWriterClosed();
-  }
-
-  public void close() throws IOException {
-    checkIfWriterClosed();
-    closed = true;
+  public void write( String content ) {
+    elements.add( content );
   }
 
   public void printContents( PrintWriter writer ) {
     for( int i = 0; i < elements.size(); i++ ) {
       writer.print( elements.get( i ).toString() );
-    }
-  }
-
-  private void append( String token ) {
-    elements.add( token );
-  }
-
-  private void checkIfWriterClosed() {
-    if( closed ) {
-      String msg = "Operation is not allowed since the writer was closed.";
-      throw new IllegalStateException( msg );
     }
   }
 }

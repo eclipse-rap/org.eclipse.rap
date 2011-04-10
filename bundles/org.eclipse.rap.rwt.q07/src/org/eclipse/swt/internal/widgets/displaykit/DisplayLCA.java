@@ -12,7 +12,6 @@
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
@@ -119,7 +118,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static void renderShells( final Display display ) throws IOException {
+  private static void renderShells( Display display ) throws IOException {
     RenderVisitor visitor = new RenderVisitor();
     Composite[] shells = getShells( display );
     for( int i = 0; i < shells.length; i++ ) {
@@ -128,14 +127,14 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static void writeRequestCounter() throws IOException {
+  private static void writeRequestCounter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Writer responseWriter = stateInfo.getResponseWriter();
+    JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
     Object[] args = new Object[] { RWTRequestVersionControl.nextRequestId() };
     responseWriter.write( MessageFormat.format( PATTERN_REQUEST_COUNTER, args ) );
   }
 
-  private static void writeTheme( final Display display ) throws IOException {
+  private static void writeTheme( Display display ) {
     String currThemeId = ThemeUtil.getCurrentThemeId();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldThemeId = adapter.getPreserved( PROP_CURR_THEME );
@@ -146,14 +145,12 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       buffer.append( theme.getJsId() );
       buffer.append( " );" );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      Writer responseWriter = stateInfo.getResponseWriter();
+      JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
       responseWriter.write( buffer.toString() );
     }
   }
 
-  private static void writeErrorPages( final Display display )
-    throws IOException
-  {
+  private static void writeErrorPages( Display display ) {
     String timeoutPage = getTimeoutPage();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldTimeoutPage = adapter.getPreserved( PROP_TIMEOUT_PAGE );
@@ -163,7 +160,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       Object[] param = new Object[] { timeoutPage };
       String jsCode = MessageFormat.format( pattern, param );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      Writer responseWriter = stateInfo.getResponseWriter();
+      JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
       responseWriter.write( jsCode );
     }
   }
@@ -187,9 +184,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     return timeoutPage;
   }
 
-  private static void writeExitConfirmation( final Display display )
-    throws IOException
-  {
+  private static void writeExitConfirmation( Display display ) {
     String exitConfirmation = getExitConfirmation();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldExitConfirmation = adapter.getPreserved( PROP_EXIT_CONFIRMATION );
@@ -205,7 +200,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
                     + exitConfirmationStr
                     + " );";
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      Writer responseWriter = stateInfo.getResponseWriter();
+      JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
       responseWriter.write( code );
     }
   }
@@ -227,7 +222,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     ThemeManager.getInstance().registerResources();
   }
 
-  public void readData( final Display display ) {
+  public void readData( Display display ) {
     readBounds( display );
     readCursorLocation( display );
     readFocusControl( display );
@@ -285,7 +280,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static void writeFocus( final Display display ) throws IOException {
+  private static void writeFocus( Display display ) {
     if( !display.isDisposed() ) {
       IDisplayAdapter displayAdapter = getDisplayAdapter( display );
       IWidgetAdapter widgetAdapter = DisplayUtil.getAdapter( display );
@@ -304,16 +299,14 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
           buffer.append( WidgetUtil.getId( display.getFocusControl() ) );
           buffer.append( "\" );" );
           IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-          Writer responseWriter = stateInfo.getResponseWriter();
+          JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
           responseWriter.write( buffer.toString() );
         }
       }
     }
   }
 
-  private static void writeUICallBackActivation( final Display display )
-    throws IOException
-  {
+  private static void writeUICallBackActivation( Display display ) {
     if( !display.isDisposed() ) {
       UICallBackServiceHandler.writeActivation();
     }
