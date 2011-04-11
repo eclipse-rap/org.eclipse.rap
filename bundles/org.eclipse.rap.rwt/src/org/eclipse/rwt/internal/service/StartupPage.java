@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.theme.*;
@@ -43,7 +43,7 @@ public final class StartupPage {
   }
 
   private static StartupPage getInstance() {
-    return ( StartupPage )RWTContext.getSingleton( StartupPage.class );
+    return ( StartupPage )ApplicationContext.getSingleton( StartupPage.class );
   }
 
   void setConfigurer( IStartupPageConfigurer configurer ) {
@@ -66,7 +66,7 @@ public final class StartupPage {
   private void ensureConfigurer() {
     if( configurer == null ) {
       Class instanceType = RWTStartupPageConfigurer.class;
-      configurer = ( IStartupPageConfigurer )RWTContext.getSingleton( instanceType );
+      configurer = ( IStartupPageConfigurer )ApplicationContext.getSingleton( instanceType );
     }
   }
 

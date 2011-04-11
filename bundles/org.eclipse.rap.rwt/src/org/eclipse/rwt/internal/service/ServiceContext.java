@@ -15,8 +15,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
-import org.eclipse.rwt.internal.engine.RWTContextUtil;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -36,7 +36,7 @@ public final class ServiceContext {
   private IServiceStateInfo stateInfo;
   private boolean disposed;
   private ISessionStore sessionStore;
-  private RWTContext rwtContext;
+  private ApplicationContext applicationContext;
   
   /**
    * creates a new instance of <code>ServiceContext</code>
@@ -141,23 +141,22 @@ public final class ServiceContext {
     request = null;
     response = null;
     stateInfo = null;
-    disposed = true;
     sessionStore = null;
-    rwtContext = null;
+    applicationContext = null;
+    disposed = true;
   }
   
-  public RWTContext getRWTContext() {
+  public ApplicationContext getApplicationContext() {
     checkState();
-    // TODO [RWTContext]: Revise performance improvement with buffering
-    //                    mechanism in place.
+    // TODO [ApplicationContext]: Revise performance improvement with buffering mechanism in place.
     if( !isBuffered() ) {
-      getRWTContextFromSession();
+      getApplicationContextFromSession();
       if( !isBuffered() ) {
-        getRWTContextFromServletContext();
-        bufferRWTContextInSession();
+        getApplicationContextFromServletContext();
+        bufferApplicationContextInSession();
       }
     }
-    return rwtContext;
+    return applicationContext;
   }
 
   
@@ -165,26 +164,26 @@ public final class ServiceContext {
   // helping methods
 
   private boolean isBuffered() {
-    return rwtContext != null;
+    return applicationContext != null;
   }
   
-  private void bufferRWTContextInSession() {
+  private void bufferApplicationContextInSession() {
     if( sessionStore != null ) {
-      RWTContextUtil.registerRWTContext( sessionStore, rwtContext );
+      ApplicationContextUtil.registerApplicationContext( sessionStore, applicationContext );
     }
   }
 
-  private void getRWTContextFromServletContext() {
+  private void getApplicationContextFromServletContext() {
     // Note [fappel]: Yourkit analysis showed that the following line is
-    //                expensive. Because of this the RWTContext is 
+    //                expensive. Because of this the ApplicationContext is 
     //                buffered in a field.
     ServletContext servletContext = request.getSession().getServletContext();
-    rwtContext = RWTContextUtil.getRWTContext( servletContext );
+    applicationContext = ApplicationContextUtil.getApplicationContext( servletContext );
   }
 
-  private void getRWTContextFromSession() {
+  private void getApplicationContextFromSession() {
     if( sessionStore != null ) {
-      rwtContext = RWTContextUtil.getRWTContext( sessionStore );
+      applicationContext = ApplicationContextUtil.getApplicationContext( sessionStore );
     }
   }
   

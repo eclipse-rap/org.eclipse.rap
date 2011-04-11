@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 
 
@@ -39,7 +39,7 @@ public final class PhaseListenerRegistry {
   
   private static PhaseListenerRegistryInstance getInstance() {
     Class singletonType = PhaseListenerRegistryInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( PhaseListenerRegistryInstance )singleton;
   }
     

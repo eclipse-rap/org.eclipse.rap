@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.swt.graphics.ImageData;
 
 
@@ -31,7 +31,7 @@ final class ImageDataFactory {
 
   private static ImageDataFactoryInstance getInstance() {
     Class singletonType = ImageDataFactoryInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( ImageDataFactoryInstance )singleton;
   }
   

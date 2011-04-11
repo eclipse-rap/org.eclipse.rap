@@ -50,10 +50,9 @@ public class Fixture {
     usePerformanceOptimizations
       = Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
 
-    // TODO [RWTContext]: Replacing ThemeManagerInstance improves performance
-    //                    of RWTAllTestSuite. Think about a less 
-    //                    intrusive solution.
-    RWTContextUtil.replace( ThemeManagerInstance.class,
+    // TODO [ApplicationContext]: Replacing ThemeManagerInstance improves performance of 
+    //      RWTAllTestSuite. Think about a less intrusive solution.
+    ApplicationContextUtil.replace( ThemeManagerInstance.class,
                             ThemeManagerSingletonFactory.class );
   }
 
@@ -103,39 +102,37 @@ public class Fixture {
   }
   
   
-  ////////////////////////////////
-  // Methods to control RWTContext
+  ////////////////////////////////////////
+  // Methods to control ApplicationContext
   
-  public static void createRWTContext() {
+  public static void createApplicationContext() {
     ensureServletContext();
-    createRWTContext( new ContextInitializer( servletContext ) );
+    createApplicationContext( new ContextInitializer( servletContext ) );
   }
 
-  public static void createRWTContext( Runnable initializer ) {
+  public static void createApplicationContext( Runnable initializer ) {
     createWebContextDirectories();
     ensureServletContext();
-    RWTContext rwtContext = RWTContextUtil.createRWTContext();
-    RWTContextUtil.registerRWTContext( servletContext, rwtContext );
-    RWTContextUtil.runWithInstance( rwtContext, initializer );
+    ApplicationContext applicationContext = ApplicationContextUtil.createApplicationContext();
+    ApplicationContextUtil.registerApplicationContext( servletContext, applicationContext );
+    ApplicationContextUtil.runWithInstance( applicationContext, initializer );
   }
   
-  public static void disposeOfRWTContext() {
+  public static void disposeOfApplicationContext() {
     ContextDestroyer destroyer = new ContextDestroyer( servletContext );
-    disposeOfRWTContext( destroyer );
+    disposeOfApplicationContext( destroyer );
   }
 
-  public static void disposeOfRWTContext( Runnable destroyer ) {
-    RWTContext rwtContext = RWTContextUtil.getRWTContext( servletContext );
-    RWTContextUtil.runWithInstance( rwtContext, destroyer );
-    RWTContextUtil.deregisterRWTContext( servletContext );
+  public static void disposeOfApplicationContext( Runnable destroyer ) {
+    ApplicationContext applicationContext
+      = ApplicationContextUtil.getApplicationContext( servletContext );
+    ApplicationContextUtil.runWithInstance( applicationContext, destroyer );
+    ApplicationContextUtil.deregisterApplicationContext( servletContext );
     disposeOfServletContext();
-    // TODO [RWTContext]: At the time beeing this improves RWTAllTestSuite
-    //                    performance by 50% on my machine without causing
-    //                    any test to fail. However this has a bad smell
-    //                    with it, so I introduced a flag that can be switch
-    //                    on for fast tests on local machines and switched
-    //                    of for the integration build tests. Think about
-    //                    a less intrusive solution.
+    // TODO [ApplicationContext]: At the time beeing this improves RWTAllTestSuite performance by 
+    //      50% on my machine without causing any test to fail. However this has a bad smell
+    //      with it, so I introduced a flag that can be switch on for fast tests on local machines 
+    //      and switched of for the integration build tests. Think about a less intrusive solution.
     if( !usePerformanceOptimizations ) {
       deleteWebContextDirectories();
     }
@@ -207,7 +204,7 @@ public class Fixture {
     registerResourceManagerFactory();
     registerCurrentPhaseListener();
     setSystemProperties();
-    createRWTContext();
+    createApplicationContext();
     createServiceContext();
     AdapterFactoryRegistry.register();
   }
@@ -224,7 +221,7 @@ public class Fixture {
 
   public static void tearDown() {
     disposeOfServiceContext();
-    disposeOfRWTContext();
+    disposeOfApplicationContext();
     disposeOfServletContext();
     unsetSystemProperties();
   }
@@ -477,7 +474,7 @@ public class Fixture {
     ThemeManager result = null;
     try {
       result = ThemeManager.getInstance();
-    } catch( IllegalStateException noRWTContextAvailable ) {
+    } catch( IllegalStateException noApplicationContextAvailable ) {
     }
     return result;
   }

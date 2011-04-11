@@ -15,7 +15,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -87,7 +87,7 @@ public final class ThemeAdapterUtil {
   }
 
   private static ThemeAdapterUtil getInstance() {
-    return ( ThemeAdapterUtil )RWTContext.getSingleton( ThemeAdapterUtil.class );
+    return ( ThemeAdapterUtil )ApplicationContext.getSingleton( ThemeAdapterUtil.class );
   }
 
   private ThemeAdapterUtil() {

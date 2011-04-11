@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
@@ -58,7 +58,7 @@ public final class ResourceManager {
   }
 
   private static ResourceManager getSingleton() {
-    return ( ResourceManager )RWTContext.getSingleton( ResourceManager.class );
+    return ( ResourceManager )ApplicationContext.getSingleton( ResourceManager.class );
   }
 
   private ResourceManager() {

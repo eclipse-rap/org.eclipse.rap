@@ -20,7 +20,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.ResourceManager;
@@ -194,7 +194,7 @@ public final class RWT {
    */
   public static IServiceManager getServiceManager() {
     Class singletonType = ServiceManagerImpl.class;
-    return ( IServiceManager )RWTContext.getSingleton( singletonType );
+    return ( IServiceManager )ApplicationContext.getSingleton( singletonType );
   }
   
   /**
@@ -234,7 +234,7 @@ public final class RWT {
    * @since 1.4
    */
   public static IApplicationStore getApplicationStore() {
-    return ( IApplicationStore )RWTContext.getSingleton( ApplicationStoreImpl.class );
+    return ( IApplicationStore )ApplicationContext.getSingleton( ApplicationStoreImpl.class );
   }
   
   /**

@@ -14,7 +14,7 @@ package org.eclipse.rwt.internal;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 
 
 /**
@@ -39,7 +39,7 @@ public class ConfigurationReader {
 
   private static ConfigurationReaderInstance getInstance() {
     Class singletonType = ConfigurationReaderInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( ConfigurationReaderInstance )singleton;
   }
   

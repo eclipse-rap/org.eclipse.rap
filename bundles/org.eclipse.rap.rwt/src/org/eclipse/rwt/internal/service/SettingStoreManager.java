@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.service.ISettingStore;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 
@@ -46,7 +46,7 @@ public final class SettingStoreManager {
   
   private static SettingStoreManagerInstance getInstance() {
     Class singletonType = SettingStoreManagerInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( SettingStoreManagerInstance )singleton;
   }
   

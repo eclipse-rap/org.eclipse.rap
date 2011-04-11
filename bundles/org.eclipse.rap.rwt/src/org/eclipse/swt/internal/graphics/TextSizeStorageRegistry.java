@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 
 // TODO [fappel]: Finish implementation and revise this. This class is meant to 
 //                be initialized once at application startup. Because of this
@@ -50,7 +50,7 @@ public class TextSizeStorageRegistry {
   }
   
   private static TextSizeStorageRegistryInstance getInstance() {
-    Object singleton = RWTContext.getSingleton( TextSizeStorageRegistryInstance.class );
+    Object singleton = ApplicationContext.getSingleton( TextSizeStorageRegistryInstance.class );
     return ( TextSizeStorageRegistryInstance )singleton;
   }
 }

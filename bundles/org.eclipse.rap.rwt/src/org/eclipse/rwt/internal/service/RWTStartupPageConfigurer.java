@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
@@ -220,7 +220,7 @@ public final class RWTStartupPageConfigurer
 
   public static RWTStartupPageConfigurer getInstance() {
     Class singletonType = RWTStartupPageConfigurer.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( RWTStartupPageConfigurer )singleton;
   }
 

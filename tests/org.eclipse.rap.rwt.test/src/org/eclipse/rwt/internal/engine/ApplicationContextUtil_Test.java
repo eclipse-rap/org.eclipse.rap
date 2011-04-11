@@ -30,92 +30,92 @@ import org.eclipse.swt.internal.graphics.TextSizeStorageRegistry.TextSizeStorage
 import org.eclipse.swt.widgets.DisplaysHolder;
 
 
-public class RWTContextUtil_Test extends TestCase {
+public class ApplicationContextUtil_Test extends TestCase {
   
-  public void testRegisterDefaultRWTContext() {
+  public void testRegisterDefaultApplicationContext() {
     Fixture.createServiceContext();
 
     ISessionStore session = ContextProvider.getSession();
     HttpSession httpSession = session.getHttpSession();
     ServletContext servletContext = httpSession.getServletContext();
-    RWTContext rwtContext
-      = RWTContextUtil.registerDefaultRWTContext( servletContext );
+    ApplicationContext applicationContext
+      = ApplicationContextUtil.registerDefaultApplicationContext( servletContext );
 
-    assertNotNull( rwtContext );
+    assertNotNull( applicationContext );
     assertNotNull( getSingleton( ThemeManagerInstance.class ) );
-    assertSame( rwtContext.getInstance( ThemeManagerInstance.class ),
+    assertSame( applicationContext.getInstance( ThemeManagerInstance.class ),
                 getSingleton( ThemeManagerInstance.class ) );
     assertNotNull( getSingleton( BrandingManagerInstance.class ) );
-    assertSame( rwtContext.getInstance( BrandingManagerInstance.class ),
+    assertSame( applicationContext.getInstance( BrandingManagerInstance.class ),
                 getSingleton( BrandingManagerInstance.class ) );
     assertNotNull( getSingleton( PhaseListenerRegistryInstance.class ) );
-    assertSame( rwtContext.getInstance( PhaseListenerRegistryInstance.class ),
+    assertSame( applicationContext.getInstance( PhaseListenerRegistryInstance.class ),
                 getSingleton( PhaseListenerRegistryInstance.class ) );
     assertNotNull( getSingleton( LifeCycleFactoryInstance.class ) );
-    assertSame( rwtContext.getInstance( LifeCycleFactoryInstance.class ),
+    assertSame( applicationContext.getInstance( LifeCycleFactoryInstance.class ),
                 getSingleton( LifeCycleFactoryInstance.class ) );
     assertNotNull( getSingleton( EntryPointManagerInstance.class ) );
-    assertSame( rwtContext.getInstance( EntryPointManagerInstance.class ),
+    assertSame( applicationContext.getInstance( EntryPointManagerInstance.class ),
                 getSingleton( EntryPointManagerInstance.class ) );
     assertNotNull( getSingleton( ResourceFactoryInstance.class ) );
-    assertSame( rwtContext.getInstance( ResourceFactoryInstance.class ),
+    assertSame( applicationContext.getInstance( ResourceFactoryInstance.class ),
                 getSingleton( ResourceFactoryInstance.class ) );
     assertNotNull( getSingleton( ImageFactoryInstance.class ) );
-    assertSame( rwtContext.getInstance( ImageFactoryInstance.class ),
+    assertSame( applicationContext.getInstance( ImageFactoryInstance.class ),
                 getSingleton( ImageFactoryInstance.class ) );
     assertNotNull( getSingleton( InternalImageFactoryInstance.class ) );
-    assertSame( rwtContext.getInstance( InternalImageFactoryInstance.class ),
+    assertSame( applicationContext.getInstance( InternalImageFactoryInstance.class ),
                 getSingleton( InternalImageFactoryInstance.class ) );
     assertNotNull( getSingleton( ImageDataFactoryInstance.class ) );
-    assertSame( rwtContext.getInstance( ImageDataFactoryInstance.class ),
+    assertSame( applicationContext.getInstance( ImageDataFactoryInstance.class ),
                 getSingleton( ImageDataFactoryInstance.class ) );
     assertNotNull( getSingleton( FontDataFactoryInstance.class ) );
-    assertSame( rwtContext.getInstance( FontDataFactoryInstance.class ),
+    assertSame( applicationContext.getInstance( FontDataFactoryInstance.class ),
                 getSingleton( FontDataFactoryInstance.class ) );
     assertNotNull( getSingleton( AdapterFactoryRegistryInstance.class ) );
-    assertSame( rwtContext.getInstance( AdapterFactoryRegistryInstance.class ),
+    assertSame( applicationContext.getInstance( AdapterFactoryRegistryInstance.class ),
                 getSingleton( AdapterFactoryRegistryInstance.class ) );
     assertNotNull( getSingleton( SettingStoreManagerInstance.class ) );
-    assertSame( rwtContext.getInstance( SettingStoreManagerInstance.class ),
+    assertSame( applicationContext.getInstance( SettingStoreManagerInstance.class ),
                 getSingleton( SettingStoreManagerInstance.class ) );
     assertNotNull( getSingleton( ServiceManagerInstance.class ) );
-    assertSame( rwtContext.getInstance( ServiceManagerInstance.class ),
+    assertSame( applicationContext.getInstance( ServiceManagerInstance.class ),
                 getSingleton( ServiceManagerInstance.class ) );
     assertNotNull( getSingleton( ResourceRegistryInstance.class ) );
-    assertSame( rwtContext.getInstance( ResourceRegistryInstance.class ),
+    assertSame( applicationContext.getInstance( ResourceRegistryInstance.class ),
                 getSingleton( ResourceRegistryInstance.class ) );
     assertNotNull( getSingleton( ConfigurationReaderInstance.class ) );
-    assertSame( rwtContext.getInstance( ConfigurationReaderInstance.class ),
+    assertSame( applicationContext.getInstance( ConfigurationReaderInstance.class ),
                 getSingleton( ConfigurationReaderInstance.class ) );
     assertNotNull( getSingleton( ResourceManagerImpl.class ) );
-    assertSame( rwtContext.getInstance( ResourceManagerImpl.class ),
+    assertSame( applicationContext.getInstance( ResourceManagerImpl.class ),
                 getSingleton( ResourceManagerImpl.class ) );
     assertNotNull( getSingleton( ResourceManager.class ) );
-    assertSame( rwtContext.getInstance( ResourceManager.class ),
+    assertSame( applicationContext.getInstance( ResourceManager.class ),
                 getSingleton( ResourceManager.class ) );
     assertNotNull( getSingleton( RWTStartupPageConfigurer.class ) );
-    assertSame( rwtContext.getInstance( RWTStartupPageConfigurer.class ),
+    assertSame( applicationContext.getInstance( RWTStartupPageConfigurer.class ),
                 getSingleton( RWTStartupPageConfigurer.class ) );
     assertNotNull( getSingleton( StartupPage.class ) );
-    assertSame( rwtContext.getInstance( StartupPage.class ),
+    assertSame( applicationContext.getInstance( StartupPage.class ),
                 getSingleton( StartupPage.class ) );
     assertNotNull( getSingleton( ServiceManagerImpl.class ) );
-    assertSame( rwtContext.getInstance( ServiceManagerImpl.class ),
+    assertSame( applicationContext.getInstance( ServiceManagerImpl.class ),
                 getSingleton( ServiceManagerImpl.class ) );
     assertNotNull( getSingleton( DisplaysHolder.class ) );
-    assertSame( rwtContext.getInstance( DisplaysHolder.class ),
+    assertSame( applicationContext.getInstance( DisplaysHolder.class ),
                 getSingleton( DisplaysHolder.class ) );
     assertNotNull( getSingleton( ThemeAdapterUtil.class ) );
-    assertSame( rwtContext.getInstance( ThemeAdapterUtil.class ),
+    assertSame( applicationContext.getInstance( ThemeAdapterUtil.class ),
                 getSingleton( ThemeAdapterUtil.class ) );
     assertNotNull( getSingleton( JSLibraryConcatenator.class ) );
-    assertSame( rwtContext.getInstance( JSLibraryConcatenator.class ),
+    assertSame( applicationContext.getInstance( JSLibraryConcatenator.class ),
                 getSingleton( JSLibraryConcatenator.class ) );
     assertNotNull( getSingleton( TextSizeStorageRegistryInstance.class ) );
-    assertSame( rwtContext.getInstance( TextSizeStorageRegistryInstance.class ),
+    assertSame( applicationContext.getInstance( TextSizeStorageRegistryInstance.class ),
                 getSingleton( TextSizeStorageRegistryInstance.class ) );
     
-    RWTContextUtil.deregisterRWTContext( servletContext );
+    ApplicationContextUtil.deregisterApplicationContext( servletContext );
     try {
       getSingleton( ThemeManagerInstance.class );
       fail( "After deregistration there must be no context available." );
@@ -123,45 +123,45 @@ public class RWTContextUtil_Test extends TestCase {
     }
   }
   
-  public void testRegisterRWTContext() {
+  public void testRegisterApplicationContext() {
     TestServletContext servletContext = new TestServletContext();
-    RWTContext rwtContext = new RWTContext();
+    ApplicationContext applicationContext = new ApplicationContext();
     
-    RWTContextUtil.registerRWTContext( servletContext, rwtContext );
-    RWTContext found = RWTContextUtil.getRWTContext( servletContext );
-    assertSame( rwtContext, found );
+    ApplicationContextUtil.registerApplicationContext( servletContext, applicationContext );
+    ApplicationContext found = ApplicationContextUtil.getApplicationContext( servletContext );
+    assertSame( applicationContext, found );
     
-    RWTContextUtil.deregisterRWTContext( servletContext );
-    assertNull( RWTContextUtil.getRWTContext( servletContext ) );
+    ApplicationContextUtil.deregisterApplicationContext( servletContext );
+    assertNull( ApplicationContextUtil.getApplicationContext( servletContext ) );
   }
   
-  public void testRegisterRWTContextOnSessionStore() {
+  public void testRegisterApplicationContextOnSessionStore() {
     SessionStoreImpl sessionStore = new SessionStoreImpl( new TestSession() );
-    RWTContext rwtContext = new RWTContext();
+    ApplicationContext applicationContext = new ApplicationContext();
 
-    RWTContextUtil.registerRWTContext( sessionStore, rwtContext );
-    RWTContext found = RWTContextUtil.getRWTContext( sessionStore );
-    assertSame( rwtContext, found );
+    ApplicationContextUtil.registerApplicationContext( sessionStore, applicationContext );
+    ApplicationContext found = ApplicationContextUtil.getApplicationContext( sessionStore );
+    assertSame( applicationContext, found );
     
-    RWTContextUtil.deregisterRWTContext( sessionStore );
-    assertNull( RWTContextUtil.getRWTContext( sessionStore ) );
+    ApplicationContextUtil.deregisterApplicationContext( sessionStore );
+    assertNull( ApplicationContextUtil.getApplicationContext( sessionStore ) );
   }
   
   public void testRunWithInstance() {
-    RWTContext rwtContext = new RWTContext();
-    final RWTContext[] found = new RWTContext[ 1 ];
+    ApplicationContext applicationContext = new ApplicationContext();
+    final ApplicationContext[] found = new ApplicationContext[ 1 ];
     Runnable runnable = new Runnable() {
       public void run() {
-        found[0] = RWTContextUtil.getInstance();
+        found[0] = ApplicationContextUtil.getInstance();
       }
     };
 
-    boolean before = RWTContextUtil.hasContext();
-    RWTContextUtil.runWithInstance( rwtContext, runnable );
-    boolean after = RWTContextUtil.hasContext();
+    boolean before = ApplicationContextUtil.hasContext();
+    ApplicationContextUtil.runWithInstance( applicationContext, runnable );
+    boolean after = ApplicationContextUtil.hasContext();
 
     assertFalse( before );
-    assertSame( rwtContext, found[ 0 ] );
+    assertSame( applicationContext, found[ 0 ] );
     assertFalse( after );
   }
 
@@ -173,18 +173,18 @@ public class RWTContextUtil_Test extends TestCase {
       }
     };
     
-    boolean before = RWTContextUtil.hasContext();
+    boolean before = ApplicationContextUtil.hasContext();
     RuntimeException actual = runWithExceptionExpected( runnable );
-    boolean after = RWTContextUtil.hasContext();
+    boolean after = ApplicationContextUtil.hasContext();
     
     assertFalse( before );
     assertSame( expected, actual );
     assertFalse( after );
   }
   
-  public void testParamRWTContextNotNull() {
+  public void testParamApplicationContextNotNull() {
     try {
-      RWTContextUtil.runWithInstance( null, new Runnable() {
+      ApplicationContextUtil.runWithInstance( null, new Runnable() {
         public void run() {}
       } );
       fail();
@@ -194,22 +194,22 @@ public class RWTContextUtil_Test extends TestCase {
   
   public void testParamRunnableNotNull() {
     try {
-      RWTContextUtil.runWithInstance( new RWTContext(), null );
+      ApplicationContextUtil.runWithInstance( new ApplicationContext(), null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
   
   public void testRunWithInstanceWithNestedCall() {
-    final RWTContext rwtContext = new RWTContext();
+    final ApplicationContext applicationContext = new ApplicationContext();
     Runnable runnable = new Runnable() {
       public void run() {
-        RWTContextUtil.runWithInstance( rwtContext, this );
+        ApplicationContextUtil.runWithInstance( applicationContext, this );
       }
     };
     
     try {
-      RWTContextUtil.runWithInstance( rwtContext, runnable );
+      ApplicationContextUtil.runWithInstance( applicationContext, runnable );
       fail( "Nested calls in same thread of runWithInstance are not allowed" );
     } catch( IllegalStateException expected ) {
     }
@@ -217,20 +217,20 @@ public class RWTContextUtil_Test extends TestCase {
   
   public void testGetInstanceWithoutContextProviderRegistration() {
     try {
-      RWTContextUtil.getInstance();
+      ApplicationContextUtil.getInstance();
       fail();
     } catch( IllegalStateException expected ) {
     }
   }
 
   private static Object getSingleton( Class singletonType ) {
-    return RWTContext.getSingleton( singletonType );
+    return ApplicationContext.getSingleton( singletonType );
   }
 
   private static RuntimeException runWithExceptionExpected( Runnable runnable ) {
     RuntimeException actual = null;
     try {
-      RWTContextUtil.runWithInstance( new RWTContext(), runnable );
+      ApplicationContextUtil.runWithInstance( new ApplicationContext(), runnable );
       fail();
     } catch( RuntimeException runtimeException ) {
       actual = runtimeException;

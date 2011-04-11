@@ -85,9 +85,9 @@ public class HttpServiceTracker extends ServiceTracker {
   public Object addingService( ServiceReference reference ) {
     HttpService result = getHttpService( reference );
     HttpContext httpContext = getHttpContext( reference, result );
-    RWTContext rwtContext = createAndInitializeRWTContext();
-    registerServlets( reference, result, httpContext, rwtContext );
-    registerResourceDir( result, httpContext, rwtContext );
+    ApplicationContext applicationContext = createAndInitializeRWTContext();
+    registerServlets( reference, result, httpContext, applicationContext );
+    registerResourceDir( result, httpContext, applicationContext );
     return result;
   }
 
@@ -126,7 +126,7 @@ public class HttpServiceTracker extends ServiceTracker {
   private void registerServlets( ServiceReference reference,
                                  HttpService httpService,
                                  HttpContext httpContext,
-                                 RWTContext rwtContext )
+                                 ApplicationContext rwtContext )
   {
     ensureDefaultAlias();
     Iterator aliases = servletAliases.keySet().iterator();
@@ -153,13 +153,13 @@ public class HttpServiceTracker extends ServiceTracker {
   private void registerServlet( String name,
                                 HttpService httpService,
                                 HttpContext httpContext,
-                                RWTContext rwtContext )
+                                ApplicationContext rwtContext )
   {
     try {
       RWTDelegate handler = new RWTDelegate();
       httpService.registerServlet( "/" + name, handler, null, httpContext );
       ServletContext servletContext = handler.getServletContext();
-      RWTContextUtil.registerRWTContext( servletContext, rwtContext );
+      ApplicationContextUtil.registerApplicationContext( servletContext, rwtContext );
     } catch( Exception exception ) {
       logError( "Failed to register servlet " + name, exception );
     }
@@ -167,7 +167,7 @@ public class HttpServiceTracker extends ServiceTracker {
 
   private void registerResourceDir( HttpService httpService,
                                     HttpContext httpContext,
-                                    RWTContext rwtContext )
+                                    ApplicationContext rwtContext )
   {
     if( httpService != null ) {
       String contextRoot = getContextRoot( rwtContext );
@@ -214,9 +214,9 @@ public class HttpServiceTracker extends ServiceTracker {
     return ( HttpContextExtensionService )context.getService( reference );
   }
 
-  private static RWTContext createAndInitializeRWTContext() {
-    RWTContext result = RWTContextUtil.createRWTContext();
-    RWTContextUtil.runWithInstance( result, new Runnable() {
+  private static ApplicationContext createAndInitializeRWTContext() {
+    ApplicationContext result = ApplicationContextUtil.createApplicationContext();
+    ApplicationContextUtil.runWithInstance( result, new Runnable() {
       public void run() {
         new EngineConfigWrapper();
       }
@@ -224,9 +224,9 @@ public class HttpServiceTracker extends ServiceTracker {
     return result;
   }
 
-  private static String getContextRoot( RWTContext rwtContext ) {
+  private static String getContextRoot( ApplicationContext rwtContext ) {
     final String[] result = new String[ 1 ];
-    RWTContextUtil.runWithInstance( rwtContext, new Runnable() {
+    ApplicationContextUtil.runWithInstance( rwtContext, new Runnable() {
       public void run() {
         String contextRoot = ContextProvider.getWebAppBase();
         result[ 0 ] = ( new Path( contextRoot ) ).toString();

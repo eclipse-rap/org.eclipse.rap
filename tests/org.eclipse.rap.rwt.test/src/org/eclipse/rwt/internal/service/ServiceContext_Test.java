@@ -16,49 +16,49 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.engine.RWTContext;
-import org.eclipse.rwt.internal.engine.RWTContextUtil;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 
 
 public class ServiceContext_Test extends TestCase {
   
   private SessionStoreImpl sessionStore;
 
-  public void testGetRWTContext() {
-    RWTContext rwtContext = new RWTContext();
-    ServiceContext context = createContext( rwtContext );
+  public void testGetApplicationContext() {
+    ApplicationContext applicationContext = new ApplicationContext();
+    ServiceContext context = createContext( applicationContext );
     
-    RWTContext foundInContext = context.getRWTContext();
-    RWTContext foundInSession = RWTContextUtil.getRWTContext( sessionStore );
-    assertSame( rwtContext, foundInContext );
-    assertSame( rwtContext, foundInSession );
+    ApplicationContext foundInContext = context.getApplicationContext();
+    ApplicationContext foundInSession = ApplicationContextUtil.getApplicationContext( sessionStore );
+    assertSame( applicationContext, foundInContext );
+    assertSame( applicationContext, foundInSession );
   }
 
-  public void testGetRWTContextWithNullSessionStore() {
-    RWTContext rwtContext = new RWTContext();
+  public void testGetApplicationContextWithNullSessionStore() {
+    ApplicationContext applicationContext = new ApplicationContext();
     sessionStore = null;
-    ServiceContext context = createContext( rwtContext );
+    ServiceContext context = createContext( applicationContext );
     
-    RWTContext found = context.getRWTContext();
+    ApplicationContext found = context.getApplicationContext();
 
-    assertSame( rwtContext, found );
+    assertSame( applicationContext, found );
   }
   
-  public void testGetRWTContextFromSessionStore() {
-    RWTContext rwtContext = new RWTContext();
+  public void testGetApplicationContextFromSessionStore() {
+    ApplicationContext applicationContext = new ApplicationContext();
     ServiceContext context = createContext();
-    RWTContextUtil.registerRWTContext( sessionStore, rwtContext );
+    ApplicationContextUtil.registerApplicationContext( sessionStore, applicationContext );
 
-    RWTContext found = context.getRWTContext();
-    assertSame( rwtContext, found );
+    ApplicationContext found = context.getApplicationContext();
+    assertSame( applicationContext, found );
   }
   
-  public void testGetRWTContextOnDisposedServiceContext() {
+  public void testGetApplicationContextOnDisposedServiceContext() {
     ServiceContext context = createContext( null );
     context.dispose();
     
     try {
-      context.getRWTContext();
+      context.getApplicationContext();
       fail();
     } catch( IllegalStateException expected ) {
     }
@@ -68,7 +68,7 @@ public class ServiceContext_Test extends TestCase {
     sessionStore = new SessionStoreImpl( new TestSession() );
   }
 
-  private ServiceContext createContext( RWTContext rwtContext ) {
+  private ServiceContext createContext( ApplicationContext applicationContext ) {
     TestRequest request = new TestRequest();
     TestResponse response = new TestResponse();
     HttpSession session = new TestSession();
@@ -77,7 +77,7 @@ public class ServiceContext_Test extends TestCase {
     }
     request.setSession( session );
     ServletContext servletContext = session.getServletContext();
-    RWTContextUtil.registerRWTContext( servletContext, rwtContext );
+    ApplicationContextUtil.registerApplicationContext( servletContext, applicationContext );
     return createContext( request, response );
   }
 

@@ -51,12 +51,12 @@ public class ResourceFactory_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    Fixture.createRWTContext();
+    Fixture.createApplicationContext();
     Fixture.createServiceContext();
   }
 
   protected void tearDown() throws Exception {
     Fixture.disposeOfServiceContext();
-    Fixture.disposeOfRWTContext();
+    Fixture.disposeOfApplicationContext();
   }
 }

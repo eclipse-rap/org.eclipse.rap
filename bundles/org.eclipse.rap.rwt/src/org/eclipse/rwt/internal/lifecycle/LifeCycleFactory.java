@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
@@ -32,7 +32,7 @@ public final class LifeCycleFactory {
   
   private static LifeCycleFactoryInstance getInstance() {
     Class singletonType = LifeCycleFactoryInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( LifeCycleFactoryInstance )singleton;
   }
   

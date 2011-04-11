@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.resources.IResource;
 
 
@@ -35,7 +35,7 @@ public final class ResourceRegistry {
   
   private static ResourceRegistryInstance getInstance() {
     Class singletonType = ResourceRegistryInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( ResourceRegistryInstance )singleton;
   }
 }

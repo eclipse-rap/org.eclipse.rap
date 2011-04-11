@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.graphics;
 
 import java.io.InputStream;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.Device;
@@ -58,7 +58,7 @@ public final class ImageFactory {
   }
 
   private static ImageFactoryInstance getInstance() {
-    Object singleton = RWTContext.getSingleton( ImageFactoryInstance.class );
+    Object singleton = ApplicationContext.getSingleton( ImageFactoryInstance.class );
     return ( ImageFactoryInstance )singleton;
   }
   

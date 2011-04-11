@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.service.IServiceHandler;
 
 
@@ -35,7 +35,7 @@ public final class ServiceManager {
   }
 
   private static ServiceManagerInstance getInstance() {
-    return ( ServiceManagerInstance )RWTContext.getSingleton( ServiceManagerInstance.class );
+    return ( ServiceManagerInstance )ApplicationContext.getSingleton( ServiceManagerInstance.class );
   }
 
   private ServiceManager() {

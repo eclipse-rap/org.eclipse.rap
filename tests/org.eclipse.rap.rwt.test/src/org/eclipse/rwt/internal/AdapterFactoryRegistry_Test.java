@@ -108,7 +108,7 @@ public class AdapterFactoryRegistry_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    Fixture.createRWTContext();
+    Fixture.createApplicationContext();
     Fixture.createServiceContext();
     Fixture.fakeNewRequest();
   }

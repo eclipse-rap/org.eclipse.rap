@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.swt.graphics.FontData;
 
 
@@ -30,7 +30,7 @@ public final class FontDataFactory {
 
   private static FontDataFactoryInstance getInstance() {
     Class singletonType = FontDataFactoryInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( FontDataFactoryInstance )singleton;
   }
   

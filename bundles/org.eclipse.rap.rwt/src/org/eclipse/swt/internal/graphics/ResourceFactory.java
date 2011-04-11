@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 
@@ -94,7 +94,7 @@ public final class ResourceFactory {
   
   private static ResourceFactoryInstance getInstance() {
     Class singletonType = ResourceFactoryInstance.class;
-    return ( ResourceFactoryInstance )RWTContext.getSingleton( singletonType );
+    return ( ResourceFactoryInstance )ApplicationContext.getSingleton( singletonType );
   }
 
   private ResourceFactory() {

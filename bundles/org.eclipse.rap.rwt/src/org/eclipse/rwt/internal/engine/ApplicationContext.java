@@ -19,7 +19,7 @@ import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
-public class RWTContext {
+public class ApplicationContext {
 
   private final Map instances;
 
@@ -28,17 +28,17 @@ public class RWTContext {
     Class getInstanceType();
   }
 
-  public RWTContext() {
+  public ApplicationContext() {
     this( new Class[ 0 ] );
   }
 
-  public RWTContext( Class[] instanceTypes ) {
+  public ApplicationContext( Class[] instanceTypes ) {
     instances = new HashMap();
     createInstances( instanceTypes );
   }
 
   public static Object getSingleton( Class instanceType ) {
-    return RWTContextUtil.getInstance().getInstance( instanceType );
+    return ApplicationContextUtil.getInstance().getInstance( instanceType );
   }
 
   Object getInstance( Class instanceType ) {

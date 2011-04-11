@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.graphics;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.ImageData;
 
@@ -62,7 +62,7 @@ public final class InternalImageFactory {
 
   private static InternalImageFactoryInstance getInstance() {
     Class singletonType = InternalImageFactoryInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( InternalImageFactoryInstance )singleton;
   }
   

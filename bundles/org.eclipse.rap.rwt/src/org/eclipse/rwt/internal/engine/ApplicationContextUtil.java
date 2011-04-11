@@ -28,10 +28,10 @@ import org.eclipse.swt.internal.graphics.TextSizeStorageRegistry.TextSizeStorage
 import org.eclipse.swt.widgets.DisplaysHolder;
 
 
-public class RWTContextUtil {
+public class ApplicationContextUtil {
   private final static ThreadLocal CONTEXT_HOLDER = new ThreadLocal();
-  private final static String ATTRIBUTE_RWT_CONTEXT
-    = RWTContext.class.getName() + "#RWTContext";
+  private final static String ATTRIBUTE_APPLICATION_CONTEXT
+    = ApplicationContext.class.getName() + "#instance";
  
   private static final Class[] INSTANCE_TYPES = new Class[] {
     ApplicationStoreImpl.class,
@@ -61,62 +61,60 @@ public class RWTContextUtil {
     TextSizeStorageRegistryInstance.class,
   };
 
-  public static RWTContext registerDefaultRWTContext( ServletContext context ) {
-    RWTContext result = createRWTContext();
-    registerRWTContext( context, result );
+  public static ApplicationContext registerDefaultApplicationContext( ServletContext context ) {
+    ApplicationContext result = createApplicationContext();
+    registerApplicationContext( context, result );
     return result;
   }
 
-  public static RWTContext createRWTContext() {
-    return new RWTContext( INSTANCE_TYPES );
+  public static ApplicationContext createApplicationContext() {
+    return new ApplicationContext( INSTANCE_TYPES );
   }
 
-  public static void registerRWTContext( ServletContext servletContext,
-                                         RWTContext rwtContext )
+  public static void registerApplicationContext( ServletContext servletContext,
+                                                 ApplicationContext applicationContext )
   {
-    servletContext.setAttribute( ATTRIBUTE_RWT_CONTEXT, rwtContext );
+    servletContext.setAttribute( ATTRIBUTE_APPLICATION_CONTEXT, applicationContext );
   }
 
-  public static RWTContext getRWTContext( ServletContext servletContext ) {
-    return ( RWTContext )servletContext.getAttribute( ATTRIBUTE_RWT_CONTEXT );
+  public static ApplicationContext getApplicationContext( ServletContext servletContext ) {
+    return ( ApplicationContext )servletContext.getAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
   }
 
-  public static void deregisterRWTContext( ServletContext servletContext ) {
-    servletContext.removeAttribute( ATTRIBUTE_RWT_CONTEXT );
+  public static void deregisterApplicationContext( ServletContext servletContext ) {
+    servletContext.removeAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
     ContextProvider.disposeContext();
   }
   
-  public static void registerRWTContext( ISessionStore sessionStore,
-                                         RWTContext rwtContext )
+  public static void registerApplicationContext( ISessionStore sessionStore,
+                                                 ApplicationContext applicationContext )
   {
-    sessionStore.setAttribute( ATTRIBUTE_RWT_CONTEXT, rwtContext );
+    sessionStore.setAttribute( ATTRIBUTE_APPLICATION_CONTEXT, applicationContext );
   }
 
-  public static RWTContext getRWTContext( ISessionStore sessionStore ) {
-    return ( RWTContext )sessionStore.getAttribute( ATTRIBUTE_RWT_CONTEXT );
+  public static ApplicationContext getApplicationContext( ISessionStore sessionStore ) {
+    return ( ApplicationContext )sessionStore.getAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
   }
 
-  public static void deregisterRWTContext( ISessionStore sessionStore ) {
-    sessionStore.removeAttribute( ATTRIBUTE_RWT_CONTEXT );
+  public static void deregisterApplicationContext( ISessionStore sessionStore ) {
+    sessionStore.removeAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
   }
   
-  public static RWTContext getInstance() {
-    RWTContext result = ( RWTContext )CONTEXT_HOLDER.get();
+  public static ApplicationContext getInstance() {
+    ApplicationContext result = ( ApplicationContext )CONTEXT_HOLDER.get();
     if( result == null  ) {
       ServiceContext context = ContextProvider.getContext();
-      result = context.getRWTContext();
+      result = context.getApplicationContext();
     }
-    checkRWTContextExists( result );
+    checkApplicationContextExists( result );
     return result;
   }
 
-  public static void runWithInstance( RWTContext rwtContext,
-                                      Runnable runnable )
-  {
-    ParamCheck.notNull( rwtContext, "rwtContext" );
+  public static void runWithInstance( ApplicationContext applicationContext, Runnable runnable ) {
+    ParamCheck.notNull( applicationContext, "applicationContext" );
     ParamCheck.notNull( runnable, "runnable" );
     checkNestedCall();
-    CONTEXT_HOLDER.set( rwtContext );
+    CONTEXT_HOLDER.set( applicationContext );
     try {
       runnable.run();
     } finally {
@@ -124,8 +122,8 @@ public class RWTContextUtil {
     }
   }
 
-  // TODO [RWTContext]: method is used by Fixture for performance speed up
-  //                    of test suite. Think about a less intrusive solution.
+  // TODO [ApplicationContext]: method is used by Fixture for performance speed up of test suite. 
+  //      Think about a less intrusive solution.
   public static void replace( Class instanceType, Class replacementType ) {
     for( int i = 0; i < INSTANCE_TYPES.length; i++ ) {
       if( INSTANCE_TYPES[ i ] == instanceType ) {
@@ -141,9 +139,9 @@ public class RWTContextUtil {
     }
   }
 
-  private static void checkRWTContextExists( RWTContext rwtContext ) {
-    if( rwtContext == null ) {
-      throw new IllegalStateException( "No RWTContext registered." );
+  private static void checkApplicationContextExists( ApplicationContext applicationContext ) {
+    if( applicationContext == null ) {
+      throw new IllegalStateException( "No ApplicationContext registered." );
     }
   }
 

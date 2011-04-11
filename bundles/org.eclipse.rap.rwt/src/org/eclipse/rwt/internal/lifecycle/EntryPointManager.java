@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -44,7 +44,7 @@ public final class EntryPointManager {
   
   private static EntryPointManagerInstance getInstance() {
     Class singletonType = EntryPointManagerInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( EntryPointManagerInstance )singleton;
   }
 

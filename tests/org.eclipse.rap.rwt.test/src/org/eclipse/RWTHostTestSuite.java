@@ -92,8 +92,8 @@ public class RWTHostTestSuite {
     // RWT Tests
     suite.addTestSuite( EntryPointManager_Test.class );
     suite.addTestSuite( RWTServletContextListener_Test.class );
-    suite.addTestSuite( RWTContext_Test.class );
-    suite.addTestSuite( RWTContextUtil_Test.class );
+    suite.addTestSuite( ApplicationContext_Test.class );
+    suite.addTestSuite( ApplicationContextUtil_Test.class );
     suite.addTestSuite( AdapterFactoryRegistry_Test.class );
     suite.addTestSuite( PhaseListenerRegistry_Test.class );
     suite.addTestSuite( RWTDelegate_Test.class );

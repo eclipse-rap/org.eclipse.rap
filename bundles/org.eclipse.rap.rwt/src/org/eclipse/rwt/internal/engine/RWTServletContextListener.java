@@ -116,28 +116,29 @@ public final class RWTServletContextListener implements ServletContextListener {
 
   public void contextInitialized( final ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
-    RWTContext rwtContext = registerDefaultRWTContext( servletContext );
+    ApplicationContext applicationContext = registerDefaultApplicationContext( servletContext );
     ContextInitializer initializer = new ContextInitializer( servletContext );
-    RWTContextUtil.runWithInstance( rwtContext, initializer );
+    ApplicationContextUtil.runWithInstance( applicationContext, initializer );
   }
 
   public void contextDestroyed( final ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
-    RWTContext rwtContext = RWTContextUtil.getRWTContext( servletContext );
+    ApplicationContext applicationContext
+      = ApplicationContextUtil.getApplicationContext( servletContext );
     ContextDestroyer destroyer = new ContextDestroyer( servletContext );
-    RWTContextUtil.runWithInstance( rwtContext, destroyer );
-    deregisterDefaultRWTContext( servletContext );
+    ApplicationContextUtil.runWithInstance( applicationContext, destroyer );
+    deregisterDefaultApplicationContext( servletContext );
   }
 
   ////////////////////////////////////////////////////////////
   // helping methods - entry point registration/deregistration
   
-  private RWTContext registerDefaultRWTContext( ServletContext servletContext ) {
-    return RWTContextUtil.registerDefaultRWTContext( servletContext );
+  private ApplicationContext registerDefaultApplicationContext( ServletContext servletContext ) {
+    return ApplicationContextUtil.registerDefaultApplicationContext( servletContext );
   }
   
-  void deregisterDefaultRWTContext( ServletContext servletContext ) {
-    RWTContextUtil.deregisterRWTContext( servletContext );
+  void deregisterDefaultApplicationContext( ServletContext servletContext ) {
+    ApplicationContextUtil.deregisterApplicationContext( servletContext );
   }
 
   public static void registerEngineConfig( ServletContext servletContext ) {

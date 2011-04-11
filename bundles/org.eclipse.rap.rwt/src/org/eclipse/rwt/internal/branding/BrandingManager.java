@@ -15,7 +15,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
@@ -142,7 +142,7 @@ public final class BrandingManager {
 
   private static BrandingManagerInstance getInstance() {
     Class singletonType = BrandingManagerInstance.class;
-    return ( BrandingManagerInstance )RWTContext.getSingleton( singletonType );
+    return ( BrandingManagerInstance )ApplicationContext.getSingleton( singletonType );
   }
   
   private BrandingManager() {

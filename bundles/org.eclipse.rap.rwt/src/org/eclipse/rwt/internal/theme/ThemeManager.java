@@ -17,7 +17,7 @@ import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
@@ -39,9 +39,8 @@ public final class ThemeManager {
 
   private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
 
-  // TODO [RWTContext]: made field public to replace with a performance
-  //                    optimized solution for tests. Think about a less
-  //                    intrusive solution.
+  // TODO [ApplicationContext]: made field public to replace with a performance
+  //      optimized solution for tests. Think about a less intrusive solution.
   public static ResourceLoader STANDARD_RESOURCE_LOADER
     = new ResourceLoader()
   {
@@ -585,6 +584,6 @@ public final class ThemeManager {
 
   private static ThemeManagerInstance getSingletonHolder() {
     Class singletonType = ThemeManagerInstance.class;
-    return ( ThemeManagerInstance )RWTContext.getSingleton( singletonType );
+    return ( ThemeManagerInstance )ApplicationContext.getSingleton( singletonType );
   }
 }

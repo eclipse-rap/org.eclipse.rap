@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 
 
 public final class AdapterFactoryRegistry {
@@ -33,7 +33,7 @@ public final class AdapterFactoryRegistry {
 
   private static AdapterFactoryRegistryInstance getInstance() {
     Class singletonType = AdapterFactoryRegistryInstance.class;
-    Object singleton = RWTContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( singletonType );
     return ( AdapterFactoryRegistryInstance )singleton;
   }
 

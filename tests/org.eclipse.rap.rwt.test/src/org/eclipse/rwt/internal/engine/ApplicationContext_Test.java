@@ -13,11 +13,11 @@ package org.eclipse.rwt.internal.engine;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.engine.RWTContext.InstanceTypeFactory;
+import org.eclipse.rwt.internal.engine.ApplicationContext.InstanceTypeFactory;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
 
 
-public class RWTContext_Test extends TestCase {
+public class ApplicationContext_Test extends TestCase {
   
   private static class TestInstanceType {}
   
@@ -43,7 +43,7 @@ public class RWTContext_Test extends TestCase {
   
   public void testGetInstanceWithUnregisterClass() {
     try {
-      new RWTContext().getInstance( TestInstanceType.class );
+      new ApplicationContext().getInstance( TestInstanceType.class );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -51,28 +51,30 @@ public class RWTContext_Test extends TestCase {
   
   public void testGetInstanceWithNull() {
     try {
-      new RWTContext().getInstance( null );
+      new ApplicationContext().getInstance( null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
   
   public void testRegisterInstanceTypes() {
-    RWTContext rwtContext = new RWTContext( new Class[] { TestInstanceType.class } );
-    Object instance = rwtContext.getInstance( TestInstanceType.class );
+    Class[] classes = new Class[] { TestInstanceType.class };
+    ApplicationContext applicationContext = new ApplicationContext( classes );
+    Object instance = applicationContext.getInstance( TestInstanceType.class );
     assertTrue( instance instanceof TestInstanceType );
   }
   
   public void testGetInstanceReturnsAlwaysSameInstance() {
-    RWTContext rwtContext = new RWTContext( new Class[] { TestInstanceType.class } );
-    Object instance1 = rwtContext.getInstance( TestInstanceType.class );
-    Object instance2 = rwtContext.getInstance( TestInstanceType.class );
+    Class[] classes = new Class[] { TestInstanceType.class };
+    ApplicationContext applicationContext = new ApplicationContext( classes );
+    Object instance1 = applicationContext.getInstance( TestInstanceType.class );
+    Object instance2 = applicationContext.getInstance( TestInstanceType.class );
     assertSame( instance1, instance2 );
   }
   
   public void testRegisterInstanceTypesWithNull() {
     try {
-      new RWTContext( null );
+      new ApplicationContext( null );
       fail();
     } catch( NullPointerException expected ) {
     }    
@@ -80,21 +82,21 @@ public class RWTContext_Test extends TestCase {
 
   public void testRegisterAbstractClass() {
     try {
-      new RWTContext( new Class[] { AbstractClass.class } );
+      new ApplicationContext( new Class[] { AbstractClass.class } );
       fail();
     } catch( ClassInstantiationException expected ) {
     }    
   }
   
   public void testRegisterInstanceFactory() {
-    RWTContext context = new RWTContext( new Class[] { TestInstanceTypeFactory.class } );
+    ApplicationContext context = new ApplicationContext( new Class[] { TestInstanceTypeFactory.class } );
     Object instance = context.getInstance( TestInstanceType.class );
     assertTrue( instance instanceof TestInstanceType );
   }
   
   public void testRegisterInstanceTypeFactoryWithNonMatchingType() {
     try {
-      new RWTContext( new Class[] { WrongTypeFactory.class } );
+      new ApplicationContext( new Class[] { WrongTypeFactory.class } );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -106,16 +108,17 @@ public class RWTContext_Test extends TestCase {
       TestInstanceTypeFactory.class
     };
     try {
-      new RWTContext( instanceTypes );
+      new ApplicationContext( instanceTypes );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
   
   public void testGetInstanceOfNonRegisterType() {
-    RWTContext rwtContext = new RWTContext( new Class[] { TestInstanceType.class } );
+    Class[] classes = new Class[] { TestInstanceType.class };
+    ApplicationContext applicationContext = new ApplicationContext( classes );
     try {
-      rwtContext.getInstance( Runnable.class );
+      applicationContext.getInstance( Runnable.class );
       fail();
     } catch( IllegalArgumentException expected ) {
     }

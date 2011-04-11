@@ -15,7 +15,7 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.engine.RWTContext.InstanceTypeFactory;
+import org.eclipse.rwt.internal.engine.ApplicationContext.InstanceTypeFactory;
 import org.eclipse.rwt.internal.theme.*;
 
 
@@ -24,10 +24,9 @@ class ThemeManagerSingletonFactory implements InstanceTypeFactory {
   static {
     ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
   }
-  // TODO [RWTContext]: Used as performance optimized solution for tests. 
-  //                    At the time being buffering speeds up RWTAllTestSuite
-  //                    about 10% on my machine. Think about a less
-  //                    intrusive solution.
+  // TODO [ApplicationContext]: Used as performance optimized solution for tests. At the time being 
+  //      buffering speeds up RWTAllTestSuite about 10% on my machine. Think about a less intrusive 
+  //      solution.
   private static class TestResourceLoader implements ResourceLoader {
     private ClassLoader classLoader = ThemeManager.class.getClassLoader();
     private Map resourceStreams = new HashMap();

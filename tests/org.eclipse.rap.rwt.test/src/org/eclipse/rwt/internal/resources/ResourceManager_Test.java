@@ -65,12 +65,12 @@ public class ResourceManager_Test extends TestCase {
   }
   
   protected void setUp() {
-    Fixture.createRWTContext( new EmptyInitializer() );
+    Fixture.createApplicationContext( new EmptyInitializer() );
     Fixture.createServiceContext();
   }
   
   protected void tearDown() {
     Fixture.disposeOfServiceContext();
-    Fixture.disposeOfRWTContext();
+    Fixture.disposeOfApplicationContext();
   }
 }

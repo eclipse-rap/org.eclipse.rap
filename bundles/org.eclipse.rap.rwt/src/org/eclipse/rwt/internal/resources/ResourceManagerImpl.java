@@ -19,7 +19,7 @@ import java.util.*;
 
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.IEngineConfig;
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.internal.util.URLHelper;
@@ -117,7 +117,7 @@ public class ResourceManagerImpl implements IResourceManager {
 
   public static IResourceManager getInstance() {
     Class instanceType = ResourceManagerImpl.class;
-    Object instance = RWTContext.getSingleton( instanceType );
+    Object instance = ApplicationContext.getSingleton( instanceType );
     ResourceManagerImpl result = ( ResourceManagerImpl )instance;
     String resources = ConfigurationReader.getConfiguration().getResources();
     File ctxDir = ConfigurationReader.getEngineConfig().getServerContextDir();

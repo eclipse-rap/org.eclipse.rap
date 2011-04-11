@@ -21,7 +21,7 @@ import org.eclipse.rwt.internal.AdapterManagerImpl;
 public class AdapterManager_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    Fixture.createRWTContext();
+    Fixture.createApplicationContext();
     Fixture.createServiceContext();
   }
   

@@ -313,7 +313,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setSystemProperties();
     registerResourceManagerFactory();
-    Fixture.createRWTContext();
+    Fixture.createApplicationContext();
     Fixture.createServiceContext();
 
     maliciousButtonId = null;
@@ -355,7 +355,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   protected void tearDown() throws Exception {
     session = null;
     Fixture.disposeOfServiceContext();
-    Fixture.disposeOfRWTContext();
+    Fixture.disposeOfApplicationContext();
     Fixture.unsetSystemProperties();
   }
 }

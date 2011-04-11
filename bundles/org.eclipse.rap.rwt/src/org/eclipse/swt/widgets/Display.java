@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
-import org.eclipse.rwt.internal.engine.RWTContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
@@ -886,7 +886,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private static DisplaysHolder getDisplaysHolder() {
-    return ( DisplaysHolder )RWTContext.getSingleton( DisplaysHolder.class );
+    return ( DisplaysHolder )ApplicationContext.getSingleton( DisplaysHolder.class );
   }
 
   /**

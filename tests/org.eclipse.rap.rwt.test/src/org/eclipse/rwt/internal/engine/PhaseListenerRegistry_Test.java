@@ -35,7 +35,7 @@ public class PhaseListenerRegistry_Test extends TestCase {
   
   public void testAddAndRemoveAndGetAndClear() {
     initializeWithoutPhaseListener();
-    Fixture.createRWTContext();
+    Fixture.createApplicationContext();
     Fixture.createServiceContext();
     PhaseListener phaseListener = new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -62,7 +62,7 @@ public class PhaseListenerRegistry_Test extends TestCase {
     
     // cleanUp
     Fixture.disposeOfServiceContext();
-    Fixture.disposeOfRWTContext();
+    Fixture.disposeOfApplicationContext();
   }
 
   private void initializeWithoutPhaseListener() {
