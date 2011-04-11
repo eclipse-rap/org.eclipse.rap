@@ -34,8 +34,8 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
     // Let pass one startup request to init the 'system'
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
-    PhaseListenerRegistry.add( new CurrentPhase.Listener() );
+    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
+    RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     ISessionStore session = ContextProvider.getSession();
     String id = LifeCycle.class.getName();

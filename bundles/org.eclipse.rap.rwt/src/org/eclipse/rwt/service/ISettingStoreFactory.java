@@ -38,6 +38,5 @@ public interface ISettingStoreFactory {
    * @throws IllegalArgumentException if storeId is empty or composed
    *         entirely of whitespace
    */
-  ISettingStore createSettingStore( final String storeId );
-  
+  ISettingStore createSettingStore( String storeId );
 }

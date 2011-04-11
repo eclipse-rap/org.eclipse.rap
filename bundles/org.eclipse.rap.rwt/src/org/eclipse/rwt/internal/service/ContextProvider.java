@@ -16,8 +16,8 @@ import java.util.WeakHashMap;
 import javax.servlet.http.*;
 
 import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.IEngineConfig;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -110,7 +110,7 @@ public class ContextProvider {
   }
   
   public static String getWebAppBase() {
-    IEngineConfig engineConfig = ConfigurationReader.getEngineConfig();
+    IEngineConfig engineConfig = RWTFactory.getConfigurationReader().getEngineConfig();
     return engineConfig.getServerContextDir().toString();
   }
   

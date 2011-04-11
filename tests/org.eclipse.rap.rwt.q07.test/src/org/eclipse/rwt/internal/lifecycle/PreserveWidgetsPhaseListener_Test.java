@@ -47,7 +47,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeNewRequest();
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
+    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
   }
 
   protected void tearDown() throws Exception {

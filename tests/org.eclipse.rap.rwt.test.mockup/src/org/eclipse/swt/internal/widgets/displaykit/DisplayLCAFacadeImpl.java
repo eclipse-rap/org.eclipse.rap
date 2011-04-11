@@ -17,7 +17,6 @@ import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
@@ -28,13 +27,9 @@ public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
     return new IDisplayLifeCycleAdapter() {
       public void preserveValues( Display display ) {
       }
-      public void processAction( Device display ) {
-        doProcessAction( display );
-      }
       public void readData( Display display ) {
         doReadData( display );
       }
-
       public void render( Display display ) throws IOException {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();

@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.AdapterFactoryRegistryInstance;
-import org.eclipse.rwt.internal.ConfigurationReaderInstance;
+import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
@@ -48,9 +48,9 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( BrandingManager.class ) );
     assertSame( applicationContext.getInstance( BrandingManager.class ),
                 getSingleton( BrandingManager.class ) );
-    assertNotNull( getSingleton( PhaseListenerRegistryInstance.class ) );
-    assertSame( applicationContext.getInstance( PhaseListenerRegistryInstance.class ),
-                getSingleton( PhaseListenerRegistryInstance.class ) );
+    assertNotNull( getSingleton( PhaseListenerRegistry.class ) );
+    assertSame( applicationContext.getInstance( PhaseListenerRegistry.class ),
+                getSingleton( PhaseListenerRegistry.class ) );
     assertNotNull( getSingleton( LifeCycleFactory.class ) );
     assertSame( applicationContext.getInstance( LifeCycleFactory.class ),
                 getSingleton( LifeCycleFactory.class ) );
@@ -75,18 +75,18 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( AdapterFactoryRegistryInstance.class ) );
     assertSame( applicationContext.getInstance( AdapterFactoryRegistryInstance.class ),
                 getSingleton( AdapterFactoryRegistryInstance.class ) );
-    assertNotNull( getSingleton( SettingStoreManagerInstance.class ) );
-    assertSame( applicationContext.getInstance( SettingStoreManagerInstance.class ),
-                getSingleton( SettingStoreManagerInstance.class ) );
+    assertNotNull( getSingleton( SettingStoreManager.class ) );
+    assertSame( applicationContext.getInstance( SettingStoreManager.class ),
+                getSingleton( SettingStoreManager.class ) );
     assertNotNull( getSingleton( ServiceManager.class ) );
     assertSame( applicationContext.getInstance( ServiceManager.class ),
                 getSingleton( ServiceManager.class ) );
     assertNotNull( getSingleton( ResourceRegistryInstance.class ) );
     assertSame( applicationContext.getInstance( ResourceRegistryInstance.class ),
                 getSingleton( ResourceRegistryInstance.class ) );
-    assertNotNull( getSingleton( ConfigurationReaderInstance.class ) );
-    assertSame( applicationContext.getInstance( ConfigurationReaderInstance.class ),
-                getSingleton( ConfigurationReaderInstance.class ) );
+    assertNotNull( getSingleton( ConfigurationReader.class ) );
+    assertSame( applicationContext.getInstance( ConfigurationReader.class ),
+                getSingleton( ConfigurationReader.class ) );
     assertNotNull( getSingleton( ResourceManagerImpl.class ) );
     assertSame( applicationContext.getInstance( ResourceManagerImpl.class ),
                 getSingleton( ResourceManagerImpl.class ) );

@@ -33,19 +33,16 @@ import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.AdapterFactoryRegistry;
-import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.EngineConfig;
 import org.eclipse.rwt.internal.IEngineConfig;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
-import org.eclipse.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
-import org.eclipse.rwt.internal.service.SettingStoreManager;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -120,7 +117,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
   // helping methods
 
   private void init() {
-    ConfigurationReader.setEngineConfig( this );
+    RWTFactory.getConfigurationReader().setEngineConfig( this );
     registerPhaseListener();
     registerResourceManagerFactory();
     registerSettingStoreFactory();
@@ -145,7 +142,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
       try {
         PhaseListener listener
           = ( PhaseListener )elements[ i ].createExecutableExtension( "class" );
-        PhaseListenerRegistry.add( listener );
+        RWTFactory.getPhaseListenerRegistry().add( listener );
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
       }
@@ -188,7 +185,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
     if( result == null ) {
       result = new WorkbenchFileSettingStoreFactory(); // default
     }
-    SettingStoreManager.register( result );
+    RWTFactory.getSettingStoreManager().register( result );
   }
 
   private static void registerFactories() {

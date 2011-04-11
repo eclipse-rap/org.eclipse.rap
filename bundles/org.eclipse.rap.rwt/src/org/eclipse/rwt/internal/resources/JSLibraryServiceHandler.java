@@ -19,8 +19,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.IConfiguration;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.StreamWritingUtil;
 import org.eclipse.rwt.service.IServiceHandler;
@@ -95,6 +95,6 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   }
   
   private static IConfiguration getConfiguration() {
-    return ConfigurationReader.getConfiguration();
+    return RWTFactory.getConfigurationReader().getConfiguration();
   }
 }

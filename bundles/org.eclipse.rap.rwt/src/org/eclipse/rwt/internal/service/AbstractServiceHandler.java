@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.IServiceHandler;
 
@@ -48,7 +49,7 @@ public abstract class AbstractServiceHandler implements IServiceHandler {
   }
 
   static IConfiguration getConfiguration() {
-    return ConfigurationReader.getConfiguration();
+    return RWTFactory.getConfigurationReader().getConfiguration();
   }
 
   protected static HttpServletRequest getRequest() {

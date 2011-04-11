@@ -15,6 +15,7 @@ import java.util.Date;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -63,7 +64,7 @@ public class DNDSupport_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
+    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );

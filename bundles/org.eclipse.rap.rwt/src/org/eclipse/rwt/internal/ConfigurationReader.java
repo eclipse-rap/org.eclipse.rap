@@ -12,38 +12,65 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
-import javax.xml.parsers.FactoryConfigurationError;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
 
-
-/**
- * This is a helping class that reads configuration values from system
- * properties.
- */
 public class ConfigurationReader {
+  private IConfiguration configuration;
+  private IEngineConfig engineConfig;
+  
+  
+  private static final class ConfigurationImpl implements IConfiguration {
 
-  public static IConfiguration getConfiguration() {
-    return getInstance().getConfiguration();
-  }
+    private final Map values;
 
-  public static IEngineConfig getEngineConfig() {
-    return getInstance().getEngineConfig();
+    private ConfigurationImpl() {
+      values = new HashMap();
+    }
+
+    public String getLifeCycle() {
+      String defaultValue = IConfiguration.LIFE_CYCLE_DEFAULT;
+      return getConfigValue( IConfiguration.PARAM_LIFE_CYCLE, defaultValue );
+    }
+    
+    public boolean isCompression() {
+      String compression = IConfiguration.PARAM_COMPRESSION;
+      String value = getConfigValue( compression, "false" );
+      return Boolean.valueOf( value ).booleanValue();
+    }
+    
+    public String getResources() {
+      String defaultValue = IConfiguration.RESOURCES_DELIVER_FROM_DISK;
+      return getConfigValue( IConfiguration.PARAM_RESOURCES, defaultValue );
+    }
+    
+    private String getConfigValue( String tagName, String defaultValue ) {
+      if( !values.containsKey( tagName ) ) {
+        String result = "";
+        if( System.getProperty( tagName ) != null ) {
+          result = System.getProperty( tagName );
+        } else {
+          result = defaultValue;
+        }
+        values.put( tagName, result );
+      }
+      return ( String )values.get( tagName );
+    }
   }
   
-  public static void setEngineConfig( final IEngineConfig engineConfig )
-    throws FactoryConfigurationError
-  {
-    getInstance().setEngineConfig( engineConfig );
+  public IConfiguration getConfiguration() {
+    if( configuration == null ) {
+      configuration = new ConfigurationImpl();
+    }
+    return configuration;
   }
 
-  private static ConfigurationReaderInstance getInstance() {
-    Class singletonType = ConfigurationReaderInstance.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( ConfigurationReaderInstance )singleton;
+  public IEngineConfig getEngineConfig() {
+    return engineConfig;
   }
-  
-  private ConfigurationReader() {
-    // prevent instance creation
+
+  public void setEngineConfig( final IEngineConfig engineConfig ) {
+    this.engineConfig = engineConfig;
   }
 }

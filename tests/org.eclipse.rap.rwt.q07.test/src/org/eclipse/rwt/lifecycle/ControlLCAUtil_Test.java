@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.SWT;
@@ -347,8 +348,8 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEventsWithDoItFlag() {
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
-    PhaseListenerRegistry.add( new CurrentPhase.Listener() );
+    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
+    RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List eventLog = new ArrayList();
     Listener doitTrueListener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -411,8 +412,8 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessTraverseEventsWithDoItFlag() {
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
-    PhaseListenerRegistry.add( new CurrentPhase.Listener() );
+    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
+    RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List eventLog = new ArrayList();
     Listener doitTrueListener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -466,8 +467,8 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testKeyAndTraverseEvents() {
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
-    PhaseListenerRegistry.add( new CurrentPhase.Listener() );
+    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
+    RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List eventLog = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display );

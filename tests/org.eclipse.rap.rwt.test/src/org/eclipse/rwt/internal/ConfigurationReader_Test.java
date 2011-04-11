@@ -15,12 +15,13 @@ package org.eclipse.rwt.internal;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 
 
 public class ConfigurationReader_Test extends TestCase {
 
   public void testConfigurationReading() {
-    IConfiguration configuration = ConfigurationReader.getConfiguration();
+    IConfiguration configuration = RWTFactory.getConfigurationReader().getConfiguration();
     String lifeCycle = configuration.getLifeCycle();
     assertEquals( IConfiguration.LIFE_CYCLE_DEFAULT, lifeCycle );
     boolean compression = configuration.isCompression();

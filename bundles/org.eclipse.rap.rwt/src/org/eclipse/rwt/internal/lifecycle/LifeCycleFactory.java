@@ -12,8 +12,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.IConfiguration;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
@@ -41,8 +41,7 @@ public class LifeCycleFactory {
   private ILifeCycle loadLifeCycle() {
     LifeCycle result = globalLifeCycle;
     if( result == null ) {
-      IConfiguration configuration = ConfigurationReader.getConfiguration();
-      String lifeCycleClassName = configuration.getLifeCycle();
+      String lifeCycleClassName = getLifeCycleClassName();
       ClassLoader classLoader = LifeCycleFactory.class.getClassLoader();
       result = ( LifeCycle )ClassUtil.newInstance( classLoader, lifeCycleClassName );
       if( result.getScope().equals( Scope.APPLICATION ) ) {
@@ -50,6 +49,11 @@ public class LifeCycleFactory {
       }
     }
     return result;
+  }
+
+  private static String getLifeCycleClassName() {
+    IConfiguration configuration = RWTFactory.getConfigurationReader().getConfiguration();
+    return configuration.getLifeCycle();
   }
 
   private LifeCycleFactory() {

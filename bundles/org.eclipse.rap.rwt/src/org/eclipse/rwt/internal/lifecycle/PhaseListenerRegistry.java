@@ -11,39 +11,33 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 
 
-/**
- * <p>This class holds <code>PhaseListener</code>s that were configured
- * by init parameters in the servlet context (e.g. in web.xml).</p>
- */
-public final class PhaseListenerRegistry {
-  
-  public static void add( final PhaseListener listener ) {
-    getInstance().add( listener );
+public class PhaseListenerRegistry {
+  private final Set phaseListeners;
+
+  public PhaseListenerRegistry() {
+    phaseListeners = new HashSet();
   }
   
-  public static void remove( final PhaseListener listener ) {
-    getInstance().remove( listener );
+  public void add( PhaseListener listener ) {
+    ParamCheck.notNull( listener, "listener" );
+    phaseListeners.add( listener );
   }
   
-  public static PhaseListener[] get() {
-    return getInstance().get();
+  public void remove( PhaseListener listener ) {
+    ParamCheck.notNull( listener, "listener" );
+    phaseListeners.remove( listener );
   }
   
-  public static void clear() {
-    getInstance().clear();
-  }
-  
-  private static PhaseListenerRegistryInstance getInstance() {
-    Class singletonType = PhaseListenerRegistryInstance.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( PhaseListenerRegistryInstance )singleton;
-  }
-    
-  private PhaseListenerRegistry() {
-    // prevent instantiation
+  public PhaseListener[] get() {
+    PhaseListener[] result = new PhaseListener[ phaseListeners.size() ];
+    phaseListeners.toArray( result );
+    return result;
   }
 }

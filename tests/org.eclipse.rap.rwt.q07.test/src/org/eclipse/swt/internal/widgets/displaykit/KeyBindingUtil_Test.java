@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -121,7 +120,7 @@ public class KeyBindingUtil_Test extends TestCase {
     assertEquals( SWT.SHIFT | SWT.ALT, event2.stateMask );
   }
 
-  public void testWriteKeyBindings() throws IOException {
+  public void testWriteKeyBindings() {
     String[] keyBindings = new String[] {
       "ALT+'",
       "CTRL+INSERT",
@@ -145,7 +144,7 @@ public class KeyBindingUtil_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
-  public void testWriteKeyBindings_UnrecognizedKey() throws IOException {
+  public void testWriteKeyBindings_UnrecognizedKey() {
     String[] keyBindings = new String[] {
       "ALT+ABC"
     };
@@ -159,7 +158,7 @@ public class KeyBindingUtil_Test extends TestCase {
     }
   }
 
-  public void testWriteKeyBindings_UnrecognizedModifier() throws IOException {
+  public void testWriteKeyBindings_UnrecognizedModifier() {
     String[] keyBindings = new String[] {
       "ALT+CONTROL+A"
     };
@@ -173,7 +172,7 @@ public class KeyBindingUtil_Test extends TestCase {
     }
   }
 
-  public void testWriteKeyBindings_EmptyKeyBinding() throws IOException {
+  public void testWriteKeyBindings_EmptyKeyBinding() {
     String[] keyBindings = new String[] {
       "CTRL+A",
       "",
@@ -189,7 +188,7 @@ public class KeyBindingUtil_Test extends TestCase {
     }
   }
 
-  public void testWriteKeyBindings_NullKeyBinding() throws IOException {
+  public void testWriteKeyBindings_NullKeyBinding() {
     String[] keyBindings = new String[] {
       "CTRL+A",
       null,
@@ -205,7 +204,7 @@ public class KeyBindingUtil_Test extends TestCase {
     }
   }
 
-  public void testWriteKeyBindings_InvalidKeyBindingListClass() throws IOException {
+  public void testWriteKeyBindings_InvalidKeyBindingListClass() {
     Integer keyBindings = new Integer( 123 );
     Fixture.fakeNewRequest();
     display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
@@ -217,7 +216,7 @@ public class KeyBindingUtil_Test extends TestCase {
     }
   }
 
-  public void testWriteKeyBindings_NullKeyBindingList() throws IOException {
+  public void testWriteKeyBindings_NullKeyBindingList() {
     Fixture.markInitialized( display );
     String[] keyBindings = new String[] {
       "CTRL+E"
@@ -231,7 +230,7 @@ public class KeyBindingUtil_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
-  public void testWriteKeyBindings_EmptylKeyBindingList() throws IOException {
+  public void testWriteKeyBindings_EmptylKeyBindingList() {
     Fixture.markInitialized( display );
     String[] keyBindings = new String[] {
       "CTRL+E"

@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
@@ -288,14 +289,13 @@ public class ShellLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String shellToActivateId = WidgetUtil.getId( shellToActivate );
     // Set precondition and assert it
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
+    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     activeShell.setActive();
     assertSame( activeShell, display.getActiveShell() );
     // Simulate shell activation without event listeners
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED,
-                              shellToActivateId );
+    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, shellToActivateId );
     Fixture.executeLifeCycleFromServerThread( );
     assertSame( shellToActivate, display.getActiveShell() );
     // Set precondition and assert it
@@ -311,8 +311,7 @@ public class ShellLCA_Test extends TestCase {
     activeShell.addShellListener( shellListener );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED,
-                              shellToActivateId );
+    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, shellToActivateId );
     Fixture.executeLifeCycleFromServerThread( );
     assertSame( shellToActivate, display.getActiveShell() );
     String expected = "deactivated:activeShell|activated:shellToActivate|";

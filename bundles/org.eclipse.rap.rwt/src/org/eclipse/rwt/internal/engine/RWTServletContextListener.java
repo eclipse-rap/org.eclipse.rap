@@ -112,14 +112,14 @@ public final class RWTServletContextListener implements ServletContextListener {
   ///////////////////////////////////////////
   // implementation of ServletContextListener
 
-  public void contextInitialized( final ServletContextEvent evt ) {
+  public void contextInitialized( ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
     ApplicationContext applicationContext = registerDefaultApplicationContext( servletContext );
     ContextInitializer initializer = new ContextInitializer( servletContext );
     ApplicationContextUtil.runWithInstance( applicationContext, initializer );
   }
 
-  public void contextDestroyed( final ServletContextEvent evt ) {
+  public void contextDestroyed( ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
     ApplicationContext applicationContext
       = ApplicationContextUtil.getApplicationContext( servletContext );
@@ -142,10 +142,10 @@ public final class RWTServletContextListener implements ServletContextListener {
   public static void registerEngineConfig( ServletContext servletContext ) {
     String realPath = servletContext.getRealPath( "/" );
     EngineConfig engineConfig = new EngineConfig( realPath );
-    ConfigurationReader.setEngineConfig( engineConfig );
+    RWTFactory.getConfigurationReader().setEngineConfig( engineConfig );
   }
 
-  public static void registerEntryPoints( final ServletContext context ) {
+  public static void registerEntryPoints( ServletContext context ) {
     Set registeredEntryPoints = new HashSet();
     String value = context.getInitParameter( ENTRY_POINTS_PARAM );
     if( value != null ) {
@@ -173,7 +173,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     setRegisteredEntryPoints( context, registeredEntryPoints );
   }
 
-  public static void deregisterEntryPoints( final ServletContext context ) {
+  public static void deregisterEntryPoints( ServletContext context ) {
     String[] entryPoints = getRegisteredEntryPoints( context );
     if( entryPoints != null ) {
       for( int i = 0; i < entryPoints.length; i++ ) {
@@ -182,23 +182,20 @@ public final class RWTServletContextListener implements ServletContextListener {
     }
   }
 
-  public static void setRegisteredEntryPoints( final ServletContext ctx,
-                                               final Set entryPoints )
-  {
+  public static void setRegisteredEntryPoints( ServletContext context, Set entryPoints ) {
     String[] value = new String[ entryPoints.size() ];
     entryPoints.toArray( value );
-    ctx.setAttribute( REGISTERED_ENTRY_POINTS, value );
+    context.setAttribute( REGISTERED_ENTRY_POINTS, value );
   }
 
-  public static String[] getRegisteredEntryPoints( final ServletContext ctx ) {
-    return ( String[] )ctx.getAttribute( REGISTERED_ENTRY_POINTS );
+  public static String[] getRegisteredEntryPoints( ServletContext context ) {
+    return ( String[] )context.getAttribute( REGISTERED_ENTRY_POINTS );
   }
 
   //////////////////////////////////////////////////
   // Helping methods - resource manager registration
 
-  public static void registerResourceManagerFactory(
-    final ServletContext context )
+  public static void registerResourceManagerFactory( ServletContext context )
   {
     String factoryName = context.getInitParameter( RESOURCE_MANAGER_FACTORY_PARAM );
     if( factoryName != null ) {
@@ -219,24 +216,21 @@ public final class RWTServletContextListener implements ServletContextListener {
   ///////////////////////////////////////////////////////
   // Helping methods - setting store factory registration
   
-  public static void registerSettingStoreFactory(
-    final ServletContext context ) 
-  {
-    if( !SettingStoreManager.hasFactory() ) {
-      String factoryName
-        = context.getInitParameter( SETTING_STORE_FACTORY_PARAM );
+  public static void registerSettingStoreFactory( ServletContext context ) {
+    SettingStoreManager settingStoreManager = RWTFactory.getSettingStoreManager();
+    if( !settingStoreManager.hasFactory() ) {
+      String factoryName = context.getInitParameter( SETTING_STORE_FACTORY_PARAM );
       if( factoryName != null ) {
         try {
           ISettingStoreFactory factory
             = ( ISettingStoreFactory )ClassUtil.newInstance( CLASS_LOADER, factoryName ); 
-          SettingStoreManager.register( factory );
+          settingStoreManager.register( factory );
         } catch( ClassInstantiationException cie ) {
-          String text = "Failed to register setting store factory ''{0}''.";
-          String msg = MessageFormat.format( text, new Object[] { factoryName } );
-          context.log( msg, cie );
+          String message = "Failed to register setting store factory: " + factoryName;
+          context.log( message, cie );
         }
       } else {
-        SettingStoreManager.register( new RWTFileSettingStoreFactory() );
+        settingStoreManager.register( new RWTFileSettingStoreFactory() );
       }
     }
   }
@@ -244,7 +238,7 @@ public final class RWTServletContextListener implements ServletContextListener {
   /////////////////////////////////////////////////
   // Helping methods - adapter factory registration
 
-  public static void registerAdapterFactories( final ServletContext context ) {
+  public static void registerAdapterFactories( ServletContext context ) {
     String initParam = context.getInitParameter( ADAPTER_FACTORIES_PARAM );
     if( initParam != null ) {
       String[] factoryParams = initParam.split( SEPARATOR );
@@ -280,7 +274,7 @@ public final class RWTServletContextListener implements ServletContextListener {
   ///////////////////////////////////////////////////////////////
   // Helping methods - phase listener registration/deregistration
 
-  public static void registerPhaseListener( final ServletContext context ) {
+  public static void registerPhaseListener( ServletContext context ) {
     List phaseListeners = new ArrayList();
     String initParam = context.getInitParameter( PHASE_LISTENERS_PARAM );
     if( initParam != null ) {
@@ -300,34 +294,33 @@ public final class RWTServletContextListener implements ServletContextListener {
       phaseListeners.add( new PreserveWidgetsPhaseListener() );
       phaseListeners.add( new CurrentPhase.Listener() );
     }
-    PhaseListener[] registeredListeners;
-    registeredListeners = new PhaseListener[ phaseListeners.size() ];
+    PhaseListenerRegistry phaseListenerRegistry = RWTFactory.getPhaseListenerRegistry();
+    PhaseListener[] registeredListeners = new PhaseListener[ phaseListeners.size() ];
     phaseListeners.toArray( registeredListeners );
     for( int i = 0; i < registeredListeners.length; i++ ) {
-      PhaseListenerRegistry.add( registeredListeners[ i ] );
+      phaseListenerRegistry.add( registeredListeners[ i ] );
     }
     context.setAttribute( REGISTERED_PHASE_LISTENERS, registeredListeners );
   }
 
-  public static void deregisterPhaseListeners( final ServletContext context ) {
+  public static void deregisterPhaseListeners( ServletContext context ) {
+    PhaseListenerRegistry phaseListenerRegistry = RWTFactory.getPhaseListenerRegistry();
     PhaseListener[] listeners = getRegisteredPhaseListeners( context );
     if( listeners != null ) {
       for( int i = 0; i < listeners.length; i++ ) {
-        PhaseListenerRegistry.remove( listeners[ i ] );
+        phaseListenerRegistry.remove( listeners[ i ] );
       }
     }
   }
 
-  private static PhaseListener[] getRegisteredPhaseListeners(
-    final ServletContext ctx )
-  {
-    return ( PhaseListener[] )ctx.getAttribute( REGISTERED_PHASE_LISTENERS );
+  private static PhaseListener[] getRegisteredPhaseListeners( ServletContext context ) {
+    return ( PhaseListener[] )context.getAttribute( REGISTERED_PHASE_LISTENERS );
   }
 
   //////////////////////////////////////////
   // Helping methods - resource registration
   
-  public static void registerResources( final ServletContext context ) {
+  public static void registerResources( ServletContext context ) {
     List resources = new ArrayList();
     String initParam = context.getInitParameter( RESOURCES_PARAM );
     if( initParam != null ) {
@@ -353,14 +346,14 @@ public final class RWTServletContextListener implements ServletContextListener {
     context.setAttribute( REGISTERED_RESOURCES, registeredResources );
   }
 
-  public static void deregisterResources( final ServletContext context ) {
+  public static void deregisterResources( ServletContext context ) {
     ResourceRegistry.clear();
   }
 
   ///////////////////////////////////////
   // Helping methods - theme registration
 
-  public static void registerThemes( final ServletContext context ) {
+  public static void registerThemes( ServletContext context ) {
     ThemeManager manager = ThemeManager.getInstance();
     String value = context.getInitParameter( THEMES_PARAM );
     ResourceLoader loader = new ResourceLoader() {
@@ -397,7 +390,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     manager.initialize();
   }
 
-  public static void deregisterThemes( final ServletContext servletContext ) {
+  public static void deregisterThemes( ServletContext context ) {
     ThemeManager.resetInstance();
   }
 
@@ -416,8 +409,8 @@ public final class RWTServletContextListener implements ServletContextListener {
   //////////////////////////////////////////
   // Helping methods - branding registration
   
-  public static void registerBrandings( final ServletContext servletContext ) {
-    String value = servletContext.getInitParameter( BRANDINGS_PARAM );
+  public static void registerBrandings( ServletContext context ) {
+    String value = context.getInitParameter( BRANDINGS_PARAM );
     if( value != null ) {
       List registeredBrandings = new ArrayList(); 
       String[] brandings = value.split( SEPARATOR );
@@ -431,23 +424,20 @@ public final class RWTServletContextListener implements ServletContextListener {
         } catch( ClassInstantiationException cie ) {
           String text = "Failed to register branding ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { className } );
-          servletContext.log( msg, cie );
+          context.log( msg, cie );
         }
       }
-      setRegisteredBrandings( servletContext, registeredBrandings );
+      setRegisteredBrandings( context, registeredBrandings );
     }
   }
   
-  public static void setRegisteredBrandings( final ServletContext context, 
-                                             final List brandings ) 
-  {
-    AbstractBranding[] registeredBrandings
-      = new AbstractBranding[ brandings.size() ];
+  public static void setRegisteredBrandings( ServletContext context, List brandings ) {
+    AbstractBranding[] registeredBrandings = new AbstractBranding[ brandings.size() ];
     brandings.toArray( registeredBrandings );
     context.setAttribute( REGISTERED_BRANDINGS, registeredBrandings );
   }
   
-  public static void deregisterBrandings( final ServletContext context ) {
+  public static void deregisterBrandings( ServletContext context ) {
     AbstractBranding[] brandings 
       = ( AbstractBranding[] )context.getAttribute( REGISTERED_BRANDINGS );
     if( brandings != null ) {

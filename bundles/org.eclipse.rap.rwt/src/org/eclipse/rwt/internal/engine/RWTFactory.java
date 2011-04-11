@@ -10,28 +10,30 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
+import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
+import org.eclipse.rwt.service.IApplicationStore;
 
 
 public class RWTFactory {
   
+  public static IApplicationStore getApplicationStore() {
+    return ( IApplicationStore )ApplicationContext.getSingleton( ApplicationStoreImpl.class );
+  }
+
   public static LifeCycleFactory getLifeCycleFactory() {
-    Object singleton = ApplicationContext.getSingleton( LifeCycleFactory.class );
-    return ( LifeCycleFactory )singleton;
+    return ( LifeCycleFactory )ApplicationContext.getSingleton( LifeCycleFactory.class );
   }
   
   public static BrandingManager getBrandingManager() {
-    Object singleton = ApplicationContext.getSingleton( BrandingManager.class );
-    return ( BrandingManager )singleton;
+    return ( BrandingManager )ApplicationContext.getSingleton( BrandingManager.class );
   }
   
   public static EntryPointManager getEntryPointManager() {
-    Object singleton = ApplicationContext.getSingleton( EntryPointManager.class );
-    return ( EntryPointManager )singleton;
+    return ( EntryPointManager )ApplicationContext.getSingleton( EntryPointManager.class );
   }
 
   public static ServiceManager getServiceManager() {
@@ -40,15 +42,24 @@ public class RWTFactory {
   }
 
   public static StartupPage getStartupPage() {
-    Object singleton = ApplicationContext.getSingleton( StartupPage.class );
-    return ( StartupPage )singleton;
+    return ( StartupPage )ApplicationContext.getSingleton( StartupPage.class );
   }
   
   public static IStartupPageConfigurer getStartupPageConfigurer() {
-    Object singleton = ApplicationContext.getSingleton( StartupPageConfigurer.class );
-    return ( IStartupPageConfigurer )singleton;
+    return ( IStartupPageConfigurer )ApplicationContext.getSingleton( StartupPageConfigurer.class );
   }
 
+  public static SettingStoreManager getSettingStoreManager() {
+    return ( SettingStoreManager )ApplicationContext.getSingleton( SettingStoreManager.class );
+  }
+  
+  public static ConfigurationReader getConfigurationReader() {
+    return ( ConfigurationReader )ApplicationContext.getSingleton( ConfigurationReader.class );
+  }
+
+  public static PhaseListenerRegistry getPhaseListenerRegistry() {
+    return ( PhaseListenerRegistry )ApplicationContext.getSingleton( PhaseListenerRegistry.class );
+  }
 
   private RWTFactory() {
     // prevent instantiation

@@ -68,11 +68,10 @@ public class RenderDispose_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
-    PhaseListenerRegistry.add( preserveWidgetsPhaseListener );
+    RWTFactory.getPhaseListenerRegistry().add( preserveWidgetsPhaseListener );
   }
 
   protected void tearDown() throws Exception {
-    PhaseListenerRegistry.clear();
     Fixture.tearDown();
   }
 }

@@ -17,9 +17,9 @@ import java.net.*;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.eclipse.rwt.internal.ConfigurationReader;
-import org.eclipse.rwt.internal.IEngineConfig;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.internal.util.URLHelper;
@@ -118,8 +118,9 @@ public class ResourceManagerImpl implements IResourceManager {
   public static IResourceManager getInstance() {
     Object instance = ApplicationContext.getSingleton( ResourceManagerImpl.class );
     ResourceManagerImpl result = ( ResourceManagerImpl )instance;
-    String resources = ConfigurationReader.getConfiguration().getResources();
-    File ctxDir = ConfigurationReader.getEngineConfig().getServerContextDir();
+    ConfigurationReader configurationReader = RWTFactory.getConfigurationReader();
+    String resources = configurationReader.getConfiguration().getResources();
+    File ctxDir = configurationReader.getEngineConfig().getServerContextDir();
     result.webAppRoot = ctxDir.toString();
     result.deliveryMode = resources;
     return result;
@@ -365,7 +366,7 @@ public class ResourceManagerImpl implements IResourceManager {
     {
       result = getContextLoader();
     } else if( loader == null ) {
-      IEngineConfig engineConfig = ConfigurationReader.getEngineConfig();
+      IEngineConfig engineConfig = RWTFactory.getConfigurationReader().getEngineConfig();
       List buffer = WebAppURLs.getWebAppURLs( engineConfig );
       URL[] urls = new URL[ buffer.size() ];
       buffer.toArray( urls );

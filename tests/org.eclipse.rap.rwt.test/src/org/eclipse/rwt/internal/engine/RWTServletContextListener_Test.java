@@ -198,7 +198,7 @@ public class RWTServletContextListener_Test extends TestCase {
     // is destroyed
     TestServletContext servletContext = Fixture.getServletContext();
     RWTServletContextListener.deregisterPhaseListeners( servletContext );
-    PhaseListener[] phaseListeners = PhaseListenerRegistry.get();
+    PhaseListener[] phaseListeners = RWTFactory.getPhaseListenerRegistry().get();
     for( int i = 0; i < phaseListeners.length; i++ ) {
       if( phaseListeners[ i ] instanceof TestPhaseListener ) {
         fail( "Failed to remove phase listener when context was destroyed" );

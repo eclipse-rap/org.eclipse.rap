@@ -18,55 +18,60 @@ import javax.servlet.http.Cookie;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.service.ISettingStore;
+import org.eclipse.rwt.service.ISettingStoreFactory;
 
 
-/**
- * Tests for the class {@link SettingStoreManager}.
- */
 public class SettingStoreManager_Test extends TestCase {
 
+  private static class TestSettingStoreFactory implements ISettingStoreFactory {
+    public ISettingStore createSettingStore( String storeId ) {
+      return null;
+    }
+  }
+
   public void testGetStoreTwoRequests() {
-    ISettingStore store = SettingStoreManager.getStore();
+    ISettingStore store = RWTFactory.getSettingStoreManager().getStore();
     assertNotNull( store );
 
     // same session, new request -> same store
     Fixture.fakeNewRequest();
-    ISettingStore sameStore = SettingStoreManager.getStore();
+    ISettingStore sameStore = RWTFactory.getSettingStoreManager().getStore();
     assertSame( store, sameStore );
   }
 
   public void testGetStoreTwoSessions() {
-    ISettingStore store = SettingStoreManager.getStore();
+    ISettingStore store = RWTFactory.getSettingStoreManager().getStore();
     assertNotNull( store );
 
     // new session -> new store
     fakeNewSession();
-    ISettingStore newStore = SettingStoreManager.getStore();
+    ISettingStore newStore = RWTFactory.getSettingStoreManager().getStore();
     assertNotSame( store, newStore );
   }
 
   public void testGetStoreAfterLoad() throws Exception {
-    ISettingStore store = SettingStoreManager.getStore();
+    ISettingStore store = RWTFactory.getSettingStoreManager().getStore();
     assertNotNull( store );
 
     // load storeById -> same store
     String randomId = String.valueOf( System.currentTimeMillis() );
-    SettingStoreManager.getStore().loadById( randomId );
-    assertSame( store, SettingStoreManager.getStore() );
+    RWTFactory.getSettingStoreManager().getStore().loadById( randomId );
+    assertSame( store, RWTFactory.getSettingStoreManager().getStore() );
   }
 
   public void testLoadById() throws Exception {
     String id = String.valueOf( System.currentTimeMillis() );
 
-    ISettingStore store = SettingStoreManager.getStore();
+    ISettingStore store = RWTFactory.getSettingStoreManager().getStore();
     store.loadById( id );
     assertNull( store.getAttribute( "key" ) );
     store.setAttribute( "key", "value" );
 
     // new session -> new store
     fakeNewSession();
-    ISettingStore newStore = SettingStoreManager.getStore();
+    ISettingStore newStore = RWTFactory.getSettingStoreManager().getStore();
     // no key in store, we haven't loaded yet
     assertNull( newStore.getAttribute( "key" ) );
     newStore.loadById( id );
@@ -75,7 +80,7 @@ public class SettingStoreManager_Test extends TestCase {
   }
 
   public void testGetStoreSetsCookie() {
-    SettingStoreManager.getStore();
+    RWTFactory.getSettingStoreManager().getStore();
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     Cookie cookie = response.getCookie( "settingStore" );
     assertTrue( cookie.getMaxAge() > 0 );
@@ -88,7 +93,7 @@ public class SettingStoreManager_Test extends TestCase {
     cookie.setMaxAge( 3600 );
     ( ( TestRequest )ContextProvider.getRequest() ).addCookie( cookie );
 
-    ISettingStore store = SettingStoreManager.getStore();
+    ISettingStore store = RWTFactory.getSettingStoreManager().getStore();
     assertEquals( storeId, store.getId() );
   }
 
@@ -102,7 +107,31 @@ public class SettingStoreManager_Test extends TestCase {
     String value = maxLong + "_" + maxInt;
     assertTrue( SettingStoreManager.isValidCookieValue( value ) );
   }
+  
+  public void testRegister() {
+    SettingStoreManager settingStoreManager = new SettingStoreManager();
+    TestSettingStoreFactory factory = new TestSettingStoreFactory();
+    settingStoreManager.register( factory );
+    assertTrue( settingStoreManager.hasFactory() );
+  }
+  
+  public void testRegisterTwice() {
+    SettingStoreManager settingStoreManager = new SettingStoreManager();
+    settingStoreManager.register( new TestSettingStoreFactory() );
+    try {
+      settingStoreManager.register( new TestSettingStoreFactory() );
+    } catch( IllegalStateException expected ) {
+    }
+  }
 
+  public void testRegisterWithNulArgument() {
+    SettingStoreManager settingStoreManager = new SettingStoreManager();
+    try {
+      settingStoreManager.register( null );
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

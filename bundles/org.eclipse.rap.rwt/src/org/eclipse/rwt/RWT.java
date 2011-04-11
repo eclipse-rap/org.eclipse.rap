@@ -20,11 +20,11 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.internal.widgets.BrowserHistory;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
@@ -202,7 +202,7 @@ public final class RWT {
    * @since 1.1
    */
   public static ISettingStore getSettingStore() {
-    return SettingStoreManager.getStore();
+    return RWTFactory.getSettingStoreManager().getStore();
   }
   
   /**
@@ -233,7 +233,7 @@ public final class RWT {
    * @since 1.4
    */
   public static IApplicationStore getApplicationStore() {
-    return ( IApplicationStore )ApplicationContext.getSingleton( ApplicationStoreImpl.class );
+    return RWTFactory.getApplicationStore();
   }
   
   /**

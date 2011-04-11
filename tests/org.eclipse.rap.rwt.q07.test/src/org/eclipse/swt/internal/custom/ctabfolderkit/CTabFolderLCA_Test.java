@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
@@ -361,8 +362,8 @@ public class CTabFolderLCA_Test extends TestCase {
     // Let pass one startup request to init the 'system'
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
-    PhaseListenerRegistry.add( new CurrentPhase.Listener() );
+    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
+    RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     Fixture.executeLifeCycleFromServerThread( );
 
 

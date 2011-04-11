@@ -417,7 +417,7 @@ public class RWTLifeCycle_Test extends TestCase {
         return PhaseId.PREPARE_UI_ROOT;
       }
     };
-    PhaseListenerRegistry.add( listener );
+    RWTFactory.getPhaseListenerRegistry().add( listener );
     // Run lifecycle in session one
     RWTLifeCycle lifeCycle1 = new RWTLifeCycle();
     lifeCycle1.execute();
@@ -429,7 +429,6 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle2 = new RWTLifeCycle();
     lifeCycle2.execute();
     assertSame( listener, callbackHandler[ 0 ] );
-    PhaseListenerRegistry.clear();
   }
 
   public void testContinueLifeCycle() {

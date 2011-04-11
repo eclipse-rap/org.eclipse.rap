@@ -439,7 +439,7 @@ public class JSWriter_Test extends TestCase {
     display.dispose();
   }
 
-  public void testCallFieldAssignment() throws IOException {
+  public void testCallFieldAssignment() {
     Display display = new Display();
     TestShell shell = new TestShell( display );
     Fixture.fakeResponseWriter();
@@ -1083,7 +1083,7 @@ public class JSWriter_Test extends TestCase {
     assertEquals( "w.setHtml( \"\\n\\n\" );", Fixture.getAllMarkup() );
   }
   
-  public void testVarAssignment() throws IOException {
+  public void testVarAssignment() {
     Display display = new Display();
     Widget widget = new Shell( display );
     JSWriter writer = JSWriter.getWriterFor( widget );
