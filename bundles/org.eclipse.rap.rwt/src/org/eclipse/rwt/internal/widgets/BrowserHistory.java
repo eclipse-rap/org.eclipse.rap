@@ -18,6 +18,7 @@ import org.eclipse.rwt.*;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rwt.events.BrowserHistoryListener;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.events.*;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -46,7 +47,7 @@ public final class BrowserHistory
 
   public BrowserHistory() {
     this.display = Display.getCurrent();
-    LifeCycleFactory.getLifeCycle().addPhaseListener( this );
+    RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( this );
     RWT.getSessionStore().addSessionStoreListener( this );
   }
   
@@ -69,16 +70,14 @@ public final class BrowserHistory
     JSExecutor.executeJS( MessageFormat.format( ADD_TO_HISTORY, args ) );
   }
 
-  public void addBrowserHistoryListener( final BrowserHistoryListener listener ) 
-  {
+  public void addBrowserHistoryListener( final BrowserHistoryListener listener ) {
     if( null == listener ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     BrowserHistoryEvent.addListener( this, listener );
   }
 
-  public void removeBrowserHistoryListener( final BrowserHistoryListener lsnr ) 
-  {
+  public void removeBrowserHistoryListener( final BrowserHistoryListener lsnr ) {
     if( null == lsnr ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -96,8 +95,7 @@ public final class BrowserHistory
       HttpServletRequest request = ContextProvider.getRequest();
       String isEvent = request.getParameter( EVENT_HISTORY_NAVIGATED );
       if( Boolean.valueOf( isEvent ).booleanValue() ) {
-        String entryId
-          = request.getParameter( EVENT_HISTORY_NAVIGATED_ENTRY_ID );
+        String entryId = request.getParameter( EVENT_HISTORY_NAVIGATED_ENTRY_ID );
         Event evt = new BrowserHistoryEvent( this, entryId );
         evt.processEvent();
       }
@@ -128,6 +126,6 @@ public final class BrowserHistory
   // SessionStoreListener
   
   public void beforeDestroy( final SessionStoreEvent event ) {
-    LifeCycleFactory.getLifeCycle().removePhaseListener( this );
+    RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
   }
 }

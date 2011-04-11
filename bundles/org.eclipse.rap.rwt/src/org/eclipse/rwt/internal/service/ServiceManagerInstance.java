@@ -18,16 +18,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rwt.service.IServiceManager;
 
 
-public class ServiceManagerInstance {
+public class ServiceManagerInstance implements IServiceManager {
   private final ServiceHandlerRegistry customHandlers;
   private final IServiceHandler handlerDispatcher;
   private IServiceHandler lifeCycleRequestHandler;
-
   
   private final class HandlerDispatcher implements IServiceHandler {
-    
     public void service() throws ServletException, IOException {
       if( isCustomHandler() ) {
         IServiceHandler customHandler = getCustomHandler();
@@ -38,27 +37,27 @@ public class ServiceManagerInstance {
     }
   }
   
-  private ServiceManagerInstance() {
+  public ServiceManagerInstance() {
     handlerDispatcher = new HandlerDispatcher();
     customHandlers = new ServiceHandlerRegistry();
   }
   
-  void registerServiceHandler( String id, IServiceHandler handler ) {
+  public void registerServiceHandler( String id, IServiceHandler handler ) {
     customHandlers.put( id, handler );
   }
 
-  void unregisterServiceHandler( String id ) {
+  public void unregisterServiceHandler( String id ) {
     customHandlers.remove( id );
   }
   
-  IServiceHandler getHandler() {
+  public IServiceHandler getHandler() {
     return handlerDispatcher;
   }
   
   //////////////////
   // helping methods
   
-  private String getCustomHandlerId() {
+  private static String getCustomHandlerId() {
     HttpServletRequest request = ContextProvider.getRequest();
     return request.getParameter( IServiceHandler.REQUEST_PARAM );
   }

@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
@@ -489,7 +490,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "500,501,502,503" );
     Fixture.fakeRequestParam( tableId + ".topIndex", "500" );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
 
       private static final long serialVersionUID = 1L;
@@ -514,7 +515,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testClearVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );

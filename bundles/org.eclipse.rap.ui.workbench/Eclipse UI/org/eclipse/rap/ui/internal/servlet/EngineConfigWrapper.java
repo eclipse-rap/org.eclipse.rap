@@ -12,21 +12,43 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.servlet;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
-import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.AdapterFactoryRegistry;
+import org.eclipse.rwt.internal.ConfigurationReader;
+import org.eclipse.rwt.internal.EngineConfig;
+import org.eclipse.rwt.internal.IEngineConfig;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.lifecycle.PhaseListenerRegistry;
+import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
+import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
+import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
+import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.SettingStoreManager;
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.ResourceLoader;
+import org.eclipse.rwt.internal.theme.Theme;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -209,7 +231,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
       try {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
-        EntryPointManager.register( parameter, clazz );
+        RWTFactory.getEntryPointManager().register( parameter, clazz );
         EntryPointExtension.bind( id, parameter );
       } catch( final Throwable thr ) {
         String text =   "Could not register entry point ''{0}'' "
@@ -371,13 +393,13 @@ public final class EngineConfigWrapper implements IEngineConfig {
   }
 
   private static void registerUICallBackServiceHandler() {
-    ServiceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID,
-                                           new UICallBackServiceHandler() );
+    RWT.getServiceManager().registerServiceHandler( UICallBackServiceHandler.HANDLER_ID,
+    												new UICallBackServiceHandler() );
   }
 
   private void registerJSLibraryServiceHandler() {
     JSLibraryServiceHandler handler = new JSLibraryServiceHandler();
-    ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, handler );
+    RWT.getServiceManager().registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, handler );
     // TODO [SystemStart]: move this to where the actual system initialization takes place
     JSLibraryConcatenator.getInstance().startJSConcatenation();
   }
@@ -392,7 +414,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
         if( id != null ) {
           Object extObject = elements[ i ].createExecutableExtension( "class" );
           IServiceHandler handler = ( IServiceHandler )extObject;
-          ServiceManager.registerServiceHandler( id, handler );
+          RWT.getServiceManager().registerServiceHandler( id, handler );
         }
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );

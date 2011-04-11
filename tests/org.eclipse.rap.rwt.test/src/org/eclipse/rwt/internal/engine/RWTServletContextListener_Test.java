@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
-import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
@@ -121,7 +120,7 @@ public class RWTServletContextListener_Test extends TestCase {
     Fixture.triggerServletContextInitialized();
 
     Fixture.createServiceContext();
-    int returnVal = EntryPointManager.createUI( EntryPointManager.DEFAULT );
+    int returnVal = RWTFactory.getEntryPointManager().createUI( EntryPointManager.DEFAULT );
     assertEquals( ENTRY_POINT_RETURN_VALUE, returnVal );
   }
   
@@ -131,7 +130,7 @@ public class RWTServletContextListener_Test extends TestCase {
     Fixture.triggerServletContextInitialized();
 
     Fixture.createServiceContext();
-    int returnVal = EntryPointManager.createUI( "param1" );
+    int returnVal = RWTFactory.getEntryPointManager().createUI( "param1" );
     assertEquals( -15, returnVal );
   }
   
@@ -147,10 +146,10 @@ public class RWTServletContextListener_Test extends TestCase {
     Fixture.triggerServletContextInitialized();
 
     Fixture.createServiceContext();
-    int returnVal = EntryPointManager.createUI( EntryPointManager.DEFAULT );
+    int returnVal = RWTFactory.getEntryPointManager().createUI( EntryPointManager.DEFAULT );
     assertEquals( -15, returnVal );
     Display.getCurrent().dispose();
-    returnVal = EntryPointManager.createUI( "param1" );
+    returnVal = RWTFactory.getEntryPointManager().createUI( "param1" );
     assertEquals( ENTRY_POINT_RETURN_VALUE, returnVal );
   }
   
@@ -159,7 +158,7 @@ public class RWTServletContextListener_Test extends TestCase {
     Fixture.triggerServletContextInitialized();
     
     Fixture.createServiceContext();
-    assertEquals( 0, EntryPointManager.getEntryPoints().length );
+    assertEquals( 0, RWTFactory.getEntryPointManager().getEntryPoints().length );
   }
   
   public void testDestroyed() {
@@ -171,7 +170,7 @@ public class RWTServletContextListener_Test extends TestCase {
     TestServletContext servletContext = Fixture.getServletContext();
     RWTServletContextListener.deregisterEntryPoints( servletContext );
     try {
-      EntryPointManager.createUI( EntryPointManager.DEFAULT );
+      RWTFactory.getEntryPointManager().createUI( EntryPointManager.DEFAULT );
       fail( "contextDestroyed did not deregister entry point" );
     } catch( IllegalArgumentException expected ) {
     }
@@ -188,9 +187,9 @@ public class RWTServletContextListener_Test extends TestCase {
     // was loaded and gets executed
     Fixture.createServiceContext();
     Class entryPointType = TestEntryPointWithShell.class;
-    EntryPointManager.register( EntryPointManager.DEFAULT, entryPointType );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointType );
     Fixture.fakeResponseWriter();
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     phaseListenerLog = "";
     lifeCycle.execute();
     assertTrue( phaseListenerLog.length() > 0 );
@@ -217,9 +216,9 @@ public class RWTServletContextListener_Test extends TestCase {
     // was loaded and gets executed
     Fixture.createServiceContext();
     Class entryPointType = TestEntryPointWithShell.class;
-    EntryPointManager.register( EntryPointManager.DEFAULT, entryPointType );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointType );
     Fixture.fakeResponseWriter();
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
 
     assertTrue( ResourceRegistry.get()[ 0 ] instanceof TestResource );
@@ -238,13 +237,13 @@ public class RWTServletContextListener_Test extends TestCase {
     Fixture.triggerServletContextInitialized();
     
     Fixture.createServiceContext();
-    AbstractBranding[] allBrandings = BrandingManager.getAll();
+    AbstractBranding[] allBrandings = RWTFactory.getBrandingManager().getAll();
     assertEquals( 1, allBrandings.length );
     assertEquals( TestBranding.class, allBrandings[ 0 ].getClass() );
 
     TestServletContext servletContext = Fixture.getServletContext();
     RWTServletContextListener.deregisterBrandings( servletContext );
-    assertEquals( 0, BrandingManager.getAll().length );
+    assertEquals( 0, RWTFactory.getBrandingManager().getAll().length );
   }
 
   protected void setUp() throws Exception {

@@ -22,8 +22,7 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener;
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -165,8 +164,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     TestRequest request;
-    EntryPointManager.register( EntryPointManager.DEFAULT,
-                                ExceptionInReadAndDispatchEntryPoint.class );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, ExceptionInReadAndDispatchEntryPoint.class );
     // send initial request - response is index.html
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );
@@ -213,7 +211,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   public void testEventProcessingOnSessionRestart() throws Exception {
     TestRequest request;
     Class entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
-    EntryPointManager.register( EntryPointManager.DEFAULT, entryPoint );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPoint );
     // send initial request - response is index.html
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );
@@ -243,7 +241,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   public void testSessionInvalidateWithDisposeInFinally() throws Exception {
     TestRequest request;
     Class clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
-    EntryPointManager.register( EntryPointManager.DEFAULT, clazz );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, clazz );
     // send initial request - response is index.html
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );

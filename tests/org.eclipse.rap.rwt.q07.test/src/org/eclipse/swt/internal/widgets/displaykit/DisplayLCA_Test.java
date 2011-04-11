@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -320,9 +321,8 @@ public class DisplayLCA_Test extends TestCase {
 
   public void testRenderInitiallyDisposed() throws Exception {
     Fixture.fakeResponseWriter();
-    EntryPointManager.register( EntryPointManager.DEFAULT,
-                                TestRenderInitiallyDisposedEntryPoint.class );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestRenderInitiallyDisposedEntryPoint.class );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     Fixture.fakeRequestParam( RequestParams.STARTUP,
                               EntryPointManager.DEFAULT );
     // ensure that life cycle execution succeeds with disposed display
@@ -335,9 +335,8 @@ public class DisplayLCA_Test extends TestCase {
 
   public void testRenderDisposed() throws Exception {
     Fixture.fakeResponseWriter();
-    EntryPointManager.register( EntryPointManager.DEFAULT,
-                                TestRenderDisposedEntryPoint.class );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestRenderDisposedEntryPoint.class );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     Fixture.fakeRequestParam( RequestParams.STARTUP,
                               EntryPointManager.DEFAULT );
     lifeCycle.execute();

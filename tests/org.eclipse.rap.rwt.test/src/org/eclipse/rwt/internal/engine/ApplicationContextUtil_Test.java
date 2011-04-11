@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.AdapterFactoryRegistryInstance;
 import org.eclipse.rwt.internal.ConfigurationReaderInstance;
-import org.eclipse.rwt.internal.branding.BrandingManagerInstance;
+import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
@@ -45,18 +45,18 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( ThemeManagerInstance.class ) );
     assertSame( applicationContext.getInstance( ThemeManagerInstance.class ),
                 getSingleton( ThemeManagerInstance.class ) );
-    assertNotNull( getSingleton( BrandingManagerInstance.class ) );
-    assertSame( applicationContext.getInstance( BrandingManagerInstance.class ),
-                getSingleton( BrandingManagerInstance.class ) );
+    assertNotNull( getSingleton( BrandingManager.class ) );
+    assertSame( applicationContext.getInstance( BrandingManager.class ),
+                getSingleton( BrandingManager.class ) );
     assertNotNull( getSingleton( PhaseListenerRegistryInstance.class ) );
     assertSame( applicationContext.getInstance( PhaseListenerRegistryInstance.class ),
                 getSingleton( PhaseListenerRegistryInstance.class ) );
-    assertNotNull( getSingleton( LifeCycleFactoryInstance.class ) );
-    assertSame( applicationContext.getInstance( LifeCycleFactoryInstance.class ),
-                getSingleton( LifeCycleFactoryInstance.class ) );
-    assertNotNull( getSingleton( EntryPointManagerInstance.class ) );
-    assertSame( applicationContext.getInstance( EntryPointManagerInstance.class ),
-                getSingleton( EntryPointManagerInstance.class ) );
+    assertNotNull( getSingleton( LifeCycleFactory.class ) );
+    assertSame( applicationContext.getInstance( LifeCycleFactory.class ),
+                getSingleton( LifeCycleFactory.class ) );
+    assertNotNull( getSingleton( EntryPointManager.class ) );
+    assertSame( applicationContext.getInstance( EntryPointManager.class ),
+                getSingleton( EntryPointManager.class ) );
     assertNotNull( getSingleton( ResourceFactoryInstance.class ) );
     assertSame( applicationContext.getInstance( ResourceFactoryInstance.class ),
                 getSingleton( ResourceFactoryInstance.class ) );
@@ -99,9 +99,6 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( StartupPage.class ) );
     assertSame( applicationContext.getInstance( StartupPage.class ),
                 getSingleton( StartupPage.class ) );
-    assertNotNull( getSingleton( ServiceManagerImpl.class ) );
-    assertSame( applicationContext.getInstance( ServiceManagerImpl.class ),
-                getSingleton( ServiceManagerImpl.class ) );
     assertNotNull( getSingleton( DisplaysHolder.class ) );
     assertSame( applicationContext.getInstance( DisplaysHolder.class ),
                 getSingleton( DisplaysHolder.class ) );

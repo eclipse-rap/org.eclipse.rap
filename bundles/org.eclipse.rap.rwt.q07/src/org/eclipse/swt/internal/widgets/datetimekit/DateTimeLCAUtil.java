@@ -71,9 +71,8 @@ final class DateTimeLCAUtil {
     }
   }
 
-  static void initCellSize( final DateTime dateTime ) throws IOException {
-    IDateTimeAdapter dateTimeAdapter
-      = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
+  static void initCellSize( final DateTime dateTime ) {
+    IDateTimeAdapter dateTimeAdapter = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
     JSWriter writer = JSWriter.getWriterFor( dateTime );
     Point cellSize = dateTimeAdapter.getCellSize();
     writer.callFieldAssignment( new JSVar( "org.eclipse.swt.widgets.Calendar" ),

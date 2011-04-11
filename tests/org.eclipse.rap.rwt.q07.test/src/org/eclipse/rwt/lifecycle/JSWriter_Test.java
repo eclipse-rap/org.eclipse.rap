@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.SWT;
@@ -1018,9 +1019,8 @@ public class JSWriter_Test extends TestCase {
   public void testWidgetDisposal() throws Exception {
     // Run requests to initialize the 'system'
     Fixture.fakeNewRequest();
-    EntryPointManager.register( EntryPointManager.DEFAULT,
-                                WidgetDisposalEntryPoint.class );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, WidgetDisposalEntryPoint.class );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     String dispId = WidgetDisposalEntryPoint.dispId;

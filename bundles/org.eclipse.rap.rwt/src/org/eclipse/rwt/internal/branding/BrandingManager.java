@@ -12,30 +12,22 @@
 package org.eclipse.rwt.internal.branding;
 
 import java.text.MessageFormat;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
-public final class BrandingManager {
-
+public class BrandingManager {
   public static final String DEFAULT_SERVLET_NAME = "rap";
-  
-  /** 
-   * The id of RAP's built-in branding 
-   * (value is "org.eclipse.rap.rwt.branding.default").
-   */
-  public static final String DEFAULT_BRANDING_ID 
-    = "org.eclipse.rap.rwt.branding.default";
-  
-  private static final String[] EMPTY_ENTRY_POINTS = new String[ 0 ];
-  private static final Header[] EMPTY_HEADERS = new Header[ 0 ];
+  public static final String DEFAULT_BRANDING_ID = "org.eclipse.rap.rwt.branding.default";
 
-  private static final AbstractBranding DEFAULT_BRANDING
-    = new AbstractBranding()
-  {
+  private static final Header[] EMPTY_HEADERS = new Header[ 0 ];
+  private static final String[] EMPTY_ENTRY_POINTS = new String[ 0 ];
+  
+  private static final AbstractBranding DEFAULT_BRANDING = new AbstractBranding() {
     public String getBody() {
       return "";
     }
@@ -52,7 +44,7 @@ public final class BrandingManager {
       return EMPTY_HEADERS;
     }
     public String getServletName() {
-      return DEFAULT_SERVLET_NAME;
+      return BrandingManager.DEFAULT_SERVLET_NAME;
     }
     public String getThemeId() {
       return null;
@@ -64,22 +56,37 @@ public final class BrandingManager {
       return "RAP Startup Page";
     }
   };
+  
+  private final List brandings;
 
-  public static void register( final AbstractBranding branding ) {
-    getInstance().register( branding );
+  public BrandingManager() {
+    brandings = new LinkedList();
+  }
+
+  public void register( final AbstractBranding branding ) {
+    ParamCheck.notNull( branding, "branding" );
+    synchronized( brandings ) {
+      brandings.add( branding );
+    }
   }
   
-  public static void deregister( final AbstractBranding branding ) {
-    getInstance().deregister( branding );
+  public void deregister( final AbstractBranding branding ) {
+    ParamCheck.notNull( branding, "branding" );
+    synchronized( brandings ) {
+      brandings.remove( branding );
+    }
+  }
+  
+  public AbstractBranding[] getAll() {
+    AbstractBranding[] result;
+    synchronized( brandings ) {
+      result = new AbstractBranding[ brandings.size() ];
+      brandings.toArray( result );
+    }
+    return result;
   }
 
-  public static AbstractBranding[] getAll() {
-    return getInstance().getAll();    
-  }
-
-  public static AbstractBranding get( final String servletName,
-                                      final String entryPoint )
-  {
+  public AbstractBranding find( String servletName, String entryPoint ) {
     ParamCheck.notNull( servletName, "servletName" );
     AbstractBranding result = null;
     AbstractBranding[] brandings = getAll();
@@ -98,14 +105,12 @@ public final class BrandingManager {
       }
     }
     if( result == null ) {
-      result = DEFAULT_BRANDING;
+      result = BrandingManager.DEFAULT_BRANDING;
     }
     return result;
   }
-  
-  private static boolean matches( final AbstractBranding branding, 
-                                  final String entryPoint ) 
-  {
+
+  private static boolean matches( AbstractBranding branding, String entryPoint ) {
     boolean result = false;
     String defaultEntryPoint = branding.getDefaultEntryPoint();
     if( defaultEntryPoint != null && !"".equals( defaultEntryPoint ) ) {
@@ -126,8 +131,8 @@ public final class BrandingManager {
     }
     return result;
   }
-  
-  private static int search( final String[] strings, final String string ) {
+
+  private static int search( String[] strings, String string ) {
     int result = -1;
     // Assume that strings does not contain null value(s)
     if( string != null ) {
@@ -138,14 +143,5 @@ public final class BrandingManager {
       }
     }
     return result;
-  }
-
-  private static BrandingManagerInstance getInstance() {
-    Class singletonType = BrandingManagerInstance.class;
-    return ( BrandingManagerInstance )ApplicationContext.getSingleton( singletonType );
-  }
-  
-  private BrandingManager() {
-    // prevent instantiation
   }
 }

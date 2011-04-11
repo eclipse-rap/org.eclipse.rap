@@ -12,31 +12,47 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.ConfigurationReader;
+import org.eclipse.rwt.internal.IConfiguration;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rwt.service.ISessionStore;
 
 
+public class LifeCycleFactory {
+  private LifeCycle globalLifeCycle;
 
-/** <p>Supplies a factory method for lifecycle managers for various 
-  * <code>LifeCycle</code> implementations.</p>
-  */
-public final class LifeCycleFactory {
-  
-  public static ILifeCycle getLifeCycle() {
-    return getInstance().getLifeCycle();
+  public ILifeCycle getLifeCycle() {
+    ISessionStore session = ContextProvider.getSession();
+    String id = LifeCycle.class.getName();
+    ILifeCycle result = ( ILifeCycle )session.getAttribute( id );
+    if( result == null ) {
+      result = loadLifeCycle();
+      session.setAttribute( id, result );
+    }
+    return result;
   }
   
-  public static void destroy() {
-    getInstance().destroy(); 
+  public void destroy() {
+    globalLifeCycle = null;
   }
   
-  private static LifeCycleFactoryInstance getInstance() {
-    Class singletonType = LifeCycleFactoryInstance.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( LifeCycleFactoryInstance )singleton;
+  private ILifeCycle loadLifeCycle() {
+    LifeCycle result = globalLifeCycle;
+    if( result == null ) {
+      IConfiguration configuration = ConfigurationReader.getConfiguration();
+      String lifeCycleClassName = configuration.getLifeCycle();
+      ClassLoader classLoader = LifeCycleFactory.class.getClassLoader();
+      result = ( LifeCycle )ClassUtil.newInstance( classLoader, lifeCycleClassName );
+      if( result.getScope().equals( Scope.APPLICATION ) ) {
+        globalLifeCycle = result;
+      }
+    }
+    return result;
   }
-  
+
   private LifeCycleFactory() {
-    // prevent instantiation
+    // prevent instance creation
   }
 }

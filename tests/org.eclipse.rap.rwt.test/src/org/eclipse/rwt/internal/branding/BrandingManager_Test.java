@@ -18,167 +18,152 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.RWTStartupPageConfigurer;
 import org.eclipse.rwt.internal.util.URLHelper;
 
 
 public class BrandingManager_Test extends TestCase {
   
-  public static class TestBranding extends AbstractBranding {
-
-    private String servletName;
-    private String[] entryPoints;
-    private String defaultEntryPoint;
-    private int registerResourcesCallCount;
-
-    public TestBranding() {
-    }
-    
-    public TestBranding( final String servletName, 
-                         final String[] entryPoints, 
-                         final String defaultEntryPoint ) 
-    {
-      this.servletName = servletName;
-      this.entryPoints = entryPoints;
-      this.defaultEntryPoint = defaultEntryPoint;
-    }
-
-    public String[] getEntryPoints() {
-      return entryPoints;
-    }
-
-    public String getServletName() {
-      return servletName;
-    }
-
-    public String getDefaultEntryPoint() {
-      return defaultEntryPoint;
-    }
-
-    public void registerResources() throws IOException {
-      registerResourcesCallCount++;
+  public void testRegisterWithNullArgument() {
+    BrandingManager brandingManager = new BrandingManager();
+    try {
+      brandingManager.register( null );
+      fail( "register: must not allow null parameter" );
+    } catch( NullPointerException expected ) {
     }
   }
   
   public void testRegister() {
-    // Test with illegal parameters
-    try {
-      BrandingManager.register( null );
-      fail( "register: must not allow null parameter" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    // Test legal usage
+    BrandingManager brandingManager = new BrandingManager();
     TestBranding branding = new TestBranding();
-    BrandingManager.register( branding );
-    assertEquals( 1, BrandingManager.getAll().length );
-    assertSame( branding, BrandingManager.getAll()[ 0 ] );
-  }
-
-  public void testDeregister() {
-    // Test with illegal parameters
-    try {
-      BrandingManager.deregister( null );
-      fail( "register: must not allow null parameter" );
-    } catch( NullPointerException e ) {
-      // expected
-    }
-    // Test legal usage
-    TestBranding branding = new TestBranding();
-    BrandingManager.register( branding );
-    BrandingManager.deregister( branding );
-    assertEquals( 0, BrandingManager.getAll().length );
-    // De-register an unregistered branding: must be silently ignored
-    BrandingManager.register( branding );
-    BrandingManager.deregister( new TestBranding() );
-    assertEquals( 1, BrandingManager.getAll().length );
+    brandingManager.register( branding );
+    assertEquals( 1, brandingManager.getAll().length );
+    assertSame( branding, brandingManager.getAll()[ 0 ] );
   }
   
-  public void testGet() {
-    AbstractBranding branding;
-    AbstractBranding actualBranding;
+  public void testDeregisterWithNullArgument() {
+    BrandingManager brandingManager = new BrandingManager();
+    try {
+      brandingManager.deregister( null );
+      fail( "deregister: must not allow null parameter" );
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
+  public void testDeregister() {
+    BrandingManager brandingManager = new BrandingManager();
+    // Test legal usage
+    TestBranding branding = new TestBranding();
+    brandingManager.register( branding );
+    brandingManager.deregister( branding );
+    assertEquals( 0, brandingManager.getAll().length );
+    // De-register an unregistered branding: must be silently ignored
+    brandingManager.register( branding );
+    brandingManager.deregister( new TestBranding() );
+    assertEquals( 1, brandingManager.getAll().length );
+  }
+  
+  public void testFindBrandingWithNullServletName() {
+    BrandingManager brandingManager = new BrandingManager();
+    try {
+      brandingManager.find( null, "" );
+      fail( "findBranding: must not allow null-servletName" );
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
+  public void testFindWhenNoBrandingRegistered() {
+    BrandingManager brandingManager = new BrandingManager();
     // Test without any registered branding  
-    actualBranding = BrandingManager.get( "myServlet", null );
-    assertNotNull( actualBranding );
-    actualBranding = BrandingManager.get( "myServlet", "myEP" );
-    assertNotNull( actualBranding );
-    // Test branding with servlet name and only a default EP
-    branding = new TestBranding( "myServlet", null, "myEP" );
-    BrandingManager.register( branding );
-    actualBranding = BrandingManager.get( "myServlet", "myEP" );
-    assertSame( branding, actualBranding );
-    actualBranding = BrandingManager.get( "myServlet", null );
-    assertSame( branding, actualBranding );
-    actualBranding = BrandingManager.get( "myServlet", "" );
-    assertSame( branding, actualBranding );
-    actualBranding = BrandingManager.get( "myServlet", "anotherEP" );
-    assertSame( branding, actualBranding );
-    // clean up
-    BrandingManager.deregister( branding );
+    assertNotNull( brandingManager.find( "myServlet", null ) );
+    assertNotNull( brandingManager.find( "myServlet", "myEP" ) );
+  }
 
+  public void testFindWithServletNameAndDefaultEntryPoint() {
+    BrandingManager brandingManager = new BrandingManager();
+    AbstractBranding actualBranding;
+    // Test branding with servlet name and only a default EP
+    TestBranding branding = new TestBranding( "myServlet", null, "myEP" );
+    brandingManager.register( branding );
+    actualBranding = brandingManager.find( "myServlet", "myEP" );
+    assertSame( branding, actualBranding );
+    actualBranding = brandingManager.find( "myServlet", null );
+    assertSame( branding, actualBranding );
+    actualBranding = brandingManager.find( "myServlet", "" );
+    assertSame( branding, actualBranding );
+    actualBranding = brandingManager.find( "myServlet", "anotherEP" );
+    assertSame( branding, actualBranding );
+  }
+  
+  public void testFind() {
+    BrandingManager brandingManager = new BrandingManager();
+    TestBranding branding;
+    AbstractBranding actualBranding;
     // Test branding with servlet name, no default EP and this list of EP's:
     // - myEP
     branding = new TestBranding( "myServlet", new String[] { "myEP" }, null );
-    BrandingManager.register( branding );
-    actualBranding = BrandingManager.get( "myServlet", "myEP" );
+    brandingManager.register( branding );
+    actualBranding = brandingManager.find( "myServlet", "myEP" );
     assertSame( branding, actualBranding );
     try {
-      BrandingManager.get( "myServlet", "anotherEP" );
+      brandingManager.find( "myServlet", "anotherEP" );
       fail( "Should not find a matching branding" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     // clean up
-    BrandingManager.deregister( branding );
+    brandingManager.deregister( branding );
     
     // Test two brandings
     // 1 - serlvet name: brand1 with default entry point 'default1'
     // 2 - serlvet name: brand2 with default entry point 'default2'
     AbstractBranding branding1 
       = new TestBranding( "brand1", new String[] { "default1" }, "default1" );
-    BrandingManager.register( branding1 );
+    brandingManager.register( branding1 );
     AbstractBranding branding2 
       = new TestBranding( "brand2", new String[] { "default2" }, "default2" );
-    BrandingManager.register( branding2 );
-    actualBranding = BrandingManager.get( "brand1", null );
+    brandingManager.register( branding2 );
+    actualBranding = brandingManager.find( "brand1", null );
     assertSame( branding1, actualBranding );
-    actualBranding = BrandingManager.get( "brand1", "default1" );
+    actualBranding = brandingManager.find( "brand1", "default1" );
     assertSame( branding1, actualBranding );
-    actualBranding = BrandingManager.get( "brand2", null );
+    actualBranding = brandingManager.find( "brand2", null );
     assertSame( branding2, actualBranding );
-    actualBranding = BrandingManager.get( "brand2", "default2" );
+    actualBranding = brandingManager.find( "brand2", "default2" );
     assertSame( branding2, actualBranding );
     try {
-      BrandingManager.get( "brand2", "default1" );
+      brandingManager.find( "brand2", "default1" );
       fail( "Servlet 'brand2' with EP 'default1' shouldn't be allowed" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     // clean up
-    BrandingManager.deregister( branding1 );
-    BrandingManager.deregister( branding2 );
+    brandingManager.deregister( branding1 );
+    brandingManager.deregister( branding2 );
     
     // Test one branding with the following attributes: 
     // servlet: myServlet, EP list: listedEP, default EP: defEP
-    branding 
-      = new TestBranding( "myServlet", new String[] { "listedEP" }, "defEP" );
-    BrandingManager.register( branding );
-    actualBranding = BrandingManager.get( "myServlet", "defEP" );
+    branding = new TestBranding( "myServlet", new String[] { "listedEP" }, "defEP" );
+    brandingManager.register( branding );
+    actualBranding = brandingManager.find( "myServlet", "defEP" );
     assertSame( branding, actualBranding );
-    actualBranding = BrandingManager.get( "myServlet", null );
+    actualBranding = brandingManager.find( "myServlet", null );
     assertSame( branding, actualBranding );
-    actualBranding = BrandingManager.get( "myServlet", "" );
+    actualBranding = brandingManager.find( "myServlet", "" );
     assertSame( branding, actualBranding );
-    actualBranding = BrandingManager.get( "myServlet", "listedEP" );
+    actualBranding = brandingManager.find( "myServlet", "listedEP" );
     assertSame( branding, actualBranding );
     // clean up
-    BrandingManager.deregister( branding );
-    
-    // Test defining a branding with the default servlet name
+    brandingManager.deregister( branding );
+  }
+  
+  public void testFindWhenBrandingWithDefaultServletNameIsRegistered() {
+    BrandingManager brandingManager = new BrandingManager();
     String defaultServletName = BrandingManager.DEFAULT_SERVLET_NAME;
-    branding = new TestBranding( defaultServletName, null, "defEP" );
-    BrandingManager.register( branding );
-    actualBranding = BrandingManager.get( defaultServletName, "defEP" );
+    TestBranding branding = new TestBranding( defaultServletName, null, "defEP" );
+    brandingManager.register( branding );
+    AbstractBranding actualBranding = brandingManager.find( defaultServletName, "defEP" );
     assertSame( branding, actualBranding );
   }
   
@@ -186,7 +171,7 @@ public class BrandingManager_Test extends TestCase {
     Fixture.fakeResponseWriter();
     String servletName = URLHelper.getServletName();
     TestBranding branding = new TestBranding( servletName, null, "default" );
-    BrandingManager.register( branding );
+    RWTFactory.getBrandingManager().register( branding );
     RWTStartupPageConfigurer configurer;
     // check precondition
     assertEquals( 0, branding.registerResourcesCallCount );

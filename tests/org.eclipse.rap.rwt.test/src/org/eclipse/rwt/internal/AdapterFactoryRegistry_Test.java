@@ -18,6 +18,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -88,11 +89,10 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     // is responsible for factory creation has application scope.
     // This tests that each session becomes its own instance of a particular
     // AdapterFactory implementation.
-    EntryPointManager.register( EntryPointManager.DEFAULT,
-                                TestEntryPoint.class );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
     TestAdapterFactory.log = "";
     AdapterFactoryRegistry.add( TestAdapterFactory.class, TestAdaptable.class );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     assertEquals( "", TestAdapterFactory.log );
     ThemeManager.getInstance().initialize();
     lifeCycle.execute();

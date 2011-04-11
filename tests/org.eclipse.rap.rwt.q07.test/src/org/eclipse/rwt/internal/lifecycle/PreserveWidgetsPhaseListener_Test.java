@@ -20,6 +20,7 @@ import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -62,7 +63,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     final Text text = new Text( shell, SWT.NONE );
     text.setText( "hello" );
     Fixture.markInitialized( display );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     final StringBuffer log = new StringBuffer();
     lifeCycle.addPhaseListener( new PhaseListener() {
 
@@ -167,9 +168,8 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   public void testStartup() throws Exception {
     // Simulate startup with no startup entry point set
     // First request: (renders html skeletion that contains 'application')
-    EntryPointManager.register( EntryPointManager.DEFAULT,
-                                TestEntryPointWithShell.class );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPointWithShell.class );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     lifeCycle.execute();
     // Second request: first 'real' one that writes JavaScript to create display

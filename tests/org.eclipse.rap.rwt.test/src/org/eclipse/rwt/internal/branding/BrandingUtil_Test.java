@@ -10,51 +10,48 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.branding;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.StartupPageTemplateHolder;
 
 
 public class BrandingUtil_Test extends TestCase {
 
-  private static class TestBranding extends AbstractBranding {
-    String favIcon;
-    Header[] headers;
-    String exitConfMessage;
-    boolean showExitConf;
-    public String getBody() {
-      return null;
-    }
-    public boolean showExitConfirmation() {
-      return showExitConf;
-    }
-    public String getExitConfirmationText() {
-      return exitConfMessage;
-    }
-    public String getFavIcon() {
-      return favIcon;
-    }
-    public Header[] getHeaders() {
-      return headers;
-    }
-    public String getServletName() {
-      return "rap";
-    }
-    public String getId() {
-      return TestBranding.class.getName();
-    }
-    public void registerResources() throws IOException {
-      if( favIcon != null && !"".equals( favIcon ) ) {
-        ResourceManager.getInstance().register( favIcon );
-      }
-    }
-  }
+//  private static class TestBranding extends AbstractBranding {
+//    String favIcon;
+//    Header[] headers;
+//    String exitConfMessage;
+//    boolean showExitConf;
+//    public String getBody() {
+//      return null;
+//    }
+//    public boolean showExitConfirmation() {
+//      return showExitConf;
+//    }
+//    public String getExitConfirmationText() {
+//      return exitConfMessage;
+//    }
+//    public String getFavIcon() {
+//      return favIcon;
+//    }
+//    public Header[] getHeaders() {
+//      return headers;
+//    }
+//    public String getServletName() {
+//      return "rap";
+//    }
+//    public String getId() {
+//      return TestBranding.class.getName();
+//    }
+//    public void registerResources() throws IOException {
+//      if( favIcon != null && !"".equals( favIcon ) ) {
+//        ResourceManager.getInstance().register( favIcon );
+//      }
+//    }
+//  }
 
   public void testReplacePlaceholder() {
     String templateString = StartupPageTemplateHolder.VAR_ENTRY_POINT.toString();
@@ -137,20 +134,21 @@ public class BrandingUtil_Test extends TestCase {
   }
 
   public void testGetCurrentBrandingId1() {
-    BrandingUtil.findBranding();
+    BrandingUtil.determineBranding();
     String currentBrandingId =  BrandingUtil.getCurrentBrandingId();
     assertEquals( BrandingManager.DEFAULT_BRANDING_ID, currentBrandingId );
   }
 
   public void testGetCurrentBrandingId2() {
     TestBranding branding = new TestBranding();
-    BrandingManager.register( branding );
+    branding.servletName = "rap";
+    RWTFactory.getBrandingManager().register( branding );
     try {
-      BrandingUtil.findBranding();
+      BrandingUtil.determineBranding();
       String currentBrandingId =  BrandingUtil.getCurrentBrandingId();
       assertEquals( branding.getId(), currentBrandingId );
     } finally {
-      BrandingManager.deregister( branding );
+      RWTFactory.getBrandingManager().deregister( branding );
     }
   }
 

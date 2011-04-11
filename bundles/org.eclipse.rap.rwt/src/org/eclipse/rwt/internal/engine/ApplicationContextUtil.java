@@ -15,7 +15,7 @@ import javax.servlet.ServletContext;
 
 import org.eclipse.rwt.internal.AdapterFactoryRegistryInstance;
 import org.eclipse.rwt.internal.ConfigurationReaderInstance;
-import org.eclipse.rwt.internal.branding.BrandingManagerInstance;
+import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
@@ -38,10 +38,10 @@ public class ApplicationContextUtil {
     ThemeManagerInstance.class,
     ResourceManagerImpl.class,
     ResourceManager.class,
-    BrandingManagerInstance.class,
+    BrandingManager.class,
     PhaseListenerRegistryInstance.class,
-    LifeCycleFactoryInstance.class,
-    EntryPointManagerInstance.class,
+    LifeCycleFactory.class,
+    EntryPointManager.class,
     ResourceFactoryInstance.class,
     ImageFactoryInstance.class,
     InternalImageFactoryInstance.class,
@@ -54,7 +54,6 @@ public class ApplicationContextUtil {
     ServiceManagerInstance.class,
     ConfigurationReaderInstance.class,
     ResourceRegistryInstance.class,
-    ServiceManagerImpl.class,
     DisplaysHolder.class,
     ThemeAdapterUtil.class,
     JSLibraryConcatenator.class,

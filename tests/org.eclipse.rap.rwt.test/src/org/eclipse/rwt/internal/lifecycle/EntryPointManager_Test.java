@@ -34,79 +34,97 @@ public class EntryPointManager_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-
-  public void testRegister() {
+  
+  public void testRegisterWithNullName() {
+    EntryPointManager entryPointManager = new EntryPointManager();
     try {
-      EntryPointManager.register( null, TestEntryPointWithLog.class );
+      entryPointManager.register( null, TestEntryPointWithLog.class );
       fail( "null-name not allowed" );
-    } catch( NullPointerException e ) {
-      // expected
+    } catch( NullPointerException expected ) {
     }
+  }
+
+  public void testRegisterWithNullClass() {
+    EntryPointManager entryPointManager = new EntryPointManager();
     try {
-      EntryPointManager.register( "xyz", null );
+      entryPointManager.register( "xyz", null );
       fail( "null-class not allowed" );
-    } catch( NullPointerException e ) {
-      // expected
+    } catch( NullPointerException expected ) {
     }
+  }
+  
+  public void testRegisterWithNonEntryPointClass() {
+    EntryPointManager entryPointManager = new EntryPointManager();
     try {
-      EntryPointManager.register( "xyz", String.class );
+      entryPointManager.register( "xyz", String.class );
       fail( "illegal entry point class" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
+  }
+  
+  public void testRegisterDuplicateEntryPoint() {
+    EntryPointManager entryPointManager = new EntryPointManager();
+    entryPointManager.register( "xyz", TestEntryPointWithLog.class );
     try {
-      EntryPointManager.register( "xyz", TestEntryPointWithLog.class );
-      EntryPointManager.register( "xyz", TestEntryPointWithLog.class );
+      entryPointManager.register( "xyz", TestEntryPointWithLog.class );
       fail( "register duplicate names not allowed" );
-    } catch( IllegalArgumentException e ) {
-      EntryPointManager.deregister( "xyz" );
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testDeregister() {
+  public void testDeregisterWithNullName() {
+    EntryPointManager entryPointManager = new EntryPointManager();
     try {
-      EntryPointManager.deregister( null );
+      entryPointManager.deregister( null );
       fail( "deregister( null ) not allowed" );
-    } catch( NullPointerException e ) {
-      // expected
+    } catch( NullPointerException expected ) {
     }
+  }
+  
+  public void testDeregisterNonExistingEntryPoint() {
+    EntryPointManager entryPointManager = new EntryPointManager();
     try {
-      EntryPointManager.deregister( "does.not.exist.at.all" );
+      entryPointManager.deregister( "does.not.exist.at.all" );
       fail( "deregister not allowed for unregistered entry points" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
-    EntryPointManager.register( "abc", TestEntryPointWithLog.class );
-    EntryPointManager.deregister( "abc" );
+  }
+  
+  public void testDeregister() {
+    EntryPointManager entryPointManager = new EntryPointManager();
+    entryPointManager.register( "abc", TestEntryPointWithLog.class );
+    entryPointManager.deregister( "abc" );
     try {
-      EntryPointManager.createUI( "abc" );
+      entryPointManager.createUI( "abc" );
       fail( "deregistering entry point failed" );
-    } catch( RuntimeException e ) {
+    } catch( RuntimeException expected ) {
     }
   }
 
-  public void testCreateUI() {
+  public void testCreateUIWithNullName() {
+    EntryPointManager entryPointManager = new EntryPointManager();
     try {
-      EntryPointManager.createUI( null );
+      entryPointManager.createUI( null );
       fail( "createUI must be given a non-null name" );
-    } catch( NullPointerException e ) {
-      // expected
+    } catch( NullPointerException expected ) {
     }
+  }
+  
+  public void testCreateUIWithNonExistingEntryPointName() {
+    EntryPointManager entryPointManager = new EntryPointManager();
     try {
-      EntryPointManager.createUI( "does.not.exist" );
+      entryPointManager.createUI( "does.not.exist" );
       fail( "cannot call createUI for non-existing entry point" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
-    EntryPointManager.register( EntryPointManager.DEFAULT,
-                                TestEntryPointWithLog.class );
-    int returnVal = EntryPointManager.createUI( EntryPointManager.DEFAULT );
+  }
+  
+  public void testCreateUI() {
+    EntryPointManager entryPointManager = new EntryPointManager();
+    entryPointManager.register( EntryPointManager.DEFAULT, TestEntryPointWithLog.class );
+    int returnVal = entryPointManager.createUI( EntryPointManager.DEFAULT );
     assertEquals( "isRunning", log );
     assertEquals( 123, returnVal );
-    
-    String currentEntryPoint = EntryPointManager.getCurrentEntryPoint();
-    assertEquals( EntryPointManager.DEFAULT, currentEntryPoint );
-    
-    EntryPointManager.deregister( EntryPointManager.DEFAULT );
+    assertEquals( EntryPointManager.DEFAULT, EntryPointManager.getCurrentEntryPoint() );
   }
 }

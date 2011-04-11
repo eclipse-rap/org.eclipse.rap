@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -30,7 +31,7 @@ public class RenderDispose_Test extends TestCase {
     final Composite shell = new Shell( display , SWT.NONE );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     // first rendering: html document that contains the javaScript 'application'
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     Fixture.executeLifeCycleFromServerThread( );
     // second rendering: initial markup that constructs the above created
     // widget hierarchy (display, shell and button)

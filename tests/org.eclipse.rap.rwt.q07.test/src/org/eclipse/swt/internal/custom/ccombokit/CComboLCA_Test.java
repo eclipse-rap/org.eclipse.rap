@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
@@ -261,7 +262,7 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testReadText() {
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -307,7 +308,7 @@ public class CComboLCA_Test extends TestCase {
   public void testTextSelectionWithVerifyEvent() {
     final java.util.List log = new ArrayList();
     // register preserve-values phase-listener
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -438,7 +439,7 @@ public class CComboLCA_Test extends TestCase {
 
     String buttonId = WidgetUtil.getId( button );
     String displayId = DisplayUtil.getId( display );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
 
     // Execute life cycle once to simulate startup request

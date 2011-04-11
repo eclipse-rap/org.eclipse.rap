@@ -16,14 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.util.URLHelper;
 
 
 public final class BrandingUtil {
 
-  private static final String ATTR_BRANDING_ID 
-    = BrandingUtil.class.getName() + "#brandingId";
+  private static final String ATTR_BRANDING_ID = BrandingUtil.class.getName() + "#brandingId";
 
   public static void replacePlaceholder( final StartupPageTemplateHolder template, 
                                          final StartupPageTemplateHolder.Variable variable, 
@@ -47,22 +47,22 @@ public final class BrandingUtil {
     return buffer.toString();
   }
   
-  public static AbstractBranding findBranding() {
+  public static AbstractBranding determineBranding() {
     HttpServletRequest request = ContextProvider.getRequest();
     String servletName = URLHelper.getServletName();
     String entryPoint = request.getParameter( RequestParams.STARTUP );
-    AbstractBranding branding = BrandingManager.get( servletName, entryPoint );
+    AbstractBranding branding = RWTFactory.getBrandingManager().find( servletName, entryPoint );
     RWT.getSessionStore().setAttribute( ATTR_BRANDING_ID, branding.getId() );
     return branding;
   }
   
   /**
    * Return the id of the current branding. This is only available after 
-   * {@link #findBranding()} has been called.
+   * {@link #determineBranding()} has been called.
    * @return the id of the current branding or <code>null</code>.
    */
   public static String getCurrentBrandingId() {
-    return ( String ) RWT.getSessionStore().getAttribute( ATTR_BRANDING_ID );
+    return ( String )RWT.getSessionStore().getAttribute( ATTR_BRANDING_ID );
   }
   
   //////////////////

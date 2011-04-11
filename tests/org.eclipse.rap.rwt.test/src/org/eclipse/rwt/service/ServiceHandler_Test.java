@@ -20,8 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServiceManager;
 
 
 public class ServiceHandler_Test extends TestCase {
@@ -50,7 +50,7 @@ public class ServiceHandler_Test extends TestCase {
   public void testCustomServiceHandler() throws Exception {
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, HANDLER_ID );
 
-    ServiceManager.getHandler().service();
+    RWTFactory.getServiceManager().getHandler().service();
 
     assertEquals( SERVICE_DONE, log );
   }
@@ -60,7 +60,7 @@ public class ServiceHandler_Test extends TestCase {
     RWT.getServiceManager().registerServiceHandler( id, new CustomHandler() );
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, id );
 
-    ServiceManager.getHandler().service();
+    RWTFactory.getServiceManager().getHandler().service();
 
     assertEquals( SERVICE_DONE, log );
   }
@@ -71,7 +71,7 @@ public class ServiceHandler_Test extends TestCase {
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, id );
     RWT.getServiceManager().unregisterServiceHandler( id );
 
-    ServiceManager.getHandler().service();
+    RWTFactory.getServiceManager().getHandler().service();
 
     assertEquals( "", log );
   }

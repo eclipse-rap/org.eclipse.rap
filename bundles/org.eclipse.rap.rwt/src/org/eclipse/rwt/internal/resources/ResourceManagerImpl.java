@@ -116,8 +116,7 @@ public class ResourceManagerImpl implements IResourceManager {
   }
 
   public static IResourceManager getInstance() {
-    Class instanceType = ResourceManagerImpl.class;
-    Object instance = ApplicationContext.getSingleton( instanceType );
+    Object instance = ApplicationContext.getSingleton( ResourceManagerImpl.class );
     ResourceManagerImpl result = ( ResourceManagerImpl )instance;
     String resources = ConfigurationReader.getConfiguration().getResources();
     File ctxDir = ConfigurationReader.getEngineConfig().getServerContextDir();

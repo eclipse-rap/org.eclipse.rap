@@ -17,6 +17,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -114,12 +115,11 @@ public class ExternalBrowser_Test extends TestCase {
    * matches the order of the ExternalBrowser#open/close calls
    */
   public void testJavaScriptExecutionOrder() throws IOException {
-    EntryPointManager.register( EntryPointManager.DEFAULT,
-                                TestJavaScriptExecutionOrderEntryPoint.class );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestJavaScriptExecutionOrderEntryPoint.class );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     // run life cycle
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     // assert conditions
     String markup = Fixture.getAllMarkup();

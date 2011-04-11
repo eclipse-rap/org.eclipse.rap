@@ -301,7 +301,7 @@ public abstract class PresentationFactory extends AbstractPresentationFactory
   
   private String loadBrandingLayoutId() {
     String result = null;
-    AbstractBranding branding = BrandingUtil.findBranding();
+    AbstractBranding branding = BrandingUtil.determineBranding();
     if( branding != null ) {
       String brandingId = branding.getId();
       IExtensionRegistry registry = Platform.getExtensionRegistry();

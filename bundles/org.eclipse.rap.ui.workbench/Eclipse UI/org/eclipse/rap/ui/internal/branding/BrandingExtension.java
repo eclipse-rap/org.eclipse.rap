@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
 import org.eclipse.rwt.internal.branding.BrandingManager;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Filter;
@@ -105,7 +106,7 @@ public final class BrandingExtension {
     }
     Filter serviceFilter = readServiceFilter( element, branding );
     registerServletName( servletName, serviceFilter );
-    BrandingManager.register( branding );
+    RWTFactory.getBrandingManager().register( branding );
   }
 
   // EXPERIMENTAL, see bug 241210

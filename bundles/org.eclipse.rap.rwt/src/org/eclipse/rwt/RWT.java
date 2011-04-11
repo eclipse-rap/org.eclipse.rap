@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.engine.ApplicationContext;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.*;
@@ -174,7 +174,7 @@ public final class RWT {
    * @return instance of {@link ILifeCycle}
    */
   public static ILifeCycle getLifeCycle() {
-    return LifeCycleFactory.getLifeCycle();
+    return RWTFactory.getLifeCycleFactory().getLifeCycle();
   }
   
   /**
@@ -193,8 +193,7 @@ public final class RWT {
    * @return the {@link IServiceManager}
    */
   public static IServiceManager getServiceManager() {
-    Class singletonType = ServiceManagerImpl.class;
-    return ( IServiceManager )ApplicationContext.getSingleton( singletonType );
+    return RWTFactory.getServiceManager();
   }
   
   /**

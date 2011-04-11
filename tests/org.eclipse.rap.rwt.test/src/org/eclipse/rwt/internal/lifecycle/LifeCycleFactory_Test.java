@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 
@@ -35,8 +36,8 @@ public class LifeCycleFactory_Test extends TestCase {
   }
   
   public void testGetUserdefinedLifeCycle() {
-    ILifeCycle lifeCycle1 = LifeCycleFactory.getLifeCycle();
-    ILifeCycle lifeCycle2 = LifeCycleFactory.getLifeCycle();
+    ILifeCycle lifeCycle1 = RWTFactory.getLifeCycleFactory().getLifeCycle();
+    ILifeCycle lifeCycle2 = RWTFactory.getLifeCycleFactory().getLifeCycle();
     assertTrue( lifeCycle1 instanceof TestLifeCycle );
     assertSame( lifeCycle1, lifeCycle2 );
   }

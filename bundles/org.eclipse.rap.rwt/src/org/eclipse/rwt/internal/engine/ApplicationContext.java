@@ -21,12 +21,16 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 
 public class ApplicationContext {
 
-  private final Map instances;
-
   public static interface InstanceTypeFactory {
     Object createInstance();
     Class getInstanceType();
   }
+
+  public static Object getSingleton( Class instanceType ) {
+    return ApplicationContextUtil.getInstance().getInstance( instanceType );
+  }
+
+  private final Map instances;
 
   public ApplicationContext() {
     this( new Class[ 0 ] );
@@ -35,10 +39,6 @@ public class ApplicationContext {
   public ApplicationContext( Class[] instanceTypes ) {
     instances = new HashMap();
     createInstances( instanceTypes );
-  }
-
-  public static Object getSingleton( Class instanceType ) {
-    return ApplicationContextUtil.getInstance().getInstance( instanceType );
   }
 
   Object getInstance( Class instanceType ) {

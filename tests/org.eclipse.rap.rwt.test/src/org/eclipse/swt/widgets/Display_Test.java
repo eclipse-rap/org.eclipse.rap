@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServiceContext;
@@ -814,12 +815,12 @@ public class Display_Test extends TestCase {
 
   public void testEnsureIdIsW1() throws IOException {
     Class entryPointClass = EnsureIdEntryPoint.class;
-    EntryPointManager.register( EntryPointManager.DEFAULT, entryPointClass );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointClass );
     Fixture.fakeNewRequest();
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     assertEquals( "w1", DisplayUtil.getId( RWTLifeCycle.getSessionDisplay() ) );
-    EntryPointManager.deregister( EntryPointManager.DEFAULT );
+    RWTFactory.getEntryPointManager().deregister( EntryPointManager.DEFAULT );
   }
 
   public void testSetData() {

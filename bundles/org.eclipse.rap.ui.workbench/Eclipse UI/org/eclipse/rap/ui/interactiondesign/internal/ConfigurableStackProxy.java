@@ -151,7 +151,7 @@ public class ConfigurableStackProxy extends StackPresentation {
   
   private IConfigurationElement getBrandingElement() {
     if( brandingElement == null ) {
-      AbstractBranding branding = BrandingUtil.findBranding();
+      AbstractBranding branding = BrandingUtil.determineBranding();
       if( branding != null ) {
         String brandingId = branding.getId();
         IExtensionRegistry registry = Platform.getExtensionRegistry();

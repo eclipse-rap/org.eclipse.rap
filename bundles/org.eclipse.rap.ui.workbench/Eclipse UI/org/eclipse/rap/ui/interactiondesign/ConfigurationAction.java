@@ -83,7 +83,7 @@ public abstract class ConfigurationAction extends Action {
    */
   public static boolean allActionsVisible() {
     boolean result = false;
-    AbstractBranding branding = BrandingUtil.findBranding();
+    AbstractBranding branding = BrandingUtil.determineBranding();
     if( branding != null ) {
       String brandingId = branding.getId();
       IExtensionRegistry registry = Platform.getExtensionRegistry();

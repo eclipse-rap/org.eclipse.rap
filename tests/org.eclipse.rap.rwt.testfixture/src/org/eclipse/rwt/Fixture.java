@@ -263,14 +263,14 @@ public class Fixture {
 
   public static void preserveWidgets() {
     PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     PhaseEvent event = new PhaseEvent( lifeCycle, PhaseId.READ_DATA );
     listener.afterPhase( event );
   }
 
   public static void clearPreserved() {
     PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
-    ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
+    ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     PhaseEvent event = new PhaseEvent( lifeCycle, PhaseId.RENDER );
     listener.afterPhase( event );
   }
@@ -315,7 +315,7 @@ public class Fixture {
     IUIThreadHolder threadHolder = registerCurrentThreadAsUIThreadHolder();
     Thread serverThread = fakeRequestThread( threadHolder );
     simulateRequest( threadHolder, serverThread );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     while( RWTLifeCycle.getSessionDisplay().readAndDispatch() ) {
     }
     lifeCycle.sleep();
@@ -386,10 +386,8 @@ public class Fixture {
     }
   }
 
-  private static void simulateRequest( IUIThreadHolder threadHolder,
-                                       Thread serverThread )
-  {
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+  private static void simulateRequest( IUIThreadHolder threadHolder, Thread serverThread ) {
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     synchronized( threadHolder.getLock() ) {
       serverThread.start();
       try {
@@ -400,10 +398,8 @@ public class Fixture {
     }
   }
 
-  private static Thread fakeRequestThread( final IUIThreadHolder threadHolder )
-  {
-    final RWTLifeCycle lifeCycle
-      = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+  private static Thread fakeRequestThread( final IUIThreadHolder threadHolder ) {
+    final RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     final ServiceContext context = ContextProvider.getContext();
     Thread result = new Thread( new Runnable() {
       public void run() {

@@ -21,10 +21,8 @@ import javax.servlet.*;
 
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
-import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.service.SettingStoreManager;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
@@ -85,7 +83,7 @@ public final class RWTServletContextListener implements ServletContextListener {
       deregisterResources( servletContext );
       deregisterUICallBackServiceHandler();
       deregisterJSLibraryServiceHandler();
-      LifeCycleFactory.destroy();
+      RWTFactory.getLifeCycleFactory().destroy();
     }
   }
 
@@ -162,7 +160,7 @@ public final class RWTServletContextListener implements ServletContextListener {
         }
         try {
           Class clazz = Class.forName( className );
-          EntryPointManager.register( entryPointName, clazz );
+          RWTFactory.getEntryPointManager().register( entryPointName, clazz );
           registeredEntryPoints.add( entryPointName );
         } catch( final Exception ex ) {
           String text = "Failed to register entry point ''{0}''.";
@@ -179,7 +177,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     String[] entryPoints = getRegisteredEntryPoints( context );
     if( entryPoints != null ) {
       for( int i = 0; i < entryPoints.length; i++ ) {
-        EntryPointManager.deregister( entryPoints[ i ] );
+        RWTFactory.getEntryPointManager().deregister( entryPoints[ i ] );
       }
     }
   }
@@ -407,13 +405,12 @@ public final class RWTServletContextListener implements ServletContextListener {
   // Helping methods - UI callback service handler
   
   public static void registerUICallBackServiceHandler() {
-    ServiceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID,
-                                           new UICallBackServiceHandler() );
+    RWTFactory.getServiceManager().registerServiceHandler( UICallBackServiceHandler.HANDLER_ID, 
+                                                           new UICallBackServiceHandler() );
   }
 
   public static void deregisterUICallBackServiceHandler() {
-    String id = UICallBackServiceHandler.HANDLER_ID;
-    ServiceManager.unregisterServiceHandler( id );
+    RWTFactory.getServiceManager().unregisterServiceHandler( UICallBackServiceHandler.HANDLER_ID );
   }
 
   //////////////////////////////////////////
@@ -429,7 +426,7 @@ public final class RWTServletContextListener implements ServletContextListener {
         try {
           AbstractBranding branding
             = ( AbstractBranding )ClassUtil.newInstance( CLASS_LOADER, className );
-          BrandingManager.register( branding );
+          RWTFactory.getBrandingManager().register( branding );
           registeredBrandings.add( branding );
         } catch( ClassInstantiationException cie ) {
           String text = "Failed to register branding ''{0}''.";
@@ -455,7 +452,7 @@ public final class RWTServletContextListener implements ServletContextListener {
       = ( AbstractBranding[] )context.getAttribute( REGISTERED_BRANDINGS );
     if( brandings != null ) {
       for( int i = 0; i < brandings.length; i++ ) {
-        BrandingManager.deregister( brandings[ i ] );
+        RWTFactory.getBrandingManager().deregister( brandings[ i ] );
       }
     }
   }
@@ -464,14 +461,13 @@ public final class RWTServletContextListener implements ServletContextListener {
   // Helping methods - JS Library service handler
   
   public static void registerJSLibraryServiceHandler() {
-    JSLibraryServiceHandler handler = new JSLibraryServiceHandler();
-    ServiceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, handler );
+    RWTFactory.getServiceManager().registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, 
+                                                           new JSLibraryServiceHandler() );
     // TODO [SystemStart]: move this to where the actual system initialization takes place
     JSLibraryConcatenator.getInstance().startJSConcatenation();
   }
 
   public static void deregisterJSLibraryServiceHandler() {
-    String id = JSLibraryServiceHandler.HANDLER_ID;
-    ServiceManager.unregisterServiceHandler( id );
+    RWTFactory.getServiceManager().unregisterServiceHandler( JSLibraryServiceHandler.HANDLER_ID );
   }
 }

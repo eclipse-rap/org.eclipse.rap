@@ -56,7 +56,7 @@ public final class StartupPage {
       // send out the survey
       render();
     } else {
-      AbstractBranding branding = BrandingUtil.findBranding();
+      AbstractBranding branding = BrandingUtil.determineBranding();
       if( branding.getThemeId() != null ) {
         ThemeUtil.setCurrentThemeId( branding.getThemeId() );
       }

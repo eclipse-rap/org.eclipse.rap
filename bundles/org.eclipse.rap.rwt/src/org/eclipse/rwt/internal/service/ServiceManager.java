@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.service.IServiceHandler;
 
 
@@ -21,21 +21,9 @@ import org.eclipse.rwt.service.IServiceHandler;
  */
 public final class ServiceManager {
 
-  public static void registerServiceHandler( String id, IServiceHandler handler ) {
-    getInstance().registerServiceHandler( id, handler );
-  }
-
-  public static void unregisterServiceHandler( String id ) {
-    getInstance().unregisterServiceHandler( id );
-  }
-
   /** <p>returns the appropriate service handler.</p> */
   public static IServiceHandler getHandler() {
-    return getInstance().getHandler();
-  }
-
-  private static ServiceManagerInstance getInstance() {
-    return ( ServiceManagerInstance )ApplicationContext.getSingleton( ServiceManagerInstance.class );
+    return RWTFactory.getServiceManager().getHandler();
   }
 
   private ServiceManager() {

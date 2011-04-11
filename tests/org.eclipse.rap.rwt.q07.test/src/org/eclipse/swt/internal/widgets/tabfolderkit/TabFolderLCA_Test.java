@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -164,7 +165,7 @@ public class TabFolderLCA_Test extends TestCase {
     item1.setControl( control1 );
     shell.open();
 
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String folderId = WidgetUtil.getId( folder );
@@ -202,7 +203,7 @@ public class TabFolderLCA_Test extends TestCase {
       }
     } );
 
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String item1Id = WidgetUtil.getId( item1 );

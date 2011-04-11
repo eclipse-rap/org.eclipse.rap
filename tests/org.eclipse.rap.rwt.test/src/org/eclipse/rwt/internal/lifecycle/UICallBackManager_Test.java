@@ -18,6 +18,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -462,11 +463,9 @@ public class UICallBackManager_Test extends TestCase {
     final ServiceContext context,
     final Throwable[] uiCallBackServiceHandlerThrowable )
   {
-    final RWTLifeCycle lifeCycle
-      = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    final RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
-
       public void afterPhase( final PhaseEvent event ) {
         Thread uiCallBackThread = new Thread( new Runnable() {
           public void run() {

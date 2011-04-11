@@ -206,7 +206,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String getExitConfirmation() {
-    AbstractBranding branding = BrandingUtil.findBranding();
+    AbstractBranding branding = BrandingUtil.determineBranding();
     String result = null; // does not display exit dialog
     if( branding.showExitConfirmation() ) {
       result = branding.getExitConfirmationText();

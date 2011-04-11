@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
@@ -167,7 +168,7 @@ public class TextLCA_Test extends TestCase {
   public void testSelectionWithVerifyEvent() {
     final java.util.List log = new ArrayList();
     // register preserve-values phase-listener
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     final Text text = new Text( shell, SWT.NONE );
     shell.open();
@@ -248,7 +249,7 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testPreserveText() {
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     Text text = new Text( shell, SWT.SINGLE );
     shell.open();
@@ -272,7 +273,7 @@ public class TextLCA_Test extends TestCase {
   public void testVerifyAndModifyEvent() {
     final java.util.List log = new ArrayList();
     // register preserve-values phase-listener
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     // set up widgets to be tested
     final Text text = new Text( shell, SWT.NONE );

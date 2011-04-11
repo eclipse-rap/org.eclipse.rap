@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -35,7 +36,7 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     ISessionStore session = ContextProvider.getSession();
     String id = LifeCycle.class.getName();
     session.setAttribute( id, lifeCycle );

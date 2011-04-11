@@ -19,8 +19,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 
@@ -96,7 +96,6 @@ public class WrappedRequest_Test extends TestCase {
   }
   
   public void testStartupRequestWithParameter() throws Exception {
-    System.setProperty( "lifecycle", RWTLifeCycle.class.getName() );
     StartupPage startupPage = ( StartupPage )ApplicationContext.getSingleton( StartupPage.class );
     startupPage.setConfigurer( new StartupPage.IStartupPageConfigurer() {
       public StartupPageTemplateHolder getTemplate() throws IOException {
@@ -110,22 +109,20 @@ public class WrappedRequest_Test extends TestCase {
     String p1 = "p1";
     String v1 = "v1";
     Fixture.fakeRequestParam( p1, v1 );
-    ServiceManager.getHandler().service();
+    RWTFactory.getServiceManager().getHandler().service();
     String allMarkup = Fixture.getAllMarkup();
     assertTrue( allMarkup.indexOf( "Startup Page" ) != -1 );
     
-    EntryPointManager.register( EntryPointManager.DEFAULT, 
-                                DefaultEntryPoint.class );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, DefaultEntryPoint.class );
     Fixture.fakeRequestParam( p1, null );
     Fixture.fakeRequestParam( RequestParams.STARTUP, 
                               EntryPointManager.DEFAULT );
     Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setHeader( "User-Agent", "myAgent" );
-    ServiceManager.getHandler().service();
+    RWTFactory.getServiceManager().getHandler().service();
 
     assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );
-    System.getProperties().remove( "lifecycle" );
   }
 
   protected void setUp() throws Exception {

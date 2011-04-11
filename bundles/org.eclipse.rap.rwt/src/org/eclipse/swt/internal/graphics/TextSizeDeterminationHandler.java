@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
@@ -48,10 +48,9 @@ final class TextSizeDeterminationHandler
     if( display != null && display.getThread() == Thread.currentThread() ) {
       ISessionStore session = ContextProvider.getSession();
       if( session.getAttribute( CALCULATION_HANDLER ) == null ) {
-        TextSizeDeterminationHandler handler
-          = new TextSizeDeterminationHandler( display );
+        TextSizeDeterminationHandler handler = new TextSizeDeterminationHandler( display );
         session.setAttribute( CALCULATION_HANDLER, handler );
-        LifeCycleFactory.getLifeCycle().addPhaseListener( handler );
+        RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( handler );
       }
     }
   }
@@ -153,7 +152,7 @@ final class TextSizeDeterminationHandler
         ServletLog.log( "", e );
       } finally {
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
-          LifeCycleFactory.getLifeCycle().removePhaseListener( this );
+          RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
           ISessionStore session = ContextProvider.getSession();
           session.removeAttribute( CALCULATION_HANDLER );
         }
@@ -188,7 +187,7 @@ final class TextSizeDeterminationHandler
   public void valueUnbound( final HttpSessionBindingEvent event ) {
     UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {
-        ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
+        ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
         lifeCycle.removePhaseListener( TextSizeDeterminationHandler.this );
       }
     } );

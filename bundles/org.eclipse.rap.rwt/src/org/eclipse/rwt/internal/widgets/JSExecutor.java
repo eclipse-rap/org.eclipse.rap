@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.widgets;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -25,7 +26,7 @@ public final class JSExecutor {
     JSExecutorPhaseListener jsExecutor = getJSExecutor();
     if( jsExecutor == null ) {
       jsExecutor = new JSExecutorPhaseListener();
-      LifeCycleFactory.getLifeCycle().addPhaseListener( jsExecutor );
+      RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( jsExecutor );
       setJSExecutor( jsExecutor );
     }
     jsExecutor.append( code );
@@ -71,7 +72,7 @@ public final class JSExecutor {
         try {
           writer.write( code.toString() );
         } finally {
-          LifeCycleFactory.getLifeCycle().removePhaseListener( this );
+          RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
         }
       }
     }

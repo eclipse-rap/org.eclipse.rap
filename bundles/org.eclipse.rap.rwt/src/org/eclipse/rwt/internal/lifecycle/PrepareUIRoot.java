@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -32,11 +33,11 @@ final class PrepareUIRoot implements IPhase {
     PhaseId result;
     if( startup != null ) {
       TextSizeDetermination.readStartupProbes();
-      EntryPointManager.createUI( startup );      
+      RWTFactory.getEntryPointManager().createUI( startup );      
       result = PhaseId.RENDER;
     } else if( RWTLifeCycle.getSessionDisplay() == null ) {
       TextSizeDetermination.readStartupProbes();
-      EntryPointManager.createUI( EntryPointManager.DEFAULT );
+      RWTFactory.getEntryPointManager().createUI( EntryPointManager.DEFAULT );
       result = PhaseId.RENDER;
     } else {
       result = PhaseId.READ_DATA;

@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
@@ -72,8 +73,8 @@ public final class ApplicationRegistry {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
         appEntrypointMapping.put( applicationParameter, clazz );
-        EntryPointManager.register( applicationParameter,
-                                    EntrypointApplicationWrapper.class );
+        RWTFactory.getEntryPointManager().register( applicationParameter,
+                                    				EntrypointApplicationWrapper.class );
         EntryPointExtension.bind( applicationId, applicationParameter );
       }
     } catch( final ClassNotFoundException e ) {

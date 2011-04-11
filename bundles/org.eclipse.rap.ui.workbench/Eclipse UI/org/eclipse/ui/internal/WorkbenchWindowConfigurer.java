@@ -617,7 +617,7 @@ public final class WorkbenchWindowConfigurer implements
     // RAP [hs] method introduced for interactiondesign API
     private String getBrandingPresentationFactoryId() {
       String result = null;
-      AbstractBranding branding = BrandingUtil.findBranding();
+      AbstractBranding branding = BrandingUtil.determineBranding();
       if( branding != null ) {
         String brandingId = branding.getId();
         IExtensionRegistry registry = Platform.getExtensionRegistry();

@@ -15,6 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -155,7 +156,7 @@ public class MenuLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) == -1 );
     // Simulate client-side size-change of shell: menuBar must render new size
     Fixture.clearPreserved();
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     PreserveWidgetsPhaseListener preserveListener
       = new PreserveWidgetsPhaseListener();
     lifeCycle.addPhaseListener( preserveListener );

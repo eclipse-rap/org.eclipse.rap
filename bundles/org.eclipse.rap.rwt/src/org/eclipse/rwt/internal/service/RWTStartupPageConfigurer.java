@@ -172,7 +172,7 @@ public final class RWTStartupPageConfigurer
   // Branding helper methods
 
   private void applyBranding() throws IOException {
-    AbstractBranding branding = BrandingUtil.findBranding();
+    AbstractBranding branding = BrandingUtil.determineBranding();
     registerBrandingResources( branding );
     HttpServletRequest request = ContextProvider.getRequest();
     // TODO: [bm][rh] move into util

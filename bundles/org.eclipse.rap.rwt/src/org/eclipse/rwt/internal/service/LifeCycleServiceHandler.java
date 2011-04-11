@@ -20,6 +20,7 @@ import javax.servlet.http.*;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.RWTMessages;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.ISessionStore;
@@ -73,7 +74,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     initializeSession();
     if( isSessionInitialized() ) {
       RequestParameterBuffer.merge();
-      LifeCycle lifeCycle = ( LifeCycle )LifeCycleFactory.getLifeCycle();
+      LifeCycle lifeCycle = ( LifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
       lifeCycle.execute();
     } else {
       Map parameters = ContextProvider.getRequest().getParameterMap();
