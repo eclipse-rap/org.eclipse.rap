@@ -20,6 +20,7 @@ import java.util.*;
 import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.*;
+import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -455,7 +456,9 @@ public final class ThemeManager {
             throw new IllegalArgumentException( mesg );
           }
           try {
-            String key = Theme.createCssKey( value );
+            ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+            ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
+            String key = adapter.getKey( value );
             String registerPath = IMAGE_DEST_PATH + "/" + key;
             IResourceManager resourceMgr = ResourceManager.getInstance();
             resourceMgr.register( registerPath, inputStream );
@@ -478,7 +481,9 @@ public final class ThemeManager {
       if( value instanceof QxCursor ) {
         QxCursor cursor = ( QxCursor )value;
         if( cursor.isCustomCursor() ) {
-          String key = Theme.createCssKey( value );
+          ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+          ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
+          String key = adapter.getKey( value );
           String path = cursor.value;
           log( " register theme cursor " + key + ", path=" + path );
           InputStream inputStream;
