@@ -88,8 +88,10 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     _onload : function( evt ) {
       this.base( arguments, evt );
       this.release();
-      this._attachBrowserFunctions();
-      this._sendProgressEvent();
+      if( this._isContentAccessible() ) {
+        this._attachBrowserFunctions();
+        this._sendProgressEvent();
+      }
     },
     
     _sendProgressEvent : function() {

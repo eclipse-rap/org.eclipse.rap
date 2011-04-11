@@ -336,7 +336,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function( browser ) {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertTrue( "slow connection?", browser._isLoaded );
-        assertNotNull( testUtil.getErrorPage() );
+        assertNull( testUtil.getErrorPage() );
         browser.destroy();
       }
     ],
