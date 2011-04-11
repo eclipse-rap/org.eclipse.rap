@@ -21,11 +21,6 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     // TODO [rh] preliminary workaround to make Browser accessible by tab
     this.setTabIndex( 1 );
     this.setAppearance( "browser" );
-    this.addEventListener( "load", this._onLoad, this );
-  },
-
-  destruct : function() {
-    this.removeEventListener( "load", this._onLoad, this );
   },
   
   properties : {
@@ -90,7 +85,8 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       // server syncs manually
     },
 
-    _onLoad : function( evt ) {
+    _onload : function( evt ) {
+      this.base( arguments, evt );
       this.release();
       this._attachBrowserFunctions();
       this._sendProgressEvent();

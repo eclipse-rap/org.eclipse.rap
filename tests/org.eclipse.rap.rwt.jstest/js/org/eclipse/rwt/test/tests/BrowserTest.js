@@ -272,12 +272,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
+        browser.setSource( "javascript:false;" );
         testUtil.delayTest( 300 );
         testUtil.store( browser );
       },
       function( browser ) {
         browser.createFunction( "abc" );
-        browser.reload(); //simulates a navigation
+        browser.getIframeNode().src = this.BLANK;
         testUtil.delayTest( 300 );
         testUtil.store( browser );
       },
@@ -458,7 +459,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       }
     ],
 
-        
     testDispose :  [
       function() {
         // See Bug 327440 - Memory leak problem with Iframe in Internet Explorer
