@@ -698,7 +698,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       }
     } ),
     
-
     testLayoutTargetNodeAfterBorderRemove : qx.core.Variant.select("qx.client", {
       "mshtml" : function() {
         if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
@@ -717,6 +716,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       },
       "default" : function(){}
     } ),
+    
+    // See Bug 342311
+    testPrepareShapeBug : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      this.gfxBorder.setRadii( [ 3, 3, 3, 3 ] );
+      button.setText( "Hello World!" );
+      button.addToDocument();
+      button.setBackgroundGradient( null );
+      button.setBorder( this.gfxBorder );
+      testUtil.flush();
+      button.setBorder( null );
+      testUtil.flush();
+      button.setBackgroundGradient( this.gradient );
+      // succeeds by not crashing
+      button.destroy();
+      this.gfxBorder.setRadii( [ 0, 0, 0, 0 ] );
+    },
+    
     /////////
     // Helper
 
