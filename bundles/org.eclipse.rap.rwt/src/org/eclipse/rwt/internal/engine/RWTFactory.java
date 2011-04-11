@@ -13,7 +13,8 @@ package org.eclipse.rwt.internal.engine;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rwt.internal.service.ServiceManagerInstance;
+import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 
 
 public class RWTFactory {
@@ -33,10 +34,21 @@ public class RWTFactory {
     return ( EntryPointManager )singleton;
   }
 
-  public static ServiceManagerInstance getServiceManager() {
-    Object singleton = ApplicationContext.getSingleton( ServiceManagerInstance.class );
-    return ( ServiceManagerInstance )singleton;
+  public static ServiceManager getServiceManager() {
+    Object singleton = ApplicationContext.getSingleton( ServiceManager.class );
+    return ( ServiceManager )singleton;
   }
+
+  public static StartupPage getStartupPage() {
+    Object singleton = ApplicationContext.getSingleton( StartupPage.class );
+    return ( StartupPage )singleton;
+  }
+  
+  public static IStartupPageConfigurer getStartupPageConfigurer() {
+    Object singleton = ApplicationContext.getSingleton( StartupPageConfigurer.class );
+    return ( IStartupPageConfigurer )singleton;
+  }
+
 
   private RWTFactory() {
     // prevent instantiation

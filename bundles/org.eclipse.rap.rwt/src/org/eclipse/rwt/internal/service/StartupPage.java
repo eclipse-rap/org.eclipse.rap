@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.theme.*;
@@ -31,26 +31,18 @@ import org.eclipse.rwt.internal.util.*;
  * A helping class that delivers the initial HTML page in order to bootstrap the client side.
  */
 public final class StartupPage {
-  private IStartupPageConfigurer configurer;
-
   public interface IStartupPageConfigurer {
     StartupPageTemplateHolder getTemplate() throws IOException;
     boolean isModifiedSince();
   }
-
-  static void send() throws IOException {
-    getInstance().doSend();
-  }
-
-  private static StartupPage getInstance() {
-    return ( StartupPage )ApplicationContext.getSingleton( StartupPage.class );
-  }
+  
+  private IStartupPageConfigurer configurer;
 
   void setConfigurer( IStartupPageConfigurer configurer ) {
     this.configurer = configurer;
   }
 
-  private void doSend() throws IOException {
+  void send() throws IOException {
     ensureConfigurer();
     if( configurer.isModifiedSince() ) {
       // send out the survey
@@ -65,8 +57,7 @@ public final class StartupPage {
 
   private void ensureConfigurer() {
     if( configurer == null ) {
-      Class instanceType = RWTStartupPageConfigurer.class;
-      configurer = ( IStartupPageConfigurer )ApplicationContext.getSingleton( instanceType );
+      configurer = RWTFactory.getStartupPageConfigurer();
     }
   }
 
@@ -75,10 +66,9 @@ public final class StartupPage {
     response.setContentType( HTTP.CONTENT_TEXT_HTML );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
     StartupPageTemplateHolder template = configurer.getTemplate();
-    template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE,
-                      getBgImage() );
+    template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE, getBgImage() );
     // TODO [fappel]: check whether servletName has to be url encoded
-    //                in case the client has switched of cookies
+    //                in case the client has switched off cookies
     template.replace( StartupPageTemplateHolder.VAR_SERVLET,
                       URLHelper.getServletName() );
     template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
@@ -92,7 +82,7 @@ public final class StartupPage {
     }
   }
 
-  private String getBgImage() {
+  private static String getBgImage() {
     String result = "";
     QxType cssValue = ThemeUtil.getCssValue( "Display",
                                              "background-image",
@@ -108,7 +98,7 @@ public final class StartupPage {
     return result;
   }
 
-  private String getEntryPoint() {
+  private static String getEntryPoint() {
     HttpServletRequest request = ContextProvider.getRequest();
     String result = request.getParameter( RequestParams.STARTUP );
     if( result == null ) {
@@ -117,12 +107,7 @@ public final class StartupPage {
     return result;
   }
 
-  private JavaScriptResponseWriter getResponseWriter() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return stateInfo.getResponseWriter();
-  }
-
-  private StartupPage() {
-    // prevent instance creation
+  private static JavaScriptResponseWriter getResponseWriter() {
+    return ContextProvider.getStateInfo().getResponseWriter();
   }
 }

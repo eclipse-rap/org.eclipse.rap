@@ -78,9 +78,9 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( SettingStoreManagerInstance.class ) );
     assertSame( applicationContext.getInstance( SettingStoreManagerInstance.class ),
                 getSingleton( SettingStoreManagerInstance.class ) );
-    assertNotNull( getSingleton( ServiceManagerInstance.class ) );
-    assertSame( applicationContext.getInstance( ServiceManagerInstance.class ),
-                getSingleton( ServiceManagerInstance.class ) );
+    assertNotNull( getSingleton( ServiceManager.class ) );
+    assertSame( applicationContext.getInstance( ServiceManager.class ),
+                getSingleton( ServiceManager.class ) );
     assertNotNull( getSingleton( ResourceRegistryInstance.class ) );
     assertSame( applicationContext.getInstance( ResourceRegistryInstance.class ),
                 getSingleton( ResourceRegistryInstance.class ) );
@@ -93,9 +93,9 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( ResourceManager.class ) );
     assertSame( applicationContext.getInstance( ResourceManager.class ),
                 getSingleton( ResourceManager.class ) );
-    assertNotNull( getSingleton( RWTStartupPageConfigurer.class ) );
-    assertSame( applicationContext.getInstance( RWTStartupPageConfigurer.class ),
-                getSingleton( RWTStartupPageConfigurer.class ) );
+    assertNotNull( getSingleton( StartupPageConfigurer.class ) );
+    assertSame( applicationContext.getInstance( StartupPageConfigurer.class ),
+                getSingleton( StartupPageConfigurer.class ) );
     assertNotNull( getSingleton( StartupPage.class ) );
     assertSame( applicationContext.getInstance( StartupPage.class ),
                 getSingleton( StartupPage.class ) );

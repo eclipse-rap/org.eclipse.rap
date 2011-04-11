@@ -23,7 +23,6 @@ import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 
 class ServiceHandlerRegistry {
   private static final String SERVICEHANDLER_XML = "servicehandler.xml";
@@ -89,9 +88,7 @@ class ServiceHandlerRegistry {
     }
   }
 
-  private void registerHandlerInstances( IResourceManager manager )
-    throws IOException, FactoryConfigurationError, ParserConfigurationException, SAXException
-  {
+  private void registerHandlerInstances( IResourceManager manager ) throws Exception {
     Enumeration resources = manager.getResources( SERVICEHANDLER_XML );
     while( hasServiceHandlerDeclarations( resources ) ) {
       Document document = parseDocument( ( URL )resources.nextElement() );
@@ -103,16 +100,14 @@ class ServiceHandlerRegistry {
     return resources != null && resources.hasMoreElements();
   }
 
-  private Document parseDocument( URL url )
-    throws FactoryConfigurationError, ParserConfigurationException, IOException, SAXException
-  {
-    DocumentBuilder builder = createBuilder();
+  private static Document parseDocument( URL url ) throws Exception, FactoryConfigurationError {
+    DocumentBuilder builder = createDocumentBuilder();
     URLConnection connection = openConnection( url );
     return parseDocument( builder, connection );
   }
 
-  private Document parseDocument( DocumentBuilder builder, URLConnection connection )
-    throws IOException, SAXException
+  private static Document parseDocument( DocumentBuilder builder, URLConnection connection )
+    throws Exception
   {
     Document result;
     InputStream inputStream = connection.getInputStream();
@@ -124,13 +119,13 @@ class ServiceHandlerRegistry {
     return result;
   }
 
-  private URLConnection openConnection( URL url ) throws IOException {
+  private static URLConnection openConnection( URL url ) throws IOException {
     URLConnection result = url.openConnection();
     result.setUseCaches( false );
     return result;
   }
 
-  private DocumentBuilder createBuilder()
+  private static DocumentBuilder createDocumentBuilder()
     throws FactoryConfigurationError, ParserConfigurationException
   {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -151,19 +146,19 @@ class ServiceHandlerRegistry {
     this.handlers.put( id, handlerInstance );
   }
 
-  private NodeList getHandlerList( Document document ) {
+  private static NodeList getHandlerList( Document document ) {
     return document.getElementsByTagName( "handler" );
   }
 
-  private String getHandlerId( Node item ) {
+  private static String getHandlerId( Node item ) {
     return getAttribute( item, "requestparameter" );
   }
 
-  private String getClassName( Node item ) {
+  private static String getClassName( Node item ) {
     return getAttribute( item, "class" );
   }
 
-  private String getAttribute( Node item, String attrName ) {
+  private static String getAttribute( Node item, String attrName ) {
     return item.getAttributes().getNamedItem( attrName ).getNodeValue();
   }
 }

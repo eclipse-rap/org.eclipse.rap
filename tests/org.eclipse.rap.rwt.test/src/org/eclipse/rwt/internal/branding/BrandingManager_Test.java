@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.service.RWTStartupPageConfigurer;
+import org.eclipse.rwt.internal.service.StartupPageConfigurer;
 import org.eclipse.rwt.internal.util.URLHelper;
 
 
@@ -172,11 +172,11 @@ public class BrandingManager_Test extends TestCase {
     String servletName = URLHelper.getServletName();
     TestBranding branding = new TestBranding( servletName, null, "default" );
     RWTFactory.getBrandingManager().register( branding );
-    RWTStartupPageConfigurer configurer;
+    StartupPageConfigurer configurer;
     // check precondition
     assertEquals( 0, branding.registerResourcesCallCount );
     // access branding for the first time: registerResources must be called
-    configurer = RWTStartupPageConfigurer.getInstance();
+    configurer = StartupPageConfigurer.getInstance();
     configurer.getTemplate();
     assertEquals( 1, branding.registerResourcesCallCount );
     // access branding another time: registerResources must *not* be called

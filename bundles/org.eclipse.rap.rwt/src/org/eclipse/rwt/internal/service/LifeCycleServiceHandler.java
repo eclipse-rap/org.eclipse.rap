@@ -79,7 +79,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     } else {
       Map parameters = ContextProvider.getRequest().getParameterMap();
       RequestParameterBuffer.store( parameters );
-      StartupPage.send();
+      RWTFactory.getStartupPage().send();
     }
     writeOutput();
   }

@@ -26,6 +26,7 @@ import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.resources.*;
+import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.HTTP;
@@ -35,22 +36,23 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 
 
-public final class RWTStartupPageConfigurer
-  implements StartupPage.IStartupPageConfigurer
-{
+public final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   private static final String PACKAGE_NAME 
-    = RWTStartupPageConfigurer.class.getPackage().getName();
+    = StartupPageConfigurer.class.getPackage().getName();
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
   
-  // TODO [fappel]: think about clusters
-  // cache control variables
+  // TODO [fappel]: think about clusters cache control variables
   private int probeCount;
-  private long lastModified = System.currentTimeMillis();
-
+  private long lastModified;
   private StartupPageTemplateHolder template;
-  private final List registeredBrandings = new LinkedList();
+  private final List registeredBrandings;
+  
+  public StartupPageConfigurer() {
+    lastModified = System.currentTimeMillis();
+    registeredBrandings = new LinkedList();
+  }
   
   ////////////////////////////////////////////////////
   // ILifeCycleServiceHandlerConfigurer implementation 
@@ -82,8 +84,7 @@ public final class RWTStartupPageConfigurer
     //      version of the index.html *without* sending a request to ask
     //      whether the cached page can be used.
     //      fix for bug 220733: append no-store to the Cache-Control header
-    response.addHeader( "Cache-Control", 
-                        "max-age=0, no-cache, must-revalidate, no-store" );
+    response.addHeader( "Cache-Control", "max-age=0, no-cache, must-revalidate, no-store" );
     long dateHeader = request.getDateHeader( "If-Modified-Since" );
     // Because browser store the date in format with seconds as smallest unit
     // add one second to avoid rounding problems...
@@ -123,16 +124,15 @@ public final class RWTStartupPageConfigurer
     }
   }
   
-  private InputStream loadTemplateFile() throws IOException {
+  private static InputStream loadTemplateFile() throws IOException {
     InputStream result = null;
     IResourceManager manager = ResourceManager.getInstance();
     ClassLoader buffer = manager.getContextLoader();
-    manager.setContextLoader( RWTStartupPageConfigurer.class.getClassLoader() );
+    manager.setContextLoader( StartupPageConfigurer.class.getClassLoader() );
     try {        
       result = manager.getResourceAsStream( INDEX_TEMPLATE );
       if ( result == null ) {
-        String text =   "Failed to load Browser Survey HTML Page. "
-                      + "Resource {0} could not be found.";
+        String text = "Failed to load Browser Survey HTML Page. Resource {0} could not be found.";
         Object[] param = new Object[]{ INDEX_TEMPLATE };
         String msg = MessageFormat.format( text, param );
         throw new IOException( msg );
@@ -206,10 +206,7 @@ public final class RWTStartupPageConfigurer
                                      noScriptWarning );
   }
 
-  private void registerBrandingResources( 
-    final AbstractBranding branding )
-    throws IOException
-  {
+  private void registerBrandingResources( AbstractBranding branding ) throws IOException {
     synchronized( registeredBrandings ) {
       if( !registeredBrandings.contains( branding ) ) {
         branding.registerResources();
@@ -218,10 +215,10 @@ public final class RWTStartupPageConfigurer
     }
   }
 
-  public static RWTStartupPageConfigurer getInstance() {
-    Class singletonType = RWTStartupPageConfigurer.class;
+  public static StartupPageConfigurer getInstance() {
+    Class singletonType = StartupPageConfigurer.class;
     Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( RWTStartupPageConfigurer )singleton;
+    return ( StartupPageConfigurer )singleton;
   }
 
   private static String getJsLibraries() {
@@ -242,9 +239,5 @@ public final class RWTStartupPageConfigurer
     buffer.append( "\" charset=\"" );
     buffer.append( HTTP.CHARSET_UTF_8 );
     buffer.append( "\"></script>" );
-  }
-
-  private RWTStartupPageConfigurer() {
-    // prevent instance creation
   }
 }

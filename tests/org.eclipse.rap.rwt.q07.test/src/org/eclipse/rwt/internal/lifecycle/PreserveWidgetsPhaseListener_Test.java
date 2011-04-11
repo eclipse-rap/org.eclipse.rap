@@ -24,7 +24,6 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -101,41 +100,27 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
         if( adaptable instanceof Display && adapter == ILifeCycleAdapter.class )
         {
           result = new IDisplayLifeCycleAdapter() {
-
             public void preserveValues( final Display display ) {
               log.append( display.getClass().getName() );
             }
-
-            public void processAction( Device display ) {
-            }
-
             public void readData( Display display ) {
             }
-
             public void render( Display display ) throws IOException {
             }
           };
         } else {
           result = new AbstractWidgetLCA() {
-
             public void preserveValues( final Widget widget ) {
               log.append( widget.getClass().getName() );
             }
-
             public void readData( final Widget widget ) {
             }
-
-            public void renderInitialization( final Widget widget )
-              throws IOException
-            {
+            public void renderInitialization( final Widget widget ) throws IOException {
             }
-
             public void renderChanges( final Widget widget ) throws IOException
             {
             }
-
-            public void renderDispose( final Widget widget ) throws IOException
-            {
+            public void renderDispose( final Widget widget ) throws IOException {
             }
           };
         }

@@ -17,6 +17,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 
 
 public class StartupPage_Test extends TestCase {
@@ -32,7 +33,7 @@ public class StartupPage_Test extends TestCase {
   public void testSurveyGeneration() throws IOException {
     Fixture.fakeResponseWriter();
 //    long start = System.currentTimeMillis();
-    StartupPage.send();
+    RWTFactory.getStartupPage().send();
 //    long end = System.currentTimeMillis();
 //    long initialCreationTime = end - start;
     String initialMarkup = Fixture.getAllMarkup();
@@ -43,7 +44,7 @@ public class StartupPage_Test extends TestCase {
     for( int i = 0; i < 10; i++ ) {
       Fixture.fakeResponseWriter();
 //      start = System.currentTimeMillis();
-      StartupPage.send();
+      RWTFactory.getStartupPage().send();
 //      end = System.currentTimeMillis();
 //      long successiveCreationTime = end - start;
 

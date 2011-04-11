@@ -12,21 +12,68 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rwt.service.IServiceManager;
 
 
-/** <p>provides the appropriate HttpServlet request service handler for the
- *  given runtime mode.</p>
- */
-public final class ServiceManager {
-
-  /** <p>returns the appropriate service handler.</p> */
-  public static IServiceHandler getHandler() {
-    return RWTFactory.getServiceManager().getHandler();
+public class ServiceManager implements IServiceManager {
+  private final ServiceHandlerRegistry customHandlers;
+  private final IServiceHandler handlerDispatcher;
+  private IServiceHandler lifeCycleRequestHandler;
+  
+  private final class HandlerDispatcher implements IServiceHandler {
+    public void service() throws ServletException, IOException {
+      if( isCustomHandler() ) {
+        IServiceHandler customHandler = getCustomHandler();
+        customHandler.service();
+      } else {
+        getLifeCycleRequestHandler().service();
+      }
+    }
+  }
+  
+  public ServiceManager() {
+    handlerDispatcher = new HandlerDispatcher();
+    customHandlers = new ServiceHandlerRegistry();
+  }
+  
+  public void registerServiceHandler( String id, IServiceHandler handler ) {
+    customHandlers.put( id, handler );
   }
 
-  private ServiceManager() {
-    // prevent instance creation
+  public void unregisterServiceHandler( String id ) {
+    customHandlers.remove( id );
+  }
+  
+  public IServiceHandler getHandler() {
+    return handlerDispatcher;
+  }
+  
+  //////////////////
+  // helping methods
+  
+  private static String getCustomHandlerId() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    return request.getParameter( IServiceHandler.REQUEST_PARAM );
+  }
+  
+  private IServiceHandler getLifeCycleRequestHandler() {
+    if( lifeCycleRequestHandler == null ) {
+      lifeCycleRequestHandler = new LifeCycleServiceHandler();
+    }
+    return lifeCycleRequestHandler;
+  }
+
+  private boolean isCustomHandler() {
+    return customHandlers.isCustomHandler( getCustomHandlerId() );
+  }
+  
+  private IServiceHandler getCustomHandler() {
+    return customHandlers.get( getCustomHandlerId() );
   }
 }
