@@ -1179,7 +1179,7 @@ public class Tree extends Composite {
     return columnHolder.size();
   }
 
-  void createItem( final TreeColumn column, final int index ) {
+  void createColumn( TreeColumn column, int index ) {
     columnHolder.insert( column, index );
     if( columnOrder == null ) {
       columnOrder = new int[]{
@@ -1192,8 +1192,7 @@ public class Tree extends Composite {
       }
       int[] newColumnOrder = new int[ length + 1 ];
       System.arraycopy( columnOrder, 0, newColumnOrder, 0, index );
-      System.arraycopy( columnOrder, index, newColumnOrder, index + 1, length
-                                                                       - index );
+      System.arraycopy( columnOrder, index, newColumnOrder, index + 1, length - index );
       columnOrder = newColumnOrder;
       columnOrder[ index ] = index;
     }

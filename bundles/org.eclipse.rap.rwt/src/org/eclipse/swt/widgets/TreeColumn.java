@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -121,13 +121,13 @@ public class TreeColumn extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TreeColumn( final Tree parent, final int style, final int index ) {
+  public TreeColumn( Tree parent, int style, int index ) {
     super( parent, checkStyle( style ) );
     if( !( 0 <= index && index <= parent.columnHolder.size() ) ) {
       error( SWT.ERROR_INVALID_RANGE );
     }
     this.parent = parent;
-    parent.createItem( this, index );
+    parent.createColumn( this, index );
   }
 
   /**
