@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.rwt.RoundedBorder",
   properties : {
 
     // starting top-left going clock-wise
-    radii : { // TODO [tb] group properties?
+    radii : {
       check : "Array",
       nullable : false,
       apply : "_applyRadii",
@@ -58,45 +58,31 @@ qx.Class.define( "org.eclipse.rwt.RoundedBorder",
       this.setRadii( [ value, value, value, value ] );
     },
 
-    //handle properties
-    // the manager is always informed with "top" since "renderTop" handles
-    // everything, however on changed borderWidths the affected edge
-    // must also be given for the widget to recalculate it's layout
     _applyWidthTop : function( value, old ) {
       this.__width[ 0 ] = value;
-      this.__informManager( "top" );
     },
 
     _applyWidthRight : function(value, old) {
       this.__width[ 1 ] = value;
-      this.__informManager( "top" );
-      this.__informManager( "right" );
     },
 
     _applyWidthBottom : function(value, old) {
       this.__width[ 2 ] = value;
-      this.__informManager( "top" );
-      this.__informManager( "bottom" );
     },
 
     _applyWidthLeft : function(value, old) {
       this.__width[ 3 ] = value;
-      this.__informManager( "top" );
-      this.__informManager( "left" );
     },
 
-    _changeColorTop : function( value ) {
+    _applyColorTop : function( value ) {
       this.__color = value;
-      this.__informManager( "top" );
     },
 
     _applyRadii : function( value, old ) {
       this.__radii = value; // TODO [tb] : check the values?
-      this.__informManager( "top" );
     },
 
     //ignore all other properties
-    // TODO [tb] : prodouce error on call?
     _applyColorRight : function() { },
     _applyColorBottom : function() { },
     _applyColorLeft : function() { },

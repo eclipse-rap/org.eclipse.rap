@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -84,14 +84,12 @@ qx.Class.define("qx.theme.manager.Meta",
       }
 
       var colorMgr = qx.theme.manager.Color.getInstance();
-      var borderMgr = qx.theme.manager.Border.getInstance();
       var fontMgr = qx.theme.manager.Font.getInstance();
       var iconMgr = qx.theme.manager.Icon.getInstance();
       var widgetMgr = qx.theme.manager.Widget.getInstance();
       var appearanceMgr = qx.theme.manager.Appearance.getInstance();
 
       colorMgr.setColorTheme(color);
-      borderMgr.setBorderTheme(border);
       fontMgr.setFontTheme(font);
       widgetMgr.setWidgetTheme(widget);
       iconMgr.setIconTheme(icon);
@@ -111,7 +109,6 @@ qx.Class.define("qx.theme.manager.Meta",
         qx.theme.manager.Icon.getInstance().syncIconTheme();
         qx.theme.manager.Widget.getInstance().syncWidgetTheme();
         qx.theme.manager.Font.getInstance().syncFontTheme();
-        qx.theme.manager.Border.getInstance().syncBorderTheme();
         qx.theme.manager.Color.getInstance().syncColorTheme();
       }
     },
@@ -148,17 +145,6 @@ qx.Class.define("qx.theme.manager.Meta",
         }
 
         qx.theme.manager.Color.getInstance().setColorTheme(obj);
-      }
-
-      theme = setting.get("qx.borderTheme");
-      if (theme)
-      {
-        obj = qx.Theme.getByName(theme);
-        if (!obj) {
-          throw new Error("The border theme to use is not available: " + theme);
-        }
-
-        qx.theme.manager.Border.getInstance().setBorderTheme(obj);
       }
 
       theme = setting.get("qx.fontTheme");

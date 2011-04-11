@@ -3645,36 +3645,13 @@ qx.Class.define( "qx.ui.core.Widget", {
     _layoutTargetNode : false,
 
     _applyBorder : function(value, old) {
-      qx.theme.manager.Border.getInstance().connect(this._queueBorder, this, value);
+      this._queueBorder( value );
     },
 
-    /** translates edges to (queue) jobs */
-    __borderJobs : {
-      top : "borderTop",
-      right : "borderRight",
-      bottom : "borderBottom",
-      left : "borderLeft"
-    },
-
-    /**
-     * Callback for border manager connection
-     */
-    _queueBorder : function(value, edge) {
-      if (!edge) {
-        var jobs = this.__borderJobs;
-        for (var entry in jobs) {
-          this.addToQueue(jobs[entry]);
-        }
-        this.__reflowBorderX(value);
-        this.__reflowBorderY(value);
-      } else {
-        if (edge === "left" || edge === "right") {
-          this.__reflowBorderX(value);
-        } else {
-          this.__reflowBorderY(value);
-        }
-        this.addToQueue(this.__borderJobs[edge]);
-      }
+    _queueBorder : function(value ) {
+      this.addToQueue( "border" );
+      this.__reflowBorderX(value);
+      this.__reflowBorderY(value);
       this.__borderObject = value;
     },
 
@@ -3710,33 +3687,17 @@ qx.Class.define( "qx.ui.core.Widget", {
      */
     renderBorder : function(changes) {
       var value = this.__borderObject;
-      if (value) {
-        if (changes.borderTop) {
-          value.renderTop(this);
-        }
-        if (changes.borderRight) {
-          value.renderRight(this);
-        }
-        if (changes.borderBottom) {
-          value.renderBottom(this);
-        }
-        if (changes.borderLeft) {
-          value.renderLeft(this);
-        }
+      if( value ) {
+        value.renderTop(this);
+        value.renderRight(this);
+        value.renderBottom(this);
+        value.renderLeft(this);
       } else {
-        var border = qx.ui.core.Border;
-        if (changes.borderTop) {
-          border.resetTop(this);
+        this._style.border = "";
+        if( this._innerStyle ) {
+          this._innerStyle.border = "";
         }
-        if (changes.borderRight) {
-          border.resetRight(this);
-        }
-        if (changes.borderBottom) {
-          border.resetBottom(this);
-        }
-        if (changes.borderLeft) {
-          border.resetLeft(this);
-        }
+
       }
       // RAP: Fix for Bug 301709
       this._usesComplexBorder = this._computeUsesComplexBorder();

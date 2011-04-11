@@ -1136,13 +1136,9 @@ qx.Class.define("qx.ui.core.Parent",
       // APPLY LAYOUT
       var vChanges = vChild._layoutChanges;
 
-      try
-      {
-        if (vChild.renderBorder)
-        {
-          if (vChanges.borderTop || vChanges.borderRight || vChanges.borderBottom || vChanges.borderLeft) {
-            vChild.renderBorder(vChanges);
-          }
+      try {
+        if (vChild.renderBorder && vChanges.border ) {
+          vChild.renderBorder( vChanges );
         }
       }
       catch(ex)

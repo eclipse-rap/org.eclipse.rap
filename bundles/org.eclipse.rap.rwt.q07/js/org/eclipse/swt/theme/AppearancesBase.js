@@ -1545,11 +1545,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
-      var border = new qx.ui.core.Border();
+      var border;
       if( states.barTop ) {
-        border.setBottom( 1, "solid", color );
+        border = new qx.ui.core.Border( [ 0, 0, 1, 0 ], "solid", color );
       } else {
-        border.setTop( 1, "solid", color );
+        border = new qx.ui.core.Border( [ 1, 0, 0, 0 ], "solid", color );
       }
       result.border = border;
       return result;
@@ -2213,14 +2213,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       if( states.header ) {
-        var border = qx.ui.core.Border.fromConfig({
-          right   : [ 1, "solid", "gray" ],
-          bottom  : [ 1, "solid", "gray" ]
-        });
+        var border = new qx.ui.core.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
       } else {
-        var border = qx.ui.core.Border.fromConfig({
-          right   : [ 1, "solid", "gray" ]
-        });
+        var border = new qx.ui.core.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
       }
       return {
         textAlign       : "center",
@@ -2233,9 +2228,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "calendar-weekday" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var border = qx.ui.core.Border.fromConfig({
-        bottom : [ 1, "solid", "gray" ]
-      });
+      var border = new qx.ui.core.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff 
       var font = tv.getCssFont( "*", "font" );
       var smallFont = new qx.ui.core.Font();

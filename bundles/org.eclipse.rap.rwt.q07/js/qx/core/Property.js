@@ -143,8 +143,8 @@ qx.Class.define("qx.core.Property",
       "Theme"     : 'value !== null && value.$$type === "Theme"',
 
       "Color"     : 'typeof value === "string" && qx.util.ColorUtil.isValid(value)',
-      "Border"    : 'value !== null && qx.theme.manager.Border.getInstance().isDynamic(value)',
-      "Font"      : 'value !== null && qx.theme.manager.Font.getInstance().isDynamic(value)',
+      "Border"    : 'value !== null',
+      "Font"      : 'value !== null',
       "Label"     : 'value !== null && typeof value === "string"'
     },
 

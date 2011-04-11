@@ -136,10 +136,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertEquals( [ 1, 1, 1, 1 ], this.getFakePadding( widget ) );
       assertEquals( [ 1, 1, 1, 1 ], this.getBorderCache( widget ) );
       this.gfxBorder.setWidth( 0 );
+      widget._applyBorder( this.gfxBorder );
       testUtil.flush();      
       assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );
       this.gfxBorder.setWidth( 4, 0, 3, 0 );
+      widget._applyBorder( this.gfxBorder );
       testUtil.flush();      
       assertEquals ( [ 4, 0, 3, 0 ], this.getFakePadding( widget ) );      
       assertEquals ( [ 4, 0, 3, 0 ], this.getBorderCache( widget ) );      
@@ -163,12 +165,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertTrue( this.usesGfxBorder( widget ) );
       var shape = widget._gfxData.backgroundShape;
       assertEquals( 0, gfxUtil.getStrokeWidth( shape ) );
+      widget._applyBorder( this.gfxBorder );
       this.gfxBorder.setWidth( 2 );
       testUtil.flush();
       assertEquals( 2, gfxUtil.getStrokeWidth( shape ) );
       this.gfxBorder.setWidth( 1, 2, 3, 4 );
+      widget._applyBorder( this.gfxBorder );
       testUtil.flush();
       assertEquals( 4, gfxUtil.getStrokeWidth( shape ) );
+      widget.destroy();
+      testUtil.flush();
+    },
+
+    testRoundedBorderColor : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var widget = this._createWidget();
+      this.gfxBorder.setRadius( 3 );      
+      this.gfxBorder.setWidth( 2 );
+      this.gfxBorder.setColor( "red" );
+      widget.setBorder( this.gfxBorder ); 
+      testUtil.flush();
+      assertTrue( this.usesGfxBorder( widget ) );
+      var shape = widget._gfxData.backgroundShape;
+      assertEquals( "red", gfxUtil.getStrokeColor( shape ) );
       widget.destroy();
       testUtil.flush();
     },

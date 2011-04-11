@@ -207,6 +207,13 @@ qx.Class.define( "org.eclipse.rwt.GraphicsUtil", {
     },
     
     /**
+     * returns the color of the stroke of the shape
+     */
+    getStrokeColor : function( shape ) {
+      return this._renderClass.getStrokeColor( shape );      
+    },
+    
+    /**
      * opaciy is a value between 0 and 1. 
      */
     setOpacity : function( shape, opacity ) {

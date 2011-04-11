@@ -97,7 +97,6 @@
     "qx/util/manager/Value.js",
     "qx/theme/manager/Color.js",
     "qx/util/ColorUtil.js",
-    "qx/theme/manager/Border.js",
     "qx/ui/core/Border.js",
     "qx/theme/manager/Font.js",
     "qx/ui/core/Font.js",

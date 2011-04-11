@@ -348,6 +348,10 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       return result; 
     },
     
+    getStrokeColor : function( shape ) {
+      return shape.node.strokecolor.value;
+    },
+    
     setOpacity : function( shape, opacity ) {
       shape.opacity = opacity;
       this._renderFilter( shape );

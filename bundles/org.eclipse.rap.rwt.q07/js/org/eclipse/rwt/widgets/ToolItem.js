@@ -108,7 +108,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
     },
 
     _applySeparatorBorder : function( value, oldValue ) {
-      qx.theme.manager.Border.getInstance().connect( this._queueSeparatorBorder, this, value);
+      this._queueSeparatorBorder( value );
     },
 
     _queueSeparatorBorder : function( value ) {

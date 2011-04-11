@@ -294,6 +294,10 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
       return parseFloat( shape.node.getAttribute( "stroke-width" ) );
     },
 
+    getStrokeColor : function( shape ) {
+      return shape.node.getAttribute( "stroke" );
+    },
+
     setOpacity : function( shape, opacity ) {
       shape.node.setAttribute( "opacity", opacity );
     },
