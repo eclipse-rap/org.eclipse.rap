@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1221,7 +1221,7 @@ public class TreeItem extends Item {
    * Updates internal structures in the receiver and its child items to handle
    * the creation of a new column.
    */
-  void addColumn( final TreeColumn column ) {
+  void addColumn( TreeColumn column ) {
     int index = column.getIndex();
     int columnCount = parent.columnHolder.size();
     if( columnCount > 1 ) {
@@ -1230,9 +1230,7 @@ public class TreeItem extends Item {
       } else {
         String[] newTexts = new String[ columnCount ];
         System.arraycopy( texts, 0, newTexts, 0, index );
-        System.arraycopy( texts, index, newTexts, index + 1, columnCount
-                                                             - index
-                                                             - 1 );
+        System.arraycopy( texts, index, newTexts, index + 1, columnCount - index - 1 );
         texts = newTexts;
       }
       if( index == 0 ) {
@@ -1244,9 +1242,7 @@ public class TreeItem extends Item {
       } else {
         Image[] newImages = new Image[ columnCount ];
         System.arraycopy( images, 0, newImages, 0, index );
-        System.arraycopy( images, index, newImages, index + 1, columnCount
-                                                               - index
-                                                               - 1 );
+        System.arraycopy( images, index, newImages, index + 1, columnCount - index - 1 );
         images = newImages;
       }
       if( index == 0 ) {
