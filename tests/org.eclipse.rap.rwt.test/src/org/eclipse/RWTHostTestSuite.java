@@ -74,6 +74,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Scope_Test.class );
     suite.addTestSuite( ServiceHandler_Test.class );
     suite.addTestSuite( SessionStore_Test.class );
+    suite.addTestSuite( ApplicationStoreImpl_Test.class );
     suite.addTestSuite( EngineConfig_Test.class );
     suite.addTestSuite( QxCleanup_Test.class );
     suite.addTestSuite( ResourceManagerImpl_Test.class );

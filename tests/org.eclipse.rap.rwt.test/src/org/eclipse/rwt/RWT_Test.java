@@ -11,8 +11,11 @@ package org.eclipse.rwt;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.internal.engine.RWTContext;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
@@ -62,6 +65,12 @@ public class RWT_Test extends TestCase {
     assertNotNull( requestThread[ 0 ] );
   }
 
+  public void testGetApplicationStore() {
+    IApplicationStore applicationStore = RWT.getApplicationStore();
+
+    assertSame( applicationStore, RWTContext.getSingleton( ApplicationStoreImpl.class ) );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

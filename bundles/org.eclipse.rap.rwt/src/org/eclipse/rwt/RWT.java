@@ -13,7 +13,8 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -223,6 +224,17 @@ public final class RWT {
    */
   public static ISessionStore getSessionStore() {
     return ContextProvider.getSession();
+  }
+  
+  /**
+   * Returns the <code>IApplicationStore</code> instance that represents the web context's
+   * global data storage area.
+   * 
+   * @return instance of {@link IApplicationStore}
+   * @since 1.4
+   */
+  public static IApplicationStore getApplicationStore() {
+    return ( IApplicationStore )RWTContext.getSingleton( ApplicationStoreImpl.class );
   }
   
   /**

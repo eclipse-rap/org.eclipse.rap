@@ -34,6 +34,7 @@ public class RWTContextUtil {
     = RWTContext.class.getName() + "#RWTContext";
  
   private static final Class[] INSTANCE_TYPES = new Class[] {
+    ApplicationStoreImpl.class,
     ThemeManagerInstance.class,
     ResourceManagerImpl.class,
     ResourceManager.class,
