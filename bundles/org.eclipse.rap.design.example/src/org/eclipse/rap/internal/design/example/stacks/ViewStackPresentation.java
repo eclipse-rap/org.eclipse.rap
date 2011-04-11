@@ -443,6 +443,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     partButtonMap.put( part, buttonArea );
     buttonPartMap.put( buttonArea, part );
     buttonList.add( buttonArea );
+    moveToTabBarEnd( buttonArea );
   }
 
   private void handleToggleZoom( final IPresentablePart part ) {
@@ -559,10 +560,8 @@ public class ViewStackPresentation extends ConfigurableStack {
           }
         }
       }
-      buttonArea.getParent().layout();
       showPartButton( currentPart );
     }
-
   }
 
   private void checkHideSeparator( final Composite buttonArea ) {
@@ -789,14 +788,22 @@ public class ViewStackPresentation extends ConfigurableStack {
   private void showPartButton( final IPresentablePart part ) {
     Control button = ( Control ) partButtonMap.get( part );
     if( button != null && !button.isDisposed() && !button.isVisible() ) {
-      Control hiddenButton = hideLastVisibleButton();
       overflowButtons.remove( button );
+      moveToTabBarEnd( button );
       button.setVisible( true );
-      button.moveAbove( hiddenButton );
     }
     if( tabBg != null && !tabBg.isDisposed() ) {
       tabBg.layout( true, true );
       manageOverflow();
+    }
+  }
+
+  private void moveToTabBarEnd( Control partButton ) {
+    Control lastInvisibleButton = getLastInvisibleButton();
+    if ( lastInvisibleButton != null && lastInvisibleButton.isVisible() ) {
+      partButton.moveBelow( lastInvisibleButton );
+    } else {
+      partButton.moveAbove( lastInvisibleButton );
     }
   }
 
@@ -833,6 +840,7 @@ public class ViewStackPresentation extends ConfigurableStack {
     int result = 0;
     result = getTabChildrenSize();
     result += childToShow.getBounds().width;
+    result += BUTTON_SPACING;
     return result;
   }
 
@@ -908,7 +916,8 @@ public class ViewStackPresentation extends ConfigurableStack {
     Control[] children = tabBg.getChildren();
     for( int i = 0; i < children.length; i++ ) {
       if( children[ i ].isVisible() && !children[ i ].isDisposed() ) {
-        result += ( children[ i ].getSize().x + BUTTON_SPACING );
+        result += children[ i ].getBounds().width;
+        result += BUTTON_SPACING;
       }
     }
     return result;
