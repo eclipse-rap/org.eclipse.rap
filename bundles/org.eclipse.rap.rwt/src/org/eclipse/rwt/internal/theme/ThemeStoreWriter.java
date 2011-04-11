@@ -108,7 +108,7 @@ public final class ThemeStoreWriter {
   }
 
   private static Map createValuesMap( QxType[] values ) {
-    Map result = new HashMap();
+    Map result = new LinkedHashMap();
     for( int i = 0; i < values.length; i++ ) {
       appendValueToMap( values[ i ], result );
     }
