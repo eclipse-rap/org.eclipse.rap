@@ -1131,6 +1131,7 @@ public class ControlLCAUtil {
           result = "w-resize";
         break;
         case SWT.CURSOR_SIZENE:
+        case SWT.CURSOR_SIZENESW:
           result = "ne-resize";
         break;
         case SWT.CURSOR_SIZESE:
@@ -1140,6 +1141,7 @@ public class ControlLCAUtil {
           result = "sw-resize";
         break;
         case SWT.CURSOR_SIZENW:
+        case SWT.CURSOR_SIZENWSE:
           result = "nw-resize";
         break;
         case SWT.CURSOR_IBEAM:

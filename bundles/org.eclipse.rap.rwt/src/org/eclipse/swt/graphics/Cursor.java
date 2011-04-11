@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,10 +23,12 @@ import org.eclipse.swt.SWT;
  *
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>CURSOR_ARROW, CURSOR_WAIT, CURSOR_CROSS, CURSOR_HELP, CURSOR_SIZEALL,
- * CURSOR_SIZENS, CURSOR_SIZEWE, CURSOR_SIZEN, CURSOR_SIZES, CURSOR_SIZEE,
- * CURSOR_SIZEW, CURSOR_SIZENE, CURSOR_SIZESE, CURSOR_SIZESW, CURSOR_SIZENW,
- * CURSOR_IBEAM, CURSOR_HAND, CURSOR_UPARROW</dd>
+ * <dd>
+ *   CURSOR_ARROW, CURSOR_WAIT, CURSOR_CROSS, CURSOR_APPSTARTING, CURSOR_HELP,
+ *   CURSOR_SIZEALL, CURSOR_SIZENESW, CURSOR_SIZENS, CURSOR_SIZENWSE, CURSOR_SIZEWE,
+ *   CURSOR_SIZEN, CURSOR_SIZES, CURSOR_SIZEE, CURSOR_SIZEW, CURSOR_SIZENE, CURSOR_SIZESE,
+ *   CURSOR_SIZESW, CURSOR_SIZENW, CURSOR_UPARROW, CURSOR_IBEAM, CURSOR_NO, CURSOR_HAND
+ * </dd>
  * </dl>
  * <p>
  * Note: Only one of the above styles may be specified.
@@ -70,7 +72,6 @@ public final class Cursor extends Resource {
    *
    * @see SWT#CURSOR_ARROW
    * @see SWT#CURSOR_WAIT
-   * @see SWT#CURSOR_APPSTARTING
    * @see SWT#CURSOR_CROSS
    * @see SWT#CURSOR_APPSTARTING
    * @see SWT#CURSOR_HELP
@@ -161,7 +162,9 @@ public final class Cursor extends Resource {
       case SWT.CURSOR_CROSS:
       case SWT.CURSOR_HELP:
       case SWT.CURSOR_SIZEALL:
+      case SWT.CURSOR_SIZENESW:
       case SWT.CURSOR_SIZENS:
+      case SWT.CURSOR_SIZENWSE:
       case SWT.CURSOR_SIZEWE:
       case SWT.CURSOR_SIZEN:
       case SWT.CURSOR_SIZES:

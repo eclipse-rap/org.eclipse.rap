@@ -2246,12 +2246,24 @@ public class SWT {
   public static final int CURSOR_SIZEALL = 5;
 
   /**
+   * System resize north-east-south-west cursor  (value is 6).
+   * @since 1.4
+   */
+  public static final int CURSOR_SIZENESW = 6;
+
+  /**
    * System resize north-south cursor  (value is 7).
    *
    * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZENS = 7;
+
+  /**
+   * System resize north-west-south-east cursor  (value is 8).
+   * @since 1.4
+   */
+  public static final int CURSOR_SIZENWSE = 8;
 
   /**
    * System resize west-east cursor  (value is 9).
