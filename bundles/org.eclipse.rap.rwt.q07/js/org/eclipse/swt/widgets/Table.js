@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
@@ -834,13 +834,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _onChangeSize : function( evt ) {
-      this._updateClientAreaSize();
+      // [if] workaround for bug 333043
+      // update _clientArea size only if it's visible, otherwize update size _onClientAppear event
+      if( this._clientArea.isSeeable() ) {
+        this._updateClientAreaSize();
+      }
     },
 
     _onClientAppear : function( evt ) {
-      this._updateRowCount();
-      this._updateRows();
-      this._updateGridLines();
+      this._updateClientAreaSize();
     },
 
     ///////////////////////
@@ -1272,7 +1274,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._clientArea.setHeight( clientHeight );
       this._clientArea.setWidth( clientWidth );
       this._updateColumnHeader();
-      this._updateGridLines();
       // Adjust number of rows and update rows if necessary
       if( this._updateRowCount() ) {
         this._updateRows();
@@ -1280,6 +1281,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._updateRowBounds();
         this._updateRowTop();
       }
+      this._updateGridLines();
     },
 
     _updateRowCount : function() {
