@@ -12,24 +12,28 @@ package org.eclipse.rap.examples.pages;
 import org.eclipse.swt.layout.GridLayout;
 
 
-public final class ExampleUtil {
+final class ExampleUtil {
 
-  public static GridLayout createGridLayout( final int numColumns,
-                                             final boolean makeColumnsEqualWidth )
+  static GridLayout createGridLayout( final int numColumns,
+                                      final boolean makeColumnsEqual )
   {
-    return createGridLayout( numColumns, makeColumnsEqualWidth, 0, 0 );
+    return createGridLayout( numColumns, makeColumnsEqual, 0, 0 );
   }
 
-  public static GridLayout createGridLayout( final int numColumns,
-                                             final boolean makeColumnsEqualWidth,
-                                             final int margin,
-                                             final int spacing )
+  static GridLayout createGridLayout( final int numColumns,
+                                      final boolean makeColumnsEqual,
+                                      final int margin,
+                                      final int spacing )
   {
-    GridLayout result = new GridLayout( numColumns, makeColumnsEqualWidth );
+    GridLayout result = new GridLayout( numColumns, makeColumnsEqual );
     result.horizontalSpacing = spacing;
     result.verticalSpacing = spacing;
     result.marginWidth = margin;
     result.marginHeight = margin;
     return result;
+  }
+  
+  private ExampleUtil() {
+    // prevent instantiation
   }
 }

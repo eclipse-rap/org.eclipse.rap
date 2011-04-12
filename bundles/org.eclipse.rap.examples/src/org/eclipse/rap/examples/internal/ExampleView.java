@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2008, 2010 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -24,17 +24,20 @@ import org.eclipse.ui.part.ViewPart;
 
 
 public class ExampleView extends ViewPart {
-
   public static final String ID = "org.eclipse.rap.examples.exampleView";
+  
+  private final Map examplePages;
   private PageBook book;
-  private Map examplePages = new HashMap();
   private SelectionListener selectionListener;
 
+  public ExampleView() {
+    examplePages = new HashMap();
+  }
+  
   public void createPartControl( final Composite parent ) {
     book = new PageBook( parent, 0 );
     selectionListener = new SelectionListener();
-    ISelectionService selectionService
-      = getSite().getWorkbenchWindow().getSelectionService();
+    ISelectionService selectionService = getSelectionService();
     selectionService.addSelectionListener( selectionListener );
   }
 
@@ -43,8 +46,7 @@ public class ExampleView extends ViewPart {
   }
 
   public void dispose() {
-    ISelectionService selectionService
-      = getSite().getWorkbenchWindow().getSelectionService();
+    ISelectionService selectionService = getSelectionService();
     selectionService.removeSelectionListener( selectionListener );
     super.dispose();
   }
@@ -63,6 +65,10 @@ public class ExampleView extends ViewPart {
       result = exPage;
     }
     return result;
+  }
+
+  private ISelectionService getSelectionService() {
+    return getSite().getWorkbenchWindow().getSelectionService();
   }
 
   private final class SelectionListener implements ISelectionListener {
