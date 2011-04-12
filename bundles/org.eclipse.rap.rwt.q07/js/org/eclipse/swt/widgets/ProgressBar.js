@@ -176,7 +176,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     // OVERWRITTEN, called indirectly by _applyBorder in qx.ui.core.Widget
     _queueBorder : function( value ) {
       this.addToQueue( "indicatorBorder" );
-      if( value instanceof org.eclipse.rwt.RoundedBorder ) {
+      if( value && value.getStyle() === "rounded" ) {
         // rounded borders are to be ignored by the qooxdoo-layouting:
         this._cachedBorderTop = 0;
         this._cachedBorderRight = 0;
@@ -283,7 +283,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
 
     _styleIndicatorBorder : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
-      if( this.getBorder() instanceof org.eclipse.rwt.RoundedBorder ) {
+      if( this.getBorder() && this.getBorder().getStyle() === "rounded" ) {
         if( !this._useBorderShape ) {
           this._style.border = "";
           if( this._borderShape == null ) {

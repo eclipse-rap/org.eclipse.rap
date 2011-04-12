@@ -133,8 +133,26 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         }
       }
     },
+    
+    // Overwritten:
+    renderBorder : function( changes ) {
+      var value = this.__borderObject;
+      if( value ) {
+        if( value.getStyle() === "rounded" ) {
+          this._styleGfxBorder( value.getWidths(), value.getColor(), value.getRadii() );
+        } else {
+          value.render( this );
+        }
+      } else {
+        this._style.border = "";
+        if( this._innerStyle ) {
+          this._innerStyle.border = "";
+        }
+      }
+      // RAP: Fix for Bug 301709
+      this._usesComplexBorder = this._computeUsesComplexBorder();
+    },
 
-    //called by RoundedBorder:    
     _styleGfxBorder : function( width, color, radii ) {
       // NOTE: widgets with no dimensions of their own wont work together 
       //       with a gfxBorder (accepted bug)
@@ -182,8 +200,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     
     //overwritten:
     _computeUsesComplexBorder : function() {
-      var result =    this._gfxBorderEnabled 
-                   && this.getGfxProperty( "borderMaxWidth" ) > 0 ;
+      var result = this._gfxBorderEnabled && this.getGfxProperty( "borderMaxWidth" ) > 0 ;
       if( !result ) {
         result = this.base( arguments );
       }
@@ -668,7 +685,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     //called if the GfxBorder object has been replaced
     _gfxOnBorderChanged : function( event ) {
-      if ( !( event.getValue() instanceof org.eclipse.rwt.RoundedBorder ) ) {
+      var border = event.getValue();
+      if ( !( border && border.getStyle() === "rounded" ) ) {
         this._styleGfxBorder( null, null, null );
       }
     },

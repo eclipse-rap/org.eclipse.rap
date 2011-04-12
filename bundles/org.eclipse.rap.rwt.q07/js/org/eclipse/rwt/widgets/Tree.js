@@ -1420,18 +1420,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _getGridBorder : function( state ) {
-      var border = new qx.ui.core.Border( 0 );
       var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
       var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
       tvGrid.dispose();
+      var borderWidths = [ 0, 0, 0, 0 ];
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;
-      border.setColor( gridColor );
       if( state.horizontal ) {
-        border.setWidthBottom( 1 );
+        borderWidths[ 2 ] = 1;
       } else if( state.vertical ) {
-        border.setWidthRight( 1 );
+        borderWidths[ 1 ] = 1;
       }
-      return border;
+      return new org.eclipse.rwt.Border( borderWidths, "solid", gridColor );
     },
     
     _layoutX : function() {

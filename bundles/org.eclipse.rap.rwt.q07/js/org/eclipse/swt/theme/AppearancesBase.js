@@ -981,26 +981,26 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "TreeColumn", "color" );
       result.font = tv.getCssFont( "TreeColumn", "font" );
       result.backgroundColor = tv.getCssColor( "TreeColumn", "background-color" );
-      result.backgroundImage = tv.getCssImage( "TreeColumn",
-                                               "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "TreeColumn",
-                                                     "background-image" );
+      result.backgroundImage = tv.getCssImage( "TreeColumn", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "TreeColumn", "background-image" );
       result.opacity = states.moving ? 0.6 : 1.0;
       result.padding = tv.getCssBoxDimensions( "TreeColumn", "padding" );
-      var border = new qx.ui.core.Border( 0 );
+      var borderColors = [ null, null, null, null ];
+      var borderWidths = [ 0, 0, 0, 0 ];
+      var borderStyles = [ "solid", "solid", "solid", "solid" ];
       if( !states.dummy ) {
         var verticalState = { "vertical" : true };
         var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
         var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;
-        border.setColorRight( gridColor );
-        border.setWidthRight( 1 );
+        borderColors[ 1 ] = gridColor;
+        borderWidths[ 1 ] = 1;
       }
       var borderBottom = tv.getCssBorder( "TreeColumn", "border-bottom" );
-      border.setWidthBottom( borderBottom.getWidthBottom() );
-      border.setStyleBottom( borderBottom.getStyleBottom() );
-      border.setColorBottom( borderBottom.getColorBottom() );
-      result.border = border;
+      borderWidths[ 2 ] = borderBottom.getWidthBottom();
+      borderStyles[ 2 ] = borderBottom.getStyleBottom();
+      borderColors[ 2 ] = borderBottom.getColorBottom();
+      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       return result;
     }
   },
@@ -1058,7 +1058,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 //    result.height = "1*";
       result.overflow = "hidden";
       result.backgroundColor = tv.getCssColor( "*", "background-color" );
-      result.border = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
+      result.border = new org.eclipse.rwt.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
       result.padding = 10;
       return result;
     }
@@ -1082,35 +1082,19 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-
-      var border_top_normal 
-        = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
-      border_top_normal.setWidthBottom( 0 );
-
-      var border_top_checked 
-        = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
-      border_top_checked.setWidthBottom( 0 );
+      var borderColor = tv.getCssNamedColor( "thinborder" );
       var top_color = tv.getCssColor( "TabItem", "border-top-color" );
-      border_top_checked.setWidthTop( 3 );
-      border_top_checked.setStyleTop( "solid" );
-      border_top_checked.setColorTop( top_color );
-
-      var border_bottom_normal 
-        = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
-      border_bottom_normal.setWidthTop( 0 );
-
-      var border_bottom_checked 
-        = new qx.ui.core.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
-      border_bottom_checked.setWidthTop( 0 );
       var bottom_color = tv.getCssColor( "TabItem", "border-bottom-color" );
-      border_bottom_checked.setWidthBottom( 3 );
-      border_bottom_checked.setStyleBottom( "solid" );
-      border_bottom_checked.setColorBottom( bottom_color );
-
+      var checkedColorTop = [ top_color, borderColor, borderColor, borderColor ];
+      var checkedColorBottom = [ borderColor, borderColor, bottom_color, borderColor ];
       if( states.checked ) {
         result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?
         result.padding = [ 2, 8, 4, 7 ];
-        result.border = states.barTop ? border_top_checked : border_bottom_checked;
+        if( states.barTop ) {
+          result.border = new org.eclipse.rwt.Border( [ 3, 1, 0, 1 ], "solid", checkedColorTop ); 
+        } else {
+          result.border = new org.eclipse.rwt.Border( [ 0, 1, 3, 1 ], "solid", checkedColorBottom );
+        }
         result.margin = [ 0, -1, 0, -2 ];
         if( states.alignLeft ) {
           if( states.firstChild ) {
@@ -1143,19 +1127,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
           }
         }
         if( states.barTop ) {
-          result.border = border_top_normal;
+          result.border = new org.eclipse.rwt.Border( [ 1, 1, 0, 1 ], "solid", borderColor );
           result.marginTop = 3;
           result.marginBottom = 1;
         } else {
-          result.border = border_bottom_normal;
+          result.border = new org.eclipse.rwt.Border( [ 0, 1, 1, 1 ], "solid", borderColor );
           result.marginTop = 1;
           result.marginBottom = 3;
         }
       }
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
       result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "TabItem",
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "TabItem", "background-image" );
       return result;
     }
   },
@@ -1342,22 +1325,23 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "TableColumn", "font" );
       result.backgroundColor = tv.getCssColor( "TableColumn", "background-color" );
       result.backgroundImage = tv.getCssImage( "TableColumn", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "TableColumn",
-                                                     "background-image" );
-      var border = new qx.ui.core.Border( 0 );
+      result.backgroundGradient = tv.getCssGradient( "TableColumn", "background-image" );
+      var borderColors = [ null, null, null, null ];
+      var borderWidths = [ 0, 0, 0, 0 ];
+      var borderStyles = [ "solid", "solid", "solid", "solid" ];
       if( !states.dummy ) {
         var verticalState = { "vertical" : true };
         var tvGrid = new org.eclipse.swt.theme.ThemeValues( verticalState );
         var gridColor = tvGrid.getCssColor( "Table-GridLine", "color" );
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;
-        border.setColorRight( gridColor );        
-        border.setWidthRight( 1 );
+        borderColors[ 1 ] = gridColor;
+        borderWidths[ 1 ] = 1;
       }
       var borderBottom = tv.getCssBorder( "TableColumn", "border-bottom" );
-      border.setWidthBottom( borderBottom.getWidthBottom() );
-      border.setStyleBottom( borderBottom.getStyleBottom() );
-      border.setColorBottom( borderBottom.getColorBottom() );
-      result.border = border;
+      borderWidths[ 2 ] = borderBottom.getWidthBottom();
+      borderStyles[ 2 ] = borderBottom.getStyleBottom();
+      borderColors[ 2 ] = borderBottom.getColorBottom();
+      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       return result;
     }
   },
@@ -1391,16 +1375,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( states.linesvisible ) {
         // TODO [rst] Optimize: this function might be called a few times,
         //            the border can be cached somewhere
-        var border = new qx.ui.core.Border( 0 );
         var horizontalState = { "horizontal" : true };
         var tvGrid = new org.eclipse.swt.theme.ThemeValues( horizontalState );
         var gridColor = tvGrid.getCssColor( "Table-GridLine", "color" );
         gridColor = gridColor == "undefined" ? "transparent" : gridColor;        
-        border.setColor( gridColor );
-        border.setWidthBottom( 1 );
-        result.border = border;
+        result.border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", gridColor );
       } else {
-        result.border = "undefined";
+        result.border = "undefined"; // resets border to initial value (not a border itself!) 
       }
       result.textColor = tv.getCssColor( "TableItem", "color" );
       if( result.textColor == "undefined" ) {
@@ -1438,10 +1419,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var gridColor = tv.getCssColor( "Table-GridLine", "color" );
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;
       var result = {};
-      var border = new qx.ui.core.Border( 0 );
-      border.setColor( gridColor );      
-      border.setWidthLeft( 1 );
-      result.border = border;
+      result.border = new org.eclipse.rwt.Border( [ 0, 0, 0, 1 ], "solid", gridColor );
       return result;
     }
   },
@@ -1506,19 +1484,17 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       var radii = tv.getCssBoxDimensions( "CTabFolder", "border-radius" );
-      if( radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0 )
-      {
-        result.border = new org.eclipse.rwt.RoundedBorder( 0, color );
+      var borderWidth = states.rwt_BORDER ? 1 : 0;
+      if( radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0 ) {
+        var borderRadii;
         if( states.barTop ) {
-          result.border.setRadii( [ radii[ 0 ], radii[ 1 ], 0, 0 ] );
+          borderRadii = [ radii[ 0 ], radii[ 1 ], 0, 0 ];
         } else {
-          result.border.setRadii( [ 0, 0, radii[ 2 ], radii[ 3 ] ] );
+          borderRadii = [ 0, 0, radii[ 2 ], radii[ 3 ] ];
         }
+        result.border = new org.eclipse.rwt.Border( borderWidth, "rounded", color, borderRadii );
       } else {
-        result.border = new qx.ui.core.Border( 0, "solid", color );
-      }
-      if( states.rwt_BORDER ) {
-        result.border.setWidth( 1 );
+        result.border = new org.eclipse.rwt.Border( borderWidth, "solid", color );
       }
       return result;
     }
@@ -1535,7 +1511,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         }
         var tv = new org.eclipse.swt.theme.ThemeValues( statesWithSelected );
         var color = tv.getCssColor( "CTabItem", "background-color" );
-        result.border = new qx.ui.core.Border( 2, "solid", color );
+        result.border = new org.eclipse.rwt.Border( 2, "solid", color );
       } else {
         result.border = "undefined";
       }
@@ -1551,9 +1527,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       var border;
       if( states.barTop ) {
-        border = new qx.ui.core.Border( [ 0, 0, 1, 0 ], "solid", color );
+        border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", color );
       } else {
-        border = new qx.ui.core.Border( [ 1, 0, 0, 0 ], "solid", color );
+        border = new org.eclipse.rwt.Border( [ 1, 0, 0, 0 ], "solid", color );
       }
       result.border = border;
       return result;
@@ -1582,28 +1558,27 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         radii[ 0 ] = 0;
         radii[ 1 ] = 0;
       }
-      var rounded
-         = radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0;
-      if( rounded && states.selected ) {
-        result.border = new org.eclipse.rwt.RoundedBorder( 0, color );
-        result.border.setRadii( radii );
-        result.containerOverflow = false;
-      } else {
-        result.border = new qx.ui.core.Border( 0, "solid", color );
-      }
+      var rounded = radii[ 0 ] > 0 || radii[ 1 ] > 0 || radii[ 2 ] > 0 || radii[ 3 ] > 0;
+      var borderWidths = [ 0, 0, 0, 0 ];
       if( !states.nextSelected ) {
-        result.border.setWidthRight( 1 );
+        borderWidths[ 1 ] = 1;
       }
       if( states.selected ) {
-        result.border.setWidthLeft( 1 );
+        borderWidths[ 3 ] = 1;
         if( states.barTop ) {
-          result.border.setWidthTop( 1 );
+          borderWidths[ 0 ] = 1;
         } else {
-          result.border.setWidthBottom( 1 );
+          borderWidths[ 2 ] = 1;
         }
       }
       if( states.firstItem && states.rwt_BORDER && !rounded ) {
-        result.border.setWidthLeft( 1 );
+        borderWidths[ 3 ] = 1;
+      }
+      if( rounded && states.selected ) {
+        result.border = new org.eclipse.rwt.Border( borderWidths, "rounded", color, radii );
+        result.containerOverflow = false;
+      } else {
+        result.border = new org.eclipse.rwt.Border( borderWidths, "solid", color );
       }
       if( states.selected ) {
         result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
@@ -1627,7 +1602,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( states.over ) {
         result.backgroundColor = "white";
         var color = tv.getCssColor( "CTabFolder", "border-color" );
-        result.border = new qx.ui.core.Border( 1, "solid", color );
+        result.border = new org.eclipse.rwt.Border( 1, "solid", color );
       } else {
         result.backgroundColor = "undefined";
         result.border = "undefined";
@@ -2217,9 +2192,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       if( states.header ) {
-        var border = new qx.ui.core.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
+        var border = new org.eclipse.rwt.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
       } else {
-        var border = new qx.ui.core.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
+        var border = new org.eclipse.rwt.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
       }
       return {
         textAlign       : "center",
@@ -2232,7 +2207,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "calendar-weekday" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var border = new qx.ui.core.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
+      var border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff 
       var font = tv.getCssFont( "*", "font" );
       var smallFont = new qx.ui.core.Font();
@@ -2265,7 +2240,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.backgroundColor = "undefined";
       }
       var borderColor = states.disabled ? tv.getCssColor( "*", "color" ) : "red";
-      var border = new qx.ui.core.Border( 1, "solid", borderColor );
+      var border = new org.eclipse.rwt.Border( 1, "solid", borderColor );
       result.border = states.today ? border : "undefined";
       return result;
     }

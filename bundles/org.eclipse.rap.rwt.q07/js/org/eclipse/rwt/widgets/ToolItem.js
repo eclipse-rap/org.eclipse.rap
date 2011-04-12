@@ -147,11 +147,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
         if( changes.separatorBorder ) {
           // apply the separator-border (currently verly limited)
           var style = this.getCellNode( 3 ).style;
-          var borderWidth = this._separatorBorder.__widthLeft;
+          var borderWidth = this._separatorBorder.getWidthLeft();
           var borderStyle = this._separatorBorder.getStyleLeft();
-          var borderColor = this._separatorBorder.__colorLeft;
-          // simplified version of "renderLeft" (of qx.ui.core.Border):
-          style.borderLeftWidth = borderWidth || "0px";
+          var borderColor = this._separatorBorder.getColorLeft();
+          style.borderLeftWidth = ( borderWidth || 0 ) + "px";
           style.borderLeftStyle = borderStyle || "none";
           style.borderLeftColor = borderColor || "";
         }

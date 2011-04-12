@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var border = tv.getCssBorder( cssSelector, "border" );
       var opacity = tv.getCssFloat( cssSelector, "opacity" );
-      var hasValidBorder = border instanceof qx.ui.core.Border;
+      var hasValidBorder = border instanceof org.eclipse.rwt.Border;
       var margin = tv.getCssBoxDimensions( cssSelector, "margin" );
       var padding = tv.getCssBoxDimensions( cssSelector, "padding" );
       if( !padding ) {

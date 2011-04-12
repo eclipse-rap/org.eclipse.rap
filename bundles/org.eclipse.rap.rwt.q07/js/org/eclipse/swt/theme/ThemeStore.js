@@ -204,7 +204,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       var key = this._getCssValue( element, states, property, theme );
       var value = this._values.borders[ key ];
       var border;
-      if( !( value instanceof qx.ui.core.Border ) ) {
+      if( !( value instanceof org.eclipse.rwt.Border ) ) {
         border = this._getBorderFromValue( value );
         this._values.borders[ key ] = border;
       } else {
@@ -218,7 +218,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
           //            due to their dependence on (independently usable) non-rounded border.
           var width = border.getWidthTop();
           var color = border.getColorTop();
-          border = new org.eclipse.rwt.RoundedBorder( width, color, radii );
+          border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
         }
       }
       return border;
@@ -242,8 +242,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         if( borderDef ) {
           var color = this._resolveNamedColors( borderDef.color );
           var innerColor = this._resolveNamedColors( borderDef.innerColor );
-          result = new qx.ui.core.Border( borderDef.width, "solid", color );
-          result.setInnerColor( innerColor );
+          result = new org.eclipse.rwt.Border( borderDef.width, "complex", color, innerColor );
           result.setUserData( "isComplex", true );
           this._values.borders[ key ] = result;
         } else {
@@ -387,7 +386,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         }
       }
       if( result === null ) {
-        result = new qx.ui.core.Border( value.width, value.style, value.color );
+        result = new org.eclipse.rwt.Border( value.width, value.style, value.color );
       }
       return result;
     }

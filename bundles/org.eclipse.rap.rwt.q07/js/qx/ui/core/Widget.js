@@ -144,8 +144,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       qx.ui.core.Widget.flushGlobalLayoutQueue();
       qx.ui.core.Widget.flushGlobalDisplayQueue();
       qx.ui.core.Widget.flushGlobalDisposeQueue();
-      qx.ui.core.Widget._flushGlobalQueuesPhase 
-        = qx.ui.core.Widget._FLUSH_PHASE_IDLE;
+      qx.ui.core.Widget._flushGlobalQueuesPhase = qx.ui.core.Widget._FLUSH_PHASE_IDLE;
       delete qx.ui.core.Widget._inFlushGlobalQueues;
     },
 
@@ -2855,14 +2854,10 @@ qx.Class.define( "qx.ui.core.Widget", {
       this._applyStateStyleFocus(this.__states);
       var vAppearance = this.getAppearance();
       if (vAppearance) {
-        try {
           var r = qx.theme.manager.Appearance.getInstance().styleFrom(vAppearance, this.__states);
           if (r) {
             this._styleFromMap(r);
           }
-        } catch(ex) {
-          throw new Error( "Could not apply state appearance " + ex );
-        }
       }
     },
 
@@ -3644,21 +3639,21 @@ qx.Class.define( "qx.ui.core.Widget", {
     _usesComplexBorder : false,
     _layoutTargetNode : false,
 
-    _applyBorder : function(value, old) {
+    _applyBorder : function( value, old ) {
       this._queueBorder( value );
     },
 
-    _queueBorder : function(value ) {
+    _queueBorder : function( value ) {
       this.addToQueue( "border" );
-      this.__reflowBorderX(value);
-      this.__reflowBorderY(value);
+      this.__reflowBorderX( value );
+      this.__reflowBorderY( value );
       this.__borderObject = value;
     },
 
     /**
      * Invalidates the cached frame on y-axis when border changes occour
      */
-    __reflowBorderX : function(value) {
+    __reflowBorderX : function( value ) {
       var oldLeftWidth = this._cachedBorderLeft;
       var oldRightWidth = this._cachedBorderRight;
       this._cachedBorderLeft = value ? value.getWidthLeft() : 0;
@@ -3688,10 +3683,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     renderBorder : function(changes) {
       var value = this.__borderObject;
       if( value ) {
-        value.renderTop(this);
-        value.renderRight(this);
-        value.renderBottom(this);
-        value.renderLeft(this);
+        value.render( this );
       } else {
         this._style.border = "";
         if( this._innerStyle ) {
@@ -3704,8 +3696,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     _computeUsesComplexBorder : function() {
-      // it is assumed that either all edges are complex or none
-      return this.__borderObject && this.__borderObject.__complexTop;
+      return this.__borderObject && this.__borderObject.getStyle() === "complex";
     },
 
     prepareEnhancedBorder : function() {

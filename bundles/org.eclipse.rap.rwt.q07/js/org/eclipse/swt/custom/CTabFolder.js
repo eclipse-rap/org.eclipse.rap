@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this._frame = new qx.ui.layout.CanvasLayout();
     this._frame.setAppearance( "ctabfolder-frame" );
     this.add( this._frame );
-    this._frameBorder = new qx.ui.core.Border( 2, "solid" );
+    this._frameBorder = new org.eclipse.rwt.Border( 2, "solid", "black" );
 
     // Create horizontal line that separates the button bar from the rest of
     // the client area

@@ -487,6 +487,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
                   + error
                   + "</pre></body></html>";
       this._writeErrorPage( content );
+      throw error;
     }
 
   }

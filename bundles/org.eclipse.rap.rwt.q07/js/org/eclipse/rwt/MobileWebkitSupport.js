@@ -89,10 +89,8 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
 
     _bindListeners : function() {
        this.__onTouchEvent = qx.lang.Function.bind( this._onTouchEvent, this );
-       this.__onGestureEvent 
-         = qx.lang.Function.bind( this._onGestureEvent, this );
-       this.__onOrientationEvent 
-         = qx.lang.Function.bind( this._onOrientationEvent, this );
+       this.__onGestureEvent = qx.lang.Function.bind( this._onGestureEvent, this );
+       this.__onOrientationEvent = qx.lang.Function.bind( this._onOrientationEvent, this );
     },
 
     _registerListeners : function() {
@@ -293,7 +291,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
                             true, //cancelable 
                             window, //view 
                             0, // detail 
-                            coordiantes[ 0 ], // screenX 
+                            coordiantes[ 0 ], //screenX 
                             coordiantes[ 1 ], //screenY 
                             coordiantes[ 0 ], //clientX 
                             coordiantes[ 1 ], //clientY 
