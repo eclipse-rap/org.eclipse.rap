@@ -25,54 +25,82 @@ import org.eclipse.swt.widgets.Display;
 
 public class ImageFactory_Test extends TestCase {
 
-  public void testFindImageByPath_registersResource() {
-    ClassLoader classLoader = ImageFactory_Test.class.getClassLoader();
-    String path = Fixture.IMAGE1;
-    Image image1 = ImageFactory.findImage( path, classLoader );
+  private static final String TEST_PATH = "testpath";
+
+  private static final ClassLoader CLASS_LOADER = ImageFactory_Test.class.getClassLoader();
+
+  private Display display;
+
+  private ImageFactory imageFactory;
+
+  public void testFindImageByPathRegistersResource() {
+    Image image1 = imageFactory.findImage( Fixture.IMAGE1, CLASS_LOADER );
     String registerPath = getRegisterPath( image1 );
     assertTrue( ResourceManager.getInstance().isRegistered( registerPath ) );
   }
 
-  public void testFindImageByPath_returnsSharedImage() {
-    ClassLoader classLoader = ImageFactory_Test.class.getClassLoader();
-    Image image1 = ImageFactory.findImage( Fixture.IMAGE1, classLoader );
-    Image image1a = ImageFactory.findImage( Fixture.IMAGE1, classLoader );
+  public void testFindImageByPathReturnsSharedImage() {
+    Image image1 = imageFactory.findImage( Fixture.IMAGE1, CLASS_LOADER );
+    Image image1a = imageFactory.findImage( Fixture.IMAGE1, CLASS_LOADER );
     assertNotNull( image1 );
     assertSame( image1, image1a );
-    Image image2 = ImageFactory.findImage( Fixture.IMAGE2, classLoader );
-    Image image2a = ImageFactory.findImage( Fixture.IMAGE2, classLoader );
+    Image image2 = imageFactory.findImage( Fixture.IMAGE2, CLASS_LOADER );
+    Image image2a = imageFactory.findImage( Fixture.IMAGE2, CLASS_LOADER );
     assertNotNull( image2 );
     assertSame( image2, image2a );
   }
 
   public void testCreateImage() {
-    Display display = new Display();
-    String path = "testpath";
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream1 = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image1 = ImageFactory.createImage( display , path, stream1 );
-    assertNotNull( image1 );
-    InputStream stream2 = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image2 = ImageFactory.createImage( display, path, stream2 );
+    InputStream stream1 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
+    Image image = imageFactory.createImage( display, TEST_PATH, stream1 );
+    assertNotNull( image );
+    assertNotNull( image.internalImage );
+  }
+  
+  public void testCreateImageReturnsDistinctInstancesForSameStream() {
+    InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
+    Image image1 = imageFactory.createImage( display, TEST_PATH, stream );
+    Image image2 = imageFactory.createImage( display, TEST_PATH, stream );
     assertNotSame( image1, image2 );
     assertSame( image1.internalImage, image2.internalImage );
+  }
+  
+  public void testCreateImageReturnsDisposableImage() {
+    InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
+    Image image1 = imageFactory.createImage( display, TEST_PATH, stream );
     // image must be disposable, i.e. dispose must not throw an ISE
     image1.dispose();
   }
 
-  private static String getRegisterPath( final Image image ) {
-    String imagePath = ResourceFactory.getImagePath( image );
-    int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
-    return imagePath.substring( prefixLength );
+  public void testGetImagePath() {
+    InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
+    Image image = imageFactory.createImage( display, TEST_PATH, stream );
+    String imagePath = imageFactory.getImagePath( image );
+    assertNotNull( imagePath );
+    assertTrue( imagePath.length() > 0 );
+  }
+
+  public void testGetImagePathForNullImage() {
+    String imagePath = imageFactory.getImagePath( null );
+    assertNull( imagePath );
   }
 
   protected void setUp() throws Exception {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
+    display = new Display();
+    imageFactory = new ImageFactory();
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
+  }
+
+  private static String getRegisterPath( Image image ) {
+    String imagePath = ResourceFactory.getImagePath( image );
+    int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
+    return imagePath.substring( prefixLength );
   }
 }

@@ -12,57 +12,94 @@
 package org.eclipse.swt.internal.graphics;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 
 
-/**
- * This class provides access to shared Image instances.
- */
-public final class ImageFactory {
+public class ImageFactory {
+  
+  private final Map cache;
+  private final Object cacheLock;
+  
+  public ImageFactory() {
+    cache = new HashMap();
+    cacheLock = new Object();
+  }
 
-  public static Image findImage( final String path ) {
+  public Image findImage( String path ) {
     IResourceManager manager = ResourceManager.getInstance();
     return findImage( path, manager.getContextLoader() );
   }
 
-  public static Image findImage( final String path,
-                                 final ClassLoader imageLoader )
-  {
-    return getInstance().findImage( path, imageLoader );
+  public Image findImage( String path, ClassLoader imageLoader ) {
+    Image result;
+    synchronized( cacheLock ) {
+      result = ( Image )cache.get( path );
+      if( result == null ) {
+        result = createImage( path, imageLoader );
+        cache.put( path, result );
+      }
+    }
+    return result;
   }
 
-  public static Image findImage( final String path,
-                                 final InputStream inputStream )
-  {
-    return getInstance().findImage( path, inputStream );
+  public Image findImage( String path, InputStream inputStream ) {
+    Image result;
+    synchronized( cacheLock ) {
+      result = ( Image )cache.get( path );
+      if( result == null ) {
+        result = createImage( null, path, inputStream );
+        cache.put( path, result );
+      }
+    }
+    return result;
   }
 
-  public static Image createImage( final Device device,
-                                   final String key,
-                                   final InputStream inputStream )
-  {
-    return getInstance().createImage( device, key, inputStream );
+  public Image createImage( Device device, String key, InputStream inputStream ) {
+    InternalImageFactory internalImageFactory = RWTFactory.getInternalImageFactory();
+    InternalImage internalImage = internalImageFactory.findInternalImage( key, inputStream );
+    return createImageInstance( device, internalImage );
   }
 
-  public static String getImagePath( final Image image ) {
-    return getInstance().getImagePath( image );
+  String getImagePath( Image image ) {
+    String result = null;
+    if( image != null ) {
+      String resourceName = image.internalImage.getResourceName();
+      result = ResourceManager.getInstance().getLocation( resourceName );
+    }
+    return result;
   }
 
-  static void clear() {
-    getInstance().clear();
+  private Image createImage( String path, ClassLoader imageLoader ) {
+    InputStream inputStream = getInputStream( path, imageLoader );
+    return createImage( null, path, inputStream );
   }
 
-  private static ImageFactoryInstance getInstance() {
-    Object singleton = ApplicationContext.getSingleton( ImageFactoryInstance.class );
-    return ( ImageFactoryInstance )singleton;
+  private static Image createImageInstance( Device device, InternalImage internalImage ) {
+    Class[] paramTypes = new Class[] { Device.class, InternalImage.class };
+    Object[] paramValues = new Object[] { device, internalImage };
+    return ( Image )ClassUtil.newInstance( Image.class, paramTypes, paramValues );
   }
-  
-  private ImageFactory() {
-    // prevent instantiation
+
+  private static InputStream getInputStream( String path, ClassLoader imageLoader ) {
+    IResourceManager manager = ResourceManager.getInstance();
+    ClassLoader bufferedContextLoader = manager.getContextLoader();
+    if( imageLoader != null ) {
+      manager.setContextLoader( imageLoader );
+    }
+    InputStream result;
+    try {
+      result = manager.getResourceAsStream( path );
+    } finally {
+      manager.setContextLoader( bufferedContextLoader );
+    }
+    return result;
   }
 }

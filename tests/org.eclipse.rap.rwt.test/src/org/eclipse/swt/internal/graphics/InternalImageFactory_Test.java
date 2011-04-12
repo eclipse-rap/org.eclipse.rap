@@ -23,18 +23,18 @@ import org.eclipse.swt.graphics.*;
 
 
 public class InternalImageFactory_Test extends TestCase {
+  private static final ClassLoader CLASS_LOADER = Fixture.class.getClassLoader();
+  private InternalImageFactory internalImageFactory;
 
   public void testRegisterResource() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream inputStream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    InputStream inputStream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     String name = "testName";
     InternalImageFactory.registerResource( name, inputStream );
     assertTrue( ResourceManager.getInstance().isRegistered( name ) );
   }
 
   public void testReadImageData() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream inputStream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
+    InputStream inputStream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData data
       = InternalImageFactory.readImageData( new BufferedInputStream( inputStream ) );
     assertEquals( 100, data.width );
@@ -56,11 +56,10 @@ public class InternalImageFactory_Test extends TestCase {
   }
 
   public void testInternalImagesFromInputStreamAreCached() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream1 = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    InternalImage internalImage1 = InternalImageFactory.findInternalImage( stream1 );
-    InputStream stream2 = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    InternalImage internalImage2 = InternalImageFactory.findInternalImage( stream2 );
+    InputStream stream1 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( stream1 );
+    InputStream stream2 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
+    InternalImage internalImage2 = internalImageFactory.findInternalImage( stream2 );
     assertNotNull( internalImage1 );
     assertSame( internalImage1, internalImage2 );
   }
@@ -69,8 +68,8 @@ public class InternalImageFactory_Test extends TestCase {
     File imageFile = new File( Fixture.TEMP_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE1, imageFile );
     String path = imageFile.getAbsolutePath();
-    InternalImage internalImage1 = InternalImageFactory.findInternalImage( path );
-    InternalImage internalImage2 = InternalImageFactory.findInternalImage( path );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( path );
+    InternalImage internalImage2 = internalImageFactory.findInternalImage( path );
     assertNotNull( internalImage1 );
     assertSame( internalImage1, internalImage2 );
   }
@@ -80,10 +79,8 @@ public class InternalImageFactory_Test extends TestCase {
     ImageData imageData1 = image.getImageData();
     ImageData imageData2 = image.getImageData();
     assertNotSame( imageData1, imageData2 );
-    InternalImage internalImage1
-      = InternalImageFactory.findInternalImage( imageData1 );
-    InternalImage internalImage2
-      = InternalImageFactory.findInternalImage( imageData2 );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( imageData1 );
+    InternalImage internalImage2 = internalImageFactory.findInternalImage( imageData2 );
     assertNotNull( internalImage1 );
     assertSame( internalImage1, internalImage2 );
   }
@@ -93,10 +90,8 @@ public class InternalImageFactory_Test extends TestCase {
     PaletteData palette2 = new PaletteData( new RGB[] { new RGB( 3, 5, 42 ) } );
     ImageData imageData1 = new ImageData( 8, 8, 8, palette1  );
     ImageData imageData2 = new ImageData( 8, 8, 8, palette2 );
-    InternalImage internalImage1
-      = InternalImageFactory.findInternalImage( imageData1 );
-    InternalImage internalImage2
-      = InternalImageFactory.findInternalImage( imageData2 );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( imageData1 );
+    InternalImage internalImage2 = internalImageFactory.findInternalImage( imageData2 );
     assertNotSame( internalImage1, internalImage2 );
   }
 
@@ -105,30 +100,26 @@ public class InternalImageFactory_Test extends TestCase {
     PaletteData palette2 = new PaletteData( 1, 2, 3 );
     ImageData imageData1 = new ImageData( 8, 8, 8, palette1  );
     ImageData imageData2 = new ImageData( 8, 8, 8, palette2 );
-    InternalImage internalImage1
-      = InternalImageFactory.findInternalImage( imageData1 );
-    InternalImage internalImage2
-      = InternalImageFactory.findInternalImage( imageData2 );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( imageData1 );
+    InternalImage internalImage2 = internalImageFactory.findInternalImage( imageData2 );
     assertNotSame( internalImage1, internalImage2 );
   }
 
   public void testFindInternalImageWithPath() {
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream1 = loader.getResourceAsStream( Fixture.IMAGE1 );
+    InputStream stream1 = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     String key = "testkey";
-    InternalImage internalImage1
-      = InternalImageFactory.findInternalImage( key, stream1 );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( key, stream1 );
     assertNotNull( internalImage1 );
     // second stream is not read
     InputStream stream2 = new ByteArrayInputStream( new byte[ 0 ] );
-    InternalImage internalImage2
-      = InternalImageFactory.findInternalImage( key, stream2 );
+    InternalImage internalImage2 = internalImageFactory.findInternalImage( key, stream2 );
     assertSame( internalImage1, internalImage2 );
   }
 
   protected void setUp() throws Exception {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
+    internalImageFactory = new InternalImageFactory();
   }
 
   protected void tearDown() throws Exception {

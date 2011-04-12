@@ -11,62 +11,194 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.*;
 
-/**
- * This class creates, caches and provides access to shared instances of
- * InternalImage.
- */
-public final class InternalImageFactory {
 
-  public static InternalImage findInternalImage( final String fileName ) {
-    return getInstance().findInternalImage( fileName );
-  }
-
-  public static InternalImage findInternalImage( final InputStream stream ) {
-    return getInstance().findInternalImage( stream );
-  }
-
-  public static InternalImage findInternalImage( final ImageData imageData ) {
-    return getInstance().findInternalImage( imageData );
-  }
-
-  public static InternalImage findInternalImage( final String key,
-                                                 final InputStream inputStream )
-  {
-    return getInstance().findInternalImage( key, inputStream );
-  }
-
-  static void registerResource( final String path, final InputStream stream ) {
-    getInstance().registerResource( path, stream );
-  }
-
-  static ImageData readImageData( final BufferedInputStream stream )
-    throws SWTException
-  {
-    return getInstance().readImageData( stream );
-  }
-
-  static InputStream createInputStream( final ImageData imageData ) {
-    return getInstance().createInputStream( imageData );
-  }
-
-  static void clear() {
-    getInstance().clear();
-  }
-
-  private static InternalImageFactoryInstance getInstance() {
-    Class singletonType = InternalImageFactoryInstance.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( InternalImageFactoryInstance )singleton;
-  }
+public class InternalImageFactory {
+  private final Map cache;
+  private final Object cacheLock;
   
-  private InternalImageFactory() {
-    // prevent instantiation
+  InternalImageFactory() {
+    cache = new HashMap();
+    cacheLock = new Object();
+  }
+
+  // TODO [rst] If we do not rely on the fact that there is only one
+  //            InternalImage instance, we could loose synchronization as in
+  //            ImageDataFactory.
+  public InternalImage findInternalImage( String fileName ) {
+    InternalImage result;
+    synchronized( cacheLock ) {
+      result = ( InternalImage )cache.get( fileName );
+      if( result == null ) {
+        result = createInternalImage( fileName );
+        cache.put( fileName, result );
+      }
+    }
+    return result;
+  }
+
+  public InternalImage findInternalImage( InputStream stream ) {
+    InternalImage result;
+    BufferedInputStream bufferedStream = new BufferedInputStream( stream );
+    ImageData imageData = readImageData( bufferedStream );
+    String path = createGeneratedImagePath( imageData );
+    synchronized( cacheLock ) {
+      result = ( InternalImage )cache.get( path );
+      if( result == null ) {
+        result = createInternalImage( path, bufferedStream, imageData );
+        cache.put( path, result );
+      }
+    }
+    return result;
+  }
+
+  public InternalImage findInternalImage( ImageData imageData ) {
+    InternalImage result;
+    String path = createGeneratedImagePath( imageData );
+    synchronized( cacheLock ) {
+      result = ( InternalImage )cache.get( path );
+      if( result == null ) {
+        InputStream stream = createInputStream( imageData );
+        result = createInternalImage( path, stream, imageData );
+        cache.put( path, result );
+      }
+    }
+    return result;
+  }
+
+  InternalImage findInternalImage( String key, InputStream inputStream ) {
+    InternalImage result;
+    synchronized( cacheLock ) {
+      result = ( InternalImage )cache.get( key );
+      if( result == null ) {
+        BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
+        ImageData imageData = readImageData( bufferedStream );
+        String path = createGeneratedImagePath( imageData );
+        result = createInternalImage( path, bufferedStream, imageData );
+        cache.put( key, result );
+      }
+    }
+    return result;
+  }
+
+  static ImageData readImageData( InputStream stream ) throws SWTException {
+    ////////////////////////////////////////////////////////////////////////////
+    // TODO: [fappel] Image size calculation and resource registration both
+    //                read the input stream. Because of this I use a workaround
+    //                with a BufferedInputStream. Resetting it after reading the
+    //                image size enables the ResourceManager to reuse it for
+    //                registration. Note that the order is crucial here, since
+    //                the ResourceManager seems to close the stream (shrug).
+    //                It would be nice to find a solution without reading the
+    //                stream twice.
+    stream.mark( Integer.MAX_VALUE );
+    ImageData result = new ImageData( stream );
+    try {
+      stream.reset();
+    } catch( final IOException shouldNotHappen ) {
+      String msg = "Could not reset input stream after reading image";
+      throw new RuntimeException( msg, shouldNotHappen );
+    }
+    return result;
+  }
+
+  static InputStream createInputStream( ImageData imageData ) {
+    ImageLoader imageLoader = new ImageLoader();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    imageLoader.data = new ImageData[] { imageData };
+    imageLoader.save( outputStream, getOutputFormat( imageData ) );
+    byte[] bytes = outputStream.toByteArray();
+    return new ByteArrayInputStream( bytes );
+  }
+
+  static void registerResource( String path, InputStream stream ) {
+    IResourceManager manager = ResourceManager.getInstance();
+    manager.register( path, stream );
+  }
+
+  private static InternalImage createInternalImage( String fileName ) {
+    InternalImage result;
+    try {
+      FileInputStream stream = new FileInputStream( fileName );
+      try {
+        result = createInternalImage( stream );
+      } finally {
+        stream.close();
+      }
+    } catch( IOException e ) {
+      throw new SWTException( SWT.ERROR_IO, e.getMessage() );
+    }
+    return result;
+  }
+
+  private static InternalImage createInternalImage( InputStream stream ) {
+    BufferedInputStream bufferedStream = new BufferedInputStream( stream );
+    ImageData imageData = readImageData( bufferedStream );
+    String path = createGeneratedImagePath( imageData );
+    return createInternalImage( path, bufferedStream, imageData );
+  }
+
+  private static InternalImage createInternalImage( String path,
+                                                    InputStream stream,
+                                                    ImageData imageData )
+  {
+    registerResource( path, stream );
+    return new InternalImage( path, imageData.width, imageData.height );
+  }
+
+  private static int getOutputFormat( ImageData imageData ) {
+    int result = imageData.type;
+    if( imageData.type == SWT.IMAGE_UNDEFINED ) {
+      result = SWT.IMAGE_PNG;
+    }
+    return result;
+  }
+
+  private static String createGeneratedImagePath( ImageData data ) {
+    int hashCode = getHashCode( data );
+    return "generated/" + Integer.toHexString( hashCode );
+  }
+
+  // TODO [rh] improve test coverage, getHashCode seems to be tested at most indirectly
+  private static int getHashCode( ImageData imageData ) {
+    int result;
+    if( imageData.data  == null ) {
+      result = 0;
+    } else {
+      result = 1;
+      for( int i = 0; i < imageData.data.length; i++ ) {
+        result = 31 * result + imageData.data[ i ];
+      }
+    }
+    if( imageData.palette != null  ) {
+      if( imageData.palette.isDirect ) {
+        result = result * 29 + imageData.palette.redMask;
+        result = result * 29 + imageData.palette.greenMask;
+        result = result * 29 + imageData.palette.blueMask;
+      } else {
+        RGB[] rgb = imageData.palette.getRGBs();
+        for( int i = 0; i < rgb.length; i++ ) {
+          result = result * 37 + rgb[ i ].red;
+          result = result * 37 + rgb[ i ].green;
+          result = result * 37 + rgb[ i ].blue;
+        }
+      }
+    }
+    result = result * 41 + imageData.alpha;
+    result = result * 41 + imageData.transparentPixel;
+    result = result * 41 + imageData.type;
+    result = result * 41 + imageData.bytesPerLine;
+    result = result * 41 + imageData.scanlinePad;
+    result = result * 41 + imageData.maskPad;
+    return result;
   }
 }

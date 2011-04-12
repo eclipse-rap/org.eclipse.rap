@@ -13,16 +13,17 @@ package org.eclipse.swt.internal.graphics;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
 
 public class FontDataFactory_Test extends TestCase {
 
-  public void testFind() {
+  private FontDataFactory fontDataFactory;
+
+  public void testFindFontData() {
     FontData fontData = new FontData( "Times", 18, SWT.NORMAL );
-    FontData result = FontDataFactory.findFontData( fontData );
+    FontData result = fontDataFactory.findFontData( fontData );
     assertNotNull( result );
     assertNotSame( fontData, result );
     assertEquals( "Times", result.getName() );
@@ -30,27 +31,23 @@ public class FontDataFactory_Test extends TestCase {
     assertEquals( SWT.NORMAL, result.getStyle() );
   }
 
-  public void testSafeCopy() {
+  public void testFindFontDataReturnsSafeCopy() {
     FontData fontData = new FontData( "Times", 18, SWT.NORMAL );
-    FontData result = FontDataFactory.findFontData( fontData );
+    FontData result = fontDataFactory.findFontData( fontData );
     assertNotSame( fontData, result );
     fontData.setHeight( 23 );
     assertEquals( 18, result.getHeight() );
   }
 
-  public void testShared() {
+  public void testFindFontDataReturnsSharedInstance() {
     FontData fontData1 = new FontData( "Times", 18, SWT.NORMAL );
-    FontData result1 = FontDataFactory.findFontData( fontData1 );
+    FontData result1 = fontDataFactory.findFontData( fontData1 );
     FontData fontData2 = new FontData( "Times", 18, SWT.NORMAL );
-    FontData result2 = FontDataFactory.findFontData( fontData2 );
+    FontData result2 = fontDataFactory.findFontData( fontData2 );
     assertSame( result1, result2 );
   }
 
   protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    fontDataFactory = new FontDataFactory();
   }
 }

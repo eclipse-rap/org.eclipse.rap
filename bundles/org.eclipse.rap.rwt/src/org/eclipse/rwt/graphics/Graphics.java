@@ -13,6 +13,7 @@ package org.eclipse.rwt.graphics;
 
 import java.io.InputStream;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
@@ -138,7 +139,7 @@ public final class Graphics {
     if( "".equals( path ) ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    return ImageFactory.findImage( path );
+    return RWTFactory.getImageFactory().findImage( path );
   }
 
   /**
@@ -169,7 +170,7 @@ public final class Graphics {
     if( "".equals( path ) ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    return ImageFactory.findImage( path, imageLoader );
+    return RWTFactory.getImageFactory().findImage( path, imageLoader );
   }
 
   /**
@@ -203,7 +204,7 @@ public final class Graphics {
     if( "".equals( path ) ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    return ImageFactory.findImage( path, inputStream );
+    return RWTFactory.getImageFactory().findImage( path, inputStream );
   }
 
   /**

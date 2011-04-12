@@ -14,9 +14,9 @@ package org.eclipse.swt.graphics;
 
 import java.io.InputStream;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.graphics.InternalImage;
-import org.eclipse.swt.internal.graphics.InternalImageFactory;
 
 /**
  * Instances of this class are graphics which have been prepared
@@ -124,7 +124,7 @@ public final class Image extends Resource {
     if( stream == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    internalImage = InternalImageFactory.findInternalImage( stream );
+    internalImage = findInternalImage( stream );
   }
 
   /**
@@ -168,7 +168,7 @@ public final class Image extends Resource {
     if( fileName == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    internalImage = InternalImageFactory.findInternalImage( fileName );
+    internalImage = findInternalImage( fileName );
   }
 
   /**
@@ -244,7 +244,7 @@ public final class Image extends Resource {
     if( imageData == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    internalImage = InternalImageFactory.findInternalImage( imageData );
+    internalImage = findInternalImage( imageData );
   }
 
   /**
@@ -286,7 +286,7 @@ public final class Image extends Resource {
     Color white = device.getSystemColor( SWT.COLOR_WHITE );
     PaletteData palette = new PaletteData( new RGB[] { white.getRGB() } );
     ImageData imageData = new ImageData( width, height, 8, palette );
-    internalImage = InternalImageFactory.findInternalImage( imageData );
+    internalImage = findInternalImage( imageData );
   }
 
   /**
@@ -404,5 +404,17 @@ public final class Image extends Resource {
     }
     // do nothing
     return null;
+  }
+
+  private static InternalImage findInternalImage( final ImageData imageData ) {
+    return RWTFactory.getInternalImageFactory().findInternalImage( imageData );
+  }
+
+  private static InternalImage findInternalImage( final InputStream stream ) {
+    return RWTFactory.getInternalImageFactory().findInternalImage( stream );
+  }
+
+  private static InternalImage findInternalImage( final String fileName ) {
+    return RWTFactory.getInternalImageFactory().findInternalImage( fileName );
   }
 }

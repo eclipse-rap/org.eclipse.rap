@@ -18,7 +18,7 @@ import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.IApplicationStore;
-import org.eclipse.swt.internal.graphics.TextSizeStorageRegistry;
+import org.eclipse.swt.internal.graphics.*;
 
 
 public class RWTFactory {
@@ -73,9 +73,28 @@ public class RWTFactory {
   }
 
   public static TextSizeStorageRegistry getTextSizeStorageRegistry() {
-    return ( TextSizeStorageRegistry )ApplicationContext.getSingleton( TextSizeStorageRegistry.class );
+    Object singleton = ApplicationContext.getSingleton( TextSizeStorageRegistry.class );
+    return ( TextSizeStorageRegistry )singleton;
   }
 
+  public static ImageFactory getImageFactory() {
+    Object singleton = ApplicationContext.getSingleton( ImageFactory.class );
+    return ( ImageFactory )singleton;
+  }
+
+  public static FontDataFactory getFontDataFactory() {
+    return ( FontDataFactory )ApplicationContext.getSingleton( FontDataFactory.class );
+  }
+
+  public static ImageDataFactory getImageDataFactory() {
+    return ( ImageDataFactory )ApplicationContext.getSingleton( ImageDataFactory.class );
+  }
+
+  public static InternalImageFactory getInternalImageFactory() {
+    Object singleton = ApplicationContext.getSingleton( InternalImageFactory.class );
+    return ( InternalImageFactory )singleton;
+  }
+  
   private RWTFactory() {
     // prevent instantiation
   }

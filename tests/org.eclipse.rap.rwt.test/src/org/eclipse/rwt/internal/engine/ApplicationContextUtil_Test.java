@@ -59,18 +59,18 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( ResourceFactoryInstance.class ) );
     assertSame( applicationContext.getInstance( ResourceFactoryInstance.class ),
                 getSingleton( ResourceFactoryInstance.class ) );
-    assertNotNull( getSingleton( ImageFactoryInstance.class ) );
-    assertSame( applicationContext.getInstance( ImageFactoryInstance.class ),
-                getSingleton( ImageFactoryInstance.class ) );
-    assertNotNull( getSingleton( InternalImageFactoryInstance.class ) );
-    assertSame( applicationContext.getInstance( InternalImageFactoryInstance.class ),
-                getSingleton( InternalImageFactoryInstance.class ) );
-    assertNotNull( getSingleton( ImageDataFactoryInstance.class ) );
-    assertSame( applicationContext.getInstance( ImageDataFactoryInstance.class ),
-                getSingleton( ImageDataFactoryInstance.class ) );
-    assertNotNull( getSingleton( FontDataFactoryInstance.class ) );
-    assertSame( applicationContext.getInstance( FontDataFactoryInstance.class ),
-                getSingleton( FontDataFactoryInstance.class ) );
+    assertNotNull( getSingleton( ImageFactory.class ) );
+    assertSame( applicationContext.getInstance( ImageFactory.class ),
+                getSingleton( ImageFactory.class ) );
+    assertNotNull( getSingleton( InternalImageFactory.class ) );
+    assertSame( applicationContext.getInstance( InternalImageFactory.class ),
+                getSingleton( InternalImageFactory.class ) );
+    assertNotNull( getSingleton( ImageDataFactory.class ) );
+    assertSame( applicationContext.getInstance( ImageDataFactory.class ),
+                getSingleton( ImageDataFactory.class ) );
+    assertNotNull( getSingleton( FontDataFactory.class ) );
+    assertSame( applicationContext.getInstance( FontDataFactory.class ),
+                getSingleton( FontDataFactory.class ) );
     assertNotNull( getSingleton( AdapterFactoryRegistryInstance.class ) );
     assertSame( applicationContext.getInstance( AdapterFactoryRegistryInstance.class ),
                 getSingleton( AdapterFactoryRegistryInstance.class ) );

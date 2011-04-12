@@ -11,30 +11,38 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.eclipse.swt.graphics.FontData;
 
 
-/**
- * This class creates and provides shared FontData instances for internal use.
- */
-public final class FontDataFactory {
-
-  public static FontData findFontData( final FontData fontData ) {
-    return getInstance().findFontData( fontData );
-  }
-
-  static void clear() {
-    getInstance().clear();
-  }
-
-  private static FontDataFactoryInstance getInstance() {
-    Class singletonType = FontDataFactoryInstance.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( FontDataFactoryInstance )singleton;
-  }
+public class FontDataFactory {
+  private final Map cache;
   
-  private FontDataFactory() {
-    // prevent instantiation
+  public FontDataFactory() {
+    cache = new Hashtable();
+  }
+
+  public FontData findFontData( final FontData fontData ) {
+    // Note [rst]: We don't need to synchronize get and put here. Since the
+    //             creation of FontData is deterministic, concurrent access
+    //             can at worst lead to one FontData instance overwriting the
+    //             other. In this rare case, two equal internal FontData
+    //             instances would be in use in the system, which is harmless.
+    Object key = new Integer( fontData.hashCode() );
+    FontData result = ( FontData )cache.get( key );
+    if( result == null ) {
+      result = cloneFontData( fontData );
+      cache.put( key, result );
+    }
+    return result;
+  }
+
+  private static FontData cloneFontData( FontData fontData ) {
+    String name = fontData.getName();
+    int height = fontData.getHeight();
+    int style = fontData.getStyle();
+    return new FontData( name, height, style );
   }
 }

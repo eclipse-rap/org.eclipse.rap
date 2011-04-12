@@ -12,8 +12,8 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.*;
-import org.eclipse.swt.internal.graphics.*;
 
 
 /**
@@ -38,7 +38,7 @@ public final class Font extends Resource {
   // used by ResourceFactory#getFont()
   private Font( final FontData fontData ) {
     super( null );
-    internalFontData = FontDataFactory.findFontData( fontData );
+    internalFontData = findFontData( fontData );
   }
 
   /**
@@ -72,7 +72,7 @@ public final class Font extends Resource {
     if( fontData == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    internalFontData = FontDataFactory.findFontData( fontData );
+    internalFontData = findFontData( fontData );
   }
 
   /**
@@ -117,7 +117,7 @@ public final class Font extends Resource {
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );
       }
     }
-    internalFontData = FontDataFactory.findFontData( fontData[ 0 ] );
+    internalFontData = findFontData( fontData[ 0 ] );
   }
 
   /**
@@ -142,11 +142,7 @@ public final class Font extends Resource {
    *    <li>ERROR_NO_HANDLES - if a font could not be created from the given arguments</li>
    * </ul>
    */
-  public Font( final Device device,
-               final String name,
-               final int height,
-               final int style )
-  {
+  public Font( final Device device, final String name, final int height, final int style ) {
     super( checkDevice( device ) );
     if( name == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -155,7 +151,7 @@ public final class Font extends Resource {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
     FontData fontData = new FontData( name, height, style );
-    internalFontData = FontDataFactory.findFontData( fontData );
+    internalFontData = findFontData( fontData );
   }
 
   /**
@@ -226,5 +222,9 @@ public final class Font extends Resource {
     buffer.append( styleName );
     buffer.append( "}" );
     return buffer.toString();
+  }
+
+  private static FontData findFontData( final FontData fontData ) {
+    return RWTFactory.getFontDataFactory().findFontData( fontData );
   }
 }

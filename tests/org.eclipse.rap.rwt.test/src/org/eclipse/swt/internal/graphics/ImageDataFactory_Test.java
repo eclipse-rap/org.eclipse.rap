@@ -23,28 +23,31 @@ import org.eclipse.swt.graphics.ImageData;
 
 
 public class ImageDataFactory_Test extends TestCase {
+  private static final ClassLoader CLASS_LOADER = ImageDataFactory_Test.class.getClassLoader();
+  
+  private ImageDataFactory imageDataFactory;
 
   public void testFindImageData() {
-    ClassLoader classLoader = ImageDataFactory_Test.class.getClassLoader();
-    Image image = Graphics.getImage( Fixture.IMAGE_50x100, classLoader );
+    Image image = Graphics.getImage( Fixture.IMAGE_50x100, CLASS_LOADER );
     IResourceManager resMgr = ResourceManager.getInstance();
     assertTrue( resMgr.isRegistered( image.internalImage.getResourceName() ) );
-    ImageData imageData = ImageDataFactory.findImageData( image.internalImage );
+    ImageData imageData = imageDataFactory.findImageData( image.internalImage );
     assertNotNull( imageData );
     assertEquals( 50, imageData.width );
     assertEquals( 100, imageData.height );
-    ImageData imageData2 = ImageDataFactory.findImageData( image.internalImage );
-    assertNotNull( imageData2 );
-    assertNotSame( imageData, imageData2 );
-    assertEquals( imageData.data.length, imageData2.data.length );
+  }
+  
+  public void testFindImageDataUsesCachedImage() {
+    Image image = Graphics.getImage( Fixture.IMAGE_50x100, CLASS_LOADER );
+    ImageData imageData1 = imageDataFactory.findImageData( image.internalImage );
+    ImageData imageData2 = imageDataFactory.findImageData( image.internalImage );
+    assertNotSame( imageData1, imageData2 );
+    assertEquals( imageData1.data.length, imageData2.data.length );
   }
 
   public void testFindImageDataWithBlankImage() {
-    ClassLoader classLoader = ImageDataFactory_Test.class.getClassLoader();
-    Image blankImage = Graphics.getImage( "resources/images/blank.gif",
-                                          classLoader );
-    ImageData blankData
-      = ImageDataFactory.findImageData( blankImage.internalImage );
+    Image blankImage = Graphics.getImage( "resources/images/blank.gif", CLASS_LOADER );
+    ImageData blankData = imageDataFactory.findImageData( blankImage.internalImage );
     assertNotNull( blankData );
     assertEquals( 1, blankData.width );
     assertEquals( 1, blankData.height );
@@ -52,7 +55,7 @@ public class ImageDataFactory_Test extends TestCase {
 
   public void testFindImageDataWithNull() {
     try {
-      ImageDataFactory.findImageData( null );
+      imageDataFactory.findImageData( null );
       fail( "Must not allow null-argument" );
     } catch( NullPointerException expected ) {
     }
@@ -61,6 +64,7 @@ public class ImageDataFactory_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
+    imageDataFactory = new ImageDataFactory();
   }
 
   protected void tearDown() throws Exception {

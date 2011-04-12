@@ -11,31 +11,53 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.ImageData;
 
 
-/**
- * This class provides ImageData for internal images. Small image data objects
- * are being cached.
- */
-final class ImageDataFactory {
-
-  public static ImageData findImageData( final InternalImage internalImage ) {
-    return getInstance().findImageData( internalImage );
-  }
-
-  static void clear() {
-    getInstance().clear();
-  }
-
-  private static ImageDataFactoryInstance getInstance() {
-    Class singletonType = ImageDataFactoryInstance.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( ImageDataFactoryInstance )singleton;
-  }
+public class ImageDataFactory {
+  private final ImageDataCache imageDataCache;
   
-  private ImageDataFactory() {
-    // prevent instantiation
+  ImageDataFactory() {
+    imageDataCache = new ImageDataCache();
+  }
+
+  ImageData findImageData( InternalImage internalImage ) {
+    ImageData result;
+    // Note [rst]: We don't need to synchronize access here. Since the creation
+    //             of ImageData is deterministic, at worst it is done more than
+    //             once when accessed concurrently.
+    result = imageDataCache.getImageData( internalImage );
+    if( result == null ) {
+      result = createImageData( internalImage );
+      if( result != null ) {
+        imageDataCache.putImageData( internalImage, result );
+      }
+    }
+    return result;
+  }
+
+  private static ImageData createImageData( InternalImage internalImage ) {
+    ImageData result = null;
+    String imagePath = internalImage.getResourceName();
+    try {
+      IResourceManager manager = ResourceManager.getInstance();
+      InputStream inputStream = manager.getRegisteredContent( imagePath );
+      if( inputStream != null ) {
+        try {
+          result = new ImageData( inputStream );
+        } finally {
+          inputStream.close();
+        }
+      }
+    } catch( IOException ioe ) {
+      String message = "Failed to close input stream";
+      throw new RuntimeException( message, ioe );
+    }
+    return result;
   }
 }

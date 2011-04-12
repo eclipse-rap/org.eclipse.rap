@@ -19,12 +19,12 @@ import java.io.InputStream;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.internal.graphics.ImageFactory;
 
 /**
  * An image descriptor that loads its image information from a file.
@@ -121,7 +121,7 @@ class FileImageDescriptor extends ImageDescriptor {
         InputStream inputStream = getStream();
         if( inputStream != null ) {
           try {
-            result = ImageFactory.createImage( device, path, inputStream );
+            result = RWTFactory.getImageFactory().createImage( device, path, inputStream );
           } finally {
             try {
               inputStream.close();

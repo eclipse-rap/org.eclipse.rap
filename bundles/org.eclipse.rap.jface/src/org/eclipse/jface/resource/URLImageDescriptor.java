@@ -18,12 +18,12 @@ import java.net.URL;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.Policy;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.internal.graphics.ImageFactory;
 
 /**
  * An ImageDescriptor that gets its information from a URL. This class is not
@@ -140,7 +140,7 @@ class URLImageDescriptor extends ImageDescriptor {
     InputStream stream = getStream();
     if( stream != null ) {
       try {
-        result = ImageFactory.createImage( device, path, stream );
+        result = RWTFactory.getImageFactory().createImage( device, path, stream );
       } finally {
         try {
           stream.close();

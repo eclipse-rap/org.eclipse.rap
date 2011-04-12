@@ -13,6 +13,7 @@
 package org.eclipse.swt.internal.graphics;
 
 import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 
@@ -22,25 +23,13 @@ public final class ResourceFactory {
   /////////
   // Colors
 
-  public static Color getColor( final int red,
-                                final int green,
-                                final int blue )
-  {
+  public static Color getColor( final int red, final int green, final int blue ) {
     int colorNr = computeColorNr( red, green, blue );
     return getColor( colorNr );
   }
 
-  public static int computeColorNr( final int red,
-                                    final int green,
-                                    final int blue )
-  {
-    if(    red > 255
-        || red < 0
-        || green > 255
-        || green < 0
-        || blue > 255
-        || blue < 0 )
-    {
+  public static int computeColorNr( final int red, final int green, final int blue ) {
+    if( red > 255 || red < 0 || green > 255 || green < 0 || blue > 255 || blue < 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
     int colorNr = red | green << 8 | blue << 16;
@@ -59,7 +48,7 @@ public final class ResourceFactory {
   }
   
   public static String getImagePath( final Image image ) {
-    return ImageFactory.getImagePath( image );
+    return RWTFactory.getImageFactory().getImagePath( image );
   }
 
   public static Cursor getCursor( final int style ) {
@@ -68,14 +57,6 @@ public final class ResourceFactory {
   
   ///////////////
   // Test helpers
-
-  public static void clear() {
-    getInstance().clear();
-    ImageFactory.clear();
-    InternalImageFactory.clear();
-    ImageDataFactory.clear();
-    FontDataFactory.clear();
-  }
 
   static int colorsCount() {
     return getInstance().getColorsCount();
