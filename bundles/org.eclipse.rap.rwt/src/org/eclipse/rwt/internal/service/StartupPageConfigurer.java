@@ -24,6 +24,7 @@ import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
@@ -223,7 +224,7 @@ public final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   private static String getJsLibraries() {
     StringBuffer buffer = new StringBuffer();
-    IResource[] resources = ResourceRegistry.get();
+    IResource[] resources = RWTFactory.getResourceRegistry().get();
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ].isExternal() && resources[ i ].isJSLibrary() ) {
         writeScriptTag( buffer, resources[ i ].getLocation() );

@@ -33,7 +33,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -1539,9 +1538,9 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.3
    */
-  public Cursor getSystemCursor( final int id ) {
+  public Cursor getSystemCursor( int id ) {
     checkDevice();
-    return ResourceFactory.getCursor( id );
+    return RWTFactory.getResourceFactory().getCursor( id );
   }
 
   /**

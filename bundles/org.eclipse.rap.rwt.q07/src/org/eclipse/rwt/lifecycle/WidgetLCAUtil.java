@@ -26,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -572,7 +573,7 @@ public final class WidgetLCAUtil {
                                  final Image image )
     throws IOException
   {
-    String path = image == null ? null : ResourceFactory.getImagePath( image );
+    String path = image == null ? null : ImageFactory.getImagePath( image );
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.set( jsProperty, path );
   }

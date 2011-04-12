@@ -92,6 +92,48 @@ public class Color_Test extends TestCase {
     assertSame( Display.getCurrent(), color.getDevice() );
   }
   
+  public void testConstructorWithInvalidRedValue() {
+    Display display = new Display();
+    try {
+      new Color( display, -1, 0, 0 );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+    try {
+      new Color( display, 300, 0, 0 );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testConstructorWithInvalidGreenValue() {
+    Display display = new Display();
+    try {
+      new Color( display, 0, -1, 0 );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+    try {
+      new Color( display, 0, 300, 0 );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testConstructorWithInvalidBlueValue() {
+    Display display = new Display();
+    try {
+      new Color( display, 0, 0, -1 );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+    try {
+      new Color( display, 0, 0, 300 );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
   public void testDispose() {
     Display display = new Display();
     Color color = new Color( display, new RGB( 0, 0, 0 ) );

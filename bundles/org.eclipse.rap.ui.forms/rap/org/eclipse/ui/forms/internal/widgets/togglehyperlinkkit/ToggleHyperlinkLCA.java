@@ -18,6 +18,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.*;
@@ -99,7 +100,7 @@ public final class ToggleHyperlinkLCA extends AbstractWidgetLCA {
     Image[] images = getImages( hyperlink );
     String[] imageNames = new String[ images.length ];
     for( int i = 0; i < imageNames.length; i++ ) {
-      imageNames[ i ] = ResourceFactory.getImagePath( images[ i ] );
+      imageNames[ i ] = ImageFactory.getImagePath( images[ i ] );
     }
     writer.set( "images", imageNames ); //$NON-NLS-1$
 

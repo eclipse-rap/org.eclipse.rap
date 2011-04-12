@@ -26,6 +26,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -549,7 +550,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     control.setBackgroundImage( image );
     ControlLCAUtil.writeBackgroundImage( control );
-    String imageLocation = ResourceFactory.getImagePath( image );
+    String imageLocation = ImageFactory.getImagePath( image );
     String expected =   "var w = wm.findWidgetById( \"w2\" );"
                       + "w.setUserData( \"backgroundImageSize\", [58,12 ] );"
                       + "w.setBackgroundImage( \""

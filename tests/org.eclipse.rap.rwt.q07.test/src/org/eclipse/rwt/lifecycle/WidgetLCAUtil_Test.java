@@ -22,6 +22,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -305,7 +306,7 @@ public class WidgetLCAUtil_Test extends TestCase {
                               JSConst.QX_FIELD_ICON,
                               item.getImage() );
     String expected = "w.setIcon( \""
-                    + ResourceFactory.getImagePath( item.getImage() )
+                    + ImageFactory.getImagePath( item.getImage() )
                     + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
 
@@ -314,10 +315,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     item.setImage( null );
-    WidgetLCAUtil.writeImage( item,
-                              Props.IMAGE,
-                              JSConst.QX_FIELD_ICON,
-                              item.getImage() );
+    WidgetLCAUtil.writeImage( item, Props.IMAGE, JSConst.QX_FIELD_ICON, item.getImage() );
     assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( null );" ) != -1 );
   }
 

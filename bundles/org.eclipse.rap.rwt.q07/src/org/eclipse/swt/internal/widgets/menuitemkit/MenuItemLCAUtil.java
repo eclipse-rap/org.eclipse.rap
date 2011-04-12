@@ -19,6 +19,7 @@ import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Menu;
@@ -75,7 +76,7 @@ final class MenuItemLCAUtil {
   static void writeImage( final MenuItem item ) throws IOException {
     Image image = item.getImage();
     if( WidgetLCAUtil.hasChanged( item, Props.IMAGE, image, null ) ) {
-      String imagePath = ResourceFactory.getImagePath( image );
+      String imagePath = ImageFactory.getImagePath( image );
       JSWriter writer = JSWriter.getWriterFor( item );
       Rectangle bounds = image != null ? image.getBounds() : null;
       Object[] args = new Object[]{

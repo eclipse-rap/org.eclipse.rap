@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkLCA;
@@ -50,7 +51,7 @@ public class ImageHyperlinkLCA extends HyperlinkLCA {
       if( image == null ) {
         imagePath = ""; //$NON-NLS-1$
       } else {
-        imagePath = ResourceFactory.getImagePath( image );
+        imagePath = ImageFactory.getImagePath( image );
       }
       JSWriter writer = JSWriter.getWriterFor( imageHyperlink );
       writer.set( "icon", imagePath ); //$NON-NLS-1$

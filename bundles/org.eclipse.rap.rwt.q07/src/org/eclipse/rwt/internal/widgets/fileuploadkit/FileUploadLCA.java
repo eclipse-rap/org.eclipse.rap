@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Widget;
@@ -89,7 +90,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
   static void writeImage( FileUpload fileUpload ) throws IOException {
     Image image = fileUpload.getImage();
     if( WidgetLCAUtil.hasChanged( fileUpload, Props.IMAGE, image, null ) ) {
-      String imagePath = ResourceFactory.getImagePath( image );
+      String imagePath = ImageFactory.getImagePath( image );
       JSWriter writer = JSWriter.getWriterFor( fileUpload );
       Rectangle bounds = image != null ? image.getBounds() : null;
       Object[] args = new Object[]{

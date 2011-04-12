@@ -56,9 +56,9 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( EntryPointManager.class ) );
     assertSame( applicationContext.getInstance( EntryPointManager.class ),
                 getSingleton( EntryPointManager.class ) );
-    assertNotNull( getSingleton( ResourceFactoryInstance.class ) );
-    assertSame( applicationContext.getInstance( ResourceFactoryInstance.class ),
-                getSingleton( ResourceFactoryInstance.class ) );
+    assertNotNull( getSingleton( ResourceFactory.class ) );
+    assertSame( applicationContext.getInstance( ResourceFactory.class ),
+                getSingleton( ResourceFactory.class ) );
     assertNotNull( getSingleton( ImageFactory.class ) );
     assertSame( applicationContext.getInstance( ImageFactory.class ),
                 getSingleton( ImageFactory.class ) );
@@ -80,9 +80,9 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( ServiceManager.class ) );
     assertSame( applicationContext.getInstance( ServiceManager.class ),
                 getSingleton( ServiceManager.class ) );
-    assertNotNull( getSingleton( ResourceRegistryInstance.class ) );
-    assertSame( applicationContext.getInstance( ResourceRegistryInstance.class ),
-                getSingleton( ResourceRegistryInstance.class ) );
+    assertNotNull( getSingleton( ResourceRegistry.class ) );
+    assertSame( applicationContext.getInstance( ResourceRegistry.class ),
+                getSingleton( ResourceRegistry.class ) );
     assertNotNull( getSingleton( ConfigurationReader.class ) );
     assertSame( applicationContext.getInstance( ConfigurationReader.class ),
                 getSingleton( ConfigurationReader.class ) );

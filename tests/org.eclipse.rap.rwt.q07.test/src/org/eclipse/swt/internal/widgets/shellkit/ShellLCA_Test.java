@@ -23,6 +23,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.*;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
@@ -422,7 +423,7 @@ public class ShellLCA_Test extends TestCase {
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
     String expected = "w.setIcon( \""
-                    + ResourceFactory.getImagePath( shell.getImage() )
+                    + ImageFactory.getImagePath( shell.getImage() )
                     + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // without caption bar
@@ -431,7 +432,7 @@ public class ShellLCA_Test extends TestCase {
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
     expected = "w.setIcon( \""
-             + ResourceFactory.getImagePath( shell.getImage() )
+             + ImageFactory.getImagePath( shell.getImage() )
              + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) == -1 );
     // with caption bar, without MIN, MAX, CLOSE
@@ -440,7 +441,7 @@ public class ShellLCA_Test extends TestCase {
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
     expected = "w.setIcon( \""
-             + ResourceFactory.getImagePath( shell.getImage() )
+             + ImageFactory.getImagePath( shell.getImage() )
              + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // with multiple images
@@ -449,7 +450,7 @@ public class ShellLCA_Test extends TestCase {
     shell.setImages( new Image[] { Graphics.getImage( Fixture.IMAGE1 ) } );
     lca.renderChanges( shell );
     expected = "w.setIcon( \""
-             + ResourceFactory.getImagePath( shell.getImages()[0] )
+             + ImageFactory.getImagePath( shell.getImages()[0] )
              + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }

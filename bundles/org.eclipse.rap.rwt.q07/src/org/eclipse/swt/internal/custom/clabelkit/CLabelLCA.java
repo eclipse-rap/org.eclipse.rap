@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Widget;
@@ -112,7 +113,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
         imagePath = null;
       } else {
         // TODO passing image bounds to qooxdoo can speed up rendering
-        imagePath = ResourceFactory.getImagePath( image );
+        imagePath = ImageFactory.getImagePath( image );
       }
       JSWriter writer = JSWriter.getWriterFor( label );
       writer.set( JSConst.QX_FIELD_ICON, imagePath );

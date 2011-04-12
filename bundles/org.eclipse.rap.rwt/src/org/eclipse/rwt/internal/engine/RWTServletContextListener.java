@@ -339,13 +339,13 @@ public final class RWTServletContextListener implements ServletContextListener {
     registeredResources = new IResource[ resources.size() ];
     resources.toArray( registeredResources );
     for( int i = 0; i < registeredResources.length; i++ ) {
-      ResourceRegistry.add( registeredResources[ i ] );
+      RWTFactory.getResourceRegistry().add( registeredResources[ i ] );
     }
     context.setAttribute( REGISTERED_RESOURCES, registeredResources );
   }
 
   public static void deregisterResources( ServletContext context ) {
-    ResourceRegistry.clear();
+    RWTFactory.getResourceRegistry().clear();
   }
 
   ///////////////////////////////////////

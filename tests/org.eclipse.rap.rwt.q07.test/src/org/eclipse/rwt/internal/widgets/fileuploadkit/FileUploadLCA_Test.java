@@ -28,6 +28,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -74,7 +75,7 @@ public class FileUploadLCA_Test extends TestCase {
     lca.renderChanges( upload );
     String allMarkup = Fixture.getAllMarkup();
     assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
-    String imageLocation = ResourceFactory.getImagePath( image );
+    String imageLocation = ImageFactory.getImagePath( image );
     String expected = "w.setImage( \"" + imageLocation + "\", 58, 12 );";
     assertTrue( allMarkup.indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();

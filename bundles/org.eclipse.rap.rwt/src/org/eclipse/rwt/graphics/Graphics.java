@@ -44,8 +44,8 @@ public final class Graphics {
    * @see RGB
    * @see Device#getSystemColor
    */
-  public static Color getColor( final RGB rgb ) {
-    return ResourceFactory.getColor( rgb.red, rgb.green, rgb.blue );
+  public static Color getColor( RGB rgb ) {
+    return RWTFactory.getResourceFactory().getColor( rgb.red, rgb.green, rgb.blue );
   }
 
   /**
@@ -62,9 +62,8 @@ public final class Graphics {
    * @param blue the amount of blue in the color
    * @return the color
    */
-  public static Color getColor( final int red, final int green, final int blue )
-  {
-    return ResourceFactory.getColor( red, green, blue );
+  public static Color getColor( int red, int green, int blue ) {
+    return RWTFactory.getResourceFactory().getColor( red, green, blue );
   }
 
   /**
@@ -82,11 +81,11 @@ public final class Graphics {
    *    <li>ERROR_NULL_ARGUMENT - if the data argument is null</li>
    * </ul>
    */
-  public static Font getFont( final FontData data ) {
+  public static Font getFont( FontData data ) {
     if( data == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return ResourceFactory.getFont( data );
+    return RWTFactory.getResourceFactory().getFont( data );
   }
 
   /**
@@ -108,11 +107,8 @@ public final class Graphics {
    *    <li>ERROR_INVALID_ARGUMENT - if the height is negative</li>
    * </ul>
    */
-  public static Font getFont( final String name,
-                              final int height,
-                              final int style )
-  {
-    return ResourceFactory.getFont( new FontData( name, height, style ) );
+  public static Font getFont( String name, int height, int style ) {
+    return RWTFactory.getResourceFactory().getFont( new FontData( name, height, style ) );
   }
 
   /**
@@ -239,8 +235,8 @@ public final class Graphics {
    * @deprecated use {@link org.eclipse.swt.widgets.Display#getSystemCursor(int)
    * Display#getSystemCursor(int)}
    */
-  public static Cursor getCursor( final int style ) {
-    return ResourceFactory.getCursor( style );
+  public static Cursor getCursor( int style ) {
+    return RWTFactory.getResourceFactory().getCursor( style );
   }
 
   //////////////////////////

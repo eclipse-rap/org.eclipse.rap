@@ -15,8 +15,7 @@ import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.GCOperation;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.graphics.GCOperation.*;
 import org.eclipse.swt.widgets.Control;
 
@@ -165,7 +164,7 @@ final class GCOperationWriter {
 
   private void drawImage( final DrawImage operation ) throws IOException {
     Object[] args = new Object[] {
-      ResourceFactory.getImagePath( operation.image ),
+      ImageFactory.getImagePath( operation.image ),
       new Integer( operation.srcX ),
       new Integer( operation.srcY ),
       new Integer( operation.srcWidth ),

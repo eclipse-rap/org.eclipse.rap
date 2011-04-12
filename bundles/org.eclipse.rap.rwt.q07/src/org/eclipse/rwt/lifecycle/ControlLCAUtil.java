@@ -28,6 +28,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.events.EventLCAUtil;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
@@ -86,8 +87,7 @@ public class ControlLCAUtil {
 
   private static final String USER_DATA_KEY_LISTENER = "keyListener";
   private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
-  private static final String USER_DATA_BACKGROUND_IMAGE_SIZE
-    = "backgroundImageSize";
+  private static final String USER_DATA_BACKGROUND_IMAGE_SIZE = "backgroundImageSize";
   private static final String ATT_CANCEL_KEY_EVENT
     = ControlLCAUtil.class.getName() + "#cancelKeyEvent";
   private static final String ATT_ALLOW_KEY_EVENT
@@ -411,19 +411,15 @@ public class ControlLCAUtil {
    * @param control the control whose background image property to write
    * @throws IOException
    */
-  public static void writeBackgroundImage( final Control control )
-    throws IOException
-  {
-    IControlAdapter controlAdapter
-      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+  public static void writeBackgroundImage( final Control control ) throws IOException {
+    IControlAdapter controlAdapter = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
     Image image = controlAdapter.getUserBackgroundImage();
-    if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND_IMAGE, image, null ) )
-    {
+    if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND_IMAGE, image, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       if( image != null ) {
-        String imagePath = ResourceFactory.getImagePath( image );
+        String imagePath = ImageFactory.getImagePath( image );
         Rectangle bounds = image.getBounds();
-        Object[] args = new Object[]{
+        Object[] args = new Object[] {
           USER_DATA_BACKGROUND_IMAGE_SIZE,
           new Integer[]{
             new Integer( bounds.width ),

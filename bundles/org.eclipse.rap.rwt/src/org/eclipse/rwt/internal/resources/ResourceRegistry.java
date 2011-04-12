@@ -11,31 +11,32 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResource;
 
 
-public final class ResourceRegistry {
+public class ResourceRegistry {
+  private final Set resources;
 
-  private ResourceRegistry() {
-    // prevent instantiation
+  public ResourceRegistry() {
+    resources = new LinkedHashSet();
   }
   
-  public static void add( final IResource resource ) {
-    getInstance().add( resource );
+  public void add( final IResource resource ) {
+    ParamCheck.notNull( resource, "resource" );
+    resources.add( resource );
   }
   
-  public static IResource[] get() {
-    return getInstance().get();
+  public IResource[] get() {
+    IResource[] result = new IResource[ resources.size() ];
+    resources.toArray( result );
+    return result;
   }
   
-  public static void clear() {
-    getInstance().clear();
-  }
-  
-  private static ResourceRegistryInstance getInstance() {
-    Class singletonType = ResourceRegistryInstance.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( ResourceRegistryInstance )singleton;
+  public void clear() {
+    resources.clear();
   }
 }

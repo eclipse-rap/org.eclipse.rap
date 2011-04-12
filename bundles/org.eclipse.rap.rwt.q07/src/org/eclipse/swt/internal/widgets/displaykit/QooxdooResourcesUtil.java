@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.InputStream;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.*;
@@ -327,7 +328,7 @@ final class QooxdooResourcesUtil {
     IResourceManager manager = ResourceManager.getInstance();
     ClassLoader contextLoader = manager.getContextLoader();
     try {
-      IResource[] resources = ResourceRegistry.get();
+      IResource[] resources = RWTFactory.getResourceRegistry().get();
       for( int i = 0; i < resources.length; i++ ) {
         if( !resources[ i ].isExternal() ) {
           manager.setContextLoader( resources[ i ].getLoader() );

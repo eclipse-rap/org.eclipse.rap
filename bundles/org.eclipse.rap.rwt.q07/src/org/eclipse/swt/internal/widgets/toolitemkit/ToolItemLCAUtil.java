@@ -20,6 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
@@ -224,6 +225,6 @@ final class ToolItemLCAUtil {
   }
 
   private static String getImagePath( final Image image ) {
-    return image == null ? null : ResourceFactory.getImagePath( image );
+    return image == null ? null : ImageFactory.getImagePath( image );
   }
 }

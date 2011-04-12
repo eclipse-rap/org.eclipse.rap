@@ -15,44 +15,44 @@ package org.eclipse.swt.internal.graphics;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.*;
 
 
 public class ResourceFactory_Test extends TestCase {
 
+  private ResourceFactory resourceFactory;
+
   public void testGetColor() {
-    assertEquals( 0, ResourceFactory.colorsCount() );
-    Color color = Graphics.getColor( 15, 127, 255 );
+    Color color = resourceFactory.getColor( 15, 127, 255 );
     assertEquals( 15, color.getRed() );
     assertEquals( 127, color.getGreen() );
     assertEquals( 255, color.getBlue() );
-    assertEquals( 1, ResourceFactory.colorsCount() );
-    Color red = Graphics.getColor( 255, 0, 0 );
-    assertEquals( 2, ResourceFactory.colorsCount() );
-    Color red2 = Graphics.getColor( 255, 0, 0 );
-    assertEquals( 2, ResourceFactory.colorsCount() );
-    assertSame( red, red2 );
+  }
+  
+  public void testGetColorReturnsSharedColor() {
+    Color red1 = resourceFactory.getColor( 255, 0, 0 );
+    Color red2 = resourceFactory.getColor( 255, 0, 0 );
+    assertSame( red1, red2 );
   }
 
   public void testGetFont() {
-    assertEquals( 0, ResourceFactory.fontsCount() );
-    Font font1 = Graphics.getFont( "Times", 12, SWT.BOLD );
+    Font font1 = resourceFactory.getFont( new FontData( "Times", 12, SWT.BOLD ) );
     assertEquals( "Times", font1.getFontData()[ 0 ].getName() );
     assertEquals( 12, font1.getFontData()[ 0 ].getHeight() );
     assertEquals( SWT.BOLD, font1.getFontData()[ 0 ].getStyle() );
-    assertNotNull( font1 );
-    assertEquals( 1, ResourceFactory.fontsCount() );
-    Font font1a = Graphics.getFont( "Times", 12, SWT.BOLD );
-    assertSame( font1, font1a );
-    assertEquals( 1, ResourceFactory.fontsCount() );
+  }
+  
+  public void testGetFontReturnsSharedFont() {
+    Font font1 = resourceFactory.getFont( new FontData( "Times", 12, SWT.BOLD ) );
+    Font font2 = resourceFactory.getFont( new FontData( "Times", 12, SWT.BOLD ) );
+    assertSame( font1, font2 );
   }
 
   protected void setUp() throws Exception {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
+    resourceFactory = new ResourceFactory();
   }
 
   protected void tearDown() throws Exception {

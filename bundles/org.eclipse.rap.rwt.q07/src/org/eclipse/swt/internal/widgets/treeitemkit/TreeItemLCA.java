@@ -18,6 +18,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
@@ -165,7 +166,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images ) ) {
       String[] imagePaths = new String[ images.length ];
       for( int i = 0; i < imagePaths.length; i++ ) {
-        imagePaths[ i ] = ResourceFactory.getImagePath( images[ i ] );
+        imagePaths[ i ] = ImageFactory.getImagePath( images[ i ] );
       }
       writer.set( "images", new Object[]{
         imagePaths

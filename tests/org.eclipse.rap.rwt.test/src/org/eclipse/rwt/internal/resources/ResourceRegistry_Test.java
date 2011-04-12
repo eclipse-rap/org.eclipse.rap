@@ -12,47 +12,49 @@ package org.eclipse.rwt.internal.resources;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class ResourceRegistry_Test extends TestCase {
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  private ResourceRegistry resourceRegistry;
+
+  private static class TestResource implements IResource {
+    public String getCharset() {
+      return null;
+    }
+    public ClassLoader getLoader() {
+      return null;
+    }
+    public String getLocation() {
+      return null;
+    }
+    public RegisterOptions getOptions() {
+      return null;
+    }
+    public boolean isExternal() {
+      return false;
+    }
+    public boolean isJSLibrary() {
+      return false;
+    }
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testAdd() {
+    IResource resource = new TestResource();
+    resourceRegistry.add( resource );
+    assertEquals( resource, resourceRegistry.get()[ 0 ] );
   }
   
-  public void testAddAndGetAndClear() {
-    IResource resource = new IResource() {
-      public String getCharset() {
-        return null;
-      }
-      public ClassLoader getLoader() {
-        return null;
-      }
-      public String getLocation() {
-        return null;
-      }
-      public RegisterOptions getOptions() {
-        return null;
-      }
-      public boolean isExternal() {
-        return false;
-      }
-      public boolean isJSLibrary() {
-        return false;
-      }
-    };
-    // add & get
-    ResourceRegistry.add( resource );
-    assertEquals( resource, ResourceRegistry.get()[ 0 ] );
-    // clear
-    ResourceRegistry.clear();
-    assertEquals( 0, ResourceRegistry.get().length );
+  public void testClear() {
+    IResource resource = new TestResource();
+    resourceRegistry.add( resource );
+    resourceRegistry.clear();
+    assertEquals( 0, resourceRegistry.get().length );
+  }
+
+  protected void setUp() throws Exception {
+    resourceRegistry = new ResourceRegistry();
   }
 }

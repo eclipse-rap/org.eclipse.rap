@@ -19,6 +19,7 @@ import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -448,7 +449,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     Image selBgImage = adapter.getUserSelectionBackgroundImage();
     Object[] args = null;
     if( selBgImage != null ) {
-      String selBgImagePath = ResourceFactory.getImagePath( selBgImage );
+      String selBgImagePath = ImageFactory.getImagePath( selBgImage );
       Rectangle selBgImageBounds = selBgImage.getBounds();
         args = new Object[]{
           selBgImagePath, 

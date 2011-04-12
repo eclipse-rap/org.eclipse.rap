@@ -16,6 +16,7 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -141,7 +142,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
       if( image == null ) {
         imagePath = null;
       } else {
-        imagePath = ResourceFactory.getImagePath( image );
+        imagePath = ImageFactory.getImagePath( image );
       }
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( PROP_IMAGE, imagePath );

@@ -17,6 +17,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.widgets.ProgressBar;
@@ -91,7 +92,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
                                   image, 
                                   null ) ) 
     {
-      String imagePath = ResourceFactory.getImagePath( image );
+      String imagePath = ImageFactory.getImagePath( image );
       JSWriter writer = JSWriter.getWriterFor( progressBar );
       Rectangle bounds = image != null ? image.getBounds() : null;      
       Object[] args = new Object[]{

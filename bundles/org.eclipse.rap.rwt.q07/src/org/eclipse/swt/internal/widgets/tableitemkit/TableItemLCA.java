@@ -17,6 +17,7 @@ import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
@@ -193,7 +194,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( item );
       String[] imagePaths = new String[ images.length ];
       for( int i = 0; i < imagePaths.length; i++ ) {
-        imagePaths[ i ] = ResourceFactory.getImagePath( images[ i ] );
+        imagePaths[ i ] = ImageFactory.getImagePath( images[ i ] );
       }
       writer.set( "images", new Object[] { imagePaths } );
     }

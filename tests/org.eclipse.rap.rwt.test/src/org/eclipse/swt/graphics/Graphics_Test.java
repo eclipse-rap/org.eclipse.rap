@@ -25,6 +25,7 @@ import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.widgets.Display;
 
@@ -226,8 +227,8 @@ public class Graphics_Test extends TestCase {
     }
   }
 
-  private static String getRegisterPath( final Image image ) {
-    String imagePath = ResourceFactory.getImagePath( image );
+  private static String getRegisterPath( Image image ) {
+    String imagePath = ImageFactory.getImagePath( image );
     int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
     return imagePath.substring( prefixLength );
   }

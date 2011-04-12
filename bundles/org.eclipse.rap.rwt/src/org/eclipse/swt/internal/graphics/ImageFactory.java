@@ -28,6 +28,15 @@ public class ImageFactory {
   private final Map cache;
   private final Object cacheLock;
   
+  public static String getImagePath( Image image ) {
+    String result = null;
+    if( image != null ) {
+      String resourceName = image.internalImage.getResourceName();
+      result = ResourceManager.getInstance().getLocation( resourceName );
+    }
+    return result;
+  }
+
   public ImageFactory() {
     cache = new HashMap();
     cacheLock = new Object();
@@ -66,15 +75,6 @@ public class ImageFactory {
     InternalImageFactory internalImageFactory = RWTFactory.getInternalImageFactory();
     InternalImage internalImage = internalImageFactory.findInternalImage( key, inputStream );
     return createImageInstance( device, internalImage );
-  }
-
-  String getImagePath( Image image ) {
-    String result = null;
-    if( image != null ) {
-      String resourceName = image.internalImage.getResourceName();
-      result = ResourceManager.getInstance().getLocation( resourceName );
-    }
-    return result;
   }
 
   private Image createImage( String path, ClassLoader imageLoader ) {

@@ -40,7 +40,6 @@ import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -378,9 +377,8 @@ public final class EngineConfigWrapper implements IEngineConfig {
     IConfigurationElement[] elements = point.getConfigurationElements();
     for( int i = 0; i < elements.length; i++ ) {
       try {
-        IResource resource
-          = ( IResource )elements[ i ].createExecutableExtension( "class" );
-        ResourceRegistry.add( resource );
+        IResource resource = ( IResource )elements[ i ].createExecutableExtension( "class" );
+        RWTFactory.getResourceRegistry().add( resource );
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
       }

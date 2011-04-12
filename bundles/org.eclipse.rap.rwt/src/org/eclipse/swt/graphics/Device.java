@@ -12,9 +12,12 @@
 package org.eclipse.swt.graphics;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 
@@ -62,58 +65,59 @@ public abstract class Device implements Drawable {
    */
   public Color getSystemColor( final int id ) {
     checkDevice();
+    ResourceFactory resourceFactory = RWTFactory.getResourceFactory();
     Color result;
     switch( id ) {
       case SWT.COLOR_WHITE:
-        result = ResourceFactory.getColor( 255, 255, 255 );
+        result = resourceFactory.getColor( 255, 255, 255 );
       break;
       case SWT.COLOR_BLACK:
-        result = ResourceFactory.getColor( 0, 0, 0 );
+        result = resourceFactory.getColor( 0, 0, 0 );
       break;
       case SWT.COLOR_RED:
-        result = ResourceFactory.getColor( 255, 0, 0 );
+        result = resourceFactory.getColor( 255, 0, 0 );
       break;
       case SWT.COLOR_DARK_RED:
-        result = ResourceFactory.getColor( 128, 0, 0 );
+        result = resourceFactory.getColor( 128, 0, 0 );
       break;
       case SWT.COLOR_GREEN:
-        result = ResourceFactory.getColor( 0, 255, 0 );
+        result = resourceFactory.getColor( 0, 255, 0 );
       break;
       case SWT.COLOR_DARK_GREEN:
-        result = ResourceFactory.getColor( 0, 128, 0 );
+        result = resourceFactory.getColor( 0, 128, 0 );
       break;
       case SWT.COLOR_YELLOW:
-        result = ResourceFactory.getColor( 255, 255, 0 );
+        result = resourceFactory.getColor( 255, 255, 0 );
       break;
       case SWT.COLOR_DARK_YELLOW:
-        result = ResourceFactory.getColor( 128, 128, 0 );
+        result = resourceFactory.getColor( 128, 128, 0 );
       break;
       case SWT.COLOR_BLUE:
-        result = ResourceFactory.getColor( 0, 0, 255 );
+        result = resourceFactory.getColor( 0, 0, 255 );
       break;
       case SWT.COLOR_DARK_BLUE:
-        result = ResourceFactory.getColor( 0, 0, 128 );
+        result = resourceFactory.getColor( 0, 0, 128 );
       break;
       case SWT.COLOR_MAGENTA:
-        result = ResourceFactory.getColor( 255, 0, 255 );
+        result = resourceFactory.getColor( 255, 0, 255 );
       break;
       case SWT.COLOR_DARK_MAGENTA:
-        result = ResourceFactory.getColor( 128, 0, 128 );
+        result = resourceFactory.getColor( 128, 0, 128 );
       break;
       case SWT.COLOR_CYAN:
-        result = ResourceFactory.getColor( 0, 255, 255 );
+        result = resourceFactory.getColor( 0, 255, 255 );
       break;
       case SWT.COLOR_DARK_CYAN:
-        result = ResourceFactory.getColor( 0, 128, 128 );
+        result = resourceFactory.getColor( 0, 128, 128 );
       break;
       case SWT.COLOR_GRAY:
-        result = ResourceFactory.getColor( 192, 192, 192 );
+        result = resourceFactory.getColor( 192, 192, 192 );
       break;
       case SWT.COLOR_DARK_GRAY:
-        result = ResourceFactory.getColor( 128, 128, 128 );
+        result = resourceFactory.getColor( 128, 128, 128 );
       break;
       default:
-        result = ResourceFactory.getColor( 0, 0, 0 );
+        result = resourceFactory.getColor( 0, 0, 0 );
       break;
     }
     return result;

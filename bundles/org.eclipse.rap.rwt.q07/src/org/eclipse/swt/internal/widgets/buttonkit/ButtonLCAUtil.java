@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
@@ -79,7 +80,7 @@ final class ButtonLCAUtil {
   static void writeImage( final Button button ) throws IOException {
     Image image = button.getImage();
     if( WidgetLCAUtil.hasChanged( button, Props.IMAGE, image, null ) ) {
-      String imagePath = ResourceFactory.getImagePath( image );
+      String imagePath = ImageFactory.getImagePath( image );
       JSWriter writer = JSWriter.getWriterFor( button );
       Rectangle bounds = image != null ? image.getBounds() : null;
       Object[] args = new Object[]{

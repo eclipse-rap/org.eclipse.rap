@@ -17,10 +17,11 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.*;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.TestAdaptable;
+import org.eclipse.rwt.internal.TestAdapterFactory;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
@@ -221,14 +222,14 @@ public class RWTServletContextListener_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
 
-    assertTrue( ResourceRegistry.get()[ 0 ] instanceof TestResource );
-    assertTrue( ResourceRegistry.get().length == 1 );
+    assertTrue( RWTFactory.getResourceRegistry().get()[ 0 ] instanceof TestResource );
+    assertTrue( RWTFactory.getResourceRegistry().get().length == 1 );
     
     // Ensure that phase listeners are removed when context is destroyed
     TestServletContext servletContext = Fixture.getServletContext();
     RWTServletContextListener.deregisterResources( servletContext );
     
-    assertTrue( ResourceRegistry.get().length == 0 );
+    assertTrue( RWTFactory.getResourceRegistry().get().length == 0 );
   }
 
   public void testBrandingInitialization() {

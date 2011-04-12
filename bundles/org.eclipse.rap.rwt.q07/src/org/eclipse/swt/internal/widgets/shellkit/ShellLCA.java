@@ -23,6 +23,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
@@ -313,7 +314,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
         JSWriter writer = JSWriter.getWriterFor( shell );
         writer.set( JSConst.QX_FIELD_ICON,
-                    ResourceFactory.getImagePath( image ) );
+                    ImageFactory.getImagePath( image ) );
       }
     }
   }

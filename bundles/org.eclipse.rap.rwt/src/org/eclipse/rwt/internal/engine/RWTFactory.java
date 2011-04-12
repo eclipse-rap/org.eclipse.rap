@@ -15,6 +15,7 @@ import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
+import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
@@ -93,6 +94,10 @@ public class RWTFactory {
     return ( ImageDataFactory )ApplicationContext.getSingleton( ImageDataFactory.class );
   }
 
+  public static ResourceFactory getResourceFactory() {
+    return ( ResourceFactory )ApplicationContext.getSingleton( ResourceFactory.class );
+  }
+
   public static InternalImageFactory getInternalImageFactory() {
     Object singleton = ApplicationContext.getSingleton( InternalImageFactory.class );
     return ( InternalImageFactory )singleton;
@@ -107,9 +112,12 @@ public class RWTFactory {
   }
 
   public static AdapterFactoryRegistry getAdapterFactoryRegistry() {
-    Class singletonType = AdapterFactoryRegistry.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
+    Object singleton = ApplicationContext.getSingleton( AdapterFactoryRegistry.class );
     return ( AdapterFactoryRegistry )singleton;
+  }
+
+  public static ResourceRegistry getResourceRegistry() {
+    return ( ResourceRegistry )ApplicationContext.getSingleton( ResourceRegistry.class );
   }
 
   private RWTFactory() {

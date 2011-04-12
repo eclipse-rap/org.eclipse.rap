@@ -18,6 +18,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
@@ -112,7 +113,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( formText );
     int style = bullet.getBulletStyle();
     Image image = getBulletImage( formText, bullet );
-    String imageName = ResourceFactory.getImagePath( image );
+    String imageName = ImageFactory.getImagePath( image );
     String text = bullet.getBulletText();
     Rectangle bounds = getBulletBounds( bullet );
     // [if] If <li> "style" attribute is set to "text" and there is no text set
@@ -226,7 +227,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( formText );
     Rectangle bounds = segment.getBounds();
     Image image = segment.getImage( getResourceTable( formText ) );
-    String imageName = ResourceFactory.getImagePath( image );
+    String imageName = ImageFactory.getImagePath( image );
     Object[] args = new Object[] {
       imageName,
       new Integer( bounds.x ),
@@ -246,7 +247,7 @@ public class FormTextLCA extends AbstractWidgetLCA {
     String tooltipText = segment.getTooltipText();
     Rectangle bounds = segment.getBounds();
     Image image = segment.getImage( getResourceTable( formText ) );
-    String imageName = ResourceFactory.getImagePath( image );
+    String imageName = ImageFactory.getImagePath( image );
     Object[] args = new Object[] {
       imageName,
       tooltipText,

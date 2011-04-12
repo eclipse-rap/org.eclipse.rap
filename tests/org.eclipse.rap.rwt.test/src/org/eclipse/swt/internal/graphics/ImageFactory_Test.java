@@ -75,13 +75,13 @@ public class ImageFactory_Test extends TestCase {
   public void testGetImagePath() {
     InputStream stream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE1 );
     Image image = imageFactory.createImage( display, TEST_PATH, stream );
-    String imagePath = imageFactory.getImagePath( image );
+    String imagePath = ImageFactory.getImagePath( image );
     assertNotNull( imagePath );
     assertTrue( imagePath.length() > 0 );
   }
 
   public void testGetImagePathForNullImage() {
-    String imagePath = imageFactory.getImagePath( null );
+    String imagePath = ImageFactory.getImagePath( null );
     assertNull( imagePath );
   }
 
@@ -99,7 +99,7 @@ public class ImageFactory_Test extends TestCase {
   }
 
   private static String getRegisterPath( Image image ) {
-    String imagePath = ResourceFactory.getImagePath( image );
+    String imagePath = ImageFactory.getImagePath( image );
     int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
     return imagePath.substring( prefixLength );
   }

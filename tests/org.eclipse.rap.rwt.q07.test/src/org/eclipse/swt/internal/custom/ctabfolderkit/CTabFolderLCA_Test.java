@@ -31,6 +31,7 @@ import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabitemkit.CTabItemLCA;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -523,7 +524,7 @@ public class CTabFolderLCA_Test extends TestCase {
     Image image = Graphics.getImage( Fixture.IMAGE_50x100 );
     folder.setSelectionBackground( image );
     lca.renderChanges( folder );
-    String imagePath = ResourceFactory.getImagePath( image );
+    String imagePath = ImageFactory.getImagePath( image );
     String expected = "w.setSelectionBackgroundImage( [ \"" + imagePath + "\",50,100 ] );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }

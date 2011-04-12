@@ -13,7 +13,7 @@ package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.graphics.ColorUtil;
 
 
 /**
@@ -43,7 +43,7 @@ public class Color extends Resource {
   /**
    * Prevents uninitialized instances from being created outside the package.
    */
-  private Color( final int colorNr ) {
+  private Color( int colorNr ) {
     super( null );
     this.colorNr = colorNr;
   }
@@ -79,12 +79,12 @@ public class Color extends Resource {
    * @see org.eclipse.rwt.graphics.Graphics#getColor(RGB)
    * @since 1.3
    */
-  public Color( final Device device, final RGB rgb ) {
+  public Color( Device device, RGB rgb ) {
     super( checkDevice( device ) );
     if( rgb == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    colorNr = ResourceFactory.computeColorNr( rgb.red, rgb.green, rgb.blue );
+    colorNr = ColorUtil.computeColorNr( rgb.red, rgb.green, rgb.blue );
   }
 
   /**
@@ -120,13 +120,9 @@ public class Color extends Resource {
    * @see org.eclipse.rwt.graphics.Graphics#getColor(RGB)
    * @since 1.3
    */
-  public Color( final Device device,
-                final int red,
-                final int green,
-                final int blue )
-  {
+  public Color( Device device, int red, int green, int blue ) {
     super( checkDevice( device ) );
-    colorNr = ResourceFactory.computeColorNr( red, green, blue );
+    colorNr = ColorUtil.computeColorNr( red, green, blue );
   }
 
   /**
@@ -206,7 +202,7 @@ public class Color extends Resource {
    *         <code>false</code> otherwise
    * @see #hashCode
    */
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result;
     if( object == this ) {
       result = true;
