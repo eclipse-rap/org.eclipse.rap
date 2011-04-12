@@ -11,57 +11,28 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
-public final class ResourceManager {
+public final class ResourceManagerProvider {
   private IResourceManagerFactory factory;
   private IResourceManager instance;
   
-
-  public static void register( final IResourceManagerFactory factory ) {
-    getSingleton().doRegister( factory ); 
-  }
-  
-  public static void disposeOfResourceManagerFactory() {
-    getSingleton().doDisposeOfResourceManagerFactory();
-  }
-
-  public synchronized static IResourceManager getInstance() {
-    return getSingleton().doGetInstance();
-  }
-
-  private void doRegister( final IResourceManagerFactory factory ) {
+  public synchronized void registerFactory( IResourceManagerFactory factory ) {
     ParamCheck.notNull( factory, "factory" );
-    
     if( this.factory != null ) {
       String msg = "There is already an IResourceManagerFactory registered.";
       throw new IllegalStateException( msg );
     }
     this.factory = factory;
   }
-
   
-  private void doDisposeOfResourceManagerFactory() {
-    this.factory = null;
-    this.instance = null;
-  }
-
-  private IResourceManager doGetInstance() {
+  public synchronized IResourceManager getResourceManager() {
     if( instance == null ) {
       instance = factory.create();
     }
     return instance;
-  }
-
-  private static ResourceManager getSingleton() {
-    return ( ResourceManager )ApplicationContext.getSingleton( ResourceManager.class );
-  }
-
-  private ResourceManager() {
-    // prevent instance creation
   }
 }

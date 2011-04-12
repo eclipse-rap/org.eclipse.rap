@@ -14,7 +14,8 @@ package org.eclipse.swt.internal.widgets.groupkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Widget;
 
 public class GroupLCA extends AbstractWidgetLCA {
 

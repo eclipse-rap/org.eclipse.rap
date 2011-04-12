@@ -15,13 +15,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.browser.*;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Widget;
@@ -190,8 +191,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String name = createUrlFromHtml( html );
     byte[] bytes = html.getBytes( "UTF-8" );
     InputStream inputStream = new ByteArrayInputStream( bytes );
-    ResourceManager.getInstance().register( name, inputStream );
-    return ResourceManager.getInstance().getLocation( name );
+    IResourceManager resourceManager = RWT.getResourceManager();
+    resourceManager.register( name, inputStream );
+    return resourceManager.getLocation( name );
   }
 
   private static String createUrlFromHtml( final String html ) {

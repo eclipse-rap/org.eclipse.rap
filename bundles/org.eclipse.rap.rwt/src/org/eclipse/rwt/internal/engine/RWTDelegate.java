@@ -18,7 +18,8 @@ import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServiceContext;
 
 
 public class RWTDelegate extends HttpServlet {

@@ -14,8 +14,7 @@ import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
-import org.eclipse.rwt.internal.resources.ResourceRegistry;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
@@ -118,6 +117,11 @@ public class RWTFactory {
 
   public static ResourceRegistry getResourceRegistry() {
     return ( ResourceRegistry )ApplicationContext.getSingleton( ResourceRegistry.class );
+  }
+
+  public static ResourceManagerProvider getResourceManagerProvider() {
+    Object singleton = ApplicationContext.getSingleton( ResourceManagerProvider.class );
+    return ( ResourceManagerProvider )singleton;
   }
 
   private RWTFactory() {

@@ -24,7 +24,6 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 

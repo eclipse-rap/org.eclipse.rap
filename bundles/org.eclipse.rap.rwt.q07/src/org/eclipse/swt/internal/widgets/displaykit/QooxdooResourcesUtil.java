@@ -14,20 +14,17 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.InputStream;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.resources.*;
+import org.eclipse.rwt.internal.resources.ResourceUtil;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.*;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
-// TODO [rh] Should javaScript namespaces include widget and/or custom?
-//      e.g. org/eclipse/swt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
 
-
-  private static final String CLIENT_LIBRARY_VARIANT
-    = "org.eclipse.rwt.clientLibraryVariant";
+  private static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
   private static final String CLIENT_JS = "client.js";
@@ -284,7 +281,7 @@ final class QooxdooResourcesUtil {
 
   public static void registerResources() {
     ClassLoader loader = QooxdooResourcesUtil.class.getClassLoader();
-    IResourceManager manager = ResourceManager.getInstance();
+    IResourceManager manager = RWT.getResourceManager();
     ClassLoader bufferedLoader = manager.getContextLoader();
     manager.setContextLoader( loader );
     try {
@@ -310,7 +307,7 @@ final class QooxdooResourcesUtil {
   }
 
   private static void registerWidgetImages() {
-    IResourceManager manager = ResourceManager.getInstance();
+    IResourceManager manager = RWT.getResourceManager();
     ClassLoader classLoader = QooxdooResourcesUtil.class.getClassLoader();
     for( int i = 0; i < WIDGET_IMAGES.length; i++ ) {
       String resourcePath = WIDGET_IMAGES[ i ];
@@ -324,7 +321,7 @@ final class QooxdooResourcesUtil {
   }
 
   private static void registerContributions() {
-    IResourceManager manager = ResourceManager.getInstance();
+    IResourceManager manager = RWT.getResourceManager();
     ClassLoader contextLoader = manager.getContextLoader();
     try {
       IResource[] resources = RWTFactory.getResourceRegistry().get();
@@ -352,11 +349,10 @@ final class QooxdooResourcesUtil {
   }
 
   private static void register( String libraryName, boolean compress ) {
-    IResourceManager manager = ResourceManager.getInstance();
     RegisterOptions option =   compress
                              ? RegisterOptions.VERSION_AND_COMPRESS
                              : RegisterOptions.VERSION;
-    manager.register( libraryName, HTTP.CHARSET_UTF_8, option );
+    RWT.getResourceManager().register( libraryName, HTTP.CHARSET_UTF_8, option );
     ResourceUtil.useJsLibrary( libraryName );
   }
 

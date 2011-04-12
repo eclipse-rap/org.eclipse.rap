@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -184,7 +183,7 @@ public final class RWT {
    * @return instance of {@link IResourceManager}
    */
   public static IResourceManager getResourceManager() {
-    return ResourceManager.getInstance();
+    return RWTFactory.getResourceManagerProvider().getResourceManager();
   }
   
   /**

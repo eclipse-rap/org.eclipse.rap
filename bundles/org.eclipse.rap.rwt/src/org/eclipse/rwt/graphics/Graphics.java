@@ -128,7 +128,7 @@ public final class Graphics {
    *    <li>ERROR_UNSUPPORTED_FORMAT - if the image stream contains an unrecognized format</li>
    * </ul>
    */
-  public static Image getImage( final String path ) {
+  public static Image getImage( String path ) {
     if( path == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -157,9 +157,7 @@ public final class Graphics {
    *    <li>ERROR_UNSUPPORTED_FORMAT - if the image stream contains an unrecognized format</li>
    * </ul>
    */
-  public static Image getImage( final String path,
-                                final ClassLoader imageLoader )
-  {
+  public static Image getImage( String path, ClassLoader imageLoader ) {
     if( path == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -188,9 +186,7 @@ public final class Graphics {
    *    <li>ERROR_UNSUPPORTED_FORMAT - if the image stream contains an unrecognized format</li>
    * </ul>
    */
-  public static Image getImage( final String path,
-                                final InputStream inputStream )
-  {
+  public static Image getImage( String path, InputStream inputStream ) {
     if( path == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -286,7 +282,7 @@ public final class Graphics {
    *                <li>ERROR_NULL_ARGUMENT - if the string is null</li>
    *                </ul>
    */
-  public static Point stringExtent( final Font font, final String string ) {
+  public static Point stringExtent( Font font, String string ) {
     if( font == null || string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -299,7 +295,7 @@ public final class Graphics {
    * @param font the font for which the result is valid
    * @return the height of the font
    */
-  public static int getCharHeight( final Font font ) {
+  public static int getCharHeight( Font font ) {
     if( font == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -313,7 +309,7 @@ public final class Graphics {
    * @param font the font for which the result is valid
    * @return the average character width of the font
    */
-  public static float getAvgCharWidth( final Font font ) {
+  public static float getAvgCharWidth( Font font ) {
     if( font == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }

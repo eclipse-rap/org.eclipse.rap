@@ -17,7 +17,6 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.ExpandEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IExpandBarAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;

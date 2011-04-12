@@ -202,14 +202,14 @@ public final class RWTServletContextListener implements ServletContextListener {
       try {
         IResourceManagerFactory factory
           = ( IResourceManagerFactory )ClassUtil.newInstance( CLASS_LOADER, factoryName );
-        ResourceManager.register( factory );
+        RWTFactory.getResourceManagerProvider().registerFactory( factory );
       } catch( ClassInstantiationException ex ) {
         String text = "Failed to register resource manager factory ''{0}''.";
         String msg = MessageFormat.format( text, new Object[] { factoryName } );
         context.log( msg, ex );
       }
     } else {
-      ResourceManager.register( new DefaultResourceManagerFactory() );
+      RWTFactory.getResourceManagerProvider().registerFactory( new DefaultResourceManagerFactory() );
     }
   }
   

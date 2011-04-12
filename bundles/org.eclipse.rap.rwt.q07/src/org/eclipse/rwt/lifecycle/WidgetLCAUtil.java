@@ -27,7 +27,6 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;

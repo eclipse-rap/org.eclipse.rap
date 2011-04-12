@@ -36,7 +36,7 @@ public class ApplicationContextUtil {
     ApplicationStoreImpl.class,
     ThemeManagerHolder.class,
     ResourceManagerImpl.class,
-    ResourceManager.class,
+    ResourceManagerProvider.class,
     BrandingManager.class,
     PhaseListenerRegistry.class,
     LifeCycleFactory.class,

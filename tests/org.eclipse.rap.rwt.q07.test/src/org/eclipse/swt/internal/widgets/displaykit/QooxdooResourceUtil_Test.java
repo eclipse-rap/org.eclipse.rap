@@ -10,18 +10,19 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.resources.IResourceManager;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.resources.IResourceManager;
 
 
 public class QooxdooResourceUtil_Test extends TestCase {
 
+  private IResourceManager resourceManager;
+
   public void testRegisterResources() throws Exception {
     QooxdooResourcesUtil.registerResources();
-    IResourceManager resourceManager = ResourceManager.getInstance();
     assertTrue( resourceManager.isRegistered( "client.js" ) );
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
   }
@@ -29,13 +30,13 @@ public class QooxdooResourceUtil_Test extends TestCase {
   public void testRegisterResourcesDebug() throws Exception {
     System.setProperty( "org.eclipse.rwt.clientLibraryVariant", "DEBUG" );
     QooxdooResourcesUtil.registerResources();
-    IResourceManager resourceManager = ResourceManager.getInstance();
     assertFalse( resourceManager.isRegistered( "client.js" ) );
     assertTrue( resourceManager.isRegistered( "qx/lang/Core.js" ) );
   }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    resourceManager = RWT.getResourceManager();
   }
 
   protected void tearDown() throws Exception {
