@@ -89,9 +89,9 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( ResourceManagerImpl.class ) );
     assertSame( applicationContext.getInstance( ResourceManagerImpl.class ),
                 getSingleton( ResourceManagerImpl.class ) );
-    assertNotNull( getSingleton( ResourceManager.class ) );
-    assertSame( applicationContext.getInstance( ResourceManager.class ),
-                getSingleton( ResourceManager.class ) );
+    assertNotNull( getSingleton( ResourceManagerProvider.class ) );
+    assertSame( applicationContext.getInstance( ResourceManagerProvider.class ),
+                getSingleton( ResourceManagerProvider.class ) );
     assertNotNull( getSingleton( StartupPageConfigurer.class ) );
     assertSame( applicationContext.getInstance( StartupPageConfigurer.class ),
                 getSingleton( StartupPageConfigurer.class ) );

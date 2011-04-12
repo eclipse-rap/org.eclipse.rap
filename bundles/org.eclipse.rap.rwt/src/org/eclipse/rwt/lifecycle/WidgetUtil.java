@@ -13,8 +13,7 @@ package org.eclipse.rwt.lifecycle;
 import java.text.MessageFormat;
 
 import org.eclipse.rwt.internal.lifecycle.UITestUtil;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;

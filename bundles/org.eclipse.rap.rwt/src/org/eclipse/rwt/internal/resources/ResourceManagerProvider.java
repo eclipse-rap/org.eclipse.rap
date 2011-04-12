@@ -22,17 +22,21 @@ public final class ResourceManagerProvider {
   
   public synchronized void registerFactory( IResourceManagerFactory factory ) {
     ParamCheck.notNull( factory, "factory" );
-    if( this.factory != null ) {
-      String msg = "There is already an IResourceManagerFactory registered.";
-      throw new IllegalStateException( msg );
-    }
+    checkNoFactoryRegistered();
     this.factory = factory;
   }
-  
+
   public synchronized IResourceManager getResourceManager() {
     if( instance == null ) {
       instance = factory.create();
     }
     return instance;
+  }
+
+  private void checkNoFactoryRegistered() {
+    if( factory != null ) {
+      String msg = "There is already an IResourceManagerFactory registered.";
+      throw new IllegalStateException( msg );
+    }
   }
 }

@@ -18,8 +18,7 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.graphics.ImageData;
 
 
@@ -77,15 +76,12 @@ public class ImageDataCache_Test extends TestCase {
     Fixture.disposeOfApplicationContext();
   }
 
-  private static ImageData getImageData( final String resource ) {
-    IResourceManager manager = ResourceManager.getInstance();
-    InputStream inputStream = manager.getResourceAsStream( resource );
+  private static ImageData getImageData( String resource ) {
+    InputStream inputStream = RWT.getResourceManager().getResourceAsStream( resource );
     return new ImageData( inputStream );
   }
 
-  private static void assertEqualsImageData( final ImageData imageData1,
-                                             final ImageData imageData2 )
-  {
+  private static void assertEqualsImageData( ImageData imageData1, ImageData imageData2 ) {
     assertEquals( imageData1.width, imageData2.width );
     assertEquals( imageData1.height, imageData2.height );
     assertTrue( Arrays.equals( imageData1.data, imageData2.data ) );

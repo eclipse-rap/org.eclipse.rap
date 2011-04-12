@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.TestAdaptable;
 import org.eclipse.rwt.internal.TestAdapterFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
@@ -112,7 +111,7 @@ public class RWTServletContextListener_Test extends TestCase {
     Fixture.triggerServletContextInitialized();
 
     Fixture.createServiceContext();
-    assertTrue( ResourceManager.getInstance() instanceof TestResourceManager );
+    assertTrue( RWT.getResourceManager() instanceof TestResourceManager );
   }
 
   public void testEntryPointInitialization() {

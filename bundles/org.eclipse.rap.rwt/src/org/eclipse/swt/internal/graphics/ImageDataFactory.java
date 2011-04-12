@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.graphics;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.ImageData;
 
@@ -45,8 +45,8 @@ public class ImageDataFactory {
     ImageData result = null;
     String imagePath = internalImage.getResourceName();
     try {
-      IResourceManager manager = ResourceManager.getInstance();
-      InputStream inputStream = manager.getRegisteredContent( imagePath );
+      IResourceManager resourceManager = RWT.getResourceManager();
+      InputStream inputStream = resourceManager.getRegisteredContent( imagePath );
       if( inputStream != null ) {
         try {
           result = new ImageData( inputStream );

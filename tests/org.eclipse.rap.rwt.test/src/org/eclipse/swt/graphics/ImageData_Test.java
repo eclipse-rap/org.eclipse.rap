@@ -17,17 +17,14 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 
 
 public class ImageData_Test extends TestCase {
   
   public void testImageData() {
-    IResourceManager manager = ResourceManager.getInstance();
-    InputStream inputStream
-      = manager.getResourceAsStream( Fixture.IMAGE_100x50 );
+    ClassLoader loader = Fixture.class.getClassLoader();
+    InputStream inputStream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     assertNotNull( inputStream );
     ImageData[] datas = ImageDataLoader.load( inputStream );
     assertNotNull( datas );
@@ -37,13 +34,5 @@ public class ImageData_Test extends TestCase {
     assertEquals( 100, data.width );
     assertEquals( 50, data.height );
     assertEquals( SWT.IMAGE_PNG, data.type );
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 }

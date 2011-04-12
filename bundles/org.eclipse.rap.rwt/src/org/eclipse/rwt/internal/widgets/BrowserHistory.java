@@ -20,7 +20,7 @@ import org.eclipse.rwt.events.BrowserHistoryListener;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.events.*;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;

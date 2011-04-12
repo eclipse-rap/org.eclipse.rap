@@ -15,8 +15,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.resources.ResourceManager;
-import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
@@ -120,11 +119,6 @@ public class InternalImageFactory {
     return new ByteArrayInputStream( bytes );
   }
 
-  static void registerResource( String path, InputStream stream ) {
-    IResourceManager manager = ResourceManager.getInstance();
-    manager.register( path, stream );
-  }
-
   private static InternalImage createInternalImage( String fileName ) {
     InternalImage result;
     try {
@@ -151,7 +145,7 @@ public class InternalImageFactory {
                                                     InputStream stream,
                                                     ImageData imageData )
   {
-    registerResource( path, stream );
+    RWT.getResourceManager().register( path, stream );
     return new InternalImage( path, imageData.width, imageData.height );
   }
 

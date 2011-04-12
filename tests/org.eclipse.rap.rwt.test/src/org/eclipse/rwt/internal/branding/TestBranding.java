@@ -12,9 +12,9 @@ package org.eclipse.rwt.internal.branding;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 
 public class TestBranding extends AbstractBranding {
 
@@ -75,7 +75,7 @@ public class TestBranding extends AbstractBranding {
   public void registerResources() throws IOException {
     registerResourcesCallCount++;
     if( favIcon != null && !"".equals( favIcon ) ) {
-      ResourceManager.getInstance().register( favIcon );
+      RWT.getResourceManager().register( favIcon );
     }
  }
 }

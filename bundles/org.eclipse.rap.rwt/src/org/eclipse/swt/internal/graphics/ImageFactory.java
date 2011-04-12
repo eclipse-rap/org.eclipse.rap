@@ -15,8 +15,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.Device;
@@ -32,7 +32,7 @@ public class ImageFactory {
     String result = null;
     if( image != null ) {
       String resourceName = image.internalImage.getResourceName();
-      result = ResourceManager.getInstance().getLocation( resourceName );
+      result = RWT.getResourceManager().getLocation( resourceName );
     }
     return result;
   }
@@ -43,8 +43,7 @@ public class ImageFactory {
   }
 
   public Image findImage( String path ) {
-    IResourceManager manager = ResourceManager.getInstance();
-    return findImage( path, manager.getContextLoader() );
+    return findImage( path, RWT.getResourceManager().getContextLoader() );
   }
 
   public Image findImage( String path, ClassLoader imageLoader ) {
@@ -89,7 +88,7 @@ public class ImageFactory {
   }
 
   private static InputStream getInputStream( String path, ClassLoader imageLoader ) {
-    IResourceManager manager = ResourceManager.getInstance();
+    IResourceManager manager = RWT.getResourceManager();
     ClassLoader bufferedContextLoader = manager.getContextLoader();
     if( imageLoader != null ) {
       manager.setContextLoader( imageLoader );

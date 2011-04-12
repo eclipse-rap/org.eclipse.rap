@@ -20,6 +20,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
@@ -127,11 +128,11 @@ public final class StartupPageConfigurer implements IStartupPageConfigurer {
   
   private static InputStream loadTemplateFile() throws IOException {
     InputStream result = null;
-    IResourceManager manager = ResourceManager.getInstance();
-    ClassLoader buffer = manager.getContextLoader();
-    manager.setContextLoader( StartupPageConfigurer.class.getClassLoader() );
+    IResourceManager resourceManager = RWT.getResourceManager();
+    ClassLoader buffer = resourceManager.getContextLoader();
+    resourceManager.setContextLoader( StartupPageConfigurer.class.getClassLoader() );
     try {        
-      result = manager.getResourceAsStream( INDEX_TEMPLATE );
+      result = resourceManager.getResourceAsStream( INDEX_TEMPLATE );
       if ( result == null ) {
         String text = "Failed to load Browser Survey HTML Page. Resource {0} could not be found.";
         Object[] param = new Object[]{ INDEX_TEMPLATE };
@@ -139,7 +140,7 @@ public final class StartupPageConfigurer implements IStartupPageConfigurer {
         throw new IOException( msg );
       }
     } finally {
-      manager.setContextLoader( buffer );          
+      resourceManager.setContextLoader( buffer );          
     }
     return result;
   }

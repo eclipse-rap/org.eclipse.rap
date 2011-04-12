@@ -17,6 +17,7 @@ import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.*;
@@ -438,8 +439,7 @@ public final class ThemeManager {
             ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
             String key = adapter.getKey( value );
             String registerPath = IMAGE_DEST_PATH + "/" + key;
-            IResourceManager resourceMgr = ResourceManager.getInstance();
-            resourceMgr.register( registerPath, inputStream );
+            RWT.getResourceManager().register( registerPath, inputStream );
           } finally {
             try {
               inputStream.close();
@@ -480,9 +480,8 @@ public final class ThemeManager {
           try {
             String widgetDestPath = CURSOR_DEST_PATH;
             String registerPath = widgetDestPath + "/" + key;
-            IResourceManager resMgr = ResourceManager.getInstance();
-            resMgr.register( registerPath, inputStream );
-            String location = resMgr.getLocation( registerPath );
+            RWT.getResourceManager().register( registerPath, inputStream );
+            String location = RWT.getResourceManager().getLocation( registerPath );
             log( " theme cursor registered @ " + location );
           } finally {
             try {
@@ -497,7 +496,7 @@ public final class ThemeManager {
   }
 
   private static void registerJsLibrary( String name, String code, boolean compress ) {
-    IResourceManager manager = ResourceManager.getInstance();
+    IResourceManager resourceManager = RWT.getResourceManager();
     RegisterOptions option =   compress
                              ? RegisterOptions.VERSION_AND_COMPRESS
                              : RegisterOptions.VERSION;
@@ -509,9 +508,9 @@ public final class ThemeManager {
         throw new RuntimeException( shouldNotHappen );
       }
       ByteArrayInputStream inputStream = new ByteArrayInputStream( buffer );
-      manager.register( name, inputStream, CHARSET, option );
+      resourceManager.register( name, inputStream, CHARSET, option );
     } else {
-      manager.register( name, CHARSET, option );
+      resourceManager.register( name, CHARSET, option );
     }
     ResourceUtil.useJsLibrary( name );
   }

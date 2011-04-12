@@ -18,7 +18,7 @@ import java.util.*;
 
 import javax.xml.parsers.*;
 
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.IServiceHandler;
@@ -76,9 +76,9 @@ class ServiceHandlerRegistry {
   
   private void registerHandlerInstances() {
     try {
-      IResourceManager manager = ResourceManager.getInstance();
-      if( manager != null ) {
-        registerHandlerInstances( manager );
+      IResourceManager resourceManager = RWT.getResourceManager();
+      if( resourceManager != null ) {
+        registerHandlerInstances( resourceManager );
       }
     } catch( RuntimeException rte ) {
       throw rte;

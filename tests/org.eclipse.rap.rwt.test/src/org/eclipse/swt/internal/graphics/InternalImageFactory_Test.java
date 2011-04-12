@@ -17,8 +17,8 @@ import java.io.*;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.swt.graphics.*;
 
 
@@ -29,14 +29,13 @@ public class InternalImageFactory_Test extends TestCase {
   public void testRegisterResource() {
     InputStream inputStream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
     String name = "testName";
-    InternalImageFactory.registerResource( name, inputStream );
-    assertTrue( ResourceManager.getInstance().isRegistered( name ) );
+    RWT.getResourceManager().register( name, inputStream );
+    assertTrue( RWT.getResourceManager().isRegistered( name ) );
   }
 
   public void testReadImageData() {
     InputStream inputStream = CLASS_LOADER.getResourceAsStream( Fixture.IMAGE_100x50 );
-    ImageData data
-      = InternalImageFactory.readImageData( new BufferedInputStream( inputStream ) );
+    ImageData data = InternalImageFactory.readImageData( new BufferedInputStream( inputStream ) );
     assertEquals( 100, data.width );
     assertEquals( 50, data.height );
   }

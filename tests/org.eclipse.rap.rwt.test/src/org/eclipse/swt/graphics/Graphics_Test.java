@@ -19,14 +19,13 @@ import java.net.URLClassLoader;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -95,26 +94,25 @@ public class Graphics_Test extends TestCase {
   }
 
   public void testGetImage() {
-    IResourceManager manager = ResourceManager.getInstance();
+    IResourceManager resourceManager = RWT.getResourceManager();
     // only if you comment initial registration in
     // org.eclipse.swt.internal.widgets.displaykit.QooxdooResourcesUtil
-    assertFalse( manager.isRegistered( Fixture.IMAGE1 ) );
+    assertFalse( resourceManager.isRegistered( Fixture.IMAGE1 ) );
     Image image1 = Graphics.getImage( Fixture.IMAGE1 );
     String registerPath = getRegisterPath( image1 );
-    assertTrue( manager.isRegistered( registerPath ) );
-    File contextDir = new File( Fixture.WEB_CONTEXT_DIR,
-                                ResourceManagerImpl.RESOURCES );
+    assertTrue( resourceManager.isRegistered( registerPath ) );
+    File contextDir = new File( Fixture.WEB_CONTEXT_DIR, ResourceManagerImpl.RESOURCES );
     assertTrue( new File( contextDir, registerPath ).exists() );
     Image image1a = Graphics.getImage( Fixture.IMAGE1 );
     assertSame( image1, image1a );
     // another picture
     Image image2 = Graphics.getImage( Fixture.IMAGE2 );
     String image2Path = getRegisterPath( image2 );
-    assertTrue( manager.isRegistered( image2Path ) );
+    assertTrue( resourceManager.isRegistered( image2Path ) );
     assertTrue( new File( contextDir, image2Path ).exists() );
     // ... and do it again...
     Graphics.getImage( Fixture.IMAGE1 );
-    assertTrue( manager.isRegistered( registerPath ) );
+    assertTrue( resourceManager.isRegistered( registerPath ) );
   }
 
   public void testGetImageWithClassLoader() throws IOException {
@@ -122,8 +120,7 @@ public class Graphics_Test extends TestCase {
     Fixture.copyTestResource( Fixture.IMAGE3, testGif );
     URL[] urls = new URL[] { Fixture.WEB_CONTEXT_DIR.toURI().toURL() };
     URLClassLoader classLoader = new URLClassLoader( urls, null );
-    IResourceManager manager = ResourceManager.getInstance();
-    assertFalse( manager.isRegistered( Fixture.IMAGE3 ) );
+    assertFalse( RWT.getResourceManager().isRegistered( Fixture.IMAGE3 ) );
     try {
       Graphics.getImage( "test.gif" );
       fail( "Image not available on the classpath." );
@@ -140,13 +137,11 @@ public class Graphics_Test extends TestCase {
     Fixture.copyTestResource( Fixture.IMAGE3, testGif );
     URL[] urls = new URL[] { Fixture.WEB_CONTEXT_DIR.toURI().toURL() };
     URLClassLoader classLoader = new URLClassLoader( urls, null );
-    IResourceManager manager = ResourceManager.getInstance();
-    assertFalse( manager.isRegistered( Fixture.IMAGE3 ) );
+    assertFalse( RWT.getResourceManager().isRegistered( Fixture.IMAGE3 ) );
     try {
       Graphics.getImage( imageName );
       fail( "Image not available on the classpath." );
-    } catch( final SWTException e ) {
-      // expected
+    } catch( SWTException expected ) {
     }
     InputStream is = classLoader.getResourceAsStream( imageName );
     Image image = Graphics.getImage( "test.gif", is );

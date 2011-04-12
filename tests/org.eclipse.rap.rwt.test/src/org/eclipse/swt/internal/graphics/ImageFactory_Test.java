@@ -17,7 +17,7 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -30,13 +30,12 @@ public class ImageFactory_Test extends TestCase {
   private static final ClassLoader CLASS_LOADER = ImageFactory_Test.class.getClassLoader();
 
   private Display display;
-
   private ImageFactory imageFactory;
 
   public void testFindImageByPathRegistersResource() {
     Image image1 = imageFactory.findImage( Fixture.IMAGE1, CLASS_LOADER );
     String registerPath = getRegisterPath( image1 );
-    assertTrue( ResourceManager.getInstance().isRegistered( registerPath ) );
+    assertTrue( RWT.getResourceManager().isRegistered( registerPath ) );
   }
 
   public void testFindImageByPathReturnsSharedImage() {

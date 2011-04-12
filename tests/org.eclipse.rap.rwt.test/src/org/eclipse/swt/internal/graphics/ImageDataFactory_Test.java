@@ -15,8 +15,8 @@ package org.eclipse.swt.internal.graphics;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -29,8 +29,8 @@ public class ImageDataFactory_Test extends TestCase {
 
   public void testFindImageData() {
     Image image = Graphics.getImage( Fixture.IMAGE_50x100, CLASS_LOADER );
-    IResourceManager resMgr = ResourceManager.getInstance();
-    assertTrue( resMgr.isRegistered( image.internalImage.getResourceName() ) );
+    IResourceManager resourceManager = RWT.getResourceManager();
+    assertTrue( resourceManager.isRegistered( image.internalImage.getResourceName() ) );
     ImageData imageData = imageDataFactory.findImageData( image.internalImage );
     assertNotNull( imageData );
     assertEquals( 50, imageData.width );

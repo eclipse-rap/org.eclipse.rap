@@ -39,7 +39,6 @@ import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -147,7 +146,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
   }
 
   private static void registerResourceManagerFactory() {
-    ResourceManager.register( new DefaultResourceManagerFactory() );
+    RWTFactory.getResourceManagerProvider().registerFactory( new DefaultResourceManagerFactory() );
   }
 
   private static void registerSettingStoreFactory() {

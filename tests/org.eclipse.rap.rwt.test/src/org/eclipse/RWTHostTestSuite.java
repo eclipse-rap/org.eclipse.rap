@@ -99,7 +99,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( RWTDelegate_Test.class );
     suite.addTestSuite( ResourceRegistry_Test.class );
     suite.addTestSuite( RWTRequestVersionControl_Test.class );
-    suite.addTestSuite( ResourceManager_Test.class );
+    suite.addTestSuite( ResourceManagerProvider_Test.class );
     suite.addTestSuite( BrandingManager_Test.class );
     suite.addTestSuite( BrandingUtil_Test.class );
     suite.addTestSuite( JSListenerType_Test.class );
