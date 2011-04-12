@@ -22,14 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -878,18 +876,6 @@ public class Display extends Device implements Adaptable {
   //////////////////////
   // Information methods
   
-  private static WeakReference[] getDisplays() {
-    return getDisplaysHolder().getDisplays();
-  }
-  
-  private static void setDisplays( WeakReference[] displays ) {
-    getDisplaysHolder().setDisplays( displays );
-  }
-
-  private static DisplaysHolder getDisplaysHolder() {
-    return ( DisplaysHolder )ApplicationContext.getSingleton( DisplaysHolder.class );
-  }
-
   /**
    * Returns the display which the given thread is the
    * user-interface thread for, or null if the given thread
@@ -2202,6 +2188,14 @@ public class Display extends Device implements Adaptable {
     }
   }
 
+  private static WeakReference[] getDisplays() {
+    return RWTFactory.getDisplaysHolder().getDisplays();
+  }
+  
+  private static void setDisplays( WeakReference[] displays ) {
+    RWTFactory.getDisplaysHolder().setDisplays( displays );
+  }
+
   /////////////////////
   // Consistency checks
 
@@ -2363,8 +2357,7 @@ public class Display extends Device implements Adaptable {
     }
 
     public boolean isFocusInvalidated() {
-      IServiceStore serviceStore = RWT.getServiceStore();
-      Object value = serviceStore.getAttribute( ATTR_INVALIDATE_FOCUS );
+      Object value = RWT.getServiceStore().getAttribute( ATTR_INVALIDATE_FOCUS );
       return value != null;
     }
 

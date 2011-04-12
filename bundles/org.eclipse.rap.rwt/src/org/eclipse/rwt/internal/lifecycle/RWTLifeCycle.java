@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
@@ -323,7 +322,7 @@ public class RWTLifeCycle extends LifeCycle {
   private static void initialize() {
     ISessionStore session = ContextProvider.getSession();
     if( session.getAttribute( INITIALIZED ) == null ) {
-      AdapterFactoryRegistry.register();
+      RWTFactory.getAdapterFactoryRegistry().register();
       session.setAttribute( INITIALIZED, Boolean.TRUE );
     }
   }

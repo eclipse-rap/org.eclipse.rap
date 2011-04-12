@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.resources;
 import java.io.*;
 import java.util.zip.GZIPOutputStream;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.StreamWritingUtil;
 
@@ -25,12 +25,12 @@ public class JSLibraryConcatenator {
   private byte[] uncompressed;
   private String content;
 
-  JSLibraryConcatenator() {
+  public JSLibraryConcatenator() {
     content = "";
   }
 
   public static JSLibraryConcatenator getInstance() {
-    return ( JSLibraryConcatenator )ApplicationContext.getSingleton( JSLibraryConcatenator.class );
+    return RWTFactory.getJSLibraryConcatenator();
   }
 
   public String getHashCode() {

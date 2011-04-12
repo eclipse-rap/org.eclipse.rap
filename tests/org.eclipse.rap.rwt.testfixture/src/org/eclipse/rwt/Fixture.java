@@ -18,7 +18,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener.ContextDestroyer;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener.ContextInitializer;
@@ -206,7 +205,7 @@ public class Fixture {
     setSystemProperties();
     createApplicationContext();
     createServiceContext();
-    AdapterFactoryRegistry.register();
+    RWTFactory.getAdapterFactoryRegistry().register();
   }
 
   private static void registerCurrentPhaseListener() {

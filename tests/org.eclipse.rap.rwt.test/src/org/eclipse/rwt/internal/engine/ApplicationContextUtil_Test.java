@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.AdapterFactoryRegistryInstance;
+import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -26,7 +26,7 @@ import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.*;
-import org.eclipse.swt.widgets.DisplaysHolder;
+import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 
 public class ApplicationContextUtil_Test extends TestCase {
@@ -71,9 +71,9 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( FontDataFactory.class ) );
     assertSame( applicationContext.getInstance( FontDataFactory.class ),
                 getSingleton( FontDataFactory.class ) );
-    assertNotNull( getSingleton( AdapterFactoryRegistryInstance.class ) );
-    assertSame( applicationContext.getInstance( AdapterFactoryRegistryInstance.class ),
-                getSingleton( AdapterFactoryRegistryInstance.class ) );
+    assertNotNull( getSingleton( AdapterFactoryRegistry.class ) );
+    assertSame( applicationContext.getInstance( AdapterFactoryRegistry.class ),
+                getSingleton( AdapterFactoryRegistry.class ) );
     assertNotNull( getSingleton( SettingStoreManager.class ) );
     assertSame( applicationContext.getInstance( SettingStoreManager.class ),
                 getSingleton( SettingStoreManager.class ) );

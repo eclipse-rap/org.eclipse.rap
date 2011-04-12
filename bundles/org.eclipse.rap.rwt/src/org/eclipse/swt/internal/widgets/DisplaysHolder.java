@@ -8,7 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.widgets;
+package org.eclipse.swt.internal.widgets;
 
 import java.lang.ref.WeakReference;
 
@@ -20,11 +20,11 @@ public class DisplaysHolder {
     displays = new WeakReference[ 4 ];
   }
   
-  WeakReference[] getDisplays() {
+  public WeakReference[] getDisplays() {
     return displays;
   }
   
-  void setDisplays( WeakReference[] displays ) {
+  public void setDisplays( WeakReference[] displays ) {
     this.displays = displays;
   }
 }

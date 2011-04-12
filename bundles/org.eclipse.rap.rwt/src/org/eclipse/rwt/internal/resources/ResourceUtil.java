@@ -15,6 +15,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -63,7 +64,7 @@ public final class ResourceUtil {
     } finally {
       fos.close();
     }
-    JSLibraryConcatenator.getInstance().appendJSLibrary( toWrite, content );
+    RWTFactory.getJSLibraryConcatenator().appendJSLibrary( toWrite, content );
   }
 
   public static void useJsLibrary( String libraryName ) {

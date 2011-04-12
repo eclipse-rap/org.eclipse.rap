@@ -12,32 +12,90 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import java.text.MessageFormat;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.internal.service.ServletLog;
+import org.eclipse.rwt.internal.util.*;
 
 
-public final class AdapterFactoryRegistry {
-
-  public static void add( final Class factoryClass, 
-                          final Class adaptableClass )
-  {
-    getInstance().add( factoryClass, adaptableClass );
+public class AdapterFactoryRegistry {
+  private final List factories;
+  
+  private final static class FactoryEntry {
+    private Class factoryClass;
+    private Class adaptableClass;
+  }
+  
+  public AdapterFactoryRegistry() {
+    factories = new LinkedList();
   }
 
-  public static void register() {
-    getInstance().register();
+  public void add( Class factoryClass, Class adaptableClass ) {
+    ParamCheck.notNull( factoryClass, "factoryClass" );
+    ParamCheck.notNull( adaptableClass, "adaptableClass" );
+    if( !AdapterFactory.class.isAssignableFrom( factoryClass ) ) {
+      Object[] params = new Object[] {
+        factoryClass.getName(),
+        AdapterFactory.class.getName()
+      };
+      String text = "''{0}'' is not an instance of ''{1}''.";
+      String msg = MessageFormat.format( text, params );
+      throw new IllegalArgumentException( msg );
+    }
+    if( !Adaptable.class.isAssignableFrom( adaptableClass ) ) {
+      Object[] params = new Object[] {
+        adaptableClass.getName(),
+        Adaptable.class.getName()
+      };
+      String text = "''{0}'' is not an instance of ''{1}''.";
+      String msg = MessageFormat.format( text, params );
+      throw new IllegalArgumentException( msg );
+    }
+    FactoryEntry[] entries = getEntries();
+    for( int i = 0; i < entries.length; i++ ) {
+      if(    entries[ i ].factoryClass == factoryClass
+          && entries[ i ].adaptableClass == adaptableClass )
+      {
+        Object[] params = new Object[]{
+          factoryClass.getName(),
+          adaptableClass.getName()
+        };
+        String text = "The factory ''{0}'' was already added for the adaptable ''{1}''.";
+        String msg = MessageFormat.format( text, params );
+        throw new IllegalArgumentException( msg );
+      }
+    }
+    FactoryEntry factoryEntry = new FactoryEntry();
+    factoryEntry.factoryClass = factoryClass;
+    factoryEntry.adaptableClass = adaptableClass;
+    factories.add( factoryEntry );
   }
 
-  public static void clear() {
-    getInstance().clear();
+  public void register() {
+    FactoryEntry[] entries = getEntries();
+    for( int i = 0; i < entries.length; i++ ) {
+      Class clazz = entries[ i ].factoryClass;
+      try {
+        AdapterFactory factory = ( AdapterFactory )ClassUtil.newInstance( clazz );
+        AdapterManagerImpl.getInstance().registerAdapters( factory, entries[ i ].adaptableClass );
+      } catch( ClassInstantiationException cie ) {
+        String text = "Could not create an instance of ''{0}''.";
+        String msg = MessageFormat.format( text, new Object[] { clazz } );
+        ServletLog.log( msg, cie );
+      }
+    }
   }
+  
+  //////////////////
+  // helping methods
 
-  private static AdapterFactoryRegistryInstance getInstance() {
-    Class singletonType = AdapterFactoryRegistryInstance.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( AdapterFactoryRegistryInstance )singleton;
-  }
-
-  private AdapterFactoryRegistry() {
-    // prevent instance creation
+  private FactoryEntry[] getEntries() {
+    FactoryEntry[] entries = new FactoryEntry[ factories.size() ];
+    factories.toArray( entries );
+    return entries;
   }
 }

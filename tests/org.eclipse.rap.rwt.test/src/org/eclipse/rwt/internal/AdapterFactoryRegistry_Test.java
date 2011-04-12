@@ -19,7 +19,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -40,43 +41,42 @@ public class AdapterFactoryRegistry_Test extends TestCase {
   }
   
   public void testRegistration() {
-    AdapterFactoryRegistry.add( TestAdapterFactory.class, TestAdaptable.class );
-    AdapterFactoryRegistry.register();
+    RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, TestAdaptable.class );
+    RWTFactory.getAdapterFactoryRegistry().register();
     TestAdaptable adaptable = new TestAdaptable();
     Runnable runnable = ( Runnable )adaptable.getAdapter( Runnable.class );
     assertNotNull( runnable );
     
     try {
-      AdapterFactoryRegistry.add( null, TestAdaptable.class );
+      RWTFactory.getAdapterFactoryRegistry().add( null, TestAdaptable.class );
       fail( "Parameter factory class must not be null." );
     } catch( final NullPointerException npe ) {
       // expected
     }
     
     try {
-      AdapterFactoryRegistry.add( TestAdapterFactory.class, null );
+      RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, null );
       fail( "Parameter adaptable class must not be null." );
     } catch( final NullPointerException npe ) {
       // expected
     }
     
     try {
-      AdapterFactoryRegistry.add( Object.class, TestAdaptable.class );
+      RWTFactory.getAdapterFactoryRegistry().add( Object.class, TestAdaptable.class );
       fail( "Parameter factory class must not instance of AdapterFactory." );
     } catch( final IllegalArgumentException iae ) {
       // expected
     }
     
     try {
-      AdapterFactoryRegistry.add( TestAdapterFactory.class, Object.class );
+      RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, Object.class );
       fail( "Parameter adaptable class must not instance of Adaptable." );
     } catch( final IllegalArgumentException iae ) {
       // expected
     }
     
     try {
-      AdapterFactoryRegistry.add( TestAdapterFactory.class,
-                                  TestAdaptable.class );
+      RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, TestAdaptable.class );
       fail( "Factory - adaptable pair was already added." );
     } catch( final IllegalArgumentException iae ) {
       // expected
@@ -91,7 +91,7 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     // AdapterFactory implementation.
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
     TestAdapterFactory.log = "";
-    AdapterFactoryRegistry.add( TestAdapterFactory.class, TestAdaptable.class );
+    RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, TestAdaptable.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     assertEquals( "", TestAdapterFactory.log );
     ThemeManager.getInstance().initialize();

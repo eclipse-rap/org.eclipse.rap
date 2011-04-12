@@ -32,14 +32,12 @@ import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.EngineConfig;
 import org.eclipse.rwt.internal.IEngineConfig;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
-import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
@@ -200,7 +198,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
         Bundle bundle = Platform.getBundle( contributorName );
         Class factoryClass = bundle.loadClass( factoryName );
         Class adaptableClass = bundle.loadClass( adaptableName );
-        AdapterFactoryRegistry.add( factoryClass, adaptableClass );
+        RWTFactory.getAdapterFactoryRegistry().add( factoryClass, adaptableClass );
       } catch( final Throwable thr ) {
         String text =   "Could not register adapter factory ''{0}'' "
                       + "for the adapter type ''{1}''.";
@@ -398,7 +396,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
     JSLibraryServiceHandler handler = new JSLibraryServiceHandler();
     RWT.getServiceManager().registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, handler );
     // TODO [SystemStart]: move this to where the actual system initialization takes place
-    JSLibraryConcatenator.getInstance().startJSConcatenation();
+    RWTFactory.getJSLibraryConcatenator().startJSConcatenation();
   }
 
   private void registerCustomServiceHandlers() {

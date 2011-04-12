@@ -253,7 +253,7 @@ public final class RWTServletContextListener implements ServletContextListener {
           try {
             Class factoryClass = Class.forName( classNames[ 0 ] );
             Class adaptableClass = Class.forName( classNames[ 1 ] );
-            AdapterFactoryRegistry.add( factoryClass, adaptableClass );
+            RWTFactory.getAdapterFactoryRegistry().add( factoryClass, adaptableClass );
           } catch( final Throwable thr ) {
             Object[] param = new Object[] { factoryParams[ i ] };
             String text;
@@ -264,10 +264,8 @@ public final class RWTServletContextListener implements ServletContextListener {
         }
       }
     } else {
-      AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
-                                  Widget.class );
-      AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
-                                  Display.class );
+      RWTFactory.getAdapterFactoryRegistry().add( LifeCycleAdapterFactory.class, Widget.class );
+      RWTFactory.getAdapterFactoryRegistry().add( LifeCycleAdapterFactory.class, Display.class );
     }
   }
 
@@ -454,7 +452,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     RWTFactory.getServiceManager().registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, 
                                                            new JSLibraryServiceHandler() );
     // TODO [SystemStart]: move this to where the actual system initialization takes place
-    JSLibraryConcatenator.getInstance().startJSConcatenation();
+    RWTFactory.getJSLibraryConcatenator().startJSConcatenation();
   }
 
   public static void deregisterJSLibraryServiceHandler() {

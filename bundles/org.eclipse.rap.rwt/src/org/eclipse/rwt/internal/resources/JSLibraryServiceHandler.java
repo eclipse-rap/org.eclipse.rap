@@ -53,7 +53,7 @@ public class JSLibraryServiceHandler implements IServiceHandler {
       RWT.getRequest().getServletPath().substring( 1 ),
       IServiceHandler.REQUEST_PARAM,
       JSLibraryServiceHandler.HANDLER_ID,
-      JSLibraryConcatenator.getInstance().getHashCode()
+      RWTFactory.getJSLibraryConcatenator().getHashCode()
     };
     return MessageFormat.format( JSLibraryServiceHandler.REQUEST_PATTERN, param );
   }
@@ -81,12 +81,12 @@ public class JSLibraryServiceHandler implements IServiceHandler {
   private void writeCompressedOutput() throws IOException {
     RWT.getResponse().setHeader( CONTENT_ENCODING, ENCODING_GZIP );
     ServletOutputStream out = RWT.getResponse().getOutputStream();
-    StreamWritingUtil.writeBuffered( JSLibraryConcatenator.getInstance().getCompressed(), out );
+    StreamWritingUtil.writeBuffered( RWTFactory.getJSLibraryConcatenator().getCompressed(), out );
   }
 
   private void writeUnCompressedOutput() throws IOException {
     ServletOutputStream out = RWT.getResponse().getOutputStream();
-    StreamWritingUtil.writeBuffered( JSLibraryConcatenator.getInstance().getUncompressed(), out );
+    StreamWritingUtil.writeBuffered( RWTFactory.getJSLibraryConcatenator().getUncompressed(), out );
   }
 
   private static boolean isAcceptEncoding() {

@@ -17,6 +17,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 
 
 public class ResourceUtil_Test extends TestCase {
@@ -65,14 +66,14 @@ public class ResourceUtil_Test extends TestCase {
   }
 
   public void testConcatenationEmpty() {
-    JSLibraryConcatenator jsConcatenator = JSLibraryConcatenator.getInstance();
+    JSLibraryConcatenator jsConcatenator = new JSLibraryConcatenator();
     jsConcatenator.startJSConcatenation();
     String result = jsConcatenator.getContent();
     assertEquals( "", result );
   }
 
   public void testConcatenation() throws IOException {
-    JSLibraryConcatenator jsConcatenator = JSLibraryConcatenator.getInstance();
+    JSLibraryConcatenator jsConcatenator = RWTFactory.getJSLibraryConcatenator();
     jsConcatenator.startJSConcatenation();
     File file = File.createTempFile( "test", ".js" );
     ResourceUtil.write( file, getStringAsIntArray( "foo" ) );

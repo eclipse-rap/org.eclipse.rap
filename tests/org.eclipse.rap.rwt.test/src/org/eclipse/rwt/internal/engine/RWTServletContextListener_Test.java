@@ -99,7 +99,7 @@ public class RWTServletContextListener_Test extends TestCase {
     Fixture.triggerServletContextInitialized();
 
     Fixture.createServiceContext();
-    AdapterFactoryRegistry.register();
+    RWTFactory.getAdapterFactoryRegistry().register();
     TestAdaptable testAdaptable = new TestAdaptable();
     Runnable runnable = ( Runnable )testAdaptable.getAdapter( Runnable.class );
     assertNotNull( runnable );

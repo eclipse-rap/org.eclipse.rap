@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.engine;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rwt.internal.AdapterFactoryRegistryInstance;
+import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -24,7 +24,7 @@ import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.*;
-import org.eclipse.swt.widgets.DisplaysHolder;
+import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 
 public class ApplicationContextUtil {
@@ -46,7 +46,7 @@ public class ApplicationContextUtil {
     InternalImageFactory.class,
     ImageDataFactory.class,
     FontDataFactory.class,
-    AdapterFactoryRegistryInstance.class,
+    AdapterFactoryRegistry.class,
     SettingStoreManager.class,
     StartupPageConfigurer.class,
     StartupPage.class,

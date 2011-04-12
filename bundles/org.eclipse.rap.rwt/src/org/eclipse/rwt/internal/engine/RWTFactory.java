@@ -10,15 +10,18 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
+import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 
 public class RWTFactory {
@@ -95,6 +98,20 @@ public class RWTFactory {
     return ( InternalImageFactory )singleton;
   }
   
+  public static DisplaysHolder getDisplaysHolder() {
+    return ( DisplaysHolder )ApplicationContext.getSingleton( DisplaysHolder.class );
+  }
+
+  public static JSLibraryConcatenator getJSLibraryConcatenator() {
+    return ( JSLibraryConcatenator )ApplicationContext.getSingleton( JSLibraryConcatenator.class );
+  }
+
+  public static AdapterFactoryRegistry getAdapterFactoryRegistry() {
+    Class singletonType = AdapterFactoryRegistry.class;
+    Object singleton = ApplicationContext.getSingleton( singletonType );
+    return ( AdapterFactoryRegistry )singleton;
+  }
+
   private RWTFactory() {
     // prevent instantiation
   }
