@@ -14,7 +14,7 @@
 package org.eclipse.rwt.internal.theme;
 
 
-public class ThemeManagerInstance {
+public class ThemeManagerHolder {
   private ThemeManager instance;
   
   public ThemeManager getInstance() {
@@ -26,9 +26,5 @@ public class ThemeManagerInstance {
   
   public void resetInstance() {
     instance = null;
-  }
-  
-  private ThemeManagerInstance() {
-    // prevent instance creation
   }
 }

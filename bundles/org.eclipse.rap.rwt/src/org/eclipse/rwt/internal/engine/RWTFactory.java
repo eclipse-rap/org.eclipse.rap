@@ -15,6 +15,8 @@ import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
+import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
+import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.IApplicationStore;
 
 
@@ -59,6 +61,14 @@ public class RWTFactory {
 
   public static PhaseListenerRegistry getPhaseListenerRegistry() {
     return ( PhaseListenerRegistry )ApplicationContext.getSingleton( PhaseListenerRegistry.class );
+  }
+  
+  public static ThemeManagerHolder getThemeManager() {
+    return ( ThemeManagerHolder )ApplicationContext.getSingleton( ThemeManagerHolder.class );
+  }
+
+  public static ThemeAdapterManager getThemeAdapterManager() {
+    return ( ThemeAdapterManager )ApplicationContext.getSingleton( ThemeAdapterManager.class );
   }
 
   private RWTFactory() {

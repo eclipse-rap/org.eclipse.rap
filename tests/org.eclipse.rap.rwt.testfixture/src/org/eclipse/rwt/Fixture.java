@@ -26,7 +26,7 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.internal.theme.ThemeManagerInstance;
+import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -52,7 +52,7 @@ public class Fixture {
 
     // TODO [ApplicationContext]: Replacing ThemeManagerInstance improves performance of 
     //      RWTAllTestSuite. Think about a less intrusive solution.
-    ApplicationContextUtil.replace( ThemeManagerInstance.class,
+    ApplicationContextUtil.replace( ThemeManagerHolder.class,
                             ThemeManagerSingletonFactory.class );
   }
 

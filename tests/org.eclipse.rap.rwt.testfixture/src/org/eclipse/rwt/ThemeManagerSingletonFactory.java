@@ -20,7 +20,7 @@ import org.eclipse.rwt.internal.theme.*;
 
 
 class ThemeManagerSingletonFactory implements InstanceTypeFactory {
-  private static ThemeManagerInstance themeManagerHolder;
+  private static ThemeManagerHolder themeManagerHolder;
   static {
     ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
   }
@@ -74,13 +74,13 @@ class ThemeManagerSingletonFactory implements InstanceTypeFactory {
     return themeManagerHolder;
   }
 
-  private ThemeManagerInstance newThemeManagerHolder() {
-    ThemeManagerInstance result;
+  private ThemeManagerHolder newThemeManagerHolder() {
+    ThemeManagerHolder result;
     try {
-      Class type = ThemeManagerInstance.class;
+      Class type = ThemeManagerHolder.class;
       Constructor constructor = type.getDeclaredConstructor( null );
       constructor.setAccessible( true );
-      result = ( ThemeManagerInstance )constructor.newInstance( null );
+      result = ( ThemeManagerHolder )constructor.newInstance( null );
     } catch( Exception shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
     }
@@ -88,6 +88,6 @@ class ThemeManagerSingletonFactory implements InstanceTypeFactory {
   }
 
   public Class getInstanceType() {
-    return ThemeManagerInstance.class;
+    return ThemeManagerHolder.class;
   }
 }

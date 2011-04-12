@@ -11,53 +11,51 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.swt.widgets.Widget;
 
 
-public final class ThemeAdapterUtil {
+public final class ThemeAdapterManager {
 
   private final Map themeAdapters;
 
-  public static IThemeAdapter getThemeAdapter( final Widget widget ) {
-    return getInstance().doGetThemeAdapter( widget );
+  public ThemeAdapterManager() {
+    themeAdapters = new HashMap();
   }
 
-  private IThemeAdapter doGetThemeAdapter( final Widget widget ) {
+  public IThemeAdapter getThemeAdapter( Widget widget ) {
     Class widgetClass = widget.getClass();
     IThemeAdapter result;
     synchronized( themeAdapters ) {
       result = ( IThemeAdapter )themeAdapters.get( widgetClass );
       if( result == null ) {
-        IThemeAdapter adapter = null;
-        Class superClass = widgetClass;
-        while( !Object.class.equals( superClass ) && adapter == null ) {
-          adapter = loadThemeAdapter( superClass );
-          if( adapter == null ) {
-            superClass = superClass.getSuperclass();
-          }
-        }
+        IThemeAdapter adapter = findThemeAdapter( widgetClass );
         themeAdapters.put( widgetClass, adapter );
         result = adapter;
       }
     }
-    if( result == null ) {
-      String text = "Failed to obtain theme adapter for class ''{0}\''.";
-      Object[] params = new Object[]{ widgetClass.getName() };
-      String msg = MessageFormat.format( text, params );
-      throw new ThemeManagerException( msg );
+    ensureThemeAdapterWasFound( widgetClass, result );
+    return result;
+  }
+
+  private static IThemeAdapter findThemeAdapter( Class widgetClass ) {
+    IThemeAdapter result = null;
+    Class superClass = widgetClass;
+    while( !Object.class.equals( superClass ) && result == null ) {
+      result = loadThemeAdapter( superClass );
+      if( result == null ) {
+        superClass = superClass.getSuperclass();
+      }
     }
     return result;
   }
 
-  private static IThemeAdapter loadThemeAdapter( final Class clazz ) {
+  private static IThemeAdapter loadThemeAdapter( Class clazz ) {
     IThemeAdapter result = null;
     String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
     String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
@@ -74,9 +72,7 @@ public final class ThemeAdapterUtil {
     return result;
   }
 
-  private static IThemeAdapter loadThemeAdapter( final String className,
-                                                 final ClassLoader classLoader )
-  {
+  private static IThemeAdapter loadThemeAdapter( String className, ClassLoader classLoader ) {
     IThemeAdapter result = null;
     try {
       result = ( IThemeAdapter )ClassUtil.newInstance( classLoader, className );
@@ -86,11 +82,10 @@ public final class ThemeAdapterUtil {
     return result;
   }
 
-  private static ThemeAdapterUtil getInstance() {
-    return ( ThemeAdapterUtil )ApplicationContext.getSingleton( ThemeAdapterUtil.class );
-  }
-
-  private ThemeAdapterUtil() {
-    themeAdapters = new HashMap();
+  private static void ensureThemeAdapterWasFound( Class widgetClass, IThemeAdapter result ) {
+    if( result == null ) {
+      String msg = "Failed to obtain theme adapter for class: " + widgetClass.getName();
+      throw new ThemeManagerException( msg );
+    }
   }
 }

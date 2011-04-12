@@ -17,12 +17,13 @@ import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.swt.widgets.Widget;
@@ -34,20 +35,15 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class ThemeManager {
 
-  public static final String DEFAULT_THEME_ID
-    = "org.eclipse.rap.rwt.theme.Default";
+  public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
 
   private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
 
   // TODO [ApplicationContext]: made field public to replace with a performance
   //      optimized solution for tests. Think about a less intrusive solution.
-  public static ResourceLoader STANDARD_RESOURCE_LOADER
-    = new ResourceLoader()
-  {
+  public static ResourceLoader STANDARD_RESOURCE_LOADER = new ResourceLoader() {
     ClassLoader classLoader = getClass().getClassLoader();
-    public InputStream getResourceAsStream( final String resourceName )
-      throws IOException
-    {
+    public InputStream getResourceAsStream( final String resourceName ) throws IOException {
       return classLoader.getResourceAsStream( resourceName );
     }
   };
@@ -57,11 +53,9 @@ public final class ThemeManager {
 
   private static final String LOG_SYSTEM_PROPERTY
     = System.getProperty( ThemeManager.class.getName() + ".log" );
-  private static final boolean DEBUG
-    = "true".equals( LOG_SYSTEM_PROPERTY );
+  private static final boolean DEBUG = "true".equals( LOG_SYSTEM_PROPERTY );
 
-  private static final String CLIENT_LIBRARY_VARIANT
-    = "org.eclipse.rwt.clientLibraryVariant";
+  private static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
   private static final String WIDGET_THEME_PATH = "resource/widget/rap";
@@ -129,7 +123,7 @@ public final class ThemeManager {
    * Returns the sole instance of the ThemeManager.
    */
   public static ThemeManager getInstance() {
-    return getSingletonHolder().getInstance();
+    return RWTFactory.getThemeManager().getInstance();
   }
 
   /**
@@ -137,7 +131,7 @@ public final class ThemeManager {
    * call to create a new instance.
    */
   public static void resetInstance() {
-    getSingletonHolder().resetInstance();
+    RWTFactory.getThemeManager().resetInstance();
   }
   
   /**
@@ -184,21 +178,12 @@ public final class ThemeManager {
    * @throws IllegalArgumentException if the given widget is not a subtype of
    *           {@link Widget}
    */
-  public void addThemeableWidget( final Class widget,
-                                  final ResourceLoader loader )
-  {
-    if( initialized ) {
-      throw new IllegalStateException( "ThemeManager is already initialized" );
-    }
-    if( widget == null ) {
-      throw new NullPointerException( "widget" );
-    }
-    if( loader == null ) {
-      throw new NullPointerException( "loader" );
-    }
+  public void addThemeableWidget( Class widget, ResourceLoader loader ) {
+    checkNotInitialized();
+    ParamCheck.notNull( widget, "widget" );
+    ParamCheck.notNull( loader, "loader" );
     if( !Widget.class.isAssignableFrom( widget ) ) {
-      String message =   "Themeable widget is not a subtype of Widget: "
-                       + widget.getName();
+      String message = "Themeable widget is not a subtype of Widget: " + widget.getName();
       throw new IllegalArgumentException( message );
     }
     themeableWidgets.add( new ThemeableWidget( widget, loader ) );
@@ -212,10 +197,8 @@ public final class ThemeManager {
    * @throws IllegalArgumentException if a theme with the same id is already
    *           registered
    */
-  public void registerTheme( final Theme theme ) {
-    if( initialized ) {
-      throw new IllegalStateException( "ThemeManager is already initialized" );
-    }
+  public void registerTheme( Theme theme ) {
+    checkNotInitialized();
     String id = theme.getId();
     if( themes.containsKey( id ) ) {
       String pattern = "Theme with id ''{0}'' exists already";
@@ -233,7 +216,7 @@ public final class ThemeManager {
    * @return <code>true</code> if a theme has been registered with the given
    *         id
    */
-  public boolean hasTheme( final String themeId ) {
+  public boolean hasTheme( String themeId ) {
     return themes.containsKey( themeId );
   }
 
@@ -244,7 +227,7 @@ public final class ThemeManager {
    * @return the theme registered with the given id or <code>null</code> if
    *         there is no theme registered with this id
    */
-  public Theme getTheme( final String themeId ) {
+  public Theme getTheme( String themeId ) {
     Theme result = null;
     if( themes.containsKey( themeId ) ) {
       result = ( Theme )themes.get( themeId );
@@ -283,8 +266,14 @@ public final class ThemeManager {
     }
   }
 
-  ThemeableWidget getThemeableWidget( final Class widget ) {
+  ThemeableWidget getThemeableWidget( Class widget ) {
     return themeableWidgets.get( widget );
+  }
+
+  private void checkNotInitialized() {
+    if( initialized ) {
+      throw new IllegalStateException( "ThemeManager is already initialized" );
+    }
   }
 
   private void checkInitialized() {
@@ -302,12 +291,9 @@ public final class ThemeManager {
   /**
    * Loads and processes all theme-relevant resources for a given widget.
    */
-  private void processThemeableWidget( final ThemeableWidget themeWidget )
-  {
-    String className
-      = LifeCycleAdapterUtil.getSimpleClassName( themeWidget.widget );
-    String[] variants
-      = LifeCycleAdapterUtil.getKitPackageVariants( themeWidget.widget );
+  private void processThemeableWidget( final ThemeableWidget themeWidget ) {
+    String className = LifeCycleAdapterUtil.getSimpleClassName( themeWidget.widget );
+    String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( themeWidget.widget );
     boolean found = false;
     try {
       for( int i = 0; i < variants.length && !found ; i++ ) {
@@ -316,22 +302,19 @@ public final class ThemeManager {
         found |= loadDefaultCss( themeWidget, variants[ i ], className );
       }
       if( themeWidget.elements == null ) {
-        log( "WARNING: No elements defined for themeable widget: "
-             + themeWidget.widget.getName() );
+        log( "WARNING: No elements defined for themeable widget: " + themeWidget.widget.getName() );
       }
       if( themeWidget.defaultStyleSheet != null ) {
         defaultTheme.addStyleSheet( themeWidget.defaultStyleSheet );
       }
-    } catch( final IOException e ) {
-      String message = "Failed to initialize themeable widget "
-                       + themeWidget.widget.getName();
-      throw new ThemeManagerException( message, e );
+    } catch( IOException e ) {
+      String msg = "Failed to initialize themeable widget: " + themeWidget.widget.getName();
+      throw new ThemeManagerException( msg, e );
     }
   }
 
-  private boolean loadThemeDef( final ThemeableWidget themeWidget,
-                                final String pkgName,
-                                final String className ) throws IOException
+  private boolean loadThemeDef( ThemeableWidget themeWidget, String pkgName, String className )
+    throws IOException
   {
     boolean result = false;
     String resPkgName = pkgName.replace( '.', '/' );
@@ -358,9 +341,7 @@ public final class ThemeManager {
     return result;
   }
 
-  private boolean loadAppearanceJs( final ThemeableWidget themeWidget,
-                                    final String pkgName,
-                                    final String className )
+  private boolean loadAppearanceJs( ThemeableWidget themeWidget, String pkgName, String className )
     throws IOException
   {
     boolean result = false;
@@ -380,9 +361,7 @@ public final class ThemeManager {
     return result;
   }
 
-  private boolean loadDefaultCss( final ThemeableWidget themeWidget,
-                                  final String pkgName,
-                                  final String className ) 
+  private boolean loadDefaultCss( ThemeableWidget themeWidget, String pkgName, String className )
     throws IOException
   {
     boolean result = false;
@@ -408,7 +387,7 @@ public final class ThemeManager {
    * Creates and registers all JavaScript theme files and images for a given
    * theme.
    */
-  private void registerThemeFiles( final Theme theme ) {
+  private void registerThemeFiles( Theme theme ) {
     boolean compress = !isDebugVariant();
     synchronized( registeredThemeFiles ) {
       String themeId = theme.getId();
@@ -434,7 +413,7 @@ public final class ThemeManager {
     }
   }
 
-  private void registerThemeableWidgetImages( final Theme theme ) {
+  private void registerThemeableWidgetImages( Theme theme ) {
     QxType[] values = theme.getValuesMap().getAllValues();
     for( int i = 0; i < values.length; i++ ) {
       QxType value = values[ i ];
@@ -473,7 +452,7 @@ public final class ThemeManager {
     }
   }
 
-  private void registerThemeableWidgetCursors( final Theme theme ) {
+  private void registerThemeableWidgetCursors( Theme theme ) {
     QxType[] values = theme.getValuesMap().getAllValues();
     for( int i = 0; i < values.length; i++ ) {
       QxType value = values[ i ];
@@ -537,7 +516,7 @@ public final class ThemeManager {
     ResourceUtil.useJsLibrary( name );
   }
 
-  private String createQxThemes( final Theme theme ) {
+  private String createQxThemes( Theme theme ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( createQxTheme( theme, QxTheme.ICON ) );
     buffer.append( createQxTheme( theme, QxTheme.WIDGET ) );
@@ -546,7 +525,7 @@ public final class ThemeManager {
     return buffer.toString();
   }
 
-  private String createQxTheme( final Theme theme, final int type ) {
+  private String createQxTheme( Theme theme, int type ) {
     String jsId = theme.getJsId();
     String base = null;
     if( type == QxTheme.APPEARANCE ) {
@@ -580,10 +559,5 @@ public final class ThemeManager {
     if( DEBUG ) {
       System.out.println( mesg );
     }
-  }
-
-  private static ThemeManagerInstance getSingletonHolder() {
-    Class singletonType = ThemeManagerInstance.class;
-    return ( ThemeManagerInstance )ApplicationContext.getSingleton( singletonType );
   }
 }

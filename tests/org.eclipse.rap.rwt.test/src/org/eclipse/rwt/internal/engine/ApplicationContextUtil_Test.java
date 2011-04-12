@@ -22,8 +22,8 @@ import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
-import org.eclipse.rwt.internal.theme.ThemeManagerInstance;
+import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
+import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeStorageRegistry.TextSizeStorageRegistryInstance;
@@ -42,9 +42,9 @@ public class ApplicationContextUtil_Test extends TestCase {
       = ApplicationContextUtil.registerDefaultApplicationContext( servletContext );
 
     assertNotNull( applicationContext );
-    assertNotNull( getSingleton( ThemeManagerInstance.class ) );
-    assertSame( applicationContext.getInstance( ThemeManagerInstance.class ),
-                getSingleton( ThemeManagerInstance.class ) );
+    assertNotNull( getSingleton( ThemeManagerHolder.class ) );
+    assertSame( applicationContext.getInstance( ThemeManagerHolder.class ),
+                getSingleton( ThemeManagerHolder.class ) );
     assertNotNull( getSingleton( BrandingManager.class ) );
     assertSame( applicationContext.getInstance( BrandingManager.class ),
                 getSingleton( BrandingManager.class ) );
@@ -102,9 +102,9 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( DisplaysHolder.class ) );
     assertSame( applicationContext.getInstance( DisplaysHolder.class ),
                 getSingleton( DisplaysHolder.class ) );
-    assertNotNull( getSingleton( ThemeAdapterUtil.class ) );
-    assertSame( applicationContext.getInstance( ThemeAdapterUtil.class ),
-                getSingleton( ThemeAdapterUtil.class ) );
+    assertNotNull( getSingleton( ThemeAdapterManager.class ) );
+    assertSame( applicationContext.getInstance( ThemeAdapterManager.class ),
+                getSingleton( ThemeAdapterManager.class ) );
     assertNotNull( getSingleton( JSLibraryConcatenator.class ) );
     assertSame( applicationContext.getInstance( JSLibraryConcatenator.class ),
                 getSingleton( JSLibraryConcatenator.class ) );
@@ -114,7 +114,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     
     ApplicationContextUtil.deregisterApplicationContext( servletContext );
     try {
-      getSingleton( ThemeManagerInstance.class );
+      getSingleton( ThemeManagerHolder.class );
       fail( "After deregistration there must be no context available." );
     } catch( IllegalStateException expected ) {
     }

@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.events.EventAdapter;
 import org.eclipse.rwt.internal.events.IEventAdapter;
 import org.eclipse.rwt.internal.theme.*;
@@ -173,7 +174,7 @@ public abstract class Widget implements Adaptable {
     } else if( adapter == IThemeAdapter.class ) {
       // This also bypasses the AdapterManager for the sake of performance.
       // ThemeAdapters are requested frequently during size computations.
-      result = ThemeAdapterUtil.getThemeAdapter( this );
+      result = RWTFactory.getThemeAdapterManager().getThemeAdapter( this );
     } else if( adapter == IWidgetGraphicsAdapter.class ) {
       if( widgetGraphicsAdapter == null ) {
         widgetGraphicsAdapter = new WidgetGraphicsAdapter();

@@ -19,8 +19,8 @@ import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
-import org.eclipse.rwt.internal.theme.ThemeManagerInstance;
+import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
+import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.*;
@@ -35,7 +35,7 @@ public class ApplicationContextUtil {
  
   private static final Class[] INSTANCE_TYPES = new Class[] {
     ApplicationStoreImpl.class,
-    ThemeManagerInstance.class,
+    ThemeManagerHolder.class,
     ResourceManagerImpl.class,
     ResourceManager.class,
     BrandingManager.class,
@@ -55,7 +55,7 @@ public class ApplicationContextUtil {
     ConfigurationReader.class,
     ResourceRegistryInstance.class,
     DisplaysHolder.class,
-    ThemeAdapterUtil.class,
+    ThemeAdapterManager.class,
     JSLibraryConcatenator.class,
     TextSizeStorageRegistryInstance.class,
   };
