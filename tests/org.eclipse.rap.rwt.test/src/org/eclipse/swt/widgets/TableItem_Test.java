@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -31,8 +31,14 @@ import org.eclipse.swt.layout.FillLayout;
 
 public class TableItem_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
@@ -40,8 +46,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     // Add one item
     TableItem item1 = new TableItem( table, SWT.NONE );
@@ -74,8 +78,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testParent() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     // Test creating column with valid parent
     new TableColumn( table, SWT.NONE );
@@ -91,8 +93,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testBounds() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -137,8 +137,6 @@ public class TableItem_Test extends TestCase {
   public void testBoundsWithScroll() {
     final int tableWidth = 100;
     final int tableHeight = 100;
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( tableWidth, tableHeight );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
@@ -166,9 +164,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testTextBounds() {
-    // Test setup
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
@@ -184,9 +179,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithInvalidIndex() {
-    // Test setup
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "abc" );
@@ -198,9 +190,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithImageAndColumns() {
-    // Test setup
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
@@ -214,8 +203,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithChangedFont() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "abc" );
@@ -229,8 +216,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithCheckboxTable() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.CHECK );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 100 );
@@ -242,8 +227,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithScroll() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
@@ -260,9 +243,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testImageBoundsWithoutColumns() {
-    // Test setup
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
 
@@ -292,9 +272,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testImageBoundsWithColumns() {
-    // Test setup
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
@@ -335,8 +312,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testImageBoundsWithScroll() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
@@ -352,8 +327,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testBoundsWithCheckedTable() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     // without columns
     Table table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -377,8 +350,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testBoundsWidthReorderedColumns() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     column0.setWidth( 1 );
@@ -396,8 +367,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testInvalidBounds() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -408,8 +377,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testText() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
 
     // Test with no columns at all
@@ -441,8 +408,6 @@ public class TableItem_Test extends TestCase {
 
   public void testImage() {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     // Test with no columns at all
     TableItem item = new TableItem( table, SWT.NONE );
@@ -486,8 +451,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testSetImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Table table = new Table( shell, SWT.CHECK );
     TableItem tableItem = new TableItem( table, 0 );
     Image[] images = new Image[]{
@@ -547,9 +510,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testCheckedAndGrayed() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-
     // Ensure that checked and grayed only work with SWT.CHECK
     Table simpleTable = new Table( shell, SWT.NONE );
     TableItem simpleItem = new TableItem( simpleTable, SWT.NONE );
@@ -573,9 +533,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testClearVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 100, 20 );
     table.setItemCount( 101 );
@@ -591,8 +548,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testFont() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -624,8 +579,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testBackground() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -657,8 +610,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testForeground() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -696,10 +647,7 @@ public class TableItem_Test extends TestCase {
    * fired when the item becomes visible. SWT (on Windows) behaves the same. */
   public void testSetterWithVirtual() {
     // set up virtual table with unresolved items
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List eventLog = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 90, 90 );
@@ -722,9 +670,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testDisposeVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL | SWT.MULTI );
@@ -747,9 +692,6 @@ public class TableItem_Test extends TestCase {
 
   public void testSetItemCountDisposeOrder() {
     final java.util.List log = new ArrayList();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     for( int i = 0; i < 30; i++ ) {
       final TableItem item = new TableItem( table, SWT.NONE );
@@ -773,8 +715,6 @@ public class TableItem_Test extends TestCase {
   // TableItemAdapter Tests
 
   public void testGetBackground() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     Color tableColor = display.getSystemColor( SWT.COLOR_YELLOW );
@@ -800,8 +740,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testGetForegrounds() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     Color tableColor = display.getSystemColor( SWT.COLOR_YELLOW );
@@ -827,8 +765,6 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testGetFont() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     Font tableFont = Graphics.getFont( "TableFont", 11, SWT.ITALIC );
@@ -853,33 +789,26 @@ public class TableItem_Test extends TestCase {
     assertSame( cellFont, fonts[ 0 ] );
   }
 
-  public void testSetBackground()
-  {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    Table table = new Table(control, SWT.NONE);
-    TableItem tableItem = new TableItem(table, SWT.NONE);
+  public void testSetBackground() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
     Color color = display.getSystemColor( SWT.COLOR_RED );
     tableItem.setBackground( color );
     assertEquals( color, tableItem.getBackground() );
     tableItem.setBackground( null );
     assertEquals( table.getBackground(), tableItem.getBackground() );
-    Color color2 = new Color(display, 0, 255, 0);
+    Color color2 = new Color( display, 0, 255, 0 );
     color2.dispose();
-    try{
+    try {
       tableItem.setBackground( color2 );
-      fail("Disposed Image must not be set.");
-    }
-    catch (IllegalArgumentException e)
-    {
-      //Expected Exception
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
     }
   }
 
   public void testSetBackgroundI() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    Table table = new Table( control, SWT.NONE );
+    Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
     Color color = display.getSystemColor( SWT.COLOR_RED );
     tableItem.setBackground( 0, color );
@@ -898,118 +827,201 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testSetFont() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    Table table = new Table(control, SWT.NONE);
-    TableItem tableItem = new TableItem(table, SWT.NONE);
-
-    Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
-                                       15,
-                                       SWT.BOLD );
-     tableItem.setFont( tableFont );
-     table.setFont( tableFont );
-     assertSame( tableFont, tableItem.getFont() );
-     Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
-     tableItem.setFont( itemFont );
-     assertSame( itemFont, tableItem.getFont() );
-     tableItem.setFont( null );
-     assertSame( tableFont, tableItem.getFont() );
-
-    // Test with images, that should appear on unselected tabs
-    Font font = new Font(display, "Testfont", 10, SWT.BOLD);
-    font.dispose();
-    try{
-      tableItem.setFont( font );
-      fail("Disposed Image must not be set.");
-    }
-    catch (IllegalArgumentException e)
-    {
-      //Expected Exception
-    }
-  }
-
-  public void testSetFontI() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    Table table = new Table(control, SWT.NONE);
-    TableItem tableItem = new TableItem(table, SWT.NONE);
-
-    Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
-                                      15,
-                                      SWT.BOLD );
-    tableItem.setFont( 0, tableFont );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
+    Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
+    tableItem.setFont( tableFont );
     table.setFont( tableFont );
-    assertSame( tableFont, tableItem.getFont(0) );
+    assertSame( tableFont, tableItem.getFont() );
     Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
     tableItem.setFont( itemFont );
     assertSame( itemFont, tableItem.getFont() );
     tableItem.setFont( null );
     assertSame( tableFont, tableItem.getFont() );
     // Test with images, that should appear on unselected tabs
-    Font font = new Font(display, "Testfont", 10, SWT.BOLD);
+    Font font = new Font( display, "Testfont", 10, SWT.BOLD );
     font.dispose();
-    //Test for the method TableItem#setFont( int, Font)
-    try{
-      tableItem.setFont(3, font );
-      fail("Disposed Image must not be set.");
+    try {
+      tableItem.setFont( font );
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
     }
-    catch (IllegalArgumentException e)
-    {
-      //Expected Exception
+  }
+
+  public void testSetFontI() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
+    Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
+    tableItem.setFont( 0, tableFont );
+    table.setFont( tableFont );
+    assertSame( tableFont, tableItem.getFont( 0 ) );
+    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
+    tableItem.setFont( itemFont );
+    assertSame( itemFont, tableItem.getFont() );
+    tableItem.setFont( null );
+    assertSame( tableFont, tableItem.getFont() );
+    // Test with images, that should appear on unselected tabs
+    Font font = new Font( display, "Testfont", 10, SWT.BOLD );
+    font.dispose();
+    // Test for the method TableItem#setFont( int, Font)
+    try {
+      tableItem.setFont( 3, font );
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
     }
   }
 
   public void testSetForeground() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    Table table = new Table(control, SWT.NONE);
-    TableItem tableItem = new TableItem(table, SWT.NONE);
-
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
     Color color = display.getSystemColor( SWT.COLOR_RED );
     tableItem.setForeground( color );
-    assertEquals( color, tableItem.getForeground(  ) );
+    assertEquals( color, tableItem.getForeground() );
     tableItem.setForeground( null );
     assertEquals( table.getForeground(), tableItem.getForeground() );
-
-    Color color2 = new Color(display, 255, 0, 0);
+    Color color2 = new Color( display, 255, 0, 0 );
     color2.dispose();
-    try{
+    try {
       tableItem.setForeground( color2 );
-      fail("Disposed Image must not be set.");
-    }
-    catch (IllegalArgumentException e)
-    {
-      //Expected Exception
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
     }
   }
 
   public void testSetForegroundI() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    Table table = new Table(control, SWT.NONE);
-    TableItem tableItem = new TableItem(table, SWT.NONE);
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
     Color color = display.getSystemColor( SWT.COLOR_RED );
-    tableItem.setForeground(0, color );
+    tableItem.setForeground( 0, color );
     assertEquals( color, tableItem.getForeground( 0 ) );
     tableItem.setForeground( null );
     assertEquals( table.getForeground(), tableItem.getForeground() );
-    Color color2 = new Color(display, 255, 0, 0);
+    Color color2 = new Color( display, 255, 0, 0 );
     color2.dispose();
-
-  //Test for the method TableItem#setForeground( int, Font)
-    try{
-      tableItem.setForeground(150, color2 );
-      fail("Disposed Image must not be set.");
-    }
-    catch (IllegalArgumentException e)
-    {
-      //Expected Exception
+    // Test for the method TableItem#setForeground( int, Font)
+    try {
+      tableItem.setForeground( 150, color2 );
+      fail( "Disposed Image must not be set." );
+    } catch( IllegalArgumentException e ) {
+      // Expected Exception
     }
   }
+  
+  public void testInsertColumn_ShiftData_Text() {
+    Table table = new Table( shell, SWT.BORDER );
+    for( int i = 0; i < 3; i++ ) {
+      new TableColumn( table, SWT.NONE );
+    }
+    TableItem item = new TableItem( table, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      item.setText( i, "cell" + i );
+    }
+    new TableColumn( table, SWT.NONE, 1 );
+    assertEquals( "cell0", item.getText( 0 ) );
+    assertEquals( "", item.getText( 1 ) );
+    assertEquals( "cell1", item.getText( 2 ) );
+    assertEquals( "cell2", item.getText( 3 ) );
+  }
+
+  public void testInsertColumn_ShiftData_Image() {
+    Table table = new Table( shell, SWT.BORDER );
+    for( int i = 0; i < 3; i++ ) {
+      new TableColumn( table, SWT.NONE );
+    }
+    TableItem item = new TableItem( table, SWT.NONE );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    for( int i = 0; i < 3; i++ ) {
+      item.setImage( i, image );
+    }
+    new TableColumn( table, SWT.NONE, 1 );
+    assertEquals( image, item.getImage( 0 ) );
+    assertNull( item.getImage( 1 ) );
+    assertEquals( image, item.getImage( 2 ) );
+    assertEquals( image, item.getImage( 3 ) );
+  }
+
+  public void testInsertColumn_ShiftData_Font() {
+    Table table = new Table( shell, SWT.BORDER );
+    for( int i = 0; i < 3; i++ ) {
+      new TableColumn( table, SWT.NONE );
+    }
+    TableItem item = new TableItem( table, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      Font font = Graphics.getFont( "Arial", 20 + i, SWT.BOLD );
+      item.setFont( i, font );
+    }
+    new TableColumn( table, SWT.NONE, 1 );
+    assertEquals( 20, item.getFont( 0 ).getFontData()[ 0 ].getHeight() );    
+    assertEquals( item.getFont(), item.getFont( 1 ) );
+    assertEquals( 21, item.getFont( 2 ).getFontData()[ 0 ].getHeight() );
+    assertEquals( 22, item.getFont( 3 ).getFontData()[ 0 ].getHeight() );
+  }
+
+  public void testInsertColumn_ShiftData_Foreground() {
+    Table table = new Table( shell, SWT.BORDER );
+    for( int i = 0; i < 3; i++ ) {
+      new TableColumn( table, SWT.NONE );
+    }
+    TableItem item = new TableItem( table, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      Color color = Graphics.getColor( 20 + i, 0, 0 );
+      item.setForeground( i, color );
+    }
+    new TableColumn( table, SWT.NONE, 1 );
+    assertEquals( 20, item.getForeground( 0 ).getRed() );
+    assertEquals( item.getForeground(), item.getForeground( 1 ) );
+    assertEquals( 21, item.getForeground( 2 ).getRed() );
+    assertEquals( 22, item.getForeground( 3 ).getRed() );
+  }
+
+  public void testInsertColumn_ShiftData_Background() {
+    Table table = new Table( shell, SWT.BORDER );
+    for( int i = 0; i < 3; i++ ) {
+      new TableColumn( table, SWT.NONE );
+    }
+    TableItem item = new TableItem( table, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      Color color = Graphics.getColor( 20 + i, 0, 0 );
+      item.setBackground( i, color );
+    }
+    new TableColumn( table, SWT.NONE, 1 );
+    assertEquals( 20, item.getBackground( 0 ).getRed() );
+    assertEquals( item.getBackground(), item.getBackground( 1 ) );
+    assertEquals( 21, item.getBackground( 2 ).getRed() );
+    assertEquals( 22, item.getBackground( 3 ).getRed() );
+  }
+
+  public void testInsertColumn_NoShiftData() {
+    Table table = new Table( shell, SWT.BORDER );
+    for( int i = 0; i < 3; i++ ) {
+      new TableColumn( table, SWT.NONE );
+    }
+    TableItem item = new TableItem( table, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      item.setText( i, "cell" + i );
+    }
+    new TableColumn( table, SWT.NONE );
+    assertEquals( "cell0", item.getText( 0 ) );
+    assertEquals( "cell1", item.getText( 1 ) );
+    assertEquals( "cell2", item.getText( 2 ) );
+    assertEquals( "", item.getText( 3 ) );
+  }
+
+  public void testInsertColumn_NoShiftData2() {
+    Table table = new Table( shell, SWT.BORDER );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "cell0" );
+    new TableColumn( table, SWT.NONE );
+    assertEquals( "cell0", item.getText( 0 ) );
+  }
+
   /////////////////
   // helper methods
 
-  private static int getCheckWidth( final Table table ) {
+  private static int getCheckWidth( Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     int checkWidth = tableAdapter.getCheckWidth();

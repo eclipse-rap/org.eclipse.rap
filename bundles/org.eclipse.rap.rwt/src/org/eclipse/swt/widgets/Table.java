@@ -1996,7 +1996,7 @@ public class Table extends Composite {
   /////////////////////////////
   // Create and destroy columns
 
-  final void createColumn( final TableColumn column, final int index ) {
+  final void createColumn( TableColumn column, int index ) {
     columnHolder.insert( column, index );
     if( columnOrder == null ) {
       columnOrder = new int[] { index };
@@ -2019,6 +2019,12 @@ public class Table extends Composite {
       System.arraycopy( columnImageCount, 0, newColumnImageCount, 0, index );
       System.arraycopy( columnImageCount, index, newColumnImageCount, index + 1, length - index );
       columnImageCount = newColumnImageCount;
+    }
+    // Shift data if needed
+    for( int i = 0; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].shiftData( index );
+      }
     }
     updateScrollBars();
   }

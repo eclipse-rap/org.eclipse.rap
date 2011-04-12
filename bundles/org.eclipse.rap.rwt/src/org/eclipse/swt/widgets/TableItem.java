@@ -1089,10 +1089,20 @@ public class TableItem extends Item {
     return result;
   }
 
-  ///////////////////////////////////////
-  // Clear item data (texts, images, etc)
+  ////////////////////////////////////////
+  // Manage item data (texts, images, etc)
 
-  final void removeData( final int index ) {
+  final void shiftData( int index ) {
+    if( data != null && data.length > index && parent.getColumnCount() > 1 ) {
+      Data[] newData = new Data[ data.length + 1 ];
+      System.arraycopy( data, 0, newData, 0, index );
+      int offSet = data.length - index;
+      System.arraycopy( data, index, newData, index + 1, offSet );
+      data = newData;
+    }
+  }
+
+  final void removeData( int index ) {
     if( data != null && data.length > index && parent.getColumnCount() > 1 ) {
       Data[] newData = new Data[ data.length - 1 ];
       System.arraycopy( data, 0, newData, 0, index );
