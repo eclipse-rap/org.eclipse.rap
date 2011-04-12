@@ -6,7 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
@@ -246,6 +247,9 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       }
     } else {
       table.setColumnOrder( columnOrder );
+      // [if] HACK mark left as changed - see bug 336340
+      IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
+      adapter.preserve( PROP_LEFT, null );
     }
   }
 

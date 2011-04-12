@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
@@ -29,8 +30,13 @@ import org.eclipse.swt.widgets.*;
 
 public class TableColumnLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -38,8 +44,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testPreserveValus() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Table table = new Table( shell, SWT.BORDER );
     TableColumn column = new TableColumn( table, SWT.CENTER );
     Fixture.markInitialized( display );
@@ -139,8 +143,6 @@ public class TableColumnLCA_Test extends TestCase {
 
   public void testResizeEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     final TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 20 );
@@ -179,8 +181,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testGetLeft() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     column0.setWidth( 10 );
@@ -202,8 +202,6 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testMoveColumn() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     column0.setText( "Col 0" );
@@ -316,5 +314,38 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( 0, columnOrder[ 1 ] );
     assertEquals( 2, columnOrder[ 2 ] );
     assertEquals( 3, columnOrder[ 3 ] );
+  }
+
+  // see bug 336340
+  public void testMoveColumn_ZeroWidth() {
+    Fixture.markInitialized( display );
+    Table table = new Table( shell, SWT.NONE );
+    Fixture.markInitialized( table );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( column0 );
+    column0.setText( "Col 0" );
+    column0.setWidth( 10 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( column1 );
+    column1.setText( "Col 1" );
+    column1.setWidth( 20 );
+    TableColumn column2 = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( column2 );
+    column2.setText( "Col 2" );
+    column2.setWidth( 0 );
+    TableColumn column3 = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( column3 );
+    column3.setText( "Col 3" );
+    column3.setWidth( 30 );
+    Fixture.preserveWidgets();
+    String displayId = DisplayUtil.getId( display );
+    String column1Id = WidgetUtil.getId( column1 );
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( column1Id + ".left", String.valueOf( 35 ) );
+    Fixture.executeLifeCycleFromServerThread( );
+    String markup = Fixture.getAllMarkup();
+    String expected = "var w = wm.findWidgetById( \"" + column1Id + "\" );w.setLeft( 10 );";
+    assertTrue( markup.indexOf( expected ) != -1 );
   }
 }
