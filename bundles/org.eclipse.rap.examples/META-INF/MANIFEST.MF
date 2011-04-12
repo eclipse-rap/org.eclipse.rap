@@ -14,4 +14,4 @@ Import-Package: javax.servlet;version="2.4.0",
 Export-Package: org.eclipse.rap.examples,
  org.eclipse.rap.examples.internal;x-internal:=true,
  org.eclipse.rap.examples.internal.model;x-internal:=true
-Bundle-Vendor: Eclipse RAP Project
+Bundle-Vendor: Eclipse.org - RAP
