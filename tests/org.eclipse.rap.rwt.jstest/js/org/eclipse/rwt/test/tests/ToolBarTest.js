@@ -40,9 +40,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       assertContains( "widgetSelected=w1",  msg );
       assertContainsNot( "detail=arrow", msg );
       this.testUtil.clearRequestLog();
-      this.testUtil.fakeMouseClick( item,  
-                                    103 + parseInt( lineStyle.left ), 
-                                    103 );
+      this.testUtil.fakeMouseClick( item, 103 + parseInt( lineStyle.left ), 103 );
       assertEquals( 1, this.testUtil.getRequestsSend() );
       var msg = this.testUtil.getMessage();
       assertContains( "detail=arrow", msg );
@@ -96,7 +94,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
     
     testDropDownLineBorder : function() {
       var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
-      var border = new qx.ui.core.Border( 1, "outset", "black");  
+      var border = new org.eclipse.rwt.Border( 1, "outset", "black");  
       this.item = item; 
       item.setText( "hallo" );
       item.setSeparatorBorder( border );

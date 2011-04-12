@@ -15,8 +15,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
   members : {
 
     testSimpleBorderConstructor : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var border = new qx.ui.core.Border( 2, "solid", "#FF00FF" );
+      var border = new org.eclipse.rwt.Border( 2, "solid", "#FF00FF" );
       assertEquals( "#FF00FF", border.getColorTop() );
       assertEquals( "#FF00FF", border.getColorLeft() );
       assertEquals( "#FF00FF", border.getColorBottom() );
@@ -32,12 +31,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       border.dispose();
     },
 
+    testGetStyle : function() {
+      var border = new org.eclipse.rwt.Border( 2, "solid", "#FF00FF" );
+      assertEquals( "solid", border.getStyle() );
+      border = new org.eclipse.rwt.Border( 2, [ "solid", "solid", "solid", "solid" ], "#FF00FF" );
+      assertNull( border.getStyle() );
+      border.dispose();
+    },
+
+    testGetColor : function() {
+      var border = new org.eclipse.rwt.Border( 2, "solid", "#FF00FF" );
+      assertEquals( "#FF00FF", border.getColor() );
+      border = new org.eclipse.rwt.Border( 2, "solid", [ "#FF00FF", "#FF00FF", "#FF00FF", "#FF00FF" ] );
+      assertNull( border.getColor() );
+      border = new org.eclipse.rwt.Border( 2, "solid", null );
+      assertEquals( "", border.getColor() );
+    },
+
     testArrayArgumentConstructor : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var color = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
       var width = [ 1, 2, 3, 4 ];
       var style = [ "solid", "outset", "inset", "groove" ];
-      var border = new qx.ui.core.Border( width, style, color );
+      var border = new org.eclipse.rwt.Border( width, style, color );
       assertEquals( color[ 0 ], border.getColorTop() );
       assertEquals( color[ 1 ], border.getColorRight() );
       assertEquals( color[ 2 ], border.getColorBottom() );
@@ -52,25 +67,49 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       assertEquals( style[ 3 ], border.getStyleLeft() );
       border.dispose();
     },
-
+    
     testRoundedBorderConstructor : function() {
-      // NOTE: Other RoundedBorder Tests are only in GraphicsMixinTest for now
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var border = new org.eclipse.rwt.RoundedBorder( 3, "#FF00F0", [ 0, 1, 2, 3 ] );
-      assertEquals( "#FF00F0", border.getColorTop() );
+      // NOTE: Render RoundedBorder Tests are only in GraphicsMixinTest for now
+      var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00F0", [ 0, 1, 2, 3 ] );
+      assertEquals( "#FF00F0", border.getColor() );
       assertEquals( 3, border.getWidthTop() );
       assertEquals( [ 0, 1, 2, 3 ], border.getRadii() );
       border.dispose();
     },
 
+    testRoundedBorderWithoutRadii : function() {
+      // NOTE: Other RoundedBorder Tests are only in GraphicsMixinTest for now
+      try{ 
+        var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00F0" );
+        fail();
+      } catch( ex ) {
+        //expected
+      }
+    },
+
+    testRoundedBorderWithSingleRadius: function() {
+      var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00F0", 4 );
+      assertEquals( [ 4, 4, 4, 4 ], border.getRadii() );
+      border.dispose();    
+    },
+    
+    testRoundedBorderWithMultipleColors : function() {
+      // NOTE: Other RoundedBorder Tests are only in GraphicsMixinTest for now
+      var colors = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
+      try{ 
+        var border = new org.eclipse.rwt.Border( 3, "rounded", colors, [ 3, 3, 3, 3 ] );
+        fail();
+      } catch( ex ) {
+        //expected
+      }
+    },
+
     testSetInnerColor : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var color = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
       var colorInner = [ "#DD00EF", "#DD00EE", "#DD0EFF", "#DDE0FF" ];
       var width = [ 1, 2, 3, 4 ];
-      var style = [ "solid", "outset", "inset", "groove" ];
-      var border = new qx.ui.core.Border( width, style, color );
-      border.setInnerColor( colorInner );
+      var style = "complex";
+      var border = new org.eclipse.rwt.Border( width, style, color, colorInner );
       assertEquals( color[ 0 ], border.getColorTop() );
       assertEquals( color[ 1 ], border.getColorRight() );
       assertEquals( color[ 2 ], border.getColorBottom() );
@@ -81,10 +120,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       assertEquals( colorInner[ 3 ], border.getColorInnerLeft() );
       border.dispose();
     },
-    
+
+    testCopmlexBorderWithoutInnerColor : function() {
+      try {
+        var border = new org.eclipse.rwt.Border( 2, "complex", "red" );
+        fail();
+      } catch( ex ) {
+        //expected
+      }
+    },
+
+    testTooMuchArgumentsForSimpleBorder : function() {
+      try {
+        var border = new org.eclipse.rwt.Border( 2, "solid", "red", 4 );
+        fail();
+      } catch( ex ) {
+        //expected
+      }
+    },
+
     testRenderSimpleBorder : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var border = new qx.ui.core.Border( 2, "solid", "#FF00FF" );
+      var border = new org.eclipse.rwt.Border( 2, "solid", "#FF00FF" );
       var widget = this._createWidget();
       assertEquals( [ "", "", "", "" ], this._getBorderColors( widget._style ) );
       assertEquals( [ "", "", "", "" ], this._getBorderStyles( widget._style ) );
@@ -103,7 +160,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
     
     testRemoveSimpleBorder : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var border = new qx.ui.core.Border( 2, "solid", "#FF00FF" );
+      var border = new org.eclipse.rwt.Border( 2, "solid", "#FF00FF" );
       var widget = this._createWidget();
       widget.setBorder( border );
       testUtil.flush();
@@ -121,7 +178,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var color = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
       var width = [ 1, 2, 3, 4 ];
       var style = [ "solid", "outset", "inset", "groove" ];
-      var border = new qx.ui.core.Border( width, style, color );
+      var border = new org.eclipse.rwt.Border( width, style, color );
       var widget = this._createWidget();
       widget.setBorder( border );
       testUtil.flush();
@@ -136,8 +193,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var colorOuter = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
       var colorInner = [ "#DD00EF", "#DD00EE", "#DD0EFF", "#DDE0FF" ];
-      var border = new qx.ui.core.Border( 2, "outset", colorOuter ); // style must be ignored
-      border.setInnerColor( colorInner );
+      var border = new org.eclipse.rwt.Border( 2, "complex", colorOuter, colorInner ); 
       var widget = this._createWidget();
       widget.setBorder( border );
       testUtil.flush();
@@ -165,8 +221,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var colorOuter = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
       var colorInner = [ "#DD00EF", "#DD00EE", "#DD0EFF", "#DDE0FF" ];
-      var border = new qx.ui.core.Border( 2, "outset", colorOuter ); // style must be ignored
-      border.setInnerColor( colorInner );
+      var border = new org.eclipse.rwt.Border( 2, "complex", colorOuter, colorInner  );
       var widget = this._createWidget();
       widget.setBorder( border );
       testUtil.flush();
@@ -188,6 +243,39 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       widget.destroy();
       border.dispose();
     },
+
+
+    testRenderSimpleAfterComplexBorder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var colorSimple = [ "#00EF00", "#00EE00", "#0EFF00", "#E0FF00" ];
+      var colorOuter = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
+      var colorInner = [ "#DD00EF", "#DD00EE", "#DD0EFF", "#DDE0FF" ];
+      var complexBorder = new org.eclipse.rwt.Border( 2, "complex", colorOuter, colorInner );
+      var simpleBorder = new org.eclipse.rwt.Border( 2, "outset", colorSimple );
+      var widget = this._createWidget();
+      widget.setBorder( complexBorder );
+      testUtil.flush();
+      widget.setBorder( simpleBorder );
+      testUtil.flush();
+      var outsetStyles = [ "outset", "outset", "outset", "outset" ];
+      assertEquals( colorSimple, this._getBorderColors( widget._style ) );
+      assertEquals( outsetStyles, this._getBorderStyles( widget._style ) );
+      assertEquals( [ 2, 2, 2, 2 ], this._getBorderWidths( widget._style ) );        
+      if( org.eclipse.rwt.Client.isGecko() ) {
+        assertEquals( "", widget._style.MozBorderTopColors );
+        assertEquals( "", widget._style.MozBorderRightColors );
+        assertEquals( "", widget._style.MozBorderBottomColors );
+        assertEquals( "", widget._style.MozBorderLeftColors );
+      } else {
+        assertEquals( [ "", "", "", "" ], this._getBorderStyles( widget._innerStyle ) );
+        assertEquals( [ 0, 0, 0, 0 ], this._getBorderWidths( widget._innerStyle ) );
+        assertEquals( [ "", "", "", "" ], this._getBorderColors( widget._innerStyle ) );
+      }
+      widget.destroy();
+      simpleBorder.dispose();
+      complexBorder.dispose();
+    },
+
 
     //////////////
     // helper

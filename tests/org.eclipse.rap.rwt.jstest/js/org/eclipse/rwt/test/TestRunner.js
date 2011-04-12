@@ -124,8 +124,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
   	},
 
   	_initTest : function() {
-      this._presenter.setNumberTestsFinished( this._currentClass + 0.5 ,
-                                              this._testClasses.length );
+      this._presenter.setNumberTestsFinished( this._currentClass + 0.5 , this._testClasses.length );
       var className = this._testClasses[ this._currentClass ].classname;
       this._presenter.log( '', false );
       this.info( "+ " + className, false );
@@ -138,8 +137,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
   	_testFinished : function() {
       this._args = [];
       this._currentInstance.dispose();
-      this._presenter.setNumberTestsFinished( this._currentClass,
-                                              this._testClasses.length );
+      this._presenter.setNumberTestsFinished( this._currentClass, this._testClasses.length );
     },
 
     _allFinished : function() {
@@ -158,13 +156,17 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       }
       if( this._NOTRYCATCH ) {
         fun.apply( this._currentInstance, this._args );
-        this._cleanUp();
-        this.info( test + " - OK ", true );
+        if( !this._failed ) {
+          this._cleanUp();
+          this.info( test + " - OK ", true );
+        }
       } else {
         try {
           fun.apply( this._currentInstance, this._args );
-          this._cleanUp();
-          this.info( test + " - OK ", true );
+          if( !this._failed ) {
+            this._cleanUp();
+            this.info( test + " - OK ", true );
+          }
         } catch( e ) {
           this._handleException( e );
         }
@@ -189,7 +191,17 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       this._failed = true;
       var classname = this._testFunctions[ this._currentFunction ];
       this.info( classname + " failed:", true );
-      this.info( e, false );
+      try{
+        if( e.msg ) {
+          this.info( e.msg, false );
+        } else if( e.message ) {
+          this.info( e.message, false );          
+        } else {
+          this.info( e, false );
+        }
+      } catch( ex ) {
+        this.info( e, false );        
+      }
       this.info( this._asserts + " asserts succeeded.", false );
       this._createFailLog( e, this._currentInstance );
       this._checkFlushState();

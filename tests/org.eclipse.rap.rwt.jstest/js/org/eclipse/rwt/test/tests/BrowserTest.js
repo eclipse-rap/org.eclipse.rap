@@ -18,7 +18,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
     testGetDomain : function() {
       var url1 = "HTtp://google.de/";
       var url2 =   "http://www.sub.somedomain.com:84/"
-                 + "example/document.html?param=value&param2=%20value2"
+                 + "example/document.html?param=value&param2=%20value2";
       var url3 = "https://amazon.com";
       var url4 = "FTPS://mydomain.cOM";
       var domain1 = org.eclipse.swt.browser.Browser.getDomain( url1 );

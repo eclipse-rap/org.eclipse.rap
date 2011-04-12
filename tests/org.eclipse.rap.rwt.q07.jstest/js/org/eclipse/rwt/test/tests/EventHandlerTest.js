@@ -405,7 +405,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       } );
       testUtil.flush();
       testUtil.initErrorPageLog();
-      testUtil.click( widget );
+      try{ 
+        testUtil.click( widget );
+        fail();
+      }catch( ex ) {
+        // expected
+      }
       assertNotNull( testUtil.getErrorPage() );
       widget.destroy();
     },
@@ -420,7 +425,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       } );
       testUtil.flush();
       testUtil.initErrorPageLog();
-      testUtil.press( widget, "a" );
+      try{ 
+        testUtil.press( widget, "a" );
+        fail();
+      }catch( ex ) {
+        // expected
+      }
       assertNotNull( testUtil.getErrorPage() );
       widget.destroy();
     },

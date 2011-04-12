@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -24,6 +24,7 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
   		assertContainsNot = org.eclipse.rwt.test.Asserts.assertContainsNot;
   		assertLarger = org.eclipse.rwt.test.Asserts.assertLarger;
   		assertSmaller = org.eclipse.rwt.test.Asserts.assertSmaller;
+  		fail = org.eclipse.rwt.test.Asserts.fail;
   	},
 
   	_getArguments : function( args, hasExpected ) {
@@ -68,6 +69,9 @@ qx.Class.define("org.eclipse.rwt.test.Asserts", {
       return diffsArr;
   	},
 
+  	fail : function() {
+  	  org.eclipse.rwt.test.TestRunner.getInstance()._handleException( new Error( "fail()" ) );
+  	},
   	
     assertTrue : function() {
       var args = org.eclipse.rwt.test.Asserts._getArguments( arguments, false );

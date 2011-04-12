@@ -257,13 +257,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     },
     
     _getComplexBorder : function() {
-      var complexBorder = new qx.ui.core.Border( 2, "outset" );
-      complexBorder.setColor( "green" );
-      complexBorder.setInnerColor( "red" );
-      return complexBorder;
+      return new org.eclipse.rwt.Border( 2, "complex", "green", "red" );
     }
-    
-    
     
   }
 } );

@@ -589,17 +589,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touch( document.body, "touchend" );
       this.touch( node, "touchstart" );
       this.touch( node, "touchend" );
-      var expected = [
-        "mousedown", 
-        "mouseup", 
-        "click",
-      ];
+      var expected = [ "mousedown", "mouseup", "click" ];
       assertEquals( expected, log );
       widget.destroy();      
       this.resetMobileWebkitSupport();
     },
 
-    testNoDoubeClickTooSlow : function() {
+    testNoDoubleClickTooSlow : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
       widget.addToDocument();
@@ -618,14 +614,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       org.eclipse.rwt.MobileWebkitSupport._lastMouseClickTime -= 1000;
       this.touch( node, "touchstart" );
       this.touch( node, "touchend" );
-      var expected = [
-        "mousedown", 
-        "mouseup", 
-        "click",
-        "mousedown", 
-        "mouseup", 
-        "click"
-      ];
+      var expected = [ "mousedown", "mouseup", "click", "mousedown", "mouseup", "click" ];
       assertEquals( expected, log );
       widget.destroy();      
       this.resetMobileWebkitSupport();

@@ -187,7 +187,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setHeight( 500 );
       tree.setWidth( 600 );
       testUtil.flush();
-      var border = new qx.ui.core.Border( 4 );
+      var border = new org.eclipse.rwt.Border( 4, "solid", null );
       tree.setBorder( border );
       testUtil.flush();
       var node = tree._clientArea.getElement();
