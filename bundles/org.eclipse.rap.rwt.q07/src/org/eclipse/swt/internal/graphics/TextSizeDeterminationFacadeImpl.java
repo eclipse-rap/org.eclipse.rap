@@ -21,9 +21,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
 
 
-public final class TextSizeDeterminationFacadeImpl
-  extends TextSizeDeterminationFacade
-{
+public final class TextSizeDeterminationFacadeImpl extends TextSizeDeterminationFacade {
 
   public String getStartupProbeCodeInternal() {
     StringBuffer result = new StringBuffer();
@@ -43,13 +41,9 @@ public final class TextSizeDeterminationFacadeImpl
     return result.toString();
   }
 
-  // TODO [rst] Perform also TAB expansion to match the default of
-  //            GC#textExtent( String )
-  public String createMeasureStringInternal( final String string,
-                                             final boolean expandNewLines )
-  {
-    // TODO [fappel]: revise this - text escape may cause inaccurate
-    //                calculations
+  // TODO [rst] Perform also TAB expansion to match the default of GC#textExtent( String )
+  public String createMeasureStringInternal( final String string, final boolean expandNewLines ) {
+    // TODO [fappel]: revise this - text escape may cause inaccurate calculations
     String result = WidgetLCAUtil.escapeText( string, true );
     String newLineReplacement = expandNewLines ? "<br/>" : " ";
     result = WidgetLCAUtil.replaceNewLines( result, newLineReplacement );

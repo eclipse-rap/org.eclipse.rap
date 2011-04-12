@@ -28,8 +28,7 @@ public class TextSizeDetermination {
     = TextSizeDetermination.class.getName() + ".hasCalculator";
   private static final String CALCULATION_ITEMS
     = TextSizeDetermination.class.getName() + ".CalculationItems";
-  private static final ICalculationItem[] EMTY_ITEMS
-    = new ICalculationItem[ 0 ];
+  private static final ICalculationItem[] EMTY_ITEMS = new ICalculationItem[ 0 ];
   
   private static final int STRING_EXTENT = 0;
   private static final int TEXT_EXTENT = 1;
@@ -88,10 +87,8 @@ public class TextSizeDetermination {
       } else {
         result = TextSizeEstimation.textExtent( font, string, wrapWidth );
         BigDecimal height = new BigDecimal( result.y );
-        BigDecimal charHeight
-          = new BigDecimal( TextSizeEstimation.getCharHeight( font ) );
-        int rows
-          = height.divide( charHeight, 0, BigDecimal.ROUND_HALF_UP ).intValue();
+        BigDecimal charHeight = new BigDecimal( TextSizeEstimation.getCharHeight( font ) );
+        int rows = height.divide( charHeight, 0, BigDecimal.ROUND_HALF_UP ).intValue();
         result.y = getCharHeight( font ) * rows;
       }
     }
@@ -107,9 +104,7 @@ public class TextSizeDetermination {
     String toMeasure = string;
     if( estimationMode != MARKUP_EXTENT ) {
       boolean expandNewLines = estimationMode == TEXT_EXTENT;
-      toMeasure
-        = TextSizeDeterminationFacade.createMeasureString( string,
-                                                           expandNewLines );
+      toMeasure = TextSizeDeterminationFacade.createMeasureString( string, expandNewLines );
     }
     FontData fontData = font.getFontData()[ 0 ];
     Point result = TextSizeDataBase.lookup( fontData, toMeasure, wrapWidth );

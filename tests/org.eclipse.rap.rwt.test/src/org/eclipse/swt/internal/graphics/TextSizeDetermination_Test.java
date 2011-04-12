@@ -321,13 +321,10 @@ public class TextSizeDetermination_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
-    TextSizeDataBase.reset();
-    TextSizeProbeStore.reset();
   }
 
   protected void tearDown() throws Exception {
     TextSizeProbeStore.reset();
-    TextSizeDataBase.reset();
     Fixture.tearDown();
   }
 }

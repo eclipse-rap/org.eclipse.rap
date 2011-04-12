@@ -78,20 +78,17 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
     };
     String allMarkup = Fixture.getAllMarkup();
     for( int i = 0; i < expected.length; i++ ) {
-      assertTrue( "Expected: " + expected[ i ],
-                  allMarkup.indexOf( expected[ i ] ) != -1 );
+      assertTrue( "Expected: " + expected[ i ], allMarkup.indexOf( expected[ i ] ) != -1 );
     }
   }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    TextSizeDataBase.reset();
     TextSizeProbeStore.reset();
   }
 
   protected void tearDown() throws Exception {
     TextSizeProbeStore.reset();
-    TextSizeDataBase.reset();
     Fixture.tearDown();
   }
 }

@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.*;
@@ -36,7 +37,7 @@ final class TextSizeProbeStore {
   }
 
   private static final String PROBE_REQUESTS
-    = TextSizeProbeStore.class.getName() + ".ProbeRequests";
+    = TextSizeProbeStore.class.getName() + "#probeRequests";
   
   private static Map probes = new HashMap(); 
   
@@ -134,7 +135,7 @@ final class TextSizeProbeStore {
     IProbe[] result;
     synchronized( probes ) {
       if( probes.isEmpty() ) {
-        FontData[] fontList = TextSizeStorageRegistry.obtain().getFontList();
+        FontData[] fontList = RWTFactory.getTextSizeStorageRegistry().obtain().getFontList();
         for( int i = 0; i < fontList.length; i++ ) {
           createProbe( fontList[ i ], getProbeString( fontList[ i ] ) );
         }
@@ -167,13 +168,13 @@ final class TextSizeProbeStore {
     synchronized( probes ) {
       probes.put( fontData, result );
     }
-    TextSizeStorageRegistry.obtain().storeFont( fontData );
+    RWTFactory.getTextSizeStorageRegistry().obtain().storeFont( fontData );
     return result;
   }
 
   static void reset() {
     synchronized( probes ) {
-      ITextSizeStorage registry = TextSizeStorageRegistry.obtain();
+      ITextSizeStorage registry = RWTFactory.getTextSizeStorageRegistry().obtain();
       if( registry instanceof DefaultTextSizeStorage ) {
         ( ( DefaultTextSizeStorage )registry ).resetFontList();
       }
@@ -211,8 +212,7 @@ final class TextSizeProbeStore {
       result.append( "\"" );
       result.append( probe.getString() );
       result.append( "\", " );
-      result.append(
-        TextSizeDeterminationFacade.createFontParam( probe.getFontData() ) );
+      result.append( TextSizeDeterminationFacade.createFontParam( probe.getFontData() ) );
       result.append( " ]" );
     }
     return result.toString();

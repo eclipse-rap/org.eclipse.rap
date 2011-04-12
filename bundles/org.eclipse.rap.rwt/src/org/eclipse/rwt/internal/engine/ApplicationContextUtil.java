@@ -24,7 +24,6 @@ import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeStorageRegistry.TextSizeStorageRegistryInstance;
 import org.eclipse.swt.widgets.DisplaysHolder;
 
 
@@ -57,7 +56,7 @@ public class ApplicationContextUtil {
     DisplaysHolder.class,
     ThemeAdapterManager.class,
     JSLibraryConcatenator.class,
-    TextSizeStorageRegistryInstance.class,
+    TextSizeStorageRegistry.class,
   };
 
   public static ApplicationContext registerDefaultApplicationContext( ServletContext context ) {

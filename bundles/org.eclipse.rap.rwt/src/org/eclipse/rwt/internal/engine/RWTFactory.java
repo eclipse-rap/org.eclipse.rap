@@ -18,6 +18,7 @@ import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.IApplicationStore;
+import org.eclipse.swt.internal.graphics.TextSizeStorageRegistry;
 
 
 public class RWTFactory {
@@ -69,6 +70,10 @@ public class RWTFactory {
 
   public static ThemeAdapterManager getThemeAdapterManager() {
     return ( ThemeAdapterManager )ApplicationContext.getSingleton( ThemeAdapterManager.class );
+  }
+
+  public static TextSizeStorageRegistry getTextSizeStorageRegistry() {
+    return ( TextSizeStorageRegistry )ApplicationContext.getSingleton( TextSizeStorageRegistry.class );
   }
 
   private RWTFactory() {

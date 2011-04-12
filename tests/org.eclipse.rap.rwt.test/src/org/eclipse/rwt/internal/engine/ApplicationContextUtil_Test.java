@@ -26,7 +26,6 @@ import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeStorageRegistry.TextSizeStorageRegistryInstance;
 import org.eclipse.swt.widgets.DisplaysHolder;
 
 
@@ -108,9 +107,9 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( JSLibraryConcatenator.class ) );
     assertSame( applicationContext.getInstance( JSLibraryConcatenator.class ),
                 getSingleton( JSLibraryConcatenator.class ) );
-    assertNotNull( getSingleton( TextSizeStorageRegistryInstance.class ) );
-    assertSame( applicationContext.getInstance( TextSizeStorageRegistryInstance.class ),
-                getSingleton( TextSizeStorageRegistryInstance.class ) );
+    assertNotNull( getSingleton( TextSizeStorageRegistry.class ) );
+    assertSame( applicationContext.getInstance( TextSizeStorageRegistry.class ),
+                getSingleton( TextSizeStorageRegistry.class ) );
     
     ApplicationContextUtil.deregisterApplicationContext( servletContext );
     try {

@@ -11,58 +11,36 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import java.text.MessageFormat;
-
-import org.eclipse.swt.graphics.*;
+import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbeResult;
 
 
 final class TextSizeDataBase {
 
-  public static Point lookup( final FontData font,
-                              final String string,
-                              final int wrapWidth )
-  {
+  static Point lookup( FontData font, String string, int wrapWidth ) {
     Point result = null;
     if( TextSizeProbeStore.getInstance().containsProbeResult( font ) ) {
       Integer key = getKey( font, string, wrapWidth );
-      result = TextSizeStorageRegistry.obtain().lookupTextSize( key );
+      result = RWTFactory.getTextSizeStorageRegistry().obtain().lookupTextSize( key );
     } else {
       TextSizeProbeStore.addProbeRequest( font );
     }
     return result;
   }
 
-  public static void store( final FontData fontData,
-                            final String string,
-                            final int wrapWidth,
-                            final Point calculatedTextSize )
-  {
+  static void store( FontData fontData, String string, int wrapWidth, Point calculatedTextSize ) {
     if( !TextSizeProbeStore.getInstance().containsProbeResult( fontData ) ) {
-      String txt = "Font ''{0}'' not probed yet.";
-      Object[] args = new Object[] { fontData.toString() };
-      String msg = MessageFormat.format( txt, args );
+      String msg = "Font not probed yet: " + fontData.toString();
       throw new IllegalStateException( msg );
     }
-    ITextSizeStorage registry = TextSizeStorageRegistry.obtain();
+    ITextSizeStorage registry = RWTFactory.getTextSizeStorageRegistry().obtain();
     Integer key = getKey( fontData, string, wrapWidth );
     registry.storeTextSize( key, calculatedTextSize );
   }
 
-  // for test purposes only
-  static void reset() {
-    ITextSizeStorage registry = TextSizeStorageRegistry.obtain();
-    if( registry instanceof DefaultTextSizeStorage ) {
-      ( ( DefaultTextSizeStorage )registry ).resetStringSizes();
-    }
-  }
-
-
-  // for test purposes only
-  static Integer getKey( final FontData fontData,
-                         final String string,
-                         final int wrapWidth )
-  {
+  static Integer getKey( FontData fontData, String string, int wrapWidth ) {
     TextSizeProbeStore instance = TextSizeProbeStore.getInstance();
     IProbeResult probeResult = instance.getProbeResult( fontData );
     String probeText = probeResult.getProbe().getString();
@@ -74,5 +52,10 @@ final class TextSizeDataBase {
     hashCode = 31 * hashCode + string.hashCode();
     hashCode = 31 * hashCode + wrapWidth;
     return new Integer( hashCode );
+  }
+  
+  
+  private TextSizeDataBase() {
+    // prevent instantiation
   }
 }
