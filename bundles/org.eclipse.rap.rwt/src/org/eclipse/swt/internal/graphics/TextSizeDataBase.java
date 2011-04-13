@@ -43,7 +43,7 @@ final class TextSizeDataBase {
   static Integer getKey( FontData fontData, String string, int wrapWidth ) {
     TextSizeProbeStore instance = TextSizeProbeStore.getInstance();
     IProbeResult probeResult = instance.getProbeResult( fontData );
-    String probeText = probeResult.getProbe().getString();
+    String probeText = probeResult.getProbe().getText();
     Point probeSize = probeResult.getSize();
     int hashCode = 1;
     hashCode = 31 * hashCode + probeText.hashCode();

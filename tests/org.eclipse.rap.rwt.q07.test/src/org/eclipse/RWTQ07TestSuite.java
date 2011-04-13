@@ -27,6 +27,7 @@ import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA
 import org.eclipse.swt.internal.dnd.dragsourcekit.DragSourceLCA_Test;
 import org.eclipse.swt.internal.events.ActivateEvent_Test;
 import org.eclipse.swt.internal.events.EventLCAUtil_Test;
+import org.eclipse.swt.internal.graphics.TextSizeDeterminationFacadeImpl_Test;
 import org.eclipse.swt.internal.graphics.TextSizeDeterminationHandler_Test;
 import org.eclipse.swt.internal.internal.widgets.controldecoratorkit.ControlDecoratorLCA_Test;
 import org.eclipse.swt.internal.widgets.WidgetAdapter_Test;
@@ -100,6 +101,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( RWTLifeCycle2_Test.class );
     suite.addTestSuite( ThemeAdapter_Test.class );
     suite.addTestSuite( TextSizeDeterminationHandler_Test.class );
+    suite.addTestSuite( TextSizeDeterminationFacadeImpl_Test.class );
     suite.addTestSuite( DragSourceLCA_Test.class );
 
     // == Service ==

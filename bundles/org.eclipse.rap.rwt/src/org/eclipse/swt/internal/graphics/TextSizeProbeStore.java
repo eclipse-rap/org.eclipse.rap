@@ -19,7 +19,6 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.Display;
 
 
 final class TextSizeProbeStore {
@@ -41,13 +40,9 @@ final class TextSizeProbeStore {
   
   private static Map probes = new HashMap(); 
   
-  private Map probeResults = new HashMap();
-  
-  
   public interface IProbe {
     FontData getFontData();
-    String getString();
-    String getJSProbeParam();
+    String getText();
   }
   
   public interface IProbeResult {
@@ -56,36 +51,28 @@ final class TextSizeProbeStore {
     float getAvgCharWidth();
   }
   
-  private static final class ProbeImpl implements IProbe {
-
-    private final String probeText;
+  private static class ProbeImpl implements IProbe {
+    private final String text;
     private final FontData fontData;
-    private String jsProbeParam;
 
-    private ProbeImpl( final String probeText, final FontData fontData ) {
-      this.probeText = probeText;
+    ProbeImpl( String text, FontData fontData ) {
+      this.text = text;
       this.fontData = fontData;
-      this.jsProbeParam = createProbeParam( this );
     }
 
     public FontData getFontData() {
       return fontData;
     }
 
-    public String getString() {
-      return probeText;
-    }
-
-    public String getJSProbeParam() {
-      if( "".equals( jsProbeParam ) ) {
-        jsProbeParam = createProbeParam( this );
-      }
-      return jsProbeParam;
+    public String getText() {
+      return text;
     }
   }
   
+  private final Map probeResults;
+
   private TextSizeProbeStore() {
-    // prevent instance creation
+    probeResults = new HashMap();
   }
    
   static TextSizeProbeStore getInstance() {
@@ -114,11 +101,8 @@ final class TextSizeProbeStore {
       public float getAvgCharWidth() {
         if( avgCharWidth == 0 ) {
           BigDecimal width = new BigDecimal( getSize().x );
-          BigDecimal charCount 
-            = new BigDecimal( getProbe().getString().length() );
-          int roundingMethod = BigDecimal.ROUND_HALF_UP;
-          avgCharWidth 
-            = width.divide( charCount, 2, roundingMethod ).floatValue();
+          BigDecimal charCount = new BigDecimal( getProbe().getText().length() );
+          avgCharWidth = width.divide( charCount, 2, BigDecimal.ROUND_HALF_UP ).floatValue();
         }
         return avgCharWidth;
       }
@@ -146,12 +130,12 @@ final class TextSizeProbeStore {
     return result;
   }
 
-  private static String getProbeString( final FontData fontData ) {
+  private static String getProbeString( FontData fontData ) {
     // TODO [fappel]: probe string determination different from default
     return DEFAULT_PROBE;
   }
   
-  static IProbe getProbe( final FontData font ) {
+  static IProbe getProbe( FontData font ) {
     IProbe result;
     synchronized( probes ) {
       result = ( IProbe )probes.get( font );
@@ -159,11 +143,11 @@ final class TextSizeProbeStore {
     return result;
   }
   
-  static boolean containsProbe( final FontData fontData ) {
+  static boolean containsProbe( FontData fontData ) {
     return getProbe( fontData ) != null;
   }
   
-  static IProbe createProbe( final FontData fontData, final String probeText ) {
+  static IProbe createProbe( FontData fontData, String probeText ) {
     IProbe result = new ProbeImpl( probeText, fontData );
     synchronized( probes ) {
       probes.put( fontData, result );
@@ -202,22 +186,6 @@ final class TextSizeProbeStore {
   //////////////////
   // helping methods
   
-  private static String createProbeParam( final IProbe probe ) {
-    StringBuffer result = new StringBuffer();
-    final Display display = Display.getCurrent();
-    if( display != null ) {
-      result.append( "[ " );
-      result.append( probe.getFontData().hashCode() );
-      result.append( ", " );
-      result.append( "\"" );
-      result.append( probe.getString() );
-      result.append( "\", " );
-      result.append( TextSizeDeterminationFacade.createFontParam( probe.getFontData() ) );
-      result.append( " ]" );
-    }
-    return result.toString();
-  }
-
   private static Set getProbeRequestsInternal() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Set result = ( Set )stateInfo.getAttribute( PROBE_REQUESTS );

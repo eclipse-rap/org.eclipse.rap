@@ -31,7 +31,7 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
       result.append( "[ " );
       for( int i = 0; i < probeList.length; i++ ) {
         IProbe probe = probeList[ i ];
-        result.append( probe.getJSProbeParam() );
+        result.append( createProbeParamFragment( probe ) );
         if( i < probeList.length - 1 ) {
           result.append( ", " );
         }
@@ -50,9 +50,7 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     return result;
   }
 
-  public ICalculationItem[] writeStringMeasurementsInternal()
-    throws IOException
-  {
+  public ICalculationItem[] writeStringMeasurementsInternal() throws IOException {
     ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
     if( items.length > 0 ) {
       JSWriter writer = JSWriter.getWriterForResetHandler();
@@ -93,20 +91,34 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
       param.append( "[ " );
       for( int i = 0; i < requests.length; i++ ) {
         IProbe probe = requests[ i ];
-        param.append( probe.getJSProbeParam() );
+        param.append( createProbeParamFragment( probe ) );
         if( i < requests.length - 1 ) {
           param.append( ", " );
         }
       }
       param.append( " ]" );
       String funcName = "org.eclipse.swt.FontSizeCalculation.probe";
-      writer.callStatic( funcName,
-                         new Object[] { new JSVar( param.toString() ) } );
+      writer.callStatic( funcName, new Object[] { new JSVar( param.toString() ) } );
     }
     return requests;
   }
+  
+  static String createProbeParamFragment( IProbe probe ) {
+    FontData fontData = probe.getFontData();
+System.out.println( "createProbeFragment for: " + fontData + ", " + probe.getText() );    
+    StringBuffer result = new StringBuffer();
+    result.append( "[ " );
+    result.append( fontData.hashCode() );
+    result.append( ", " );
+    result.append( "\"" );
+    result.append( probe.getText() );
+    result.append( "\", " );
+    result.append( createFontParam( fontData ) );
+    result.append( " ]" );
+    return result.toString();
+  }
 
-  public String createFontParamInternal( final FontData fontData ) {
+  private static String createFontParam( FontData fontData ) {
     StringBuffer result = new StringBuffer();
     String[] names = WidgetLCAUtil.parseFontName( fontData.getName() );
     result.append( "[ " );

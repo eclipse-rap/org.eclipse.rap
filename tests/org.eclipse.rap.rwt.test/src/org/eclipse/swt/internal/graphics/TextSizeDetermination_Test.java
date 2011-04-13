@@ -204,7 +204,7 @@ public class TextSizeDetermination_Test extends TestCase {
     assertSame( probe0, TextSizeProbeStore.getProbe( fontData0 ) );
     assertTrue( TextSizeProbeStore.containsProbe( fontData0 ) );
     assertSame( probe0.getFontData(), fontData0 );
-    assertSame( probe0.getString(), probeText0 );
+    assertSame( probe0.getText(), probeText0 );
 
     Font font1 = Graphics.getFont( "arial", 12, SWT.NORMAL );
     FontData fontData1 = font1.getFontData()[ 0 ];
@@ -304,7 +304,7 @@ public class TextSizeDetermination_Test extends TestCase {
         public FontData getFontData() {
           return fontData;
         }
-        public String getString() {
+        public String getText() {
           return text;
         }
         public String getJSProbeParam() {
