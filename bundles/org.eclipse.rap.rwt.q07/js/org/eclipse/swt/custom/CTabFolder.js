@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
@@ -176,7 +176,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         item.updateBackground();
       } );
       if( color != null && !this.hasState( "rwt_FLAT" ) ) {
-        this._frameBorder.setColor( color );
+        this._frameBorder._setColor( color );
         this._frame.setBorder( this._frameBorder );
       } else {
         this._frame.resetBorder();
