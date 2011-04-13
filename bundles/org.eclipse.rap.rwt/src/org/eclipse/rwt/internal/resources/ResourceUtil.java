@@ -22,25 +22,23 @@ import org.eclipse.rwt.resources.IResourceManager;
 
 public final class ResourceUtil {
 
-  static int[] read( final String name,
-                     final String charset,
-                     final boolean compress )
+  // TODO [rh] avoid passing around the same set of arguments again and again
+  static int[] read( String name,
+                     String charset,
+                     boolean compress,
+                     IResourceManager resourceManager )
     throws IOException
   {
     int[] result;
     if( charset != null ) {
-      result = readText( name, charset, compress );
+      result = readText( name, charset, compress, resourceManager );
     } else {
-      result = readBinary( name );
+      result = readBinary( name, resourceManager );
     }
     return result;
   }
 
-  static int[] read( final InputStream is,
-                     final String charset,
-                     final boolean compress )
-    throws IOException
-  {
+  static int[] read( InputStream is, String charset, boolean compress ) throws IOException {
     int[] result;
     if( charset != null ) {
       result = readText( is, charset, compress );
@@ -50,7 +48,7 @@ public final class ResourceUtil {
     return result;
   }
 
-  static void write( final File toWrite, final int[] content ) throws IOException {
+  static void write( File toWrite, int[] content ) throws IOException {
     FileOutputStream fos = new FileOutputStream( toWrite );
     try {
       OutputStream out = new BufferedOutputStream( fos );
@@ -72,13 +70,14 @@ public final class ResourceUtil {
     // TODO [rst] Add to concatenation buffer
   }
 
-  private static int[] readText( final String name,
-                                 final String charset,
-                                 final boolean compress )
+  private static int[] readText( String name,
+                                 String charset,
+                                 boolean compress,
+                                 IResourceManager resourceManager )
     throws IOException
   {
     // read resource
-    InputStream is = openStream( name );
+    InputStream is = openStream( name, resourceManager );
     int[] result;
     try {
       result = readText( is, charset, compress );
@@ -88,10 +87,8 @@ public final class ResourceUtil {
     return result;
   }
 
-  static int[] readText( final InputStream is,
-                         final String charset,
-                         final boolean compress )
-    throws UnsupportedEncodingException, IOException
+  static int[] readText( InputStream is, String charset, boolean compress )
+    throws IOException
   {
     StringBuffer buffer = new StringBuffer();
     InputStreamReader reader = new InputStreamReader( is, charset );
@@ -132,9 +129,11 @@ public final class ResourceUtil {
     return result;
   }
 
-  private static int[] readBinary( final String name ) throws IOException {
+  private static int[] readBinary( String name, IResourceManager resourceManager ) 
+    throws IOException 
+  {
     int[] result;
-    InputStream is = openStream( name );
+    InputStream is = openStream( name, resourceManager );
     try {
       result = readBinary( is );
     } finally {
@@ -143,7 +142,7 @@ public final class ResourceUtil {
     return result;
   }
 
-  static int[] readBinary( final InputStream stream ) throws IOException {
+  static int[] readBinary( InputStream stream ) throws IOException {
     ByteArrayOutputStream bufferedResult = new ByteArrayOutputStream();
     BufferedInputStream bufferedStream = new BufferedInputStream( stream );
     try {
@@ -164,12 +163,13 @@ public final class ResourceUtil {
     return result;
   }
 
-  private static InputStream openStream( final String name ) throws IOException {
+  private static InputStream openStream( String name, IResourceManager resourceManager ) 
+    throws IOException 
+  {
     ClassLoader loader = ResourceManagerImpl.class.getClassLoader();
     URL resource = loader.getResource( name );
     if( resource == null ) {
-      IResourceManager manager = ResourceManagerImpl.getInstance();
-      resource = manager.getResource( name );
+      resource = resourceManager.getResource( name );
     }
     if( resource == null ) {
       throw new IOException( "Resource to read not found: " + name );
@@ -179,7 +179,7 @@ public final class ResourceUtil {
     return con.getInputStream();
   }
 
-  static void compress( final StringBuffer javaScript ) throws IOException {
+  static void compress( StringBuffer javaScript ) throws IOException {
     JSFile jsFile = new JSFile( javaScript.toString() );
     javaScript.setLength( 0 );
     javaScript.append( jsFile.compress() );

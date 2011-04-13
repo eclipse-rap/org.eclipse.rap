@@ -35,7 +35,6 @@ public class ApplicationContextUtil {
   private static final Class[] INSTANCE_TYPES = new Class[] {
     ApplicationStoreImpl.class,
     ThemeManagerHolder.class,
-    ResourceManagerImpl.class,
     ResourceManagerProvider.class,
     BrandingManager.class,
     PhaseListenerRegistry.class,

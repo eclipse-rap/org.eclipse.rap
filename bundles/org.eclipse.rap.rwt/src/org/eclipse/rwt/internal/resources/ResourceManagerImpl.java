@@ -17,8 +17,8 @@ import java.net.*;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.eclipse.rwt.internal.*;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.ConfigurationReader;
+import org.eclipse.rwt.internal.IEngineConfig;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
@@ -61,8 +61,7 @@ public class ResourceManagerImpl implements IResourceManager {
    *
    * <p>For internal use only</p>
    */
-  public static final String DELIVER_BY_SERVLET_AND_TEMP_DIR
-    = "deliverByServletAndTempDir";
+  public static final String DELIVER_BY_SERVLET_AND_TEMP_DIR = "deliverByServletAndTempDir";
 
   public static final String RESOURCES = "rwt-resources";
 
@@ -87,10 +86,7 @@ public class ResourceManagerImpl implements IResourceManager {
     /** the resource's version or null for 'no version' */
     private final Integer version;
 
-    public Resource( final int[] content,
-                     final String charset,
-                     final Integer version )
-    {
+    public Resource( int[] content, String charset, Integer version ) {
       this.charset = charset;
       this.content = content;
       this.version = version;
@@ -109,32 +105,20 @@ public class ResourceManagerImpl implements IResourceManager {
     }
   }
 
-  private ResourceManagerImpl() {
+  public ResourceManagerImpl() {
     repository = new Hashtable();
     cache = new Hashtable();
     contextLoader = new ThreadLocal();
   }
 
-  public static IResourceManager getInstance() {
-    Object instance = ApplicationContext.getSingleton( ResourceManagerImpl.class );
-    ResourceManagerImpl result = ( ResourceManagerImpl )instance;
+  static IResourceManager createInstance() {
+    ResourceManagerImpl result = new ResourceManagerImpl();
     ConfigurationReader configurationReader = RWTFactory.getConfigurationReader();
     String resources = configurationReader.getConfiguration().getResources();
-    File ctxDir = configurationReader.getEngineConfig().getServerContextDir();
-    result.webAppRoot = ctxDir.toString();
+    File servletContextDir = configurationReader.getEngineConfig().getServerContextDir();
+    result.webAppRoot = servletContextDir.toString();
     result.deliveryMode = resources;
     return result;
-  }
-
-  /**
-   * Loads the given <code>resource</code> from the class path.
-   *
-   * @param resource the name of the resource to be loaded, must not be
-   *          <code>null</code>
-   */
-  public static String load( final String resource ) {
-    ParamCheck.notNull( resource, "resource" );
-    return ( ( ResourceManagerImpl )getInstance() ).doLoad( resource );
   }
 
   /**
@@ -147,11 +131,10 @@ public class ResourceManagerImpl implements IResourceManager {
    * @return the content of the resource or <code>null</code> if no resource
    *         with the given <code>name</code> and <code>version</code> exists.
    */
-  public static int[] findResource( final String name, final Integer version ) {
+  public int[] findResource( final String name, final Integer version ) {
     ParamCheck.notNull( name, "name" );
     int[] result = null;
-    ResourceManagerImpl manager = ( ResourceManagerImpl )getInstance();
-    Resource resource = ( Resource )manager.cache.get( createKey( name ) );
+    Resource resource = ( Resource )cache.get( createKey( name ) );
     if( resource != null ) {
       if(    ( version == null && resource.getVersion() == null )
           || ( version != null && version.equals( resource.getVersion() ) ) )
@@ -172,11 +155,10 @@ public class ResourceManagerImpl implements IResourceManager {
    *         was registered or the resource does not have a version number.
    * @throws NullPointerException when <<code>name</code> is <code>null</code>.
    */
-  public static Integer findVersion( final String name ) {
+  public Integer findVersion( final String name ) {
     ParamCheck.notNull( name, "name" );
     Integer result = null;
-    ResourceManagerImpl manager = ( ResourceManagerImpl )getInstance();
-    Resource resource = ( Resource )manager.cache.get( createKey( name ) );
+    Resource resource = ( Resource )cache.get( createKey( name ) );
     if( resource != null ) {
       result = resource.getVersion();
     }
@@ -185,31 +167,8 @@ public class ResourceManagerImpl implements IResourceManager {
 
   /** <p>returns whether the application runs in the mode specified by the
     * passed String.</p> */
-  public static boolean isDeliveryMode( final String deliveryMode ) {
-    return getDeliveryMode().equals( deliveryMode );
-  }
-
-  /** <p>Sets which mode is used for delivering the resources at runtime.
-   *  DELIVER_BY_SERVLET could be useful if running on a server which is
-   *  permittedto to write to the webapp home.</p>
-   *  @param newDeliveryMode <code>ResourceBase .DELIVER_BY_SERVLET</code> or
-   *  <code>ResourceBase.DELIVER_FROM_DISK</code>
-   */
-  public static void setDeliveryMode( final String newDeliveryMode ) {
-    if(    newDeliveryMode.equals( DELIVER_BY_SERVLET )
-        || newDeliveryMode.equals( DELIVER_FROM_DISK )
-        || newDeliveryMode.equals( DELIVER_BY_SERVLET_AND_TEMP_DIR ) )
-    {
-      ( ( ResourceManagerImpl )getInstance() ).deliveryMode = newDeliveryMode;
-    }
-  }
-
-  /** <p>Returns which mode is used for delivering the resources at runtime.
-   *  DELIVER_BY_SERVLET could be useful if running on a server which has
-   *  no grant writing to webapp home.</p>
-   */
-  public static String getDeliveryMode() {
-    return ( ( ResourceManagerImpl )getInstance() ).deliveryMode;
+  public boolean isDeliveryMode( String deliveryMode ) {
+    return this.deliveryMode.equals( deliveryMode );
   }
 
   /////////////////////////////
@@ -381,9 +340,7 @@ public class ResourceManagerImpl implements IResourceManager {
     return String.valueOf( name.hashCode() );
   }
 
-  private static String createRequestURL( final String fileName,
-                                          final Integer version )
-  {
+  private String createRequestURL( String fileName, Integer version ) {
     String result;
     String newFileName = fileName.replace( '\\', '/' );
     if( isDeliveryMode( DELIVER_FROM_DISK ) ) {
@@ -407,19 +364,6 @@ public class ResourceManagerImpl implements IResourceManager {
     return result;
   }
 
-  private String doLoad( final String resource ) {
-    String key = createKey( resource );
-    if( !repository.containsKey( key ) ) {
-      try {
-        register( resource );
-      } catch( ResourceRegistrationException e ) {
-        // application file which is not managed by the resource manager
-        repository.put( key, resource );
-      }
-    }
-    return createRequestURL( resource, null );
-  }
-
   private void doRegister( final String name,
                            final String charset,
                            final RegisterOptions options )
@@ -430,7 +374,7 @@ public class ResourceManagerImpl implements IResourceManager {
     if( !repository.containsKey( key ) ) {
       boolean compress = shouldCompress( options );
       try {
-        int[] content = ResourceUtil.read( name, charset, compress );
+        int[] content = ResourceUtil.read( name, charset, compress, this );
         doRegister( name, charset, options, key, content );
       } catch ( IOException e ) {
         String text = "Failed to register resource ''{0}''.";
@@ -526,7 +470,7 @@ public class ResourceManagerImpl implements IResourceManager {
            && SystemProps.useCompressedJavaScript();
   }
 
-  private File getDiskLocation( final String name, final Integer version ) {
+  private File getDiskLocation( String name, Integer version ) {
     StringBuffer filename = new StringBuffer();
     filename.append( webAppRoot );
     filename.append( File.separator );
