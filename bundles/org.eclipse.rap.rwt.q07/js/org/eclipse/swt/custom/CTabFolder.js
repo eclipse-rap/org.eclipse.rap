@@ -176,7 +176,9 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         item.updateBackground();
       } );
       if( color != null && !this.hasState( "rwt_FLAT" ) ) {
-        this._frameBorder._setColor( color );
+        this._frame.setBorder( null );
+        this._frameBorder.dispose();
+        this._frameBorder = new org.eclipse.rwt.Border( 2, "solid", color );
         this._frame.setBorder( this._frameBorder );
       } else {
         this._frame.resetBorder();
