@@ -275,7 +275,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       simpleBorder.dispose();
       complexBorder.dispose();
     },
-
+    
+    // NOTE : This tests relies on the fact that the push-button has a rounded border
+    //        that doesnt change on hover. Should the change in the default theme, the test
+    //        looses its validity.
+    testCacheRoundedBorder : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var button = new org.eclipse.rwt.widgets.Button( "push" ); 
+      button.addState( "rwt_PUSH" );       
+      button.addToDocument();
+      testUtil.flush();
+      var borderOne = button.getBorder();
+      button.addState( "over" );
+      testUtil.flush();
+      var borderTwo = button.getBorder();
+      assertIdentical( borderOne, borderTwo );
+    },
 
     //////////////
     // helper

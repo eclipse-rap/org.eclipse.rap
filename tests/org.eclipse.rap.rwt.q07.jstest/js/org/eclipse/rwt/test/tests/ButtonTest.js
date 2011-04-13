@@ -85,7 +85,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       button.destroy();
       qx.ui.core.Widget.flushGlobalQueues();
     },
-        
+
     testParent : function() {
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       this._currentButton = button;

@@ -201,24 +201,33 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     },
 
     getBorder : function( element, states, property, theme ) {
+      var border;
       var key = this._getCssValue( element, states, property, theme );
       var value = this._values.borders[ key ];
-      var border;
-      if( !( value instanceof org.eclipse.rwt.Border ) ) {
-        border = this._getBorderFromValue( value );
-        this._values.borders[ key ] = border;
-      } else {
-        border = value;
-      }
-      if( !this._isComplexBorder( border ) ) {
+      var resolved = value instanceof org.eclipse.rwt.Border;
+      var style = resolved ? value.getStyle() : value.style;
+      if( style === "solid" ) {
         var radiiKey = this._getCssValue( element, states, "border-radius", theme );
         var radii = this._values.boxdims[ radiiKey ];
         if( radii != null && ( radii.join( "" ) !== "0000" ) ) {
-          // TODO [tb]: Rounded borders can currently not be easily cached
-          //            due to their dependence on (independently usable) non-rounded border.
-          var width = border.getWidthTop();
-          var color = border.getColorTop();
-          border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
+          var roundedBorderKey = key + "#" + radiiKey;
+          var roundedBorder = this._values.borders[ roundedBorderKey ];
+          if( !roundedBorder ) {
+            var width = resolved ? value.getWidthTop() : value.width;
+            var color = resolved ? value.getColorTop() : value.color;
+            border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
+            this._values.borders[ roundedBorderKey ] = border;
+          } else {
+            border = roundedBorder;
+          }
+        }
+      }
+      if( !border ) {
+        if( resolved ) {
+          border = value;
+        } else {
+          border = this._getBorderFromValue( value );
+          this._values.borders[ key ] = border;
         }
       }
       return border;
@@ -227,11 +236,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     getShadow : function( element, states, property, theme ) {
       var key = this._getCssValue( element, states, property, theme );
       return this._values.shadows[ key ];
-    },
-
-    // TODO [tb] : move to border & refactor
-    _isComplexBorder : function( border ) {
-      return border.getStyleTop() !== "solid" || border.getUserData( "isComplex" );
     },
 
     getNamedBorder : function( name ) {
@@ -243,7 +247,6 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
           var color = this._resolveNamedColors( borderDef.color );
           var innerColor = this._resolveNamedColors( borderDef.innerColor );
           result = new org.eclipse.rwt.Border( borderDef.width, "complex", color, innerColor );
-          result.setUserData( "isComplex", true );
           this._values.borders[ key ] = result;
         } else {
           result = null;
