@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.InputStream;
 
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.resources.ResourceUtil;
 import org.eclipse.rwt.internal.util.HTTP;
@@ -22,7 +21,7 @@ import org.eclipse.rwt.resources.*;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
-final class QooxdooResourcesUtil {
+final class ClientResources {
 
   private static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
@@ -274,91 +273,84 @@ final class QooxdooResourcesUtil {
     "resource/widget/rap/scale/h_marker_small.gif",
     "resource/widget/rap/scale/v_marker_small.gif",
   };
+  
+  private final IResourceManager resourceManager;
 
-  private QooxdooResourcesUtil() {
-    // prevent instance creation
+  public ClientResources( IResourceManager resourceManager ) {
+    this.resourceManager = resourceManager;
   }
 
-  public static void registerResources() {
-    ClassLoader loader = QooxdooResourcesUtil.class.getClassLoader();
-    IResourceManager manager = RWT.getResourceManager();
-    ClassLoader bufferedLoader = manager.getContextLoader();
-    manager.setContextLoader( loader );
+  public void registerResources() {
+    ClassLoader bufferedLoader = resourceManager.getContextLoader();
     try {
-      // TODO [rst] Needed by qx.js - can we get rid of it?
-      manager.register( "resource/static/html/blank.html", HTTP.CHARSET_UTF_8 );
+      resourceManager.setContextLoader( getClass().getClassLoader() );
+      // TODO [rst] Needed by client.js - can we get rid of it?
+      resourceManager.register( "resource/static/html/blank.html", HTTP.CHARSET_UTF_8 );
       registerJavascriptFiles();
+      registerWidgetImages();
+      registerContributions();
     } finally {
-      manager.setContextLoader( bufferedLoader );
+      resourceManager.setContextLoader( bufferedLoader );
     }
-    registerWidgetImages();
-    registerContributions();
   }
 
-  private static void registerJavascriptFiles() {
+  private void registerJavascriptFiles() {
     if( isDebug() ) {
       for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
-        String resource = JAVASCRIPT_FILES[ i ];
-        register( resource, false );
+        registerJavascriptFile( JAVASCRIPT_FILES[ i ] );
       }
     } else {
-      register( CLIENT_JS, false );
+      registerJavascriptFile( CLIENT_JS );
     }
   }
 
-  private static void registerWidgetImages() {
-    IResourceManager manager = RWT.getResourceManager();
-    ClassLoader classLoader = QooxdooResourcesUtil.class.getClassLoader();
+  private void registerWidgetImages() {
     for( int i = 0; i < WIDGET_IMAGES.length; i++ ) {
       String resourcePath = WIDGET_IMAGES[ i ];
-      InputStream inputStream = classLoader.getResourceAsStream( resourcePath );
-      if( inputStream == null ) {
-        String mesg = "Resource not found: " + resourcePath;
-        throw new IllegalArgumentException( mesg );
-      }
-      manager.register( resourcePath, inputStream );
+      InputStream inputStream = openResourceStream( resourcePath );
+      resourceManager.register( resourcePath, inputStream );
     }
   }
 
-  private static void registerContributions() {
-    IResourceManager manager = RWT.getResourceManager();
-    ClassLoader contextLoader = manager.getContextLoader();
-    try {
-      IResource[] resources = RWTFactory.getResourceRegistry().get();
-      for( int i = 0; i < resources.length; i++ ) {
-        if( !resources[ i ].isExternal() ) {
-          manager.setContextLoader( resources[ i ].getLoader() );
-          String charset = resources[ i ].getCharset();
-          RegisterOptions options = resources[ i ].getOptions();
-          String location = resources[ i ].getLocation();
-          if( charset == null && options == null ) {
-            manager.register( location );
-          } else if( options == null ) {
-            manager.register( location, charset );
-          } else {
-            manager.register( location, charset, options );
-          }
-          if( resources[ i ].isJSLibrary() ) {
-            ResourceUtil.useJsLibrary( location );
-          }
+  private void registerContributions() {
+    IResource[] resources = RWTFactory.getResourceRegistry().get();
+    for( int i = 0; i < resources.length; i++ ) {
+      if( !resources[ i ].isExternal() ) {
+        resourceManager.setContextLoader( resources[ i ].getLoader() );
+        String charset = resources[ i ].getCharset();
+        RegisterOptions options = resources[ i ].getOptions();
+        String location = resources[ i ].getLocation();
+        if( charset == null && options == null ) {
+          resourceManager.register( location );
+        } else if( options == null ) {
+          resourceManager.register( location, charset );
+        } else {
+          resourceManager.register( location, charset, options );
+        }
+        if( resources[ i ].isJSLibrary() ) {
+          ResourceUtil.useJsLibrary( location );
         }
       }
-    } finally {
-      manager.setContextLoader( contextLoader );
     }
   }
 
-  private static void register( String libraryName, boolean compress ) {
-    RegisterOptions option =   compress
-                             ? RegisterOptions.VERSION_AND_COMPRESS
-                             : RegisterOptions.VERSION;
-    RWT.getResourceManager().register( libraryName, HTTP.CHARSET_UTF_8, option );
+  private void registerJavascriptFile( String libraryName ) {
+    InputStream inputStream = openResourceStream( libraryName );
+    resourceManager.register( libraryName, inputStream, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
     ResourceUtil.useJsLibrary( libraryName );
+  }
+
+  private InputStream openResourceStream( String name ) {
+    InputStream result = getClass().getClassLoader().getResourceAsStream( name );
+    if( result == null ) {
+      String mesg = "Resource not found: " + name;
+      throw new IllegalArgumentException( mesg );
+    }
+    return result;
   }
 
   private static boolean isDebug() {
     String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
-    boolean isDebug = DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
-    return isDebug;
+    return DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
   }
 }

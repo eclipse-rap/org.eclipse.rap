@@ -210,11 +210,7 @@ public class ResourceManagerImpl implements IResourceManager {
     repository.put( key, name );
   }
 
-  public void register( final String name,
-                        final InputStream is,
-                        final String charset,
-                        final RegisterOptions options )
-  {
+  public void register( String name, InputStream is, String charset, RegisterOptions options ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( is, "is" );
     ParamCheck.notNull( charset, "charset" );
@@ -224,10 +220,9 @@ public class ResourceManagerImpl implements IResourceManager {
     try {
       int[] content = ResourceUtil.read( is, charset, compress );
       doRegister( name, charset, options, key, content );
-    } catch ( IOException e ) {
-      String text = "Failed to register resource ''{0}''.";
-      String msg = MessageFormat.format( text, new Object[] { name } );
-      throw new ResourceRegistrationException( msg, e ) ;
+    } catch ( IOException ioe ) {
+      String msg = "Failed to register resource: " + name;
+      throw new ResourceRegistrationException( msg, ioe ) ;
     }
     repository.put( key, name );
   }

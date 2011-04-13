@@ -149,7 +149,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( ToolTipLCA_Test.class );
     suite.addTestSuite( KeyBindingUtil_Test.class );
     suite.addTestSuite( FileUploadLCA_Test.class );
-    suite.addTestSuite( QooxdooResourceUtil_Test.class );
+    suite.addTestSuite( ClientResources_Test.class );
     return suite;
   }
 }

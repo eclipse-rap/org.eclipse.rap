@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -17,26 +20,35 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
-public class QooxdooResourceUtil_Test extends TestCase {
+public class ClientResources_Test extends TestCase {
 
+  private ClientResources clientResources;
   private IResourceManager resourceManager;
 
   public void testRegisterResources() throws Exception {
-    QooxdooResourcesUtil.registerResources();
+    clientResources.registerResources();
     assertTrue( resourceManager.isRegistered( "client.js" ) );
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
   }
 
   public void testRegisterResourcesDebug() throws Exception {
     System.setProperty( "org.eclipse.rwt.clientLibraryVariant", "DEBUG" );
-    QooxdooResourcesUtil.registerResources();
+    clientResources.registerResources();
     assertFalse( resourceManager.isRegistered( "client.js" ) );
     assertTrue( resourceManager.isRegistered( "qx/lang/Core.js" ) );
+  }
+  
+  public void testRegisterResourcesWithCustomContextLoader() {
+    URLClassLoader contextLoader = new URLClassLoader( new URL[ 0 ] );
+    resourceManager.setContextLoader( contextLoader );
+    clientResources.registerResources();
+    assertSame( contextLoader, resourceManager.getContextLoader() );
   }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     resourceManager = RWT.getResourceManager();
+    clientResources = new ClientResources( resourceManager );
   }
 
   protected void tearDown() throws Exception {

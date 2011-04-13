@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
@@ -218,7 +219,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   static void registerResources() {
-    QooxdooResourcesUtil.registerResources();
+    new ClientResources( RWT.getResourceManager() ).registerResources();
     ThemeManager.getInstance().registerResources();
   }
 
