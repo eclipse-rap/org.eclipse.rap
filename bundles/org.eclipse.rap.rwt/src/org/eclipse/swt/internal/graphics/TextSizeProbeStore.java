@@ -20,25 +20,20 @@ import org.eclipse.swt.graphics.FontData;
 
 public class TextSizeProbeStore {
 
-  public interface IProbe {
-    FontData getFontData();
-    String getText();
-  }
-
-  private static class ProbeImpl implements IProbe {
+  static class Probe {
     private final String text;
     private final FontData fontData;
 
-    ProbeImpl( String text, FontData fontData ) {
+    Probe( String text, FontData fontData ) {
       this.text = text;
       this.fontData = fontData;
     }
 
-    public FontData getFontData() {
+    FontData getFontData() {
       return fontData;
     }
 
-    public String getText() {
+    String getText() {
       return text;
     }
   }
@@ -64,8 +59,8 @@ public class TextSizeProbeStore {
     probes = new HashMap();
   }
   
-  IProbe[] getProbeList() {
-    IProbe[] result;
+  Probe[] getProbeList() {
+    Probe[] result;
     synchronized( probes ) {
       if( probes.isEmpty() ) {
         // TODO [rh] store TextSizeStorageRegistry in a field and initialize it during configuration
@@ -74,14 +69,14 @@ public class TextSizeProbeStore {
           createProbe( fontList[ i ], getProbeString( fontList[ i ] ) );
         }
       }
-      result = new IProbe[ probes.size() ];
+      result = new Probe[ probes.size() ];
       probes.values().toArray( result );
     }
     return result;
   }
   
-  IProbe createProbe( FontData fontData, String probeText ) {
-    IProbe result = new ProbeImpl( probeText, fontData );
+  Probe createProbe( FontData fontData, String probeText ) {
+    Probe result = new Probe( probeText, fontData );
     synchronized( probes ) {
       probes.put( fontData, result );
     }
@@ -89,14 +84,14 @@ public class TextSizeProbeStore {
     return result;
   }
 
-  IProbe getProbe( FontData font ) {
+  Probe getProbe( FontData font ) {
     synchronized( probes ) {
-      return ( IProbe )probes.get( font );
+      return ( Probe )probes.get( font );
     }
   }
   
   static void addProbeRequest( FontData fontData ) {
-    IProbe probe = RWTFactory.getTextSizeProbeStore().getProbe( fontData );
+    Probe probe = RWTFactory.getTextSizeProbeStore().getProbe( fontData );
     if( probe == null ) {
       String probeString = getProbeString( fontData );
       probe = RWTFactory.getTextSizeProbeStore().createProbe( fontData, probeString );
@@ -104,9 +99,9 @@ public class TextSizeProbeStore {
     getProbeRequestsInternal().add( probe );
   }
 
-  static IProbe[] getProbeRequests() {
+  static Probe[] getProbeRequests() {
     Set probeRequests = getProbeRequestsInternal();
-    IProbe[] result = new IProbe[ probeRequests.size() ];
+    Probe[] result = new Probe[ probeRequests.size() ];
     probeRequests.toArray( result );
     return result;
   }

@@ -19,19 +19,19 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 
 public final class TextSizeDeterminationFacadeImpl extends TextSizeDeterminationFacade {
 
   public String getStartupProbeCodeInternal() {
     StringBuffer result = new StringBuffer();
-    IProbe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
+    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
     if( probeList.length > 0 ) {
       result.append( "org.eclipse.swt.FontSizeCalculation.probe(" );
       result.append( "[ " );
       for( int i = 0; i < probeList.length; i++ ) {
-        IProbe probe = probeList[ i ];
+        Probe probe = probeList[ i ];
         result.append( createProbeParamFragment( probe ) );
         if( i < probeList.length - 1 ) {
           result.append( ", " );
@@ -84,14 +84,14 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     return items;
   }
 
-  public TextSizeProbeStore.IProbe[] writeFontProbingInternal() throws IOException {
-    TextSizeProbeStore.IProbe[] requests = TextSizeProbeStore.getProbeRequests();
+  public Probe[] writeFontProbingInternal() throws IOException {
+    Probe[] requests = TextSizeProbeStore.getProbeRequests();
     if( requests.length > 0 ) {
       JSWriter writer = JSWriter.getWriterForResetHandler();
       StringBuffer param = new StringBuffer();
       param.append( "[ " );
       for( int i = 0; i < requests.length; i++ ) {
-        TextSizeProbeStore.IProbe probe = requests[ i ];
+        Probe probe = requests[ i ];
         param.append( createProbeParamFragment( probe ) );
         if( i < requests.length - 1 ) {
           param.append( ", " );
@@ -104,7 +104,7 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     return requests;
   }
   
-  static String createProbeParamFragment( TextSizeProbeStore.IProbe probe ) {
+  static String createProbeParamFragment( Probe probe ) {
     FontData fontData = probe.getFontData();
     StringBuffer result = new StringBuffer();
     result.append( "[ " );

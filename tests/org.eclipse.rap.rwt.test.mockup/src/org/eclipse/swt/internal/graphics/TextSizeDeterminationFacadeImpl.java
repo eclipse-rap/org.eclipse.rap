@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.graphics;
 import java.io.IOException;
 
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 
 public final class TextSizeDeterminationFacadeImpl extends TextSizeDeterminationFacade {
@@ -26,8 +27,8 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     return new ICalculationItem[ 0 ];
   }
 
-  public TextSizeProbeStore.IProbe[] writeFontProbingInternal() throws IOException {
-    return new TextSizeProbeStore.IProbe[ 0 ];
+  public Probe[] writeFontProbingInternal() throws IOException {
+    return new Probe[ 0 ];
   }
 
   public String getStartupProbeCodeInternal() {

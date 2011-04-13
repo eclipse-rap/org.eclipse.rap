@@ -23,8 +23,8 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
-import org.eclipse.swt.internal.graphics.TextSizeProbeResults.IProbeResult;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.graphics.TextSizeProbeResults.ProbeResult;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 
 public class TextSizeDetermination_Test extends TestCase {
@@ -52,7 +52,7 @@ public class TextSizeDetermination_Test extends TestCase {
     assertEquals( 1, items.length );
 
     Point storedSize = new Point( 100, 10 );
-    IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
+    Probe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 1, probeRequests.length );
     assertEquals( font.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
@@ -104,7 +104,7 @@ public class TextSizeDetermination_Test extends TestCase {
   }
 
   public void testCharHeight() {
-    IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
+    Probe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 0, probeRequests.length );
 
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
@@ -124,7 +124,7 @@ public class TextSizeDetermination_Test extends TestCase {
   }
 
   public void testAvgCharWidth() {
-    IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
+    Probe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 0, probeRequests.length );
 
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
@@ -185,17 +185,17 @@ public class TextSizeDetermination_Test extends TestCase {
     assertEquals( calculatedTextSize1, textSize );
   }
 
-  private IProbe findRequestedProbe( int i ) {
-    TextSizeProbeStore.IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
+  private Probe findRequestedProbe( int i ) {
+    Probe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     return textSizeProbeStore.getProbe( probeRequests[ i ].getFontData() );
   }
 
   public void testProbeStorage() {
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
     FontData fontData0 = font0.getFontData()[ 0 ];
-    TextSizeProbeStore.IProbe[] probeList = textSizeProbeStore.getProbeList();
+    Probe[] probeList = textSizeProbeStore.getProbeList();
     assertEquals( 0, probeList.length );
-    TextSizeProbeStore.IProbe probe0 = textSizeProbeStore.getProbe( fontData0 );
+    Probe probe0 = textSizeProbeStore.getProbe( fontData0 );
     assertNull( probe0 );
 
     String probeText0 = "ProbeText0";
@@ -213,7 +213,7 @@ public class TextSizeDetermination_Test extends TestCase {
     assertNull( textSizeProbeStore.getProbe( fontData1 ) );
 
     TextSizeProbeResults probeStore = TextSizeProbeResults.getInstance();
-    IProbeResult probeResult0 = probeStore.getProbeResult( fontData0 );
+    ProbeResult probeResult0 = probeStore.getProbeResult( fontData0 );
     assertNull( probeResult0 );
 
     Point probeSize0 = new Point( 10, 10 );
@@ -295,20 +295,13 @@ public class TextSizeDetermination_Test extends TestCase {
 
   public void testTextSizeDatabaseKey() {
     Font font = Graphics.getFont( "name", 10, SWT.NORMAL );
-    final FontData fontData = font.getFontData()[ 0 ];
+    FontData fontData = font.getFontData()[ 0 ];
     Set takenKeys = new HashSet();
     StringBuffer generatedText = new StringBuffer();
     for( int i = 0; i < 100; i++ ) {
       generatedText.append( "a" );
-      final String text = generatedText.toString();
-      IProbe probe = new IProbe() {
-        public FontData getFontData() {
-          return fontData;
-        }
-        public String getText() {
-          return text;
-        }
-      };
+      String text = generatedText.toString();
+      Probe probe = new Probe( text, fontData );
       Point size = new Point( 1, 2 );
       TextSizeProbeResults.getInstance().createProbeResult( probe, size );
       Integer key = TextSizeDataBase.getKey( fontData, text, -1 );

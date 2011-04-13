@@ -25,7 +25,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
@@ -39,7 +39,7 @@ final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBi
   ICalculationItem[] calculationItems;
   boolean renderDone;
   private final Display display;
-  private IProbe[] probes;
+  private Probe[] probes;
 
   static void register() {
     Display display = RWTLifeCycle.getSessionDisplay();
@@ -161,11 +161,11 @@ final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBi
     return PhaseId.ANY;
   }
 
-  static void readProbedFonts( IProbe[] probes ) {
+  static void readProbedFonts( Probe[] probes ) {
     boolean hasProbes = probes != null;
     HttpServletRequest request = ContextProvider.getRequest();
     for( int i = 0; hasProbes && i < probes.length; i++ ) {
-      IProbe probe = probes[ i ];
+      Probe probe = probes[ i ];
       String name = String.valueOf( probe.getFontData().hashCode() );
       String value = request.getParameter( name );
       if( value != null ) {

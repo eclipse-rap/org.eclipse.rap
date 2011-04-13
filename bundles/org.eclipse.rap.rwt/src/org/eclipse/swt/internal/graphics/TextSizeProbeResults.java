@@ -18,39 +18,33 @@ import java.util.Map;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 
 final class TextSizeProbeResults {
   
-  interface IProbeResult {
-    IProbe getProbe();
-    Point getSize();
-    float getAvgCharWidth();
-  }
-  
-  private static class ProbeResultImpl implements IProbeResult {
+  static class ProbeResult {
     private final Point size;
-    private final IProbe probe;
+    private final Probe probe;
     private float avgCharWidth;
   
-    ProbeResultImpl( IProbe probe, Point size ) {
+    ProbeResult( Probe probe, Point size ) {
       this.probe = probe;
       this.size = size;
     }
   
-    public IProbe getProbe() {
+    Probe getProbe() {
       return probe;
     }
   
-    public Point getSize() {
+    Point getSize() {
       return size;
     }
   
-    public float getAvgCharWidth() {
+    float getAvgCharWidth() {
       if( avgCharWidth == 0 ) {
         BigDecimal width = new BigDecimal( getSize().x );
-        BigDecimal charCount = new BigDecimal( getProbe().getText().length() );
+        BigDecimal charCount = new BigDecimal( probe.getText().length() );
         avgCharWidth = width.divide( charCount, 2, BigDecimal.ROUND_HALF_UP ).floatValue();
       }
       return avgCharWidth;
@@ -67,14 +61,14 @@ final class TextSizeProbeResults {
     probeResults = new HashMap();
   }
    
-  IProbeResult createProbeResult( IProbe probe, Point size ) {
-    IProbeResult result = new ProbeResultImpl( probe, size );
+  ProbeResult createProbeResult( Probe probe, Point size ) {
+    ProbeResult result = new ProbeResult( probe, size );
     probeResults.put( probe.getFontData(), result );
     return result;
   }
 
-  IProbeResult getProbeResult( FontData fontData ) {
-    return ( IProbeResult )probeResults.get( fontData );
+  ProbeResult getProbeResult( FontData fontData ) {
+    return ( ProbeResult )probeResults.get( fontData );
   }
   
   boolean containsProbeResult( FontData fontData ) {

@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeProbeResults.IProbeResult;
+import org.eclipse.swt.internal.graphics.TextSizeProbeResults.ProbeResult;
 
 
 final class TextSizeDataBase {
@@ -42,7 +42,7 @@ final class TextSizeDataBase {
 
   static Integer getKey( FontData fontData, String string, int wrapWidth ) {
     TextSizeProbeResults instance = TextSizeProbeResults.getInstance();
-    IProbeResult probeResult = instance.getProbeResult( fontData );
+    ProbeResult probeResult = instance.getProbeResult( fontData );
     String probeText = probeResult.getProbe().getText();
     Point probeSize = probeResult.getSize();
     int hashCode = 1;

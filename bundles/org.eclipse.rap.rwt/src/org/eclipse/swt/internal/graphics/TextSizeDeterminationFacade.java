@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.FacadesInitializer;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 abstract class TextSizeDeterminationFacade {
 
@@ -30,7 +30,7 @@ abstract class TextSizeDeterminationFacade {
     return FACADE_IMPL.writeStringMeasurementsInternal();
   }
 
-  static IProbe[] writeFontProbing() throws IOException {
+  static Probe[] writeFontProbing() throws IOException {
     return FACADE_IMPL.writeFontProbingInternal();
   }
 
@@ -42,7 +42,7 @@ abstract class TextSizeDeterminationFacade {
 
   public abstract ICalculationItem[] writeStringMeasurementsInternal() throws IOException;
 
-  public abstract IProbe[] writeFontProbingInternal() throws IOException;
+  public abstract Probe[] writeFontProbingInternal() throws IOException;
 
   public abstract String getStartupProbeCodeInternal();
 }

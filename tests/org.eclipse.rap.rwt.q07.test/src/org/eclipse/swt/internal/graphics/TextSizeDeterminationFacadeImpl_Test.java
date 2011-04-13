@@ -14,33 +14,17 @@ import junit.framework.TestCase;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 
 public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
 
-  private static class TestProbe implements TextSizeProbeStore.IProbe {
-    String text;
-    FontData fontData;
-    public FontData getFontData() {
-      return fontData;
-    }
-    public String getText() {
-      return text;
-    }
-  }
-
-  private FontData fontData;
 
   public void testCreateProbeParamFragment() {
-    TestProbe probe = new TestProbe();
-    probe.text = "text";
-    probe.fontData = fontData;
+    FontData fontData = new FontData( "font-name", 1, SWT.NORMAL );
+    Probe probe = new Probe( "text", fontData );
     String expected = "[ -1586239415, \"text\", [ \"font-name\" ], 1, false, false ]";
     String actual = TextSizeDeterminationFacadeImpl.createProbeParamFragment( probe );
     assertEquals( expected, actual );
-  }
-
-  protected void setUp() throws Exception {
-    fontData = new FontData( "font-name", 1, SWT.NORMAL );
   }
 }

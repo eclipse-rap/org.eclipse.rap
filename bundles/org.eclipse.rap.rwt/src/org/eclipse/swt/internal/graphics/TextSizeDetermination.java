@@ -19,8 +19,8 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeProbeResults.IProbeResult;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.graphics.TextSizeProbeResults.ProbeResult;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 
 public class TextSizeDetermination {
@@ -142,7 +142,7 @@ public class TextSizeDetermination {
     FontData fontData = font.getFontData()[ 0 ];
     TextSizeProbeResults probeStore = TextSizeProbeResults.getInstance();
     if( probeStore.containsProbeResult( fontData ) ) {
-      IProbeResult probeResult = probeStore.getProbeResult( fontData );
+      ProbeResult probeResult = probeStore.getProbeResult( fontData );
       result = probeResult.getSize().y;
     } else {
       TextSizeProbeStore.addProbeRequest( fontData );
@@ -156,7 +156,7 @@ public class TextSizeDetermination {
     TextSizeProbeResults probeStore = TextSizeProbeResults.getInstance();
     FontData fontData = font.getFontData()[ 0 ];
     if( probeStore.containsProbeResult( fontData ) ) {
-      IProbeResult probeResult = probeStore.getProbeResult( fontData );
+      ProbeResult probeResult = probeStore.getProbeResult( fontData );
       result = probeResult.getAvgCharWidth();
     } else {
       TextSizeProbeStore.addProbeRequest( fontData );
@@ -166,7 +166,7 @@ public class TextSizeDetermination {
   }
 
   public static void readStartupProbes() {
-    IProbe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
+    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
     TextSizeDeterminationHandler.readProbedFonts( probeList );
   }
 
