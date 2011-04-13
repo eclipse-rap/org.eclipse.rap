@@ -20,10 +20,8 @@ import org.eclipse.swt.graphics.*;
 public interface ITextSizeStorage {
   
   FontData[] getFontList();
-  
   void storeFont( FontData fontData );
   
   Point lookupTextSize( Integer key );
-
   void storeTextSize( Integer key, Point size );
 }

@@ -105,7 +105,6 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
   
   static String createProbeParamFragment( IProbe probe ) {
     FontData fontData = probe.getFontData();
-System.out.println( "createProbeFragment for: " + fontData + ", " + probe.getText() );    
     StringBuffer result = new StringBuffer();
     result.append( "[ " );
     result.append( fontData.hashCode() );
