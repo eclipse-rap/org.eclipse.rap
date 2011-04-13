@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -771,14 +771,16 @@ public abstract class Widget implements Adaptable {
         DisposeEvent disposeEvent = new DisposeEvent( this );
         disposeEvent.processEvent();
       }
-      releaseChildren();
-      releaseParent();
-      releaseWidget();
-      // TODO [rh] think about a better solution to propagate widget disposal
-      //      to the LCA
-      IWidgetAdapter adapter
-        = ( IWidgetAdapter )getAdapter( IWidgetAdapter.class );
-      adapter.markDisposed( this );
+      if( ( state & DISPOSED ) == 0 ) {
+        releaseChildren();
+      }
+      if( ( state & RELEASED ) == 0 ) {
+        state |= RELEASED;
+        releaseParent();
+        releaseWidget();
+        IWidgetAdapter adapter = ( IWidgetAdapter )getAdapter( IWidgetAdapter.class );
+        adapter.markDisposed( this );
+      }
     }
   }
 

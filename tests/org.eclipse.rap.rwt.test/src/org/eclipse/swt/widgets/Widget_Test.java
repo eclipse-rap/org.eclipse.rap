@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -27,8 +27,14 @@ import org.eclipse.swt.events.*;
 
 public class Widget_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
@@ -36,17 +42,12 @@ public class Widget_Test extends TestCase {
   }
 
   public void testGetAdapter() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Widget shell = new Shell( display );
     // ensure that Widget#getAdapter can be called after widget was disposed of
     shell.dispose();
     assertNotNull( shell.getAdapter( IWidgetAdapter.class ) );
   }
 
   public void testCheckWidget() throws InterruptedException {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Widget widget = new Text( shell, SWT.NONE );
 
     final Throwable[] throwable = new Throwable[ 1 ];
@@ -70,8 +71,6 @@ public class Widget_Test extends TestCase {
   }
 
   public void testData() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Widget widget = new Text( shell, SWT.NONE );
 
     // Test initial state
@@ -115,9 +114,6 @@ public class Widget_Test extends TestCase {
   public void testDisposeParentWhileInDispose() {
     // This test leads to a stack overflow or, if line "item[ 0 ].dispose();"
     // is activated to a NPE
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Composite composite = new Composite( shell, SWT.NONE );
     ToolBar toolbar = new ToolBar( composite, SWT.NONE );
     final ToolItem[] item = { null };
@@ -137,16 +133,31 @@ public class Widget_Test extends TestCase {
   }
 
   public void testDisposeSelfWhileInDispose() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    final Shell widget = new Shell( display, SWT.NONE );
-    widget.addDisposeListener( new DisposeListener() {
+    shell.addDisposeListener( new DisposeListener() {
       public void widgetDisposed( final DisposeEvent event ) {
-        widget.dispose();
+        shell.dispose();
       }
     } );
-    widget.dispose();
+    shell.dispose();
     // no assert: this test ensures that no exception occurs
+  }
+
+  public void testDisposeSelfWhileInDispose_RenderOnce() {
+    Fixture.markInitialized( shell );
+    shell.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( final DisposeEvent event ) {
+        shell.dispose();
+      }
+    } );
+    shell.dispose();
+    int counter = 0;
+    Widget[] disposedWidgets = DisposedWidgets.getAll();
+    for( int i = 0; i < disposedWidgets.length; i++ ) {
+      if( disposedWidgets[ i ] == shell ) {
+        counter++;
+      }
+    }
+    assertEquals( 1, counter );
   }
 
   public void testCheckBits() {
@@ -163,8 +174,6 @@ public class Widget_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Widget widget = new Button( shell, SWT.NONE );
 
     // Ensure initial state
@@ -180,8 +189,6 @@ public class Widget_Test extends TestCase {
   }
 
   public void testDisposeFromIllegalThread() throws InterruptedException {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final Widget widget = new Button( shell, SWT.NONE );
 
     final AssertionFailedError[] failure = new AssertionFailedError[ 1 ];
@@ -206,53 +213,42 @@ public class Widget_Test extends TestCase {
   }
 
   public void testDisposeWithException() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Widget widget = new Shell( display );
-    widget.addDisposeListener( new DisposeListener() {
+    shell.addDisposeListener( new DisposeListener() {
       public void widgetDisposed( final DisposeEvent event ) {
         throw new RuntimeException();
       }
     } );
     try {
-      widget.dispose();
+      shell.dispose();
       fail( "Wrong test setup: dispose listener must throw exception" );
     } catch( Exception e ) {
       // expected
     }
-    assertFalse( widget.isDisposed() );
+    assertFalse( shell.isDisposed() );
     assertEquals( 0, DisposedWidgets.getAll().length );
   }
 
   public void testRemoveListener() {
     // Ensure that removing a listener that was never added is ignored
     // silently see https://bugs.eclipse.org/251816
-    Display display = new Display();
-    Widget widget = new Shell( display );
-    widget.removeListener( SWT.Activate, new Listener() {
+    shell.removeListener( SWT.Activate, new Listener() {
       public void handleEvent( final Event event ) {
       }
     } );
   }
 
   public void testNotifyListeners() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Widget widget = new Shell( display );
     final StringBuffer log = new StringBuffer();
-    widget.addListener( SWT.Resize, new Listener() {
+    shell.addListener( SWT.Resize, new Listener() {
       public void handleEvent( final Event event ) {
         log.append( "untyped" );
       }
     } );
-    widget.notifyListeners( SWT.Resize, new Event() );
+    shell.notifyListeners( SWT.Resize, new Event() );
     assertEquals( "untyped", log.toString() );
   }
 
   public void testNotifyListenersTyped() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final StringBuffer log = new StringBuffer();
     shell.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent e ) {
@@ -264,9 +260,6 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersDisplayFilter() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final StringBuffer log = new StringBuffer();
     display.addFilter( SWT.Resize, new Listener() {
       public void handleEvent( final Event event ) {
@@ -279,9 +272,6 @@ public class Widget_Test extends TestCase {
 
   // SWT always overrides e.type, e.display and e.widget
   public void testNotifyListenersEventFields() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final Display display = new Display();
-    final Shell shell = new Shell( display );
     final StringBuffer log = new StringBuffer();
     display.addFilter( SWT.Resize, new Listener() {
       public void handleEvent( final Event event ) {
@@ -318,55 +308,44 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersSetData() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final Display display = new Display();
-    final Widget widget = new Shell( display );
     final StringBuffer log = new StringBuffer();
-    widget.addListener( SWT.SetData, new Listener(){
+    shell.addListener( SWT.SetData, new Listener(){
       public void handleEvent( final Event event ) {
-        assertSame( widget, event.widget );
-        assertSame( widget, event.item );
+        assertSame( shell, event.widget );
+        assertSame( shell, event.item );
         assertEquals( 3, event.index );
         assertSame( display, event.display );
         log.append( "setdata" );
       }
     });
     Event event = new Event();
-    event.item = widget;
+    event.item = shell;
     event.index = 3;
-    widget.notifyListeners( SWT.SetData, event );
+    shell.notifyListeners( SWT.SetData, event );
     assertEquals( "setdata", log.toString() );
   }
 
   public void testNotifyListenersNullEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final Display display = new Display();
-    final Control control = new Shell( display );
     final StringBuffer log = new StringBuffer();
-    control.addControlListener( new ControlAdapter() {
+    shell.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
-        assertSame( control, event.widget );
+        assertSame( shell, event.widget );
         assertSame( display, event.display );
         log.append( "typed" );
       }
     } );
-    control.notifyListeners( SWT.Resize, null );
+    shell.notifyListeners( SWT.Resize, null );
     assertEquals( "typed", log.toString() );
   }
 
   public void testNotifyListenersInvalidEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final Display display = new Display();
-    final Widget widget = new Shell( display );
-    widget.notifyListeners( 4711, new Event() );
+    shell.notifyListeners( 4711, new Event() );
     // no assertion: this test ensures that invalid event types are silently
     // ignored
   }
 
   public void testGetListeners() {
-    final Display display = new Display();
-    final Widget widget = new Shell( display );
-    Listener[] listeners = widget.getListeners( 0 );
+    Listener[] listeners = shell.getListeners( 0 );
     assertNotNull( listeners );
     assertEquals( 0, listeners.length );
     Listener dummyListener = new Listener() {
@@ -377,52 +356,43 @@ public class Widget_Test extends TestCase {
       public void handleEvent( final Event event ) {
       }
     };
-    widget.addListener( SWT.Resize, dummyListener );
-    assertEquals( 0, widget.getListeners( SWT.Move ).length );
-    assertEquals( 1, widget.getListeners( SWT.Resize ).length );
-    assertSame( dummyListener, widget.getListeners( SWT.Resize )[0] );
-    widget.addListener( SWT.Resize, dummyListener2 );
-    assertEquals( 2, widget.getListeners( SWT.Resize ).length );
+    shell.addListener( SWT.Resize, dummyListener );
+    assertEquals( 0, shell.getListeners( SWT.Move ).length );
+    assertEquals( 1, shell.getListeners( SWT.Resize ).length );
+    assertSame( dummyListener, shell.getListeners( SWT.Resize )[0] );
+    shell.addListener( SWT.Resize, dummyListener2 );
+    assertEquals( 2, shell.getListeners( SWT.Resize ).length );
   }
 
   public void testIsListening() {
-    final Display display = new Display();
-    final Widget widget = new Shell( display );
     final Listener dummyListener = new Listener() {
       public void handleEvent( final Event event ) {
       }
     };
-    assertFalse( widget.isListening( SWT.Resize ) );
-    widget.addListener( SWT.Resize, dummyListener );
-    assertTrue( widget.isListening( SWT.Resize ) );
-    widget.removeListener( SWT.Resize, dummyListener );
-    assertFalse( widget.isListening( SWT.Resize ) );
+    assertFalse( shell.isListening( SWT.Resize ) );
+    shell.addListener( SWT.Resize, dummyListener );
+    assertTrue( shell.isListening( SWT.Resize ) );
+    shell.removeListener( SWT.Resize, dummyListener );
+    assertFalse( shell.isListening( SWT.Resize ) );
   }
 
   public void testIsListeningForTypedEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Control control = new Shell( display );
-    control.addHelpListener( new HelpListener() {
+    shell.addHelpListener( new HelpListener() {
       public void helpRequested( final HelpEvent event ) {
       }
     } );
-    assertTrue( control.isListening( SWT.Help ) );
+    assertTrue( shell.isListening( SWT.Help ) );
   }
   
   public void testGetDisplay() {
-    Display display = new Display();
-    Widget widget = new Shell( display );
-    assertSame( display, widget.getDisplay() );
+    assertSame( display, shell.getDisplay() );
   }
 
   public void testGetDisplayFromNonUIThread() throws Exception {
     final Display[] widgetDisplay = { null };
-    Display display = new Display();
-    final Widget widget = new Shell( display );
     Thread thread = new Thread( new Runnable() {
       public void run() {
-        widgetDisplay[ 0 ] = widget.getDisplay();
+        widgetDisplay[ 0 ] = shell.getDisplay();
       }
     } );
     thread.start();
@@ -431,9 +401,7 @@ public class Widget_Test extends TestCase {
   }
   
   public void testReskin() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
-    Display display = new Display();
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         if( event.type == SWT.Skin ) {
@@ -442,7 +410,6 @@ public class Widget_Test extends TestCase {
       }
     };
     display.addListener( SWT.Skin, listener );
-    Shell shell = new Shell( display );
     Composite child1 = new Composite( shell, SWT.NONE );
     Label subchild1 = new Label( child1, SWT.NONE );
     Composite child2 = new Composite( shell, SWT.NONE );
