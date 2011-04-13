@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;import java.util.LinkedList;
 
@@ -26,8 +26,13 @@ import org.eclipse.swt.layout.FillLayout;
 
 public class Table_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -35,8 +40,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Table table = new Table( shell, SWT.NONE );
 
     assertEquals( false, table.getHeaderVisible() );
@@ -50,8 +53,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Table table = new Table( shell, SWT.NONE );
     assertTrue( ( table.getStyle() & SWT.H_SCROLL ) != 0 );
     assertTrue( ( table.getStyle() & SWT.V_SCROLL ) != 0 );
@@ -73,8 +74,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testTableCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Table table = new Table( shell, SWT.NONE );
     assertEquals( 0, table.getItemCount() );
     assertEquals( 0, table.getItems().length );
@@ -127,8 +126,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testHeaderHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     assertEquals( 0, table.getHeaderHeight() );
@@ -137,8 +134,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testTableItemTexts() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     String text0 = "text0";
@@ -214,8 +209,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testTopIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Table table = new Table( shell, SWT.NONE );
     new TableItem( table, SWT.NONE );
     TableItem lastItem = new TableItem( table, SWT.NONE );
@@ -268,8 +261,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.SINGLE );
     TableColumn column = new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -280,8 +271,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeSingleSelectedItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.SINGLE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -295,8 +284,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeMultiSelectedItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.MULTI );
     new TableColumn( table, SWT.NONE );
     TableItem item0 = new TableItem( table, SWT.NONE );
@@ -324,8 +311,6 @@ public class Table_Test extends TestCase {
 
   public void testDisposeInSetData() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 100 );
     table.addListener( SWT.SetData, new Listener() {
@@ -347,8 +332,6 @@ public class Table_Test extends TestCase {
   public void testReduceSetItemCountWithSelection() {
     // Create a table that is populated with setItemCount with all selected
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.MULTI );
     new TableColumn( table, SWT.NONE );
@@ -375,8 +358,6 @@ public class Table_Test extends TestCase {
   public void testReduceSetItemCountWithSelectionVirtual() {
     // Create a table that is populated with setItemCount with all selected
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 800, 800 );
     shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
@@ -404,8 +385,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testFocusIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item0 = new TableItem( table, SWT.NONE );
@@ -469,8 +448,6 @@ public class Table_Test extends TestCase {
 
   public void testFocusIndexVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 500, 500 );
     Object adapter = table.getAdapter( ITableAdapter.class );
@@ -485,8 +462,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveAll() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem preDisposedItem = new TableItem( table, SWT.NONE );
@@ -506,8 +481,6 @@ public class Table_Test extends TestCase {
 
   public void testRemoveAllVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
@@ -526,8 +499,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveRange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     int number = 5;
     TableItem[] items = new TableItem[ number ];
@@ -552,8 +523,6 @@ public class Table_Test extends TestCase {
 
   public void testRemoveRangeVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
@@ -572,8 +541,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemove() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     int number = 5;
     TableItem[] items = new TableItem[ number ];
@@ -587,8 +554,6 @@ public class Table_Test extends TestCase {
 
   public void testRemoveVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     table.setSize( 100, 100 );
     table.setItemCount( 10 );
@@ -602,8 +567,6 @@ public class Table_Test extends TestCase {
 
   public void testRemoveArrayVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
@@ -624,8 +587,6 @@ public class Table_Test extends TestCase {
   public void testRemoveWithSelectionListener() {
     // ensure that no selection event is fired if a selected item is removed
     final boolean eventFired[] = { false };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     for( int i = 0; i < 5; i++ ) {
       new TableItem( table, SWT.NONE );
@@ -641,8 +602,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveArray() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     int number = 15;
     TableItem[] items = new TableItem[ number ];
@@ -693,8 +652,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSingleSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.SINGLE );
     TableItem item1 = new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -803,8 +760,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testMultiSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.MULTI );
     TableItem item1 = new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -936,8 +891,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSelectionReveals() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.BORDER | SWT.MULTI );
     table.setSize( 200, 200 );
     for( int i = 0; i < 128; i++ ) {
@@ -966,9 +919,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetSelectionIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-
     // SWT.SINGLE
     Table singleTable = new Table( shell, SWT.SINGLE );
     new TableItem( singleTable, SWT.NONE );
@@ -990,9 +940,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSelectAll() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-
     // SWT.SINGLE
     Table singleTable = new Table( shell, SWT.SINGLE );
     new TableColumn( singleTable, SWT.NONE );
@@ -1014,8 +961,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDeselect() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.SINGLE );
     new TableColumn( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -1057,8 +1002,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDeselectAll() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -1070,8 +1013,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testIsSelectedNonVirtual() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -1090,8 +1031,6 @@ public class Table_Test extends TestCase {
 
   public void testIsSelectedVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.VIRTUAL );
     new TableColumn( table, SWT.NONE );
@@ -1117,8 +1056,6 @@ public class Table_Test extends TestCase {
 
   public void testClearNonVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.CHECK );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -1149,16 +1086,13 @@ public class Table_Test extends TestCase {
 
   public void testClearVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
     Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
     new TableColumn( table, SWT.NONE );
     table.setItemCount( 100 );
     shell.layout();
     shell.open();
-    ITableAdapter tableAdapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
 
     table.getItem( 0 ).getText();
     table.select( 0 );
@@ -1168,8 +1102,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearRange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem[] items = new TableItem[ 10 ];
@@ -1199,19 +1131,15 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearIndices() {
-	  Display display = new Display();
-	  Shell shell = new Shell( display );
-	  Table table = new Table( shell, SWT.NONE );
-	  new TableColumn( table, SWT.NONE );
-
-	  TableItem[] items = new TableItem[10];
-	  for (int i = 0; i < 10; i++) {
-		  items[i] = new TableItem( table, SWT.NONE );
-		  items[i].setText( "abc" );
-		  items[i].setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-	  }
-
-	  table.clear( new int[]{ 1, 3, 5 } );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem[] items = new TableItem[ 10 ];
+    for( int i = 0; i < 10; i++ ) {
+      items[ i ] = new TableItem( table, SWT.NONE );
+      items[ i ].setText( "abc" );
+      items[ i ].setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    }
+    table.clear( new int[] { 1, 3, 5 } );
     Image img = Graphics.getImage( Fixture.IMAGE1 );
     for( int i = 0; i < 10; i++ ) {
       if( i == 1 || i == 3 || i == 5 ) {
@@ -1224,7 +1152,7 @@ public class Table_Test extends TestCase {
     }
     // Test clear with illegal arguments
     try {
-      table.clear( new int[]{ 2, 4, 15 } );
+      table.clear( new int[] { 2, 4, 15 } );
       fail( "Must throw exception when attempting to clear non-existing items" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -1233,8 +1161,6 @@ public class Table_Test extends TestCase {
 
   public void testShowItem() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setLinesVisible( false );
     table.setHeaderVisible( false );
@@ -1271,8 +1197,6 @@ public class Table_Test extends TestCase {
     // Calling setSelection() before setSize() should not change top index
     // See bug 272714, https://bugs.eclipse.org/bugs/show_bug.cgi?id=272714
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     for( int i = 0; i < 10; i++ ) {
       new TableItem( table, SWT.NONE );
@@ -1297,8 +1221,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSortColumnAndDirection() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
 
@@ -1338,8 +1260,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetColumnOrder() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
 
     // Test column order for table without columns
@@ -1390,8 +1310,6 @@ public class Table_Test extends TestCase {
         log.append( column.getText() + " moved|" );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     column0.setText( "Col0" );
@@ -1422,8 +1340,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeOfOrderedColumn() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
 
     new TableColumn( table, SWT.NONE );
@@ -1456,8 +1372,6 @@ public class Table_Test extends TestCase {
 
   public void testRedrawAfterDisposeVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 100, 100 );
     table.setItemCount( 150 );
@@ -1469,8 +1383,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetColumnOrderWithInvalidArguments() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     // Passing null is not allowed
     try {
@@ -1504,8 +1416,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetItemCountNonVirtual() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
 
     // Setting itemCount to a higher value than getItemCount() creates the
@@ -1534,8 +1444,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetItemCountVirtual() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
 
     table.setItemCount( 1 );
@@ -1551,8 +1459,6 @@ public class Table_Test extends TestCase {
 
   public void testClearAllAndSetItemCountWithSelection() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     shell.open();
     Table table = new Table( shell, SWT.VIRTUAL | SWT.SINGLE );
@@ -1574,8 +1480,6 @@ public class Table_Test extends TestCase {
 
   // bug 303473
   public void testItemImageSizeAfterClear() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
@@ -1584,8 +1488,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testItemImageSizeAfterRemovingAllItems() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
@@ -1595,8 +1497,6 @@ public class Table_Test extends TestCase {
 
   public void testSetItemCountWithSetDataListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     shell.open();
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -1613,8 +1513,6 @@ public class Table_Test extends TestCase {
 
   public void testResizeWithVirtualItems() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 0, 0 );
     table.setItemCount( 1 );
@@ -1629,8 +1527,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testItemImageSize() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
 
     // Test initial itemImageSize
@@ -1657,8 +1553,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testHasColumnImages() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item0 = new TableItem( table, SWT.NONE );
 
@@ -1698,8 +1592,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testHasColumnImagesAfterColumnDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.dispose();
@@ -1709,8 +1601,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item;
     // Illegal argument
@@ -1760,8 +1650,6 @@ public class Table_Test extends TestCase {
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=283263
    */
   public void testGetItemBelowHeader() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setHeaderVisible( true );
     table.setSize( 100, 100 );
@@ -1781,8 +1669,6 @@ public class Table_Test extends TestCase {
    */
   public void testCheckDataWithInvalidIndex() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
     ITableAdapter adapter
@@ -1794,8 +1680,6 @@ public class Table_Test extends TestCase {
 
   public void testComputeSizeNonVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
 
     // Test non virtual table
     Table table = new Table( shell, SWT.NONE );
@@ -1857,8 +1741,6 @@ public class Table_Test extends TestCase {
 
   public void testComputeSizeVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
 
     Table table = new Table( shell, SWT.BORDER | SWT.VIRTUAL );
     table.setItemCount( 10 );
@@ -1906,8 +1788,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testComputeSizeNoScroll() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NO_SCROLL );
     Point actual = table.computeSize( 20, 20 );
     Point expected = new Point( 20, 20 );
@@ -1915,8 +1795,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetVisibleItemCount() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     for( int i = 0; i < 10; i++ ) {
       new TableItem( table, SWT.NONE ).setText( "Item " + i );
@@ -1933,8 +1811,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetItemHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
     item1.setText( "Item 1" );
@@ -1947,8 +1823,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testNeedsScrollBarWithoutColumn() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 200, 200 );
     assertFalse( table.needsHScrollBar() );
@@ -1971,8 +1845,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testNeedsScrollBarWithColumn() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 200, 200 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -1990,8 +1862,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testHasScrollBar_NO_SCROLL() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NO_SCROLL );
     table.setSize( 200, 200 );
     assertFalse( table.hasVScrollBar() );
@@ -2003,8 +1873,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetScrollBarWidth() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 10, 10 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -2021,8 +1889,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnColumnChange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 20 );
     assertFalse( table.hasHScrollBar() );
@@ -2038,8 +1904,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnItemsChange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 20 );
     assertFalse( table.hasVScrollBar() );
@@ -2053,8 +1917,6 @@ public class Table_Test extends TestCase {
 
   public void testUpdateScrollBarOnResize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 20 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -2065,8 +1927,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnItemWidthChange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 60, 60 );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -2098,8 +1958,6 @@ public class Table_Test extends TestCase {
 
   public void testUpdateScrollBarOnHeaderVisibleChange() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     int itemCount = 5;
     for( int i = 0; i < itemCount ; i++ ) {
@@ -2114,8 +1972,6 @@ public class Table_Test extends TestCase {
 
   public void testUpdateScrollBarOnVirtualItemCountChange() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.VIRTUAL );
     int itemCount = 5;
     table.setSize( 100, itemCount * table.getItemHeight() + 4 );
@@ -2126,8 +1982,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarItemWidthChangeWithColumn() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 100 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -2143,8 +1997,6 @@ public class Table_Test extends TestCase {
 
   public void testUpdateScrollBarWithInterDependencyHFirst() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 20 );
@@ -2161,8 +2013,6 @@ public class Table_Test extends TestCase {
 
   public void testUpdateScrollBarWithInterDependencyVFirst() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 26 );
@@ -2189,8 +2039,6 @@ public class Table_Test extends TestCase {
         item.setText( data[ index ] );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.addListener( SWT.SetData, setDataListener );
@@ -2219,8 +2067,6 @@ public class Table_Test extends TestCase {
 
   public void testIndexOf() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
@@ -2249,8 +2095,6 @@ public class Table_Test extends TestCase {
 
   public void testIndexOfVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
@@ -2266,8 +2110,6 @@ public class Table_Test extends TestCase {
 
   public void testShowColumn() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 800, 600 );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 300, 100 );
@@ -2311,8 +2153,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testScrollBars() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     assertNotNull( table.getHorizontalBar() );
     assertNotNull( table.getVerticalBar() );
@@ -2325,8 +2165,6 @@ public class Table_Test extends TestCase {
   // after setInput
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=288634
   public void testUpdateColumnImageCount() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -2351,8 +2189,6 @@ public class Table_Test extends TestCase {
   // 239024: {TableViewer] Missing text due to TableViewerColumn
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=239024
   public void testGetItemsPreferredWidth() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
@@ -2369,8 +2205,6 @@ public class Table_Test extends TestCase {
   }
   
   public void testRemoveArrayDuplicates() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     int number = 5;
     TableItem[] items = new TableItem[ number ];
@@ -2386,8 +2220,6 @@ public class Table_Test extends TestCase {
 
   public void testReskinDoesNotResolveVirtualItems() {
     final java.util.List eventLog = new LinkedList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 1000 );
