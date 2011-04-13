@@ -14,27 +14,27 @@ package org.eclipse.rwt.internal;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.engine.RWTFactory;
-
 
 public class ConfigurationReader_Test extends TestCase {
 
-  public void testConfigurationReading() {
-    IConfiguration configuration = RWTFactory.getConfigurationReader().getConfiguration();
+  private IConfiguration configuration;
+
+  public void testConfigurationDefaultForGetLifeCycle() {
     String lifeCycle = configuration.getLifeCycle();
     assertEquals( IConfiguration.LIFE_CYCLE_DEFAULT, lifeCycle );
+  }
+  
+  public void testConfigurationDefaultForIsCompression() {
     boolean compression = configuration.isCompression();
-    assertEquals( false, compression );
+    assertFalse( compression );
+  }
+  
+  public void testConfigurationDefaultForGetResources() {
     String resources = configuration.getResources();
     assertEquals( IConfiguration.RESOURCES_DELIVER_FROM_DISK, resources );
   }
   
   protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-  
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    configuration = new ConfigurationReader().getConfiguration();
   }
 }
