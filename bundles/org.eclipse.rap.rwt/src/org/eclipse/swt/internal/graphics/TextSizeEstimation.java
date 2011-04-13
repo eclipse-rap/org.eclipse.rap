@@ -11,9 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.util.EncodingUtil;
-import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 
@@ -21,7 +19,7 @@ public final class TextSizeEstimation {
   
   private static final class DefaultFontMetricsEstimation implements IFontMetricsEstimation {
 
-    public float getAverageCharWidth( final Font font ) {
+    public float getAverageCharWidth( Font font ) {
       float result;
       FontData fontData = font.getFontData()[ 0 ];
       TextSizeProbeResults probeStore = TextSizeProbeResults.getInstance();
@@ -38,29 +36,17 @@ public final class TextSizeEstimation {
       return result;
     }
 
-    public int getCharHeight( final Font font ) {
+    public int getCharHeight( Font font ) {
       // at 72 dpi, 1 pt == 1 px
       return font.getFontData()[ 0 ].getHeight();
     }
   }
 
-  private static final String FONT_METRICS_ESTIMATION
-    = TextSizeEstimation.class.getName() + "#fontMetricsEstimation";
-
-  private static void setFontMetricsEstimation( IFontMetricsEstimation value ) {
-    ISessionStore sessionStore = RWT.getSessionStore();
-    sessionStore.setAttribute( FONT_METRICS_ESTIMATION, value );
-  }
+  private static final IFontMetricsEstimation FONT_METRICS_ESTIMATION 
+    = new DefaultFontMetricsEstimation();
   
   private static IFontMetricsEstimation getFontMetricsEstimation() {
-    ISessionStore sessionStore = RWT.getSessionStore();
-    Object attribute = sessionStore.getAttribute( FONT_METRICS_ESTIMATION );
-    IFontMetricsEstimation result = ( IFontMetricsEstimation )attribute;
-    if( result == null ) {
-      result = new DefaultFontMetricsEstimation();
-      setFontMetricsEstimation( result );
-    }
-    return result;
+    return FONT_METRICS_ESTIMATION;
   }
 
   /**
@@ -69,7 +55,7 @@ public final class TextSizeEstimation {
    * @param string the text whose size to estimate
    * @return the estimated size
    */
-  static Point stringExtent( final Font font, final String string ) {
+  static Point stringExtent( Font font, String string ) {
     int width = getLineWidth( string, font );
     int height = getCharHeight( font ) + 2;
     return new Point( width, height );
@@ -84,10 +70,7 @@ public final class TextSizeEstimation {
    * 
    * @return the estimated size
    */
-  static Point textExtent( final Font font,
-                           final String string,
-                           final int wrapWidth )
-  {
+  static Point textExtent( Font font, String string, int wrapWidth ) {
     int lineCount = 0;
     int maxWidth = 0;
     String[] lines = EncodingUtil.splitNewLines( string );
@@ -125,7 +108,7 @@ public final class TextSizeEstimation {
    * @param font the font to perform the estimation for
    * @return the estimated character height in pixels
    */
-  static int getCharHeight( final Font font ) {
+  static int getCharHeight( Font font ) {
     return getFontMetricsEstimation().getCharHeight( font );
   }
   
@@ -136,7 +119,7 @@ public final class TextSizeEstimation {
    * @param font the font to perform the estimation for
    * @return the estimated average character width in pixels
    */
-  static float getAvgCharWidth( final Font font ) {
+  static float getAvgCharWidth( Font font ) {
     return getFontMetricsEstimation().getAverageCharWidth( font );
   }
   
@@ -145,10 +128,7 @@ public final class TextSizeEstimation {
    * equal to wrapWidth. If there is no such substring, zero is returned. The
    * result is never negative.
    */
-  private static int getLongestMatch( final String string,
-                                      final int wrapWidth,
-                                      final Font font )
-  {
+  private static int getLongestMatch( String string, int wrapWidth, Font font ) {
     int result = 0;
     if( getLineWidth( string, font ) < wrapWidth ) {
       result = string.length();
@@ -171,9 +151,7 @@ public final class TextSizeEstimation {
   /**
    * Returns the next substring that can be wrapped.
    */
-  private static String nextSubLine( final String line,
-                                     final int startIndex )
-  {
+  private static String nextSubLine( String line, int startIndex ) {
     String result = line;
     int index = line.indexOf( ' ', startIndex );
     if( index != -1 ) {
@@ -185,7 +163,7 @@ public final class TextSizeEstimation {
   /**
    * Returns the width of a given string in pixels. Line breaks are ignored.
    */
-  private static int getLineWidth( final String line, final Font font ) {
+  private static int getLineWidth( String line, Font font ) {
     return Math.round( getAvgCharWidth( font ) * line.length() );
   }
 }

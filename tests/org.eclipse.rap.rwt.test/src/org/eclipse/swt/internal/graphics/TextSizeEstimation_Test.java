@@ -18,25 +18,32 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 public class TextSizeEstimation_Test extends TestCase {
 
+  private Font font10;
+
   public void testAvgCharWidth() {
-    Font font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     float avgCharWidth = TextSizeEstimation.getAvgCharWidth( font10 );
     assertTrue( avgCharWidth > 3 );
     assertTrue( avgCharWidth < 6 );
   }
   
+  public void testAvgCharWithUsesProbeResults() {
+    Probe probe = new Probe( "X", font10.getFontData()[ 0 ] );
+    TextSizeProbeResults.getInstance().createProbeResult( probe, new Point( 4711, 0 ) );
+    float avgCharWidth = TextSizeEstimation.getAvgCharWidth( font10 );
+    assertEquals( 4711.0, avgCharWidth, 0.01 );
+  }
+  
   public void testCharHeight() {
-    Font font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     assertTrue( charHeight > 9 );
     assertTrue( charHeight < 13 );
   }
   
   public void testStringExtent() {
-    Font font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     String string = "TestString";
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     Point extent10 = TextSizeEstimation.stringExtent( font10 , string );
@@ -60,7 +67,6 @@ public class TextSizeEstimation_Test extends TestCase {
   }
   
   public void testTextExtent() {
-    Font font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     int charHeight = TextSizeEstimation.getCharHeight( font10 );
     assertTrue( charHeight > 9 );
     assertTrue( charHeight < 13 );
@@ -85,14 +91,13 @@ public class TextSizeEstimation_Test extends TestCase {
   // Test for a case where text width == wrapWidth
   public void testEndlessLoopProblem() {
     Font font = Graphics.getFont( "Helvetica", 11, SWT.NORMAL );
-    Point extent = TextSizeEstimation.textExtent( font,
-                                                  "Zusatzinfo (Besuch)",
-                                                  100 );
+    Point extent = TextSizeEstimation.textExtent( font, "Zusatzinfo (Besuch)", 100 );
     assertEquals( 100, extent.x );
   }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
   }
 
   protected void tearDown() throws Exception {
