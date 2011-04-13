@@ -19,24 +19,11 @@ import org.eclipse.swt.graphics.*;
  */
 public interface ITextSizeStorage {
   
-  /**
-   * TODO [fappel]: Documentation
-   */
   FontData[] getFontList();
   
-  /**
-   * TODO [fappel]: Documentation
-   */
   void storeFont( FontData fontData );
   
-  /**
-   * TODO [fappel]: Documentation
-   */
   Point lookupTextSize( Integer key );
 
-  /**
-   * TODO [fappel]: Documentation
-   */
   void storeTextSize( Integer key, Point size );
-  
 }
