@@ -80,6 +80,10 @@ public class RWTFactory {
     return ( TextSizeStorageRegistry )singleton;
   }
 
+  public static TextSizeProbeStore getTextSizeProbeStore() {
+    return ( TextSizeProbeStore )ApplicationContext.getSingleton( TextSizeProbeStore.class );
+  }
+  
   public static ImageFactory getImageFactory() {
     Object singleton = ApplicationContext.getSingleton( ImageFactory.class );
     return ( ImageFactory )singleton;

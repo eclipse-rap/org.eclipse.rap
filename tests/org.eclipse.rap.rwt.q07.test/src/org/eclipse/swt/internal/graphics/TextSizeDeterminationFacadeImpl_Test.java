@@ -14,12 +14,11 @@ import junit.framework.TestCase;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
 
 
 public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
 
-  private static class TestProbe implements IProbe {
+  private static class TestProbe implements TextSizeProbeStore.IProbe {
     String text;
     FontData fontData;
     public FontData getFontData() {

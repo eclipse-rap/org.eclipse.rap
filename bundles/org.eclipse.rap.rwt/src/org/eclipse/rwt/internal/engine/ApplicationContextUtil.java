@@ -56,6 +56,7 @@ public class ApplicationContextUtil {
     ThemeAdapterManager.class,
     JSLibraryConcatenator.class,
     TextSizeStorageRegistry.class,
+    TextSizeProbeStore.class,
   };
 
   public static ApplicationContext registerDefaultApplicationContext( ServletContext context ) {

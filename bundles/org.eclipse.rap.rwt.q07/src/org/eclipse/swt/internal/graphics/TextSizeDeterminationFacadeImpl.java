@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.graphics;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -25,7 +26,7 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
 
   public String getStartupProbeCodeInternal() {
     StringBuffer result = new StringBuffer();
-    IProbe[] probeList = TextSizeProbeStore.getProbeList();
+    IProbe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
     if( probeList.length > 0 ) {
       result.append( "org.eclipse.swt.FontSizeCalculation.probe(" );
       result.append( "[ " );
@@ -83,14 +84,14 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     return items;
   }
 
-  public IProbe[] writeFontProbingInternal() throws IOException {
-    IProbe[] requests = TextSizeProbeStore.getProbeRequests();
+  public TextSizeProbeStore.IProbe[] writeFontProbingInternal() throws IOException {
+    TextSizeProbeStore.IProbe[] requests = TextSizeProbeStore.getProbeRequests();
     if( requests.length > 0 ) {
       JSWriter writer = JSWriter.getWriterForResetHandler();
       StringBuffer param = new StringBuffer();
       param.append( "[ " );
       for( int i = 0; i < requests.length; i++ ) {
-        IProbe probe = requests[ i ];
+        TextSizeProbeStore.IProbe probe = requests[ i ];
         param.append( createProbeParamFragment( probe ) );
         if( i < requests.length - 1 ) {
           param.append( ", " );
@@ -103,7 +104,7 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     return requests;
   }
   
-  static String createProbeParamFragment( IProbe probe ) {
+  static String createProbeParamFragment( TextSizeProbeStore.IProbe probe ) {
     FontData fontData = probe.getFontData();
     StringBuffer result = new StringBuffer();
     result.append( "[ " );

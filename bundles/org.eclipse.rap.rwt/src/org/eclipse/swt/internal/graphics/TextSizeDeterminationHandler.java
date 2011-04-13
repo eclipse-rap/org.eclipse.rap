@@ -161,7 +161,7 @@ final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBi
     return PhaseId.ANY;
   }
 
-  public static void readProbedFonts( IProbe[] probes ) {
+  static void readProbedFonts( IProbe[] probes ) {
     boolean hasProbes = probes != null;
     HttpServletRequest request = ContextProvider.getRequest();
     for( int i = 0; hasProbes && i < probes.length; i++ ) {
@@ -170,7 +170,7 @@ final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBi
       String value = request.getParameter( name );
       if( value != null ) {
         Point size = getSize( value );
-        TextSizeProbeStore.getInstance().createProbeResult( probe, size );
+        TextSizeProbeResults.getInstance().createProbeResult( probe, size );
       }
     }
   }

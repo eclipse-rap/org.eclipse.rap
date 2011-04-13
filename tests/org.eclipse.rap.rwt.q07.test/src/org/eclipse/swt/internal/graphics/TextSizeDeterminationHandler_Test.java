@@ -84,11 +84,9 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    TextSizeProbeStore.reset();
   }
 
   protected void tearDown() throws Exception {
-    TextSizeProbeStore.reset();
     Fixture.tearDown();
   }
 }

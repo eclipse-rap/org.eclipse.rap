@@ -19,14 +19,12 @@ import org.eclipse.swt.graphics.*;
 
 public final class TextSizeEstimation {
   
-  private static final class DefaultFontMetricsEstimation
-    implements IFontMetricsEstimation
-  {
+  private static final class DefaultFontMetricsEstimation implements IFontMetricsEstimation {
 
     public float getAverageCharWidth( final Font font ) {
       float result;
       FontData fontData = font.getFontData()[ 0 ];
-      TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
+      TextSizeProbeResults probeStore = TextSizeProbeResults.getInstance();
       if( probeStore.containsProbeResult( fontData ) ) {
         // we can improve char width estimations in case that we already have the
         // specified font probed.
@@ -49,12 +47,12 @@ public final class TextSizeEstimation {
   private static final String FONT_METRICS_ESTIMATION
     = TextSizeEstimation.class.getName() + "#fontMetricsEstimation";
 
-  public static void setFontMetricsEstimation( IFontMetricsEstimation value ) {
+  private static void setFontMetricsEstimation( IFontMetricsEstimation value ) {
     ISessionStore sessionStore = RWT.getSessionStore();
     sessionStore.setAttribute( FONT_METRICS_ESTIMATION, value );
   }
   
-  public static IFontMetricsEstimation getFontMetricsEstimation() {
+  private static IFontMetricsEstimation getFontMetricsEstimation() {
     ISessionStore sessionStore = RWT.getSessionStore();
     Object attribute = sessionStore.getAttribute( FONT_METRICS_ESTIMATION );
     IFontMetricsEstimation result = ( IFontMetricsEstimation )attribute;

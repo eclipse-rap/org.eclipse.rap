@@ -14,12 +14,13 @@ package org.eclipse.swt.internal.graphics;
 
 import java.math.BigDecimal;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.TextSizeProbeResults.IProbeResult;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbeResult;
 
 
 public class TextSizeDetermination {
@@ -139,7 +140,7 @@ public class TextSizeDetermination {
   public static int getCharHeight( final Font font ) {
     int result;
     FontData fontData = font.getFontData()[ 0 ];
-    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
+    TextSizeProbeResults probeStore = TextSizeProbeResults.getInstance();
     if( probeStore.containsProbeResult( fontData ) ) {
       IProbeResult probeResult = probeStore.getProbeResult( fontData );
       result = probeResult.getSize().y;
@@ -152,7 +153,7 @@ public class TextSizeDetermination {
 
   public static float getAvgCharWidth( final Font font ) {
     float result;
-    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
+    TextSizeProbeResults probeStore = TextSizeProbeResults.getInstance();
     FontData fontData = font.getFontData()[ 0 ];
     if( probeStore.containsProbeResult( fontData ) ) {
       IProbeResult probeResult = probeStore.getProbeResult( fontData );
@@ -165,12 +166,12 @@ public class TextSizeDetermination {
   }
 
   public static void readStartupProbes() {
-    IProbe[] probeList = TextSizeProbeStore.getProbeList();
+    IProbe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
     TextSizeDeterminationHandler.readProbedFonts( probeList );
   }
 
   public static int getProbeCount() {
-    return TextSizeProbeStore.getProbeList().length;
+    return RWTFactory.getTextSizeProbeStore().getProbeList().length;
   }
 
   public static ICalculationItem[] getCalculationItems() {

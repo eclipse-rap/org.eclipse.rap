@@ -107,7 +107,10 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNotNull( getSingleton( TextSizeStorageRegistry.class ) );
     assertSame( applicationContext.getInstance( TextSizeStorageRegistry.class ),
                 getSingleton( TextSizeStorageRegistry.class ) );
-    
+    assertNotNull( getSingleton( TextSizeProbeStore.class ) );
+    assertSame( applicationContext.getInstance( TextSizeProbeStore.class ),
+                getSingleton( TextSizeProbeStore.class ) );
+
     ApplicationContextUtil.deregisterApplicationContext( servletContext );
     try {
       getSingleton( ThemeManagerHolder.class );
