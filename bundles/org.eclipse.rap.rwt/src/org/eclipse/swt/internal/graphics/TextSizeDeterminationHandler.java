@@ -31,9 +31,7 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
 
 
-final class TextSizeDeterminationHandler
-  implements PhaseListener, HttpSessionBindingListener
-{
+final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBindingListener {
   private static final long serialVersionUID = 1L;
   private static final String CALCULATION_HANDLER
     = TextSizeDeterminationHandler.class.getName() + ".CalculationHandler";
@@ -55,17 +53,17 @@ final class TextSizeDeterminationHandler
     }
   }
 
-  TextSizeDeterminationHandler( final Display display ) {
+  TextSizeDeterminationHandler( Display display ) {
     this.display = display;
   }
 
   //////////////////////////
   // interface PhaseListener
 
-  public void beforePhase( final PhaseEvent event ) {
+  public void beforePhase( PhaseEvent event ) {
   }
 
-  public void afterPhase( final PhaseEvent event ) {
+  public void afterPhase( PhaseEvent event ) {
     if( display == RWTLifeCycle.getSessionDisplay() ) {
       try {
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
@@ -144,11 +142,10 @@ final class TextSizeDeterminationHandler
         }
         if( event.getPhaseId() == PhaseId.RENDER ) {
           probes = TextSizeDeterminationFacade.writeFontProbing();
-          calculationItems
-            = TextSizeDeterminationFacade.writeStringMeasurements();
+          calculationItems = TextSizeDeterminationFacade.writeStringMeasurements();
           renderDone = true;
         }
-      } catch( final IOException e ) {
+      } catch( IOException e ) {
         ServletLog.log( "", e );
       } finally {
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
@@ -164,7 +161,7 @@ final class TextSizeDeterminationHandler
     return PhaseId.ANY;
   }
 
-  public static void readProbedFonts( final IProbe[] probes ) {
+  public static void readProbedFonts( IProbe[] probes ) {
     boolean hasProbes = probes != null;
     HttpServletRequest request = ContextProvider.getRequest();
     for( int i = 0; hasProbes && i < probes.length; i++ ) {
@@ -181,10 +178,10 @@ final class TextSizeDeterminationHandler
   ///////////////////////////////////////
   // interface HttpSessionBindingListener
 
-  public void valueBound( final HttpSessionBindingEvent event ) {
+  public void valueBound( HttpSessionBindingEvent event ) {
   }
 
-  public void valueUnbound( final HttpSessionBindingEvent event ) {
+  public void valueUnbound( HttpSessionBindingEvent event ) {
     UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {
         ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
@@ -214,9 +211,8 @@ final class TextSizeDeterminationHandler
     }
   }
 
-  private static Point getSize( final String value ) {
+  private static Point getSize( String value ) {
     String[] split = value.split( "," );
-    return new Point( Integer.parseInt( split[ 0 ] ),
-                      Integer.parseInt( split[ 1 ] ) );
+    return new Point( Integer.parseInt( split[ 0 ] ), Integer.parseInt( split[ 1 ] ) );
   }
 }
