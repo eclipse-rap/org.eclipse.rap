@@ -382,4 +382,25 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.preserveWidgets();
   }
 
+  // see bug 338696
+  public void testDeselectAfterClear() throws IOException {
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 10 );
+    // materialize item 0
+    TableItem item = table.getItem( 0 );
+    item.setText( "Item 0" );
+    table.select( 0 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.fakeResponseWriter();
+    TableItemLCA tableItemLCA = new TableItemLCA();
+    tableItemLCA.preserveValues( item );
+    table.clear( 0 );
+    table.deselectAll();
+    tableItemLCA.renderChanges( item );
+    String expected = "w.clear();w.setSelection( false );";
+    String result = Fixture.getAllMarkup();
+    assertTrue( result.indexOf( expected ) != -1 );
+  }
+
 }

@@ -93,10 +93,11 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     writer.newWidget( "org.eclipse.swt.widgets.TableItem", args );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     final TableItem item = ( TableItem )widget;
     if( wasCleared( item ) ) {
       writeClear( item );
+      writeSelection( item );
     } else {
       Table table = item.getParent();
       if( isCached( table, table.indexOf( item ) ) ) {
