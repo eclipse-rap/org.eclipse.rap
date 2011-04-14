@@ -16,109 +16,36 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
-import org.eclipse.rwt.internal.ConfigurationReader;
-import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
-import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.internal.graphics.*;
-import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 
 public class ApplicationContextUtil_Test extends TestCase {
   
   public void testRegisterDefaultApplicationContext() {
     Fixture.createServiceContext();
-
-    ISessionStore session = ContextProvider.getSession();
-    HttpSession httpSession = session.getHttpSession();
-    ServletContext servletContext = httpSession.getServletContext();
+    ServletContext servletContext = getServletContext();
     ApplicationContext applicationContext
       = ApplicationContextUtil.registerDefaultApplicationContext( servletContext );
-
     assertNotNull( applicationContext );
-    assertNotNull( getSingleton( ThemeManagerHolder.class ) );
-    assertSame( applicationContext.getInstance( ThemeManagerHolder.class ),
-                getSingleton( ThemeManagerHolder.class ) );
-    assertNotNull( getSingleton( BrandingManager.class ) );
-    assertSame( applicationContext.getInstance( BrandingManager.class ),
-                getSingleton( BrandingManager.class ) );
-    assertNotNull( getSingleton( PhaseListenerRegistry.class ) );
-    assertSame( applicationContext.getInstance( PhaseListenerRegistry.class ),
-                getSingleton( PhaseListenerRegistry.class ) );
-    assertNotNull( getSingleton( LifeCycleFactory.class ) );
-    assertSame( applicationContext.getInstance( LifeCycleFactory.class ),
-                getSingleton( LifeCycleFactory.class ) );
-    assertNotNull( getSingleton( EntryPointManager.class ) );
-    assertSame( applicationContext.getInstance( EntryPointManager.class ),
-                getSingleton( EntryPointManager.class ) );
-    assertNotNull( getSingleton( ResourceFactory.class ) );
-    assertSame( applicationContext.getInstance( ResourceFactory.class ),
-                getSingleton( ResourceFactory.class ) );
-    assertNotNull( getSingleton( ImageFactory.class ) );
-    assertSame( applicationContext.getInstance( ImageFactory.class ),
-                getSingleton( ImageFactory.class ) );
-    assertNotNull( getSingleton( InternalImageFactory.class ) );
-    assertSame( applicationContext.getInstance( InternalImageFactory.class ),
-                getSingleton( InternalImageFactory.class ) );
-    assertNotNull( getSingleton( ImageDataFactory.class ) );
-    assertSame( applicationContext.getInstance( ImageDataFactory.class ),
-                getSingleton( ImageDataFactory.class ) );
-    assertNotNull( getSingleton( FontDataFactory.class ) );
-    assertSame( applicationContext.getInstance( FontDataFactory.class ),
-                getSingleton( FontDataFactory.class ) );
-    assertNotNull( getSingleton( AdapterFactoryRegistry.class ) );
-    assertSame( applicationContext.getInstance( AdapterFactoryRegistry.class ),
-                getSingleton( AdapterFactoryRegistry.class ) );
-    assertNotNull( getSingleton( SettingStoreManager.class ) );
-    assertSame( applicationContext.getInstance( SettingStoreManager.class ),
-                getSingleton( SettingStoreManager.class ) );
-    assertNotNull( getSingleton( ServiceManager.class ) );
-    assertSame( applicationContext.getInstance( ServiceManager.class ),
-                getSingleton( ServiceManager.class ) );
-    assertNotNull( getSingleton( ResourceRegistry.class ) );
-    assertSame( applicationContext.getInstance( ResourceRegistry.class ),
-                getSingleton( ResourceRegistry.class ) );
-    assertNotNull( getSingleton( ConfigurationReader.class ) );
-    assertSame( applicationContext.getInstance( ConfigurationReader.class ),
-                getSingleton( ConfigurationReader.class ) );
-    assertNotNull( getSingleton( ResourceManagerProvider.class ) );
-    assertSame( applicationContext.getInstance( ResourceManagerProvider.class ),
-                getSingleton( ResourceManagerProvider.class ) );
-    assertNotNull( getSingleton( StartupPageConfigurer.class ) );
-    assertSame( applicationContext.getInstance( StartupPageConfigurer.class ),
-                getSingleton( StartupPageConfigurer.class ) );
-    assertNotNull( getSingleton( StartupPage.class ) );
-    assertSame( applicationContext.getInstance( StartupPage.class ),
-                getSingleton( StartupPage.class ) );
-    assertNotNull( getSingleton( DisplaysHolder.class ) );
-    assertSame( applicationContext.getInstance( DisplaysHolder.class ),
-                getSingleton( DisplaysHolder.class ) );
-    assertNotNull( getSingleton( ThemeAdapterManager.class ) );
-    assertSame( applicationContext.getInstance( ThemeAdapterManager.class ),
-                getSingleton( ThemeAdapterManager.class ) );
-    assertNotNull( getSingleton( JSLibraryConcatenator.class ) );
-    assertSame( applicationContext.getInstance( JSLibraryConcatenator.class ),
-                getSingleton( JSLibraryConcatenator.class ) );
-    assertNotNull( getSingleton( TextSizeStorageRegistry.class ) );
-    assertSame( applicationContext.getInstance( TextSizeStorageRegistry.class ),
-                getSingleton( TextSizeStorageRegistry.class ) );
-    assertNotNull( getSingleton( TextSizeProbeStore.class ) );
-    assertSame( applicationContext.getInstance( TextSizeProbeStore.class ),
-                getSingleton( TextSizeProbeStore.class ) );
-
+    assertSame( applicationContext.getInstance( EntryPointManager.class ), 
+                ApplicationContextUtil.getInstance().getInstance( EntryPointManager.class ) );
+    ApplicationContextUtil.deregisterApplicationContext( servletContext );
+  }
+  
+  public void testDeregisterApplicationContext() {
+    Fixture.createServiceContext();
+    ServletContext servletContext = getServletContext();
     ApplicationContextUtil.deregisterApplicationContext( servletContext );
     try {
-      getSingleton( ThemeManagerHolder.class );
+      ApplicationContextUtil.getInstance().getInstance( EntryPointManager.class );
       fail( "After deregistration there must be no context available." );
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testRegisterApplicationContext() {
     TestServletContext servletContext = new TestServletContext();
     ApplicationContext applicationContext = new ApplicationContext();
@@ -219,8 +146,10 @@ public class ApplicationContextUtil_Test extends TestCase {
     }
   }
 
-  private static Object getSingleton( Class singletonType ) {
-    return ApplicationContext.getSingleton( singletonType );
+  private static ServletContext getServletContext() {
+    ISessionStore session = ContextProvider.getSession();
+    HttpSession httpSession = session.getHttpSession();
+    return httpSession.getServletContext();
   }
 
   private static RuntimeException runWithExceptionExpected( Runnable runnable ) {

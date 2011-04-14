@@ -24,10 +24,9 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.resources.*;
+import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.EncodingUtil;
@@ -215,12 +214,6 @@ public final class StartupPageConfigurer implements IStartupPageConfigurer {
         registeredBrandings.add( branding );
       }
     }
-  }
-
-  public static StartupPageConfigurer getInstance() {
-    Class singletonType = StartupPageConfigurer.class;
-    Object singleton = ApplicationContext.getSingleton( singletonType );
-    return ( StartupPageConfigurer )singleton;
   }
 
   private static String getJsLibraries() {

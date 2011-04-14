@@ -26,10 +26,6 @@ public class ApplicationContext {
     Class getInstanceType();
   }
 
-  public static Object getSingleton( Class instanceType ) {
-    return ApplicationContextUtil.getInstance().getInstance( instanceType );
-  }
-
   private final Map instances;
 
   public ApplicationContext() {

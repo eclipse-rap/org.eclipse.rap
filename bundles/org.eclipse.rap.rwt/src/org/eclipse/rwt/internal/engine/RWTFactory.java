@@ -27,107 +27,106 @@ import org.eclipse.swt.internal.widgets.DisplaysHolder;
 public class RWTFactory {
   
   public static IApplicationStore getApplicationStore() {
-    return ( IApplicationStore )ApplicationContext.getSingleton( ApplicationStoreImpl.class );
+    return ( IApplicationStore )getApplicationSingleton( ApplicationStoreImpl.class );
   }
 
   public static LifeCycleFactory getLifeCycleFactory() {
-    return ( LifeCycleFactory )ApplicationContext.getSingleton( LifeCycleFactory.class );
+    return ( LifeCycleFactory )getApplicationSingleton( LifeCycleFactory.class );
   }
   
   public static BrandingManager getBrandingManager() {
-    return ( BrandingManager )ApplicationContext.getSingleton( BrandingManager.class );
+    return ( BrandingManager )getApplicationSingleton( BrandingManager.class );
   }
   
   public static EntryPointManager getEntryPointManager() {
-    return ( EntryPointManager )ApplicationContext.getSingleton( EntryPointManager.class );
+    return ( EntryPointManager )getApplicationSingleton( EntryPointManager.class );
   }
 
   public static ServiceManager getServiceManager() {
-    Object singleton = ApplicationContext.getSingleton( ServiceManager.class );
+    Object singleton = getApplicationSingleton( ServiceManager.class );
     return ( ServiceManager )singleton;
   }
 
   public static StartupPage getStartupPage() {
-    return ( StartupPage )ApplicationContext.getSingleton( StartupPage.class );
+    return ( StartupPage )getApplicationSingleton( StartupPage.class );
   }
   
   public static IStartupPageConfigurer getStartupPageConfigurer() {
-    return ( IStartupPageConfigurer )ApplicationContext.getSingleton( StartupPageConfigurer.class );
+    return ( IStartupPageConfigurer )getApplicationSingleton( StartupPageConfigurer.class );
   }
 
   public static SettingStoreManager getSettingStoreManager() {
-    return ( SettingStoreManager )ApplicationContext.getSingleton( SettingStoreManager.class );
+    return ( SettingStoreManager )getApplicationSingleton( SettingStoreManager.class );
   }
   
   public static ConfigurationReader getConfigurationReader() {
-    return ( ConfigurationReader )ApplicationContext.getSingleton( ConfigurationReader.class );
+    return ( ConfigurationReader )getApplicationSingleton( ConfigurationReader.class );
   }
 
   public static PhaseListenerRegistry getPhaseListenerRegistry() {
-    return ( PhaseListenerRegistry )ApplicationContext.getSingleton( PhaseListenerRegistry.class );
+    return ( PhaseListenerRegistry )getApplicationSingleton( PhaseListenerRegistry.class );
   }
   
   public static ThemeManagerHolder getThemeManager() {
-    return ( ThemeManagerHolder )ApplicationContext.getSingleton( ThemeManagerHolder.class );
+    return ( ThemeManagerHolder )getApplicationSingleton( ThemeManagerHolder.class );
   }
 
   public static ThemeAdapterManager getThemeAdapterManager() {
-    return ( ThemeAdapterManager )ApplicationContext.getSingleton( ThemeAdapterManager.class );
+    return ( ThemeAdapterManager )getApplicationSingleton( ThemeAdapterManager.class );
   }
 
   public static TextSizeStorageRegistry getTextSizeStorageRegistry() {
-    Object singleton = ApplicationContext.getSingleton( TextSizeStorageRegistry.class );
-    return ( TextSizeStorageRegistry )singleton;
+    return ( TextSizeStorageRegistry )getApplicationSingleton( TextSizeStorageRegistry.class );
   }
 
   public static TextSizeProbeStore getTextSizeProbeStore() {
-    return ( TextSizeProbeStore )ApplicationContext.getSingleton( TextSizeProbeStore.class );
+    return ( TextSizeProbeStore )getApplicationSingleton( TextSizeProbeStore.class );
   }
   
   public static ImageFactory getImageFactory() {
-    Object singleton = ApplicationContext.getSingleton( ImageFactory.class );
-    return ( ImageFactory )singleton;
+    return ( ImageFactory )getApplicationSingleton( ImageFactory.class );
   }
 
   public static FontDataFactory getFontDataFactory() {
-    return ( FontDataFactory )ApplicationContext.getSingleton( FontDataFactory.class );
+    return ( FontDataFactory )getApplicationSingleton( FontDataFactory.class );
   }
 
   public static ImageDataFactory getImageDataFactory() {
-    return ( ImageDataFactory )ApplicationContext.getSingleton( ImageDataFactory.class );
+    return ( ImageDataFactory )getApplicationSingleton( ImageDataFactory.class );
   }
 
   public static ResourceFactory getResourceFactory() {
-    return ( ResourceFactory )ApplicationContext.getSingleton( ResourceFactory.class );
+    return ( ResourceFactory )getApplicationSingleton( ResourceFactory.class );
   }
 
   public static InternalImageFactory getInternalImageFactory() {
-    Object singleton = ApplicationContext.getSingleton( InternalImageFactory.class );
-    return ( InternalImageFactory )singleton;
+    return ( InternalImageFactory )getApplicationSingleton( InternalImageFactory.class );
   }
   
   public static DisplaysHolder getDisplaysHolder() {
-    return ( DisplaysHolder )ApplicationContext.getSingleton( DisplaysHolder.class );
+    return ( DisplaysHolder )getApplicationSingleton( DisplaysHolder.class );
   }
 
   public static JSLibraryConcatenator getJSLibraryConcatenator() {
-    return ( JSLibraryConcatenator )ApplicationContext.getSingleton( JSLibraryConcatenator.class );
+    return ( JSLibraryConcatenator )getApplicationSingleton( JSLibraryConcatenator.class );
   }
 
   public static AdapterFactoryRegistry getAdapterFactoryRegistry() {
-    Object singleton = ApplicationContext.getSingleton( AdapterFactoryRegistry.class );
-    return ( AdapterFactoryRegistry )singleton;
+    return ( AdapterFactoryRegistry )getApplicationSingleton( AdapterFactoryRegistry.class );
   }
 
   public static ResourceRegistry getResourceRegistry() {
-    return ( ResourceRegistry )ApplicationContext.getSingleton( ResourceRegistry.class );
+    return ( ResourceRegistry )getApplicationSingleton( ResourceRegistry.class );
   }
 
   public static ResourceManagerProvider getResourceManagerProvider() {
-    Object singleton = ApplicationContext.getSingleton( ResourceManagerProvider.class );
-    return ( ResourceManagerProvider )singleton;
+    return ( ResourceManagerProvider )getApplicationSingleton( ResourceManagerProvider.class );
   }
-
+  
+  private static Object getApplicationSingleton( Class type ) {
+    return ApplicationContextUtil.getInstance().getInstance( type );
+  }
+  
   private RWTFactory() {
     // prevent instantiation
   }

@@ -94,6 +94,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( RWTServletContextListener_Test.class );
     suite.addTestSuite( ApplicationContext_Test.class );
     suite.addTestSuite( ApplicationContextUtil_Test.class );
+    suite.addTestSuite( RWTFactory_Test.class );
     suite.addTestSuite( AdapterFactoryRegistry_Test.class );
     suite.addTestSuite( PhaseListenerRegistry_Test.class );
     suite.addTestSuite( RWTDelegate_Test.class );
