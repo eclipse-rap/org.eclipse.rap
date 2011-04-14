@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,22 +42,21 @@ final class BrowserTab extends ExampleTab {
   private Browser browser;
   private BrowserFunction function;
 
-  public BrowserTab( final CTabFolder folder ) {
+  public BrowserTab( CTabFolder folder ) {
     super( folder, "Browser" );
   }
 
-  protected void createStyleControls( final Composite parent ) {
-    // TODO [rh] reactivate when implemented in Browser widget
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
-//    createEnablementButton();
+    createEnablementButton();
     createUrlAndHTMLSelector( parent );
     createPropertyCheckbox( "Add Progress Listener", PROP_PROGRESS_LISTENER );
     createExternalBrowserSelector( parent );
     createBrowserFunctionSelector( parent );
   }
 
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new FillLayout() );
     browser = new Browser( parent, getStyle() );
     if( hasCreateProperty( PROP_PROGRESS_LISTENER ) ) {
@@ -74,7 +73,7 @@ final class BrowserTab extends ExampleTab {
     registerControl( browser );
   }
 
-  private void createUrlAndHTMLSelector( final Composite parent ) {
+  private void createUrlAndHTMLSelector( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label lblURL = new Label( composite, SWT.NONE );
@@ -121,7 +120,7 @@ final class BrowserTab extends ExampleTab {
     });
   }
 
-  private void createExternalBrowserSelector( final Composite parent ) {
+  private void createExternalBrowserSelector( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setLayout( new GridLayout( 2, false ) );
     group.setText( "External Browser" );
@@ -179,7 +178,7 @@ final class BrowserTab extends ExampleTab {
     } );
   }
 
-  private void createBrowserFunctionSelector( final Composite parent ) {
+  private void createBrowserFunctionSelector( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "BrowserFunction" );
     group.setLayout( new GridLayout( 3, false ) );
@@ -231,10 +230,7 @@ final class BrowserTab extends ExampleTab {
     return result;
   }
 
-  private static int computeStyle( final boolean locationBar,
-                                   final boolean statusBar,
-                                   final boolean navigationBar )
-  {
+  private static int computeStyle( boolean locationBar, boolean statusBar, boolean navigationBar ) {
     int style = 0;
     if( locationBar ) {
       style |= ExternalBrowser.LOCATION_BAR;
@@ -276,11 +272,11 @@ final class BrowserTab extends ExampleTab {
 
   private class CustomFunction extends BrowserFunction {
 
-    CustomFunction( final Browser browser, final String name ) {
+    CustomFunction( Browser browser, String name ) {
       super( browser, name );
     }
 
-    public Object function( final Object[] arguments ) {
+    public Object function( Object[] arguments ) {
       StringBuffer buffer = new StringBuffer();
       buffer.append( "theJavaFunction() called from javascript with args:\n" );
       dumpArguments( arguments, "", buffer );
@@ -299,20 +295,20 @@ final class BrowserTab extends ExampleTab {
       return returnValue;
     }
 
-    private void dumpArguments( final Object[] arguments,
-                                final String tabString,
-                                StringBuffer buffer ) {
+    private void dumpArguments( Object[] arguments, String tabString, StringBuffer buffer ) {
       String tab = tabString + "    ";
       for( int i = 0; i < arguments.length; i++ ) {
         Object arg = arguments[ i ];
         if( arg == null ) {
-          buffer.append( tab + "-->null\n" );
+          buffer.append( tab );
+          buffer.append( "-->null\n" );
         } else {
-          buffer.append(   tab + "-->"
-                         + arg.getClass().getName()
-                         + ": "
-                         + arg.toString()
-                         + "\n");
+          buffer.append( tab );
+          buffer.append( "-->" );
+          buffer.append( arg.getClass().getName() );
+          buffer.append( ": " );
+          buffer.append( arg.toString() );
+          buffer.append( "\n" );
           if( arg.getClass().isArray() ) {
             Object[] arg1 = ( Object[] )arg;
             dumpArguments( arg1, tab, buffer );

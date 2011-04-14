@@ -85,9 +85,25 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       // server syncs manually
     },
 
+    // overwritten
+    _applyEnabled : function( value, oldValue ) {
+      this.base( arguments, value, oldValue );
+      if( value ) {
+        this.release();
+      } else {
+        this.block();
+      }
+    },
+
+    // overwritten
+    release : function() {
+      if( this.getEnabled() ) {
+        this.base( arguments );
+      }
+    },
+
     _onload : function( evt ) {
       this.base( arguments, evt );
-      this.release();
       if( this._isContentAccessible() ) {
         this._attachBrowserFunctions();
         this._sendProgressEvent();
