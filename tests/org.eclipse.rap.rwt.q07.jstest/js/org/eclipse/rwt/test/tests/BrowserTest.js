@@ -497,6 +497,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       }
     ],
 
+    testEnabled :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var browser = this._createBrowser();
+        testUtil.delayTest( 300 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( "slow connection?", browser._isLoaded );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var blockerNode = browser.getBlockerNode();
+        var blockerParent = browser._getBlockerParent();
+        assertTrue( blockerNode.parentNode !== blockerParent );
+        browser.setEnabled( false );
+        assertTrue( blockerNode.parentNode === blockerParent );
+        browser.setEnabled( true );
+        assertTrue( blockerNode.parentNode !== blockerParent );
+        browser.destroy();
+      }
+    ],
+
     testObjectToString : function() {
       var browser = this._createBrowser();
       var object = [];
