@@ -21,6 +21,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     // TODO [rh] preliminary workaround to make Browser accessible by tab
     this.setTabIndex( 1 );
     this.setAppearance( "browser" );
+    this.addEventListener( "create", this._onCreate, this );
   },
   
   properties : {
@@ -109,7 +110,13 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         this._sendProgressEvent();
       }
     },
-    
+
+    _onCreate : function( evt ) {
+      if( !this.getEnabled() ) {
+        this.block();
+      }
+    },
+
     _sendProgressEvent : function() {
       if( this._hasProgressListener ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
