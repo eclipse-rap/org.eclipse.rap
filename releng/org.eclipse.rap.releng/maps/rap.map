@@ -55,8 +55,8 @@ plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,
 plugin@org.eclipse.rap.ui.templates=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.templates
 plugin@org.eclipse.rap.ui.launch=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.launch
 plugin@org.eclipse.rap.ui.intro=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.intro
-plugin@org.eclipse.rap.ui.intro=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.launch.rwt
-plugin@org.eclipse.rap.ui.intro=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.launch.rwt.help
+plugin@org.eclipse.rap.ui.launch.rwt=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.launch.rwt
+plugin@org.eclipse.rap.ui.launch.rwt.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/tooling/org.eclipse.rap.ui.launch.rwt.help
 
 # rap junit
 plugin@org.eclipse.rap.junit=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.junit
