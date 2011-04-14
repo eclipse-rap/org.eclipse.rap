@@ -1820,6 +1820,9 @@ qx.Class.define( "qx.ui.core.Widget", {
         // link element and style reference
         this._element = value;
         this._style = value.style;
+        if( this._layoutTargetNode ) {
+          this.prepareEnhancedBorder();
+        }
         this._applyStyleProperties(value);
         this._applyHtmlProperties(value);
         this._applyHtmlAttributes(value);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,7 @@ Combo-Button-Icon:hover {
 Combo-List {
   border: 1px solid #c1c1c1;
   border-radius: 0px 0px 2px 2px;
+  box-shadow: 3px 3px 3px rgba( 0, 0, 0, 0.4 );
 }
 
 Combo-Field {

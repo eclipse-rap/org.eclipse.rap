@@ -248,6 +248,7 @@ Combo-Button-Icon {
 
 Combo-List {
   border: 1px #a7a6aa;
+  box-shadow: none;
 }
 
 Combo-Field {
@@ -538,6 +539,7 @@ Menu {
   padding: 1px;
   opacity: 1;
   animation: none;
+  box-shadow: none;
 }
 
 MenuItem {
@@ -625,6 +627,7 @@ Shell {
 
 Shell[TITLE], Shell[BORDER] {
   border: 2px outset;
+  box-shadow: none;
 }
 
 Shell:maximized {
@@ -1207,6 +1210,7 @@ Widget-ToolTip {
   background-color: #ffffe1;
   opacity: 1;
   animation: none;
+  box-shadow: none;
 }
 
 Display {

@@ -46,7 +46,6 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
     this._closeTimer = new qx.client.Timer( 250 );
     this._closeTimer.addEventListener( "interval", this._onclosetimer, this );
     this._renderAppearance();
-    this.setContainerOverflow( false );
     this.addToDocument();    
   },
 
@@ -619,18 +618,24 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
         var renderer = this._animation.getDefaultRenderer();
         renderer.animate( this, "height", animationType );
         this._animation.addEventListener( "init", this._initAnimation, this );
+        this._animation.addEventListener( "cancel", this._finishAnimation, this );
       } else if( this._animation != null ) {
         this._animation.setEnabled( false );
       }
     },
 
     _initAnimation : function( event ) {
+      this.setContainerOverflow( false );
       if( event.getData() == "disappear" ) {
         this._animation.setProperties( this.getAnimation()[ "slideOut" ] );
       } else {
         // There might also be a resize due to "unhideItems"
         this._animation.setProperties( this.getAnimation()[ "slideIn" ] );
       }
+    },
+    
+    _finishAnimation : function( event ) {
+      this.setContainerOverflow( true );
     }
 
   }

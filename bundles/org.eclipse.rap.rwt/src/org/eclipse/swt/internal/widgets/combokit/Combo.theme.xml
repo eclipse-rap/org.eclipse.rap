@@ -151,6 +151,8 @@
         </description>
       </property>
 
+      <property name="box-shadow" description="The shadow behind the combos list." />
+
     </element>
     
     <element name="Combo-FocusIndicator" 

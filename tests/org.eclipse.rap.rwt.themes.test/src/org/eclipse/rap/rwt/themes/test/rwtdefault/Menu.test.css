@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
 * available at http://www.eclipse.org/legal/epl-v10.html
@@ -19,6 +19,7 @@ Menu {
   background-color: white;
   border: 1px #0059a5;
   border-radius: 2px;
+  box-shadow: 2px 2px 2px rgba( 0, 0, 0, 0.5 );
 }
 
 MenuItem {

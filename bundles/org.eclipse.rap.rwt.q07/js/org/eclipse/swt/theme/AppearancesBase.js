@@ -198,6 +198,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundImage = tv.getCssImage( "Widget-ToolTip", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "Widget-ToolTip", "background-image" );
       result.opacity = tv.getCssFloat( "Widget-ToolTip", "opacity" );
+      result.shadow = tv.getCssShadow( "Widget-ToolTip", "box-shadow" );
       return result;
     }
   },
@@ -222,6 +223,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundGradient = tv.getCssGradient( "ToolTip", "background-image" );
       result.animation = tv.getCssAnimation( "ToolTip", "animation" );
       result.opacity = tv.getCssFloat( "ToolTip", "opacity" );
+      result.shadow = tv.getCssShadow( "ToolTip", "box-shadow" );
       return result;
     }
   },
@@ -597,7 +599,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         overflow : "hidden",
         border : tv.getCssBorder( "Menu", "border" ),
         padding : tv.getCssBoxDimensions( "Menu", "padding" ),
-        opacity : tv.getCssFloat( "Menu", "opacity" )
+        opacity : tv.getCssFloat( "Menu", "opacity" ),
+        shadow : tv.getCssShadow( "Menu", "box-shadow" )
       };
     }
   },
@@ -788,6 +791,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "Combo", "color" );
       result.font = tv.getCssFont( "*", "font" );
       result.backgroundColor = tv.getCssColor( "Combo", "background-color" );
+      result.shadow = tv.getCssShadow( "Combo-List", "box-shadow" );
       return result;
     }
   },

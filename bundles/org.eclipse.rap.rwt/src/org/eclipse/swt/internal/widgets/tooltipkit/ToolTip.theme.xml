@@ -70,6 +70,8 @@
       </description>
     </property>
 
+    <property name="box-shadow" description="The shadow behind the tooltip." />
+
     <element name="ToolTip-Image" 
         description="The image area.">
       
@@ -84,7 +86,7 @@
 	
 	    <property name="background-image"
 	        description="The image URL" />
-        
+
     </element>
 
     <element name="ToolTip-Text" 

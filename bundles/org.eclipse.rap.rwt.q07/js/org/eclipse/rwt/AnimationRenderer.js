@@ -185,12 +185,10 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
                            ? this._cloneFrom.getLastValue()
                            : transitionValue; 
         try { 
-          var value = this._converterFunction( convertValue, 
-                                               this._startValue, 
-                                               this._endValue );
+          var value = this._converterFunction( convertValue, this._startValue, this._endValue );
           this.renderValue( value );
         } catch( e ) {
-          throw "AnimationRenderer failed: " + e;
+          throw "AnimationRenderer failed: " + ( e.message ? e.message : e );
         }
       }
     },

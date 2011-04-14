@@ -264,12 +264,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       this._handleFlushListener();
       if( this._isCanvasReady() ) {
         this._renderGfxShadow();
-      } else if(    !this._gfxShadowEnabled 
-                 && this._gfxData 
-                 && this._gfxData.shadowInsert ) 
-      {
-        // remove shape from canvas
-        this._prepareShadowShape();
+      } else if( !this._gfxShadowEnabled && this._gfxData && this._gfxData.shadowInsert ) {
+        this._prepareShadowShape(); // remove shape from canvas
       }
     },
 
