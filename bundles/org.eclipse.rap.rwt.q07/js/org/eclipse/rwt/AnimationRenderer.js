@@ -327,7 +327,10 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
           }
         break;
         case "backgroundGradient":
-          result = this._context.getGfxProperty( "gradient" );
+          var context = this._context;
+          // NOTE : this is not necessarily the actually last rendered value, but converting from 
+          //        css3-syntax to rwt-gradient would be overkill. It shouldn't matter.         
+          result = context.getBackgroundGradient();
         break;
         default:  
           throw "getValueFromWidget: " + this._renderType + " not supported!";

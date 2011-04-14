@@ -10,40 +10,6 @@
 
 qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
-  properties : {
-
-    backgroundGradient : {
-      check : "Array",
-      nullable : true,
-      init : null,
-      apply : "_applyBackgroundGradient",
-      event : "changeBackgroundGradient",      
-      themeable : true
-    },
-
-    /**
-     * Syntax for shadow:
-     * [
-     *    inset, //boolean, currently not supported
-     *    offsetX, // positive or negative number
-     *    offsetY, // positive or negative number
-     *    blurRadius, // positive number or zero
-     *    spread, // positive or negative number
-     *    color, // string
-     *    opacity, // number between 0 and 1
-     * ]
-     */
-    shadow : {
-      check : "Array",
-      nullable : true,
-      init : null,
-      apply : "_applyShadow",
-      event : "changeShadow",      
-      themeable : true
-    }
-
-  },
-  
   statics : {
     
     getSupportsShadows : function() {

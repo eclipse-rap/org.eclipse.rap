@@ -158,12 +158,12 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     },
     
     // NOTE: This returns true if the browser sufficiently implements 
-    // border-radius, drop-shadow and linear-gradient. IE9 (currently) ignored.
+    // border-radius, drop-shadow and linear-gradient. IE9 and opera (currently) ignored.
     supportsCss3 : function() {
       var engine = org.eclipse.rwt.Client.getEngine();
       var version = org.eclipse.rwt.Client.getVersion();
-      var result =    engine === "webkit" && version >= 522
-                   || engine === "gecko" && version >= 1.9;
+      var result =    engine === "webkit" && version >= 522 // 
+                   || engine === "gecko" && version >= 2; // firefox 4+
       return result;
     },
 

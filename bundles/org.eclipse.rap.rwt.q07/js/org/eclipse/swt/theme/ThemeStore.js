@@ -206,7 +206,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       var value = this._values.borders[ key ];
       var resolved = value instanceof org.eclipse.rwt.Border;
       var style = resolved ? value.getStyle() : value.style;
-      if( style === "solid" ) {
+      if( style === "solid" || style === "none" || style === null ) {
         var radiiKey = this._getCssValue( element, states, "border-radius", theme );
         var radii = this._values.boxdims[ radiiKey ];
         if( radii != null && ( radii.join( "" ) !== "0000" ) ) {

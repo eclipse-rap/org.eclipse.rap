@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     
     _configureToolTip : function() {
       var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
-      toolTip.setShowInterval( 200 );
+      toolTip.setShowInterval( 600 );
       toolTip.setHideInterval( 15000 );
       toolTip.setMousePointerOffsetX( -35 );
       toolTip.setMousePointerOffsetY( -60 );

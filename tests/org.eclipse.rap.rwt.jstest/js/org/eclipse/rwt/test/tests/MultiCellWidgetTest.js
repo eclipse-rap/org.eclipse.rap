@@ -396,13 +396,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
     },
 
     testContentNotSelectable : qx.core.Variant.select("qx.client", {
-      "mshtml" : function(){},
+      "mshtml|opera" : function(){},
       "default": function() {
         var widget = this.createDefaultWidget();
         this.initWidget( widget, true );
         var parentNode = widget._getTargetNode();
-        assertFalse( 
-          this.testUtil.getElementSelectable( widget._getTargetNode() ) );  
+        assertFalse( this.testUtil.getElementSelectable( widget._getTargetNode() ) );
         this.disposeWidget( widget );
       } 
     } ),

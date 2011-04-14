@@ -42,8 +42,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     // [if] Listen for DOM event instead of qooxdoo event - see bug 294846.
     this.removeEventListener( "mousedown", this._onwindowmousedown );
     this.addEventListener( "create", this._onCreate, this );
-    this.__onwindowmousedown
-      = qx.lang.Function.bind( this._onwindowmousedown, this );
+    this.__onwindowmousedown = qx.lang.Function.bind( this._onwindowmousedown, this );
   },
 
   statics : {

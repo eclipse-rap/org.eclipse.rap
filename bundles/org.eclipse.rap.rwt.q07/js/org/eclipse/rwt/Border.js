@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
    * values colors as one single value. 
    * 
    * @param width Integer. Multiple values can be given for rounded border but only the 
-   *        biggest and zero are used. Null is allowed.
+   *        biggest and zero may be used. Null is allowed.
    * @param style String, either a browser-recognized border-style, or "complex" or "rounded".
    *        The last two are not accepted as an array, only as a single string. 
    * @param color String in any browser-recognized color-format. For rounded border only one 
@@ -53,9 +53,10 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       this._setRadii( colorsOrRadii );        
     } else if( colorsOrRadii !== undefined ) {
       throw new Error( "colorsOrRadii set for style " + this.getStyle() );
-    }  },
-
-  members : {
+    }  
+  },
+  
+  statics : {
     _EDGEWIDTH : [ "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth" ],
     _EDGECOLOR : [ "borderTopColor", "borderRightColor", "borderBottomColor", "borderLeftColor" ],
     _EDGESTYLE : [ "borderTopStyle", "borderRightStyle", "borderBottomStyle", "borderLeftStyle" ],
@@ -65,7 +66,40 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       "MozBorderBottomColors", 
       "MozBorderLeftColors" 
     ],
+    _BORDERRADII : qx.core.Variant.select( "qx.client", {
+      "webkit" : [
+        "-webkit-border-top-left-radius", 
+        "-webkit-border-top-right-radius", 
+        "-webkit-border-bottom-right-radius", 
+        "-webkit-border-bottom-left-radius" 
+      ],
+      "gecko" : [ 
+        "borderTopLeftRadius", 
+        "borderTopRightRadius", 
+        "borderBottomRightRadius", 
+        "borderBottomLeftRadius"
+      ],
+      "default" : []
+    } ), 
     
+    
+    reset : function( widget ) {
+      widget._style.border = "";
+      if( widget._innerStyle ) {
+        widget._innerStyle.border = "";
+      }
+      try{
+        for( var i = 0; i < 4; i++ ) {
+          widget._style[ this._BORDERRADII[ i ] ] = "";
+        }
+      } catch( ex ) {
+        //ignore
+      }
+    }
+
+  },
+
+  members : {
     _setColor : function( value ) {
       if( typeof value === "string" ) {
         this._singleColor = value;
@@ -80,7 +114,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     _setStyle : function( value ) {
       if( typeof value === "string" ) {
         this._singleStyle = value;
-        if( value === "complex" || value === "complex" ) {
+        if( value === "complex" || value === "rounded" ) {
           this._styles = this._normalizeValue( "solid" );          
         } else {
           this._styles = this._normalizeValue( value );          
@@ -213,29 +247,32 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     _renderSimpleBorder : function( widget ) {
       this._resetComplexBorder( widget );
       var style = widget._style;
+      var statics = org.eclipse.rwt.Border
       for( var i = 0; i < 4; i++ ) {
-        style[ this._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
-        style[ this._EDGESTYLE[ i ] ] = this._styles[ i ] || "none";
-        style[ this._EDGECOLOR[ i ] ] = this._colors[ i ] || "";
+        style[ statics._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
+        style[ statics._EDGESTYLE[ i ] ] = this._styles[ i ] || "none";
+        style[ statics._EDGECOLOR[ i ] ] = this._colors[ i ] || "";
       }
     },
 
     _renderComplexBorder : qx.core.Variant.select("qx.client", {
       "gecko" : function( widget ) {
+        var statics = org.eclipse.rwt.Border
         var style = widget._style;
         for( var i = 0; i < 4; i++ ) {
-          style[ this._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
-          style[ this._EDGECOLOR[ i ] ] = this._colors[ i ] || "";
+          style[ statics._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
+          style[ statics._EDGECOLOR[ i ] ] = this._colors[ i ] || "";
           if( this._widths[ i ] === 2 ) {
-            style[ this._EDGESTYLE[ i ] ] = "solid";
-            style[ this._EDGEMOZCOLORS[ i ] ] = this._colors[ i ] + " " + this._innerColors[ i ];
+            style[ statics._EDGESTYLE[ i ] ] = "solid";
+            style[ statics._EDGEMOZCOLORS[ i ] ] = this._colors[ i ] + " " + this._innerColors[ i ];
           } else {
-            style[ this._EDGESTYLE[ i ] ] = this._styles[ i ] || "none";
-            style[ this._EDGEMOZCOLORS[ i ] ] = "";
+            style[ statics._EDGESTYLE[ i ] ] = this._styles[ i ] || "none";
+            style[ statics._EDGEMOZCOLORS[ i ] ] = "";
           }
         }
       },
       "default" : function( widget ) {
+        var statics = org.eclipse.rwt.Border
         var outer = widget._style;
         var inner = widget._innerStyle;
         for( var i = 0; i < 4; i++ ) {
@@ -244,20 +281,20 @@ qx.Class.define( "org.eclipse.rwt.Border", {
               widget.prepareEnhancedBorder();
               inner = widget._innerStyle;
             }
-            outer[ this._EDGEWIDTH[ i ] ] = "1px"
-            outer[ this._EDGESTYLE[ i ] ] = "solid";
-            outer[ this._EDGECOLOR[ i ] ] = this._colors[ i ] || "";
-            inner[ this._EDGEWIDTH[ i ] ] = "1px"
-            inner[ this._EDGESTYLE[ i ] ] = "solid";
-            inner[ this._EDGECOLOR[ i ] ] = this._innerColors[ i ];
+            outer[ statics._EDGEWIDTH[ i ] ] = "1px"
+            outer[ statics._EDGESTYLE[ i ] ] = "solid";
+            outer[ statics._EDGECOLOR[ i ] ] = this._colors[ i ] || "";
+            inner[ statics._EDGEWIDTH[ i ] ] = "1px"
+            inner[ statics._EDGESTYLE[ i ] ] = "solid";
+            inner[ statics._EDGECOLOR[ i ] ] = this._innerColors[ i ];
           } else {
-            outer[ this._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
-            outer[ this._EDGESTYLE[ i ] ] = this._styles[ i ] || "none";
-            outer[ this._EDGECOLOR[ i ] ] = this._colors[ i ] || "";
+            outer[ statics._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
+            outer[ statics._EDGESTYLE[ i ] ] = this._styles[ i ] || "none";
+            outer[ statics._EDGECOLOR[ i ] ] = this._colors[ i ] || "";
             if( inner ) {
-              inner[ this._EDGEWIDTH[ i ] ] = "";
-              inner[ this._EDGESTYLE[ i ] ] = "";
-              inner[ this._EDGECOLOR[ i ] ] = "";
+              inner[ statics._EDGEWIDTH[ i ] ] = "";
+              inner[ statics._EDGESTYLE[ i ] ] = "";
+              inner[ statics._EDGECOLOR[ i ] ] = "";
             }
           }
         }
@@ -265,23 +302,30 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     } ),
 
     _renderRoundedBorder : function( widget ) {
-      // TODO [tb] : CSS3 implementation
+      var statics = org.eclipse.rwt.Border
+      this._renderSimpleBorder( widget );
+      var style = widget._style;
+      for( var i = 0; i < 4; i++ ) {
+        style[ statics._BORDERRADII[ i ] ] = this._radii[ i ] + "px";
+      }
     },
     
     _resetComplexBorder : qx.core.Variant.select("qx.client", {
       "gecko" : function( widget ) {
+        var statics = org.eclipse.rwt.Border
         var style = widget._style;
         for( var i = 0; i < 4; i++ ) {
-          style[ this._EDGEMOZCOLORS[ i ] ] = "";
+          style[ statics._EDGEMOZCOLORS[ i ] ] = "";
         }
       }, 
       "default" : function( widget ) {
+        var statics = org.eclipse.rwt.Border
         var inner = widget._innerStyle;
         if( inner ) {
           for( var i = 0; i < 4; i++ ) {
-            inner[ this._EDGEWIDTH[ i ] ] = "";
-            inner[ this._EDGESTYLE[ i ] ] = "";
-            inner[ this._EDGECOLOR[ i ] ] = "";
+            inner[ statics._EDGEWIDTH[ i ] ] = "";
+            inner[ statics._EDGESTYLE[ i ] ] = "";
+            inner[ statics._EDGECOLOR[ i ] ] = "";
           }
         }
       }

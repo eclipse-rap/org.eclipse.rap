@@ -446,10 +446,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       // padding is only applied on the server, since client area content is
       // positioned absolutely
       result.backgroundColor = tv.getCssColor( "Shell", "background-color" );
-      result.backgroundImage
-        = tv.getCssImage( "Shell", "background-image" );
-      result.backgroundGradient
-        = tv.getCssGradient( "Shell", "background-image" );
+      result.backgroundImage = tv.getCssImage( "Shell", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Shell", "background-image" );
       result.border = tv.getCssBorder( "Shell", "border" );
       result.minWidth = states.rwt_TITLE ? 80 : 5;
       result.minHeight = states.rwt_TITLE ? 25 : 5;
@@ -468,12 +466,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.margin = tv.getCssBoxDimensions( "Shell-Titlebar", "margin" );
       result.padding = tv.getCssBoxDimensions( "Shell-Titlebar", "padding" );
       result.textColor = tv.getCssColor( "Shell-Titlebar", "color" );
-      result.backgroundColor
-        = tv.getCssColor( "Shell-Titlebar", "background-color" );
-      result.backgroundImage
-        = tv.getCssImage( "Shell-Titlebar", "background-image" );
-      result.backgroundGradient
-        = tv.getCssGradient( "Shell-Titlebar", "background-image" );
+      result.backgroundColor = tv.getCssColor( "Shell-Titlebar", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Shell-Titlebar", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Shell-Titlebar", "background-image" );
       result.border = tv.getCssBorder( "Shell-Titlebar", "border" );
       if( states.rwt_TITLE ) {
         result.minHeight = tv.getCssDimension( "Shell-Titlebar", "height" );

@@ -19,13 +19,12 @@ Shell-Titlebar {
   height: 22px;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: none;
-  border-radius: 3px 3px 0px 0px;
+  border-radius: 1px 1px 0px 0px;
 }
 
 Shell-Titlebar:inactive {
   color: #aaaaaa;
-  background-image: gradient( linear, left top, left bottom,
-                              from( #595959 ), to( #4b4b4b ) );
+  background-image: gradient( linear, left top, left bottom, from( #595959 ), to( #4b4b4b ) );
 }
 
 Shell {

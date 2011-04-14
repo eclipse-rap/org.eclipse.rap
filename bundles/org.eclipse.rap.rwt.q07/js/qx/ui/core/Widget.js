@@ -701,6 +701,36 @@ qx.Class.define( "qx.ui.core.Widget", {
       event : "changeBackgroundColor",
       themeable : true
     },
+    
+    backgroundGradient : {
+      check : "Array",
+      nullable : true,
+      init : null,
+      apply : "_applyBackgroundGradient",
+      event : "changeBackgroundGradient",      
+      themeable : true
+    },
+
+    /**
+     * Syntax for shadow:
+     * [
+     *    inset, //boolean, currently not supported
+     *    offsetX, // positive or negative number
+     *    offsetY, // positive or negative number
+     *    blurRadius, // positive number or zero
+     *    spread, // positive or negative number
+     *    color, // string
+     *    opacity, // number between 0 and 1
+     * ]
+     */
+    shadow : {
+      check : "Array",
+      nullable : true,
+      init : null,
+      apply : "_applyShadow",
+      event : "changeShadow",      
+      themeable : true
+    },
 
     /**
      * The color (textColor) style property of the rendered widget.
@@ -3617,6 +3647,14 @@ qx.Class.define( "qx.ui.core.Widget", {
       qx.theme.manager.Color.getInstance().connect(this._styleBackgroundColor, this, value);
     },
 
+    _applyBackgroundGradient : function( value, oldValue ) {
+      org.eclipse.rwt.HtmlUtil.setBackgroundGradient( this, value );
+    },
+
+    _applyShadow : function( value, oldValue ) {
+      org.eclipse.rwt.HtmlUtil.setBoxShadow( this, value );      
+    },
+
     _styleBackgroundColor : function(value) {
       value ? this.setStyleProperty("backgroundColor", value) : this.removeStyleProperty("backgroundColor");
     },
@@ -3680,16 +3718,12 @@ qx.Class.define( "qx.ui.core.Widget", {
      * Renders border object to widget.
      * Callback from layout queue
      */
-    renderBorder : function(changes) {
+    renderBorder : function( changes ) {
       var value = this.__borderObject;
       if( value ) {
         value.render( this );
       } else {
-        this._style.border = "";
-        if( this._innerStyle ) {
-          this._innerStyle.border = "";
-        }
-
+        org.eclipse.rwt.Border.reset( this );
       }
       // RAP: Fix for Bug 301709
       this._usesComplexBorder = this._computeUsesComplexBorder();

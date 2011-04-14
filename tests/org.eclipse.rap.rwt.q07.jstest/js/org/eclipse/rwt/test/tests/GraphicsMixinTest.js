@@ -9,6 +9,7 @@
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
+
   extend : qx.core.Object,
 
 	construct : function(){
@@ -18,6 +19,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
 	},
 
   members : {
+    
+    TARGETENGINE : org.eclipse.rwt.Client.supportsCss3() ? [ "none" ] : undefined,
 
     testSetGradient : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -93,12 +96,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var shell = this._createShell();
-      shell.setBackgroundColor( "green" );          
-      assertEquals( "green", testUtil.getCssBackgroundColor( shell ) );
+      shell.setBackgroundColor( "#008000" );          
+      var result = qx.util.ColorUtil.stringToRgb( testUtil.getCssBackgroundColor( shell ) );
+      assertEquals( [ 0, 128, 0 ], result );
       shell.setBackgroundGradient( this.gradient );
       assertNull( testUtil.getCssBackgroundColor( shell ) );
       shell.setBackgroundGradient( null );
-      assertEquals( "green", testUtil.getCssBackgroundColor( shell ) );
+      result = qx.util.ColorUtil.stringToRgb( testUtil.getCssBackgroundColor( shell ) );
+      assertEquals( [ 0, 128, 0 ], result );
       shell.destroy();
       testUtil.flush();
     },

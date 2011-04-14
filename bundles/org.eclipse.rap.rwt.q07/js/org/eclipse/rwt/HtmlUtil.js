@@ -21,6 +21,12 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
 
   statics : {
     
+    BROWSER_PREFIX : qx.core.Variant.select( "qx.client", {
+      "gecko" : "-moz-",
+      "webkit" : "-webkit-",
+      "default" : ""
+    } ),
+    
     // TODO [tb] : Without IE6-support the browser-switch and opacity parameter could be removed  
     setBackgroundImage : ( function() {
       var result;
@@ -48,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       return result;
     } )(),
 
-    setOpacity  : qx.core.Variant.select("qx.client", {
+    setOpacity  : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( target, value ) {
         if( value == null || value >= 1 || value < 0 ) {
           this.removeCssFilter( target );
@@ -73,13 +79,69 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       }
     } ),
     
+    setBackgroundGradient : qx.core.Variant.select( "qx.client", {
+      "webkit" : function( target, gradientObject ) {
+        // NOTE: Webkit will also support the new syntax, but support for the old syntax
+        //       will not be removed "in the foreseeable future". See:
+        //       http://www.webkit.org/blog/1424/css3-gradients/
+        if( gradientObject ) {
+          var args = [ "linear", "left top" ];
+          if( gradientObject.horizontal === true ) {
+            args.push( "right top" );
+          }  else {
+            args.push( "left bottom" );            
+          }
+          for( var i = 0; i < gradientObject.length; i++ ) {
+            var position = gradientObject[ i ][ 0 ]; 
+            var color = gradientObject[ i ][ 1 ];
+            args.push( "color-stop(" + position + "," + color + ")" );
+          }
+          var string = this.BROWSER_PREFIX + "gradient( " + args.join() + ")";
+          this.setStyleProperty( target, "background", string );
+        } else {
+          this.removeStyleProperty( target, "background" );
+        }
+      },
+      "default" : function( target, gradientObject ) {
+        if( gradientObject ) {
+          var args = [ gradientObject.horizontal === true ? "0deg" : "-90deg" ];
+          for( var i = 0; i < gradientObject.length; i++ ) {
+            var position = ( gradientObject[ i ][ 0 ] * 100 ) + "%"; 
+            var color = gradientObject[ i ][ 1 ];
+            args.push( color + " " + position );
+          }
+          var string = this.BROWSER_PREFIX + "linear-gradient( " + args.join() + ")";
+          this.setStyleProperty( target, "background", string );
+        } else {
+          this.removeStyleProperty( target, "background" );
+        }
+      }
+    } ),
+    
+    setBoxShadow: function( target, shadowObject ) {
+      var property;
+      if( org.eclipse.rwt.Client.isWebkit() ) {
+        property = this.BROWSER_PREFIX + "box-shadow";
+      } else {
+        property = "boxShadow";          
+      }
+      if( shadowObject ) {
+        // NOTE: older webkit dont accept spread, therefor only use parameters 1-3  
+        var string = shadowObject.slice( 1, 4 ).join( "px " ) + "px";
+        var rgba = qx.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
+        rgba.push( shadowObject[ 6 ] );
+        string += " rgba(" + rgba.join() + ")";
+        this.setStyleProperty( target, property, string );
+      } else {
+        this.removeStyleProperty( target, property );
+      }
+    },
+
     setPointerEvents : function( target, value ) {
       var version = org.eclipse.rwt.Client.getVersion();
-      var ffSupport 
-        = org.eclipse.rwt.Client.getEngine() === "gecko" && version >= 1.9;
+      var ffSupport = org.eclipse.rwt.Client.getEngine() === "gecko" && version >= 1.9;
       // NOTE: chrome does not support pointerEvents, but not on svg-nodes
-      var webKitSupport 
-        = org.eclipse.rwt.Client.getBrowser() === "safari" && version >= 530;
+      var webKitSupport = org.eclipse.rwt.Client.getBrowser() === "safari" && version >= 530;
       if( ffSupport || webKitSupport ) {
         this.setStyleProperty( target, "pointerEvents", value );
         target.setAttribute( "pointerEvents", value );
@@ -210,7 +272,6 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
                                  originalEvent.metaKey, 
                                  originalEvent.button, 
                                  originalEvent.relatedTarget);
-        console.log( "dispatch " + event.type );
         target.dispatchEvent( newEvent );
       }
     } )

@@ -19,7 +19,7 @@ Shell-Titlebar {
   height: 22px;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: none;
-  border-radius: 3px 3px 0px 0px;
+  border-radius: 1px 1px 0px 0px;
 }
 
 Shell-Titlebar:inactive {

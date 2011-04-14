@@ -19,10 +19,13 @@ qx.Class.define( "org.eclipse.swt.Application", {
     this.base( arguments );
     this._exitConfirmation = null;
     this._startupTime = new Date().getTime();
-    qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );
-    qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GraphicsMixin );
-    qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget,
-                    org.eclipse.rwt.GraphicsMixin );
+    if( !org.eclipse.rwt.Client.supportsCss3() ) {
+      qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );
+      qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GraphicsMixin );
+      qx.Class.patch( org.eclipse.rwt.widgets.MultiCellWidget, org.eclipse.rwt.GraphicsMixin );
+    } else {
+      qx.Class.patch( org.eclipse.swt.widgets.ProgressBar, org.eclipse.rwt.GraphicsMixin );
+    }
     qx.Class.patch( qx.ui.core.ClientDocumentBlocker,
                     org.eclipse.rwt.FadeAnimationMixin );
     qx.Class.patch( qx.event.type.DomEvent,

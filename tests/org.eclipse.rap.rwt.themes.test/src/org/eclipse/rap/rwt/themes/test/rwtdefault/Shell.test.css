@@ -48,14 +48,13 @@ Shell-Titlebar {
   background-color: #0080c0;
   background-gradient-color: #0080c0;
   color: white;
-  background-image: gradient( linear, left top, left bottom,
-                              from( #005fac ), to( #005092 ) );
+  background-image: gradient( linear, left top, left bottom, from( #005fac ), to( #005092 ) );
   padding: 2px 5px 2px;
   margin: 0px;
   height: 22px;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: none;
-  border-radius: 3px 3px 0px 0px;
+  border-radius: 1px 1px 0px 0px;
 }
 
 Shell-Titlebar:inactive {

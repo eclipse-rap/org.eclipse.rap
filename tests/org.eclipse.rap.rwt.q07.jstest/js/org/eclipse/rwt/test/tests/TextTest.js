@@ -15,16 +15,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
   members : {
 
     testRenderPaddingWithRoundedBorder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var text = new org.eclipse.rwt.widgets.Text( false );
-      org.eclipse.swt.TextUtil.initialize( text );
-      text.setPadding( 3 );
-      text.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 0 ) );
-      text.addToDocument();
-      testUtil.flush();
-      assertEquals( "", text._style.paddingLeft );
-      assertEquals( "3px", text._innerStyle.paddingLeft );
-      text.destroy();
+      if( !org.eclipse.rwt.Client.supportsCss3() ) {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var text = new org.eclipse.rwt.widgets.Text( false );
+        org.eclipse.swt.TextUtil.initialize( text );
+        text.setPadding( 3 );
+        text.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 0 ) );
+        text.addToDocument();
+        testUtil.flush();
+        assertEquals( "", text._style.paddingLeft );
+        assertEquals( "3px", text._innerStyle.paddingLeft );
+        text.destroy();
+      }
     },
 
     testCreateAsTextSetPasswordMode : function() {

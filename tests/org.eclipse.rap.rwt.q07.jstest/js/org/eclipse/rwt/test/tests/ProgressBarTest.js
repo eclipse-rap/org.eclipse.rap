@@ -99,7 +99,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       qx.ui.core.Widget.flushGlobalQueues();
     },
 
-
     testOnCanvasAppearOnEnhancedBorder : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
@@ -117,10 +116,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.setParent( shell );
       testUtil.flush();
       assertEquals( 1, log.length );
-      shell.setBackgroundColor( "green" );
-      shell.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 0 ) );
-      testUtil.flush();
-      assertEquals( 2, log.length );
+      if( !org.eclipse.rwt.Client.supportsCss3() ) {
+        shell.setBackgroundColor( "green" );
+        shell.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 0 ) );
+        testUtil.flush();
+        assertEquals( 2, log.length );
+      }
       shell.destroy();
       testUtil.flush();
     },

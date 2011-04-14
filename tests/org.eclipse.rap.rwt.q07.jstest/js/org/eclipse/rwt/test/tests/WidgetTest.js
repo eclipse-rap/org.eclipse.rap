@@ -243,6 +243,131 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       widget.destroy();
     },
     
+    testRenderSimpleBackgroundGradient : function() {
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        widget.setBackgroundGradient( gradient );
+        testUtil.flush();
+        var result = this._getCssGradient( widget.getElement() );
+        var expected1 = "gradient(-90deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
+        var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
+        assertTrue( result === expected1 || result === expected2 );
+        widget.destroy();
+      }
+    },
+    
+    testRemoveBackgroundGradient : function() {
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        widget.setBackgroundGradient( gradient );
+        testUtil.flush();
+        var result = this._getCssGradient( widget.getElement() );
+        assertFalse( result === "" );
+        widget.setBackgroundGradient( null );
+        testUtil.flush();
+        var result = this._getCssGradient( widget.getElement() );
+        assertTrue( result === "" );
+        widget.destroy();
+      }
+    },
+    
+    testRenderHorizontalBackgroundGradient : function() {
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
+        gradient.horizontal = true;
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        widget.setBackgroundGradient( gradient );
+        testUtil.flush();
+        var result = this._getCssGradient( widget.getElement() );
+        var expected1 = "gradient(0deg, rgb(255, 0, 255) 0%, rgb(0, 255, 0) 100%)";
+        var expected2 = "gradient(linear, 0% 0%, 100% 0%, from(rgb(255, 0, 255)), to(rgb(0, 255, 0)))";
+        assertTrue( result === expected1 || result === expected2 );
+        widget.destroy();
+      }
+    },
+    
+    testRenderComplexBackgroundGradient : function() {
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var gradient = [ 
+          [ 0, "rgb(255, 0, 255)" ], 
+          [ 0.33, "rgb(255, 128, 255)" ],
+          [ 1, "rgb(0, 255, 0)" ] 
+        ];
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        widget.setBackgroundGradient( gradient );
+        testUtil.flush();
+        var result = this._getCssGradient( widget.getElement() );
+        var expected1 =   "gradient(-90deg, rgb(255, 0, 255) 0%, " 
+                        + "rgb(255, 128, 255) 33%, rgb(0, 255, 0) 100%)";
+        var expected2 = "gradient(linear, 0% 0%, 0% 100%, from(rgb(255, 0, 255)), color-stop(0.33, rgb(255, 128, 255)), to(rgb(0, 255, 0)))";
+        assertTrue( result === expected1 || result === expected2 );
+        widget.destroy();
+      }
+    },
+    
+    testRenderBoxShadow : function() {
+//      Syntax for shadow:
+//      [
+//         inset, //boolean, currently not supported
+//         offsetX, // positive or negative number
+//         offsetY, // positive or negative number
+//         blurRadius, // positive number or zero
+//         spread, // positive or negative number, currently not supported
+//         color, // string
+//         opacity, // number between 0 and 1
+//      ]
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var shadow = [ false, 3, 5, 1, 0, "#090807", 0.4 ];
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        widget.setShadow( shadow );
+        testUtil.flush();
+        var result = this._getCssShadow( widget.getElement() );
+        var expected;
+        if( org.eclipse.rwt.Client.isWebkit() ) {
+          // webkit currently outputs "rgba(9, 8, 7, 0.398438) 3px 5px 1px"
+          assertTrue( result.indexOf( "3px 5px 1px" ) !== -1 );
+          assertTrue( result.indexOf( "rgba(9, 8, 7, 0." ) !== -1 );
+        } else {
+          expected1 = "3px 5px 1px rgba(9, 8, 7, 0.4)"
+          expected2 = "3px 5px 1px rgba(9,8,7,0.4)"
+          assertTrue( result === expected1 || result === expected2 );
+        }
+        widget.destroy();
+      }
+    },
+    
+    testRemoveBoxShadow : function() {
+//      Syntax for shadow:
+//      [
+//         inset, //boolean, currently not supported
+//         offsetX, // positive or negative number
+//         offsetY, // positive or negative number
+//         blurRadius, // positive number or zero
+//         spread, // positive or negative number, currently not supported
+//         color, // string
+//         opacity, // number between 0 and 1
+//      ]
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var shadow = [ false, 3, 5, 1, 0, "#090807", 0.4 ];
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        widget.setShadow( shadow );
+        testUtil.flush();
+        widget.setShadow( null );
+        testUtil.flush();
+        var result = this._getCssShadow( widget.getElement() );
+        assertEquals( "", result );
+        widget.destroy();
+      }
+    },
+
     /////////
     // Helper
     
@@ -258,7 +383,33 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
     
     _getComplexBorder : function() {
       return new org.eclipse.rwt.Border( 2, "complex", "green", "red" );
-    }
+    },
     
+    _getCssGradient : function( element ) {
+      var result = "";
+      var background = element.style.background;
+      var start = background.indexOf( "gradient(" );
+      if( start !== -1 ) {
+        var end = background.indexOf( ") repeat", start );
+        if( end != -1 ) {
+          result = background.slice( start, end + 1 );
+        } else {
+          result = background.slice( start );          
+        }
+      }
+      return result;
+    },
+    
+    _getCssShadow : function( element ) {
+      var result = element.style.boxShadow;
+      if( !result ) {
+        result = element.style[ "-webkit-box-shadow" ];
+      }
+      if( !result ) {
+        result = "";
+      }
+      return result;
+    }
+      
   }
 } );
