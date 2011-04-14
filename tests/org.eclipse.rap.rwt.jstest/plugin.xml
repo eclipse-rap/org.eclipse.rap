@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/org.eclipse.rap.rwt.q07.jstest"
+            base-name="/">
+      </resource>
+      <resource
+            alias="/org.eclipse.rap.rwt.q07"
+            base-name="/"
+            httpcontextId="org.eclipse.rap.rwt.q07.httpcontext">
+      </resource>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.httpcontexts">
+      <httpcontext
+            class="org.eclipse.rap.rwt.q07.jstest.internal.JsTestsHttpContext"
+            id="org.eclipse.rap.rwt.q07.httpcontext">
+      </httpcontext>
+   </extension>
+
+</plugin>
