@@ -508,7 +508,6 @@ qx.Class.define("qx.ui.embed.Iframe",
       this._syncScrolling();
 
       value.appendChild(iframeNode);
-      value.appendChild(blockerNode);
 
       this.base(arguments, value, old);
     },
