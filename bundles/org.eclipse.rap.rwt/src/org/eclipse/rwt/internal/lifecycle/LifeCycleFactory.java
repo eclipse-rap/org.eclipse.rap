@@ -17,46 +17,57 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rwt.service.ISessionStore;
 
 
 public class LifeCycleFactory {
-  private LifeCycle globalLifeCycle;
+  private static final String ATTR_SESSION_LIFE_CYCLE
+    = LifeCycle.class.getName() + "#sessionLifeCycle";
+  
+  private LifeCycle applicationScopedLifeCycle;
 
   public ILifeCycle getLifeCycle() {
-    ISessionStore session = ContextProvider.getSession();
-    String id = LifeCycle.class.getName();
-    ILifeCycle result = ( ILifeCycle )session.getAttribute( id );
+    ILifeCycle result;
+    if( applicationScopedLifeCycle != null ) {
+      result = applicationScopedLifeCycle;
+    } else {
+      result = getSessionLifeCycle();
+    }
     if( result == null ) {
       result = loadLifeCycle();
-      session.setAttribute( id, result );
-    }
-    return result;
-  }
-  
-  public void destroy() {
-    globalLifeCycle = null;
-  }
-  
-  private ILifeCycle loadLifeCycle() {
-    LifeCycle result = globalLifeCycle;
-    if( result == null ) {
-      String lifeCycleClassName = getLifeCycleClassName();
-      ClassLoader classLoader = LifeCycleFactory.class.getClassLoader();
-      result = ( LifeCycle )ClassUtil.newInstance( classLoader, lifeCycleClassName );
-      if( result.getScope().equals( Scope.APPLICATION ) ) {
-        globalLifeCycle = result;
-      }
     }
     return result;
   }
 
+  public void destroy() {
+    applicationScopedLifeCycle = null;
+  }
+
+  private ILifeCycle loadLifeCycle() {
+    LifeCycle result = instantiateLifeCycle();
+    if( Scope.APPLICATION.equals( result.getScope() ) ) {
+      applicationScopedLifeCycle = result;
+    }else {
+      setSessionLifeCycle( result );
+    }
+    return result;
+  }
+
+  private LifeCycle instantiateLifeCycle() {
+    String className = getLifeCycleClassName();
+    ClassLoader classLoader = getClass().getClassLoader();
+    return ( LifeCycle )ClassUtil.newInstance( classLoader, className );
+  }
+
+  private static void setSessionLifeCycle( ILifeCycle result ) {
+    ContextProvider.getSession().setAttribute( ATTR_SESSION_LIFE_CYCLE, result );
+  }
+
+  private static ILifeCycle getSessionLifeCycle() {
+    return ( ILifeCycle )ContextProvider.getSession().getAttribute( ATTR_SESSION_LIFE_CYCLE );
+  }
+  
   private static String getLifeCycleClassName() {
     IConfiguration configuration = RWTFactory.getConfigurationReader().getConfiguration();
     return configuration.getLifeCycle();
-  }
-
-  private LifeCycleFactory() {
-    // prevent instance creation
   }
 }
