@@ -125,10 +125,8 @@ public class TreeItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TreeItem( final Tree parent, final int style ) {
-    this( parent, null, style, parent == null
-                                             ? 0
-                                             : parent.getItemCount() );
+  public TreeItem( Tree parent, int style ) {
+    this( parent, null, style, parent == null ? 0 : parent.getItemCount() );
   }
 
   /**
@@ -164,7 +162,7 @@ public class TreeItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TreeItem( final Tree parent, final int style, final int index ) {
+  public TreeItem( Tree parent, int style, int index ) {
     this( parent, null, style, index );
   }
 
@@ -198,15 +196,11 @@ public class TreeItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TreeItem( final TreeItem parentItem, final int style ) {
-    this( parentItem == null
-                            ? null
-                            : parentItem.parent,
+  public TreeItem( TreeItem parentItem, int style ) {
+    this( parentItem == null ? null : parentItem.parent,
           parentItem,
           style,
-          parentItem == null
-                            ? 0
-                            : parentItem.getItemCount() );
+          parentItem == null ? 0 : parentItem.getItemCount() );
   }
 
   /**
@@ -242,33 +236,24 @@ public class TreeItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TreeItem( final TreeItem parentItem, final int style, final int index )
-  {
-    this( parentItem == null
-                            ? null
-                            : parentItem.parent, parentItem, style, index );
+  public TreeItem( TreeItem parentItem, int style, int index ) {
+    this( parentItem == null ? null : parentItem.parent, parentItem, style, index );
   }
 
-  private TreeItem( final Tree parent,
-                    final TreeItem parentItem,
-                    final int style,
-                    final int index )
-  {
+  private TreeItem( Tree parent, TreeItem parentItem, int style, int index ) {
     super( parent, style );
     int numberOfItems;
-        // if there is a parent item, get the next index of parentItem
-        if( parentItem != null ) {
-          numberOfItems = parentItem.getItemCount( false );
-        }
-        // If there is no parent item, get the next index of the tree
-        else {
-          numberOfItems = parent.getItemCount();
-        }
-        // check range
-        if( index < 0 || index > numberOfItems ) {
-          error( SWT.ERROR_INVALID_RANGE );
-        }
-
+    // if there is a parent item, get the next index of parentItem
+    if( parentItem != null ) {
+      numberOfItems = parentItem.getItemCount( false );
+    } else {
+      // If there is no parent item, get the next index of the tree
+      numberOfItems = parent.getItemCount();
+    }
+    // check range
+    if( index < 0 || index > numberOfItems ) {
+      error( SWT.ERROR_INVALID_RANGE );
+    }
     this.parent = parent;
     this.parentItem = parentItem;
     if( parentItem != null ) {
