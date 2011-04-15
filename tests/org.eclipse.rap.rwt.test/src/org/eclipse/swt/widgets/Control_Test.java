@@ -272,6 +272,15 @@ public class Control_Test extends TestCase {
     assertSame( display.getSystemFont(), label.getFont() );
   }
 
+  public void testGetFontAfterDisposingFont() {
+    Control control = new Label( shell, SWT.NONE );
+    Font font = new Font( display, "font-name", 10, SWT.NONE );
+    control.setFont( font );
+    font.dispose();
+    Font returnedFont = control.getFont();
+    assertSame( font, returnedFont );
+  }
+  
   public void testForeground() {
     Composite comp = new Composite( shell, SWT.NONE );
     Control control = new Label( comp, SWT.PUSH );
