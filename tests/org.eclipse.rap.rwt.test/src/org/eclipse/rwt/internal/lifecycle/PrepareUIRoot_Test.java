@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class PrepareUIRoot_Test extends TestCase {
   
+  private IPhase phase;
+
   private static class TestEntryPoint implements IEntryPoint {
     static boolean wasInvoked;
     public int createUI() {
@@ -31,17 +33,19 @@ public class PrepareUIRoot_Test extends TestCase {
       return 0;
     }
   }
+  
+  public void testGetPhaseId() {
+    assertEquals( PhaseId.PREPARE_UI_ROOT, phase.getPhaseID() );
+  }
 
   public void testExecuteInSubsequentRequests() throws IOException {
     new Display();
-    IPhase phase = new PrepareUIRoot();
     PhaseId phaseId = phase.execute();
     assertEquals( PhaseId.READ_DATA, phaseId );
   }
   
   public void testExecuteInFirstRequestsWithNoStartupParameter() throws IOException {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
-    IPhase phase = new PrepareUIRoot();
     PhaseId phaseId = phase.execute();
     assertEquals( PhaseId.RENDER, phaseId );
     assertTrue( TestEntryPoint.wasInvoked );
@@ -51,7 +55,6 @@ public class PrepareUIRoot_Test extends TestCase {
     String entryPointName = "myEntryPoint";
     RWTFactory.getEntryPointManager().register( entryPointName, TestEntryPoint.class );
     Fixture.fakeRequestParam( RequestParams.STARTUP, entryPointName );
-    IPhase phase = new PrepareUIRoot();
     PhaseId phaseId = phase.execute();
     assertEquals( PhaseId.RENDER, phaseId );
     assertTrue( TestEntryPoint.wasInvoked );
@@ -59,6 +62,7 @@ public class PrepareUIRoot_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
+    phase = new PrepareUIRoot();
   }
   
   protected void tearDown() throws Exception {

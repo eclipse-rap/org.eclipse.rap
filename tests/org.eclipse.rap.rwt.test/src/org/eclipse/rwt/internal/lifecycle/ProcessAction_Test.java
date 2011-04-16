@@ -22,6 +22,12 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ProcessAction_Test extends TestCase {
   
+  private ProcessAction processAction;
+
+  public void testGetPhaseId() {
+    assertEquals( PhaseId.PROCESS_ACTION, processAction.getPhaseID() );
+  }
+  
   public void testExecute() {
     final boolean[] wasExecuted = { false };
     Display display = new Display();
@@ -34,7 +40,6 @@ public class ProcessAction_Test extends TestCase {
     } );
     ShellEvent shellEvent = new ShellEvent( shell, ShellEvent.SHELL_CLOSED );
     shellEvent.processEvent();
-    ProcessAction processAction = new ProcessAction();
     PhaseId phaseId = processAction.execute();
     assertEquals( PhaseId.RENDER, phaseId );
     assertTrue( wasExecuted[ 0 ] );
@@ -43,6 +48,7 @@ public class ProcessAction_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    processAction = new ProcessAction();
   }
   
   protected void tearDown() throws Exception {
