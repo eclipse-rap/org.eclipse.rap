@@ -32,16 +32,19 @@ final class PrepareUIRoot implements IPhase {
     String startup = request.getParameter( RequestParams.STARTUP );
     PhaseId result;
     if( startup != null ) {
-      TextSizeDetermination.readStartupProbes();
-      RWTFactory.getEntryPointManager().createUI( startup );      
+      createUI( startup );      
       result = PhaseId.RENDER;
     } else if( RWTLifeCycle.getSessionDisplay() == null ) {
-      TextSizeDetermination.readStartupProbes();
-      RWTFactory.getEntryPointManager().createUI( EntryPointManager.DEFAULT );
+      createUI( EntryPointManager.DEFAULT );
       result = PhaseId.RENDER;
     } else {
       result = PhaseId.READ_DATA;
     }
     return result;
+  }
+
+  private static void createUI( String entryPointName ) {
+    TextSizeDetermination.readStartupProbes();
+    RWTFactory.getEntryPointManager().createUI( entryPointName );
   }
 }
