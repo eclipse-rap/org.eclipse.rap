@@ -99,7 +99,6 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( PhaseListenerManager_Test.class );
     suite.addTestSuite( RWTLifeCycle_Test.class );
     suite.addTestSuite( RWTLifeCycle2_Test.class );
-    suite.addTestSuite( PrepareUIRoot_Test.class );
     suite.addTestSuite( ThemeAdapter_Test.class );
     suite.addTestSuite( TextSizeDeterminationHandler_Test.class );
     suite.addTestSuite( TextSizeDeterminationFacadeImpl_Test.class );
