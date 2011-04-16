@@ -18,20 +18,12 @@ import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 
 
-/**
- * The superclass for all implementations of the lifecycle of a request.
- */
 public abstract class LifeCycle implements ILifeCycle {
 
-  /**
-   * Executes the lifecycle defined in this LifeCycle. Implementing subclasses
-   * use this as entry point to the processing of their phases.
-   */
+  public abstract Scope getScope();
+
   public abstract void execute() throws ServletException, IOException;
 
   public abstract void addPhaseListener( PhaseListener listener );
-
   public abstract void removePhaseListener( PhaseListener listener );
-
-  public abstract Scope getScope();
 }
