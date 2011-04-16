@@ -45,7 +45,7 @@ public class PhaseListenerManager_Test extends TestCase {
     }
   }
 
-  private static class FailingPhaseListener implements PhaseListener {
+  private static class ExceptionPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
     public void beforePhase( PhaseEvent event ) {
       throw new RuntimeException();
@@ -53,6 +53,22 @@ public class PhaseListenerManager_Test extends TestCase {
     public void afterPhase( PhaseEvent event ) {
       throw new RuntimeException();
     }
+    public PhaseId getPhaseId() {
+      return PhaseId.ANY;
+    }
+  }
+
+  private static class ErrorPhaseListener implements PhaseListener {
+    private static final long serialVersionUID = 1L;
+  
+    public void beforePhase( PhaseEvent event ) {
+      throw new TestError();
+    }
+  
+    public void afterPhase( PhaseEvent event ) {
+      throw new TestError();
+    }
+  
     public PhaseId getPhaseId() {
       return PhaseId.ANY;
     }
@@ -194,6 +210,12 @@ public class PhaseListenerManager_Test extends TestCase {
     assertEquals( phase, phaseEvent.getPhaseId() );
   }
   
+  public void testNotifyBeforePhaseWithNonMatchingListener() {
+    phaseListenerManager.addPhaseListener( new LoggingPhaseListener( PhaseId.RENDER ) );
+    phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA );
+    assertEquals( 0, phaseEvents.size() );
+  }
+  
   public void testNotifyBeforePhaseWithANYListener() {
     PhaseId phase = PhaseId.READ_DATA;
     phaseListenerManager.addPhaseListener( new LoggingPhaseListener( PhaseId.ANY ) );
@@ -207,33 +229,69 @@ public class PhaseListenerManager_Test extends TestCase {
   public void testExceptionsInBeforePhaseEvent() {
     List loggedExceptions = new LinkedList();
     setupServletContextLog( loggedExceptions );
-    phaseListenerManager.addPhaseListener( new FailingPhaseListener() );
-    phaseListenerManager.addPhaseListener( new FailingPhaseListener() );
+    phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
+    phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
     phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA );
     assertEquals( 2, loggedExceptions.size() );
   }
-  
+
   public void testErrorInBeforePhaseEvent() {
     List loggedExceptions = new LinkedList();
     setupServletContextLog( loggedExceptions );
-    phaseListenerManager.addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-      public void beforePhase( PhaseEvent event ) {
-        throw new TestError();
-      }
-      public void afterPhase( PhaseEvent event ) {
-      }
-      public PhaseId getPhaseId() {
-        return PhaseId.ANY;
-      }
-    } );
+    phaseListenerManager.addPhaseListener( new ErrorPhaseListener() );
     try {
       phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA );
       fail();
     } catch( TestError expected ) {
     }
   }
+
+  public void testNotifyAfterPhaseWithSpecificListener() {
+    PhaseId phase = PhaseId.READ_DATA;
+    phaseListenerManager.addPhaseListener( new LoggingPhaseListener( phase ) );
+    phaseListenerManager.notifyAfterPhase( phase );
+    assertEquals( 1, phaseEvents.size() );
+    PhaseEvent phaseEvent = ( PhaseEvent ) phaseEvents.get( 0 );
+    assertSame( lifeCycle, phaseEvent.getSource() ); 
+    assertEquals( phase, phaseEvent.getPhaseId() );
+  }
   
+  public void testNotifyAfterPhaseWithNonMatchingListener() {
+    phaseListenerManager.addPhaseListener( new LoggingPhaseListener( PhaseId.RENDER ) );
+    phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA );
+    assertEquals( 0, phaseEvents.size() );
+  }
+  
+  public void testNotifyAfterPhaseWithANYListener() {
+    PhaseId phase = PhaseId.READ_DATA;
+    phaseListenerManager.addPhaseListener( new LoggingPhaseListener( PhaseId.ANY ) );
+    phaseListenerManager.notifyAfterPhase( phase );
+    assertEquals( 1, phaseEvents.size() );
+    PhaseEvent phaseEvent = ( PhaseEvent ) phaseEvents.get( 0 );
+    assertSame( lifeCycle, phaseEvent.getSource() ); 
+    assertEquals( phase, phaseEvent.getPhaseId() );
+  }
+  
+  public void testExceptionsInAfterPhaseEvent() {
+    List loggedExceptions = new LinkedList();
+    setupServletContextLog( loggedExceptions );
+    phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
+    phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
+    phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA );
+    assertEquals( 2, loggedExceptions.size() );
+  }
+
+  public void testErrorInAfterPhaseEvent() {
+    List loggedExceptions = new LinkedList();
+    setupServletContextLog( loggedExceptions );
+    phaseListenerManager.addPhaseListener( new ErrorPhaseListener() );
+    try {
+      phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA );
+      fail();
+    } catch( TestError expected ) {
+    }
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     phaseEvents = new LinkedList();
