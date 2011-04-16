@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-public interface RequestParams {
- 
-  final static String STARTUP = "startup";
-  static final String UIROOT = "uiRoot";
+public final class RequestParams {
+  public static final String STARTUP = "startup";
+  public static final String UIROOT = "uiRoot";
+  
+  private RequestParams() {
+    // prevent instantiation
+  }
 }
