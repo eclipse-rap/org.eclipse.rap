@@ -272,6 +272,11 @@ public class Control_Test extends TestCase {
     assertSame( display.getSystemFont(), label.getFont() );
   }
 
+  /*
+   * In SWT, it is not allowed to dispose of a resource that is in use. (see bug 342943)
+   * Though, SWT does not immediately 'react' when disposing of a resource that is in use.
+   * This test mimics the behaviour on Windows. 
+   */
   public void testGetFontAfterDisposingFont() {
     Control control = new Label( shell, SWT.NONE );
     Font font = new Font( display, "font-name", 10, SWT.NONE );
