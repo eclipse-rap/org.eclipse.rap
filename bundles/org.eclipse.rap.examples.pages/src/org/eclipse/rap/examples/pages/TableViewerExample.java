@@ -92,10 +92,10 @@ public class TableViewerExample implements IExamplePage {
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
       public void selectionChanged( final SelectionChangedEvent event ) {
-        StructuredSelection sel = (StructuredSelection) event.getSelection();
+        StructuredSelection sel = ( StructuredSelection )event.getSelection();
         Element firstElement = ( Element )sel.getFirstElement();
         if( firstElement != null ) {
-          lblSelection.setText( firstElement.name
+          lblSelection.setText(   firstElement.name
                                 + " ("
                                 + firstElement.symbol
                                 + ")" );
