@@ -179,8 +179,8 @@ public class ThemeStoreWriter_Test extends TestCase {
     String output = storeWriter.createJs();
     String expected =   "\"colors\": {\n"
                       + "\"3ffe9078\": \"#cecece\",\n"
-                      + "\"400339c0\": \"#ff0000\",\n"
-                      + "\"ffffffff\": \"undefined\"\n"
+                      + "\"ffffffff\": \"undefined\",\n"
+                      + "\"400339c0\": \"#ff0000\"\n"
                       + "}";
     assertTrue( output.indexOf( expected ) != -1 );
     expected =   "\"Button\": {\n"

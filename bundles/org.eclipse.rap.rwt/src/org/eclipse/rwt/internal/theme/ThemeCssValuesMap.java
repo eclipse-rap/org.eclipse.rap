@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -25,16 +25,12 @@ public final class ThemeCssValuesMap {
 
   private final Map valuesMap;
 
-  public ThemeCssValuesMap( final StyleSheet styleSheet,
-                            final ThemeableWidget[] themeableWidgets )
-  {
-    valuesMap = new HashMap();
+  public ThemeCssValuesMap( StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
+    valuesMap = new LinkedHashMap();
     extractValues( styleSheet, themeableWidgets );
   }
 
-  public ConditionalValue[] getValues( final String elementName,
-                                       final String propertyName )
-  {
+  public ConditionalValue[] getValues( String elementName, String propertyName ) {
     ConditionalValue[] result;
     PropertyKey propertyKey = new PropertyKey( elementName, propertyName );
     result = ( ConditionalValue[] )valuesMap.get( propertyKey );
@@ -61,18 +57,14 @@ public final class ThemeCssValuesMap {
     return result;
   }
 
-  private void extractValues( final StyleSheet styleSheet,
-                              final ThemeableWidget[] themeableWidgets )
-  {
+  private void extractValues( StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
     for( int i = 0; i < themeableWidgets.length; i++ ) {
       ThemeableWidget themeableWidget = themeableWidgets[ i ];
       extractValuesForWidget( styleSheet, themeableWidget );
     }
   }
 
-  private void extractValuesForWidget( final StyleSheet styleSheet,
-                                       final ThemeableWidget themeableWidget )
-  {
+  private void extractValuesForWidget( StyleSheet styleSheet, ThemeableWidget themeableWidget ) {
     IThemeCssElement[] elements = themeableWidget.elements;
     if( elements != null ) {
       for( int i = 0; i < elements.length; i++ ) {
@@ -82,8 +74,7 @@ public final class ThemeCssValuesMap {
         for( int j = 0; j < properties.length; j++ ) {
           String propertyName = properties[ j ];
           PropertyKey key = new PropertyKey( elementName, propertyName );
-          ConditionalValue[] values = styleSheet.getValues( elementName,
-                                                            propertyName );
+          ConditionalValue[] values = styleSheet.getValues( elementName, propertyName );
           ConditionalValue[] filteredValues = filterValues( values, element );
           valuesMap.put( key, filteredValues );
         }
@@ -91,9 +82,7 @@ public final class ThemeCssValuesMap {
     }
   }
 
-  private ConditionalValue[] filterValues( final ConditionalValue[] values,
-                                           final IThemeCssElement element )
-  {
+  private ConditionalValue[] filterValues( ConditionalValue[] values, IThemeCssElement element ) {
     List resultList = new ArrayList();
     String[] latestConstraint = null;
     for( int j = 0; j < values.length; j++ ) {
@@ -110,9 +99,7 @@ public final class ThemeCssValuesMap {
     return result;
   }
 
-  private static boolean matches( final IThemeCssElement element,
-                                  final String[] constraints )
-  {
+  private static boolean matches( IThemeCssElement element, String[] constraints ) {
     boolean passed = true;
     // TODO [rst] Revise: no restrictions for * rules
     if( !"*".equals( element.getName() ) ) {
@@ -128,8 +115,7 @@ public final class ThemeCssValuesMap {
     return passed;
   }
 
-  private static boolean contains( final String[] elements, final String string )
-  {
+  private static boolean contains( String[] elements, String string ) {
     boolean result = false;
     for( int i = 0; i < elements.length && !result; i++ ) {
       if( string.equals( elements[ i ] ) ) {
@@ -147,20 +133,19 @@ public final class ThemeCssValuesMap {
 
     private final int hashCode;
 
-    public PropertyKey( final String element, final String property ) {
+    public PropertyKey( String element, String property ) {
       this.element = element;
       this.property = property;
       hashCode = element.hashCode() ^ property.hashCode();
     }
 
-    public boolean equals( final Object obj ) {
+    public boolean equals( Object obj ) {
       boolean result;
       if( obj == this ) {
         result = true;
       } else if( obj != null && obj.getClass() == getClass() ) {
         PropertyKey other = ( PropertyKey )obj;
-        result =    element.equals( other.element )
-                 && property.equals( other.property );
+        result = element.equals( other.element ) && property.equals( other.property );
       } else {
         result = false;
       }
