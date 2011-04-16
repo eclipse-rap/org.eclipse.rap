@@ -20,6 +20,6 @@ interface IPhase {
   interface IInterruptible extends IPhase {
   }
   
-  abstract PhaseId getPhaseID();
+  abstract PhaseId getPhaseId();
   abstract PhaseId execute() throws IOException;
 }

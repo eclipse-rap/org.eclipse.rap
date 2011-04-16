@@ -49,7 +49,7 @@ public class RWTLifeCycle extends LifeCycle {
       public PhaseId execute() throws IOException {
         return null;
       }
-      public PhaseId getPhaseID() {
+      public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
       }
     },
@@ -61,7 +61,7 @@ public class RWTLifeCycle extends LifeCycle {
       public PhaseId execute() throws IOException {
         return null;
       }
-      public PhaseId getPhaseID() {
+      public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
       }
     },
@@ -71,7 +71,7 @@ public class RWTLifeCycle extends LifeCycle {
         new ProcessAction().execute();
         return null;
       }
-      public PhaseId getPhaseID() {
+      public PhaseId getPhaseId() {
         return PhaseId.PROCESS_ACTION;
       }
     },
@@ -183,13 +183,13 @@ public class RWTLifeCycle extends LifeCycle {
         // A non-null currentPhase indicates that an IInterruptible phase
         // was executed before. In this case we now need to execute the
         // AfterPhase events
-        phaseListenerManager.notifyAfterPhase( phaseOrder[ phaseIndex ].getPhaseID() );
+        phaseListenerManager.notifyAfterPhase( phaseOrder[ phaseIndex ].getPhaseId() );
         start = currentPhase.intValue() + 1;
       }
       boolean interrupted = false;
       for( int i = start; !interrupted && i < phaseOrder.length; i++ ) {
         IPhase phase = phaseOrder[ i ];
-        phaseListenerManager.notifyBeforePhase( phase.getPhaseID() );
+        phaseListenerManager.notifyBeforePhase( phase.getPhaseId() );
         if( phase instanceof IInterruptible ) {
           // IInterruptible phases return control to the user code, thus
           // they don't call Phase#execute()
@@ -204,7 +204,7 @@ public class RWTLifeCycle extends LifeCycle {
             // the application call stack
             throw new PhaseExecutionError( e );
           }
-          phaseListenerManager.notifyAfterPhase( phase.getPhaseID() );
+          phaseListenerManager.notifyAfterPhase( phase.getPhaseId() );
         }
       }
       if( !interrupted ) {

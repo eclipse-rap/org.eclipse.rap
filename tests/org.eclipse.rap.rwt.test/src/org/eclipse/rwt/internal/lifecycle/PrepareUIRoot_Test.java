@@ -35,7 +35,7 @@ public class PrepareUIRoot_Test extends TestCase {
   }
   
   public void testGetPhaseId() {
-    assertEquals( PhaseId.PREPARE_UI_ROOT, phase.getPhaseID() );
+    assertEquals( PhaseId.PREPARE_UI_ROOT, phase.getPhaseId() );
   }
 
   public void testExecuteInSubsequentRequests() throws IOException {

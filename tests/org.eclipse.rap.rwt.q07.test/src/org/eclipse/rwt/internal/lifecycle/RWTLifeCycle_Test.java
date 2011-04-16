@@ -452,16 +452,16 @@ public class RWTLifeCycle_Test extends TestCase {
           fail( "Interruptible phase should never get executed." );
           return null;
         }
-        public PhaseId getPhaseID() {
+        public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
       },
       new IPhase() {
         public PhaseId execute() throws IOException {
-          log.append( "execute" + getPhaseID() );
+          log.append( "execute" + getPhaseId() );
           return null;
         }
-        public PhaseId getPhaseID() {
+        public PhaseId getPhaseId() {
           return PhaseId.RENDER;
         }
       }
@@ -493,7 +493,7 @@ public class RWTLifeCycle_Test extends TestCase {
         public PhaseId execute() throws IOException {
           return null;
         }
-        public PhaseId getPhaseID() {
+        public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
       }
@@ -691,7 +691,7 @@ public class RWTLifeCycle_Test extends TestCase {
         public PhaseId execute() throws IOException {
           return null;
         }
-        public PhaseId getPhaseID() {
+        public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
       }
@@ -720,7 +720,7 @@ public class RWTLifeCycle_Test extends TestCase {
         public PhaseId execute() throws IOException {
           return null;
         }
-        public PhaseId getPhaseID() {
+        public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
       }
@@ -773,7 +773,7 @@ public class RWTLifeCycle_Test extends TestCase {
           log.append( "prepare" );
           return null;
         }
-        public PhaseId getPhaseID() {
+        public PhaseId getPhaseId() {
           return PhaseId.PREPARE_UI_ROOT;
         }
       },
@@ -781,7 +781,7 @@ public class RWTLifeCycle_Test extends TestCase {
         public PhaseId execute() throws IOException {
           return null;
         }
-        public PhaseId getPhaseID() {
+        public PhaseId getPhaseId() {
           return PhaseId.PROCESS_ACTION;
         }
       }
@@ -811,7 +811,7 @@ public class RWTLifeCycle_Test extends TestCase {
         public PhaseId execute() throws IOException {
           return null;
         }
-        public PhaseId getPhaseID() {
+        public PhaseId getPhaseId() {
           return PhaseId.PROCESS_ACTION;
         }
       }

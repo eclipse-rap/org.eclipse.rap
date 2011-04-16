@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Display;
 
 final class ProcessAction implements IPhase {
 
-  public PhaseId getPhaseID() {
+  public PhaseId getPhaseId() {
     return PhaseId.PROCESS_ACTION;
   }
 

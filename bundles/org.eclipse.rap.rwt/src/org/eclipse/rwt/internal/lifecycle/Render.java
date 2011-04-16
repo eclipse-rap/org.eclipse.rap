@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Display;
 
 final class Render implements IPhase {
 
-  public PhaseId getPhaseID() {
+  public PhaseId getPhaseId() {
     return PhaseId.RENDER;
   }
 

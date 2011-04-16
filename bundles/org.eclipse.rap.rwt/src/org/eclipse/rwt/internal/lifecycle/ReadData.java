@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Display;
 
 final class ReadData implements IPhase {
 
-  public PhaseId getPhaseID() {
+  public PhaseId getPhaseId() {
     return PhaseId.READ_DATA;
   }
 

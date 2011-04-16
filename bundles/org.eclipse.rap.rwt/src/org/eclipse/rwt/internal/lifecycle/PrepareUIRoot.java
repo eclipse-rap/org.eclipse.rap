@@ -23,7 +23,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 final class PrepareUIRoot implements IPhase {
 
-  public PhaseId getPhaseID() {
+  public PhaseId getPhaseId() {
     return PhaseId.PREPARE_UI_ROOT;
   }
 

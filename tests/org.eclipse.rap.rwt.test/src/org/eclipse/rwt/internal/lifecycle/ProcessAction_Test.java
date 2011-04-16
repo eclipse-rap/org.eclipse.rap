@@ -25,7 +25,7 @@ public class ProcessAction_Test extends TestCase {
   private ProcessAction processAction;
 
   public void testGetPhaseId() {
-    assertEquals( PhaseId.PROCESS_ACTION, processAction.getPhaseID() );
+    assertEquals( PhaseId.PROCESS_ACTION, processAction.getPhaseId() );
   }
   
   public void testExecute() {
