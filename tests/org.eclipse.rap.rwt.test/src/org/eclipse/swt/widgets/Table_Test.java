@@ -1370,6 +1370,20 @@ public class Table_Test extends TestCase {
     assertEquals( 1, table.getColumnOrder()[ 1 ] );
   }
 
+  public void testDisposeWithFontDisposeInDisposeListener() {
+    Table table = new Table( shell, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
+    table.setFont( font );
+    table.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        font.dispose();
+      }
+    } );
+    table.dispose();
+  }
+
   public void testRedrawAfterDisposeVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -2235,7 +2249,7 @@ public class Table_Test extends TestCase {
     
     assertEquals( 0, eventLog.size() );
   }
-
+  
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {
