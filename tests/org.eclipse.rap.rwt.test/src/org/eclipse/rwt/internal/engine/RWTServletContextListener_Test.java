@@ -186,6 +186,7 @@ public class RWTServletContextListener_Test extends TestCase {
     // Prepare and execute a life cycle to ensure that the phase listener
     // was loaded and gets executed
     Fixture.createServiceContext();
+    RWTFactory.getAdapterFactoryRegistry().register();
     Class entryPointType = TestEntryPointWithShell.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointType );
     Fixture.fakeResponseWriter();
@@ -215,6 +216,7 @@ public class RWTServletContextListener_Test extends TestCase {
     // Prepare and execute a life cycle to ensure that the phase listener
     // was loaded and gets executed
     Fixture.createServiceContext();
+    RWTFactory.getAdapterFactoryRegistry().register();
     Class entryPointType = TestEntryPointWithShell.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointType );
     Fixture.fakeResponseWriter();

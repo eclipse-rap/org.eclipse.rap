@@ -28,8 +28,7 @@ public final class DisplayUtil {
 
   public static IDisplayLifeCycleAdapter getLCA( final Display display ) {
     Class clazz = ILifeCycleAdapter.class;
-    IDisplayLifeCycleAdapter result;
-    result = ( IDisplayLifeCycleAdapter )display.getAdapter( clazz );
+    IDisplayLifeCycleAdapter result = ( IDisplayLifeCycleAdapter )display.getAdapter( clazz );
     if( result == null ) {
       throwAdapterException( clazz );
     }

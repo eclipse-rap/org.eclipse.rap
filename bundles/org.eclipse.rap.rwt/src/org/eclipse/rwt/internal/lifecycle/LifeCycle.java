@@ -12,7 +12,6 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
-import javax.servlet.ServletException;
 
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -22,8 +21,8 @@ public abstract class LifeCycle implements ILifeCycle {
 
   public abstract Scope getScope();
 
-  public abstract void execute() throws ServletException, IOException;
+  public abstract void execute() throws IOException;
 
-  public abstract void addPhaseListener( PhaseListener listener );
-  public abstract void removePhaseListener( PhaseListener listener );
+  public abstract void addPhaseListener( PhaseListener phaseListener );
+  public abstract void removePhaseListener( PhaseListener phaseListener );
 }

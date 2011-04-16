@@ -11,7 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -36,6 +37,9 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
   final static String SESSION_INITIALIZED
     = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
+  private static final String ADAPTER_MANAGER_INITIALIZED 
+    = LifeCycleServiceHandler.class.getName() + "#adapterManagerInitialized";
+
 
   public void service() throws IOException, ServletException {
     synchronized( ContextProvider.getSession() ) {
@@ -43,7 +47,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
   }
 
-  void synchronizedService() throws ServletException, IOException {
+  void synchronizedService() throws IOException {
     initializeStateInfo();
     RWTRequestVersionControl.beforeService();
     try {
@@ -69,11 +73,12 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
   }
 
-  private static void runLifeCycle() throws ServletException, IOException {
+  private static void runLifeCycle() throws IOException {
     checkRequest();
     initializeSession();
     if( isSessionInitialized() ) {
       RequestParameterBuffer.merge();
+      initializeAdapterManager();
       LifeCycle lifeCycle = ( LifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
       lifeCycle.execute();
     } else {
@@ -82,6 +87,14 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       RWTFactory.getStartupPage().send();
     }
     writeOutput();
+  }
+
+  private static void initializeAdapterManager() {
+    ISessionStore session = ContextProvider.getSession();
+    if( session.getAttribute( ADAPTER_MANAGER_INITIALIZED ) == null ) {
+      RWTFactory.getAdapterFactoryRegistry().register();
+      session.setAttribute( ADAPTER_MANAGER_INITIALIZED, Boolean.TRUE );
+    }
   }
 
 
@@ -132,8 +145,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   }
 
   private static void clearSessionStore() {
-    SessionStoreImpl sessionStore
-      = ( SessionStoreImpl )ContextProvider.getSession();
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSession();
     // clear attributes of session store to enable new startup
     sessionStore.valueUnbound( null );
     // reinitialize session store state

@@ -10,18 +10,15 @@
  *    EclipseSource - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-
 package org.eclipse.rwt.internal;
-
-import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
@@ -40,70 +37,82 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     }
   }
   
-  public void testRegistration() {
+  public void testAdd() {
     RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, TestAdaptable.class );
     RWTFactory.getAdapterFactoryRegistry().register();
     TestAdaptable adaptable = new TestAdaptable();
     Runnable runnable = ( Runnable )adaptable.getAdapter( Runnable.class );
     assertNotNull( runnable );
-    
+  }
+  
+  public void testAddWithNullFactoryClass() {
     try {
       RWTFactory.getAdapterFactoryRegistry().add( null, TestAdaptable.class );
       fail( "Parameter factory class must not be null." );
-    } catch( final NullPointerException npe ) {
-      // expected
+    } catch( final NullPointerException expected ) {
     }
-    
+  }
+
+  public void testAddWithNullAdaptableClass() {
     try {
       RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, null );
       fail( "Parameter adaptable class must not be null." );
-    } catch( final NullPointerException npe ) {
-      // expected
-    }
-    
-    try {
-      RWTFactory.getAdapterFactoryRegistry().add( Object.class, TestAdaptable.class );
-      fail( "Parameter factory class must not instance of AdapterFactory." );
-    } catch( final IllegalArgumentException iae ) {
-      // expected
-    }
-    
-    try {
-      RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, Object.class );
-      fail( "Parameter adaptable class must not instance of Adaptable." );
-    } catch( final IllegalArgumentException iae ) {
-      // expected
-    }
-    
-    try {
-      RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, TestAdaptable.class );
-      fail( "Factory - adaptable pair was already added." );
-    } catch( final IllegalArgumentException iae ) {
-      // expected
+    } catch( final NullPointerException expected ) {
     }
   }
   
-  public void testAdapterFactoryCreation() throws IOException {
+  public void testAddWithInvalidFactoryClass() {
+    try {
+      RWTFactory.getAdapterFactoryRegistry().add( Object.class, TestAdaptable.class );
+      fail( "Parameter factory class must not instance of AdapterFactory." );
+    } catch( final IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testAddWithInvalidAdaptableClass() {
+    try {
+      RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, Object.class );
+      fail( "Parameter adaptable class is not an instance of Adaptable." );
+    } catch( final IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testAddWithExistingAdaptable() {
+    RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, TestAdaptable.class );
+    try {
+      RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, TestAdaptable.class );
+      fail( "Factory - adaptable pair was already added." );
+    } catch( final IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testAdapterFactoryCreation() throws Exception {
     // [fappel]:
-    // AdapterFactories are used in Session scope but the RWTLifeCycle which
-    // is responsible for factory creation has application scope.
-    // This tests that each session becomes its own instance of a particular
-    // AdapterFactory implementation.
+    // AdapterFactories are used in Session scope but the RWTLifeCycle which is responsible for 
+    // factory creation has application scope.
+    // This tests that each session gets its own instance of a particular AdapterFactory 
+    // implementation.
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
     TestAdapterFactory.log = "";
     RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, TestAdaptable.class );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     assertEquals( "", TestAdapterFactory.log );
+    Fixture.fakeNewRequest();
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
+    createResponseOutputStream();
     ThemeManager.getInstance().initialize();
-    lifeCycle.execute();
+    new LifeCycleServiceHandler().service();
     assertEquals( TestAdapterFactory.CREATED, TestAdapterFactory.log );
 
     ContextProvider.disposeContext();
     Fixture.createServiceContext();
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
     Fixture.fakeResponseWriter();
+    createResponseOutputStream();
     
     TestAdapterFactory.log = "";
-    lifeCycle.execute();
+    new LifeCycleServiceHandler().service();
     assertEquals( TestAdapterFactory.CREATED, TestAdapterFactory.log );
   }
 
@@ -115,6 +124,11 @@ public class AdapterFactoryRegistry_Test extends TestCase {
   
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private static void createResponseOutputStream() {
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    response.setOutputStream( new TestServletOutputStream() );
   }
 
 }

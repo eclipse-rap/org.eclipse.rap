@@ -33,8 +33,6 @@ public class RWTLifeCycle extends LifeCycle {
 
   private static final String ATTR_SESSION_DISPLAY
     = RWTLifeCycle.class.getName() + "#sessionDisplay";
-  private static final String INITIALIZED
-    = RWTLifeCycle.class.getName() + "Initialized";
   private static final String CURRENT_PHASE
     = RWTLifeCycle.class.getName() + ".currentPhase";
   private static final String PHASE_ORDER
@@ -125,7 +123,6 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   public void execute() throws IOException {
-    initialize();
     if( getEntryPoint() != null ) {
       setPhaseOrder( PHASE_ORDER_STARTUP );
     } else {
@@ -317,14 +314,6 @@ public class RWTLifeCycle extends LifeCycle {
     ISessionStore sessionStore = ContextProvider.getSession();
     SessionStoreImpl sessionStoreImpl = ( SessionStoreImpl )sessionStore;
     sessionStoreImpl.setShutdownAdapter( adapter );
-  }
-
-  private static void initialize() {
-    ISessionStore session = ContextProvider.getSession();
-    if( session.getAttribute( INITIALIZED ) == null ) {
-      RWTFactory.getAdapterFactoryRegistry().register();
-      session.setAttribute( INITIALIZED, Boolean.TRUE );
-    }
   }
 
   public void setPhaseOrder( final IPhase[] phaseOrder ) {

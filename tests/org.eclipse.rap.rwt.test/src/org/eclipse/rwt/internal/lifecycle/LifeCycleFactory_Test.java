@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import javax.servlet.ServletException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -28,7 +26,7 @@ public class LifeCycleFactory_Test extends TestCase {
     }
     public void removePhaseListener( PhaseListener listener ) {
     }
-    public void execute() throws ServletException {
+    public void execute() {
     }
     public Scope getScope() { 
       return Scope.APPLICATION; 
@@ -40,7 +38,7 @@ public class LifeCycleFactory_Test extends TestCase {
     }
     public void removePhaseListener( PhaseListener listener ) {
     }
-    public void execute() throws ServletException {
+    public void execute() {
     }
     public Scope getScope() { 
       return Scope.SESSION; 
