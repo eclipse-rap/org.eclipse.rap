@@ -43,7 +43,7 @@ public final class ThemeCssValuesMap {
   }
 
   public QxType[] getAllValues() {
-    Set resultSet = new HashSet();
+    Set resultSet = new LinkedHashSet();
     Iterator iterator = valuesMap.values().iterator();
     while( iterator.hasNext() ) {
       ConditionalValue[] condValues = ( ConditionalValue[] )iterator.next();
