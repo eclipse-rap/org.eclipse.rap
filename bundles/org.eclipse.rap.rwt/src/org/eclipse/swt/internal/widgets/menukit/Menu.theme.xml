@@ -71,6 +71,9 @@
       <property name="opacity" 
           description="The opacity of the item. A value between 0 and 1." />
 
+      <style name="BAR"
+          description="Style constant for menu bar items." />
+
       <style name="PUSH"
           description="Style constant for push menu item behavior." />
 
@@ -87,6 +90,9 @@
           description="Style constant for cascade menu item behavior." />
 
       <state name="hover"
+          description="On mouse over" />
+
+      <state name="pressed"
           description="On mouse over" />
 
       <state name="disabled"

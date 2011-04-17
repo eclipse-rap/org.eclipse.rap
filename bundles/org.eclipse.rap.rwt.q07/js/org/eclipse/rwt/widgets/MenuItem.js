@@ -39,26 +39,31 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
       this._isSelectable = false;
       this._isDeselectable = false;
       this._sendEvent = false;
+      this.addState( "rwt_BAR" );
      break;
      case "push" : 
       this._isSelectable = false;
       this._isDeselectable = false;
       this._sendEvent = true;
+      this.addState( "rwt_PUSH" );
      break;
      case "check":
       this._isSelectable = true;
       this._isDeselectable = true;
       this._sendEvent = true;     
+      this.addState( "rwt_CHECK" );
      break;
      case "cascade":
       this._isSelectable = false;
       this._isDeselectable = false;
       this._sendEvent = false;
+      this.addState( "rwt_CASCADE" );
      break;
      case "radio":
       this._isSelectable = true;
       this._sendEvent = false;
       this.setNoRadioGroup( false );
+      this.addState( "rwt_RADIO" );
       org.eclipse.rwt.RadioButtonUtil.registerExecute( this );
      break;
      default:

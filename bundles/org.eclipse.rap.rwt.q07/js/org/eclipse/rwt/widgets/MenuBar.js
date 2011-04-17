@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -18,7 +18,6 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuBar", {
     this.addEventListener( "mousedown", this._onMouseDown );
     this.addEventListener( "mouseover", this._onMouseOver );
     this.addEventListener( "mouseout", this._onMouseOut );
-    // TODO [tb] : optional: style "pressed" state
     // TODO [tb] : optional: implement keyboard control
   },
 

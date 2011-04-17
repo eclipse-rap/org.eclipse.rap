@@ -619,8 +619,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
       result.textColor = tv.getCssColor( "MenuItem", "color" );
       if( states.cascade ) {                
-        result.arrow
-          = tv.getCssSizedImage( "MenuItem-CascadeIcon", "background-image" );
+        result.arrow = tv.getCssSizedImage( "MenuItem-CascadeIcon", "background-image" );
       } else {
         result.arrow = null;        
       }
@@ -634,12 +633,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         }
       } else {
         if( states.radio ) {
-          var radioWidth
-            = tv.getCssSizedImage( "MenuItem-RadioIcon", "background-image" )[ 1 ];
+          var radioWidth = tv.getCssSizedImage( "MenuItem-RadioIcon", "background-image" )[ 1 ];
           result.selectionIndicator = [ null, radioWidth, 0 ];
         } else if( states.check ) {
-          var checkWidth 
-            = tv.getCssSizedImage( "MenuItem-CheckIcon", "background-image" )[ 1 ];
+          var checkWidth = tv.getCssSizedImage( "MenuItem-CheckIcon", "background-image" )[ 1 ];
           result.selectionIndicator = [ null, checkWidth, 0 ];          
         } else {
           result.selectionIndicator = null;
@@ -726,10 +723,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "Text", "font" );
       result.textColor = tv.getCssColor( "Text", "color" );
       result.backgroundColor = tv.getCssColor( "Text", "background-color" );
-      result.backgroundImage = tv.getCssImage( "Text", 
-                                               "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "Text", 
-                                                     "background-image" );
+      result.backgroundImage = tv.getCssImage( "Text", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Text", "background-image" );
       result.border = tv.getCssBorder( "Text", "border" );
       // [if] Do not apply top/bottom paddings on the client
       var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );

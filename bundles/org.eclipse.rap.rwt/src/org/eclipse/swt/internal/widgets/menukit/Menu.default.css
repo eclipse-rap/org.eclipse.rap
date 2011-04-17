@@ -36,6 +36,11 @@ MenuItem:hover {
   color: #4a4a4a;
 }
 
+MenuItem[BAR]:pressed {
+  background-color: #00589f;
+  color: white;
+}
+
 MenuItem-CheckIcon {
   background-image: url( resource/widget/rap/menu/checkbox.gif );
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,9 +36,7 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, 
-                             "org.eclipse.rwt.widgets.MenuItem", 
-                             ITEM_TYPE_BAR );
+    MenuItemLCAUtil.newItem( menuItem, "org.eclipse.rwt.widgets.MenuItem", ITEM_TYPE_BAR );
   }
 
   // TODO [tb] the client-side menuItem supports images, but the menubar 

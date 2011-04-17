@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,12 +49,8 @@ final class PushMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    String type = ( menuItem.getStyle() & SWT.CASCADE ) != 0
-                   ? ITEM_TYPE_CASCADE
-                   : ITEM_TYPE_PUSH;
-    MenuItemLCAUtil.newItem( menuItem,
-                             "org.eclipse.rwt.widgets.MenuItem",
-                             type );
+    String type = ( menuItem.getStyle() & SWT.CASCADE ) != 0 ? ITEM_TYPE_CASCADE : ITEM_TYPE_PUSH;
+    MenuItemLCAUtil.newItem( menuItem, "org.eclipse.rwt.widgets.MenuItem", type );
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {
