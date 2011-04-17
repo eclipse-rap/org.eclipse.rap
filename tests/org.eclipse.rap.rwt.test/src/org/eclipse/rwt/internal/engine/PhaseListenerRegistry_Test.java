@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 
 
@@ -38,6 +39,12 @@ public class PhaseListenerRegistry_Test extends TestCase {
     phaseListenerRegistry = new PhaseListenerRegistry();
   }
   
+  protected void tearDown() throws Exception {
+    if( ContextProvider.hasContext() ) {
+      Fixture.disposeOfServiceContext();
+    }
+  }
+  
   public void testDefaultInitialization() {
     Fixture.setServletContextListener( new RWTServletContextListener() );
     Fixture.triggerServletContextInitialized();
@@ -45,8 +52,6 @@ public class PhaseListenerRegistry_Test extends TestCase {
     
     assertEquals( true, findPhaseListener( CurrentPhase.Listener.class ) );
     assertEquals( true, findPhaseListener( PreserveWidgetsPhaseListener.class ) );
-    // clean up
-    Fixture.disposeOfServiceContext();
   }
   
   public void testAdd() {
@@ -76,7 +81,7 @@ public class PhaseListenerRegistry_Test extends TestCase {
     }
   }
   
-  private static boolean findPhaseListener( final Class phaseListenerClass ) {
+  private static boolean findPhaseListener( Class phaseListenerClass ) {
     boolean result = false;
     PhaseListener[] phaseListeners = RWTFactory.getPhaseListenerRegistry().get();
     for( int i = 0; !result && i < phaseListeners.length; i++ ) {
