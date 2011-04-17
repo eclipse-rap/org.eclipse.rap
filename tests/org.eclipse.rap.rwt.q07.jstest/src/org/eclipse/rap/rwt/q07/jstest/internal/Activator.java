@@ -42,17 +42,11 @@ public class Activator extends Plugin implements BundleActivator {
     }
   }
 
-  private void printUrlInformation( String httpPortProperty )
-    throws MalformedURLException
-  {
+  private void printUrlInformation( String httpPortProperty ) throws MalformedURLException {
     int port = Integer.parseInt( httpPortProperty );
     URL url = new URL( PROTOCOL, ADDRESS, port, PATH_TO_TESTS );
     System.out.println( "Use the URL below to start the tests:" );
     System.out.println( url );
-  }
-
-  public void stop( BundleContext context ) throws Exception {
-    super.stop( context );
   }
   
 }
