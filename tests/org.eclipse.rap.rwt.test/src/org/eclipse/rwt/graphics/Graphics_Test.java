@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-package org.eclipse.swt.graphics;
+package org.eclipse.rwt.graphics;
 
 import java.io.*;
 import java.net.URL;
@@ -20,11 +20,11 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Display;
 
@@ -234,7 +234,7 @@ public class Graphics_Test extends TestCase {
       assertFalse( font.isDisposed() );
     }
   }
-
+  
   private static String getRegisterPath( Image image ) {
     String imagePath = ImageFactory.getImagePath( image );
     int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;

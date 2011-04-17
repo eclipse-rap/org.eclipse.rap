@@ -16,6 +16,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.rwt.*;
+import org.eclipse.rwt.graphics.Graphics_Test;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager_Test;
 import org.eclipse.rwt.internal.branding.BrandingUtil_Test;
