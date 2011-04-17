@@ -45,6 +45,9 @@ public final class Graphics {
    * @see Device#getSystemColor
    */
   public static Color getColor( RGB rgb ) {
+    if( rgb == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     return RWTFactory.getResourceFactory().getColor( rgb.red, rgb.green, rgb.blue );
   }
 

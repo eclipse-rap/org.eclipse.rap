@@ -31,6 +31,19 @@ import org.eclipse.swt.widgets.Display;
 
 public class Graphics_Test extends TestCase {
 
+  public void testGetColorWithNullArgument() {
+    try {
+      Graphics.getColor( null );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testGetColorRGBReturnsEqualColorAsGetColor() {
+    Color color1 = Graphics.getColor( new RGB( 1, 1, 1 ) );
+    Color color2 = Graphics.getColor( 1, 1, 1 );
+    assertEquals( color1, color2 );
+  }
+  
   public void testTextExtentNull() {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
     try {
