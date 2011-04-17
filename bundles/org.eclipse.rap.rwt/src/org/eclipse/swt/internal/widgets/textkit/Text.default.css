@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,9 @@
 Text {
   border: none;
   padding: 2px 3px;
-  background-image: none;
   color: #464a4e;
   background-color: #fcfcfc;
+  background-image: none;
 }
 
 Text[BORDER] {
@@ -29,8 +29,18 @@ Text[SINGLE] {
   /* padding: 2px 3px; */
 }
 
+Text[BORDER] {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #dbdbdb ),
+    color-stop( 27%, #f8f8f8 ),
+    to( #fbfbfb )
+  );
+}
+
 Text[MULTI] {
   /* padding: 0px 0px 0px 3px; */
+  background-image: none;
 }
 
 Text[MULTI][BORDER] {

@@ -769,8 +769,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "Combo", "border" );
-      result.backgroundColor
-        = tv.getCssColor( "Combo", "background-color" );
+      result.backgroundColor = tv.getCssColor( "Combo", "background-color" );
+      result.backgroundGradient = tv.getCssGradient( "Combo", "background-image" );
       result.textColor = tv.getCssColor( "Combo", "color" );
       result.font = tv.getCssFont( "Combo", "font" );
       return result;
@@ -825,11 +825,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "Combo-Button", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "Combo-Button", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "Combo-Button", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "Combo-Button", 
-                                                     "background-image" );      
+      result.backgroundGradient = tv.getCssGradient( "Combo-Button", "background-image" );
       // TODO [rst] rather use button.bgcolor?
       result.backgroundColor = tv.getCssColor( "Combo-Button",
                                                "background-color" );
@@ -849,8 +847,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "CCombo", "border" );
-      result.backgroundColor = tv.getCssColor( "CCombo",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "CCombo", "background-color" );
+      result.backgroundGradient = tv.getCssGradient( "CCombo", "background-image" );
       result.textColor = tv.getCssColor( "CCombo", "color" );
       result.font = tv.getCssFont( "CCombo", "font" );
       return result;
@@ -865,8 +863,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "CCombo-List", "border" );
       result.textColor = tv.getCssColor( "CCombo", "color" );
       result.font = tv.getCssFont( "*", "font" );
-      result.backgroundColor = tv.getCssColor( "CCombo",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "CCombo", "background-color" );
+      result.shadow = tv.getCssShadow( "CCombo-List", "box-shadow" );
       return result;
     }
   },
@@ -1196,12 +1194,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-
       result.font = tv.getCssFont( "Spinner", "font" );
       result.textColor = tv.getCssColor( "Spinner", "color" );
       result.backgroundColor = tv.getCssColor( "Spinner", "background-color" );
       result.border = tv.getCssBorder( "Spinner", "border" );
-
+      result.backgroundGradient = tv.getCssGradient( "Spinner", "background-image" );
       return result;
     }
   },
@@ -1935,6 +1932,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "DateTime", "font" );
       result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      result.backgroundGradient = tv.getCssGradient( "DateTime", "background-image" );
       return result;
     }
   },
@@ -1947,6 +1945,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "DateTime", "font" );
       result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      result.backgroundGradient = tv.getCssGradient( "DateTime", "background-image" );
       return result;
     }
   },

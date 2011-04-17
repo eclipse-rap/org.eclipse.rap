@@ -32,6 +32,12 @@
       </description>
     </property>
 
+    <property name="background-image">
+      <description>
+        Background gradient for combo text field.
+      </description>
+    </property>
+
     <property name="font">
       <description>
         The font used for the text field and the drop-down list of a Combo.

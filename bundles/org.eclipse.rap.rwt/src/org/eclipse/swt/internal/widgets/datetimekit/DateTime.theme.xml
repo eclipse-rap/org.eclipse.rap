@@ -22,6 +22,12 @@
     <property name="background-color"
         description="Background color" />
 
+    <property name="background-image">
+      <description>
+        Background gradient for DateTime. Not applied to DateTime Calendar.
+      </description>
+    </property>
+
     <property name="font">
       <description>
         Text font for DateTime. Not applied to DateTime Calendar.

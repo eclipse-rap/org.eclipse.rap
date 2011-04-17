@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
 * available at http://www.eclipse.org/legal/epl-v10.html
@@ -15,11 +15,18 @@ Spinner {
   padding: 1px 2px;
   color: #464a4e;
   background-color: #fcfcfc;
+  background-image: none;
 }
 
 Spinner[BORDER] {
   border: 1px solid #a4a4a4;
   border-radius: 2px 2px 2px 2px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #dbdbdb ),
+    color-stop( 27%, #f8f8f8 ),
+    to( #fbfbfb )
+  );
 }
 
 Spinner-DownButton {

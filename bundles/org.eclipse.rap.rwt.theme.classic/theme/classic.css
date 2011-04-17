@@ -8,6 +8,12 @@
 *   EclipseSource - initial API and implementation
 *******************************************************************************/
 
+/* Group Classic theme */
+
+Group-Frame {
+  border-radius: 0px;
+}
+
 /* Browser Classic theme */
 
 Browser {

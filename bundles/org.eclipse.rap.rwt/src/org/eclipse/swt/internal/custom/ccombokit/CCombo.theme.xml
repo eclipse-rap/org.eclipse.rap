@@ -31,6 +31,12 @@
       </description>
     </property>
 
+    <property name="background-image">
+      <description>
+        Background gradient for combo text field.
+      </description>
+    </property>
+
     <property name="font">
       <description>
         The font used for the text field and the drop-down list of a CCombo.
@@ -57,6 +63,7 @@
         description="Style constant for bordered behavior." />
 
     <element name="CCombo-Button">
+
       <description>
         The drop-down button of RWT CCombo.
       </description>
@@ -161,6 +168,8 @@
             like "inset" or "outset" is used.
           </description>
       </property>
+
+      <property name="box-shadow" description="The shadow behind the combos list." />
 
       <style name="FLAT"
           description="Applies when style FLAT is set on the parent." />

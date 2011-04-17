@@ -20,6 +20,12 @@
 
     <property name="background-color"
         description="Spinner background color" />
+		
+		<property name="background-image">
+		  <description>
+		    Background gradient for spinner.
+		  </description>
+		</property>
 
     <property name="font"
         description="Text font" />
@@ -48,7 +54,7 @@
       
       <property name="padding"
         description="Padding for spinner text fields." />
-      
+            
     </element>
 
     <element name="Spinner-UpButton"

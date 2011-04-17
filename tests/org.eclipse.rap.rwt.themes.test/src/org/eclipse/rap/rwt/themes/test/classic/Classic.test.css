@@ -8,6 +8,12 @@
 *   EclipseSource - initial API and implementation
 *******************************************************************************/
 
+/* Group Classic theme */
+
+Group-Frame {
+  border-radius: 0px;
+}
+
 /* Browser Classic theme */
 
 Browser {
@@ -24,6 +30,7 @@ CCombo {
   background-color: white;
   color: black;
   border: none;
+  background-image: none;
 }
 
 CCombo[BORDER] {
@@ -56,6 +63,7 @@ CCombo-Button[FLAT]:hover {
 
 CCombo-List {
   border: 1px #a7a6aa;
+  background-image: none;
 }
 
 CCombo-Field {
@@ -237,6 +245,7 @@ Combo {
   background-color: white;
   color: black;
   border: 2px inset;
+  background-image: none;
 }
 
 Combo-Button {
@@ -257,6 +266,7 @@ Combo-Button-Icon {
 
 Combo-List {
   border: 1px #a7a6aa;
+  background-image: none;
 }
 
 Combo-Field {
@@ -981,19 +991,23 @@ Text {
 }
 
 Text[BORDER] {
+  background-image: none;
   border: 1px inset;
 }
 
 Text[SINGLE] {
   /* padding: 2px 3px; */
+  background-image: none;
 }
 
 Text[MULTI] {
   /* padding: 0px 0px 0px 3px; */
+  background-image: none;
 }
 
 Text[MULTI][BORDER] {
   /* padding: 0px 0px 0px 4px; */
+  background-image: none;
 }
 
 Text-Message {
