@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     EclipseSource - ongoing development
+ *     Austin Riddle (Texas Center for Applied Technology) - draggable types
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
@@ -14,6 +15,22 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
   type : "static",
   
   statics : {
+    //These represent widget types and (optionally) defined appearances that are used to determine 
+    //if the widget is draggable.  If appearances are defined for a type, then one of the appearances
+    //must match to allow the widget to be draggable.
+    _draggableTypes : {
+      "org.eclipse.swt.widgets.Shell" : null,
+      "org.eclipse.swt.widgets.Sash"  : null,
+      "org.eclipse.swt.widgets.Scale" : [ "scale-thumb" ],
+      "org.eclipse.swt.widgets.Slider" : [ "slider-thumb" ],
+      "org.eclipse.rwt.widgets.ScrollBar" : null,
+      "org.eclipse.swt.custom.ScrolledComposite" : [ "scrollbar-thumb" ],
+      "org.eclipse.rwt.widgets.BasicButton" : [ "scrollbar-thumb" ],
+      "qx.ui.layout.CanvasLayout" : [ "coolitem-handle" ],
+      "org.eclipse.swt.widgets.List" : [ "scrollbar-thumb" ],
+      "org.eclipse.swt.widgets.Table" : [ "table-column", "label", "image", "scrollbar-thumb" ],
+      "org.eclipse.rwt.widgets.Tree" : [ "tree-column", "label", "image", "scrollbar-thumb" ]
+    },
     _lastMouseOverTarget : null,
     _lastMouseDownTarget : null,
     _lastMouseDownPosition : null,
@@ -46,6 +63,14 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         this._registerListeners();
         this._registerFilter();
       } 
+    },
+    
+    // API for registration of custom-widgets for touch handling
+    addDraggableType : function( type ) {
+      //protect already registered types
+      var exists = type in this._draggableTypes;
+      if ( !exists )
+        this._draggableTypes[type] = null;
     },
 
     // Experimental API for custom-widget
@@ -178,13 +203,44 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       }
       if( this._lastMouseDownPosition !== null ) {
         var oldPos = this._lastMouseDownPosition;
+        var target = domEvent.target;
         var touch = this._getTouch( domEvent );
         var pos = [ touch.clientX, touch.clientY ];
-        if(    Math.abs( oldPos[ 0 ] - pos[ 0 ] ) >= 15
-            || Math.abs( oldPos[ 1 ] - pos[ 1 ] ) >= 15 ) {
-          this._cancelMouseSession( domEvent );
+        if ( this._isDraggableWidget( domEvent.target ) ) {
+          domEvent.preventDefault();
+          this._fireMouseEvent( "mousemove", target, domEvent, pos );
+        } else {
+          if( Math.abs( oldPos[ 0 ] - pos[ 0 ] ) >= 15
+              || Math.abs( oldPos[ 1 ] - pos[ 1 ] ) >= 15 ) {
+            this._cancelMouseSession( domEvent );
+          }
         }
       }
+    },
+    
+    _isDraggableWidget : function ( target ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widgetTarget = org.eclipse.rwt.EventHandlerUtil.getOriginalTargetObject( target );
+      //We find the nearest control because matching based on widgetTarget can produce too generalized cases.
+      var widget = widgetManager.findControl( widgetTarget );
+      var draggable = false;
+      if ( widget == null ) { 
+        widget = widgetTarget;
+      }
+      if ( widget != null 
+           && widget.classname in this._draggableTypes ) {
+        var appearances = this._draggableTypes[ widget.classname ];
+        if ( appearances == null ) {
+          draggable = true; 
+        } else {
+          for ( var i = 0; i < appearances.length && !draggable; i++ ) {
+            if ( widgetTarget.getAppearance() == appearances[ i ] ) {
+              draggable = true;
+            }
+          }
+        }
+      }
+      return draggable;
     },
     
     _handleTouchEnd : function( domEvent ) {
@@ -291,7 +347,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
                             true, //cancelable 
                             window, //view 
                             0, // detail 
-                            coordiantes[ 0 ], //screenX 
+                            coordiantes[ 0 ], // screenX 
                             coordiantes[ 1 ], //screenY 
                             coordiantes[ 0 ], //clientX 
                             coordiantes[ 1 ], //clientY 

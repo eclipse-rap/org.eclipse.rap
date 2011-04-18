@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    EclipseSource - initial API and implementation
+ *    Austin Riddle (Texas Center for Applied Technology) - tests for draggable types
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
@@ -453,7 +454,184 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.destroy();      
       this.resetMobileWebkitSupport();
     },
-
+    
+    //First test must be here to initialize registration for next tests
+    testIsDraggableShell : function() {
+      this._registeredTests = {};
+      var widget = new org.eclipse.swt.widgets.Shell();
+      widget.addToDocument();
+      widget.initialize();
+      widget.open();
+      this._registeredTests[ widget.classname ] = null;
+      this._performIsDraggableWidgetTest( widget, true );
+      widget.destroy();
+    },
+    
+    testIsDraggableSash : function() {
+      var widget = new org.eclipse.swt.widgets.Sash();
+      widget.addToDocument();
+      this._registeredTests[ widget.classname ] = null;
+      this._performIsDraggableWidgetTest( widget, true );
+      widget.destroy();
+    },
+    
+    testIsDraggableScale : function() {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widget = new org.eclipse.swt.widgets.Scale( "horizontal" );
+      widget.addToDocument();
+      widgetManager.add( widget, this._registeredTests.length, true );
+      widgetManager.add( widget._thumb, this._registeredTests.length+"a", false );
+      this._registeredTests[ widget.classname ] = [ widget._thumb.getAppearance() ];
+      this._performIsDraggableWidgetTest( widget._thumb, true );
+      widget.destroy();
+    },
+      
+    testIsDraggableSlider : function() {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widget = new org.eclipse.swt.widgets.Slider( "horizontal" );
+      widget.addToDocument();
+      widgetManager.add( widget, this._registeredTests.length, true );
+      widgetManager.add( widget._thumb, this._registeredTests.length+"a", false );
+      this._registeredTests[ widget.classname ] = [ widget._thumb.getAppearance() ];
+      this._performIsDraggableWidgetTest( widget._thumb, true );
+      widget.destroy();
+    },
+    
+    testIsDraggableScrollBar : function() {
+      var widget = new org.eclipse.rwt.widgets.ScrollBar( false );
+      widget.addToDocument();
+      this._registeredTests[ widget.classname ] = null;
+      this._performIsDraggableWidgetTest( widget, true );
+      widget.destroy();
+    },
+    
+    testIsDraggableScrolledComposite : function() {
+      var widget = new org.eclipse.swt.custom.ScrolledComposite( false );
+      widget.addToDocument();
+      this._registeredTests[ widget.classname ] = [ widget._horzScrollBar._thumb.getAppearance() ];
+      this._performIsDraggableWidgetTest( widget._horzScrollBar._thumb, true );
+      widget.destroy();
+    },
+      
+    testIsDraggableComboScrollBar : function() {
+      var widget = new org.eclipse.rwt.widgets.BasicButton( "push" );
+      widget.setAppearance( "scrollbar-thumb" );
+      widget.addToDocument();
+      this._registeredTests[ widget.classname ] = [ widget.getAppearance() ];
+      this._performIsDraggableWidgetTest( widget, true );
+      widget.destroy();
+    },
+      
+    testIsDraggableCoolItem : function() {
+      var widget = new qx.ui.layout.CanvasLayout();
+      widget.setAppearance( "coolitem-handle" );
+      widget.addToDocument();
+      this._registeredTests[ widget.classname ] = [ widget.getAppearance() ];
+      this._performIsDraggableWidgetTest( widget, true );
+      widget.destroy();
+    },
+    
+    testIsDraggableList : function() {
+      var widget = new org.eclipse.swt.widgets.List( true );
+      widget.addToDocument();
+      this._registeredTests[ widget.classname ] = [ widget._horzScrollBar._thumb.getAppearance() ];
+      this._performIsDraggableWidgetTest( widget._horzScrollBar._thumb, true );
+      this._performIsDraggableWidgetTest( widget._vertScrollBar._thumb, true );
+      widget.destroy();
+    },
+    
+    testIsDraggableTableScrollBarAndColumn : function() {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widget = new org.eclipse.swt.widgets.Table( this._registeredTests.length, "" );
+      widget.addToDocument();
+      widgetManager.add( widget, this._registeredTests.length, true );
+      var column = new org.eclipse.swt.widgets.TableColumn( widget );
+      column.setLabel( "test" );
+      column.setIcon( "http://blah.blah" );
+      widgetManager.add( column, this._registeredTests.length + "a", false );
+      this._registeredTests[ widget.classname ] = [ column.getAppearance() ];
+      this._performIsDraggableWidgetTest( column, true );
+      this._registeredTests[ widget.classname ][ 1 ] = [ column.getLabelObject().getAppearance() ];
+      this._performIsDraggableWidgetTest( column.getLabelObject(), true );
+      this._registeredTests[ widget.classname ][ 2 ] = [ column._iconObject.getAppearance() ];
+      this._performIsDraggableWidgetTest( column._iconObject, true );
+      this._registeredTests[ widget.classname ][ 3 ] = widget._horzScrollBar._thumb.getAppearance();
+      this._performIsDraggableWidgetTest( widget._horzScrollBar._thumb, true );
+      this._performIsDraggableWidgetTest( widget._vertScrollBar._thumb, true );
+      widget.destroy();
+    },
+      
+    testIsDraggableTreeScrollBarAndColumn : function() {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var widget = new org.eclipse.rwt.widgets.Tree();
+      widget.addToDocument();
+      widgetManager.add( widget, this._registeredTests.length, true );
+      column = new org.eclipse.swt.widgets.TableColumn( widget );
+      column.setLabel( "test" );
+      column.setIcon( "http://blah.blah" );
+      column.setParent( widget );
+      widgetManager.add( column, this._registeredTests.length + "a", false );
+      this._registeredTests[ widget.classname ] = [ column.getAppearance() ];
+      this._performIsDraggableWidgetTest( column, true );
+      this._registeredTests[ widget.classname ][ 1 ] = [ column.getLabelObject().getAppearance() ];
+      this._performIsDraggableWidgetTest( column.getLabelObject(), true );
+      this._registeredTests[ widget.classname ][ 2 ] = [ column._iconObject.getAppearance() ];
+      this._performIsDraggableWidgetTest( column._iconObject, true );
+      this._registeredTests[ widget.classname ][ 3 ] = widget._horzScrollBar._thumb.getAppearance();
+      this._performIsDraggableWidgetTest( widget._horzScrollBar._thumb, true );
+      this._performIsDraggableWidgetTest( widget._vertScrollBar._thumb, true );
+      widget.destroy();
+         
+      this.resetMobileWebkitSupport();
+    },
+    
+    testIsDraggableTestCoverage : function () {
+      var cases = org.eclipse.rwt.MobileWebkitSupport._draggableTypes;
+      for ( var key in cases ) {
+        if ( key in this._registeredTests ) {
+          var caseAppearances = cases[ key ];
+          if ( caseAppearances != null ) {
+            var testAppearances = this._registeredTests[ key ];
+            for ( var i = 0; i < caseAppearances.length; i++ ) {
+              if ( testAppearances != null ) {
+                var found = false;
+                for ( var j = 0; j < testAppearances.length && !found; j++ ) {
+                   if ( caseAppearances[ i ] == testAppearances[ j ] ) {
+                     found = true;
+                   }
+                }
+                if ( !found ) {
+                  throw "Missing isDraggableWidget test for " + key 
+                        + " with appearance " + caseAppearances[ i ];
+                }
+              } else {
+                throw "Missing isDraggableWidget test for " + key
+                      + " with appearance " + caseAppearances[ i ];    
+              }
+            }
+          }
+        } else {
+          throw "Missing isDraggableWidget test for " + key;
+        }
+      }
+      this._registeredTests = null;
+    },    
+    
+    testIsNotDraggableWidget : function() {
+      //test basic widgets without proper appearance that might allow a broader match
+      widget = new org.eclipse.rwt.widgets.BasicButton( "push" );
+      widget.addToDocument();
+      this._performIsDraggableWidgetTest( widget, false );
+      widget.destroy();
+      
+      widget = new qx.ui.layout.CanvasLayout();
+      widget.addToDocument();
+      this._performIsDraggableWidgetTest( widget, false );
+      widget.destroy();
+      
+      this.resetMobileWebkitSupport();
+    },
+    
     testCancelOnGesture : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var doc = qx.ui.core.ClientDocument.getInstance();
@@ -767,6 +945,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var tag = node.tagName;
       return tag != "INPUT" && tag != "TEXTAREA";
     },
+    
+    _performIsDraggableWidgetTest : function ( widget, testDraggable ) {
+      org.eclipse.rwt.test.fixture.TestUtil.flush();
+      var node = widget._getTargetNode();
+      assertFalse( typeof node === "undefined" );
+      assertNotNull( node );
+      var isDraggable = org.eclipse.rwt.MobileWebkitSupport._isDraggableWidget( node );
+      assertEquals( testDraggable, isDraggable );
+    },    
     
     touch : function( node, type, touchesNumberOrArray ) {
       var touches;
