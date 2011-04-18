@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
@@ -128,10 +126,8 @@ public class BrowserLCA_Test extends TestCase {
         return new Object[ 0 ];
       }
     };
-    Fixture.fakeNewRequest();
-    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeNewRequest( display );
     String browserId = WidgetUtil.getId( browser );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String param = browserId + "." + BrowserLCA.PARAM_EXECUTE_FUNCTION;
     Fixture.fakeRequestParam( param, "func" );
     param = browserId + "." + BrowserLCA.PARAM_EXECUTE_ARGUMENTS;

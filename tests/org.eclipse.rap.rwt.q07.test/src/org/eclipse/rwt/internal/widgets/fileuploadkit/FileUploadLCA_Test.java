@@ -17,8 +17,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -93,19 +91,15 @@ public class FileUploadLCA_Test extends TestCase {
 
   public void testReadFileName() {
     FileUpload fileUpload = new FileUpload( shell, SWT.NONE );
-    String displayId = DisplayUtil.getId( display );
     String uploadId = WidgetUtil.getId( fileUpload );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( uploadId + ".fileName", "foo" );
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "foo", fileUpload.getFileName() );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "foo", fileUpload.getFileName() );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( uploadId + ".fileName", "" );
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( null, fileUpload.getFileName() );
@@ -133,10 +127,8 @@ public class FileUploadLCA_Test extends TestCase {
         eventLog.add( event );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
     String uploadId = WidgetUtil.getId( upload );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( uploadId + ".fileName", "foo" );
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "foo", upload.getFileName() );

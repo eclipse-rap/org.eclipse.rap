@@ -21,7 +21,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
@@ -355,13 +354,11 @@ public class CTabFolderLCA_Test extends TestCase {
     item2.setControl( item2Control );
     shell.open();
 
-    String displayId = DisplayUtil.getId( display );
     String folderId = WidgetUtil.getId( folder );
     String item2Id = WidgetUtil.getId( item2 );
 
     // Let pass one startup request to init the 'system'
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     Fixture.executeLifeCycleFromServerThread( );
@@ -369,8 +366,7 @@ public class CTabFolderLCA_Test extends TestCase {
 
     // The actual test request: item1 is selected, the request selects item2
     folder.setSelection( item1 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( folderId + ".selectedItemId", item2Id );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     Fixture.executeLifeCycleFromServerThread( );

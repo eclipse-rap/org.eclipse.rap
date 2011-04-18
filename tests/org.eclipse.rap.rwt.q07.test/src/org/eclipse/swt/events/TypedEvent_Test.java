@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.events.ActivateAdapter;
@@ -91,10 +90,8 @@ public class TypedEvent_Test extends TestCase {
         log.append( EVENT_FIRED );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -139,10 +136,8 @@ public class TypedEvent_Test extends TestCase {
         eventLog.add( event );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
 
@@ -167,14 +162,13 @@ public class TypedEvent_Test extends TestCase {
       }
     } );
     buttonId = WidgetUtil.getId( button );
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_BUTTON, "1" );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_X, "1" );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_Y, "1" );
     Fixture.fakeRequestParam( JSConst.EVENT_MOUSE_DOWN_TIME, "0" );
-    String focusedControlParam = displayId + ".focusControl";
+    String focusedControlParam = DisplayUtil.getId( display ) + ".focusControl";
     Fixture.fakeRequestParam( focusedControlParam, buttonId );
 
     Fixture.executeLifeCycleFromServerThread( );

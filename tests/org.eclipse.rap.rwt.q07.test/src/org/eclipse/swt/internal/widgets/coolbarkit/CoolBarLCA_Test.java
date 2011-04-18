@@ -239,7 +239,6 @@ public final class CoolBarLCA_Test extends TestCase {
     shell.layout();
     shell.open();
     // Set up environment; get displayId first as it currently is in 'real life'
-    String displayId = DisplayUtil.getId( display );
     String item0Id = WidgetUtil.getId( item0 );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -255,8 +254,7 @@ public final class CoolBarLCA_Test extends TestCase {
 
     // Drag item0 and drop it inside the bounds of item1
     cba.setItemOrder( new int[] { 0, 1 } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "483" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
@@ -266,8 +264,7 @@ public final class CoolBarLCA_Test extends TestCase {
 
     // Drag item0 and drop it beyond the bounds of item1
     cba.setItemOrder( new int[] { 0, 1 } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "2000" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
@@ -290,7 +287,6 @@ public final class CoolBarLCA_Test extends TestCase {
     shell.layout();
     shell.open();
     // Set up environment; get displayId first as it currently is in 'real life'
-    String displayId = DisplayUtil.getId( display );
     String item0Id = WidgetUtil.getId( item0 );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -307,8 +303,7 @@ public final class CoolBarLCA_Test extends TestCase {
     // Simulate that fist item is dragged around but dropped at its original
     // position
     cba.setItemOrder( new int[] { 0, 1 } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "10" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );

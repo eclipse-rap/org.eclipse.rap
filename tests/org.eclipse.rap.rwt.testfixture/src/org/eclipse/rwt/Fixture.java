@@ -281,6 +281,11 @@ public class Fixture {
     writer.printContents( new PrintWriter( recorder ) );
     return recorder.getBuffer().toString();
   }
+  
+  public static void fakeNewRequest( Display display ) {
+    fakeNewRequest();
+    fakeRequestParam( RequestParams.UIROOT, DisplayUtil.getId( display ) );
+  }
 
   public static void fakeNewRequest() {
     HttpSession session = ContextProvider.getRequest().getSession();

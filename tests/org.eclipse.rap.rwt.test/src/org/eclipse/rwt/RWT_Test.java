@@ -57,9 +57,7 @@ public class RWT_Test extends TestCase {
         } );
       }
     } );
-    Fixture.fakeNewRequest();
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     assertNotNull( requestThread[ 0 ] );
   }

@@ -17,9 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -315,9 +313,8 @@ public class ButtonLCA_Test extends TestCase {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     shellAdapter.setActiveControl( label );
-    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeNewRequest( display );
     String buttonId = WidgetUtil.getId( button );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
     Fixture.readDataAndProcessAction( display );
@@ -338,10 +335,8 @@ public class ButtonLCA_Test extends TestCase {
         log.append( "widgetSelected" );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.widgetSelected", buttonId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( "widgetSelected", log.toString() );
@@ -413,11 +408,9 @@ public class ButtonLCA_Test extends TestCase {
     button1.addSelectionListener( listener );
     button2.addSelectionListener( listener );
     button3.addSelectionListener( listener );
-    String displayId = DisplayUtil.getId( display );
     String button1Id = WidgetUtil.getId( button1 );
     String button2Id = WidgetUtil.getId( button2 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
     Fixture.readDataAndProcessAction( display );
     assertTrue( log.indexOf( "1:true" ) != -1 );
@@ -426,8 +419,7 @@ public class ButtonLCA_Test extends TestCase {
 
     log.delete( 0, log.length() );
 
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( button1Id + ".selection", "false" );
     Fixture.fakeRequestParam( button2Id + ".selection", "true" );
     Fixture.readDataAndProcessAction( display );
@@ -450,11 +442,9 @@ public class ButtonLCA_Test extends TestCase {
     button1.addSelectionListener( listener );
     button2.addSelectionListener( listener );
     button2.setSelection( true );
-    String displayId = DisplayUtil.getId( display );
     String button1Id = WidgetUtil.getId( button1 );
     String button2Id = WidgetUtil.getId( button2 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
     Fixture.fakeRequestParam( button2Id + ".selection", "false" );
     Fixture.readDataAndProcessAction( display );
@@ -479,11 +469,9 @@ public class ButtonLCA_Test extends TestCase {
     button1.addListener( SWT.Selection, listener );
     button2.addListener( SWT.Selection, listener );
     button2.setSelection( true );
-    String displayId = DisplayUtil.getId( display );
     String button1Id = WidgetUtil.getId( button1 );
     String button2Id = WidgetUtil.getId( button2 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
     Fixture.fakeRequestParam( button2Id + ".selection", "false" );
     Fixture.readDataAndProcessAction( display );

@@ -16,8 +16,8 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -192,19 +192,18 @@ public class ShellLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     Label otherLabel = new Label( shell, SWT.NONE );
-    String displayId = DisplayUtil.getId( display );
     String shellId = WidgetUtil.getId( shell );
     String labelId = WidgetUtil.getId( label );
     String otherLabelId = WidgetUtil.getId( otherLabel );
     setActiveControl( shell, otherLabel );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( shellId + ".activeControl", labelId );
     Fixture.readDataAndProcessAction( display );
     assertSame( label, getActiveControl( shell ) );
     // Ensure that if there is both, an avtiveControl parameter and a
     // controlActivated event, the activeControl parameter is ignored
     setActiveControl( shell, otherLabel );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( shellId + ".activeControl", otherLabelId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, labelId );
     Fixture.readDataAndProcessAction( display );
@@ -286,15 +285,13 @@ public class ShellLCA_Test extends TestCase {
     Shell activeShell = new Shell( display, SWT.NONE );
     activeShell.setData( "activeShell" );
     activeShell.open();
-    String displayId = DisplayUtil.getId( display );
     String shellToActivateId = WidgetUtil.getId( shellToActivate );
     // Set precondition and assert it
     RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     activeShell.setActive();
     assertSame( activeShell, display.getActiveShell() );
     // Simulate shell activation without event listeners
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, shellToActivateId );
     Fixture.executeLifeCycleFromServerThread( );
     assertSame( shellToActivate, display.getActiveShell() );
@@ -309,8 +306,7 @@ public class ShellLCA_Test extends TestCase {
     ActivateEvent.addListener( activeShell, activateListener );
     shellToActivate.addShellListener( shellListener );
     activeShell.addShellListener( shellListener );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, shellToActivateId );
     Fixture.executeLifeCycleFromServerThread( );
     assertSame( shellToActivate, display.getActiveShell() );
@@ -336,9 +332,7 @@ public class ShellLCA_Test extends TestCase {
       // expected
     }
     // no deactivation event must be created for a null active shell
-    Fixture.fakeNewRequest();
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     String shell1Id = WidgetUtil.getId( shell1 );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, shell1Id );
     Fixture.readDataAndProcessAction( display );
@@ -348,10 +342,8 @@ public class ShellLCA_Test extends TestCase {
   public void testDisposeSingleShell() {
     Shell shell = new Shell( display );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String shellId = WidgetUtil.getId( shell );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 0, display.getShells().length );
@@ -464,9 +456,7 @@ public class ShellLCA_Test extends TestCase {
     item.setText( "Popup" );
     shell.setMenu( menu );
     Fixture.fakeResponseWriter();
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String createMenuScript

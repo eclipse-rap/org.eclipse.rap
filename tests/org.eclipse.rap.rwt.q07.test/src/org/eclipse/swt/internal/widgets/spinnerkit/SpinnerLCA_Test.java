@@ -15,9 +15,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -230,17 +228,14 @@ public class SpinnerLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
     spinner.setMaximum( 100 );
-    String displayId = DisplayUtil.getId( display );
     String spinnerId = WidgetUtil.getId( spinner );
     // simulate valid client-side selection
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( spinnerId + ".selection", "77" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 77, spinner.getSelection() );
     // simulate invalid client-side selection
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( spinnerId + ".selection", "777" );
     spinner.setSelection( 1 );
     Fixture.readDataAndProcessAction( display );
@@ -253,10 +248,8 @@ public class SpinnerLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final Spinner spinner = new Spinner( shell, SWT.NONE );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String spinnerId = WidgetUtil.getId( spinner );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, spinnerId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, spinnerId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, spinnerId );
@@ -271,7 +264,6 @@ public class SpinnerLCA_Test extends TestCase {
       }
     } );
     spinner.addSelectionListener( new SelectionListener() {
-
       public void widgetSelected( final SelectionEvent event ) {
         assertEquals( spinner, event.getSource() );
         log.append( ".widgetSelected" );
@@ -282,15 +274,13 @@ public class SpinnerLCA_Test extends TestCase {
         log.append( ".widgetDefaultSelected" );
       }
     } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( spinnerId + ".selection", "2" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, spinnerId );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( ".modifyText.widgetSelected", log.toString() );
     log.setLength( 0 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, spinnerId );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( ".widgetDefaultSelected", log.toString() );

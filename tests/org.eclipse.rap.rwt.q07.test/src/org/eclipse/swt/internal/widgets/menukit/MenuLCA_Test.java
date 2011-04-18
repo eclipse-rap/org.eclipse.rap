@@ -16,8 +16,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -161,14 +161,11 @@ public class MenuLCA_Test extends TestCase {
       = new PreserveWidgetsPhaseListener();
     lifeCycle.addPhaseListener( preserveListener );
     shell.setMenuBar( menuBar );
-    String displayId = DisplayUtil.getId( display );
     String shellId = WidgetUtil.getId( shell );
     String menuId = WidgetUtil.getId( menuBar );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( shellId + ".bounds.x", "0" );
     Fixture.fakeRequestParam( shellId + ".bounds.y", "0" );
     Fixture.fakeRequestParam( shellId + ".bounds.width", "1234" );

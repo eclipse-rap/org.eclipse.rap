@@ -16,11 +16,11 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.events.DragDetectEvent;
 import org.eclipse.swt.events.DragDetectListener;
@@ -59,7 +59,6 @@ public class DNDSupport_Test extends TestCase {
   
   private Display display;
   private Shell shell;
-  private String displayId;
   private java.util.List events;
 
   protected void setUp() throws Exception {
@@ -68,7 +67,6 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-    displayId = DisplayUtil.getId( display );
     events = new ArrayList();
   }
 
@@ -78,7 +76,7 @@ public class DNDSupport_Test extends TestCase {
   }
 
   public void testRegisterAndDisposeDragSource() {
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Control dragSourceControl = new Label( shell, SWT.NONE );
     DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
@@ -94,7 +92,7 @@ public class DNDSupport_Test extends TestCase {
   }
 
   public void testRegisterAndDisposeDropTarget() {
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Control dropTargetControl = new Label( shell, SWT.NONE );
     DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_COPY );
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
@@ -129,8 +127,7 @@ public class DNDSupport_Test extends TestCase {
     } );
     shell.open();
     // Simulate request that sends a drop event
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDragSourceEvent( dragSourceControl, "dragStart", 1 );
     // run life cycle
     Fixture.executeLifeCycleFromServerThread();
@@ -159,8 +156,7 @@ public class DNDSupport_Test extends TestCase {
     dropTarget.addDropListener( new LogingDropTargetListener() );
     shell.open();
     // Simulate request that sends a drop event
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dragEnter", 1 );
     Fixture.executeLifeCycleFromServerThread();
     events.clear();
@@ -204,8 +200,7 @@ public class DNDSupport_Test extends TestCase {
     } );
     shell.open();
     // Simulate request that sends a drop event
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     int typeId = HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
@@ -266,8 +261,7 @@ public class DNDSupport_Test extends TestCase {
     } );
     shell.open();
     // Simulate request that sends a drop event
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 1 );
     // run life cycle
     try {
@@ -324,12 +318,8 @@ public class DNDSupport_Test extends TestCase {
     } );
     shell.open();
     // Simulate request that sends a drop event
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dropAccept",
-                           1 );
+    Fixture.fakeNewRequest( display );
+    createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 1 );
     // run life cycle
     Fixture.readDataAndProcessAction( display );
     assertEquals( 3, events.size() );
@@ -375,8 +365,7 @@ public class DNDSupport_Test extends TestCase {
     } );
     shell.open();
     // Simulate request that sends a drop event
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 1 );
     // run life cycle
     Fixture.readDataAndProcessAction( display );
@@ -416,8 +405,7 @@ public class DNDSupport_Test extends TestCase {
     } );
     shell.open();
     // Simulate request that sends a drop event
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dropAccept", 1 );
     createDragSourceEvent( dragSourceCont, "dragFinished", 2 );
     // run life cycle
@@ -446,8 +434,7 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event 'somewhere', but outside a valid
     // drop target
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDragSourceEvent( dragSourceControl, "dragFinished", 1 );
     // run life cycle
     Fixture.readDataAndProcessAction( display );
@@ -478,8 +465,7 @@ public class DNDSupport_Test extends TestCase {
     dropTarget.addDropListener( new LogingDropTargetListener() );
     shell.open();
     // Simulate request that sends a drop event over a valid drop target
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dropAccept", 1 );
     createDragSourceEvent( dragSourceCont, "dragFinished", 2 );
     // run life cycle
@@ -536,8 +522,7 @@ public class DNDSupport_Test extends TestCase {
     } );
     shell.open();
     // Simulate request that sends a drop event over a valid drop target
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dropAccept", 1 );
     createDragSourceEvent( dragSourceCont, "dragFinished", 2 );
     // run life cycle
@@ -589,8 +574,7 @@ public class DNDSupport_Test extends TestCase {
     } );
     shell.open();
     // Simulate request that sends a drop event over a valid drop target
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dropAccept", 1 );
     createDragSourceEvent( dragSourceCont, "dragFinished", 2 );
     // run life cycle
@@ -634,8 +618,7 @@ public class DNDSupport_Test extends TestCase {
     } );
     shell.open();
     // Simulate request that sends a drop event over a valid drop target
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 1 );
     createDragSourceEvent( dragSourceControl, "dragFinished", 2 );
     // run life cycle
@@ -683,8 +666,7 @@ public class DNDSupport_Test extends TestCase {
     dropTarget.setTransfer( new Transfer[] { TextTransfer.getInstance() } );
     shell.open();
     // Simulate request that sends a drop event over a valid drop target
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 0 );
     // run life cycle
     Fixture.readDataAndProcessAction( display );
@@ -707,11 +689,10 @@ public class DNDSupport_Test extends TestCase {
     DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
     dropTarget.setTransfer( types );
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    Fixture.fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     int typeId = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
                            "dragEnter",
@@ -751,9 +732,9 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dragEnter", 1 );
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dragOver", 2 );
     Fixture.executeLifeCycleFromServerThread();
@@ -783,9 +764,9 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     int typeId = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
@@ -841,9 +822,9 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
                            "dragEnter",
@@ -909,9 +890,9 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
                            "dragEnter",
@@ -948,9 +929,9 @@ public class DNDSupport_Test extends TestCase {
       }
     } );
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
                            "dragEnter",
@@ -985,9 +966,9 @@ public class DNDSupport_Test extends TestCase {
     DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
     dropTarget.setTransfer( types );
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
                            "dragEnter",
@@ -1024,9 +1005,9 @@ public class DNDSupport_Test extends TestCase {
       }
     } );    
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
                            "dragEnter",
@@ -1071,9 +1052,9 @@ public class DNDSupport_Test extends TestCase {
       }
     } );    
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl,
                            dragSourceControl,
                            "dragEnter",
@@ -1115,9 +1096,9 @@ public class DNDSupport_Test extends TestCase {
       }
     } );    
     shell.open();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dragOver", 1 );
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
@@ -1143,8 +1124,7 @@ public class DNDSupport_Test extends TestCase {
     dropTarget.addDropListener( new LogingDropTargetListener() );
     shell.open();
     // Simulate request that sends a drop event
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dragEnter", 2 );
     createDropTargetEvent( dropTargetCont, 
@@ -1188,8 +1168,7 @@ public class DNDSupport_Test extends TestCase {
     dropTarget.addDropListener( new LogingDropTargetListener() );
     shell.open();
     // Simulate request that sends a drop event
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dragEnter", 2 );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dragOver", 5 );
     createDropTargetEvent( dropTargetCont, dragSourceCont, "dragOperationChanged", 7 );
@@ -1203,11 +1182,6 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( 0, ( ( DropTargetEvent )events.get( 3 ) ).operations );
     assertEquals( operations, ( ( DropTargetEvent )events.get( 4 ) ).operations );
     assertEquals( operations, ( ( DropTargetEvent )events.get( 5 ) ).operations );
-  }
-
-  private void fakeNewRequest() {
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
   }
 
   // Mirrors _sendDragSourceEvent in DNDSupport.js

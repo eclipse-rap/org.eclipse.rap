@@ -806,9 +806,7 @@ public class TreeLCA_Test extends TestCase {
                                                  final String itemId,
                                                  final int column )
   {
-    Fixture.fakeNewRequest();
-    String displayId = DisplayUtil.getId( tree.getDisplay() );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( tree.getDisplay() );
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_REQUESTED, treeId );
     String cellString = itemId + "," + column;

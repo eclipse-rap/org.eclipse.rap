@@ -11,15 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import java.util.*;
+import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -165,8 +163,7 @@ public class MouseEvent_Test extends TestCase {
     int shellX = shell.getLocation().x;
     int shellY = shell.getLocation().y;
     // Simulate request that sends a mouseDown + mouseUp sequence
-    Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( );
+    Fixture.fakeNewRequest( display );
     fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
     Fixture.readDataAndProcessAction( display );
@@ -193,8 +190,7 @@ public class MouseEvent_Test extends TestCase {
     int shellX = shell.getLocation().x;
     int shellY = shell.getLocation().y;
     // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
-    Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( );
+    Fixture.fakeNewRequest( display );
     fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseDoubleClickRequest( shell, shellX + 30, shellY + 30 );
@@ -232,8 +228,7 @@ public class MouseEvent_Test extends TestCase {
     int shellX = shell.getLocation().x;
     int shellY = shell.getLocation().y;
     // Simulate request that sends a mouseDown + mouseUp sequence
-    Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( );
+    Fixture.fakeNewRequest( display );
     fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
     Fixture.readDataAndProcessAction( display );
@@ -261,8 +256,7 @@ public class MouseEvent_Test extends TestCase {
     int shellX = shell.getLocation().x;
     int shellY = shell.getLocation().y;
     // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
-    Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( );
+    Fixture.fakeNewRequest( display );
     fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
     fakeMouseDoubleClickRequest( shell, shellX + 30, shellY + 30 );
@@ -297,8 +291,7 @@ public class MouseEvent_Test extends TestCase {
     int shellX = shell.getLocation().x;
     int shellY = shell.getLocation().y;
     // Simulate request that sends a mouseDown + mouseUp on shell border
-    Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( );
+    Fixture.fakeNewRequest( display );
     fakeMouseDownRequest( shell, shellX + 1, shellY + 1 );
     fakeMouseUpRequest( shell, shellX + 1, shellY + 1 );
     Fixture.readDataAndProcessAction( display );
@@ -306,16 +299,14 @@ public class MouseEvent_Test extends TestCase {
     assertEquals( 0, events.size() );
     events.clear();
     // Simulate request that sends a mouseDown + mouseUp on shell titlebar
-    Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( );
+    Fixture.fakeNewRequest( display );
     fakeMouseDownRequest( shell, shellX + 10, shellY + 10 );
     fakeMouseUpRequest( shell, shellX + 10, shellY + 10 );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 0, events.size() );
     events.clear();
     // Simulate request that sends a mouseDown + mouseUp on shell menubar
-    Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( );
+    Fixture.fakeNewRequest( display );
     fakeMouseDownRequest( shell, shellX + 24, shellY + 24 );
     fakeMouseUpRequest( shell, shellX + 24, shellY + 24 );
     Fixture.readDataAndProcessAction( display );
@@ -331,16 +322,11 @@ public class MouseEvent_Test extends TestCase {
     table.addMouseListener( new LoggingMouseListener( events ) );
     assertEquals( new Rectangle( 0, 0, 85, 100 ), table.getClientArea() );
     // Simulate request that sends a mouseDown + mouseUp on scrollbar
-    Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( );
+    Fixture.fakeNewRequest( display );
     fakeMouseDownRequest( table, 90, 10 );
     fakeMouseUpRequest( table, 90, 10 );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 0, events.size() );
-  }
-
-  private void fakeUIRootRequestParam() {
-    Fixture.fakeRequestParam( RequestParams.UIROOT, DisplayUtil.getId( display ) );
   }
 
   private static void fakeMouseDoubleClickRequest( Widget widget, int x, int y ) {

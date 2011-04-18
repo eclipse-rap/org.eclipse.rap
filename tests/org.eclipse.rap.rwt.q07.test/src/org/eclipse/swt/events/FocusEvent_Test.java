@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -29,13 +28,11 @@ public class FocusEvent_Test extends TestCase {
   
   private Display display;
   private Shell shell;
-  private String displayId;
   private List events;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
-    displayId = DisplayUtil.getId( display );
     shell = new Shell( display );
     shell.open();
     events = new ArrayList();
@@ -81,9 +78,8 @@ public class FocusEvent_Test extends TestCase {
     Control focusControl = new Button( shell, SWT.PUSH );
     String focusControlId = WidgetUtil.getId( focusControl );
 
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( displayId + ".focusControl", focusControlId );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", focusControlId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusLost", focusControlId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, events.size() );
@@ -104,9 +100,8 @@ public class FocusEvent_Test extends TestCase {
     } );
     String controlId = WidgetUtil.getId( control );
     
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", controlId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusGained", controlId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, events.size() );

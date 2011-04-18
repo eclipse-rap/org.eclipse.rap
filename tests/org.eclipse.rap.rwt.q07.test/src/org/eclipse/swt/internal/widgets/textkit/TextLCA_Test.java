@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -133,10 +132,8 @@ public class TextLCA_Test extends TestCase {
       }
     } );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String textId = WidgetUtil.getId( text );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "new text" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
     Fixture.readDataAndProcessAction( display );
@@ -155,10 +152,8 @@ public class TextLCA_Test extends TestCase {
       }
     } );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String textId = WidgetUtil.getId( text );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
     Fixture.readDataAndProcessAction( display );
@@ -172,7 +167,6 @@ public class TextLCA_Test extends TestCase {
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     final Text text = new Text( shell, SWT.NONE );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String textId = WidgetUtil.getId( text );
     // ensure that selection is unchanged in case a verify-listener is 
     // registered that does not change the text
@@ -186,8 +180,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( shell );
     Fixture.markInitialized( text );
     log.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
@@ -213,8 +206,7 @@ public class TextLCA_Test extends TestCase {
     };
     text.addVerifyListener( alteringVerifyListener );
     log.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
@@ -235,8 +227,7 @@ public class TextLCA_Test extends TestCase {
     };
     text.addVerifyListener( alteringVerifyListener );
     log.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
@@ -258,8 +249,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.fakeNewRequest();
     String textId = WidgetUtil.getId( text );
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
@@ -278,7 +268,6 @@ public class TextLCA_Test extends TestCase {
     // set up widgets to be tested
     final Text text = new Text( shell, SWT.NONE );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String textId = WidgetUtil.getId( text );
     // ensure that modify *and* verify event is fired
     text.setText( "" );
@@ -292,8 +281,7 @@ public class TextLCA_Test extends TestCase {
         log.add( event );
       }
     } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
@@ -334,9 +322,7 @@ public class TextLCA_Test extends TestCase {
   }
   
   public void testEchoCharMultiLine() {
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Text text = new Text( shell, SWT.MULTI );
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
@@ -347,46 +333,38 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testEchoCharSingleLine() {
-    String displayId = DisplayUtil.getId( display );
     Text text = new Text( shell, SWT.SINGLE );
     Fixture.markInitialized( display );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
     text.setEchoChar( ( char )27 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );    
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
     text.setEchoChar( ( char )0 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );    
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
   }
   
   public void testEchoCharPassword() {
-    String displayId = DisplayUtil.getId( display );
     Text text = new Text( shell, SWT.PASSWORD );
     Fixture.markInitialized( display );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
     text.setEchoChar( ( char )0 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
     text.setEchoChar( ( char )27 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );

@@ -272,10 +272,8 @@ public class CComboLCA_Test extends TestCase {
     Fixture.markInitialized( shell );
     Fixture.markInitialized( ccombo );
     // test without verify listener
-    Fixture.fakeNewRequest();
+    Fixture.fakeNewRequest( display );
     String textId = WidgetUtil.getId( ccombo );
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "some text" );
     Fixture.executeLifeCycleFromServerThread();
     // ensure that no text and selection values are sent back to the client
@@ -285,7 +283,6 @@ public class CComboLCA_Test extends TestCase {
     // test with verify listener
     final StringBuffer log = new StringBuffer();
     ccombo.addVerifyListener( new VerifyListener() {
-
       public void verifyText( VerifyEvent event ) {
         assertEquals( ccombo, event.widget );
         assertEquals( "verify me", event.text );
@@ -294,8 +291,7 @@ public class CComboLCA_Test extends TestCase {
         log.append( event.text );
       }
     } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.executeLifeCycleFromServerThread();
     // ensure that no text and selection values are sent back to the client
@@ -314,7 +310,6 @@ public class CComboLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final CCombo ccombo = new CCombo( shell, SWT.NONE );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String ccomboId = WidgetUtil.getId( ccombo );
     // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
@@ -328,8 +323,7 @@ public class CComboLCA_Test extends TestCase {
     Fixture.markInitialized( shell );
     Fixture.markInitialized( ccombo );
     log.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
     Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
@@ -355,8 +349,7 @@ public class CComboLCA_Test extends TestCase {
     };
     ccombo.addVerifyListener( alteringVerifyListener );
     log.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
     Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
@@ -377,8 +370,7 @@ public class CComboLCA_Test extends TestCase {
     };
     ccombo.addVerifyListener( alteringVerifyListener );
     log.clear();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( ccomboId + ".text", "verify me" );
     Fixture.fakeRequestParam( ccomboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( ccomboId + ".selectionLength", "0" );
@@ -438,18 +430,15 @@ public class CComboLCA_Test extends TestCase {
     } );
 
     String buttonId = WidgetUtil.getId( button );
-    String displayId = DisplayUtil.getId( display );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
 
     // Execute life cycle once to simulate startup request
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
 
     // Simulate button click that executes widgetSelected
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.executeLifeCycleFromServerThread();
     String expected = "w.select( 0 )";

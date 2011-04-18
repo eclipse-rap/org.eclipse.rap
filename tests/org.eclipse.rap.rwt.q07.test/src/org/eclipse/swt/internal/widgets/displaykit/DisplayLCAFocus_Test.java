@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -42,18 +41,15 @@ public class DisplayLCAFocus_Test extends TestCase {
     
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
-    String displayId = DisplayUtil.getId( display );
     String button1Id = WidgetUtil.getId( button1 );
 
     // Simulate initial request that constructs UI
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     
     // Simulate request that is sent when button was pressed
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( displayId + ".focusControl", button1Id );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", button1Id );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, button1Id );
     Fixture.executeLifeCycleFromServerThread();
     
@@ -81,18 +77,15 @@ public class DisplayLCAFocus_Test extends TestCase {
     
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
-    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
 
     // Simulate initial request that constructs UI
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
     
     // Simulate request that is sent when button was pressed
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( displayId + ".focusControl", buttonId );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.executeLifeCycleFromServerThread( );
     

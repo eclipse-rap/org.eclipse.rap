@@ -20,7 +20,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -305,10 +304,8 @@ public class TableLCA_Test extends TestCase {
         log.append( "SetDataEvent" );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "1" );
     Fixture.executeLifeCycleFromServerThread();
@@ -333,12 +330,10 @@ public class TableLCA_Test extends TestCase {
       }
     } );
     // Simulate request that comes in after item2 was checked (but not selected)
-    Fixture.fakeNewRequest();
-    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeNewRequest( display );
     String tableId = WidgetUtil.getId( table );
     String item2Id = WidgetUtil.getId( item2 );
     String item2Index = String.valueOf( table.indexOf( item2 ));
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( item2Id + ".checked", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
@@ -371,11 +366,9 @@ public class TableLCA_Test extends TestCase {
       }
     } );
     // Simulate request that comes in after item2 was checked (but not selected)
-    Fixture.fakeNewRequest();
-    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeNewRequest( display );
     String tableId = WidgetUtil.getId( table );
     String item2Index = String.valueOf( table.indexOf( item2 ) );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.readDataAndProcessAction( display );
@@ -394,8 +387,7 @@ public class TableLCA_Test extends TestCase {
     events[ 0 ] = null;
     table.setSelection( 1 ); // Set focused item
     table.select( 0 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.readDataAndProcessAction( display );
@@ -415,8 +407,7 @@ public class TableLCA_Test extends TestCase {
     table.setSelection( 0 ); // Set focused item
     table.deselectAll();
     table.select( 1 );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.readDataAndProcessAction( display );
@@ -435,8 +426,7 @@ public class TableLCA_Test extends TestCase {
     events[ 0 ] = null;
     table.setSelection( 1 ); // Set focused item
     table.deselectAll();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.readDataAndProcessAction( display );
@@ -467,9 +457,7 @@ public class TableLCA_Test extends TestCase {
       }
     } );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId  );
     Fixture.executeLifeCycleFromServerThread();
@@ -483,10 +471,8 @@ public class TableLCA_Test extends TestCase {
     table.setSize( 90, 90 );
     table.setItemCount( 1000 );
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "500,501,502,503" );
     Fixture.fakeRequestParam( tableId + ".topIndex", "500" );
@@ -532,16 +518,13 @@ public class TableLCA_Test extends TestCase {
     }
     assertFalse( adapter.isItemVirtual( table.getItemCount() - 1 ) );
     //
-    String displayId = DisplayUtil.getId( display );
     final int lastItemIndex = table.getItemCount() - 1;
     String lastItemId = WidgetUtil.getId( table.getItem( lastItemIndex ) );
     // fake one request that would initialize the UI
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     // run actual request
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public void beforePhase( final PhaseEvent event ) {
@@ -577,12 +560,10 @@ public class TableLCA_Test extends TestCase {
     table.setItemCount( 1000 );
     shell.layout();
     shell.open();
-    String displayId = DisplayUtil.getId( display );
     String tableId = WidgetUtil.getId( table );
     // Run test request
     assertTrue( isItemVirtual( table, 500 ) ); // ensure precondition
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "500" );
     Fixture.fakeRequestParam( tableId + ".topIndex", "500" );
@@ -997,9 +978,7 @@ public class TableLCA_Test extends TestCase {
                                                  final String itemId,
                                                  final int column )
   {
-    Fixture.fakeNewRequest();
-    String displayId = DisplayUtil.getId( table.getDisplay() );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( table.getDisplay() );
     String tableId = WidgetUtil.getId( table );
     Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_REQUESTED, tableId );
     String cellString = itemId + "," + column;

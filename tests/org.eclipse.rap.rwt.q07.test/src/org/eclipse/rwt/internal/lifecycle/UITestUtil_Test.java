@@ -16,7 +16,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
@@ -59,24 +58,20 @@ public class UITestUtil_Test extends TestCase {
     UITestUtil.enabled = true;
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    String displayId = DisplayUtil.getId( display );
     // Request with not yet initialized widgets
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setHtmlId" ) != -1 );
     
     // Request with already initialized widgets
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setHtmlId" ) == -1 );
     
     // Request with invalid id
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Label label = new Label( shell, SWT.NONE );
     label.setData( WidgetUtil.CUSTOM_WIDGET_ID, "a/8" );
     AbstractWidgetLCA lca = WidgetUtil.getLCA( label );

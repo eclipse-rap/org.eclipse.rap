@@ -115,10 +115,8 @@ public class UntypedEvents_Test extends TestCase {
         throw new RuntimeException( "This should never be called." );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( widget );
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
 

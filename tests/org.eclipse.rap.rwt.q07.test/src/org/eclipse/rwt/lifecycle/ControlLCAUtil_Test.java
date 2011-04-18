@@ -371,13 +371,11 @@ public class ControlLCAUtil_Test extends TestCase {
     Shell shell = new Shell( display );
     shell.open();
     String shellId = WidgetUtil.getId( shell );
-    String displayId = DisplayUtil.getId( display );
 
     // Simulate KeyEvent request, listener leaves doit untouched (doit==true)
     shell.addListener( SWT.KeyDown, doitTrueListener );
     shell.addListener( SWT.KeyUp, keyUpListener );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "0" );
@@ -395,8 +393,7 @@ public class ControlLCAUtil_Test extends TestCase {
     // Simulate KeyEvent request, listener sets doit = false
     eventLog.clear();
     shell.addListener( SWT.KeyDown, doitFalseListener );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "0" );
@@ -430,12 +427,10 @@ public class ControlLCAUtil_Test extends TestCase {
     Shell shell = new Shell( display );
     shell.open();
     String shellId = WidgetUtil.getId( shell );
-    String displayId = DisplayUtil.getId( display );
 
     // Simulate Tab key stroke, listener leaves doit untouched (doit==true)
     shell.addListener( SWT.Traverse, doitTrueListener );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "9" );
@@ -451,8 +446,7 @@ public class ControlLCAUtil_Test extends TestCase {
     // Simulate Tab key stroke, listener sets doit = false
     eventLog.clear();
     shell.addListener( SWT.Traverse, doitFalseListener );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "9" );
@@ -474,7 +468,6 @@ public class ControlLCAUtil_Test extends TestCase {
     Shell shell = new Shell( display );
     shell.open();
     String shellId = WidgetUtil.getId( shell );
-    String displayId = DisplayUtil.getId( display );
 
     // Ensure that if a key event that notifies about a traversal key is
     // canceled (doit=false) the following traverse event isn't fired at all
@@ -486,8 +479,7 @@ public class ControlLCAUtil_Test extends TestCase {
     shell.addListener( SWT.Traverse, listener );
     shell.addListener( SWT.KeyDown, listener );
     shell.addListener( SWT.KeyUp, listener );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "27" );

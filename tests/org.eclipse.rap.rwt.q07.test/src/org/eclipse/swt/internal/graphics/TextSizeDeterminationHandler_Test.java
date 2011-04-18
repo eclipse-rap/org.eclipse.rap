@@ -17,7 +17,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
@@ -29,11 +28,9 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
 
   public void testRequestCycle() {
     Display display = new Display();
-    String displayId = DisplayUtil.getId( display );
 
     // Let pass one startup request to init the 'system'
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
@@ -44,8 +41,7 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
 
     // The actual test request
     Fixture.fakeResponseWriter();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public void afterPhase( final PhaseEvent event ) {

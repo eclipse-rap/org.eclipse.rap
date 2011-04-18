@@ -17,9 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -31,8 +29,14 @@ import org.eclipse.swt.widgets.*;
 
 public class ActivateEvent_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
@@ -44,8 +48,6 @@ public class ActivateEvent_Test extends TestCase {
     final int[] activatedCount = { 0 };
     final Widget[] deactivated = new Widget[ 10 ];
     final int[] deactivatedCount = { 0 };
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     ActivateEvent.addListener( label, new ActivateListener() {
       public void activated( final ActivateEvent event ) {
@@ -65,7 +67,6 @@ public class ActivateEvent_Test extends TestCase {
   }
 
   public void testListenerOnComposite() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Widget[] activated = new Widget[ 10 ];
     final int[] activatedCount = { 0 };
     final Widget[] deactivated = new Widget[ 10 ];
@@ -80,8 +81,6 @@ public class ActivateEvent_Test extends TestCase {
         deactivatedCount[ 0 ]++;
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Label label = new Label( composite, SWT.NONE );
     Composite otherComposite = new Composite( shell, SWT.NONE );
@@ -105,9 +104,6 @@ public class ActivateEvent_Test extends TestCase {
   }
 
   public void testActivateOnFocus() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     // This label gets implicitly focused (and thus activated) on Shell#open()
     new Label( shell, SWT.NONE );
     // This is the label to test the ActivateEvent on
@@ -137,8 +133,6 @@ public class ActivateEvent_Test extends TestCase {
         log.add( event );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     shell.addListener( SWT.Activate, listener );
     shell.addListener( SWT.Deactivate, listener );
     Control control = new Label( shell, SWT.NONE );
@@ -170,8 +164,6 @@ public class ActivateEvent_Test extends TestCase {
   public void testShellWithTypedAndUntypedListener() {
     final Event[] untypedEvent = { null };
     final ShellEvent[] typedEvent = { null };
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     shell.addListener( SWT.Activate, new Listener() {
       public void handleEvent( final Event event ) {
         untypedEvent[ 0 ] = event;
@@ -182,9 +174,8 @@ public class ActivateEvent_Test extends TestCase {
         typedEvent[ 0 ] = event;
       }
     } );
-    String displayId = DisplayUtil.getId( shell.getDisplay() );
     String controlId = WidgetUtil.getId( shell );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, controlId );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( untypedEvent[ 0 ] );
@@ -194,10 +185,8 @@ public class ActivateEvent_Test extends TestCase {
     assertSame( shell, typedEvent[ 0 ].widget );
   }
 
-  private static void fakeActivateRequestParam( final Control control ) {
-    String displayId = DisplayUtil.getId( control.getDisplay() );
-    String controlId = WidgetUtil.getId( control );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, controlId );
+  private void fakeActivateRequestParam( Control control ) {
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, WidgetUtil.getId( control ) );
   }
 }

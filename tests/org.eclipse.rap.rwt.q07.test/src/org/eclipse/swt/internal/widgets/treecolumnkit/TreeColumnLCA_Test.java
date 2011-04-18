@@ -154,18 +154,15 @@ public class TreeColumnLCA_Test extends TestCase {
         log.append( "controlResized" );
       }
     } );
-    String displayId = DisplayUtil.getId( display );
     String columnId = WidgetUtil.getId( column );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     //
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     // Simulate request that changes column width
     int newWidth = column.getWidth() + 2;
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.controlResized", columnId );
     Fixture.fakeRequestParam( columnId + ".width", String.valueOf( newWidth ) );
     Fixture.executeLifeCycleFromServerThread();

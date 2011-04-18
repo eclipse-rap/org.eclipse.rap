@@ -228,14 +228,12 @@ public class DisplayLCA_Test extends TestCase {
     final Button button2 = new DisposeTestButton( shell, SWT.PUSH );
     final Button button3 = new DisposeTestButton( shell, SWT.CHECK );
 
-    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
 
     // Run requests to initialize the 'system'
     Fixture.fakeNewRequest();
     Fixture.executeLifeCycleFromServerThread( );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
 
     // Run the actual test request: the button is clicked
@@ -247,8 +245,7 @@ public class DisplayLCA_Test extends TestCase {
         button.dispose();
       }
     } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.executeLifeCycleFromServerThread( );
 
@@ -263,9 +260,7 @@ public class DisplayLCA_Test extends TestCase {
         button2.dispose();
       }
     } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.executeLifeCycleFromServerThread( );
 
@@ -280,9 +275,7 @@ public class DisplayLCA_Test extends TestCase {
         button3.dispose();
       }
     } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.executeLifeCycleFromServerThread( );
 
@@ -309,9 +302,7 @@ public class DisplayLCA_Test extends TestCase {
     // Ensure that the isInitialized state is to to true *right* after a widget
     // was rendered; as opposed to being set to true after the whole widget
     // tree was rendered
-    Fixture.fakeResponseWriter();
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     // check precondition
     assertEquals( false, WidgetUtil.getAdapter( composite ).isInitialized() );
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
@@ -321,10 +312,10 @@ public class DisplayLCA_Test extends TestCase {
 
   public void testRenderInitiallyDisposed() throws Exception {
     Fixture.fakeResponseWriter();
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestRenderInitiallyDisposedEntryPoint.class );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, 
+                                                TestRenderInitiallyDisposedEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    Fixture.fakeRequestParam( RequestParams.STARTUP,
-                              EntryPointManager.DEFAULT );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
     // ensure that life cycle execution succeeds with disposed display
     try {
       lifeCycle.execute();
@@ -369,16 +360,14 @@ public class DisplayLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String controlId = WidgetUtil.getId( control );
 
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( control, display.getFocusControl() );
 
     // Request parameter focusControl with value 'null' is ignored
     Control previousFocusControl = display.getFocusControl();
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( previousFocusControl, display.getFocusControl() );
@@ -414,7 +403,7 @@ public class DisplayLCA_Test extends TestCase {
     displayAdapter.setBounds( new Rectangle( 0, 0, 800, 600 ) );
 
     String displayId = DisplayUtil.getAdapter( display ).getId();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( displayId + ".cursorLocation.x", "1" );
     Fixture.fakeRequestParam( displayId + ".cursorLocation.y", "2" );
     IDisplayLifeCycleAdapter lca = DisplayUtil.getLCA( display );
