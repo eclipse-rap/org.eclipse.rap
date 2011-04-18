@@ -12,7 +12,6 @@
 package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -24,10 +23,11 @@ import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.util.HTTP;
+import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
 
-public class LifeCycleServiceHandler extends AbstractServiceHandler {
+public class LifeCycleServiceHandler implements IServiceHandler {
 
   public static final String RWT_INITIALIZE = "rwt_initialize";
 
@@ -35,7 +35,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   private static final String PATTERN_RELOAD
     = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
 
-  final static String SESSION_INITIALIZED
+  static final String SESSION_INITIALIZED
     = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
   private static final String ADAPTER_MANAGER_INITIALIZED 
     = LifeCycleServiceHandler.class.getName() + "#adapterManagerInitialized";
@@ -53,7 +53,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     RWTRequestVersionControl.beforeService();
     try {
       if(    RWTRequestVersionControl.isValid()
-          || LifeCycleServiceHandler.isSessionRestart()
+          || isSessionRestart()
           || ContextProvider.getRequest().getSession().isNew() )
       {
         runLifeCycle();
@@ -67,7 +67,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
   public static void initializeSession() {
     if( !isSessionInitialized() ) {
-      if( getRequest().getParameter( RWT_INITIALIZE ) != null ) {
+      if( ContextProvider.getRequest().getParameter( RWT_INITIALIZE ) != null ) {
         ISessionStore session = ContextProvider.getSession();
         session.setAttribute( SESSION_INITIALIZED, Boolean.TRUE );
       }
@@ -102,7 +102,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   // helping methods
 
   private static boolean isSessionRestart() {
-    HttpServletRequest request = getRequest();
+    HttpServletRequest request = ContextProvider.getRequest();
     boolean startup = request.getParameter( RequestParams.STARTUP ) != null;
     String uiRoot = request.getParameter( RequestParams.UIROOT );
     HttpSession session = request.getSession();
@@ -124,8 +124,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       HttpServletResponse response = ContextProvider.getResponse();
       response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
       response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
-      PrintWriter writer = getOutputWriter();
-      stateInfo.setResponseWriter( new JavaScriptResponseWriter( writer ) );
+      stateInfo.setResponseWriter( new JavaScriptResponseWriter( response.getWriter() ) );
     }
   }
 

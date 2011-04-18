@@ -20,17 +20,15 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
 
 public class LifeCycleServiceHandler_Test extends TestCase {
   
-  private static final String SESSION_STORE_ATTRIBUTE
-    = "session-store-attribute";
-  private static final String HTTP_SESSION_ATTRIBUTE
-    = "http-session-attribute";
+  private static final String SESSION_STORE_ATTRIBUTE = "session-store-attribute";
+  private static final String HTTP_SESSION_ATTRIBUTE = "http-session-attribute";
 
   private static final int THREAD_COUNT = 10;
   private static final String ENTER = "enter|";
@@ -50,13 +48,11 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     }
   }
   
-  private class Worker implements Runnable {
+  private static class Worker implements Runnable {
     private final ServiceContext context;
     private final IServiceHandler serviceHandler;
 
-    private Worker( final ServiceContext context,
-                    final IServiceHandler serviceHandler )
-    {
+    private Worker( ServiceContext context, IServiceHandler serviceHandler ) {
       this.context = context;
       this.serviceHandler = serviceHandler;
     }
