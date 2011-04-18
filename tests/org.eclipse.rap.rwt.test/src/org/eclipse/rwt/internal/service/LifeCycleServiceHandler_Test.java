@@ -107,10 +107,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     // fake required environment settings
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
     Fixture.fakeResponseWriter();
-    sessionStore.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED,
-                               Boolean.TRUE );
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    response.setOutputStream( new TestServletOutputStream() );
+    sessionStore.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
     // run life cycle
     new LifeCycleServiceHandler().service();
     assertNull( sessionStore.getAttribute( SESSION_STORE_ATTRIBUTE ) );

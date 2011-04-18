@@ -126,8 +126,6 @@ public class WrappedRequest_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    response.setOutputStream( new TestServletOutputStream() );
   }
 
   protected void tearDown() throws Exception {

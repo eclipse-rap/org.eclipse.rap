@@ -49,6 +49,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
 
   void synchronizedService() throws IOException {
     initializeStateInfo();
+    initializeJavaScriptResponseWriter();
     RWTRequestVersionControl.beforeService();
     try {
       if(    RWTRequestVersionControl.isValid()
@@ -86,7 +87,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       RequestParameterBuffer.store( parameters );
       RWTFactory.getStartupPage().send();
     }
-    writeOutput();
   }
 
   private static void initializeAdapterManager() {
@@ -116,21 +116,25 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       stateInfo = new ServiceStateInfo();
       ContextProvider.getContext().setStateInfo( stateInfo );
     }
+  }
+
+  private static void initializeJavaScriptResponseWriter() throws IOException {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     if( stateInfo.getResponseWriter() == null ) {
-      stateInfo.setResponseWriter( new JavaScriptResponseWriter() );
+      HttpServletResponse response = ContextProvider.getResponse();
+      response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
+      response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
+      PrintWriter writer = getOutputWriter();
+      stateInfo.setResponseWriter( new JavaScriptResponseWriter( writer ) );
     }
   }
 
-  private static void handleInvalidRequestCounter() throws IOException {
+  private static void handleInvalidRequestCounter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
     String message = RWTMessages.getMessage( "RWT_MultipleInstancesError" );
     Object[] args = new Object[] { message };
     responseWriter.write( MessageFormat.format( PATTERN_RELOAD, args ) );
-    HttpServletResponse response = ContextProvider.getResponse();
-    response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
-    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
-    LifeCycleServiceHandler.writeOutput();
   }
 
   private static boolean isSessionInitialized() {
@@ -151,17 +155,5 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     // reinitialize session store state
     sessionStore.valueBound( null );
     sessionStore.setAttribute( SessionSingletonBase.LOCK, new Object() );
-  }
-
-  private static void writeOutput() throws IOException {
-    if( !ContextProvider.getContext().isDisposed() ) {
-      JavaScriptResponseWriter responseWriter = ContextProvider.getStateInfo().getResponseWriter();
-      PrintWriter outputWriter = getOutputWriter();
-      try {
-        responseWriter.printContents( outputWriter );
-      } finally {
-        outputWriter.close();
-      }
-    }
   }
 }

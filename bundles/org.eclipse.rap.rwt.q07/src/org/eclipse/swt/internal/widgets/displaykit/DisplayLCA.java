@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
@@ -24,7 +23,6 @@ import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.dnd.DragSource;
@@ -102,9 +100,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // Note [rst] Startup page created in LifecycleServiceHandler#runLifeCycle
     // TODO [rh] should be replaced by requestCounter != 0
     if( request.getParameter( RequestParams.UIROOT ) != null ) {
-      HttpServletResponse response = ContextProvider.getResponse();
-      response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
-      response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
       disposeWidgets();
       writeRequestCounter();
       writeTheme( display );

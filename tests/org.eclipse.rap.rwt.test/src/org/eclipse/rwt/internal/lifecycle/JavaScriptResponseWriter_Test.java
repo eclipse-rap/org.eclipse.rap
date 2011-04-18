@@ -12,43 +12,32 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import junit.framework.TestCase;
-
-import org.eclipse.rwt.Fixture;
 
 
 public class JavaScriptResponseWriter_Test extends TestCase {
 
+  private StringWriter recorder;
+  private JavaScriptResponseWriter writer;
+
   protected void setUp() throws Exception {
-    Fixture.setUp();
+    recorder = new StringWriter();
+    writer = new JavaScriptResponseWriter( new PrintWriter( recorder ) );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testEmptyResponse() {
+    assertEquals( "", getContents() );
   }
 
-  public void testWriteMethods() throws Exception {
-    JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
+  public void testWrite() throws Exception {
     writer.write( " Text " );
-    String result = getContents( writer );
-    assertEquals( " Text ", result );
+    assertEquals( " Text ", getContents( ) );
   }
 
-  public void testPrintContents() {
-    JavaScriptResponseWriter writer = new JavaScriptResponseWriter();
-    StringWriter stringWriter = new StringWriter();
-    writer.printContents( new PrintWriter( stringWriter ) );
-    assertEquals( "", stringWriter.getBuffer().toString() );
-    writer.write( "Test" );
-    writer.printContents( new PrintWriter( stringWriter ) );
-    assertEquals( "Test", stringWriter.getBuffer().toString() );
-  }
-
-  private static String getContents( JavaScriptResponseWriter writer ) {
-    StringWriter recorder = new StringWriter();
-    writer.printContents( new PrintWriter( recorder ) );
+  private String getContents() {
     return recorder.getBuffer().toString();
   }
 }

@@ -267,7 +267,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     throws Exception 
   {
     final Exception[] exception = { null };
-    final TestResponse[] response = { newResponse() };
+    final TestResponse[] response = { new TestResponse() };
     Runnable runnable = new Runnable() {
       public void run() {
         synchronized( this ) {
@@ -294,13 +294,6 @@ public class RWTLifeCycle2_Test extends TestCase {
     return response[ 0 ];
   }
 
-  private static TestResponse newResponse() {
-    TestResponse result = new TestResponse();
-    TestServletOutputStream outputStream = new TestServletOutputStream();
-    result.setOutputStream( outputStream );
-    return result;
-  }
-  
   private TestRequest newRequest() {
     TestRequest result = new TestRequest();
     result.setSession( session );

@@ -119,7 +119,6 @@ public class UICallBackServiceHandler_Test extends TestCase {
   public void testResponseContentType() throws IOException {
     Fixture.fakeResponseWriter();
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    response.setOutputStream( new TestServletOutputStream() );
     UICallBackServiceHandler.writeResponse();
     assertEquals( "text/javascript; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }

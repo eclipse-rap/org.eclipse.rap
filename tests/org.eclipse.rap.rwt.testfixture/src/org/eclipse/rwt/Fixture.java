@@ -14,8 +14,7 @@ package org.eclipse.rwt;
 
 import java.io.*;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.eclipse.rwt.internal.engine.*;
@@ -275,13 +274,10 @@ public class Fixture {
   }
   
   public static String getAllMarkup() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
-    StringWriter recorder = new StringWriter();
-    writer.printContents( new PrintWriter( recorder ) );
-    return recorder.getBuffer().toString();
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    return response.getContent();
   }
-  
+
   public static void fakeNewRequest( Display display ) {
     fakeNewRequest();
     fakeRequestParam( RequestParams.UIROOT, DisplayUtil.getId( display ) );
@@ -306,8 +302,16 @@ public class Fixture {
   }
 
   public static void fakeResponseWriter() {
+    PrintWriter writer;
+    try {
+      TestResponse testResponse = ( TestResponse )ContextProvider.getResponse();
+      testResponse.clearContent();
+      writer = ContextProvider.getResponse().getWriter();
+    } catch( IOException exception ) {
+      throw new RuntimeException( exception );
+    }
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setResponseWriter( new JavaScriptResponseWriter() );
+    stateInfo.setResponseWriter( new JavaScriptResponseWriter( writer ) );
   }
 
   public static void fakePhase( final PhaseId phase ) {

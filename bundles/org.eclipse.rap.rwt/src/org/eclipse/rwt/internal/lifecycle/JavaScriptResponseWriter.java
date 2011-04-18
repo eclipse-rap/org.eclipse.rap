@@ -11,26 +11,18 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.PrintWriter;
 
 
 public class JavaScriptResponseWriter {
 
-  private final List elements;
+  private final PrintWriter writer;
 
-  public JavaScriptResponseWriter() {
-    elements = new ArrayList();
+  public JavaScriptResponseWriter( PrintWriter writer ) {
+    this.writer = writer;
   }
 
   public void write( String content ) {
-    elements.add( content );
-  }
-
-  public void printContents( PrintWriter writer ) {
-    for( int i = 0; i < elements.size(); i++ ) {
-      writer.print( elements.get( i ).toString() );
-    }
+    writer.write( content );
   }
 }

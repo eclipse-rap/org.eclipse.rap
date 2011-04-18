@@ -15,13 +15,12 @@ package org.eclipse.rwt.service;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.service.ContextProvider;
 
 
 public class ServiceHandler_Test extends TestCase {
@@ -90,19 +89,12 @@ public class ServiceHandler_Test extends TestCase {
   protected void setUp() throws Exception {
     throwException = false;
     registerCustomHandler();
-    initResponseOutputStream();
   }
 
   protected void tearDown() throws Exception {
     throwException = false;
     Fixture.tearDown();
     log = "";
-  }
-
-  private void initResponseOutputStream() {
-    HttpServletResponse response = ContextProvider.getResponse();
-    TestResponse testResponse = ( TestResponse )response;
-    testResponse.setOutputStream( new TestServletOutputStream() );
   }
 
   private void registerCustomHandler() {

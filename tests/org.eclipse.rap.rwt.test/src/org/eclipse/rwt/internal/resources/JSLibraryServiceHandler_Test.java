@@ -18,14 +18,15 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
 
 
 public class JSLibraryServiceHandler_Test extends TestCase {
-  private TestResponse response;
 
   public void testResponseWithEncoding() throws IOException, ServletException {    
     new JSLibraryServiceHandler().service();
     
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertNull( response.getHeader( "Content-Encoding" ) );
     assertEquals( "text/javascript; charset=UTF-8", response.getHeader( "Content-Type" ) );
     assertEquals( JSLibraryServiceHandler.EXPIRES_NEVER, response.getHeader( "Expires" ) );
@@ -43,15 +44,9 @@ public class JSLibraryServiceHandler_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    createResponse();
   }
   
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-  }
-  
-  private void createResponse() {
-    response = ( TestResponse )RWT.getResponse();
-    response.setOutputStream( new TestServletOutputStream() );
   }
 }

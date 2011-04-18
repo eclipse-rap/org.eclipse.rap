@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 
 import javax.servlet.ServletOutputStream;
@@ -20,13 +19,19 @@ import javax.servlet.http.HttpServletResponse;
 
 public final class TestResponse implements HttpServletResponse {
 
-  private ServletOutputStream outStream;
+  private TestServletOutputStream outStream;
   private String contentType;
   private String characterEncoding;
   private Map cookies = new HashMap();
   private Map headers = new HashMap();
   private int errorStatus;
   private String redirect;
+  private PrintWriter printWriter;
+  
+  public TestResponse() {
+    characterEncoding = "UTF-8";
+    outStream = new TestServletOutputStream();
+  }
 
   public void addCookie( final Cookie arg0 ) {
     cookies.put( arg0.getName(), arg0 );
@@ -111,12 +116,11 @@ public final class TestResponse implements HttpServletResponse {
     return outStream;
   }
 
-  public void setOutputStream( final ServletOutputStream outStream ) {
-    this.outStream = outStream;
-  }
-
   public PrintWriter getWriter() throws IOException {
-    return new PrintWriter( outStream );
+    if( printWriter == null ) {
+      printWriter = new PrintWriter( new OutputStreamWriter( outStream, characterEncoding ) );
+    }
+    return printWriter;
   }
 
   public void setContentLength( final int arg0 ) {
@@ -165,5 +169,22 @@ public final class TestResponse implements HttpServletResponse {
 
   public Locale getLocale() {
     return null;
+  }
+
+  public String getContent() {
+    String result;
+    printWriter.flush();
+    ByteArrayOutputStream content = outStream.getContent();
+    try {
+      result = content.toString( characterEncoding );
+    } catch( UnsupportedEncodingException exception ) {
+      throw new RuntimeException( exception );
+    }
+    return result;
+  }
+
+  public void clearContent() {
+    outStream = new TestServletOutputStream();
+    printWriter = null;
   }
 }

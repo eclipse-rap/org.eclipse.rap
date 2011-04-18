@@ -99,7 +99,6 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
-    createResponseOutputStream();
     ThemeManager.getInstance().initialize();
     new LifeCycleServiceHandler().service();
     assertEquals( TestAdapterFactory.CREATED, TestAdapterFactory.log );
@@ -109,8 +108,6 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
     Fixture.fakeResponseWriter();
-    createResponseOutputStream();
-    
     TestAdapterFactory.log = "";
     new LifeCycleServiceHandler().service();
     assertEquals( TestAdapterFactory.CREATED, TestAdapterFactory.log );
@@ -125,10 +122,4 @@ public class AdapterFactoryRegistry_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-
-  private static void createResponseOutputStream() {
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    response.setOutputStream( new TestServletOutputStream() );
-  }
-
 }

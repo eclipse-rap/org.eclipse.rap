@@ -393,8 +393,6 @@ public class UICallBackManager_Test extends TestCase {
       public void run() {
         ContextProvider.setContext( context );
         Fixture.fakeResponseWriter();
-        TestResponse response = ( TestResponse )context.getResponse();
-        response.setOutputStream( new TestServletOutputStream() );
         UICallBackServiceHandler uiCallBackServiceHandler = new UICallBackServiceHandler();
         try {
           UICallBackManager.getInstance().setActive( true );
