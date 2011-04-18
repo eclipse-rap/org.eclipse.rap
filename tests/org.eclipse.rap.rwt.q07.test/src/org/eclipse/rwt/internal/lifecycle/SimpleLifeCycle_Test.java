@@ -72,7 +72,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   
   public void testPhaseOrderForInitialRequest() throws Exception {
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener();
+    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     lifeCycle.addPhaseListener( phaseListener );
     lifeCycle.execute();
     PhaseEventInfo[] loggedEvents = phaseListener.getLoggedEvents();
@@ -85,7 +85,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   
   public void testPhaseOrderForSubsequentRequest() throws Exception {
     new Display();
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener();
+    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     lifeCycle.addPhaseListener( phaseListener );
     lifeCycle.execute();
     PhaseEventInfo[] loggedEvents = phaseListener.getLoggedEvents();
@@ -101,7 +101,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
 
   public void testListenersFromPhaseListenerRegistryAreExecuted() throws Exception {
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener();
+    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     RWTFactory.getPhaseListenerRegistry().add( phaseListener );
     SimpleLifeCycle lifeCycle = new SimpleLifeCycle();
     lifeCycle.execute();
@@ -149,7 +149,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
   
   public void testPhaseListenersHaveApplicationScope() throws Exception {
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener();
+    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     lifeCycle.addPhaseListener( phaseListener );
     newSession();
     lifeCycle.execute();
@@ -157,14 +157,14 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
   
   public void testAddPhaseListener() throws Exception {
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener();
+    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     lifeCycle.addPhaseListener( phaseListener );
     lifeCycle.execute();
     assertTrue( phaseListener.getLoggedEvents().length > 0 );
   }
   
   public void testRemovePhaseListener() throws Exception {
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener();
+    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     lifeCycle.addPhaseListener( phaseListener );
     lifeCycle.removePhaseListener( phaseListener );
     lifeCycle.execute();

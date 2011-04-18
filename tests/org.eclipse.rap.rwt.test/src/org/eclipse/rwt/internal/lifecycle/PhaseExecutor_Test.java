@@ -69,15 +69,13 @@ public class PhaseExecutor_Test extends TestCase {
   }
   
   public void testExecuteNotifiesPhaseListener() throws IOException {
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener();
+    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     phaseListenerManager.addPhaseListener( phaseListener );
     IPhase[] phases = new IPhase[] { 
       new TestPhase( new LinkedList(), PhaseId.PREPARE_UI_ROOT, null ), 
     };
     PhaseExecutor phaseExecutor = new PhaseExecutor( phaseListenerManager, phases );
     phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
-
-  
     PhaseEventInfo[] loggedEvents = phaseListener.getLoggedEvents();
     assertEquals( 2, loggedEvents.length );
     PhaseEventInfo beforePrepareUIRoot = loggedEvents[ 0 ];

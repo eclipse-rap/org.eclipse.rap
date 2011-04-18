@@ -19,9 +19,11 @@ public class LoggingPhaseListener implements PhaseListener {
   private static final long serialVersionUID = 1L;
   
   public static class PhaseEventInfo {
+    
     public final boolean before;
     public final Object source;
     public final PhaseId phaseId;
+    
     PhaseEventInfo( PhaseEvent event, boolean before ) {
       this.source = event.getSource();
       this.phaseId = event.getPhaseId();
@@ -29,10 +31,12 @@ public class LoggingPhaseListener implements PhaseListener {
     }
   }
   
+  private final PhaseId phaseId;
   private final List eventLog;
   
-  public LoggingPhaseListener() {
-    eventLog = new LinkedList();
+  public LoggingPhaseListener( PhaseId phaseId ) {
+    this.phaseId = phaseId;
+    this.eventLog = new LinkedList();
   }
   
   public void beforePhase( PhaseEvent event ) {
@@ -44,7 +48,7 @@ public class LoggingPhaseListener implements PhaseListener {
   }
   
   public PhaseId getPhaseId() {
-    return PhaseId.ANY;
+    return phaseId;
   }
   
   public PhaseEventInfo[] getLoggedEvents() {
