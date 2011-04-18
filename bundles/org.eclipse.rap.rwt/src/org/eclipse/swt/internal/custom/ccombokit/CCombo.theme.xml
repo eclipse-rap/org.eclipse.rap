@@ -33,7 +33,7 @@
 
     <property name="background-image">
       <description>
-        Background gradient for combo text field.
+        Background gradient for ccombo text field.
       </description>
     </property>
 

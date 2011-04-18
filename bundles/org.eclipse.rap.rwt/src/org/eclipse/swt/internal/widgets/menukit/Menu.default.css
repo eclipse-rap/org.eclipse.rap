@@ -36,7 +36,7 @@ MenuItem:hover {
   color: #4a4a4a;
 }
 
-MenuItem[BAR]:pressed {
+MenuItem:pressed {
   background-color: #00589f;
   color: white;
 }

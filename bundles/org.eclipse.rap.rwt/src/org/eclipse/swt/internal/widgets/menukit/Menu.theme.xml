@@ -71,9 +71,6 @@
       <property name="opacity" 
           description="The opacity of the item. A value between 0 and 1." />
 
-      <style name="BAR"
-          description="Style constant for menu bar items." />
-
       <style name="PUSH"
           description="Style constant for push menu item behavior." />
 
@@ -93,7 +90,7 @@
           description="On mouse over" />
 
       <state name="pressed"
-          description="On mouse over" />
+          description="On mouse down and open submenu. Only for menu-bars." />
 
       <state name="disabled"
           description="Applies to disabled menu items." />
