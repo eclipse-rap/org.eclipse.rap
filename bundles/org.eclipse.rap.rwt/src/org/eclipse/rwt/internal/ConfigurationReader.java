@@ -34,12 +34,6 @@ public class ConfigurationReader {
       return getConfigValue( IConfiguration.PARAM_LIFE_CYCLE, defaultValue );
     }
     
-    public boolean isCompression() {
-      String compression = IConfiguration.PARAM_COMPRESSION;
-      String value = getConfigValue( compression, "false" );
-      return Boolean.valueOf( value ).booleanValue();
-    }
-    
     public String getResources() {
       String defaultValue = IConfiguration.RESOURCES_DELIVER_FROM_DISK;
       return getConfigValue( IConfiguration.PARAM_RESOURCES, defaultValue );

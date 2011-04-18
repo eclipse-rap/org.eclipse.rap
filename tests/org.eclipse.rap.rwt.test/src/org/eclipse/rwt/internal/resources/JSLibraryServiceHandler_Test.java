@@ -18,7 +18,6 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.IConfiguration;
 
 
 public class JSLibraryServiceHandler_Test extends TestCase {
@@ -27,24 +26,11 @@ public class JSLibraryServiceHandler_Test extends TestCase {
   public void testResponseWithEncoding() throws IOException, ServletException {    
     new JSLibraryServiceHandler().service();
     
-    assertNull( response.getHeader( JSLibraryServiceHandler.CONTENT_ENCODING ) );
+    assertNull( response.getHeader( "Content-Encoding" ) );
     assertEquals( "text/javascript; charset=UTF-8", response.getHeader( "Content-Type" ) );
     assertEquals( JSLibraryServiceHandler.EXPIRES_NEVER, response.getHeader( "Expires" ) );
   }
   
-  public void testResponseWithoutEncoding() throws IOException, ServletException {
-    TestRequest request = ( TestRequest )RWT.getRequest();
-    request.setHeader( JSLibraryServiceHandler.ACCEPT_ENCODING,
-                       JSLibraryServiceHandler.ENCODING_GZIP );
-
-    new JSLibraryServiceHandler().service();
-
-    // as js concatenation in unit test mode is switched of
-    // we only test header settings...
-    String encoding = response.getHeader( JSLibraryServiceHandler.CONTENT_ENCODING );
-    assertEquals( JSLibraryServiceHandler.ENCODING_GZIP, encoding );
-  }
-
   public void testRequestURLCreation() {
     String expected =   "rap?custom_service_handler"
                       + "=org.eclipse.rwt.internal.resources.JSLibraryServiceHandler"
@@ -57,13 +43,10 @@ public class JSLibraryServiceHandler_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    System.setProperty( IConfiguration.PARAM_COMPRESSION, "true" );
     createResponse();
   }
   
   protected void tearDown() throws Exception {
-    response = null;
-    System.getProperties().remove( IConfiguration.PARAM_COMPRESSION );
     Fixture.tearDown();
   }
   

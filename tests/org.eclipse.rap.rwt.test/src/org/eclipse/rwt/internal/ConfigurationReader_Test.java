@@ -24,11 +24,6 @@ public class ConfigurationReader_Test extends TestCase {
     assertEquals( IConfiguration.LIFE_CYCLE_DEFAULT, lifeCycle );
   }
   
-  public void testConfigurationDefaultForIsCompression() {
-    boolean compression = configuration.isCompression();
-    assertFalse( compression );
-  }
-  
   public void testConfigurationDefaultForGetResources() {
     String resources = configuration.getResources();
     assertEquals( IConfiguration.RESOURCES_DELIVER_FROM_DISK, resources );

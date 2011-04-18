@@ -19,7 +19,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.IConfiguration;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.StreamWritingUtil;
@@ -39,9 +38,6 @@ import org.eclipse.rwt.service.IServiceHandler;
 public class JSLibraryServiceHandler implements IServiceHandler {
 
   public final static String HANDLER_ID = JSLibraryServiceHandler.class.getName();
-  public final static String CONTENT_ENCODING = "Content-Encoding";
-  public final static String ENCODING_GZIP = "gzip";
-  public final static String ACCEPT_ENCODING = "Accept-Encoding";
 
   static final String EXPIRES_NEVER = "Sun, 17 Jan 2038 19:14:07 GMT";
   static final String REQUEST_PATTERN = "{0}?{1}={2}&hash={3}";
@@ -60,41 +56,18 @@ public class JSLibraryServiceHandler implements IServiceHandler {
 
   public void service() throws IOException, ServletException {
     setResponseHeaders();
-    if( useCompression() ) {
-      writeCompressedOutput();
-    } else {
-      writeUnCompressedOutput();
-    }
+    writeOutput();
   }
 
-  private boolean useCompression() {
-    return isAcceptEncoding() && getConfiguration().isCompression();
-  }
-
-  private void setResponseHeaders() {
+  private static void setResponseHeaders() {
     HttpServletResponse response = RWT.getResponse();
     response.setHeader( EXPIRES, EXPIRES_NEVER );
     response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
   }
 
-  private void writeCompressedOutput() throws IOException {
-    RWT.getResponse().setHeader( CONTENT_ENCODING, ENCODING_GZIP );
-    ServletOutputStream out = RWT.getResponse().getOutputStream();
-    StreamWritingUtil.writeBuffered( RWTFactory.getJSLibraryConcatenator().getCompressed(), out );
-  }
-
-  private void writeUnCompressedOutput() throws IOException {
+  private static void writeOutput() throws IOException {
     ServletOutputStream out = RWT.getResponse().getOutputStream();
     StreamWritingUtil.writeBuffered( RWTFactory.getJSLibraryConcatenator().getUncompressed(), out );
-  }
-
-  private static boolean isAcceptEncoding() {
-    String encodings = RWT.getRequest().getHeader( ACCEPT_ENCODING );
-    return encodings != null && encodings.indexOf( ENCODING_GZIP ) != -1;
-  }
-  
-  private static IConfiguration getConfiguration() {
-    return RWTFactory.getConfigurationReader().getConfiguration();
   }
 }

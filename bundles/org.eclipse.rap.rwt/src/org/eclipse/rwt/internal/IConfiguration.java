@@ -22,7 +22,6 @@ import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 public interface IConfiguration {
 
   public static final String PARAM_LIFE_CYCLE = "lifecycle";
-  public static final String PARAM_COMPRESSION = "org.eclipse.rwt.compression";
   public static final String PARAM_RESOURCES = "resources";
 
   public static final String LIFE_CYCLE_DEFAULT = RWTLifeCycle.class.getName();
@@ -35,14 +34,6 @@ public interface IConfiguration {
    * request.
    */
   String getLifeCycle();
-
-  /** 
-   * <p>Returns whether the HTML output of the web appliction is sent
-   * gzipped to browsers that support gzipped network communication
-   * (Should be 'true' for productive versions to save network traffic 
-   * and shorten loading time).</p>
-   */
-  boolean isCompression();
 
   /**
    * <p>Returns whether static resources like JavaScript-libraries, images,
