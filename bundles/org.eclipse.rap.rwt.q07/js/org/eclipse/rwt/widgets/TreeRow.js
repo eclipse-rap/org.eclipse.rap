@@ -229,6 +229,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         var height = this._tree.getItemHeight(); 
         var width = nextLevelOffset - offset;
         var element = this._getNextElement( 3 );
+        element.innerHTML = "";
         this._setImage( element, source, true );
         this._setBounds( element, offset, 0, width, height );
         result = element;
@@ -244,6 +245,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         var image = this._getImageFromAppearance( "tree-check-box", states );
         this._renderOverState( item );
         var element = this._getNextElement( 3 );
+        element.innerHTML = "";
         this._setImage( element, image, true );
         var left = this._tree.getCheckBoxLeft( item );
         var width = this._tree.getCheckBoxWidth( item );
@@ -283,6 +285,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _renderSelectionBackground : function( item, cell ) {
       if( this._styleMap.itemBackground !== null ) {
         var element = this._getNextElement( 2 );
+        element.innerHTML = "";
         element.style.backgroundColor = this._styleMap.itemBackground;
         var padding = this._tree.getSelectionPadding();
         var left = this._tree.getItemTextLeft( item, cell, true );
@@ -303,6 +306,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           && background != this._styleMap.backgroundColor ) 
       {
         var element = this._getNextElement( 1 );
+        element.innerHTML = "";
         element.style.backgroundColor = background;
         var left = this._tree.getItemLeft( item, cell, false );
         var width = this._tree.getItemWidth( item, cell, false );
@@ -319,6 +323,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var element = null;
       if( source !== null ) {
         element = this._getNextElement( 3 );
+        element.innerHTML = "";
         this._setImage( element, source, true );
         var left = this._tree.getItemImageLeft( item, cell );
         var width = this._tree.getItemImageWidth( item, cell );
@@ -335,6 +340,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var element = null;
       if( text !== "" ) {
         element = this._getNextElement( 3 );
+        //do not reset since we are about to reassign
         var left = this._tree.getItemTextLeft( item, cell );
         var width = this._tree.getItemTextWidth( item, cell );
         element.style.verticalAlign = "middle";  
@@ -469,7 +475,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         result.style.display = "";
         result.style.backgroundColor = "";
         result.style.backgroundImage = "";
-        result.innerHTML = "";
       } else {
         result = document.createElement( "div" );
         result.style.position = "absolute";
