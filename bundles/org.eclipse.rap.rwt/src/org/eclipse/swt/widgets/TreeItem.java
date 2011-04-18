@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.*;
+
 
 /**
  * Instances of this class represent a selectable user interface object that
@@ -74,24 +75,24 @@ public class TreeItem extends Item {
       }
       return fonts;
     }
-
   }
 
   private final TreeItem parentItem;
   private final Tree parent;
   private final ItemHolder itemHolder;
   private final ITreeItemAdapter treeItemAdapter;
+  private final int index;
   private Font font;
   private boolean expanded;
   private boolean checked;
-  private Color background, foreground;
+  private Color background;
+  private Color foreground;
   private boolean grayed;
   private String[] texts;
   private Image[] images;
   Color[] cellForegrounds, cellBackgrounds;
   Font[] cellFonts;
   int depth;
-  private final int index;
   private boolean cached;
   int flatIndex;
 
@@ -274,7 +275,7 @@ public class TreeItem extends Item {
     parent.updateScrollBars();
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = itemHolder;
@@ -336,7 +337,7 @@ public class TreeItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setExpanded( final boolean expanded ) {
+  public void setExpanded( boolean expanded ) {
     checkWidget();
     markCached();
     if( !expanded || getItemCount() > 0 ) {
@@ -392,28 +393,24 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public Rectangle getBounds( final int columnIndex ) {
+  public Rectangle getBounds( int columnIndex ) {
     checkWidget();
     return getBounds( columnIndex, true );
   }
 
-  Rectangle getBounds( final int columnIndex, final boolean checkData ) {
+  Rectangle getBounds( int columnIndex, boolean checkData ) {
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     if( isVisible() && isValidColumn( columnIndex ) ) {
       int left = parent.getVisualCellLeft( columnIndex, this );
       int width = parent.getVisualCellWidth( columnIndex, this, checkData );
-      result = new Rectangle( left,
-                              getItemTop(),
-                              width,
-                              parent.getItemHeight() );
+      result = new Rectangle( left, getItemTop(), width, parent.getItemHeight() );
     }
     return result;
   }
 
-  private boolean isValidColumn( final int index ) {
+  private boolean isValidColumn( int index ) {
     int columnCount = parent.getColumnCount();
-    return    ( columnCount == 0 && index == 0 )
-           || ( index >= 0 && index < columnCount );
+    return ( columnCount == 0 && index == 0 ) || ( index >= 0 && index < columnCount );
   }
 
   private boolean isVisible() {
@@ -438,7 +435,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public Color getBackground( final int columnIndex ) {
+  public Color getBackground( int columnIndex ) {
     checkWidget();
     // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
@@ -464,12 +461,12 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public Font getFont( final int columnIndex ) {
+  public Font getFont( int columnIndex ) {
     checkWidget();
     return getFont( columnIndex, true );
   }
 
-  Font getFont( final int columnIndex, final boolean checkData ) {
+  Font getFont( int columnIndex, boolean checkData ) {
     // if (checkData && !parent.checkData (this, true)) error
     // (SWT.ERROR_WIDGET_DISPOSED);
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
@@ -497,7 +494,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public Color getForeground( final int columnIndex ) {
+  public Color getForeground( int columnIndex ) {
     checkWidget();
     // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
@@ -528,7 +525,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setBackground( final int columnIndex, final Color value ) {
+  public void setBackground( int columnIndex, Color value ) {
     checkWidget();
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -541,11 +538,7 @@ public class TreeItem extends Item {
       cellBackgrounds = new Color[ validColumnCount ];
     } else if( cellBackgrounds.length < validColumnCount ) {
       Color[] newCellBackgrounds = new Color[ validColumnCount ];
-      System.arraycopy( cellBackgrounds,
-                        0,
-                        newCellBackgrounds,
-                        0,
-                        cellBackgrounds.length );
+      System.arraycopy( cellBackgrounds, 0, newCellBackgrounds, 0, cellBackgrounds.length );
       cellBackgrounds = newCellBackgrounds;
     }
     if( cellBackgrounds[ columnIndex ] == value ) {
@@ -578,7 +571,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setFont( final int columnIndex, final Font value ) {
+  public void setFont( int columnIndex, Font value ) {
     checkWidget();
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -600,9 +593,7 @@ public class TreeItem extends Item {
     if( cellFonts[ columnIndex ] == value ) {
       return;
     }
-    if( cellFonts[ columnIndex ] != null
-        && cellFonts[ columnIndex ].equals( value ) )
-    {
+    if( cellFonts[ columnIndex ] != null && cellFonts[ columnIndex ].equals( value ) ) {
       return;
     }
     cellFonts[ columnIndex ] = value;
@@ -627,7 +618,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setForeground( final int columnIndex, final Color value ) {
+  public void setForeground( int columnIndex, Color value ) {
     checkWidget();
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -640,19 +631,13 @@ public class TreeItem extends Item {
       cellForegrounds = new Color[ validColumnCount ];
     } else if( cellForegrounds.length < validColumnCount ) {
       Color[] newCellForegrounds = new Color[ validColumnCount ];
-      System.arraycopy( cellForegrounds,
-                        0,
-                        newCellForegrounds,
-                        0,
-                        cellForegrounds.length );
+      System.arraycopy( cellForegrounds, 0, newCellForegrounds, 0, cellForegrounds.length );
       cellForegrounds = newCellForegrounds;
     }
     if( cellForegrounds[ columnIndex ] == value ) {
       return;
     }
-    if( cellForegrounds[ columnIndex ] != null
-        && cellForegrounds[ columnIndex ].equals( value ) )
-    {
+    if( cellForegrounds[ columnIndex ] != null && cellForegrounds[ columnIndex ].equals( value ) ) {
       return;
     }
     cellForegrounds[ columnIndex ] = value;
@@ -678,7 +663,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     checkWidget();
     if( font != null && font.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -704,7 +689,7 @@ public class TreeItem extends Item {
     return getFont( true );
   }
 
-  Font getFont( final boolean checkData ) {
+  Font getFont( boolean checkData ) {
     if( checkData ) {
       materialize();
     }
@@ -731,7 +716,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setBackground( final Color value ) {
+  public void setBackground( Color value ) {
     checkWidget();
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -810,7 +795,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setForeground( final Color value ) {
+  public void setForeground( Color value ) {
     checkWidget();
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -834,7 +819,7 @@ public class TreeItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setChecked( final boolean checked ) {
+  public void setChecked( boolean checked ) {
     checkWidget();
     if( ( parent.getStyle() & SWT.CHECK ) != 0 ) {
       if( checked != this.checked ) {
@@ -871,7 +856,7 @@ public class TreeItem extends Item {
    *              not called from the thread that created the receiver</li>
    *              </ul>
    */
-  public void setGrayed( final boolean value ) {
+  public void setGrayed( boolean value ) {
     checkWidget();
     if( ( parent.getStyle() & SWT.CHECK ) != 0 ) {
       if( grayed != value ) {
@@ -911,7 +896,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public String getText( final int columnIndex ) {
+  public String getText( int columnIndex ) {
     checkWidget();
     return getText( columnIndex, true );
   }
@@ -932,7 +917,7 @@ public class TreeItem extends Item {
     return super.getText();
   }
 
-  String getText( final int columnIndex, final boolean checkData ) {
+  String getText( int columnIndex, boolean checkData ) {
     if( checkData && !isCached() ) {
       parent.checkData( this, this.index );
     }
@@ -964,7 +949,7 @@ public class TreeItem extends Item {
    *
    * @since 1.3
    */
-  public Rectangle getTextBounds( final int index ) {
+  public Rectangle getTextBounds( int index ) {
     checkWidget();
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     if( isVisible() && isValidColumn( index ) ) {
@@ -989,7 +974,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setText( final String[] value ) {
+  public void setText( String[] value ) {
     checkWidget();
     if( value == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1014,7 +999,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setText( final int columnIndex, final String value ) {
+  public void setText( int columnIndex, String value ) {
     checkWidget();
     if( value == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1048,7 +1033,7 @@ public class TreeItem extends Item {
    *              not called from the thread that created the receiver</li>
    *              </ul>
    */
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     setText( 0, text );
   }
@@ -1065,7 +1050,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public Image getImage( final int columnIndex ) {
+  public Image getImage( int columnIndex ) {
     checkWidget();
     return getImage( columnIndex, true );
   }
@@ -1097,7 +1082,7 @@ public class TreeItem extends Item {
    *              not called from the thread that created the receiver</li>
    *              </ul>
    */
-  public Rectangle getImageBounds( final int columnIndex ) {
+  public Rectangle getImageBounds( int columnIndex ) {
     checkWidget();
     // parent.checkData( this, parent.indexOf( this ) );
     Rectangle result = null;
@@ -1119,7 +1104,7 @@ public class TreeItem extends Item {
     return result;
   }
 
-  Image getImage( final int columnIndex, final boolean checkData ) {
+  Image getImage( int columnIndex, boolean checkData ) {
     // if( checkData ) parent.checkData( this, this.index );
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
     if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
@@ -1137,7 +1122,7 @@ public class TreeItem extends Item {
   /*
    * Returns the receiver's ideal width for the specified columnIndex.
    */
-  int getPreferredWidth( final int columnIndex, final boolean checkData ) {
+  int getPreferredWidth( int columnIndex, boolean checkData ) {
     return parent.getPreferredCellWidth( this, columnIndex, checkData );
   }
 
@@ -1186,7 +1171,7 @@ public class TreeItem extends Item {
    * @see SWT#SetData
    * @since 1.0
    */
-  public void clear( final int index, final boolean recursive ) {
+  public void clear( int index, boolean recursive ) {
     checkWidget();
     if( !( 0 <= index && index < itemHolder.size() ) ) {
       error( SWT.ERROR_INVALID_RANGE );
@@ -1242,7 +1227,7 @@ public class TreeItem extends Item {
     }
   }
 
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     setImage( 0, image );
   }
@@ -1263,7 +1248,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setImage( final int columnIndex, final Image value ) {
+  public void setImage( int columnIndex, Image value ) {
     checkWidget();
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -1309,7 +1294,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setImage( final Image[] value ) {
+  public void setImage( Image[] value ) {
     checkWidget();
     if( value == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1343,18 +1328,18 @@ public class TreeItem extends Item {
    * @see SWT#SetData
    * @since 1.0
    */
-  public void clearAll( final boolean recursive ) {
+  public void clearAll( boolean recursive ) {
     clearAll( recursive, true );
   }
 
-  void clearAll( final boolean recursive, final boolean doVisualUpdate ) {
+  void clearAll( boolean recursive, boolean doVisualUpdate ) {
     checkWidget();
     if( itemHolder.size() == 0 ) {
       return;
     }
     /* clear the item(s) */
     for( int i = 0; i < itemHolder.size(); i++ ) {
-      final TreeItem treeItem = ( ( TreeItem )itemHolder.getItem( i ) );
+      TreeItem treeItem = ( ( TreeItem )itemHolder.getItem( i ) );
       treeItem.clear();
       if( recursive ) {
         treeItem.clearAll( true, false );
@@ -1404,7 +1389,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public TreeItem getItem( final int index ) {
+  public TreeItem getItem( int index ) {
     checkWidget();
     return ( TreeItem )itemHolder.getItem( index );
   }
@@ -1424,7 +1409,7 @@ public class TreeItem extends Item {
     return getItemCount( true );
   }
 
-  int getItemCount( final boolean checkData ) {
+  int getItemCount( boolean checkData ) {
     checkWidget();
     if( checkData ) {
       materialize();
@@ -1451,7 +1436,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public int indexOf( final TreeItem item ) {
+  public int indexOf( TreeItem item ) {
     checkWidget();
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1492,7 +1477,7 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setItemCount( final int count ) {
+  public void setItemCount( int count ) {
     checkWidget();
     parent.setItemCount( count, this );
   }

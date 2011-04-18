@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -26,12 +26,14 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
+
 public class Tree_Test extends TestCase {
 
+  private Display display;
+  private Composite composite;
+
   public void testGetItemsAndGetItemCount() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     assertEquals( 0, tree.getItemCount() );
     assertEquals( 0, tree.getItems().length );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -41,9 +43,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testImage() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertSame( Graphics.getImage( Fixture.IMAGE1 ), item1.getImage() );
@@ -53,30 +53,26 @@ public class Tree_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree1 = new Tree( shell, SWT.NONE );
+    Tree tree1 = new Tree( composite, SWT.NONE );
     assertTrue( ( tree1.getStyle() & SWT.SINGLE ) != 0 );
     assertTrue( ( tree1.getStyle() & SWT.H_SCROLL ) != 0 );
     assertTrue( ( tree1.getStyle() & SWT.V_SCROLL ) != 0 );
-    Tree tree2 = new Tree( shell, SWT.SINGLE );
+    Tree tree2 = new Tree( composite, SWT.SINGLE );
     assertTrue( ( tree2.getStyle() & SWT.SINGLE ) != 0 );
     assertTrue( ( tree2.getStyle() & SWT.H_SCROLL ) != 0 );
     assertTrue( ( tree2.getStyle() & SWT.V_SCROLL ) != 0 );
-    Tree tree3 = new Tree( shell, SWT.MULTI );
+    Tree tree3 = new Tree( composite, SWT.MULTI );
     assertTrue( ( tree3.getStyle() & SWT.MULTI ) != 0 );
     assertTrue( ( tree3.getStyle() & SWT.H_SCROLL ) != 0 );
     assertTrue( ( tree3.getStyle() & SWT.V_SCROLL ) != 0 );
-    Tree tree4 = new Tree( shell, SWT.SINGLE | SWT.MULTI );
+    Tree tree4 = new Tree( composite, SWT.SINGLE | SWT.MULTI );
     assertTrue( ( tree4.getStyle() & SWT.SINGLE ) != 0 );
     assertTrue( ( tree4.getStyle() & SWT.H_SCROLL ) != 0 );
     assertTrue( ( tree4.getStyle() & SWT.V_SCROLL ) != 0 );
   }
 
   public void testItemHierarchy() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item, SWT.NONE );
     assertEquals( 1, item.getItems().length );
@@ -89,9 +85,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -105,15 +99,11 @@ public class Tree_Test extends TestCase {
   }
 
   public void testDisposeSelected() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.MULTI );
+    Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item, SWT.NONE );
     TreeItem otherItem = new TreeItem( tree, SWT.NONE );
-    tree.setSelection( new TreeItem[]{
-      subItem, otherItem
-    } );
+    tree.setSelection( new TreeItem[] { subItem, otherItem } );
     item.dispose();
     assertEquals( true, item.isDisposed() );
     assertEquals( true, subItem.isDisposed() );
@@ -123,9 +113,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testIndexOf() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     assertEquals( 0, tree.indexOf( item ) );
     item.dispose();
@@ -141,15 +129,13 @@ public class Tree_Test extends TestCase {
     } catch( IllegalArgumentException iae ) {
       // expected
     }
-    Tree anotherTree = new Tree( shell, SWT.NONE );
+    Tree anotherTree = new Tree( composite, SWT.NONE );
     TreeItem anotherItem = new TreeItem( anotherTree, SWT.NONE );
     assertEquals( -1, tree.indexOf( anotherItem ) );
   }
 
   public void testIndexOfColumns() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     TreeColumn col = new TreeColumn( tree, SWT.NONE );
     assertEquals( 0, tree.indexOf( col ) );
     col.dispose();
@@ -170,9 +156,7 @@ public class Tree_Test extends TestCase {
   public void testExpandCollapse() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.addTreeListener( new TreeListener() {
       public void treeCollapsed( final TreeEvent e ) {
         log.append( "collapsed" );
@@ -201,9 +185,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testSelectionForSingle() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     // Verify that an empty tree has an empty selection
     assertEquals( 0, tree.getItemCount() );
     assertTrue( Arrays.equals( new TreeItem[ 0 ], tree.getSelection() ) );
@@ -216,9 +198,7 @@ public class Tree_Test extends TestCase {
     // Test selecting a single treItem
     tree.setSelection( treeItem1 );
     assertEquals( 1, tree.getSelectionCount() );
-    TreeItem[] expected = new TreeItem[]{
-      treeItem1
-    };
+    TreeItem[] expected = new TreeItem[] { treeItem1 };
     assertTrue( Arrays.equals( expected, tree.getSelection() ) );
     // Verify that getSelection returns a safe copy
     tree.setSelection( treeItem1 );
@@ -237,20 +217,16 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, tree.getSelectionCount() );
     assertEquals( 0, tree.getSelection().length );
     // Test selecting a single treeItem with setSelection(TreeItem[])
-    tree.setSelection( new TreeItem[]{
-      treeItem1
-    } );
+    tree.setSelection( new TreeItem[] { treeItem1 } );
     assertEquals( 1, tree.getSelectionCount() );
     assertSame( treeItem1, tree.getSelection()[ 0 ] );
     // Test that setSelection(TreeItem[]) copies the argument
-    TreeItem[] newSelection = new TreeItem[]{
-      treeItem1
-    };
+    TreeItem[] newSelection = new TreeItem[] { treeItem1 };
     tree.setSelection( newSelection );
     newSelection[ 0 ] = null;
     assertSame( treeItem1, tree.getSelection()[ 0 ] );
-    // Test that calling setSelection(TreeItem[]) with a null-argument leads
-    // to an exception
+    
+    // Test that calling setSelection(TreeItem[]) with a null-argument leads to an exception
     try {
       tree.setSelection( ( org.eclipse.swt.widgets.TreeItem[] )null );
       fail( "must not allow setSelection( null )" );
@@ -259,19 +235,13 @@ public class Tree_Test extends TestCase {
     }
     // Test calling setSelection(TreeItem[]) with more than one element
     TreeItem treeItem2 = new TreeItem( tree, SWT.NONE );
-    tree.setSelection( new TreeItem[]{
-      treeItem2, treeItem1, null
-    } );
+    tree.setSelection( new TreeItem[] { treeItem2, treeItem1, null } );
     assertEquals( 0, tree.getSelectionCount() );
     assertTrue( Arrays.equals( new TreeItem[ 0 ], tree.getSelection() ) );
     // Test calling setSelection(TreeItem[]) with one null-element
     // -> must not change current selection
-    tree.setSelection( new TreeItem[]{
-      treeItem1
-    } );
-    tree.setSelection( new TreeItem[]{
-      null
-    } );
+    tree.setSelection( new TreeItem[] { treeItem1 } );
+    tree.setSelection( new TreeItem[] { null } );
     assertEquals( 1, tree.getSelectionCount() );
     assertSame( treeItem1, tree.getSelection()[ 0 ] );
     // Verify that selecting a disposed of item throws an exception
@@ -288,9 +258,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testSelectionForMulti() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.MULTI );
+    Tree tree = new Tree( composite, SWT.MULTI );
     // Verify that an empty tree has an empty selection
     assertEquals( 0, tree.getItemCount() );
     assertTrue( Arrays.equals( new TreeItem[ 0 ], tree.getSelection() ) );
@@ -304,54 +272,36 @@ public class Tree_Test extends TestCase {
     tree.setSelection( new TreeItem[ 0 ] );
     assertEquals( 0, tree.getSelectionCount() );
     assertEquals( 0, tree.getSelection().length );
-    // Ensure that setSelection( item ) does the same as
-    // setSelection( new TreeItem[] { item } )
+    
+    // Ensure that setSelection( item ) does the same as setSelection( new TreeItem[] { item } )
     tree.setSelection( treeItem1 );
     TreeItem selected1 = tree.getSelection()[ 0 ];
-    tree.setSelection( new TreeItem[]{
-      treeItem1
-    } );
+    tree.setSelection( new TreeItem[] { treeItem1 } );
     TreeItem selected2 = tree.getSelection()[ 0 ];
     assertSame( selected1, selected2 );
     // Select two treeItems
     TreeItem treeItem2 = new TreeItem( tree, SWT.NONE );
-    tree.setSelection( new TreeItem[]{
-      treeItem1, treeItem2
-    } );
+    tree.setSelection( new TreeItem[] { treeItem1, treeItem2 } );
     assertEquals( 2, tree.getSelectionCount() );
-    TreeItem[] expected = new TreeItem[]{
-      treeItem1, treeItem2
-    };
+    TreeItem[] expected = new TreeItem[] { treeItem1, treeItem2 };
     assertTrue( Arrays.equals( expected, tree.getSelection() ) );
     // Test calling setSelection(TreeItem[]) with one null-element
     // -> must not change current selection
-    tree.setSelection( new TreeItem[]{
-      treeItem1
-    } );
-    tree.setSelection( new TreeItem[]{
-      null
-    } );
+    tree.setSelection( new TreeItem[] { treeItem1 } );
+    tree.setSelection( new TreeItem[] { null } );
     assertEquals( 1, tree.getSelectionCount() );
     assertSame( treeItem1, tree.getSelection()[ 0 ] );
     // Test calling setSelection(TreeItem[]) with only null-elements
     // -> must not change current selection
-    tree.setSelection( new TreeItem[]{
-      treeItem1
-    } );
-    tree.setSelection( new TreeItem[]{
-      null, null
-    } );
+    tree.setSelection( new TreeItem[] { treeItem1 } );
+    tree.setSelection( new TreeItem[] { null, null } );
     assertEquals( 1, tree.getSelectionCount() );
     assertSame( treeItem1, tree.getSelection()[ 0 ] );
     // Select two treeItems, with some null-elements in between
     tree.setSelection( new TreeItem[ 0 ] );
-    tree.setSelection( new TreeItem[]{
-      null, treeItem1, null, treeItem2
-    } );
+    tree.setSelection( new TreeItem[] { null, treeItem1, null, treeItem2 } );
     assertEquals( 2, tree.getSelectionCount() );
-    expected = new TreeItem[]{
-      treeItem1, treeItem2
-    };
+    expected = new TreeItem[] { treeItem1, treeItem2 };
     assertTrue( Arrays.equals( expected, tree.getSelection() ) );
     // Verify that selecting a disposed of item throws an exception
     try {
@@ -369,9 +319,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testSelectAllForSingle() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     new TreeItem( item1, SWT.NONE );
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
@@ -381,9 +329,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testSelectAllForMulti() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.MULTI );
+    Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     TreeItem item11 = new TreeItem( item1, SWT.NONE );
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
@@ -394,23 +340,17 @@ public class Tree_Test extends TestCase {
   }
 
   public void testDeselectAll() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.MULTI );
+    Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem treeItem1 = new TreeItem( tree, SWT.NONE );
     TreeItem treeItem2 = new TreeItem( tree, SWT.NONE );
-    tree.setSelection( new TreeItem[]{
-      treeItem1, treeItem2
-    } );
+    tree.setSelection( new TreeItem[] { treeItem1, treeItem2 } );
     tree.deselectAll();
     assertEquals( 0, tree.getSelectionCount() );
     assertEquals( 0, tree.getSelection().length );
   }
 
   public void testSelectForSingle() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     new TreeItem( item1, SWT.NONE );
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
@@ -421,9 +361,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testSelectForMulti() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.MULTI );
+    Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     TreeItem item11 = new TreeItem( item1, SWT.NONE );
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
@@ -435,9 +373,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testDeselectForSingle() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     new TreeItem( item1, SWT.NONE );
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
@@ -448,9 +384,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testDeselectForMulti() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.MULTI );
+    Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     TreeItem item11 = new TreeItem( item1, SWT.NONE );
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
@@ -462,9 +396,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testRemoveAll() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.MULTI );
+    Tree tree = new Tree( composite, SWT.MULTI );
     // Test removeAll on empty tree
     tree.removeAll();
     assertEquals( 0, tree.getItemCount() );
@@ -482,49 +414,32 @@ public class Tree_Test extends TestCase {
   }
 
   public void testInitialGetTopItemIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
-    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    Tree tree = new Tree( composite, SWT.NONE );
+    ITreeAdapter adapter = getTreeAdapter( tree );
+
     assertEquals( 0, adapter.getTopItemIndex() );
-    display.dispose();
   }
 
   public void testShowItemFlat() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setBounds( 0, 0, 200, 200 );
     for( int i = 0; i < 100; i++ ) {
       new TreeItem( tree, SWT.None );
     }
-    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter adapter = getTreeAdapter( tree );
+    
     assertEquals( 0, adapter.getTopItemIndex() );
     tree.showItem( tree.getItem( 70 ) );
     assertEquals( 60, adapter.getTopItemIndex() );
-    display.dispose();
   }
 
   public void testGetParentItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     assertNull( tree.getParentItem() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.RENDER );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-
   public void testGetColumnCount() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     assertEquals( 0, tree.getColumnCount() );
     TreeColumn column0 = new TreeColumn( tree, SWT.NONE );
     assertEquals( 1, tree.getColumnCount() );
@@ -541,9 +456,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testGetColumnI() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     try {
       tree.getColumn( 0 );
       fail( "No exception thrown for index out of range" );
@@ -573,9 +486,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testGetColumns() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     assertEquals( 0, tree.getColumns().length );
     TreeColumn column0 = new TreeColumn( tree, SWT.LEFT );
     TreeColumn[] columns = tree.getColumns();
@@ -598,9 +509,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testSetHeaderVisible() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     assertFalse( tree.getHeaderVisible() );
     tree.setHeaderVisible( true );
     assertTrue( tree.getHeaderVisible() );
@@ -609,9 +518,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testGetHeaderHeight() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     assertEquals( 0, tree.getHeaderHeight() );
     tree.setHeaderVisible( true );
     assertTrue( tree.getHeaderHeight() > 0 );
@@ -620,9 +527,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testSetSortColumn() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertEquals( null, tree.getSortColumn() );
     tree.setSortColumn( column );
@@ -632,9 +537,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testSetSortDirection() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     assertEquals( SWT.NONE, tree.getSortDirection() );
     tree.setSortDirection( SWT.UP );
     assertEquals( SWT.UP, tree.getSortDirection() );
@@ -643,23 +546,19 @@ public class Tree_Test extends TestCase {
   }
 
   public void testShowSelection() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.SINGLE );
+    Tree tree = new Tree( composite, SWT.SINGLE );
     TreeItem item;
     tree.showSelection();
     item = new TreeItem( tree, 0 );
-    tree.setSelection( new TreeItem[]{
-      item
-    } );
+    tree.setSelection( new TreeItem[] { item } );
     tree.showSelection();
+    
+    // TODO [fappel]: What does this test? I wonder since there is no assert statement.
   }
 
   public void testResizeListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    final Shell shell = new Shell( display );
-    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
+    final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     final List log = new ArrayList();
     tree.addControlListener( new ControlAdapter() {
 
@@ -672,9 +571,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnColumnChange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
     assertFalse( tree.hasHScrollBar() );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
@@ -689,9 +586,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnItemsChange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
     assertFalse( tree.hasVScrollBar() );
     for( int i = 0; i < 20; i++ ) {
@@ -703,9 +598,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnItemExpand() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 50, 20 );
     assertFalse( tree.hasVScrollBar() );
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -719,9 +612,7 @@ public class Tree_Test extends TestCase {
 
   public void testUpdateScrollBarOnResize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 25 );
@@ -731,9 +622,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnItemWidthChange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 60, 60 );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     assertFalse( tree.hasHScrollBar() );
@@ -754,9 +643,7 @@ public class Tree_Test extends TestCase {
 
   public void testUpdateScrollBarOnHeaderVisibleChange() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     int itemCount = 5;
     for( int i = 0; i < itemCount ; i++ ) {
       TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -771,9 +658,7 @@ public class Tree_Test extends TestCase {
 
   public void testUpdateScrollBarOnVirtualItemCountChange() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
     int itemCount = 5;
     int itemHeight = tree.getItemHeight();
     tree.setSize( 100, itemCount * itemHeight + 4 );
@@ -784,9 +669,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarItemWidthChangeWithColumn() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 10 );
@@ -801,9 +684,7 @@ public class Tree_Test extends TestCase {
 
   public void testUpdateScrollBarWithInterDependencyHFirst() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 20 );
     new TreeItem( tree, SWT.NONE );
@@ -820,9 +701,7 @@ public class Tree_Test extends TestCase {
 
   public void testUpdateScrollBarWithInterDependencyVFirst() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 26 );
     tree.setSize( 30, 30 );
@@ -837,9 +716,7 @@ public class Tree_Test extends TestCase {
 
   public void testComputeSizeWithColumns() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     Point expected = new Point( 79, 79 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     for( int i = 0; i < 10; i++ ) {
@@ -848,7 +725,7 @@ public class Tree_Test extends TestCase {
     new TreeItem( tree, SWT.NONE ).setText( "Long long item 100" );
     expected = new Point( 130, 213 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    tree = new Tree( shell, SWT.BORDER );
+    tree = new Tree( composite, SWT.BORDER );
     for( int i = 0; i < 10; i++ ) {
       new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
     }
@@ -878,7 +755,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 73, col3.getWidth() );
     expected = new Point( 110, 229 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    tree = new Tree( shell, SWT.CHECK );
+    tree = new Tree( composite, SWT.CHECK );
     for( int i = 0; i < 10; i++ ) {
       new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
     }
@@ -897,9 +774,7 @@ public class Tree_Test extends TestCase {
 
   public void testComputeSizeWithIndention() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     Point expected = new Point( 79, 79 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -919,10 +794,8 @@ public class Tree_Test extends TestCase {
 
   public void testShowColumn() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    shell.setSize( 800, 600 );
-    Tree tree = new Tree( shell, SWT.NONE );
+    composite.setSize( 800, 600 );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 300, 100 );
     for( int i = 0; i < 10; i++ ) {
       TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -931,8 +804,8 @@ public class Tree_Test extends TestCase {
     for( int i = 0; i < 10; i++ ) {
       new TreeItem( tree, SWT.NONE );
     }
-    ITreeAdapter adapter
-      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    
+    ITreeAdapter adapter = getTreeAdapter( tree );
     assertEquals( 0, adapter.getScrollLeft() );
     tree.showColumn( tree.getColumn( 8 ) );
     assertEquals( 165, adapter.getScrollLeft() );
@@ -952,7 +825,7 @@ public class Tree_Test extends TestCase {
       fail( "Disposed column not allowed as argument" );
     } catch( IllegalArgumentException e ) {
     }
-    Tree tree1 = new Tree( shell, SWT.NONE );
+    Tree tree1 = new Tree( composite, SWT.NONE );
     column = new TreeColumn( tree1, SWT.NONE );
     tree.showColumn( column );
     assertEquals( 50, adapter.getScrollLeft() );
@@ -964,9 +837,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testImageCutOff() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 20 );
@@ -976,9 +847,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testImageCutOffMultiColumn() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 500, 500 );
     TreeColumn column1 = new TreeColumn( tree, SWT.LEFT );
     column1.setWidth( 200 );
@@ -995,9 +864,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testImageCutOffAndRestore() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -1011,9 +878,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testHideColumn() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 0 );
@@ -1022,9 +887,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testHideColumnWidthImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -1038,9 +901,7 @@ public class Tree_Test extends TestCase {
   // VIRTUAL
 
   public void testVirtualGetItemOutOfBounds() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 10 );
     try {
       tree.getItem( 10 );
@@ -1052,9 +913,7 @@ public class Tree_Test extends TestCase {
 
   public void testVirtualInitalSetDataEvents() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    final Shell shell = new Shell( display );
-    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
+    final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     final List log = new ArrayList();
     tree.addListener( SWT.SetData, new Listener() {
       public void handleEvent( final Event event ) {
@@ -1082,9 +941,7 @@ public class Tree_Test extends TestCase {
 
   public void testVirtualNoSetDataEventForCollapsedItems() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    final Shell shell = new Shell( display );
-    final Tree tree = new Tree( shell, SWT.VIRTUAL );
+    final Tree tree = new Tree( composite, SWT.VIRTUAL );
     final List log = new ArrayList();
     tree.addListener( SWT.SetData, new Listener() {
       public void handleEvent( final Event event ) {
@@ -1100,9 +957,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testVirtualClear() {
-    Display display = new Display();
-    final Shell shell = new Shell( display );
-    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
+    final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     tree.setSize( 100, 160 );
     tree.addListener( SWT.SetData, new Listener() {
       public void handleEvent( final Event event ) {
@@ -1135,9 +990,7 @@ public class Tree_Test extends TestCase {
 
   public void testVirtualComputeSize() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Tree tree = new Tree( shell, SWT.BORDER | SWT.VIRTUAL );
+    Tree tree = new Tree( composite, SWT.BORDER | SWT.VIRTUAL );
     tree.setItemCount( 10 );
     tree.addListener( SWT.SetData, new Listener() {
 
@@ -1179,14 +1032,12 @@ public class Tree_Test extends TestCase {
   public void testVirtualScrollThrowsSetData() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final LoggingListener log = new LoggingListener();
-    final Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
     tree.setSize( 100, 100 );
     tree.addListener( SWT.SetData, log );
     log.clear();
-    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter adapter = getTreeAdapter( tree );
     adapter.setTopItemIndex( 30 );
     assertSame( tree.getItem( 30 ), log.get( 0 ).item );
     assertSame( tree.getItem( 31 ), log.get( 1 ).item );
@@ -1195,9 +1046,7 @@ public class Tree_Test extends TestCase {
   public void testVirtualShowItemThrowsSetData() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final LoggingListener log = new LoggingListener();
-    final Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
     tree.setSize( 100, 100 );
     tree.addListener( SWT.SetData, log );
@@ -1207,9 +1056,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testTopItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 300, 85 );
     TreeItem[] items = new TreeItem[ 60 ];
     int counter = 0;
@@ -1236,20 +1083,16 @@ public class Tree_Test extends TestCase {
   }
 
   public void testScrollBars() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     assertNotNull( tree.getHorizontalBar() );
     assertNotNull( tree.getVerticalBar() );
-    tree = new Tree( shell, SWT.NO_SCROLL );
+    tree = new Tree( composite, SWT.NO_SCROLL );
     assertNull( tree.getHorizontalBar() );
     assertNull( tree.getVerticalBar() );
   }
 
   public void testHasScrollBar_NO_SCROLL() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NO_SCROLL );
+    Tree tree = new Tree( composite, SWT.NO_SCROLL );
     tree.setSize( 200, 200 );
     assertFalse( tree.hasVScrollBar() );
     assertFalse( tree.hasHScrollBar() );
@@ -1260,16 +1103,15 @@ public class Tree_Test extends TestCase {
   }
 
   public void testCellWidthWithoutColumns() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Tree tree = new Tree( shell, SWT.NONE );
+    Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     item1.setText( "First item text." );
     TreeItem item2 = new TreeItem( item1, SWT.NONE );
     item2.setText( "Second item text is longer." );
     TreeItem item3 = new TreeItem( item2, SWT.NONE );
     item3.setText( "Third item text is longer than the second item text." );
-    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    
+    ITreeAdapter adapter = getTreeAdapter( tree );
     int cellWidth1 = adapter.getCellWidth( 0 );
     assertTrue( cellWidth1 > 0 );
     item1.setExpanded( true );
@@ -1280,11 +1122,24 @@ public class Tree_Test extends TestCase {
     assertTrue( cellWidth3 > cellWidth2 );
   }
 
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.RENDER );
+    display = new Display();
+    composite = new Shell( display, SWT.NONE );
+  }
+
+  protected void tearDown() throws Exception {
+    display.dispose();
+    display = null;
+    composite = null;
+    Fixture.tearDown();
+  }
+
   /////////
   // HELPER
 
-  private static boolean contains( final TreeItem[] items, final TreeItem item )
-  {
+  private static boolean contains( TreeItem[] items, TreeItem item ) {
     boolean result = false;
     for( int i = 0; !result && i < items.length; i++ ) {
       if( item == items[ i ] ) {
@@ -1292,5 +1147,9 @@ public class Tree_Test extends TestCase {
       }
     }
     return result;
+  }
+
+  private ITreeAdapter getTreeAdapter( Tree tree ) {
+    return ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
   }
 }

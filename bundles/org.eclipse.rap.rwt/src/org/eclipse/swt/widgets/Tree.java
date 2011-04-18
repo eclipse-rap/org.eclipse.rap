@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -120,7 +120,7 @@ public class Tree extends Composite {
 
   private final class CompositeItemHolder implements IItemHolderAdapter {
 
-    public void add( final Item item ) {
+    public void add( Item item ) {
       if( item instanceof TreeItem ) {
         itemHolder.add( item );
       } else {
@@ -128,7 +128,7 @@ public class Tree extends Composite {
       }
     }
 
-    public void insert( final Item item, final int index ) {
+    public void insert( Item item, int index ) {
       if( item instanceof TreeItem ) {
         itemHolder.insert( item, index );
       } else {
@@ -136,7 +136,7 @@ public class Tree extends Composite {
       }
     }
 
-    public void remove( final Item item ) {
+    public void remove( Item item ) {
       if( item instanceof TreeItem ) {
         itemHolder.remove( item );
       } else {
@@ -160,7 +160,7 @@ public class Tree extends Composite {
     private String toolTipText;
     private ICellToolTipProvider provider;
 
-    public void setScrollLeft( final int left ) {
+    public void setScrollLeft( int left ) {
       Tree.this.scrollLeft = left;
     }
 
@@ -168,11 +168,11 @@ public class Tree extends Composite {
       return Tree.this.scrollLeft;
     }
 
-    public boolean isCached( final TreeItem item ) {
+    public boolean isCached( TreeItem item ) {
       return item.isCached();
     }
 
-    public void checkAllData( final Tree tree ) {
+    public void checkAllData( Tree tree ) {
       tree.checkAllData();
     }
 
@@ -184,23 +184,23 @@ public class Tree extends Composite {
       return Tree.this.hasVScrollBar();
     }
 
-    public Point getItemImageSize( final int index ) {
+    public Point getItemImageSize( int index ) {
       return Tree.this.getItemImageSize( index );
     }
 
-    public int getCellLeft( final int index ) {
+    public int getCellLeft( int index ) {
       return Tree.this.getCellLeft( index );
     }
 
-    public int getCellWidth( final int index ) {
+    public int getCellWidth( int index ) {
       return Tree.this.getCellWidth( index );
     }
 
-    public int getTextOffset( final int index ) {
+    public int getTextOffset( int index ) {
       return Tree.this.getTextOffset( index );
     }
 
-    public int getTextMaxWidth( final int index ) {
+    public int getTextMaxWidth( int index ) {
       return Tree.this.getTextWidth( index );
     }
 
@@ -208,7 +208,7 @@ public class Tree extends Composite {
       return Tree.this.getCheckImageSize().x;
     }
 
-    public int getImageOffset( final int index ) {
+    public int getImageOffset( int index ) {
       return Tree.this.getImageOffset( index );
     }
 
@@ -228,11 +228,11 @@ public class Tree extends Composite {
       return Tree.this.getTopIndex();
     }
 
-    public void setTopItemIndex( final int index ) {
+    public void setTopItemIndex( int index ) {
       Tree.this.setTopItemIndex( index );
     }
 
-    public int getColumnLeft( final TreeColumn column ) {
+    public int getColumnLeft( TreeColumn column ) {
       int index = Tree.this.indexOf( column );
       return Tree.this.getColumn( index ).getLeft();
     }
@@ -241,7 +241,7 @@ public class Tree extends Composite {
       return provider;
     }
 
-    public void setCellToolTipProvider( final ICellToolTipProvider provider ) {
+    public void setCellToolTipProvider( ICellToolTipProvider provider ) {
       this.provider = provider;
     }
 
@@ -249,14 +249,14 @@ public class Tree extends Composite {
       return toolTipText;
     }
 
-    public void setToolTipText( final String toolTipText ) {
+    public void setToolTipText( String toolTipText ) {
       this.toolTipText = toolTipText;
     }
 
   }
 
   private static final class ResizeListener extends ControlAdapter {
-    public void controlResized( final ControlEvent event ) {
+    public void controlResized( ControlEvent event ) {
       Tree tree = ( Tree )event.widget;
       if( tree.isVirtual() ) {
         tree.checkAllData();
@@ -297,7 +297,7 @@ public class Tree extends Composite {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Tree( final Composite parent, final int style ) {
+  public Tree( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     itemHolder = new ItemHolder( TreeItem.class );
     columnHolder = new ItemHolder( TreeColumn.class );
@@ -312,7 +312,7 @@ public class Tree extends Composite {
     state &= ~( /* CANVAS | */THEME_BACKGROUND );
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = new CompositeItemHolder();
@@ -338,13 +338,13 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setItemCount( final int itemCount ) {
+  public void setItemCount( int itemCount ) {
     checkWidget();
     setItemCount( itemCount, null );
     redraw();
   }
 
-  void setItemCount( final int itemCount, final TreeItem parent ) {
+  void setItemCount( int itemCount, TreeItem parent ) {
     int oldItemCount;
     if( parent == null ) {
       oldItemCount = getItemCount();
@@ -431,7 +431,7 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public TreeItem getItem( final int index ) {
+  public TreeItem getItem( int index ) {
     checkWidget();
     return ( TreeItem )itemHolder.getItem( index );
   }
@@ -454,7 +454,7 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public int indexOf( final TreeItem item ) {
+  public int indexOf( TreeItem item ) {
     checkWidget();
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -517,7 +517,7 @@ public class Tree extends Composite {
    *              </ul>
    * @see Tree#showSelection()
    */
-  public void showItem( final TreeItem item ) {
+  public void showItem( TreeItem item ) {
     checkWidget();
     if( item == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -564,7 +564,7 @@ public class Tree extends Composite {
    *
    * @since 1.4
    */
-  public void setTopItem( final TreeItem item ) {
+  public void setTopItem( TreeItem item ) {
     checkWidget();
     if( item == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -616,7 +616,7 @@ public class Tree extends Composite {
     return result;
   }
 
-  private void setTopItemIndex( final int index ) {
+  private void setTopItemIndex( int index ) {
     if( index != topItemIndex ) {
       topItemIndex = index;
       checkAllData();
@@ -645,7 +645,7 @@ public class Tree extends Composite {
    *
    * @since 1.3
    */
-  public void showColumn( final TreeColumn column ) {
+  public void showColumn( TreeColumn column ) {
     checkWidget();
     if( column == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -754,7 +754,7 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setSelection( final TreeItem selection ) {
+  public void setSelection( TreeItem selection ) {
     checkWidget();
     if( selection == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -785,7 +785,7 @@ public class Tree extends Composite {
    *              </ul>
    * @see Tree#deselectAll()
    */
-  public void setSelection( final TreeItem[] selection ) {
+  public void setSelection( TreeItem[] selection ) {
     checkWidget();
     if( selection == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -847,7 +847,7 @@ public class Tree extends Composite {
    *
    * @since 1.3
    */
-  public void select( final TreeItem item ) {
+  public void select( TreeItem item ) {
     checkWidget();
     if( item == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -858,7 +858,7 @@ public class Tree extends Composite {
     if( ( style & SWT.SINGLE ) != 0 ) {
       setSelection( item );
     } else {
-      final ArrayList selItems = new ArrayList( Arrays.asList( selection ) );
+      ArrayList selItems = new ArrayList( Arrays.asList( selection ) );
       if( !selItems.contains( item ) ) {
         selItems.add( item );
         selection = new TreeItem[ selItems.size() ];
@@ -885,7 +885,7 @@ public class Tree extends Composite {
       final java.util.List allItems = new ArrayList();
       WidgetTreeVisitor.accept( this, new AllWidgetTreeVisitor() {
 
-        public boolean doVisit( final Widget widget ) {
+        public boolean doVisit( Widget widget ) {
           if( widget instanceof TreeItem ) {
             allItems.add( widget );
           }
@@ -914,7 +914,7 @@ public class Tree extends Composite {
    *
    * @since 1.3
    */
-  public void deselect( final TreeItem item ) {
+  public void deselect( TreeItem item ) {
     checkWidget();
     if( item == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -960,7 +960,7 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setLinesVisible( final boolean value ) {
+  public void setLinesVisible( boolean value ) {
     checkWidget();
     if( linesVisible == value ) {
       return; /* no change */
@@ -1027,7 +1027,7 @@ public class Tree extends Composite {
    * @see SWT#VIRTUAL
    * @see SWT#SetData
    */
-  public void clear( final int index, final boolean recursive ) {
+  public void clear( int index, boolean recursive ) {
     checkWidget();
     if( !( 0 <= index && index < itemHolder.size() ) ) {
       error( SWT.ERROR_INVALID_RANGE );
@@ -1066,7 +1066,7 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public TreeItem getItem( final Point point ) {
+  public TreeItem getItem( Point point ) {
     checkWidget();
     if( point == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1081,7 +1081,7 @@ public class Tree extends Composite {
     return result;
   }
 
-  private List collectVisibleItems( final TreeItem parent ) {
+  private List collectVisibleItems( TreeItem parent ) {
     List result = new ArrayList();
     TreeItem[] children;
     if( parent == null ) {
@@ -1143,7 +1143,7 @@ public class Tree extends Composite {
    * @see SWT#VIRTUAL
    * @see SWT#SetData
    */
-  public void clearAll( final boolean recursive ) {
+  public void clearAll( boolean recursive ) {
     checkWidget();
     if( itemHolder.size() == 0 ) {
       return;
@@ -1204,7 +1204,7 @@ public class Tree extends Composite {
     updateScrollBars();
   }
 
-  final void destroyColumn( final TreeColumn column ) {
+  final void destroyColumn( TreeColumn column ) {
     int index = indexOf( column );
     // Remove data from TreeItems
     // TreeItem[] items = getItems();
@@ -1250,8 +1250,7 @@ public class Tree extends Composite {
     checkWidget();
     int result = 0;
     if( headerVisible ) {
-      TreeThemeAdapter themeAdapter
-        = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
+      TreeThemeAdapter themeAdapter = getThemeAdapter();
       Font headerFont = themeAdapter.getHeaderFont( this );
       int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
@@ -1285,7 +1284,7 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setHeaderVisible( final boolean value ) {
+  public void setHeaderVisible( boolean value ) {
     checkWidget();
     if( headerVisible == value ) {
       return; /* no change */
@@ -1331,7 +1330,7 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public int indexOf( final TreeColumn column ) {
+  public int indexOf( TreeColumn column ) {
     checkWidget();
     if( column == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1368,7 +1367,7 @@ public class Tree extends Composite {
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
    */
-  public TreeColumn getColumn( final int index ) {
+  public TreeColumn getColumn( int index ) {
     checkWidget();
     if( !( 0 <= index && index < columnHolder.size() ) ) {
       error( SWT.ERROR_INVALID_RANGE );
@@ -1426,7 +1425,7 @@ public class Tree extends Composite {
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
    */
-  public void setColumnOrder( final int[] order ) {
+  public void setColumnOrder( int[] order ) {
     checkWidget();
     if( order == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1482,7 +1481,7 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setSortColumn( final TreeColumn column ) {
+  public void setSortColumn( TreeColumn column ) {
     checkWidget();
     if( column != null && column.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -1510,7 +1509,7 @@ public class Tree extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setSortDirection( final int direction ) {
+  public void setSortDirection( int direction ) {
     checkWidget();
     if( direction != SWT.UP && direction != SWT.DOWN && direction != SWT.NONE )
     {
@@ -1624,7 +1623,7 @@ public class Tree extends Composite {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -1645,7 +1644,7 @@ public class Tree extends Composite {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -1667,7 +1666,7 @@ public class Tree extends Composite {
    * @see TreeListener
    * @see #removeTreeListener
    */
-  public void addTreeListener( final TreeListener listener ) {
+  public void addTreeListener( TreeListener listener ) {
     checkWidget();
     TreeEvent.addListener( this, listener );
   }
@@ -1688,7 +1687,7 @@ public class Tree extends Composite {
    * @see TreeListener
    * @see #addTreeListener
    */
-  public void removeTreeListener( final TreeListener listener ) {
+  public void removeTreeListener( TreeListener listener ) {
     checkWidget();
     TreeEvent.removeListener( this, listener );
   }
@@ -1715,7 +1714,7 @@ public class Tree extends Composite {
     super.releaseChildren();
   }
 
-  void removeFromSelection( final TreeItem item ) {
+  void removeFromSelection( TreeItem item ) {
     int index = -1;
     for( int i = 0; index == -1 && i < selection.length; i++ ) {
       if( selection[ i ] == item ) {
@@ -1736,10 +1735,7 @@ public class Tree extends Composite {
   /////////////////////
   // Widget dimensions
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
     int height = 0;
@@ -1795,7 +1791,7 @@ public class Tree extends Composite {
   /////////////////////
   // item layout helper
 
-  private int getMaxInnerWidth( final TreeItem[] items, final int level ) {
+  private int getMaxInnerWidth( TreeItem[] items, int level ) {
     int maxInnerWidth = 0;
     for( int i = 0; i < items.length; i++ ) {
       if( items[ i ] != null && items[ i ].isCached() ) {
@@ -1811,17 +1807,17 @@ public class Tree extends Composite {
     return maxInnerWidth;
   }
 
-  int getCellLeft( final int index ) {
+  int getCellLeft( int index ) {
     return getColumnCount() == 0 ? 0 : getColumn( index ).getLeft();
   }
 
-  private int getCellWidth( final int index ) {
+  private int getCellWidth( int index ) {
     return   getColumnCount() == 0 && index == 0
            ? getMaxInnerWidth( getItems(), 1 )
            : getColumn( index ).getWidth();
   }
 
-  int getImageOffset( final int index ) {
+  int getImageOffset( int index ) {
     // Note: The left cell-padding is visually ignored for the tree-column
     int result = isTreeColumn( index ) ? 0 : getCellPadding().x;
     if( hasCheckBoxes( index ) ) {
@@ -1830,7 +1826,7 @@ public class Tree extends Composite {
     return result;
   }
 
-  private int getTextOffset( final int index ) {
+  private int getTextOffset( int index ) {
     int result = getImageOffset( index );
     result += getItemImageOuterWidth( index );
     if( isTreeColumn( index ) ) {
@@ -1839,7 +1835,7 @@ public class Tree extends Composite {
     return result;
   }
 
-  int getTextWidth( final int index ) {
+  int getTextWidth( int index ) {
     int result = getCellWidth( index ) - getTextOffset( index );
     if( isTreeColumn( index ) ) {
       result -= ( TEXT_MARGIN.width - TEXT_MARGIN.x );
@@ -1847,11 +1843,11 @@ public class Tree extends Composite {
     return Math.max( 0, result );
   }
 
-  int getIndentionOffset( final TreeItem item ) {
+  int getIndentionOffset( TreeItem item ) {
     return this.getIndentionWidth() * ( item.depth + 1);
   }
 
-  int getVisualCellLeft( final int index, final TreeItem item ) {
+  int getVisualCellLeft( int index, TreeItem item ) {
     int result = getCellLeft( index ) - scrollLeft;
     if( isTreeColumn( index ) ) {
       result += getIndentionOffset( item );
@@ -1862,16 +1858,12 @@ public class Tree extends Composite {
     return result;
   }
 
-  int getVisualCellWidth( final int index,
-                          final TreeItem item,
-                          final boolean checkData )
-  {
+  int getVisualCellWidth( int index, TreeItem item, boolean checkData ) {
     int result;
     if( getColumnCount() == 0 && index == 0 ) {
       String text = item.getText( 0, checkData );
-      int textWidth
-        = Graphics.stringExtent( item.getFont( checkData ), text ).x;
-      result =   getCellPadding().width
+      int textWidth = Graphics.stringExtent( item.getFont( checkData ), text ).x;
+      result = getCellPadding().width
                + getItemImageOuterWidth( index )
                + textWidth
                + TEXT_MARGIN.width;
@@ -1888,13 +1880,11 @@ public class Tree extends Composite {
     return result;
   }
 
-  int getVisualTextLeft( final int index, final TreeItem item ) {
-    return    getVisualCellLeft( index, item )
-            + getCellPadding().x
-            + getItemImageOuterWidth( index );
+  int getVisualTextLeft( int index, TreeItem item ) {
+    return getVisualCellLeft( index, item ) + getCellPadding().x + getItemImageOuterWidth( index );
   }
 
-  int getVisualTextWidth( final int index, final TreeItem item ) {
+  int getVisualTextWidth( int index, TreeItem item ) {
     int result = 0;
     if( index == 0 && getColumnCount() == 0 ) {
       result = Graphics.stringExtent( item.getFont(), item.getText( 0 ) ).x;
@@ -1906,14 +1896,10 @@ public class Tree extends Composite {
     return result;
   }
 
-  int getPreferredCellWidth( final TreeItem item,
-                             final int columnIndex,
-                             final boolean checkData )
-  {
+  int getPreferredCellWidth( TreeItem item, int columnIndex, boolean checkData ) {
     int result = getTextOffset( columnIndex ) ;
     Rectangle padding = getCellPadding();
-    result += Graphics.stringExtent( getFont(),
-                                     item.getText( columnIndex, checkData ) ).x;
+    result += Graphics.stringExtent( getFont(), item.getText( columnIndex, checkData ) ).x;
     result += ( padding.width - padding.x );
     if( isTreeColumn( columnIndex ) ) {
       result += ( TEXT_MARGIN.width - TEXT_MARGIN.x );
@@ -1921,26 +1907,21 @@ public class Tree extends Composite {
     return result;
   }
 
-  boolean isTreeColumn( final int index ) {
-    return    ( index == 0 && getColumnCount() == 0 )
+  boolean isTreeColumn( int index ) {
+    return    index == 0 && getColumnCount() == 0
            || getColumnCount() > 0 && getColumnOrder()[ 0 ] == index;
   }
 
-  private boolean hasCheckBoxes( final int index ) {
+  private boolean hasCheckBoxes( int index ) {
     return ( style & SWT.CHECK ) != 0 && isTreeColumn( index );
   }
 
-  private boolean hasColumnImages( final int columnIndex ) {
-    int count = columnIndex == 0
-              ? itemImageCount
-              : getColumn( columnIndex ).itemImageCount;
+  private boolean hasColumnImages( int columnIndex ) {
+    int count = columnIndex == 0 ? itemImageCount : getColumn( columnIndex ).itemImageCount;
     return count > 0;
   }
 
-  void updateColumnImageCount( final int columnIndex,
-                               final Image oldImage,
-                               final Image newImage )
-  {
+  void updateColumnImageCount( int columnIndex, Image oldImage, Image newImage ) {
     int delta = 0;
     if( oldImage == null && newImage != null ) {
       delta = +1;
@@ -1957,14 +1938,14 @@ public class Tree extends Composite {
     }
   }
 
-  void updateItemImageSize( final Image image ) {
+  void updateItemImageSize( Image image ) {
     if( image != null && itemImageSize == null ) {
       Rectangle imageBounds = image.getBounds();
       itemImageSize = new Point( imageBounds.width, imageBounds.height );
     }
   }
 
-  Point getItemImageSize( final int index ) {
+  Point getItemImageSize( int index ) {
     Point result;
     if( hasColumnImages( index ) ) {
       result = getItemImageSize();
@@ -1980,7 +1961,7 @@ public class Tree extends Composite {
     return result;
   }
 
-  private int getItemImageOuterWidth( final int index ) {
+  private int getItemImageOuterWidth( int index ) {
     int result = 0;
     if( hasColumnImages( index ) ) {
       result += getItemImageSize( index ).x;
@@ -1999,9 +1980,11 @@ public class Tree extends Composite {
   }
 
   private Point getCheckImageSize() {
-    TreeThemeAdapter themeAdapter
-      = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getCheckBoxImageSize( this );
+    return getThemeAdapter().getCheckBoxImageSize( this );
+  }
+
+  private TreeThemeAdapter getThemeAdapter() {
+    return ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
   }
 
   private Point getCheckImageOuterSize() {
@@ -2014,17 +1997,13 @@ public class Tree extends Composite {
 
   private Rectangle getCheckBoxMargin() {
     if( bufferedCheckBoxMargin == null ) {
-      TreeThemeAdapter themeAdapter
-        = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
-      bufferedCheckBoxMargin = themeAdapter.getCheckBoxMargin( this );
+      bufferedCheckBoxMargin = getThemeAdapter().getCheckBoxMargin( this );
     }
     return bufferedCheckBoxMargin;
   }
 
   private int getIndentionWidth() {
-    TreeThemeAdapter themeAdapter
-      = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getIndentionWidth( this );
+    return getThemeAdapter().getIndentionWidth( this );
   }
 
   ///////////////////
@@ -2037,7 +2016,7 @@ public class Tree extends Composite {
       public void run() {
         WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
           int flatIndex = 0;
-          public boolean doVisit( final Widget widget ) {
+          public boolean doVisit( Widget widget ) {
             boolean result = true;
             if( widget instanceof TreeItem ) { // ignore tree
               TreeItem item = ( TreeItem )widget;
@@ -2063,7 +2042,7 @@ public class Tree extends Composite {
     } );
   }
 
-  private boolean isItemVisible( final TreeItem item ) {
+  private boolean isItemVisible( TreeItem item ) {
     boolean result = false;
     int itemPosition = item.getItemTop();
     if( itemPosition >= 0 && itemPosition <= getSize().y ) {
@@ -2094,9 +2073,7 @@ public class Tree extends Composite {
     }
   }
 
-  private int updateFlatIndicesSub( final TreeItem item,
-                                         final int flatIndex )
-  {
+  private int updateFlatIndicesSub( TreeItem item, int flatIndex ) {
     int newFlatIndex = flatIndex;
     if( item.getExpanded() ) {
       TreeItem[] subItems = item.getItems();
@@ -2110,7 +2087,7 @@ public class Tree extends Composite {
     return newFlatIndex;
   }
 
-  final void checkData( final TreeItem item, final int index ) {
+  final void checkData( TreeItem item, int index ) {
     if( isVirtual() && !item.isCached() ) {
       item.markCached();
       SetDataEvent event = new SetDataEvent( Tree.this, item, index );
@@ -2122,7 +2099,7 @@ public class Tree extends Composite {
     }
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = style;
     if( ( style & SWT.NO_SCROLL ) == 0 ) {
       result |= SWT.H_SCROLL | SWT.V_SCROLL;
@@ -2132,18 +2109,14 @@ public class Tree extends Composite {
 
   Rectangle getCellPadding() {
     if( bufferedCellPadding == null ) {
-      TreeThemeAdapter themeAdapter
-        = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
-      bufferedCellPadding = themeAdapter.getCellPadding( this );
+      bufferedCellPadding = getThemeAdapter().getCellPadding( this );
     }
     return bufferedCellPadding;
   }
 
   int getCellSpacing() {
     if( bufferedCellSpacing < 0 ) {
-      TreeThemeAdapter themeAdapter
-        = ( TreeThemeAdapter )getAdapter( IThemeAdapter.class );
-      bufferedCellSpacing = themeAdapter.getCellSpacing( this );
+      bufferedCellSpacing = getThemeAdapter().getCellSpacing( this );
     }
     return bufferedCellSpacing;
   }
@@ -2286,7 +2259,7 @@ public class Tree extends Composite {
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     TreeItem[] items = getItems();
     if( items != null ) {
       for( int i = 0; i < items.length; i++ ) {

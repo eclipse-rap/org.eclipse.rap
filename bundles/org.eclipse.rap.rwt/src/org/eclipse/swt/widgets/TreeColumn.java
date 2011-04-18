@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -375,8 +375,7 @@ public class TreeColumn extends Item {
     if( image != null ) {
       newWidth += image.getBounds().width + MARGIN_IMAGE;
     }
-    if( parent.getSortColumn() == this && parent.getSortDirection() != SWT.NONE )
-    {
+    if( parent.getSortColumn() == this && parent.getSortDirection() != SWT.NONE ) {
       newWidth += SORT_INDICATOR_WIDTH + MARGIN_IMAGE;
     }
     for( int i = 0; i < availableItems.length; i++ ) {
