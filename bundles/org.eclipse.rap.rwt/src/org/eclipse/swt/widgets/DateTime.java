@@ -22,7 +22,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.internal.widgets.datetimekit.DateTimeThemeAdapter;
 
@@ -54,7 +53,7 @@ public class DateTime extends Composite {
 
   private final class DateTimeAdapter implements IDateTimeAdapter {
 
-    public Rectangle getBounds( final int widget ) {
+    public Rectangle getBounds( int widget ) {
       Rectangle result = new Rectangle( 0, 0, 0, 0 );
       switch( widget ) {
         case WEEKDAY_TEXTFIELD:
@@ -195,7 +194,7 @@ public class DateTime extends Composite {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public DateTime( final Composite parent, final int style ) {
+  public DateTime( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     dateTimeAdapter = new DateTimeAdapter();
     rightNow = Calendar.getInstance();
@@ -233,7 +232,7 @@ public class DateTime extends Composite {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -256,7 +255,7 @@ public class DateTime extends Composite {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -390,7 +389,7 @@ public class DateTime extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setHours( final int hours ) {
+  public void setHours( int hours ) {
     checkWidget();
     if( checkTime( hours, getMinutes(), getSeconds() ) ) {
       rightNow.set( Calendar.HOUR_OF_DAY, hours );
@@ -411,7 +410,7 @@ public class DateTime extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setMinutes( final int minutes ) {
+  public void setMinutes( int minutes ) {
     checkWidget();
     if( checkTime( getHours(), minutes, getSeconds() ) ) {
       rightNow.set( Calendar.MINUTE, minutes );
@@ -432,7 +431,7 @@ public class DateTime extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setSeconds( final int seconds ) {
+  public void setSeconds( int seconds ) {
     checkWidget();
     if( checkTime( getHours(), getMinutes(), seconds ) ) {
       rightNow.set( Calendar.SECOND, seconds );
@@ -454,7 +453,7 @@ public class DateTime extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setDay( final int day ) {
+  public void setDay( int day ) {
     checkWidget();
     int month = rightNow.get( Calendar.MONTH );
     int year = rightNow.get( Calendar.YEAR );
@@ -477,7 +476,7 @@ public class DateTime extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setMonth( final int month ) {
+  public void setMonth( int month ) {
     checkWidget();
     int day = rightNow.get( Calendar.DATE );
     int year = rightNow.get( Calendar.YEAR );
@@ -500,7 +499,7 @@ public class DateTime extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setYear( final int year ) {
+  public void setYear( int year ) {
     checkWidget();
     int day = rightNow.get( Calendar.DATE );
     int month = rightNow.get( Calendar.MONTH );
@@ -528,7 +527,7 @@ public class DateTime extends Composite {
    *
    * @since 1.2
    */
-  public void setDate( final int year, final int month, final int day ) {
+  public void setDate( int year, int month, int day ) {
     checkWidget();
     if( checkDate( year, month, day ) ) {
       // reset
@@ -557,7 +556,7 @@ public class DateTime extends Composite {
    *
    * @since 1.2
    */
-  public void setTime( final int hours, final int minutes, final int seconds ) {
+  public void setTime( int hours, int minutes, int seconds ) {
     checkWidget();
     if( checkTime( hours, minutes, seconds ) ) {
       setHours( hours );
@@ -566,14 +565,14 @@ public class DateTime extends Composite {
     }
   }
 
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     if( font != getFont() ) {
       super.setFont( font );
     }
     computeSubWidgetsBounds();
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IDateTimeAdapter.class ) {
       result = dateTimeAdapter;
@@ -583,9 +582,7 @@ public class DateTime extends Composite {
     return result;
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed ) {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0, height = 0;
     if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
@@ -608,7 +605,7 @@ public class DateTime extends Composite {
     return new Point( width, height );
   }
 
-  public void setBounds( final Rectangle bounds ) {
+  public void setBounds( Rectangle bounds ) {
     super.setBounds( bounds );
     // [if] Recalculate the sub widgets bounds
     // important for using it in FillLayout where the
@@ -662,10 +659,8 @@ public class DateTime extends Composite {
     } else if( ( style & SWT.TIME ) != 0 ) {
       // Hours text field
       hoursTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
-      hoursTextFieldBounds.width
-        = Graphics.stringExtent( font, "88" ).x + H_PADDING;
-      hoursTextFieldBounds.height
-        = Graphics.stringExtent( font, "88" ).y + V_PADDING;
+      hoursTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
+      hoursTextFieldBounds.height = Graphics.stringExtent( font, "88" ).y + V_PADDING;
       // Hours minutes separator
       separator3Bounds = new Rectangle( 0, padding.y, 0, 0 );
       separator3Bounds.x = hoursTextFieldBounds.x + hoursTextFieldBounds.width;
@@ -678,8 +673,7 @@ public class DateTime extends Composite {
       minutesTextFieldBounds.height = hoursTextFieldBounds.height;
       // Minutes seconds separator
       separator4Bounds = new Rectangle( 0, padding.y, 0, 0 );
-      separator4Bounds.x = minutesTextFieldBounds.x
-                         + minutesTextFieldBounds.width;
+      separator4Bounds.x = minutesTextFieldBounds.x + minutesTextFieldBounds.width;
       separator4Bounds.width = separator3Bounds.width;
       separator4Bounds.height = hoursTextFieldBounds.height;
       // Seconds text field
@@ -690,13 +684,9 @@ public class DateTime extends Composite {
       // The spinner bounds
       int spinnerButtonWidth = getSpinnerButtonWidth();
       spinnerBounds = new Rectangle( 0, 0, 0, 0 );
-      spinnerBounds.x = minutesTextFieldBounds.x
-                      + minutesTextFieldBounds.width
-                      + padding.x;
+      spinnerBounds.x = minutesTextFieldBounds.x + minutesTextFieldBounds.width + padding.x;
       if( ( style & SWT.MEDIUM ) != 0 || ( style & SWT.LONG) != 0 ) {
-        spinnerBounds.x = secondsTextFieldBounds.x
-                        + secondsTextFieldBounds.width
-                        + padding.x;
+        spinnerBounds.x = secondsTextFieldBounds.x + secondsTextFieldBounds.width + padding.x;
       }
       spinnerBounds.width = spinnerButtonWidth + 1;
       spinnerBounds.height = hoursTextFieldBounds.height + padding.height;
@@ -713,71 +703,57 @@ public class DateTime extends Composite {
     // The weekday text field bounds
     weekdayTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
-      weekdayTextFieldBounds.width
-        = getMaxWidth( weekdayNames ) + H_PADDING + 2;
+      weekdayTextFieldBounds.width = getMaxWidth( weekdayNames ) + H_PADDING + 2;
     }
-    weekdayTextFieldBounds.height
-      = TextSizeDetermination.stringExtent( font, weekdayNames[1] ).y
-        + V_PADDING;
+    weekdayTextFieldBounds.height = Graphics.stringExtent( font, weekdayNames[1] ).y + V_PADDING;
     // The weekday month separator bounds
     separator0Bounds = new Rectangle( 0, padding.y, 0, 0 );
-    separator0Bounds.x
-      = weekdayTextFieldBounds.x + weekdayTextFieldBounds.width;
+    separator0Bounds.x = weekdayTextFieldBounds.x + weekdayTextFieldBounds.width;
     if( ( style & SWT.LONG ) != 0 ) {
-      separator0Bounds.width
-        = TextSizeDetermination.stringExtent( font, "," ).x;
+      separator0Bounds.width = Graphics.stringExtent( font, "," ).x;
     }
     separator0Bounds.height = weekdayTextFieldBounds.height;
     // The month text field bounds
     monthTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     monthTextFieldBounds.x = separator0Bounds.x + separator0Bounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      monthTextFieldBounds.width
-        = TextSizeDetermination.stringExtent( font, "88" ).x + H_PADDING;
+      monthTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
     } else {
-      monthTextFieldBounds.width
-        = getMaxWidth( monthNames ) + H_PADDING + 2;
+      monthTextFieldBounds.width = getMaxWidth( monthNames ) + H_PADDING + 2;
     }
     monthTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The month date separator bounds
     separator1Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator1Bounds.x = monthTextFieldBounds.x + monthTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator1Bounds.width
-        = TextSizeDetermination.stringExtent( font, dateSeparator ).x;
+      separator1Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
     }
     separator1Bounds.height = weekdayTextFieldBounds.height;
     // The date text field bounds
     dayTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     dayTextFieldBounds.x = separator1Bounds.x + separator1Bounds.width;
     if( ( style & SWT.SHORT ) == 0 ) {
-      dayTextFieldBounds.width
-        = TextSizeDetermination.stringExtent( font, "88" ).x + H_PADDING;
+      dayTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
     }
     dayTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The date year separator bounds
     separator2Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator2Bounds.x = dayTextFieldBounds.x + dayTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator2Bounds.width
-        = TextSizeDetermination.stringExtent( font, dateSeparator ).x;
+      separator2Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
     } else {
-      separator2Bounds.width
-        = TextSizeDetermination.stringExtent( font, "," ).x;
+      separator2Bounds.width = Graphics.stringExtent( font, "," ).x;
     }
     separator2Bounds.height = weekdayTextFieldBounds.height;
     // The year text field bounds
     yearTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     yearTextFieldBounds.x = separator2Bounds.x + separator2Bounds.width;
-    yearTextFieldBounds.width
-      = TextSizeDetermination.stringExtent( font, "8888" ).x + H_PADDING;
+    yearTextFieldBounds.width = Graphics.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
     int spinnerButtonWidth = getSpinnerButtonWidth();
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
-    spinnerBounds.x =   yearTextFieldBounds.x
-                      + yearTextFieldBounds.width
-                      + padding.x;
+    spinnerBounds.x = yearTextFieldBounds.x + yearTextFieldBounds.width + padding.x;
     spinnerBounds.width = spinnerButtonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height + padding.height;
     // The drop-down button bounds
@@ -803,16 +779,12 @@ public class DateTime extends Composite {
     // The weekday text field bounds
     weekdayTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
-      weekdayTextFieldBounds.width
-        = getMaxWidth( weekdayNames ) + H_PADDING + 2;
+      weekdayTextFieldBounds.width = getMaxWidth( weekdayNames ) + H_PADDING + 2;
     }
-    weekdayTextFieldBounds.height
-      = Graphics.stringExtent( font, weekdayNames[1] ).y
-      + V_PADDING;
+    weekdayTextFieldBounds.height = Graphics.stringExtent( font, weekdayNames[1] ).y + V_PADDING;
     // The weekday day separator bounds
     separator0Bounds = new Rectangle( 0, padding.y, 0, 0 );
-    separator0Bounds.x
-      = weekdayTextFieldBounds.x + weekdayTextFieldBounds.width;
+    separator0Bounds.x = weekdayTextFieldBounds.x + weekdayTextFieldBounds.width;
     if( ( style & SWT.LONG ) != 0 ) {
       separator0Bounds.width = Graphics.stringExtent( font, "," ).x;
     }
@@ -821,52 +793,43 @@ public class DateTime extends Composite {
     dayTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     dayTextFieldBounds.x = separator0Bounds.x + separator0Bounds.width;
     if( ( style & SWT.SHORT ) == 0 ) {
-      dayTextFieldBounds.width
-        = Graphics.stringExtent( font, "88" ).x + H_PADDING;
+      dayTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
     }
     dayTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The day month separator bounds
     separator1Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator1Bounds.x = dayTextFieldBounds.x + dayTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator1Bounds.width
-        = Graphics.stringExtent( font, dateSeparator ).x;
+      separator1Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
     }
     separator1Bounds.height = weekdayTextFieldBounds.height;
     // The month text field bounds
     monthTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     monthTextFieldBounds.x = separator1Bounds.x + separator1Bounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      monthTextFieldBounds.width
-        = Graphics.stringExtent( font, "88" ).x + H_PADDING;
+      monthTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
     } else {
-      monthTextFieldBounds.width
-        = getMaxWidth( monthNames ) + H_PADDING + 2;
+      monthTextFieldBounds.width = getMaxWidth( monthNames ) + H_PADDING + 2;
     }
     monthTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The month year separator bounds
     separator2Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator2Bounds.x = monthTextFieldBounds.x + monthTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator2Bounds.width
-        = Graphics.stringExtent( font, dateSeparator ).x;
+      separator2Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
     } else {
-      separator2Bounds.width
-        = Graphics.stringExtent( font, "," ).x;
+      separator2Bounds.width = Graphics.stringExtent( font, "," ).x;
     }
     separator2Bounds.height = weekdayTextFieldBounds.height;
     // The year text field bounds
     yearTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     yearTextFieldBounds.x = separator2Bounds.x + separator2Bounds.width;
-    yearTextFieldBounds.width
-      = Graphics.stringExtent( font, "8888" ).x + H_PADDING;
+    yearTextFieldBounds.width = Graphics.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The spinner bounds
     int spinnerButtonWidth = getSpinnerButtonWidth();
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
-    spinnerBounds.x =   yearTextFieldBounds.x
-                      + yearTextFieldBounds.width
-                      + padding.x;
+    spinnerBounds.x = yearTextFieldBounds.x + yearTextFieldBounds.width + padding.x;
     spinnerBounds.width = spinnerButtonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height + padding.height;
     // The drop-down button bounds
@@ -892,62 +855,50 @@ public class DateTime extends Composite {
     // The weekday text field bounds
     weekdayTextFieldBounds = new Rectangle( padding.x, padding.y, 0, 0 );
     if( ( style & SWT.LONG ) != 0 ) {
-      weekdayTextFieldBounds.width
-        = getMaxWidth( weekdayNames ) + H_PADDING + 2;
+      weekdayTextFieldBounds.width = getMaxWidth( weekdayNames ) + H_PADDING + 2;
     }
-    weekdayTextFieldBounds.height
-      = Graphics.stringExtent( font, weekdayNames[1] ).y
-      + V_PADDING;
+    weekdayTextFieldBounds.height = Graphics.stringExtent( font, weekdayNames[1] ).y + V_PADDING;
     // The weekday day separator bounds
     separator0Bounds = new Rectangle( 0, padding.y, 0, 0 );
-    separator0Bounds.x
-      = weekdayTextFieldBounds.x + weekdayTextFieldBounds.width;
+    separator0Bounds.x = weekdayTextFieldBounds.x + weekdayTextFieldBounds.width;
     if( ( style & SWT.LONG ) != 0 ) {
-      separator0Bounds.width
-        = TextSizeDetermination.stringExtent( font, "," ).x;
+      separator0Bounds.width = Graphics.stringExtent( font, "," ).x;
     }
     separator0Bounds.height = weekdayTextFieldBounds.height;
     // The year text field bounds
     yearTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     yearTextFieldBounds.x = separator0Bounds.x + separator0Bounds.width;
-    yearTextFieldBounds.width
-      = TextSizeDetermination.stringExtent( font, "8888" ).x + H_PADDING;
+    yearTextFieldBounds.width = Graphics.stringExtent( font, "8888" ).x + H_PADDING;
     yearTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The year month separator bounds
     separator1Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator1Bounds.x = yearTextFieldBounds.x + yearTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator1Bounds.width
-        = TextSizeDetermination.stringExtent( font, dateSeparator ).x;
+      separator1Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
     }
     // The month text field bounds
     monthTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     monthTextFieldBounds.x = separator1Bounds.x + separator1Bounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      monthTextFieldBounds.width
-        = TextSizeDetermination.stringExtent( font, "88" ).x + H_PADDING;
+      monthTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
     } else {
-      monthTextFieldBounds.width
-        = getMaxWidth( monthNames ) + H_PADDING + 2;
+      monthTextFieldBounds.width = getMaxWidth( monthNames ) + H_PADDING + 2;
     }
     monthTextFieldBounds.height = weekdayTextFieldBounds.height;
     // The month day separator bounds
     separator2Bounds = new Rectangle( 0, padding.y, 0, 0 );
     separator2Bounds.x = monthTextFieldBounds.x + monthTextFieldBounds.width;
     if( ( style & SWT.MEDIUM ) != 0 ) {
-      separator2Bounds.width
-        = TextSizeDetermination.stringExtent( font, dateSeparator ).x;
+      separator2Bounds.width = Graphics.stringExtent( font, dateSeparator ).x;
     } else {
-      separator2Bounds.width
-        = TextSizeDetermination.stringExtent( font, "," ).x;
+      separator2Bounds.width = Graphics.stringExtent( font, "," ).x;
     }
     separator2Bounds.height = weekdayTextFieldBounds.height;
     // The day text field bounds
     dayTextFieldBounds = new Rectangle( 0, padding.y, 0, 0 );
     dayTextFieldBounds.x = separator2Bounds.x + separator2Bounds.width;
     if( ( style & SWT.SHORT ) == 0 ) {
-      dayTextFieldBounds.width
-        = TextSizeDetermination.stringExtent( font, "88" ).x + H_PADDING;
+      dayTextFieldBounds.width = Graphics.stringExtent( font, "88" ).x + H_PADDING;
     }
     dayTextFieldBounds.height = weekdayTextFieldBounds.height;
 
@@ -955,9 +906,7 @@ public class DateTime extends Composite {
     // The spinner bounds
     int spinnerButtonWidth = getSpinnerButtonWidth();
     spinnerBounds = new Rectangle( 0, 0, 0, 0 );
-    spinnerBounds.x =   dayTextFieldBounds.x
-                      + dayTextFieldBounds.width
-                      + padding.x;
+    spinnerBounds.x = dayTextFieldBounds.x + dayTextFieldBounds.width + padding.x;
     spinnerBounds.width = spinnerButtonWidth + 1;
     spinnerBounds.height = weekdayTextFieldBounds.height + padding.height;
     // The drop-down button bounds
@@ -977,7 +926,7 @@ public class DateTime extends Composite {
     return new Point( width, height );
   }
 
-  private void recalculateButtonsBounds( final Point size ) {
+  private void recalculateButtonsBounds( Point size ) {
     int border = getBorderWidth();
     spinnerBounds.x = size.x - spinnerBounds.width - 2 * border;
     spinnerBounds.height = size.y - 2 * border;
@@ -988,33 +937,31 @@ public class DateTime extends Composite {
   }
 
   private int getSpinnerButtonWidth() {
-    DateTimeThemeAdapter themeAdapter
-      = ( DateTimeThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getSpinnerButtonWidth( this );
+    return getDateTimeThemeAdapter().getSpinnerButtonWidth( this );
+  }
+
+  private DateTimeThemeAdapter getDateTimeThemeAdapter() {
+    return ( DateTimeThemeAdapter )getAdapter( IThemeAdapter.class );
   }
 
   private int getDropDownButtonWidth() {
-    DateTimeThemeAdapter themeAdapter
-      = ( DateTimeThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getDropDownButtonWidth( this );
+    return getDateTimeThemeAdapter().getDropDownButtonWidth( this );
   }
 
   private Rectangle getFieldPadding() {
-    DateTimeThemeAdapter themeAdapter
-      = ( DateTimeThemeAdapter )getAdapter( IThemeAdapter.class );
-    return themeAdapter.getFieldPadding( this );
+    return getDateTimeThemeAdapter().getFieldPadding( this );
   }
 
   String getNameText() {
     return "DateTime";
   }
 
-  private static int getDaysInMonth( final int month, final int year ) {
+  private static int getDaysInMonth( int month, int year ) {
     GregorianCalendar cal = new GregorianCalendar( year, month, 1 );
     return cal.getActualMaximum( Calendar.DAY_OF_MONTH );
   }
 
-  private int getMaxWidth( final String[] strings ) {
+  private int getMaxWidth( String[] strings ) {
     Font font = getFont();
     int result = 0;
     for( int i = 0; i < strings.length; i++ ) {
@@ -1025,9 +972,8 @@ public class DateTime extends Composite {
   }
 
   private static String getDateSeparator() {
-    DateFormat df
-      = DateFormat.getDateInstance( DateFormat.SHORT, RWT.getLocale() );
-    String datePattern = ( ( SimpleDateFormat )df ).toPattern();
+    DateFormat dateFormat = DateFormat.getDateInstance( DateFormat.SHORT, RWT.getLocale() );
+    String datePattern = ( ( SimpleDateFormat )dateFormat ).toPattern();
     String result = "";
     int index = 0;
     while( Character.isLetter( datePattern.charAt( index ) ) ) {
@@ -1037,13 +983,11 @@ public class DateTime extends Composite {
     return result;
   }
 
-  private static String getDatePattern( final String dateSeparator ) {
-    DateFormat format
-      = DateFormat.getDateInstance( DateFormat.SHORT, RWT.getLocale() );
+  private static String getDatePattern( String dateSeparator ) {
+    DateFormat format = DateFormat.getDateInstance( DateFormat.SHORT, RWT.getLocale() );
     String datePattern = ( ( SimpleDateFormat )format ).toPattern();
     String result = "";
-    StringTokenizer tokenizer
-      = new StringTokenizer( datePattern, dateSeparator );
+    StringTokenizer tokenizer = new StringTokenizer( datePattern, dateSeparator );
     while ( tokenizer.hasMoreTokens() ) {
       String token = tokenizer.nextToken();
       result += Character.toString( token.charAt( 0 ) );
@@ -1051,10 +995,7 @@ public class DateTime extends Composite {
     return result.toUpperCase();
   }
 
-  private static boolean checkDate( final int year,
-                                    final int month,
-                                    final int day )
-  {
+  private static boolean checkDate( int year, int month, int day ) {
     int daysInMonth = getDaysInMonth( month, year );
     boolean validYear = ( year >= 1752 && year <= 9999 && day <= daysInMonth );
     boolean validMonth = ( month >= 0 && month <= 11 && day <= daysInMonth );
@@ -1062,17 +1003,14 @@ public class DateTime extends Composite {
     return validYear && validMonth && validDay;
   }
 
-  private static boolean checkTime( final int hours,
-                                    final int minutes,
-                                    final int seconds )
-  {
+  private static boolean checkTime( int hours, int minutes, int seconds ) {
     boolean validHours = ( hours >= 0 && hours <= 23 );
     boolean validMinutes = ( minutes >= 0 && minutes <= 59 );
     boolean validSeconds = ( seconds >= 0 && seconds <= 59 );
     return validHours && validMinutes && validSeconds;
   }
 
-  static int checkStyle( final int value ) {
+  static int checkStyle( int value ) {
     /*
      * Even though it is legal to create this widget with scroll bars, they
      * serve no useful purpose because they do not automatically scroll the

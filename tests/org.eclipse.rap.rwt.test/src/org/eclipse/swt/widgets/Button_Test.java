@@ -24,7 +24,6 @@ import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 
 public class Button_Test extends TestCase {
@@ -174,7 +173,7 @@ public class Button_Test extends TestCase {
 
     // Text and image to use
     String text = "Click me!";
-    Point extent = TextSizeDetermination.stringExtent( shell.getFont(), text );
+    Point extent = Graphics.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 52, 14 ), extent );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -278,7 +277,7 @@ public class Button_Test extends TestCase {
 
     // Text and image to use
     String text = "Click me!";
-    Point extent = TextSizeDetermination.stringExtent( shell.getFont(), text );
+    Point extent = Graphics.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 52, 14 ), extent );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 

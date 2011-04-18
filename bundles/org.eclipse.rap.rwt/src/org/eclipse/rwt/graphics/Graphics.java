@@ -14,10 +14,10 @@ package org.eclipse.rwt.graphics;
 import java.io.InputStream;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.*;
 
 
 /**

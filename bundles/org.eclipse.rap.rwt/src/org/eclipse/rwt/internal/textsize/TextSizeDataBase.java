@@ -9,12 +9,12 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.rwt.internal.textsize;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeResults.ProbeResult;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeProbeResults.ProbeResult;
 
 
 final class TextSizeDataBase {

@@ -9,7 +9,7 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.rwt.internal.textsize;
 
 
 import java.math.BigDecimal;
@@ -17,10 +17,10 @@ import java.math.BigDecimal;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeResults.ProbeResult;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeProbeResults.ProbeResult;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 
 public class TextSizeDetermination {

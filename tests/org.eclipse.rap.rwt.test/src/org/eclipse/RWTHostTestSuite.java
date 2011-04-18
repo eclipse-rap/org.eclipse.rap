@@ -25,6 +25,7 @@ import org.eclipse.rwt.internal.events.EventAdapter_Test;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.textsize.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.*;
 import org.eclipse.rwt.internal.util.ClassUtil_Test;

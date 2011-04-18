@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
@@ -48,11 +48,11 @@ public class TextSizeDeterminationHandler_Test extends TestCase {
       }
       public void beforePhase( final PhaseEvent event ) {
         Font font = Graphics.getFont( "arial", 10, SWT.BOLD );
-        TextSizeDetermination.stringExtent( font, "FirstString" );
+        Graphics.stringExtent( font, "FirstString" );
         font = Graphics.getFont( "helvetia, ms sans serif", 12, SWT.BOLD );
-        TextSizeDetermination.stringExtent( font, "SecondString" );
+        Graphics.stringExtent( font, "SecondString" );
         font = Graphics.getFont( "\"Bogus\" \\ Font \" Name", 12, SWT.BOLD );
-        TextSizeDetermination.stringExtent( font, "Weird \" String \\" );
+        Graphics.stringExtent( font, "Weird \" String \\" );
       }
       public PhaseId getPhaseId() {
         return PhaseId.RENDER;

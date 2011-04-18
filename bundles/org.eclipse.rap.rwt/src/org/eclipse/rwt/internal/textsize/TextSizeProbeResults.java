@@ -9,16 +9,16 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.rwt.internal.textsize;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 
 final class TextSizeProbeResults {

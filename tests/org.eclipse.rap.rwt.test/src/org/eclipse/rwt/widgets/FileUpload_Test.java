@@ -15,12 +15,12 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.widgets.IFileUploadAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -175,7 +175,7 @@ public class FileUpload_Test extends TestCase {
   public void testComputeSize() {
     // Text and image to use
     String text = "Click me!";
-    Point extent = TextSizeDetermination.stringExtent( shell.getFont(), text );
+    Point extent = Graphics.stringExtent( shell.getFont(), text );
     assertEquals( new Point( 52, 14 ), extent );
     Image image = createImage( Fixture.IMAGE_100x50 );
     FileUpload upload = new FileUpload( shell, SWT.NONE );

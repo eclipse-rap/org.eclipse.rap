@@ -10,7 +10,7 @@
  *     EclipseSource - ongoing development
  ******************************************************************************/
 
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.rwt.internal.textsize;
 
 import java.io.*;
 import java.util.*;
@@ -20,11 +20,12 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.textsize.TextSizeDetermination.ICalculationItem;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeResults.ProbeResult;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
-import org.eclipse.swt.internal.graphics.TextSizeProbeResults.ProbeResult;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
+import org.eclipse.swt.internal.graphics.*;
 
 
 public class TextSizeDetermination_Test extends TestCase {

@@ -9,13 +9,13 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.rwt.internal.textsize;
 
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.FacadesInitializer;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
+import org.eclipse.rwt.internal.textsize.TextSizeDetermination.ICalculationItem;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 
 abstract class TextSizeDeterminationFacade {
 

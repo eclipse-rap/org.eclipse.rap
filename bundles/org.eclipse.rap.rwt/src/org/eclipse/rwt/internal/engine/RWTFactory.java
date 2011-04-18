@@ -17,6 +17,8 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeStore;
+import org.eclipse.rwt.internal.textsize.TextSizeStorageRegistry;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.IApplicationStore;

@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 
 

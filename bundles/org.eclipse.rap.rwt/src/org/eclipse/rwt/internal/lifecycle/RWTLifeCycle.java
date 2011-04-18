@@ -19,10 +19,10 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.widgets.Display;
 
 public class RWTLifeCycle extends LifeCycle {

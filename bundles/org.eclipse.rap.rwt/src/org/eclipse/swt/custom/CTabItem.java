@@ -15,7 +15,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -82,7 +81,7 @@ public class CTabItem extends Item {
    * @see SWT
    * @see Widget#getStyle()
    */
-  public CTabItem( final CTabFolder parent, final int style ) {
+  public CTabItem( CTabFolder parent, int style ) {
     this( parent, style, checkNull( parent ).getItemCount() );
   }
 
@@ -116,7 +115,7 @@ public class CTabItem extends Item {
    * @see SWT
    * @see Widget#getStyle()
    */
-  public CTabItem( final CTabFolder parent, final int style, final int index ) {
+  public CTabItem( CTabFolder parent, int style, int index ) {
     super( parent, checkStyle( style ) );
     showClose = ( style & SWT.CLOSE ) != 0;
     this.parent = parent;
@@ -128,7 +127,7 @@ public class CTabItem extends Item {
     parent.createItem( this, index );
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IWidgetFontAdapter.class ) {
       result = widgetFontAdapter;
@@ -156,7 +155,7 @@ public class CTabItem extends Item {
   /////////////////////////////////////////
   // Getter/setter for principal properties
 
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -169,7 +168,7 @@ public class CTabItem extends Item {
     }
   }
 
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     if( image != getImage() ) {
       super.setImage( image );
@@ -198,7 +197,7 @@ public class CTabItem extends Item {
    *
    * @since 1.0
    */
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     checkWidget();
     if( font != null && font.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
@@ -263,7 +262,7 @@ public class CTabItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setControl( final Control control ) {
+  public void setControl( Control control ) {
     checkWidget();
     if( control != null ) {
       if( control.isDisposed() ) {
@@ -299,7 +298,7 @@ public class CTabItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setToolTipText( final String toolTipText ) {
+  public void setToolTipText( String toolTipText ) {
     checkWidget();
     this.toolTipText = toolTipText;
   }
@@ -341,7 +340,7 @@ public class CTabItem extends Item {
    *
    * @since 1.3
    */
-  public void setShowClose( final boolean close ) {
+  public void setShowClose( boolean close ) {
     checkWidget();
     if( ( parent.getStyle() & SWT.CLOSE )  == 0 && showClose != close ) {
       showClose = close;
@@ -418,15 +417,15 @@ public class CTabItem extends Item {
   ///////////////////////////////////////////////////////////////////////
   // Helping methods used by CTabFolder to control item size and location
 
-  int preferredHeight( final boolean isSelected ) {
+  int preferredHeight( boolean isSelected ) {
     Image image = getImage();
     int h = ( image == null ) ? 0 : image.getBounds().height;
     String text = getText();
-    h = Math.max( h, TextSizeDetermination.textExtent( getFont(), text, 0 ).y );
+    h = Math.max( h, Graphics.textExtent( getFont(), text, 0 ).y );
     return h + parent.getItemPadding( isSelected ).height;
   }
 
-  int preferredWidth( final boolean isSelected, final boolean minimum ) {
+  int preferredWidth( boolean isSelected, boolean minimum ) {
     // NOTE: preferred width does not include the "dead space" caused
     // by the curve.
     if (isDisposed()) return 0;
@@ -531,7 +530,7 @@ public class CTabItem extends Item {
    * The code of this methods is taken from SWT's CTabItem#drawSelected() and
    * modified to suit the specifics of RWT.
    */
-  String getShortenedText( final boolean isSelected ) {
+  String getShortenedText( boolean isSelected ) {
     if( shortenedText == null ) {
       int xDraw = x + parent.getItemPaddingLeft( isSelected );
       if( showImage() ) {
@@ -555,17 +554,13 @@ public class CTabItem extends Item {
     return shortenedText == null ? "" : shortenedText;
   }
 
-  String shortenText( final Font font, final String text, final int width ) {
+  String shortenText( Font font, String text, int width ) {
     return useEllipses()
       ? shortenText( font, text, width, ELLIPSIS )
       : shortenText( font, text, width, "" );
   }
 
-  static String shortenText( final Font font,
-                             String text,
-                             final int width,
-                             final String ellipses )
-  {
+  static String shortenText( Font font, String text, int width, String ellipses ) {
     if( Graphics.stringExtent( font, text ).x <= width ) {
       return text;
     }
@@ -586,14 +581,14 @@ public class CTabItem extends Item {
   //////////////////
   // Helping methods
 
-  private static CTabFolder checkNull( final CTabFolder parent ) {
+  private static CTabFolder checkNull( CTabFolder parent ) {
     if( parent == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return parent;
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = SWT.NONE;
     if( ( style & SWT.CLOSE ) != 0 ) {
       result = SWT.CLOSE;

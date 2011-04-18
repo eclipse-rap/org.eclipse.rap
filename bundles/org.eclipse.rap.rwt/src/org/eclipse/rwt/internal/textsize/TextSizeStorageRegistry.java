@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.rwt.internal.textsize;
 
 //TODO [fappel] Finish implementation and revise this. This class is meant to be initialized once 
 //     at application startup. Because of this there should no need for synchronization. Due to the 

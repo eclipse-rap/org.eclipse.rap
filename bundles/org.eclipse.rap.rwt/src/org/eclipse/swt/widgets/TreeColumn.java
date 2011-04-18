@@ -16,7 +16,6 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
 
 
@@ -83,7 +82,7 @@ public class TreeColumn extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TreeColumn( final Tree parent, final int style ) {
+  public TreeColumn( Tree parent, int style ) {
     this( parent, style, checkNull( parent ).columnHolder.size() );
   }
 
@@ -147,7 +146,7 @@ public class TreeColumn extends Item {
    * @see ControlListener
    * @see #removeControlListener
    */
-  public void addControlListener( final ControlListener listener ) {
+  public void addControlListener( ControlListener listener ) {
     checkWidget();
     ControlEvent.addListener( this, listener );
   }
@@ -175,19 +174,19 @@ public class TreeColumn extends Item {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
-  static Tree checkNull( final Tree tree ) {
+  static Tree checkNull( Tree tree ) {
     if( tree == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return tree;
   }
 
-  static int checkStyle( final int style ) {
+  static int checkStyle( int style ) {
     return checkBits( style, SWT.LEFT, SWT.CENTER, SWT.RIGHT, 0, 0, 0 );
   }
 
@@ -198,7 +197,7 @@ public class TreeColumn extends Item {
     dispose( true );
   }
 
-  void dispose( final boolean notifyParent ) {
+  void dispose( boolean notifyParent ) {
     super.dispose(); /* super is intentional here */
     // if (notifyParent) parent.destroyItem (this);
     parent = null;
@@ -234,9 +233,7 @@ public class TreeColumn extends Item {
   int getContentWidth() {
     int contentWidth = 0;
     if( text.length() > 0 ) {
-      contentWidth += TextSizeDetermination.textExtent( parent.getFont(),
-                                                        text,
-                                                        0 ).x;
+      contentWidth += Graphics.textExtent( parent.getFont(), text, 0 ).x;
     }
     if( image != null ) {
       contentWidth += image.getBounds().width;
@@ -250,8 +247,7 @@ public class TreeColumn extends Item {
         contentWidth += MARGIN_IMAGE;
       }
     }
-    TreeThemeAdapter themeAdapter
-      = ( TreeThemeAdapter )parent.getAdapter( IThemeAdapter.class );
+    TreeThemeAdapter themeAdapter = ( TreeThemeAdapter )parent.getAdapter( IThemeAdapter.class );
     contentWidth += themeAdapter.getHeaderPadding( parent ).width;
     return contentWidth;
   }
@@ -417,7 +413,7 @@ public class TreeColumn extends Item {
    * @see ControlListener
    * @see #addControlListener
    */
-  public void removeControlListener( final ControlListener listener ) {
+  public void removeControlListener( ControlListener listener ) {
     checkWidget();
     ControlEvent.removeListener( this, listener );
   }
@@ -438,7 +434,7 @@ public class TreeColumn extends Item {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -458,18 +454,12 @@ public class TreeColumn extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setAlignment( final int alignment ) {
+  public void setAlignment( int alignment ) {
     checkWidget();
     if( ( alignment & ( SWT.LEFT | SWT.RIGHT | SWT.CENTER ) ) == 0 ) {
       return;
     }
-    int newAlignment = checkBits( alignment,
-                                  SWT.LEFT,
-                                  SWT.CENTER,
-                                  SWT.RIGHT,
-                                  0,
-                                  0,
-                                  0 );
+    int newAlignment = checkBits( alignment, SWT.LEFT, SWT.CENTER, SWT.RIGHT, 0, 0, 0 );
     if( ( style & newAlignment ) != 0 ) {
       return; /* same value */
     }
@@ -496,7 +486,7 @@ public class TreeColumn extends Item {
    * @see SWT#Move
    * @since 1.0
    */
-  public void setMoveable( final boolean moveable ) {
+  public void setMoveable( boolean moveable ) {
     checkWidget();
     this.moveable = moveable;
   }
@@ -512,19 +502,19 @@ public class TreeColumn extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setResizable( final boolean value ) {
+  public void setResizable( boolean value ) {
     checkWidget();
     resizable = value;
   }
 
-  void setSortDirection( final int value ) {
+  void setSortDirection( int value ) {
     if( value == sort ) {
       return;
     }
     sort = value;
   }
 
-  public void setText( final String value ) {
+  public void setText( String value ) {
     checkWidget();
     if( value == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -547,7 +537,7 @@ public class TreeColumn extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setToolTipText( final String string ) {
+  public void setToolTipText( String string ) {
     checkWidget();
     if( toolTipText == string ) {
       return;
@@ -568,7 +558,7 @@ public class TreeColumn extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setWidth( final int value ) {
+  public void setWidth( int value ) {
     // TODO: [bm] add support for ellipsis
     checkWidget();
     if( value < 0 ) {

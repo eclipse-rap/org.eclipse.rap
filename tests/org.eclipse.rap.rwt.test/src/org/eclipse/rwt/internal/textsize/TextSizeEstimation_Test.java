@@ -9,16 +9,17 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
+import org.eclipse.swt.internal.graphics.*;
 
 public class TextSizeEstimation_Test extends TestCase {
 

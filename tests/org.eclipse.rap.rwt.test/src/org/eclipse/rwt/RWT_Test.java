@@ -12,8 +12,6 @@ package org.eclipse.rwt;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;

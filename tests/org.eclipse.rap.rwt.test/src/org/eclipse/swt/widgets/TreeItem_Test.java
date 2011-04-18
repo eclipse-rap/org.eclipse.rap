@@ -23,7 +23,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
 
 public class TreeItem_Test extends TestCase {
@@ -673,7 +672,7 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(), string );
+    Point stringExtent = Graphics.stringExtent( treeItem.getFont(), string );
     TreeItem subItem = new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( true );
     subItem.setText( string );
@@ -692,7 +691,7 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(), string );
+    Point stringExtent = Graphics.stringExtent( treeItem.getFont(), string );
     treeItem.setText( string );
     Rectangle withTextBounds = treeItem.getBounds( 0 );
     treeItem.setText( "" );
@@ -731,7 +730,7 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    Point stringExtent = TextSizeDetermination.stringExtent( treeItem.getFont(), string );
+    Point stringExtent = Graphics.stringExtent( treeItem.getFont(), string );
     treeItem.setText( string );
     Rectangle boundsTextOnly = treeItem.getBounds( 0 );
     treeItem.setImage( image );

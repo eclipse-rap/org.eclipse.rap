@@ -28,12 +28,12 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
+import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 
 

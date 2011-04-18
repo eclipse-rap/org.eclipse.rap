@@ -19,7 +19,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -139,9 +138,7 @@ public class CLabel extends Canvas {
 
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
-    CLabelThemeAdapter themeAdapter
-      = ( CLabelThemeAdapter )getAdapter( IThemeAdapter.class );
-    int borderWidth = themeAdapter.getBorderWidth( this );
+    int borderWidth = getCLabelThemeAdapter().getBorderWidth( this );
     Point e = getTotalSize( image, text );
     if ( wHint == SWT.DEFAULT ) {
       e.x += leftMargin + rightMargin;
@@ -184,9 +181,7 @@ public class CLabel extends Canvas {
    */
   private Point getTotalSize( Image image, String text ) {
     Point size = new Point( 0, 0 );
-    CLabelThemeAdapter themeAdapter
-      = ( CLabelThemeAdapter )getAdapter( IThemeAdapter.class );
-    int spacing = themeAdapter.getSpacing( this );
+    int spacing = getCLabelThemeAdapter().getSpacing( this );
     if ( image != null ) {
       Rectangle r = image.getBounds();
       size.x += r.width;
@@ -194,7 +189,7 @@ public class CLabel extends Canvas {
     }
 
     if ( text != null && text.length() > 0 ) {
-      Point e = TextSizeDetermination.textExtent( getFont(), text, 0 );
+      Point e = Graphics.textExtent( getFont(), text, 0 );
       size.x += e.x;
       size.y = Math.max( size.y, e.y );
       if ( image != null )
@@ -294,7 +289,7 @@ public class CLabel extends Canvas {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setBackground( final Image image ) {
+  public void setBackground( Image image ) {
     checkWidget();
     if( image != backgroundImage ) {
       backgroundImage = image;
@@ -333,7 +328,7 @@ public class CLabel extends Canvas {
    *
    * @since 1.4
    */
-  public void setBackground( final Color[] colors, final int[] percents ) {
+  public void setBackground( Color[] colors, int[] percents ) {
     setBackground( colors, percents, false );
   }
 
@@ -365,10 +360,7 @@ public class CLabel extends Canvas {
    *
    * @since 1.4
    */
-  public void setBackground( final Color[] colors,
-                             final int[] percents,
-                             final boolean vertical )
-  {
+  public void setBackground( Color[] colors, int[] percents, boolean vertical ) {
     checkWidget();
     if( colors != null ) {
       if( percents == null || percents.length != colors.length - 1 ) {
@@ -400,10 +392,7 @@ public class CLabel extends Canvas {
     backgroundImage = null;
   }
 
-  private void setBackgroundGradient( final Color[] colors,
-                                      final int[] percents,
-                                      final boolean vertical )
-  {
+  private void setBackgroundGradient( Color[] colors, int[] percents, boolean vertical ) {
     IWidgetGraphicsAdapter adapter
       = ( IWidgetGraphicsAdapter )getAdapter( IWidgetGraphicsAdapter.class );
     adapter.setBackgroundGradient( colors, percents, vertical );
@@ -529,11 +518,7 @@ public class CLabel extends Canvas {
    *
    * @since 1.3
    */
-  public void setMargins( final int leftMargin,
-                          final int topMargin,
-                          final int rightMargin,
-                          final int bottomMargin )
-  {
+  public void setMargins( int leftMargin, int topMargin, int rightMargin, int bottomMargin ) {
     checkWidget();
     this.leftMargin = Math.max( 0, leftMargin );
     this.topMargin = Math.max( 0, topMargin );
@@ -553,7 +538,7 @@ public class CLabel extends Canvas {
    *
    * @since 1.3
    */
-  public void setLeftMargin( final int leftMargin ) {
+  public void setLeftMargin( int leftMargin ) {
     checkWidget();
     if( leftMargin >= 0 ) {
       this.leftMargin = leftMargin;
@@ -584,7 +569,7 @@ public class CLabel extends Canvas {
    *
    * @since 1.3
    */
-  public void setTopMargin( final int topMargin ) {
+  public void setTopMargin( int topMargin ) {
     checkWidget();
     if( topMargin >= 0 ) {
       this.topMargin = topMargin;
@@ -615,7 +600,7 @@ public class CLabel extends Canvas {
    *
    * @since 1.3
    */
-  public void setRightMargin( final int rightMargin ) {
+  public void setRightMargin( int rightMargin ) {
     checkWidget();
     if( rightMargin >= 0 ) {
       this.rightMargin = rightMargin;
@@ -646,7 +631,7 @@ public class CLabel extends Canvas {
    *
    * @since 1.3
    */
-  public void setBottomMargin( final int bottomMargin ) {
+  public void setBottomMargin( int bottomMargin ) {
     checkWidget();
     if( bottomMargin >= 0 ) {
       this.bottomMargin = bottomMargin;
@@ -666,12 +651,14 @@ public class CLabel extends Canvas {
   }
 
   private void initMargins() {
-    CLabelThemeAdapter themeAdapter
-      = ( CLabelThemeAdapter )getAdapter( IThemeAdapter.class );
-    Rectangle padding = themeAdapter.getPadding( this );
+    Rectangle padding = getCLabelThemeAdapter().getPadding( this );
     leftMargin = padding.x;
     topMargin = padding.y;
     rightMargin = padding.width - padding.x;
     bottomMargin = padding.height - padding.y;
+  }
+
+  private CLabelThemeAdapter getCLabelThemeAdapter() {
+    return ( CLabelThemeAdapter )getAdapter( IThemeAdapter.class );
   }
 }

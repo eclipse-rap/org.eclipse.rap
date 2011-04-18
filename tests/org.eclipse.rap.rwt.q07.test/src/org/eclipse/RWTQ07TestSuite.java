@@ -16,6 +16,8 @@ import junit.framework.TestSuite;
 
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.StartupPage_Test;
+import org.eclipse.rwt.internal.textsize.TextSizeDeterminationFacadeImpl_Test;
+import org.eclipse.rwt.internal.textsize.TextSizeDeterminationHandler_Test;
 import org.eclipse.rwt.internal.widgets.fileuploadkit.FileUploadLCA_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
@@ -27,8 +29,6 @@ import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA
 import org.eclipse.swt.internal.dnd.dragsourcekit.DragSourceLCA_Test;
 import org.eclipse.swt.internal.events.ActivateEvent_Test;
 import org.eclipse.swt.internal.events.EventLCAUtil_Test;
-import org.eclipse.swt.internal.graphics.TextSizeDeterminationFacadeImpl_Test;
-import org.eclipse.swt.internal.graphics.TextSizeDeterminationHandler_Test;
 import org.eclipse.swt.internal.internal.widgets.controldecoratorkit.ControlDecoratorLCA_Test;
 import org.eclipse.swt.internal.widgets.WidgetAdapter_Test;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;

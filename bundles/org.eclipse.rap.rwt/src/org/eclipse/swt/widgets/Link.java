@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 
 /**
@@ -74,7 +75,7 @@ public class Link extends Control {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Link( final Composite parent, final int style ) {
+  public Link( Composite parent, int style ) {
     super( parent, style );
   }
 
@@ -105,7 +106,7 @@ public class Link extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String string ) {
+  public void setText( String string ) {
     checkWidget();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -159,7 +160,7 @@ public class Link extends Control {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -181,15 +182,12 @@ public class Link extends Control {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
-  public Point computeSize( final int wHint, 
-                            final int hHint, 
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
     int height = 0;
@@ -199,8 +197,7 @@ public class Link extends Control {
       // because the other will be escaped in 
       // TextSizeDetermination#createMeasureString()
       String string = escapeAmpersand( displayText );
-      Point extent
-        = TextSizeDetermination.textExtent( getFont(), string, wHint );
+      Point extent = Graphics.textExtent( getFont(), string, wHint );
       width = extent.x;
       height = extent.y;
     }
@@ -215,7 +212,7 @@ public class Link extends Control {
     return new Point( width, height );
   }
   
-  private static String escapeAmpersand( final String string ) {
+  private static String escapeAmpersand( String string ) {
     StringBuffer result = new StringBuffer();
     for( int i = 0; i < string.length(); i++ ) {
       if( string.charAt( i ) == '&' ) {
@@ -227,7 +224,7 @@ public class Link extends Control {
     return result.toString();
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == ILinkAdapter.class ) {
       if( linkAdapter == null ) {

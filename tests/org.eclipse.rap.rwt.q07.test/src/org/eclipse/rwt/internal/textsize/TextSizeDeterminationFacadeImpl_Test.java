@@ -8,13 +8,14 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.graphics;
+package org.eclipse.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.internal.textsize.TextSizeDeterminationFacadeImpl;
+import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.internal.graphics.TextSizeProbeStore.Probe;
 
 
 public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
