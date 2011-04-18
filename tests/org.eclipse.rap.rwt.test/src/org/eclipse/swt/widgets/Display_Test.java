@@ -157,7 +157,6 @@ public class Display_Test extends TestCase {
     Runnable runnable = new Runnable() {
       public void run() {
         ContextProvider.setContext( context );
-        Fixture.fakeResponseWriter();
         display[ 0 ] = new Display();
       }
     };
@@ -165,6 +164,15 @@ public class Display_Test extends TestCase {
     thread.start();
     thread.join();
     assertSame( thread, display[ 0 ].getThread() );
+  }
+  
+  public void testAttachAndDetachThread() {
+    Display display = new Display();
+    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    adapter.detachThread();
+    assertNull( display.getThread() );
+    adapter.attachThread();
+    assertSame( Thread.currentThread(), display.getThread() );
   }
 
   public void testGetShells() {

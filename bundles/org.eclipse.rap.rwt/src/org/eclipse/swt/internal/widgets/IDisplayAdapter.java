@@ -18,8 +18,6 @@ import org.eclipse.swt.widgets.*;
 
 public interface IDisplayAdapter {
 
-  final static IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
-
   interface IFilterEntry {
     int getType();
     Listener getListener();
@@ -36,4 +34,6 @@ public interface IDisplayAdapter {
   IFilterEntry[] getFilters();
   
   int getAsyncRunnablesCount();
+  void attachThread();
+  void detachThread();
 }

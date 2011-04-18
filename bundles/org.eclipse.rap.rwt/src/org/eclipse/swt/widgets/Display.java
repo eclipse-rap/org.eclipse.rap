@@ -118,6 +118,7 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  */
 public class Display extends Device implements Adaptable {
 
+  private static final IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
   private final static String AVAILABLE_WIDTH = "w4t_width";
   private final static String AVAILABLE_HEIGHT = "w4t_height";
   private static final String ATTR_INVALIDATE_FOCUS
@@ -177,7 +178,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private final List shells;
-  private final Thread thread;
+  private Thread thread;
   private final ISessionStore session;
   private final Rectangle bounds;
   private final Point cursorLocation;
@@ -229,7 +230,7 @@ public class Display extends Device implements Adaptable {
       SWT.error( SWT.ERROR_NOT_IMPLEMENTED, null, " [multiple displays]" );
     }
     RWTLifeCycle.setSessionDisplay( this );
-    thread = Thread.currentThread();
+    attachThread();
     session = ContextProvider.getSession();
     shells = new ArrayList();
     monitor = new Monitor( this );
@@ -276,14 +277,12 @@ public class Display extends Device implements Adaptable {
   private void setFocusControl( final Control focusControl ) {
     if( this.focusControl != focusControl ) {
       if( this.focusControl != null && !this.focusControl.isInDispose() ) {
-        FocusEvent event
-          = new FocusEvent( this.focusControl, FocusEvent.FOCUS_LOST );
+        FocusEvent event = new FocusEvent( this.focusControl, FocusEvent.FOCUS_LOST );
         event.processEvent();
       }
       this.focusControl = focusControl;
       if( this.focusControl != null ) {
-        FocusEvent event
-          = new FocusEvent( this.focusControl, FocusEvent.FOCUS_GAINED );
+        FocusEvent event = new FocusEvent( this.focusControl, FocusEvent.FOCUS_GAINED );
         event.processEvent();
       }
     }
@@ -814,17 +813,13 @@ public class Display extends Device implements Adaptable {
         shells.add( activeShell );
       }
       ShellEvent shellEvent;
-      if(    lastActiveShell != null
-          && ( lastActiveShell.state & Widget.DISPOSE_SENT ) == 0 )
-      {
-        shellEvent = new ShellEvent( lastActiveShell,
-                                     ShellEvent.SHELL_DEACTIVATED );
+      if( lastActiveShell != null && ( lastActiveShell.state & Widget.DISPOSE_SENT ) == 0 ) {
+        shellEvent = new ShellEvent( lastActiveShell, ShellEvent.SHELL_DEACTIVATED );
         shellEvent.processEvent();
       }
       this.activeShell = activeShell;
       if( activeShell != null ) {
-        shellEvent = new ShellEvent( activeShell,
-                                     ShellEvent.SHELL_ACTIVATED );
+        shellEvent = new ShellEvent( activeShell, ShellEvent.SHELL_ACTIVATED );
         shellEvent.processEvent();
       }
       if( this.activeShell != null ) {
@@ -870,6 +865,14 @@ public class Display extends Device implements Adaptable {
       }
       return thread;
     }
+  }
+  
+  private void attachThread() {
+    thread = Thread.currentThread();
+  }
+
+  private void detachThread() {
+    thread = null;
   }
 
   //////////////////////
@@ -1729,8 +1732,7 @@ public class Display extends Device implements Adaptable {
     IFilterEntry[] entries = getFilterEntries();
     boolean found = false;
     for( int i = 0; !found && i < entries.length; i++ ) {
-      found =    entries[ i ].getListener() == listener
-              && entries[ i ].getType() == eventType;
+      found = entries[ i ].getListener() == listener && entries[ i ].getType() == eventType;
       if( found ) {
         filters.remove( entries[ i ] );
       }
@@ -2262,7 +2264,7 @@ public class Display extends Device implements Adaptable {
   }
 
   private IFilterEntry[] getFilterEntries() {
-    IFilterEntry[] result = IDisplayAdapter.EMPTY_FILTERS;
+    IFilterEntry[] result = EMPTY_FILTERS;
     if( filters != null ) {
       result = new IFilterEntry[ filters.size() ];
       filters.toArray( result );
@@ -2283,7 +2285,7 @@ public class Display extends Device implements Adaptable {
     ControlFinder( final Display display, final Point location ) {
       this.display = display;
       this.location = new Point( location.x, location.y );
-      foundComponentInParent = new HashSet();
+      this.foundComponentInParent = new HashSet();
       find();
     }
 
@@ -2376,6 +2378,14 @@ public class Display extends Device implements Adaptable {
 
     public int getAsyncRunnablesCount() {
       return Display.this.synchronizer.getMessageCount();
+    }
+    
+    public void attachThread() {
+      Display.this.attachThread();
+    }
+    
+    public void detachThread() {
+      Display.this.detachThread();
     }
   }
 }
