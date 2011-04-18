@@ -59,10 +59,6 @@ qx.Class.define("qx.io.remote.Request",
     }
 
     this.setProhibitCaching(true);
-
-    // Prototype-Style Request Headers
-    this.setRequestHeader("X-Requested-With", "qooxdoo");
-    this.setRequestHeader("X-Qooxdoo-Version", "0.7.4 (r16878)");
     
     // Get the next sequence number for this request
     this._seqNum = ++qx.io.remote.Request._seqNum;
@@ -227,8 +223,7 @@ qx.Class.define("qx.io.remote.Request",
     responseType :
     {
       check : [ qx.util.Mime.TEXT, qx.util.Mime.JAVASCRIPT, qx.util.Mime.JSON, qx.util.Mime.XML, qx.util.Mime.HTML ],
-      init : qx.util.Mime.TEXT,
-      apply : "_applyResponseType"
+      init : qx.util.Mime.TEXT
     },
 
 
@@ -685,20 +680,6 @@ qx.Class.define("qx.io.remote.Request",
         this.removeRequestHeader("Content-Type");
       }
     },
-
-
-    /**
-     * TODOC
-     *
-     * @type member
-     * @param value {var} Current value
-     * @param old {var} Previous value
-     */
-    _applyResponseType : function(value, old) {
-      this.setRequestHeader("X-Qooxdoo-Response-Type", value);
-    },
-
-
 
 
     /*
