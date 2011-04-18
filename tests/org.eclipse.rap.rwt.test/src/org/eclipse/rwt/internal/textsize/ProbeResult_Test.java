@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.Point;
 
 
 public class ProbeResult_Test extends TestCase {
-  
 
   public void testGetProbe() {
     Probe probe = createProbe( "" );

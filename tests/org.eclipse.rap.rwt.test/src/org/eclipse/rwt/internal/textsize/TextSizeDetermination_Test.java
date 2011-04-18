@@ -20,12 +20,10 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.textsize.TextSizeDetermination.ICalculationItem;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeResults.ProbeResult;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.*;
 
 
 public class TextSizeDetermination_Test extends TestCase {
@@ -34,7 +32,7 @@ public class TextSizeDetermination_Test extends TestCase {
   private TextSizeProbeStore textSizeProbeStore;
 
   public void testStringExtent() {
-    ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
+    MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
     assertEquals( 0, items.length );
 
     Font font = Graphics.getFont( "arial", 10, SWT.NORMAL );
@@ -42,14 +40,14 @@ public class TextSizeDetermination_Test extends TestCase {
     Point estimated = TextSizeEstimation.stringExtent( font, TEST_STRING );
     assertEquals( estimated, calculated );
 
-    items = TextSizeDetermination.getCalculationItems();
+    items = MeasurementUtil.getMeasurementItems();
     assertEquals( 1, items.length );
-    items = TextSizeDetermination.getCalculationItems();
+    items = MeasurementUtil.getMeasurementItems();
     assertEquals( 1, items.length );
 
     TextSizeDetermination.stringExtent( font, TEST_STRING );
     assertEquals( 1, items.length );
-    items = TextSizeDetermination.getCalculationItems();
+    items = MeasurementUtil.getMeasurementItems();
     assertEquals( 1, items.length );
 
     Point storedSize = new Point( 100, 10 );
@@ -59,10 +57,7 @@ public class TextSizeDetermination_Test extends TestCase {
 
     TextSizeProbeResults probeStore = TextSizeProbeResults.getInstance();
     probeStore.createProbeResult( probeRequests[ 0 ], new Point( 10, 10 ) );
-    TextSizeDataBase.store( font.getFontData()[ 0 ], 
-                            TEST_STRING, 
-                            SWT.DEFAULT, 
-                            storedSize );
+    TextSizeDataBase.store( font.getFontData()[ 0 ], TEST_STRING, SWT.DEFAULT,  storedSize );
     calculated = TextSizeDetermination.stringExtent( font, TEST_STRING );
     assertEquals( storedSize, calculated );
 
@@ -94,10 +89,10 @@ public class TextSizeDetermination_Test extends TestCase {
     Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     String markup = "First Line<ul><li>item1</li><li>item2</li></ul>";
     TextSizeDetermination.markupExtent( font, markup, 0 );
-    ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
+    MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
     boolean markupUnaltered = false;
     for( int i = 0; i < items.length; i++ ) {
-      if( items[ i ].getString().equals( markup ) ) {
+      if( items[ i ].getTextToMeasure().equals( markup ) ) {
         markupUnaltered = true;
       }
     }

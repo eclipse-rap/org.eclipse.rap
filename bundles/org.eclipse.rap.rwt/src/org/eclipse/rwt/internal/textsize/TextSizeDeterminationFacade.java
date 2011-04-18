@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.textsize;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.FacadesInitializer;
-import org.eclipse.rwt.internal.textsize.TextSizeDetermination.ICalculationItem;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 
 abstract class TextSizeDeterminationFacade {
@@ -26,7 +25,7 @@ abstract class TextSizeDeterminationFacade {
     return FACADE_IMPL.createMeasureStringInternal( string, expandLineDelimitors );
   }
 
-  static ICalculationItem[] writeStringMeasurements() throws IOException {
+  static MeasurementItem[] writeStringMeasurements() throws IOException {
     return FACADE_IMPL.writeStringMeasurementsInternal();
   }
 
@@ -40,7 +39,7 @@ abstract class TextSizeDeterminationFacade {
 
   public abstract String createMeasureStringInternal( String string, boolean expandNewLines );
 
-  public abstract ICalculationItem[] writeStringMeasurementsInternal() throws IOException;
+  public abstract MeasurementItem[] writeStringMeasurementsInternal() throws IOException;
 
   public abstract Probe[] writeFontProbingInternal() throws IOException;
 

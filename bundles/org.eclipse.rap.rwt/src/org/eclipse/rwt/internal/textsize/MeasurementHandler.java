@@ -19,7 +19,6 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
-import org.eclipse.rwt.internal.textsize.TextSizeDetermination.ICalculationItem;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
@@ -31,12 +30,12 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
 
 
-final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBindingListener {
+final class MeasurementHandler implements PhaseListener, HttpSessionBindingListener {
   private static final long serialVersionUID = 1L;
-  private static final String CALCULATION_HANDLER
-    = TextSizeDeterminationHandler.class.getName() + ".CalculationHandler";
+  private static final String MEASUREMENT_HANDLER
+    = MeasurementHandler.class.getName() + "#MeasurementHandler";
 
-  ICalculationItem[] calculationItems;
+  MeasurementItem[] calculationItems;
   boolean renderDone;
   private final Display display;
   private Probe[] probes;
@@ -45,15 +44,15 @@ final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBi
     Display display = RWTLifeCycle.getSessionDisplay();
     if( display != null && display.getThread() == Thread.currentThread() ) {
       ISessionStore session = ContextProvider.getSession();
-      if( session.getAttribute( CALCULATION_HANDLER ) == null ) {
-        TextSizeDeterminationHandler handler = new TextSizeDeterminationHandler( display );
-        session.setAttribute( CALCULATION_HANDLER, handler );
+      if( session.getAttribute( MEASUREMENT_HANDLER ) == null ) {
+        MeasurementHandler handler = new MeasurementHandler( display );
+        session.setAttribute( MEASUREMENT_HANDLER, handler );
         RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( handler );
       }
     }
   }
 
-  TextSizeDeterminationHandler( Display display ) {
+  MeasurementHandler( Display display ) {
     this.display = display;
   }
 
@@ -151,7 +150,7 @@ final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBi
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
           RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
           ISessionStore session = ContextProvider.getSession();
-          session.removeAttribute( CALCULATION_HANDLER );
+          session.removeAttribute( MEASUREMENT_HANDLER );
         }
       }
     }
@@ -185,7 +184,7 @@ final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBi
     UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {
         ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
-        lifeCycle.removePhaseListener( TextSizeDeterminationHandler.this );
+        lifeCycle.removePhaseListener( MeasurementHandler.this );
       }
     } );
   }
@@ -197,14 +196,14 @@ final class TextSizeDeterminationHandler implements PhaseListener, HttpSessionBi
     boolean hasItems = calculationItems != null;
     HttpServletRequest request = ContextProvider.getRequest();
     for( int i = 0; hasItems && i < calculationItems.length; i++ ) {
-      ICalculationItem item = calculationItems[ i ];
+      MeasurementItem item = calculationItems[ i ];
       String name = String.valueOf( item.hashCode() );
       String value = request.getParameter( name );
       // TODO [fappel]: Workaround for background process problem
       if( value != null ) {
         Point size = getSize( value );
         TextSizeDataBase.store( item.getFontData(),
-                                item.getString(),
+                                item.getTextToMeasure(),
                                 item.getWrapWidth(),
                                 size );
       }

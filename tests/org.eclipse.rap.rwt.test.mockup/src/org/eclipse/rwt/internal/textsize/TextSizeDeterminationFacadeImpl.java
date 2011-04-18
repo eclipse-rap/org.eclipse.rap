@@ -13,8 +13,6 @@ package org.eclipse.rwt.internal.textsize;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.textsize.TextSizeDeterminationFacade;
-import org.eclipse.rwt.internal.textsize.TextSizeDetermination.ICalculationItem;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 
 
@@ -24,8 +22,8 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     return string;
   }
 
-  public ICalculationItem[] writeStringMeasurementsInternal() throws IOException {
-    return new ICalculationItem[ 0 ];
+  public MeasurementItem[] writeStringMeasurementsInternal() throws IOException {
+    return new MeasurementItem[ 0 ];
   }
 
   public Probe[] writeFontProbingInternal() throws IOException {

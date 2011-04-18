@@ -24,7 +24,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
 
-public class TextSizeDeterminationHandler_Test extends TestCase {
+public class MeasurementHandler_Test extends TestCase {
 
   public void testRequestCycle() {
     Display display = new Display();

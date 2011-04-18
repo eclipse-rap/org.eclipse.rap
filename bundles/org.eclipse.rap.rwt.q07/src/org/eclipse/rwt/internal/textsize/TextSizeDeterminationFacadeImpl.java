@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.textsize;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.textsize.TextSizeDetermination.ICalculationItem;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
@@ -51,22 +50,22 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     return result;
   }
 
-  public ICalculationItem[] writeStringMeasurementsInternal() throws IOException {
-    ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
+  public MeasurementItem[] writeStringMeasurementsInternal() throws IOException {
+    MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
     if( items.length > 0 ) {
       JSWriter writer = JSWriter.getWriterForResetHandler();
       StringBuffer param = new StringBuffer();
       param.append( "[ " );
       for( int i = 0; i < items.length; i++ ) {
         param.append( "[ " );
-        ICalculationItem item = items[ i ];
+        MeasurementItem item = items[ i ];
         param.append( item.hashCode() );
         param.append( ", " );
         param.append( "\"" );
-        String itemString = item.getString();
-        itemString = EncodingUtil.escapeDoubleQuoted( itemString );
-        itemString = EncodingUtil.escapeLeadingTrailingSpaces( itemString );
-        param.append( itemString );
+        String textToMeasure = item.getTextToMeasure();
+        textToMeasure = EncodingUtil.escapeDoubleQuoted( textToMeasure );
+        textToMeasure = EncodingUtil.escapeLeadingTrailingSpaces( textToMeasure );
+        param.append( textToMeasure );
         param.append( "\", " );
         param.append( createFontParam( item.getFontData() ) );
         param.append( ", " );

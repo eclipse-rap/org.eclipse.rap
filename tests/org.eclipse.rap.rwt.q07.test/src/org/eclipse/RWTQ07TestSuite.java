@@ -17,7 +17,7 @@ import junit.framework.TestSuite;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.StartupPage_Test;
 import org.eclipse.rwt.internal.textsize.TextSizeDeterminationFacadeImpl_Test;
-import org.eclipse.rwt.internal.textsize.TextSizeDeterminationHandler_Test;
+import org.eclipse.rwt.internal.textsize.MeasurementHandler_Test;
 import org.eclipse.rwt.internal.widgets.fileuploadkit.FileUploadLCA_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
@@ -100,7 +100,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( RWTLifeCycle_Test.class );
     suite.addTestSuite( RWTLifeCycle2_Test.class );
     suite.addTestSuite( ThemeAdapter_Test.class );
-    suite.addTestSuite( TextSizeDeterminationHandler_Test.class );
+    suite.addTestSuite( MeasurementHandler_Test.class );
     suite.addTestSuite( TextSizeDeterminationFacadeImpl_Test.class );
     suite.addTestSuite( DragSourceLCA_Test.class );
 
