@@ -34,7 +34,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       assertEquals( "item2", items[ 2 ].getLabel() );
       list.destroy();
     },
-    
+
+    testHoverItem : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      this._fakeAppearance();
+      var list = this._createDefaultList();
+      this._addItems( list, 3 );
+      testUtil.flush();
+      var items = this._getItems( list );
+      assertEquals( "white", testUtil.getCssBackgroundColor( items[ 1 ] ) );
+      testUtil.mouseOver( items[ 1 ] );
+      assertTrue( items[ 1 ].hasState( "over" ) );
+      assertEquals( "green", testUtil.getCssBackgroundColor( items[ 1 ] ) );
+      testUtil.mouseOut( items[ 1 ] );
+      assertFalse( items[ 1 ].hasState( "over" ) );
+      assertEquals( "white", testUtil.getCssBackgroundColor( items[ 1 ] ) );
+      list.destroy();
+    },
+
+    testHoverEvenItem : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      this._fakeAppearance();
+      var list = this._createDefaultList();
+      this._addItems( list, 3 );
+      testUtil.flush();
+      var items = this._getItems( list );
+      assertEquals( "blue", testUtil.getCssBackgroundColor( items[ 0 ] ) );
+      testUtil.mouseOver( items[ 0 ] );
+      assertTrue( items[ 0 ].hasState( "over" ) );
+      assertEquals( "red", testUtil.getCssBackgroundColor( items[ 0 ] ) );
+      testUtil.mouseOut( items[ 0 ] );
+      assertFalse( items[ 0 ].hasState( "over" ) );
+      assertEquals( "blue", testUtil.getCssBackgroundColor( items[ 0 ] ) );
+      list.destroy();
+    },
+
     testSelectItem : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var list = this._createDefaultList();
@@ -415,6 +449,34 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
     _getScrollPosition : function( list ) {
       var client = list._clientArea;
       return [ client.getScrollLeft(), client.getScrollTop() ];
+    },
+    
+    _fakeAppearance : function() {
+      testUtil.fakeAppearance( "list-item", {
+        style : function( states ) {
+          var result = {
+            height : "auto",
+            horizontalChildrenAlign : "left",
+            verticalChildrenAlign : "middle",
+            spacing : 4,
+            padding : [ 3, 5 ],
+            minWidth : "auto"
+          };
+          if( states.over && states.even ) {
+            result.backgroundColor = "red";
+          } else if( states.over && !states.even ) {
+            result.backgroundColor = "green";            
+          } else if( !states.over && states.even ) {
+            result.backgroundColor = "blue";                        
+          } else {            
+            result.backgroundColor = "white";                        
+          }
+          result.textColor = "black";
+          result.backgroundImage = null;
+          result.backgroundGradient = null;
+          return result;
+        }
+      } );
     }
 
   }
