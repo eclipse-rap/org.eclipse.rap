@@ -275,6 +275,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
     
+    testRemoveBackgroundGradientAndRestoreBakgroundColor : function() {
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        widget.setBackgroundColor( "red" );
+        testUtil.flush();
+        assertEquals( "red", testUtil.getCssBackgroundColor( widget ) );
+        widget.setBackgroundGradient( gradient );
+        testUtil.flush();
+        widget.setBackgroundGradient( null );
+        testUtil.flush();
+        assertEquals( "red", testUtil.getCssBackgroundColor( widget ) );
+        widget.destroy();
+      }
+    },
+    
+    testRemoveBackgroundGradientAndRestoreBakgroundImage : function() {
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        widget.setBackgroundImage( "bla.png" );
+        testUtil.flush();
+        assertTrue( testUtil.getCssBackgroundImage( widget.getElement() ).indexOf( "bla.png" ) !== -1 );
+        widget.setBackgroundGradient( gradient );
+        testUtil.flush();
+        widget.setBackgroundGradient( null );
+        testUtil.flush();
+        assertTrue( testUtil.getCssBackgroundImage( widget.getElement() ).indexOf( "bla.png" ) !== -1 );
+        widget.destroy();
+      }
+    },
+
     testRenderHorizontalBackgroundGradient : function() {
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var gradient = [ [ 0, "rgb(255, 0, 255)" ], [ 1, "rgb(0, 255, 0)" ] ];

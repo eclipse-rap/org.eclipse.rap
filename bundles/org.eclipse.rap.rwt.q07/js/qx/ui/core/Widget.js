@@ -3646,12 +3646,16 @@ qx.Class.define( "qx.ui.core.Widget", {
     /////////////////////////
     // FONT AND COLOR SUPPORT
 
-    _applyBackgroundColor : function(value, old) {
-      qx.theme.manager.Color.getInstance().connect(this._styleBackgroundColor, this, value);
+    _applyBackgroundColor : function( value, old ) {
+      this._styleBackgroundColor( value );
     },
 
     _applyBackgroundGradient : function( value, oldValue ) {
       org.eclipse.rwt.HtmlUtil.setBackgroundGradient( this, value );
+      if( value === null ) {
+        this.setStyleProperty( "backgroundImage", this.getStyleProperty( "backgroundImage" ) );
+        this.setStyleProperty( "backgroundColor", this.getStyleProperty( "backgroundColor" ) );
+      }
     },
 
     _applyShadow : function( value, oldValue ) {
