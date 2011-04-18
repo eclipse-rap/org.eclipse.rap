@@ -25,15 +25,14 @@ import org.eclipse.rwt.service.ISessionStore;
  */
 final class RequestParameterBuffer {
 
-  private static final String BUFFER
-    = RequestParameterBuffer.class.getName() + "#buffer:-)";
+  private static final String BUFFER = RequestParameterBuffer.class.getName() + "#buffer:-)";
 
   /**
    * Buffers the given <code>parameters</code> within the session for later
    * use with <code>merge</code>. If the session has already parameters stored,
    * the method returns immediately.
    */
-  static void store( final Map parameters ) {
+  static void store( Map parameters ) {
     // [if] Store parameters only once.
     // Workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=265008
     if( getBufferedParameters() == null ) {
@@ -55,8 +54,7 @@ final class RequestParameterBuffer {
     HttpServletRequest request = ContextProvider.getRequest();
     Map bufferedParams = getBufferedParameters();
     if( bufferedParams != null ) {
-      WrappedRequest wrappedRequest = new WrappedRequest( request, 
-                                                          bufferedParams );
+      WrappedRequest wrappedRequest = new WrappedRequest( request, bufferedParams );
       ServiceContext context = ContextProvider.getContext();
       context.setRequest( wrappedRequest );
     }
