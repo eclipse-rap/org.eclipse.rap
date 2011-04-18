@@ -2506,11 +2506,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setColumnCount( 4 );
       tree.setWidth( 370 );
       testUtil.flush();
-      var expected = 6;
-      if( testUtil.isMobileWebkit() ) {
-      	expected += 1; // No scrollbars => bigger client-area
-      }
-      assertEquals( expected, tree.getChildren().length );
+      assertEquals( 6, tree.getChildren().length );
       tree.destroy();
     },
     

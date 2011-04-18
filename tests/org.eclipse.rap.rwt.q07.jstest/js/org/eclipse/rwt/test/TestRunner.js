@@ -221,40 +221,42 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
 
   	// called by Asserts.js
   	processAssert : function( assertType, expected, value, isFailed, message ) {
-      if( isFailed ) {
-        var expectedString;
-        var valueString;
-        if( assertType === "assertEquals" ) {
-          var expectedString = this._getObjectSummary( expected );
-          var valueString = this._getObjectSummary( value );
-        } else {
-          var expectedString = expected + "";
-          var valueString = value + "";
-        }
-        var errorMessage =   'Assert "'
-                           + ( message ? message : this._asserts + 1 )
-                           + '", type "'
-                           + assertType
-                           + '" failed : Expected "'
-                           + expectedString
-                           + '" but found "'
-                           + valueString
-                           + '"';
-        var error = {
-          "assert" : true,
-          "testClass" : this._testClasses[ this._currentClass ].classname,
-          "testFunction" : this._currentFunction,
-          "expected" : expected,
-          "actual" : value,
-          "msg" : errorMessage,
-          toString : function() {
-            return this.msg;
+  	  if( !this._failed ) {
+        if( isFailed ) {
+          var expectedString;
+          var valueString;
+          if( assertType === "assertEquals" ) {
+            var expectedString = this._getObjectSummary( expected );
+            var valueString = this._getObjectSummary( value );
+          } else {
+            var expectedString = expected + "";
+            var valueString = value + "";
           }
-        };
-        throw( error );
-      } else {
-        this._asserts++;
-      }
+          var errorMessage =   'Assert "'
+                             + ( message ? message : this._asserts + 1 )
+                             + '", type "'
+                             + assertType
+                             + '" failed : Expected "'
+                             + expectedString
+                             + '" but found "'
+                             + valueString
+                             + '"';
+          var error = {
+            "assert" : true,
+            "testClass" : this._testClasses[ this._currentClass ].classname,
+            "testFunction" : this._currentFunction,
+            "expected" : expected,
+            "actual" : value,
+            "msg" : errorMessage,
+            toString : function() {
+              return this.msg;
+            }
+          };
+          throw( error );
+        } else {
+          this._asserts++;
+        }
+  	  }
   	},
 
   	_getObjectSummary : function( value ) {

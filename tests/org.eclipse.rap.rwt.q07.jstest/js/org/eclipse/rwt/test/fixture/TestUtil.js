@@ -189,16 +189,14 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       if( typeof target === "undefined" ) {
         throw( "Error in fakeMouseEventDOM: target not defined! " );
       }
-      var domEvent 
-        = this._createFakeMouseEventDOM( target, type, button, left, top, mod );
+      var domEvent = this._createFakeMouseEventDOM( target, type, button, left, top, mod );
       if( filter === true && this.isMobileWebkit() ) {
         delete domEvent.originalEvent;
       }
       this.fireFakeDomEvent( domEvent );
     },
 
-    _createFakeMouseEventDOM : function( target, type, button, left, top, mod ) 
-    {
+    _createFakeMouseEventDOM : function( target, type, button, left, top, mod ) {
       // TODO [tb] : refactor to not overwrite paramters? 
       if( typeof left === "undefined" ) {
         left = 0;
@@ -776,10 +774,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     // Misc
 
     isMobileWebkit : function() {
-      var platform = org.eclipse.rwt.Client.getPlatform();
-      var engine = org.eclipse.rwt.Client.getEngine();
-      var isMobile = platform === "ipad" || platform === "iphone";
-      return isMobile && engine === "webkit"; 
+      return org.eclipse.rwt.Client.isMobileSafari(); 
     },
 
     isFocused : function( widget ) {

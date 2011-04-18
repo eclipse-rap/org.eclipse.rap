@@ -132,9 +132,11 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     },
 
     execute : function( script ) {
+      // NOTE [tb] : For some very strange reason the access check must not be done directly
+      // before the try-catch for the ipad to recognize the error is may throw.
+      this._checkIframeAccess();
       var success = true;
       var result = null;
-      this._checkIframeAccess();
       try {
         result = this._parseEvalResult( this._eval( script ) );
       } catch( ex ) {
@@ -190,8 +192,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     _throwSecurityException : function( domainUnkown ) {
       var statics = org.eclipse.swt.browser.Browser;
       var localDomain = statics.getDomain( document.URL );
-      var srcDomain 
-        = domainUnkown ? null : statics.getDomain( this.getSource() );
+      var srcDomain = domainUnkown ? null : statics.getDomain( this.getSource() );
       var msg = "SecurityRestriction:\nBrowser-Widget can not access " 
       msg +=   srcDomain !== null 
              ? "\"" + srcDomain + "\"" 

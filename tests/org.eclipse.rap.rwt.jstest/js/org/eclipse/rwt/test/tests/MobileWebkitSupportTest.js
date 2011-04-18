@@ -520,9 +520,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var node = widget._getTargetNode();
       this.touchAt( node, "touchstart", 10, 10 );
       assertEquals( 2, widgetLog.length );
-      this.touchAt( node, "touchmove", 18, 18 );
+      this.touchAt( node, "touchmove", 24, 24 );
       assertEquals( 2, widgetLog.length );
-      this.touchAt( node, "touchmove", 19, 19 );
+      this.touchAt( node, "touchmove", 25, 25 );
       this.touch( node, "touchend" );
       var widgetExpected = [ "mouseover", "mousedown", "mouseout" ];
       var docExpected = [ "mouseover", "mouseup" ];      
@@ -637,7 +637,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       this.touch( node, "touchstart" );
       this.touch( node, "touchend" );
       this.touchAt( node, "touchstart", 10, 10 );
-      this.touchAt( node, "touchmove", 19, 19 );
+      this.touchAt( node, "touchmove", 25, 25 );
       var expected = [ true, true, true, true ];
       assertEquals( expected, log );
       widget.destroy();

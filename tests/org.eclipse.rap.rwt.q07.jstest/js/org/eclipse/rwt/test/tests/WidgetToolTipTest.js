@@ -23,6 +23,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetToolTipTest", {
   
   members : {
     
+    TARGETPLATFORM : [ "win", "mac", "unix" ],
+
     testUpdateWidgetToolTipText : function() {
       this.widget1 = new qx.ui.basic.Label( "Hello World 1" );
       this.widget2 = new qx.ui.basic.Label( "Hello World 2" );
