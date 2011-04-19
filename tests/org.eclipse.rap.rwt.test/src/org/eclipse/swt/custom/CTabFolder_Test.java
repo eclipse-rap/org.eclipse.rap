@@ -31,9 +31,10 @@ import org.eclipse.swt.widgets.*;
 
 public class CTabFolder_Test extends TestCase {
 
+  private Shell shell;
+  private Display display;
+
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
 
     assertEquals( false, folder.getMRUVisible() );
@@ -50,8 +51,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testHierarchy() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     assertEquals( 0, folder.getItemCount() );
     assertTrue( Arrays.equals( new CTabItem[ 0 ], folder.getItems() ) );
@@ -59,7 +58,7 @@ public class CTabFolder_Test extends TestCase {
     CTabItem item = new CTabItem( folder, SWT.NONE );
     assertTrue( Composite.class.isAssignableFrom( folder.getClass() ) );
     assertSame( folder, item.getParent() );
-    assertSame( display, item.getDisplay() );
+    assertSame( folder.getDisplay(), item.getDisplay() );
     assertEquals( 1, folder.getItemCount() );
     assertSame( item, folder.getItem( 0 ) );
     assertSame( item, folder.getItems()[ 0 ] );
@@ -76,10 +75,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testDispose() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer  log = new StringBuffer();
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     CTabFolder folder1 = new CTabFolder( shell, SWT.NONE );
     folder1.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -106,8 +102,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder1 = new CTabFolder( shell, SWT.NONE );
     assertEquals( SWT.TOP | SWT.MULTI | SWT.LEFT_TO_RIGHT, folder1.getStyle() );
     assertEquals( SWT.TOP, folder1.getTabPosition() );
@@ -137,8 +131,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSelectionIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
 
     // Test folder without items: initial value must be -1 / null
@@ -184,8 +176,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSelectionWithControl() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
     folder.setSize( 100, 200 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
@@ -211,10 +201,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSelectionWithEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     final CTabItem item1 = new CTabItem( folder, SWT.NONE );
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
@@ -237,8 +224,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testMinimizeMaximize() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     // Test initial state
     assertEquals( false, folder.getMinimized() );
@@ -266,8 +251,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testMinMaxVisible() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     // test getter/setter
     folder.setMinimizeVisible( false );
@@ -277,9 +260,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testResize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     folder.setMinimizeVisible( true );
     folder.setMaximizeVisible( true );
@@ -300,8 +280,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testLayout() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     assertEquals( CTabFolderLayout.class, folder.getLayout().getClass() );
 
@@ -310,8 +288,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testTabHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     // Test initial value
     assertTrue( folder.getTabHeight() > 0 );
@@ -329,8 +305,6 @@ public class CTabFolder_Test extends TestCase {
 
   // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=279592
   public void testTabHeightImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.CLOSE );
     item.setText( "foo" );
@@ -341,8 +315,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testTopRight() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     ToolBar toolBar = new ToolBar( folder, SWT.NONE );
     // Test initial value
@@ -375,8 +347,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSelectionForegroundAndBackground() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
 
     // Set some background color
@@ -399,8 +369,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSelectionBackgroundGradient() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
@@ -477,8 +445,6 @@ public class CTabFolder_Test extends TestCase {
 
   // bug 329013
   public void testSelectionBackgroundGradientWithHighlightColor() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
@@ -510,8 +476,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSelectionBackgroundImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
@@ -524,9 +488,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testChevronVisibilityWithSingleStyle() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     shell.setSize( 150, 150 );
     CTabFolder folder = new CTabFolder( shell, SWT.SINGLE | SWT.CLOSE | SWT.BORDER );
     folder.setSize( 100, 100 );
@@ -572,9 +533,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testComputeTrim() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Rectangle expected = new Rectangle( -2, -19, 4, 21 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
@@ -599,9 +557,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testClientArea() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
     new CTabItem( folder, SWT.NONE );
@@ -627,9 +582,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     assertEquals( new Point( 0, 0 ), folder.getSize() );
     Point expected = new Point( 7, 85 );
@@ -660,9 +612,6 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testGetItem() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     item1.setText( "abc" );
@@ -675,9 +624,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSetSelectionBackground() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    CTabFolder folder = new CTabFolder( control, SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Color color = new Color( display, 0, 0, 0 );
     color.dispose();
     try {
@@ -689,9 +636,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSetSelectionBackgroundI() {
-    Display display = new Display();
-    Composite control = new Shell( display );
-    CTabFolder folder = new CTabFolder( control, SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Color color = new Color( display, 255, 0, 0 );
     color.dispose();
     Color[] colors = new Color[]{
@@ -710,9 +655,6 @@ public class CTabFolder_Test extends TestCase {
 
   // bug 300998
   public void testRemoveLastItem() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.open();
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
@@ -731,6 +673,9 @@ public class CTabFolder_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
