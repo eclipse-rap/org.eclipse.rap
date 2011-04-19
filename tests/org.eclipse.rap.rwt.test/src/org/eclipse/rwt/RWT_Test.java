@@ -20,6 +20,12 @@ import org.eclipse.swt.widgets.Display;
 
 public class RWT_Test extends TestCase {
   
+  public void testGetApplicationStore() {
+    IApplicationStore applicationStore = RWT.getApplicationStore();
+  
+    assertSame( applicationStore, RWTFactory.getApplicationStore() );
+  }
+
   public void testRequestThreadExecFromBackgroundThread() throws Exception {
     final Throwable[] exception = { null };
     Thread thread = new Thread( new Runnable() {
@@ -42,7 +48,7 @@ public class RWT_Test extends TestCase {
     assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
   
-  public void testThreadRequestExec() {
+  public void testRequestThreadExec() {
     final Thread[] requestThread = { null };
     Display display = new Display();
     // use asyncExec to run code during executeLifeCycleFromServerThread
@@ -60,10 +66,17 @@ public class RWT_Test extends TestCase {
     assertNotNull( requestThread[ 0 ] );
   }
 
-  public void testGetApplicationStore() {
-    IApplicationStore applicationStore = RWT.getApplicationStore();
-
-    assertSame( applicationStore, RWTFactory.getApplicationStore() );
+  public void testRequestThreadExecWithoutDisplay() {
+    Runnable runnable = new Runnable() {
+      public void run() {
+      }
+    };
+    try {
+      RWT.requestThreadExec( runnable );
+      fail();
+    } catch( SWTException expected ) {
+      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
+    }
   }
   
   protected void setUp() throws Exception {
