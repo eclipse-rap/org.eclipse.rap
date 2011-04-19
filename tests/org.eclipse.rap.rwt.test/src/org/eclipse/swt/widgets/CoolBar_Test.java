@@ -21,14 +21,16 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 
 
 public class CoolBar_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   public void testHierarchy() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
 
     assertTrue( Composite.class.isAssignableFrom( bar.getClass() ) );
@@ -42,8 +44,6 @@ public class CoolBar_Test extends TestCase {
   }
 
   public void testItems() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     assertEquals( 0, bar.getItemCount() );
     assertTrue( Arrays.equals( new CoolItem[ 0 ], bar.getItems() ) );
@@ -60,8 +60,6 @@ public class CoolBar_Test extends TestCase {
   }
 
   public void testIndexOnCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CoolBar coolBar = new CoolBar( shell, SWT.NONE );
     CoolItem coolItem = new CoolItem( coolBar, SWT.NONE );
     coolItem.setText( "1" );
@@ -72,8 +70,6 @@ public class CoolBar_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     assertEquals( SWT.NO_FOCUS | SWT.HORIZONTAL | SWT.LEFT_TO_RIGHT, bar.getStyle() );
 
@@ -100,8 +96,6 @@ public class CoolBar_Test extends TestCase {
   }
 
   public void testIndexOf() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     CoolItem item = new CoolItem( bar, SWT.NONE );
     assertEquals( 0, bar.indexOf( item ) );
@@ -128,8 +122,6 @@ public class CoolBar_Test extends TestCase {
         log.add( event.getSource() );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     bar.addDisposeListener( disposeListener );
     CoolItem item1 = new CoolItem( bar, SWT.NONE );
@@ -151,18 +143,13 @@ public class CoolBar_Test extends TestCase {
   }
 
   public void testLocked() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
-
     assertEquals( false, bar.getLocked() );
     bar.setLocked( true );
     assertEquals( true, bar.getLocked() );
   }
 
   public void testItemOrder() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.NONE );
     new CoolItem( bar, SWT.NONE );
     new CoolItem( bar, SWT.NONE );
@@ -212,9 +199,6 @@ public class CoolBar_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     CoolBar coolBar = new CoolBar( shell, SWT.HORIZONTAL );
     Point expected = new Point( 0, 0 );
     assertEquals( expected, coolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -237,11 +221,25 @@ public class CoolBar_Test extends TestCase {
     assertEquals( expected, coolBar.computeSize( 100, 100 ) );
   }
 
+  public void testDisposeWithFontDisposeInDisposeListener() {
+    CoolBar coolBar = new CoolBar( shell, SWT.NONE );
+    new CoolItem( coolBar, SWT.NONE );
+    new CoolItem( coolBar, SWT.NONE );
+    final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
+    coolBar.setFont( font );
+    coolBar.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        font.dispose();
+      }
+    } );
+    coolBar.dispose();
+  }
+
   private CoolItem createItem( final CoolBar coolBar ) {
-    ToolBar toolBar = new ToolBar(coolBar, SWT.FLAT);
-    for (int i = 0; i < 3; i++) {
-        ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-        item.setText( "item " + i );
+    ToolBar toolBar = new ToolBar( coolBar, SWT.FLAT );
+    for( int i = 0; i < 3; i++ ) {
+      ToolItem item = new ToolItem( toolBar, SWT.PUSH );
+      item.setText( "item " + i );
     }
     toolBar.pack();
     Point size = toolBar.getSize();
@@ -262,6 +260,8 @@ public class CoolBar_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
