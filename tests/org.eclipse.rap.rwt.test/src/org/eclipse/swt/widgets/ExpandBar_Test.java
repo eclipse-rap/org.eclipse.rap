@@ -16,14 +16,19 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ExpandEvent;
-import org.eclipse.swt.events.ExpandListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 
 public class ExpandBar_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -31,8 +36,6 @@ public class ExpandBar_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertEquals( ExpandItem.CHEVRON_SIZE, expandBar.getBandHeight() );
     assertEquals( 4, expandBar.getSpacing() );
@@ -42,8 +45,6 @@ public class ExpandBar_Test extends TestCase {
   }
 
   public void testCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertEquals( 0, expandBar.getItemCount() );
     assertEquals( 0, expandBar.getItems().length );
@@ -68,8 +69,6 @@ public class ExpandBar_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertTrue( ( expandBar.getStyle() & SWT.V_SCROLL ) == 0 );
     assertTrue( ( expandBar.getStyle() & SWT.BORDER ) == 0 );
@@ -83,8 +82,6 @@ public class ExpandBar_Test extends TestCase {
   }
 
   public void testBandHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertEquals( ExpandItem.CHEVRON_SIZE, expandBar.getBandHeight() );
     Font font = Graphics.getFont( "font", 30, SWT.BOLD );
@@ -93,8 +90,6 @@ public class ExpandBar_Test extends TestCase {
   }
 
   public void testSpacing() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     assertEquals( 4, expandBar.getSpacing() );
     expandBar.setSpacing( 8 );
@@ -102,8 +97,6 @@ public class ExpandBar_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     expandBar.dispose();
@@ -112,9 +105,6 @@ public class ExpandBar_Test extends TestCase {
   }
 
   public void testExpandListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     final StringBuffer log = new StringBuffer();
     ExpandListener expandListener = new ExpandListener() {
@@ -133,8 +123,6 @@ public class ExpandBar_Test extends TestCase {
   }
   
   public void testIndexOfWithNullItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     try {
       expandBar.indexOf( null );
@@ -145,8 +133,6 @@ public class ExpandBar_Test extends TestCase {
   }
 
   public void testIndexOfWithDisposedItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     item.dispose();
@@ -160,13 +146,25 @@ public class ExpandBar_Test extends TestCase {
 
   // bug 301005
   public void testSetFontNull() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     try {
       expandBar.setFont( null );
     } catch( Throwable e ) {
       fail( "setFont() must accept null value" );
     }
+  }
+
+  public void testDisposeWithFontDisposeInDisposeListener() {
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    new ExpandItem( expandBar, SWT.NONE );
+    new ExpandItem( expandBar, SWT.NONE );
+    final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
+    expandBar.setFont( font );
+    expandBar.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        font.dispose();
+      }
+    } );
+    expandBar.dispose();
   }
 }
