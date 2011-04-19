@@ -19,8 +19,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
@@ -669,6 +668,20 @@ public class CTabFolder_Test extends TestCase {
       e.printStackTrace();
       fail( "Disposing last item that contains focused control must not fail" );
     }
+  }
+
+  public void testDisposeWithFontDisposeInDisposeListener() {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
+    folder.setFont( font );
+    folder.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        font.dispose();
+      }
+    } );
+    folder.dispose();
   }
 
   protected void setUp() throws Exception {
