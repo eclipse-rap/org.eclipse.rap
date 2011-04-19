@@ -64,13 +64,7 @@ public class QxShadow implements QxType {
       throw new NullPointerException( "null argument" );
     }
     String htmlColor = QxColor.toHtmlString( color.red, color.green, color.blue );
-    return new QxShadow( inset,
-                         offsetX,
-                         offsetY,
-                         blur,
-                         spread,
-                         htmlColor,
-                         color.alpha );
+    return new QxShadow( inset, offsetX, offsetY, blur, spread, htmlColor, color.alpha );
   }
 
   public boolean equals( Object obj ) {

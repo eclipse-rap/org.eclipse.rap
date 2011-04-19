@@ -892,8 +892,7 @@ public final class PropertyResolver {
                                 color );
     }
     if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse shadow "
-                                          + toString( unit ) );
+      throw new IllegalArgumentException( "Failed to parse shadow " + toString( unit ) );
     }
     return result;
   }

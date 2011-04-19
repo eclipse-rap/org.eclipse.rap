@@ -21,8 +21,8 @@ Combo, CCombo {
 Combo, CCombo[BORDER] {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #dbdbdb ),
-    color-stop( 27%, #f8f8f8 ),
+    from( #e2e2e2 ),
+    color-stop( 15%, #f8f8f8 ),
     to( #fbfbfb )
   );
   border: 1px solid #c1c1c1;
