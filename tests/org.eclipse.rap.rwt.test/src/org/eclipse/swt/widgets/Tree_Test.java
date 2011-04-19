@@ -105,6 +105,21 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, ItemHolder.getItems( subItem ).length );
   }
 
+  public void testDisposeWithFontDisposeInDisposeListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Tree tree = new Tree( composite, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
+    tree.setFont( font );
+    tree.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        font.dispose();
+      }
+    } );
+    tree.dispose();
+  }
+
   public void testDisposeSelected() {
     Tree tree = new Tree( composite, SWT.MULTI );
     TreeItem item = new TreeItem( tree, SWT.NONE );

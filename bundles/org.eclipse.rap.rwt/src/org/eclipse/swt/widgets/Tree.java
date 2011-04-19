@@ -1205,35 +1205,37 @@ public class Tree extends Composite {
   }
 
   final void destroyColumn( TreeColumn column ) {
-    int index = indexOf( column );
-    // Remove data from TreeItems
-    // TreeItem[] items = getItems();
-    // TODO [bm] dipose unneccesary data
-    // for( int i = 0; i < items.length; i++ ) {
-    // items[ i ].removeData( index );
-    // }
-    // Reset sort column if necessary
-    if( column == sortColumn ) {
-      sortColumn = null;
-    }
-    // Remove from column holder
-    columnHolder.remove( column );
-    // Remove from column order
-    int length = columnOrder.length;
-    int[] newColumnOrder = new int[ length - 1 ];
-    int count = 0;
-    for( int i = 0; i < length; i++ ) {
-      if( columnOrder[ i ] != index ) {
-        int newOrder = columnOrder[ i ];
-        if( index < newOrder ) {
-          newOrder--;
-        }
-        newColumnOrder[ count ] = newOrder;
-        count++;
+    if( !isInDispose() ) {
+      int index = indexOf( column );
+      // Remove data from TreeItems
+      // TreeItem[] items = getItems();
+      // TODO [bm] dipose unneccesary data
+      // for( int i = 0; i < items.length; i++ ) {
+      // items[ i ].removeData( index );
+      // }
+      // Reset sort column if necessary
+      if( column == sortColumn ) {
+        sortColumn = null;
       }
+      // Remove from column holder
+      columnHolder.remove( column );
+      // Remove from column order
+      int length = columnOrder.length;
+      int[] newColumnOrder = new int[ length - 1 ];
+      int count = 0;
+      for( int i = 0; i < length; i++ ) {
+        if( columnOrder[ i ] != index ) {
+          int newOrder = columnOrder[ i ];
+          if( index < newOrder ) {
+            newOrder--;
+          }
+          newColumnOrder[ count ] = newOrder;
+          count++;
+        }
+      }
+      columnOrder = newColumnOrder;
+      updateScrollBars();
     }
-    columnOrder = newColumnOrder;
-    updateScrollBars();
   }
 
   /**
@@ -1710,6 +1712,7 @@ public class Tree extends Composite {
     TreeColumn[] cols = ( TreeColumn[] )columnHolder.getItems();
     for( int c = 0; c < cols.length; c++ ) {
       cols[ c ].dispose();
+      columnHolder.remove( cols[ c ] );
     }
     super.releaseChildren();
   }

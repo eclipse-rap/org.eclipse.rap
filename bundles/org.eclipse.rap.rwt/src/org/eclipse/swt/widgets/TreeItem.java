@@ -1497,8 +1497,10 @@ public class TreeItem extends Item {
     } else {
       ItemHolder.removeItem( parent, this );
     }
-    parent.removeFromSelection( this );
-    parent.updateScrollBars();
+    if( !parent.isInDispose() ) {
+      parent.removeFromSelection( this );
+      parent.updateScrollBars();
+    }
     super.releaseParent();
   }
 
