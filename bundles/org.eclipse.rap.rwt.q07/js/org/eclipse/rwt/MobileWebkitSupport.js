@@ -13,11 +13,11 @@
 qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
 
   type : "static",
-  
+
   statics : {
-    //These represent widget types and (optionally) defined appearances that are used to determine 
-    //if the widget is draggable.  If appearances are defined for a type, then one of the appearances
-    //must match to allow the widget to be draggable.
+    // These represent widget types and (optionally) defined appearances that are used to determine
+    // if the widget is draggable.  If appearances are defined for a type, then one of the
+    // appearances must match to allow the widget to be draggable.
     _draggableTypes : {
       "org.eclipse.swt.widgets.Shell" : null,
       "org.eclipse.swt.widgets.Sash"  : null,
@@ -40,7 +40,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _fullscreen : window.navigator.standalone,
     _touchListener : null,
     _gestureListener : null,
-    
+
     _allowedMouseEvents : {
       "INPUT" : {
         "mousedown" : true,
@@ -62,33 +62,34 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         this._bindListeners();
         this._registerListeners();
         this._registerFilter();
-      } 
+      }
     },
-    
+
     // API for registration of custom-widgets for touch handling
     addDraggableType : function( type ) {
-      //protect already registered types
+      // protect already registered types
       var exists = type in this._draggableTypes;
-      if ( !exists )
+      if( !exists ) {
         this._draggableTypes[type] = null;
+      }
     },
 
     // Experimental API for custom-widget
     setTouchListener : function( func, context ) {
       this._touchListener = [ func, context ];
     },
-    
+
     // Experimental API for custom-widget
     setGestureListener : function( func, context ) {
       this._gestureListener = [ func, context ];
     },
-    
+
     _isZoomed : function() {
       var vertical = window.orientation % 180 === 0;
       var width = vertical ? screen.width : screen.height;
       return window.innerWidth !== width;
     },
-    
+
     _configureToolTip : function() {
       var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance();
       toolTip.setShowInterval( 600 );
@@ -105,11 +106,9 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         }
       };
     },
-    
+
     _hideTabHighlight : function() {
-      qx.html.StyleSheet.createElement( 
-        " * { -webkit-tap-highlight-color: rgba(0,0,0,0); }"
-      );
+      qx.html.StyleSheet.createElement( " * { -webkit-tap-highlight-color: rgba(0,0,0,0); }" );
     },
 
     _bindListeners : function() {
@@ -119,7 +118,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     },
 
     _registerListeners : function() {
-      var target = document.body;      
+      var target = document.body;
       target.ontouchstart = this.__onTouchEvent;
       target.ontouchmove = this.__onTouchEvent;
       target.ontouchend = this.__onTouchEvent;
@@ -127,30 +126,30 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       target.ongesturestart = this.__onGestureEvent;
       target.ongesturechange = this.__onGestureEvent;
       target.ongestureend = this.__onGestureEvent;
-      target.onorientationchange = this.__onOrientationEvent;  
+      target.onorientationchange = this.__onOrientationEvent;
     },
-    
+
     _registerFilter : function() {
       var eventHandler = org.eclipse.rwt.EventHandler;
       eventHandler.setMouseEventFilter( this._filterMouseEvents, this );
     },
-    
+
     _filterMouseEvents : function( event ) {
       var allowedMap = this._allowedMouseEvents;
       var result = typeof event.originalEvent === "object"; // faked event?
       if( !result ) {
         result = allowedMap[ "*" ][ event.type ] === true;
-      } 
+      }
       if( !result && typeof allowedMap[ event.target.tagName ] === "object" ) {
         result = allowedMap[ event.target.tagName ][ event.type ] === true;
-      } 
+      }
       if( !result ) {
         event.preventDefault();
         event.returnValue = false;
       }
       return result;
     },
-    
+
     _onTouchEvent : function( domEvent ) {
       var type = domEvent.type;
       if( this._fullscreen ) {
@@ -176,7 +175,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         }
       }
     },
-    
+
     _getTouch : function( domEvent ) {
       var touch = domEvent.touches.item( 0 );
       if( touch === null ) {
@@ -185,7 +184,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       }
       return touch;
     },
-    
+
     _handleTouchStart : function( domEvent ) {
       var touch = this._getTouch( domEvent );
       var target = domEvent.target;
@@ -195,7 +194,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       this._lastMouseDownPosition = pos;
       this._fireMouseEvent( "mousedown", target, domEvent, pos );
     },
-        
+
     _handleTouchMove : function( domEvent ) {
       if( !this._isZoomed() ) {
         // Prevents wipe/scrolling when it's not useful:
@@ -210,31 +209,32 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
           domEvent.preventDefault();
           this._fireMouseEvent( "mousemove", target, domEvent, pos );
         } else {
-          if( Math.abs( oldPos[ 0 ] - pos[ 0 ] ) >= 15
-              || Math.abs( oldPos[ 1 ] - pos[ 1 ] ) >= 15 ) {
+          if(    Math.abs( oldPos[ 0 ] - pos[ 0 ] ) >= 15
+              || Math.abs( oldPos[ 1 ] - pos[ 1 ] ) >= 15 )
+          {
             this._cancelMouseSession( domEvent );
           }
         }
       }
     },
-    
+
     _isDraggableWidget : function ( target ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var widgetTarget = org.eclipse.rwt.EventHandlerUtil.getOriginalTargetObject( target );
-      //We find the nearest control because matching based on widgetTarget can produce too generalized cases.
+      // We find the nearest control because matching based on widgetTarget can produce too
+      // generalized cases.
       var widget = widgetManager.findControl( widgetTarget );
       var draggable = false;
-      if ( widget == null ) { 
+      if( widget == null ) {
         widget = widgetTarget;
       }
-      if ( widget != null 
-           && widget.classname in this._draggableTypes ) {
+      if( widget != null && widget.classname in this._draggableTypes ) {
         var appearances = this._draggableTypes[ widget.classname ];
-        if ( appearances == null ) {
-          draggable = true; 
+        if( appearances == null ) {
+          draggable = true;
         } else {
-          for ( var i = 0; i < appearances.length && !draggable; i++ ) {
-            if ( widgetTarget.getAppearance() == appearances[ i ] ) {
+          for( var i = 0; i < appearances.length && !draggable; i++ ) {
+            if( widgetTarget.getAppearance() == appearances[ i ] ) {
               draggable = true;
             }
           }
@@ -242,7 +242,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       }
       return draggable;
     },
-    
+
     _handleTouchEnd : function( domEvent ) {
       domEvent.preventDefault(); // Prevent tap-zoom
       var touch = this._getTouch( domEvent );
@@ -253,7 +253,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       }
       // Note: Currently this check won't work as expected because webkit
       // always reports the target from touchstart (in event and touch).
-      // It stays on the speculation that this might be fixed in webkit. 
+      // It stays on the speculation that this might be fixed in webkit.
       if( this._lastMouseDownTarget === target ) {
         this._fireMouseEvent( "click", target, domEvent, pos );
         this._lastMouseDownTarget = null;
@@ -276,7 +276,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
         var diff = ( ( new Date() ).getTime() ) - this._lastMouseClickTime;
         result = diff < org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME;
       }
-      return result; 
+      return result;
     },
 
     _onGestureEvent : function( domEvent ) {
@@ -302,7 +302,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     // emulate mouse
 
     _disableMouse : function( domEvent ) {
-      // Note: Safari already does somthing similar to this (a touchevent 
+      // Note: Safari already does somthing similar to this (a touchevent
       // that executes JavaScript will prevent further touch/gesture events),
       // but no in all cases, e.g. on a touchstart with two touches.
       this._cancelMouseSession( domEvent );
@@ -312,7 +312,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     _cancelMouseSession : function( domEvent ) {
       var dummy = this._getDummyTarget();
       this._moveMouseTo( dummy, domEvent );
-      if( this._lastMouseDownTarget !== null ) { 
+      if( this._lastMouseDownTarget !== null ) {
         this._fireMouseEvent( "mouseup", dummy, domEvent, [ 0, 0 ] );
       }
       this._lastMouseDownTarget = null;
@@ -333,7 +333,7 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       if( oldTarget !== target ) {
         var pos = [ 0, 0 ];
         if( oldTarget !== null ) {
-          this._fireMouseEvent( "mouseout", oldTarget, domEvent, pos ); 
+          this._fireMouseEvent( "mouseout", oldTarget, domEvent, pos );
         }
         this._lastMouseOverTarget = target;
         this._fireMouseEvent( "mouseover", target, domEvent, pos );
@@ -342,25 +342,25 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
 
     _fireMouseEvent : function( type, target, originalEvent, coordiantes ) {
       var event = document.createEvent( "MouseEvent" );
-      event.initMouseEvent( type, 
-                            true, // bubbles 
-                            true, //cancelable 
-                            window, //view 
-                            0, // detail 
-                            coordiantes[ 0 ], // screenX 
-                            coordiantes[ 1 ], //screenY 
-                            coordiantes[ 0 ], //clientX 
-                            coordiantes[ 1 ], //clientY 
-                            false, //ctrlKey 
-                            false, //altKey 
-                            false, //shiftKey 
-                            false, //metaKey 
-                            qx.event.type.MouseEvent.buttons.left, 
+      event.initMouseEvent( type,
+                            true, // bubbles
+                            true, //cancelable
+                            window, //view
+                            0, // detail
+                            coordiantes[ 0 ], // screenX
+                            coordiantes[ 1 ], //screenY
+                            coordiantes[ 0 ], //clientX
+                            coordiantes[ 1 ], //clientY
+                            false, //ctrlKey
+                            false, //altKey
+                            false, //shiftKey
+                            false, //metaKey
+                            qx.event.type.MouseEvent.buttons.left,
                             null );
       event.originalEvent = originalEvent;
       target.dispatchEvent( event );
     },
-    
+
     _postMouseEvent : function( type ) {
       if( type === "mouseup" ) {
         qx.ui.popup.ToolTipManager.getInstance().setCurrentToolTip( null );
@@ -368,6 +368,5 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
     }
 
   }
-    
-} );
 
+} );
