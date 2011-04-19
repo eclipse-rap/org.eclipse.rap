@@ -65,7 +65,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
     },
     
     getValue : function( value ) {
-      return this._selection / this._selectionFactor;
+      return Math.round( this._selection / this._selectionFactor );
     },
 
     setMaximum : function( value ) {

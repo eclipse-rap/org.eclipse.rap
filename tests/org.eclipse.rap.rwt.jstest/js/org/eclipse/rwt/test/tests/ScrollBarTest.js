@@ -447,6 +447,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.destroy();
     },
 
+    testGetValue_NoFractionalValue : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      bar = this._createScrollBar( false, false );
+      bar.setValue( 5 );
+      bar.setHeight( 60 );
+      testUtil.flush();
+      assertEquals( 5, bar.getValue() );
+    },
+
     // test div increment
     
     /////////
