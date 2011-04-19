@@ -54,14 +54,12 @@ public class ButtonLCA_Test extends TestCase {
     //default
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    Boolean isDefault
-      = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
+    Boolean isDefault = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
     assertEquals( Boolean.FALSE, isDefault );
     button.getShell().setDefaultButton( button );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
-    isDefault
-      = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
+    isDefault = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
     assertEquals( Boolean.TRUE, isDefault );
     Fixture.clearPreserved();
     display.dispose();
@@ -74,8 +72,7 @@ public class ButtonLCA_Test extends TestCase {
     button.setSelection( true );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
     Fixture.clearPreserved();
     display.dispose();
   }
@@ -88,10 +85,8 @@ public class ButtonLCA_Test extends TestCase {
     button.setGrayed( true );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( CheckButtonDelegateLCA.PROP_GRAYED ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( CheckButtonDelegateLCA.PROP_GRAYED ) );
     Fixture.clearPreserved();
     display.dispose();
   }
@@ -103,8 +98,7 @@ public class ButtonLCA_Test extends TestCase {
     //alignment
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    Integer alignment
-     = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
+    Integer alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
     assertEquals( SWT.UP, alignment.intValue() );
     button.setAlignment( SWT.LEFT );
     Fixture.preserveWidgets();
@@ -140,8 +134,7 @@ public class ButtonLCA_Test extends TestCase {
     button.setSelection( true );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
     Fixture.clearPreserved();
     display.dispose();
   }
