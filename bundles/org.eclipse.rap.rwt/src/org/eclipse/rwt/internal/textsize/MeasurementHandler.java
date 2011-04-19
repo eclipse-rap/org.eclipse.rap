@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -32,28 +31,13 @@ import org.eclipse.swt.widgets.*;
 
 final class MeasurementHandler implements PhaseListener, HttpSessionBindingListener {
   private static final long serialVersionUID = 1L;
-  private static final String MEASUREMENT_HANDLER
-    = MeasurementHandler.class.getName() + "#MeasurementHandler";
-
   MeasurementItem[] calculationItems;
   boolean renderDone;
   private final Display display;
   private Probe[] probes;
 
-  static void register() {
-    Display display = RWTLifeCycle.getSessionDisplay();
-    if( display != null && display.getThread() == Thread.currentThread() ) {
-      ISessionStore session = ContextProvider.getSession();
-      if( session.getAttribute( MEASUREMENT_HANDLER ) == null ) {
-        MeasurementHandler handler = new MeasurementHandler( display );
-        session.setAttribute( MEASUREMENT_HANDLER, handler );
-        RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( handler );
-      }
-    }
-  }
-
-  MeasurementHandler( Display display ) {
-    this.display = display;
+  MeasurementHandler() {
+    this.display = RWTLifeCycle.getSessionDisplay();
   }
 
   //////////////////////////
@@ -148,9 +132,7 @@ final class MeasurementHandler implements PhaseListener, HttpSessionBindingListe
         ServletLog.log( "", e );
       } finally {
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
-          RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
-          ISessionStore session = ContextProvider.getSession();
-          session.removeAttribute( MEASUREMENT_HANDLER );
+          MeasurementUtil.deregister();
         }
       }
     }

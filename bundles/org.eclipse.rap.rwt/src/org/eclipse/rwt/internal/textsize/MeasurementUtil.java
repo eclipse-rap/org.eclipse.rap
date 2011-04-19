@@ -10,8 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.widgets.Display;
 
 
 public class MeasurementUtil {
@@ -23,10 +28,31 @@ public class MeasurementUtil {
     if( !contains( oldItems, newItem ) ) {
       MeasurementItem[] items = concatenate( oldItems, newItem );
       setMeasurementItems( items );
-      MeasurementHandler.register();
+      MeasurementUtil.register();
     }
   }
 
+  static void deregister() {
+    createRegistrar().deregister();
+  }
+  
+  
+  ////////////////////////////////////////////////////////////
+  // helping methods, package private for testing purpose only
+
+  static void register() {
+    // TODO [fappel]: is this check realy reasonable? And if so shouldn't we throw an exception
+    //                in the else case?
+    if( isDisplayRelatedUIThread() ) {
+      createRegistrar().register();
+    }
+  }
+
+  static boolean isDisplayRelatedUIThread() {
+    Display display = RWTLifeCycle.getSessionDisplay();
+    return display != null && display.getThread() == Thread.currentThread();
+  }
+  
   static MeasurementItem[] getMeasurementItems() {
     MeasurementItem[] result = ( MeasurementItem[] )getStateInfo().getAttribute( ITEMS );
     if( result == null ) {
@@ -62,5 +88,11 @@ public class MeasurementUtil {
   
   private static IServiceStateInfo getStateInfo() {
     return ContextProvider.getStateInfo();
+  }
+
+  private static MeasurementHandlerRegistrar createRegistrar() {
+    ISessionStore session = ContextProvider.getSession();
+    ILifeCycle lifeCycle = RWT.getLifeCycle();
+    return new MeasurementHandlerRegistrar( session, lifeCycle );
   }
 }

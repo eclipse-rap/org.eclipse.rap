@@ -13,19 +13,24 @@ package org.eclipse.rwt.internal.textsize;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 
 
 public class MeasurementUtil_Test extends TestCase {
   
   public void testAddMeasurementItem() {
+    new Display();
     MeasurementItem item = createItem();
     MeasurementUtil.addMeasurementItem( item );
 
     MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
     assertEquals( 1, items.length );
     assertSame( item, items [ 0 ] );
+    assertTrue( createHandlerRegistrar().isRegistered() );
   }
   
   public void testAddMeasurementItemIsIdempotent() {
@@ -36,6 +41,27 @@ public class MeasurementUtil_Test extends TestCase {
     MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
     assertEquals( 1, items.length );
     assertSame( item, items [ 0 ] );
+  }
+  
+  public void testRegister() {
+    new Display();
+    
+    MeasurementUtil.register();
+    
+    assertTrue( createHandlerRegistrar().isRegistered() );
+  }
+  
+  public void testIsDisplayRelatedUIThread() {
+    new Display();
+    assertTrue( MeasurementUtil.isDisplayRelatedUIThread() );
+  }
+
+  public void testIsNonDisplayRelatedUIThread() throws InterruptedException {
+    new Display();
+    
+    boolean isDisplayRelatedUIThread = checkInNonUIThread();
+
+    assertFalse( isDisplayRelatedUIThread );
   }
   
   public void testGetAndSetOfMeasurementItems() {
@@ -100,5 +126,22 @@ public class MeasurementUtil_Test extends TestCase {
 
   private MeasurementItem createItem( FontData fontData, String textToMeasure, int wrapWidth ) {
     return new MeasurementItem( textToMeasure, fontData, wrapWidth );
+  }
+  
+
+  private boolean checkInNonUIThread() throws InterruptedException {
+    final boolean[] result = new boolean[ 1 ];
+    Thread nonUIThread = new Thread( new Runnable() {
+      public void run() {
+        result[ 0 ] = MeasurementUtil.isDisplayRelatedUIThread();
+      }
+    } );
+    nonUIThread.start();
+    nonUIThread.join();
+    return result[ 0 ];
+  }
+
+  private MeasurementHandlerRegistrar createHandlerRegistrar() {
+    return new MeasurementHandlerRegistrar( ContextProvider.getSession(), RWT.getLifeCycle() );
   }
 }
