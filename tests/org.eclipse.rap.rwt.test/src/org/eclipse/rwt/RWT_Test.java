@@ -79,6 +79,15 @@ public class RWT_Test extends TestCase {
     }
   }
   
+  public void testRequestThreadExecWithNullRunnable() {
+    new Display();
+    try {
+      RWT.requestThreadExec( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
