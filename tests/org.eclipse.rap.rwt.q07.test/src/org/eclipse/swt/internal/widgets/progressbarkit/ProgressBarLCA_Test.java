@@ -20,11 +20,10 @@ import org.eclipse.swt.widgets.*;
 
 public class ProgressBarLCA_Test extends TestCase {
 
+  private Shell shell;
+
   public void testPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
-    Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
     Object preserved = adapter.getPreserved( ProgressBarLCA.PROP_STATE );
@@ -32,9 +31,6 @@ public class ProgressBarLCA_Test extends TestCase {
   }
 
   public void testRenderChanges() throws Exception {
-    Display display = new Display();
-    Fixture.markInitialized( display );
-    Shell shell = new Shell( display, SWT.NONE );
     ProgressBar progressBar = new ProgressBar( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( progressBar );
     ProgressBarLCA lca = new ProgressBarLCA();
@@ -48,7 +44,6 @@ public class ProgressBarLCA_Test extends TestCase {
     Fixture.clearPreserved();
     lca.preserveValues( progressBar );
     progressBar.setState( SWT.NORMAL );
-    Fixture.markInitialized( display );
     lca.renderChanges( progressBar );
     allMarkup = Fixture.getAllMarkup();
     expected = "w.setState( null );";
@@ -57,6 +52,10 @@ public class ProgressBarLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Display display = new Display();
+    Fixture.markInitialized( display );
+    shell = new Shell( display, SWT.NONE );
+    Fixture.markInitialized( display );
   }
 
   protected void tearDown() throws Exception {
