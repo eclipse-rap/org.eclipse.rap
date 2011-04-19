@@ -228,8 +228,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         var offset = this._tree.getIndentionOffset( level );
         var height = this._tree.getItemHeight(); 
         var width = nextLevelOffset - offset;
-        var element = this._getNextElement( 3 );
-        element.innerHTML = "";
+        var element = this._getImageElement( 3 );
         this._setImage( element, source, true );
         this._setBounds( element, offset, 0, width, height );
         result = element;
@@ -244,8 +243,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._setState( "over", this._tree.isHoverElement( oldCheckBox ) );
         var image = this._getImageFromAppearance( "tree-check-box", states );
         this._renderOverState( item );
-        var element = this._getNextElement( 3 );
-        element.innerHTML = "";
+        var element = this._getImageElement( 3 );
         this._setImage( element, image, true );
         var left = this._tree.getCheckBoxLeft( item );
         var width = this._tree.getCheckBoxWidth( item );
@@ -284,8 +282,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     
     _renderSelectionBackground : function( item, cell ) {
       if( this._styleMap.itemBackground !== null ) {
-        var element = this._getNextElement( 2 );
-        element.innerHTML = "";
+        var element = this._getBackgroundElement( 2 );
         element.style.backgroundColor = this._styleMap.itemBackground;
         var padding = this._tree.getSelectionPadding();
         var left = this._tree.getItemTextLeft( item, cell, true );
@@ -302,11 +299,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _renderCellBackground : function( item, cell ) {
       var background = this._getCellBackground( item, cell );
-      if(    background != "undefined" 
-          && background != this._styleMap.backgroundColor ) 
-      {
-        var element = this._getNextElement( 1 );
-        element.innerHTML = "";
+      if( background != "undefined" && background != this._styleMap.backgroundColor ) {
+        var element = this._getBackgroundElement( 1 );
         element.style.backgroundColor = background;
         var left = this._tree.getItemLeft( item, cell, false );
         var width = this._tree.getItemWidth( item, cell, false );
@@ -322,8 +316,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var source = item.getImage( cell );
       var element = null;
       if( source !== null ) {
-        element = this._getNextElement( 3 );
-        element.innerHTML = "";
+        element = this._getImageElement( 3 );
         this._setImage( element, source, true );
         var left = this._tree.getItemImageLeft( item, cell );
         var width = this._tree.getItemImageWidth( item, cell );
@@ -339,7 +332,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var text = item.getText( cell );
       var element = null;
       if( text !== "" ) {
-        element = this._getNextElement( 3 );
+        element = this._getTextElement( 3 );
         //do not reset since we are about to reassign
         var left = this._tree.getItemTextLeft( item, cell );
         var width = this._tree.getItemTextWidth( item, cell );
@@ -466,6 +459,28 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var opacity = this._tree.getEnabled() ? 1 : 0.3;
       org.eclipse.rwt.HtmlUtil.setBackgroundImage( element, src, opacity );
     },
+    
+    _getTextElement : function( zIndex ) {
+      var result = this._getNextElement( zIndex );
+      org.eclipse.rwt.HtmlUtil.setBackgroundImage( result, null );
+      result.style.backgroundColor = "";
+      // NOTE: It's important for the iPad not to set innerHTML twice. See bug 323988
+      return result;
+    },
+    
+    _getImageElement : function( zIndex ) {
+      var result = this._getNextElement( zIndex );
+      result.innerHTML = "";
+      result.style.backgroundColor = "";
+      return result;
+    },
+        
+    _getBackgroundElement : function( zIndex ) {
+      var result = this._getNextElement( zIndex );
+      org.eclipse.rwt.HtmlUtil.setBackgroundImage( result, null );
+      result.innerHTML = "";
+      return result;
+    },
         
     _getNextElement : function( zIndex ) {
       var result;
@@ -473,8 +488,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       if( node.childNodes.length > this._usedNodes ) {
         result = node.childNodes[ this._usedNodes ];
         result.style.display = "";
-        result.style.backgroundColor = "";
-        result.style.backgroundImage = "";
       } else {
         result = document.createElement( "div" );
         result.style.position = "absolute";
