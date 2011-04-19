@@ -16,13 +16,22 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 
 
 public class ToolBar_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -30,8 +39,6 @@ public class ToolBar_Test extends TestCase {
   }
 
   public void testCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     assertEquals( 0, toolBar.getItemCount() );
     assertEquals( 0, toolBar.getItems().length );
@@ -69,8 +76,6 @@ public class ToolBar_Test extends TestCase {
   }
 
   public void testHorizontal() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.HORIZONTAL );
     ToolItem toolItem1 = new ToolItem( toolBar, SWT.PUSH );
     ToolItem toolItem2 = new ToolItem( toolBar, SWT.PUSH );
@@ -89,8 +94,6 @@ public class ToolBar_Test extends TestCase {
   }
   
   public void testVertical() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     ToolItem toolItem1 = new ToolItem( toolBar, SWT.PUSH );
     ToolItem toolItem2 = new ToolItem( toolBar, SWT.PUSH );
@@ -116,8 +119,6 @@ public class ToolBar_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolBar = new ToolBar( shell, SWT.VERTICAL );
     assertEquals( 0, toolBar.getItemCount() );
     assertEquals( 0, toolBar.getItems().length );
@@ -130,9 +131,21 @@ public class ToolBar_Test extends TestCase {
     assertTrue( item1.isDisposed() );
   }
 
+  public void testDisposeWithFontDisposeInDisposeListener() {
+    ToolBar folder = new ToolBar( shell, SWT.NONE );
+    new ToolItem( folder, SWT.NONE );
+    new ToolItem( folder, SWT.NONE );
+    final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
+    folder.setFont( font );
+    folder.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        font.dispose();
+      }
+    } );
+    folder.dispose();
+  }
+
   public void testIndexOf() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar bar = new ToolBar( shell, SWT.NONE );
     ToolItem item = new ToolItem( bar, SWT.NONE );
     assertEquals( 0, bar.indexOf( item ) );
@@ -153,12 +166,8 @@ public class ToolBar_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ToolBar toolbar = new ToolBar( shell, SWT.NONE );
-    assertEquals( new Point( 24, 22 ),
-                  toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 24, 22 ), toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     ToolItem toolItem1 = new ToolItem( toolbar, SWT.PUSH );
     toolItem1.setText( "Item 1" );
@@ -170,9 +179,7 @@ public class ToolBar_Test extends TestCase {
     separator.setControl( new Text( toolbar, SWT.NONE ) );
     ToolItem toolItem3 = new ToolItem( toolbar, SWT.DROP_DOWN );
     toolItem3.setText( "Item 3" );
-    assertEquals( new Point( 153, 22 ),
-                  toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-
+    assertEquals( new Point( 153, 22 ), toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     assertEquals( new Point( 100, 100 ), toolbar.computeSize( 100, 100 ) );
   }
 } 
