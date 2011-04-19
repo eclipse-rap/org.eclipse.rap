@@ -2029,50 +2029,52 @@ public class Table extends Composite {
     updateScrollBars();
   }
 
-  final void destroyColumn( final TableColumn column ) {
-    int index = indexOf( column );
-    // Remove data from TableItems
-    for( int i = 0; i < itemCount; i++ ) {
-      if( items[ i ] != null ) {
-        items[ i ].removeData( index );
-      }
-    }
-    // Reset sort column if necessary
-    if( column == sortColumn ) {
-      sortColumn = null;
-    }
-    // Remove from column holder
-    columnHolder.remove( column );
-    // Remove from column order
-    int length = columnOrder.length;
-    int[] newColumnOrder = new int[ length - 1 ];
-    int count = 0;
-    for( int i = 0; i < length; i++ ) {
-      if( columnOrder[ i ] != index ) {
-        int newOrder = columnOrder[ i ];
-        if( index < newOrder ) {
-          newOrder--;
+  final void destroyColumn( TableColumn column ) {
+    if( !isInDispose() ) {
+      int index = indexOf( column );
+      // Remove data from TableItems
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          items[ i ].removeData( index );
         }
-        newColumnOrder[ count ] = newOrder;
-        count++;
       }
-    }
-    columnOrder = newColumnOrder;
-    // Remove from columnImageCount
-    if( columnImageCount.length == 1 ) {
-      columnImageCount = null;
-    } else {
-      count = 0;
-      int[] newColumnImageCount = new int[ columnImageCount.length - 1 ];
-      for( int i = 0; i < columnImageCount.length; i++ ) {
-        if( i != index ) {
-          newColumnImageCount[ count ] = columnImageCount[ i ];
+      // Reset sort column if necessary
+      if( column == sortColumn ) {
+        sortColumn = null;
+      }
+      // Remove from column holder
+      columnHolder.remove( column );
+      // Remove from column order
+      int length = columnOrder.length;
+      int[] newColumnOrder = new int[ length - 1 ];
+      int count = 0;
+      for( int i = 0; i < length; i++ ) {
+        if( columnOrder[ i ] != index ) {
+          int newOrder = columnOrder[ i ];
+          if( index < newOrder ) {
+            newOrder--;
+          }
+          newColumnOrder[ count ] = newOrder;
           count++;
         }
       }
-      columnImageCount = newColumnImageCount;
+      columnOrder = newColumnOrder;
+      // Remove from columnImageCount
+      if( columnImageCount.length == 1 ) {
+        columnImageCount = null;
+      } else {
+        count = 0;
+        int[] newColumnImageCount = new int[ columnImageCount.length - 1 ];
+        for( int i = 0; i < columnImageCount.length; i++ ) {
+          if( i != index ) {
+            newColumnImageCount[ count ] = columnImageCount[ i ];
+            count++;
+          }
+        }
+        columnImageCount = newColumnImageCount;
+      }
+      updateScrollBars();
     }
-    updateScrollBars();
   }
 
   ////////////////////////////
@@ -2113,33 +2115,35 @@ public class Table extends Composite {
     updateScrollBars();
   }
 
-  final void destroyItem( final TableItem item, final int index ) {
-    removeFromSelection( index );
-    adjustSelectionIdices( index );
-    if( item != null ) {
-      int columnCount = Math.max( 1, columnHolder.size() );
-      for( int i = 0; i < columnCount; i++ ) {
-        updateColumnImageCount( i, item.getImageInternal( i ), null );
+  final void destroyItem( TableItem item, int index ) {
+    if( !isInDispose() ) {
+      removeFromSelection( index );
+      adjustSelectionIdices( index );
+      if( item != null ) {
+        int columnCount = Math.max( 1, columnHolder.size() );
+        for( int i = 0; i < columnCount; i++ ) {
+          updateColumnImageCount( i, item.getImageInternal( i ), null );
+        }
       }
-    }
-    itemCount--;
-    if( item != null ) {
-      item.index = -1;
-    }
-    if( itemCount == 0 ) {
-      setTableEmpty();
-    } else {
-      System.arraycopy( items, index + 1, items, index, itemCount - index );
-      items[ itemCount ] = null;
-      adjustItemIndices( index );
-    }
-    adjustTopIndex();
-    if( index == focusIndex || focusIndex > itemCount - 1 ) {
-      adjustFocusIndex();
-    }
-    updateScrollBars();
-    if( ( style & SWT.VIRTUAL ) != 0 ) {
-      redraw();
+      itemCount--;
+      if( item != null ) {
+        item.index = -1;
+      }
+      if( itemCount == 0 ) {
+        setTableEmpty();
+      } else {
+        System.arraycopy( items, index + 1, items, index, itemCount - index );
+        items[ itemCount ] = null;
+        adjustItemIndices( index );
+      }
+      adjustTopIndex();
+      if( index == focusIndex || focusIndex > itemCount - 1 ) {
+        adjustFocusIndex();
+      }
+      updateScrollBars();
+      if( ( style & SWT.VIRTUAL ) != 0 ) {
+        redraw();
+      }
     }
   }
 
@@ -2147,18 +2151,18 @@ public class Table extends Composite {
   // Destroy table
 
   void releaseChildren() {
-    // TODO [rh] optimize: only execute the necessary mimimum from destroyItem
-    //      when disposing of the table itself
     Item[] tableItems = new TableItem[ this.items.length ];
     System.arraycopy( this.items, 0, tableItems, 0, this.items.length );
     for( int i = 0; i < tableItems.length; i++ ) {
       if( tableItems[ i ] != null ) {
         tableItems[ i ].dispose();
+        items[ i ] = null;
       }
     }
     Item[] tableColumns = columnHolder.getItems();
     for( int i = 0; i < tableColumns.length; i++ ) {
       tableColumns[ i ].dispose();
+      columnHolder.remove( tableColumns[ i ] );
     }
   }
 

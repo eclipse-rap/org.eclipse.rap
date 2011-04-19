@@ -1371,6 +1371,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeWithFontDisposeInDisposeListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.NONE );
     new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
