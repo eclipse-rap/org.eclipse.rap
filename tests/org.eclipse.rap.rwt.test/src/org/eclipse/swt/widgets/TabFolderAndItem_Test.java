@@ -21,16 +21,16 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
 
 public class TabFolderAndItem_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   public void testGetItemsAndGetItemCount() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     assertEquals( 0, folder.getItemCount() );
     assertEquals( 0, folder.getItems().length );
@@ -41,10 +41,7 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testInitialSelection() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 100, 100 );
     SelectionListener selectionListener = new SelectionAdapter() {
@@ -85,8 +82,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testIndexOf() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
 
     TabItem item0 = new TabItem( folder, SWT.NONE );
@@ -103,9 +98,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testSelection() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
     TabItem item1 = new TabItem( folder, SWT.NONE );
@@ -196,8 +188,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testSelectedControl() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     shell.open();
 
@@ -221,8 +211,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testImages() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
     item0.setImage(Graphics.getImage( Fixture.IMAGE1 ) );
@@ -233,8 +221,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testHierarchy() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
     assertSame( folder, item.getParent() );
@@ -251,8 +237,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
     folder.dispose();
@@ -261,9 +245,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testIndexedItemCreation() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem secondItem = new TabItem( folder, SWT.NONE );
     TabItem firstItem = new TabItem( folder, SWT.NONE, 0 );
@@ -274,9 +255,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testItemDispose() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
@@ -289,8 +267,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testToolTip() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem tabItem = new TabItem( folder, SWT.NONE );
 
@@ -300,8 +276,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testGetItemAtPoint() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     // Test with bar on top
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 400, 400 );
@@ -353,9 +327,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testClientArea() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 100, 100 );
     Rectangle expected = new Rectangle( 1, 24, 98, 75 );
@@ -378,9 +349,6 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testComputeTrim() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     Rectangle expected = new Rectangle( -1, -24, 2, 25 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
@@ -398,8 +366,25 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
   }
 
+  public void testDisposeWithFontDisposeInDisposeListener() {
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    final Font font = new Font( display, "font-name", 10, SWT.NORMAL );
+    folder.setFont( font );
+    folder.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent event ) {
+        font.dispose();
+      }
+    } );
+    folder.dispose();
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {

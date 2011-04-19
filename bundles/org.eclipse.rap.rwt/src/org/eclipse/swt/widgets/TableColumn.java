@@ -491,6 +491,7 @@ public class TableColumn extends Item {
   // Widget and Item overrides
 
   void releaseParent() {
+    super.releaseParent();
     parent.destroyColumn( this );
   }
 

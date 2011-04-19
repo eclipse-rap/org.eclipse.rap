@@ -536,6 +536,7 @@ public class MenuItem extends Item {
   }
 
   final void releaseParent() {
+    super.releaseParent();
     ItemHolder.removeItem( parent, this );
   }
 
