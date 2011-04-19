@@ -91,9 +91,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
       } else if( value ) {
         this._mergeEvents = true;
         this._eventTimer = new qx.client.Timer( 125 );
-        this._eventTimer.addEventListener( "interval", 
-                                           this._dispatchValueChanged,
-                                           this );
+        this._eventTimer.addEventListener( "interval", this._dispatchValueChanged, this );
       }
     },
 
@@ -156,11 +154,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
           var size = this._getThumbSize();
           if( size < this._minThumbSize ) {
             var idealLength = this._getSliderSize();
-            var newLength 
-              = this._minThumbSize * this._maximum / this._getLineSize();
+            var newLength = this._minThumbSize * this._maximum / this._getLineSize();
             this._setThumb( newLength );
-            this._selectionFactor 
-              = ( this._maximum - newLength ) / ( this._maximum - idealLength );
+            this._selectionFactor = ( this._maximum - newLength ) / ( this._maximum - idealLength );
           }
         }
       }
