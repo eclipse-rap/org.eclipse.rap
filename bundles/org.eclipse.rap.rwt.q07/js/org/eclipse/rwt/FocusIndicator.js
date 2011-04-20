@@ -99,12 +99,9 @@ qx.Class.define( "org.eclipse.rwt.FocusIndicator", {
         var borderColor = border[ "getColor" + edge ]();
         var borderStyle = border[ "getStyle" + edge ]();
         var borderWidth = border[ "getWidth" + edge ]();
-        style[ "border" + edge + "Width" ] 
-          = borderWidth == null ? "0px" : borderWidth + "px";
-        style[ "border" + edge + "Style" ] 
-          = borderStyle == null ? "none" : borderStyle; 
-        style[ "border" + edge + "Color" ]
-          = borderColor == null ? "" : borderColor;          
+        style[ "border" + edge + "Width" ] = borderWidth == null ? "0px" : borderWidth + "px";
+        style[ "border" + edge + "Style" ] = borderStyle == null ? "none" : borderStyle;
+        style[ "border" + edge + "Color" ] = borderColor == null ? "" : borderColor;
       }
       style.backgroundColor = theme[ "backgroundColor" ];
       this._styleFocusIndiactorOpacity( theme[ "opacity" ] );      
