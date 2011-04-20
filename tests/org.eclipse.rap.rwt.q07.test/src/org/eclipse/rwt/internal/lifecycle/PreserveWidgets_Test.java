@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.*;
 
 public class PreserveWidgets_Test extends TestCase {
 
-  public static final class TestEntryPointWithShell implements IEntryPoint {
+  public static class TestEntryPointWithShell implements IEntryPoint {
     public int createUI() {
       Display display = new Display();
       new Shell( display, SWT.NONE );
@@ -52,7 +52,7 @@ public class PreserveWidgets_Test extends TestCase {
       this.log = log;
     }
 
-    public Object getAdapter( final Object adaptable, final Class adapter ) {
+    public Object getAdapter( Object adaptable, Class adapter ) {
       Object result = null;
       if( adaptable instanceof Display && adapter == ILifeCycleAdapter.class ) {
         result = new IDisplayLifeCycleAdapter() {
@@ -71,14 +71,14 @@ public class PreserveWidgets_Test extends TestCase {
           public void preserveValues( Widget widget ) {
             log.append( widget.getClass().getName() );
           }
-          public void readData( final Widget widget ) {
+          public void readData( Widget widget ) {
           }
-          public void renderInitialization( final Widget widget ) throws IOException {
+          public void renderInitialization( Widget widget ) throws IOException {
           }
-          public void renderChanges( final Widget widget ) throws IOException
+          public void renderChanges( Widget widget ) throws IOException
           {
           }
-          public void renderDispose( final Widget widget ) throws IOException {
+          public void renderDispose( Widget widget ) throws IOException {
           }
         };
       }
@@ -100,8 +100,8 @@ public class PreserveWidgets_Test extends TestCase {
   }
 
   public void testInitialization() throws Exception {
-    // ensures that the default WidgetCopyPhaseListener is registered
-    // and executes at the designated phases
+    // ensures that the default preserve mechanism is registered and executes at the designated 
+    // phases
     Display display = new Display();
     Composite shell = new Shell( display );
     final Text text = new Text( shell, SWT.NONE );
@@ -119,7 +119,7 @@ public class PreserveWidgets_Test extends TestCase {
           }
         }
       }
-      public void afterPhase( final PhaseEvent event ) {
+      public void afterPhase( PhaseEvent event ) {
       }
       public PhaseId getPhaseId() {
         return PhaseId.ANY;
