@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
@@ -150,6 +151,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       testUtil.flush();
       shell.destroy();
       testUtil.flush();            
+    },
+
+    testCustomVariant : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = new org.eclipse.swt.widgets.Shell();
+      var variant = "variant_myCustomVariant";
+      shell.addState( variant );
+      assertTrue( shell._captionBar.hasState( variant) );
+      assertTrue( shell._captionTitle.hasState( variant) );
+      assertTrue( shell._minimizeButton.hasState( variant) );
+      assertTrue( shell._maximizeButton.hasState( variant) );
+      assertTrue( shell._restoreButton.hasState( variant) );
+      assertTrue( shell._closeButton.hasState( variant) );
+      shell.removeState( variant );
+      assertFalse( shell._captionBar.hasState( variant) );
+      assertFalse( shell._captionTitle.hasState( variant) );
+      assertFalse( shell._minimizeButton.hasState( variant) );
+      assertFalse( shell._maximizeButton.hasState( variant) );
+      assertFalse( shell._restoreButton.hasState( variant) );
+      assertFalse( shell._closeButton.hasState( variant) );
     }
 
   }
