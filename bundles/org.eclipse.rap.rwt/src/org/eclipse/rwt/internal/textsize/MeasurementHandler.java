@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.*;
 final class MeasurementHandler implements PhaseListener, HttpSessionBindingListener {
   private static final String KEY_SCROLLED_COMPOSITE_CONTENT_SIZE = "org.eclipse.rap.content-size";
   private static final String KEY_SCROLLED_COMPOSITE_ORIGIN = "org.eclipse.rap.sc-origin";
+  private static final int RESIZE_OFFSET = 1000;
   private static final long serialVersionUID = 1L;
 
   
@@ -143,27 +144,10 @@ final class MeasurementHandler implements PhaseListener, HttpSessionBindingListe
     bufferScrolledCompositeOrigins( shell );
     clearLayoutBuffers( shell );
     enlargeShell( shell );
+    enlargeScrolledCompositeContent( shell );
     clearLayoutBuffers( shell );
     restoreShellSize( shell, boundsBuffer );
     restoreScrolledCompositeOrigins( shell );
-  }
-
-  private void restoreShellSize( Shell shell, Rectangle bufferedBounds ) {
-    getShellAdapter( shell ).setBounds( bufferedBounds );
-  }
-
-  private void enlargeShell( Shell shell ) {
-    Rectangle bnds = shell.getBounds();
-    Rectangle bounds1000 = new Rectangle( bnds.x, bnds.y, bnds.width + 1000, bnds.height + 1000 );
-    restoreShellSize( shell, bounds1000 );
-  }
-
-  private IShellAdapter getShellAdapter( Shell shell ) {
-    return ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
-  }
-
-  private void restoreScrolledCompositeOrigins( Shell shell ) {
-    WidgetTreeVisitor.accept( shell, createRestoreSCOriginsVisitor() );
   }
 
   private void clearLayoutBuffers( Shell shell ) {
@@ -174,12 +158,14 @@ final class MeasurementHandler implements PhaseListener, HttpSessionBindingListe
     WidgetTreeVisitor.accept( shell, createBufferSCOriginsVisitor() );
   }
 
-  private Shell[] getShells() {
-    Object adapter = display.getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
-    return displayAdapter.getShells();
+  private void enlargeScrolledCompositeContent( Shell shell ) {
+    WidgetTreeVisitor.accept( shell, createEnlargeSCContentVisitor() );
   }
 
+  private void restoreScrolledCompositeOrigins( Shell shell ) {
+    WidgetTreeVisitor.accept( shell, createRestoreSCOriginsVisitor() );
+  }
+  
   private AllWidgetTreeVisitor createRestoreSCOriginsVisitor() {
     return new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
@@ -222,6 +208,22 @@ final class MeasurementHandler implements PhaseListener, HttpSessionBindingListe
     };
   }
 
+  private WidgetTreeVisitor createEnlargeSCContentVisitor() {
+    return new AllWidgetTreeVisitor() {
+      public boolean doVisit( final Widget widget ) {
+        if( widget instanceof ScrolledComposite ) {
+          ScrolledComposite composite = ( ScrolledComposite )widget;
+          Control content = composite.getContent();
+          if( content != null ) {
+            Point size = content.getSize();
+            content.setSize( size.x + RESIZE_OFFSET, size.y + RESIZE_OFFSET );
+          }
+        }
+        return true;
+      }
+    };
+  }
+
   private AllWidgetTreeVisitor createClearLayoutBuffersVisitor() {
     AllWidgetTreeVisitor result = new AllWidgetTreeVisitor() {
       public boolean doVisit( Widget widget ) {
@@ -243,6 +245,31 @@ final class MeasurementHandler implements PhaseListener, HttpSessionBindingListe
     } catch( IOException shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
     }
+  }
+
+  private void restoreShellSize( Shell shell, Rectangle bufferedBounds ) {
+    setShellSize( shell, bufferedBounds );
+  }
+
+  private void setShellSize( Shell shell, Rectangle bounds ) {
+    getShellAdapter( shell ).setBounds( bounds );
+  }
+
+  private void enlargeShell( Shell shell ) {
+    Rectangle bnds = shell.getBounds();
+    Rectangle bounds1000
+      = new Rectangle( bnds.x, bnds.y, bnds.width + RESIZE_OFFSET, bnds.height + RESIZE_OFFSET );
+    setShellSize( shell, bounds1000 );
+  }
+
+  private Shell[] getShells() {
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    return displayAdapter.getShells();
+  }
+
+  private IShellAdapter getShellAdapter( Shell shell ) {
+    return ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
   }
 
   private static Point getSize( String value ) {
