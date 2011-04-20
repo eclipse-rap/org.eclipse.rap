@@ -9,9 +9,15 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.internal.IConfiguration;
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.lifecycle.LifeCycle;
+import org.eclipse.rwt.internal.lifecycle.Scope;
+import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -20,6 +26,38 @@ import org.eclipse.swt.widgets.Display;
 
 public class RWT_Test extends TestCase {
   
+  private static class TestLifeCycle extends LifeCycle {
+    static final String REQUEST_THREAD_EXEC = "requestThreadExec";
+    
+    private String invocationLog = "";
+
+    public Scope getScope() {
+      return Scope.APPLICATION;
+    }
+
+    public void execute() throws IOException {
+    }
+
+    public void requestThreadExec( Runnable runnable ) {
+      invocationLog += REQUEST_THREAD_EXEC;
+    }
+
+    public void addPhaseListener( PhaseListener phaseListener ) {
+    }
+
+    public void removePhaseListener( PhaseListener phaseListener ) {
+    }
+    
+    String getInvocationLog() {
+      return invocationLog;
+    }
+  }
+
+  private static class EmptyRunnable implements Runnable {
+    public void run() {
+    }
+  }
+
   public void testGetApplicationStore() {
     IApplicationStore applicationStore = RWT.getApplicationStore();
   
@@ -35,8 +73,8 @@ public class RWT_Test extends TestCase {
             public void run() {
             }
           } );
-        } catch( Exception e ) {
-          exception[ 0 ] = e;
+        } catch( Exception expected ) {
+          exception[ 0 ] = expected;
         }
       }
     }, "testRequestThreadExecFromBackgroundThread" );
@@ -67,15 +105,24 @@ public class RWT_Test extends TestCase {
   }
 
   public void testRequestThreadExecWithoutDisplay() {
-    Runnable runnable = new Runnable() {
-      public void run() {
-      }
-    };
+    Runnable runnable = new EmptyRunnable();
     try {
       RWT.requestThreadExec( runnable );
       fail();
     } catch( SWTException expected ) {
       assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
+    }
+  }
+  
+  public void testRequestThreadExecWithDisposedDisplay() {
+    Display display = new Display();
+    display.dispose();
+    Runnable runnable = new EmptyRunnable();
+    try {
+      RWT.requestThreadExec( runnable );
+      fail();
+    } catch( SWTException expected ) {
+      assertEquals( SWT.ERROR_DEVICE_DISPOSED, expected.code );
     }
   }
   
@@ -88,11 +135,22 @@ public class RWT_Test extends TestCase {
     }
   }
   
+  public void testRequestThreadExecDelegatesToLifeCycle() {
+    System.setProperty( IConfiguration.PARAM_LIFE_CYCLE, TestLifeCycle.class.getName() );
+    new Display();
+    
+    RWT.requestThreadExec( new EmptyRunnable() );
+    
+    TestLifeCycle lifeCycle = ( TestLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    assertEquals( TestLifeCycle.REQUEST_THREAD_EXEC, lifeCycle.getInvocationLog() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+    System.getProperties().remove( IConfiguration.PARAM_LIFE_CYCLE );
   }
 }

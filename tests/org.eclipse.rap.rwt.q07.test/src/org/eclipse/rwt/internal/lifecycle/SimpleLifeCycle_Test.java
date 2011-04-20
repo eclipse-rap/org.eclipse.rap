@@ -171,6 +171,19 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertEquals( 0, phaseListener.getLoggedEvents().length );
   }
   
+  public void testRequestThreadExecRunsRunnableOnCallingThread() {
+    final Thread[] invocationThread = { null };
+    Runnable runnable = new Runnable() {
+      public void run() {
+        invocationThread[ 0 ] = Thread.currentThread();
+      }
+    };
+    
+    lifeCycle.requestThreadExec( runnable );
+    
+    assertSame( Thread.currentThread(), invocationThread[ 0 ] );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );

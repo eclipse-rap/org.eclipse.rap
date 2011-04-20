@@ -48,6 +48,10 @@ public class SimpleLifeCycle extends LifeCycle {
       detachThread();
     }
   }
+  
+  public void requestThreadExec( Runnable runnable ) {
+    runnable.run();
+  }
 
   public void addPhaseListener( PhaseListener phaseListener ) {
     phaseListenerManager.addPhaseListener( phaseListener );

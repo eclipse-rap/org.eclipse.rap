@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.IConfiguration;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -28,6 +29,8 @@ public class LifeCycleFactory_Test extends TestCase {
     }
     public void execute() {
     }
+    public void requestThreadExec( Runnable runnable ) {
+    }
     public Scope getScope() { 
       return Scope.APPLICATION; 
     }
@@ -40,6 +43,8 @@ public class LifeCycleFactory_Test extends TestCase {
     }
     public void execute() {
     }
+    public void requestThreadExec( Runnable runnable ) {
+    }
     public Scope getScope() { 
       return Scope.SESSION; 
     }
@@ -48,7 +53,8 @@ public class LifeCycleFactory_Test extends TestCase {
   private LifeCycleFactory lifeCycleFactory;
   
   public void testGetLifeCycleWithApplicationScopedLifeCycle() {
-    System.setProperty( "lifecycle", ApplicationScopedLifeCycle.class.getName() );
+    System.setProperty( IConfiguration.PARAM_LIFE_CYCLE, 
+                        ApplicationScopedLifeCycle.class.getName() );
     ILifeCycle lifeCycle1 = lifeCycleFactory.getLifeCycle();
     ILifeCycle lifeCycle2 = lifeCycleFactory.getLifeCycle();
     assertTrue( lifeCycle1 instanceof ApplicationScopedLifeCycle );
@@ -56,7 +62,7 @@ public class LifeCycleFactory_Test extends TestCase {
   }
   
   public void testGetLifeCycleWithSessionScopedLifeCycle() {
-    System.setProperty( "lifecycle", SessionScopedLifeCycle.class.getName() );
+    System.setProperty( IConfiguration.PARAM_LIFE_CYCLE, SessionScopedLifeCycle.class.getName() );
     ILifeCycle lifeCycleForSession1 = lifeCycleFactory.getLifeCycle();
     newSession();
     ILifeCycle lifeCycleForSession2 = lifeCycleFactory.getLifeCycle();
@@ -65,7 +71,7 @@ public class LifeCycleFactory_Test extends TestCase {
   }
   
   public void testGetLifeCycleWithSessionScopedLifeCycleReturnsSameForOneSession() {
-    System.setProperty( "lifecycle", SessionScopedLifeCycle.class.getName() );
+    System.setProperty( IConfiguration.PARAM_LIFE_CYCLE, SessionScopedLifeCycle.class.getName() );
     ILifeCycle lifeCycle1 = lifeCycleFactory.getLifeCycle();
     ILifeCycle lifeCycle2 = lifeCycleFactory.getLifeCycle();
     assertSame( lifeCycle1, lifeCycle2 );
@@ -77,7 +83,7 @@ public class LifeCycleFactory_Test extends TestCase {
   }
   
   protected void tearDown() throws Exception {
-    System.getProperties().remove( "lifecycle" );
+    System.getProperties().remove( IConfiguration.PARAM_LIFE_CYCLE );
     Fixture.tearDown();
   }
 

@@ -151,7 +151,7 @@ public class RWTLifeCycle extends LifeCycle {
     return Scope.APPLICATION;
   }
 
-  public static void requestThreadExec( final Runnable runnable ) {
+  public void requestThreadExec( Runnable runnable ) {
     setRequestThreadRunnable( runnable );
     switchThread();
   }
