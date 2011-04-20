@@ -166,8 +166,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     flushGlobalWidgetQueue : function() {
-      qx.ui.core.Widget._flushGlobalQueuesPhase 
-        = qx.ui.core.Widget._FLUSH_PHASE_WIDGET;      
+      qx.ui.core.Widget._flushGlobalQueuesPhase = qx.ui.core.Widget._FLUSH_PHASE_WIDGET;
       var vQueue = qx.ui.core.Widget._globalWidgetQueue, vLength, vWidget;
       while ((vLength = vQueue.length) > 0) {
         for (var i=0; i<vLength; i++) {
@@ -198,8 +197,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     flushGlobalElementQueue : function() {
-      qx.ui.core.Widget._flushGlobalQueuesPhase 
-        = qx.ui.core.Widget._FLUSH_PHASE_ELEMENT;
+      qx.ui.core.Widget._flushGlobalQueuesPhase = qx.ui.core.Widget._FLUSH_PHASE_ELEMENT;
       var vQueue = qx.ui.core.Widget._globalElementQueue, vLength, vWidget;
       while ((vLength = vQueue.length) > 0) {
         for (var i=0; i<vLength; i++) {
@@ -230,8 +228,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     flushGlobalStateQueue : function() {
-      qx.ui.core.Widget._flushGlobalQueuesPhase 
-        = qx.ui.core.Widget._FLUSH_PHASE_STATE;
+      qx.ui.core.Widget._flushGlobalQueuesPhase = qx.ui.core.Widget._FLUSH_PHASE_STATE;
       var Widget = qx.ui.core.Widget;
       // the queue may change while doing the flush so we work on a copy of
       // the queue and loop while the queue has any entries.
@@ -298,8 +295,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     flushGlobalLayoutQueue : function() {
-      qx.ui.core.Widget._flushGlobalQueuesPhase 
-        = qx.ui.core.Widget._FLUSH_PHASE_LAYOUT;
+      qx.ui.core.Widget._flushGlobalQueuesPhase = qx.ui.core.Widget._FLUSH_PHASE_LAYOUT;
       var vQueue = qx.ui.core.Widget._globalLayoutQueue, vLength, vParent;
       while ((vLength = vQueue.length) > 0) {
         for (var i=0; i<vLength; i++) {
@@ -335,8 +331,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     removeFromGlobalDisplayQueue : function(vWidget) {},
 
     flushGlobalDisplayQueue : function() {
-      qx.ui.core.Widget._flushGlobalQueuesPhase 
-        = qx.ui.core.Widget._FLUSH_PHASE_DISPLAY;
+      qx.ui.core.Widget._flushGlobalQueuesPhase = qx.ui.core.Widget._FLUSH_PHASE_DISPLAY;
       var vKey, vLazyQueue, vWidget, vFragment;
       var vFastQueue = qx.ui.core.Widget._fastGlobalDisplayQueue;
       var vLazyQueues = qx.ui.core.Widget._lazyGlobalDisplayQueues;
@@ -483,22 +478,48 @@ qx.Class.define( "qx.ui.core.Widget", {
       var style = "this._style.";
       var cssValue = "=((v==null)?0:v)+'px'";
       var parameter = "v";
-      var properties = [ "left", "right", "top", "bottom", "width", "height", "minWidth", "maxWidth", "minHeight", "maxHeight" ];
-      var propertiesUpper = [ "Left", "Right", "Top", "Bottom", "Width", "Height", "MinWidth", "MaxWidth", "MinHeight", "MaxHeight" ];
+      var properties = [ 
+        "left", 
+        "right", 
+        "top", 
+        "bottom", 
+        "width", 
+        "height", 
+        "minWidth", 
+        "maxWidth", 
+        "minHeight", 
+        "maxHeight" 
+      ];
+      var propertiesUpper = [ 
+        "Left", 
+        "Right", 
+        "Top", 
+        "Bottom", 
+        "Width", 
+        "Height", 
+        "MinWidth", 
+        "MaxWidth", 
+        "MinHeight", 
+        "MaxHeight" 
+      ];
       var applyMargin = applyRuntime + "Margin";
       var resetMargin = resetRuntime + "Margin";
       var styleMargin = style + "margin";
       for (var i=0; i<4; i++) {
-        members[applyMargin + propertiesUpper[i]] = new Function(parameter, styleMargin + propertiesUpper[i] + cssValue);
-        members[resetMargin + propertiesUpper[i]] = new Function(styleMargin + propertiesUpper[i] + "=''");
+        members[applyMargin + propertiesUpper[i]] 
+          = new Function(parameter, styleMargin + propertiesUpper[i] + cssValue);
+        members[resetMargin + propertiesUpper[i]] 
+          = new Function(styleMargin + propertiesUpper[i] + "=''");
       }
       var applyPadding = applyRuntime + "Padding";
       var resetPadding = resetRuntime + "Padding";
       var stylePadding = style + "padding";
       // need to use setStyleProperty to keep compatibility with enhanced cross browser borders
       for (var i=0; i<4; i++) {
-        members[applyPadding + propertiesUpper[i]] = new Function(parameter, "this.setStyleProperty('padding" + propertiesUpper[i] + "', ((v==null)?0:v)+'px')");
-        members[resetPadding + propertiesUpper[i]] = new Function("this.removeStyleProperty('padding" + propertiesUpper[i] + "')");
+        members[applyPadding + propertiesUpper[i]] 
+          = new Function(parameter, "this.setStyleProperty('padding" + propertiesUpper[i] + "', ((v==null)?0:v)+'px')");
+        members[resetPadding + propertiesUpper[i]] 
+          = new Function("this.removeStyleProperty('padding" + propertiesUpper[i] + "')");
       }
 
       /*
@@ -513,7 +534,8 @@ qx.Class.define( "qx.ui.core.Widget", {
         to reset the value. This seems to work again.
       */
       for (var i=0; i<properties.length; i++) {
-        members[applyRuntime + propertiesUpper[i]] = new Function(parameter, style + properties[i] + cssValue);
+        members[applyRuntime + propertiesUpper[i]] 
+          = new Function(parameter, style + properties[i] + cssValue);
         members[resetRuntime + propertiesUpper[i]] = new Function(style + properties[i] + "=''");
       }
     },
@@ -524,7 +546,18 @@ qx.Class.define( "qx.ui.core.Widget", {
     layoutPropertyTypes : {},
 
     __initLayoutProperties : function(statics) {
-      var a = [ "width", "height", "minWidth", "maxWidth", "minHeight", "maxHeight", "left", "right", "top", "bottom" ];
+      var a = [ 
+        "width", 
+        "height", 
+        "minWidth", 
+        "maxWidth", 
+        "minHeight", 
+        "maxHeight", 
+        "left", 
+        "right", 
+        "top", 
+        "bottom" 
+      ];
       for (var i=0, l=a.length, p, b, t; i<l; i++) {
         p = a[i];
         b = "_computed" + qx.lang.String.toFirstUp(p);
@@ -1534,10 +1567,22 @@ qx.Class.define( "qx.ui.core.Widget", {
       if (old) {
         var vOldIndex = old.getChildren().indexOf(this);
         // Reset cached dimension and location values
-        this._computedWidthValue = this._computedMinWidthValue = this._computedMaxWidthValue = this._computedLeftValue = this._computedRightValue = null;
-        this._computedHeightValue = this._computedMinHeightValue = this._computedMaxHeightValue = this._computedTopValue = this._computedBottomValue = null;
-        this._cachedBoxWidth = this._cachedInnerWidth = this._cachedOuterWidth = null;
-        this._cachedBoxHeight = this._cachedInnerHeight = this._cachedOuterHeight = null;
+        this._computedWidthValue = null;
+        this._computedMinWidthValue = null;
+        this._computedMaxWidthValue = null;
+        this._computedLeftValue = null;
+        this._computedRightValue = null;
+        this._computedHeightValue = null;
+        this._computedMinHeightValue = null;
+        this._computedMaxHeightValue = null;
+        this._computedTopValue = null;
+        this._computedBottomValue = null;
+        this._cachedBoxWidth = null;
+        this._cachedInnerWidth = null;
+        this._cachedOuterWidth = null;
+        this._cachedBoxHeight = null;
+        this._cachedInnerHeight = null;
+        this._cachedOuterHeight = null;
         // Finally remove from children array
         qx.lang.Array.removeAt(old.getChildren(), vOldIndex);
         // Invalidate visible children cache
@@ -1738,26 +1783,19 @@ qx.Class.define( "qx.ui.core.Widget", {
     // VISIBILITY HANDLING
 
     _applyVisibility : function(value, old) {
-      if (value)
-      {
+      if (value) {
         if ( this._isDisplayable && this._isCreated ) {
           this._beforeAppear();
         }
-
         this.removeStyleProperty("display");
-
         if ( this._isDisplayable && this._isCreated ) {
           this._afterAppear();
         }
-      }
-      else
-      {
+      } else {
         if ( this._isDisplayable && this._isCreated ) {
           this._beforeDisappear();
         }
-
         this.setStyleProperty("display", "none");
-
         if ( this._isDisplayable && this._isCreated ) {
           this._afterDisappear();
         }
@@ -1855,13 +1893,10 @@ qx.Class.define( "qx.ui.core.Widget", {
       try {
         var vQueue = this._jobQueue;
         var vParent = this.getParent();
-
         if (!vParent || qx.lang.Object.isEmpty(vQueue)) {
           return;
         }
-
         var vLayoutImpl = this instanceof qx.ui.core.Parent ? this.getLayoutImpl() : null;
-
         if (vLayoutImpl) {
           vLayoutImpl.updateSelfOnJobQueueFlush(vQueue);
         }
@@ -1875,8 +1910,10 @@ qx.Class.define( "qx.ui.core.Widget", {
         var vRecomputeOuterHeight = vQueue.marginTop || vQueue.marginBottom;
         var vRecomputeInnerWidth = vQueue.frameWidth;
         var vRecomputeInnerHeight = vQueue.frameHeight;
-        var vRecomputeParentPreferredInnerWidth = (vQueue.frameWidth || vQueue.preferredInnerWidth) && this._recomputePreferredBoxWidth();
-        var vRecomputeParentPreferredInnerHeight = (vQueue.frameHeight || vQueue.preferredInnerHeight) && this._recomputePreferredBoxHeight();
+        var vRecomputeParentPreferredInnerWidth 
+          = (vQueue.frameWidth || vQueue.preferredInnerWidth) && this._recomputePreferredBoxWidth();
+        var vRecomputeParentPreferredInnerHeight 
+          = (vQueue.frameHeight || vQueue.preferredInnerHeight) && this._recomputePreferredBoxHeight();
         if (vRecomputeParentPreferredInnerWidth) {
           var vPref = this.getPreferredBoxWidth();
           if (this._computedWidthTypeAuto) {
@@ -1887,7 +1924,6 @@ qx.Class.define( "qx.ui.core.Widget", {
             this._computedMinWidthValue = vPref;
             vQueue.minWidth = true;
           }
-
           if (this._computedMaxWidthTypeAuto) {
             this._computedMaxWidthValue = vPref;
             vQueue.maxWidth = true;
@@ -2598,7 +2634,6 @@ qx.Class.define( "qx.ui.core.Widget", {
           break;
         }
       }
-
       // No ELSE because you can also switch from percent to auto
       if (wasFlex != this[s4]) {
         switch(name) {
@@ -2898,8 +2933,10 @@ qx.Class.define( "qx.ui.core.Widget", {
       var vAppearance = this.getAppearance();
       if (vAppearance) {
         var vAppearanceManager = qx.theme.manager.Appearance.getInstance();
-        var vOldAppearanceProperties = vAppearanceManager.styleFromTheme(vOldAppearanceTheme, vAppearance, this.__states);
-        var vNewAppearanceProperties = vAppearanceManager.styleFromTheme(vNewAppearanceTheme, vAppearance, this.__states);
+        var vOldAppearanceProperties 
+          = vAppearanceManager.styleFromTheme(vOldAppearanceTheme, vAppearance, this.__states);
+        var vNewAppearanceProperties 
+          = vAppearanceManager.styleFromTheme(vNewAppearanceTheme, vAppearance, this.__states);
         var vUnstyleList = [];
         for (var prop in vOldAppearanceProperties) {
           if (vNewAppearanceProperties[prop] === undefined) {
@@ -3585,7 +3622,7 @@ qx.Class.define( "qx.ui.core.Widget", {
 	          case "scrollX":
 	          case "scrollY":
 	            pv = "scroll";
-           break;
+            break;
 	        }
         } else {
           switch( pv ) {
@@ -3608,10 +3645,10 @@ qx.Class.define( "qx.ui.core.Widget", {
 	        switch( value ) {
 	          case "scrollX":
 	            this.setStyleProperty( "overflowY", "hidden" );
-	            break;	
+	          break;	
 	          case "scrollY":
 	            this.setStyleProperty( "overflowX", "hidden" );
-	            break;
+	          break;
 	        }
         }
         this._renderOverflow(pn, pv, value, old);
@@ -4046,9 +4083,21 @@ qx.Class.define( "qx.ui.core.Widget", {
       elem.qx_Widget = null;
     }
     this._disposeObjectDeep( "_adapters", 1 );
-    this._disposeFields("_isCreated", "_inlineEvents", "_element", "_style",
-      "_targetNode", "_innerStyle", "_oldParent", "_styleProperties",
-      "_htmlProperties", "_htmlAttributes", "__states", "_jobQueue",
-      "_layoutChanges", "__borderObject");
+    this._disposeFields( 
+      "_isCreated", 
+      "_inlineEvents", 
+      "_element", 
+      "_style",
+      "_targetNode", 
+      "_innerStyle", 
+      "_oldParent", 
+      "_styleProperties",
+      "_htmlProperties", 
+      "_htmlAttributes", 
+      "__states", 
+      "_jobQueue",
+      "_layoutChanges", 
+      "__borderObject" 
+    );
   }
 } );
