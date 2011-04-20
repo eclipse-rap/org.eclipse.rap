@@ -56,7 +56,7 @@ public class PreserveWidgets_Test extends TestCase {
       Object result = null;
       if( adaptable instanceof Display && adapter == ILifeCycleAdapter.class ) {
         result = new IDisplayLifeCycleAdapter() {
-          public void preserveValues( final Display display ) {
+          public void preserveValues( Display display ) {
             log.append( display.getClass().getName() );
           }
           public void readData( Display display ) {
@@ -68,7 +68,7 @@ public class PreserveWidgets_Test extends TestCase {
         };
       } else {
         result = new AbstractWidgetLCA() {
-          public void preserveValues( final Widget widget ) {
+          public void preserveValues( Widget widget ) {
             log.append( widget.getClass().getName() );
           }
           public void readData( final Widget widget ) {
@@ -103,7 +103,7 @@ public class PreserveWidgets_Test extends TestCase {
     // ensures that the default WidgetCopyPhaseListener is registered
     // and executes at the designated phases
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display );
     final Text text = new Text( shell, SWT.NONE );
     text.setText( "hello" );
     Fixture.markInitialized( display );
@@ -172,7 +172,7 @@ public class PreserveWidgets_Test extends TestCase {
     try {
       new DisplayLCA().clearPreserved( display );
     } catch( Exception e ) {
-      fail( "Preserve-phase-listener must succeed even with disposed display" );
+      fail( "clearPreserved() must succeed even with disposed display" );
     }
   }
 
