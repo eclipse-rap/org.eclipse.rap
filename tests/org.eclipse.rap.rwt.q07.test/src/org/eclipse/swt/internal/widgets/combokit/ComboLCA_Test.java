@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -257,8 +256,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testReadText() {
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.BORDER );
@@ -299,9 +296,6 @@ public class ComboLCA_Test extends TestCase {
 
   public void testTextSelectionWithVerifyEvent() {
     final java.util.List log = new ArrayList();
-    // register preserve-values phase-listener
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.NONE );
@@ -394,8 +388,6 @@ public class ComboLCA_Test extends TestCase {
     } );
 
     String buttonId = WidgetUtil.getId( button );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
 
     // Execute life cycle once to simulate startup request
     Fixture.fakeNewRequest( display );

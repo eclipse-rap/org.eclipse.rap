@@ -18,7 +18,8 @@ import org.eclipse.swt.widgets.Display;
 
 
 public interface IDisplayLifeCycleAdapter extends ILifeCycleAdapter {
-  void preserveValues( Display display );
   void readData( Display display );
+  void preserveValues( Display display );
   void render( Display display ) throws IOException;
+  void clearPreserved( Display display );
 }

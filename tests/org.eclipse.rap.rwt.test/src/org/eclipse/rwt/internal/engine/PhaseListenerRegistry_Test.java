@@ -51,7 +51,6 @@ public class PhaseListenerRegistry_Test extends TestCase {
     Fixture.createServiceContext();
     
     assertEquals( true, findPhaseListener( CurrentPhase.Listener.class ) );
-    assertEquals( true, findPhaseListener( PreserveWidgetsPhaseListener.class ) );
   }
   
   public void testAdd() {

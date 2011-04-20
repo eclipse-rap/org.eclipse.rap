@@ -2394,12 +2394,6 @@
   </extension>
 
   <extension
-        id="org.eclipse.ui.workbench.preserveWidgetValues"
-        point="org.eclipse.rap.ui.phaselistener">
-     <listener class="org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener"/>
-  </extension>
-
-  <extension
         id="org.eclipse.ui.workbench.currentPhase"
         point="org.eclipse.rap.ui.phaselistener">
      <listener class="org.eclipse.rwt.internal.lifecycle.CurrentPhase$Listener"/>

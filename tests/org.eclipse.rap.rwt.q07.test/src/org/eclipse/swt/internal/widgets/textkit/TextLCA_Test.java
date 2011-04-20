@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -32,11 +31,13 @@ public class TextLCA_Test extends TestCase {
   
   private Display display;
   private Shell shell;
+  private TextLCA textLCA;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Fixture.fakeResponseWriter();
+    textLCA = new TextLCA();
     display = new Display();
     shell = new Shell( display );
   }
@@ -96,7 +97,6 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
-    TextLCA textLCA = new TextLCA();
     text.setText( "hello" );
     textLCA.renderChanges( text );
     assertTrue( Fixture.getAllMarkup().endsWith( "setValue( \"hello\" );" ) );
@@ -114,7 +114,6 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
-    TextLCA textLCA = new TextLCA();
     char[] value = new char[] { 'h', 'e', 'l', 0, 'l', 'o' };
     text.setText( String.valueOf( value ) );
     textLCA.renderChanges( text );
@@ -163,8 +162,6 @@ public class TextLCA_Test extends TestCase {
   public void testSelectionWithVerifyEvent() {
     final java.util.List log = new ArrayList();
     // register preserve-values phase-listener
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     final Text text = new Text( shell, SWT.NONE );
     shell.open();
     String textId = WidgetUtil.getId( text );
@@ -240,8 +237,6 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testPreserveText() {
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     Text text = new Text( shell, SWT.SINGLE );
     shell.open();
     Fixture.markInitialized( display );
@@ -262,9 +257,6 @@ public class TextLCA_Test extends TestCase {
 
   public void testVerifyAndModifyEvent() {
     final java.util.List log = new ArrayList();
-    // register preserve-values phase-listener
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     // set up widgets to be tested
     final Text text = new Text( shell, SWT.NONE );
     shell.open();
@@ -294,12 +286,11 @@ public class TextLCA_Test extends TestCase {
 
   public void testTextLimit() throws IOException {
     Text text = new Text( shell, SWT.NONE );
-    TextLCA lca = new TextLCA();
     // run LCA one to dump the here uninteresting prolog
-    lca.renderChanges( text );
+    textLCA.renderChanges( text );
     // Initially no textLimit must be rendered if the initial value is untouched
     Fixture.fakeResponseWriter();
-    lca.renderChanges( text );
+    textLCA.renderChanges( text );
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setMaxLength" ) );
     // Positive textLimit is written as setMaxLength( ... )
     Fixture.fakeResponseWriter();
@@ -307,7 +298,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
     text.setTextLimit( 12 );
-    lca.renderChanges( text );
+    textLCA.renderChanges( text );
     String expected = "setMaxLength( 12 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // Negative textLimit is tread as 'no limit'
@@ -316,56 +307,58 @@ public class TextLCA_Test extends TestCase {
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
     text.setTextLimit( -50 );
-    lca.renderChanges( text );
+    textLCA.renderChanges( text );
     expected = "setMaxLength( null );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
   
-  public void testEchoCharMultiLine() {
+  public void testEchoCharMultiLine() throws IOException {
     Fixture.fakeNewRequest( display );
     Text text = new Text( shell, SWT.MULTI );
-    Fixture.executeLifeCycleFromServerThread();
+    textLCA.render( text );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
+    
+    Fixture.preserveWidgets();
     text.setEchoChar( ( char )27 );
-    Fixture.executeLifeCycleFromServerThread();
+    textLCA.render( text );
     assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
   }
 
-  public void testEchoCharSingleLine() {
+  public void testEchoCharSingleLine() throws IOException {
     Text text = new Text( shell, SWT.SINGLE );
-    Fixture.markInitialized( display );
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
+    textLCA.render( text );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
+
+    Fixture.preserveWidgets();
     text.setEchoChar( ( char )27 );
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
+    textLCA.render( text );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
+    
+    Fixture.preserveWidgets();
     text.setEchoChar( ( char )0 );
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
+    textLCA.render( text );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
   }
   
-  public void testEchoCharPassword() {
+  public void testEchoCharPassword() throws IOException {
     Text text = new Text( shell, SWT.PASSWORD );
-    Fixture.markInitialized( display );
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
+    textLCA.render( text );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
+
+    Fixture.preserveWidgets();
     text.setEchoChar( ( char )0 );
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
+    textLCA.render( text );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
+
+    Fixture.preserveWidgets();
     text.setEchoChar( ( char )27 );
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
+    textLCA.render( text );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
   }
@@ -493,7 +486,7 @@ public class TextLCA_Test extends TestCase {
       = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener( w, true )";
     Text text = new Text( shell, SWT.READ_ONLY );
     text.addModifyListener( createModifyListener() );
-    new TextLCA().renderChanges( text );
+    textLCA.renderChanges( text );
     assertTrue( Fixture.getAllMarkup().indexOf( setHasModifyListener ) != -1 );
   }
   
@@ -506,7 +499,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
     text.setEditable( true );
-    new TextLCA().renderChanges( text );
+    textLCA.renderChanges( text );
     assertTrue( Fixture.getAllMarkup().indexOf( setHasModifyListener ) != -1 );
   }
 
@@ -515,7 +508,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
     text.setText( "abc\u2028abc\u2029abc" );
-    new TextLCA().renderChanges( text );
+    textLCA.renderChanges( text );
     String expected = "w.setValue( \"abcabcabc\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
@@ -525,7 +518,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
     text.setText( "abc\u2028abc\u2029abc" );
-    new TextLCA().renderChanges( text );
+    textLCA.renderChanges( text );
     String expected = "w.setValue( \"abcabcabc\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
@@ -535,7 +528,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( text );
     Fixture.preserveWidgets();
     text.setText( "abc\u2028abc\u2029abc" );
-    new TextLCA().renderChanges( text );
+    textLCA.renderChanges( text );
     String expected = "w.setValue( \"abcabcabc\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }

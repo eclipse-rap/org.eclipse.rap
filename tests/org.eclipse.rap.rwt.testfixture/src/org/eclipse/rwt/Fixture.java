@@ -260,17 +260,21 @@ public class Fixture {
   }
 
   public static void preserveWidgets() {
-    PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    PhaseEvent event = new PhaseEvent( lifeCycle, PhaseId.READ_DATA );
-    listener.afterPhase( event );
+    Display display = RWTLifeCycle.getSessionDisplay();
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    PhaseId bufferedPhaseId = CurrentPhase.get();
+    fakePhase( PhaseId.READ_DATA );
+    displayLCA.preserveValues( display );
+    fakePhase( bufferedPhaseId );
   }
 
   public static void clearPreserved() {
-    PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
-    ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
-    PhaseEvent event = new PhaseEvent( lifeCycle, PhaseId.RENDER );
-    listener.afterPhase( event );
+    Display display = RWTLifeCycle.getSessionDisplay();
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    PhaseId bufferedPhaseId = CurrentPhase.get();
+    fakePhase( PhaseId.RENDER );
+    displayLCA.clearPreserved( display );
+    fakePhase( bufferedPhaseId );
   }
   
   public static String getAllMarkup() {

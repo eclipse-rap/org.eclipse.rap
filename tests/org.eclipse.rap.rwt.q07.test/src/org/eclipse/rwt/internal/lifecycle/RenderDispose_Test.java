@@ -22,9 +22,6 @@ import org.eclipse.swt.widgets.*;
 
 public class RenderDispose_Test extends TestCase {
 
-  private final PreserveWidgetsPhaseListener preserveWidgetsPhaseListener
-    = new PreserveWidgetsPhaseListener();
-
   public void testDisposeNotYetInitialized() {
     // set up the test widget hierarchy
     Display display = new Display();
@@ -68,7 +65,6 @@ public class RenderDispose_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
-    RWTFactory.getPhaseListenerRegistry().add( preserveWidgetsPhaseListener );
   }
 
   protected void tearDown() throws Exception {

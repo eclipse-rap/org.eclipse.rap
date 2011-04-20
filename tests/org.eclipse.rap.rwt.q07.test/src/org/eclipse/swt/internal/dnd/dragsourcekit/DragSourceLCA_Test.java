@@ -12,8 +12,6 @@ package org.eclipse.swt.internal.dnd.dragsourcekit;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -25,7 +23,6 @@ public class DragSourceLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
   }
 
   protected void tearDown() throws Exception {

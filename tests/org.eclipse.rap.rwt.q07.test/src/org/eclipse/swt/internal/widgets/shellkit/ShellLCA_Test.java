@@ -11,13 +11,13 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.shellkit;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.*;
 
 
@@ -287,7 +288,6 @@ public class ShellLCA_Test extends TestCase {
     activeShell.open();
     String shellToActivateId = WidgetUtil.getId( shellToActivate );
     // Set precondition and assert it
-    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     activeShell.setActive();
     assertSame( activeShell, display.getActiveShell() );
     // Simulate shell activation without event listeners
@@ -447,17 +447,15 @@ public class ShellLCA_Test extends TestCase {
   }
 
   // see bug 223879
-  public void testRenderPopupMenu() {
+  public void testRenderPopupMenu() throws IOException {
     Fixture.markInitialized( display );
     Shell shell = new Shell( display , SWT.NONE );
     shell.setMinimumSize( 100, 100 );
     Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem item = new MenuItem( menu, SWT.PUSH );
-    item.setText( "Popup" );
     shell.setMenu( menu );
     Fixture.fakeResponseWriter();
     Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread();
+    new DisplayLCA().render( display );
     String markup = Fixture.getAllMarkup();
     String createMenuScript
       = "var w = new org.eclipse.rwt.widgets.Menu();"

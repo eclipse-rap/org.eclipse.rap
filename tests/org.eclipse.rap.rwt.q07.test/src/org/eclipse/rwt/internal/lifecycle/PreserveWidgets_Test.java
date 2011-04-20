@@ -21,13 +21,13 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.*;
 
-public class PreserveWidgetsPhaseListener_Test extends TestCase {
+public class PreserveWidgets_Test extends TestCase {
 
   public static final class TestEntryPointWithShell implements IEntryPoint {
     public int createUI() {
@@ -43,11 +43,56 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
       return 0;
     }
   }
-  
+
+  private static class LoggingLifeCycleAdapterFactory implements AdapterFactory {
+
+    private final StringBuffer log;
+
+    private LoggingLifeCycleAdapterFactory( StringBuffer log ) {
+      this.log = log;
+    }
+
+    public Object getAdapter( final Object adaptable, final Class adapter ) {
+      Object result = null;
+      if( adaptable instanceof Display && adapter == ILifeCycleAdapter.class ) {
+        result = new IDisplayLifeCycleAdapter() {
+          public void preserveValues( final Display display ) {
+            log.append( display.getClass().getName() );
+          }
+          public void readData( Display display ) {
+          }
+          public void render( Display display ) throws IOException {
+          }
+          public void clearPreserved( Display display ) {
+          }
+        };
+      } else {
+        result = new AbstractWidgetLCA() {
+          public void preserveValues( final Widget widget ) {
+            log.append( widget.getClass().getName() );
+          }
+          public void readData( final Widget widget ) {
+          }
+          public void renderInitialization( final Widget widget ) throws IOException {
+          }
+          public void renderChanges( final Widget widget ) throws IOException
+          {
+          }
+          public void renderDispose( final Widget widget ) throws IOException {
+          }
+        };
+      }
+      return result;
+    }
+
+    public Class[] getAdapterList() {
+      return new LifeCycleAdapterFactory().getAdapterList();
+    }
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeNewRequest();
-    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
   }
 
   protected void tearDown() throws Exception {
@@ -65,9 +110,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     final StringBuffer log = new StringBuffer();
     lifeCycle.addPhaseListener( new PhaseListener() {
-
       private static final long serialVersionUID = 1L;
-
       public void beforePhase( final PhaseEvent event ) {
         if( PhaseId.PROCESS_ACTION.equals( event.getPhaseId() ) ) {
           IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
@@ -76,10 +119,8 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
           }
         }
       }
-
       public void afterPhase( final PhaseEvent event ) {
       }
-
       public PhaseId getPhaseId() {
         return PhaseId.ANY;
       }
@@ -89,95 +130,58 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   }
 
   public void testExecutionOrder() {
-    final StringBuffer log = new StringBuffer();
-    Fixture.fakeResponseWriter();
-    AdapterFactory lifeCycleAdapterFactory = new AdapterFactory() {
-
-      private AdapterFactory factory = new LifeCycleAdapterFactory();
-
-      public Object getAdapter( final Object adaptable, final Class adapter ) {
-        Object result = null;
-        if( adaptable instanceof Display && adapter == ILifeCycleAdapter.class )
-        {
-          result = new IDisplayLifeCycleAdapter() {
-            public void preserveValues( final Display display ) {
-              log.append( display.getClass().getName() );
-            }
-            public void readData( Display display ) {
-            }
-            public void render( Display display ) throws IOException {
-            }
-          };
-        } else {
-          result = new AbstractWidgetLCA() {
-            public void preserveValues( final Widget widget ) {
-              log.append( widget.getClass().getName() );
-            }
-            public void readData( final Widget widget ) {
-            }
-            public void renderInitialization( final Widget widget ) throws IOException {
-            }
-            public void renderChanges( final Widget widget ) throws IOException
-            {
-            }
-            public void renderDispose( final Widget widget ) throws IOException {
-            }
-          };
-        }
-        return result;
-      }
-
-      public Class[] getAdapterList() {
-        return factory.getAdapterList();
-      }
-    };
-    Fixture.disposeOfServiceContext();
-    Fixture.createServiceContext();
-    AdapterManager manager = AdapterManagerImpl.getInstance();
-    manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
-    manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
-
-    // Create test widget hierarchy
+    StringBuffer log = new StringBuffer();
+    installLoggingLifeCycleAdapterFactory( log );
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display );
     new Text( shell, SWT.NONE );
-    // Execute life cycle
     Fixture.markInitialized( display );
-    Fixture.executeLifeCycleFromServerThread( );
-    String expected = Display.class.getName()
-                    + Shell.class.getName()
-                    + Text.class.getName();
+    new DisplayLCA().preserveValues( display );
+    String expected = Shell.class.getName() + Text.class.getName();
     assertEquals( expected, log.toString() );
+  }
+
+  public void testPreserveValuesWhenDisplayIsUninitialized() {
+    StringBuffer log = new StringBuffer();
+    installLoggingLifeCycleAdapterFactory( log );
+    Display display = new Display();
+    Composite shell = new Shell( display );
+    new Text( shell, SWT.NONE );
+    new DisplayLCA().preserveValues( display );
+    assertEquals( "", log.toString() );
   }
 
   public void testStartup() throws Exception {
     // Simulate startup with no startup entry point set
     // First request: (renders html skeletion that contains 'application')
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPointWithShell.class );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, 
+                                                TestEntryPointWithShell.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     lifeCycle.execute();
     // Second request: first 'real' one that writes JavaScript to create display
     Fixture.fakeResponseWriter();
-    fakeUIRootRequestParam( RWTLifeCycle.getSessionDisplay() );
+    Fixture.fakeNewRequest( RWTLifeCycle.getSessionDisplay() );
     lifeCycle.execute();
     assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) != -1 );
   }
   
   public void testClearPreservedWithDisposedDisplay() {
-    Fixture.fakePhase( PhaseId.RENDER );
     Display display = new Display();
     display.dispose();
+    Fixture.fakePhase( PhaseId.RENDER );
     try {
-      PreserveWidgetsPhaseListener.clearPreserved( display );
+      new DisplayLCA().clearPreserved( display );
     } catch( Exception e ) {
       fail( "Preserve-phase-listener must succeed even with disposed display" );
     }
   }
 
-  private static void fakeUIRootRequestParam( final Display display ) {
-    Object adapter = display.getAdapter( IWidgetAdapter.class );
-    IWidgetAdapter displayAdapter = ( IWidgetAdapter )adapter;
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayAdapter.getId() );
+  private static void installLoggingLifeCycleAdapterFactory( StringBuffer log ) {
+    AdapterFactory lifeCycleAdapterFactory = new LoggingLifeCycleAdapterFactory( log );
+    Fixture.disposeOfServiceContext();
+    Fixture.createServiceContext();
+    AdapterManager manager = AdapterManagerImpl.getInstance();
+    manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
+    manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
   }
 }

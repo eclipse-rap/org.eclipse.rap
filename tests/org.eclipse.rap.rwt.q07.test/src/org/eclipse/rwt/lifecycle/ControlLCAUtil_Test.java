@@ -348,7 +348,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEventsWithDoItFlag() {
-    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List eventLog = new ArrayList();
     Listener doitTrueListener = new Listener() {
@@ -409,7 +408,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessTraverseEventsWithDoItFlag() {
-    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List eventLog = new ArrayList();
     Listener doitTrueListener = new Listener() {
@@ -461,7 +459,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testKeyAndTraverseEvents() {
-    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List eventLog = new ArrayList();
     Display display = new Display();

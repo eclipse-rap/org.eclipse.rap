@@ -86,6 +86,33 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   ////////////////////////////////////////////////////////
   // interface implementation of IDisplayLifeCycleAdapter
 
+  public void readData( Display display ) {
+    readBounds( display );
+    readCursorLocation( display );
+    readFocusControl( display );
+    KeyBindingUtil.readKeyBindingEvents( display );
+    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+      public boolean doVisit( final Widget widget ) {
+        IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
+        adapter.readData( widget );
+        return true;
+      }
+    };
+    Shell[] shells = getShells( display );
+    for( int i = 0; i < shells.length; i++ ) {
+      Composite shell = shells[ i ];
+      WidgetTreeVisitor.accept( shell, visitor );
+    }
+    for( int i = 0; i < shells.length; i++ ) {
+      if( shells[ i ].getMaximized() || shells[ i ].getFullScreen() ) {
+        Object adapter = shells[ i ].getAdapter( IShellAdapter.class );
+        IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+        shellAdapter.setBounds( display.getBounds() );
+      }
+    }
+    DNDSupport.processEvents();
+  }
+
   public void preserveValues( final Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
@@ -93,6 +120,18 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
     KeyBindingUtil.preserveKeyBindings( display );
+    if( adapter.isInitialized() ) {
+      Shell[] shells = getShells( display );
+      for( int i = 0; i < shells.length; i++ ) {
+        WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+          public boolean doVisit( final Widget widget ) {
+            AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
+            widgetLCA.preserveValues( widget );
+            return true;
+          }
+        } );
+      }
+    }
   }
 
   public void render( final Display display ) throws IOException {
@@ -111,6 +150,21 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       writeUICallBackActivation( display );
       markInitialized( display );
       KeyBindingUtil.writeKeyBindings( display );
+    }
+  }
+  
+  public void clearPreserved( Display display ) {
+    WidgetAdapter widgetAdapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
+    widgetAdapter.clearPreserved();
+    Composite[] shells = getShells( display );
+    for( int i = 0; i < shells.length; i++ ) {
+      WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+        public boolean doVisit( final Widget widget ) {
+          WidgetAdapter widgetAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
+          widgetAdapter.clearPreserved();
+          return true;
+        }
+      } );
     }
   }
 
@@ -151,8 +205,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldTimeoutPage = adapter.getPreserved( PROP_TIMEOUT_PAGE );
     if( !timeoutPage.equals( oldTimeoutPage ) ) {
-      String pattern
-        = "org.eclipse.swt.Request.getInstance().setTimeoutPage( \"{0}\" );";
+      String pattern = "org.eclipse.swt.Request.getInstance().setTimeoutPage( \"{0}\" );";
       Object[] param = new Object[] { timeoutPage };
       String jsCode = MessageFormat.format( pattern, param );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
@@ -162,10 +215,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String getTimeoutPage() {
-    String timeoutTitle
-      = RWTMessages.getMessage( "RWT_SessionTimeoutPageTitle" );
-    String timeoutHeadline
-      = RWTMessages.getMessage( "RWT_SessionTimeoutPageHeadline" );
+    String timeoutTitle = RWTMessages.getMessage( "RWT_SessionTimeoutPageTitle" );
+    String timeoutHeadline = RWTMessages.getMessage( "RWT_SessionTimeoutPageHeadline" );
     String pattern = RWTMessages.getMessage( "RWT_SessionTimeoutPageMessage" );
     Object[] arguments = new Object[]{ "<a {HREF_URL}>", "</a>" };
     String timeoutMessage = MessageFormat.format( pattern, arguments );
@@ -216,33 +267,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   static void registerResources() {
     new ClientResources( RWT.getResourceManager() ).registerResources();
     ThemeManager.getInstance().registerResources();
-  }
-
-  public void readData( Display display ) {
-    readBounds( display );
-    readCursorLocation( display );
-    readFocusControl( display );
-    KeyBindingUtil.readKeyBindingEvents( display );
-    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
-        IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
-        adapter.readData( widget );
-        return true;
-      }
-    };
-    Shell[] shells = getShells( display );
-    for( int i = 0; i < shells.length; i++ ) {
-      Composite shell = shells[ i ];
-      WidgetTreeVisitor.accept( shell, visitor );
-    }
-    for( int i = 0; i < shells.length; i++ ) {
-      if( shells[ i ].getMaximized() || shells[ i ].getFullScreen() ) {
-        Object adapter = shells[ i ].getAdapter( IShellAdapter.class );
-        IShellAdapter shellAdapter = ( IShellAdapter )adapter;
-        shellAdapter.setBounds( display.getBounds() );
-      }
-    }
-    DNDSupport.processEvents();
   }
 
   /////////////////////////////

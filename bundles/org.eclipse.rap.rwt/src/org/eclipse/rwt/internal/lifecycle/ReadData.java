@@ -23,7 +23,9 @@ final class ReadData implements IPhase {
 
   public PhaseId execute() {
     Display display = RWTLifeCycle.getSessionDisplay();
-    DisplayUtil.getLCA( display ).readData( display );
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    displayLCA.readData( display );
+    displayLCA.preserveValues( display );
     return PhaseId.PROCESS_ACTION;
   }
 }

@@ -14,7 +14,6 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -39,8 +38,6 @@ public class DisplayLCAFocus_Test extends TestCase {
     shell.layout();
     shell.open();
     
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     String button1Id = WidgetUtil.getId( button1 );
 
     // Simulate initial request that constructs UI
@@ -75,8 +72,6 @@ public class DisplayLCAFocus_Test extends TestCase {
     shell.layout();
     shell.open();
     
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     String buttonId = WidgetUtil.getId( button );
 
     // Simulate initial request that constructs UI

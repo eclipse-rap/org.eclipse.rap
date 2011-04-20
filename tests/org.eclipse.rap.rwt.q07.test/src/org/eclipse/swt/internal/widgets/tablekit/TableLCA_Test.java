@@ -502,7 +502,6 @@ public class TableLCA_Test extends TestCase {
   public void testClearVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
     final Table table = new Table( shell, SWT.VIRTUAL );

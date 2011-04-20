@@ -35,6 +35,8 @@ public class DisplayLCAFacadeImpl extends DisplayLCAFacade {
         JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
         responseWriter.write( "Render Fake" );
       }
+      public void clearPreserved( Display display ) {
+      }
     };
   }
 

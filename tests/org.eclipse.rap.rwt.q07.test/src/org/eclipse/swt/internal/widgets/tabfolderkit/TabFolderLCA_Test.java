@@ -17,7 +17,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -165,14 +164,10 @@ public class TabFolderLCA_Test extends TestCase {
     item1.setControl( control1 );
     shell.open();
 
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
     String folderId = WidgetUtil.getId( folder );
     String item1Id = WidgetUtil.getId( item1 );
 
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
     Fixture.readDataAndProcessAction( display );
@@ -203,8 +198,6 @@ public class TabFolderLCA_Test extends TestCase {
       }
     } );
 
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String item1Id = WidgetUtil.getId( item1 );
     String folderId = WidgetUtil.getId( folder );

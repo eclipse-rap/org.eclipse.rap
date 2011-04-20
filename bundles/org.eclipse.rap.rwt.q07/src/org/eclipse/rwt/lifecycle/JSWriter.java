@@ -66,8 +66,8 @@ public final class JSWriter {
 
   private static final String WRITER_MAP
     = JSWriter.class.getName() + "#map";
-  private static final String HAS_WINDOW_MANAGER
-    = JSWriter.class.getName() + "#hasWindowManager";
+  private static final String HAS_WIDGET_MANAGER
+    = JSWriter.class.getName() + "#hasWidgetManager";
   private static final String CURRENT_WIDGET_REF
     = JSWriter.class.getName() + "#currentWidgetRef";
 
@@ -749,11 +749,11 @@ public final class JSWriter {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     if(    currentPhaseIsRender()
         && widget != null
-        && stateInfo.getAttribute( HAS_WINDOW_MANAGER ) == null )
+        && stateInfo.getAttribute( HAS_WIDGET_MANAGER ) == null )
     {
       writeVarAssignment( WIDGET_MANAGER_REF,
                           "org.eclipse.swt.WidgetManager.getInstance()" );
-      stateInfo.setAttribute( HAS_WINDOW_MANAGER, Boolean.TRUE );
+      stateInfo.setAttribute( HAS_WIDGET_MANAGER, Boolean.TRUE );
     }
   }
 

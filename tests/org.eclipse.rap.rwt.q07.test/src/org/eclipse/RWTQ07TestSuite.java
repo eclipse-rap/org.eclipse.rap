@@ -75,7 +75,7 @@ public class RWTQ07TestSuite {
     //                RWT core tests, but there is still some refactoring
     //                necessary to achieve this, so they've been moved
     //                temporarily to the q07 fragment tests..
-    suite.addTestSuite( PreserveWidgetsPhaseListener_Test.class );
+    suite.addTestSuite( PreserveWidgets_Test.class );
     suite.addTestSuite( WidgetAdapter_Test.class );
     suite.addTestSuite( DuplicateRequest_Test.class );
     suite.addTestSuite( MouseEvent_Test.class );

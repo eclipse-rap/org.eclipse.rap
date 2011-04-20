@@ -289,7 +289,6 @@ public final class RWTServletContextListener implements ServletContextListener {
         }
       }
     } else {
-      phaseListeners.add( new PreserveWidgetsPhaseListener() );
       phaseListeners.add( new CurrentPhase.Listener() );
     }
     PhaseListenerRegistry phaseListenerRegistry = RWTFactory.getPhaseListenerRegistry();

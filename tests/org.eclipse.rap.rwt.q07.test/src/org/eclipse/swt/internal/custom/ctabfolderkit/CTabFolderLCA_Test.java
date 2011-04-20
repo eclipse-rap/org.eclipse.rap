@@ -359,7 +359,6 @@ public class CTabFolderLCA_Test extends TestCase {
 
     // Let pass one startup request to init the 'system'
     Fixture.fakeNewRequest( display );
-    RWTFactory.getPhaseListenerRegistry().add( new PreserveWidgetsPhaseListener() );
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     Fixture.executeLifeCycleFromServerThread( );
 
