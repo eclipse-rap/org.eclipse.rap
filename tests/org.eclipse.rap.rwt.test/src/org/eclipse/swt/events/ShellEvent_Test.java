@@ -23,11 +23,15 @@ public class ShellEvent_Test extends TestCase {
   
   private static final String SHELL_CLOSED = "shellClosed|";
   
-  private String log = "";
+  private String log;
+  private Shell shell;
   
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    log = "";
+    Display display = new Display();
+    shell = new Shell( display );
   }
   
   protected void tearDown() throws Exception {
@@ -40,18 +44,24 @@ public class ShellEvent_Test extends TestCase {
         log += SHELL_CLOSED;
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     shell.addShellListener( listener );
     
     shell.close();
-    assertEquals( SHELL_CLOSED, log );
     
-    log = "";
-    shell = new Shell( display , SWT.NONE );
+    assertEquals( SHELL_CLOSED, log );
+  }
+  
+  public void testRemoveCloseListener() {
+    ShellListener listener = new ShellAdapter() {
+      public void shellClosed( final ShellEvent event ) {
+        log += SHELL_CLOSED;
+      }
+    };
     shell.addShellListener( listener );
     shell.removeShellListener( listener );
+
     shell.close();
+    
     assertEquals( "", log );
   }
   
@@ -64,11 +74,8 @@ public class ShellEvent_Test extends TestCase {
         log += SHELL_CLOSED;
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     shell.addShellListener( listener );
     shell.open();
-    log = "";
     shell.close();
     assertFalse( shell.isDisposed() );
     assertEquals( SHELL_CLOSED, log );
@@ -84,11 +91,8 @@ public class ShellEvent_Test extends TestCase {
         log += SHELL_CLOSED;
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     shell.addListener( SWT.Close, listener );
     shell.open();
-    log = "";
     shell.close();
     assertFalse( shell.isDisposed() );
     assertEquals( SHELL_CLOSED, log );
