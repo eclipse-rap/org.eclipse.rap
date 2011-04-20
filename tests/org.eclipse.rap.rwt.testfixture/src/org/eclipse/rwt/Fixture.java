@@ -260,7 +260,7 @@ public class Fixture {
   }
 
   public static void preserveWidgets() {
-    Display display = RWTLifeCycle.getSessionDisplay();
+    Display display = LifeCycleUtil.getSessionDisplay();
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     PhaseId bufferedPhaseId = CurrentPhase.get();
     fakePhase( PhaseId.READ_DATA );
@@ -269,7 +269,7 @@ public class Fixture {
   }
 
   public static void clearPreserved() {
-    Display display = RWTLifeCycle.getSessionDisplay();
+    Display display = LifeCycleUtil.getSessionDisplay();
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     PhaseId bufferedPhaseId = CurrentPhase.get();
     fakePhase( PhaseId.RENDER );
@@ -328,7 +328,7 @@ public class Fixture {
     Thread serverThread = fakeRequestThread( threadHolder );
     simulateRequest( threadHolder, serverThread );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    while( RWTLifeCycle.getSessionDisplay().readAndDispatch() ) {
+    while( LifeCycleUtil.getSessionDisplay().readAndDispatch() ) {
     }
     lifeCycle.sleep();
   }

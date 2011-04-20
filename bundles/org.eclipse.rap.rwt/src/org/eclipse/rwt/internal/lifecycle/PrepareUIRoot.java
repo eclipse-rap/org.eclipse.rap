@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
 import org.eclipse.rwt.lifecycle.PhaseId;
 
@@ -28,14 +24,10 @@ final class PrepareUIRoot implements IPhase {
   }
 
   public PhaseId execute() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String startup = request.getParameter( RequestParams.STARTUP );
+    String entryPointName = LifeCycleUtil.getEntryPoint();
     PhaseId result;
-    if( startup != null ) {
-      createUI( startup );      
-      result = PhaseId.RENDER;
-    } else if( RWTLifeCycle.getSessionDisplay() == null ) {
-      createUI( EntryPointManager.DEFAULT );
+    if( entryPointName != null ) {
+      createUI( entryPointName );      
       result = PhaseId.RENDER;
     } else {
       result = PhaseId.READ_DATA;

@@ -142,7 +142,7 @@ public class Display extends Device implements Adaptable {
    * @return the current display
    */
   public static Display getCurrent() {
-    Display result = RWTLifeCycle.getSessionDisplay();
+    Display result = LifeCycleUtil.getSessionDisplay();
     if(    result != null ) {
       if( result.isDisposed() || result.getThread() != Thread.currentThread() )
       {
@@ -162,7 +162,7 @@ public class Display extends Device implements Adaptable {
    * @return the default display
    */
   public static Display getDefault() {
-    Display result = RWTLifeCycle.getSessionDisplay();
+    Display result = LifeCycleUtil.getSessionDisplay();
     if( result == null && isUIThread() ) {
       result = new Display();
     }
@@ -229,7 +229,7 @@ public class Display extends Device implements Adaptable {
     if( getCurrent() != null ) {
       SWT.error( SWT.ERROR_NOT_IMPLEMENTED, null, " [multiple displays]" );
     }
-    RWTLifeCycle.setSessionDisplay( this );
+    LifeCycleUtil.setSessionDisplay( this );
     attachThread();
     session = ContextProvider.getSession();
     shells = new ArrayList();

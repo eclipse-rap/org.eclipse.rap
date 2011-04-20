@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -43,7 +44,7 @@ public abstract class UIJob extends Job {
 // RAP [fappel]: discovering the display at runtime of a job is not
 //               possible in RAP
 //        super(name);
-        this( RWTLifeCycle.getSessionDisplay(), name );
+        this( LifeCycleUtil.getSessionDisplay(), name );
     }
 
     /**

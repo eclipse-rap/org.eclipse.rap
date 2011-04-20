@@ -96,7 +96,7 @@ public final class UICallBackManager {
 
   boolean hasRunnables() {
     boolean result = false;
-    Display display = RWTLifeCycle.getSessionDisplay();
+    Display display = LifeCycleUtil.getSessionDisplay();
     if( display != null && !display.isDisposed() ) {
       IDisplayAdapter adapter
         = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );

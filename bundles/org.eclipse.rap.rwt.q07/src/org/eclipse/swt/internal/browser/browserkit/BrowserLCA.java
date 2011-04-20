@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -168,7 +169,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
         public void beforePhase( final PhaseEvent event ) {
         }
         public void afterPhase( final PhaseEvent event ) {
-          if( browser.getDisplay() == RWTLifeCycle.getSessionDisplay() ) {
+          if( browser.getDisplay() == LifeCycleUtil.getSessionDisplay() ) {
             try {
               JSWriter writer = JSWriter.getWriterFor( browser );
               writer.call( "execute", new Object[] { executeScript } );

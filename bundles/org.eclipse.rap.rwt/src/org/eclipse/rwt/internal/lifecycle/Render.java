@@ -24,7 +24,7 @@ final class Render implements IPhase {
   }
 
   public PhaseId execute() throws IOException {
-    Display display = RWTLifeCycle.getSessionDisplay();
+    Display display = LifeCycleUtil.getSessionDisplay();
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     displayLCA.render( display );
     displayLCA.clearPreserved( display );

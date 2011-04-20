@@ -154,7 +154,7 @@ final class UIThread
       // Simulate PROCESS_ACTION phase if the session times out
       CurrentPhase.set( PhaseId.PROCESS_ACTION );
       // TODO [rh] find a better decoupled way to dispose of the display
-      Display display = RWTLifeCycle.getSessionDisplay();
+      Display display = LifeCycleUtil.getSessionDisplay();
       if( display != null ) {
         display.dispose();
       }

@@ -11,7 +11,7 @@
 package org.eclipse.rwt.internal.textsize;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
@@ -49,7 +49,7 @@ public class MeasurementUtil {
   }
 
   static boolean isDisplayRelatedUIThread() {
-    Display display = RWTLifeCycle.getSessionDisplay();
+    Display display = LifeCycleUtil.getSessionDisplay();
     return display != null && display.getThread() == Thread.currentThread();
   }
   

@@ -160,7 +160,7 @@ public class PreserveWidgets_Test extends TestCase {
     lifeCycle.execute();
     // Second request: first 'real' one that writes JavaScript to create display
     Fixture.fakeResponseWriter();
-    Fixture.fakeNewRequest( RWTLifeCycle.getSessionDisplay() );
+    Fixture.fakeNewRequest( LifeCycleUtil.getSessionDisplay() );
     lifeCycle.execute();
     assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) != -1 );
   }

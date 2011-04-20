@@ -16,7 +16,7 @@ import java.io.IOException;
 import javax.servlet.http.*;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.rwt.lifecycle.*;
@@ -41,7 +41,7 @@ final class MeasurementHandler implements PhaseListener, HttpSessionBindingListe
   private Probe[] probes;
 
   MeasurementHandler() {
-    this.display = RWTLifeCycle.getSessionDisplay();
+    this.display = LifeCycleUtil.getSessionDisplay();
   }
 
   //////////////////////////
@@ -122,7 +122,7 @@ final class MeasurementHandler implements PhaseListener, HttpSessionBindingListe
   }
 
   private boolean requestBelongsToHandler() {
-    return display == RWTLifeCycle.getSessionDisplay();
+    return display == LifeCycleUtil.getSessionDisplay();
   }
 
   private boolean beforeMeasurement( PhaseEvent event ) {

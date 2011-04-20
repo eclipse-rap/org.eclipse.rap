@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
@@ -513,7 +514,7 @@ public final class DNDSupport {
 
   private static Widget findWidgetById( final String id ) {
     Widget result = null;
-    Display display = RWTLifeCycle.getSessionDisplay();
+    Display display = LifeCycleUtil.getSessionDisplay();
     Shell[] shells = getDisplayAdapter( display ).getShells();
     for( int i = 0; result == null && i < shells.length; i++ ) {
       Widget widget = WidgetUtil.find( shells[ i ], id );

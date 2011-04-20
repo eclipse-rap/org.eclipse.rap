@@ -66,7 +66,7 @@ public final class JSExecutor {
     }
 
     public void afterPhase( PhaseEvent event ) {
-      if( display == RWTLifeCycle.getSessionDisplay() ) {
+      if( display == LifeCycleUtil.getSessionDisplay() ) {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
         try {

@@ -21,8 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -322,7 +321,7 @@ public final class RWT {
    */
   public static void requestThreadExec( final Runnable runnable ) {
     ParamCheck.notNull( runnable, "runnable" );
-    Display display = RWTLifeCycle.getSessionDisplay();
+    Display display = LifeCycleUtil.getSessionDisplay();
     if( display == null || display.getThread() != Thread.currentThread() ) {
       SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }

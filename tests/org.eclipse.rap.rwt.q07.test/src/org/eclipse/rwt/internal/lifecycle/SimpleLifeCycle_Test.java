@@ -123,7 +123,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
     lifeCycle.execute();
     assertNull( Display.getCurrent() );
-    assertNull( RWTLifeCycle.getSessionDisplay().getThread() );
+    assertNull( LifeCycleUtil.getSessionDisplay().getThread() );
   }
   
   public void testThreadIsAttachedInSubsequentRequest() throws IOException {
@@ -145,7 +145,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     Fixture.fakeNewRequest();
     lifeCycle.execute();
     assertNull( Display.getCurrent() );
-    assertNull( RWTLifeCycle.getSessionDisplay().getThread() );
+    assertNull( LifeCycleUtil.getSessionDisplay().getThread() );
   }
   
   public void testPhaseListenersHaveApplicationScope() throws Exception {

@@ -34,7 +34,7 @@ public final class FakeContextUtil {
   {
     // Don't replace local variables by method calls, since the context may
     // change during the methods execution.
-    Display sessionDisplay = RWTLifeCycle.getSessionDisplay();
+    Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
     boolean useDifferentContext
       =  ContextProvider.hasContext() && sessionDisplay != display;
     ServiceContext contextBuffer = null;

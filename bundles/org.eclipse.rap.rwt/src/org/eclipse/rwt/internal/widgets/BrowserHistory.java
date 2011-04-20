@@ -20,7 +20,7 @@ import org.eclipse.rwt.events.BrowserHistoryListener;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.events.*;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
@@ -91,7 +91,7 @@ public final class BrowserHistory
   }
 
   public void beforePhase( final PhaseEvent event ) {
-    if( display == RWTLifeCycle.getSessionDisplay() ) {
+    if( display == LifeCycleUtil.getSessionDisplay() ) {
       HttpServletRequest request = ContextProvider.getRequest();
       String isEvent = request.getParameter( EVENT_HISTORY_NAVIGATED );
       if( Boolean.valueOf( isEvent ).booleanValue() ) {

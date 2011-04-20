@@ -827,7 +827,7 @@ public class Display_Test extends TestCase {
     Fixture.fakeNewRequest();
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
-    assertEquals( "w1", DisplayUtil.getId( RWTLifeCycle.getSessionDisplay() ) );
+    assertEquals( "w1", DisplayUtil.getId( LifeCycleUtil.getSessionDisplay() ) );
     RWTFactory.getEntryPointManager().deregister( EntryPointManager.DEFAULT );
   }
 

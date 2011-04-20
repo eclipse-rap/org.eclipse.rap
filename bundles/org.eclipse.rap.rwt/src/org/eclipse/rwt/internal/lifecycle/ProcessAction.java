@@ -22,7 +22,7 @@ final class ProcessAction implements IPhase {
   }
 
   public PhaseId execute() {
-    Display display = RWTLifeCycle.getSessionDisplay();
+    Display display = LifeCycleUtil.getSessionDisplay();
     while( display.readAndDispatch() ) {
     }
     return PhaseId.RENDER;

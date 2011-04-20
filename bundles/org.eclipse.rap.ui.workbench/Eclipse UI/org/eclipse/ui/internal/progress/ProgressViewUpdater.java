@@ -21,6 +21,7 @@ import org.eclipse.rap.ui.internal.progress.JobCanceler;
 import org.eclipse.rap.ui.internal.progress.ProgressUtil;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
@@ -178,7 +179,7 @@ public class ProgressViewUpdater implements IJobProgressManagerListener {
       ProgressViewUpdaterHolder singletonHolder = getSingletonHolder();
       if( singletonHolder.singleton == null ) {
         singletonHolder.singleton = new ProgressViewUpdater();
-        singletonHolder.singleton.display = RWTLifeCycle.getSessionDisplay();
+        singletonHolder.singleton.display = LifeCycleUtil.getSessionDisplay();
       }
       return singletonHolder.singleton;
     }

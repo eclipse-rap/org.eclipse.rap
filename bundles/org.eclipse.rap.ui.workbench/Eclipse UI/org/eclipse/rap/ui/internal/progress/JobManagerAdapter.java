@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -209,7 +210,7 @@ public class JobManagerAdapter
   private static Display findDisplay( final Job job ) {
     Display result = null;
     if( ContextProvider.hasContext() ) {
-      result = RWTLifeCycle.getSessionDisplay();
+      result = LifeCycleUtil.getSessionDisplay();
     } else {
       if( job instanceof UIJob ) {
         UIJob uiJob = ( UIJob )job;

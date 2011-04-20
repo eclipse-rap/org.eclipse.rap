@@ -13,8 +13,6 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
@@ -23,7 +21,6 @@ import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.widgets.Display;
 
 public class RWTLifeCycle extends LifeCycle {
 
@@ -31,8 +28,6 @@ public class RWTLifeCycle extends LifeCycle {
     = RWTLifeCycle.class.getName() + ".uiThread";
   private static final Integer ZERO = new Integer( 0 );
 
-  private static final String ATTR_SESSION_DISPLAY
-    = RWTLifeCycle.class.getName() + "#sessionDisplay";
   private static final String CURRENT_PHASE
     = RWTLifeCycle.class.getName() + ".currentPhase";
   private static final String PHASE_ORDER
@@ -299,15 +294,7 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private static String getEntryPoint() {
-    String result = null;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String startup = request.getParameter( RequestParams.STARTUP );
-    if( startup != null ) {
-      result = startup;
-    } else if( getSessionDisplay() == null ) {
-      result = EntryPointManager.DEFAULT;
-    }
-    return result;
+    return LifeCycleUtil.getEntryPoint();
   }
 
   private static void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
@@ -329,18 +316,5 @@ public class RWTLifeCycle extends LifeCycle {
   public static IUIThreadHolder getUIThreadHolder() {
     ISessionStore session = ContextProvider.getSession();
     return ( IUIThreadHolder )session.getAttribute( UI_THREAD );
-  }
-
-  public static void setSessionDisplay( final Display display ) {
-    ContextProvider.getSession().setAttribute( ATTR_SESSION_DISPLAY, display );
-  }
-
-  public static Display getSessionDisplay() {
-    Display result = null;
-    if( ContextProvider.hasContext() ) {
-      ISessionStore sessionStore = ContextProvider.getSession();
-      result = ( Display )sessionStore.getAttribute( ATTR_SESSION_DISPLAY );
-    }
-    return result;
   }
 }
