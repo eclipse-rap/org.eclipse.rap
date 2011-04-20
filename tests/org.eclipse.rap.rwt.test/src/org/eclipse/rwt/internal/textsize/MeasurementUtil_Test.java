@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Display;
 public class MeasurementUtil_Test extends TestCase {
   
   public void testAddMeasurementItem() {
-    new Display();
+    initializeSessionWithDisplay();
     MeasurementItem item = createItem();
     
     MeasurementUtil.addMeasurementItem( item );
@@ -44,7 +44,7 @@ public class MeasurementUtil_Test extends TestCase {
   }
   
   public void testRegister() {
-    new Display();
+    initializeSessionWithDisplay();
     
     MeasurementUtil.register();
     
@@ -52,7 +52,7 @@ public class MeasurementUtil_Test extends TestCase {
   }
   
   public void testIsDisplayRelatedUIThread() {
-    new Display();
+    initializeSessionWithDisplay();
     
     boolean isDisplayRelatedUIThread = MeasurementUtil.isDisplayRelatedUIThread();
     
@@ -60,7 +60,7 @@ public class MeasurementUtil_Test extends TestCase {
   }
 
   public void testIsNonDisplayRelatedUIThread() throws InterruptedException {
-    new Display();
+    initializeSessionWithDisplay();
     
     boolean isDisplayRelatedUIThread = checkInNonUIThread();
 
@@ -146,5 +146,9 @@ public class MeasurementUtil_Test extends TestCase {
 
   private MeasurementHandlerRegistrar createHandlerRegistrar() {
     return new MeasurementHandlerRegistrar( ContextProvider.getSession(), RWT.getLifeCycle() );
+  }
+  
+  private Display initializeSessionWithDisplay() {
+    return new Display();
   }
 }
