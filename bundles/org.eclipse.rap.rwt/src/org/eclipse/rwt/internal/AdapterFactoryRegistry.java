@@ -78,15 +78,20 @@ public class AdapterFactoryRegistry {
   public void register() {
     FactoryEntry[] entries = getEntries();
     for( int i = 0; i < entries.length; i++ ) {
-      Class clazz = entries[ i ].factoryClass;
-      try {
-        AdapterFactory factory = ( AdapterFactory )ClassUtil.newInstance( clazz );
-        AdapterManagerImpl.getInstance().registerAdapters( factory, entries[ i ].adaptableClass );
-      } catch( ClassInstantiationException cie ) {
-        String text = "Could not create an instance of ''{0}''.";
-        String msg = MessageFormat.format( text, new Object[] { clazz } );
-        ServletLog.log( msg, cie );
-      }
+      FactoryEntry entry = entries[ i ];
+      register( entry );
+    }
+  }
+
+  private static void register( FactoryEntry factoryEntry ) {
+    Class clazz = factoryEntry.factoryClass;
+    try {
+      AdapterFactory factory = ( AdapterFactory )ClassUtil.newInstance( clazz );
+      AdapterManagerImpl.getInstance().registerAdapters( factory, factoryEntry.adaptableClass );
+    } catch( ClassInstantiationException cie ) {
+      String text = "Could not create an instance of ''{0}''.";
+      String msg = MessageFormat.format( text, new Object[] { clazz } );
+      ServletLog.log( msg, cie );
     }
   }
   

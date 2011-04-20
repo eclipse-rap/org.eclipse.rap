@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
@@ -16,13 +17,8 @@ import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.SessionSingletonBase;
 
 
-/** 
- * <p>Implementation of the <code>AdapterManager</code> protocol.</p>
- * <p>Implementation as Singleton.</p>
- */
 public class AdapterManagerImpl implements AdapterManager {
 
-  /** <p>the internal datastructure of <code>AdapterManagerImpl</code></p>*/
   private final Map registry;
   private final Map factoryCache;
   private final AdapterFactory nullFactory;
@@ -37,15 +33,12 @@ public class AdapterManagerImpl implements AdapterManager {
     }
   }
   
-  /** <p>creates the singleton instance of <code>AdapterManagerImpl</code></p>*/
   private AdapterManagerImpl() {
     registry = new HashMap();
     factoryCache = new HashMap();
     nullFactory = new NullFactory();
   }
   
-  /** <p>returns the singleton instance of this
-   *  <code>AdapterManager</code> implementation.</p> */
   public static AdapterManager getInstance() {
     return ( AdapterManager )SessionSingletonBase.getInstance( AdapterManagerImpl.class );
   }
@@ -54,13 +47,11 @@ public class AdapterManagerImpl implements AdapterManager {
   ////////////////////////////
   // interface implementations
   
-  public Object getAdapter( final Object adaptable, 
-                            final Class adapter )
-  {
+  public Object getAdapter( Object adaptable, Class adapter ) {
     // Note [fappel]: Since this code is performance critical, don't change
     //                anything without checking it against a profiler.
     Object result = null;
-    Object hash = calculateHash( adaptable, adapter );
+    Integer hash = calculateHash( adaptable, adapter );
     AdapterFactory cachedFactory = ( AdapterFactory )factoryCache.get( hash );
     if( cachedFactory != null ) {
       result = cachedFactory.getAdapter( adaptable, adapter );
@@ -70,15 +61,13 @@ public class AdapterManagerImpl implements AdapterManager {
     return result;
   }
   
-  private static Object calculateHash( Object adaptable, Class adapter ) {
+  private static Integer calculateHash( Object adaptable, Class adapter ) {
     Class adaptableClass = adaptable.getClass();
     int hash = 23273 + adaptableClass.hashCode() * 37 + adapter.hashCode();
     return new Integer( hash );
   }
 
-  private Object doGetAdapter( final Object adaptable,
-                               final Class adapter, 
-                               final Object hash ) {
+  private Object doGetAdapter( Object adaptable, Class adapter, Integer hash ) {
     Object result = null;
     Class[] keys = new Class[ registry.size() ];
     registry.keySet().toArray( keys );
@@ -104,9 +93,7 @@ public class AdapterManagerImpl implements AdapterManager {
     return result;
   }
 
-  public void registerAdapters( final AdapterFactory factory, 
-                                final Class adaptable ) 
-  {
+  public void registerAdapters( AdapterFactory factory, Class adaptable ) {
     if( registry.containsKey( adaptable ) ) {
       List factories = ( List )registry.get( adaptable );
       if( !factories.contains( factory ) ) {
@@ -120,8 +107,7 @@ public class AdapterManagerImpl implements AdapterManager {
     factoryCache.clear();
   }
 
-  public void deregisterAdapters( final AdapterFactory factory, 
-                                  final Class adaptable ) {
+  public void deregisterAdapters( AdapterFactory factory, Class adaptable ) {
     if( registry.containsKey( adaptable ) ) {
       List factories = ( List )registry.get( adaptable );
       if( factories.contains( factory ) ) {

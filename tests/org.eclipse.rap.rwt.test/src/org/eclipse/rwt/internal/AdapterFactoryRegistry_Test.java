@@ -49,7 +49,7 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     try {
       RWTFactory.getAdapterFactoryRegistry().add( null, TestAdaptable.class );
       fail( "Parameter factory class must not be null." );
-    } catch( final NullPointerException expected ) {
+    } catch( NullPointerException expected ) {
     }
   }
 
@@ -57,7 +57,7 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     try {
       RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, null );
       fail( "Parameter adaptable class must not be null." );
-    } catch( final NullPointerException expected ) {
+    } catch( NullPointerException expected ) {
     }
   }
   
@@ -65,7 +65,7 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     try {
       RWTFactory.getAdapterFactoryRegistry().add( Object.class, TestAdaptable.class );
       fail( "Parameter factory class must not instance of AdapterFactory." );
-    } catch( final IllegalArgumentException expected ) {
+    } catch( IllegalArgumentException expected ) {
     }
   }
   
@@ -73,7 +73,7 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     try {
       RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, Object.class );
       fail( "Parameter adaptable class is not an instance of Adaptable." );
-    } catch( final IllegalArgumentException expected ) {
+    } catch( IllegalArgumentException expected ) {
     }
   }
   
@@ -82,7 +82,7 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     try {
       RWTFactory.getAdapterFactoryRegistry().add( TestAdapterFactory.class, TestAdaptable.class );
       fail( "Factory - adaptable pair was already added." );
-    } catch( final IllegalArgumentException expected ) {
+    } catch( IllegalArgumentException expected ) {
     }
   }
   

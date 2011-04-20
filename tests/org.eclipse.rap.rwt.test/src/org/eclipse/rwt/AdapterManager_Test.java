@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,107 +20,123 @@ import org.eclipse.rwt.internal.AdapterManagerImpl;
 
 public class AdapterManager_Test extends TestCase {
 
-  protected void setUp() throws Exception {
+  private AdapterManager adapterManager;
+  private DummyType dummy;
+
+  protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
+    adapterManager = AdapterManagerImpl.getInstance();
+    dummy = new DummyType();
   }
   
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
   
-  public void testAdapterManager() {
-    AdapterFactory adapterFactory = new AdapterFactory() {
-      public Object getAdapter( final Object adaptable, 
-                                final Class adapter ) {
-        IDummyType dummy = ( IDummyType )adaptable;
-        return new DummyAdapter( dummy );
-      }
-      public Class[] getAdapterList() {
-        return new Class[] { IDummyAdapter.class };
-      }
-    };
+  public void testRegisterSingleAdapterFactory() {
+    AdapterFactory adapterFactory = new TestAdapterFactory1();
+    adapterManager.registerAdapters( adapterFactory, IDummyType.class );
     
-    AdapterManager manager = AdapterManagerImpl.getInstance();
-    manager.registerAdapters( adapterFactory, IDummyType.class );
-    
-    Dummy dummy = new Dummy();
-    Object adapter = dummy.getAdapter( IDummyAdapter.class );
-    assertTrue( adapter != null );
-    assertTrue( adapter instanceof IDummyAdapter );
-    adapter = dummy.getAdapter( Concealer.class );
-    assertTrue( adapter == null );    
-    
+    Object adapter1 = dummy.getAdapter( IDummyAdapter1.class );
+    Object adapter3 = dummy.getAdapter( IDummyAdapter3.class );
 
-    AdapterFactory adapterFactory2 = new AdapterFactory() {
-      public Object getAdapter( final Object adaptable, 
-                                final Class adapter ) {
-        IDummyType dummy = ( IDummyType )adaptable;
-        Object result = null;
-        if( adapter == IDummyAdapter2.class ) {
-          result = new DummyAdapter2( dummy );
-        } else if( adapter == Concealer.class ) {
-          result = new Concealer(){ 
-          };
-        }
-        return result;
-      }
-      public Class[] getAdapterList() {
-        return new Class[] { IDummyAdapter2.class, Concealer.class };
-      }
-    };
-    manager.registerAdapters( adapterFactory2, IDummyType.class );
+    assertTrue( adapter1 instanceof IDummyAdapter1 );
+    assertNull( adapter3 );    
+  }
+  
+  public void testRegisterMultipleAdapterFactories() {
+    AdapterFactory adapterFactory1 = new TestAdapterFactory1();
+    adapterManager.registerAdapters( adapterFactory1, IDummyType.class );
+    AdapterFactory adapterFactory2 = new TestAdapterFactory2();
+    adapterManager.registerAdapters( adapterFactory2, IDummyType.class );
+    
+    Object adapter2 = dummy.getAdapter( IDummyAdapter2.class );
+    Object adapter3 = dummy.getAdapter( IDummyAdapter3.class );
+    
+    assertTrue( adapter2 instanceof IDummyAdapter2 );
+    assertTrue( adapter3 instanceof IDummyAdapter3 );
+  }
+  
+  public void testDeregister() {
+    TestAdapterFactory1 adapterFactory1 = new TestAdapterFactory1();
+    adapterManager.registerAdapters( adapterFactory1, IDummyType.class );
+    adapterManager.registerAdapters( new TestAdapterFactory2(), IDummyType.class );
 
-    adapter = dummy.getAdapter( IDummyAdapter2.class );
-    assertTrue( adapter != null );
-    assertTrue( adapter instanceof IDummyAdapter2 );
-    adapter = dummy.getAdapter( Concealer.class );
-    assertTrue( adapter != null );
-    assertTrue( adapter instanceof Concealer );
-    
-    manager.deregisterAdapters( adapterFactory, IDummyType.class );
-    adapter = dummy.getAdapter( IDummyAdapter.class );
-    assertTrue( adapter == null );
-    adapter = dummy.getAdapter( Concealer.class );
-    assertTrue( adapter != null );
-    assertTrue( adapter instanceof Concealer );
-    
+    adapterManager.deregisterAdapters( adapterFactory1, IDummyType.class );
+    Object dummyAdapter1 = dummy.getAdapter( IDummyAdapter1.class );
+    Object dummyAdapter2 = dummy.getAdapter( IDummyAdapter2.class );
+    Object dummyAdapter3 = dummy.getAdapter( IDummyAdapter3.class );
+
+    assertNull( dummyAdapter1 );
+    assertNotNull( dummyAdapter2 );
+    assertNotNull( dummyAdapter3 );
+    assertTrue( dummyAdapter3 instanceof IDummyAdapter3 );
   }
   
   /////////////
   // test types
   
-  public interface Concealer {
+  private static class TestAdapterFactory1 implements AdapterFactory {
+  
+    public Object getAdapter( Object adaptable, Class adapter ) {
+      return new DummyAdapter1();
+    }
+  
+    public Class[] getAdapterList() {
+      return new Class[] { IDummyAdapter1.class };
+    }
+  }
+
+  private static class TestAdapterFactory2 implements AdapterFactory {
+
+    public Object getAdapter( Object adaptable, Class adapter ) {
+      Object result = null;
+      if( adapter == IDummyAdapter2.class ) {
+        result = new DummyAdapter2();
+      } else if( adapter == IDummyAdapter3.class ) {
+        result = new IDummyAdapter3(){ 
+        };
+      }
+      return result;
+    }
+
+    public Class[] getAdapterList() {
+      return new Class[] { IDummyAdapter2.class, IDummyAdapter3.class };
+    }
+  }
+
+  private interface IDummyAdapter1 {
+    void doAnything();
+  }
+
+  private interface IDummyAdapter2 {
+    void doSomething();
+  }
+
+  private interface IDummyAdapter3 {
     // empty, used only for test case
   }
   
-  class Dummy implements IDummyType, Adaptable {
+  private interface IDummyType {
+    void doNothing();
+  }
+
+  private static class DummyType implements IDummyType, Adaptable {
     public void doNothing() {
     }
-    public Object getAdapter( final Class adapter ) {
+    public Object getAdapter( Class adapter ) {
       return AdapterManagerImpl.getInstance().getAdapter( this, adapter );
     }
   }
   
-  class DummyAdapter implements IDummyAdapter {
-    DummyAdapter( final IDummyType dummy ) {}
-    public void doAnyThing() {}
+  private static class DummyAdapter1 implements IDummyAdapter1 {
+    public void doAnything() {
+    }
   }
   
-  class DummyAdapter2 implements IDummyAdapter2 {
-    DummyAdapter2( final IDummyType dummy ) {}
-    public void doSomesThing() {}
-  }
-  
-  interface IDummyAdapter {
-    void doAnyThing();
-  }
-  
-  interface IDummyAdapter2 {
-    void doSomesThing();
-  }
-
-  interface IDummyType {
-    void doNothing();
+  static class DummyAdapter2 implements IDummyAdapter2 {
+    public void doSomething() {
+    }
   }
 }
