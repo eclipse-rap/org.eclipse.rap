@@ -23,13 +23,13 @@ import org.eclipse.rwt.internal.util.*;
 
 
 public class AdapterFactoryRegistry {
-  private final List factories;
-  
-  private final static class FactoryEntry {
+  private static class FactoryEntry {
     private Class factoryClass;
     private Class adaptableClass;
   }
   
+  private final List factories;
+
   public AdapterFactoryRegistry() {
     factories = new LinkedList();
   }
@@ -37,42 +37,45 @@ public class AdapterFactoryRegistry {
   public void add( Class factoryClass, Class adaptableClass ) {
     ParamCheck.notNull( factoryClass, "factoryClass" );
     ParamCheck.notNull( adaptableClass, "adaptableClass" );
+    checkFactoryClassImplementsAdapterFactory( factoryClass );
+    checkAdaptableClassImplementsAdaptable( adaptableClass );
+    checkNotYetAdded( factoryClass, adaptableClass );
+    FactoryEntry factoryEntry = new FactoryEntry();
+    factoryEntry.factoryClass = factoryClass;
+    factoryEntry.adaptableClass = adaptableClass;
+    factories.add( factoryEntry );
+  }
+
+  private static void checkFactoryClassImplementsAdapterFactory( Class factoryClass ) {
     if( !AdapterFactory.class.isAssignableFrom( factoryClass ) ) {
-      Object[] params = new Object[] {
-        factoryClass.getName(),
-        AdapterFactory.class.getName()
+      Object[] params = new Object[] { factoryClass.getName(), AdapterFactory.class.getName()
       };
       String text = "''{0}'' is not an instance of ''{1}''.";
       String msg = MessageFormat.format( text, params );
       throw new IllegalArgumentException( msg );
     }
+  }
+
+  private static void checkAdaptableClassImplementsAdaptable( Class adaptableClass ) {
     if( !Adaptable.class.isAssignableFrom( adaptableClass ) ) {
-      Object[] params = new Object[] {
-        adaptableClass.getName(),
-        Adaptable.class.getName()
-      };
+      Object[] params = new Object[] { adaptableClass.getName(), Adaptable.class.getName() };
       String text = "''{0}'' is not an instance of ''{1}''.";
       String msg = MessageFormat.format( text, params );
       throw new IllegalArgumentException( msg );
     }
+  }
+
+  private void checkNotYetAdded( Class factoryClass, Class adaptableClass ) {
     FactoryEntry[] entries = getEntries();
     for( int i = 0; i < entries.length; i++ ) {
-      if(    entries[ i ].factoryClass == factoryClass
-          && entries[ i ].adaptableClass == adaptableClass )
-      {
-        Object[] params = new Object[]{
-          factoryClass.getName(),
-          adaptableClass.getName()
-        };
+      FactoryEntry entry = entries[ i ];
+      if(  entry.factoryClass == factoryClass && entry.adaptableClass == adaptableClass ) {
+        Object[] params = new Object[]{ factoryClass.getName(), adaptableClass.getName() };
         String text = "The factory ''{0}'' was already added for the adaptable ''{1}''.";
         String msg = MessageFormat.format( text, params );
         throw new IllegalArgumentException( msg );
       }
     }
-    FactoryEntry factoryEntry = new FactoryEntry();
-    factoryEntry.factoryClass = factoryClass;
-    factoryEntry.adaptableClass = adaptableClass;
-    factories.add( factoryEntry );
   }
 
   public void register() {
