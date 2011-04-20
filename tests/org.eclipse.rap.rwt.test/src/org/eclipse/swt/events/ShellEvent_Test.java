@@ -38,6 +38,15 @@ public class ShellEvent_Test extends TestCase {
     Fixture.tearDown();
   }
   
+  public void testInitialValues() {
+    ShellEvent shellEvent = new ShellEvent( shell, ShellEvent.SHELL_CLOSED );
+    assertNull( shellEvent.data );
+    assertSame( shell.getDisplay(), shellEvent.display );
+    assertSame( shell, shellEvent.widget );
+    assertTrue( shellEvent.doit );
+    assertEquals( ShellEvent.SHELL_CLOSED, shellEvent.getID() );
+  }
+  
   public void testAddRemoveClosedListener() {
     ShellListener listener = new ShellAdapter() {
       public void shellClosed( final ShellEvent event ) {
