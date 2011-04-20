@@ -22,7 +22,7 @@ public final class LifeCycleAdapterUtil {
    * Inserts the package path segment <code>internal</code> at every possible
    * position in a given package name and appends class name + kit at the end.
    */
-  public static String[] getKitPackageVariants( final Class clazz ) {
+  public static String[] getKitPackageVariants( Class clazz ) {
     String packageName = null;
     Package packageObject = clazz.getPackage();
     if( packageObject != null ) {
@@ -32,9 +32,7 @@ public final class LifeCycleAdapterUtil {
     return getKitPackageVariants( packageName, className );
   }
 
-  static String[] getKitPackageVariants( final String packageName,
-                                         final String className )
-  {
+  static String[] getKitPackageVariants( String packageName, String className ) {
     String[] result;
     if( packageName == null || "".equals( packageName ) ) {
       StringBuffer buffer = new StringBuffer();
@@ -71,9 +69,9 @@ public final class LifeCycleAdapterUtil {
   /**
    * Returns the class name without package prefix for a given class.
    */
-  public static String getSimpleClassName( final Class clazz ) {
+  public static String getSimpleClassName( Class clazz ) {
     String className = clazz.getName();
-    int idx = className.lastIndexOf( '.' );
-    return className.substring( idx + 1 );
+    int index = className.lastIndexOf( '.' );
+    return className.substring( index + 1 );
   }
 }
