@@ -208,6 +208,21 @@ public class Shell_Test extends TestCase {
     shell.setVisible( false );
     assertEquals( "", log.toString() );
   }
+  
+  public void testCloseNotifiesShellListeners() {
+    final ShellEvent[] shellEvent = { null };
+    shell.addShellListener( new ShellAdapter() {
+      public void shellClosed( ShellEvent event ) {
+        shellEvent[ 0 ] = event;
+      }
+    } );
+    shell.open();
+    shell.close();
+    assertNotNull( shellEvent );
+    assertSame( shell, shellEvent[ 0 ].widget );
+    assertSame( shell, shellEvent[ 0 ].getSource() );
+    assertSame( shell.getDisplay(), shellEvent[ 0 ].display );
+  }
 
   public void testCloseChildShells() {
     shell.open();

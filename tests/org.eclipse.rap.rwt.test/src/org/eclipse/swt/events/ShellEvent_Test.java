@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.events;
 
 import junit.framework.TestCase;
@@ -43,13 +43,14 @@ public class ShellEvent_Test extends TestCase {
     assertNull( shellEvent.data );
     assertSame( shell.getDisplay(), shellEvent.display );
     assertSame( shell, shellEvent.widget );
+    assertSame( shell, shellEvent.getSource() );
     assertTrue( shellEvent.doit );
     assertEquals( ShellEvent.SHELL_CLOSED, shellEvent.getID() );
   }
   
   public void testAddRemoveClosedListener() {
     ShellListener listener = new ShellAdapter() {
-      public void shellClosed( final ShellEvent event ) {
+      public void shellClosed( ShellEvent event ) {
         log += SHELL_CLOSED;
       }
     };
@@ -62,7 +63,7 @@ public class ShellEvent_Test extends TestCase {
   
   public void testRemoveCloseListener() {
     ShellListener listener = new ShellAdapter() {
-      public void shellClosed( final ShellEvent event ) {
+      public void shellClosed( ShellEvent event ) {
         log += SHELL_CLOSED;
       }
     };
@@ -76,7 +77,7 @@ public class ShellEvent_Test extends TestCase {
   
   public void testDenyClose() {
     ShellListener listener = new ShellAdapter() {
-      public void shellClosed( final ShellEvent event ) {
+      public void shellClosed( ShellEvent event ) {
         // Test initial value of doit flag on ShellEvent
         assertTrue( event.doit );
         event.doit = false;
@@ -93,7 +94,7 @@ public class ShellEvent_Test extends TestCase {
 
   public void testDenyCloseWithUntypedListener() {
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         // Test initial value of doit flag on ShellEvent
         assertTrue( event.doit );
         event.doit = false;
