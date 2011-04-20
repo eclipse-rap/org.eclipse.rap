@@ -28,19 +28,17 @@ public class MeasurementUtil_Test extends TestCase {
     
     MeasurementUtil.addMeasurementItem( item );
 
-    assertEquals( 1, MeasurementUtil.getMeasurementItems().length );
-    assertSame( item, MeasurementUtil.getMeasurementItems() [ 0 ] );
-    assertTrue( createHandlerRegistrar().isRegistered() );
+    checkMeasurementItemBuffering( item );
+    checkMeasurementHandlerRegistration();
   }
-  
+
   public void testAddMeasurementItemIsIdempotent() {
     MeasurementItem item = createItem();
     
     MeasurementUtil.addMeasurementItem( item );
     MeasurementUtil.addMeasurementItem( item );
 
-    assertEquals( 1, MeasurementUtil.getMeasurementItems().length );
-    assertSame( item, MeasurementUtil.getMeasurementItems() [ 0 ] );
+    checkMeasurementItemBuffering( item );
   }
   
   public void testRegister() {
@@ -48,7 +46,7 @@ public class MeasurementUtil_Test extends TestCase {
     
     MeasurementUtil.register();
     
-    assertTrue( createHandlerRegistrar().isRegistered() );
+    checkMeasurementHandlerRegistration();
   }
   
   public void testIsDisplayRelatedUIThread() {
@@ -99,8 +97,12 @@ public class MeasurementUtil_Test extends TestCase {
     MeasurementItem item1 = createItem();
     MeasurementItem item2 = createItem( item1.getFontData(), "otherText", item1.getWrapWidth() );
 
-    assertTrue( MeasurementUtil.contains( new MeasurementItem[] { item1 }, item1 ) );
-    assertFalse( MeasurementUtil.contains( new MeasurementItem[] { item1 }, item2 ) );
+    MeasurementItem[] items = new MeasurementItem[] { item1 };
+    boolean itemsContainItem1 = MeasurementUtil.contains( items, item1 );
+    boolean itemsContainItem2 = MeasurementUtil.contains( items, item2 );
+
+    assertTrue( itemsContainItem1 );
+    assertFalse( itemsContainItem2 );
   }
   
   public void testConcatenate() {
@@ -108,8 +110,7 @@ public class MeasurementUtil_Test extends TestCase {
     
     MeasurementItem[] items = MeasurementUtil.concatenate( new MeasurementItem[ 0 ], item );
     
-    assertEquals( 1, items.length );
-    assertSame( item, items[ 0 ] );
+    checkItemConcatenation( item, items );
   }
 
   protected void setUp() throws Exception {
@@ -150,5 +151,20 @@ public class MeasurementUtil_Test extends TestCase {
   
   private Display initializeSessionWithDisplay() {
     return new Display();
+  }
+  
+  private void checkMeasurementItemBuffering( MeasurementItem item ) {
+    assertEquals( 1, MeasurementUtil.getMeasurementItems().length );
+    assertSame( item, MeasurementUtil.getMeasurementItems() [ 0 ] );
+  }
+
+  private void checkMeasurementHandlerRegistration() {
+    assertTrue( createHandlerRegistrar().isRegistered() );
+  }
+  
+
+  private void checkItemConcatenation( MeasurementItem item, MeasurementItem[] items ) {
+    assertEquals( 1, items.length );
+    assertSame( item, items[ 0 ] );
   }
 }
