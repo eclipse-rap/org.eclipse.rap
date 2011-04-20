@@ -111,7 +111,7 @@ public class PreserveWidgets_Test extends TestCase {
     final StringBuffer log = new StringBuffer();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
-      public void beforePhase( final PhaseEvent event ) {
+      public void beforePhase( PhaseEvent event ) {
         if( PhaseId.PROCESS_ACTION.equals( event.getPhaseId() ) ) {
           IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
           if( "hello".equals( adapter.getPreserved( Props.TEXT ) ) ) {
