@@ -25,22 +25,22 @@ public class MeasurementUtil_Test extends TestCase {
   public void testAddMeasurementItem() {
     new Display();
     MeasurementItem item = createItem();
+    
     MeasurementUtil.addMeasurementItem( item );
 
-    MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
-    assertEquals( 1, items.length );
-    assertSame( item, items [ 0 ] );
+    assertEquals( 1, MeasurementUtil.getMeasurementItems().length );
+    assertSame( item, MeasurementUtil.getMeasurementItems() [ 0 ] );
     assertTrue( createHandlerRegistrar().isRegistered() );
   }
   
   public void testAddMeasurementItemIsIdempotent() {
     MeasurementItem item = createItem();
+    
     MeasurementUtil.addMeasurementItem( item );
     MeasurementUtil.addMeasurementItem( item );
 
-    MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
-    assertEquals( 1, items.length );
-    assertSame( item, items [ 0 ] );
+    assertEquals( 1, MeasurementUtil.getMeasurementItems().length );
+    assertSame( item, MeasurementUtil.getMeasurementItems() [ 0 ] );
   }
   
   public void testRegister() {
@@ -53,7 +53,10 @@ public class MeasurementUtil_Test extends TestCase {
   
   public void testIsDisplayRelatedUIThread() {
     new Display();
-    assertTrue( MeasurementUtil.isDisplayRelatedUIThread() );
+    
+    boolean isDisplayRelatedUIThread = MeasurementUtil.isDisplayRelatedUIThread();
+    
+    assertTrue( isDisplayRelatedUIThread );
   }
 
   public void testIsNonDisplayRelatedUIThread() throws InterruptedException {
