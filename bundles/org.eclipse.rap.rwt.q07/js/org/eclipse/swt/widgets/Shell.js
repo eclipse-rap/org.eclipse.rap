@@ -245,6 +245,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       this.base( arguments, state );
       if( this._isRelevantState( state ) ) {
         this._captionBar.addState( state );
+        this._captionTitle.addState( state );
         this._minimizeButton.addState( state );
         this._maximizeButton.addState( state );
         this._restoreButton.addState( state );
@@ -260,6 +261,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       this.base( arguments, state );
       if( this._isRelevantState( state ) ) {
         this._captionBar.removeState( state );
+        this._captionTitle.removeState( state );
         this._minimizeButton.removeState( state );
         this._maximizeButton.removeState( state );
         this._restoreButton.removeState( state );
