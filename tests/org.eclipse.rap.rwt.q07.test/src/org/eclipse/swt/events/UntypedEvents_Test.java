@@ -27,7 +27,7 @@ public class UntypedEvents_Test extends TestCase {
   private static final String WIDGET_SELECTED = "widgetSelected";
   private static final String WIDGET_DEFAULT_SELECTED = "widgetSelected";
   
-  private String log = "";
+  private String log;
   private Display display;
   private Shell shell;
   private Button widget;
@@ -35,6 +35,7 @@ public class UntypedEvents_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    log = "";
     display = new Display();
     shell = new Shell( display, SWT.SHELL_TRIM );
     widget = new Button( shell, SWT.PUSH );
