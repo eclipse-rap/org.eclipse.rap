@@ -76,11 +76,11 @@ public class SimpleLifeCycle extends LifeCycle {
   }
 
   private static IDisplayAdapter getDisplayAdapter() {
-    IDisplayAdapter displayAdapter = null;
+    IDisplayAdapter result = null;
     Display display = LifeCycleUtil.getSessionDisplay();
     if( display != null ) {
-      displayAdapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+      result = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
     }
-    return displayAdapter;
+    return result;
   }
 }
