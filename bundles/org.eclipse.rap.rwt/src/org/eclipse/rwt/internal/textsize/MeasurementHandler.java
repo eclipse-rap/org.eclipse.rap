@@ -24,7 +24,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
 
-final class MeasurementHandler implements PhaseListener, HttpSessionBindingListener {
+class MeasurementHandler implements PhaseListener, HttpSessionBindingListener {
   private static final long serialVersionUID = 1L;
   
   private final Display display;
@@ -52,7 +52,7 @@ final class MeasurementHandler implements PhaseListener, HttpSessionBindingListe
     }
     if( afterMeasurement( event ) ) {
       applyMeasurementResults();
-      MeasurementUtil.deregister();
+      MeasurementUtil.deregisterMeasurementHandler();
     }
   }
 
@@ -131,7 +131,6 @@ final class MeasurementHandler implements PhaseListener, HttpSessionBindingListe
     readMeasuredStrings();
     recalculationEnforcement.execute();
   }
-
 
   private void writeMeasurementContent() {
     try {

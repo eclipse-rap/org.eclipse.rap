@@ -19,20 +19,20 @@ import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 
-public class MeasurementUtil {
+class MeasurementUtil {
   private static final String ITEMS = MeasurementUtil.class.getName() + "#MeasurementItems";
   private static final MeasurementItem[] EMTY_ITEMS = new MeasurementItem[ 0 ];
   
-  static void addMeasurementItem( MeasurementItem newItem ) {
-    MeasurementItem[] oldItems = getMeasurementItems();
+  static void addItemToMeasure( MeasurementItem newItem ) {
+    MeasurementItem[] oldItems = getItemsToMeasure();
     if( !contains( oldItems, newItem ) ) {
       MeasurementItem[] items = concatenate( oldItems, newItem );
-      setMeasurementItems( items );
-      MeasurementUtil.register();
+      setItemsToMeasure( items );
+      MeasurementUtil.registerMeasurementHandler();
     }
   }
 
-  static void deregister() {
+  static void deregisterMeasurementHandler() {
     createRegistrar().deregister();
   }
   
@@ -40,7 +40,7 @@ public class MeasurementUtil {
   ////////////////////////////////////////////////////////////
   // helping methods, package private for testing purpose only
 
-  static void register() {
+  static void registerMeasurementHandler() {
     // TODO [fappel]: is this check realy reasonable? And if so shouldn't we throw an exception
     //                in the else case?
     if( isDisplayRelatedUIThread() ) {
@@ -53,7 +53,7 @@ public class MeasurementUtil {
     return display != null && display.getThread() == Thread.currentThread();
   }
   
-  static MeasurementItem[] getMeasurementItems() {
+  static MeasurementItem[] getItemsToMeasure() {
     MeasurementItem[] result = ( MeasurementItem[] )getStateInfo().getAttribute( ITEMS );
     if( result == null ) {
       result = EMTY_ITEMS;
@@ -61,7 +61,7 @@ public class MeasurementUtil {
     return result;
   }
 
-  static void setMeasurementItems( MeasurementItem[] items ) {
+  static void setItemsToMeasure( MeasurementItem[] items ) {
     getStateInfo().setAttribute( ITEMS, items );
   }
 

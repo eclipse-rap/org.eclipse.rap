@@ -128,7 +128,7 @@ public class MeasurementHandler_Test extends TestCase {
 
   private void fakeMeasurementResults() {
     TestRequest request = ( TestRequest )RWT.getRequest();
-    MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
+    MeasurementItem[] items = MeasurementUtil.getItemsToMeasure();
     for( int i = 0; i < items.length; i++ ) {
       String name = String.valueOf( items[ i ].hashCode() );
       String value = "100,1" + String.valueOf( i );

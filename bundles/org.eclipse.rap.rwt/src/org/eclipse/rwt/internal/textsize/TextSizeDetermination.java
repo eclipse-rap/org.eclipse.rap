@@ -97,7 +97,7 @@ public class TextSizeDetermination {
           throw new IllegalStateException( "Unknown estimation mode." );
         }
       }
-      MeasurementUtil.addMeasurementItem( new MeasurementItem( toMeasure, fontData, wrapWidth ) );
+      MeasurementUtil.addItemToMeasure( new MeasurementItem( toMeasure, fontData, wrapWidth ) );
     }
     // TODO [rst] Still returns wrong result for texts that contain only
     //            whitespace (and possibly more that one line)

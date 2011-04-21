@@ -22,29 +22,29 @@ import org.eclipse.swt.widgets.Display;
 
 public class MeasurementUtil_Test extends TestCase {
   
-  public void testAddMeasurementItem() {
+  public void testAddItemToMeasure() {
     initializeSessionWithDisplay();
     MeasurementItem item = createItem();
     
-    MeasurementUtil.addMeasurementItem( item );
+    MeasurementUtil.addItemToMeasure( item );
 
     checkMeasurementItemBuffering( item );
     checkMeasurementHandlerRegistration();
   }
 
-  public void testAddMeasurementItemIsIdempotent() {
+  public void testAddItemToMeasureIsIdempotent() {
     MeasurementItem item = createItem();
     
-    MeasurementUtil.addMeasurementItem( item );
-    MeasurementUtil.addMeasurementItem( item );
+    MeasurementUtil.addItemToMeasure( item );
+    MeasurementUtil.addItemToMeasure( item );
 
     checkMeasurementItemBuffering( item );
   }
   
-  public void testRegister() {
+  public void testRegisterMeasurementHandler() {
     initializeSessionWithDisplay();
     
-    MeasurementUtil.register();
+    MeasurementUtil.registerMeasurementHandler();
     
     checkMeasurementHandlerRegistration();
   }
@@ -65,17 +65,17 @@ public class MeasurementUtil_Test extends TestCase {
     assertFalse( isDisplayRelatedUIThread );
   }
   
-  public void testGetAndSetOfMeasurementItems() {
+  public void testGetAndSetOfItemsToMeasure() {
     MeasurementItem item = createItem();
     
-    MeasurementUtil.setMeasurementItems( new MeasurementItem[] { item } );
-    MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
+    MeasurementUtil.setItemsToMeasure( new MeasurementItem[] { item } );
+    MeasurementItem[] items = MeasurementUtil.getItemsToMeasure();
     
     assertSame( item, items[ 0 ] );
   }
   
-  public void testGetMeasurementItemsWithEmptyResult() {
-    MeasurementItem[] items = MeasurementUtil.getMeasurementItems();
+  public void testGetItemsToMeasureWithEmptyResult() {
+    MeasurementItem[] items = MeasurementUtil.getItemsToMeasure();
     
     assertEquals( 0, items.length );
   }
@@ -154,8 +154,8 @@ public class MeasurementUtil_Test extends TestCase {
   }
   
   private void checkMeasurementItemBuffering( MeasurementItem item ) {
-    assertEquals( 1, MeasurementUtil.getMeasurementItems().length );
-    assertSame( item, MeasurementUtil.getMeasurementItems() [ 0 ] );
+    assertEquals( 1, MeasurementUtil.getItemsToMeasure().length );
+    assertSame( item, MeasurementUtil.getItemsToMeasure() [ 0 ] );
   }
 
   private void checkMeasurementHandlerRegistration() {
