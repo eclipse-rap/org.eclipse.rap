@@ -1098,13 +1098,16 @@ qx.Class.define("qx.ui.form.TextField",
         }
 
         var vRange = this.__getRange();
-        var len = this._inputElement.value.length;
+        var vRange2 = vRange.duplicate();
 
         // Weird Internet Explorer statement
-        vRange.moveToBookmark(vSelectionRange.getBookmark());
-        vRange.moveEnd('character', len);
+        vRange2.moveToBookmark( vSelectionRange.getBookmark() );
+        vRange.setEndPoint( 'EndToStart', vRange2 );
+        // for some reason IE doesn’t always count the \n and \r in the length
+        var textPart = vSelectionRange.text.replace( /[\r\n]/g, '.' );
+        var textWhole = this._inputElement.value.replace( /[\r\n]/g, '.' );
 
-        return len - vRange.text.length;
+        return textWhole.indexOf( textPart, vRange.text.length );
       },
 
       "gecko" : function()

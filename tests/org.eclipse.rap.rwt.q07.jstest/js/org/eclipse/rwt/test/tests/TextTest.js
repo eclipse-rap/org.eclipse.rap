@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
@@ -159,12 +160,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setWrap( true );
       var wrapProperty = "";
       var wrapAttribute = "";
-      try{
+      try {
         wrapProperty = text._inputElement.wrap;
-      }catch( ex ){}
-      try{
+      } catch( ex ) {}
+      try {
         wrapAttribute = text._inputElement.getAttribute( "wrap" );
-      }catch( ex ){}
+      } catch( ex ) {}
       assertTrue( wrapProperty == "soft" || wrapAttribute == "soft" );
       text.setParent( null );
       text.destroy();
@@ -172,7 +173,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       testUtil.clearTimerOnceLog();
     },
     
-    testTextAreaMaxLength : qx.core.Variant.select("qx.client", {
+    testTextAreaMaxLength : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         // NOTE: This test would fail in IE because it has a bug that sometimes
         // prevents a textFields value from being overwritten and read in the 
@@ -219,7 +220,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         testUtil.flush();
         testUtil.clearTimerOnceLog();
       }
-    } )
+    } ),
+
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=330857 
+    testGetSelectionWithLineBreakAtTheEnd : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.prepareTimerUse();
+      var text = new org.eclipse.rwt.widgets.Text( true );
+      org.eclipse.swt.TextUtil.initialize( text );
+      text.setValue( "0123456789\r\n" );
+      text.addToDocument();
+      testUtil.flush();
+      text.setFocused( true );
+      text.setSelectionStart( 0 );
+      text.setSelectionLength( 5 );
+      assertEquals( 0, text.getSelectionStart() );
+    }
 
   }
   
