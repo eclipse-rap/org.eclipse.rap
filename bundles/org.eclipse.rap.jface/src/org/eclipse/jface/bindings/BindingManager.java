@@ -46,7 +46,7 @@ import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.contexts.IContextIds;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.Util;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -2200,7 +2200,7 @@ public final class BindingManager extends HandleObjectManager implements
         if( display == null ) {
           throw new IllegalStateException();
         }
-        display.setData( DisplayUtil.KEYBINDING_LIST, array );
+        display.setData( RWT.ACTIVE_KEYS, array );
 	  }
 	}
 	// ENDRAP [if]

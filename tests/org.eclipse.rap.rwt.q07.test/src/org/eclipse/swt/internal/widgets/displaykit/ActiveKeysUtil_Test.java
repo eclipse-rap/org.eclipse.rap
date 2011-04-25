@@ -16,6 +16,7 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -24,7 +25,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
 
-public class KeyBindingUtil_Test extends TestCase {
+public class ActiveKeysUtil_Test extends TestCase {
 
   private Display display;
 
@@ -38,35 +39,38 @@ public class KeyBindingUtil_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  public void testPreserveKeyBindingsEmpty() {
+    Fixture.markInitialized( display );
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+
+    Fixture.preserveWidgets();
+
+    assertNull( adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS ) );
+  }
+
   public void testPreserveKeyBindings() {
     Fixture.markInitialized( display );
-    Fixture.preserveWidgets();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    String[] value = ( String[] )adapter.getPreserved( KeyBindingUtil.PROP_KEYBINDING_LIST );
-    assertNull( value );
-    Fixture.clearPreserved();
-    String[] keyBindings = new String[] {
-      "CTRL+A"
-    };
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
+
+    String[] keyBindings = new String[] { "CTRL+A" };
+    display.setData( RWT.ACTIVE_KEYS, keyBindings );
     Fixture.preserveWidgets();
-    adapter = DisplayUtil.getAdapter( display );
-    value = ( String[] )adapter.getPreserved( KeyBindingUtil.PROP_KEYBINDING_LIST );
-    assertTrue( Arrays.equals( keyBindings, value ) );
-    Fixture.clearPreserved();
+
+    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS );
+    assertTrue( Arrays.equals( keyBindings, preserved ) );
   }
 
   public void testKeyBindingsSafeCopy() {
     Fixture.markInitialized( display );
-    String[] keyBindings = new String[] {
-      "CTRL+A"
-    };
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+
+    String[] keyBindings = new String[] { "CTRL+A" };
+    display.setData( RWT.ACTIVE_KEYS, keyBindings );
     Fixture.preserveWidgets();
     keyBindings[ 0 ] = "CTRL+B";
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    String[] value = ( String[] )adapter.getPreserved( KeyBindingUtil.PROP_KEYBINDING_LIST );
-    assertEquals( "CTRL+A", value[ 0 ] );
+
+    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS );
+    assertEquals( "CTRL+A", preserved[ 0 ] );
   }
 
   public void testNoKeyEventsForIllegalWidgetId() {
@@ -81,11 +85,13 @@ public class KeyBindingUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "32" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "ctrl,alt" );
+
     Fixture.readDataAndProcessAction( display );
+
     assertEquals( 0, log.size() );
   }
 
-  public void testReadKeyBindingEvents() {
+  public void testReadKeyBindingEvents_CtrlAltSpace() {
     final ArrayList log = new ArrayList();
     display.addFilter( SWT.KeyDown, new Listener() {
       public void handleEvent( final Event event ) {
@@ -97,30 +103,45 @@ public class KeyBindingUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "32" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "ctrl,alt" );
+    
     Fixture.readDataAndProcessAction( display );
+    
     assertEquals( 1, log.size() );
-    Event event1 = ( Event )log.get( 0 );
-    assertEquals( SWT.KeyDown, event1.type );
-    assertEquals( null, event1.widget );
-    assertEquals( 32, event1.keyCode );
-    assertEquals( 32, event1.character );
-    assertEquals( SWT.CTRL | SWT.ALT, event1.stateMask );
+    Event event = ( Event )log.get( 0 );
+    assertEquals( SWT.KeyDown, event.type );
+    assertEquals( null, event.widget );
+    assertEquals( 32, event.keyCode );
+    assertEquals( ' ', event.character );
+    assertEquals( SWT.CTRL | SWT.ALT, event.stateMask );
+  }
+
+  public void testReadKeyBindingEvents_AltShiftF5() {
+    final ArrayList log = new ArrayList();
+    display.addFilter( SWT.KeyDown, new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event );
+      }
+    } );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, "w1" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "116" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "alt,shift" );
+
     Fixture.readDataAndProcessAction( display );
-    assertEquals( 2, log.size() );
-    Event event2 = ( Event )log.get( 1 );
-    assertEquals( SWT.KeyDown, event2.type );
-    assertEquals( null, event1.widget );
-    assertEquals( SWT.F5, event2.keyCode );
-    assertEquals( 0, event2.character );
-    assertEquals( SWT.SHIFT | SWT.ALT, event2.stateMask );
+
+    assertEquals( 1, log.size() );
+    Event event = ( Event )log.get( 0 );
+    assertEquals( SWT.KeyDown, event.type );
+    assertEquals( null, event.widget );
+    assertEquals( SWT.F5, event.keyCode );
+    assertEquals( 0, event.character );
+    assertEquals( SWT.SHIFT | SWT.ALT, event.stateMask );
   }
 
   public void testWriteKeyBindings() {
+    Fixture.fakeNewRequest();
+
     String[] keyBindings = new String[] {
       "ALT+'",
       "CTRL+INSERT",
@@ -129,9 +150,9 @@ public class KeyBindingUtil_Test extends TestCase {
       "CTRL+ALT+.",
       "F1"
     };
-    Fixture.fakeNewRequest();
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
-    KeyBindingUtil.writeKeyBindings( display );
+    display.setData( RWT.ACTIVE_KEYS, keyBindings );
+    ActiveKeysUtil.writeActiveKeys( display );
+
     String expected
       =   "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({"
         + "\"ALT+222\":true,"
@@ -145,13 +166,13 @@ public class KeyBindingUtil_Test extends TestCase {
   }
 
   public void testWriteKeyBindings_UnrecognizedKey() {
-    String[] keyBindings = new String[] {
-      "ALT+ABC"
-    };
     Fixture.fakeNewRequest();
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
+
+    String[] keyBindings = new String[] { "ALT+ABC" };
+    display.setData( RWT.ACTIVE_KEYS, keyBindings );
+    
     try {
-      KeyBindingUtil.writeKeyBindings( display );
+      ActiveKeysUtil.writeActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -159,13 +180,12 @@ public class KeyBindingUtil_Test extends TestCase {
   }
 
   public void testWriteKeyBindings_UnrecognizedModifier() {
-    String[] keyBindings = new String[] {
-      "ALT+CONTROL+A"
-    };
     Fixture.fakeNewRequest();
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
+
+    display.setData( RWT.ACTIVE_KEYS, new String[] { "ALT+CONTROL+A" } );
+    
     try {
-      KeyBindingUtil.writeKeyBindings( display );
+      ActiveKeysUtil.writeActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -173,15 +193,17 @@ public class KeyBindingUtil_Test extends TestCase {
   }
 
   public void testWriteKeyBindings_EmptyKeyBinding() {
+    Fixture.fakeNewRequest();
+
     String[] keyBindings = new String[] {
       "CTRL+A",
       "",
       "ALT+INSERT"
     };
-    Fixture.fakeNewRequest();
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
+    display.setData( RWT.ACTIVE_KEYS, keyBindings );
+
     try {
-      KeyBindingUtil.writeKeyBindings( display );
+      ActiveKeysUtil.writeActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -189,15 +211,17 @@ public class KeyBindingUtil_Test extends TestCase {
   }
 
   public void testWriteKeyBindings_NullKeyBinding() {
+    Fixture.fakeNewRequest();
+
     String[] keyBindings = new String[] {
       "CTRL+A",
       null,
       "ALT+INSERT"
     };
-    Fixture.fakeNewRequest();
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
+    display.setData( RWT.ACTIVE_KEYS, keyBindings );
+
     try {
-      KeyBindingUtil.writeKeyBindings( display );
+      ActiveKeysUtil.writeActiveKeys( display );
       fail( "Should throw NullPointerException" );
     } catch( NullPointerException e ) {
       // expected
@@ -205,11 +229,12 @@ public class KeyBindingUtil_Test extends TestCase {
   }
 
   public void testWriteKeyBindings_InvalidKeyBindingListClass() {
-    Integer keyBindings = new Integer( 123 );
     Fixture.fakeNewRequest();
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
+
+    display.setData( RWT.ACTIVE_KEYS, new Integer( 123 ) );
+
     try {
-      KeyBindingUtil.writeKeyBindings( display );
+      ActiveKeysUtil.writeActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -218,29 +243,26 @@ public class KeyBindingUtil_Test extends TestCase {
 
   public void testWriteKeyBindings_NullKeyBindingList() {
     Fixture.markInitialized( display );
-    String[] keyBindings = new String[] {
-      "CTRL+E"
-    };
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
+    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+E" } );
     Fixture.preserveWidgets();
     Fixture.fakeNewRequest();
-    display.setData( DisplayUtil.KEYBINDING_LIST, null );
-    KeyBindingUtil.writeKeyBindings( display );
+
+    display.setData( RWT.ACTIVE_KEYS, null );
+    ActiveKeysUtil.writeActiveKeys( display );
+
     String expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
-  public void testWriteKeyBindings_EmptylKeyBindingList() {
+  public void testWriteKeyBindings_EmptyKeyBindingList() {
     Fixture.markInitialized( display );
-    String[] keyBindings = new String[] {
-      "CTRL+E"
-    };
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
+    display.setData( RWT.ACTIVE_KEYS, new String[] { "CTRL+E" } );
     Fixture.preserveWidgets();
     Fixture.fakeNewRequest();
-    keyBindings = new String[ 0 ];
-    display.setData( DisplayUtil.KEYBINDING_LIST, keyBindings );
-    KeyBindingUtil.writeKeyBindings( display );
+
+    display.setData( RWT.ACTIVE_KEYS, new String[ 0 ] );
+    ActiveKeysUtil.writeActiveKeys( display );
+
     String expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
     assertEquals( expected, Fixture.getAllMarkup() );
   }

@@ -90,7 +90,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     readBounds( display );
     readCursorLocation( display );
     readFocusControl( display );
-    KeyBindingUtil.readKeyBindingEvents( display );
+    ActiveKeysUtil.readKeyEvents( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
         IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
@@ -119,7 +119,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     adapter.preserve( PROP_CURR_THEME, ThemeUtil.getCurrentThemeId() );
     adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
-    KeyBindingUtil.preserveKeyBindings( display );
+    ActiveKeysUtil.preserveActiveKeys( display );
     if( adapter.isInitialized() ) {
       Shell[] shells = getShells( display );
       for( int i = 0; i < shells.length; i++ ) {
@@ -149,7 +149,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       writeFocus( display );
       writeUICallBackActivation( display );
       markInitialized( display );
-      KeyBindingUtil.writeKeyBindings( display );
+      ActiveKeysUtil.writeActiveKeys( display );
     }
   }
   

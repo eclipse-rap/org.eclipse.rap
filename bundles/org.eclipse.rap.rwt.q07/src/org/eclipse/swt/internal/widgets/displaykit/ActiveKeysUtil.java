@@ -14,6 +14,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -28,9 +29,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 
 
-public final class KeyBindingUtil {
+public final class ActiveKeysUtil {
 
-  private static final String JSFUNC_SET_KEYBINDING_LIST
+  private static final String JSFUNC_SET_ACTIVE_KEYS
     = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings";
 
   private static final Map KEY_MAP = new HashMap();
@@ -101,18 +102,18 @@ public final class KeyBindingUtil {
   private final static String CTRL = "CTRL+";
   private final static String SHIFT = "SHIFT+";
 
-  final static String PROP_KEYBINDING_LIST = "keyBindingList";
+  final static String PROP_ACTIVE_KEYS = "activeKeys";
 
-  private KeyBindingUtil() {
+  private ActiveKeysUtil() {
     // prevent instantiation
   }
 
-  static void preserveKeyBindings( Display display ) {
+  static void preserveActiveKeys( Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    adapter.preserve( PROP_KEYBINDING_LIST, getKeyBindingList( display ) );
+    adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( display ) );
   }
 
-  static void readKeyBindingEvents( final Display display ) {
+  static void readKeyEvents( final Display display ) {
     if( wasEventSent( JSConst.EVENT_KEY_DOWN ) ) {
       final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
       final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
@@ -126,52 +127,54 @@ public final class KeyBindingUtil {
     }
   }
 
-  static void writeKeyBindings( Display display ) {
+  static void writeActiveKeys( Display display ) {
     if( !display.isDisposed() ) {
-      String[] newValue = getKeyBindingList( display );
-      if( hasKeyBindingListChanged( display, newValue ) ) {
-        StringBuffer content = new StringBuffer();
-        content.append( JSFUNC_SET_KEYBINDING_LIST );
-        content.append( "(" );
-        content.append( toJson( newValue ) );
-        content.append( ");" );
-        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-        responseWriter.write( content.toString() );
+      IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+      String[] newValue = getActiveKeys( display );
+      String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
+      boolean hasChanged = !Arrays.equals( oldValue, newValue );
+      if( hasChanged ) {
+        writeActiveKeys( newValue );
       }
     }
   }
 
-  private static boolean hasKeyBindingListChanged( Display display, String[] newValue ) {
-    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    String[] oldValue = ( String[] )adapter.getPreserved( PROP_KEYBINDING_LIST );
-    return !Arrays.equals( oldValue, newValue );
+  private static void writeActiveKeys( String[] newValue ) {
+    StringBuffer jsCode = new StringBuffer();
+    jsCode.append( JSFUNC_SET_ACTIVE_KEYS );
+    jsCode.append( "(" );
+    jsCode.append( toJson( newValue ) );
+    jsCode.append( ");" );
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
+    responseWriter.write( jsCode.toString() );
   }
 
-  private static String[] getKeyBindingList( Display display ) {
+  private static String[] getActiveKeys( Display display ) {
     String[] result = null;
-    Object data = display.getData( DisplayUtil.KEYBINDING_LIST );
+    Object data = display.getData( RWT.ACTIVE_KEYS );
     if( data != null ) {
       if( data instanceof String[] ) {
-        String[] keyBindingList = ( String[] )data;
-        result = new String[ keyBindingList.length ];
-        System.arraycopy( keyBindingList, 0, result, 0, keyBindingList.length );
+        String[] activeKeys = ( String[] )data;
+        result = new String[ activeKeys.length ];
+        System.arraycopy( activeKeys, 0, result, 0, activeKeys.length );
       } else {
-        throw new IllegalArgumentException( "Key binding list should be a string array" );
+        String mesg = "Illegal value for RWT.ACTIVE_KEYS in display data, must be a string array";
+        throw new IllegalArgumentException( mesg );
       }
     }
     return result;
   }
 
-  private static String toJson( String[] keyBindingList ) {
+  private static String toJson( String[] activeKeys ) {
     StringBuffer json = new StringBuffer();
     json.append( "{" );
-    if( keyBindingList != null ) {
-      for( int i = 0; i < keyBindingList.length; i++ ) {
+    if( activeKeys != null ) {
+      for( int i = 0; i < activeKeys.length; i++ ) {
         json.append( "\"" );
-        json.append( translateKeyBinding( keyBindingList[ i ] ) );
+        json.append( translateKeySequence( activeKeys[ i ] ) );
         json.append( "\":true" );
-        if( i < keyBindingList.length - 1 ) {
+        if( i < activeKeys.length - 1 ) {
           json.append( "," );
         }
       }
@@ -180,21 +183,21 @@ public final class KeyBindingUtil {
     return json.toString();
   }
 
-  private static String translateKeyBinding( String keyBinding ) {
-    if( keyBinding == null ) {
+  private static String translateKeySequence( String keySequence ) {
+    if( keySequence == null ) {
       throw new NullPointerException( "Null argument" );
     }
-    if( keyBinding.trim().length() == 0 ) {
-      throw new IllegalArgumentException( "Empty key binding definition" );
+    if( keySequence.trim().length() == 0 ) {
+      throw new IllegalArgumentException( "Empty key sequence definition found" );
     }
-    int lastPlusIndex = keyBinding.lastIndexOf( "+" );
+    int lastPlusIndex = keySequence.lastIndexOf( "+" );
     String modifierPart = "";
     String keyPart = "";
     if( lastPlusIndex != -1 ) {
-      modifierPart = keyBinding.substring( 0, lastPlusIndex + 1 );
-      keyPart = keyBinding.substring( lastPlusIndex + 1 );
+      modifierPart = keySequence.substring( 0, lastPlusIndex + 1 );
+      keyPart = keySequence.substring( lastPlusIndex + 1 );
     } else {
-      keyPart = keyBinding;
+      keyPart = keySequence;
     }
     return getModifierKeys( modifierPart ) + getKeyCode( keyPart );
   }
@@ -212,7 +215,7 @@ public final class KeyBindingUtil {
       result.append( SHIFT );
     }
     if( modifier.length() != result.length() ) {
-      throw new IllegalArgumentException( "Unrecognized modifier: " + modifier );
+      throw new IllegalArgumentException( "Unrecognized modifier found in key sequence: " + modifier );
     }
     return result.toString();
   }
@@ -257,8 +260,7 @@ public final class KeyBindingUtil {
   }
 
   private static IFilterEntry[] getFilterEntries( Display display ) {
-    IDisplayAdapter adapter
-      = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
     return adapter.getFilters();
   }
 

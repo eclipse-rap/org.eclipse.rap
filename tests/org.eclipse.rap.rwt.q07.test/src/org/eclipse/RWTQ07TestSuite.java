@@ -150,7 +150,7 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( CanvasLCA_Test.class );
     suite.addTestSuite( GCOperationWriter_Test.class );
     suite.addTestSuite( ToolTipLCA_Test.class );
-    suite.addTestSuite( KeyBindingUtil_Test.class );
+    suite.addTestSuite( ActiveKeysUtil_Test.class );
     suite.addTestSuite( FileUploadLCA_Test.class );
     suite.addTestSuite( ClientResources_Test.class );
     return suite;

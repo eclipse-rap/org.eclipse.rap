@@ -21,7 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.LifeCycle;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -33,7 +34,7 @@ import org.eclipse.rwt.service.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
-
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * This class provides access to aspects of RWT which are not
@@ -167,7 +168,51 @@ public final class RWT {
       return result;
     }
   }
-  
+
+  /**
+   * The property to use in <code>Display.setData()</code> in order to activate global key events
+   * for certain key sequences. The value for this property has to be an array of Strings, each
+   * representing a key sequence. When this property is set on the display, the client will be
+   * instructed to issue events for the given key sequences. These key events can be captured using
+   * <code>Display.addFilter()</code>.
+   * <p>
+   * Valid strings for key sequences consist of one or more keys, separated by <code>+</code>. Keys
+   * can be identified by their character, i.e. upper case letters, digits, or one of the special
+   * characters <code>, . / \ [ ] ` '</code>. Moreover, the following keywords can be used to refer
+   * to special keys: <code>BACKSPACE</code>, <code>TAB</code>, <code>RETURN</code>,
+   * <code>ENTER</code>, <code>ESCAPE</code>, <code>SPACE</code>, <code>PAGE_UP</code>,
+   * <code>PAGE_DOWN</code>, <code>END</code>, <code>HOME</code>, <code>ARROW_LEFT</code>,
+   * <code>ARROW_UP</code>, <code>ARROW_RIGHT</code>, <code>ARROW_DOWN</code>, <code>INSERT</code>,
+   * <code>DELETE</code>, <code>F1</code>, <code>F2</code>, <code>F3</code>, <code>F4</code>,
+   * <code>F5</code>, <code>F6</code>, <code>F7</code>, <code>F8</code>, <code>F9</code>,
+   * <code>F10</code>, <code>F11</code>, <code>F12</code>, Valid modifier keys are
+   * <code>SHIFT</code>, <code>ALT</code>, and <code>CTRL</code>.
+   * </p>
+   * Examples: <code>&quot;A&quot;</code>, <code>&quot;F12&quot;</code>,
+   * <code>&quot;CTRL+1&quot;</code>, <code>&quot;ALT+ARROW_DOWN&quot;</code>,
+   * <code>&quot;ALT+SHIFT+X&quot;</code>.
+   * <p>
+   * </p>
+   * <p>
+   * Example code for implementing a key binding: <code><pre>
+   * display.setData( RWT.ACTIVE_KEYS, new String[] { &quot;CTRL+1&quot;, &quot;CTRL+2&quot; } );
+   * display.addFilter( SWT.KeyDown, new Listener() {
+   *   public void handleEvent( Event event ) {
+   *     boolean ctrlPressed = ( event.stateMask &amp; SWT.Ctrl ) != 0;
+   *     if( ctrlPressed &amp;&amp; event.character == '1' ) {
+   *       // handle Ctrl+1
+   *     }
+   *   }
+   * } );
+   * </pre></code>
+   * </p>
+   * 
+   * @see Display#setData(String,Object)
+   * @see Display#addFilter(int, Listener)
+   * @since 1.4
+   */
+  public static final String ACTIVE_KEYS = "org.eclipse.rap.rwt.activeKeys";
+
   /**
    * Returns the instance of the life cycle which is currently processed.
    * 
