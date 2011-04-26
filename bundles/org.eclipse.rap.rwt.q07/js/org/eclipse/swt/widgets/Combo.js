@@ -413,10 +413,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // Mouse events handling methods
     
     _reDispatch : function( event ) {
-      var original = event.getTarget();
-      if( !this.contains( original ) ) {
+      var originalTarget = event.getTarget();
+      var originalTargetParent = originalTarget.getParent();
+      if(    originalTargetParent === this._list
+          || originalTargetParent === this._list._vertScrollBar )
+      {
         // TODO [tb] : should be disposed automatically, test
-        original.dispatchEvent( event, false );
+        originalTarget.dispatchEvent( event, false );
         event.stopPropagation();
       }
     },

@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
@@ -91,6 +92,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       testUtil.flush();
       assertFalse( combo._list.isSeeable() );
       combo.destroy();
+    },
+
+    // bug 343532
+    testEventRedispatch : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      var otherCombo = this._createDefaultCombo();
+      otherCombo.setSpace( 239, 81, 36, 23 );
+      combo.setListVisible( true );
+      testUtil.flush();
+      assertTrue( combo._list.isSeeable() );
+      testUtil.click( otherCombo._field );
+      testUtil.flush();
+      assertFalse( combo._list.isSeeable() );
+      assertFalse( otherCombo._list.isSeeable() );
+      combo.destroy();
+      otherCombo.destroy();
+    },
+
+    // bug 343557
+    testEventRedispatch_2 : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.setListVisible( true );
+      var checkbox = new org.eclipse.rwt.widgets.Button( "check" );
+      checkbox.addState( "rwt_CHECK" );
+      checkbox.addToDocument();
+      checkbox.setEnabled( false );
+      testUtil.flush();
+      assertTrue( combo._list.isSeeable() );
+      assertFalse( checkbox.getEnabled() );
+      assertFalse( checkbox.hasState( "selected" ) );
+      testUtil.click( checkbox );
+      assertFalse( combo._list.isSeeable() );
+      assertFalse( checkbox.hasState( "selected" ) );
+      combo.destroy();
+      checkbox.destroy();
     },
 
     testButtonClick : function() {
