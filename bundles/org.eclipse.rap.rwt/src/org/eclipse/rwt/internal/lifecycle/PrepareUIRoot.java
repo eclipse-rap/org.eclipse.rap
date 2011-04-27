@@ -12,7 +12,6 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
 import org.eclipse.rwt.lifecycle.PhaseId;
 
 
@@ -36,7 +35,6 @@ final class PrepareUIRoot implements IPhase {
   }
 
   private static void createUI( String entryPointName ) {
-    TextSizeDetermination.readStartupProbes();
     RWTFactory.getEntryPointManager().createUI( entryPointName );
   }
 }

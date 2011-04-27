@@ -51,7 +51,7 @@ public class TextSizeDetermination_Test extends TestCase {
     assertEquals( 1, items.length );
 
     Point storedSize = new Point( 100, 10 );
-    Probe[] probeRequests = TextSizeProbeStore.getProbeRequests();
+    Probe[] probeRequests = TextSizeProbeStore.getProbesToMeasure();
     assertEquals( 1, probeRequests.length );
     assertEquals( font.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
@@ -100,7 +100,7 @@ public class TextSizeDetermination_Test extends TestCase {
   }
 
   public void testCharHeight() {
-    Probe[] probeRequests = TextSizeProbeStore.getProbeRequests();
+    Probe[] probeRequests = TextSizeProbeStore.getProbesToMeasure();
     assertEquals( 0, probeRequests.length );
 
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
@@ -108,7 +108,7 @@ public class TextSizeDetermination_Test extends TestCase {
     int estimated = TextSizeEstimation.getCharHeight( font0 );
     assertEquals( estimated, calculated, 0 );
 
-    probeRequests = TextSizeProbeStore.getProbeRequests();
+    probeRequests = TextSizeProbeStore.getProbesToMeasure();
     assertEquals( 1, probeRequests.length );
     assertEquals( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
@@ -120,7 +120,7 @@ public class TextSizeDetermination_Test extends TestCase {
   }
 
   public void testAvgCharWidth() {
-    Probe[] probeRequests = TextSizeProbeStore.getProbeRequests();
+    Probe[] probeRequests = TextSizeProbeStore.getProbesToMeasure();
     assertEquals( 0, probeRequests.length );
 
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
@@ -128,7 +128,7 @@ public class TextSizeDetermination_Test extends TestCase {
     float estimated = TextSizeEstimation.getAvgCharWidth( font0 );
     assertEquals( estimated, calculated, 0 );
 
-    probeRequests = TextSizeProbeStore.getProbeRequests();
+    probeRequests = TextSizeProbeStore.getProbesToMeasure();
     assertEquals( 1, probeRequests.length );
     assertEquals( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
@@ -182,7 +182,7 @@ public class TextSizeDetermination_Test extends TestCase {
   }
 
   private Probe findRequestedProbe( int i ) {
-    Probe[] probeRequests = TextSizeProbeStore.getProbeRequests();
+    Probe[] probeRequests = TextSizeProbeStore.getProbesToMeasure();
     return textSizeProbeStore.getProbe( probeRequests[ i ].getFontData() );
   }
 

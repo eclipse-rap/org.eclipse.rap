@@ -28,14 +28,14 @@ class BufferScrolledCompositeOriginsVisitor extends AllWidgetTreeVisitor {
 
   private void bufferOrigin( ScrolledComposite composite ) {
     Point origin = composite.getOrigin();
-    composite.setData( RecalculationEnforcement.KEY_SCROLLED_COMPOSITE_ORIGIN, origin );
+    composite.setData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_ORIGIN, origin );
   }
 
   private void bufferContentSize( ScrolledComposite composite ) {
     Control content = composite.getContent();
     if( content != null ) {
       Point size = content.getSize();
-      content.setData( RecalculationEnforcement.KEY_SCROLLED_COMPOSITE_CONTENT_SIZE, size );
+      content.setData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_CONTENT_SIZE, size );
     }
   }
 }

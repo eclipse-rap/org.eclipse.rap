@@ -2398,6 +2398,11 @@
         point="org.eclipse.rap.ui.phaselistener">
      <listener class="org.eclipse.rwt.internal.lifecycle.CurrentPhase$Listener"/>
   </extension>
+  <extension
+        id="org.eclipse.ui.workbench.textSizeMeasurementListener"
+        point="org.eclipse.rap.ui.phaselistener">
+     <listener class="org.eclipse.rwt.internal.textsize.TextSizeMeasurementListener"/>
+  </extension>
 
    <extension
          point="org.eclipse.rap.ui.themes">

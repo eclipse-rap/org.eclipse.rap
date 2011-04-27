@@ -25,7 +25,7 @@ final class TextSizeDataBase {
       Integer key = getKey( font, string, wrapWidth );
       result = RWTFactory.getTextSizeStorageRegistry().obtain().lookupTextSize( key );
     } else {
-      TextSizeProbeStore.addProbeRequest( font );
+      TextSizeProbeStore.addProbeToMeasure( font );
     }
     return result;
   }

@@ -22,19 +22,21 @@ import org.eclipse.swt.graphics.FontData;
 
 
 public final class TextSizeDeterminationFacadeImpl extends TextSizeDeterminationFacade {
+  private static final String FUNCTION_MEASURE_STRINGS
+    = "org.eclipse.swt.FontSizeCalculation.measureStrings";
+  private static final String FUNCTION_PROBE
+    = "org.eclipse.swt.FontSizeCalculation.probe";
 
   public String getStartupProbeCodeInternal() {
     StringBuffer result = new StringBuffer();
     Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
     if( probeList.length > 0 ) {
-      result.append( "org.eclipse.swt.FontSizeCalculation.probe(" );
-      result.append( "[ " );
+      result.append( FUNCTION_PROBE );
+      result.append( "( [ " );
       for( int i = 0; i < probeList.length; i++ ) {
         Probe probe = probeList[ i ];
         result.append( createProbeParamFragment( probe ) );
-        if( i < probeList.length - 1 ) {
-          result.append( ", " );
-        }
+        result.append( getParamFragmentSeparator( i, probeList.length ) );
       }
       result.append( " ] );" );
     }
@@ -46,70 +48,62 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     // TODO [fappel]: revise this - text escape may cause inaccurate calculations
     String result = WidgetLCAUtil.escapeText( string, true );
     String newLineReplacement = expandNewLines ? "<br/>" : " ";
-    result = WidgetLCAUtil.replaceNewLines( result, newLineReplacement );
-    return result;
+    return WidgetLCAUtil.replaceNewLines( result, newLineReplacement );
   }
 
   public MeasurementItem[] writeStringMeasurementsInternal() throws IOException {
     MeasurementItem[] items = MeasurementUtil.getItemsToMeasure();
     if( items.length > 0 ) {
-      JSWriter writer = JSWriter.getWriterForResetHandler();
       StringBuffer param = new StringBuffer();
       param.append( "[ " );
       for( int i = 0; i < items.length; i++ ) {
-        param.append( "[ " );
-        MeasurementItem item = items[ i ];
-        param.append( item.hashCode() );
-        param.append( ", " );
-        param.append( "\"" );
-        String textToMeasure = item.getTextToMeasure();
-        textToMeasure = EncodingUtil.escapeDoubleQuoted( textToMeasure );
-        textToMeasure = EncodingUtil.escapeLeadingTrailingSpaces( textToMeasure );
-        param.append( textToMeasure );
-        param.append( "\", " );
-        param.append( createFontParam( item.getFontData() ) );
-        param.append( ", " );
-        param.append( item.getWrapWidth() );
-        param.append( " ]" );
-        if( i < items.length - 1 ) {
-          param.append( ", " );
-        }
+        param.append( createItemParamFragment( items[ i ] ) );
+        param.append( getParamFragmentSeparator( i, items.length ) );
       }
       param.append( " ]" );
-      String funcName = "org.eclipse.swt.FontSizeCalculation.measureStrings";
-      writer.callStatic( funcName,
-                         new Object[] { new JSVar( param.toString() ) } );
+      writeFunctionCall( FUNCTION_MEASURE_STRINGS, param );
     }
     return items;
   }
 
   public Probe[] writeFontProbingInternal() throws IOException {
-    Probe[] requests = TextSizeProbeStore.getProbeRequests();
+    Probe[] requests = TextSizeProbeStore.getProbesToMeasure();
     if( requests.length > 0 ) {
-      JSWriter writer = JSWriter.getWriterForResetHandler();
       StringBuffer param = new StringBuffer();
       param.append( "[ " );
       for( int i = 0; i < requests.length; i++ ) {
-        Probe probe = requests[ i ];
-        param.append( createProbeParamFragment( probe ) );
-        if( i < requests.length - 1 ) {
-          param.append( ", " );
-        }
+        param.append( createProbeParamFragment( requests[ i ] ) );
+        param.append( getParamFragmentSeparator( i, requests.length ) );
       }
       param.append( " ]" );
-      String funcName = "org.eclipse.swt.FontSizeCalculation.probe";
-      writer.callStatic( funcName, new Object[] { new JSVar( param.toString() ) } );
+      writeFunctionCall( FUNCTION_PROBE, param );
     }
     return requests;
   }
-  
+
+  static String createItemParamFragment( MeasurementItem item ) {
+    StringBuffer result = new StringBuffer();
+    result.append( "[ " );
+    result.append( item.hashCode() );
+    result.append( ", \"" );
+    String textToMeasure = item.getTextToMeasure();
+    textToMeasure = EncodingUtil.escapeDoubleQuoted( textToMeasure );
+    textToMeasure = EncodingUtil.escapeLeadingTrailingSpaces( textToMeasure );
+    result.append( textToMeasure );
+    result.append( "\", " );
+    result.append( createFontParam( item.getFontData() ) );
+    result.append( ", " );
+    result.append( item.getWrapWidth() );
+    result.append( " ]" );
+    return result.toString();
+  }
+
   static String createProbeParamFragment( Probe probe ) {
     FontData fontData = probe.getFontData();
     StringBuffer result = new StringBuffer();
     result.append( "[ " );
     result.append( fontData.hashCode() );
-    result.append( ", " );
-    result.append( "\"" );
+    result.append( ", \"" );
     result.append( probe.getText() );
     result.append( "\", " );
     result.append( createFontParam( fontData ) );
@@ -136,5 +130,25 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
     result.append( ", " );
     result.append( ( fontData.getStyle() & SWT.ITALIC ) != 0 );
     return result.toString();
+  }
+  
+  private String getParamFragmentSeparator( int currentIndex, int lengthCount ) {
+    String result = "";
+    if( isNotLast( currentIndex, lengthCount ) ) {
+      result = ", ";
+    }
+    return result;
+  }
+
+  private boolean isNotLast( int currentIndex, int lengthCount ) {
+    return currentIndex < lengthCount - 1;
+  }
+
+  private void writeFunctionCall( String functionName, StringBuffer param ) throws IOException {
+    getWriter().callStatic( functionName, new Object[] { new JSVar( param.toString() ) } );
+  }
+
+  private JSWriter getWriter() {
+    return JSWriter.getWriterForResetHandler();
   }
 }

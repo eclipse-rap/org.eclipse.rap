@@ -30,7 +30,7 @@ class RestoreScrolledCompositeOriginsVisitor extends AllWidgetTreeVisitor {
     Point oldOrigin = getBufferedOrigin( composite );
     if( oldOrigin != null ) {
       composite.setOrigin( oldOrigin );
-      composite.setData( RecalculationEnforcement.KEY_SCROLLED_COMPOSITE_ORIGIN, null );
+      composite.setData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_ORIGIN, null );
     }
   }
 
@@ -45,15 +45,15 @@ class RestoreScrolledCompositeOriginsVisitor extends AllWidgetTreeVisitor {
     Point size = getBufferedContentSize( content );
     if( size != null ) {
       content.setSize( size );
-      content.setData( RecalculationEnforcement.KEY_SCROLLED_COMPOSITE_CONTENT_SIZE, null );
+      content.setData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_CONTENT_SIZE, null );
     }
   }
 
   private Point getBufferedContentSize( Control content ) {
-    return ( Point )content.getData( RecalculationEnforcement.KEY_SCROLLED_COMPOSITE_CONTENT_SIZE );
+    return ( Point )content.getData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_CONTENT_SIZE );
   }
   
   private Point getBufferedOrigin( ScrolledComposite composite ) {
-    return ( Point )composite.getData( RecalculationEnforcement.KEY_SCROLLED_COMPOSITE_ORIGIN );
+    return ( Point )composite.getData( TextSizeRecalculation.KEY_SCROLLED_COMPOSITE_ORIGIN );
   }
 }

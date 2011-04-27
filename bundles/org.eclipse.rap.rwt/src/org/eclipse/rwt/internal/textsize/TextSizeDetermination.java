@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeResults.ProbeResult;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 
@@ -115,7 +114,7 @@ public class TextSizeDetermination {
       ProbeResult probeResult = probeStore.getProbeResult( fontData );
       result = probeResult.getSize().y;
     } else {
-      TextSizeProbeStore.addProbeRequest( fontData );
+      TextSizeProbeStore.addProbeToMeasure( fontData );
       result = TextSizeEstimation.getCharHeight( font );
     }
     return result;
@@ -129,15 +128,10 @@ public class TextSizeDetermination {
       ProbeResult probeResult = probeStore.getProbeResult( fontData );
       result = probeResult.getAvgCharWidth();
     } else {
-      TextSizeProbeStore.addProbeRequest( fontData );
+      TextSizeProbeStore.addProbeToMeasure( fontData );
       result = TextSizeEstimation.getAvgCharWidth( font );
     }
     return result;
-  }
-
-  public static void readStartupProbes() {
-    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
-    MeasurementHandler.readProbedFonts( probeList );
   }
 
   public static int getProbeCount() {

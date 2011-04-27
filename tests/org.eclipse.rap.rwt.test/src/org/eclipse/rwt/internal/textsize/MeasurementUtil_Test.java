@@ -13,8 +13,6 @@ package org.eclipse.rwt.internal.textsize;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
@@ -29,7 +27,6 @@ public class MeasurementUtil_Test extends TestCase {
     MeasurementUtil.addItemToMeasure( item );
 
     checkMeasurementItemBuffering( item );
-    checkMeasurementHandlerRegistration();
   }
 
   public void testAddItemToMeasureIsIdempotent() {
@@ -41,30 +38,15 @@ public class MeasurementUtil_Test extends TestCase {
     checkMeasurementItemBuffering( item );
   }
   
-  public void testRegisterMeasurementHandler() {
-    initializeSessionWithDisplay();
-    
-    MeasurementUtil.registerMeasurementHandler();
-    
-    checkMeasurementHandlerRegistration();
-  }
-  
-  public void testIsDisplayRelatedUIThread() {
-    initializeSessionWithDisplay();
-    
-    boolean isDisplayRelatedUIThread = MeasurementUtil.isDisplayRelatedUIThread();
-    
-    assertTrue( isDisplayRelatedUIThread );
-  }
+  public void testHasItemsToMeasure() {
+    MeasurementItem item = createItem();
+    MeasurementUtil.addItemToMeasure( item );
 
-  public void testIsNonDisplayRelatedUIThread() throws InterruptedException {
-    initializeSessionWithDisplay();
+    boolean hasItemsToMeasure = MeasurementUtil.hasItemsToMeasure();
     
-    boolean isDisplayRelatedUIThread = checkInNonUIThread();
-
-    assertFalse( isDisplayRelatedUIThread );
+    assertTrue( hasItemsToMeasure );
   }
-  
+    
   public void testGetAndSetOfItemsToMeasure() {
     MeasurementItem item = createItem();
     
@@ -78,19 +60,6 @@ public class MeasurementUtil_Test extends TestCase {
     MeasurementItem[] items = MeasurementUtil.getItemsToMeasure();
     
     assertEquals( 0, items.length );
-  }
-  
-  public void testIsEquals() {
-    MeasurementItem item1 = createItem();
-    FontData fontData = new FontData( "helvetia", 34, SWT.NONE );
-    MeasurementItem item2 = createItem( fontData, item1.getTextToMeasure(), item1.getWrapWidth() );
-    MeasurementItem item3 = createItem( item1.getFontData(), "otherText", item1.getWrapWidth() );
-    MeasurementItem item4 = createItem( item1.getFontData(), item1.getTextToMeasure(), 23 );
-
-    assertTrue( MeasurementUtil.isEquals( item1, item1 ) );
-    assertFalse( MeasurementUtil.isEquals( item1, item2 ) );
-    assertFalse( MeasurementUtil.isEquals( item1, item3 ) );
-    assertFalse( MeasurementUtil.isEquals( item1, item4 ) );
   }
   
   public void testContains() {
@@ -132,23 +101,6 @@ public class MeasurementUtil_Test extends TestCase {
     return new MeasurementItem( textToMeasure, fontData, wrapWidth );
   }
   
-
-  private boolean checkInNonUIThread() throws InterruptedException {
-    final boolean[] result = new boolean[ 1 ];
-    Thread nonUIThread = new Thread( new Runnable() {
-      public void run() {
-        result[ 0 ] = MeasurementUtil.isDisplayRelatedUIThread();
-      }
-    } );
-    nonUIThread.start();
-    nonUIThread.join();
-    return result[ 0 ];
-  }
-
-  private MeasurementHandlerRegistrar createHandlerRegistrar() {
-    return new MeasurementHandlerRegistrar( ContextProvider.getSession(), RWT.getLifeCycle() );
-  }
-  
   private Display initializeSessionWithDisplay() {
     return new Display();
   }
@@ -157,11 +109,6 @@ public class MeasurementUtil_Test extends TestCase {
     assertEquals( 1, MeasurementUtil.getItemsToMeasure().length );
     assertSame( item, MeasurementUtil.getItemsToMeasure() [ 0 ] );
   }
-
-  private void checkMeasurementHandlerRegistration() {
-    assertTrue( createHandlerRegistrar().isRegistered() );
-  }
-  
 
   private void checkItemConcatenation( MeasurementItem item, MeasurementItem[] items ) {
     assertEquals( 1, items.length );

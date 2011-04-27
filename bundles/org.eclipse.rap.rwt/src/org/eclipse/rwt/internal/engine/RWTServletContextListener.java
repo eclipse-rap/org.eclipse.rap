@@ -24,6 +24,7 @@ import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.SettingStoreManager;
+import org.eclipse.rwt.internal.textsize.TextSizeMeasurementListener;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
@@ -280,8 +281,8 @@ public final class RWTServletContextListener implements ServletContextListener {
       for( int i = 0; i < listenerNames.length; i++ ) {
         String className = listenerNames[ i ].trim();
         try {
-          PhaseListener listener = ( PhaseListener )ClassUtil.newInstance( CLASS_LOADER, className );
-          phaseListeners.add( listener );
+          PhaseListener lsnr = ( PhaseListener )ClassUtil.newInstance( CLASS_LOADER, className );
+          phaseListeners.add( lsnr );
         } catch( ClassInstantiationException cie ) {
           String text = "Failed to register phase listener ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { className } );
@@ -290,6 +291,7 @@ public final class RWTServletContextListener implements ServletContextListener {
       }
     } else {
       phaseListeners.add( new CurrentPhase.Listener() );
+      phaseListeners.add( new TextSizeMeasurementListener() );
     }
     PhaseListenerRegistry phaseListenerRegistry = RWTFactory.getPhaseListenerRegistry();
     PhaseListener[] registeredListeners = new PhaseListener[ phaseListeners.size() ];

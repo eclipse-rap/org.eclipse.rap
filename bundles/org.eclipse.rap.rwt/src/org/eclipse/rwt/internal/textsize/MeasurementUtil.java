@@ -10,13 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.lifecycle.ILifeCycle;
-import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.widgets.Display;
 
 
 class MeasurementUtil {
@@ -25,32 +22,16 @@ class MeasurementUtil {
   
   static void addItemToMeasure( MeasurementItem newItem ) {
     MeasurementItem[] oldItems = getItemsToMeasure();
-    if( !contains( oldItems, newItem ) ) {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String value = request.getParameter( String.valueOf( newItem.hashCode() ) );
+    if( value == null && !contains( oldItems, newItem ) ) {
       MeasurementItem[] items = concatenate( oldItems, newItem );
       setItemsToMeasure( items );
-      MeasurementUtil.registerMeasurementHandler();
     }
   }
 
-  static void deregisterMeasurementHandler() {
-    createRegistrar().deregister();
-  }
-  
-  
-  ////////////////////////////////////////////////////////////
-  // helping methods, package private for testing purpose only
-
-  static void registerMeasurementHandler() {
-    // TODO [fappel]: is this check realy reasonable? And if so shouldn't we throw an exception
-    //                in the else case?
-    if( isDisplayRelatedUIThread() ) {
-      createRegistrar().register();
-    }
-  }
-
-  static boolean isDisplayRelatedUIThread() {
-    Display display = LifeCycleUtil.getSessionDisplay();
-    return display != null && display.getThread() == Thread.currentThread();
+  static boolean hasItemsToMeasure() {
+    return getItemsToMeasure().length != 0;
   }
   
   static MeasurementItem[] getItemsToMeasure() {
@@ -60,21 +41,19 @@ class MeasurementUtil {
     }
     return result;
   }
+  
+  
+  ////////////////////////////////////////////////////////////
+  // helping methods, package private for testing purpose only
 
   static void setItemsToMeasure( MeasurementItem[] items ) {
     getStateInfo().setAttribute( ITEMS, items );
   }
 
-  static boolean isEquals( MeasurementItem item1, MeasurementItem item2 ) {
-    return    item2.getTextToMeasure().equals( item1.getTextToMeasure() )
-           && item2.getFontData().equals( item1.getFontData() )
-           && item2.getWrapWidth() == item1.getWrapWidth();
-  }
-
   static boolean contains( MeasurementItem[] items, MeasurementItem item ) {
     boolean result = false;
     for( int i = 0; !result && i < items.length; i++ ) {
-      result = isEquals( item, items[ i ] );
+      result = item.equals( items[ i ] );
     }
     return result;
   }
@@ -85,14 +64,8 @@ class MeasurementUtil {
     result[ items.length ] = item;
     return result;
   }
-  
+
   private static IServiceStateInfo getStateInfo() {
     return ContextProvider.getStateInfo();
-  }
-
-  private static MeasurementHandlerRegistrar createRegistrar() {
-    ISessionStore session = ContextProvider.getSession();
-    ILifeCycle lifeCycle = RWT.getLifeCycle();
-    return new MeasurementHandlerRegistrar( session, lifeCycle );
   }
 }

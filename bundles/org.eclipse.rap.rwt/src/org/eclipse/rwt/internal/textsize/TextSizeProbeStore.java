@@ -90,17 +90,21 @@ public class TextSizeProbeStore {
     }
   }
   
-  static void addProbeRequest( FontData fontData ) {
+  static boolean hasProbesToMeasure() {
+    return getProbesToMeasure().length != 0;
+  }
+
+  static void addProbeToMeasure( FontData fontData ) {
     Probe probe = RWTFactory.getTextSizeProbeStore().getProbe( fontData );
     if( probe == null ) {
       String probeString = getProbeString( fontData );
       probe = RWTFactory.getTextSizeProbeStore().createProbe( fontData, probeString );
     }
-    getProbeRequestsInternal().add( probe );
+    getProbesToMeasureInternal().add( probe );
   }
 
-  static Probe[] getProbeRequests() {
-    Set probeRequests = getProbeRequestsInternal();
+  static Probe[] getProbesToMeasure() {
+    Set probeRequests = getProbesToMeasureInternal();
     Probe[] result = new Probe[ probeRequests.size() ];
     probeRequests.toArray( result );
     return result;
@@ -111,7 +115,7 @@ public class TextSizeProbeStore {
     return DEFAULT_PROBE;
   }
 
-  private static Set getProbeRequestsInternal() {
+  private static Set getProbesToMeasureInternal() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Set result = ( Set )stateInfo.getAttribute( PROBE_REQUESTS );
     if( result == null ) {

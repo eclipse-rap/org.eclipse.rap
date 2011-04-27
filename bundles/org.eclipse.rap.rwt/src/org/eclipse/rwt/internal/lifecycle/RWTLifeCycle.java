@@ -17,7 +17,6 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.ISessionStore;
@@ -211,7 +210,6 @@ public class RWTLifeCycle extends LifeCycle {
     if( ZERO.equals( getCurrentPhase() ) ) {
       String startup = getEntryPoint();
       if( startup != null ) {
-        TextSizeDetermination.readStartupProbes();
         result = RWTFactory.getEntryPointManager().createUI( startup );
       }
     }

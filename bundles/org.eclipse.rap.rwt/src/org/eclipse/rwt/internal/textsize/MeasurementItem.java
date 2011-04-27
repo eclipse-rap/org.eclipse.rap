@@ -35,4 +35,46 @@ class MeasurementItem {
   int getWrapWidth() {
     return wrapWidth;
   }
+
+  // TODO [fappel]: add tests and rewrite generated code
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ( ( fontData == null ) ? 0 : fontData.hashCode() );
+    result = prime * result + ( ( string == null ) ? 0 : string.hashCode() );
+    result = prime * result + wrapWidth;
+    return result;
+  }
+  
+  // TODO [fappel]: add tests and rewrite generated code
+  public boolean equals( Object obj ) {
+    if( this == obj ) {
+      return true;
+    }
+    if( obj == null ) {
+      return false;
+    }
+    if( getClass() != obj.getClass() ) {
+      return false;
+    }
+    MeasurementItem other = ( MeasurementItem )obj;
+    if( fontData == null ) {
+      if( other.fontData != null ) {
+        return false;
+      }
+    } else if( !fontData.equals( other.fontData ) ) {
+      return false;
+    }
+    if( string == null ) {
+      if( other.string != null ) {
+        return false;
+      }
+    } else if( !string.equals( other.string ) ) {
+      return false;
+    }
+    if( wrapWidth != other.wrapWidth ) {
+      return false;
+    }
+    return true;
+  }
 }

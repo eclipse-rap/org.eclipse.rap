@@ -31,8 +31,8 @@ class EnlargeScrolledCompositeContentVisitor extends AllWidgetTreeVisitor {
 
   private void enlargeContentControl( Control content ) {
     Point currentSize = content.getSize();
-    int width = currentSize.x + RecalculationEnforcement.RESIZE_OFFSET;
-    int height = currentSize.y + RecalculationEnforcement.RESIZE_OFFSET;
+    int width = currentSize.x + TextSizeRecalculation.RESIZE_OFFSET;
+    int height = currentSize.y + TextSizeRecalculation.RESIZE_OFFSET;
     content.setSize( width, height );
   }
 

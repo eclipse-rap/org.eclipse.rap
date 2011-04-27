@@ -10,13 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 
-class RecalculationEnforcement {
+class TextSizeRecalculation {
   static final String KEY_SCROLLED_COMPOSITE_CONTENT_SIZE = "org.eclipse.rap.content-size";
   static final String KEY_SCROLLED_COMPOSITE_ORIGIN = "org.eclipse.rap.sc-origin";
   static final int RESIZE_OFFSET = 1000;
@@ -24,8 +25,13 @@ class RecalculationEnforcement {
   private final Display display;
 
   
-  RecalculationEnforcement( Display display ) {
+  // TODO [fappel]: remove constructor
+  TextSizeRecalculation( Display display ) {
     this.display = display;
+  }
+
+  public TextSizeRecalculation() {
+    this( null );
   }
 
   void execute() {
@@ -76,6 +82,18 @@ class RecalculationEnforcement {
   }
 
   private Shell[] getShells() {
+    return getShells( getDisplay() );
+  }
+
+  private Display getDisplay() {
+    Display result = display;
+    if( result == null ) {
+      result = LifeCycleUtil.getSessionDisplay();
+    }
+    return result;
+  }
+
+  private Shell[] getShells( Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     return displayAdapter.getShells();
