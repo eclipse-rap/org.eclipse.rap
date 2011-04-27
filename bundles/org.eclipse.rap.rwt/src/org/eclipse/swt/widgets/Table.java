@@ -657,7 +657,7 @@ public class Table extends Composite {
    */
   public TableItem getItem( final int index ) {
     checkWidget();
-    if( !( 0 <= index && index < itemCount ) ) {
+    if( index < 0 || index >= itemCount ) {
       SWT.error( SWT.ERROR_INVALID_RANGE );
     }
     return _getItem( index );
@@ -2171,8 +2171,8 @@ public class Table extends Composite {
     super.releaseWidget();
   }
 
-  //////////////////////////////////
-  // Helping methods - item retrival
+  ///////////////////////////////////
+  // Helping methods - item retrieval
 
   private TableItem _getItem( final int index ) {
     if( ( style & SWT.VIRTUAL ) != 0 && items[ index ] == null ) {
