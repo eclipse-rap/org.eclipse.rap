@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -555,7 +555,7 @@ public class Table extends Composite {
   /**
    * Sets the number of items contained in the receiver.
    *
-   * @param newCount the number of items
+   * @param count the number of items
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -564,28 +564,28 @@ public class Table extends Composite {
    */
   // TODO [rh] Consider calling RWTLifeCycle#fakeRedraw at the end of this
   //      method to ensure that items are drawn when inside the visible bounds
-  public void setItemCount( final int newCount ) {
+  public void setItemCount( int count ) {
     checkWidget();
-    int count = Math.max( 0, newCount );
-    if( count != itemCount ) {
-      while( count < itemCount ) {
-        TableItem item = items[ count ];
+    int newItemCount = Math.max( 0, count );
+    if( newItemCount != itemCount ) {
+      while( newItemCount < itemCount ) {
+        TableItem item = items[ newItemCount ];
         if( item != null && !item.isDisposed() ) {
           item.dispose();
         } else {
-          destroyItem( null, count );
+          destroyItem( null, newItemCount );
         }
       }
-      int length = Math.max( 4, ( count + 3 ) / 4 * 4 );
+      int length = Math.max( 4, ( newItemCount + 3 ) / 4 * 4 );
       TableItem[] newItems = new TableItem[ length ];
-      System.arraycopy( items, 0, newItems, 0, Math.min( count, itemCount ) );
+      System.arraycopy( items, 0, newItems, 0, Math.min( newItemCount, itemCount ) );
       items = newItems;
       if( ( style & SWT.VIRTUAL ) == 0 ) {
-        for( int i = itemCount; i < count; i++ ) {
+        for( int i = itemCount; i < newItemCount; i++ ) {
           items[ i ] = new TableItem( this, SWT.NONE, i, true );
         }
       }
-      itemCount = count;
+      itemCount = newItemCount;
       adjustTopIndex();
       if( focusIndex > itemCount - 1 ) {
         adjustFocusIndex();
@@ -868,9 +868,9 @@ public class Table extends Composite {
    * @see SWT#VIRTUAL
    * @see SWT#SetData
    */
-  public void clear( final int index ) {
+  public void clear( int index ) {
     checkWidget();
-    if( !( 0 <= index && index < itemCount ) ) {
+    if( index < 0 || index >= itemCount ) {
       SWT.error( SWT.ERROR_INVALID_RANGE );
     }
     TableItem item = items[ index ];
@@ -2080,12 +2080,11 @@ public class Table extends Composite {
   ////////////////////////////
   // Create and destroy items
 
-  final void createItem( final TableItem item, final int index ) {
-    int count = itemCount;
-    if( !( 0 <= index && index <= count ) ) {
+  final void createItem( TableItem item, int index ) {
+    if( index < 0 || index > itemCount ) {
       error( SWT.ERROR_INVALID_RANGE );
     }
-    if( count == items.length ) {
+    if( itemCount == items.length ) {
       /*
        * Grow the array faster when redraw is off or the table is not visible.
        * When the table is painted, the items array is resized to be smaller to
@@ -2098,7 +2097,7 @@ public class Table extends Composite {
       items = newItems;
     }
     /* Insert the item */
-    System.arraycopy( items, index, items, index + 1, count - index );
+    System.arraycopy( items, index, items, index + 1, itemCount - index );
     items[ index ] = item;
     itemCount++;
     adjustItemIndices( index );
