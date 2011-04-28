@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -30,6 +30,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     final Control control2 = new Button( composite, SWT.PUSH );
     Control control3 = new Button( composite, SWT.PUSH );
     Tree tree = new Tree( composite, SWT.NONE );
+    TreeColumn treeColumn = new TreeColumn( tree, SWT.NONE );
     final TreeItem treeItem1 = new TreeItem( tree, SWT.NONE );
     TreeItem treeItem2 = new TreeItem( tree, SWT.NONE );
     TreeItem subTreeItem1 = new TreeItem( treeItem1, SWT.NONE );
@@ -40,6 +41,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       control2,
       control3,
       tree,
+      treeColumn,
       treeItem1,
       subTreeItem1,
       treeItem2
@@ -57,7 +59,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
         return true;
       }
     } );
-    assertEquals( 9, count[ 0 ] );
+    assertEquals( 10, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
       public boolean visit( final Composite composite ) {
@@ -74,7 +76,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
         return true;
       }
     } );
-    assertEquals( 9, count[ 0 ] );
+    assertEquals( 10, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
@@ -82,7 +84,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
         return widget != treeItem1;
       }
     } );
-    assertEquals( 8, count[ 0 ] );
+    assertEquals( 9, count[ 0 ] );
   }
 
   public void testTreeVisitorWithTable() {
