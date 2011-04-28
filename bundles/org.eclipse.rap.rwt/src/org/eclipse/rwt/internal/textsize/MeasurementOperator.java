@@ -15,6 +15,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
@@ -25,19 +26,28 @@ class MeasurementOperator {
   private final Map probes;
   private final Set items;
 
+  static MeasurementOperator getInstance() {
+    return ( MeasurementOperator )SessionSingletonBase.getInstance( MeasurementOperator.class );
+  }
+
   MeasurementOperator() {
     probes = new HashMap();
     items = new HashSet();
     addStartupProbesToBuffer();
   }
-  
+
+  void addItemToMeasure( MeasurementItem newItem ) {
+    if( !requestContainsMeasurementResult( newItem ) ) {
+      items.add( newItem );
+    }
+  }
+
   void handleMeasurementRequests() {
     if( TextSizeProbeStore.hasProbesToMeasure() ) {
-      addProbesOfRequestToBuffer();
+      addProbesOfProbeStore();
       writeFontProbingStatement();
     }
-    if( MeasurementUtil.hasItemsToMeasure() ) {
-      addItemsOfRequestToBuffer();
+    if( hasItemsToMeasure() ) {
       writeTextMeasurements();
     }
   }
@@ -47,18 +57,8 @@ class MeasurementOperator {
     return readMeasuredTextSizes();
   }
   
-  void readMeasuredFontProbeSizes() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    Iterator probeList = probes.values().iterator();
-    while( probeList.hasNext() ) {
-      Probe probe = ( Probe )probeList.next();
-      String name = String.valueOf( probe.getFontData().hashCode() );
-      String value = request.getParameter( name );
-      if( value != null ) {
-        createProbeResult( probe, value );
-        probeList.remove();
-      }
-    }
+  void handleStartupProbeMeasurementResults() {
+    readMeasuredFontProbeSizes();
   }
 
   int getProbeCount() {
@@ -67,6 +67,12 @@ class MeasurementOperator {
 
   int getItemCount() {
     return items.size();
+  }
+  
+  MeasurementItem[] getItems() {
+    MeasurementItem[] result = new MeasurementItem[ items.size() ];
+    items.toArray( result );
+    return result;
   }
 
   private void writeTextMeasurements() {
@@ -86,6 +92,20 @@ class MeasurementOperator {
       throw new RuntimeException( shouldNotHappen );
     }
   }
+  
+  private void readMeasuredFontProbeSizes() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    Iterator probeList = probes.values().iterator();
+    while( probeList.hasNext() ) {
+      Probe probe = ( Probe )probeList.next();
+      String name = String.valueOf( probe.getFontData().hashCode() );
+      String value = request.getParameter( name );
+      if( value != null ) {
+        createProbeResult( probe, value );
+        probeList.remove();
+      }
+    }
+  }
 
   private void createProbeResult( Probe probe, String value ) {
     Point size = getSize( value );
@@ -93,35 +113,19 @@ class MeasurementOperator {
   }
 
   private boolean readMeasuredTextSizes() {
-    int itemsSizeBefore = items.size();
-    HttpServletRequest request = ContextProvider.getRequest();
+    int originalItemsSize = items.size();
     Iterator itemList = items.iterator();
     while( itemList.hasNext() ) {
       MeasurementItem item = ( MeasurementItem )itemList.next();
-      String name = String.valueOf( item.hashCode() );
-      String value = request.getParameter( name );
-      if( value != null ) {
-        storeMeasuredText( item, value );
+      if( requestContainsMeasurementResult( item ) ) {
+        storeTextMeasurement( item );
         itemList.remove();
       }
     }
-    return itemsSizeBefore != items.size();
-  }
-
-  private void storeMeasuredText( MeasurementItem item, String value ) {
-    Point size = getSize( value );
-    FontData fontData = item.getFontData();
-    String textToMeasure = item.getTextToMeasure();
-    int wrapWidth = item.getWrapWidth();
-    TextSizeDataBase.store( fontData, textToMeasure, wrapWidth, size );
+    return itemsHasBeenMeasured( originalItemsSize );
   }
   
-  private void addItemsOfRequestToBuffer() {
-    MeasurementItem[] itemList = MeasurementUtil.getItemsToMeasure();
-    items.addAll( Arrays.asList( itemList ) );
-  }
-
-  private void addProbesOfRequestToBuffer() {
+  private void addProbesOfProbeStore() {
     Probe[] probeList = TextSizeProbeStore.getProbesToMeasure();
     addProbesToBuffer( probeList );
   }
@@ -132,13 +136,41 @@ class MeasurementOperator {
     }
   }
 
+  private void addStartupProbesToBuffer() {
+    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
+    addProbesToBuffer( probeList );
+  }
+
+  private boolean hasItemsToMeasure() {
+    return !items.isEmpty();
+  }
+
+  private boolean itemsHasBeenMeasured( int originalItemsSize ) {
+    return originalItemsSize != items.size();
+  }
+  
+  private static boolean requestContainsMeasurementResult( MeasurementItem newItem ) {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String value = request.getParameter( String.valueOf( newItem.hashCode() ) );
+    return value != null;
+  }
+
   private static Point getSize( String value ) {
     String[] split = value.split( "," );
     return new Point( Integer.parseInt( split[ 0 ] ), Integer.parseInt( split[ 1 ] ) );
   }
 
-  private void addStartupProbesToBuffer() {
-    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
-    addProbesToBuffer( probeList );
+  private static void storeTextMeasurement( MeasurementItem item ) {
+    Point size = readMeasuredItemSize( item );
+    FontData fontData = item.getFontData();
+    String textToMeasure = item.getTextToMeasure();
+    int wrapWidth = item.getWrapWidth();
+    TextSizeDataBase.store( fontData, textToMeasure, wrapWidth, size );
+  }
+
+  private static Point readMeasuredItemSize( MeasurementItem item ) {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String name = String.valueOf( item.hashCode() );
+    return getSize( request.getParameter( name ) );
   }
 }

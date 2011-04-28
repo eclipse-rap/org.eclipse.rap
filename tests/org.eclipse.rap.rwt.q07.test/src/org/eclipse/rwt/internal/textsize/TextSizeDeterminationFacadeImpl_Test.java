@@ -82,7 +82,8 @@ public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
   private void checkResponseContainsContent( String[] expected ) {
     String allMarkup = Fixture.getAllMarkup();
     for( int i = 0; i < expected.length; i++ ) {
-      assertTrue( "Expected: " + expected[ i ], contains( allMarkup, expected[ i ] ) );
+      assertTrue( "Expected to contain '" + expected[ i ] + "', but was '" + allMarkup + "'",
+                  contains( allMarkup, expected[ i ] ) );
     }
   }
 
@@ -134,7 +135,7 @@ public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
       ", \"" + probe + "\", [ \"arial\" ], 10, true, false ]",
       ", [ ",
       ", \"" + probe + "\", [ \"helvetia\", \"ms sans serif\" ], 12, true, false ]",
-      " ] );",
+      ", [ ",
       ", \"" + probe + "\", [ \"Bogus  Font  Name\" ], 12, true, false ]",
       " ] );"
     };
@@ -143,9 +144,12 @@ public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
   private String[] getMeasurementCall() {
     return new String[] {
       "org.eclipse.swt.FontSizeCalculation.measureStrings( [ [ ",
-      ", \"FirstString\", [ \"arial\" ], 10, true, false, -1 ], [ ",
-      ", \"SecondString\", [ \"helvetia\", \"ms sans serif\" ], 12, true, false, -1 ], [",
-      ", \"Weird &quot; String \\\\\", [ \"Bogus  Font  Name\" ], 12, true, false, -1 ] ] );"
+      ", \"FirstString\", [ \"arial\" ], 10, true, false, -1 ]",
+      ", [ ",
+      ", \"SecondString\", [ \"helvetia\", \"ms sans serif\" ], 12, true, false, -1 ]", 
+      ", [",
+      ", \"Weird &quot; String \\\\\", [ \"Bogus  Font  Name\" ], 12, true, false, -1 ]",
+      " ] );"
     };
   }
   

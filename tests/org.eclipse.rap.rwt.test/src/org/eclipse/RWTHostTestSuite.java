@@ -78,6 +78,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( PhaseExecutor_Test.class );
     suite.addTestSuite( ReadData_Test.class );
     suite.addTestSuite( PhaseId_Test.class );
+    suite.addTestSuite( PhaseListenerUtil_Test.class );
     suite.addTestSuite( Scope_Test.class );
     suite.addTestSuite( ServiceHandler_Test.class );
     suite.addTestSuite( SessionStore_Test.class );
@@ -217,7 +218,6 @@ public class RWTHostTestSuite {
     suite.addTestSuite( TextSizeEstimation_Test.class );
     suite.addTestSuite( TextSizeDetermination_Test.class );
     suite.addTestSuite( MeasurementItem_Test.class );
-    suite.addTestSuite( MeasurementUtil_Test.class );
     suite.addTestSuite( TextSizeRecalculation_Test.class );
     suite.addTestSuite( MeasurementOperator_Test.class );
     suite.addTestSuite( ProbeResult_Test.class );

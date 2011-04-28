@@ -52,7 +52,7 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
   }
 
   public MeasurementItem[] writeStringMeasurementsInternal() throws IOException {
-    MeasurementItem[] items = MeasurementUtil.getItemsToMeasure();
+    MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
     if( items.length > 0 ) {
       StringBuffer param = new StringBuffer();
       param.append( "[ " );

@@ -32,7 +32,7 @@ public class TextSizeDetermination_Test extends TestCase {
   private TextSizeProbeStore textSizeProbeStore;
 
   public void testStringExtent() {
-    MeasurementItem[] items = MeasurementUtil.getItemsToMeasure();
+    MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
     assertEquals( 0, items.length );
 
     Font font = Graphics.getFont( "arial", 10, SWT.NORMAL );
@@ -40,14 +40,14 @@ public class TextSizeDetermination_Test extends TestCase {
     Point estimated = TextSizeEstimation.stringExtent( font, TEST_STRING );
     assertEquals( estimated, calculated );
 
-    items = MeasurementUtil.getItemsToMeasure();
+    items = MeasurementOperator.getInstance().getItems();
     assertEquals( 1, items.length );
-    items = MeasurementUtil.getItemsToMeasure();
+    items = MeasurementOperator.getInstance().getItems();
     assertEquals( 1, items.length );
 
     TextSizeDetermination.stringExtent( font, TEST_STRING );
     assertEquals( 1, items.length );
-    items = MeasurementUtil.getItemsToMeasure();
+    items = MeasurementOperator.getInstance().getItems();
     assertEquals( 1, items.length );
 
     Point storedSize = new Point( 100, 10 );
@@ -89,7 +89,7 @@ public class TextSizeDetermination_Test extends TestCase {
     Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     String markup = "First Line<ul><li>item1</li><li>item2</li></ul>";
     TextSizeDetermination.markupExtent( font, markup, 0 );
-    MeasurementItem[] items = MeasurementUtil.getItemsToMeasure();
+    MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
     boolean markupUnaltered = false;
     for( int i = 0; i < items.length; i++ ) {
       if( items[ i ].getTextToMeasure().equals( markup ) ) {

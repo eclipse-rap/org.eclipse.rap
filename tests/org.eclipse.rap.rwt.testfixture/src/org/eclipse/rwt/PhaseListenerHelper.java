@@ -10,11 +10,17 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
-import org.eclipse.rwt.lifecycle.PhaseEvent;
-import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.*;
 
 
-public class PhaseListenerUtil {
+public class PhaseListenerHelper {
+  
+  private static class TestLifeCycle implements ILifeCycle {
+    public void removePhaseListener( PhaseListener listener ) {
+    }
+    public void addPhaseListener( PhaseListener listener ) {
+    }
+  }
 
   public static PhaseEvent createReadDataEvent() {
     return createPhaseEvent( PhaseId.READ_DATA );
@@ -33,10 +39,10 @@ public class PhaseListenerUtil {
   }
 
   private static PhaseEvent createPhaseEvent( PhaseId phaseId ) {
-    return new PhaseEvent( RWT.getLifeCycle(), phaseId );
+    return new PhaseEvent( new TestLifeCycle(), phaseId );
   }
   
-  private PhaseListenerUtil() {
+  private PhaseListenerHelper() {
     // prevent instance creation
   }
 }

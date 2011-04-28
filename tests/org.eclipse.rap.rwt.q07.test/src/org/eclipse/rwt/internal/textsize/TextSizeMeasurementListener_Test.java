@@ -42,16 +42,16 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   }
   
   public void testAfterPhaseWithoutMeasurementItemsOrProbes() {
-    listener.afterPhase( PhaseListenerUtil.createRenderEvent() );
+    listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
     
     assertFalse( responseContains( PROBE_CALL ) );
     assertFalse( responseContains( RESPONSE_CALL ) );
   }
 
   public void testAfterPhaseWithMeasurementItems() {
-    MeasurementUtil.addItemToMeasure( new MeasurementItem( "text", FONT_DATA, 0 ) );
+    MeasurementOperator.getInstance().addItemToMeasure( new MeasurementItem( "text", FONT_DATA, 0 ) );
    
-    listener.afterPhase( PhaseListenerUtil.createRenderEvent() );
+    listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
     
     assertFalse( responseContains( PROBE_CALL ) );
     assertTrue( responseContains( RESPONSE_CALL ) );
@@ -60,14 +60,14 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   public void testAfterPhaseWithProbes() {
     TextSizeProbeStore.addProbeToMeasure( FONT_DATA );
     
-    listener.afterPhase( PhaseListenerUtil.createRenderEvent() );
+    listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
     
     assertTrue( responseContains( PROBE_CALL ) );
     assertFalse( responseContains( RESPONSE_CALL ) );
   }
 
   public void testAfterPhaseWithMeasurementItemsButWrongPhaseId() {
-    MeasurementUtil.addItemToMeasure( new MeasurementItem( "text", FONT_DATA, 0 ) );
+    MeasurementOperator.getInstance().addItemToMeasure( new MeasurementItem( "text", FONT_DATA, 0 ) );
     
     executeNonRenderPhases();
     
@@ -88,7 +88,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   public void testAfterPhaseWithMeasuredProbes() {
     fakeRequestWithProbeMeasurementResults();
 
-    listener.afterPhase( PhaseListenerUtil.createProcessActionEvent() );
+    listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
     
     checkProbeResultHasBeenStored();
   }
@@ -97,7 +97,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
     createShellWithResizeListener();
     fakeRequestWithItemMeasurementResults();
     
-    listener.afterPhase( PhaseListenerUtil.createProcessActionEvent() );
+    listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
     
     checkTextMeasurementResultHasBeenStored();
     checkShellHasBeenResized();
@@ -106,7 +106,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   public void testAfterPhaseWithoutMeasuredItemsMustNotResizeShell() {
     createShellWithResizeListener();
     
-    listener.afterPhase( PhaseListenerUtil.createProcessActionEvent() );
+    listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
     
     checkShellHasNotBeenResized();
   }
@@ -115,7 +115,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
     createProbe();
     fakeRequestWithProbeMeasurementResults();
     
-    listener.beforePhase( PhaseListenerUtil.createPrepareUIRootEvent() );
+    listener.beforePhase( PhaseListenerHelper.createPrepareUIRootEvent() );
     
     checkProbeResultWasStored();
   }
@@ -165,14 +165,14 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   
   private void fakeRequestWithProbeMeasurementResults() {
     TextSizeProbeStore.addProbeToMeasure( FONT_DATA );
-    listener.afterPhase( PhaseListenerUtil.createRenderEvent() );
+    listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
     TestRequest request = ( TestRequest )RWT.getRequest();
     request.addParameter( String.valueOf( FONT_DATA.hashCode() ), "5,10" );
   }
   
   private void fakeRequestWithItemMeasurementResults() {
     MeasurementItem itemToMeasure = new MeasurementItem( "text", FONT_DATA, -1 );
-    MeasurementUtil.addItemToMeasure( itemToMeasure );
+    MeasurementOperator.getInstance().addItemToMeasure( itemToMeasure );
     fakeRequestWithProbeMeasurementResults();
     TestRequest request = ( TestRequest )RWT.getRequest();
     request.addParameter( String.valueOf( itemToMeasure.hashCode() ), "100,10" );
@@ -183,9 +183,9 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   }
 
   private void executeNonRenderPhases() {
-    listener.afterPhase( PhaseListenerUtil.createPrepareUIRootEvent() );
-    listener.afterPhase( PhaseListenerUtil.createReadDataEvent() );
-    listener.afterPhase( PhaseListenerUtil.createProcessActionEvent() );
+    listener.afterPhase( PhaseListenerHelper.createPrepareUIRootEvent() );
+    listener.afterPhase( PhaseListenerHelper.createReadDataEvent() );
+    listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
   }
   
   private void createShellWithResizeListener() {

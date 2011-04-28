@@ -11,7 +11,6 @@
 package org.eclipse.rwt.internal.textsize;
 
 
-import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.lifecycle.*;
 
 
@@ -29,16 +28,16 @@ public class TextSizeMeasurementListener implements PhaseListener {
   // interface PhaseListener
   
   public void afterPhase( PhaseEvent event ) {
-    if( isRenderPhase( event ) ) {
+    if( PhaseListenerUtil.isRender( event ) ) {
       handleMeasurementRequests();
     }
-    if( isProcessActionPhase( event ) ) {
+    if( PhaseListenerUtil.isProcessAction( event ) ) {
       handleMeasurementResults();
     }
   }
   
   public void beforePhase( PhaseEvent event ) {
-    if( isPrepareUIRoot( event ) ) {
+    if( PhaseListenerUtil.isPrepareUIRoot( event ) ) {
       handleStartupProbeMeasurementResults();
     }
   }
@@ -52,7 +51,7 @@ public class TextSizeMeasurementListener implements PhaseListener {
   // helping methods
   
   private void handleStartupProbeMeasurementResults() {
-    getMeasurementOperator().readMeasuredFontProbeSizes();
+    getMeasurementOperator().handleStartupProbeMeasurementResults();
   }
   
   private void handleMeasurementRequests() {
@@ -64,20 +63,8 @@ public class TextSizeMeasurementListener implements PhaseListener {
       textSizeRecalculation.execute();
     }
   }
-
+  
   private MeasurementOperator getMeasurementOperator() {
-    return ( MeasurementOperator )SessionSingletonBase.getInstance( MeasurementOperator.class );
-  }
-
-  private boolean isProcessActionPhase( PhaseEvent event ) {
-    return event.getPhaseId() == PhaseId.PROCESS_ACTION;
-  }
-
-  private boolean isRenderPhase( PhaseEvent event ) {
-    return event.getPhaseId() == PhaseId.RENDER;
-  }
-
-  private boolean isPrepareUIRoot( PhaseEvent event ) {
-    return event.getPhaseId() == PhaseId.PREPARE_UI_ROOT;
+    return MeasurementOperator.getInstance();
   }
 }

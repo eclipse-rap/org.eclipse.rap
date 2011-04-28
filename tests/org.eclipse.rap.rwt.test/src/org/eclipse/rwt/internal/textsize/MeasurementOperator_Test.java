@@ -16,6 +16,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 
 
 public class MeasurementOperator_Test extends TestCase {
@@ -96,9 +97,43 @@ public class MeasurementOperator_Test extends TestCase {
     assertEquals( 1, measurementOperator.getProbeCount() );
   }
   
+  public void testHandleStartupProbeMeasurementResults() {
+    createProbeOfFont1();
+    fakeRequestParamWithMeasurementResultOfProbe( FONT_DATA_1 );
+    MeasurementOperator measurementOperator = new MeasurementOperator();
+    
+    measurementOperator.handleStartupProbeMeasurementResults();
+    
+    assertEquals( 0, measurementOperator.getProbeCount() );
+  }
+
+  public void testAddItemToMeasure() {
+    initializeSessionWithDisplay();
+    MeasurementItem item = createItem();
+    
+    operator.addItemToMeasure( item );
+
+    checkMeasurementItemBuffering( item );
+  }
+
+  public void testAddItemToMeasureIsIdempotent() {
+    MeasurementItem item = createItem();
+    
+    operator.addItemToMeasure( item );
+    operator.addItemToMeasure( item );
+
+    checkMeasurementItemBuffering( item );
+  }
+    
+  public void testGetItemsToMeasureWithEmptyResult() {
+    MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
+    
+    assertEquals( 0, items.length );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
-    operator = new MeasurementOperator();
+    operator = MeasurementOperator.getInstance();
   }
   
   protected void tearDown() throws Exception {
@@ -106,10 +141,14 @@ public class MeasurementOperator_Test extends TestCase {
   }
 
   private void createProbeOfFont1() {
-    TextSizeProbeStore textSizeProbeStore = RWTFactory.getTextSizeProbeStore();
-    textSizeProbeStore.createProbe( FONT_DATA_1, TEXT_TO_MEASURE );
+    createProbe( FONT_DATA_1 );
   }
-  
+
+  private void createProbe( FontData fontData ) {
+    TextSizeProbeStore textSizeProbeStore = RWTFactory.getTextSizeProbeStore();
+    textSizeProbeStore.createProbe( fontData, TEXT_TO_MEASURE );
+  }
+
   private void fakeRequestParamWithMeasurementResultOfItem( MeasurementItem measurementItem ) {
     Fixture.fakeRequestParam( String.valueOf( measurementItem.hashCode() ), "12,4" );
   }
@@ -119,11 +158,11 @@ public class MeasurementOperator_Test extends TestCase {
   }
 
   private void requestMeasurementOfItem1() {
-    MeasurementUtil.addItemToMeasure( MEASUREMENT_ITEM_1 );
+    MeasurementOperator.getInstance().addItemToMeasure( MEASUREMENT_ITEM_1 );
   }
   
   private void requestMeasurementOfItem2() {
-    MeasurementUtil.addItemToMeasure( MEASUREMENT_ITEM_2 );
+    MeasurementOperator.getInstance().addItemToMeasure( MEASUREMENT_ITEM_2 );
   }
 
   private void requestProbingOfFont1() {
@@ -137,5 +176,25 @@ public class MeasurementOperator_Test extends TestCase {
   private void requestProbing( FontData fontData1 ) {
     Fixture.fakeNewRequest();
     TextSizeProbeStore.addProbeToMeasure( fontData1 );
+  }
+  
+  private MeasurementItem createItem() {
+    FontData fontData = new FontData( "arial", 13, SWT.BOLD );
+    String textToMeasure = "textToMeasure";
+    int wrapWidth = 2;
+    return createItem( fontData, textToMeasure, wrapWidth );
+  }
+
+  private MeasurementItem createItem( FontData fontData, String textToMeasure, int wrapWidth ) {
+    return new MeasurementItem( textToMeasure, fontData, wrapWidth );
+  }
+  
+  private Display initializeSessionWithDisplay() {
+    return new Display();
+  }
+  
+  private void checkMeasurementItemBuffering( MeasurementItem item ) {
+    assertEquals( 1, MeasurementOperator.getInstance().getItems().length );
+    assertSame( item, MeasurementOperator.getInstance().getItems() [ 0 ] );
   }
 }
