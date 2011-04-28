@@ -18,12 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 
 class MeasurementOperator {
-  private final Map probes;
+  private final Set probes;
   private final Set items;
 
   static MeasurementOperator getInstance() {
@@ -31,20 +30,13 @@ class MeasurementOperator {
   }
 
   MeasurementOperator() {
-    probes = new HashMap();
+    probes = new HashSet();
     items = new HashSet();
     addStartupProbesToBuffer();
   }
 
-  void addItemToMeasure( MeasurementItem newItem ) {
-    if( !requestContainsMeasurementResult( newItem ) ) {
-      items.add( newItem );
-    }
-  }
-
   void handleMeasurementRequests() {
-    if( TextSizeProbeStore.hasProbesToMeasure() ) {
-      addProbesOfProbeStore();
+    if( hasProbesToMeasure() ) {
       writeFontProbingStatement();
     }
     if( hasItemsToMeasure() ) {
@@ -60,11 +52,31 @@ class MeasurementOperator {
   void handleStartupProbeMeasurementResults() {
     readMeasuredFontProbeSizes();
   }
-
+  
   int getProbeCount() {
     return probes.size();
   }
-
+  
+  void addProbeToMeasure( FontData fontData ) {
+    Probe probe = RWTFactory.getTextSizeProbeStore().getProbe( fontData );
+    if( probe == null ) {
+      probe = RWTFactory.getTextSizeProbeStore().createProbe( fontData );
+    }
+    probes.add( probe );
+  }
+  
+  Probe[] getProbes() {
+    Probe[] result = new Probe[ probes.size() ];
+    probes.toArray( result );
+    return result;
+  }
+  
+  void addItemToMeasure( MeasurementItem newItem ) {
+    if( !requestContainsMeasurementResult( newItem ) ) {
+      items.add( newItem );
+    }
+  }
+  
   int getItemCount() {
     return items.size();
   }
@@ -74,16 +86,14 @@ class MeasurementOperator {
     items.toArray( result );
     return result;
   }
-
-  private void writeTextMeasurements() {
-    try {
-      // TODO [fappel]: remove return Type of facade method
-      TextSizeDeterminationFacade.writeStringMeasurements();
-    } catch( IOException shouldNotHappen ) {
-      throw new RuntimeException( shouldNotHappen );
-    }
+  
+  //////////////////
+  // helping methods
+  
+  private boolean hasProbesToMeasure() {
+    return !probes.isEmpty();
   }
-
+  
   private void writeFontProbingStatement() {
     try {
       // TODO [fappel]: remove return Type of facade method
@@ -95,7 +105,7 @@ class MeasurementOperator {
   
   private void readMeasuredFontProbeSizes() {
     HttpServletRequest request = ContextProvider.getRequest();
-    Iterator probeList = probes.values().iterator();
+    Iterator probeList = probes.iterator();
     while( probeList.hasNext() ) {
       Probe probe = ( Probe )probeList.next();
       String name = String.valueOf( probe.getFontData().hashCode() );
@@ -106,10 +116,24 @@ class MeasurementOperator {
       }
     }
   }
-
+  
   private void createProbeResult( Probe probe, String value ) {
     Point size = getSize( value );
     TextSizeProbeResults.getInstance().createProbeResult( probe, size );
+  }
+  
+  private void addStartupProbesToBuffer() {
+    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
+    probes.addAll( Arrays.asList( probeList ) );
+  }
+
+  private void writeTextMeasurements() {
+    try {
+      // TODO [fappel]: remove return Type of facade method
+      TextSizeDeterminationFacade.writeStringMeasurements();
+    } catch( IOException shouldNotHappen ) {
+      throw new RuntimeException( shouldNotHappen );
+    }
   }
 
   private boolean readMeasuredTextSizes() {
@@ -124,22 +148,6 @@ class MeasurementOperator {
     }
     return itemsHasBeenMeasured( originalItemsSize );
   }
-  
-  private void addProbesOfProbeStore() {
-    Probe[] probeList = TextSizeProbeStore.getProbesToMeasure();
-    addProbesToBuffer( probeList );
-  }
-
-  private void addProbesToBuffer( Probe[] probeList ) {
-    for( int i = 0; i < probeList.length; i++ ) {
-      probes.put( probeList[ i ].getFontData(), probeList[ i ] );
-    }
-  }
-
-  private void addStartupProbesToBuffer() {
-    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
-    addProbesToBuffer( probeList );
-  }
 
   private boolean hasItemsToMeasure() {
     return !items.isEmpty();
@@ -148,7 +156,7 @@ class MeasurementOperator {
   private boolean itemsHasBeenMeasured( int originalItemsSize ) {
     return originalItemsSize != items.size();
   }
-  
+
   private static boolean requestContainsMeasurementResult( MeasurementItem newItem ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String value = request.getParameter( String.valueOf( newItem.hashCode() ) );

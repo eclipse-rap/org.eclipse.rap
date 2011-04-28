@@ -114,7 +114,7 @@ public class TextSizeDetermination {
       ProbeResult probeResult = probeStore.getProbeResult( fontData );
       result = probeResult.getSize().y;
     } else {
-      TextSizeProbeStore.addProbeToMeasure( fontData );
+      MeasurementOperator.getInstance().addProbeToMeasure( fontData );
       result = TextSizeEstimation.getCharHeight( font );
     }
     return result;
@@ -128,7 +128,7 @@ public class TextSizeDetermination {
       ProbeResult probeResult = probeStore.getProbeResult( fontData );
       result = probeResult.getAvgCharWidth();
     } else {
-      TextSizeProbeStore.addProbeToMeasure( fontData );
+      MeasurementOperator.getInstance().addProbeToMeasure( fontData );
       result = TextSizeEstimation.getAvgCharWidth( font );
     }
     return result;

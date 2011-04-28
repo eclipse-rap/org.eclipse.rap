@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.textsize;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -67,7 +66,7 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
   }
 
   public Probe[] writeFontProbingInternal() throws IOException {
-    Probe[] requests = TextSizeProbeStore.getProbesToMeasure();
+    Probe[] requests = MeasurementOperator.getInstance().getProbes();
     if( requests.length > 0 ) {
       StringBuffer param = new StringBuffer();
       param.append( "[ " );

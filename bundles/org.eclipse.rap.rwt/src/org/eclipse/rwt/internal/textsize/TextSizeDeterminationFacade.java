@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.textsize;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.FacadesInitializer;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 
 abstract class TextSizeDeterminationFacade {
 

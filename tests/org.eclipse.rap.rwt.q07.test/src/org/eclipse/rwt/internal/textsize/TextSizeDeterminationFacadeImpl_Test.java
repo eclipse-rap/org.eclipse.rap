@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -129,7 +128,7 @@ public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
   //                would make the statement array even more unreadable. If you find a more
   //                readable option feel free to change :-)
   private String[] getProbeCall() {
-    String probe = TextSizeProbeStore.DEFAULT_PROBE;
+    String probe = Probe.DEFAULT_PROBE_STRING;
     return new String[] {
       "org.eclipse.swt.FontSizeCalculation.probe( [ [",
       ", \"" + probe + "\", [ \"arial\" ], 10, true, false ]",

@@ -21,7 +21,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.textsize.TextSizeProbeResults.ProbeResult;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 
@@ -51,7 +50,7 @@ public class TextSizeDetermination_Test extends TestCase {
     assertEquals( 1, items.length );
 
     Point storedSize = new Point( 100, 10 );
-    Probe[] probeRequests = TextSizeProbeStore.getProbesToMeasure();
+    Probe[] probeRequests = MeasurementOperator.getInstance().getProbes();
     assertEquals( 1, probeRequests.length );
     assertEquals( font.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
@@ -100,7 +99,7 @@ public class TextSizeDetermination_Test extends TestCase {
   }
 
   public void testCharHeight() {
-    Probe[] probeRequests = TextSizeProbeStore.getProbesToMeasure();
+    Probe[] probeRequests = MeasurementOperator.getInstance().getProbes();
     assertEquals( 0, probeRequests.length );
 
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
@@ -108,7 +107,7 @@ public class TextSizeDetermination_Test extends TestCase {
     int estimated = TextSizeEstimation.getCharHeight( font0 );
     assertEquals( estimated, calculated, 0 );
 
-    probeRequests = TextSizeProbeStore.getProbesToMeasure();
+    probeRequests = MeasurementOperator.getInstance().getProbes();
     assertEquals( 1, probeRequests.length );
     assertEquals( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
@@ -120,7 +119,7 @@ public class TextSizeDetermination_Test extends TestCase {
   }
 
   public void testAvgCharWidth() {
-    Probe[] probeRequests = TextSizeProbeStore.getProbesToMeasure();
+    Probe[] probeRequests = MeasurementOperator.getInstance().getProbes();
     assertEquals( 0, probeRequests.length );
 
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
@@ -128,12 +127,12 @@ public class TextSizeDetermination_Test extends TestCase {
     float estimated = TextSizeEstimation.getAvgCharWidth( font0 );
     assertEquals( estimated, calculated, 0 );
 
-    probeRequests = TextSizeProbeStore.getProbesToMeasure();
+    probeRequests = MeasurementOperator.getInstance().getProbes();
     assertEquals( 1, probeRequests.length );
     assertEquals( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
 
     TextSizeProbeResults probeStore = TextSizeProbeResults.getInstance();
-    Point probeSize = new Point( TextSizeProbeStore.DEFAULT_PROBE.length() * 4, 10 );
+    Point probeSize = new Point( Probe.DEFAULT_PROBE_STRING.length() * 4, 10 );
     probeStore.createProbeResult( probeRequests[ 0 ], probeSize );
     calculated = TextSizeDetermination.getAvgCharWidth( font0 );
     assertEquals( 4, calculated, 0 );
@@ -182,7 +181,7 @@ public class TextSizeDetermination_Test extends TestCase {
   }
 
   private Probe findRequestedProbe( int i ) {
-    Probe[] probeRequests = TextSizeProbeStore.getProbesToMeasure();
+    Probe[] probeRequests = MeasurementOperator.getInstance().getProbes();
     return textSizeProbeStore.getProbe( probeRequests[ i ].getFontData() );
   }
 
@@ -194,15 +193,14 @@ public class TextSizeDetermination_Test extends TestCase {
     Probe probe0 = textSizeProbeStore.getProbe( fontData0 );
     assertNull( probe0 );
 
-    String probeText0 = "ProbeText0";
-    probe0 = textSizeProbeStore.createProbe( fontData0, probeText0 );
+    probe0 = textSizeProbeStore.createProbe( fontData0 );
     probeList = textSizeProbeStore.getProbeList();
     assertEquals( 1, probeList.length );
     assertSame( probe0, probeList[ 0 ] );
     assertSame( probe0, textSizeProbeStore.getProbe( fontData0 ) );
     assertTrue( textSizeProbeStore.getProbe( fontData0 ) != null );
     assertSame( probe0.getFontData(), fontData0 );
-    assertSame( probe0.getText(), probeText0 );
+    assertSame( probe0.getText(), Probe.DEFAULT_PROBE_STRING );
 
     Font font1 = Graphics.getFont( "arial", 12, SWT.NORMAL );
     FontData fontData1 = font1.getFontData()[ 0 ];

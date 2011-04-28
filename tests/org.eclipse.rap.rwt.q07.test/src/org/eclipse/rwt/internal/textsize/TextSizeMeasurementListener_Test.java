@@ -58,7 +58,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   }
 
   public void testAfterPhaseWithProbes() {
-    TextSizeProbeStore.addProbeToMeasure( FONT_DATA );
+    MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
     
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
     
@@ -77,7 +77,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
 
 
   public void testAfterPhaseWithProbesButWrongPhaseId() {
-    TextSizeProbeStore.addProbeToMeasure( FONT_DATA );
+    MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
     
     executeNonRenderPhases();
     
@@ -142,7 +142,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   
   private void createProbe() {
     TextSizeProbeStore textSizeProbeStore = RWTFactory.getTextSizeProbeStore();
-    textSizeProbeStore.createProbe( FONT_DATA, "probeText" );
+    textSizeProbeStore.createProbe( FONT_DATA );
   }
 
   private void checkShellHasBeenResized() {
@@ -164,7 +164,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   }
   
   private void fakeRequestWithProbeMeasurementResults() {
-    TextSizeProbeStore.addProbeToMeasure( FONT_DATA );
+    MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
     TestRequest request = ( TestRequest )RWT.getRequest();
     request.addParameter( String.valueOf( FONT_DATA.hashCode() ), "5,10" );

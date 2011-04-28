@@ -146,7 +146,7 @@ public class MeasurementOperator_Test extends TestCase {
 
   private void createProbe( FontData fontData ) {
     TextSizeProbeStore textSizeProbeStore = RWTFactory.getTextSizeProbeStore();
-    textSizeProbeStore.createProbe( fontData, TEXT_TO_MEASURE );
+    textSizeProbeStore.createProbe( fontData );
   }
 
   private void fakeRequestParamWithMeasurementResultOfItem( MeasurementItem measurementItem ) {
@@ -175,7 +175,7 @@ public class MeasurementOperator_Test extends TestCase {
   
   private void requestProbing( FontData fontData1 ) {
     Fixture.fakeNewRequest();
-    TextSizeProbeStore.addProbeToMeasure( fontData1 );
+    operator.addProbeToMeasure( fontData1 );
   }
   
   private MeasurementItem createItem() {

@@ -13,7 +13,6 @@ package org.eclipse.rwt.internal.textsize;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.textsize.TextSizeProbeStore.Probe;
 
 
 public final class TextSizeDeterminationFacadeImpl extends TextSizeDeterminationFacade {
