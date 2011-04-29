@@ -146,4 +146,41 @@ public class SessionSingleton_Test extends TestCase {
     
     
   }
+  
+  public void testGetInstanceKey() {
+    String instanceKey = SessionSingletonBase.getInstanceKey( String.class );
+    assertNotNull( instanceKey );
+  }
+  
+  public void testGetInstanceKeyForSameClass() {
+    String instanceKey1 = SessionSingletonBase.getInstanceKey( String.class );
+    String instanceKey2 = SessionSingletonBase.getInstanceKey( String.class );
+    assertSame( instanceKey1, instanceKey2 );
+  }
+  
+  public void testGetInstanceKeyForDifferentClasses() {
+    String instanceKey = SessionSingletonBase.getInstanceKey( String.class );
+    String otherInstanceKey = SessionSingletonBase.getInstanceKey( Object.class );
+    assertNotSame( instanceKey, otherInstanceKey );
+  }
+  
+  public void testGetLockKey() {
+    String lockKey = SessionSingletonBase.getLockKey( String.class );
+    
+    assertNotNull( lockKey );
+  }
+  
+  public void testGetLockKeyForSameClass() {
+    String lockKey1 = SessionSingletonBase.getLockKey( String.class );
+    String lockKey2 = SessionSingletonBase.getLockKey( String.class );
+    
+    assertSame( lockKey1, lockKey2 );
+  }
+
+  public void testGetLockKeyForDifferentClasses() {
+    String lockKey = SessionSingletonBase.getLockKey( String.class );
+    String otherLockKey = SessionSingletonBase.getLockKey( Object.class );
+    
+    assertNotSame( lockKey, otherLockKey );
+  }
 }

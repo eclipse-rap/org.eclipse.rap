@@ -69,8 +69,8 @@ public abstract class SessionSingletonBase {
   /** 
    * Returns the singleton instance of the specified type that is stored
    * in the current session context. If no instance exists yet, a new
-   * one will be created. Therefore the specified type should have
-   * an parameterless default constructor.
+   * one will be created. The specified type must have a parameterless 
+   * constructor.
    * 
    * @param type specifies the session singleton instance type.
    * @return the unique instance of the specified type that is associated
@@ -102,7 +102,7 @@ public abstract class SessionSingletonBase {
   private static Object getInstanceLock( final Class type ) {
     // create a lock per session instance to avoid deadlocks
     ISessionStore session = ContextProvider.getSession();
-    Object result = null;
+    Object result;
     synchronized( session.getAttribute( LOCK ) ) {
       result = session.getAttribute( getLockKey( type ) );
       if( result == null ) {
@@ -113,7 +113,7 @@ public abstract class SessionSingletonBase {
     return result;
   }
   
-  private static String getInstanceKey( final Class type ) {
+  static String getInstanceKey( final Class type ) {
     // Note [fappel]: Since this code is performance critical, don't change
     //                anything without checking it against a profiler.
     String name = type.getName();
@@ -121,12 +121,13 @@ public abstract class SessionSingletonBase {
     if( result == null ) {
       StringBuffer key = new StringBuffer( PREFIX );
       key.append( name );
-      instanceKeyMap.put( name, key.toString() );
+      result = key.toString();
+      instanceKeyMap.put( name, result );
     }
     return result;
   }
   
-  private static String getLockKey( final Class type ) {
+  static String getLockKey( final Class type ) {
     // Note [fappel]: Since this code is performance critical, don't change
     //                anything without checking it against a profiler.
     String name = type.getName();
@@ -135,7 +136,8 @@ public abstract class SessionSingletonBase {
       StringBuffer key = new StringBuffer( PREFIX );
       key.append( name );
       key.append( LOCK_POSTFIX );
-      lockKeyMap.put( name, key.toString() );
+      result = key.toString();
+      lockKeyMap.put( name, result );
     }
     return result;
   }
