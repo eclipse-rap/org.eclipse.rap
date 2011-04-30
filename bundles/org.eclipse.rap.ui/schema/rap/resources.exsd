@@ -49,6 +49,16 @@
          </appInfo>
       </annotation>
       <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="dependsOn"/>
+         </sequence>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  An optional identifier of the resource instance.
+               </documentation>
+            </annotation>
+         </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
@@ -56,6 +66,21 @@
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn="org.eclipse.rwt.resources.IResource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="dependsOn">
+      <complexType>
+         <attribute name="resourceId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The resourceId is used to identify the resource on which this resource depends on.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.rap.ui.resources/resource/@id"/>
                </appInfo>
             </annotation>
          </attribute>

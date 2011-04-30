@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
-
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -61,6 +63,22 @@ import org.osgi.framework.Bundle;
  */
 // TODO: [fappel] clean replacement mechanism that is anchored in W4Toolkit core
 public final class EngineConfigWrapper implements IEngineConfig {
+  
+  private static final class DependentResource {
+    public final IResource resource;
+    public final String id;
+    public final List dependencies;
+    
+    public DependentResource( IResource resource, String id, List dependencies ) {
+      this.resource = resource;
+      this.id = id;
+      this.dependencies = dependencies;
+    }
+    
+    public String toString() {
+      return id != null ? id : resource.getClass().getName();
+    }
+  }
 
   //  extension point id for adapter factory registration
   private static final String ID_ADAPTER_FACTORY
@@ -374,12 +392,75 @@ public final class EngineConfigWrapper implements IEngineConfig {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_RESOURCES );
     IConfigurationElement[] elements = point.getConfigurationElements();
+    DependentResource[] resources = loadResources( elements );
+    resources = sortResources( resources );
+    registerResources( resources );
+  }
+
+  private static DependentResource[] loadResources( IConfigurationElement[] elements ) {
+    DependentResource[] result = new DependentResource[ elements.length ];
     for( int i = 0; i < elements.length; i++ ) {
       try {
         IResource resource = ( IResource )elements[ i ].createExecutableExtension( "class" );
-        RWTFactory.getResourceRegistry().add( resource );
-      } catch( final CoreException ce ) {
+        String resourceId = elements[ i ].getAttribute( "id" );
+        IConfigurationElement[] dependsOn = elements[ i ].getChildren( "dependsOn" );
+        List resourceDependencies = new ArrayList();
+        for( int j = 0 ; j < dependsOn.length ; j++ ) {
+          String dependency = dependsOn[ j ].getAttribute( "resourceId" );
+          resourceDependencies.add( dependency );
+        }
+        result[ i ] = new DependentResource( resource, resourceId, resourceDependencies );
+      } catch( CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
+      }
+    }
+    return result;
+  }
+
+  private static DependentResource[] sortResources( DependentResource[] resources ) {
+    DependentResource[] result = new DependentResource[ resources.length ];
+    List sortedResourceIds = new ArrayList();
+    List deferredResources = new ArrayList();
+    int index = 0;
+    for( int i = 0; i < resources.length; i++ ) {
+      DependentResource resource = resources[ i ];
+      if( resource != null ) {
+        resource.dependencies.removeAll( sortedResourceIds );
+        boolean checkDeferredResources = false;
+        if( resource.dependencies.isEmpty() ) {
+          result[ index++ ] = resource;
+          sortedResourceIds.add( resource.id );
+          checkDeferredResources = true;
+        } else {
+          deferredResources.add( resource );
+        }
+        while( checkDeferredResources ) {
+          checkDeferredResources = false;
+          for( Iterator iterator = deferredResources.iterator(); iterator.hasNext(); ) {
+            DependentResource deferredResource = ( DependentResource )iterator.next();
+            deferredResource.dependencies.removeAll( sortedResourceIds );
+            if( deferredResource.dependencies.isEmpty() ) {
+              result[ index++ ] = deferredResource;
+              sortedResourceIds.add( deferredResource.id );
+              iterator.remove();
+              checkDeferredResources = true;
+            }
+          }
+        }
+      }
+    }
+    if( deferredResources.size() != 0 ) {
+      String pluginId = WorkbenchPlugin.getDefault().getBundle().getSymbolicName();
+      String message = "Dependencies could not be resolved for " + deferredResources;
+      WorkbenchPlugin.getDefault().getLog().log( new Status( IStatus.ERROR, pluginId, message ) );
+    }
+    return result;
+  }
+
+  private static void registerResources( DependentResource[] resources ) {
+    for( int i = 0; i < resources.length; i++ ) {
+      if( resources[ i ] != null ) {
+        RWTFactory.getResourceRegistry().add( resources[ i ].resource );
       }
     }
   }

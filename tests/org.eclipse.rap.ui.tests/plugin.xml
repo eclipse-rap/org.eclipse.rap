@@ -4450,5 +4450,32 @@
             id="myHandler2">
       </serviceHandler>
    </extension>
+   <extension
+         point="org.eclipse.rap.ui.resources">
+      <resource
+            class="org.eclipse.rap.ui.tests.resources.Resource4">
+      </resource>
+      <resource
+            class="org.eclipse.rap.ui.tests.resources.Resource2"
+            id="org.eclipse.rap.ui.tests.resources.resource2">
+         <dependsOn
+               resourceId="org.eclipse.rap.ui.tests.resources.resource3">
+         </dependsOn>
+      </resource>
+      <resource
+            class="org.eclipse.rap.ui.tests.resources.Resource5">
+      </resource>
+      <resource
+            class="org.eclipse.rap.ui.tests.resources.Resource1"
+            id="org.eclipse.rap.ui.tests.resources.resource1">
+         <dependsOn
+               resourceId="org.eclipse.rap.ui.tests.resources.resource2">
+         </dependsOn>
+      </resource>
+      <resource
+            class="org.eclipse.rap.ui.tests.resources.Resource3"
+            id="org.eclipse.rap.ui.tests.resources.resource3">
+      </resource>
+   </extension>
    <!-- RAP IAD END -->
 </plugin>            
