@@ -405,17 +405,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       } );
       testUtil.flush();
       testUtil.initErrorPageLog();
-      try{ 
+      try { 
         testUtil.click( widget );
         fail();
-      }catch( ex ) {
+      } catch( ex ) {
         // expected
       }
       assertNotNull( testUtil.getErrorPage() );
       widget.destroy();
     },
  
-    testCatchKeyEventError : function(){
+    testCatchKeyEventError : function() {
       var widget = new qx.ui.basic.Terminator();
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       widget.addToDocument();
@@ -428,11 +428,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       try{ 
         testUtil.press( widget, "a" );
         fail();
-      }catch( ex ) {
+      } catch( ex ) {
         // expected
       }
       assertNotNull( testUtil.getErrorPage() );
       widget.destroy();
+    },
+
+    testFocusWithoutCapturedWidget : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget1 = new qx.ui.basic.Terminator();
+      widget1.setFocused( true );
+      widget1.setTabIndex( 1 );
+      var widget2 = new qx.ui.basic.Terminator();;
+      widget2.setTabIndex( 1 );
+      widget1.addToDocument();
+      widget2.addToDocument();
+      testUtil.flush();
+      var node = widget2._getTargetNode();
+      var right = qx.event.type.MouseEvent.buttons.right;
+      testUtil.fakeMouseEventDOM( node, "mousedown", right );
+      assertTrue( widget2.getFocused() );
+      widget1.destroy();
+      widget2.destroy();
+    },
+
+    testFocusWithCapturedWidget : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget1 = new qx.ui.basic.Terminator();
+      widget1.setFocused( true );
+      widget1.setTabIndex( 1 );
+      widget1.setCapture( true );
+      var widget2 = new qx.ui.basic.Terminator();;
+      widget2.setTabIndex( 1 );
+      widget1.addToDocument();
+      widget2.addToDocument();
+      testUtil.flush();
+      var node = widget2._getTargetNode();
+      var right = qx.event.type.MouseEvent.buttons.right;
+      testUtil.fakeMouseEventDOM( node, "mousedown", right );
+      assertFalse( widget2.getFocused() );
+      widget1.destroy();
+      widget2.destroy();
     },
 
     /////////

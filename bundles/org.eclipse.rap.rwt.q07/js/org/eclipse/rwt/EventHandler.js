@@ -335,12 +335,12 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           && !this._allowContextMenu( vOriginalTarget, vDomTarget ) ) {
        util.stopDomEvent( vDomEvent );
       }
-      if( vTarget.getEnabled() && vType == "mousedown" ) {
+      if( vDispatchTarget.getEnabled() && vType == "mousedown" ) {
         qx.event.handler.FocusHandler.mouseFocus = true;
-        var vRoot = vTarget.getFocusRoot();
+        var vRoot = vDispatchTarget.getFocusRoot();
         if( vRoot ) {
           this.setFocusRoot( vRoot );
-          var vFocusTarget = vTarget;
+          var vFocusTarget = vDispatchTarget;
           while( !vFocusTarget.isFocusable() && vFocusTarget != vRoot ) {
             vFocusTarget = vFocusTarget.getParent();
           }
@@ -348,7 +348,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           // Otherwise the focus will activate another widget if the
           // active one is not tabable.
           vRoot.setFocusedChild( vFocusTarget );
-          vRoot.setActiveChild( vTarget );
+          vRoot.setActiveChild( vDispatchTarget );
         }
       }
       // handle related target object
