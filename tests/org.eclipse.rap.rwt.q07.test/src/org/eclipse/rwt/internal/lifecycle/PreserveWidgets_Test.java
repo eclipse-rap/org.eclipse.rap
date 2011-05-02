@@ -16,10 +16,8 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -176,12 +174,17 @@ public class PreserveWidgets_Test extends TestCase {
     }
   }
 
-  private static void installLoggingLifeCycleAdapterFactory( StringBuffer log ) {
-    AdapterFactory lifeCycleAdapterFactory = new LoggingLifeCycleAdapterFactory( log );
-    Fixture.disposeOfServiceContext();
+  private static void installLoggingLifeCycleAdapterFactory( final StringBuffer log ) {
+    Fixture.disposeOfApplicationContext();
+    Fixture.createApplicationContext( new Runnable() {
+      public void run() {
+        RWTFactory.getResourceManagerProvider().registerFactory( new TestResourceManagerFactory() );
+        AdapterFactory lifeCycleAdapterFactory = new LoggingLifeCycleAdapterFactory( log );
+        AdapterManager adapterManager = RWTFactory.getAdapterManager();
+        adapterManager.registerAdapters( lifeCycleAdapterFactory, Display.class );
+        adapterManager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
+      }
+    } );
     Fixture.createServiceContext();
-    AdapterManager manager = AdapterManagerImpl.getInstance();
-    manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
-    manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
   }
 }

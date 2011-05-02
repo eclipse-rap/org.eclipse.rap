@@ -13,11 +13,10 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.events.EventAdapter;
 import org.eclipse.rwt.internal.events.IEventAdapter;
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -183,7 +182,7 @@ public abstract class Widget implements Adaptable {
     } else {
       // [fappel] Buffer the adapterManager to improve performance
       if( adapterManager == null ) {
-        adapterManager = AdapterManagerImpl.getInstance();
+        adapterManager = RWTFactory.getAdapterManager();
       }
       result = adapterManager.getAdapter( this, adapter );
     }

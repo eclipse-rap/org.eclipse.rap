@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -757,7 +756,7 @@ public class Display extends Device implements Adaptable {
       }
       result = widgetAdapter;
     } else {
-      result = AdapterManagerImpl.getInstance().getAdapter( this, adapter );
+      result = RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }

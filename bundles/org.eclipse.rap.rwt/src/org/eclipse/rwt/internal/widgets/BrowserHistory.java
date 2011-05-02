@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rwt.events.BrowserHistoryListener;
-import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.events.*;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
@@ -117,7 +116,7 @@ public final class BrowserHistory
       }
       result = eventAdapter;
     } else {
-      result = AdapterManagerImpl.getInstance().getAdapter( this, adapter );
+      result = RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }

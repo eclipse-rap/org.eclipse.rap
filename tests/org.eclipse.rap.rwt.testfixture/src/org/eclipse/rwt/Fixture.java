@@ -204,7 +204,6 @@ public class Fixture {
     setSystemProperties();
     createApplicationContext();
     createServiceContext();
-    RWTFactory.getAdapterFactoryRegistry().register();
   }
 
   private static void registerCurrentPhaseListener() {

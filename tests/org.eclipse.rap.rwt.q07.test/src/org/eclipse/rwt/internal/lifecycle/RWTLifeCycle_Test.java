@@ -425,7 +425,6 @@ public class RWTLifeCycle_Test extends TestCase {
     // Simulate new session and run lifecycle
     newSession();
     Fixture.fakeResponseWriter();
-    RWTFactory.getAdapterFactoryRegistry().register();
     callbackHandler[ 0 ] = null;
     RWTLifeCycle lifeCycle2 = new RWTLifeCycle();
     lifeCycle2.execute();

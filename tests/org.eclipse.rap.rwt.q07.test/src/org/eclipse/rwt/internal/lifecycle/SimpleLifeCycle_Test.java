@@ -209,6 +209,5 @@ public class SimpleLifeCycle_Test extends TestCase {
   private static void newSession() {
     ContextProvider.disposeContext();
     Fixture.createServiceContext();
-    RWTFactory.getAdapterFactoryRegistry().register();
   }
 }

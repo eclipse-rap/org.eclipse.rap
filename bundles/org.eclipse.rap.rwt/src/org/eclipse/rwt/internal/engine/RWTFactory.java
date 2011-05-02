@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
-import org.eclipse.rwt.internal.ConfigurationReader;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
@@ -113,8 +112,8 @@ public class RWTFactory {
     return ( JSLibraryConcatenator )getApplicationSingleton( JSLibraryConcatenator.class );
   }
 
-  public static AdapterFactoryRegistry getAdapterFactoryRegistry() {
-    return ( AdapterFactoryRegistry )getApplicationSingleton( AdapterFactoryRegistry.class );
+  public static AdapterManager getAdapterManager() {
+    return ( AdapterManager )getApplicationSingleton( AdapterManagerImpl.class );
   }
 
   public static ResourceRegistry getResourceRegistry() {

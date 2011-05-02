@@ -13,8 +13,7 @@ package org.eclipse.rwt.internal.engine;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rwt.internal.AdapterFactoryRegistry;
-import org.eclipse.rwt.internal.ConfigurationReader;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
@@ -47,7 +46,7 @@ public class ApplicationContextUtil {
     InternalImageFactory.class,
     ImageDataFactory.class,
     FontDataFactory.class,
-    AdapterFactoryRegistry.class,
+    AdapterManagerImpl.class,
     SettingStoreManager.class,
     StartupPageConfigurer.class,
     StartupPage.class,

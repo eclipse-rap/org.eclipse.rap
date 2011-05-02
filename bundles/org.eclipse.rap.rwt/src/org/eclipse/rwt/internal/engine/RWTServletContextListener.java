@@ -241,6 +241,7 @@ public final class RWTServletContextListener implements ServletContextListener {
 
   public static void registerAdapterFactories( ServletContext context ) {
     String initParam = context.getInitParameter( ADAPTER_FACTORIES_PARAM );
+    AdapterManager adapterManager = RWTFactory.getAdapterManager();
     if( initParam != null ) {
       String[] factoryParams = initParam.split( SEPARATOR );
       for( int i = 0; i < factoryParams.length; i++ ) {
@@ -254,7 +255,7 @@ public final class RWTServletContextListener implements ServletContextListener {
           try {
             Class factoryClass = Class.forName( classNames[ 0 ] );
             Class adaptableClass = Class.forName( classNames[ 1 ] );
-            RWTFactory.getAdapterFactoryRegistry().add( factoryClass, adaptableClass );
+            adapterManager.registerAdapterFactory( factoryClass, adaptableClass );
           } catch( final Throwable thr ) {
             Object[] param = new Object[] { factoryParams[ i ] };
             String text;
@@ -265,8 +266,8 @@ public final class RWTServletContextListener implements ServletContextListener {
         }
       }
     } else {
-      RWTFactory.getAdapterFactoryRegistry().add( LifeCycleAdapterFactory.class, Widget.class );
-      RWTFactory.getAdapterFactoryRegistry().add( LifeCycleAdapterFactory.class, Display.class );
+      adapterManager.registerAdapterFactory( LifeCycleAdapterFactory.class, Widget.class );
+      adapterManager.registerAdapterFactory( LifeCycleAdapterFactory.class, Display.class );
     }
   }
 

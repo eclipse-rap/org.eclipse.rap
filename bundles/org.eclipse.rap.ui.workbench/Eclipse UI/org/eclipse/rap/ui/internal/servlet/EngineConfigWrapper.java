@@ -214,7 +214,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
         Bundle bundle = Platform.getBundle( contributorName );
         Class factoryClass = bundle.loadClass( factoryName );
         Class adaptableClass = bundle.loadClass( adaptableName );
-        RWTFactory.getAdapterFactoryRegistry().add( factoryClass, adaptableClass );
+        RWTFactory.getAdapterManager().registerAdapterFactory( factoryClass, adaptableClass );
       } catch( final Throwable thr ) {
         String text =   "Could not register adapter factory ''{0}'' "
                       + "for the adapter type ''{1}''.";

@@ -17,8 +17,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.TestAdaptable;
-import org.eclipse.rwt.internal.TestAdapterFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.*;
@@ -34,8 +32,6 @@ public class RWTServletContextListener_Test extends TestCase {
     = RWTServletContextListener.ENTRY_POINTS_PARAM;
   private static final String RESOURCE_MANAGER_FACTORY
     = RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM;
-  private static final String ADAPTER_FACTORY
-    = RWTServletContextListener.ADAPTER_FACTORIES_PARAM;
   private static final String PHASE_LISTENER_PARAM 
     = RWTServletContextListener.PHASE_LISTENERS_PARAM;
   private static final String RESOURCE_PARAM 
@@ -91,18 +87,6 @@ public class RWTServletContextListener_Test extends TestCase {
   }
   
   public static class TestBranding extends AbstractBranding {
-  }
-  
-  public void testAdapterFactoryRegistryInitialization() {
-    Fixture.setInitParameter( ADAPTER_FACTORY, createFactoryParam() );
-    
-    Fixture.triggerServletContextInitialized();
-
-    Fixture.createServiceContext();
-    RWTFactory.getAdapterFactoryRegistry().register();
-    TestAdaptable testAdaptable = new TestAdaptable();
-    Runnable runnable = ( Runnable )testAdaptable.getAdapter( Runnable.class );
-    assertNotNull( runnable );
   }
   
   public void testResourceManagerInitialization() {
@@ -186,7 +170,6 @@ public class RWTServletContextListener_Test extends TestCase {
     // Prepare and execute a life cycle to ensure that the phase listener
     // was loaded and gets executed
     Fixture.createServiceContext();
-    RWTFactory.getAdapterFactoryRegistry().register();
     Class entryPointType = TestEntryPointWithShell.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointType );
     Fixture.fakeResponseWriter();
@@ -216,7 +199,6 @@ public class RWTServletContextListener_Test extends TestCase {
     // Prepare and execute a life cycle to ensure that the phase listener
     // was loaded and gets executed
     Fixture.createServiceContext();
-    RWTFactory.getAdapterFactoryRegistry().register();
     Class entryPointType = TestEntryPointWithShell.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointType );
     Fixture.fakeResponseWriter();
@@ -256,20 +238,5 @@ public class RWTServletContextListener_Test extends TestCase {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfServletContext();
     Fixture.setServletContextListener( null );
-  }
-  
-  private String createFactoryParam()
-  {
-    String factoryName = TestAdapterFactory.class.getName();
-    String adaptableName = TestAdaptable.class.getName();
-    return   "\n  "
-           + factoryName
-           + "#" 
-           + adaptableName
-           + ",\n  \t "
-           + factoryName
-           + "#"
-           + adaptableName
-           + "  \n";
   }
 }

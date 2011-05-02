@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
@@ -68,12 +69,5 @@ public interface AdapterManager {
    */
   void registerAdapters( AdapterFactory factory, Class adaptable );
 
-  /**
-   * <p>registers the given adapter factory as extending objects of the given
-   * type.</p>
-   * 
-   * @param factory the adapter factory to remove
-   * @param adaptable the type agains which the factory is being registered
-   */
-  void deregisterAdapters( AdapterFactory factory, Class adaptable );
+  void registerAdapterFactory( Class factoryClass, Class adaptableClass );
 }

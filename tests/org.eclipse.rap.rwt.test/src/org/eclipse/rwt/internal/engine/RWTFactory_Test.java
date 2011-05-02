@@ -48,9 +48,9 @@ public class RWTFactory_Test extends TestCase {
     assertNotNull( RWTFactory.getFontDataFactory() );
     assertSame( RWTFactory.getFontDataFactory(), RWTFactory.getFontDataFactory() );
     
-    assertNotNull( RWTFactory.getAdapterFactoryRegistry() );
-    assertSame( RWTFactory.getAdapterFactoryRegistry(), RWTFactory.getAdapterFactoryRegistry() );
-    
+    assertNotNull( RWTFactory.getAdapterManager() );
+    assertSame( RWTFactory.getAdapterManager(), RWTFactory.getAdapterManager() );
+
     assertNotNull( RWTFactory.getSettingStoreManager() );
     assertSame( RWTFactory.getSettingStoreManager(), RWTFactory.getSettingStoreManager() );
     

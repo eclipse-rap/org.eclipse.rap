@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,10 +7,10 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.util.Enumeration;
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -19,9 +19,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetLifeCycleAdapter;
-import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.widgets.*;
 
 
@@ -45,59 +43,86 @@ public class LifeCycleAdapter_Test extends TestCase {
     }
   }
 
-  public void testDisplayLifeCycleAdapter() {
-    Display display1 = new Display();
-    Object adapter1 = display1.getAdapter( ILifeCycleAdapter.class );
-    assertTrue( adapter1 instanceof IDisplayLifeCycleAdapter );
-    Object adapter2 = display1.getAdapter( ILifeCycleAdapter.class );
-    assertSame( adapter1, adapter2 );
-    removeDisplay();
-    Display display2 = new Display();
-    Object adapter3 = display2.getAdapter( ILifeCycleAdapter.class );
-    assertSame( adapter2, adapter3 );
-    Fixture.tearDown();
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-    Display display3 = new Display();
-    Object adapter4 = display3.getAdapter( ILifeCycleAdapter.class );
-    assertSame( adapter3, adapter4 );
-  }
-
-  public void testWidgetLifeCycleAdapter() {
+  public void testDisplayAdapter() {
     Display display = new Display();
-    Composite shell1 = new Shell( display, SWT.NONE );
-    Object shell1LCA = shell1.getAdapter( ILifeCycleAdapter.class );
-    assertTrue( shell1LCA instanceof IWidgetLifeCycleAdapter );
-    Composite shell2 = new Shell( display, SWT.NONE );
-    Object shell2LCA = shell2.getAdapter( ILifeCycleAdapter.class );
-    assertTrue( shell2LCA instanceof IWidgetLifeCycleAdapter );
-    assertSame( shell1LCA, shell2LCA );
-    Button button = new Button( shell2, SWT.PUSH );
-    Object buttonLCA = button.getAdapter( ILifeCycleAdapter.class );
-    assertTrue( buttonLCA instanceof IWidgetLifeCycleAdapter );
-    CustomComposite customComposite = new CustomComposite( shell2 );
-    Object customComposite1LCA = customComposite.getAdapter( ILifeCycleAdapter.class );
-    assertTrue( customComposite1LCA.getClass().equals( CompositeLCA.class ) );
-    CustomComposite customComposite2 = new CustomComposite( shell2 );
-    Object customComposite2LCA = customComposite2.getAdapter( ILifeCycleAdapter.class );
-    assertSame( customComposite1LCA, customComposite2LCA );
-    Composite composite = new Composite( shell2, SWT.NONE );
-    Object compositeLCA = composite.getAdapter( ILifeCycleAdapter.class );
-    assertTrue( compositeLCA instanceof IWidgetLifeCycleAdapter );
-    assertNotSame( customComposite1LCA, compositeLCA );
-    Fixture.tearDown();
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-    display = new Display();
-    Composite otherSessionShell = new Shell( display, SWT.NONE );
-    Object otherSessionAdapter = otherSessionShell.getAdapter( ILifeCycleAdapter.class );
-    assertSame( shell1LCA, otherSessionAdapter );
-    display.dispose();
+    Object adapter = display.getAdapter( ILifeCycleAdapter.class );
+    assertTrue( adapter instanceof IDisplayLifeCycleAdapter );
   }
   
+  public void testDisplayAdapterReturnsSameAdapterForEachInvocation() {
+    Display display = new Display();
+    Object adapter1 = display.getAdapter( ILifeCycleAdapter.class );
+    Object adapter2 = display.getAdapter( ILifeCycleAdapter.class );
+    assertSame( adapter1, adapter2 );
+  }
+  
+  public void testDisplayAdapterReturnsSameAdapterForDifferentDisplays() {
+    Display display1 = new Display();
+    Object adapter1 = display1.getAdapter( ILifeCycleAdapter.class );
+    display1.dispose();
+    Display display2 = new Display();
+    Object adapter2 = display2.getAdapter( ILifeCycleAdapter.class );
+    assertSame( adapter1, adapter2 );
+  }
+  
+  public void testDisplayAdapterIsApplicationScoped() {
+    Display display1 = new Display();
+    Object adapter1 = display1.getAdapter( ILifeCycleAdapter.class );
+    newSession();
+    Display display2 = new Display();
+    Object adapter2 = display2.getAdapter( ILifeCycleAdapter.class );
+    assertSame( adapter1, adapter2 );
+  }
+  
+  public void testWidgetAdapter() {
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    Object adapter = widget.getAdapter( ILifeCycleAdapter.class );
+    assertTrue( adapter instanceof IWidgetLifeCycleAdapter );
+  }
+  
+  public void testWidgetAdapterReturnsSameAdapterForEachInvocation() {
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    Object adapter1 = widget.getAdapter( ILifeCycleAdapter.class );
+    Object adapter2 = widget.getAdapter( ILifeCycleAdapter.class );
+    assertSame( adapter1, adapter2 );
+  }
+  
+  public void testWidgetAdapterReturnsSameAdapterForDifferentInstancesOfSameType() {
+    Display display = new Display();
+    Widget widget1 = new Shell( display );
+    Object adapter1 = widget1.getAdapter( ILifeCycleAdapter.class );
+    Widget widget2 = new Shell( display );
+    Object adapter2 = widget2.getAdapter( ILifeCycleAdapter.class );
+    assertSame( adapter1, adapter2 );
+  }
+  
+  public void testWidgetAdaptreReturnsDistinctAdapterForEachWidgetType() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Object shellAdapter = shell.getAdapter( ILifeCycleAdapter.class );
+    Button button = new Button( shell, SWT.PUSH );
+    Object buttonAdapter = button.getAdapter( ILifeCycleAdapter.class );
+    assertNotNull( shellAdapter );
+    assertNotNull( buttonAdapter );
+    assertNotSame( shellAdapter, buttonAdapter );
+  }
+
+  public void testWidgetAdapterIsApplicationScoped() {
+    Display display1 = new Display();
+    Widget widget1 = new Shell( display1 );
+    Object adapter1 = widget1.getAdapter( ILifeCycleAdapter.class );
+    newSession();
+    Display display2 = new Display();
+    Widget widget2 = new Shell( display2 );
+    Object adapter2 = widget2.getAdapter( ILifeCycleAdapter.class );
+    assertSame( adapter1, adapter2 );
+  }
+
   public void testGetAdapterWithMissingWidgetLCA() {
     Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
+    Shell shell = new Shell( display );
     Widget widget = new TestWidget( shell );
     try {
       widget.getAdapter( ILifeCycleAdapter.class );
@@ -121,20 +146,6 @@ public class LifeCycleAdapter_Test extends TestCase {
     }
   }
 
-  private static void removeDisplay() {
-    ISessionStore session = ContextProvider.getSession();
-    Enumeration attributeNames = session.getAttributeNames();
-    String toRemove = null;
-    while( toRemove == null && attributeNames.hasMoreElements() ) {
-      String nextElement = ( String )attributeNames.nextElement();
-      Object attribute = session.getAttribute( nextElement );
-      if( attribute instanceof Display ) {
-        toRemove = nextElement;
-      }
-    }
-    session.removeAttribute( toRemove );
-  }
-
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
@@ -142,5 +153,10 @@ public class LifeCycleAdapter_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private static void newSession() {
+    ContextProvider.disposeContext();
+    Fixture.createServiceContext();
   }
 }

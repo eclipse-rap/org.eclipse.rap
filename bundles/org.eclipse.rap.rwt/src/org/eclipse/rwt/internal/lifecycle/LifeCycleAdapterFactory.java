@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -27,16 +27,23 @@ import org.eclipse.swt.widgets.Widget;
 public final class LifeCycleAdapterFactory implements AdapterFactory {
 
   private static final Class[] ADAPTER_LIST = new Class[] {
-    ILifeCycleAdapter.class,
+    ILifeCycleAdapter.class
   };
 
+  private IDisplayLifeCycleAdapter displayAdapter;
   // Holds the single display life cycle adapter. MUST be created lazily
   // because its constructor needs a resource manager to be in place
-  private static IDisplayLifeCycleAdapter displayAdapter;
+  private final Object displayAdapterLock;
   // Maps widget classes to their respective life cycle adapters
   // Key: Class<Widget>, value: IWidgetLifeCycleAdapter
-  private static final Map widgetAdapters = new HashMap();
+  private final Map widgetAdapters;
 
+  
+  public LifeCycleAdapterFactory() {
+    displayAdapterLock = new Object();
+    widgetAdapters = new HashMap();
+  }
+  
   public Object getAdapter( final Object adaptable, final Class adapter ) {
     Object result = null;
     if( isDisplayLCA( adaptable, adapter ) ) {
@@ -54,46 +61,46 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   ///////////////////////////////////////////////////////////
   // Helping methods to obtain life cycle adapter for display
 
-  private boolean isDisplayLCA( final Object adaptable, final Class adapter ) {
+  private static boolean isDisplayLCA( Object adaptable, Class adapter ) {
     return adaptable instanceof Display && adapter == ILifeCycleAdapter.class;
   }
 
-  private static synchronized ILifeCycleAdapter getDisplayLCA() {
-    if( displayAdapter == null ) {
-      displayAdapter = DisplayLCAFacade.getDisplayLCA();
+  private synchronized ILifeCycleAdapter getDisplayLCA() {
+    synchronized( displayAdapterLock ) {
+      if( displayAdapter == null ) {
+        displayAdapter = DisplayLCAFacade.getDisplayLCA();
+      }
+      return displayAdapter;
     }
-    return displayAdapter;
   }
 
   ////////////////////////////////////////////////////////////
   // Helping methods to obtain life cycle adapters for widgets
 
-  private boolean isWidgetLCA( final Object adaptable, final Class adapter ) {
+  private static boolean isWidgetLCA( Object adaptable, Class adapter ) {
     return adaptable instanceof Widget && adapter == ILifeCycleAdapter.class;
   }
 
-  private static synchronized ILifeCycleAdapter getWidgetLCA(
-                                                             final Class clazz )
-  {
-    // Note [fappel]: Since this code is performance critical, don't change
-    //                anything without checking it against a profiler.
-    ILifeCycleAdapter result = ( ILifeCycleAdapter )widgetAdapters.get( clazz );
-    if( result == null ) {
-      ILifeCycleAdapter adapter = null;
-      Class superClass = clazz;
-      while( !Object.class.equals( superClass ) && adapter == null ) {
-        adapter = loadWidgetLCA( superClass );
-        if( adapter == null ) {
-          superClass = superClass.getSuperclass();
+  private synchronized ILifeCycleAdapter getWidgetLCA( Class clazz ) {
+    // [fappel] This code is performance critical, don't change without checking against a profiler
+    ILifeCycleAdapter result;
+    synchronized( widgetAdapters ) {
+      result = ( ILifeCycleAdapter )widgetAdapters.get( clazz );
+      if( result == null ) {
+        ILifeCycleAdapter adapter = null;
+        Class superClass = clazz;
+        while( !Object.class.equals( superClass ) && adapter == null ) {
+          adapter = loadWidgetLCA( superClass );
+          if( adapter == null ) {
+            superClass = superClass.getSuperclass();
+          }
         }
+        widgetAdapters.put( clazz, adapter );
+        result = adapter;
       }
-      widgetAdapters.put( clazz, adapter );
-      result = adapter;
     }
     if( result == null ) {
-      String text = "Failed to obtain life cycle adapter for class ''{0}\''.";
-      Object[] params = new Object[]{ clazz.getName() };
-      String msg = MessageFormat.format( text, params );
+      String msg = "Failed to obtain life cycle adapter for: " + clazz.getName();
       throw new LifeCycleAdapterException( msg );
     }
     return result;

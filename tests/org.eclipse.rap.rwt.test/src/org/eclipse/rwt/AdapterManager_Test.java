@@ -14,8 +14,7 @@ package org.eclipse.rwt;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.*;
 
 
 public class AdapterManager_Test extends TestCase {
@@ -24,62 +23,93 @@ public class AdapterManager_Test extends TestCase {
   private DummyType dummy;
 
   protected void setUp() {
-    Fixture.createApplicationContext();
-    Fixture.createServiceContext();
-    adapterManager = AdapterManagerImpl.getInstance();
-    dummy = new DummyType();
+    adapterManager = new AdapterManagerImpl();
+    dummy = new DummyType( adapterManager );
   }
   
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRegisterWithNullAdapterFactory() {
+    try {
+      adapterManager.registerAdapters( null, DummyType.class );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
   }
   
-  public void testRegisterSingleAdapterFactory() {
+  public void testRegisterWithNullAdaptableClass() {
+    AdapterFactory adapterFactory = new TestAdapterFactory1();
+    try {
+      adapterManager.registerAdapters( adapterFactory, null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
+  public void testRegisterWithInvalidAdaptableClass() {
+    AdapterFactory adapterFactory = new TestAdapterFactory1();
+    try {
+      adapterManager.registerAdapters( adapterFactory, Object.class );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testGetAdapterWithNoAdapterFactory() {
+    Object adapter1 = adapterManager.getAdapter( dummy, IDummyAdapter1.class );
+    assertNull( adapter1 );
+  }
+
+  public void testGetAdapterWithSingleAdapterFactory() {
     AdapterFactory adapterFactory = new TestAdapterFactory1();
     adapterManager.registerAdapters( adapterFactory, IDummyType.class );
     
-    Object adapter1 = dummy.getAdapter( IDummyAdapter1.class );
-    Object adapter3 = dummy.getAdapter( IDummyAdapter3.class );
+    Object adapter1 = adapterManager.getAdapter( dummy, IDummyAdapter1.class );
+    Object adapter3 = adapterManager.getAdapter( dummy, IDummyAdapter3.class );
 
     assertTrue( adapter1 instanceof IDummyAdapter1 );
     assertNull( adapter3 );    
   }
   
-  public void testRegisterMultipleAdapterFactories() {
+  public void testGetAdapterDoesNotBufferAdapters() {
+    LoggingAdapterFactory adapterFactory = new LoggingAdapterFactory();
+    adapterManager.registerAdapters( adapterFactory, IDummyType.class );
+
+    adapterManager.getAdapter( dummy, IDummyAdapter1.class );
+    adapterFactory.resetLog();
+    adapterManager.getAdapter( dummy, IDummyAdapter1.class );
+    
+    assertSame( dummy, adapterFactory.adaptable );
+    assertSame( IDummyAdapter1.class, adapterFactory.adapter );
+  }
+  
+  public void testGetAdapterWithMultipleAdapterFactories() {
     AdapterFactory adapterFactory1 = new TestAdapterFactory1();
     adapterManager.registerAdapters( adapterFactory1, IDummyType.class );
     AdapterFactory adapterFactory2 = new TestAdapterFactory2();
     adapterManager.registerAdapters( adapterFactory2, IDummyType.class );
     
-    Object adapter2 = dummy.getAdapter( IDummyAdapter2.class );
-    Object adapter3 = dummy.getAdapter( IDummyAdapter3.class );
+    Object adapter2 = adapterManager.getAdapter( dummy, IDummyAdapter2.class );
+    Object adapter3 = adapterManager.getAdapter( dummy, IDummyAdapter3.class );
     
     assertTrue( adapter2 instanceof IDummyAdapter2 );
     assertTrue( adapter3 instanceof IDummyAdapter3 );
   }
   
-  public void testDeregister() {
-    TestAdapterFactory1 adapterFactory1 = new TestAdapterFactory1();
-    adapterManager.registerAdapters( adapterFactory1, IDummyType.class );
-    adapterManager.registerAdapters( new TestAdapterFactory2(), IDummyType.class );
-
-    adapterManager.deregisterAdapters( adapterFactory1, IDummyType.class );
-    Object dummyAdapter1 = dummy.getAdapter( IDummyAdapter1.class );
-    Object dummyAdapter2 = dummy.getAdapter( IDummyAdapter2.class );
-    Object dummyAdapter3 = dummy.getAdapter( IDummyAdapter3.class );
-
-    assertNull( dummyAdapter1 );
-    assertNotNull( dummyAdapter2 );
-    assertNotNull( dummyAdapter3 );
-    assertTrue( dummyAdapter3 instanceof IDummyAdapter3 );
-  }
-  
   /////////////
   // test types
   
-  private static class TestAdapterFactory1 implements AdapterFactory {
+  private static class LoggingAdapterFactory implements AdapterFactory {
   
+    Object adaptable;
+    Class adapter;
+    
+    void resetLog() {
+      adaptable = null;
+      adapter = null;
+    }
+    
     public Object getAdapter( Object adaptable, Class adapter ) {
+      this.adaptable = adaptable;
+      this.adapter = adapter;
       return new DummyAdapter1();
     }
   
@@ -88,6 +118,17 @@ public class AdapterManager_Test extends TestCase {
     }
   }
 
+  private static class TestAdapterFactory1 implements AdapterFactory {
+    
+    public Object getAdapter( Object adaptable, Class adapter ) {
+      return new DummyAdapter1();
+    }
+    
+    public Class[] getAdapterList() {
+      return new Class[] { IDummyAdapter1.class };
+    }
+  }
+  
   private static class TestAdapterFactory2 implements AdapterFactory {
 
     public Object getAdapter( Object adaptable, Class adapter ) {
@@ -118,15 +159,19 @@ public class AdapterManager_Test extends TestCase {
     // empty, used only for test case
   }
   
-  private interface IDummyType {
+  private interface IDummyType extends Adaptable {
     void doNothing();
   }
 
-  private static class DummyType implements IDummyType, Adaptable {
+  private static class DummyType implements IDummyType {
+    private final AdapterManager adapterManager;
+    public DummyType( AdapterManager adapterManager ) {
+      this.adapterManager = adapterManager;
+    }
     public void doNothing() {
     }
     public Object getAdapter( Class adapter ) {
-      return AdapterManagerImpl.getInstance().getAdapter( this, adapter );
+      return adapterManager.getAdapter( this, adapter );
     }
   }
   

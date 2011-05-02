@@ -30,16 +30,11 @@ import org.eclipse.rwt.service.ISessionStore;
 public class LifeCycleServiceHandler implements IServiceHandler {
 
   public static final String RWT_INITIALIZE = "rwt_initialize";
-
   // TODO [if]: Move this code to a fragment
   private static final String PATTERN_RELOAD
     = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
-
   static final String SESSION_INITIALIZED
     = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
-  private static final String ADAPTER_MANAGER_INITIALIZED 
-    = LifeCycleServiceHandler.class.getName() + "#adapterManagerInitialized";
-
 
   public void service() throws IOException, ServletException {
     synchronized( ContextProvider.getSession() ) {
@@ -79,7 +74,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     initializeSession();
     if( isSessionInitialized() ) {
       RequestParameterBuffer.merge();
-      initializeAdapterManager();
       LifeCycle lifeCycle = ( LifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
       lifeCycle.execute();
     } else {
@@ -88,15 +82,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
       RWTFactory.getStartupPage().send();
     }
   }
-
-  private static void initializeAdapterManager() {
-    ISessionStore session = ContextProvider.getSession();
-    if( session.getAttribute( ADAPTER_MANAGER_INITIALIZED ) == null ) {
-      RWTFactory.getAdapterFactoryRegistry().register();
-      session.setAttribute( ADAPTER_MANAGER_INITIALIZED, Boolean.TRUE );
-    }
-  }
-
 
   //////////////////
   // helping methods
