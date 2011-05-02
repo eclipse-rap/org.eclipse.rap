@@ -10,11 +10,12 @@
  *    EclipseSource - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-package org.eclipse.rwt;
+package org.eclipse.rwt.internal;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.AdapterFactory;
 
 
 public class AdapterManager_Test extends TestCase {
@@ -23,11 +24,11 @@ public class AdapterManager_Test extends TestCase {
   private DummyType dummy;
 
   protected void setUp() {
-    adapterManager = new AdapterManagerImpl();
+    adapterManager = new AdapterManager();
     dummy = new DummyType( adapterManager );
   }
   
-  public void testRegisterWithNullAdapterFactory() {
+  public void testRegisterAdaptersWithNullAdapterFactory() {
     try {
       adapterManager.registerAdapters( null, DummyType.class );
       fail();
@@ -35,7 +36,7 @@ public class AdapterManager_Test extends TestCase {
     }
   }
   
-  public void testRegisterWithNullAdaptableClass() {
+  public void testRegisterAdaptersWithNullAdaptableClass() {
     AdapterFactory adapterFactory = new TestAdapterFactory1();
     try {
       adapterManager.registerAdapters( adapterFactory, null );
@@ -44,7 +45,7 @@ public class AdapterManager_Test extends TestCase {
     }
   }
   
-  public void testRegisterWithInvalidAdaptableClass() {
+  public void testRegisterAdaptersWithInvalidAdaptableClass() {
     AdapterFactory adapterFactory = new TestAdapterFactory1();
     try {
       adapterManager.registerAdapters( adapterFactory, Object.class );

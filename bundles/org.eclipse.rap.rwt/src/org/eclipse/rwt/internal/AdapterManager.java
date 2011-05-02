@@ -11,63 +11,114 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
+import java.text.MessageFormat;
+import java.util.*;
+
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.internal.util.ParamCheck;
 
-/**
- * <p>
- * An <code>AdapterManager</code> appears as a registry for
- * <code>AdapterFactory</code> implementations. Clients directly de-/register
- * <code>AdapterFactory</code> implementations at the manager.
- * </p>
- * <p>
- * <code>Adaptable</code> objects tunnel invocations of
- * <code>Adaptable.getAdapter</code> to the manager's
- * <code>AdapterManager.getAdapter</code> method. The manager itself dispatches
- * the invocation to the <code>AdapterFactory</code> instance registered for the
- * given adaptable object and requested adapter.
- * </p>
- * <p>
- * Usage:
- * 
- * <pre>
- * AdapterFactory adapterFactory = new AdapterFactory() {
- *   public Class[] getAdapterList() {
- *     return new Class[] { MyAdapter.class };
- *   }
- *   public Object getAdapter( Object adaptable, Class adapter ) {
- *     MyAdaptableType adaptableInstance = ( MyAdaptableType )adaptable;
- *     return MyAdapterImpl( adaptableInstance );
- *   }
- * }
- * AdapterManager manager = AdapterManagerImpl.getInstance();
- * manager.registerAdapters( adapterFactory, MyAdaptableType.class );
- * </pre>
- * </p>
- * 
- * @see org.eclipse.rwt.Adaptable
- * @see AdapterFactory
- */
-public interface AdapterManager {
+
+public class AdapterManager {
+
+  private static final NullAdapterFactory NULL_ADAPTER_FACTORY = new NullAdapterFactory();
+
+  private static class NullAdapterFactory implements AdapterFactory {
+    private static final Class[] EMPTY = new Class[ 0 ];
+    public Object getAdapter( Object adaptable, Class adapter ) {
+      return null;
+    }
+    public Class[] getAdapterList() {
+      return EMPTY;
+    }
+  }
   
-  /**
-   * <p>returns an object which is an instance of the given class associated
-   * with the given object or <code>null</code> if no such object can be 
-   * found.</p>
-   *
-   * @param adaptable the <code>Adaptable</code> instance used as lookup key
-   * @param adapter the type of adapter to look up
-   * @return a object castable to the given adapter type or <code>null</code> 
-   *          if there is no adapter of the given type availabe */
-  Object getAdapter( Object adaptable, Class adapter );
+  /* key: Class<Adaptable> (of adaaptable), value: List<AdapterFactory> */
+  private final Map registry;
+  /* key: hash of adaptableClass * adapterClass, value: AdapterFactory */
+  private final Map bufferedAdapterFactories;
+  
+  public AdapterManager() {
+    registry = new HashMap();
+    bufferedAdapterFactories = new HashMap();
+  }
+  
+  ////////////////////////////
+  // interface implementations
+  
+  // TODO [rh] synchronize more fine grained
+  public synchronized Object getAdapter( Object adaptable, Class adapter ) {
+    // [fappel] This code is performance critical, don't change without checking against a profiler
+    Integer hash = calculateHash( adaptable, adapter );
+    AdapterFactory factory = ( AdapterFactory )bufferedAdapterFactories.get( hash );
+    if( factory == null ) {
+      factory = findAndBufferAdapterFactory( adaptable, adapter, hash );
+    } 
+    return factory.getAdapter( adaptable, adapter );
+  }
+  
+  private static Integer calculateHash( Object adaptable, Class adapterClass ) {
+    Class adaptableClass = adaptable.getClass();
+    int hash = 23273 + adaptableClass.hashCode() * 37 + adapterClass.hashCode();
+    return new Integer( hash );
+  }
 
-  /**
-   * <p>registers the given adapter factory as extending objects of the given
-   * type.</p>
-   * 
-   * @param factory the adapter factory
-   * @param adaptable the type being extended
-   */
-  void registerAdapters( AdapterFactory factory, Class adaptable );
+  private AdapterFactory findAndBufferAdapterFactory( Object adaptable, 
+                                                      Class adapter, 
+                                                      Integer hash ) 
+  {
+    AdapterFactory result = null;
+    Class[] adaptableClasses = new Class[ registry.size() ];
+    registry.keySet().toArray( adaptableClasses );
+    for( int i = 0; result == null && i < adaptableClasses.length; i++ ) {
+      if( adaptableClasses[ i ].isAssignableFrom( adaptable.getClass() ) ) {
+        List factoryList = ( List )registry.get( adaptableClasses[ i ] );
+        AdapterFactory[] factories = new AdapterFactory[ factoryList.size() ];
+        factoryList.toArray( factories );
+        for( int j = 0; result == null && j < factories.length; j++ ) {
+          Class[] adapters = factories[ j ].getAdapterList();
+          for( int k = 0; result == null && k < adapters.length; k++ ) {
+            if( adapter.isAssignableFrom( adapters[ k ] ) ) {
+              result = factories[ j ];
+            }
+          }          
+        }
+      }
+    }
+    if( result == null ) {
+      result = NULL_ADAPTER_FACTORY;
+    }
+    bufferedAdapterFactories.put( hash, result );
+    return result;
+  }
+  
+  public void registerAdapterFactory( Class factoryClass, Class adaptableClass ) {
+    AdapterFactory adapterFactory = AdapterFactoryCreator.create( factoryClass );
+    registerAdapters( adapterFactory, adaptableClass );
+  }
 
-  void registerAdapterFactory( Class factoryClass, Class adaptableClass );
+  public synchronized void registerAdapters( AdapterFactory adapterFactory, Class adaptableClass ) {
+    ParamCheck.notNull( adapterFactory, "adapterFactory" );
+    ParamCheck.notNull( adaptableClass, "adaptableClass" );
+    checkAdaptableClassImplementsAdaptable( adaptableClass );
+    if( registry.containsKey( adaptableClass ) ) {
+      List adapterFactories = ( List )registry.get( adaptableClass );
+      if( !adapterFactories.contains( adapterFactory ) ) {
+        adapterFactories.add( adapterFactory );
+      } 
+    } else {
+      List adapterFactories = new ArrayList();
+      adapterFactories.add( adapterFactory );
+      registry.put( adaptableClass, adapterFactories );
+    }
+    bufferedAdapterFactories.clear();
+  }
+
+  private static void checkAdaptableClassImplementsAdaptable( Class adaptableClass ) {
+    if( !Adaptable.class.isAssignableFrom( adaptableClass ) ) {
+      String text = "The adaptableClass must implement {0}.";
+      String msg = MessageFormat.format( text, new Object[] { Adaptable.class.getName() } );
+      throw new IllegalArgumentException( msg );
+    }
+  }
 }

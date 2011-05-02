@@ -113,7 +113,7 @@ public class RWTFactory {
   }
 
   public static AdapterManager getAdapterManager() {
-    return ( AdapterManager )getApplicationSingleton( AdapterManagerImpl.class );
+    return ( AdapterManager )getApplicationSingleton( AdapterManager.class );
   }
 
   public static ResourceRegistry getResourceRegistry() {

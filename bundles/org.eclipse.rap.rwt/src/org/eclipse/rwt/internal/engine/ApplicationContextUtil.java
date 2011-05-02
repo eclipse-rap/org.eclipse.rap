@@ -46,7 +46,7 @@ public class ApplicationContextUtil {
     InternalImageFactory.class,
     ImageDataFactory.class,
     FontDataFactory.class,
-    AdapterManagerImpl.class,
+    AdapterManager.class,
     SettingStoreManager.class,
     StartupPageConfigurer.class,
     StartupPage.class,
