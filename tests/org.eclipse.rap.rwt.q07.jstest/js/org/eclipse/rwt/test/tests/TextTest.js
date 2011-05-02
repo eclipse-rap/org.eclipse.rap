@@ -235,6 +235,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setSelectionStart( 0 );
       text.setSelectionLength( 5 );
       assertEquals( 0, text.getSelectionStart() );
+      text.destroy();
     }
 
   }
