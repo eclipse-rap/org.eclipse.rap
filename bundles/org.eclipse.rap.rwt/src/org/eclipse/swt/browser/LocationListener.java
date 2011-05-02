@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.browser;
 
-import java.util.EventListener;
+import org.eclipse.swt.internal.SWTEventListener;
 
 
 /**
@@ -23,7 +23,7 @@ import java.util.EventListener;
  * 
  * @since 1.0
  */
-public interface LocationListener extends EventListener {
+public interface LocationListener extends SWTEventListener {
 
 /**
  * This method is called when the current location is about to be changed.
