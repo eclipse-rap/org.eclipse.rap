@@ -235,6 +235,14 @@ public class Control_Test extends TestCase {
     menu.dispose();
     assertEquals( null, control.getMenu() );
   }
+  
+  public void testInitialTabIndex() {
+    Control control = new Button( shell, SWT.PUSH );
+    
+    IControlAdapter adapter = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    
+    assertEquals( -1, adapter.getTabIndex() );
+  }
 
   public void testDisposeWithMenu() {
     Control control = new Button( shell, SWT.PUSH );

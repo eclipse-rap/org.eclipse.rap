@@ -46,8 +46,6 @@ public abstract class Control extends Widget implements Drawable {
 
   private final class ControlAdapter implements IControlAdapter {
 
-    private int tabIndex = -1;
-
     public int getZIndex() {
       Composite parent = getParent();
       int result = 0;
@@ -62,43 +60,42 @@ public abstract class Control extends Widget implements Drawable {
     }
 
     public int getTabIndex() {
-      return tabIndex;
+      return Control.this.tabIndex;
     }
 
     public void setTabIndex( final int index ) {
-      tabIndex = index;
+      Control.this.tabIndex = index;
     }
 
     public Font getUserFont() {
-      return font;
+      return Control.this.font;
     }
 
     public Color getUserForeground() {
       Color result = null;
       if( isEnabled() ) {
-        result = foreground;
+        result = Control.this.foreground;
       }
       return result;
     }
 
     public Color getUserBackground() {
-      return background;
+      return Control.this.background;
     }
 
     public Image getUserBackgroundImage() {
-      return backgroundImage;
+      return Control.this.backgroundImage;
     }
 
     public boolean getBackgroundTransparency() {
-      return backgroundTransparency;
+      return Control.this.backgroundTransparency;
     }
   }
 
-  private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
-
   private final IControlAdapter controlAdapter;
   final Composite parent;
-  Rectangle bounds = EMPTY_RECTANGLE;
+  private int tabIndex;
+  Rectangle bounds;
   private Object layoutData;
   private String toolTipText;
   private Menu menu;
@@ -112,11 +109,13 @@ public abstract class Control extends Widget implements Drawable {
   private Rectangle bufferedPadding;
   private Accessible accessible;
 
-  Control( final Composite parent ) {
+  Control( Composite parent ) {
     // prevent instantiation from outside this package; only called by Shell
     // and its super-classes
     this.parent = parent;
-    controlAdapter = new ControlAdapter();
+    this.controlAdapter = new ControlAdapter();
+    this.bounds = new Rectangle( 0, 0, 0, 0 );
+    this.tabIndex = -1;
   }
 
   /**
@@ -150,11 +149,13 @@ public abstract class Control extends Widget implements Drawable {
   public Control( final Composite parent, final int style ) {
     super( parent, style );
     this.parent = parent;
+    this.controlAdapter = new ControlAdapter();
+    this.bounds = new Rectangle( 0, 0, 0, 0 );
+    this.tabIndex = -1;
     ControlHolder.addControl( parent, this );
-    controlAdapter = new ControlAdapter();
     createWidget();
   }
-
+  
   void createWidget () {
     initState();
     checkOrientation( parent );
