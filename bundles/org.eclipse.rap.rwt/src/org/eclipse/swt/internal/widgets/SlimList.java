@@ -24,13 +24,14 @@ import java.util.*;
 public final class SlimList implements List {
 
   private static final Object[] EMPTY = new Object[ 0 ];
+  
   private Object[] data;
 
   public SlimList() {
     data = EMPTY;
   }
 
-  public boolean add( final Object element ) {
+  public boolean add( Object element ) {
     Object[] newData = new Object[ data.length + 1 ];
     System.arraycopy( data, 0, newData, 0, data.length );
     newData[ data.length ] = element;
@@ -38,7 +39,7 @@ public final class SlimList implements List {
     return true;
   }
 
-  public void add( final int index, final Object element ) {
+  public void add( int index, Object element ) {
     if( index < 0 || index > size() ) {
       String msg = "Index: " + index + ", Size: " + size();
       throw new IndexOutOfBoundsException( msg );
@@ -51,11 +52,11 @@ public final class SlimList implements List {
     data = newData;
   }
 
-  public boolean addAll( final Collection c ) {
+  public boolean addAll( Collection collection ) {
     throw new UnsupportedOperationException();
   }
 
-  public boolean addAll( final int index, final Collection c ) {
+  public boolean addAll( int index, Collection collection ) {
     throw new UnsupportedOperationException();
   }
 
@@ -63,7 +64,7 @@ public final class SlimList implements List {
     data = EMPTY;
   }
 
-  public boolean contains( final Object object ) {
+  public boolean contains( Object object ) {
     boolean result = false;
     for( int i = 0; !result && i < data.length; i++ ) {
       result = data[ i ] == object;
@@ -71,15 +72,15 @@ public final class SlimList implements List {
     return result;
   }
 
-  public boolean containsAll( final Collection c ) {
+  public boolean containsAll( Collection collection ) {
     throw new UnsupportedOperationException();
   }
 
-  public Object get( final int index ) {
+  public Object get( int index ) {
     return data[ index ];
   }
 
-  public int indexOf( final Object object ) {
+  public int indexOf( Object object ) {
     int result = -1;
     for( int i = 0; result == -1 && i < data.length; i++ ) {
       if( object == data[ i ] ) {
@@ -97,7 +98,7 @@ public final class SlimList implements List {
     throw new UnsupportedOperationException();
   }
 
-  public int lastIndexOf( final Object o ) {
+  public int lastIndexOf( Object object ) {
     throw new UnsupportedOperationException();
   }
 
@@ -105,15 +106,15 @@ public final class SlimList implements List {
     throw new UnsupportedOperationException();
   }
 
-  public ListIterator listIterator( final int index ) {
+  public ListIterator listIterator( int index ) {
     throw new UnsupportedOperationException();
   }
 
-  public Object remove( final int index ) {
+  public Object remove( int index ) {
     throw new UnsupportedOperationException();
   }
 
-  public boolean remove( final Object object ) {
+  public boolean remove( Object object ) {
     int index = indexOf( object );
     if( index != -1 ) {
       Object[] newData = new Object[ data.length - 1 ];
@@ -127,15 +128,15 @@ public final class SlimList implements List {
     return index != -1;
   }
 
-  public boolean removeAll( final Collection c ) {
+  public boolean removeAll( Collection c ) {
     throw new UnsupportedOperationException();
   }
 
-  public boolean retainAll( final Collection c ) {
+  public boolean retainAll( Collection c ) {
     throw new UnsupportedOperationException();
   }
 
-  public Object set( final int index, final Object element ) {
+  public Object set( int index, Object element ) {
     throw new UnsupportedOperationException();
   }
 
@@ -143,7 +144,7 @@ public final class SlimList implements List {
     return data.length;
   }
 
-  public List subList( final int fromIndex, final int toIndex ) {
+  public List subList( int fromIndex, int toIndex ) {
     throw new UnsupportedOperationException();
   }
 
@@ -151,8 +152,8 @@ public final class SlimList implements List {
     throw new UnsupportedOperationException();
   }
 
-  public Object[] toArray( final Object[] a ) {
-    System.arraycopy( data, 0, a, 0, data.length );
-    return a;
+  public Object[] toArray( Object[] array ) {
+    System.arraycopy( data, 0, array, 0, data.length );
+    return array;
   }
 }
