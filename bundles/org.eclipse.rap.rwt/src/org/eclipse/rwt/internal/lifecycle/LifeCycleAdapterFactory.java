@@ -30,10 +30,11 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
     ILifeCycleAdapter.class
   };
 
-  private IDisplayLifeCycleAdapter displayAdapter;
-  // Holds the single display life cycle adapter. MUST be created lazily
-  // because its constructor needs a resource manager to be in place
   private final Object displayAdapterLock;
+  private final Object widgetAdaptersLock;
+  // Holds the single display life cycle adapter. MUST be created lazily because its constructor 
+  // needs a resource manager to be in place
+  private IDisplayLifeCycleAdapter displayAdapter;
   // Maps widget classes to their respective life cycle adapters
   // Key: Class<Widget>, value: IWidgetLifeCycleAdapter
   private final Map widgetAdapters;
@@ -41,10 +42,11 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   
   public LifeCycleAdapterFactory() {
     displayAdapterLock = new Object();
+    widgetAdaptersLock = new Object();
     widgetAdapters = new HashMap();
   }
   
-  public Object getAdapter( final Object adaptable, final Class adapter ) {
+  public Object getAdapter( Object adaptable, Class adapter ) {
     Object result = null;
     if( isDisplayLCA( adaptable, adapter ) ) {
       result = getDisplayLCA();
@@ -84,7 +86,7 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   private synchronized ILifeCycleAdapter getWidgetLCA( Class clazz ) {
     // [fappel] This code is performance critical, don't change without checking against a profiler
     ILifeCycleAdapter result;
-    synchronized( widgetAdapters ) {
+    synchronized( widgetAdaptersLock ) {
       result = ( ILifeCycleAdapter )widgetAdapters.get( clazz );
       if( result == null ) {
         ILifeCycleAdapter adapter = null;
@@ -106,7 +108,7 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
     return result;
   }
 
-  private static IWidgetLifeCycleAdapter loadWidgetLCA( final Class clazz ) {
+  private static IWidgetLifeCycleAdapter loadWidgetLCA( Class clazz ) {
     IWidgetLifeCycleAdapter result = null;
     String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
     String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );

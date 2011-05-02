@@ -28,32 +28,6 @@ public class AdapterManager_Test extends TestCase {
     dummy = new DummyType( adapterManager );
   }
   
-  public void testRegisterAdaptersWithNullAdapterFactory() {
-    try {
-      adapterManager.registerAdapters( null, DummyType.class );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-  
-  public void testRegisterAdaptersWithNullAdaptableClass() {
-    AdapterFactory adapterFactory = new TestAdapterFactory1();
-    try {
-      adapterManager.registerAdapters( adapterFactory, null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-  
-  public void testRegisterAdaptersWithInvalidAdaptableClass() {
-    AdapterFactory adapterFactory = new TestAdapterFactory1();
-    try {
-      adapterManager.registerAdapters( adapterFactory, Object.class );
-      fail();
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-  
   public void testGetAdapterWithNoAdapterFactory() {
     Object adapter1 = adapterManager.getAdapter( dummy, IDummyAdapter1.class );
     assertNull( adapter1 );
@@ -61,7 +35,7 @@ public class AdapterManager_Test extends TestCase {
 
   public void testGetAdapterWithSingleAdapterFactory() {
     AdapterFactory adapterFactory = new TestAdapterFactory1();
-    adapterManager.registerAdapters( adapterFactory, IDummyType.class );
+    adapterManager.registerAdapters( IDummyType.class, adapterFactory );
     
     Object adapter1 = adapterManager.getAdapter( dummy, IDummyAdapter1.class );
     Object adapter3 = adapterManager.getAdapter( dummy, IDummyAdapter3.class );
@@ -72,7 +46,7 @@ public class AdapterManager_Test extends TestCase {
   
   public void testGetAdapterDoesNotBufferAdapters() {
     LoggingAdapterFactory adapterFactory = new LoggingAdapterFactory();
-    adapterManager.registerAdapters( adapterFactory, IDummyType.class );
+    adapterManager.registerAdapters( IDummyType.class, adapterFactory );
 
     adapterManager.getAdapter( dummy, IDummyAdapter1.class );
     adapterFactory.resetLog();
@@ -84,9 +58,9 @@ public class AdapterManager_Test extends TestCase {
   
   public void testGetAdapterWithMultipleAdapterFactories() {
     AdapterFactory adapterFactory1 = new TestAdapterFactory1();
-    adapterManager.registerAdapters( adapterFactory1, IDummyType.class );
+    adapterManager.registerAdapters( IDummyType.class, adapterFactory1 );
     AdapterFactory adapterFactory2 = new TestAdapterFactory2();
-    adapterManager.registerAdapters( adapterFactory2, IDummyType.class );
+    adapterManager.registerAdapters( IDummyType.class, adapterFactory2 );
     
     Object adapter2 = adapterManager.getAdapter( dummy, IDummyAdapter2.class );
     Object adapter3 = adapterManager.getAdapter( dummy, IDummyAdapter3.class );

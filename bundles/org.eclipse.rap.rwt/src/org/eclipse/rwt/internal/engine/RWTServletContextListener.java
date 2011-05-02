@@ -19,6 +19,7 @@ import java.util.*;
 
 import javax.servlet.*;
 
+import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -255,8 +256,9 @@ public final class RWTServletContextListener implements ServletContextListener {
           try {
             Class factoryClass = Class.forName( classNames[ 0 ] );
             Class adaptableClass = Class.forName( classNames[ 1 ] );
-            adapterManager.registerAdapterFactory( factoryClass, adaptableClass );
-          } catch( final Throwable thr ) {
+            AdapterFactory factory = ( AdapterFactory )ClassUtil.newInstance( factoryClass );
+            adapterManager.registerAdapters( adaptableClass, factory );
+          } catch( Throwable thr ) {
             Object[] param = new Object[] { factoryParams[ i ] };
             String text;
             text = "Could not register the factory-adaptable ''{0}'' pair.";
@@ -266,8 +268,9 @@ public final class RWTServletContextListener implements ServletContextListener {
         }
       }
     } else {
-      adapterManager.registerAdapterFactory( LifeCycleAdapterFactory.class, Widget.class );
-      adapterManager.registerAdapterFactory( LifeCycleAdapterFactory.class, Display.class );
+      LifeCycleAdapterFactory lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
+      adapterManager.registerAdapters( Widget.class, lifeCycleAdapterFactory );
+      adapterManager.registerAdapters( Display.class, lifeCycleAdapterFactory );
     }
   }
 

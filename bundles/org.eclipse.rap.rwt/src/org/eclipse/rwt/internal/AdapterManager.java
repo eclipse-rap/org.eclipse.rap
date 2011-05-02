@@ -11,12 +11,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
-import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 public class AdapterManager {
@@ -33,18 +31,14 @@ public class AdapterManager {
     }
   }
   
-  /* key: Class<Adaptable> (of adaaptable), value: List<AdapterFactory> */
-  private final Map registry;
+  private final AdapterFactoryRegistry registry;
   /* key: hash of adaptableClass * adapterClass, value: AdapterFactory */
   private final Map bufferedAdapterFactories;
   
   public AdapterManager() {
-    registry = new HashMap();
+    registry = new AdapterFactoryRegistry();
     bufferedAdapterFactories = new HashMap();
   }
-  
-  ////////////////////////////
-  // interface implementations
   
   // TODO [rh] synchronize more fine grained
   public synchronized Object getAdapter( Object adaptable, Class adapter ) {
@@ -57,6 +51,11 @@ public class AdapterManager {
     return factory.getAdapter( adaptable, adapter );
   }
   
+  public synchronized void registerAdapters( Class adaptableClass, AdapterFactory adapterFactory ) {
+    registry.register( adaptableClass, adapterFactory );
+    bufferedAdapterFactories.clear();
+  }
+
   private static Integer calculateHash( Object adaptable, Class adapterClass ) {
     Class adaptableClass = adaptable.getClass();
     int hash = 23273 + adaptableClass.hashCode() * 37 + adapterClass.hashCode();
@@ -68,13 +67,10 @@ public class AdapterManager {
                                                       Integer hash ) 
   {
     AdapterFactory result = null;
-    Class[] adaptableClasses = new Class[ registry.size() ];
-    registry.keySet().toArray( adaptableClasses );
+    Class[] adaptableClasses = registry.getAdaptableClasses();
     for( int i = 0; result == null && i < adaptableClasses.length; i++ ) {
       if( adaptableClasses[ i ].isAssignableFrom( adaptable.getClass() ) ) {
-        List factoryList = ( List )registry.get( adaptableClasses[ i ] );
-        AdapterFactory[] factories = new AdapterFactory[ factoryList.size() ];
-        factoryList.toArray( factories );
+        AdapterFactory[] factories = registry.getAdapterFactories( adaptableClasses[ i ] );
         for( int j = 0; result == null && j < factories.length; j++ ) {
           Class[] adapters = factories[ j ].getAdapterList();
           for( int k = 0; result == null && k < adapters.length; k++ ) {
@@ -90,35 +86,5 @@ public class AdapterManager {
     }
     bufferedAdapterFactories.put( hash, result );
     return result;
-  }
-  
-  public void registerAdapterFactory( Class factoryClass, Class adaptableClass ) {
-    AdapterFactory adapterFactory = AdapterFactoryCreator.create( factoryClass );
-    registerAdapters( adapterFactory, adaptableClass );
-  }
-
-  public synchronized void registerAdapters( AdapterFactory adapterFactory, Class adaptableClass ) {
-    ParamCheck.notNull( adapterFactory, "adapterFactory" );
-    ParamCheck.notNull( adaptableClass, "adaptableClass" );
-    checkAdaptableClassImplementsAdaptable( adaptableClass );
-    if( registry.containsKey( adaptableClass ) ) {
-      List adapterFactories = ( List )registry.get( adaptableClass );
-      if( !adapterFactories.contains( adapterFactory ) ) {
-        adapterFactories.add( adapterFactory );
-      } 
-    } else {
-      List adapterFactories = new ArrayList();
-      adapterFactories.add( adapterFactory );
-      registry.put( adaptableClass, adapterFactories );
-    }
-    bufferedAdapterFactories.clear();
-  }
-
-  private static void checkAdaptableClassImplementsAdaptable( Class adaptableClass ) {
-    if( !Adaptable.class.isAssignableFrom( adaptableClass ) ) {
-      String text = "The adaptableClass must implement {0}.";
-      String msg = MessageFormat.format( text, new Object[] { Adaptable.class.getName() } );
-      throw new IllegalArgumentException( msg );
-    }
   }
 }

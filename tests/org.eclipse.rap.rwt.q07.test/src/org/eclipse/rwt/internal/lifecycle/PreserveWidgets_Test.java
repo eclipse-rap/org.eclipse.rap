@@ -181,8 +181,8 @@ public class PreserveWidgets_Test extends TestCase {
         RWTFactory.getResourceManagerProvider().registerFactory( new TestResourceManagerFactory() );
         AdapterFactory lifeCycleAdapterFactory = new LoggingLifeCycleAdapterFactory( log );
         AdapterManager adapterManager = RWTFactory.getAdapterManager();
-        adapterManager.registerAdapters( lifeCycleAdapterFactory, Display.class );
-        adapterManager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
+        adapterManager.registerAdapters( Display.class, lifeCycleAdapterFactory );
+        adapterManager.registerAdapters( Widget.class, lifeCycleAdapterFactory );
       }
     } );
     Fixture.createServiceContext();

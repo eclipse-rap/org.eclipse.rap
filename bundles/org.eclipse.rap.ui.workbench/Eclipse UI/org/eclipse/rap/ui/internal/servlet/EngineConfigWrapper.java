@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
+import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.EngineConfig;
 import org.eclipse.rwt.internal.IEngineConfig;
@@ -46,6 +47,7 @@ import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.service.IServiceHandler;
@@ -214,8 +216,9 @@ public final class EngineConfigWrapper implements IEngineConfig {
         Bundle bundle = Platform.getBundle( contributorName );
         Class factoryClass = bundle.loadClass( factoryName );
         Class adaptableClass = bundle.loadClass( adaptableName );
-        RWTFactory.getAdapterManager().registerAdapterFactory( factoryClass, adaptableClass );
-      } catch( final Throwable thr ) {
+        AdapterFactory adapterFactory = ( AdapterFactory )ClassUtil.newInstance( factoryClass ) ;
+        RWTFactory.getAdapterManager().registerAdapters( adaptableClass, adapterFactory );
+      } catch( Throwable thr ) {
         String text =   "Could not register adapter factory ''{0}'' "
                       + "for the adapter type ''{1}''.";
         Object[] param = new Object[] { factoryName, adaptableName};
