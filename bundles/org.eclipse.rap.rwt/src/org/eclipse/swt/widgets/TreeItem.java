@@ -77,6 +77,8 @@ public class TreeItem extends Item {
     }
   }
 
+  private static final int EMPTY_PREFERED_WIDTH_BUFFER = -1;
+
   private final TreeItem parentItem;
   private final Tree parent;
   private final ItemHolder itemHolder;
@@ -95,6 +97,13 @@ public class TreeItem extends Item {
   int depth;
   private boolean cached;
   int flatIndex;
+
+  // TODO [DISCUSS_PERFORMANCE]
+  // TODO [fappel]: Discuss this experimental stuff. Yourkit analysis with the UI workbench
+  //                testsuite showed an extensive appearance of preferred width calculations.
+  //                Buffering the preferred width speeds up the suite on my machine to 1/4th
+  //                of the time needed without buffering.
+  private int preferredWidthBuffer;
 
   /**
    * Constructs a new instance of this class given its parent (which must be a
@@ -243,6 +252,7 @@ public class TreeItem extends Item {
 
   private TreeItem( Tree parent, TreeItem parentItem, int style, int index ) {
     super( parent, style );
+    clearPreferredWidthBuffer();
     int numberOfItems;
     // if there is a parent item, get the next index of parentItem
     if( parentItem != null ) {
@@ -1016,6 +1026,7 @@ public class TreeItem extends Item {
     } else {
       texts[ columnIndex ] = value;
     }
+    clearPreferredWidthBuffer();
     if( parent.getColumnCount() == 0 ) {
       parent.updateScrollBars();
     }
@@ -1265,7 +1276,7 @@ public class TreeItem extends Item {
     if( value != null && value.equals( image ) ) {
       return;
     }
-    parent.updateColumnImageCount(  columnIndex, image, value );
+    parent.updateColumnImageCount( columnIndex, image, value );
     parent.updateItemImageSize( value );
     if( columnIndex == 0 ) {
       super.setImage( value );
@@ -1273,6 +1284,7 @@ public class TreeItem extends Item {
       images[ columnIndex ] = value;
     }
     markCached();
+    clearPreferredWidthBuffer();
     if( parent.getColumnCount() == 0 ) {
       parent.updateScrollBars();
     }
@@ -1506,6 +1518,26 @@ public class TreeItem extends Item {
 
   // ////////////////
   // helping methods
+
+  //TODO [DISCUSS_PERFORMANCE]
+  void clearPreferredWidthBuffer() {
+    preferredWidthBuffer = EMPTY_PREFERED_WIDTH_BUFFER;
+  }
+
+  //TODO [DISCUSS_PERFORMANCE]
+  void setPreferredWidthBuffer( int preferredWidthBuffer ) {
+    this.preferredWidthBuffer = preferredWidthBuffer;
+  }
+
+  //TODO [DISCUSS_PERFORMANCE]
+  boolean hasPreferredWidthBuffer() {
+    return preferredWidthBuffer != EMPTY_PREFERED_WIDTH_BUFFER;
+  }
+
+  //TODO [DISCUSS_PERFORMANCE]
+  int getPreferredWidthBuffer() {
+    return preferredWidthBuffer;
+  }
 
   int getInnerHeight() {
     int innerHeight = getItemCount() * parent.getItemHeight();

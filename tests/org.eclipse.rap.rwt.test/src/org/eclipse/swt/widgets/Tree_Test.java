@@ -1287,6 +1287,46 @@ public class Tree_Test extends TestCase {
     assertTrue( cellWidth3 > cellWidth2 );
   }
 
+  // TODO [DISCUSS_PERFORMANCE]
+  public void testPreferredWidthBufferHandlingOfTreeItem() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    assertEquals( 11, item1.getPreferredWidthBuffer() );
+    
+    item1.setText( "text" );
+    assertEquals( 34, item1.getPreferredWidthBuffer() );
+
+    item1.setText( 0, "anotherText" );
+    assertEquals( 74, item1.getPreferredWidthBuffer() );
+   
+    // unfortunately tree doesn't allow to set images with different sizes
+    // therefore the size of the first image gets cached -> we only test
+    // the setImage(int,image) method
+    item1.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
+    assertEquals( 135, item1.getPreferredWidthBuffer() );
+    
+    tree.setFont( new Font( display, "arial", 40, SWT.BOLD ) );
+    assertEquals( 378, item1.getPreferredWidthBuffer() );
+    
+    // TODO [DISCUSS_PERFORMANCE]: Is there a need to override setData(String,Object) and clear
+    //                             the preferredWidthBuffer in case
+    //                             Tree.setData( WidgetUtil.CUSTOM_VARIANT, "variant" ); or
+    //                             TreeItem.setData( WidgetUtil.CUSTOM_VARIANT, "variant" );
+    //                             is used? And if so, how can we test this?
+  }
+  
+  // TODO [DISCUSS_PERFORMANCE]
+  public void testChanged() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    item1.setText( "text" );
+
+    tree.changed( tree.getChildren() );
+    
+    assertFalse( item1.hasPreferredWidthBuffer() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.RENDER );

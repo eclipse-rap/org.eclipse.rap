@@ -18,6 +18,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.SetDataEvent;
@@ -324,6 +325,15 @@ public class Tree extends Composite {
       result = super.getAdapter( adapter );
     }
     return result;
+  }
+
+  public void setFont( Font font ) {
+    super.setFont( font );
+    TreeItem[] items = getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      items[ i ].clearPreferredWidthBuffer();
+    }
+    updateScrollBars();
   }
 
   // /////////////////////////
@@ -1159,6 +1169,20 @@ public class Tree extends Composite {
       checkAllData();
     }
   }
+  
+  // TODO [DISCUSS_PERFORMANCE]
+  public void changed( Control[] changed ) {
+    clearItemsPreferredWidthBuffer();
+    super.changed( changed );
+  }
+
+  private void clearItemsPreferredWidthBuffer() {
+    Item[] items = itemHolder.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      TreeItem treeItem = ( TreeItem )items[ i ];
+      treeItem.clearPreferredWidthBuffer();
+    }
+  }
 
   /**
    * Returns the number of columns contained in the receiver. If no
@@ -1900,12 +1924,17 @@ public class Tree extends Composite {
   }
 
   int getPreferredCellWidth( TreeItem item, int columnIndex, boolean checkData ) {
-    int result = getTextOffset( columnIndex ) ;
-    Rectangle padding = getCellPadding();
-    result += Graphics.stringExtent( getFont(), item.getText( columnIndex, checkData ) ).x;
-    result += ( padding.width - padding.x );
-    if( isTreeColumn( columnIndex ) ) {
-      result += ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+    // TODO [DISCUSS_PERFORMANCE]
+    int result = item.getPreferredWidthBuffer();
+    if( !item.hasPreferredWidthBuffer() ) {
+      result = getTextOffset( columnIndex ) ;
+      Rectangle padding = getCellPadding();
+      result += Graphics.stringExtent( getFont(), item.getText( columnIndex, checkData ) ).x;
+      result += ( padding.width - padding.x );
+      if( isTreeColumn( columnIndex ) ) {
+        result += ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+      }
+      item.setPreferredWidthBuffer( result );
     }
     return result;
   }
