@@ -73,8 +73,9 @@ public class ReadData_Test extends TestCase {
   
   public void testExecute() {
     StringBuffer log = new StringBuffer();
-    new TestWidget( new Display(), log );
-    PhaseId phaseId = readData.execute();
+    Display display = new Display();
+    new TestWidget( display, log );
+    PhaseId phaseId = readData.execute( display );
     assertEquals( LoggingWidgetLCA.READ_DATA, log.toString() );
     assertEquals( PhaseId.PROCESS_ACTION, phaseId );
   }

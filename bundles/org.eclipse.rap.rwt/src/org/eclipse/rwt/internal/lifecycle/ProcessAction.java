@@ -21,8 +21,7 @@ final class ProcessAction implements IPhase {
     return PhaseId.PROCESS_ACTION;
   }
 
-  public PhaseId execute() {
-    Display display = LifeCycleUtil.getSessionDisplay();
+  public PhaseId execute( Display display ) {
     while( display.readAndDispatch() ) {
     }
     return PhaseId.RENDER;

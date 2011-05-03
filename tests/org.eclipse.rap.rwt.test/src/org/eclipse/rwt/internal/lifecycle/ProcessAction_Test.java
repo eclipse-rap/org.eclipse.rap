@@ -40,7 +40,7 @@ public class ProcessAction_Test extends TestCase {
     } );
     ShellEvent shellEvent = new ShellEvent( shell, ShellEvent.SHELL_CLOSED );
     shellEvent.processEvent();
-    PhaseId phaseId = processAction.execute();
+    PhaseId phaseId = processAction.execute( display );
     assertEquals( PhaseId.RENDER, phaseId );
     assertTrue( wasExecuted[ 0 ] );
   }

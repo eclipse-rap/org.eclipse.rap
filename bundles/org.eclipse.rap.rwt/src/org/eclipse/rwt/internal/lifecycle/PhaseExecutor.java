@@ -13,9 +13,10 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.swt.widgets.Display;
 
 
-class PhaseExecutor {
+abstract class PhaseExecutor {
 
   private final PhaseListenerManager phaseListenerManager;
   private final IPhase[] phases;
@@ -25,16 +26,18 @@ class PhaseExecutor {
     this.phases = phases;
   }
 
-  void execute( PhaseId startPhaseId ) throws IOException {
+  final void execute( PhaseId startPhaseId ) throws IOException {
     PhaseId currentPhaseId = startPhaseId;
     while( currentPhaseId != null ) {
       IPhase currentPhase = findPhase( currentPhaseId );
       phaseListenerManager.notifyBeforePhase( currentPhaseId );
-      PhaseId nextPhaseId = currentPhase.execute();
+      PhaseId nextPhaseId = currentPhase.execute( getDisplay() );
       phaseListenerManager.notifyAfterPhase( currentPhaseId );
       currentPhaseId = nextPhaseId;
     }
   }
+  
+  abstract Display getDisplay();
 
   private IPhase findPhase( PhaseId phaseId ) {
     IPhase result = null;

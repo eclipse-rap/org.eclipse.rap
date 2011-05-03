@@ -448,7 +448,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
-        public PhaseId execute() throws IOException {
+        public PhaseId execute(Display display) throws IOException {
           fail( "Interruptible phase should never get executed." );
           return null;
         }
@@ -457,7 +457,7 @@ public class RWTLifeCycle_Test extends TestCase {
         }
       },
       new IPhase() {
-        public PhaseId execute() throws IOException {
+        public PhaseId execute(Display display) throws IOException {
           log.append( "execute" + getPhaseId() );
           return null;
         }
@@ -490,7 +490,7 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, MainStartup.class );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
-        public PhaseId execute() throws IOException {
+        public PhaseId execute(Display display) throws IOException {
           return null;
         }
         public PhaseId getPhaseId() {
@@ -688,7 +688,7 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
-        public PhaseId execute() throws IOException {
+        public PhaseId execute(Display display) throws IOException {
           return null;
         }
         public PhaseId getPhaseId() {
@@ -717,7 +717,7 @@ public class RWTLifeCycle_Test extends TestCase {
     lifeCycle.addPhaseListener( new LoggingPhaseListener() );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
-        public PhaseId execute() throws IOException {
+        public PhaseId execute(Display display) throws IOException {
           return null;
         }
         public PhaseId getPhaseId() {
@@ -769,7 +769,7 @@ public class RWTLifeCycle_Test extends TestCase {
     ContextProvider.setContext( expectedContext );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IPhase() {
-        public PhaseId execute() throws IOException {
+        public PhaseId execute(Display display) throws IOException {
           log.append( "prepare" );
           return null;
         }
@@ -778,7 +778,7 @@ public class RWTLifeCycle_Test extends TestCase {
         }
       },
       new IInterruptible() {
-        public PhaseId execute() throws IOException {
+        public PhaseId execute(Display display) throws IOException {
           return null;
         }
         public PhaseId getPhaseId() {
@@ -808,7 +808,7 @@ public class RWTLifeCycle_Test extends TestCase {
     log.setLength( 0 );
     lifeCycle.setPhaseOrder( new IPhase[] {
       new IInterruptible() {
-        public PhaseId execute() throws IOException {
+        public PhaseId execute(Display display) throws IOException {
           return null;
         }
         public PhaseId getPhaseId() {

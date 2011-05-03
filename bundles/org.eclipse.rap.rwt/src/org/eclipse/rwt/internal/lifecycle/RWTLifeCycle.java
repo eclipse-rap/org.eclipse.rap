@@ -20,6 +20,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.widgets.Display;
 
 public class RWTLifeCycle extends LifeCycle {
 
@@ -38,7 +39,7 @@ public class RWTLifeCycle extends LifeCycle {
 
   private static final IPhase[] PHASE_ORDER_STARTUP = new IPhase[] {
     new IInterruptible() {
-      public PhaseId execute() throws IOException {
+      public PhaseId execute(Display display) throws IOException {
         return null;
       }
       public PhaseId getPhaseId() {
@@ -50,7 +51,7 @@ public class RWTLifeCycle extends LifeCycle {
 
   private static final IPhase[] PHASE_ORDER_SUBSEQUENT = new IPhase[] {
     new IPhase() {
-      public PhaseId execute() throws IOException {
+      public PhaseId execute(Display display) throws IOException {
         return null;
       }
       public PhaseId getPhaseId() {
@@ -59,8 +60,8 @@ public class RWTLifeCycle extends LifeCycle {
     },
     new ReadData(),
     new IInterruptible() {
-      public PhaseId execute() throws IOException {
-        new ProcessAction().execute();
+      public PhaseId execute( Display display ) throws IOException {
+        new ProcessAction().execute( display );
         return null;
       }
       public PhaseId getPhaseId() {
@@ -189,7 +190,7 @@ public class RWTLifeCycle extends LifeCycle {
           interrupted = true;
         } else {
           try {
-            phase.execute();
+            phase.execute( LifeCycleUtil.getSessionDisplay() );
           } catch( Throwable e ) {
             // Wrap exception in a ThreadDeath-derived error to break out of
             // the application call stack

@@ -27,7 +27,18 @@ public class SimpleLifeCycle extends LifeCycle {
     new ProcessAction(),
     new Render()
   };
-  
+
+  private static class SessionDisplayPhaseExecutor extends PhaseExecutor {
+    
+    SessionDisplayPhaseExecutor( PhaseListenerManager phaseListenerManager ) {
+      super( phaseListenerManager, PHASES );
+    }
+    
+    Display getDisplay() {
+      return LifeCycleUtil.getSessionDisplay();
+    }
+  }
+
   private final PhaseListenerManager phaseListenerManager;
 
   public SimpleLifeCycle() {
@@ -42,7 +53,7 @@ public class SimpleLifeCycle extends LifeCycle {
   public void execute() throws IOException {
     attachThread();
     try {
-      PhaseExecutor phaseExecutor = new PhaseExecutor( phaseListenerManager, PHASES );
+      PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phaseListenerManager );
       phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
     } finally {
       detachThread();

@@ -39,14 +39,14 @@ public class PrepareUIRoot_Test extends TestCase {
   }
 
   public void testExecuteInSubsequentRequests() throws IOException {
-    new Display();
-    PhaseId phaseId = phase.execute();
+    Display display = new Display();
+    PhaseId phaseId = phase.execute( display );
     assertEquals( PhaseId.READ_DATA, phaseId );
   }
   
   public void testExecuteInFirstRequestsWithNoStartupParameter() throws IOException {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
-    PhaseId phaseId = phase.execute();
+    PhaseId phaseId = phase.execute( null );
     assertEquals( PhaseId.RENDER, phaseId );
     assertTrue( TestEntryPoint.wasInvoked );
   }
@@ -55,7 +55,7 @@ public class PrepareUIRoot_Test extends TestCase {
     String entryPointName = "myEntryPoint";
     RWTFactory.getEntryPointManager().register( entryPointName, TestEntryPoint.class );
     Fixture.fakeRequestParam( RequestParams.STARTUP, entryPointName );
-    PhaseId phaseId = phase.execute();
+    PhaseId phaseId = phase.execute( null );
     assertEquals( PhaseId.RENDER, phaseId );
     assertTrue( TestEntryPoint.wasInvoked );
   }

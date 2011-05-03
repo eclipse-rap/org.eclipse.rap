@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,7 @@ final class Render implements IPhase {
     return PhaseId.RENDER;
   }
 
-  public PhaseId execute() throws IOException {
-    Display display = LifeCycleUtil.getSessionDisplay();
+  public PhaseId execute( Display display ) throws IOException {
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     displayLCA.render( display );
     displayLCA.clearPreserved( display );

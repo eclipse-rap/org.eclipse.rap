@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.swt.widgets.Display;
 
 
 interface IPhase {
@@ -21,5 +22,5 @@ interface IPhase {
   }
   
   abstract PhaseId getPhaseId();
-  abstract PhaseId execute() throws IOException;
+  abstract PhaseId execute( Display display ) throws IOException;
 }

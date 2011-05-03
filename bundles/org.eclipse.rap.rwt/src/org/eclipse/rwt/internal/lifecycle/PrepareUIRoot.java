@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.swt.widgets.Display;
 
 
 
@@ -22,7 +23,7 @@ final class PrepareUIRoot implements IPhase {
     return PhaseId.PREPARE_UI_ROOT;
   }
 
-  public PhaseId execute() {
+  public PhaseId execute( Display display ) {
     String entryPointName = LifeCycleUtil.getEntryPoint();
     PhaseId result;
     if( entryPointName != null ) {

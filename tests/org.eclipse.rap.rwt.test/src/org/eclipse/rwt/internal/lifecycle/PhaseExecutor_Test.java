@@ -19,9 +19,21 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.LoggingPhaseListener;
 import org.eclipse.rwt.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.widgets.Display;
 
 
 public class PhaseExecutor_Test extends TestCase {
+
+  private static class TestPhaseExecutor extends PhaseExecutor {
+
+    private TestPhaseExecutor( PhaseListenerManager phaseListenerManager, IPhase[] phases ) {
+      super( phaseListenerManager, phases );
+    }
+
+    Display getDisplay() {
+      return null;
+    }
+  }
 
   private static class TestLifeCycle implements ILifeCycle {
     public void removePhaseListener( PhaseListener listener ) {
@@ -46,7 +58,7 @@ public class PhaseExecutor_Test extends TestCase {
       return phaseId;
     }
 
-    public PhaseId execute() throws IOException {
+    public PhaseId execute(Display display) throws IOException {
       executionLog.add( this );
       return nextPhaseId;
     }
@@ -56,12 +68,12 @@ public class PhaseExecutor_Test extends TestCase {
   private TestLifeCycle lifeCycle;
 
   public void testExecute() throws IOException {
-    LinkedList executionLog = new LinkedList();
+    List executionLog = new LinkedList();
     IPhase[] phases = new IPhase[] { 
       new TestPhase( executionLog, PhaseId.PREPARE_UI_ROOT, PhaseId.RENDER ), 
       new TestPhase( executionLog, PhaseId.RENDER, null ) 
     };
-    PhaseExecutor phaseExecutor = new PhaseExecutor( phaseListenerManager, phases );
+    PhaseExecutor phaseExecutor = new TestPhaseExecutor( phaseListenerManager, phases );
     phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
     assertEquals( 2, executionLog.size() );
     assertSame( phases[ 0 ], executionLog.get( 0 ) );
@@ -74,7 +86,7 @@ public class PhaseExecutor_Test extends TestCase {
     IPhase[] phases = new IPhase[] { 
       new TestPhase( new LinkedList(), PhaseId.PREPARE_UI_ROOT, null ), 
     };
-    PhaseExecutor phaseExecutor = new PhaseExecutor( phaseListenerManager, phases );
+    PhaseExecutor phaseExecutor = new TestPhaseExecutor( phaseListenerManager, phases );
     phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
     PhaseEventInfo[] loggedEvents = phaseListener.getLoggedEvents();
     assertEquals( 2, loggedEvents.length );
