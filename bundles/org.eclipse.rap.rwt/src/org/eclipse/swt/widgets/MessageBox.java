@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -45,13 +46,15 @@ import org.eclipse.swt.layout.GridLayout;
  */
 public class MessageBox extends Dialog {
 
+  private static final int SPACING = 20;
   private static final int BUTTON_WIDTH = 61;
   private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
   private static final int MAX_WIDTH = 640;
 
   private Shell shell;
-	private String message;
-	private int returnCode;
+  private Image image;
+  private String message;
+  private int returnCode;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -66,7 +69,7 @@ public class MessageBox extends Dialog {
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
    */
-  public MessageBox( final Shell parent ) {
+  public MessageBox( Shell parent ) {
   	this( parent, SWT.OK | SWT.ICON_INFORMATION | SWT.APPLICATION_MODAL );
   }
 
@@ -93,7 +96,7 @@ public class MessageBox extends Dialog {
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
    */
-  public MessageBox( final Shell parent, final int style ) {
+  public MessageBox( Shell parent, int style ) {
   	super( parent, checkStyle ( style ) );
   	checkSubclass();
   	message = "";
@@ -121,7 +124,7 @@ public class MessageBox extends Dialog {
    *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
    * </ul>
    */
-  public void setMessage( final String string ) {
+  public void setMessage( String string ) {
     if( string == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -141,21 +144,14 @@ public class MessageBox extends Dialog {
    * </ul>
    */
   public int open() {
+    determineImageFromStyle();
     shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
-    shell.setText( getText() );
-    createControls( shell );
-    Rectangle parentSize = parent.getBounds();
-    Point prefSize = shell.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-    if( prefSize.x > MAX_WIDTH ) {
-      prefSize.x = MAX_WIDTH;
-    }
-    shell.setSize( prefSize );
-    int locationX = ( parentSize.width - prefSize.x ) / 2 + parentSize.x;
-    int locationY = ( parentSize.height - prefSize.y ) / 2 + parentSize.y;
-    shell.setLocation( new Point( locationX, locationY ) );
+    shell.setText( title );
+    createControls();
+    shell.setBounds( computeShellBounds() );
     shell.pack();
     shell.open();
-    Display display = parent.getDisplay();
+    Display display = shell.getDisplay();
     while( !shell.isDisposed() ) {
       if( !display.readAndDispatch() ) {
         display.sleep();
@@ -164,111 +160,49 @@ public class MessageBox extends Dialog {
     return returnCode;
   }
 
-  private void createControls( final Composite parent ) {
-    Display display = parent.getDisplay();
-    Image icon = null;
-    parent.setLayout( new GridLayout( 2, false ) );
-    // Icon
-    int systemImageID = -1;
+  private void determineImageFromStyle() {
+    image = null;
+    int systemImageId = -1;
     if( ( style & SWT.ICON_ERROR ) != 0 ) {
-      systemImageID = SWT.ICON_ERROR;
+      systemImageId = SWT.ICON_ERROR;
     } else if( ( style & SWT.ICON_INFORMATION ) != 0 ) {
-      systemImageID = SWT.ICON_INFORMATION;
+      systemImageId = SWT.ICON_INFORMATION;
     } else if( ( style & SWT.ICON_QUESTION ) != 0 ) {
-      systemImageID = SWT.ICON_QUESTION;
+      systemImageId = SWT.ICON_QUESTION;
     } else if( ( style & SWT.ICON_WARNING ) != 0 ) {
-      systemImageID = SWT.ICON_WARNING;
+      systemImageId = SWT.ICON_WARNING;
     } else if( ( style & SWT.ICON_WORKING ) != 0 ) {
-      systemImageID = SWT.ICON_WORKING;
+      systemImageId = SWT.ICON_WORKING;
     }
-    if( systemImageID != -1 ) {
-      icon = display.getSystemImage( systemImageID );
-      createIcon( parent, icon );
+    if( systemImageId != -1 ) {
+      image = parent.getDisplay().getSystemImage( systemImageId );
     }
-    // Text
-    createText( parent, icon );
-    // Buttons
-    Composite buttonComp = new Composite( parent, SWT.NONE );
-    buttonComp.setLayout( new GridLayout( 0, true ) );
-    GridData buttonData = new GridData( SWT.CENTER, SWT.CENTER, true, false );
-    buttonData.horizontalSpan = 2;
-    buttonComp.setLayoutData( buttonData );
-
-    if( ( style & SWT.YES ) == SWT.YES ) {
-      createButton( buttonComp, SWT.getMessage( "SWT_Yes" ), SWT.YES );
-    }
-    if( ( style & SWT.NO ) == SWT.NO ) {
-      createButton( buttonComp, SWT.getMessage( "SWT_No" ), SWT.NO );
-    }
-    if( ( style & SWT.OK ) == SWT.OK ) {
-      createButton( buttonComp, SWT.getMessage( "SWT_OK" ), SWT.OK );
-    }
-    if( ( style & SWT.ABORT ) == SWT.ABORT ) {
-      createButton( buttonComp, SWT.getMessage( "SWT_Abort" ), SWT.ABORT );
-    }
-    if( ( style & SWT.RETRY ) == SWT.RETRY ) {
-      createButton( buttonComp, SWT.getMessage( "SWT_Retry" ), SWT.RETRY );
-    }
-    if( ( style & SWT.CANCEL ) == SWT.CANCEL ) {
-      createButton( buttonComp, SWT.getMessage( "SWT_Cancel" ), SWT.CANCEL );
-    }
-    if( ( style & SWT.IGNORE ) == SWT.IGNORE ) {
-      createButton( buttonComp, SWT.getMessage( "SWT_Ignore" ), SWT.IGNORE );
-    }
-    buttonComp.getChildren()[0].forceFocus();
   }
 
-  private Button createButton( final Composite parent,
-                               final String text,
-                               final int returnCode )
-  {
-    // Increment the number of columns in the button bar
-    ( ( GridLayout ) parent.getLayout() ).numColumns++;
-    Button result = new Button( parent, SWT.PUSH );
-    // Set button layout data
-    GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
-    int widthHint = convertHorizontalDLUsToPixels( BUTTON_WIDTH );
-    Point minSize = result.computeSize( SWT.DEFAULT, SWT.DEFAULT, true );
-    data.widthHint = Math.max( widthHint, minSize.x );
-    result.setLayoutData( data );
-    // Set text
-    result.setText( text );
-    result.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        MessageBox.this.returnCode = returnCode;
-        shell.close();
-      }
-    } );
+  private Rectangle computeShellBounds() {
+    Rectangle result = new Rectangle( 0, 0, 0, 0 );
+    Point preferredSize = shell.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+    Rectangle parentSize = parent.getBounds();
+    result.x = ( parentSize.width - preferredSize.x ) / 2 + parentSize.x;
+    result.y = ( parentSize.height - preferredSize.y ) / 2 + parentSize.y;
+    result.width = Math.min( preferredSize.x, MAX_WIDTH );
+    result.height = preferredSize.y;
     return result;
   }
 
-  private void createIcon( final Composite parent, final Image icon ) {
-    Label iconLabel = new Label( parent, SWT.CENTER );
-    // Set label layout data
-    GridData data = new GridData( SWT.CENTER, SWT.TOP, false, false );
-    data.widthHint = icon.getBounds().width + 20;
-    iconLabel.setLayoutData( data );
-    // Set image
-    iconLabel.setImage( icon );
+  private void createControls() {
+    shell.setLayout( new GridLayout( 2, false ) );
+    createImage();
+    createText();
+    createButtons();
   }
 
-  private void createText( final Composite parent, final Image icon ) {
-    Label textLabel = new Label( parent, SWT.WRAP );
-    String message = getMessage();
-    Font font = textLabel.getFont();
-    // Set label layout data
+  private void createText() {
+    Label textLabel = new Label( shell, SWT.WRAP );
     GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
-    int iconWidth = icon == null ? 0 : icon.getBounds().width;
-    int maxTextWidth = MAX_WIDTH - iconWidth - 20;
-    // Determine the max line length
-    int maxLineWidth = 0;
-    StringTokenizer st = new StringTokenizer( message, "\n" );
-    while( st.hasMoreTokens() ) {
-      String line = st.nextToken();
-      int lineWidth = Graphics.stringExtent( font, line ).x;
-      maxLineWidth = Math.max( maxLineWidth, lineWidth );
-    }
-    // Set wrap width
+    int imageWidth = image == null ? 0 : image.getBounds().width;
+    int maxTextWidth = MAX_WIDTH - imageWidth - SPACING;
+    int maxLineWidth = getMaxMessageLineWidth();
     if( maxLineWidth > maxTextWidth ) {
       data.widthHint = maxTextWidth;
     }
@@ -276,23 +210,73 @@ public class MessageBox extends Dialog {
     textLabel.setText( message );
   }
 
-  private int convertHorizontalDLUsToPixels( final int dlus ) {
+  private void createImage() {
+    if( image != null ) {
+      Label label = new Label( shell, SWT.CENTER );
+      GridData data = new GridData( SWT.CENTER, SWT.TOP, false, false );
+      data.widthHint = image.getBounds().width + SPACING;
+      label.setLayoutData( data );
+      label.setImage( image );
+    }
+  }
+
+  private void createButtons() {
+    Composite buttonArea = new Composite( shell, SWT.NONE );
+    buttonArea.setLayout( new GridLayout( 0, true ) );
+    GridData buttonData = new GridData( SWT.CENTER, SWT.CENTER, true, false );
+    buttonData.horizontalSpan = 2;
+    buttonArea.setLayoutData( buttonData );
+    createButton( buttonArea, SWT.getMessage( "SWT_Yes" ), SWT.YES );
+    createButton( buttonArea, SWT.getMessage( "SWT_No" ), SWT.NO );
+    createButton( buttonArea, SWT.getMessage( "SWT_OK" ), SWT.OK );
+    createButton( buttonArea, SWT.getMessage( "SWT_Abort" ), SWT.ABORT );
+    createButton( buttonArea, SWT.getMessage( "SWT_Retry" ), SWT.RETRY );
+    createButton( buttonArea, SWT.getMessage( "SWT_Cancel" ), SWT.CANCEL );
+    createButton( buttonArea, SWT.getMessage( "SWT_Ignore" ), SWT.IGNORE );
+    buttonArea.getChildren()[ 0 ].forceFocus();
+  }
+
+  private void createButton( Composite parent, String text, final int buttonType ) {
+    if( ( style & buttonType ) == buttonType ) {
+      ( ( GridLayout ) parent.getLayout() ).numColumns++;
+      Button result = new Button( parent, SWT.PUSH );
+      GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
+      int widthHint = convertHorizontalDLUsToPixels( BUTTON_WIDTH );
+      Point minSize = result.computeSize( SWT.DEFAULT, SWT.DEFAULT, true );
+      data.widthHint = Math.max( widthHint, minSize.x );
+      result.setLayoutData( data );
+      result.setText( text );
+      result.addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( SelectionEvent event ) {
+          MessageBox.this.returnCode = buttonType;
+          shell.close();
+        }
+      } );
+    }
+  }
+
+  private int getMaxMessageLineWidth() {
+    Font font = shell.getFont();
+    int result = 0;
+    StringTokenizer tokenizer = new StringTokenizer( message, "\n" );
+    while( tokenizer.hasMoreTokens() ) {
+      String line = tokenizer.nextToken();
+      int lineWidth = Graphics.stringExtent( font, line ).x;
+      result = Math.max( result, lineWidth );
+    }
+    return result;
+  }
+
+  private int convertHorizontalDLUsToPixels( int dlus ) {
     Font dialogFont = shell.getFont();
     float charWidth = Graphics.getAvgCharWidth( dialogFont );
     float width = charWidth * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2;
     return ( int )( width / HORIZONTAL_DIALOG_UNIT_PER_CHAR );
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int chkStyle = 0;
-    int mask 
-      = SWT.YES 
-      | SWT.NO 
-      | SWT.OK 
-      | SWT.CANCEL 
-      | SWT.ABORT 
-      | SWT.RETRY 
-      | SWT.IGNORE;
+    int mask = SWT.YES | SWT.NO | SWT.OK | SWT.CANCEL | SWT.ABORT | SWT.RETRY | SWT.IGNORE;
     int bits = style & mask;
     if(    bits == SWT.OK
         || bits == ( SWT.OK | SWT.CANCEL ) )

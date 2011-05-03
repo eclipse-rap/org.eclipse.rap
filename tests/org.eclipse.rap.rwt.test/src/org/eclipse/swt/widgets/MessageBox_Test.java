@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -17,35 +18,35 @@ import org.eclipse.swt.SWT;
 
 public class MessageBox_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
 
   public void testMessage() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    String mesg = "Lorem ipsum dolor sit amet consectetuer adipiscing elit.";
-    MessageBox mb = new MessageBox( shell, SWT.NONE );
-    mb.setMessage( mesg );
-    assertEquals( mesg, mb.getMessage() );
+    String msg = "Lorem ipsum dolor sit amet consectetuer adipiscing elit.";
+    MessageBox messageBox = new MessageBox( shell, SWT.NONE );
+    messageBox.setMessage( msg );
+    assertEquals( msg, messageBox.getMessage() );
   }
 
   public void testText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     String title = "MessageBox Title";
-    MessageBox mb = new MessageBox( shell, SWT.NONE );
-    mb.setText( title );
-    assertEquals( title, mb.getText() );
+    MessageBox messageBox = new MessageBox( shell, SWT.NONE );
+    messageBox.setText( title );
+    assertEquals( title, messageBox.getText() );
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     // Test SWT.NONE
     MessageBox mb = new MessageBox( shell, SWT.NONE );
     assertTrue( ( mb.getStyle() & SWT.OK ) != 0 );

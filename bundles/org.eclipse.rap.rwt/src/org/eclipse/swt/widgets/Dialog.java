@@ -53,8 +53,8 @@ public abstract class Dialog {
 
   private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
 
-  int style;
-  Shell parent;
+  final int style;
+  final Shell parent;
   String title;
 
   /**
@@ -70,7 +70,7 @@ public abstract class Dialog {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
    * </ul>
    */
-  public Dialog( final Shell parent ) {
+  public Dialog( Shell parent ) {
     this( parent, SWT.PRIMARY_MODAL );
   }
 
@@ -100,11 +100,11 @@ public abstract class Dialog {
    * @see SWT#APPLICATION_MODAL
    * <!--@see SWT#SYSTEM_MODAL-->
    */
-  public Dialog( final Shell parent, final int style ) {
+  public Dialog( Shell parent, int style ) {
     checkParent( parent );
     this.parent = parent;
     this.style = style;
-    title = "";
+    this.title = "";
   }
 
   /**
@@ -173,7 +173,7 @@ public abstract class Dialog {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String string ) {
+  public void setText( String string ) {
     if( string == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -186,18 +186,18 @@ public abstract class Dialog {
     }
   }
 
-  void checkParent( final Shell parent ) {
+  void checkParent( Shell parent ) {
     if( parent == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     parent.checkWidget();
   }
 
-  void error( final int code ) {
+  void error( int code ) {
     SWT.error( code );
   }
 
-  static int checkStyle( final Shell parent, final int style ) {
+  static int checkStyle( Shell parent, int style ) {
     int result = style;
     int mask = SWT.PRIMARY_MODAL | SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL;
     if( ( result & SWT.SHEET ) != 0 ) {
@@ -219,9 +219,7 @@ public abstract class Dialog {
     return result;
   }
 
-  static int convertHorizontalDLUsToPixels( final Control control,
-                                            final int dlus )
-  {
+  static int convertHorizontalDLUsToPixels( Control control, int dlus ) {
     Font dialogFont = control.getFont();
     float charWidth = Graphics.getAvgCharWidth( dialogFont );
     float width = charWidth * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2;
