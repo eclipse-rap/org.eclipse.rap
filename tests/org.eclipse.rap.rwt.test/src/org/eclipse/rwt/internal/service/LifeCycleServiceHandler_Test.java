@@ -73,6 +73,8 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   
   public void testRequestSynchronization() throws InterruptedException {
     List threads = new ArrayList();
+    // initialize session, see bug 344549
+    ContextProvider.getSession();
     ServiceContext context = ContextProvider.getContext();
     for( int i = 0; i < THREAD_COUNT; i++ ) {
       IServiceHandler syncHandler = new TestHandler();
