@@ -87,44 +87,7 @@ public class Display_Test extends TestCase {
     assertNull( displayFromBgThreadWithFakeContext[ 0 ] );
   }
   
-  public void testGetDefault() throws InterruptedException {
-    final Display[] backgroundDisplay = { null };
-    final Display display = new Display();
-    assertSame( display, Display.getDefault() );
-    Thread thread = new Thread( new Runnable() {
-      public void run() {
-        backgroundDisplay[ 0 ] = Display.getDefault();
-      }
-    } );
-    thread.start();
-    thread.join();
-    assertNull( backgroundDisplay[ 0 ] );
-    Thread threadWithContext = new Thread( new Runnable() {
-      public void run() {
-        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-          public void run() {
-            backgroundDisplay[ 0 ] = Display.getDefault();
-          }
-        } );
-      }
-    } );
-    threadWithContext.start();
-    threadWithContext.join();
-    assertSame( display, backgroundDisplay[ 0 ] );
-  }
-  
-  public void testGetDefaultCreatesDisplay() throws InterruptedException {
-    // getDefault must not create a Display if called from a background thread
-    final Display[] backgroundDisplay = { null };
-    Thread thread = new Thread( new Runnable() {
-      public void run() {
-        backgroundDisplay[ 0 ] = Display.getDefault();
-      }
-    } );
-    thread.start();
-    thread.join();
-    assertNull( backgroundDisplay[ 0 ] ) ;
-    // getDefault must create a Display if called from the UI thread
+  public void testGetDefaultFromUIThread() {
     IUIThreadHolder uiThreadHolder = new IUIThreadHolder() {
       public void updateServiceContext() {
       }
@@ -143,10 +106,60 @@ public class Display_Test extends TestCase {
     };
     ISessionStore session = RWT.getSessionStore();
     session.setAttribute( RWTLifeCycle.UI_THREAD, uiThreadHolder );
+    
     Display display = Display.getDefault();
+    
     assertNotNull( display );
+    assertSame( display, Display.getDefault() );
+  }
+  
+  public void testGetDefaultWithExistingDisplayFromUIThread() {
+    Display display = new Display();
+    assertSame( display, Display.getDefault() );
+  }
+  
+  public void testGetDefaultFromBackgroundThreadWithoutContext() throws InterruptedException {
+    final Display[] backgroundDisplay = { null };
+    new Display();
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        backgroundDisplay[ 0 ] = Display.getDefault();
+      }
+    } );
+    thread.start();
+    thread.join();
+    assertNull( backgroundDisplay[ 0 ] );
+  }
+  
+  public void testGetDefaultFromBackgroundThreadDoesNotCreateDisplay() throws InterruptedException {
+    final Display[] backgroundDisplay = { null };
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        backgroundDisplay[ 0 ] = Display.getDefault();
+      }
+    } );
+    thread.start();
+    thread.join();
+    assertNull( backgroundDisplay[ 0 ] ) ;
   }
 
+  public void testGetDefaultFromBackgroundThreadWithContext() throws InterruptedException {
+    final Display[] backgroundDisplay = { null };
+    final Display display = new Display();
+    Thread threadWithContext = new Thread( new Runnable() {
+      public void run() {
+        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+          public void run() {
+            backgroundDisplay[ 0 ] = Display.getDefault();
+          }
+        } );
+      }
+    } );
+    threadWithContext.start();
+    threadWithContext.join();
+    assertSame( display, backgroundDisplay[ 0 ] );
+  }
+  
   public void testGetThread() throws InterruptedException {
     Display first = new Display();
     assertSame( Thread.currentThread(), first.getThread() );
