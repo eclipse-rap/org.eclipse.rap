@@ -39,11 +39,11 @@ public class UICallBackServiceHandler_Test extends TestCase {
     Fixture.tearDown();
   }
   
-  public void testWriteActivationFromDifferentSession() throws Exception {
+  public void testWriteActivationFromDifferentSession() throws Throwable {
     // test that on/off switching is managed in session scope
     UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
     final String[] otherSession = new String[ 1 ];
-    Thread thread = new Thread( new Runnable() {
+    Runnable runnable = new Runnable() {
       public void run() {
         Fixture.createServiceContext();
         new Display();
@@ -51,9 +51,8 @@ public class UICallBackServiceHandler_Test extends TestCase {
         UICallBackServiceHandler.writeActivation();
         otherSession[ 0 ] = Fixture.getAllMarkup();
       } 
-    } );
-    thread.start();
-    thread.join();
+    };
+    Fixture.runInThread( runnable );
     assertEquals( "", otherSession[ 0 ] );
   }
   

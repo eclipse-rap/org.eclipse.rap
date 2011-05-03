@@ -373,6 +373,31 @@ public class Fixture {
     System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "false" );
   }
 
+  public static void runInThread( final Runnable runnable ) throws Throwable {
+    final Object lock = new Object();
+    final Throwable[] exception = { null };
+    Runnable exceptionGuard = new Runnable() {
+      public void run() {
+        try {
+          runnable.run();
+        } catch( Throwable thr ) {
+          synchronized( lock ) {
+            exception[ 0 ] = thr;
+          }
+        }
+      }
+    };
+    Thread thread = new Thread( exceptionGuard );
+    thread.setDaemon( true );
+    thread.start();
+    thread.join();
+    synchronized( lock ) {
+      if( exception[ 0 ] != null ) {
+        throw exception[ 0 ];
+      }
+    }
+  }
+
   public static void delete( final File toDelete ) {
     if( toDelete.exists() ) {
       doDelete( toDelete );

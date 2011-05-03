@@ -852,7 +852,7 @@ public class RWTLifeCycle_Test extends TestCase {
     }
   }
 
-  public void testSessionInvalidateWithRunningEventLoop() throws Exception {
+  public void testSessionInvalidateWithRunningEventLoop() throws Throwable {
     final ISessionStore session = ContextProvider.getSession();
     final String[] invalidateThreadName = { null };
     final boolean hasContext[] = new boolean[]{ false };
@@ -899,7 +899,7 @@ public class RWTLifeCycle_Test extends TestCase {
     }
   }
 
-  public void testSessionInvalidateWithoutRunningEventLoop() throws Exception {
+  public void testSessionInvalidateWithoutRunningEventLoop() throws Throwable {
     final ISessionStore session = ContextProvider.getSession();
     final String[] uiThreadName = { "unknown-ui-thread" };
     final String[] invalidateThreadName = { "unkown-invalidate-thread" };
@@ -937,7 +937,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertNotNull( stateInfo[ 0 ] );
   }
 
-  public void testDisposeDisplayOnSessionTimeout() throws Exception {
+  public void testDisposeDisplayOnSessionTimeout() throws Throwable {
     final ISessionStore session = ContextProvider.getSession();
     Class clazz = DisposeDisplayOnSessionTimeoutEntryPoint.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, clazz );
@@ -947,7 +947,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertEquals( "display disposed", log.toString() );
   }
 
-  public void testOrderOfDisplayDisposeAndSessionUnbound() throws Exception {
+  public void testOrderOfDisplayDisposeAndSessionUnbound() throws Throwable {
     final ISessionStore session = ContextProvider.getSession();
     Class clazz = TestOrderOfDisplayDisposeAndSessionUnboundEntryPoint.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, clazz );
@@ -984,16 +984,13 @@ public class RWTLifeCycle_Test extends TestCase {
     uiThread[ 0 ].switchThread();
   }
   
-  private static void invalidateSession( final ISessionStore session )
-    throws InterruptedException
-  {
-    Thread serverThread = new Thread( new Runnable() {
+  private static void invalidateSession( final ISessionStore session ) throws Throwable {
+    Runnable runnable = new Runnable() {
       public void run() {
         session.getHttpSession().invalidate();
       }
-    }, "SessionInvalidateThread" );
-    serverThread.start();
-    serverThread.join();
+    };
+    Fixture.runInThread( runnable );
   }
 
   private static ServiceContext newContext() {

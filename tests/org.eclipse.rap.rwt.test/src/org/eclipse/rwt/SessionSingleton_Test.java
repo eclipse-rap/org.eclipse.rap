@@ -28,7 +28,7 @@ public class SessionSingleton_Test extends TestCase {
     }
   }
   
-  public void testSessionSingletons() throws Exception {
+  public void testSessionSingletons() throws Throwable {
     TestSession session1 = new TestSession();
     TestResponse testResponse1 = new TestResponse();
     TestRequest testRequest1 = new TestRequest();
@@ -44,11 +44,7 @@ public class SessionSingleton_Test extends TestCase {
         instance1[ 0 ] = TestSingleton.getInstance();
       }
     };
-    Thread thread = new Thread( runnable );
-    thread.setDaemon( true );
-    thread.start();
-    thread.join();
-    
+    Fixture.runInThread( runnable );
     assertNotNull( instance1[ 0 ] );
     
     TestSession session2 = new TestSession();
@@ -87,13 +83,12 @@ public class SessionSingleton_Test extends TestCase {
     }    
   }
   
-  public void testSessionSingletonsWithoutStateInfo() throws Exception {
+  public void testSessionSingletonsWithoutStateInfo() throws Throwable {
     TestSession session1 = new TestSession();
     TestResponse testResponse1 = new TestResponse();
     TestRequest testRequest1 = new TestRequest();
     testRequest1.setSession( session1 );
-    final ServiceContext serviceContext1
-    = new ServiceContext( testRequest1, testResponse1 );
+    final ServiceContext serviceContext1 = new ServiceContext( testRequest1, testResponse1 );
     final TestSingleton[] instance1 = new TestSingleton[ 1 ];
     
     Runnable runnable = new Runnable() {
@@ -102,11 +97,7 @@ public class SessionSingleton_Test extends TestCase {
         instance1[ 0 ] = TestSingleton.getInstance();
       }
     };
-    Thread thread = new Thread( runnable );
-    thread.setDaemon( true );
-    thread.start();
-    thread.join();
-    
+    Fixture.runInThread( runnable );
     assertNotNull( instance1[ 0 ] );
     
     TestSession session2 = new TestSession();

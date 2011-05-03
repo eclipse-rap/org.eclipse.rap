@@ -64,26 +64,23 @@ public class RWT_Test extends TestCase {
     assertSame( applicationStore, RWTFactory.getApplicationStore() );
   }
 
-  public void testRequestThreadExecFromBackgroundThread() throws Exception {
-    final Throwable[] exception = { null };
-    Thread thread = new Thread( new Runnable() {
+  public void testRequestThreadExecFromBackgroundThread() throws Throwable {
+    Runnable runnable = new Runnable() {
       public void run() {
-        try {
-          RWT.requestThreadExec( new Runnable() {
-            public void run() {
-            }
-          } );
-        } catch( Exception expected ) {
-          exception[ 0 ] = expected;
-        }
+        RWT.requestThreadExec( new Runnable() {
+          public void run() {
+          }
+        } );
       }
-    }, "testRequestThreadExecFromBackgroundThread" );
-    thread.start();
-    thread.join();
-    assertNotNull( exception[ 0 ] );
-    assertTrue( exception[ 0 ] instanceof SWTException );
-    SWTException swtException = ( SWTException )exception[ 0 ];
-    assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
+    };
+    try {
+      Fixture.runInThread( runnable );
+      fail();
+    } catch( Exception expected ) {
+      assertTrue( expected instanceof SWTException );
+      SWTException swtException = ( SWTException )expected;
+      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
+    }
   }
   
   public void testRequestThreadExec() {

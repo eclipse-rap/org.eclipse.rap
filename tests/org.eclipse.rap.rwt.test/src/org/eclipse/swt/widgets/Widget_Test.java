@@ -13,7 +13,6 @@ package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
 
-import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -47,29 +46,21 @@ public class Widget_Test extends TestCase {
     assertNotNull( shell.getAdapter( IWidgetAdapter.class ) );
   }
 
-  public void testCheckWidget() throws InterruptedException {
+  public void testCheckWidget() throws Throwable {
     final Widget widget = new Text( shell, SWT.NONE );
-
-    final Throwable[] throwable = new Throwable[ 1 ];
-    final String[] message = new String[ 1 ];
-    Thread thread = new Thread( new Runnable() {
+    Runnable target = new Runnable() {
       public void run() {
-        try {
-          widget.checkWidget();
-          fail( "Illegal thread access expected." );
-        } catch( final SWTException swte ) {
-          message[ 0 ] = swte.getMessage();
-        } catch( final Throwable thr ) {
-          throwable[ 0 ] = thr;
-        }
+        widget.checkWidget();
       }
-    });
-    thread.start();
-    thread.join();
-    assertEquals( message[ 0 ], "Invalid thread access" );
-    assertNull( throwable[ 0 ] );
+    };
+    try {
+      Fixture.runInThread( target );
+      fail( "Illegal thread access expected." );
+    } catch( SWTException swte ) {
+      assertEquals( "Invalid thread access", swte.getMessage() );
+    } 
   }
-
+  
   public void testData() {
     Widget widget = new Text( shell, SWT.NONE );
 
@@ -188,30 +179,20 @@ public class Widget_Test extends TestCase {
     assertEquals( true, widget.isDisposed() );
   }
 
-  public void testDisposeFromIllegalThread() throws InterruptedException {
+  public void testDisposeFromIllegalThread() throws Throwable {
     final Widget widget = new Button( shell, SWT.NONE );
-
-    final AssertionFailedError[] failure = new AssertionFailedError[ 1 ];
-    Thread thread = new Thread( new Runnable() {
+    Runnable runnable = new Runnable() {
       public void run() {
-        try {
-          widget.dispose();
-          fail( "Must not allow to dispose of a widget from a non-UI-thread" );
-        } catch( SWTException e ) {
-          // expected
-        } catch( final AssertionFailedError afa ) {
-          failure[ 0 ] = afa;
-        }
+        widget.dispose();
       }
-    } );
-    thread.start();
-    thread.join();
-
-    if( failure[ 0 ] != null ) {
-      throw failure[ 0 ];
+    };
+    try {
+      Fixture.runInThread( runnable );
+      fail( "Must not allow to dispose of a widget from a non-UI-thread" );
+    } catch( SWTException expected ) {
     }
   }
-
+  
   public void testDisposeWithException() {
     shell.addDisposeListener( new DisposeListener() {
       public void widgetDisposed( final DisposeEvent event ) {

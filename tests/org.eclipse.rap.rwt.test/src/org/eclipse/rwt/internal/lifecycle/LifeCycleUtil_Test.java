@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -37,6 +38,56 @@ public class LifeCycleUtil_Test extends TestCase {
     new Display();
     String entryPoint = LifeCycleUtil.getEntryPoint();
     assertNull( entryPoint );
+  }
+  
+  public void testGetSessionDisplayBeforeAnyDisplayCreated() {
+    Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
+    
+    assertNull( sessionDisplay );
+  }
+  
+  public void testGetSessionDisplayWithDisplayCreated() {
+    Display display = new Display();
+
+    Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
+    
+    assertSame( display, sessionDisplay );
+  }
+  
+  public void testGetSessionDisplayAfterDisplayDisposed() {
+    Display display = new Display();
+    display.dispose();
+    
+    Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
+    
+    assertSame( display, sessionDisplay );
+  }
+  
+  public void testGetSessionDisplayFromBackgroundThreadWithoutContext() throws Throwable {
+    final Display[] sessionDisplay = { null };
+    Runnable runnable = new Runnable() {
+      public void run() {
+        sessionDisplay[ 0 ] = LifeCycleUtil.getSessionDisplay();
+      }
+    };
+    Fixture.runInThread( runnable );
+    assertNull( sessionDisplay[ 0 ] );
+  }
+
+  public void testGetSessionDisplayFromBackgroundThreadWithContext() throws Throwable {
+    final Display display = new Display();
+    final Display[] sessionDisplay = { null };
+    Runnable runnable = new Runnable() {
+      public void run() {
+        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+          public void run() {
+            sessionDisplay[ 0 ] = LifeCycleUtil.getSessionDisplay();
+          }
+        } );
+      }
+    };
+    Fixture.runInThread( runnable );
+    assertSame( display, sessionDisplay[ 0 ] );
   }
   
   protected void setUp() throws Exception {
