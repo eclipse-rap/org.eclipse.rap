@@ -209,7 +209,10 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       if( style === "solid" || style === "none" || style === null ) {
         var radiiKey = this._getCssValue( element, states, "border-radius", theme );
         var radii = this._values.boxdims[ radiiKey ];
-        if( radii != null && ( radii.join( "" ) !== "0000" ) ) {
+        if( radii == null ) {
+          radii = [ 0, 0, 0, 0 ];
+        }
+        if( radii != null ) {
           var roundedBorderKey = key + "#" + radiiKey;
           var roundedBorder = this._values.borders[ roundedBorderKey ];
           if( !roundedBorder ) {
