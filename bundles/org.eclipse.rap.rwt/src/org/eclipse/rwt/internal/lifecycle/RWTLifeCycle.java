@@ -24,8 +24,7 @@ import org.eclipse.swt.widgets.Display;
 
 public class RWTLifeCycle extends LifeCycle {
 
-  public static final String UI_THREAD
-    = RWTLifeCycle.class.getName() + ".uiThread";
+  public static final String UI_THREAD = RWTLifeCycle.class.getName() + ".uiThread";
   private static final Integer ZERO = new Integer( 0 );
 
   private static final String CURRENT_PHASE
@@ -242,8 +241,7 @@ public class RWTLifeCycle extends LifeCycle {
 
   private static void handleUIThreadException() throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Throwable throwable
-      = ( Throwable )stateInfo.getAttribute( UI_THREAD_THROWABLE );
+    Throwable throwable = ( Throwable )stateInfo.getAttribute( UI_THREAD_THROWABLE );
     if( throwable != null ) {
       if( throwable instanceof PhaseExecutionError ) {
         throwable = throwable.getCause();
@@ -282,8 +280,7 @@ public class RWTLifeCycle extends LifeCycle {
 
   private static void switchThread() {
     ISessionStore session = ContextProvider.getSession();
-    IUIThreadHolder uiThreadHolder
-      = ( IUIThreadHolder )session.getAttribute( UI_THREAD );
+    IUIThreadHolder uiThreadHolder = ( IUIThreadHolder )session.getAttribute( UI_THREAD );
     uiThreadHolder.switchThread();
   }
   
