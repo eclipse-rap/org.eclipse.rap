@@ -60,7 +60,10 @@ qx.Class.define("qx.ui.form.TextField",
     // [rst] Catch backspace in readonly text fields to prevent browser default
     // action (which commonly triggers a history step back)
     // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=178320
-    this.addEventListener("keydown", this._onkeydown);
+    this.addEventListener( "keydown", this._onkeydown );
+    // [if] Stops keypress propagation
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=335779
+    this.addEventListener( "keypress", this._onkeypress );
   },
 
 
@@ -970,6 +973,12 @@ qx.Class.define("qx.ui.form.TextField",
       if( e.getKeyIdentifier() == "Backspace" && this.getReadOnly() ) {
         e.preventDefault();
       }
+    },
+
+    // [if] Stops keypress propagation
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=335779
+    _onkeypress : function( e ) {
+      e.stopPropagation();
     },
 
     /*

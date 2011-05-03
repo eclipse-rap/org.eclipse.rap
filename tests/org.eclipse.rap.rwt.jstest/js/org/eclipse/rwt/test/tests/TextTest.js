@@ -236,6 +236,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       text.setSelectionLength( 5 );
       assertEquals( 0, text.getSelectionStart() );
       text.destroy();
+    },
+
+    testKeyPressPropagation : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var composite = new org.eclipse.swt.widgets.Composite();
+      composite.setSpace( 0, 100, 0, 100 );
+      var text = new org.eclipse.rwt.widgets.Text( false );
+      text.setParent( composite );
+      org.eclipse.swt.TextUtil.initialize( text );
+      text.setSpace( 0, 50, 0, 21 );
+      composite.addToDocument();
+      testUtil.flush();
+      text.focus()
+      var counter = 0;
+      composite.addEventListener( "keypress", function( event ) {
+        counter++
+      } );
+      testUtil.keyDown( text._getTargetNode(), "Left" );
+      testUtil.keyDown( text._getTargetNode(), "Up" );
+      testUtil.keyDown( text._getTargetNode(), "Home" );
+      testUtil.keyDown( text._getTargetNode(), "x" );
+      assertEquals( 0, counter );
+      text.destroy();
+      composite.destroy();      
     }
 
   }
