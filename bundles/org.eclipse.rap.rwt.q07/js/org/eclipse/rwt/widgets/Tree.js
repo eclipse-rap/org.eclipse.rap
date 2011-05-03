@@ -1530,18 +1530,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _findItemByIndex : function( index, startItem, startIndex ) {
       var result;
-      var computedStartItem = startItem
-                            ? startItem
-                            : this.getRootItem().getChild( 0 );
+      var computedStartItem = startItem ? startItem : this.getRootItem().getChild( 0 );
       var computedStartIndex = startIndex ? startIndex : 0;
       if( index >= computedStartIndex ) {
-        result = this._findItemByIndexForwards( index,
-                                                computedStartItem, 
-                                                computedStartIndex );
+        result = this._findItemByIndexForwards( index, computedStartItem, computedStartIndex );
       } else {
-        result = this._findItemByIndexBackwards( index, 
-                                                 computedStartItem, 
-                                                 computedStartIndex );
+        result = this._findItemByIndexBackwards( index, computedStartItem, computedStartIndex );
       }
       return result;
     },
@@ -1657,14 +1651,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         this._cellToolTip = new org.eclipse.swt.widgets.TableCellToolTip( id );
-        this._clientArea.addEventListener( "mousemove",
-                                           this._onClientAreaMouseMove,
-                                           this );
+        this._clientArea.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
         this._clientArea.setToolTip( this._cellToolTip );
       } else {
-        this._clientArea.removeEventListener( "mousemove",
-                                              this._onClientAreaMouseMove,
-                                              this );
+        this._clientArea.removeEventListener( "mousemove", this._onClientAreaMouseMove, this );
         this._clientArea.setToolTip( null );
         this._cellToolTip.destroy();
         this._cellToolTip = null;

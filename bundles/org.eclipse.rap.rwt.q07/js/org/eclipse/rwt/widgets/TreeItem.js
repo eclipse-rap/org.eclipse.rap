@@ -270,8 +270,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
     
     _computeVisibleChildrenCount : function() {
-      // NOTE: Caching this value speeds up creating and scrolling the tree
-      // considerably
+      // NOTE: Caching this value speeds up creating and scrolling the tree considerably
       var result = 0;
       if( this.isExpanded() || this.isRootItem() ) {
        result = this._children.length;
