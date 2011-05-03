@@ -149,8 +149,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
     
     _getRenderThemingBackground : function( item ) {
-      var renderFullSelection =    this._renderAsSelected( item ) 
-                                && this._tree.getHasFullSelection();
+      var renderFullSelection = this._renderAsSelected( item ) && this._tree.getHasFullSelection();
       var hasItemBackground = item !== null && item.getBackground() !== null;
       var result =    !hasItemBackground 
                    || renderFullSelection 
@@ -162,8 +161,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _hasHoverBackground : function() {
       // TODO [tb] : This detection is not prefect; Should the item be hovered,
       // but a hover-independent theming-background be set, this returns true.
-      var result =    this.hasState( "over" ) 
-                   && this._styleMap.itemBackground !== "undefined"; 
+      var result = this.hasState( "over" ) && this._styleMap.itemBackground !== "undefined";
       return result;
     },
 

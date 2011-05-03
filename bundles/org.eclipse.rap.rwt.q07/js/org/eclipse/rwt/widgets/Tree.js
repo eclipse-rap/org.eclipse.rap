@@ -127,18 +127,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this.addEventListener( "elementOver", this._onElementChange, this );
       this.addEventListener( "elementOut", this._onElementChange, this );
       this.addEventListener( "keypress", this._onKeyPress, this );
-      this._clientArea.addEventListener( "mousewheel", 
-                                         this._onClientAreaMouseWheel, 
-                                         this );
-      this._mergeEventsTimer.addEventListener( "interval", 
-                                                this._updateTopItemIndex, 
-                                                this );    
-      this._horzScrollBar.addEventListener( "changeValue", 
-                                            this._onHorzScrollBarChangeValue, 
-                                            this );
-      this._vertScrollBar.addEventListener( "changeValue", 
-                                            this._onVertScrollBarChangeValue, 
-                                            this );
+      this._clientArea.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
+      this._mergeEventsTimer.addEventListener( "interval", this._updateTopItemIndex, this );
+      this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
+      this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
     },
     
     _configureScrollBars : function() {
@@ -157,13 +149,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _configureAreas : function() {
       this._clientArea.setOverflow( "hidden" );
-      this._clientArea.addEventListener( "appear", 
-                                         this._onClientAreaAppear, 
-                                         this );
+      this._clientArea.addEventListener( "appear", this._onClientAreaAppear, this );
       this._columnArea.setOverflow( "hidden" );
-      this._columnArea.addEventListener( "appear", 
-                                         this._onColumnAreaAppear, 
-                                         this );
+      this._columnArea.addEventListener( "appear", this._onColumnAreaAppear, this );
       this._columnArea.setTop( 0 );
       this._columnArea.setLeft( 0 );
       // NOTE: Need to use setDisplay here instead of setVisibility,
@@ -215,9 +203,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     setHasNoScroll : function( value ) {
       if( value ) {
-        this._clientArea.removeEventListener( "mousewheel",
-                                              this._onClientAreaMouseWheel,
-                                              this );
+        this._clientArea.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       }
     },
 
@@ -817,9 +803,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var offset = this._rows.length - 2;
       var max = this.getRootItem().getVisibleChildrenCount() - 1;
       var newIndex = Math.min( max, oldIndex + offset );
-      var item = this._findItemByIndex( newIndex, 
-                                    this._topItem, 
-                                    this._topItemIndex );
+      var item = this._findItemByIndex( newIndex, this._topItem, this._topItemIndex );
       var itemIndex = this._findIndexByItem( item );
       this._handleKeyboardSelect( event, item, itemIndex );
     },
