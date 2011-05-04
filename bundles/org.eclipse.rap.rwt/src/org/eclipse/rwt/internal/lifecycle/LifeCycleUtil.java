@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Display;
 public class LifeCycleUtil {
   private static final String ATTR_SESSION_DISPLAY 
     = LifeCycleUtil.class.getName() + "#sessionDisplay";
+  private static final String ATTR_UI_THREAD = LifeCycleUtil.class.getName() + "#uiThread";
 
   public static Display getSessionDisplay() {
     Display result = null;
@@ -33,6 +34,14 @@ public class LifeCycleUtil {
 
   public static void setSessionDisplay( Display display ) {
     ContextProvider.getSession().setAttribute( ATTR_SESSION_DISPLAY, display );
+  }
+  
+  public static void setUIThread( ISessionStore sessionStore, IUIThreadHolder threadHolder ) {
+    sessionStore.setAttribute( ATTR_UI_THREAD, threadHolder );
+  }
+  
+  public static IUIThreadHolder getUIThread( ISessionStore sessionStore ) {
+    return ( IUIThreadHolder )sessionStore.getAttribute( ATTR_UI_THREAD );
   }
 
   static String getEntryPoint() {

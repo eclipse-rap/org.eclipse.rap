@@ -12,9 +12,10 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.*;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -88,6 +89,25 @@ public class LifeCycleUtil_Test extends TestCase {
     };
     Fixture.runInThread( runnable );
     assertSame( display, sessionDisplay[ 0 ] );
+  }
+  
+  public void testGetUIThreadForNewSession() {
+    IUIThreadHolder uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSession() );
+    
+    assertNull( uiThread );
+  }
+  
+  public void testGetUIThreadWithMultipleSessions() {
+    IUIThreadHolder uiThread1 = new TestUIThreadHolder( null );
+    IUIThreadHolder uiThread2 = new TestUIThreadHolder( null );
+    ISessionStore session1 = new SessionStoreImpl( new TestSession() );
+    ISessionStore session2 = new SessionStoreImpl( new TestSession() ); 
+    
+    LifeCycleUtil.setUIThread( session1, uiThread1 );
+    LifeCycleUtil.setUIThread( session2, uiThread2 );
+    
+    assertSame( uiThread1, LifeCycleUtil.getUIThread( session1 ) );
+    assertSame( uiThread2, LifeCycleUtil.getUIThread( session2 ) );
   }
   
   protected void setUp() throws Exception {

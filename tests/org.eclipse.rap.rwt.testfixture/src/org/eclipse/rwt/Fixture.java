@@ -486,7 +486,7 @@ public class Fixture {
       }
     };
     ISessionStore session = ContextProvider.getSession();
-    session.setAttribute( RWTLifeCycle.UI_THREAD, result );
+    LifeCycleUtil.setUIThread( session, result );
     return result;
   }
 

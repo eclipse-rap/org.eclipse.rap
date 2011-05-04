@@ -142,9 +142,8 @@ public class Display extends Device implements Adaptable {
    */
   public static Display getCurrent() {
     Display result = LifeCycleUtil.getSessionDisplay();
-    if(    result != null ) {
-      if( result.isDisposed() || result.getThread() != Thread.currentThread() )
-      {
+    if( result != null ) {
+      if( result.isDisposed() || result.getThread() != Thread.currentThread() ) {
         result = null;
       }
     }
@@ -161,19 +160,23 @@ public class Display extends Device implements Adaptable {
    * @return the default display
    */
   public static Display getDefault() {
-    Display result = LifeCycleUtil.getSessionDisplay();
-    if( result == null && isUIThread() ) {
-      result = new Display();
+    Display display = LifeCycleUtil.getSessionDisplay();
+    if( display == null || display.isDisposed() ) {
+      if( isUIThread() ) {
+        display = new Display();
+      }
     }
-    return result;
+    return display;
   }
 
   private static boolean isUIThread() {
-    return
-         ContextProvider.hasContext()
-      && RWTLifeCycle.getUIThreadHolder() != null
-      && RWTLifeCycle.getUIThreadHolder().getThread() != null
-      && Thread.currentThread() == RWTLifeCycle.getUIThreadHolder().getThread();
+    boolean result = false;
+    if( ContextProvider.hasContext() ) {
+      IUIThreadHolder uiThreadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSession() );
+      Thread uiThread = uiThreadHolder == null ? null : uiThreadHolder.getThread();
+      result = uiThread == Thread.currentThread();
+    }
+    return result;
   }
 
   private final List shells;

@@ -12,7 +12,9 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -36,6 +38,35 @@ public class SimpleLifeCycle extends LifeCycle {
     
     Display getDisplay() {
       return LifeCycleUtil.getSessionDisplay();
+    }
+  }
+
+  private static class SimpleUIThreadHolder implements IUIThreadHolder {
+  
+    private final Thread thread;
+  
+    public SimpleUIThreadHolder( Thread thread ) {
+      this.thread = thread;
+    }
+  
+    public void updateServiceContext() {
+    }
+  
+    public void terminateThread() {
+    }
+  
+    public void switchThread() {
+    }
+  
+    public void setServiceContext( ServiceContext serviceContext ) {
+    }
+  
+    public Thread getThread() {
+      return thread;
+    }
+  
+    public Object getLock() {
+      return null;
     }
   }
 
@@ -77,6 +108,8 @@ public class SimpleLifeCycle extends LifeCycle {
     if( displayAdapter != null ) {
       displayAdapter.attachThread();
     }
+    IUIThreadHolder uiThreadHolder = new SimpleUIThreadHolder( Thread.currentThread() );
+    LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
   }
 
   private static void detachThread() {
@@ -84,8 +117,9 @@ public class SimpleLifeCycle extends LifeCycle {
     if( displayAdapter != null ) {
       displayAdapter.detachThread();
     }
+    LifeCycleUtil.setUIThread( RWT.getSessionStore(), null );
   }
-
+  
   private static IDisplayAdapter getDisplayAdapter() {
     IDisplayAdapter result = null;
     Display display = LifeCycleUtil.getSessionDisplay();

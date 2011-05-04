@@ -17,15 +17,11 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.*;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -88,29 +84,22 @@ public class Display_Test extends TestCase {
   }
   
   public void testGetDefaultFromUIThread() {
-    IUIThreadHolder uiThreadHolder = new IUIThreadHolder() {
-      public void updateServiceContext() {
-      }
-      public void terminateThread() {
-      }
-      public void switchThread() {
-      }
-      public void setServiceContext( ServiceContext serviceContext ) {
-      }
-      public Thread getThread() {
-        return Thread.currentThread();
-      }
-      public Object getLock() {
-        return null;
-      }
-    };
-    ISessionStore session = RWT.getSessionStore();
-    session.setAttribute( RWTLifeCycle.UI_THREAD, uiThreadHolder );
+    TestUIThreadHolder uiThreadHolder = new TestUIThreadHolder( Thread.currentThread() );
+    LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
     
     Display display = Display.getDefault();
     
     assertNotNull( display );
     assertSame( display, Display.getDefault() );
+  }
+  
+  public void testGetDefaultWithTerminatedUIThread() {
+    TestUIThreadHolder uiThreadHolder = new TestUIThreadHolder( Thread.currentThread() );
+    LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
+    
+    Display display = Display.getDefault();
+    
+    assertNotNull( display );
   }
   
   public void testGetDefaultWithExistingDisplayFromUIThread() {
@@ -120,27 +109,39 @@ public class Display_Test extends TestCase {
   
   public void testGetDefaultFromBackgroundThreadWithoutContext() throws InterruptedException {
     final Display[] backgroundDisplay = { null };
+    final Throwable[] exception = { null };
     new Display();
     Thread thread = new Thread( new Runnable() {
       public void run() {
-        backgroundDisplay[ 0 ] = Display.getDefault();
+        try {
+          backgroundDisplay[ 0 ] = Display.getDefault();
+        } catch( Throwable thr ) {
+          exception[ 0 ] = thr;
+        }
       }
     } );
     thread.start();
     thread.join();
     assertNull( backgroundDisplay[ 0 ] );
+    assertNull( exception[ 0 ] );
   }
   
   public void testGetDefaultFromBackgroundThreadDoesNotCreateDisplay() throws InterruptedException {
     final Display[] backgroundDisplay = { null };
+    final Throwable[] exception = { null };
     Thread thread = new Thread( new Runnable() {
       public void run() {
-        backgroundDisplay[ 0 ] = Display.getDefault();
+        try {
+          backgroundDisplay[ 0 ] = Display.getDefault();
+        } catch( Throwable thr ) {
+          exception[ 0 ] = thr;
+        }
       }
     } );
     thread.start();
     thread.join();
     assertNull( backgroundDisplay[ 0 ] ) ;
+    assertNull( exception[ 0 ] );
   }
 
   public void testGetDefaultFromBackgroundThreadWithContext() throws InterruptedException {
@@ -160,23 +161,38 @@ public class Display_Test extends TestCase {
     assertSame( display, backgroundDisplay[ 0 ] );
   }
   
-  public void testGetThread() throws InterruptedException {
-    Display first = new Display();
-    assertSame( Thread.currentThread(), first.getThread() );
-    first.dispose();
+  public void testGetDefaultWithDisposedDisplay() {
+    TestUIThreadHolder uiThreadHolder = new TestUIThreadHolder( Thread.currentThread() );
+    LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
+    Display display = new Display();
+    display.dispose();
+    
+    Display newDisplay = Display.getDefault();
+    assertNotNull( newDisplay );
+    assertNotSame( display, newDisplay );
+  }
 
-    final ServiceContext context = ContextProvider.getContext();
-    final Display[] display = { null };
+  public void testGetThreadFromUIThread() {
+    Display display = new Display();
+    
+    Thread thread = display.getThread();
+    
+    assertSame( Thread.currentThread(), thread );
+    display.dispose();
+  }
+  
+  public void testGetThreadFromBackgroundThreadWithoutContext() throws Throwable {
+    final Display display = new Display();
+    final Thread[] thread = { null };
     Runnable runnable = new Runnable() {
       public void run() {
-        ContextProvider.setContext( context );
-        display[ 0 ] = new Display();
+        thread[ 0 ] = display.getThread();
       }
     };
-    Thread thread = new Thread( runnable );
-    thread.start();
-    thread.join();
-    assertSame( thread, display[ 0 ].getThread() );
+    
+    Fixture.runInThread( runnable );
+    
+    assertSame( Thread.currentThread(), thread[ 0 ] );
   }
   
   public void testAttachAndDetachThread() {

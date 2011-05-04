@@ -42,7 +42,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   private static StringBuffer log = new StringBuffer();
 
-  private final class LoggingPhaseListener implements PhaseListener {
+  private static class LoggingPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
     public void beforePhase( final PhaseEvent event ) {
       log.append( "before" + event.getPhaseId() );
@@ -732,8 +732,7 @@ public class RWTLifeCycle_Test extends TestCase {
         try {
           synchronized( uiThread[ 0 ].getLock() ) {
           }
-          IUIThreadHolder uiThread
-            = ( IUIThreadHolder )Thread.currentThread();
+          IUIThreadHolder uiThread = ( IUIThreadHolder )Thread.currentThread();
           uiThread.updateServiceContext();
           lifeCycle.continueLifeCycle();
           log.setLength( 0 );
@@ -748,8 +747,7 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     };
     uiThread[ 0 ] = new UIThread( runnable );
-    ISessionStore session = ContextProvider.getSession();
-    session.setAttribute( RWTLifeCycle.UI_THREAD, uiThread[ 0 ] );
+    LifeCycleUtil.setUIThread( ContextProvider.getSession(), uiThread[ 0 ] );
 
     uiThread[ 0 ].setServiceContext( ContextProvider.getContext() );
     synchronized( uiThread[ 0 ].getLock() ) {
@@ -870,8 +868,7 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
     // Store some values for later comparison
-    IUIThreadHolder uiThreadHolder
-      = ( IUIThreadHolder )session.getAttribute( RWTLifeCycle.UI_THREAD );
+    IUIThreadHolder uiThreadHolder = LifeCycleUtil.getUIThread( session );
     String uiThreadName = uiThreadHolder.getThread().getName();
     // Invalidate session
     invalidateSession( session );
@@ -984,6 +981,39 @@ public class RWTLifeCycle_Test extends TestCase {
     uiThread[ 0 ].switchThread();
   }
   
+  public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle(); 
+    final Thread[] currentThread = { null };
+    final Thread[] uiThread = { null };
+    lifeCycle.addPhaseListener( new PhaseListener() {
+      private static final long serialVersionUID = 1L;
+      public PhaseId getPhaseId() {
+        return PhaseId.PREPARE_UI_ROOT;
+      }
+      public void beforePhase( PhaseEvent event ) {
+      }
+      public void afterPhase( PhaseEvent event ) {
+        currentThread[ 0 ] = Thread.currentThread();
+        uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getSession() ).getThread();
+      }
+    } );
+    
+    lifeCycle.execute();
+    
+    assertSame( currentThread[ 0 ], uiThread[ 0 ] );
+  }
+  
+  public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle(); 
+    lifeCycle.execute();
+    
+    Thread uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSession() ).getThread();
+
+    assertNotNull( uiThread );
+  }
+  
   private static void invalidateSession( final ISessionStore session ) throws Throwable {
     Runnable runnable = new Runnable() {
       public void run() {
@@ -1008,7 +1038,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   private static UIThread getUIThread() {
     ISessionStore session = ContextProvider.getSession();
-    return ( UIThread )session.getAttribute( RWTLifeCycle.UI_THREAD );
+    return ( UIThread )LifeCycleUtil.getUIThread( session );
   }
 
   protected void setUp() throws Exception {

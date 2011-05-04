@@ -23,8 +23,6 @@ import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 public class RWTLifeCycle extends LifeCycle {
-
-  public static final String UI_THREAD = RWTLifeCycle.class.getName() + ".uiThread";
   private static final Integer ZERO = new Integer( 0 );
 
   private static final String CURRENT_PHASE
@@ -144,10 +142,10 @@ public class RWTLifeCycle extends LifeCycle {
   public Scope getScope() {
     return Scope.APPLICATION;
   }
-
+  
   public void requestThreadExec( Runnable runnable ) {
     setRequestThreadRunnable( runnable );
-    switchThread();
+    getUIThreadHolder().switchThread();
   }
 
   private static void setRequestThreadRunnable( final Runnable runnable ) {
@@ -234,7 +232,7 @@ public class RWTLifeCycle extends LifeCycle {
     }
     // TODO [rh] consider moving this to UIThreadController#run
     if( !uiThread.getThread().isAlive() ) {
-      session.setAttribute( UI_THREAD, null );
+      LifeCycleUtil.setUIThread( session, null );
     }
     handleUIThreadException();
   }
@@ -273,17 +271,11 @@ public class RWTLifeCycle extends LifeCycle {
     IUIThreadHolder result = new UIThread( uiRunnable );
     result.getThread().setDaemon( true );
     result.getThread().setName( "UIThread [" + session.getId() + "]" );
-    session.setAttribute( UI_THREAD, result );
+    LifeCycleUtil.setUIThread( session, result );
     setShutdownAdapter( ( ISessionShutdownAdapter )result );
     return result;
   }
 
-  private static void switchThread() {
-    ISessionStore session = ContextProvider.getSession();
-    IUIThreadHolder uiThreadHolder = ( IUIThreadHolder )session.getAttribute( UI_THREAD );
-    uiThreadHolder.switchThread();
-  }
-  
   private static Integer getCurrentPhase() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return ( Integer )stateInfo.getAttribute( CURRENT_PHASE );
@@ -310,7 +302,6 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   public static IUIThreadHolder getUIThreadHolder() {
-    ISessionStore session = ContextProvider.getSession();
-    return ( IUIThreadHolder )session.getAttribute( UI_THREAD );
+    return LifeCycleUtil.getUIThread( ContextProvider.getSession() );
   }
 }

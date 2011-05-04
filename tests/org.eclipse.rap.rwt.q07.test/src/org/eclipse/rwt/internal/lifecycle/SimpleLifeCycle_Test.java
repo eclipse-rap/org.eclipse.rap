@@ -184,6 +184,33 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertSame( Thread.currentThread(), invocationThread[ 0 ] );
   }
   
+  public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
+    final Thread[] uiThread = { null };
+    lifeCycle.addPhaseListener( new PhaseListener() {
+      private static final long serialVersionUID = 1L;
+      public PhaseId getPhaseId() {
+        return PhaseId.PREPARE_UI_ROOT;
+      }
+      public void beforePhase( PhaseEvent event ) {
+      }
+      public void afterPhase( PhaseEvent event ) {
+        uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getSession() ).getThread();
+      }
+    } );
+    
+    lifeCycle.execute();
+    
+    assertSame( Thread.currentThread(), uiThread[ 0 ] );
+  }
+  
+  public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
+    lifeCycle.execute();
+    
+    IUIThreadHolder threadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSession() );
+
+    assertNull( threadHolder );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
