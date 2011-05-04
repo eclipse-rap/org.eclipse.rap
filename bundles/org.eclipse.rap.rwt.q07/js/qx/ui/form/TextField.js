@@ -978,7 +978,9 @@ qx.Class.define("qx.ui.form.TextField",
     // [if] Stops keypress propagation
     // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=335779
     _onkeypress : function( e ) {
-      e.stopPropagation();
+      if( e.getKeyIdentifier() !== "Tab" ) {
+        e.stopPropagation();
+      }
     },
 
     /*
