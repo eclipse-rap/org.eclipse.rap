@@ -3778,48 +3778,50 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     prepareEnhancedBorder : function() {
-      this._targetNode = document.createElement( "div" );
-      this._innerStyle = this._targetNode.style;
-      this._layoutTargetNode = true;
-      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        this.addToQueue( "width" );
-        this.addToQueue( "height" );
-      } else {
-        this._innerStyle.width = "100%";
-        this._innerStyle.height = "100%";
-      }
-      this._innerStyle.position = "absolute";
-      for( var i in this._styleProperties ) {
-        switch( i ) {
-          case "zIndex":
-          case "filter":
-          case "opacity":
-          case "MozOpacity":
-          case "display":
-          case "cursor":
-          break;
-          default:
-            this._innerStyle[i] = this._styleProperties[i];
-            this._style[i] = "";
+      if( !this._innerStyle ) {
+        this._targetNode = document.createElement( "div" );
+        this._innerStyle = this._targetNode.style;
+        this._layoutTargetNode = true;
+        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+          this.addToQueue( "width" );
+          this.addToQueue( "height" );
+        } else {
+          this._innerStyle.width = "100%";
+          this._innerStyle.height = "100%";
         }
-      }
-      // [if] Fix for bug 279800: Some focused widgets look strange in webkit
-      this._style.outline = "none";
-      this._applyContainerOverflow( this.getContainerOverflow() );
-      for( var i in this._htmlProperties ) {
-        switch( i ) {
-          case "unselectable":
-            this._targetNode.unselectable = this._htmlProperties[ i ];
+        this._innerStyle.position = "absolute";
+        for( var i in this._styleProperties ) {
+          switch( i ) {
+            case "zIndex":
+            case "filter":
+            case "opacity":
+            case "MozOpacity":
+            case "display":
+            case "cursor":
+            break;
+            default:
+              this._innerStyle[i] = this._styleProperties[i];
+              this._style[i] = "";
+          }
         }
-      }
-      while( this._element.firstChild ) {
-        this._targetNode.appendChild( this._element.firstChild );
-      }
-      this._element.appendChild( this._targetNode );
-      if( this.isInDom() ) {
-        // TODO [tb] : check if this works for ProgressBar
-        this._afterRemoveDom(); 
-        this._afterInsertDom(); 
+        // [if] Fix for bug 279800: Some focused widgets look strange in webkit
+        this._style.outline = "none";
+        this._applyContainerOverflow( this.getContainerOverflow() );
+        for( var i in this._htmlProperties ) {
+          switch( i ) {
+            case "unselectable":
+              this._targetNode.unselectable = this._htmlProperties[ i ];
+          }
+        }
+        while( this._element.firstChild ) {
+          this._targetNode.appendChild( this._element.firstChild );
+        }
+        this._element.appendChild( this._targetNode );
+        if( this.isInDom() ) {
+          // TODO [tb] : check if this works for ProgressBar
+          this._afterRemoveDom(); 
+          this._afterInsertDom(); 
+        }
       }
     },
 
