@@ -18,7 +18,7 @@ import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeStore;
+import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorageRegistry;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
@@ -57,7 +57,7 @@ public class ApplicationContextUtil {
     ThemeAdapterManager.class,
     JSLibraryConcatenator.class,
     TextSizeStorageRegistry.class,
-    TextSizeProbeStore.class,
+    ProbeStore.class,
   };
 
   public static ApplicationContext registerDefaultApplicationContext( ServletContext context ) {

@@ -15,9 +15,9 @@ import java.io.IOException;
 
 
 
-public final class TextSizeDeterminationFacadeImpl extends TextSizeDeterminationFacade {
+public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
 
-  public String createMeasureStringInternal( String string, boolean expandNewLines ) {
+  public String createMeasurementStringInternal( String string, boolean expandNewLines ) {
     return string;
   }
 

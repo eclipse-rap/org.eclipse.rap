@@ -97,7 +97,7 @@ class MeasurementOperator {
   private void writeFontProbingStatement() {
     try {
       // TODO [fappel]: remove return Type of facade method
-      TextSizeDeterminationFacade.writeFontProbing();
+      TextSizeUtilFacade.writeFontProbing();
     } catch( IOException shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
     }
@@ -119,18 +119,18 @@ class MeasurementOperator {
   
   private void createProbeResult( Probe probe, String value ) {
     Point size = getSize( value );
-    TextSizeProbeResults.getInstance().createProbeResult( probe, size );
+    ProbeResultStore.getInstance().createProbeResult( probe, size );
   }
   
   private void addStartupProbesToBuffer() {
-    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
+    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbes();
     probes.addAll( Arrays.asList( probeList ) );
   }
 
   private void writeTextMeasurements() {
     try {
       // TODO [fappel]: remove return Type of facade method
-      TextSizeDeterminationFacade.writeStringMeasurements();
+      TextSizeUtilFacade.writeStringMeasurements();
     } catch( IOException shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
     }

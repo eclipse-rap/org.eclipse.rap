@@ -17,14 +17,14 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.graphics.FontData;
 
 
-public class TextSizeProbeStore {
+public class ProbeStore {
   private final Map probes; 
   
-  TextSizeProbeStore() {
+  ProbeStore() {
     probes = new HashMap();
   }
   
-  Probe[] getProbeList() {
+  Probe[] getProbes() {
     Probe[] result;
     synchronized( probes ) {
       if( probes.isEmpty() ) {
@@ -52,6 +52,12 @@ public class TextSizeProbeStore {
   Probe getProbe( FontData font ) {
     synchronized( probes ) {
       return ( Probe )probes.get( font );
+    }
+  }
+  
+  int getSize() {
+    synchronized( probes ) {
+      return probes.size();
     }
   }
 }

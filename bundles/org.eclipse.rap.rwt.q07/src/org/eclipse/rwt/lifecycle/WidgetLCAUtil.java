@@ -26,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -611,7 +612,7 @@ public final class WidgetLCAUtil {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       if( font != null ) {
-        FontData fontData = font.getFontData()[ 0 ];
+        FontData fontData = FontUtil.getData( font );
         String[] names = parseFontName( fontData.getName() );
         Object[] args = new Object[]{
           widget,

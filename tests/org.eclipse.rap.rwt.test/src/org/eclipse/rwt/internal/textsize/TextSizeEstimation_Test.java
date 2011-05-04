@@ -30,7 +30,7 @@ public class TextSizeEstimation_Test extends TestCase {
   
   public void testAvgCharWithUsesProbeResults() {
     Probe probe = new Probe( "X", font10.getFontData()[ 0 ] );
-    TextSizeProbeResults.getInstance().createProbeResult( probe, new Point( 4711, 0 ) );
+    ProbeResultStore.getInstance().createProbeResult( probe, new Point( 4711, 0 ) );
     float avgCharWidth = TextSizeEstimation.getAvgCharWidth( font10 );
     assertEquals( 4711.0, avgCharWidth, 0.01 );
   }

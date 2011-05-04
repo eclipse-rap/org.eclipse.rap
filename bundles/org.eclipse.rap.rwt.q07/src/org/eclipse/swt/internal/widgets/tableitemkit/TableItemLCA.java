@@ -17,6 +17,7 @@ import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
@@ -356,7 +357,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   private static String toCss( final Font font ) {
     StringBuffer result = new StringBuffer();
-    FontData fontData = font.getFontData()[ 0 ];
+    FontData fontData = FontUtil.getData( font );
     if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
       result.append( "italic " );
     }

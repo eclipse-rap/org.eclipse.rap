@@ -16,6 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ccombokit.CComboThemeAdapter;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.widgets.*;
 
@@ -313,7 +314,7 @@ public final class CCombo extends Composite {
   public int getTextHeight() {
     checkWidget();
     Font font = getFont();
-    int fontSize = font.getFontData()[ 0 ].getHeight();
+    int fontSize = FontUtil.getData( font ).getHeight();
     return ( int )Math.floor( fontSize * LINE_HEIGHT_FACTOR );
   }
 

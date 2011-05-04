@@ -20,7 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
 
-public final class TextSizeDeterminationFacadeImpl extends TextSizeDeterminationFacade {
+public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
   private static final String FUNCTION_MEASURE_STRINGS
     = "org.eclipse.swt.FontSizeCalculation.measureStrings";
   private static final String FUNCTION_PROBE
@@ -28,7 +28,7 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
 
   public String getStartupProbeCodeInternal() {
     StringBuffer result = new StringBuffer();
-    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbeList();
+    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbes();
     if( probeList.length > 0 ) {
       result.append( FUNCTION_PROBE );
       result.append( "( [ " );
@@ -43,7 +43,7 @@ public final class TextSizeDeterminationFacadeImpl extends TextSizeDetermination
   }
 
   // TODO [rst] Perform also TAB expansion to match the default of GC#textExtent( String )
-  public String createMeasureStringInternal( final String string, final boolean expandNewLines ) {
+  public String createMeasurementStringInternal( String string, boolean expandNewLines ) {
     // TODO [fappel]: revise this - text escape may cause inaccurate calculations
     String result = WidgetLCAUtil.escapeText( string, true );
     String newLineReplacement = expandNewLines ? "<br/>" : " ";

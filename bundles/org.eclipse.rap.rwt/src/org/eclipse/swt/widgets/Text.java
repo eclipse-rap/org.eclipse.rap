@@ -15,6 +15,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
 
 /**
@@ -342,8 +343,7 @@ public class Text extends Scrollable {
    */
   public int getLineHeight() {
     checkWidget();
-    Font font = getFont();
-    int fontSize = font.getFontData()[ 0 ].getHeight();
+    int fontSize = FontUtil.getData( getFont() ).getHeight();
     return ( int )Math.floor( fontSize * LINE_HEIGHT_FACTOR );
   }
 

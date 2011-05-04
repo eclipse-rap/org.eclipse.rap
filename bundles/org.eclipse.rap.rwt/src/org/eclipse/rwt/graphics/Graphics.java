@@ -14,7 +14,7 @@ package org.eclipse.rwt.graphics;
 import java.io.InputStream;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
+import org.eclipse.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
@@ -266,7 +266,7 @@ public final class Graphics {
     if( font == null || string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return TextSizeDetermination.textExtent( font, string, wrapWidth );
+    return TextSizeUtil.textExtent( font, string, wrapWidth );
   }
 
   /**
@@ -289,7 +289,7 @@ public final class Graphics {
     if( font == null || string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return TextSizeDetermination.stringExtent( font, string );
+    return TextSizeUtil.stringExtent( font, string );
   }
 
   /**
@@ -302,7 +302,7 @@ public final class Graphics {
     if( font == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return TextSizeDetermination.getCharHeight( font );
+    return TextSizeUtil.getCharHeight( font );
   }
 
   /**
@@ -316,7 +316,7 @@ public final class Graphics {
     if( font == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return TextSizeDetermination.getAvgCharWidth( font );
+    return TextSizeUtil.getAvgCharWidth( font );
   }
 
   private Graphics() {

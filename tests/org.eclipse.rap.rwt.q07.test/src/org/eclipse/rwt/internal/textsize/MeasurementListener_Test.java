@@ -16,7 +16,6 @@ import org.eclipse.rwt.*;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeResults.ProbeResult;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -26,13 +25,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 
-public class TextSizeMeasurementListener_Test extends TestCase {
+public class MeasurementListener_Test extends TestCase {
   private static final int EXPAND_AND_RESTORE = 2;
   private static final FontData FONT_DATA = new FontData( "arial", 12, SWT.BOLD );
   private static final String RESPONSE_CALL = "org.eclipse.swt.FontSizeCalculation.measureStrings";
   private static final String PROBE_CALL = "org.eclipse.swt.FontSizeCalculation.probe";
   
-  private TextSizeMeasurementListener listener;
+  private MeasurementListener listener;
   private int resizeCount;
 
   public void testGetPhaseId() {
@@ -121,7 +120,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    listener = new TextSizeMeasurementListener();
+    listener = new MeasurementListener();
 
     Fixture.setUp();
     Fixture.fakeNewRequest( new Display() );
@@ -133,7 +132,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   }
 
   private void checkProbeResultWasStored() {
-    assertNotNull( TextSizeProbeResults.getInstance().getProbeResult( FONT_DATA ) );
+    assertNotNull( ProbeResultStore.getInstance().getProbeResult( FONT_DATA ) );
   }
 
   private void initResizeCount() {
@@ -141,7 +140,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   }
   
   private void createProbe() {
-    TextSizeProbeStore textSizeProbeStore = RWTFactory.getTextSizeProbeStore();
+    ProbeStore textSizeProbeStore = RWTFactory.getTextSizeProbeStore();
     textSizeProbeStore.createProbe( FONT_DATA );
   }
 
@@ -154,7 +153,7 @@ public class TextSizeMeasurementListener_Test extends TestCase {
   }
   
   private void checkProbeResultHasBeenStored() {
-    ProbeResult probeResult = TextSizeProbeResults.getInstance().getProbeResult( FONT_DATA );
+    ProbeResult probeResult = ProbeResultStore.getInstance().getProbeResult( FONT_DATA );
     assertEquals( new Point( 5, 10 ), probeResult.getSize() );
   }
 

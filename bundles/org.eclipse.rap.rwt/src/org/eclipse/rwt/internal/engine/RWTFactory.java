@@ -16,7 +16,7 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeStore;
+import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorageRegistry;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
@@ -80,8 +80,8 @@ public class RWTFactory {
     return ( TextSizeStorageRegistry )getApplicationSingleton( TextSizeStorageRegistry.class );
   }
 
-  public static TextSizeProbeStore getTextSizeProbeStore() {
-    return ( TextSizeProbeStore )getApplicationSingleton( TextSizeProbeStore.class );
+  public static ProbeStore getTextSizeProbeStore() {
+    return ( ProbeStore )getApplicationSingleton( ProbeStore.class );
   }
   
   public static ImageFactory getImageFactory() {

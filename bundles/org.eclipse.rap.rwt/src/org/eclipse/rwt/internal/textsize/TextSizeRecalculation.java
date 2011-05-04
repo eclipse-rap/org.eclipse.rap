@@ -22,18 +22,6 @@ class TextSizeRecalculation {
   static final String KEY_SCROLLED_COMPOSITE_ORIGIN = "org.eclipse.rap.sc-origin";
   static final int RESIZE_OFFSET = 1000;
 
-  private final Display display;
-
-  
-  // TODO [fappel]: remove constructor
-  TextSizeRecalculation( Display display ) {
-    this.display = display;
-  }
-
-  public TextSizeRecalculation() {
-    this( null );
-  }
-
   void execute() {
     Shell[] shells = getShells();
     for( int i = 0; i < shells.length; i++ ) {
@@ -86,11 +74,7 @@ class TextSizeRecalculation {
   }
 
   private Display getDisplay() {
-    Display result = display;
-    if( result == null ) {
-      result = LifeCycleUtil.getSessionDisplay();
-    }
-    return result;
+    return LifeCycleUtil.getSessionDisplay();
   }
 
   private Shell[] getShells( Display display ) {

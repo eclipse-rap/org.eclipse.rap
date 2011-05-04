@@ -25,6 +25,7 @@ import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Display;
 
@@ -184,17 +185,17 @@ public class Graphics_Test extends TestCase {
 
   public void testGetFont() {
     Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
-    assertEquals( "roman", font.getFontData()[ 0 ].getName() );
-    assertEquals( 1, font.getFontData()[ 0 ].getHeight() );
-    assertEquals( SWT.NORMAL, font.getFontData()[ 0 ].getStyle() );
+    assertEquals( "roman", FontUtil.getData( font ).getName() );
+    assertEquals( 1, FontUtil.getData( font ).getHeight() );
+    assertEquals( SWT.NORMAL, FontUtil.getData( font ).getStyle() );
     Font sameFont = Graphics.getFont( "roman", 1, SWT.NORMAL );
     assertSame( font, sameFont );
     Font otherFont = Graphics.getFont( "arial", 2, SWT.NORMAL );
     assertNotSame( otherFont, font );
     Font boldFont = Graphics.getFont( "arial", 11, SWT.BOLD );
-    assertEquals( SWT.BOLD, boldFont.getFontData()[ 0 ].getStyle() );
+    assertEquals( SWT.BOLD, FontUtil.getData( boldFont ).getStyle() );
     Font italicFont = Graphics.getFont( "arial", 11, SWT.ITALIC );
-    assertEquals( SWT.ITALIC, italicFont.getFontData()[ 0 ].getStyle() );
+    assertEquals( SWT.ITALIC, FontUtil.getData( italicFont ).getStyle() );
     sameFont = Graphics.getFont( new FontData( "roman", 1, SWT.NORMAL ) );
     assertSame( font, sameFont );
     Font arial13Normal = Graphics.getFont( "arial", 13, SWT.NORMAL );
@@ -222,7 +223,7 @@ public class Graphics_Test extends TestCase {
       // Expected
     }
     Font font = Graphics.getFont( "roman", 1, 1 << 3 );
-    assertEquals( SWT.NORMAL, font.getFontData()[ 0 ].getStyle() );
+    assertEquals( SWT.NORMAL, FontUtil.getData( font ).getStyle() );
   }
 
   public void testDisposeFactoryCreated() {

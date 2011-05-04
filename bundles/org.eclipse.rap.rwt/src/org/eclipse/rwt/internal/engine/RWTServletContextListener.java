@@ -25,7 +25,7 @@ import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.SettingStoreManager;
-import org.eclipse.rwt.internal.textsize.TextSizeMeasurementListener;
+import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
@@ -295,7 +295,7 @@ public final class RWTServletContextListener implements ServletContextListener {
       }
     } else {
       phaseListeners.add( new CurrentPhase.Listener() );
-      phaseListeners.add( new TextSizeMeasurementListener() );
+      phaseListeners.add( new MeasurementListener() );
     }
     PhaseListenerRegistry phaseListenerRegistry = RWTFactory.getPhaseListenerRegistry();
     PhaseListener[] registeredListeners = new PhaseListener[ phaseListeners.size() ];

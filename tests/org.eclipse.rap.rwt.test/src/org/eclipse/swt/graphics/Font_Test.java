@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -24,7 +25,7 @@ public class Font_Test extends TestCase {
   public void testConstructor() {
     Device device = new Display();
     Font font = new Font( device, "roman", 1, SWT.NORMAL );
-    FontData fontData = font.getFontData()[ 0 ];
+    FontData fontData = FontUtil.getData( font );
     assertEquals( "roman", fontData.getName() );
     assertEquals( 1, fontData.getHeight() );
     assertEquals( SWT.NORMAL, fontData.getStyle() );
@@ -115,7 +116,7 @@ public class Font_Test extends TestCase {
   public void testConstructorWithBogusStyle() {
     Device device = new Display();
     Font font = new Font( device, "roman", 1, 1 << 3 );
-    assertEquals( SWT.NORMAL, font.getFontData()[ 0 ].getStyle() );
+    assertEquals( SWT.NORMAL, FontUtil.getData( font ).getStyle() );
   }
 
   public void testConstructorCreatesSafeCopy() {
@@ -123,7 +124,7 @@ public class Font_Test extends TestCase {
     FontData fontData = new FontData( "roman", 1, SWT.NORMAL );
     Font font = new Font( device, fontData );
     fontData.setHeight( 23 );
-    assertEquals( 1, font.getFontData()[ 0 ].getHeight() );
+    assertEquals( 1, FontUtil.getData( font ).getHeight() );
   }
 
   public void testGetFontData() {
@@ -139,8 +140,8 @@ public class Font_Test extends TestCase {
   public void testGetFontDataCreatesSafeCopy() {
     Display display = new Display();
     Font font = new Font( display, "foo", 13, SWT.ITALIC );
-    font.getFontData()[ 0 ].setName( "bar" );
-    assertEquals( "foo", font.getFontData()[ 0 ].getName() );
+    FontUtil.getData( font ).setName( "bar" );
+    assertEquals( "foo", FontUtil.getData( font ).getName() );
   }
 
   public void testGetFontDataAfterDispose() {

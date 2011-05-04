@@ -195,7 +195,7 @@ public class Link extends Control {
     if( ( displayText.length() > 0 ) ) {
       // Replace '&' with '&&' to ensure proper size calculation with one '&',
       // because the other will be escaped in 
-      // TextSizeDetermination#createMeasureString()
+      // TextSizeUtil#createMeasureString()
       String string = escapeAmpersand( displayText );
       Point extent = Graphics.textExtent( getFont(), string, wHint );
       width = extent.x;

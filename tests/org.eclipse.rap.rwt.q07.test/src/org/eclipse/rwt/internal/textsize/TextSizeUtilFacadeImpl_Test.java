@@ -21,16 +21,16 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
 
-public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
+public class TextSizeUtilFacadeImpl_Test extends TestCase {
   private static final String TEXT_TO_MEASURE = " text \"to\" measure ";
 
   private Font[] fonts;
-  private TextSizeDeterminationFacadeImpl facade;
+  private TextSizeUtilFacadeImpl facade;
 
   public void testCreateProbeParamFragment() {
     Probe probe = createProbe();
 
-    String probeFragment = TextSizeDeterminationFacadeImpl.createProbeParamFragment( probe );
+    String probeFragment = TextSizeUtilFacadeImpl.createProbeParamFragment( probe );
     
     checkProbeFragment( probeFragment, probe );
   }
@@ -38,7 +38,7 @@ public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
   public void testCreateItemParamFragment() {
     MeasurementItem item = createMeasurementItem();
     
-    String itemFragment = TextSizeDeterminationFacadeImpl.createItemParamFragment( item );
+    String itemFragment = TextSizeUtilFacadeImpl.createItemParamFragment( item );
 
     checkItemFragment( itemFragment, item );
   }
@@ -61,7 +61,7 @@ public class TextSizeDeterminationFacadeImpl_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    facade = new TextSizeDeterminationFacadeImpl();
+    facade = new TextSizeUtilFacadeImpl();
   }
   
   protected void tearDown() throws Exception {

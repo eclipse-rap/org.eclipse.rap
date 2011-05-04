@@ -15,13 +15,13 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.FacadesInitializer;
 
-abstract class TextSizeDeterminationFacade {
+abstract class TextSizeUtilFacade {
 
-  private final static TextSizeDeterminationFacade FACADE_IMPL
-    = ( TextSizeDeterminationFacade )FacadesInitializer.load( TextSizeDeterminationFacade.class );
+  private final static TextSizeUtilFacade FACADE_IMPL
+    = ( TextSizeUtilFacade )FacadesInitializer.load( TextSizeUtilFacade.class );
 
-  static String createMeasureString( String string, boolean expandLineDelimitors ) {
-    return FACADE_IMPL.createMeasureStringInternal( string, expandLineDelimitors );
+  static String createMeasurementString( String string, boolean expandLineDelimitors ) {
+    return FACADE_IMPL.createMeasurementStringInternal( string, expandLineDelimitors );
   }
 
   static MeasurementItem[] writeStringMeasurements() throws IOException {
@@ -36,7 +36,7 @@ abstract class TextSizeDeterminationFacade {
     return FACADE_IMPL.getStartupProbeCodeInternal();
   }
 
-  public abstract String createMeasureStringInternal( String string, boolean expandNewLines );
+  public abstract String createMeasurementStringInternal( String string, boolean expandNewLines );
 
   public abstract MeasurementItem[] writeStringMeasurementsInternal() throws IOException;
 

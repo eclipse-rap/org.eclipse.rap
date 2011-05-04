@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,43 +19,15 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 
 
-final class TextSizeProbeResults {
-  
-  static class ProbeResult {
-    private final Point size;
-    private final Probe probe;
-    private float avgCharWidth;
-  
-    ProbeResult( Probe probe, Point size ) {
-      this.probe = probe;
-      this.size = size;
-    }
-  
-    Probe getProbe() {
-      return probe;
-    }
-  
-    Point getSize() {
-      return size;
-    }
-  
-    float getAvgCharWidth() {
-      if( avgCharWidth == 0 ) {
-        BigDecimal width = new BigDecimal( getSize().x );
-        BigDecimal charCount = new BigDecimal( probe.getText().length() );
-        avgCharWidth = width.divide( charCount, 2, BigDecimal.ROUND_HALF_UP ).floatValue();
-      }
-      return avgCharWidth;
-    }
-  }
+final class ProbeResultStore {
 
-  static TextSizeProbeResults getInstance() {
-    return ( TextSizeProbeResults )SessionSingletonBase.getInstance( TextSizeProbeResults.class );
-  }
-  
   private final Map probeResults;
 
-  private TextSizeProbeResults() {
+  static ProbeResultStore getInstance() {
+    return ( ProbeResultStore )SessionSingletonBase.getInstance( ProbeResultStore.class );
+  }
+  
+  ProbeResultStore() {
     probeResults = new HashMap();
   }
    

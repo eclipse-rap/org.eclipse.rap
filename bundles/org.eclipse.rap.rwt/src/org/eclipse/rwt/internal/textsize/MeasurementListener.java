@@ -14,12 +14,12 @@ package org.eclipse.rwt.internal.textsize;
 import org.eclipse.rwt.lifecycle.*;
 
 
-public class TextSizeMeasurementListener implements PhaseListener {
+public class MeasurementListener implements PhaseListener {
   private static final long serialVersionUID = 1L;
   
   private TextSizeRecalculation textSizeRecalculation;
 
-  public TextSizeMeasurementListener() {
+  public MeasurementListener() {
     textSizeRecalculation = new TextSizeRecalculation();
   }
   

@@ -100,8 +100,8 @@ public class RWTQ07TestSuite {
     suite.addTestSuite( RWTLifeCycle_Test.class );
     suite.addTestSuite( RWTLifeCycle2_Test.class );
     suite.addTestSuite( ThemeAdapter_Test.class );
-    suite.addTestSuite( TextSizeMeasurementListener_Test.class );
-    suite.addTestSuite( TextSizeDeterminationFacadeImpl_Test.class );
+    suite.addTestSuite( MeasurementListener_Test.class );
+    suite.addTestSuite( TextSizeUtilFacadeImpl_Test.class );
     suite.addTestSuite( DragSourceLCA_Test.class );
 
     // == Service ==

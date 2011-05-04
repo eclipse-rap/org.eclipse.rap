@@ -28,7 +28,7 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
-import org.eclipse.rwt.internal.textsize.TextSizeDetermination;
+import org.eclipse.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.HTTP;
@@ -71,7 +71,7 @@ public final class StartupPageConfigurer implements IStartupPageConfigurer {
   public synchronized boolean isModifiedSince() {
     boolean result;
 
-    int currentProbeCount = TextSizeDetermination.getProbeCount();
+    int currentProbeCount = MeasurementUtil.getProbeCount();
     if( probeCount != currentProbeCount ) {
       lastModified = System.currentTimeMillis();
       probeCount = currentProbeCount;
@@ -155,7 +155,7 @@ public final class StartupPageConfigurer implements IStartupPageConfigurer {
   }
 
   private static String getTextSizeProbeCode() {
-    return TextSizeDetermination.getStartupProbeCode();
+    return MeasurementUtil.getStartupProbeCode();
   }
 
   private static String getApplicationJsCode( String id ) {

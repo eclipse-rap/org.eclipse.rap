@@ -22,6 +22,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.internal.widgets.Props;
@@ -214,7 +215,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
 
     Font oldFont = label.getFont();
-    FontData fontData = oldFont.getFontData()[ 0 ];
+    FontData fontData = FontUtil.getData( oldFont );
     Font newFont = Graphics.getFont( fontData.getName(),
                                      fontData.getHeight(),
                                      SWT.BOLD );
@@ -234,7 +235,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
 
     Font oldFont = label.getFont();
-    FontData fontData = oldFont.getFontData()[ 0 ];
+    FontData fontData = FontUtil.getData( oldFont );
     Font newFont = Graphics.getFont( fontData.getName(),
                                      fontData.getHeight(),
                                      SWT.ITALIC );
@@ -250,7 +251,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     Font oldFont = label.getFont();
-    FontData fontData = oldFont.getFontData()[ 0 ];
+    FontData fontData = FontUtil.getData( oldFont );
     Font newFont = Graphics.getFont( fontData.getName(), 42, SWT.NORMAL );
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.writeFont( label, newFont );

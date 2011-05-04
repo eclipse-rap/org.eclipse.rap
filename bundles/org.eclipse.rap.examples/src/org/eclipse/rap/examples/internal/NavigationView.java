@@ -84,7 +84,7 @@ public class NavigationView extends ViewPart {
 //        }
 //      }
 //    } );
-    // workaround to apply TextSizeDetermination results
+    // workaround to apply TextSizeUtil results
     parent.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent e ) {
         ExpandItem[] items = expandBar.getItems();

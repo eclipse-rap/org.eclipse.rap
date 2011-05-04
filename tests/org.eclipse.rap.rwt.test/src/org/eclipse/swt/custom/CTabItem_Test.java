@@ -24,6 +24,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.widgets.*;
 
 
@@ -255,10 +256,10 @@ public class CTabItem_Test extends TestCase {
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
     Font font = item.getFont();
-    assertEquals( 22, font.getFontData()[ 0 ].getHeight() );
+    assertEquals( 22, FontUtil.getData( font ).getHeight() );
     folder.setSelection( 0 );
     font = item.getFont();
-    assertEquals( 24, font.getFontData()[ 0 ].getHeight() );
+    assertEquals( 24, FontUtil.getData( font ).getHeight() );
   }
 
   protected void setUp() throws Exception {

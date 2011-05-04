@@ -12,7 +12,6 @@
 package org.eclipse.rwt.internal.textsize;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.textsize.TextSizeProbeResults.ProbeResult;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 
@@ -21,7 +20,7 @@ final class TextSizeDataBase {
 
   static Point lookup( FontData font, String string, int wrapWidth ) {
     Point result = null;
-    if( TextSizeProbeResults.getInstance().containsProbeResult( font ) ) {
+    if( ProbeResultStore.getInstance().containsProbeResult( font ) ) {
       Integer key = getKey( font, string, wrapWidth );
       result = RWTFactory.getTextSizeStorageRegistry().obtain().lookupTextSize( key );
     } else {
@@ -31,7 +30,7 @@ final class TextSizeDataBase {
   }
 
   static void store( FontData fontData, String string, int wrapWidth, Point calculatedTextSize ) {
-    if( !TextSizeProbeResults.getInstance().containsProbeResult( fontData ) ) {
+    if( !ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
       String msg = "Font not probed yet: " + fontData.toString();
       throw new IllegalStateException( msg );
     }
@@ -41,7 +40,7 @@ final class TextSizeDataBase {
   }
 
   static Integer getKey( FontData fontData, String string, int wrapWidth ) {
-    TextSizeProbeResults instance = TextSizeProbeResults.getInstance();
+    ProbeResultStore instance = ProbeResultStore.getInstance();
     ProbeResult probeResult = instance.getProbeResult( fontData );
     String probeText = probeResult.getProbe().getText();
     Point probeSize = probeResult.getSize();

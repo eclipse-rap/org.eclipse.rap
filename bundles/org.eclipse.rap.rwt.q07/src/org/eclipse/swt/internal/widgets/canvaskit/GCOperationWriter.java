@@ -240,7 +240,7 @@ final class GCOperationWriter {
 
   private static String toCSSFont( final Font font ) {
     StringBuffer result = new StringBuffer();
-    FontData fontData = font.getFontData()[ 0 ];
+    FontData fontData = FontUtil.getData( font );
     if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
       result.append( "italic " );
     }
