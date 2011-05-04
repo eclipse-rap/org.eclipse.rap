@@ -139,17 +139,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       assertTrue( widget.getElement() !== widget._getTargetNode() );
       assertEquals( [ 1, 1, 1, 1 ], this.getFakePadding( widget ) );
       assertEquals( [ 1, 1, 1, 1 ], this.getBorderCache( widget ) );
-      widget._applyBorder( new org.eclipse.rwt.Border( 0, "rounded", "black", 0 ) );
+      widget.setBorder( new org.eclipse.rwt.Border( 0, "rounded", "black", 0 ) );
       testUtil.flush();      
       assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );
-      widget._applyBorder( new org.eclipse.rwt.Border( [ 4, 0, 3, 0 ], "rounded", "black", 0 ) );
+      widget.setBorder( new org.eclipse.rwt.Border( [ 4, 0, 3, 0 ], "rounded", "black", 0 ) );
       testUtil.flush();      
       assertEquals ( [ 4, 0, 3, 0 ], this.getFakePadding( widget ) );      
       assertEquals ( [ 4, 0, 3, 0 ], this.getBorderCache( widget ) );      
       widget.setBackgroundGradient( this.gradient );
       widget.setBorder( null );
       testUtil.flush();
+      // NOTE: since the layouting for targetNode is queued in the first flush, a second is needed
+      testUtil.flush(); 
       assertEquals ( [ 0, 0, 0, 0 ], this.getBorderCache( widget ) );      
       assertEquals ( [ 0, 0, 0, 0 ], this.getFakePadding( widget ) );
       widget.destroy();
@@ -720,6 +722,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
           testUtil.flush();
           assertTrue( this.widgetContainsCanvas( widget ) );
           widget.setBorder( null );
+          testUtil.flush();
           assertFalse( this.widgetContainsCanvas( widget ) );
           widget.setWidth( 400 );
           testUtil.flush();
@@ -754,6 +757,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var result = new org.eclipse.swt.widgets.Shell();
       result.addToDocument();
       result.setBackgroundColor( null );
+      result.setBackgroundGradient( null );
+      result.setBorder( null );
       result.setShadow( null );
       result.open();
       qx.ui.core.Widget.flushGlobalQueues();
@@ -773,9 +778,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     },
 
     usesGfxBorder : function( widget ) {      
-      return    widget._gfxBorderEnabled 
-             && this.widgetContainsCanvas( widget )
-             && widget._gfxData.backgroundShape == widget._gfxData.pathElement; 
+      return widget._gfxBorderEnabled && this.widgetContainsCanvas( widget );
     },
 
     usesGfxBackground : function( widget ) {
