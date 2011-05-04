@@ -991,11 +991,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       borderWidths[ 2 ] = borderBottom.getWidthBottom();
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
       borderColors[ 2 ] = borderBottom.getColorBottom();
-      if( borderWidths[ 2 ] == 0 ) {
-        result.border = new org.eclipse.rwt.Border( 0, "rounded", "black", 0 );
-      } else {
-        result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
-      }
+      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       return result;
     }
   },
@@ -1335,11 +1331,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       borderWidths[ 2 ] = borderBottom.getWidthBottom();
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
       borderColors[ 2 ] = borderBottom.getColorBottom();
-      if( borderWidths[ 2 ] == 0 ) {
-        result.border = new org.eclipse.rwt.Border( 0, "rounded", "black", 0 );
-      } else {
-        result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
-      }
+      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       return result;
     }
   },

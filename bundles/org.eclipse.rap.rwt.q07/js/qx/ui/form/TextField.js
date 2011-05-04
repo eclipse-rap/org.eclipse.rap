@@ -348,8 +348,8 @@ qx.Class.define("qx.ui.form.TextField",
           inp.addEventListener("input", this.__oninput, false);
         }
 
-        // Append to real element
-        value.appendChild(inp);
+        // TODO [tb] : write test:
+        this._getTargetNode().appendChild( inp );
       }
     },
 

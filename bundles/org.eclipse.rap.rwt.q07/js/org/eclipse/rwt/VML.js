@@ -28,8 +28,8 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       result.type = "vmlCanvas";
       var node = document.createElement( "div" );
       node.style.position = "absolute"
-      node.style.width = "100px";
-      node.style.height = "100px";
+      node.style.width = "10px";
+      node.style.height = "10px";
       node.style.top = "0";
       node.style.left = "0";
       node.style.fontSize = "0";
