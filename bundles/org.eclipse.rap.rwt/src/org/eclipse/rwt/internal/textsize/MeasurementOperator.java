@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
-import java.io.IOException;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,9 +57,9 @@ class MeasurementOperator {
   }
   
   void addProbeToMeasure( FontData fontData ) {
-    Probe probe = RWTFactory.getTextSizeProbeStore().getProbe( fontData );
+    Probe probe = RWTFactory.getProbeStore().getProbe( fontData );
     if( probe == null ) {
-      probe = RWTFactory.getTextSizeProbeStore().createProbe( fontData );
+      probe = RWTFactory.getProbeStore().createProbe( fontData );
     }
     probes.add( probe );
   }
@@ -95,12 +94,7 @@ class MeasurementOperator {
   }
   
   private void writeFontProbingStatement() {
-    try {
-      // TODO [fappel]: remove return Type of facade method
-      TextSizeUtilFacade.writeFontProbing();
-    } catch( IOException shouldNotHappen ) {
-      throw new RuntimeException( shouldNotHappen );
-    }
+    TextSizeUtilFacade.writeFontProbing();
   }
   
   private void readMeasuredFontProbeSizes() {
@@ -123,17 +117,12 @@ class MeasurementOperator {
   }
   
   private void addStartupProbesToBuffer() {
-    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbes();
+    Probe[] probeList = RWTFactory.getProbeStore().getProbes();
     probes.addAll( Arrays.asList( probeList ) );
   }
 
   private void writeTextMeasurements() {
-    try {
-      // TODO [fappel]: remove return Type of facade method
-      TextSizeUtilFacade.writeStringMeasurements();
-    } catch( IOException shouldNotHappen ) {
-      throw new RuntimeException( shouldNotHappen );
-    }
+    TextSizeUtilFacade.writeStringMeasurements();
   }
 
   private boolean readMeasuredTextSizes() {
@@ -173,7 +162,7 @@ class MeasurementOperator {
     FontData fontData = item.getFontData();
     String textToMeasure = item.getTextToMeasure();
     int wrapWidth = item.getWrapWidth();
-    TextSizeDataBase.store( fontData, textToMeasure, wrapWidth, size );
+    TextSizeStorageUtil.store( fontData, textToMeasure, wrapWidth, size );
   }
 
   private static Point readMeasuredItemSize( MeasurementItem item ) {

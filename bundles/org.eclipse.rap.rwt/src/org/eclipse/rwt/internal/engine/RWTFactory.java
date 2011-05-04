@@ -10,14 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
-import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.internal.AdapterManager;
+import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
+import org.eclipse.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rwt.internal.textsize.ProbeStore;
-import org.eclipse.rwt.internal.textsize.TextSizeStorageRegistry;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.IApplicationStore;
@@ -76,11 +77,11 @@ public class RWTFactory {
     return ( ThemeAdapterManager )getApplicationSingleton( ThemeAdapterManager.class );
   }
 
-  public static TextSizeStorageRegistry getTextSizeStorageRegistry() {
-    return ( TextSizeStorageRegistry )getApplicationSingleton( TextSizeStorageRegistry.class );
+  public static TextSizeStorage getTextSizeStorage() {
+    return ( TextSizeStorage )getApplicationSingleton( TextSizeStorage.class );
   }
 
-  public static ProbeStore getTextSizeProbeStore() {
+  public static ProbeStore getProbeStore() {
     return ( ProbeStore )getApplicationSingleton( ProbeStore.class );
   }
   

@@ -21,7 +21,7 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 class AdapterFactoryRegistry {
 
   // TODO [rh] if we decide to make the adapter mechanism internal, the concurrency lock can be 
-  //      removed as AdapterFactories are then only registered during statup
+  //      removed as AdapterFactories are then only registered during startup
   private final Object lock;
   /* key: Class<Adaptable>, value: List<AdapterFactory> */
   private final Map registry;

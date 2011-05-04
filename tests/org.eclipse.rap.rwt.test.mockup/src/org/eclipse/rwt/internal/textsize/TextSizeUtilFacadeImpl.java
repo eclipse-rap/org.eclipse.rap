@@ -11,9 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
-import java.io.IOException;
-
-
 
 public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
 
@@ -21,12 +18,10 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
     return string;
   }
 
-  public MeasurementItem[] writeStringMeasurementsInternal() throws IOException {
-    return new MeasurementItem[ 0 ];
+  public void writeStringMeasurementsInternal() {
   }
 
-  public Probe[] writeFontProbingInternal() throws IOException {
-    return new Probe[ 0 ];
+  public void writeFontProbingInternal() {
   }
 
   public String getStartupProbeCodeInternal() {

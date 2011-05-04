@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.graphics.FontData;
 
 class Probe {
@@ -32,6 +33,8 @@ class Probe {
   }
   
   Probe( String text, FontData fontData ) {
+    ParamCheck.notNull( text, "text" );
+    ParamCheck.notNull( fontData, "fontData" );
     this.text = text;
     this.fontData = fontData;
   }
@@ -44,41 +47,25 @@ class Probe {
     return text;
   }
 
-  // TODO [fappel]: add tests and rewrite generated code
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ( ( fontData == null ) ? 0 : fontData.hashCode() );
-    result = prime * result + ( ( text == null ) ? 0 : text.hashCode() );
+    result = prime * result + fontData.hashCode();
+    result = prime * result + text.hashCode();
     return result;
   }
 
-  // TODO [fappel]: add tests and rewrite generated code
   public boolean equals( Object obj ) {
-    if( this == obj ) {
-      return true;
-    }
-    if( obj == null ) {
-      return false;
-    }
-    if( getClass() != obj.getClass() ) {
-      return false;
-    }
-    Probe other = ( Probe )obj;
-    if( fontData == null ) {
-      if( other.fontData != null ) {
-        return false;
+    boolean result = false;
+    if( obj != null && getClass() == obj.getClass() ) {
+      if( this == obj ) {
+        result = true;
+      } else {
+        Probe other = ( Probe )obj;
+        result =    fontData.equals( other.fontData )
+                 && text.equals( other.text );
       }
-    } else if( !fontData.equals( other.fontData ) ) {
-      return false;
     }
-    if( text == null ) {
-      if( other.text != null ) {
-        return false;
-      }
-    } else if( !text.equals( other.text ) ) {
-      return false;
-    }
-    return true;
+    return result;
   }
 }

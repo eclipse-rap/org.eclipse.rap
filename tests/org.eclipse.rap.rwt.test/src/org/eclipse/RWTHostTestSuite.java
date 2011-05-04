@@ -217,10 +217,12 @@ public class RWTHostTestSuite {
     suite.addTestSuite( LineAttributes_Test.class );
     suite.addTestSuite( TextSizeEstimation_Test.class );
     suite.addTestSuite( TextSizeUtil_Test.class );
+    suite.addTestSuite( Probe_Test.class );
     suite.addTestSuite( ProbeStore_Test.class );
     suite.addTestSuite( ProbeResultStore_Test.class );
     suite.addTestSuite( MeasurementItem_Test.class );
     suite.addTestSuite( TextSizeRecalculation_Test.class );
+    suite.addTestSuite( TextSizeStorage_Test.class );
     suite.addTestSuite( MeasurementOperator_Test.class );
     suite.addTestSuite( ProbeResult_Test.class );
     suite.addTestSuite( ResourceFactory_Test.class );

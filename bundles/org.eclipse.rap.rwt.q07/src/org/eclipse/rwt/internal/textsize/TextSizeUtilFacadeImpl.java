@@ -28,7 +28,7 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
 
   public String getStartupProbeCodeInternal() {
     StringBuffer result = new StringBuffer();
-    Probe[] probeList = RWTFactory.getTextSizeProbeStore().getProbes();
+    Probe[] probeList = RWTFactory.getProbeStore().getProbes();
     if( probeList.length > 0 ) {
       result.append( FUNCTION_PROBE );
       result.append( "( [ " );
@@ -50,7 +50,7 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
     return WidgetLCAUtil.replaceNewLines( result, newLineReplacement );
   }
 
-  public MeasurementItem[] writeStringMeasurementsInternal() throws IOException {
+  public void writeStringMeasurementsInternal() {
     MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
     if( items.length > 0 ) {
       StringBuffer param = new StringBuffer();
@@ -62,10 +62,9 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
       param.append( " ]" );
       writeFunctionCall( FUNCTION_MEASURE_STRINGS, param );
     }
-    return items;
   }
 
-  public Probe[] writeFontProbingInternal() throws IOException {
+  public void writeFontProbingInternal() {
     Probe[] requests = MeasurementOperator.getInstance().getProbes();
     if( requests.length > 0 ) {
       StringBuffer param = new StringBuffer();
@@ -77,7 +76,6 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
       param.append( " ]" );
       writeFunctionCall( FUNCTION_PROBE, param );
     }
-    return requests;
   }
 
   static String createItemParamFragment( MeasurementItem item ) {
@@ -143,8 +141,12 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
     return currentIndex < lengthCount - 1;
   }
 
-  private void writeFunctionCall( String functionName, StringBuffer param ) throws IOException {
-    getWriter().callStatic( functionName, new Object[] { new JSVar( param.toString() ) } );
+  private void writeFunctionCall( String functionName, StringBuffer param ) {
+    try {
+      getWriter().callStatic( functionName, new Object[] { new JSVar( param.toString() ) } );
+    } catch( IOException shouldNotHappen ) {
+      throw new RuntimeException( shouldNotHappen );
+    }
   }
 
   private JSWriter getWriter() {

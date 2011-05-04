@@ -19,7 +19,7 @@ import org.eclipse.swt.internal.graphics.FontUtil;
 public class MeasurementUtil {
   
   public static int getProbeCount() {
-    return RWTFactory.getTextSizeProbeStore().getSize();
+    return RWTFactory.getProbeStore().getSize();
   }
   
   public static String getStartupProbeCode() {

@@ -17,15 +17,53 @@ import org.eclipse.swt.graphics.FontData;
 
 
 public class MeasurementItem_Test extends TestCase {
-  
+  private static final FontData FONT_DATA = new FontData( "arial", 12, SWT.BOLD );
+
   public void testMeasurementItemCreation() {
-    String textToMeasure = "textToMeasure";
-    FontData fontData = new FontData( "arial", 12, SWT.BOLD );
-    int wrapWidth = 13;
-    MeasurementItem item = new MeasurementItem( textToMeasure, fontData, wrapWidth );
+    MeasurementItem item = createItem( "textToMeasure", FONT_DATA, 13 );
     
-    assertSame( fontData, item.getFontData() );
-    assertSame( textToMeasure, item.getTextToMeasure() );
-    assertEquals( wrapWidth, item.getWrapWidth() );
+    assertSame( FONT_DATA, item.getFontData() );
+    assertSame( "textToMeasure", item.getTextToMeasure() );
+    assertEquals( 13, item.getWrapWidth() );
+  }
+  
+  public void testEquals() {
+    FontData otherFontData = new FontData( "helvetia", 12, SWT.BOLD );
+    MeasurementItem item1 = createItem( "textToMeasure", FONT_DATA, 13 );
+
+    assertTrue( item1.equals( item1 ) );
+    assertFalse( item1.equals( null ) );
+    assertFalse( item1.equals( new Object() ) );
+    assertFalse( item1.equals( createItem( "otherText", FONT_DATA, 13 ) ) );
+    assertFalse( item1.equals( createItem( "textToMeasure", otherFontData, 13 ) ) );
+    assertFalse( item1.equals( createItem( "textToMeasure", FONT_DATA, 155 ) ) );
+    assertTrue( item1.equals( createItem( "textToMeasure", FONT_DATA, 13 ) ) );
+  }
+  
+  public void testHashcode() {
+    MeasurementItem item = createItem( "textToMeasure", FONT_DATA, 13 );
+    
+    int hashCode = item.hashCode();
+    
+    assertEquals( -1805266056, hashCode );
+  }
+  
+  public void testParamTextToMeasureMustNotBeNull() {
+    try {
+      new MeasurementItem( null, FONT_DATA, 1 );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  public void testParamFontDataMustNotBeNull() {
+    try {
+      new MeasurementItem( "textToMeasure", null, 1 );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
+  private MeasurementItem createItem( String textToMeasure, FontData fontData, int wrapWidth ) {
+    return new MeasurementItem( textToMeasure, fontData, wrapWidth );
   }
 }

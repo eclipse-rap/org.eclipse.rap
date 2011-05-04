@@ -145,7 +145,7 @@ public class MeasurementOperator_Test extends TestCase {
   }
 
   private void createProbe( FontData fontData ) {
-    ProbeStore textSizeProbeStore = RWTFactory.getTextSizeProbeStore();
+    ProbeStore textSizeProbeStore = RWTFactory.getProbeStore();
     textSizeProbeStore.createProbe( fontData );
   }
 

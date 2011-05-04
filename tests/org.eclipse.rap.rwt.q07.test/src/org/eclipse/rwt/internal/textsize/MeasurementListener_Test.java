@@ -140,7 +140,7 @@ public class MeasurementListener_Test extends TestCase {
   }
   
   private void createProbe() {
-    ProbeStore textSizeProbeStore = RWTFactory.getTextSizeProbeStore();
+    ProbeStore textSizeProbeStore = RWTFactory.getProbeStore();
     textSizeProbeStore.createProbe( FONT_DATA );
   }
 

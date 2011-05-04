@@ -97,7 +97,7 @@ public class TextSizeUtil {
   private static Point lookup( Font font, String string, int wrapWidth, int mode ) {
     String measurementString = createMeasurementString( string, mode );
     FontData fontData = FontUtil.getData( font );
-    return TextSizeDataBase.lookup( fontData, measurementString, wrapWidth );
+    return TextSizeStorageUtil.lookup( fontData, measurementString, wrapWidth );
   }
 
   private static Point estimate( Font font, String string, int wrapWidth, int mode ) {

@@ -29,7 +29,7 @@ public class ProbeStore {
     synchronized( probes ) {
       if( probes.isEmpty() ) {
         // TODO [rh] store TextSizeStorageRegistry in a field and initialize it during configuration
-        FontData[] fontList = RWTFactory.getTextSizeStorageRegistry().obtain().getFontList();
+        FontData[] fontList = RWTFactory.getTextSizeStorage().getFontList();
         for( int i = 0; i < fontList.length; i++ ) {
           createProbe( fontList[ i ] );
         }
@@ -45,7 +45,7 @@ public class ProbeStore {
     synchronized( probes ) {
       probes.put( fontData, result );
     }
-    RWTFactory.getTextSizeStorageRegistry().obtain().storeFont( fontData );
+    RWTFactory.getTextSizeStorage().storeFont( fontData );
     return result;
   }
   

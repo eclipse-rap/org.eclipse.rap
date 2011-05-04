@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.graphics.FontData;
 
 class MeasurementItem {
@@ -19,6 +20,8 @@ class MeasurementItem {
   private final String string;
 
   MeasurementItem( String textToMeasure, FontData fontData, int wrapWidth ) {
+    ParamCheck.notNull( textToMeasure, "textToMeasure" );
+    ParamCheck.notNull( fontData, "fontData" );
     this.wrapWidth = wrapWidth;
     this.fontData = fontData;
     this.string = textToMeasure;
@@ -36,45 +39,27 @@ class MeasurementItem {
     return wrapWidth;
   }
 
-  // TODO [fappel]: add tests and rewrite generated code
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ( ( fontData == null ) ? 0 : fontData.hashCode() );
-    result = prime * result + ( ( string == null ) ? 0 : string.hashCode() );
+    result = prime * result + fontData.hashCode();
+    result = prime * result + string.hashCode();
     result = prime * result + wrapWidth;
     return result;
   }
   
-  // TODO [fappel]: add tests and rewrite generated code
-  public boolean equals( Object obj ) {
-    if( this == obj ) {
-      return true;
-    }
-    if( obj == null ) {
-      return false;
-    }
-    if( getClass() != obj.getClass() ) {
-      return false;
-    }
-    MeasurementItem other = ( MeasurementItem )obj;
-    if( fontData == null ) {
-      if( other.fontData != null ) {
-        return false;
+  public boolean equals( Object object ) {
+    boolean result = false;
+    if( object != null && getClass() == object.getClass() ) {
+      if( this == object ) {
+        result = true;
+      } else {
+        MeasurementItem other = ( MeasurementItem )object;
+        result =    fontData.equals( other.fontData )
+                 && string.equals( other.string )
+                 && wrapWidth == other.wrapWidth;
       }
-    } else if( !fontData.equals( other.fontData ) ) {
-      return false;
     }
-    if( string == null ) {
-      if( other.string != null ) {
-        return false;
-      }
-    } else if( !string.equals( other.string ) ) {
-      return false;
-    }
-    if( wrapWidth != other.wrapWidth ) {
-      return false;
-    }
-    return true;
+    return result;
   }
 }

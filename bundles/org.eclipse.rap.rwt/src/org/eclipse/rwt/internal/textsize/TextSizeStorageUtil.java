@@ -16,27 +16,23 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 
 
-final class TextSizeDataBase {
+final class TextSizeStorageUtil {
 
-  static Point lookup( FontData font, String string, int wrapWidth ) {
+  static Point lookup( FontData fontData, String string, int wrapWidth ) {
     Point result = null;
-    if( ProbeResultStore.getInstance().containsProbeResult( font ) ) {
-      Integer key = getKey( font, string, wrapWidth );
-      result = RWTFactory.getTextSizeStorageRegistry().obtain().lookupTextSize( key );
+    if( ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
+      Integer key = getKey( fontData, string, wrapWidth );
+      result = RWTFactory.getTextSizeStorage().lookupTextSize( key );
     } else {
-      MeasurementOperator.getInstance().addProbeToMeasure( font );
+      MeasurementOperator.getInstance().addProbeToMeasure( fontData );
     }
     return result;
   }
 
-  static void store( FontData fontData, String string, int wrapWidth, Point calculatedTextSize ) {
-    if( !ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
-      String msg = "Font not probed yet: " + fontData.toString();
-      throw new IllegalStateException( msg );
-    }
-    ITextSizeStorage registry = RWTFactory.getTextSizeStorageRegistry().obtain();
+  static void store( FontData fontData, String string, int wrapWidth, Point measuredTextSize ) {
+    checkFontExists( fontData );
     Integer key = getKey( fontData, string, wrapWidth );
-    registry.storeTextSize( key, calculatedTextSize );
+    RWTFactory.getTextSizeStorage().storeTextSize( key, measuredTextSize );
   }
 
   static Integer getKey( FontData fontData, String string, int wrapWidth ) {
@@ -54,7 +50,14 @@ final class TextSizeDataBase {
   }
   
   
-  private TextSizeDataBase() {
+  private static void checkFontExists( FontData fontData ) {
+    if( !ProbeResultStore.getInstance().containsProbeResult( fontData ) ) {
+      String msg = "Font not probed yet: " + fontData.toString();
+      throw new IllegalStateException( msg );
+    }
+  }
+  
+  private TextSizeStorageUtil() {
     // prevent instantiation
   }
 }

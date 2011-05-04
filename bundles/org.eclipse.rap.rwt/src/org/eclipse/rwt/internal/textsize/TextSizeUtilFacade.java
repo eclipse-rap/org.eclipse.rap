@@ -11,8 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
-import java.io.IOException;
-
 import org.eclipse.rwt.internal.FacadesInitializer;
 
 abstract class TextSizeUtilFacade {
@@ -24,12 +22,12 @@ abstract class TextSizeUtilFacade {
     return FACADE_IMPL.createMeasurementStringInternal( string, expandLineDelimitors );
   }
 
-  static MeasurementItem[] writeStringMeasurements() throws IOException {
-    return FACADE_IMPL.writeStringMeasurementsInternal();
+  static void writeStringMeasurements() {
+    FACADE_IMPL.writeStringMeasurementsInternal();
   }
 
-  static Probe[] writeFontProbing() throws IOException {
-    return FACADE_IMPL.writeFontProbingInternal();
+  static void writeFontProbing() {
+    FACADE_IMPL.writeFontProbingInternal();
   }
 
   static String getStartupProbeCode() {
@@ -38,9 +36,9 @@ abstract class TextSizeUtilFacade {
 
   public abstract String createMeasurementStringInternal( String string, boolean expandNewLines );
 
-  public abstract MeasurementItem[] writeStringMeasurementsInternal() throws IOException;
-
-  public abstract Probe[] writeFontProbingInternal() throws IOException;
-
+  public abstract void writeStringMeasurementsInternal();
+  
+  public abstract void writeFontProbingInternal();
+  
   public abstract String getStartupProbeCodeInternal();
 }

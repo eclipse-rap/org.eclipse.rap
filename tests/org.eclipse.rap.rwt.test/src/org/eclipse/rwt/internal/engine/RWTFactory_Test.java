@@ -81,11 +81,11 @@ public class RWTFactory_Test extends TestCase {
     assertNotNull( RWTFactory.getJSLibraryConcatenator() );
     assertSame( RWTFactory.getJSLibraryConcatenator(), RWTFactory.getJSLibraryConcatenator() );
     
-    assertNotNull( RWTFactory.getTextSizeStorageRegistry() );
-    assertSame( RWTFactory.getTextSizeStorageRegistry(), RWTFactory.getTextSizeStorageRegistry() );
+    assertNotNull( RWTFactory.getTextSizeStorage() );
+    assertSame( RWTFactory.getTextSizeStorage(), RWTFactory.getTextSizeStorage() );
     
-    assertNotNull( RWTFactory.getTextSizeProbeStore() );
-    assertSame( RWTFactory.getTextSizeProbeStore(), RWTFactory.getTextSizeProbeStore() );
+    assertNotNull( RWTFactory.getProbeStore() );
+    assertSame( RWTFactory.getProbeStore(), RWTFactory.getProbeStore() );
   }
 
   protected void setUp() throws Exception {

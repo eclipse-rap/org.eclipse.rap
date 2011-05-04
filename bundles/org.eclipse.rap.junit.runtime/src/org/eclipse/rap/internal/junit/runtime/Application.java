@@ -22,6 +22,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.testing.ITestHarness;
 import org.eclipse.ui.testing.TestableObject;
 
+
 /**
  * This class controls all aspects of the application's execution and is
  * contributed through the plugin.xml.
