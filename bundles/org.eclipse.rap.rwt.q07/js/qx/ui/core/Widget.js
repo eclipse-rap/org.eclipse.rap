@@ -1858,7 +1858,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         // link element and style reference
         this._element = value;
         this._style = value.style;
-        if( this._layoutTargetNode ) {
+        if( this._targetNodeEnabled ) {
           this.prepareEnhancedBorder();
         }
         this._applyStyleProperties(value);
@@ -3719,7 +3719,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     _cachedBorderBottom : 0,
     _cachedBorderLeft : 0,
     _usesComplexBorder : false,
-    _layoutTargetNode : false,
+    _targetNodeEnabled : false,
 
     _applyBorder : function( value, old ) {
       this._queueBorder( value );
@@ -3781,7 +3781,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       if( !this._innerStyle ) {
         this._targetNode = document.createElement( "div" );
         this._innerStyle = this._targetNode.style;
-        this._layoutTargetNode = true;
+        this._targetNodeEnabled = true;
         if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
           this.addToQueue( "width" );
           this.addToQueue( "height" );
@@ -4048,27 +4048,27 @@ qx.Class.define( "qx.ui.core.Widget", {
     if (qx.core.Variant.isSet("qx.client", "mshtml")) {
       members._renderRuntimeWidth = function(v) {
         this._style.pixelWidth = (v==null)?0:v;
-        if( this._layoutTargetNode ) {
+        if( this._targetNodeEnabled ) {
           var innerValue = this._usesComplexBorder && v != null ? v - 2 : v; 
           this._innerStyle.pixelWidth = innerValue == null ? 0 : innerValue;
         }
       };
       members._renderRuntimeHeight = function(v) {
         this._style.pixelHeight = (v==null)?0:v;
-        if( this._layoutTargetNode ) {
+        if( this._targetNodeEnabled ) {
           var innerValue = this._usesComplexBorder && v != null ? v - 2 : v;
           this._innerStyle.pixelHeight = innerValue == null ? 0 : innerValue;
         }
       };
       members._resetRuntimeWidth = function() {
         this._style.width = "";
-        if( this._layoutTargetNode ) {
+        if( this._targetNodeEnabled ) {
           this._innerStyle.width = "";
         }
       };
       members._resetRuntimeHeight = function() {
         this._style.height = "";
-        if( this._layoutTargetNode ) {
+        if( this._targetNodeEnabled ) {
           this._innerStyle.height = "";
         }
       };

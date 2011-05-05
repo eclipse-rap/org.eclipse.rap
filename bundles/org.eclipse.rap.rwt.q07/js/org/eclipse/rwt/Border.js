@@ -95,7 +95,29 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       } catch( ex ) {
         //ignore
       }
-    }
+      this._resetComplexBorder( widget );
+    },
+    
+    _resetComplexBorder : qx.core.Variant.select("qx.client", {
+      "gecko" : function( widget ) {
+        var statics = org.eclipse.rwt.Border
+        var style = widget._style;
+        for( var i = 0; i < 4; i++ ) {
+          style[ statics._EDGEMOZCOLORS[ i ] ] = "";
+        }
+      }, 
+      "default" : function( widget ) {
+        var statics = org.eclipse.rwt.Border
+        var inner = widget._innerStyle;
+        if( inner ) {
+          for( var i = 0; i < 4; i++ ) {
+            inner[ statics._EDGEWIDTH[ i ] ] = "";
+            inner[ statics._EDGESTYLE[ i ] ] = "";
+            inner[ statics._EDGECOLOR[ i ] ] = "";
+          }
+        }
+      }
+    } )
 
   },
 
@@ -245,7 +267,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     },
     
     _renderSimpleBorder : function( widget ) {
-      this._resetComplexBorder( widget );
+      org.eclipse.rwt.Border._resetComplexBorder( widget );
       var style = widget._style;
       var statics = org.eclipse.rwt.Border
       for( var i = 0; i < 4; i++ ) {
@@ -308,28 +330,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       for( var i = 0; i < 4; i++ ) {
         style[ statics._BORDERRADII[ i ] ] = this._radii[ i ] + "px";
       }
-    },
-    
-    _resetComplexBorder : qx.core.Variant.select("qx.client", {
-      "gecko" : function( widget ) {
-        var statics = org.eclipse.rwt.Border
-        var style = widget._style;
-        for( var i = 0; i < 4; i++ ) {
-          style[ statics._EDGEMOZCOLORS[ i ] ] = "";
-        }
-      }, 
-      "default" : function( widget ) {
-        var statics = org.eclipse.rwt.Border
-        var inner = widget._innerStyle;
-        if( inner ) {
-          for( var i = 0; i < 4; i++ ) {
-            inner[ statics._EDGEWIDTH[ i ] ] = "";
-            inner[ statics._EDGESTYLE[ i ] ] = "";
-            inner[ statics._EDGECOLOR[ i ] ] = "";
-          }
-        }
-      }
-    } )
+    }
 
   }
 

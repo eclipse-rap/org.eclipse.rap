@@ -158,6 +158,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       testUtil.flush();
     },
 
+    testComplexBorderWithGradient: function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
+      var widget = this._createWidget();
+      widget.setBorder( new org.eclipse.rwt.Border( [ 0, 1, 2, 3 ], "complex", "red", "blue" ) );
+      testUtil.flush();
+      testUtil.flush();
+      widget.setBackgroundGradient( this.gradient );
+      testUtil.flush();
+      if( isMshtml ) {
+        assertEquals ( [ 0, 2, 2, 0 ], this.getFakePadding( widget ) );      
+      } else {
+        assertEquals( "100%", widget._innerStyle.width );
+        assertEquals( "100%", widget._innerStyle.height );
+      }
+      var shape = widget._gfxData.backgroundShape;
+      var expected1;
+      var expected2;
+      if( isMshtml ) {
+        expected1 = " m-5,-5 l955,-5,955,975,-5,975 xe";
+        expected2 = " m-5,-5 l1155,-5,1155,1475,-5,1475 xe";
+      } else {
+        expected1 = "M 0 0 L 96 0 96 0 L 96 98 96 98 L 0 98 0 98 Z";
+        expected2 = "M 0 0 L 116 0 116 0 L 116 148 116 148 L 0 148 0 148 Z";
+      }
+      assertEquals( expected1, this._getPath( shape ) );
+      widget.setWidth( 120 );
+      widget.setHeight( 150 );
+      testUtil.flush();
+      assertEquals( expected2, this._getPath( shape ) );
+      widget.destroy();
+    },
+    
     testRoundedBorderWidth : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
@@ -522,9 +556,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
         var childOffset = isMshtml ? 0 : 1;// Count defs-node
         var widget = this._createWidget();
+        widget.setShadow( [ false, 10, 10, 10, 3, "#ff00ff", 1 ] );
+        testUtil.flush();
         widget.setBackgroundGradient( this.gradient );
         testUtil.flush();
-        widget.setShadow( [ false, 10, 10, 10, 3, "#ff00ff", 1 ] );
         var canvasNode = this._getCanvasGroupNode( widget._gfxCanvas );
         var shadow = widget._gfxData.shadowShape.node;
         var background = widget._gfxData.backgroundShape.node;
@@ -533,6 +568,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         assertIdentical( canvasNode, shadow.parentNode );
         assertIdentical( shadow, canvasNode.childNodes[ 0 + childOffset ] );
         assertIdentical( background, canvasNode.childNodes[ 1 + childOffset ] );
+        assertTrue( this._getPath( widget._gfxData.backgroundShape ).length > 0 );
         widget.setBackgroundGradient( null );
         testUtil.flush();
         assertFalse( background.parentNode === canvasNode );
@@ -606,6 +642,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
         var widget = this._createWidget();
         widget.setShadow( [ false, 0, 0, 0, 0, "#000000", 1 ] );
+        testUtil.flush();
         var shape = widget._gfxData.shadowShape;
         var expected1;
         var expected2;
@@ -660,6 +697,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
         var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
         var widget = this._createWidget();
         widget.setShadow( [ false, 3, 5, 0, 0, "#000000", 1 ] );
+        testUtil.flush();
         var shape = widget._gfxData.shadowShape;
         var expected1;
         var expected2;
