@@ -27,6 +27,7 @@ import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.layout.FillLayout;
 
@@ -239,7 +240,7 @@ public class Control_Test extends TestCase {
   public void testInitialTabIndex() {
     Control control = new Button( shell, SWT.PUSH );
     
-    IControlAdapter adapter = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    IControlAdapter adapter = ControlUtil.getControlAdapter( control );
     
     assertEquals( -1, adapter.getTabIndex() );
   }
@@ -399,8 +400,7 @@ public class Control_Test extends TestCase {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     comp.setBackgroundImage( image );
     Control control = new Label( comp, SWT.NONE );
-    IControlAdapter adapter
-      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    IControlAdapter adapter = ControlUtil.getControlAdapter( control );
 
     // initial state
     assertNull( adapter.getUserBackground() );
@@ -417,8 +417,7 @@ public class Control_Test extends TestCase {
 
     // controls created after set background mode are also transparent
     Control control2 = new Label( comp, SWT.NONE );
-    IControlAdapter adapter2
-      = ( IControlAdapter )control2.getAdapter( IControlAdapter.class );
+    IControlAdapter adapter2 = ControlUtil.getControlAdapter( control2 );
     assertSame( blue, control.getBackground() );
     assertSame( image, control.getBackgroundImage() );
     assertNull( adapter2.getUserBackground() );
@@ -460,8 +459,7 @@ public class Control_Test extends TestCase {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Label( composite, SWT.NONE );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
-    IControlAdapter adapter
-      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    IControlAdapter adapter = ControlUtil.getControlAdapter( control );
     assertNull( adapter.getUserForeground() );
     Color themeColor = control.getForeground();
     // enabled state:

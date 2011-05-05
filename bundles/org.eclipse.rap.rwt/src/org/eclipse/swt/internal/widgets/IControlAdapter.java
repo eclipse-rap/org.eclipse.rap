@@ -30,4 +30,6 @@ public interface IControlAdapter {
   Image getUserBackgroundImage();
 
   boolean getBackgroundTransparency();
+  
+  boolean isPacked();
 }

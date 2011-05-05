@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.layout.*;
 
@@ -89,8 +90,7 @@ public class Composite_Test extends TestCase {
 
   public void testBackgroundMode() {
     Button button = new Button( shell, SWT.PUSH );
-    IControlAdapter adapter
-      = ( IControlAdapter )button.getAdapter( IControlAdapter.class );
+    IControlAdapter adapter = ControlUtil.getControlAdapter( button );
     shell.setBackgroundMode( SWT.INHERIT_NONE );
     assertEquals( SWT.INHERIT_NONE, shell.getBackgroundMode() );
     assertFalse( adapter.getBackgroundTransparency() );

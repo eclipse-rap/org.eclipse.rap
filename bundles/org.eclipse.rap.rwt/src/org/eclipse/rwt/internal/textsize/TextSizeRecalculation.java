@@ -34,10 +34,15 @@ class TextSizeRecalculation {
     bufferScrolledCompositeOrigins( shell );
     clearLayoutBuffers( shell );
     enlargeShell( shell );
+    rePackControls( shell );
     enlargeScrolledCompositeContent( shell );
     clearLayoutBuffers( shell );
     restoreShellSize( shell, boundsBuffer );
     restoreScrolledCompositeOrigins( shell );
+  }
+
+  private void rePackControls( Shell shell ) {
+    WidgetTreeVisitor.accept( shell, new RePackControlsVisitor() );
   }
 
   private void clearLayoutBuffers( Shell shell ) {

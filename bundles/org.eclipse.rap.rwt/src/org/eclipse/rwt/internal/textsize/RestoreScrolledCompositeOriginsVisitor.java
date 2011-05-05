@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Widget;
 
 class RestoreScrolledCompositeOriginsVisitor extends AllWidgetTreeVisitor {
   
-  public boolean doVisit( final Widget widget ) {
+  public boolean doVisit( Widget widget ) {
     if( widget instanceof ScrolledComposite ) {
       restoreOrigin( ( ScrolledComposite )widget );
       restoreContentSize( ( ScrolledComposite )widget );

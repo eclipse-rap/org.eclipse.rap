@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Widget;
 
 class EnlargeScrolledCompositeContentVisitor extends AllWidgetTreeVisitor {
   
-  public boolean doVisit( final Widget widget ) {
+  public boolean doVisit( Widget widget ) {
     if( widget instanceof ScrolledComposite && hasContentControl( widget ) ) {
       enlargeContentControl( widget );
     }

@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
+import org.eclipse.swt.internal.widgets.ControlUtil;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Widget;
@@ -31,20 +32,19 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   static final String PROP_STATE = "state";
   static final String PROP_BACKGROUND_IMAGE_SIZED = "backgroundImageSized";
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     ProgressBar progressBar = ( ProgressBar )widget;
     ControlLCAUtil.preserveValues( progressBar );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
     adapter.preserve( PROP_MINIMUM, new Integer( progressBar.getMinimum() ) );
     adapter.preserve( PROP_MAXIMUM, new Integer( progressBar.getMaximum() ) );
-    adapter.preserve( PROP_SELECTION,
-                      new Integer( progressBar.getSelection() ) );
+    adapter.preserve( PROP_SELECTION, new Integer( progressBar.getSelection() ) );
     adapter.preserve( PROP_STATE, getState( progressBar ) );
     preserveBackgroundImage( progressBar );
     WidgetLCAUtil.preserveCustomVariant( progressBar );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     ProgressBar progressBar = ( ProgressBar )widget;
     ControlLCAUtil.processMouseEvents( progressBar );
     ControlLCAUtil.processKeyEvents( progressBar );
@@ -52,7 +52,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( progressBar );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     ProgressBar progressBar = ( ProgressBar )widget;
     JSWriter writer = JSWriter.getWriterFor( progressBar );
     writer.newWidget( "org.eclipse.swt.widgets.ProgressBar" );    
@@ -60,7 +60,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     writer.set( "flag", progressBar.getStyle() );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     ProgressBar pBar = ( ProgressBar )widget;
     ControlLCAUtil.writeChanges( pBar );
     // do not change range and selection order
@@ -72,29 +72,21 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeCustomVariant( pBar );
   }
   
-  private static void preserveBackgroundImage( final ProgressBar progressBar ) {
-    IControlAdapter controlAdapter
-      = ( IControlAdapter )progressBar.getAdapter( IControlAdapter.class );
+  private static void preserveBackgroundImage( ProgressBar progressBar ) {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( progressBar );
     Image image = controlAdapter.getUserBackgroundImage();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
     adapter.preserve( PROP_BACKGROUND_IMAGE_SIZED, image );
   }
   
-  private static void writeBackgroundImage( final ProgressBar progressBar ) 
-    throws IOException 
-  {
-    IControlAdapter controlAdapter
-      = ( IControlAdapter )progressBar.getAdapter( IControlAdapter.class );
+  private static void writeBackgroundImage( ProgressBar progressBar ) throws IOException {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( progressBar );
     Image image = controlAdapter.getUserBackgroundImage();
-    if( WidgetLCAUtil.hasChanged( progressBar, 
-                                  PROP_BACKGROUND_IMAGE_SIZED, 
-                                  image, 
-                                  null ) ) 
-    {
+    if( WidgetLCAUtil.hasChanged( progressBar, PROP_BACKGROUND_IMAGE_SIZED, image, null ) ) {
       String imagePath = ImageFactory.getImagePath( image );
       JSWriter writer = JSWriter.getWriterFor( progressBar );
       Rectangle bounds = image != null ? image.getBounds() : null;      
-      Object[] args = new Object[]{
+      Object[] args = new Object[] {
         imagePath,
         new Integer( bounds != null ? bounds.width : 0 ),
         new Integer( bounds != null ? bounds.height : 0 )
@@ -103,20 +95,18 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     }
   }
   
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
   
-  private static void writeState( final ProgressBar progressBar )
-    throws IOException
-  {
+  private static void writeState( ProgressBar progressBar ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( progressBar );
     String currentState = getState( progressBar );
     writer.set( PROP_STATE, "state", currentState , null );
   }
 
-  private static String getState( final ProgressBar progressBar ) {
+  private static String getState( ProgressBar progressBar ) {
     String result = null;
     int state = progressBar.getState();
     if( state == SWT.ERROR ) {
@@ -127,17 +117,14 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static void writeSetInt( final ProgressBar progressBar,
-                                   final String javaProperty,
-                                   final String jsProperty,
-                                   final int newValue,
-                                   final int defValue )
+  private static void writeSetInt( ProgressBar progressBar,
+                                   String javaProperty,
+                                   String jsProperty,
+                                   int newValue,
+                                   int defValue )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( progressBar );
-    writer.set( javaProperty,
-                jsProperty,
-                new Integer( newValue ),
-                new Integer( defValue ) );
+    writer.set( javaProperty, jsProperty, new Integer( newValue ), new Integer( defValue ) );
   }
 }

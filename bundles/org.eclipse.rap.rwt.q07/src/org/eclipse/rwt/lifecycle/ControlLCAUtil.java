@@ -131,7 +131,7 @@ public class ControlLCAUtil {
    * @param control the control whose parameters to preserve
    * @see #writeChanges(Control)
    */
-  public static void preserveValues( final Control control ) {
+  public static void preserveValues( Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     WidgetLCAUtil.preserveBounds( control, control.getBounds() );
     // TODO [rh] revise this (see also writeZIndex)
@@ -143,10 +143,8 @@ public class ControlLCAUtil {
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( getVisible( control ) ) );
     WidgetLCAUtil.preserveEnabled( control, control.getEnabled() );
-    IControlAdapter controlAdapter
-      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
-    WidgetLCAUtil.preserveForeground( control,
-                                      controlAdapter.getUserForeground() );
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    WidgetLCAUtil.preserveForeground( control, controlAdapter.getUserForeground() );
     WidgetLCAUtil.preserveBackground( control,
                                       controlAdapter.getUserBackground(),
                                       controlAdapter.getBackgroundTransparency() );
@@ -157,14 +155,11 @@ public class ControlLCAUtil {
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     adapter.preserve( PROP_ACTIVATE_LISTENER,
                       Boolean.valueOf( ActivateEvent.hasListener( control ) ) );
-    adapter.preserve( PROP_MOUSE_LISTENER,
-                      Boolean.valueOf( MouseEvent.hasListener( control ) ) );
+    adapter.preserve( PROP_MOUSE_LISTENER, Boolean.valueOf( MouseEvent.hasListener( control ) ) );
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      adapter.preserve( PROP_FOCUS_LISTENER,
-                        Boolean.valueOf( FocusEvent.hasListener( control ) ) );
+      adapter.preserve( PROP_FOCUS_LISTENER, Boolean.valueOf( FocusEvent.hasListener( control ) ) );
     }
-    adapter.preserve( PROP_KEY_LISTENER,
-                      Boolean.valueOf( KeyEvent.hasListener( control ) ) );
+    adapter.preserve( PROP_KEY_LISTENER, Boolean.valueOf( KeyEvent.hasListener( control ) ) );
     adapter.preserve( PROP_TRAVERSE_LISTENER,
                       Boolean.valueOf( TraverseEvent.hasListener( control ) ) );
     WidgetLCAUtil.preserveHelpListener( control );
@@ -180,7 +175,7 @@ public class ControlLCAUtil {
    */
   // TODO [rst] Revise: This seems to unnecessarily call getter and setter even
   //            when no bounds are submitted.
-  public static void readBounds( final Control control ) {
+  public static void readBounds( Control control ) {
     Rectangle current = control.getBounds();
     Rectangle newBounds = WidgetLCAUtil.readBounds( control, current );
     control.setBounds( newBounds );
@@ -194,7 +189,7 @@ public class ControlLCAUtil {
    * @param control the control whose bounds to write
    * @throws IOException
    */
-  public static void writeBounds( final Control control ) throws IOException {
+  public static void writeBounds( Control control ) throws IOException {
     Composite parent = control.getParent();
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
   }
@@ -207,7 +202,7 @@ public class ControlLCAUtil {
    * @param control the control whose z-index to write
    * @throws IOException
    */
-  public static void writeZIndex( final Control control ) throws IOException {
+  public static void writeZIndex( Control control ) throws IOException {
     // TODO [rst] remove surrounding if statement as soon as z-order on shells
     //      is completely implemented
     if( !( control instanceof Shell ) ) {
@@ -229,9 +224,7 @@ public class ControlLCAUtil {
   //      visibility of a newly created widget (no flushGlobalQueues was called)
   //      MSG: Modification of property "visibility" failed with exception:
   //           Error - Element must be created previously!
-  public static void writeVisible( final Control control )
-    throws IOException
-  {
+  public static void writeVisible( Control control ) throws IOException {
     // we only need getVisible here (not isVisible), as qooxdoo also hides/shows
     // contained controls
     Boolean newValue = Boolean.valueOf( getVisible( control ) );
@@ -242,7 +235,7 @@ public class ControlLCAUtil {
 
   // [if] Fix for bug 263025, 297466, 223873 and more
   // some qooxdoo widget with size (0,0) are not invisible
-  private static boolean getVisible( final Control control ) {
+  private static boolean getVisible( Control control ) {
     Point size = control.getSize();
     return control.getVisible() && size.x > 0 && size.y > 0;
   }
@@ -256,9 +249,7 @@ public class ControlLCAUtil {
    * @param control the control whose enabled property to write
    * @throws IOException
    */
-  public static void writeEnabled( final Control control )
-    throws IOException
-  {
+  public static void writeEnabled( Control control ) throws IOException {
     // Using isEnabled() would result in unnecessarily updating child widgets of
     // enabled/disabled controls.
     WidgetLCAUtil.writeEnabled( control, control.getEnabled() );
@@ -295,7 +286,7 @@ public class ControlLCAUtil {
    * @throws IOException
    * @see #preserveValues(Control)
    */
-  public static void writeChanges( final Control control ) throws IOException {
+  public static void writeChanges( Control control ) throws IOException {
     writeBounds( control );
     writeZIndex( control );
     writeTabIndex( control );
@@ -328,7 +319,7 @@ public class ControlLCAUtil {
    * @param control the control whose menu property to write
    * @throws IOException
    */
-  public static void writeMenu( final Control control ) throws IOException {
+  public static void writeMenu( Control control ) throws IOException {
     // [if] Write the shell context menu in Shell#writePopupMenu(),
     // otherwise the shell.setContextMenu is called before the actual creation
     // of the client menu widget. See bug 223879.
@@ -345,9 +336,7 @@ public class ControlLCAUtil {
    * @param control the control whose tool tip to write
    * @throws IOException
    */
-  public static void writeToolTip( final Control control )
-    throws IOException
-  {
+  public static void writeToolTip( Control control ) throws IOException {
     WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
   }
 
@@ -360,13 +349,9 @@ public class ControlLCAUtil {
    * @param control the control whose foreground property to write
    * @throws IOException
    */
-  public static void writeForeground( final Control control )
-    throws IOException
-  {
-    IControlAdapter controlAdapter
-      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
-    WidgetLCAUtil.writeForeground( control,
-                                   controlAdapter.getUserForeground() );
+  public static void writeForeground( Control control ) throws IOException {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    WidgetLCAUtil.writeForeground( control, controlAdapter.getUserForeground() );
   }
 
   /**
@@ -378,10 +363,8 @@ public class ControlLCAUtil {
    * @param control the control whose background property to write
    * @throws IOException
    */
-  public static void writeBackground( final Control control ) throws IOException
-  {
-    IControlAdapter controlAdapter
-      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+  public static void writeBackground( Control control ) throws IOException {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     WidgetLCAUtil.writeBackground( control,
                                    controlAdapter.getUserBackground(),
                                    controlAdapter.getBackgroundTransparency() );
@@ -393,9 +376,8 @@ public class ControlLCAUtil {
    * @param control the control whose background image property to preserve
    * @see #writeBackgroundImage(Control)
    */
-  public static void preserveBackgroundImage( final Control control ) {
-    IControlAdapter controlAdapter
-      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+  public static void preserveBackgroundImage( Control control ) {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Image image = controlAdapter.getUserBackgroundImage();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_BACKGROUND_IMAGE, image );
@@ -410,8 +392,8 @@ public class ControlLCAUtil {
    * @param control the control whose background image property to write
    * @throws IOException
    */
-  public static void writeBackgroundImage( final Control control ) throws IOException {
-    IControlAdapter controlAdapter = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+  public static void writeBackgroundImage( Control control ) throws IOException {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Image image = controlAdapter.getUserBackgroundImage();
     if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND_IMAGE, image, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( control );
@@ -443,8 +425,7 @@ public class ControlLCAUtil {
    * @param control
    * @throws IOException
    */
-  public static void writeStyleFlags( final Control control ) throws IOException
-  {
+  public static void writeStyleFlags( Control control ) throws IOException {
     WidgetLCAUtil.writeStyleFlag( control, SWT.BORDER, "BORDER" );
   }
 
@@ -456,14 +437,13 @@ public class ControlLCAUtil {
    * @param control the control whose font property to write
    * @throws IOException
    */
-  public static void writeFont( final Control control ) throws IOException {
-    Object adapter = control.getAdapter( IControlAdapter.class );
-    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+  public static void writeFont( Control control ) throws IOException {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Font newValue = controlAdapter.getUserFont();
     WidgetLCAUtil.writeFont( control, newValue );
   }
 
-  static void writeCursor( final Control control ) throws IOException {
+  static void writeCursor( Control control ) throws IOException {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
       String qxCursor = getQxCursor( newValue );
@@ -476,38 +456,28 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void writeActivateListener( final Control control )
-    throws IOException
-  {
+  public static void writeActivateListener( Control control ) throws IOException {
     if( !control.isDisposed() ) {
-      Boolean newValue
-        = Boolean.valueOf( ActivateEvent.hasListener( control ) );
+      Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
       Boolean defValue = Boolean.FALSE;
       String prop = PROP_ACTIVATE_LISTENER;
       Shell shell = control.getShell();
-      if(    !shell.isDisposed()
-          && WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) )
-      {
-        String function = newValue.booleanValue()
-                        ? JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
-                        : JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET;
+      if( !shell.isDisposed() && WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) ) {
+        String function =   newValue.booleanValue()
+                          ? JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
+                          : JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET;
         JSWriter writer = JSWriter.getWriterFor( control );
         writer.call( shell, function, new Object[]{ control } );
       }
     }
   }
 
-  static void resetActivateListener( final Control control )
-    throws IOException
-  {
-    Object adapter = control.getAdapter( IControlAdapter.class );
-    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+  static void resetActivateListener( Control control ) throws IOException {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Shell shell = controlAdapter.getShell();
     if( !shell.isDisposed() && ActivateEvent.hasListener( control ) ) {
       JSWriter writer = JSWriter.getWriterFor( control );
-      writer.call( shell,
-                   JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET,
-                   new Object[] { control } );
+      writer.call( shell, JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET, new Object[] { control } );
     }
   }
 
@@ -521,37 +491,23 @@ public class ControlLCAUtil {
    * also fire FocusEvents. The current client-side focusControl is read in
    * DisplayLCA#readData.
    */
-  private static void writeFocusListener( final Control control )
-    throws IOException
-  {
+  private static void writeFocusListener( Control control ) throws IOException {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       boolean hasListener = FocusEvent.hasListener( control );
-      writer.updateListener( FOCUS_GAINED_LISTENER_INFO,
-                             PROP_FOCUS_LISTENER,
-                             hasListener );
-      writer.updateListener( FOCUS_LOST_LISTENER_INFO,
-                             PROP_FOCUS_LISTENER,
-                             hasListener );
+      writer.updateListener( FOCUS_GAINED_LISTENER_INFO, PROP_FOCUS_LISTENER, hasListener );
+      writer.updateListener( FOCUS_LOST_LISTENER_INFO, PROP_FOCUS_LISTENER, hasListener );
     }
   }
 
-  private static void writeMouseListener( final Control control )
-    throws IOException
-  {
+  private static void writeMouseListener( Control control ) throws IOException {
     boolean hasListener = MouseEvent.hasListener( control );
     JSWriter writer = JSWriter.getWriterFor( control );
-    writer.updateListener( MOUSE_UP_LISTENER_INFO,
-                           PROP_MOUSE_LISTENER,
-                           hasListener );
-    writer.updateListener( MOUSE_DOWN_LISTENER_INFO,
-                           PROP_MOUSE_LISTENER,
-                           hasListener );
+    writer.updateListener( MOUSE_UP_LISTENER_INFO, PROP_MOUSE_LISTENER, hasListener );
+    writer.updateListener( MOUSE_DOWN_LISTENER_INFO, PROP_MOUSE_LISTENER, hasListener );
   }
 
-  static void writeKeyListener( final Control control )
-    throws IOException
-  {
+  static void writeKeyListener( Control control ) throws IOException {
     String prop = PROP_KEY_LISTENER;
     Boolean hasListener = Boolean.valueOf( KeyEvent.hasListener( control ) );
     Boolean defValue = Boolean.FALSE;
@@ -567,20 +523,14 @@ public class ControlLCAUtil {
     }
   }
 
-  static void writeTraverseListener( final Control control )
-    throws IOException
-  {
+  static void writeTraverseListener( Control control ) throws IOException {
     String prop = PROP_TRAVERSE_LISTENER;
-    Boolean hasListener
-      = Boolean.valueOf( TraverseEvent.hasListener( control ) );
+    Boolean hasListener = Boolean.valueOf( TraverseEvent.hasListener( control ) );
     Boolean defValue = Boolean.FALSE;
     if( WidgetLCAUtil.hasChanged( control, prop, hasListener, defValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       if( hasListener.booleanValue() ) {
-        Object[] args = new Object[] {
-          USER_DATA_TRAVERSE_LISTENER,
-          hasListener
-        };
+        Object[] args = new Object[] { USER_DATA_TRAVERSE_LISTENER, hasListener };
         writer.call( "setUserData", args );
       } else {
         Object[] args = new Object[] { USER_DATA_TRAVERSE_LISTENER, null };
@@ -599,11 +549,10 @@ public class ControlLCAUtil {
    * @param control the widget to preserve
    * @since 1.3
    */
-  public static void preserveMenuDetectListener( final Control control ) {
+  public static void preserveMenuDetectListener( Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     boolean hasListener = MenuDetectEvent.hasListener( control );
-    adapter.preserve( PROP_MENU_DETECT_LISTENER,
-                      Boolean.valueOf( hasListener ) );
+    adapter.preserve( PROP_MENU_DETECT_LISTENER, Boolean.valueOf( hasListener ) );
   }
 
   /**
@@ -613,17 +562,11 @@ public class ControlLCAUtil {
    * @param control
    * @since 1.3
    */
-  public static void writeMenuDetectListener( final Control control )
-    throws IOException
-  {
-    boolean hasListener = MenuDetectEvent.hasListener( control );
+  public static void writeMenuDetectListener( Control control ) throws IOException {
+    boolean hasLsnr = MenuDetectEvent.hasListener( control );
     JSWriter writer = JSWriter.getWriterFor( control );
-    writer.updateListener( MENU_DETECT_LISTENER_INFO_MOUSE,
-                           PROP_MENU_DETECT_LISTENER,
-                           hasListener );
-    writer.updateListener( MENU_DETECT_LISTENER_INFO_KEY,
-                           PROP_MENU_DETECT_LISTENER,
-                           hasListener );
+    writer.updateListener( MENU_DETECT_LISTENER_INFO_MOUSE, PROP_MENU_DETECT_LISTENER, hasLsnr );
+    writer.updateListener( MENU_DETECT_LISTENER_INFO_KEY, PROP_MENU_DETECT_LISTENER, hasLsnr );
   }
 
   /**
@@ -633,7 +576,7 @@ public class ControlLCAUtil {
    * @param control the control to process
    * @since 1.3
    */
-  public static void processMenuDetect( final Control control ) {
+  public static void processMenuDetect( Control control ) {
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MENU_DETECT ) ) {
       MenuDetectEvent event = new MenuDetectEvent( control );
       Point point = readXYParams( control,
@@ -655,7 +598,7 @@ public class ControlLCAUtil {
    * @return the z-index
    */
   // TODO [rst] also document the meaning of the returned number
-  public static int getZIndex( final Control control ) {
+  public static int getZIndex( Control control ) {
     int max = MAX_STATIC_ZORDER;
     if( control.getParent() != null ) {
       // TODO [rh] revise: determining the childrenCount by getting all the
@@ -663,16 +606,14 @@ public class ControlLCAUtil {
       //      eliminate Composite#getChildrenCount() which is no API in SWT
       max = Math.max( control.getParent().getChildren().length, max );
     }
-    Object adapter = control.getAdapter( IControlAdapter.class );
-    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     return max - controlAdapter.getZIndex();
   }
 
   ////////////
   // Tab index
 
-  private static void writeTabIndex( final Control control ) throws IOException
-  {
+  private static void writeTabIndex( Control control ) throws IOException {
     if( control instanceof Shell ) {
       resetTabIndices( ( Shell )control );
       // tabIndex must be a positive value
@@ -689,54 +630,47 @@ public class ControlLCAUtil {
    * Recursively computes the tab indices for all child controls of a given
    * composite and stores the resulting values in the control adapters.
    */
-  private static int computeTabIndices( final Composite composite,
-                                        final int startIndex )
-  {
+  private static int computeTabIndices( Composite composite, int startIndex ) {
     Control[] tabList = composite.getTabList();
-    int nextIndex = startIndex;
+    int result = startIndex;
     for( int i = 0; i < tabList.length; i++ ) {
       Control control = tabList[ i ];
-      Object adapter = control.getAdapter( IControlAdapter.class );
-      IControlAdapter controlAdapter = ( IControlAdapter )adapter;
-      controlAdapter.setTabIndex( nextIndex );
+      IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+      controlAdapter.setTabIndex( result );
       // for Links, leave a range out to be assigned to hrefs on the client
       if( control instanceof Link ) {
-        nextIndex += 300;
+        result += 300;
       } else {
-        nextIndex += 1;
+        result += 1;
       }
       if( control instanceof Composite ) {
-        nextIndex = computeTabIndices( ( Composite )control, nextIndex );
+        result = computeTabIndices( ( Composite )control, result );
       }
     }
-    return nextIndex;
+    return result;
   }
 
-  private static void resetTabIndices( final Composite comp ) {
-    Control[] children = comp.getChildren();
+  private static void resetTabIndices( Composite composite ) {
+    Control[] children = composite.getChildren();
     for( int i = 0; i < children.length; i++ ) {
       Control control = children[ i ];
-      Object adapter = control.getAdapter( IControlAdapter.class );
-      IControlAdapter controlAdapter = ( IControlAdapter )adapter;
-      controlAdapter.setTabIndex( -1 );
+      ControlUtil.getControlAdapter( control ).setTabIndex( -1 );
       if( control instanceof Composite ) {
         resetTabIndices( ( Composite )control );
       }
     }
   }
 
-  private static int getTabIndex( final Control control ) {
+  private static int getTabIndex( Control control ) {
     int result = -1;
     if( takesFocus( control ) ) {
-      Object adapter = control.getAdapter( IControlAdapter.class );
-      IControlAdapter controlAdapter = ( IControlAdapter )adapter;
-      result = controlAdapter.getTabIndex();
+      result = ControlUtil.getControlAdapter( control ).getTabIndex();
     }
     return result;
   }
 
   // TODO [rh] Eliminate instance checks. Let the respective classes always return NO_FOCUS
-  private static boolean takesFocus( final Control control ) {
+  private static boolean takesFocus( Control control ) {
     boolean result = true;
     result &= ( control.getStyle() & SWT.NO_FOCUS ) == 0;
     result &= control.getClass() != Composite.class;
@@ -747,34 +681,26 @@ public class ControlLCAUtil {
   /////////////////////
   // Selection Listener
 
-  public static void processSelection( final Widget widget,
-                                       final Item item,
-                                       final boolean readBounds )
-  {
+  public static void processSelection( Widget widget, Item item, boolean readBounds ) {
     String eventId = JSConst.EVENT_WIDGET_SELECTED;
     if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
       SelectionEvent event;
-      event = createSelectionEvent( widget,
-                                    item,
-                                    readBounds,
-                                    SelectionEvent.WIDGET_SELECTED );
+      event = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_SELECTED );
       event.processEvent();
     }
     eventId = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
       SelectionEvent event;
-      event = createSelectionEvent( widget,
-                                    item,
-                                    readBounds,
-                                    SelectionEvent.WIDGET_DEFAULT_SELECTED );
+      int widgetDefaultSelected = SelectionEvent.WIDGET_DEFAULT_SELECTED;
+      event = createSelectionEvent( widget, item, readBounds, widgetDefaultSelected );
       event.processEvent();
     }
   }
 
-  private static SelectionEvent createSelectionEvent( final Widget widget,
-                                                      final Item item,
-                                                      final boolean readBounds,
-                                                      final int type )
+  private static SelectionEvent createSelectionEvent( Widget widget,
+                                                      Item item,
+                                                      boolean readBounds,
+                                                      int type )
   {
     Rectangle bounds;
     if( widget instanceof Control && readBounds ) {
@@ -783,24 +709,15 @@ public class ControlLCAUtil {
     } else {
       bounds = new Rectangle( 0, 0, 0, 0 );
     }
-    int stateMask
-      = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
-    return new SelectionEvent( widget,
-                               item,
-                               type,
-                               bounds,
-                               stateMask,
-                               null,
-                               true,
-                               SWT.NONE );
+    int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+    return new SelectionEvent( widget, item, type, bounds, stateMask, null, true, SWT.NONE );
   }
 
   public static void processKeyEvents( final Control control ) {
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_KEY_DOWN ) ) {
       final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
       final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
-      final int stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
+      final int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
       final int traverseKey = getTraverseKey( keyCode, stateMask );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
@@ -818,8 +735,7 @@ public class ControlLCAUtil {
           initializeKeyEvent( pressedEvent, keyCode, charCode, stateMask );
           pressedEvent.processEvent();
           if( pressedEvent.doit ) {
-            KeyEvent releasedEvent
-              = new KeyEvent( control, KeyEvent.KEY_RELEASED );
+            KeyEvent releasedEvent = new KeyEvent( control, KeyEvent.KEY_RELEASED );
             initializeKeyEvent( releasedEvent, keyCode, charCode, stateMask );
             releasedEvent.processEvent();
           } else {
@@ -835,7 +751,7 @@ public class ControlLCAUtil {
     }
   }
 
-  static int getTraverseKey( final int keyCode, final int stateMask ) {
+  static int getTraverseKey( int keyCode, int stateMask ) {
     int result = SWT.TRAVERSE_NONE;
     switch( keyCode ) {
       case 27:
@@ -855,24 +771,20 @@ public class ControlLCAUtil {
     return result;
   }
 
-  private static void initializeKeyEvent( final KeyEvent event,
-                                          final int keyCode,
-                                          final int charCode,
-                                          final int stateMask )
-  {
+  private static void initializeKeyEvent( KeyEvent evt, int keyCode, int charCode, int stateMask ) {
     if( charCode == 0 ) {
-      event.keyCode = translateKeyCode( keyCode );
-      if( ( event.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
-        event.character = translateCharacter( event.keyCode );
+      evt.keyCode = translateKeyCode( keyCode );
+      if( ( evt.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
+        evt.character = translateCharacter( evt.keyCode );
       }
     } else {
-      event.keyCode = charCode;
-      event.character = translateCharacter( charCode );
+      evt.keyCode = charCode;
+      evt.character = translateCharacter( charCode );
     }
-    event.stateMask = stateMask;
+    evt.stateMask = stateMask;
   }
 
-  static int translateKeyCode( final int keyCode ) {
+  static int translateKeyCode( int keyCode ) {
     int result;
     switch( keyCode ) {
       case 20:
@@ -962,7 +874,7 @@ public class ControlLCAUtil {
     return result;
   }
 
-  private static char translateCharacter( final int keyCode ) {
+  private static char translateCharacter( int keyCode ) {
     char result = ( char )0;
     if( Character.isDefined( ( char )keyCode ) ) {
       result = ( char )keyCode;
@@ -970,17 +882,15 @@ public class ControlLCAUtil {
     return result;
   }
 
-  private static void cancelKeyEvent( final Widget widget) {
+  private static void cancelKeyEvent( Widget widget) {
     RWT.getServiceStore().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
   }
 
-  private static void allowKeyEvent( final Widget widget ) {
+  private static void allowKeyEvent( Widget widget ) {
     RWT.getServiceStore().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
   }
 
-  private static void writeKeyEventResponse( final Control control )
-    throws IOException
-  {
+  private static void writeKeyEventResponse( Control control ) throws IOException {
     IServiceStore serviceStore = RWT.getServiceStore();
     if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
       JSWriter writer = JSWriter.getWriterFor( control );
@@ -991,28 +901,22 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void processMouseEvents( final Control control ) {
+  public static void processMouseEvents( Control control ) {
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_DOWN ) ) {
       MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
-      event.button
-        = readIntParam( JSConst.EVENT_MOUSE_DOWN_BUTTON );
-      Point point = readXYParams( control,
-                                  JSConst.EVENT_MOUSE_DOWN_X,
-                                  JSConst.EVENT_MOUSE_DOWN_Y );
+      event.button = readIntParam( JSConst.EVENT_MOUSE_DOWN_BUTTON );
+      Point point = readXYParams( control, JSConst.EVENT_MOUSE_DOWN_X, JSConst.EVENT_MOUSE_DOWN_Y );
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_DOWN_TIME );
-      event.stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_DOWN_MODIFIER )
-        | EventLCAUtil.translateButton( event.button );
+      event.stateMask =   EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_DOWN_MODIFIER )
+                        | EventLCAUtil.translateButton( event.button );
       checkAndProcessMouseEvent( event );
     }
     String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
     if( WidgetLCAUtil.wasEventSent( control, eventId ) ) {
-      MouseEvent event
-        = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
-      event.button
-        = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON );
+      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
+      event.button = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON );
       Point point = readXYParams( control,
                                   JSConst.EVENT_MOUSE_DOUBLE_CLICK_X,
                                   JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y );
@@ -1020,27 +924,24 @@ public class ControlLCAUtil {
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME );
       String stateMaskParam = JSConst.EVENT_MOUSE_DOUBLE_CLICK_MODIFIER;
-      event.stateMask = EventLCAUtil.readStateMask( stateMaskParam )
-                      | EventLCAUtil.translateButton( event.button );
+      event.stateMask =   EventLCAUtil.readStateMask( stateMaskParam )
+                        | EventLCAUtil.translateButton( event.button );
       checkAndProcessMouseEvent( event );
     }
     if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
       MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_UP );
       event.button = readIntParam( JSConst.EVENT_MOUSE_UP_BUTTON );
-      Point point = readXYParams( control,
-                                  JSConst.EVENT_MOUSE_UP_X,
-                                  JSConst.EVENT_MOUSE_UP_Y );
+      Point point = readXYParams( control, JSConst.EVENT_MOUSE_UP_X, JSConst.EVENT_MOUSE_UP_Y );
       event.x = point.x;
       event.y = point.y;
       event.time = readIntParam( JSConst.EVENT_MOUSE_UP_TIME );
-      event.stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_UP_MODIFIER )
-        | EventLCAUtil.translateButton( event.button );
+      event.stateMask =   EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_UP_MODIFIER )
+                        | EventLCAUtil.translateButton( event.button );
       checkAndProcessMouseEvent( event );
     }
   }
 
-  private static void checkAndProcessMouseEvent( final MouseEvent event ) {
+  private static void checkAndProcessMouseEvent( MouseEvent event ) {
     boolean pass = false;
     Control control = ( Control )event.widget;
     if( control instanceof Scrollable ) {
@@ -1055,27 +956,24 @@ public class ControlLCAUtil {
     }
   }
 
-  private static String readStringParam( final String paramName ) {
+  private static String readStringParam( String paramName ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String value = request.getParameter( paramName );
     return value;
   }
 
-  private static int readIntParam( final String paramName ) {
+  private static int readIntParam( String paramName ) {
     String value = readStringParam( paramName );
     return NumberFormatUtil.parseInt( value );
   }
 
-  private static Point readXYParams( final Control control,
-                                     final String paramNameX,
-                                     final String paramNameY )
-  {
+  private static Point readXYParams( Control control, String paramNameX, String paramNameY ) {
     int x = readIntParam( paramNameX );
     int y = readIntParam( paramNameY );
     return control.getDisplay().map( null, control, x, y );
   }
 
-  private static String getQxCursor( final Cursor newValue ) {
+  private static String getQxCursor( Cursor newValue ) {
     String result = null;
     if( newValue != null ) {
       // TODO [rst] Find a better way of obtaining the Cursor value

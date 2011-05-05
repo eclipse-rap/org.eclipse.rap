@@ -15,12 +15,12 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.accessibility.Accessible;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ShowEvent;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.accessibility.*;
 
 
 /**
@@ -90,6 +90,10 @@ public abstract class Control extends Widget implements Drawable {
     public boolean getBackgroundTransparency() {
       return Control.this.backgroundTransparency;
     }
+    
+    public boolean isPacked() {
+      return Control.this.packed;
+    }
   }
 
   private final IControlAdapter controlAdapter;
@@ -108,6 +112,8 @@ public abstract class Control extends Widget implements Drawable {
   private Cursor cursor;
   private Rectangle bufferedPadding;
   private Accessible accessible;
+  private boolean packed;
+
 
   Control( Composite parent ) {
     // prevent instantiation from outside this package; only called by Shell
@@ -1109,8 +1115,9 @@ public abstract class Control extends Widget implements Drawable {
   public void pack( final boolean changed ) {
     checkWidget();
     setSize( computeSize( SWT.DEFAULT, SWT.DEFAULT, changed ) );
+    packed = true;
   }
-
+  
   /**
    * Returns the receiver's border width.
    *
@@ -2310,6 +2317,7 @@ public abstract class Control extends Widget implements Drawable {
     if( updateMode ) {
       updateMode();
     }
+    packed = false;
     notifyMove( oldLocation );
     notifyResize( oldSize );
   }
