@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,6 @@ import java.util.Set;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.*;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.widgets.Display;
 
 
 public final class UICallBackManager {
@@ -43,6 +41,8 @@ public final class UICallBackManager {
   // Flag that indicates whether the UICallBack mechanism is active. If not
   // no callback thread must be blocked.
   private boolean active;
+  // indicates whether the display has runnables to execute
+  private boolean hasRunnables;
 
   private UICallBackManager() {
     lock = new Object();
@@ -78,6 +78,12 @@ public final class UICallBackManager {
     }
   }
 
+  public void setHasRunnables( final boolean hasRunnables ) {
+    synchronized( lock ) {
+      this.hasRunnables = hasRunnables;
+    }
+  }
+
   void notifyUIThreadStart() {
     synchronized( lock ) {
       uiThreadRunning = true;
@@ -88,23 +94,18 @@ public final class UICallBackManager {
   void notifyUIThreadEnd() {
     synchronized( lock ) {
       uiThreadRunning = false;
-      if( hasRunnables() ) {
+      if( hasRunnables ) {
         sendUICallBack();
       }
     }
   }
 
   boolean hasRunnables() {
-    boolean result = false;
-    Display display = LifeCycleUtil.getSessionDisplay();
-    if( display != null && !display.isDisposed() ) {
-      IDisplayAdapter adapter
-        = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
-      result = adapter.getAsyncRunnablesCount() > 0;
+    synchronized( lock ) {
+      return hasRunnables;
     }
-    return result;
   }
-  
+
   boolean blockCallBackRequest() {
     boolean result = false;
     synchronized( lock ) {
@@ -140,6 +141,6 @@ public final class UICallBackManager {
            && blockedCallBackRequests.isEmpty()
            && (    waitForUIThread 
                 || uiThreadRunning 
-                || !hasRunnables() );
+                || !hasRunnables );
   }
 }
