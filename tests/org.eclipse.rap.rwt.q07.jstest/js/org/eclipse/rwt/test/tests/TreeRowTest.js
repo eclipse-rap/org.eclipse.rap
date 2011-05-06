@@ -1560,7 +1560,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       } );
       var row = new org.eclipse.rwt.widgets.TreeRow( tree );
       this._addToDom( row );
-      var item = new org.eclipse.rwt.widgets.TreeItem( tree );
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       item.setTexts( [ "Test1" ] );
       tree.selectItem( item );
       var selectionPadding = 4;
@@ -1593,7 +1593,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       } );
       var row = new org.eclipse.rwt.widgets.TreeRow( tree );
       this._addToDom( row );
-      var item = new org.eclipse.rwt.widgets.TreeItem( tree );
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       item.setTexts( [ "Test1" ] );
       tree.selectItem( item );
       var selectionPadding = 3; // only the left side
@@ -1623,7 +1623,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       } );
       var row = new org.eclipse.rwt.widgets.TreeRow( tree );
       this._addToDom( row );
-      var item = new org.eclipse.rwt.widgets.TreeItem( tree );
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       item.setTexts( [ "Test1" ] );
       tree.selectItem( item );
       tree.setItemMetrics( 0, 0, 100, 0, 0 ,0, 0 );       
@@ -1690,12 +1690,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     _createItem : function( parent, hasPrevious, hasNext ) {
+      var parentItem = org.eclipse.rwt.widgets.TreeItem._getItem( parent );
       if( hasPrevious ) {
-        new org.eclipse.rwt.widgets.TreeItem( parent );
+        new org.eclipse.rwt.widgets.TreeItem( parentItem );
       }
-      var item = new org.eclipse.rwt.widgets.TreeItem( parent );
+      var item = new org.eclipse.rwt.widgets.TreeItem( parentItem );
       if( hasNext ) {
-        new org.eclipse.rwt.widgets.TreeItem( parent );
+        new org.eclipse.rwt.widgets.TreeItem( parentItem );
       }
       return item;
     },

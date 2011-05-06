@@ -816,8 +816,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.prepareTimerUse();
       testUtil.initRequestLog();
       var tree = this.createTreeTarget();
-      var item0 = this.createTreeItem( 1, tree, tree );
-      var item1 = this.createTreeItem( 2, tree, item0 );
+      var item0 = this.createTreeItem( 0, tree, tree );
+      var item1 = this.createTreeItem( 0, tree, item0 );
       var source = this.createSource();
       testUtil.flush();
       var sourceNode = source._getTargetNode();
@@ -1388,7 +1388,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     
     createTreeItem : function( itemNr, tree, parent ) {
       var nr = itemNr + 2;
-      var item = new org.eclipse.rwt.widgets.TreeItem( parent, itemNr );
+      var parentItem = org.eclipse.rwt.widgets.TreeItem._getItem( parent );
+      var item = new org.eclipse.rwt.widgets.TreeItem( parentItem, itemNr );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( item, "w" + nr, false );
       item.setTexts( [ "text" + nr ] );

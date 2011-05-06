@@ -14,23 +14,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
   extend : qx.core.Target,
 
-  construct : function( parent, index ) {
-    // Dispose is only needed to remove items from the tree.
+  construct : function( parent, index, placeholder ) {
+    // Dispose is only needed to remove items from the tree and widget manager.
     // Since it holds no references to the dom, it suffices to dispose tree. 
     this._autoDispose = false; 
     this.base( arguments );
-    this._parent = null;
+    this._parent = parent
     this._level = -1;
-    if( parent instanceof org.eclipse.rwt.widgets.TreeItem ) {
-      this._parent = parent;
-    } else if( parent instanceof org.eclipse.rwt.widgets.Tree ) {
-      this._parent = parent.getRootItem(); 
-    }
     this._children = [];
     this._visibleChildrenCount = 0;
     this._expanded = false;
-    this._texts = [];
+    this._texts = placeholder ? [ "..." ] : [];
     this._images = [];
+    this._cached = !placeholder;
     this._font = null;
     this._cellFonts = [];
     this._foreground = null;
@@ -51,6 +47,33 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     if( this._parent != null ) {
       this._parent._remove( this );
     }
+    org.eclipse.swt.WidgetManager.getInstance().remove( this );
+  },
+  
+  statics : {
+    
+    createItem : function( parent, index, id ) {
+      var parentItem = this._getItem( parent );
+      var item;
+      if( parentItem.isChildCreated( index ) && !parentItem.isChildCached( index ) ) {
+        item = parentItem.getChild( index );
+        item.markCached();
+      } else {
+        item = new org.eclipse.rwt.widgets.TreeItem( parentItem, index, false );
+      }
+      org.eclipse.swt.WidgetManager.getInstance().add( item, id, false );
+    },
+    
+    _getItem : function( treeOrItem ) {
+      var result;
+      if( treeOrItem instanceof org.eclipse.rwt.widgets.Tree ) {
+        result = treeOrItem.getRootItem(); 
+      } else {
+        result = treeOrItem;
+      }
+      return result;
+    }
+
   },
   
   events: {
@@ -59,6 +82,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
   members : {
     
+    setItemCount : function( value ) {
+      var msg = this._children.length > value ? "remove" : "add";
+      this._children.length = value; 
+      this._update( msg );
+    },
+
+    isCached : function() {
+      return this._cached;
+    },
+
+    markCached : function() {
+      this._cached = true;
+      this._texts = [];
+    },
+
     setTexts : function( texts ) {
       this._texts = texts;
       this._update();
@@ -136,10 +174,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       return this._parent;
     },
 
-    getChildren : function() {
-      return this._children;
-    },
-    
     getVisibleChildrenCount : function() {
       if( this._visibleChildrenCount == null ) {
         this._computeVisibleChildrenCount();
@@ -155,13 +189,26 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       return this._variant;
     },
 
+    /** 
+     * Behavior is consistent with SWT:
+     *  - without index the item is added as the last one (item count increases)
+     *  - if the index already has an item, it and all after it are shifted (item count increases)
+     *  - if the index does not have an item, its inserted at that index (item count stays)
+     *  - if the index is greater the the item count it is ignored (item count increases)
+     */
     _add : function( item, index ) {
-      if( typeof index == "undefined" ) {        
+      if( index === this._children.length || index === undefined ) {    
         this._children.push( item );
+        this._update( "add", item );
       } else {
-        this._children.splice( index, 0, item );
+        if( this._children[ index ] ) {
+          this._children.splice( index, 0, item );
+          this._update( "add", item );
+        } else {
+          this._children[ index ] = item;
+          item._update();
+        }
       }
-      this._update( "add", item );
     },
 
     _remove : function( item ) {
@@ -176,12 +223,31 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
     
     getChild : function( index ) {
-      return this._children[ index ] ? this._children[ index ] : null;
+      var result = this._children[ index ];
+      if( !result ) {
+       if( index >= 0 && index < this._children.length ) {
+          result = new org.eclipse.rwt.widgets.TreeItem( this, index, true );
+        } else {
+          result = null;
+        }
+      }
+      return result;
+    },
+    
+    isChildCreated : function( index ) {
+      return this._children[ index ] !== undefined;
     },
 
-    getLastChild : function( index ) {
-      var length = this._children.length ;
-      return length > 0 ? this._children[ length - 1 ] : null; 
+    isChildCached : function( index ) {
+      return this._children[ index ].isCached();
+    },
+
+    getLastChild : function() {
+      return this.getChild( this._children.length - 1 ); 
+    },
+    
+    getIndexOfChild : function( item ) {
+      return this._children.indexOf( item );
     },
 
     setExpanded : function( value ) {
@@ -196,23 +262,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
 
     hasPreviousSibling : function() {
-      return this.getPreviousSibling() != null;
+      var siblings = this._parent._children;
+      var index = siblings.indexOf( this ) - 1 ;
+      return index >= 0;
     },
 
     hasNextSibling : function() {
-      return this.getNextSibling() != null;
+      var siblings = this._parent._children;
+      var index = siblings.indexOf( this ) + 1 ;
+      return index < siblings.length;
     },
 
     getPreviousSibling : function() {
-      var siblings = this._parent.getChildren();
-      var index = siblings.indexOf( this ) - 1;
-      return index >= 0 ? siblings[ index ] : null;
+      var index = this._parent.getIndexOfChild( this ) - 1 ;
+      return this._parent.getChild( index );
     },
 
     getNextSibling : function() {
-      var siblings = this._parent.getChildren();
-      var index = siblings.indexOf( this ) + 1 ;
-      return index < siblings.length ? siblings[ index ] : null;
+      var index = this._parent.getIndexOfChild( this ) + 1 ;
+      return this._parent.getChild( index );
     },
 
     isRootItem : function() {
@@ -275,7 +343,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       if( this.isExpanded() || this.isRootItem() ) {
        result = this._children.length;
         for( var i = 0; i < this._children.length; i++ ) {
-          result += this.getChild( i ).getVisibleChildrenCount();
+          if( this.isChildCreated( i ) ) {
+            result += this.getChild( i ).getVisibleChildrenCount();
+          }
         }
       }
       this._visibleChildrenCount = result;      

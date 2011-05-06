@@ -225,6 +225,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     ///////////////////////////
     // API for server - general
     
+    setItemCount : function( value ) {
+      this._rootItem.setItemCount( value );
+    },
+    
     setHeaderVisible : function( value ) {
       this._columnArea.setDisplay( value );
       this._layoutX();
@@ -997,9 +1001,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _updateTopItem : function( oldIndex ) {
       if( typeof oldIndex == "number" ) {
-        this._topItem = this._findItemByIndex( this._topItemIndex, 
-                                               this._topItem, 
-                                               oldIndex );
+        this._topItem = this._findItemByIndex( this._topItemIndex, this._topItem, oldIndex );
       } else {
         this._topItem = this._findItemByIndex( this._topItemIndex );
       }
@@ -1304,7 +1306,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _deselectVisibleChildren : function( item ) {
       var currentItem = this._getNextItem( item );
       var finalItem = this._getNextItem( item, true );
-      while( currentItem != finalItem) {
+      while( currentItem !== finalItem ) {
         this._deselectItem( currentItem, false );
         currentItem = this._getNextItem( currentItem, false );
       } 
@@ -1528,6 +1530,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return index != null ? this._rows[ index ] : null; 
     },
 
+    // TODO [tb] : can this be optimized to create less virtual placeholder items? 
     _findItemByIndex : function( index, startItem, startIndex ) {
       var result;
       var computedStartItem = startItem ? startItem : this.getRootItem().getChild( 0 );

@@ -61,8 +61,7 @@ public class TreeItemLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     String[] texts = ( String[] )adapter.getPreserved( TreeItemLCA.PROP_TEXTS );
     assertEquals( "qwert", texts[ 0 ] );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( TreeItemLCA.PROP_EXPANDED ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_EXPANDED ) );
     Image[] images = ( Image[] )adapter.getPreserved( TreeItemLCA.PROP_IMAGES );
     assertEquals( image, images[ 0 ] );
     Object selection = adapter.getPreserved( TreeItemLCA.PROP_SELECTION );
@@ -123,23 +122,18 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( Graphics.getImage( Fixture.IMAGE1 ), images[ 0 ] );
     assertEquals( Graphics.getImage( Fixture.IMAGE2 ), images[ 1 ] );
     assertEquals( Graphics.getImage( Fixture.IMAGE3 ), images[ 2 ] );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( TreeItemLCA.PROP_SELECTION ) );
-    assertEquals( background,
-                  adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND ) );
-    assertEquals( foreground,
-                  adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_SELECTION ) );
+    assertEquals( background, adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND ) );
+    assertEquals( foreground, adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND ) );
     fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FONTS );
     assertEquals( font1, fonts[ 0 ] );
     assertEquals( font2, fonts[ 1 ] );
     assertEquals( font3, fonts[ 2 ] );
-    backgrounds
-      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
+    backgrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
     assertEquals( background1, backgrounds[ 0 ] );
     assertEquals( background2, backgrounds[ 1 ] );
     assertEquals( background3, backgrounds[ 2 ] );
-    foregrounds
-      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
+    foregrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
     assertEquals( foreground1, foregrounds[ 0 ] );
     assertEquals( foreground2, foregrounds[ 1 ] );
     assertEquals( foreground3, foregrounds[ 2 ] );
@@ -153,19 +147,15 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
-    assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
-    assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
     Fixture.clearPreserved();
     treeItem.setChecked( true );
     treeItem.setGrayed( true );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( treeItem );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
     Fixture.clearPreserved();
     display.dispose();
   }
@@ -205,8 +195,7 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = tree.getItem( 99 );
     shell.open();
     Fixture.executeLifeCycleFromServerThread();
-    ITreeAdapter adapter 
-      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );    
+    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     assertFalse( adapter.isCached( treeItem ) );
   }
 
@@ -306,8 +295,7 @@ public class TreeItemLCA_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     String treeRef = "wm.findWidgetById( \"" + WidgetUtil.getId( tree ) +"\" )";
-    String treeItemRef 
-      = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem ) +"\" )";
+    String treeItemRef = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem ) +"\" )";
     shell.open();
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -335,8 +323,7 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setSelection( treeItem );
     String treeRef = "wm.findWidgetById( \"" + WidgetUtil.getId( tree ) +"\" )";
-    String treeItemRef 
-      = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem ) +"\" )";
+    String treeItemRef = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem ) +"\" )";
     shell.open();
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -373,10 +360,8 @@ public class TreeItemLCA_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.MULTI );
     TreeItem treeItem1 = new TreeItem( tree, SWT.NONE );
     TreeItem treeItem2 = new TreeItem( tree, SWT.NONE );
-    String treeItem1Ref 
-      = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem1 ) +"\" )";
-    String treeItem2Ref 
-      = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem2 ) +"\" )";
+    String treeItem1Ref = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem1 ) +"\" )";
+    String treeItem2Ref = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem2 ) +"\" )";
     shell.open();
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -437,17 +422,19 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem item2 = new TreeItem( item1, SWT.NONE  );
     TreeItem item3 = new TreeItem( item1, SWT.NONE );
     String item1Id = WidgetUtil.getId( item1 );
+    String item2Id = WidgetUtil.getId( item2 );
+    String item3Id = WidgetUtil.getId( item3 );
     String treeId = WidgetUtil.getId( tree );
     TreeItemLCA lca = new TreeItemLCA();
     lca.renderInitialization( item1 );
     lca.renderInitialization( item2 );
     lca.renderInitialization( item3 );
-    String expected1 = "new org.eclipse.rwt.widgets.TreeItem( "
-                     + "wm.findWidgetById( \"" + treeId + "\" ), 0 );";
-    String expected2 = "new org.eclipse.rwt.widgets.TreeItem( "
-                     + "wm.findWidgetById( \"" + item1Id + "\" ), 0 );";
-    String expected3 = "new org.eclipse.rwt.widgets.TreeItem( "
-                     + "wm.findWidgetById( \"" + item1Id + "\" ), 1 );";
+    String expected1 = "org.eclipse.rwt.widgets.TreeItem.createItem( "
+                     + "wm.findWidgetById( \"" + treeId + "\" ), 0, \"" + item1Id + "\" );";
+    String expected2 = "org.eclipse.rwt.widgets.TreeItem.createItem( "
+                     + "wm.findWidgetById( \"" + item1Id + "\" ), 0, \"" + item2Id + "\" );";
+    String expected3 = "org.eclipse.rwt.widgets.TreeItem.createItem( "
+                     + "wm.findWidgetById( \"" + item1Id + "\" ), 1, \"" + item3Id + "\" );";
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( expected1 ) != -1 );
     assertTrue( markup.indexOf( expected2 ) != -1 );
