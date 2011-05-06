@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.*;
@@ -38,8 +39,9 @@ public final class TextSizeStorage {
     private long timeStamp;
   }
   
-  private static class EntryComparator implements Comparator {
-    
+  private static class EntryComparator implements Comparator, Serializable {
+    private static final long serialVersionUID = 1L;
+
     public int compare( Object obj1, Object obj2 ) {
       Entry entry1 = ( Entry )obj1;
       Entry entry2 = ( Entry )obj2;
