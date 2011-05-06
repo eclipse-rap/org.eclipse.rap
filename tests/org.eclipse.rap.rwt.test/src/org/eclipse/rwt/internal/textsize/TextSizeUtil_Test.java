@@ -12,9 +12,6 @@
 
 package org.eclipse.rwt.internal.textsize;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -22,241 +19,159 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontUtil;
 
 
 public class TextSizeUtil_Test extends TestCase {
   private static final String TEST_STRING = "test";
+  private static final FontData FONT_DATA = new FontData( "arial", 10, SWT.NORMAL );
+  
+  public void testStringExtentAssignsUnknownStringsToTextSizeMeasuring() {
+    TextSizeUtil.stringExtent( getFont(), TEST_STRING );
+    
+    assertEquals( 1, getMeasurementItems().length );
+    assertEquals( TEST_STRING, getMeasurementItems()[ 0 ].getTextToMeasure() );
+    assertEquals( FONT_DATA, getMeasurementItems()[ 0 ].getFontData() );
+  }
+  
+  public void testStringExtentAssignsUnknownFontToFontProbing() {
+    TextSizeUtil.stringExtent( getFont(), TEST_STRING );
+    
+    assertEquals( 1, getProbes().length );
+    assertEquals( FONT_DATA, getProbes()[ 0 ].getFontData() );
+  }
+  
+  public void testStringExtentUsesEstimationForUnknownStrings() {
+    Point determined = TextSizeUtil.stringExtent( getFont(), TEST_STRING );
+    Point estimated = TextSizeEstimation.stringExtent( getFont(), TEST_STRING );
+    
+    assertEquals( estimated, determined );
+  }
 
-  private ProbeStore probeStore;
-
-  public void testStringExtent() {
-    MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
-    assertEquals( 0, items.length );
-
-    Font font = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    Point calculated = TextSizeUtil.stringExtent( font, TEST_STRING );
-    Point estimated = TextSizeEstimation.stringExtent( font, TEST_STRING );
-    assertEquals( estimated, calculated );
-
-    items = MeasurementOperator.getInstance().getItems();
-    assertEquals( 1, items.length );
-    items = MeasurementOperator.getInstance().getItems();
-    assertEquals( 1, items.length );
-
-    TextSizeUtil.stringExtent( font, TEST_STRING );
-    assertEquals( 1, items.length );
-    items = MeasurementOperator.getInstance().getItems();
-    assertEquals( 1, items.length );
-
+  public void testStringExtentUsesStoreageForKnowStrings() {
     Point storedSize = new Point( 100, 10 );
-    Probe[] probeRequests = MeasurementOperator.getInstance().getProbes();
-    assertEquals( 1, probeRequests.length );
-    assertEquals( FontUtil.getData( font ), probeRequests[ 0 ].getFontData() );
+    fakeMeasurement( TEST_STRING, SWT.DEFAULT, storedSize );
+    
+    Point determinedSize = TextSizeUtil.stringExtent( getFont(), TEST_STRING );
 
-    ProbeResultStore probeStore = ProbeResultStore.getInstance();
-    probeStore.createProbeResult( probeRequests[ 0 ], new Point( 10, 10 ) );
-    TextSizeStorageUtil.store( FontUtil.getData( font ), TEST_STRING, SWT.DEFAULT,  storedSize );
-    calculated = TextSizeUtil.stringExtent( font, TEST_STRING );
-    assertEquals( storedSize, calculated );
-
-    Point emptyStringSize = TextSizeUtil.stringExtent( font, "" );
+    assertEquals( storedSize, determinedSize );
+  }
+  
+  public void testStringExtentForEmptyString() {
+    Point emptyStringSize = TextSizeUtil.stringExtent( getFont(), "" );
+    
     assertEquals( new Point( 0, 10 ), emptyStringSize );
-
-    // make sure string extent does not expand line breaks
-    Point singleLine = TextSizeUtil.stringExtent( font, "First Line" );
-    Point multiLine = TextSizeUtil.stringExtent( font, "First Line\nSecond Line" );
+  }
+  
+  public void testStringExtentMustNotExpandLineBreaks() {
+    Point singleLine = TextSizeUtil.stringExtent( getFont(), "First Line" );
+    Point multiLine = TextSizeUtil.stringExtent( getFont(), "First Line\nSecond Line" );
+    
     assertEquals( singleLine.y, multiLine.y );
-
-    // make sure that leading and trailing space are calculated
-    Point str = TextSizeUtil.stringExtent( font, "  First Line    " );
-    Point trimStr = TextSizeUtil.stringExtent( font, "First Line" );
+  }
+  
+  public void testStringExtentConsideresLeadingAndTrailingSpaces() {
+    Point str = TextSizeUtil.stringExtent( getFont(), "  First Line    " );
+    Point trimStr = TextSizeUtil.stringExtent( getFont(), "First Line" );
+    
     assertTrue( str.x > trimStr.x );
   }
 
-  public void testTextExtent() {
-    Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
-    // make sure text extent does expand line breaks
-    Point singleLine
-      = TextSizeUtil.textExtent( font, "First Line", 0 );
-    Point multiLine
-      = TextSizeUtil.textExtent( font, "First Line\nSecond Line", 0 );
+  public void testTextExtentExpandLineBreaks() {
+    Point singleLine = TextSizeUtil.textExtent( getFont(), "First Line", 0 );
+    Point multiLine = TextSizeUtil.textExtent( getFont(), "First Line\nSecond Line", 0 );
+
     assertTrue( singleLine.y < multiLine.y );
   }
 
-  public void testCharHeight() {
-    Probe[] probeRequests = MeasurementOperator.getInstance().getProbes();
-    assertEquals( 0, probeRequests.length );
-
-    Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    int calculated = TextSizeUtil.getCharHeight( font0 );
-    int estimated = TextSizeEstimation.getCharHeight( font0 );
-    assertEquals( estimated, calculated, 0 );
-
-    probeRequests = MeasurementOperator.getInstance().getProbes();
-    assertEquals( 1, probeRequests.length );
-    assertEquals( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
-
-    ProbeResultStore probeStore = ProbeResultStore.getInstance();
-    Point probeSize = new Point( 10, 13 );
-    probeStore.createProbeResult( probeRequests[ 0 ], probeSize );
-    calculated = TextSizeUtil.getCharHeight( font0 );
-    assertEquals( 13, calculated );
+  public void testGetCharHeightAssignsUnknownFontToFontProbing() {
+    TextSizeUtil.getCharHeight( getFont() );
+    
+    assertEquals( 1, getProbes().length );
+    assertEquals( FONT_DATA, getProbes()[ 0 ].getFontData() );
+  }
+  
+  public void testGetCharHeightUsesEstimationForUnknownStrings() {
+    int determined = TextSizeUtil.getCharHeight( getFont() );
+    int estimated = TextSizeEstimation.getCharHeight( getFont() );
+    
+    assertEquals( estimated, determined, 0 );
   }
 
-  public void testAvgCharWidth() {
-    Probe[] probeRequests = MeasurementOperator.getInstance().getProbes();
-    assertEquals( 0, probeRequests.length );
+  public void testGetCharHeightUsesStorageForUnknownStrings() {
+    int charHeight = 13;
+    ProbeResultStore probeResultStore = ProbeResultStore.getInstance();
+    probeResultStore.createProbeResult( new Probe( FONT_DATA ), new Point( 10, charHeight ) );
 
-    Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    float calculated = TextSizeUtil.getAvgCharWidth( font0 );
-    float estimated = TextSizeEstimation.getAvgCharWidth( font0 );
-    assertEquals( estimated, calculated, 0 );
+    int determined = TextSizeUtil.getCharHeight( getFont() );
+    
+    assertEquals( charHeight, determined );
+  }
+  
+  public void testGetAvgCharWidthAssignsUnknownFontToFontProbing() {
+    TextSizeUtil.getAvgCharWidth( getFont() );
+    
+    assertEquals( 1, getProbes().length );
+    assertEquals( FONT_DATA, getProbes()[ 0 ].getFontData() );
+  }
+  
+  public void testGetAvgCharWidthUsesEstimationForUnknownStrings() {
+    float determined = TextSizeUtil.getAvgCharWidth( getFont() );
+    float estimated = TextSizeEstimation.getAvgCharWidth( getFont() );
+    
+    assertEquals( estimated, determined, 0 );
+  }
 
-    probeRequests = MeasurementOperator.getInstance().getProbes();
-    assertEquals( 1, probeRequests.length );
-    assertEquals( font0.getFontData()[ 0 ], probeRequests[ 0 ].getFontData() );
-
+  public void testGetAvgCharWidthUsesStorageForKnownStrings() {
     ProbeResultStore probeStore = ProbeResultStore.getInstance();
     Point probeSize = new Point( Probe.DEFAULT_PROBE_STRING.length() * 4, 10 );
-    probeStore.createProbeResult( probeRequests[ 0 ], probeSize );
-    calculated = TextSizeUtil.getAvgCharWidth( font0 );
-    assertEquals( 4, calculated, 0 );
-  }
+    probeStore.createProbeResult( new Probe( FONT_DATA ), probeSize );
+    
+    float determined = TextSizeUtil.getAvgCharWidth( getFont() );
 
-  public void testFontSizeDataBase() {
-    Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    FontData fontData0 = font0.getFontData()[ 0 ];
-    Font font1 = Graphics.getFont( "helvetia", 12, SWT.NORMAL );
-    FontData fontData1 = font1.getFontData()[ 0 ];
-
-    Point textSize;
-    textSize = TextSizeStorageUtil.lookup( fontData0, TEST_STRING, SWT.DEFAULT );
-    assertNull( textSize );
-    textSize = TextSizeStorageUtil.lookup( fontData1, TEST_STRING, SWT.DEFAULT );
-    assertNull( textSize );
-
-    try {
-      Point point = new Point( 1, 1 );
-      TextSizeStorageUtil.store( fontData1, TEST_STRING, SWT.DEFAULT, point );
-      fail( "No probe available." );
-    } catch( final IllegalStateException ise ) {
-    }
-
-    // simulate clientside probing...
-    ProbeResultStore probeStore = ProbeResultStore.getInstance();
-    Point probeSize0 = new Point( 10, 10 );
-    probeStore.createProbeResult( findRequestedProbe( 0 ), probeSize0 );
-    Point probeSize1 = new Point( 12, 12 );
-    probeStore.createProbeResult( findRequestedProbe( 1 ), probeSize1 );
-
-    Point calculatedTextSize0 = new Point( 100, 10 );
-    TextSizeStorageUtil.store( fontData0,
-                            TEST_STRING,
-                            SWT.DEFAULT,
-                            calculatedTextSize0 );
-    Point calculatedTextSize1 = new Point( 100, 12 );
-    TextSizeStorageUtil.store( fontData1,
-                            TEST_STRING,
-                            SWT.DEFAULT,
-                            calculatedTextSize1 );
-    textSize = TextSizeStorageUtil.lookup( fontData0, TEST_STRING, SWT.DEFAULT );
-    assertEquals( calculatedTextSize0, textSize );
-    textSize = TextSizeStorageUtil.lookup( fontData1, TEST_STRING, SWT.DEFAULT );
-    assertEquals( calculatedTextSize1, textSize );
-  }
-
-  private Probe findRequestedProbe( int i ) {
-    Probe[] probeRequests = MeasurementOperator.getInstance().getProbes();
-    return probeStore.getProbe( probeRequests[ i ].getFontData() );
-  }
-
-  public void testProbeStorage() {
-    Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    FontData fontData0 = font0.getFontData()[ 0 ];
-    Probe[] probeList = probeStore.getProbes();
-    assertEquals( 0, probeList.length );
-    Probe probe0 = probeStore.getProbe( fontData0 );
-    assertNull( probe0 );
-
-    probe0 = probeStore.createProbe( fontData0 );
-    probeList = probeStore.getProbes();
-    assertEquals( 1, probeList.length );
-    assertSame( probe0, probeList[ 0 ] );
-    assertSame( probe0, probeStore.getProbe( fontData0 ) );
-    assertTrue( probeStore.getProbe( fontData0 ) != null );
-    assertSame( probe0.getFontData(), fontData0 );
-    assertSame( probe0.getText(), Probe.DEFAULT_PROBE_STRING );
-
-    Font font1 = Graphics.getFont( "arial", 12, SWT.NORMAL );
-    FontData fontData1 = font1.getFontData()[ 0 ];
-    assertNull( probeStore.getProbe( fontData1 ) );
-
-    ProbeResultStore probeStore = ProbeResultStore.getInstance();
-    ProbeResult probeResult0 = probeStore.getProbeResult( fontData0 );
-    assertNull( probeResult0 );
-
-    Point probeSize0 = new Point( 10, 10 );
-    probeResult0 = probeStore.createProbeResult( probe0, probeSize0 );
-    assertSame( probeResult0.getProbe(), probe0 );
-    assertSame( probeResult0.getSize(), probeSize0 );
-    assertTrue( probeStore.containsProbeResult( fontData0 ) );
-    assertFalse( probeStore.containsProbeResult( fontData1 ) );
-  }
-
-  public void testTextSizeDatabaseKey() {
-    Font font = Graphics.getFont( "name", 10, SWT.NORMAL );
-    FontData fontData = FontUtil.getData( font );
-    Set takenKeys = new HashSet();
-    StringBuffer generatedText = new StringBuffer();
-    for( int i = 0; i < 100; i++ ) {
-      generatedText.append( "a" );
-      String text = generatedText.toString();
-      Probe probe = new Probe( text, fontData );
-      Point size = new Point( 1, 2 );
-      ProbeResultStore.getInstance().createProbeResult( probe, size );
-      Integer key = TextSizeStorageUtil.getKey( fontData, text, -1 );
-      assertFalse( takenKeys.contains( key ) );
-      takenKeys.add( key );
-    }
+    assertEquals( 4, determined, 0 );
   }
   
   public void testHeightAdjustmentInCaseOfWhitespaceText() {
-    FontData fontData = new FontData( "arial", 23, SWT.NONE );
-    int wrapWidth = 0;
-    String textToMeasure = " ";
-    fakeMeasurement( fontData, textToMeasure, wrapWidth, new Point( 2, wrapWidth ) );
+    fakeMeasurement( " ", 0, new Point( 2, 0 ) );
     
-    Point size = TextSizeUtil.textExtent( Graphics.getFont( fontData ), textToMeasure, wrapWidth );
+    Point size = TextSizeUtil.textExtent( getFont(), " ", 0 );
 
-    assertEquals( 20, size.y );
+    assertEquals( 10, size.y );
   }
 
   public void testHeightAdjustmentInCaseOfMultiLineLengthGreaterThanWrapWidth() {
-    FontData fontData = new FontData( "arial", 23, SWT.NONE );
     String textToMeasure = "multi\nline\ntext";
-    int wrapWidth = 2;
-    fakeMeasurement( fontData, textToMeasure, wrapWidth, new Point( 6, 10 ) );
+    fakeMeasurement( textToMeasure, 2, new Point( 6, 10 ) );
     
-    Point size = TextSizeUtil.textExtent( Graphics.getFont( fontData ), textToMeasure, wrapWidth );
+    Point size = TextSizeUtil.textExtent( Graphics.getFont( FONT_DATA ), textToMeasure, 2 );
     
-    assertEquals( 80, size.y );
+    assertEquals( 40, size.y );
   }
   
   protected void setUp() throws Exception {
     Fixture.setUp();
-    probeStore = RWTFactory.getProbeStore();
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
-  private void fakeMeasurement( FontData fontData, String text, int wrapWidth, Point size ) {
-    probeStore.createProbe( fontData );
-    ProbeResultStore.getInstance().createProbeResult( new Probe( fontData ), new Point( 4, 20 ) );
-    RWTFactory.getTextSizeStorage().storeFont( fontData );
+  private void fakeMeasurement( String text, int wrapWidth, Point size ) {
+    ProbeResultStore.getInstance().createProbeResult( new Probe( FONT_DATA ), new Point( 10, 10 ) );
+    RWTFactory.getTextSizeStorage().storeFont( FONT_DATA );
     String expanded = TextSizeUtilFacade.createMeasurementString( text, true );
-    TextSizeStorageUtil.store( fontData, expanded, wrapWidth, size );
+    TextSizeStorageUtil.store( FONT_DATA, expanded, wrapWidth, size );
+  }
+  
+  private MeasurementItem[] getMeasurementItems() {
+    return MeasurementOperator.getInstance().getItems();
+  }
+  
+  private Probe[] getProbes() {
+    return MeasurementOperator.getInstance().getProbes();
+  }
+
+  private Font getFont() {
+    return Graphics.getFont( FONT_DATA );
   }
 }

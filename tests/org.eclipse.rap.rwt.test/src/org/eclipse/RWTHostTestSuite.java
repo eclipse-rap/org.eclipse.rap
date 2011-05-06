@@ -217,6 +217,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( LineAttributes_Test.class );
     suite.addTestSuite( TextSizeEstimation_Test.class );
     suite.addTestSuite( TextSizeUtil_Test.class );
+    suite.addTestSuite( TextSizeStorageUtil_Test.class );
     suite.addTestSuite( Probe_Test.class );
     suite.addTestSuite( ProbeStore_Test.class );
     suite.addTestSuite( ProbeResultStore_Test.class );
