@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.textsize;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -42,8 +43,19 @@ public class ProbeStore_Test extends TestCase {
   public void testGetProbes() {
     Probe probe = createProbe();
     
-    assertEquals( 1, probeStore.getProbes().length );
-    assertSame( probe, probeStore.getProbes()[ 0 ] );
+    Probe[] probes = probeStore.getProbes();
+    
+    assertEquals( 1, probes.length );
+    assertSame( probe, probes[ 0 ] );
+  }
+  
+  public void testGetProbesFromGlobalStorage() {
+    RWTFactory.getTextSizeStorage().storeFont( FONT_DATA );
+
+    Probe[] probes = probeStore.getProbes();
+    
+    assertEquals( 1, probes.length );
+    assertSame( FONT_DATA, probes[ 0 ].getFontData() );
   }
   
   protected void setUp() {

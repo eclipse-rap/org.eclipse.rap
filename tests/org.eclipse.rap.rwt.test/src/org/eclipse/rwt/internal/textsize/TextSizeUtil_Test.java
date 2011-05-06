@@ -23,12 +23,13 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
+import org.eclipse.swt.widgets.Display;
 
 
 public class TextSizeUtil_Test extends TestCase {
   private static final String TEST_STRING = "test";
 
-  private ProbeStore textSizeProbeStore;
+  private ProbeStore probeStore;
 
   public void testStringExtent() {
     MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
@@ -168,29 +169,29 @@ public class TextSizeUtil_Test extends TestCase {
 
   private Probe findRequestedProbe( int i ) {
     Probe[] probeRequests = MeasurementOperator.getInstance().getProbes();
-    return textSizeProbeStore.getProbe( probeRequests[ i ].getFontData() );
+    return probeStore.getProbe( probeRequests[ i ].getFontData() );
   }
 
   public void testProbeStorage() {
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
     FontData fontData0 = font0.getFontData()[ 0 ];
-    Probe[] probeList = textSizeProbeStore.getProbes();
+    Probe[] probeList = probeStore.getProbes();
     assertEquals( 0, probeList.length );
-    Probe probe0 = textSizeProbeStore.getProbe( fontData0 );
+    Probe probe0 = probeStore.getProbe( fontData0 );
     assertNull( probe0 );
 
-    probe0 = textSizeProbeStore.createProbe( fontData0 );
-    probeList = textSizeProbeStore.getProbes();
+    probe0 = probeStore.createProbe( fontData0 );
+    probeList = probeStore.getProbes();
     assertEquals( 1, probeList.length );
     assertSame( probe0, probeList[ 0 ] );
-    assertSame( probe0, textSizeProbeStore.getProbe( fontData0 ) );
-    assertTrue( textSizeProbeStore.getProbe( fontData0 ) != null );
+    assertSame( probe0, probeStore.getProbe( fontData0 ) );
+    assertTrue( probeStore.getProbe( fontData0 ) != null );
     assertSame( probe0.getFontData(), fontData0 );
     assertSame( probe0.getText(), Probe.DEFAULT_PROBE_STRING );
 
     Font font1 = Graphics.getFont( "arial", 12, SWT.NORMAL );
     FontData fontData1 = font1.getFontData()[ 0 ];
-    assertNull( textSizeProbeStore.getProbe( fontData1 ) );
+    assertNull( probeStore.getProbe( fontData1 ) );
 
     ProbeResultStore probeStore = ProbeResultStore.getInstance();
     ProbeResult probeResult0 = probeStore.getProbeResult( fontData0 );
@@ -221,12 +222,42 @@ public class TextSizeUtil_Test extends TestCase {
     }
   }
   
+  public void testHeightAdjustmentInCaseOfWhitespaceText() {
+    FontData fontData = new FontData( "arial", 23, SWT.NONE );
+    int wrapWidth = 0;
+    String textToMeasure = " ";
+    fakeMeasurement( fontData, textToMeasure, wrapWidth, new Point( 2, wrapWidth ) );
+    
+    Point size = TextSizeUtil.textExtent( Graphics.getFont( fontData ), textToMeasure, wrapWidth );
+
+    assertEquals( 20, size.y );
+  }
+
+  public void testHeightAdjustmentInCaseOfMultiLineLengthGreaterThanWrapWidth() {
+    FontData fontData = new FontData( "arial", 23, SWT.NONE );
+    String textToMeasure = "multi\nline\ntext";
+    int wrapWidth = 2;
+    fakeMeasurement( fontData, textToMeasure, wrapWidth, new Point( 6, 10 ) );
+    
+    Point size = TextSizeUtil.textExtent( Graphics.getFont( fontData ), textToMeasure, wrapWidth );
+    
+    assertEquals( 80, size.y );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
-    textSizeProbeStore = RWTFactory.getProbeStore();
+    probeStore = RWTFactory.getProbeStore();
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private void fakeMeasurement( FontData fontData, String text, int wrapWidth, Point size ) {
+    probeStore.createProbe( fontData );
+    ProbeResultStore.getInstance().createProbeResult( new Probe( fontData ), new Point( 4, 20 ) );
+    RWTFactory.getTextSizeStorage().storeFont( fontData );
+    String expanded = TextSizeUtilFacade.createMeasurementString( text, true );
+    TextSizeStorageUtil.store( fontData, expanded, wrapWidth, size );
   }
 }

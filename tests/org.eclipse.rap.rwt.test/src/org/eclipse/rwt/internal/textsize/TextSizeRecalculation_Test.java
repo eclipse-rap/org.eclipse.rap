@@ -21,7 +21,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ControlUtil;
-import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -94,7 +93,7 @@ public class TextSizeRecalculation_Test extends TestCase {
   }
   
   private void checkRePackTookPlace() {
-System.out.println( "after: " + packedControl.getSize() );
+    assertEquals( new Point( 100, 22 ), packedControl.getSize() );
   }
 
   private Rectangle getInitialCompositeBounds() {

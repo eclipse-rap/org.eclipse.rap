@@ -37,7 +37,7 @@ public class TextSizeUtil {
     Point result = determineTextSize( font, text, wrapWidth, TEXT_EXTENT );
     // TODO [fappel]: replace with decent implementation
     if( wrapWidth > 0 && result.x > wrapWidth ) {
-      result = improveHeightDetermination( font, text, wrapWidth );
+      result = adjustWrapDetermination( font, text, wrapWidth );
     }
     return result;
   }
@@ -128,7 +128,7 @@ public class TextSizeUtil {
     return TextSizeUtilFacade.createMeasurementString( string, expandNewLines );
   }
   
-  private static Point improveHeightDetermination( Font font, String text, int wrapWidth ) {
+  private static Point adjustWrapDetermination( Font font, String text, int wrapWidth ) {
     Point result = TextSizeEstimation.textExtent( font, text, wrapWidth );
     BigDecimal height = new BigDecimal( result.y );
     BigDecimal charHeight = new BigDecimal( TextSizeEstimation.getCharHeight( font ) );
