@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -43,7 +41,7 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
     checkItemFragment( itemFragment, item );
   }
 
-  public void testWriteFontProbingInternal() throws IOException {
+  public void testWriteFontProbingInternal() {
     prepareFontAndTextProbing();
     
     facade.writeFontProbingInternal();
@@ -51,7 +49,7 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
     checkResponseContainsProbeCall();
   }
   
-  public void testWriteStringMeasurementsInternal() throws IOException {
+  public void testWriteStringMeasurementsInternal() {
     prepareFontAndTextProbing();
     
     facade.writeStringMeasurementsInternal();
