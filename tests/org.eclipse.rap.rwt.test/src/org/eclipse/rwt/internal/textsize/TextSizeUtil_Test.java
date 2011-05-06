@@ -23,7 +23,6 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
-import org.eclipse.swt.widgets.Display;
 
 
 public class TextSizeUtil_Test extends TestCase {
