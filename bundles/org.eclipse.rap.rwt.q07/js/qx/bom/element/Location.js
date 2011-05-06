@@ -116,8 +116,8 @@ qx.Class.define("qx.bom.element.Location",
       }
 
       return {
-        left : left,
-        top : top
+        left : Math.ceil( left ),
+        top : Math.ceil( top )
       };
     },
 
@@ -154,8 +154,8 @@ qx.Class.define("qx.bom.element.Location",
         }
 
         return {
-          left : left,
-          top : top
+          left : Math.ceil( left ),
+          top : Math.ceil( top )
         };
       },
 
@@ -181,8 +181,8 @@ qx.Class.define("qx.bom.element.Location",
         }
 
         return {
-          left : left,
-          top : top
+          left : Math.ceil( left ),
+          top : Math.ceil( top )
         };
       },
 
@@ -230,8 +230,8 @@ qx.Class.define("qx.bom.element.Location",
         }
 
         return {
-          left : left,
-          top : top
+          left : Math.ceil( left ),
+          top : Math.ceil( top )
         };
       },
 
@@ -247,8 +247,8 @@ qx.Class.define("qx.bom.element.Location",
         var top = body.offsetTop;
 
         return {
-          left : left,
-          top : top
+          left : Math.ceil( left ),
+          top : Math.ceil( top )
         };
       }
     }),
@@ -326,8 +326,8 @@ qx.Class.define("qx.bom.element.Location",
         }
 
         return {
-          left : left,
-          top : top
+          left : Math.ceil( left ),
+          top : Math.ceil( top )
         }
       },
 
@@ -388,8 +388,8 @@ qx.Class.define("qx.bom.element.Location",
         }
 
         return {
-          left : left,
-          top : top
+          left : Math.ceil( left ),
+          top : Math.ceil( top )
         }
       },
 
@@ -415,8 +415,8 @@ qx.Class.define("qx.bom.element.Location",
         }
 
         return {
-          left : left,
-          top : top
+          left : Math.ceil( left ),
+          top : Math.ceil( top )
         }
       }
     }),
