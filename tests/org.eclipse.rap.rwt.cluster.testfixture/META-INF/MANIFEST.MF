@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cluster Testfixture
+Bundle-SymbolicName: org.eclipse.rap.rwt.cluster.testfixture
+Bundle-Version: 1.4.0.qualifier
+Bundle-Vendor: Eclipse.org - RAP
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Import-Package: javax.servlet;version="2.5.0",
+ javax.servlet.http;version="2.5.0",
+ junit.framework;version="3.8.0",
+ org.eclipse.jetty.continuation;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.http;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.io;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.security;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.server;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.server.handler;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.server.session;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.servlet;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.util.component;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.util.log;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.util.resource;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.webapp;version="[7.4.0,8.0.0)",
+ org.eclipse.jetty.xml;version="[7.4.0,8.0.0)",
+ org.h2.tools;version="[1.1.0,2.0.0)"
+Export-Package: org.eclipse.rap.rwt.cluster.testfixture,
+ org.eclipse.rap.rwt.cluster.testfixture.client,
+ org.eclipse.rap.rwt.cluster.testfixture.db,
+ org.eclipse.rap.rwt.cluster.testfixture.server
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="[1.4.0,2.0.0)"

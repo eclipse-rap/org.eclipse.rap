@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RWT cluster tests
+Bundle-SymbolicName: org.eclipse.rap.rwt.cluster.test
+Bundle-Version: 1.4.0.qualifier
+Bundle-Vendor: Eclipse.org - RAP
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Require-Bundle: org.eclipse.rap.rwt,
+ org.eclipse.rap.rwt.cluster.testfixture,
+ org.junit
+Import-Package: javax.servlet.http
+
+
