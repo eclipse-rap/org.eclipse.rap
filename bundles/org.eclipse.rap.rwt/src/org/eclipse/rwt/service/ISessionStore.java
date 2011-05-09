@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
  * container's session. Different than the <code>HttpSession</code> it is
  * possible to register programmatically a listener that is notified before
  * the session store will be destroyed (<code>HttpSessionListener</code>s 
- * don't work with * RAP). This gives the possibility to cleanup on session 
+ * don't work with RAP). This gives the possibility to cleanup on session 
  * shutdown with the session singleton infrastructure intact.
  *
  * <p>This interface is not intended to be implemented by clients.</p>
