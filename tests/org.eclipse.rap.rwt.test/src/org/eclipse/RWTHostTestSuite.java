@@ -76,6 +76,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( LifeCycleFactory_Test.class );
     suite.addTestSuite( PrepareUIRoot_Test.class );
     suite.addTestSuite( ProcessAction_Test.class );
+    suite.addTestSuite( Render_Test.class );
     suite.addTestSuite( PhaseExecutor_Test.class );
     suite.addTestSuite( ReadData_Test.class );
     suite.addTestSuite( PhaseId_Test.class );

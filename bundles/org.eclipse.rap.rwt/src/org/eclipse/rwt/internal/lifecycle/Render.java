@@ -24,9 +24,11 @@ final class Render implements IPhase {
   }
 
   public PhaseId execute( Display display ) throws IOException {
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
-    displayLCA.render( display );
-    displayLCA.clearPreserved( display );
+    if( display != null ) {
+      IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+      displayLCA.render( display );
+      displayLCA.clearPreserved( display );
+    }
     return null;
   }
 }
