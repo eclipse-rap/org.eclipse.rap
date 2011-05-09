@@ -17,11 +17,8 @@ package org.eclipse.rwt.internal.resources;
 // TODO [rh] only used by ResourceManager, move to its helper class ResourceUtil
 public final class SystemProps {
   
-  public static final String USE_VERSIONED_JAVA_SCRIPT 
-    = "org.eclipse.rap.useVersionedJavaScript";
-  
-  public static final String USE_COMPRESSED_JAVA_SCRIPT 
-    = "org.eclipse.rap.useCompressedJavaScript";
+  public static final String USE_VERSIONED_JAVA_SCRIPT = "org.eclipse.rap.useVersionedJavaScript";
+  public static final String USE_COMPRESSED_JAVA_SCRIPT = "org.eclipse.rap.useCompressedJavaScript";
     
 
   private SystemProps() {
@@ -36,9 +33,7 @@ public final class SystemProps {
     return getBooleanProperty( USE_COMPRESSED_JAVA_SCRIPT, true );
   }
 
-  private static boolean getBooleanProperty( final String key, 
-                                             final boolean defaultValue ) 
-  {
+  private static boolean getBooleanProperty( String key, boolean defaultValue ) {
     boolean result = defaultValue;
     String propertyValue = System.getProperty( key );
     if( propertyValue != null ) {
@@ -46,5 +41,4 @@ public final class SystemProps {
     }
     return result;
   }
-  
 }

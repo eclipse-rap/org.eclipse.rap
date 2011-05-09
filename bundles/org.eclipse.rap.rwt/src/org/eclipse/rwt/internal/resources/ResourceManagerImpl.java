@@ -131,7 +131,7 @@ public class ResourceManagerImpl implements IResourceManager {
    * @return the content of the resource or <code>null</code> if no resource
    *         with the given <code>name</code> and <code>version</code> exists.
    */
-  public int[] findResource( final String name, final Integer version ) {
+  public int[] findResource( String name, Integer version ) {
     ParamCheck.notNull( name, "name" );
     int[] result = null;
     Resource resource = ( Resource )cache.get( createKey( name ) );
@@ -155,7 +155,7 @@ public class ResourceManagerImpl implements IResourceManager {
    *         was registered or the resource does not have a version number.
    * @throws NullPointerException when <<code>name</code> is <code>null</code>.
    */
-  public Integer findVersion( final String name ) {
+  public Integer findVersion( String name ) {
     ParamCheck.notNull( name, "name" );
     Integer result = null;
     Resource resource = ( Resource )cache.get( createKey( name ) );
@@ -174,28 +174,25 @@ public class ResourceManagerImpl implements IResourceManager {
   /////////////////////////////
   // interface IResourceManager
 
-  public void register( final String name ) {
+  public void register( String name ) {
     ParamCheck.notNull( name, "name" );
     doRegister( name, null, RegisterOptions.NONE );
   }
 
-  public void register( final String name, final String charset ) {
+  public void register( String name, String charset ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( charset, "charset" );
     doRegister( name, charset, RegisterOptions.NONE );
   }
 
-  public void register( final String name,
-                        final String charset,
-                        final RegisterOptions options )
-  {
+  public void register( String name, String charset, RegisterOptions options ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( charset, "charset" );
     ParamCheck.notNull( options, "options" );
     doRegister( name, charset, options );
   }
 
-  public void register( final String name, final InputStream is ) {
+  public void register( String name, InputStream is ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( is, "is" );
     String key = createKey( name );
@@ -227,7 +224,7 @@ public class ResourceManagerImpl implements IResourceManager {
     repository.put( key, name );
   }
 
-  public boolean unregister( final String name ) {
+  public boolean unregister( String name ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;
     String key = createKey( name );
@@ -242,31 +239,31 @@ public class ResourceManagerImpl implements IResourceManager {
     return result;
   }
 
-  public String getCharset( final String name ) {
+  public String getCharset( String name ) {
     ParamCheck.notNull( name, "name" );
     Resource resource = ( Resource )cache.get( createKey( name ) );
     return resource.getCharset();
   }
 
-  public boolean isRegistered( final String name ) {
+  public boolean isRegistered( String name ) {
     ParamCheck.notNull( name, "name" );
     String key = createKey( name );
     String fileName = ( String )repository.get( key );
     return fileName != null;
   }
 
-  public String getLocation( final String name ) {
+  public String getLocation( String name ) {
     ParamCheck.notNull( name, "name" );
     String key = createKey( name );
     String fileName = ( String )repository.get( key );
     return createRequestURL( fileName, findVersion( name ) );
   }
 
-  public URL getResource( final String name ) {
+  public URL getResource( String name ) {
     return getLoader().getResource( name );
   }
 
-  public InputStream getResourceAsStream( final String name ) {
+  public InputStream getResourceAsStream( String name ) {
     URL resource = getLoader().getResource( name );
     InputStream result = null;
     if( resource != null ) {
@@ -274,18 +271,18 @@ public class ResourceManagerImpl implements IResourceManager {
         URLConnection connection = resource.openConnection();
         connection.setUseCaches( false );
         result = connection.getInputStream();
-      } catch( final IOException ignore ) {
+      } catch( IOException ignore ) {
         // ignore
       }
     }
     return result;
   }
 
-  public Enumeration getResources( final String name ) throws IOException {
+  public Enumeration getResources( String name ) throws IOException {
     return getLoader().getResources( name );
   }
 
-  public void setContextLoader( final ClassLoader classLoader ) {
+  public void setContextLoader( ClassLoader classLoader ) {
     contextLoader.set( classLoader );
   }
 
@@ -293,7 +290,7 @@ public class ResourceManagerImpl implements IResourceManager {
     return ( ClassLoader )contextLoader.get();
   }
 
-  public InputStream getRegisteredContent( final String name ) {
+  public InputStream getRegisteredContent( String name ) {
     InputStream result = null;
     String key = createKey( name );
     String fileName = ( String )repository.get( key );
@@ -331,7 +328,7 @@ public class ResourceManagerImpl implements IResourceManager {
     return result;
   }
 
-  private static String createKey( final String name ) {
+  private static String createKey( String name ) {
     return String.valueOf( name.hashCode() );
   }
 
@@ -359,10 +356,7 @@ public class ResourceManagerImpl implements IResourceManager {
     return result;
   }
 
-  private void doRegister( final String name,
-                           final String charset,
-                           final RegisterOptions options )
-  {
+  private void doRegister( String name, String charset, RegisterOptions options ) {
     String key = createKey( name );
     // TODO [rh] should throw exception if contains key but has different
     //      charset or options
@@ -380,11 +374,11 @@ public class ResourceManagerImpl implements IResourceManager {
     }
   }
 
-  private void doRegister( final String name,
-                           final String charset,
-                           final RegisterOptions options,
-                           final String key,
-                           final int[] content )
+  private void doRegister( String name,
+                           String charset,
+                           RegisterOptions options,
+                           String key,
+                           int[] content )
     throws IOException
   {
     Integer version = computeVersion( content, options );
@@ -403,7 +397,7 @@ public class ResourceManagerImpl implements IResourceManager {
     }
   }
 
-  private static void createFile( final File fileToWrite ) throws IOException {
+  private static void createFile( File fileToWrite ) throws IOException {
     File dir = new File( fileToWrite.getParent() );
     if( !dir.mkdirs() ) {
       if( !dir.exists() ) {
@@ -415,9 +409,7 @@ public class ResourceManagerImpl implements IResourceManager {
     }
   }
 
-  private static Integer computeVersion( final int[] content,
-                                         final RegisterOptions options )
-  {
+  private static Integer computeVersion( int[] content, RegisterOptions options ) {
     Integer result = null;
     if( content != null && shouldVersion( options ) ) {
       int version = 0;
@@ -429,15 +421,7 @@ public class ResourceManagerImpl implements IResourceManager {
     return result;
   }
 
-  private static boolean shouldVersion( final RegisterOptions options ) {
-    return    (    options == RegisterOptions.VERSION
-                || options == RegisterOptions.VERSION_AND_COMPRESS )
-           && SystemProps.useVersionedJavaScript();
-  }
-
-  static String versionedResourceName( final String name,
-                                       final Integer version )
-  {
+  static String versionedResourceName( String name, Integer version ) {
     String result = name;
     if( version != null ) {
       String versionString = String.valueOf( version.intValue() );
@@ -459,7 +443,13 @@ public class ResourceManagerImpl implements IResourceManager {
     return result;
   }
 
-  private static boolean shouldCompress( final RegisterOptions options ) {
+  private static boolean shouldVersion( RegisterOptions options ) {
+    return    (    options == RegisterOptions.VERSION
+                || options == RegisterOptions.VERSION_AND_COMPRESS )
+           && SystemProps.useVersionedJavaScript();
+  }
+  
+  private static boolean shouldCompress( RegisterOptions options ) {
     return    (    options == RegisterOptions.COMPRESS
                 || options == RegisterOptions.VERSION_AND_COMPRESS )
            && SystemProps.useCompressedJavaScript();
@@ -475,7 +465,7 @@ public class ResourceManagerImpl implements IResourceManager {
     return new File( filename.toString() );
   }
 
-  private static String escapeFilename( final String name ) {
+  private static String escapeFilename( String name ) {
     String result = name;
     result = name.replaceAll( "\\$", "\\$\\$" );
     result = result.replaceAll( ":", "\\$1" );
@@ -483,9 +473,7 @@ public class ResourceManagerImpl implements IResourceManager {
     return result;
   }
 
-  private static File getTempLocation( final String name,
-                                       final Integer version )
-  {
+  private static File getTempLocation( String name, Integer version ) {
     StringBuffer result = new StringBuffer();
     result.append( System.getProperty( "java.io.tmpdir" ) );
     result.append( File.separator );
