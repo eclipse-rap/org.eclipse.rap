@@ -25,7 +25,7 @@ public class WebAppURLs {
   
   /** finds the URLs of the classes and libraries of the web 
     * application./</p>*/
-  public static List getWebAppURLs( final IEngineConfig config ) {
+  public static List getWebAppURLs( IEngineConfig config ) {
     List result = new Vector();
     try {
       File classesLib = config.getClassDir();
@@ -51,16 +51,14 @@ public class WebAppURLs {
     return result;
   }
   
-  private static List getLibraryPath( final IEngineConfig config ) {
+  private static List getLibraryPath( IEngineConfig config ) {
     List result = new Vector();
     File libDir = config.getLibDir();
     String[] libraryNames = libDir.list();
     if( libraryNames != null ) {
       for( int i = 0; i < libraryNames.length; i++ ) {
         if( libraryNames[ i ].endsWith( ".jar" ) ) {
-          result.add( new File( libDir.toString() 
-                              + File.separator
-                              + libraryNames[ i ] ) );
+          result.add( new File( libDir.toString()  + File.separator + libraryNames[ i ] ) );
         }
       }
     }
