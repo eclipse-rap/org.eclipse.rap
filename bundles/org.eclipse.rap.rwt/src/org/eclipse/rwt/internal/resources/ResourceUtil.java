@@ -87,9 +87,7 @@ public final class ResourceUtil {
     return result;
   }
 
-  static int[] readText( InputStream is, String charset, boolean compress )
-    throws IOException
-  {
+  static int[] readText( InputStream is, String charset, boolean compress ) throws IOException {
     StringBuffer buffer = new StringBuffer();
     InputStreamReader reader = new InputStreamReader( is, charset );
     BufferedReader br = new BufferedReader( reader );

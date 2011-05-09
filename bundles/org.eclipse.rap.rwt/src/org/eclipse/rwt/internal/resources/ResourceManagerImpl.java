@@ -347,9 +347,7 @@ public class ResourceManagerImpl implements IResourceManager {
       url.append( URLHelper.getURLString() );
       URLHelper.appendFirstParam( url, RESOURCE, newFileName );
       if( version != null ) {
-        URLHelper.appendParam( url,
-                               RESOURCE_VERSION,
-                               String.valueOf( version.intValue() ) );
+        URLHelper.appendParam( url, RESOURCE_VERSION, String.valueOf( version.intValue() ) );
       }
       result = ContextProvider.getResponse().encodeURL( url.toString() );
     }
@@ -435,9 +433,7 @@ public class ResourceManagerImpl implements IResourceManager {
         result = name + versionString;
       } else {
         // insert version number between name and suffix
-        result =   name.substring( 0, dotPos )
-                 + versionString
-                 + name.substring( dotPos );
+        result = name.substring( 0, dotPos ) + versionString + name.substring( dotPos );
       }
     }
     return result;
