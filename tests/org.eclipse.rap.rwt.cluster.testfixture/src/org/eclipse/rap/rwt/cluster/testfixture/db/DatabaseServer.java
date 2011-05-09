@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.cluster.testfixture.db;
 
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.h2.tools.Server;
@@ -37,8 +38,8 @@ public class DatabaseServer {
       };
       server = Server.createTcpServer( args );
       server.start();
-    } catch( SQLException e ) {
-      throw new RuntimeException( "Failed to start H2 database.", e );
+    } catch( SQLException sqle ) {
+      throw new RuntimeException( "Failed to start H2 database.", sqle );
     }
   }
 
@@ -52,6 +53,8 @@ public class DatabaseServer {
   }
   
   public String getConnectionUrl() {
-    return "jdbc:h2:tcp://localhost:" + port + "/sessions";    
+    String pattern = "jdbc:h2:tcp://localhost:{0}/mem:sessions;DB_CLOSE_DELAY=-1";
+    Object[] args = new Object[] { String.valueOf( port ) };
+    return MessageFormat.format( pattern, args );
   }
 }

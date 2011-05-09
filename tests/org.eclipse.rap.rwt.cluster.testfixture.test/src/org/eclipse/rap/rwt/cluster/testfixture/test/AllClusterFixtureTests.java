@@ -14,6 +14,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.rap.rwt.cluster.testfixture.client.*;
+import org.eclipse.rap.rwt.cluster.testfixture.db.DatabaseServerTest;
 import org.eclipse.rap.rwt.cluster.testfixture.server.ServletEngineTest;
 
 
@@ -25,6 +26,7 @@ public class AllClusterFixtureTests {
     suite.addTestSuite( HttpUrlBuilderTest.class );
     suite.addTestSuite( ResponseTest.class );
     suite.addTestSuite( ServletEngineTest.class );
+    suite.addTestSuite( DatabaseServerTest.class );
     return suite;
   }
 }
