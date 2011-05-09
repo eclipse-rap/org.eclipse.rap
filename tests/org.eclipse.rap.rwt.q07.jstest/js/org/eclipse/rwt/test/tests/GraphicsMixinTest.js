@@ -39,6 +39,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       testUtil.flush();
     },
 
+    testSetAndRemoveGradient : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+      var shell = this._createWidget( true );
+      assertFalse( shell.isSeeable() );      
+      assertFalse( this.usesGfxBackground( shell ) );
+      shell.setBackgroundGradient( this.gradient );
+      shell.setBackgroundGradient( null );
+      testUtil.flush();
+      assertFalse( this.usesGfxBackground( shell ) );
+      shell.destroy();
+      testUtil.flush();
+    },
+
     testSetGradientWhileNotInDOM : function() {    
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;

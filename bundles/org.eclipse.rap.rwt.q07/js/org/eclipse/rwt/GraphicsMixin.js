@@ -418,19 +418,21 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     _prepareBackgroundShape : function() {
       var util = org.eclipse.rwt.GraphicsUtil;
-      var backgroundShape = this._gfxData.backgroundShape;
-      if( this._gfxBackgroundEnabled ) {
-        if( backgroundShape === undefined ) {
-          this._gfxData.backgroundShape = util.createShape( "roundrect" );
+      if( this._gfxData ) {
+        var backgroundShape = this._gfxData.backgroundShape;
+        if( this._gfxBackgroundEnabled ) {
+          if( backgroundShape === undefined ) {
+            this._gfxData.backgroundShape = util.createShape( "roundrect" );
+          }
+          if( !this._gfxData.backgroundInsert ) {
+            var shape = this._gfxData.backgroundShape;
+            util.addToCanvas( this._gfxCanvas, shape );
+            this._gfxData.backgroundInsert = true;
+          }
+        } else if( this._gfxData.backgroundInsert ) {
+          util.removeFromCanvas( this._gfxCanvas, backgroundShape );
+          this._gfxData.backgroundInsert = false;
         }
-        if( !this._gfxData.backgroundInsert ) {
-          var shape = this._gfxData.backgroundShape;
-          util.addToCanvas( this._gfxCanvas, shape );
-          this._gfxData.backgroundInsert = true;
-        }
-      } else if( this._gfxData.backgroundInsert ) {
-        util.removeFromCanvas( this._gfxCanvas, backgroundShape );
-        this._gfxData.backgroundInsert = false;
       }
     },
 
@@ -523,26 +525,28 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     
     _prepareShadowShape : function() {
       var util = org.eclipse.rwt.GraphicsUtil;
-      if( this._gfxShadowEnabled ) {
-        if( this._gfxData.shadowShape === undefined ) {
-          this._createShadowShape();
-          var canvasNode = util.getCanvasNode( this._gfxCanvas );
-          org.eclipse.rwt.HtmlUtil.setPointerEvents( canvasNode, "none" );
-        }
-        var shape = this._gfxData.shadowShape;
-        if( !this._gfxData.shadowInsert ) {
-          var before = null;
-          if( this._gfxData.backgroundInsert ) {
-            before = this._gfxData.backgroundShape;
+      if( this._gfxData ) {
+        if( this._gfxShadowEnabled ) {
+          if( this._gfxData.shadowShape === undefined ) {
+            this._createShadowShape();
+            var canvasNode = util.getCanvasNode( this._gfxCanvas );
+            org.eclipse.rwt.HtmlUtil.setPointerEvents( canvasNode, "none" );
           }
-          util.addToCanvas( this._gfxCanvas, shape, before );
-          this._gfxData.shadowInsert = true;
+          var shape = this._gfxData.shadowShape;
+          if( !this._gfxData.shadowInsert ) {
+            var before = null;
+            if( this._gfxData.backgroundInsert ) {
+              before = this._gfxData.backgroundShape;
+            }
+            util.addToCanvas( this._gfxCanvas, shape, before );
+            this._gfxData.shadowInsert = true;
+          }
+        } else if( this._gfxData.shadowInsert ) {
+          util.removeFromCanvas( this._gfxCanvas, this._gfxData.shadowShape );
+          // disable overflow:
+          util.enableOverflow( this._gfxCanvas, 0, 0, null, null );
+          delete this._gfxData.shadowInsert;
         }
-      } else if( this._gfxData.shadowInsert ) {
-        util.removeFromCanvas( this._gfxCanvas, this._gfxData.shadowShape );
-        // disable overflow:
-        util.enableOverflow( this._gfxCanvas, 0, 0, null, null );
-        delete this._gfxData.shadowInsert;
       }
     },
 
