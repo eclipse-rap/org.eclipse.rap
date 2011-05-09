@@ -104,10 +104,13 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     },
 
     _onload : function( evt ) {
-      this.base( arguments, evt );
-      if( this._isContentAccessible() ) {
-        this._attachBrowserFunctions();
-        this._sendProgressEvent();
+      // syncSource in destroy may cause unwanted load event when widget is about to be disposed
+      if( !this._isInGlobalDisposeQueue ) {
+        this.base( arguments, evt );
+        if( this._isContentAccessible() ) {
+          this._attachBrowserFunctions();
+          this._sendProgressEvent();
+        }
       }
     },
 
@@ -364,6 +367,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     
     destroy : function() {
       this.base( arguments );
+      // Needed for IE dipose fix in Iframe.js because _applySource is overwritten in Browser.js
       this.syncSource();
     }
     

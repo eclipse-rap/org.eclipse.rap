@@ -491,6 +491,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       },
       function( browser, el, iframe ) {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var log = [];
+        browser.addEventListener( "load", function( e ) {
+          log.push( e );
+        }, this );
+        browser._onload();
+        assertEquals( 0, log.length );
         testUtil.flush();
         assertTrue( "disposed?", browser.isDisposed() );
         assertTrue( el.innerHTML === "" );
