@@ -141,21 +141,21 @@
   <!-- Steps to do to publish the build results -->
   <!-- ===================================================================== -->
   <target name="publish">
-    <property name="buildOuputDirectory" value="${outputDirectory}/${buildType}-${buildId}" />
+    <property name="buildOutputDirectory" value="${outputDirectory}/${buildType}-${buildId}" />
     <property name="reports.tests" value="${buildDirectory}/tests" />
 
-    <mkdir dir="${ouputDirectory}" />
-    <mkdir dir="${buildOuputDirectory}" />
+    <mkdir dir="${outputDirectory}" />
+    <mkdir dir="${buildOutputDirectory}" />
 
     <!-- copy target zip -->
-    <copy todir="${buildOuputDirectory}">
+    <copy todir="${buildOutputDirectory}">
       <fileset dir="${buildDirectory}/${buildLabel}">
         <include name="${buildLabel}.zip" />
       </fileset>
     </copy>
 
     <!-- copy test results -->
-    <copy todir="${buildOuputDirectory}/tests">
+    <copy todir="${buildOutputDirectory}/tests">
       <fileset dir="${reports.tests}" />
     </copy>
   </target>
