@@ -175,6 +175,7 @@
     "qx/ui/pageview/AbstractPage.js",
     "qx/ui/pageview/tabview/Page.js",
     "qx/ui/pageview/tabview/Button.js",
+    "org/eclipse/rwt/ErrorHandler.js",
     "org/eclipse/swt/LabelUtil.js",
     "org/eclipse/rwt/widgets/TreeRow.js",
     "org/eclipse/swt/Application.js",

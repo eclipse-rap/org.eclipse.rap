@@ -622,7 +622,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     testCatchErrorPage : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.clearErrorPage();
-      org.eclipse.swt.Request.getInstance()._writeErrorPage( "foobar" );
+      try {
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( new Error( "foobar" ) );
+        fail();
+      } catch( ex ) {
+        // expected
+      }
       assertEquals( "foobar", testUtil.getErrorPage() );
       testUtil.clearErrorPage();
       assertNull( testUtil.getErrorPage() );
