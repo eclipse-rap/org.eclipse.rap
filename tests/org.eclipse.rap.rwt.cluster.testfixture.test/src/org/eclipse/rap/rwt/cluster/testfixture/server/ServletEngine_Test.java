@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
 
 
-public class ServletEngineTest extends TestCase {
+public class ServletEngine_Test extends TestCase {
 
   private List startedEngines;
 

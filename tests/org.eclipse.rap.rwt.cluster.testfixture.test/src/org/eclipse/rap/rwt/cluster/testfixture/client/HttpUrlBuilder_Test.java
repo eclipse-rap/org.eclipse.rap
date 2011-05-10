@@ -18,7 +18,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 
-public class HttpUrlBuilderTest extends TestCase {
+public class HttpUrlBuilder_Test extends TestCase {
   
   private HttpUrlBuilder urlBuilder;
 

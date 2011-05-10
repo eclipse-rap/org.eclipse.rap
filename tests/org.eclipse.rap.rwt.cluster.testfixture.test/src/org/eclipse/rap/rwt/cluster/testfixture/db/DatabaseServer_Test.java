@@ -15,7 +15,7 @@ import java.sql.*;
 import junit.framework.TestCase;
 
 
-public class DatabaseServerTest extends TestCase {
+public class DatabaseServer_Test extends TestCase {
 
   private DatabaseServer databaseServer;
 

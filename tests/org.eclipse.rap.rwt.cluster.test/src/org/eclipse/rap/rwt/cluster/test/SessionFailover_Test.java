@@ -25,7 +25,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.ClusteredServletEngine;
 
 
 
-public class SessionFailoverTest extends TestCase {
+public class SessionFailover_Test extends TestCase {
 
   private ClusteredServletEngine primary;
   private ClusteredServletEngine secondary;
@@ -58,12 +58,13 @@ public class SessionFailoverTest extends TestCase {
     for( int i = 1; i < 5; i++ ) {
       Response clickResponse = client.sendWidgetSelectedRequest( "w5" );
       String expectedLabelPart = "relocated " + i + "/1";
-      assertTrue( "label update mismatch missing part: '" + expectedLabelPart + "'",
+      assertTrue( "label update mismatch, missing part: '" + expectedLabelPart + "'",
                   clickResponse.getContent().contains( expectedLabelPart ) );
     }
+
     // click center button four times on secondary
     client.changeServletEngine( secondary );
-    for( int i = 5; i < 9; i++ ) {
+    for( int i = 5; i < 6; i++ ) {
       Response request = client.sendWidgetSelectedRequest( "w5" );
       String clickResponse = request.getContent();
       String expectedLabelPart = "relocated " + i + "/1";

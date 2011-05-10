@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.test.TestHttpUrlConnection;
 import junit.framework.TestCase;
 
 
-public class ResponseTest extends TestCase {
+public class Response_Test extends TestCase {
   
   private static final String VALID_HTML
     = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">";

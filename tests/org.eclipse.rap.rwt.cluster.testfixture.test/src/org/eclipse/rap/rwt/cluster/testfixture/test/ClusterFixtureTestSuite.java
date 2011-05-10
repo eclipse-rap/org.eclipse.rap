@@ -8,19 +8,25 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.test;
+package org.eclipse.rap.rwt.cluster.testfixture.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.eclipse.rap.rwt.cluster.testfixture.client.*;
+import org.eclipse.rap.rwt.cluster.testfixture.db.DatabaseServer_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.server.ServletEngine_Test;
 
-public class AllClusterTests {
+
+public class ClusterFixtureTestSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite( AllClusterTests.class.getName() );
-    suite.addTestSuite( SessionFailoverTest.class );
-    suite.addTestSuite( SessionSerializationTest.class );
-    suite.addTestSuite( SingleServerTest.class );
+    TestSuite suite = new TestSuite( ClusterFixtureTestSuite.class.getName() );
+    suite.addTestSuite( RWTClient_Test.class );
+    suite.addTestSuite( HttpUrlBuilder_Test.class );
+    suite.addTestSuite( Response_Test.class );
+    suite.addTestSuite( ServletEngine_Test.class );
+    suite.addTestSuite( DatabaseServer_Test.class );
     return suite;
   }
 }

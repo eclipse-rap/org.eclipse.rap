@@ -25,7 +25,7 @@ import org.eclipse.rwt.service.ISessionStore;
 
 
 
-public class SessionSerializationTest extends TestCase {
+public class SessionSerialization_Test extends TestCase {
 
   private ServletEngine servletEngine;
   private RWTClient client;

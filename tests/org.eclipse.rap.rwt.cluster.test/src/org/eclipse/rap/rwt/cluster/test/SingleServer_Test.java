@@ -25,7 +25,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.ServletEngine;
 
 
 
-public class SingleServerTest extends TestCase {
+public class SingleServer_Test extends TestCase {
 
   private ServletEngine servletEngine;
   private RWTClient client;

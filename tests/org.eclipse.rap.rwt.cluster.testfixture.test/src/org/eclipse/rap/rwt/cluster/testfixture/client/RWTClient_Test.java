@@ -19,7 +19,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.test.TestHttpUrlConnection;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestServletEngine;
 
 
-public class RWTClientTest extends TestCase {
+public class RWTClient_Test extends TestCase {
   
   private TestServletEngine servletEngine;
 
