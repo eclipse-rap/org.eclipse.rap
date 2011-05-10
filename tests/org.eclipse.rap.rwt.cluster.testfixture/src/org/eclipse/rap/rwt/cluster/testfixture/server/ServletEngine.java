@@ -80,6 +80,7 @@ public class ServletEngine implements IServletEngine {
   private SessionManager createSessionManager( ISessionManagerProvider sessionManagerProvider ) {
     SessionManager result = sessionManagerProvider.createSessionManager( server );
     SessionIdManager sessionIdManager = sessionManagerProvider.createSessionIdManager( server );
+    result.setMaxInactiveInterval( 60 * 60 );
     result.setIdManager( sessionIdManager );
     server.setSessionIdManager( sessionIdManager );
     return result;
@@ -130,7 +131,6 @@ public class ServletEngine implements IServletEngine {
     public SessionManager createSessionManager( Server server ) {
       HashSessionManager result = new HashSessionManager();
       result.setUsingCookies( true );
-      result.setMaxInactiveInterval( 30 * 60 );
       return result;
     }
 

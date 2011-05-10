@@ -48,15 +48,20 @@ class ServletEngineLogger implements Logger {
   }
 
   public void warn( String msg, Object[] args ) {
-    throw new RuntimeException( msg );
+    warn( msg, ( Throwable )null );
   }
 
-  public void warn( Throwable thrown ) {
-    throw rethrow( thrown );
+  public void warn( Throwable throwable ) {
+    warn( null, throwable );
   }
 
-  public void warn( String msg, Throwable thrown ) {
-    throw new RuntimeException( msg, thrown );
+  public void warn( String msg, Throwable throwable ) {
+    if( msg != null ) {
+      System.err.println( msg );
+    }
+    if( throwable != null ) {
+      throw rethrow( throwable );
+    }
   }
 
   public void info( String msg, Object[] args ) {
