@@ -674,10 +674,9 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     initErrorPageLog : function() {
       var handler = org.eclipse.rwt.ErrorHandler;
       org.eclipse.rwt.test.fixture.TestUtil.clearErrorPage();
-      handler.processJavaScriptError = function( error ) {
+      handler.showError = function( content ) {
         testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        testUtil._errorPage = error.message;
-        throw error;
+        testUtil._errorPage = content;
       };
     },
 
