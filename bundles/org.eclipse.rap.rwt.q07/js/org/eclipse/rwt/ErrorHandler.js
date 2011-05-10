@@ -21,9 +21,16 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     },
 
     showTimeout : function( content ) {
+      var location = String( window.location );
+      var index = location.indexOf( "#" );
+      if( index != -1 ) {
+        location = location.substring( 0, index );
+      }
+      var hrefAttr = "href=\"" + location + "\"";
+      var html = content.replace( /{HREF_URL}/, hrefAttr );
       org.eclipse.rwt.ErrorHandler._freezeApplication();
       org.eclipse.rwt.ErrorHandler._createOverlay();
-      org.eclipse.rwt.ErrorHandler._createTimeoutArea( 400, 100 ).innerHTML = content;
+      org.eclipse.rwt.ErrorHandler._createTimeoutArea( 400, 100 ).innerHTML = html;
     },
 
     processJavaScriptErrorInResponse : function( script, error, currentRequest ) {

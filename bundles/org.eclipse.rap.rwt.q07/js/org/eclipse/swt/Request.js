@@ -308,9 +308,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         //   is currently used
         // - as clicking the link issues a regular request, we can be sure that
         //   the stale application will be cleaned up properly by the browser
-        var hrefAttr = "href=\"" + window.location + "\"";
-        var content = this._timeoutPage.replace( /{HREF_URL}/, hrefAttr );
-        org.eclipse.rwt.ErrorHandler.showTimeout( content );
+        org.eclipse.rwt.ErrorHandler.showTimeout( this._timeoutPage );
       } else {
         var errorOccured = false;
         try {
