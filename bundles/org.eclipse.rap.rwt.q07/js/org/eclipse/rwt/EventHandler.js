@@ -160,7 +160,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         }
         util.saveData( event, keyCode, charCode );
       } catch( ex ) {
-        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -248,7 +248,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           this._processMouseEvent( event ); 
         }
       } catch( ex ) {
-        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -461,7 +461,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         }
         util.stopDomEvent( vEvent );
       } catch( ex ) {
-        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -483,7 +483,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           target = target.getParent();
         }
       } catch( ex ) {
-        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -507,7 +507,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         }
         qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowblur" );
       } catch( ex ) {
-        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -519,7 +519,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         this._focused = true;
         qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowfocus" );
       } catch( ex ) {
-        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -535,7 +535,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           qx.ui.core.ClientDocument.getInstance().createDispatchEvent( "windowresize" );
         }
       } catch( ex ) {
-        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
 

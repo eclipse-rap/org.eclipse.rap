@@ -248,7 +248,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
           if( org.eclipse.swt.EventUtil.getSuspended() ) {
             throw msg;
           } else {
-            org.eclipse.swt.Request.getInstance().processJavaScriptError( msg );
+            org.eclipse.rwt.ErrorHandler.processJavaScriptError( msg );
           }
         }
       }

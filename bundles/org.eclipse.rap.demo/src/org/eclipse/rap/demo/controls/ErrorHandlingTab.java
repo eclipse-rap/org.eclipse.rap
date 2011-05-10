@@ -77,11 +77,23 @@ public class ErrorHandlingTab extends ExampleTab {
         JSExecutor.executeJS( "this is no valid JavaScript!" );
       }
     } );
+    Button btnClientError = new Button( parent, SWT.PUSH );
+    btnClientError.setText( "Throw uncaught client-side JavaScript error" );
+    btnClientError.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        StringBuffer script = new StringBuffer();
+        script.append( "window.setTimeout( '" );
+        script.append( "org.eclipse.rwt.ErrorHandler.processJavaScriptError( " );
+        script.append( "new Error( \"I am client-side error\" ) )" );
+        script.append( "', 1000 );" );
+        JSExecutor.executeJS( script.toString() );
+      }
+    } );
     Button btnServerException = new Button( parent, SWT.PUSH );
     btnServerException.setText( "Throw uncaught server-side exeption" );
     btnServerException.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        throw new RuntimeException( "Shit happens, rama rama ding ding" );
+        throw new RuntimeException( "Some exeption occured" );
       }
     } );
     Button btnServerError = new Button( parent, SWT.PUSH );

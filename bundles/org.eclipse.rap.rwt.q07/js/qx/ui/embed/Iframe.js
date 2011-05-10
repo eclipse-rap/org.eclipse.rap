@@ -90,7 +90,7 @@ qx.Class.define("qx.ui.embed.Iframe",
           throw new Error("Could not find iframe which was loaded [B]!");
         }
       } catch( ex ) {
-        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
 

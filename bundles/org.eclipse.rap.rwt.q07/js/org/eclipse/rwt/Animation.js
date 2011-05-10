@@ -274,7 +274,7 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
           }
         }
       } catch( ex ) {
-        org.eclipse.swt.Request.getInstance().processJavaScriptError( ex );
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
     

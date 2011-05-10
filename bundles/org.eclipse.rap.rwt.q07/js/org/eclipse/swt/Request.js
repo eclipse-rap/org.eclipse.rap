@@ -285,15 +285,14 @@ qx.Class.define( "org.eclipse.swt.Request", {
         }
         if( text == "" || text == null ) {
           content
-            = "<html><head><title>Error Page</title></head><body>"
-            + "<p>Request failed.</p><pre>"
+            = "<p>Request failed.</p><pre>"
             + "HTTP Status Code: "
             + String( evt.getStatusCode() )
-            + "</pre></body></html>";
+            + "</pre>";
         } else {
           content = text;
         }
-        this._writeErrorPage( content );
+        org.eclipse.rwt.ErrorHandler.showError( content );
       }
       // [if] Dispose the only finished transport - see bug 301261, 317616
       exchange.dispose();
@@ -311,7 +310,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         //   the stale application will be cleaned up properly by the browser
         var hrefAttr = "href=\"" + window.location + "\"";
         var content = this._timeoutPage.replace( /{HREF_URL}/, hrefAttr );
-        this._writeErrorPage( content );
+        org.eclipse.rwt.ErrorHandler.showTimeout( content );
       } else {
         var errorOccured = false;
         try {
@@ -321,45 +320,20 @@ qx.Class.define( "org.eclipse.swt.Request", {
             qx.ui.core.Widget.flushGlobalQueues();
             org.eclipse.swt.EventUtil.setSuspended( false );
           }
-          this._runningRequestCount--;
-          this._hideWaitHint();
         } catch( ex ) {
-          var content
-            = "<html><head><title>Error Page</title></head><body>"
-            + "<p>Could not evaluate javascript response:</p><pre>"
-            + this._gatherErrorInfo( text, ex )
-            + "</pre></body></html>";
-          this._writeErrorPage( content );
+          org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse( text,
+                                                                         ex,
+                                                                         this._currentRequest );
           errorOccured = true;
         }
         if( !errorOccured ) {
           this._dispatchReceivedEvent();
         }
       }
+      this._runningRequestCount--;
+      this._hideWaitHint();
       // [if] Dispose the only finished transport - see bug 301261, 317616
       exchange.dispose();
-    },
-    
-    _gatherErrorInfo : function( text, error ) {
-      var result = [];
-      result.push( "Error: " + error + "\n" );
-      result.push( "Script: " + text );
-      try{
-        if( error instanceof Error ) {
-          for( var key in error ) {
-            result.push( key + ": " + error[ key ] );
-          }
-        }
-        result.push( "Debug: " + qx.core.Variant.get( "qx.debug" ) );
-        result.push( "Request: " + this._currentRequest.getData() );
-        var inFlush = qx.ui.core.Widget._inFlushGlobalQueues;
-        if( inFlush ) {
-          result.push( "Phase: " + qx.ui.core.Widget._flushGlobalQueuesPhase );
-        }
-      } catch( ex ) {
-        // ensure we get a result no matter what
-      }
-      return result.join( "\n  " );
     },
 
     ///////////////////////////////
@@ -462,33 +436,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
         var event = new qx.event.type.DataEvent( "received", this );
         this.dispatchEvent( event, true );
       }
-    },
-
-    _writeErrorPage : function( content ) {
-      // shutdown or disable all things that could interfere with showing the
-      // error page
-      var app = qx.core.Init.getInstance().getApplication();
-      app.setExitConfirmation( null );
-      qx.io.remote.RequestQueue.getInstance().setEnabled( false );
-      // write the error page content
-      var client = org.eclipse.rwt.Client;
-      if( client.isMshtml() && client.getMajor() == 6 ) {
-        // do nothing for IE6, see bug 264150: Error page is broken in IE6
-      } else {
-        document.open( "text/html", true );
-      }
-      document.write( content );
-      document.close();
-    },
-
-    processJavaScriptError : function( error ) {
-      var content = "<html><head><title>Error Page</title></head><body>"
-                  + "<p>Javascript error occurred:</p><pre>"
-                  + error
-                  + "</pre></body></html>";
-      this._writeErrorPage( content );
-      throw error;
     }
-
   }
 });
