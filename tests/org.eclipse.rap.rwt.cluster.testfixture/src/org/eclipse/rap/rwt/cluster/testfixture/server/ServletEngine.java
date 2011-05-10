@@ -31,7 +31,7 @@ import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 public class ServletEngine implements IServletEngine {
   
   static {
-    Log.setLog( new SilentLogger() );
+    Log.setLog( new ServletEngineLogger() );
   }
 
   private final Server server;

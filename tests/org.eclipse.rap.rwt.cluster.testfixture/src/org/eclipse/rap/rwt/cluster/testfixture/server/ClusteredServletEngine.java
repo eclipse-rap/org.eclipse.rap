@@ -23,8 +23,8 @@ public class ClusteredServletEngine extends ServletEngine {
   }
   
   private static class ClusteredSessionManagerProvider implements ISessionManagerProvider {
-    private static final long SCAVENGE_INTERVAL = 1;
-    private static final int SAVE_INTERVAL = 1;
+    private static final long SCAVENGE_INTERVAL = 60 * 60; // 1 hour
+    private static final int SAVE_INTERVAL = 1; // 1 sec
 
     private static int nodeCounter = 0;
 

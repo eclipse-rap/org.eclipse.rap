@@ -13,16 +13,18 @@ package org.eclipse.rap.rwt.cluster.testfixture.server;
 import org.eclipse.jetty.util.log.Logger;
 
 
-public class SilentLogger implements Logger {
+class ServletEngineLogger implements Logger {
 
   private final String name;
+  private boolean debugEnabled;
 
-  SilentLogger() {
-    this( SilentLogger.class.getName() );
+  ServletEngineLogger() {
+    this( ServletEngineLogger.class.getName(), false );
   }
   
-  public SilentLogger( String name ) {
+  ServletEngineLogger( String name, boolean debugEnabled ) {
     this.name = name;
+    this.debugEnabled = debugEnabled;
   }
 
   public String getName() {
@@ -30,19 +32,19 @@ public class SilentLogger implements Logger {
   }
 
   public Logger getLogger( String name ) {
-    Logger result = this;
+    ServletEngineLogger result = this;
     if( !name.equals( getName() ) ) {
-      result = new SilentLogger( name ); 
+      result = new ServletEngineLogger( name, debugEnabled );
     }
     return result;
   }
 
   public boolean isDebugEnabled() {
-    return false;
+    return debugEnabled;
   }
 
   public void setDebugEnabled( boolean enabled ) {
-    throw new UnsupportedOperationException();
+    this.debugEnabled = enabled;
   }
 
   public void warn( String msg, Object[] args ) {
@@ -67,12 +69,22 @@ public class SilentLogger implements Logger {
   }
 
   public void debug( String msg, Object[] args ) {
+    debug( msg, ( Throwable )null );
   }
 
-  public void debug( Throwable thrown ) {
+  public void debug( Throwable throwable ) {
+    debug( null, throwable );
   }
 
-  public void debug( String msg, Throwable thrown ) {
+  public void debug( String msg, Throwable throwable ) {
+    if( debugEnabled ) {
+      if( msg != null ) {
+        System.out.println( msg );
+      }
+      if( throwable != null ) {
+        System.out.println( throwable );
+      }
+    }
   }
 
   public void ignore( Throwable ignored ) {
