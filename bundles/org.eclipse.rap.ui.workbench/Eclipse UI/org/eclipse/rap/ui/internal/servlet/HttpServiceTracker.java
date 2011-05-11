@@ -15,20 +15,30 @@ package org.eclipse.rap.ui.internal.servlet;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.IEngineConfig;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
+import org.eclipse.rwt.internal.engine.RWTDelegate;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
@@ -228,7 +238,8 @@ public class HttpServiceTracker extends ServiceTracker {
     final String[] result = new String[ 1 ];
     ApplicationContextUtil.runWithInstance( rwtContext, new Runnable() {
       public void run() {
-        String contextRoot = ContextProvider.getWebAppBase();
+        IEngineConfig engineConfig = RWTFactory.getConfigurationReader().getEngineConfig();
+		String contextRoot = engineConfig.getServerContextDir().toString();
         result[ 0 ] = ( new Path( contextRoot ) ).toString();
       }
     } );
