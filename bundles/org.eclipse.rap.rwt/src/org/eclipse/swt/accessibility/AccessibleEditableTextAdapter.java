@@ -26,7 +26,9 @@ package org.eclipse.swt.accessibility;
  * @since 1.4
  */
 public class AccessibleEditableTextAdapter implements AccessibleEditableTextListener {
-	/**
+	private static final long serialVersionUID = 1L;
+
+  /**
 	 * Copies the substring beginning at the specified <code>start</code> offset
 	 * and extending to the character at offset <code>end - 1</code> to the clipboard.
 	 * 
@@ -38,7 +40,7 @@ public class AccessibleEditableTextAdapter implements AccessibleEditableTextList
 	 * <li>[out] result - set to {@link ACC#OK} if the operation was completed successfully</li>
 	 * </ul>
 	 */
-	public void copyText(AccessibleEditableTextEvent e) {};
+	public void copyText(AccessibleEditableTextEvent e) {}
 
 	/**
 	 * Moves the substring beginning at the specified <code>start</code> offset
@@ -52,7 +54,7 @@ public class AccessibleEditableTextAdapter implements AccessibleEditableTextList
 	 * <li>[out] result - set to {@link ACC#OK} if the operation was completed successfully</li>
 	 * </ul>
 	 */
-	public void cutText(AccessibleEditableTextEvent e) {};
+	public void cutText(AccessibleEditableTextEvent e) {}
 
 	/**
 	 * Inserts the text in the clipboard at the leading edge of the specified <code>start</code> offset.
@@ -63,7 +65,7 @@ public class AccessibleEditableTextAdapter implements AccessibleEditableTextList
 	 * <li>[out] result - set to {@link ACC#OK} if the operation was completed successfully</li>
 	 * </ul>
 	 */
-	public void pasteText(AccessibleEditableTextEvent e) {};
+	public void pasteText(AccessibleEditableTextEvent e) {}
 
 	/**
 	 * Replaces the substring beginning at the specified <code>start</code> offset
@@ -83,7 +85,7 @@ public class AccessibleEditableTextAdapter implements AccessibleEditableTextList
 	 * <li>[out] result - set to {@link ACC#OK} if the operation was completed successfully</li>
 	 * </ul>
 	 */
-	public void replaceText(AccessibleEditableTextEvent e) {};
+	public void replaceText(AccessibleEditableTextEvent e) {}
 
 	/**
 	 * Replaces the set of attributes of the substring beginning at the specified <code>start</code> offset
@@ -103,5 +105,5 @@ public class AccessibleEditableTextAdapter implements AccessibleEditableTextList
 	 * <li>[out] result - set to {@link ACC#OK} if the operation was completed successfully</li>
 	 * </ul>
 	 */
-	public void setTextAttributes(AccessibleTextAttributeEvent e) {};
+	public void setTextAttributes(AccessibleTextAttributeEvent e) {}
 }
