@@ -15,8 +15,8 @@ import java.io.File;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
@@ -50,14 +50,13 @@ import org.eclipse.rwt.internal.util.ParamCheck;
  */
 public final class RWTFileSettingStoreFactory implements ISettingStoreFactory {
 
-  public ISettingStore createSettingStore( final String storeId ) {
+  public ISettingStore createSettingStore( String storeId ) {
     ParamCheck.notNullOrEmpty( storeId, "storeId" );
     ISettingStore result = new FileSettingStore( getWorkDir() );
     try {
       result.loadById( storeId );
     } catch( SettingStoreException sse ) {
-      String msg = String.valueOf( sse.getMessage() );
-      RWT.getRequest().getSession().getServletContext().log( msg, sse );
+      ServletLog.log( sse.getMessage(), sse );
     }
     return result;
   }
@@ -65,13 +64,12 @@ public final class RWTFileSettingStoreFactory implements ISettingStoreFactory {
   //////////////////
   // helping methods
 
-  private ServletContext getContext() {
-    HttpSession Session = ContextProvider.getRequest().getSession();
-    ServletContext context = Session.getServletContext();
-    return context;
+  private static ServletContext getServletContext() {
+    HttpSession session = ContextProvider.getRequest().getSession();
+    return session.getServletContext();
   }
   
-  private File getWorkDir() {
+  private static File getWorkDir() {
     File result = getWorkDirFromWebXml();
     if( result == null ) {
       result = getWorkDirFromServletContext();
@@ -86,19 +84,13 @@ public final class RWTFileSettingStoreFactory implements ISettingStoreFactory {
     return result;
   }
   
-  private File getWorkDirFromWebXml() {
-    String key = FileSettingStore.FILE_SETTING_STORE_DIR;
-    String path = getContext().getInitParameter( key );
-    return ( path != null ) ? new File( path ) : null;
+  private static File getWorkDirFromWebXml() {
+    String path = getServletContext().getInitParameter( FileSettingStore.FILE_SETTING_STORE_DIR );
+    return path != null ? new File( path ) : null;
   }
 
-  
-  private File getWorkDirFromServletContext() {
-    String key = "javax.servlet.context.tempdir";
-    File parent = ( File ) getContext().getAttribute( key );
-    return ( parent != null ) 
-           ? new File( parent, FileSettingStore.class.getName() )
-           : null;
+  private static File getWorkDirFromServletContext() {
+    File parent = ( File )getServletContext().getAttribute( "javax.servlet.context.tempdir" );
+    return parent != null ? new File( parent, FileSettingStore.class.getName() ) : null;
   }
-  
 }
