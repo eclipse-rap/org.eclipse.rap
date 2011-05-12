@@ -49,7 +49,7 @@ public class DatabaseServer {
   }
 
   public String getDriverClassName() {
-    return "org.h2.Driver";
+    return org.h2.Driver.class.getName();
   }
   
   public String getConnectionUrl() {
