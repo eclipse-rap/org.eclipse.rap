@@ -17,65 +17,70 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+
 public final class TestResponse implements HttpServletResponse {
 
   private TestServletOutputStream outStream;
   private String contentType;
   private String characterEncoding;
-  private Map cookies = new HashMap();
-  private Map headers = new HashMap();
+  private Map cookies;
+  private Map headers;
   private int errorStatus;
   private String redirect;
   private PrintWriter printWriter;
-  
+
   public TestResponse() {
     characterEncoding = "UTF-8";
     outStream = new TestServletOutputStream();
+    cookies = new HashMap();
+    headers = new HashMap();
   }
 
-  public void addCookie( final Cookie arg0 ) {
+  public void addCookie( Cookie arg0 ) {
     cookies.put( arg0.getName(), arg0 );
   }
 
-  public Cookie getCookie( final String cookieName ) {
+  public Cookie getCookie( String cookieName ) {
     return ( Cookie )cookies.get( cookieName );
   }
 
-  public boolean containsHeader( final String arg0 ) {
+  public boolean containsHeader( String arg0 ) {
     return false;
   }
 
-  public String encodeURL( final String arg0 ) {
+  public String encodeURL( String arg0 ) {
     return arg0;
   }
 
-  public String encodeRedirectURL( final String arg0 ) {
+  public String encodeRedirectURL( String arg0 ) {
     return arg0;
   }
 
-  public String encodeUrl( final String arg0 ) {
+  public String encodeUrl( String arg0 ) {
     return arg0;
   }
 
-  public String encodeRedirectUrl( final String arg0 ) {
+  public String encodeRedirectUrl( String arg0 ) {
     return arg0;
   }
 
-  public void sendError( final int arg0, final String arg1 )
+  public void sendError( int code, String message )
     throws IOException
   {
-    errorStatus = arg0;
+    errorStatus = code;
+    getWriter().write( "HTTP ERROR " + code + "\nReason: " + message );
   }
 
-  public void sendError( final int arg0 ) throws IOException {
-    errorStatus = arg0;
+  public void sendError( int code ) throws IOException {
+    errorStatus = code;
+    getWriter().write( "HTTP ERROR " + code );
   }
 
   public int getErrorStatus() {
     return errorStatus;
   }
 
-  public void sendRedirect( final String arg0 ) throws IOException {
+  public void sendRedirect( String arg0 ) throws IOException {
     redirect = arg0;
   }
 
@@ -83,33 +88,33 @@ public final class TestResponse implements HttpServletResponse {
     return redirect;
   }
 
-  public void setDateHeader( final String arg0, final long arg1 ) {
+  public void setDateHeader( String arg0, long arg1 ) {
   }
 
-  public void addDateHeader( final String arg0, final long arg1 ) {
+  public void addDateHeader( String arg0, long arg1 ) {
   }
 
-  public void setHeader( final String arg0, final String arg1 ) {
+  public void setHeader( String arg0, String arg1 ) {
     headers.put( arg0, arg1 );
   }
 
-  public String getHeader( final String name ) {
+  public String getHeader( String name ) {
     return ( String )headers.get( name );
   }
 
-  public void addHeader( final String arg0, final String arg1 ) {
+  public void addHeader( String arg0, String arg1 ) {
   }
 
-  public void setIntHeader( final String arg0, final int arg1 ) {
+  public void setIntHeader( String arg0, int arg1 ) {
   }
 
-  public void addIntHeader( final String arg0, final int arg1 ) {
+  public void addIntHeader( String arg0, int arg1 ) {
   }
 
-  public void setStatus( final int arg0 ) {
+  public void setStatus( int arg0 ) {
   }
 
-  public void setStatus( final int arg0, final String arg1 ) {
+  public void setStatus( int arg0, String arg1 ) {
   }
 
   public ServletOutputStream getOutputStream() throws IOException {
@@ -123,7 +128,7 @@ public final class TestResponse implements HttpServletResponse {
     return printWriter;
   }
 
-  public void setContentLength( final int arg0 ) {
+  public void setContentLength( int arg0 ) {
   }
 
   public void setContentType( String contentType ) {
@@ -144,7 +149,7 @@ public final class TestResponse implements HttpServletResponse {
     return characterEncoding;
   }
 
-  public void setBufferSize( final int arg0 ) {
+  public void setBufferSize( int arg0 ) {
   }
 
   public int getBufferSize() {
@@ -164,7 +169,7 @@ public final class TestResponse implements HttpServletResponse {
   public void reset() {
   }
 
-  public void setLocale( final Locale arg0 ) {
+  public void setLocale( Locale arg0 ) {
   }
 
   public Locale getLocale() {

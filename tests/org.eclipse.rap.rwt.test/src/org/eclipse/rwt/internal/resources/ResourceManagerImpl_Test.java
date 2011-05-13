@@ -45,10 +45,10 @@ public class ResourceManagerImpl_Test extends TestCase {
     = "org/eclipse/rwt/internal/resources/iso-resource.js";
   private final static String UTF_8_RESOURCE
     = "org/eclipse/rwt/internal/resources/utf-8-resource.js";
-  private static final String TEST_CONTEXT = TestRequest.CONTEX_PATH;
+  private static final String TEST_CONTEXT = TestRequest.DEFAULT_CONTEX_PATH;
   private static final int TEST_PORT = TestRequest.PORT;
-  private static final String TEST_SERVER = TestRequest.SERVER_NAME;
-  private static final String TEST_SERVLET_PATH = TestRequest.SERVLET_PATH;
+  private static final String TEST_SERVER = TestRequest.DEFAULT_SERVER_NAME;
+  private static final String TEST_SERVLET_PATH = TestRequest.DEFAULT_SERVLET_PATH;
   private static final String TEST_CONTEXT_URL
     =   "http://"
       + TEST_SERVER
