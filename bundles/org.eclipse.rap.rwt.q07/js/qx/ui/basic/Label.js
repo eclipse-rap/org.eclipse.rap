@@ -457,11 +457,17 @@ qx.Class.define("qx.ui.basic.Label",
 */
 
       // store values
-      if( org.eclipse.rwt.Client.isGecko() ) {
+      if( org.eclipse.rwt.Client.isGecko() && element.getBoundingClientRect ) {
         // See Bug 264448, 340841
         var bounds = element.getBoundingClientRect();
-        this._cachedPreferredInnerWidth = Math.ceil( bounds.width );
-        this._cachedPreferredInnerHeight = Math.ceil( bounds.height );
+        // In FF 3.0.x getBoundingClientRect has no width/height properties
+        if( bounds.width != null && bounds.height != null ) {
+          this._cachedPreferredInnerWidth = Math.ceil( bounds.width );
+          this._cachedPreferredInnerHeight = Math.ceil( bounds.height );
+        } else {
+          this._cachedPreferredInnerWidth = element.scrollWidth;
+          this._cachedPreferredInnerHeight = element.scrollHeight;
+        }
       } else {
         this._cachedPreferredInnerWidth = element.scrollWidth;
         this._cachedPreferredInnerHeight = element.scrollHeight;

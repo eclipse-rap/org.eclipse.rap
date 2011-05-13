@@ -796,12 +796,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
           style.width = wrapWidth + "px";
         }
         var result;
-        if( org.eclipse.rwt.Client.isGecko() ) {
+        if( org.eclipse.rwt.Client.isGecko() && element.getBoundingClientRect ) {
           // See Bug 340841
           var bounds = element.getBoundingClientRect();
-          var result = [ Math.ceil( bounds.width ), Math.ceil( bounds.height ) ];
+          // In FF 3.0.x getBoundingClientRect has no width/height properties
+          if( bounds.width != null && bounds.height != null ) {
+            result = [ Math.ceil( bounds.width ), Math.ceil( bounds.height ) ];
+          } else {
+            result = [ element.scrollWidth, element.scrollHeight ];
+          }
         } else {
-          var result = [ element.scrollWidth, element.scrollHeight ];
+          result = [ element.scrollWidth, element.scrollHeight ];
         }
         style.width = "auto";
         return result;
