@@ -786,6 +786,68 @@ public class TreeLCA_Test extends TestCase {
     assertEquals( "", log.toString() );
   }
   
+  public void testCreateVirtualItems() {
+    final Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setSize( 200, 200 );
+    tree.addListener( SWT.SetData, new Listener() {
+
+      public void handleEvent( Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        item.setText( "node " + tree.indexOf( item ) );
+        item.setItemCount( 10 );
+      }
+    } );
+    tree.setItemCount( 7 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.fakeNewRequest( display );
+    
+    Fixture.executeLifeCycleFromServerThread();
+
+    assertEquals( 7, countOccurences( "TreeItem.createItem(", Fixture.getAllMarkup() ) );
+  }
+
+  public void testPreserveItemCount() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    
+    Fixture.preserveWidgets();
+    
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
+    Integer preserved = ( Integer )adapter.getPreserved( TreeLCA.PROP_ITEM_COUNT );
+    assertEquals( new Integer( 0 ), preserved );
+    
+    Fixture.clearPreserved();
+    tree.setItemCount( 10 );
+    Fixture.preserveWidgets();
+    
+    preserved = ( Integer )adapter.getPreserved( TreeLCA.PROP_ITEM_COUNT );
+    assertEquals( new Integer( 10 ), preserved );
+  }
+
+  public void testRenderItemCount() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.setItemCount( 10 );
+    TreeLCA lca = new TreeLCA();
+    lca.render( tree );
+
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setItemCount( 10 )" ) != -1 );
+  }
+
+  private static int countOccurences( String searchString, String stringToSearch ) {
+    int result = 0;
+    int index = stringToSearch.indexOf( searchString );
+    while( index != -1 ) {
+      result++;
+      index = stringToSearch.indexOf( searchString, index + 1 );
+    }
+    return result;
+  }
+
   private static void createTreeColumns( final Tree tree, final int count ) {
     for( int i = 0; i < count; i++ ) {
       new TreeColumn( tree, SWT.NONE );

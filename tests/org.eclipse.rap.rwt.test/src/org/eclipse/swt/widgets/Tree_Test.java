@@ -106,7 +106,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testDisposeWithFontDisposeInDisposeListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( composite, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
@@ -181,8 +180,49 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  public void testIndexOfAfterDispose() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    for( int i = 0; i < 10; i++ ) {
+      new TreeItem( tree, SWT.NONE );
+    }
+    TreeItem item8 = tree.getItem( 8 );
+    
+    tree.getItem( 3 ).dispose();
+    
+    assertEquals( 7, tree.indexOf( item8 ) );
+  }
+
+  public void testIndexOfAfterInsert() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    for( int i = 0; i < 10; i++ ) {
+      new TreeItem( tree, SWT.NONE );
+    }
+    TreeItem item8 = tree.getItem( 8 );
+    
+    new TreeItem( tree, SWT.NONE, 3 );
+    
+    assertEquals( 9, tree.indexOf( item8 ) );
+  }
+
+  public void testGetItemCountAfterInsert() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setItemCount( 10 );
+
+    new TreeItem( tree, SWT.NONE );
+    
+    assertEquals( 11, tree.getItemCount() );
+  }
+
+  public void testGetItemCountAfterRemove() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setItemCount( 10 );
+    
+    tree.getItem( 3 ).dispose();
+    
+    assertEquals( 9, tree.getItemCount() );
+  }
+
   public void testExpandCollapse() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     Tree tree = new Tree( composite, SWT.NONE );
     tree.addTreeListener( new TreeListener() {
@@ -532,6 +572,7 @@ public class Tree_Test extends TestCase {
       tree.getColumn( 0 );
       fail( "No exception thrown for index out of range" );
     } catch( IllegalArgumentException e ) {
+      // expected
     }
 
     TreeColumn column0 = new TreeColumn( tree, SWT.LEFT );
@@ -539,6 +580,7 @@ public class Tree_Test extends TestCase {
       tree.getColumn( 1 );
       fail( "No exception thrown for index out of range" );
     } catch( IllegalArgumentException e ) {
+      // expected
     }
 
     assertEquals( column0, tree.getColumn( 0 ) );
@@ -551,6 +593,7 @@ public class Tree_Test extends TestCase {
       tree.getColumn( 1 );
       fail( "No exception thrown for index out of range" );
     } catch( IllegalArgumentException e ) {
+      // expected
     }
 
     column0.dispose();
@@ -558,6 +601,7 @@ public class Tree_Test extends TestCase {
       tree.getColumn( 0 );
       fail( "No exception thrown for index out of range" );
     } catch( IllegalArgumentException e ) {
+      // expected
     }
   }
 
@@ -646,7 +690,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testResizeListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     final List log = new ArrayList();
     tree.addControlListener( new ControlAdapter() {
@@ -709,7 +752,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnResize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 20, 20 );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
@@ -747,7 +789,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnHeaderVisibleChange() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( composite, SWT.NONE );
     int itemCount = 5;
     for( int i = 0; i < itemCount ; i++ ) {
@@ -764,7 +805,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnVirtualItemCountChange() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     int itemCount = 5;
     int itemHeight = tree.getItemHeight();
@@ -795,7 +835,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyHFirst() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( composite, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 20 );
@@ -814,7 +853,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyVFirst() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( composite, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 26 );
@@ -831,7 +869,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testComputeSizeWithColumns() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( composite, SWT.NONE );
     Point expected = new Point( 79, 79 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -897,7 +934,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testComputeSizeWithIndention() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( composite, SWT.NONE );
     Point expected = new Point( 79, 79 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -918,7 +954,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testShowColumn() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     composite.setSize( 800, 600 );
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 300, 100 );
@@ -946,6 +981,7 @@ public class Tree_Test extends TestCase {
       tree.showColumn( null );
       fail( "Null argument not allowed" );
     } catch( IllegalArgumentException e ) {
+      // expected
     }
 
     TreeColumn column = tree.getColumn( 3 );
@@ -954,6 +990,7 @@ public class Tree_Test extends TestCase {
       tree.showColumn( column );
       fail( "Disposed column not allowed as argument" );
     } catch( IllegalArgumentException e ) {
+      // expected
     }
 
     Tree tree1 = new Tree( composite, SWT.NONE );
@@ -1054,22 +1091,11 @@ public class Tree_Test extends TestCase {
   }
 
   public void testVirtualInitalSetDataEvents() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
     final List log = new ArrayList();
     tree.addListener( SWT.SetData, new Listener() {
       public void handleEvent( final Event event ) {
-        TreeItem item = ( TreeItem )event.item;
-        String text = null;
-        TreeItem parentItem = item.getParentItem();
-        if( parentItem == null ) {
-          text = "node " + tree.indexOf( item );
-        } else {
-          text = parentItem.getText() + " - " + parentItem.indexOf( item );
-        }
-        item.setText( text );
-        item.setItemCount( 10 );
-        log.add( item );
+        log.add( event.item );
       }
     } );
     tree.setItemCount( 20 );
@@ -1082,8 +1108,17 @@ public class Tree_Test extends TestCase {
     assertFalse( log.contains( tree.getItem( 19 ) ) );
   }
 
+  public void testSetDataEvents() {
+    final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
+    tree.addListener( SWT.SetData, createSetDataListener() );
+    tree.setItemCount( 20 );
+
+    TreeItem item = tree.getItem( 3 );
+    assertEquals( "node 3", item.getText() );
+    assertEquals( 10, item.getItemCount() );
+  }
+
   public void testVirtualNoSetDataEventForCollapsedItems() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Tree tree = new Tree( composite, SWT.VIRTUAL );
     final List log = new ArrayList();
     tree.addListener( SWT.SetData, new Listener() {
@@ -1099,46 +1134,95 @@ public class Tree_Test extends TestCase {
     assertFalse( item.getItems()[ 0 ].isCached() );
     assertEquals( 1, log.size() );
   }
+  
+  public void testVirtualItemIsResolved() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setItemCount( 10 );
 
-  public void testVirtualClear() {
-    final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
-    tree.setSize( 100, 160 );
-    tree.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
-        TreeItem item = ( TreeItem )event.item;
-        String text = null;
-        TreeItem parentItem = item.getParentItem();
-        if( parentItem == null ) {
-          text = "node " + tree.indexOf( item );
-        } else {
-          text = parentItem.getText() + " - " + parentItem.indexOf( item );
-        }
-        item.setText( text );
-        item.setItemCount( 10 );
-      }
-    } );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    TreeItem item = tree.getItem( 9 );
 
-    tree.setItemCount( 1 );
-    assertEquals( "node 0", tree.getItem( 0 ).getText() );
-
-    tree.clearAll( true );
-    assertEquals( "node 0", tree.getItem( 0 ).getText() );
-
-    tree.clear( 0, false );
-    assertEquals( "node 0", tree.getItem( 0 ).getText() );
-
-    TreeItem root = tree.getItem( 0 );
-    root.clear( 0, false );
-    assertEquals( "node 0 - 0", root.getItem( 0 ).getText() );
-
-    root.clearAll( true );
-    assertEquals( "node 0 - 0", root.getItem( 0 ).getText() );
-    assertEquals( "node 0 - 1", root.getItem( 1 ).getText() );
+    assertNotNull( item );
+    assertFalse( item.isDisposed() );
   }
 
+  public void testVirtualWithSmallerItemsCount() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setItemCount( 10 );
+    TreeItem item3 = tree.getItem( 3 );
+    TreeItem item9 = tree.getItem( 9 );
+    
+    tree.setItemCount( 5 );
+    
+    assertEquals( 5, tree.getItemCount() );
+    assertFalse( item3.isDisposed() );
+    assertTrue( item9.isDisposed() );
+  }
+
+  public void testVirtualClearAllNonRecursive() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setSize( 100, 160 );
+    tree.addListener( SWT.SetData, createSetDataListener() );
+    tree.setItemCount( 1 );
+    tree.getItem( 0 ).getText(); // force set data
+    tree.getItem( 0 ).setText( "custom" );
+    tree.getItem( 0 ).getItem( 0 ).setText( "custom" );
+    
+    tree.clearAll( false );
+    
+    assertEquals( "node 0", tree.getItem( 0 ).getText() );
+    assertEquals( "custom", tree.getItem( 0 ).getItem( 0 ).getText() );
+  }
+  
+  public void testVirtualClearAllRecursive() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setSize( 100, 160 );
+    tree.addListener( SWT.SetData, createSetDataListener() );
+    tree.setItemCount( 1 );
+    tree.getItem( 0 ).getText(); // force set data
+    tree.getItem( 0 ).setText( "custom" );
+    tree.getItem( 0 ).getItem( 0 ).setText( "custom" );
+
+    tree.clearAll( true );
+
+    assertEquals( "node 0", tree.getItem( 0 ).getText() );
+    assertEquals( "node 0 - 0", tree.getItem( 0 ).getItem( 0 ).getText() );
+  }
+  
+  public void testVirtualClearNonRecursive() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
+    tree.setSize( 100, 160 );
+    tree.addListener( SWT.SetData, createSetDataListener() );
+    tree.setItemCount( 2 );
+    tree.getItem( 0 ).getText(); // force set data
+    tree.getItem( 0 ).setText( "custom" );
+    tree.getItem( 0 ).getItem( 0 ).setText( "custom" );
+    tree.getItem( 1 ).setText( "custom" );
+    
+    tree.clear( 0, false );
+
+    assertEquals( "node 0", tree.getItem( 0 ).getText() );
+    assertEquals( "custom", tree.getItem( 0 ).getItem( 0 ).getText() );
+    assertEquals( "custom", tree.getItem( 1 ).getText() );
+  }
+
+  public void testVirtualClearRecursive() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
+    tree.setSize( 100, 160 );
+    tree.addListener( SWT.SetData, createSetDataListener() );
+    tree.setItemCount( 2 );
+    tree.getItem( 0 ).getText(); // force set data
+    tree.getItem( 0 ).setText( "custom" );
+    tree.getItem( 0 ).getItem( 0 ).setText( "custom" );
+    tree.getItem( 1 ).setText( "custom" );
+    
+    tree.clear( 0, true );
+    
+    assertEquals( "node 0", tree.getItem( 0 ).getText() );
+    assertEquals( "node 0 - 0", tree.getItem( 0 ).getItem( 0 ).getText() );
+    assertEquals( "custom", tree.getItem( 1 ).getText() );
+  }
+  
   public void testVirtualComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Tree tree = new Tree( composite, SWT.BORDER | SWT.VIRTUAL );
     tree.setItemCount( 10 );
     tree.addListener( SWT.SetData, new Listener() {
@@ -1184,7 +1268,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testVirtualScrollThrowsSetData() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final LoggingListener log = new LoggingListener();
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
@@ -1199,7 +1282,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testVirtualShowItemThrowsSetData() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final LoggingListener log = new LoggingListener();
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
@@ -1287,7 +1369,17 @@ public class Tree_Test extends TestCase {
     assertTrue( cellWidth3 > cellWidth2 );
   }
 
-  // TODO [DISCUSS_PERFORMANCE]
+  public void testGetItemByPoint() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    tree.setSize( 100, 100 );
+    
+    TreeItem result = tree.getItem( new Point( 5, 5 ) );
+    
+    assertSame( item1, result );
+  }
+
+  //TODO [DISCUSS_PERFORMANCE]
   public void testPreferredWidthBufferHandlingOfTreeItem() {
     Tree tree = new Tree( composite, SWT.NONE );
     
@@ -1315,7 +1407,7 @@ public class Tree_Test extends TestCase {
     //                             TreeItem.setData( WidgetUtil.CUSTOM_VARIANT, "variant" );
     //                             is used? And if so, how can we test this?
   }
-  
+
   // TODO [DISCUSS_PERFORMANCE]
   public void testChanged() {
     Tree tree = new Tree( composite, SWT.NONE );
@@ -1326,10 +1418,10 @@ public class Tree_Test extends TestCase {
     
     assertFalse( item1.hasPreferredWidthBuffer() );
   }
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakePhase( PhaseId.RENDER );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     composite = new Shell( display, SWT.NONE );
   }
@@ -1339,6 +1431,24 @@ public class Tree_Test extends TestCase {
     display = null;
     composite = null;
     Fixture.tearDown();
+  }
+
+  private static Listener createSetDataListener() {
+    return new Listener() {
+      public void handleEvent( Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        Tree parent = item.getParent();
+        TreeItem parentItem = item.getParentItem();
+        String text;
+        if( parentItem == null ) {
+          text = "node " + parent.indexOf( item );
+        } else {
+          text = parentItem.getText() + " - " + parentItem.indexOf( item );
+        }
+        item.setText( text );
+        item.setItemCount( 10 );
+      }
+    };
   }
 
   /////////

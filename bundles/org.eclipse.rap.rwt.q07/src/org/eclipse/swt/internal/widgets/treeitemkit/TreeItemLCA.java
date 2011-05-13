@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.*;
 
 public final class TreeItemLCA extends AbstractWidgetLCA {
 
+  static final String PROP_ITEM_COUNT = "itemCount";
   static final String PROP_CHECKED = "checked";
   static final String PROP_EXPANDED = "expanded";
   static final String PROP_SELECTION = "selection";
@@ -40,6 +41,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   static final String PROP_MATERIALIZED = "materialized";
   static final String PROP_VARIANT = "variant";
 
+  private static final Integer DEFAULT_ITEM_COUNT = new Integer( 0 );
+
   public void preserveValues( final Widget widget ) {
     TreeItem treeItem = ( TreeItem )widget;
     Tree tree = treeItem.getParent();
@@ -53,6 +56,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     boolean selection = isSelected( treeItem );
     adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
     if( treeAdapter.isCached( treeItem ) ) {
+      adapter.preserve( PROP_ITEM_COUNT, new Integer( treeItem.getItemCount() ) );
       preserveFont( treeItem );
       adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
       adapter.preserve( TreeItemLCA.PROP_EXPANDED, Boolean.valueOf( treeItem.getExpanded() ) );
@@ -120,6 +124,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     Tree tree = treeItem.getParent();
     ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     if( adapter.isCached( treeItem ) ) {
+      writeItemCount( treeItem );
       writeImages( treeItem );
       writeTexts( treeItem );
       writeBackground( treeItem );
@@ -144,6 +149,12 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.call( "dispose", null );
     }
+  }
+
+  private static void writeItemCount( TreeItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    Integer newValue = new Integer( item.getItemCount() );
+    writer.set( PROP_ITEM_COUNT, "itemCount", newValue, DEFAULT_ITEM_COUNT );
   }
 
   private static void writeVariant( final TreeItem item ) throws IOException {

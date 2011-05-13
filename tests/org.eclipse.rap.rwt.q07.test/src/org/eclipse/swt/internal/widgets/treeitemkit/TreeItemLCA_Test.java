@@ -181,9 +181,7 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
-    Object materialized = adapter.getPreserved( TreeItemLCA.PROP_MATERIALIZED );
-    assertEquals( Boolean.FALSE, materialized );
+    assertEquals( Boolean.FALSE, getPreservedProperty( treeItem, TreeItemLCA.PROP_MATERIALIZED ) );
     Fixture.clearPreserved();
     display.dispose();
   }
@@ -439,5 +437,45 @@ public class TreeItemLCA_Test extends TestCase {
     assertTrue( markup.indexOf( expected1 ) != -1 );
     assertTrue( markup.indexOf( expected2 ) != -1 );
     assertTrue( markup.indexOf( expected3 ) != -1 );
+  }
+
+  public void testPreserveInitialItemCount() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+
+    Fixture.preserveWidgets();
+
+    assertEquals( new Integer( 0 ), getPreservedProperty( item, TreeItemLCA.PROP_ITEM_COUNT ) );
+  }
+
+  public void testPreserveItemCount() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );    
+    
+    item.setItemCount( 10 );
+    Fixture.preserveWidgets();
+    
+    assertEquals( new Integer( 10 ), getPreservedProperty( item, TreeItemLCA.PROP_ITEM_COUNT ) );
+  }
+
+  public void testRenderItemCount() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( item );
+    Fixture.preserveWidgets();
+
+    item.setItemCount( 10 );
+    TreeItemLCA lca = new TreeItemLCA();
+    lca.render( item );
+
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setItemCount( 10 )" ) != -1 );
+  }
+
+  private static Object getPreservedProperty( Widget widget, String property ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    return adapter.getPreserved( property );
   }
 }

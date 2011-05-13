@@ -79,11 +79,30 @@ public class TreeItem extends Item {
 
   private static final int EMPTY_PREFERED_WIDTH_BUFFER = -1;
 
+  private final class CompositeItemHolder implements IItemHolderAdapter {
+    public void add( Item item ) {
+      throw new UnsupportedOperationException();
+    }
+    public void insert( Item item, int index ) {
+      throw new UnsupportedOperationException();
+    }
+    public void remove( Item item ) {
+      throw new UnsupportedOperationException();
+    }
+    public Item[] getItems() {
+      TreeItem[] items = getCreatedItems();
+      Item[] result = new Item[ items.length ];
+      System.arraycopy( items, 0, result, 0, items.length );
+      return result;
+    }
+  }
+
   private final TreeItem parentItem;
-  private final Tree parent;
-  private final ItemHolder itemHolder;
+  final Tree parent;
+  private TreeItem[] items;
+  int itemCount;
   private final ITreeItemAdapter treeItemAdapter;
-  private final int index;
+  int index;
   private Font font;
   private boolean expanded;
   private boolean checked;
@@ -136,7 +155,31 @@ public class TreeItem extends Item {
    * @see Widget#getStyle
    */
   public TreeItem( Tree parent, int style ) {
-    this( parent, null, style, parent == null ? 0 : parent.getItemCount() );
+    this( parent, null, style, parent == null ? 0 : parent.getItemCount(), true );
+  }
+
+  public TreeItem[] getCreatedItems() {
+    TreeItem[] result;
+    if( parent.isVirtual() ) {
+      int count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          count++;
+        }
+      }
+      result = new TreeItem[ count ];
+      count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          result[ count ] = items[ i ];
+          count++;
+        }
+      }
+    } else {
+      result = new TreeItem[ itemCount ];
+      System.arraycopy( items, 0, result, 0, itemCount );
+    }
+    return result;
   }
 
   /**
@@ -173,7 +216,7 @@ public class TreeItem extends Item {
    * @see Widget#getStyle
    */
   public TreeItem( Tree parent, int style, int index ) {
-    this( parent, null, style, index );
+    this( parent, null, style, index, true );
   }
 
   /**
@@ -210,7 +253,7 @@ public class TreeItem extends Item {
     this( parentItem == null ? null : parentItem.parent,
           parentItem,
           style,
-          parentItem == null ? 0 : parentItem.getItemCount() );
+          parentItem == null ? 0 : parentItem.getItemCount( false ), true );
   }
 
   /**
@@ -247,48 +290,91 @@ public class TreeItem extends Item {
    * @see Widget#getStyle
    */
   public TreeItem( TreeItem parentItem, int style, int index ) {
-    this( parentItem == null ? null : parentItem.parent, parentItem, style, index );
+    this( parentItem == null ? null : parentItem.parent, parentItem, style, index, true );
   }
 
-  private TreeItem( Tree parent, TreeItem parentItem, int style, int index ) {
+  TreeItem( Tree parent, TreeItem parentItem, int style, int index, boolean create ) {
     super( parent, style );
-    clearPreferredWidthBuffer();
-    int numberOfItems;
-    // if there is a parent item, get the next index of parentItem
-    if( parentItem != null ) {
-      numberOfItems = parentItem.getItemCount( false );
-    } else {
-      // If there is no parent item, get the next index of the tree
-      numberOfItems = parent.getItemCount();
-    }
-    // check range
-    if( index < 0 || index > numberOfItems ) {
-      error( SWT.ERROR_INVALID_RANGE );
-    }
     this.parent = parent;
     this.parentItem = parentItem;
-    if( parentItem != null ) {
-      this.depth = parentItem.depth + 1;
-    }
-    if( parentItem != null ) {
-      ItemHolder.insertItem( parentItem, this, index );
-    } else {
-      ItemHolder.insertItem( parent, this, index );
-    }
     this.index = index;
-    itemHolder = new ItemHolder( TreeItem.class );
-    treeItemAdapter = new TreeItemAdapter();
     int columnCount = parent.columnHolder.size();
     texts = new String[ columnCount ];
     images = new Image[ columnCount ];
-    parent.updateFlatIndices();
-    parent.updateScrollBars();
+    treeItemAdapter = new TreeItemAdapter();
+    if( parentItem != null ) {
+      this.depth = parentItem.depth + 1;
+    }
+    clearPreferredWidthBuffer();
+    setEmpty();
+    if( create ) {
+      int numberOfItems;
+      if( parentItem != null ) {
+        numberOfItems = parentItem.getItemCount( false );
+      } else {
+        // If there is no parent item, get the next index of the tree
+        numberOfItems = parent.getItemCount();
+      }
+      // check range
+      if( index < 0 || index > numberOfItems ) {
+        error( SWT.ERROR_INVALID_RANGE );
+      }
+      if( parentItem != null ) {
+        parentItem.createItem( this, index );
+      } else {
+        parent.createItem( this, index );
+      }
+      parent.updateFlatIndices();
+      parent.updateScrollBars();
+    }
+  }
+  
+  private void setEmpty() {
+    items = new TreeItem[ 4 ];
+  }
+
+  private void createItem( TreeItem item, int index ) {
+    if( itemCount == items.length ) {
+      /*
+       * Grow the array faster when redraw is off or the table is not visible.
+       * When the table is painted, the items array is resized to be smaller to
+       * reduce memory usage.
+       */
+      boolean small = /* drawCount == 0 && */isVisible();
+      int length = small ? items.length + 4 : Math.max( 4, items.length * 3 / 2 );
+      TreeItem[] newItems = new TreeItem[ length ];
+      System.arraycopy( items, 0, newItems, 0, items.length );
+      items = newItems;
+    }
+    System.arraycopy( items, index, items, index + 1, itemCount - index );
+    items[ index ] = item;
+    itemCount++;
+    adjustItemIndices( index );
+  }
+
+  private void destroyItem( TreeItem item, int index ) {
+    itemCount--;
+    if( itemCount == 0 ) {
+      setEmpty();
+    } else {
+      System.arraycopy( items, index + 1, items, index, itemCount - index );
+      items[ itemCount ] = null;
+    }
+    adjustItemIndices( index );
+  }
+
+  private void adjustItemIndices( int start ) {
+    for( int i = start; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].index = i;
+      }
+    }
   }
 
   public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = itemHolder;
+      result = new CompositeItemHolder();
     } else if( adapter == IWidgetFontAdapter.class ) {
       result = treeItemAdapter;
     } else if( adapter == IWidgetColorAdapter.class ) {
@@ -1184,17 +1270,15 @@ public class TreeItem extends Item {
    */
   public void clear( int index, boolean recursive ) {
     checkWidget();
-    if( !( 0 <= index && index < itemHolder.size() ) ) {
+    if( index < 0 || index >= itemCount ) {
       error( SWT.ERROR_INVALID_RANGE );
     }
-    TreeItem item = ( TreeItem )itemHolder.getItem( index );
-    /* clear the item(s) */
-    item.clear();
-    if( recursive ) {
-      item.clearAll( true, false );
-    }
-    if( ( parent.style & SWT.VIRTUAL ) == 0 ) {
-      parent.checkData( item, index );
+    TreeItem item = items[ index ];    
+    if( item != null ) {
+      item.clear();
+      if( recursive ) {
+        item.clearAll( true, false );
+      }
     }
   }
 
@@ -1232,9 +1316,11 @@ public class TreeItem extends Item {
       }
     }
     /* notify all child items as well */
-    for( int i = 0; i < itemHolder.size(); i++ ) {
-      TreeItem child = ( TreeItem )itemHolder.getItem( i );
-      child.addColumn( column );
+    for( int i = 0; i < itemCount; i++ ) {
+      TreeItem item = items[ i ];
+      if( item != null ) {
+        item.addColumn( column );
+      }
     }
   }
 
@@ -1346,18 +1432,14 @@ public class TreeItem extends Item {
 
   void clearAll( boolean recursive, boolean doVisualUpdate ) {
     checkWidget();
-    if( itemHolder.size() == 0 ) {
-      return;
-    }
-    /* clear the item(s) */
-    for( int i = 0; i < itemHolder.size(); i++ ) {
-      TreeItem treeItem = ( ( TreeItem )itemHolder.getItem( i ) );
-      treeItem.clear();
-      if( recursive ) {
-        treeItem.clearAll( true, false );
-      }
-      if( ( parent.style & SWT.VIRTUAL ) == 0 ) {
-        parent.checkData( treeItem, treeItem.index );
+    for( int i = 0; i < itemCount; i++ ) {
+      TreeItem item = items[ i ];
+      if( item != null ) {
+        item.clear();
+        if( recursive ) {
+          item.clearAll( true, false );
+        }
+        parent.checkData( item, item.index );
       }
     }
   }
@@ -1381,7 +1463,22 @@ public class TreeItem extends Item {
    */
   public TreeItem[] getItems() {
     checkWidget();
-    return ( TreeItem[] )itemHolder.getItems();
+    TreeItem[] result = new TreeItem[ itemCount ];
+    if( parent.isVirtual() ) {
+      for( int i = 0; i < itemCount; i++ ) {
+        result[ i ] = _getItem( i );
+      }
+    } else {
+      System.arraycopy( items, 0, result, 0, itemCount );
+    }
+    return result;
+  }
+  
+  private TreeItem _getItem( int index ) {
+    if( parent.isVirtual() && items[ index ] == null ) {
+      items[ index ] = new TreeItem( parent, this, SWT.NONE, index, false );
+    }
+    return items[ index ];
   }
 
   /**
@@ -1403,7 +1500,10 @@ public class TreeItem extends Item {
    */
   public TreeItem getItem( int index ) {
     checkWidget();
-    return ( TreeItem )itemHolder.getItem( index );
+    if( index < 0 || index >= itemCount ) {
+      SWT.error( SWT.ERROR_INVALID_RANGE );
+    }
+    return _getItem( index );
   }
 
   /**
@@ -1426,7 +1526,7 @@ public class TreeItem extends Item {
     if( checkData ) {
       materialize();
     }
-    return itemHolder.size();
+    return itemCount;
   }
 
   /**
@@ -1456,7 +1556,7 @@ public class TreeItem extends Item {
     if( item.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    return itemHolder.indexOf( item );
+    return item.parentItem == this ? item.index : -1;
   }
 
   /**
@@ -1491,7 +1591,30 @@ public class TreeItem extends Item {
    */
   public void setItemCount( int count ) {
     checkWidget();
-    parent.setItemCount( count, this );
+    int oldItemCount = this.getItemCount( false );
+    int newItemCount = Math.max( 0, count );
+    if( newItemCount != oldItemCount ) {
+//      TreeItem[] items = this.getItems();
+      int index = oldItemCount - 1;
+      while( index >= newItemCount ) {
+        TreeItem item = items[ index ];
+        if( item != null && !item.isDisposed() ) {
+          item.dispose();
+        }
+        index--;
+      }
+      int length = Math.max( 4, ( newItemCount + 3 ) / 4 * 4 );
+      TreeItem[] newItems = new TreeItem[ length ];
+      System.arraycopy( items, 0, newItems, 0, Math.min( newItemCount, itemCount ) );
+      items = newItems;
+      if( !parent.isVirtual() ) {
+        for( int i = oldItemCount; i < newItemCount; i++ ) {
+          new TreeItem( this, SWT.NONE, i );
+        }
+      }
+      itemCount = newItemCount;
+      parent.updateScrollBars();
+    }
   }
 
   // ///////////////////////////////
@@ -1505,9 +1628,9 @@ public class TreeItem extends Item {
 
   final void releaseParent() {
     if( parentItem != null ) {
-      ItemHolder.removeItem( parentItem, this );
+      parentItem.destroyItem( this, index );
     } else {
-      ItemHolder.removeItem( parent, this );
+      parent.destroyItem( this, index );
     }
     if( !parent.isInDispose() ) {
       parent.removeFromSelection( this );

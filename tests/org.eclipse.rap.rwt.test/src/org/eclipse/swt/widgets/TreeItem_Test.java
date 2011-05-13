@@ -51,14 +51,14 @@ public class TreeItem_Test extends TestCase {
       new TreeItem( tree, SWT.NONE, 5 );
       fail( "No exception thrown for illegal index argument" );
     } catch( IllegalArgumentException e ) {
-   // expected
+      // expected
     }
 
     try {
       new TreeItem( item, SWT.NONE, 5 );
       fail( "No exception thrown for illegal index argument" );
     } catch( IllegalArgumentException e ) {
-   // expected
+      // expected
     }
     try {
       new TreeItem( item, SWT.NONE, -1 );
@@ -448,6 +448,7 @@ public class TreeItem_Test extends TestCase {
       treeItem.setForeground( color2 );
       fail( "Disposed Image must not be set." );
     } catch( IllegalArgumentException expected ) {
+      // expected
     }
   }
 
@@ -468,6 +469,7 @@ public class TreeItem_Test extends TestCase {
       treeItem.setBackground( color2 );
       fail( "Disposed color must not be set." );
     } catch( IllegalArgumentException expected ) {
+      // expected
     }
   }
 
@@ -509,6 +511,7 @@ public class TreeItem_Test extends TestCase {
       treeItem.setForeground( 0, color2 );
       fail( "Disposed Image must not be set." );
     } catch( IllegalArgumentException expected ) {
+      // expected
     }
   }
 
@@ -551,6 +554,7 @@ public class TreeItem_Test extends TestCase {
       treeItem.setFont( 0, font3 );
       fail( "Disposed font must not be set." );
     } catch( IllegalArgumentException expected ) {
+      // expected
     }
   }
 
@@ -617,6 +621,7 @@ public class TreeItem_Test extends TestCase {
       treeItem.setBackground( 0, color );
       fail( "Disposed color must not be set." );
     } catch( IllegalArgumentException expected ) {
+      // expected
     }
   }
 
@@ -1322,7 +1327,9 @@ public class TreeItem_Test extends TestCase {
     shell.open();
     tree.setSize( 100, 100 );
     log.clear();
+
     tree.getItem( 93 ).setItemCount( 22 );
+
     assertFalse( tree.getItem( 93 ).isCached() );
     assertEquals( 0, log.size() );
     assertEquals( 22, tree.getItem( 93 ).getItemCount() );

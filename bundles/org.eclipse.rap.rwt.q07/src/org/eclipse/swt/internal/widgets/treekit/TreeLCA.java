@@ -35,42 +35,37 @@ public final class TreeLCA extends AbstractWidgetLCA {
   static final String PROP_COLUMN_COUNT = "columnCount";
   static final String PROP_TREE_COLUMN = "treeColumn";
   static final String PROP_ITEM_HEIGHT = "itemHeight";
+  static final String PROP_ITEM_COUNT = "itemCount";
   static final String PROP_TOP_ITEM_INDEX = "topItemIndex";
   static final String PROP_SCROLL_LEFT = "scrollLeft";
   static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
   static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
   static final String PROP_ITEM_METRICS = "itemMetrics";
   static final String PROP_LINES_VISIBLE = "linesVisible";
-  static final String PROP_SCROLLBARS_SELECTION_LISTENER
-    = "scrollBarsSelectionListeners";
-  static final String PROP_ENABLE_CELL_TOOLTIP
-    = "enableCellToolTip";
+  static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelectionListeners";
+  static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
 
   private static final Integer ZERO = new Integer( 0 );
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     Tree tree = ( Tree )widget;
     ControlLCAUtil.preserveValues( ( Control )widget );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( tree ) ) );
-    adapter.preserve( PROP_HEADER_HEIGHT,
-                      new Integer( tree.getHeaderHeight() ) );
-    adapter.preserve( PROP_HEADER_VISIBLE,
-                      Boolean.valueOf( tree.getHeaderVisible() ) );
-    adapter.preserve( PROP_LINES_VISIBLE,
-                      Boolean.valueOf( tree.getLinesVisible() ) );
+    adapter.preserve( PROP_HEADER_HEIGHT, new Integer( tree.getHeaderHeight() ) );
+    adapter.preserve( PROP_HEADER_VISIBLE, Boolean.valueOf( tree.getHeaderVisible() ) );
+    adapter.preserve( PROP_LINES_VISIBLE, Boolean.valueOf( tree.getLinesVisible() ) );
     preserveItemMetrics( tree );
     adapter.preserve( PROP_COLUMN_COUNT, new Integer( tree.getColumnCount() ) );
     adapter.preserve( PROP_TREE_COLUMN, getTreeColumn( tree ) );
     adapter.preserve( PROP_ITEM_HEIGHT, new Integer( tree.getItemHeight() ) );
+    adapter.preserve( PROP_ITEM_COUNT, new Integer( tree.getItemCount() ) );
     adapter.preserve( PROP_SCROLL_LEFT, getScrollLeft( tree ) );
-    adapter.preserve( PROP_TOP_ITEM_INDEX, 
-                      new Integer( getTopItemIndex( tree ) ) );
+    adapter.preserve( PROP_TOP_ITEM_INDEX, new Integer( getTopItemIndex( tree ) ) );
     adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( tree ) );
     adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( tree ) );
-    adapter.preserve( PROP_SCROLLBARS_SELECTION_LISTENER,
-                      hasScrollBarsSelectionListener( tree ) );
+    adapter.preserve( PROP_SCROLLBARS_SELECTION_LISTENER, hasScrollBarsSelectionListener( tree ) );
     adapter.preserve( PROP_ENABLE_CELL_TOOLTIP,
                       new Boolean( CellToolTipUtil.isEnabledFor( tree ) ) );
     WidgetLCAUtil.preserveCustomVariant( tree );
@@ -125,6 +120,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
+    writeItemCount( tree );
     ControlLCAUtil.writeChanges( tree );
     writeItemHeight( tree );
     writeItemMetrics( tree );
@@ -257,6 +253,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( tree, PROP_ITEM_HEIGHT, newValue ) ) {
       writer.set( PROP_ITEM_HEIGHT, "itemHeight", newValue, new Integer( 16 ) );
     }
+  }
+
+  private static void writeItemCount( Tree tree ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( tree );
+    Integer newValue = new Integer( tree.getItemCount() );
+    writer.set( PROP_ITEM_COUNT, "itemCount", newValue, ZERO );
   }
 
   static void writeItemMetrics( final Tree tree ) throws IOException {

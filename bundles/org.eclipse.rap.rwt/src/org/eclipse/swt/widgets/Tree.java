@@ -97,7 +97,8 @@ public class Tree extends Composite {
 
   private static final Rectangle TEXT_MARGIN = new Rectangle( 3, 0, 8, 0 );
 
-  /* package */final ItemHolder itemHolder;
+  private int itemCount;
+  private TreeItem[] items;
   /* package */final ItemHolder columnHolder;
   private TreeItem[] selection;
   private boolean linesVisible;
@@ -120,35 +121,34 @@ public class Tree extends Composite {
   private Rectangle bufferedCheckBoxMargin = null;
 
   private final class CompositeItemHolder implements IItemHolderAdapter {
-
     public void add( Item item ) {
-      if( item instanceof TreeItem ) {
-        itemHolder.add( item );
-      } else {
+      if( item instanceof TreeColumn ) {
         columnHolder.add( item );
+      } else {
+        String msg = "Only TreeColumns may be added to CompositeItemHolder";
+        throw new IllegalArgumentException( msg );
       }
     }
-
     public void insert( Item item, int index ) {
-      if( item instanceof TreeItem ) {
-        itemHolder.insert( item, index );
-      } else {
+      if( item instanceof TreeColumn ) {
         columnHolder.insert( item, index );
-      }
-    }
-
-    public void remove( Item item ) {
-      if( item instanceof TreeItem ) {
-        itemHolder.remove( item );
       } else {
-        columnHolder.remove( item );
+        String msg = "Only TreeColumns may be inserted to CompositeItemHolder";
+        throw new IllegalArgumentException( msg );
       }
     }
-
+    public void remove( Item item ) {
+      if( item instanceof TreeColumn ) {
+        columnHolder.remove( item );
+      } else {
+        String msg = "Only TreeColumns may be removed from CompositeItemHolder";
+        throw new IllegalArgumentException( msg );
+      }
+    }
     public Item[] getItems() {
-      TreeItem[] items = ( TreeItem[] )itemHolder.getItems();
+      TreeItem[] items = getCreatedItems();
       Item[] columns = columnHolder.getItems();
-      Item[] result = new Item[ items.length + columns.length ];
+      Item[] result = new Item[ columns.length + items.length ];
       System.arraycopy( columns, 0, result, 0, columns.length );
       System.arraycopy( items, 0, result, columns.length, items.length );
       return result;
@@ -300,13 +300,42 @@ public class Tree extends Composite {
    */
   public Tree( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
-    itemHolder = new ItemHolder( TreeItem.class );
     columnHolder = new ItemHolder( TreeColumn.class );
     treeAdapter = new InternalTreeAdapter();
+    setTreeEmpty();
     createScrollBars();
     selection = EMPTY_SELECTION;
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
+  }
+
+  private TreeItem[] getCreatedItems() {
+    TreeItem[] result;
+    if( isVirtual() ) {
+      int count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          count++;
+        }
+      }
+      result = new TreeItem[ count ];
+      count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          result[ count ] = items[ i ];
+          count++;
+        }
+      }
+    } else {
+      result = new TreeItem[ itemCount ];
+      System.arraycopy( items, 0, result, 0, itemCount );
+    }
+    return result;
+  }
+  
+  private void setTreeEmpty() {
+    items = new TreeItem[ 4 ];
+//    clearItemImageSize();
   }
 
   void initState() {
@@ -341,51 +370,38 @@ public class Tree extends Composite {
   /**
    * Sets the number of root-level items contained in the receiver.
    *
-   * @param itemCount the number of items
+   * @param count the number of items
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setItemCount( int itemCount ) {
+  public void setItemCount( int count ) {
     checkWidget();
-    setItemCount( itemCount, null );
-    redraw();
-  }
-
-  void setItemCount( int itemCount, TreeItem parent ) {
-    int oldItemCount;
-    if( parent == null ) {
-      oldItemCount = getItemCount();
-    } else {
-      oldItemCount = parent.getItemCount( false );
-    }
-    int newItemCount = Math.max( 0, itemCount );
+    int oldItemCount = itemCount;
+    int newItemCount = Math.max( 0, count );
     if( newItemCount != oldItemCount ) {
-      TreeItem[] items;
-      if( parent == null ) {
-        items = getItems();
-      } else {
-        items = parent.getItems();
-      }
-      int index = newItemCount;
-      while( index < oldItemCount ) {
+      int index = oldItemCount - 1;
+      while( index >= newItemCount ) {
         TreeItem item = items[ index ];
         if( item != null && !item.isDisposed() ) {
           item.dispose();
         }
-        index++;
+        index--;
       }
+      int length = Math.max( 4, ( newItemCount + 3 ) / 4 * 4 );
+      TreeItem[] newItems = new TreeItem[ length ];
+      System.arraycopy( items, 0, newItems, 0, Math.min( newItemCount, itemCount ) );
+      items = newItems;
+      // TODO [rst]: surround by if( !parent.isVirtual() ) { ...
       for( int i = oldItemCount; i < newItemCount; i++ ) {
-        if( parent == null ) {
-          new TreeItem( this, SWT.NONE, i );
-        } else {
-          new TreeItem( parent, SWT.NONE, i );
-        }
+        new TreeItem( this, SWT.NONE, i );
       }
+      itemCount = newItemCount;
       updateScrollBars();
     }
+    redraw();
   }
 
   /**
@@ -402,7 +418,7 @@ public class Tree extends Composite {
    */
   public int getItemCount() {
     checkWidget();
-    return itemHolder.size();
+    return itemCount;
   }
 
   /**
@@ -422,7 +438,22 @@ public class Tree extends Composite {
    */
   public TreeItem[] getItems() {
     checkWidget();
-    return ( TreeItem[] )itemHolder.getItems();
+    TreeItem[] result = new TreeItem[ itemCount ];
+    if( isVirtual() ) {
+      for( int i = 0; i < itemCount; i++ ) {
+        result[ i ] = _getItem( i );
+      }
+    } else {
+      System.arraycopy( items, 0, result, 0, itemCount );
+    }
+    return result;
+  }
+
+  private TreeItem _getItem( int index ) {
+    if( isVirtual() && items[ index ] == null ) {
+      items[ index ] = new TreeItem( this, null, SWT.NONE, index, false );
+    }
+    return items[ index ];
   }
 
   /**
@@ -443,7 +474,10 @@ public class Tree extends Composite {
    */
   public TreeItem getItem( int index ) {
     checkWidget();
-    return ( TreeItem )itemHolder.getItem( index );
+    if( index < 0 || index >= itemCount ) {
+      SWT.error( SWT.ERROR_INVALID_RANGE );
+    }
+    return _getItem( index );
   }
 
   /**
@@ -472,8 +506,7 @@ public class Tree extends Composite {
     if( item.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    int index = itemHolder.indexOf( item );
-    return index;
+    return item.parent == this ? item.index : -1;
   }
 
   /**
@@ -1039,16 +1072,15 @@ public class Tree extends Composite {
    */
   public void clear( int index, boolean recursive ) {
     checkWidget();
-    if( !( 0 <= index && index < itemHolder.size() ) ) {
+    if( index < 0 || index >= itemCount ) {
       error( SWT.ERROR_INVALID_RANGE );
     }
-    TreeItem item = ( TreeItem )itemHolder.getItem( index );
-    /* clear the item(s) */
-    item.clear();
-    if( recursive ) {
-      item.clearAll( true, false );
-    }
-    if( !isVirtual() ) {
+    TreeItem item = items[ index ];
+    if( item != null ) {
+      item.clear();
+      if( recursive ) {
+        item.clearAll( true, false );
+      }
       checkData( item, index );
     }
   }
@@ -1081,13 +1113,13 @@ public class Tree extends Composite {
     if( point == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
+    TreeItem result = null;
     int index = ( point.y - getHeaderHeight() ) / getItemHeight() + topItemIndex;
     // collect all visible items
     List visibleItems = collectVisibleItems( null );
-    if( !( 0 <= index && index < visibleItems.size() ) ) {
-      return null; /* below the last item */
+    if( 0 <= index && index < visibleItems.size() ) {
+      result = ( TreeItem )visibleItems.get( index );
     }
-    TreeItem result = ( TreeItem )visibleItems.get( index );
     return result;
   }
 
@@ -1155,18 +1187,19 @@ public class Tree extends Composite {
    */
   public void clearAll( boolean recursive ) {
     checkWidget();
-    if( itemHolder.size() == 0 ) {
-      return;
-    }
-    /* clear the item(s) */
-    for( int i = 0; i < itemHolder.size(); i++ ) {
-      ( ( TreeItem )itemHolder.getItem( i ) ).clear();
-      if( recursive ) {
-        ( ( TreeItem )itemHolder.getItem( i ) ).clearAll( true, false );
+    for( int i = 0; i < itemCount; i++ ) {
+      TreeItem item = items[ i ];
+      if( item != null ) {
+        item.clear();
+        if( recursive ) {
+          item.clearAll( true, false );
+        }
       }
     }
-    if( isVirtual() ) {
-      checkAllData();
+    if( itemCount != 0 ) {
+      if( isVirtual() ) {
+        checkAllData();
+      }
     }
   }
   
@@ -1177,10 +1210,11 @@ public class Tree extends Composite {
   }
 
   private void clearItemsPreferredWidthBuffer() {
-    Item[] items = itemHolder.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      TreeItem treeItem = ( TreeItem )items[ i ];
-      treeItem.clearPreferredWidthBuffer();
+    for( int i = 0; i < itemCount; i++ ) {
+      TreeItem item = items[ i ];
+      if( item != null ) {
+        item.clearPreferredWidthBuffer();
+      }
     }
   }
 
@@ -1220,10 +1254,12 @@ public class Tree extends Composite {
       columnOrder = newColumnOrder;
       columnOrder[ index ] = index;
     }
-    /* allow all items to update their internal structures accordingly */
-    for( int i = 0; i < itemHolder.size(); i++ ) {
-      TreeItem child = ( TreeItem )itemHolder.getItem( i );
-      child.addColumn( column );
+    // allow all items to update their internal structures accordingly
+    for( int i = 0; i < itemCount; i++ ) {
+      TreeItem item = items[ i ];
+      if( item != null ) {
+        item.addColumn( column );
+      }
     }
     updateScrollBars();
   }
@@ -1787,7 +1823,7 @@ public class Tree extends Composite {
     height += getItemCount() * getItemHeight();
     for( int i = 0; i < getItemCount(); i++ ) {
       TreeItem item = getItem( i );
-      if( item.getExpanded() ) {
+      if( !item.isInDispose() && item.getExpanded() ) {
         height += item.getInnerHeight();
       }
     }
@@ -2096,7 +2132,7 @@ public class Tree extends Composite {
   // TODO [tb] : alternative: Only index when needed.
   /* package */void updateFlatIndices() {
     int flatIndex = 0;
-    TreeItem[] uItems = this.getItems();
+    TreeItem[] uItems = getItems();
     for( int i = 0; i < uItems.length; i++ ) {
       TreeItem treeItem = uItems[ i ];
       treeItem.flatIndex = flatIndex;
@@ -2261,7 +2297,7 @@ public class Tree extends Composite {
       int maxWidth = 0;
       for( int i = 0; i < getItemCount(); i++ ) {
         TreeItem item = getItem( i );
-        if( item != null && item.isCached() ) {
+        if( item != null && !item.isInDispose() && item.isCached() ) {
           int itemWidth = item.getPreferredWidth( 0, false );
           maxWidth = Math.max( maxWidth, itemWidth );
           if( item.getExpanded() ) {
@@ -2315,5 +2351,43 @@ public class Tree extends Composite {
 
   boolean isVirtual() {
     return ( style & SWT.VIRTUAL ) != 0;
+  }
+
+  void createItem( TreeItem item, int index ) {
+    if( itemCount == items.length ) {
+      /*
+       * Grow the array faster when redraw is off or the table is not visible.
+       * When the table is painted, the items array is resized to be smaller to
+       * reduce memory usage.
+       */
+      boolean small = /* drawCount == 0 && */isVisible();
+      int length = small ? items.length + 4 : Math.max( 4, items.length * 3 / 2 );
+      TreeItem[] newItems = new TreeItem[ length ];
+      System.arraycopy( items, 0, newItems, 0, items.length );
+      items = newItems;
+    }
+    System.arraycopy( items, index, items, index + 1, itemCount - index );
+    items[ index ] = item;
+    itemCount++;
+    adjustItemIndices( index );
+  }
+
+  void destroyItem( TreeItem treeItem, int index ) {    
+    itemCount--;
+    if( itemCount == 0 ) {
+      setTreeEmpty();
+    } else {
+      System.arraycopy( items, index + 1, items, index, itemCount - index );
+      items[ itemCount ] = null;
+    }
+    adjustItemIndices( index );
+  }
+  
+  private void adjustItemIndices( int start ) {
+    for( int i = start; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].index = i;
+      }
+    }
   }
 }
