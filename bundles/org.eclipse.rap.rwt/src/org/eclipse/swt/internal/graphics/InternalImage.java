@@ -11,6 +11,7 @@
 package org.eclipse.swt.internal.graphics;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -24,10 +25,8 @@ public final class InternalImage {
   private final int width;
   private final int height;
 
-  InternalImage( final String resourceName, final int width, final int height ) {
-    if( resourceName == null ) {
-      throw new NullPointerException( "resourceName is null" );
-    }
+  InternalImage( String resourceName, int width, int height ) {
+    ParamCheck.notNull( resourceName, "resourceName" );
     if( width <= 0 || height <= 0 ) {
       throw new IllegalArgumentException( "Illegal size" );
     }
