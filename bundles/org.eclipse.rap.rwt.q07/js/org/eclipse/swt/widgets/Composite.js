@@ -26,6 +26,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Composite", {
                              this._fixBackgroundTransparency, 
                              this );
     }
+    // Disable scrolling (see bug 345903)
+    qx.ui.core.Widget.disableScrolling( this );
   },
   
   destruct : function() {

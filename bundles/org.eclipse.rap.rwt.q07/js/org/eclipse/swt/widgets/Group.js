@@ -43,6 +43,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
     this.getLegendObject().addEventListener( "mouseout",
                                              this._onMouseOut,
                                              this );
+    // Disable scrolling (see bug 345903)
+    qx.ui.core.Widget.disableScrolling( this );
   },
 
   destruct : function() {
