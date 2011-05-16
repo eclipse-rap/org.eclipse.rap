@@ -68,7 +68,7 @@ import org.eclipse.swt.internal.widgets.treekit.TreeLCA_Test;
 public class RWTQ07TestSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite( "Test for org.eclipse.rap.rwt.q07" );
+    TestSuite suite = new TestSuite( "Tests for org.eclipse.rap.rwt.q07" );
 
     // TODO [fappel]: Note that the following tests belong semantically to the
     //                RWT core tests, but there is still some refactoring

@@ -47,7 +47,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
   ////////////////
   // inner classes
 
-  private static final class IdManager {
+  static class IdManager {
 
     static IdManager getInstance() {
       return ( IdManager )SessionSingletonBase.getInstance( IdManager.class );

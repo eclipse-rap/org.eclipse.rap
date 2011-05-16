@@ -48,7 +48,7 @@ import org.eclipse.swt.widgets.*;
 public class RWTHostTestSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite( "Test for org.eclipse.rap.rwt" );
+    TestSuite suite = new TestSuite( "Tests for org.eclipse.rap.rwt" );
 
 // TODO [fappel]: Note that the following commented tests belong semantically
 //                to the RWT host tests, but there is still some refactoring
@@ -120,6 +120,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ShellEvent_Test.class );
     suite.addTestSuite( TreeEvent_Test.class );
     suite.addTestSuite( UntypedEventAdapter_Test.class );
+    suite.addTestSuite( IdManager_Test.class );
     suite.addTestSuite( UICallBack_Test.class );
     suite.addTestSuite( UICallBackManager_Test.class );
     suite.addTestSuite( UICallBackServiceHandler_Test.class );
