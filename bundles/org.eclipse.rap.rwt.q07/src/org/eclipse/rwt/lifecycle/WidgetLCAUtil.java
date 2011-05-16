@@ -690,9 +690,7 @@ public final class WidgetLCAUtil {
    * @throws IOException
    * @see {@link #preserveBackground(Widget, Color, boolean)}
    */
-  public static void writeBackground( final Widget widget,
-                                      final Color background,
-                                      final boolean transparency )
+  public static void writeBackground( Widget widget, Color background, boolean transparency )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( widget );
@@ -701,15 +699,17 @@ public final class WidgetLCAUtil {
                                                 Boolean.valueOf( transparency ),
                                                 Boolean.FALSE );
     if( !changed && !transparency ) {
-      changed
-        = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
+      changed = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
     }
     if( changed ) {
       if( transparency ) {
+        writer.set( JSConst.QX_FIELD_BG_GRADIENT, ( Object )null );
         writer.set( JSConst.QX_FIELD_BG_COLOR, ( Object )null );
       } else if( background != null ) {
+        writer.set( JSConst.QX_FIELD_BG_GRADIENT, ( Object )null );
         writer.set( JSConst.QX_FIELD_BG_COLOR, background );
       } else {
+        writer.reset( JSConst.QX_FIELD_BG_GRADIENT );
         writer.reset( JSConst.QX_FIELD_BG_COLOR );
       }
     }

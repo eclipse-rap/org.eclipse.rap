@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,21 @@ import org.eclipse.swt.widgets.*;
 
 
 public class WidgetLCAUtil_Test extends TestCase {
+  
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display , SWT.NONE );
+  }
+  
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testHasChanged() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     // test initial behaviour, text is same as default value -> no 'change'
     text.setText( "" );
@@ -60,8 +71,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testHasChangedWidthArrays() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.MULTI );
 
     boolean hasChanged;
@@ -205,8 +214,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testFontBold() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
@@ -225,8 +232,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testFontItalic() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
@@ -245,8 +250,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testFontSize() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
@@ -259,8 +262,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testFontReset() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     Fixture.fakeResponseWriter();
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
@@ -272,8 +273,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testForegroundReset() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     Fixture.fakeResponseWriter();
     Color red = Graphics.getColor( 255, 0, 0 );
@@ -285,8 +284,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testWriteImage() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Label item = new Label( shell, SWT.NONE );
 
     // for an un-initialized control: no image -> no markup
@@ -320,8 +317,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testWriteVariant() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
@@ -337,8 +332,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testWriteCustomVariant() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Control control = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
@@ -371,8 +364,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testWriteBackground() throws Exception {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Control control = new Label( shell, SWT.NONE );
     Color red = display.getSystemColor( SWT.COLOR_RED );
 
@@ -422,9 +413,45 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( "", Fixture.getAllMarkup() );
   }
 
+  public void testWriteBackground_Transparency_RemoveBackgroundGradient() throws IOException {
+    Control control = new Label( shell, SWT.NONE );
+    Fixture.markInitialized( control );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, null, false );
+    WidgetLCAUtil.writeBackground( control, null, true );
+    
+    String expected = "w.setBackgroundGradient( null );w.setBackgroundColor( null );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testWriteBackground_ResetBackgroundGradient() throws IOException {
+    Control control = new Label( shell, SWT.NONE );
+    Fixture.markInitialized( control );
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, red, false );
+    WidgetLCAUtil.writeBackground( control, null, false );
+
+    String expected = "w.resetBackgroundGradient();w.resetBackgroundColor();";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testWriteBackground_RemoveBackgroundGradient() throws IOException {
+    Control control = new Label( shell, SWT.NONE );
+    Fixture.markInitialized( control );
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, null, false );
+    WidgetLCAUtil.writeBackground( control, red );
+    
+    String expected = "w.setBackgroundGradient( null );w.setBackgroundColor( \"#ff0000\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
   public void testWriteMenu() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
 
     // for an un-initialized control: no menu -> no markup
@@ -456,8 +483,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testWriteStyleFlag() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Control control = new Label( shell, SWT.NONE );
     Control borderControl = new Label( shell, SWT.BORDER );
 
@@ -472,8 +497,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testWriteBackgroundGradient() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Control control = new Composite( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
@@ -527,8 +550,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testWriteBackgroundGradient_Horizontal() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Control control = new Composite( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
@@ -552,8 +573,6 @@ public class WidgetLCAUtil_Test extends TestCase {
   }
 
   public void testWriteRoundedBorder() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Widget widget = new Composite( shell, SWT.NONE );
 
     CompositeLCA lca = new CompositeLCA();
@@ -592,13 +611,5 @@ public class WidgetLCAUtil_Test extends TestCase {
       = "wm.setRoundedBorder"
       + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 4, 7, 8 );";
     assertEquals( expected, Fixture.getAllMarkup() );
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 }
