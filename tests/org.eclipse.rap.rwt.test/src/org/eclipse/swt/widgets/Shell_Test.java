@@ -41,6 +41,11 @@ public class Shell_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
+  
+  public void testGetAdapterWithShellAdapter() {
+    Object adapter = shell.getAdapter( IShellAdapter.class );
+    assertNotNull( adapter );
+  }
 
   public void testMenuBar() {
     Shell shell2 = new Shell( display, SWT.NONE );

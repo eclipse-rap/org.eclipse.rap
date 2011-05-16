@@ -93,6 +93,12 @@ public class Control_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
+  
+  public void testGetAdapterWithControlAdapter() {
+    Control control = new Button( shell, SWT.NONE );
+    Object adapter = control.getAdapter( IControlAdapter.class );
+    assertNotNull( adapter );
+  }
 
   public void testStyle() {
     Control control = new Button( shell, SWT.NONE );

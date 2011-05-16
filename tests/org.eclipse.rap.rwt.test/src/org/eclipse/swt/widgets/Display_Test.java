@@ -42,6 +42,18 @@ public class Display_Test extends TestCase {
       return 0;
     }
   }
+  
+  public void testGetAdapterWithDisplayAdapter() {
+    Display display = new Display();
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    assertNotNull( adapter );
+  }
+  
+  public void testGetAdapterWithWidgetAdapter() {
+    Display display = new Display();
+    Object adapter = display.getAdapter( IWidgetAdapter.class );
+    assertNotNull( adapter );
+  }
 
   public void testSingleDisplayPerSession() {
     Device display = new Display();

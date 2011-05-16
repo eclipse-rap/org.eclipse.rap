@@ -20,8 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.layout.FillLayout;
 
 public class Table_Test extends TestCase {
@@ -38,7 +37,7 @@ public class Table_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-
+  
   public void testInitialValues() {
     Table table = new Table( shell, SWT.NONE );
 
@@ -329,6 +328,24 @@ public class Table_Test extends TestCase {
     }
   }
 
+  public void testGetAdapterWithTableAdapter() {
+    Table table = new Table( shell, SWT.NONE );
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    assertNotNull( adapter );
+  }
+
+  public void testGetAdapterWithCellToolTipAdapter() {
+    Table table = new Table( shell, SWT.NONE );
+    Object adapter = table.getAdapter( ICellToolTipAdapter.class );
+    assertNotNull( adapter );
+  }
+  
+  public void testGetAdapterWithItemHolderAdapter() {
+    Table table = new Table( shell, SWT.NONE );
+    Object adapter = table.getAdapter( IItemHolderAdapter.class );
+    assertNotNull( adapter );
+  }
+  
   public void testReduceSetItemCountWithSelection() {
     // Create a table that is populated with setItemCount with all selected
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
