@@ -64,7 +64,7 @@ public class JSLibraryConcatenator {
     jsConcatenator = new ByteArrayOutputStream();
   }
 
-  public void appendJSLibrary( File toWrite, int[] content ) {
+  public void appendJSLibrary( File toWrite, byte[] content ) {
     if( isAllowed( toWrite ) ) {
       for( int i = 0; i < content.length; i++ ) {
         jsConcatenator.write( content[ i ] );
@@ -97,8 +97,8 @@ public class JSLibraryConcatenator {
     jsConcatenator.write( '\n' );
   }
 
-  private boolean isLastCharacter( int[] content, int i ) {
-    return i == content.length - 1;
+  private static boolean isLastCharacter( byte[] content, int position ) {
+    return position == content.length - 1;
   }
 
   private void initialize() throws UnsupportedEncodingException, IOException {

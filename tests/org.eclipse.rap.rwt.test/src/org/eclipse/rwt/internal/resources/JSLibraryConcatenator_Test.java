@@ -22,7 +22,7 @@ public class JSLibraryConcatenator_Test extends TestCase {
     JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
 
     concatenator.startJSConcatenation();
-    concatenator.appendJSLibrary( new File( "library.js"), new int[] { character } );
+    concatenator.appendJSLibrary( new File( "library.js"), new byte[] { ( byte )character } );
 
     assertEquals( concatenator.getUncompressed()[ 0 ], character );
     assertEquals( concatenator.getUncompressed()[ 1 ], '\n' );
@@ -34,7 +34,7 @@ public class JSLibraryConcatenator_Test extends TestCase {
   public void testIgnoreConcatenation() {
     JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
 
-    concatenator.appendJSLibrary( new File( "library.js"), new int[] { 'a' } );
+    concatenator.appendJSLibrary( new File( "library.js"), new byte[] { 'a' } );
     
     assertEquals( 0, concatenator.getUncompressed().length );
   }
@@ -43,7 +43,7 @@ public class JSLibraryConcatenator_Test extends TestCase {
     JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
     
     concatenator.startJSConcatenation();
-    concatenator.appendJSLibrary( new File( "library.js"), new int[ 0 ] );
+    concatenator.appendJSLibrary( new File( "library.js"), new byte[ 0 ] );
     
     assertEquals( 0, concatenator.getUncompressed().length );
   }
@@ -52,7 +52,7 @@ public class JSLibraryConcatenator_Test extends TestCase {
     JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
     
     concatenator.startJSConcatenation();
-    concatenator.appendJSLibrary( new File( "content.html"), new int[] { 'a' } );
+    concatenator.appendJSLibrary( new File( "content.html"), new byte[] { 'a' } );
     
     assertEquals( 0, concatenator.getUncompressed().length );    
   }
@@ -62,7 +62,7 @@ public class JSLibraryConcatenator_Test extends TestCase {
     
     concatenator.startJSConcatenation();
     concatenator.getHashCode();
-    concatenator.appendJSLibrary( new File( "content.js"), new int[] { 'a' } );
+    concatenator.appendJSLibrary( new File( "content.js"), new byte[] { 'a' } );
     
     assertEquals( 0, concatenator.getUncompressed().length );        
   }
@@ -72,7 +72,7 @@ public class JSLibraryConcatenator_Test extends TestCase {
     
     concatenator.startJSConcatenation();
     concatenator.getCompressed();
-    concatenator.appendJSLibrary( new File( "content.js"), new int[] { 'a' } );
+    concatenator.appendJSLibrary( new File( "content.js"), new byte[] { 'a' } );
     
     assertEquals( 0, concatenator.getUncompressed().length );        
   }
@@ -82,7 +82,7 @@ public class JSLibraryConcatenator_Test extends TestCase {
     
     concatenator.startJSConcatenation();
     concatenator.getUncompressed();
-    concatenator.appendJSLibrary( new File( "content.js"), new int[] { 'a' } );
+    concatenator.appendJSLibrary( new File( "content.js"), new byte[] { 'a' } );
     
     assertEquals( 0, concatenator.getUncompressed().length );        
   }

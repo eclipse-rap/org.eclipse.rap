@@ -75,8 +75,8 @@ public class ResourceUtil_Test extends TestCase {
     JSLibraryConcatenator jsConcatenator = RWTFactory.getJSLibraryConcatenator();
     jsConcatenator.startJSConcatenation();
     File file = File.createTempFile( "test", ".js" );
-    ResourceUtil.write( file, getStringAsIntArray( "foo" ) );
-    ResourceUtil.write( file, getStringAsIntArray( "bar" ) );
+    ResourceUtil.write( file, "foo".getBytes( "UTF-8" ) );
+    ResourceUtil.write( file, "bar".getBytes( "UTF-8" ) );
     String result = jsConcatenator.getContent();
     assertEquals( "foo\nbar\n", result );
   }
@@ -84,34 +84,31 @@ public class ResourceUtil_Test extends TestCase {
   public void testReadText() throws IOException {
     String input = createTestString( 10000 );
     InputStream inputStream = new ByteArrayInputStream( input.getBytes( "UTF-8" ) );
-    int[] result = ResourceUtil.readText( inputStream, "UTF-8", false );
-    byte[] bytes = toByteArray( result );
-    assertEquals( input, new String( bytes ) );
+    
+    byte[] result = ResourceUtil.readText( inputStream, "UTF-8", false );
+    
+    assertEquals( input, new String( result ) );
   }
 
-  private static byte[] toByteArray( int[] result ) {
-    byte[] bytes = new byte[ result.length ];
-    for( int i = 0; i < bytes.length; i++ ) {
-      bytes[ i ] = ( byte )result[ i ];
-    }
-    return bytes;
+  public void testWriteText() throws IOException {
+    String input = createTestString( 10000 );
+    byte[] content = input.getBytes( "UTF-8" );
+    File tempFile = File.createTempFile( "rap-", ".test" );
+    tempFile.deleteOnExit();
+
+    ResourceUtil.write( tempFile, content );
+
+    byte[] result = ResourceUtil.readText( new FileInputStream( tempFile ), "UTF-8", false );
+    assertEquals( input, new String( result ) );
   }
 
   private static String createTestString( int length ) {
     StringBuffer buffer = new StringBuffer( length );
-    for( int i = 0; i < length; i++ ) {
-      buffer.append( (char) ( 32 + ( i % 32 ) ) );
+    buffer.append( 'Ü' );
+    for( int i = 1; i < length; i++ ) {
+      buffer.append( ( char )( 32 + ( i % 32 ) ) );
     }
     return buffer.toString();
-  }
-
-  private static int[] getStringAsIntArray( String string ) {
-    byte[] bytes = string.getBytes();
-    int[] content = new int[ bytes.length ];
-    for( int i = 0; i < content.length; i++ ) {
-      content[ i ] = ( bytes[ i ] & 0x0ff );
-    }
-    return content;
   }
 
   protected void setUp() throws Exception {

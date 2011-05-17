@@ -79,14 +79,14 @@ public class ResourceManagerImpl implements IResourceManager {
 
     /** the 'raw' content of the resource. In case of a text resource (charset
      * was given) the content is UTF-8 encoded. */
-    private final int[] content;
+    private final byte[] content;
     /** the charset in which the resource was encoded before read or null for
      * binary resources. */
     private final String charset;
     /** the resource's version or null for 'no version' */
     private final Integer version;
 
-    public Resource( int[] content, String charset, Integer version ) {
+    public Resource( byte[] content, String charset, Integer version ) {
       this.charset = charset;
       this.content = content;
       this.version = version;
@@ -96,7 +96,7 @@ public class ResourceManagerImpl implements IResourceManager {
       return charset;
     }
 
-    public int[] getContent() {
+    public byte[] getContent() {
       return content;
     }
 
@@ -131,9 +131,9 @@ public class ResourceManagerImpl implements IResourceManager {
    * @return the content of the resource or <code>null</code> if no resource
    *         with the given <code>name</code> and <code>version</code> exists.
    */
-  public int[] findResource( String name, Integer version ) {
+  public byte[] findResource( String name, Integer version ) {
     ParamCheck.notNull( name, "name" );
-    int[] result = null;
+    byte[] result = null;
     Resource resource = ( Resource )cache.get( createKey( name ) );
     if( resource != null ) {
       if(    ( version == null && resource.getVersion() == null )
@@ -197,7 +197,7 @@ public class ResourceManagerImpl implements IResourceManager {
     ParamCheck.notNull( is, "is" );
     String key = createKey( name );
     try {
-      int[] content = ResourceUtil.readBinary( is );
+      byte[] content = ResourceUtil.readBinary( is );
       doRegister( name, null, RegisterOptions.NONE, key, content );
     } catch ( IOException e ) {
       String text = "Failed to register resource ''{0}''.";
@@ -215,7 +215,7 @@ public class ResourceManagerImpl implements IResourceManager {
     boolean compress = shouldCompress( options );
     String key = createKey( name );
     try {
-      int[] content = ResourceUtil.read( is, charset, compress );
+      byte[] content = ResourceUtil.read( is, charset, compress );
       doRegister( name, charset, options, key, content );
     } catch ( IOException ioe ) {
       String msg = "Failed to register resource: " + name;
@@ -361,7 +361,7 @@ public class ResourceManagerImpl implements IResourceManager {
     if( !repository.containsKey( key ) ) {
       boolean compress = shouldCompress( options );
       try {
-        int[] content = ResourceUtil.read( name, charset, compress, this );
+        byte[] content = ResourceUtil.read( name, charset, compress, this );
         doRegister( name, charset, options, key, content );
       } catch ( IOException e ) {
         String text = "Failed to register resource ''{0}''.";
@@ -376,7 +376,7 @@ public class ResourceManagerImpl implements IResourceManager {
                            String charset,
                            RegisterOptions options,
                            String key,
-                           int[] content )
+                           byte[] content )
     throws IOException
   {
     Integer version = computeVersion( content, options );
@@ -407,7 +407,7 @@ public class ResourceManagerImpl implements IResourceManager {
     }
   }
 
-  private static Integer computeVersion( int[] content, RegisterOptions options ) {
+  private static Integer computeVersion( byte[] content, RegisterOptions options ) {
     Integer result = null;
     if( content != null && shouldVersion( options ) ) {
       int version = 0;
