@@ -42,10 +42,8 @@ public final class TableLCA extends AbstractWidgetLCA {
   static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
   static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
   static final String PROP_LEFT_OFFSET = "leftOffset";
-  static final String PROP_SCROLLBARS_SELECTION_LISTENER
-    = "scrollBarsSelectionListeners";
-  static final String PROP_ENABLE_CELL_TOOLTIP
-    = "enableCellToolTip";
+  static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelectionListeners";
+  static final String PROP_ENABLE_CELL_TOOLTIP = "enableCellToolTip";
 
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
   private static final Integer DEFAULT_ITEM_COUNT = new Integer( 0 );
@@ -54,9 +52,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_LEFT_OFFSET = new Integer( 0 );
 
   private static final JSListenerInfo SELECTION_LISTENER
-    = new JSListenerInfo( "itemselected",
-                          "this.onItemSelected",
-                          JSListenerType.ACTION );
+    = new JSListenerInfo( "itemselected", "this.onItemSelected", JSListenerType.ACTION );
 
   private static final JSListenerInfo DEFAULT_SELECTION_LISTENER
     = new JSListenerInfo( "itemdefaultselected",

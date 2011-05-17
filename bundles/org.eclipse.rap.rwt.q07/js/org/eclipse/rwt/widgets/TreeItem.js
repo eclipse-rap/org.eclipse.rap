@@ -88,6 +88,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       this._update( msg );
     },
 
+    clear : function() {
+      this._cached = false;
+      this._checked = false;
+      this._grayed = false;
+      this._texts = [];
+      this._images = [];
+      this._background = null;
+      this._foreground = null;
+      this._font = null;
+      this._cellBackgrounds = [];
+      this._cellForegrounds = [];
+      this._cellFonts = [];
+      this._variant = null;
+    },
+
     isCached : function() {
       return this._cached;
     },
@@ -228,7 +243,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
        if( index >= 0 && index < this._children.length ) {
           result = new org.eclipse.rwt.widgets.TreeItem( this, index, true );
         } else {
-          result = null;
+          result = null; // TODO [tb] : no longer needed? (hasNextSibling has been refactored)
         }
       }
       return result;
@@ -281,6 +296,35 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     getNextSibling : function() {
       var index = this._parent.getIndexOfChild( this ) + 1 ;
       return this._parent.getChild( index );
+    },
+    
+    // TODO [tb] : rename to "getNextDisplayableItem"?
+    // NOTE : For a flat Hierarchy, this behaves like getNextSibling 
+    getNextItem : function( skipChildren ) {
+      var result = null;
+      if( !skipChildren && this.hasChildren() && this.isExpanded() ) {
+        result = this.getChild( 0 );
+      } else if( this.hasNextSibling() ) {
+        result = this.getNextSibling();
+      } else if( this.getLevel() > 0 ) {
+        result = this.getParent().getNextItem( true );
+      }
+      return result;
+    },
+    
+    // TODO [tb] : rename to "getPreviousDisplayableItem"?
+    // NOTE : For a flat Hierarchy, this behaves like getPreviousSibling 
+    getPreviousItem : function() {
+      var result = null;
+      if( this.hasPreviousSibling() ) {
+        result = this.getPreviousSibling();
+        while( result.hasChildren() && result.isExpanded() ) {
+          result = result.getLastChild();
+        }        
+      } else if( this.getLevel() > 0 ) {
+        result = this.getParent();
+      }
+      return result;
     },
 
     isRootItem : function() {

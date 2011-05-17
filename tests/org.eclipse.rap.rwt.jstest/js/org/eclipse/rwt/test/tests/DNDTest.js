@@ -659,7 +659,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       item0.setExpanded( true ) 
       testUtil.flush();
       var sourceNode = source._getTargetNode();
-      var targetNode = tree._rows[ 1 ]._getTargetNode(); 
+      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode(); 
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag
@@ -716,7 +716,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       item0.setExpanded( true ) 
       testUtil.flush();
       var sourceNode = source._getTargetNode();
-      var targetNode = tree._rows[ 1 ]._getTargetNode(); 
+      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode(); 
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag
@@ -773,7 +773,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       item0.setExpanded( true ) 
       testUtil.flush();
       var sourceNode = source._getTargetNode();
-      var targetNode = tree._rows[ 1 ]._getTargetNode();
+      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag
@@ -791,13 +791,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       dndSupport.setFeedback( tree, [ "select" ] );
       assertNotNull( dndSupport._dropFeedbackRenderer );
       testUtil.flush();
-      assertTrue( tree._rows[ 1 ].hasState( "dnd_selected") );
-      assertNull( tree._rows[ 1 ].getBackgroundColor() );
-      assertTrue( tree._rows[ 1 ]._getTargetNode().lastChild.style.backgroundColor != "" );
+      assertTrue( tree._rowContainer._children[ 1 ].hasState( "dnd_selected") );
+      assertNull( tree._rowContainer._children[ 1 ].getBackgroundColor() ); // hover disabled
+      assertTrue( tree._rowContainer._children[ 1 ]._getTargetNode().lastChild.style.backgroundColor != "" );
       // drop
       testUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
-      assertTrue( tree._rows[ 1 ]._getTargetNode().lastChild.style.display == "none" );
-      assertEquals( "#dae9f7", tree._rows[ 1 ].getBackgroundColor() );
+      assertTrue( tree._rowContainer._children[ 1 ]._getTargetNode().lastChild.style.display == "none" );
+      assertEquals( "#dae9f7", tree._rowContainer._children[ 1 ].getBackgroundColor() );
       testUtil.clearTimerOnceLog();
       testUtil.clearRequestLog();
       dndSupport.cancel();
@@ -821,7 +821,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var source = this.createSource();
       testUtil.flush();
       var sourceNode = source._getTargetNode();
-      var targetNode = tree._rows[ 0 ]._getTargetNode();
+      var targetNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag
@@ -870,7 +870,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var source = this.createSource();
       testUtil.flush();
       var sourceNode = source._getTargetNode();
-      var targetNode = tree._rows[ 1 ]._getTargetNode();
+      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag 
@@ -885,7 +885,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // over item 2
       testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
       testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
-      assertIdentical( tree._rows[ 1 ], dndSupport._getCurrentFeedbackTarget() );
+      assertIdentical( tree._rowContainer._children[ 1 ], dndSupport._getCurrentFeedbackTarget() );
       assertNull( dndSupport._dropFeedbackRenderer );
       dndSupport.setFeedback( tree, [ "scroll" ] );
       // setting feedback
@@ -900,6 +900,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals( 1, tree._topItemIndex );
       assertTrue( testUtil.getTimerOnceLog().length > 0 );
       testUtil.forceTimerOnce();
+      
       // scroll to item 4
       testUtil.forceInterval( dndSupport._dropFeedbackRenderer._scrollTimer );
       testUtil.flush();
@@ -932,7 +933,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var source = this.createSource();
       testUtil.flush();
       var sourceNode = source._getTargetNode();
-      var targetNode = tree._rows[ 1 ]._getTargetNode();
+      var targetNode = tree._rowContainer._children[ 1 ]._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag 
@@ -968,7 +969,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var source = this.createSource();
       testUtil.flush();
       var sourceNode = source._getTargetNode();
-      var targetNode = tree._clientArea._getTargetNode();
+      var targetNode = tree._rowContainer._getTargetNode();
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag 
@@ -1006,8 +1007,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var item1 = this.createTreeItem( 1, tree, tree );
       var source = this.createSource();
       testUtil.flush();
-      var itemNode0 = tree._rows[ 0 ]._getTargetNode()
-      var itemNode1 = tree._rows[ 1 ]._getTargetNode()
+      var itemNode0 = tree._rowContainer._children[ 0 ]._getTargetNode()
+      var itemNode1 = tree._rowContainer._children[ 1 ]._getTargetNode()
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag 
@@ -1049,8 +1050,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
       var source = this.createSource();
       testUtil.flush();
-      var itemNode0 = tree._rows[ 0 ]._getTargetNode()
-      var itemNode1 = tree._rows[ 1 ]._getTargetNode()
+      var itemNode0 = tree._rowContainer._children[ 0 ]._getTargetNode()
+      var itemNode1 = tree._rowContainer._children[ 1 ]._getTargetNode()
       var treeNode = tree.getElement();
       var doc = document.body;
       // drag 
@@ -1090,7 +1091,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
       var item0 = this.createTreeItem( 0, tree, tree );
       testUtil.flush();
-      var sourceNode = tree._rows[ 0 ]._getTargetNode();
+      var sourceNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       var doc = document.body;
       // drag
       testUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
@@ -1127,7 +1128,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var item0 = this.createTreeItem( 0, tree, tree );
       item0.setImages( [ "bla.jpg" ] );
       testUtil.flush();
-      var sourceNode = tree._rows[ 0 ]._getTargetNode();
+      var sourceNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       var doc = document.body;
       // drag
       testUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );

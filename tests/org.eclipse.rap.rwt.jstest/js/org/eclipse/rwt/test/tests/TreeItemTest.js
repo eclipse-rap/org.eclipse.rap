@@ -45,12 +45,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       item.setTexts( [ "Test", "Test2" ] );
       assertEquals( "Test", item.getText( 0 ) );
       assertEquals( "Test2", item.getText( 1 ) );
+      item.clear();
+      assertEquals( "", item.getText( 0 ) );
+      assertEquals( "", item.getText( 1 ) );
     },
 
     testItemFont : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setFont( "Arial" );
-      assertEquals( "Arial", item.getCellFont( 0 ) );       
+      assertEquals( "Arial", item.getCellFont( 0 ) );
+      item.clear();  
+      assertEquals( null, item.getCellFont( 0 ) );
     },
 
     testCellFonts : function() {
@@ -58,7 +63,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       item.setCellFonts( [ "Arial", "Verdana", "monospace" ] );
       assertEquals( "Arial", item.getCellFont( 0 ) );       
       assertEquals( "Verdana", item.getCellFont( 1 ) );       
-      assertEquals( "monospace", item.getCellFont( 2 ) );       
+      assertEquals( "monospace", item.getCellFont( 2 ) );
+      item.clear();
+      assertEquals( null, item.getCellFont( 0 ) );
+      assertEquals( null, item.getCellFont( 1 ) );
+      assertEquals( null, item.getCellFont( 2 ) );
     },
 
     testSomeCellFontsSet : function() {
@@ -73,44 +82,60 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     testForeground : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setForeground( "red" );
-      assertEquals( "red", item.getCellForeground( 0 ) );       
+      assertEquals( "red", item.getCellForeground( 0 ) );
+      item.clear();
+      assertEquals( null, item.getCellForeground( 0 ) );
     },
 
     testCellForegrounds : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setCellForegrounds( [ "red", "green" ] );
       assertEquals( "red", item.getCellForeground( 0 ) );       
-      assertEquals( "green", item.getCellForeground( 1 ) );       
+      assertEquals( "green", item.getCellForeground( 1 ) );
+      item.clear();
+      assertEquals( null, item.getCellForeground( 0 ) );
+      assertEquals( null, item.getCellForeground( 1 ) );
     },
 
     testSomeCellForegroundsSets : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setForeground( "red" );
       item.setCellForegrounds( [ null, "green" ] );
-      assertEquals( "red", item.getCellForeground( 0 ) );       
-      assertEquals( "green", item.getCellForeground( 1 ) );       
-      assertEquals( "red", item.getCellForeground( 2 ) );       
+      assertEquals( "red", item.getCellForeground( 0 ) );
+      assertEquals( "green", item.getCellForeground( 1 ) );
+      assertEquals( "red", item.getCellForeground( 2 ) );
+      item.clear();
+      assertEquals( null, item.getCellForeground( 0 ) );
+      assertEquals( null, item.getCellForeground( 1 ) );
+      assertEquals( null, item.getCellForeground( 2 ) );
     },
 
     testBackground : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
-      item.setBackground( "red" );              
-      assertEquals( "red", item.getBackground() );                            
+      item.setBackground( "red" );
+      assertEquals( "red", item.getBackground() );
+      item.clear();
+      assertEquals( null, item.getBackground() );
     },
 
     testCellBackgrounds: function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setCellBackgrounds( [ "red", "green" ] );
-      assertEquals( "red", item.getCellBackground( 0 ) );       
-      assertEquals( "green", item.getCellBackground( 1 ) );       
+      assertEquals( "red", item.getCellBackground( 0 ) );
+      assertEquals( "green", item.getCellBackground( 1 ) );
+      item.clear();
+      assertEquals( null, item.getCellBackground( 0 ) );
+      assertEquals( null, item.getCellBackground( 1 ) );
     },
 
     testSomeCellBackgroundsSet : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setCellBackgrounds( [ null, "green" ] );
       item.setBackground( "red" );
-      assertEquals( null, item.getCellBackground( 0 ) );       
-      assertEquals( "green", item.getCellBackground( 1 ) );              
+      assertEquals( null, item.getCellBackground( 0 ) );
+      assertEquals( "green", item.getCellBackground( 1 ) );
+      item.clear();
+      assertEquals( null, item.getCellBackground( 1 ) );
     },
 
     testImages : function() {
@@ -442,6 +467,55 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       assertTrue( item.isCached() );
       assertEquals( "", item.getText( 0 ) );
       item.dispose();
+    },
+    
+    testGetNextItem : function() {
+      var root = new org.eclipse.rwt.widgets.TreeItem();
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( root );
+      var child2_1 = new org.eclipse.rwt.widgets.TreeItem( child2 );
+      var child2_2 = new org.eclipse.rwt.widgets.TreeItem( child2 );
+      var child2_1_1 = new org.eclipse.rwt.widgets.TreeItem( child2_1 );
+      var child3 = new org.eclipse.rwt.widgets.TreeItem( root );
+      child2.setExpanded( true );
+      assertEquals( child2, child1.getNextItem() );
+      assertEquals( child2_1, child2.getNextItem() );
+      assertEquals( child2_2, child2_1.getNextItem() );
+      assertEquals( child3, child2_2.getNextItem() );
+      assertNull( child3.getNextItem() );
+      root.dispose();
+    },
+    
+    testGetNextItemSkipChildren : function() {
+      var root = new org.eclipse.rwt.widgets.TreeItem();
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( root );
+      var child2_1 = new org.eclipse.rwt.widgets.TreeItem( child2 );
+      var child2_2 = new org.eclipse.rwt.widgets.TreeItem( child2 );
+      var child2_1_1 = new org.eclipse.rwt.widgets.TreeItem( child2_1 );
+      var child3 = new org.eclipse.rwt.widgets.TreeItem( root );
+      child2.setExpanded( true );
+      assertEquals( child2, child1.getNextItem( true ) );
+      assertEquals( child3, child2.getNextItem( true ) );
+      assertNull( child3.getNextItem( true ) );
+      root.dispose();
+    },
+    
+    testGetPreviousItem : function() {
+      var root = new org.eclipse.rwt.widgets.TreeItem();
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( root );
+      var child2_1 = new org.eclipse.rwt.widgets.TreeItem( child2 );
+      var child2_2 = new org.eclipse.rwt.widgets.TreeItem( child2 );
+      var child2_1_1 = new org.eclipse.rwt.widgets.TreeItem( child2_1 );
+      var child3 = new org.eclipse.rwt.widgets.TreeItem( root );
+      child2.setExpanded( true );
+      assertEquals( child2_2, child3.getPreviousItem() );
+      assertEquals( child2_1, child2_2.getPreviousItem() );
+      assertEquals( child2, child2_1.getPreviousItem() );
+      assertEquals( child1, child2.getPreviousItem() );
+      assertNull( child1.getPreviousItem() );
+      root.dispose();
     }
 
  }

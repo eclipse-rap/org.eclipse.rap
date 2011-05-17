@@ -106,10 +106,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
         var avg = this._renderSum / this._renderSamples;
         var result = false;
         if( this._renderSamples > 2 ) {
-          result = avg > 200;
+          result = avg > 150;
         } else {
           result = renderTime > 700;
-        }
+       }
         if( result ) {
           this.setMergeEvents( true );
         }
@@ -201,6 +201,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
     },
 
     _getMergeCurrentEvent : function() {
+      // TODO [tb] : dont use last dispatched target as reference, use selection instead
       var result = false;
       if( this._mergeEvents ) {
         var mergeThreshold = org.eclipse.rwt.widgets.ScrollBar.MERGE_THRESHOLD;

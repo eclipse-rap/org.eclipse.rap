@@ -290,7 +290,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         result = table._items[ index ];
       } if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
         var tree = this._currentDropTarget;
-        result = tree._findItemByRow( target );
+        result = tree._rowContainer.findItemByRow( target );
       } else {
         result = target;
       }
@@ -421,20 +421,21 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _configureTreeRowFeedback : function( row ) {
       var widget = this._dragFeedbackWidget;
       var tree = this._currentDragSource;
-      var item = tree._findItemByRow( row );
+      var item = tree._rowContainer.findItemByRow( row );
       if( item != null ) {
-        var image = item.getImage( tree._treeColumn );
+        var config = tree.getRenderConfig();
+        var image = item.getImage( config.treeColumn );
         if( image != null ) {
           widget.setCellContent( 0, image );
-          var imageWidth = tree.getItemImageWidth( item, tree._treeColumn );
-          widget.setCellDimension( 0, imageWidth, tree.getItemHeight() );
+          var imageWidth = config.itemImageWidth[ config.treeColumn ];
+          widget.setCellDimension( 0, imageWidth, row.getHeight() );
         } 
-        var backgroundColor = item.getCellBackground( tree._treeColumn );
-        var textColor = item.getCellForeground( tree._treeColumn );
+        var backgroundColor = item.getCellBackground( config.treeColumn );
+        var textColor = item.getCellForeground( config.treeColumn );
         widget.setBackgroundColor( backgroundColor );
         widget.setTextColor( textColor );
-        widget.setCellContent( 1, item.getText( tree._treeColumn ) );
-        widget.setFont( tree.getFont() );
+        widget.setCellContent( 1, item.getText( config.treeColumn ) );
+        widget.setFont( config.font );
       }
     },
     
@@ -521,6 +522,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _cleanUp : function() {
       // fix for bug 296348
       var widgetUtil = org.eclipse.swt.WidgetUtil;
+      widgetUtil._fakeMouseEvent( this._currentTargetWidget, "elementOver" );
       widgetUtil._fakeMouseEvent( this._currentTargetWidget, "mouseover" );
       this.setCurrentTargetWidget( null );
       if( this._currentDropTarget != null) {

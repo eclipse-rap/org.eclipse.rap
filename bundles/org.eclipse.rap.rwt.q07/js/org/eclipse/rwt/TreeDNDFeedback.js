@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,8 +86,8 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     
     _renderFeedbackSelect : function( row, value ) {
       row._setState( "dnd_selected", value );
-      var item = this._tree._findItemByRow( row );
-      this._tree._renderItem( item );
+      var item = this._tree._rowContainer.findItemByRow( row );
+      this._tree._rowContainer.renderItem( item );
     },
 
     _renderFeedbackBefore : function( row, value ) {
@@ -114,7 +114,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     },
 
     _renderFeedbackExpand : function( row, value ) {
-      var item = this._tree._findItemByRow( row );
+      var item = this._tree._rowContainer.findItemByRow( row );
       if( item != null && item.hasChildren() ) {
         if( value && !item.isExpanded() ) {
           this._startExpandTimer();
@@ -189,16 +189,14 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
 
     _onExpandTimer : function( event ) {
       this._stopExpandTimer();
-      var item = this._tree._findItemByRow( this._currentRow );
+      var item = this._tree._rowContainer.findItemByRow( this._currentRow );
       item.setExpanded( true );
     },
 
     _startScrollTimer : function() {
       if( this._scrollTimer == null ) {
         this._scrollTimer = new qx.client.Timer( 250 );
-        this._scrollTimer.addEventListener( "interval", 
-                                            this._onScrollTimer, 
-                                            this );
+        this._scrollTimer.addEventListener( "interval", this._onScrollTimer, this );
       }
       this._scrollTimer.setEnabled( true );
     },
@@ -214,7 +212,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
       var topItemIndex = this._tree._topItemIndex;
       if( index === topItemIndex ) {
         result = -1;
-      } else if( index >= ( topItemIndex + this._tree._rows.length - 2 ) ) {
+      } else if( index >= ( topItemIndex + this._tree._rowContainer.getChildrenLength() - 2 ) ) {
         result = 1;
       }
       return result;
@@ -222,7 +220,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
 
     _onScrollTimer : function( event ) {
       this._stopScrollTimer();
-      var item = this._tree._findItemByRow( this._currentRow );
+      var item = this._tree._rowContainer.findItemByRow( this._currentRow );
       var index = this._tree._findIndexByItem( item );
       var offset = this._getScrollDirection( index );
       if( offset != 0 ) {
@@ -231,7 +229,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
         if( newItem != null ) {
           var newTopIndex = this._tree._topItemIndex + offset;
           this._tree.setTopItemIndex( newTopIndex );
-          var newRow = this._tree._findRowByItem( newItem );
+          var newRow = this._tree._rowContainer._findRowByItem( newItem );
           var oldRow = this._currentRow;
           var wrapper = function() {
             this._targetUpdateCheck( oldRow, newRow );

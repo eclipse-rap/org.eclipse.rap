@@ -44,6 +44,12 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   
   statics : {
 
+    createItem : function( parent, index, id ) {
+      var result = new org.eclipse.swt.widgets.TableItem( parent, index );
+      org.eclipse.swt.WidgetManager.getInstance().add( result, id, false );
+      return result;
+    },
+
     PX : "px"
 
   },
@@ -89,18 +95,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
 
     getGrayed : function() {
       return this._grayed;
-    },
-
-    setSelection : function( value ) {
-      // TODO [rh] improve this: don't access internal structures of Table
-      var index = this._getIndex();
-      if( value ) {
-        this._parent._selectItem( index, false );
-        // reset selection start index when selection changes server-side
-        this._parent._resetSelectionStart();
-      } else {
-        this._parent._deselectItem( index, false );
-      }
     },
 
     setTexts : function( texts ) {

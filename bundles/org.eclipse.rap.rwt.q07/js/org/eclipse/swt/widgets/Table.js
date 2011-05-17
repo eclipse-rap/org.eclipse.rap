@@ -550,6 +550,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       return this._checkBoxes !== null;
     },
 
+    selectItem : function( index ) {
+      this._selectItem( index, false );
+      // reset selection start index when selection changes server-side
+      this._resetSelectionStart();
+    },
+
+    deselectItem : function( index ) {
+      this._deselectItem( index, false );
+    },
+
     setFocusIndex : function( value ) {
       if( value !== this._focusIndex ) {
         var oldFocusIndex = this._focusIndex;
@@ -1668,8 +1678,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var req = org.eclipse.swt.Request.getInstance();
       req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
       org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-      req.addParameter( "org.eclipse.swt.events.widgetSelected.index",
-                        evt.getData() );
+      req.addParameter( "org.eclipse.swt.events.widgetSelected.index", evt.getData() );
       req.send();
     },
 

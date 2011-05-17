@@ -64,14 +64,12 @@ public class TableItemLCA_Test extends TestCase {
     Object selected = adapter.getPreserved( TableItemLCA.PROP_SELECTED );
     assertEquals( Boolean.FALSE, selected );
     String[] texts1 = TableItemLCA.getTexts( item1 );
-    String[] texts2
-      = ( String[] )adapter.getPreserved( TableItemLCA.PROP_TEXTS );
+    String[] texts2 = ( String[] )adapter.getPreserved( TableItemLCA.PROP_TEXTS );
     assertEquals( texts1[ 0 ], texts2[ 0 ] );
     assertEquals( texts1[ 1 ], texts2[ 1 ] );
     assertEquals( texts1[ 2 ], texts2[ 2 ] );
     Image[] images1 = TableItemLCA.getImages( item1 );
-    Image[] images2
-      = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
+    Image[] images2 = ( Image[] )adapter.getPreserved( TableItemLCA.PROP_IMAGES );
     assertEquals( images1[ 0 ], images2[ 0 ] );
     assertEquals( images1[ 1 ], images2[ 1 ] );
     assertEquals( images1[ 2 ], images2[ 2 ] );
@@ -88,8 +86,7 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( preservedCellForegrounds[ 0 ] );
     assertNull( preservedCellForegrounds[ 1 ] );
     assertNull( preservedCellForegrounds[ 2 ] );
-    Font[] preservedCellFonts =
-      ( Font[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FONTS );
+    Font[] preservedCellFonts = ( Font[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FONTS );
     assertNull( preservedCellFonts[ 0 ] );
     assertNull( preservedCellFonts[ 1 ] );
     assertNull( preservedCellFonts[ 2 ] );
@@ -122,8 +119,7 @@ public class TableItemLCA_Test extends TestCase {
     Color foreground3 = Graphics.getColor( 88, 134, 34 );
     item1.setForeground( 2, foreground3 );
     table.setSelection( 0 );
-    ITableAdapter tableAdapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     tableAdapter.setFocusIndex( 0 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item1 );
@@ -144,8 +140,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( image1, images2[ 0 ] );
     assertEquals( image2, images2[ 1 ] );
     assertEquals( image3, images2[ 2 ] );
-    preservedCellFonts
-      = ( Font[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FONTS );
+    preservedCellFonts = ( Font[] )adapter.getPreserved( TableItemLCA.PROP_CELL_FONTS );
     assertEquals( font1, preservedCellFonts[ 0 ] );
     assertEquals( font2, preservedCellFonts[ 1 ] );
     assertEquals( font3, preservedCellFonts[ 2 ] );
@@ -377,7 +372,46 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
   }
-
+  
+  public void testSelectItem() throws IOException {
+    Table table = new Table( shell, SWT.BORDER );
+    TableItem item = new TableItem( table, SWT.NONE, 0 );
+    item.setText( "Item 0" );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.fakeResponseWriter();
+    TableItemLCA tableItemLCA = new TableItemLCA();
+    tableItemLCA.preserveValues( item );
+    table.select( 0 );
+    tableItemLCA.renderChanges( item );
+    String tableId = WidgetUtil.getId( table );
+    int itemIndex = item.getParent().indexOf( item );
+    String expected = "var w = wm.findWidgetById( \"" + tableId + "\" );";
+    expected += "w.selectItem( " + itemIndex + " );";
+    String result = Fixture.getAllMarkup();
+    assertTrue( result.indexOf( expected ) != -1 );
+  }
+  
+  public void testDeselectItem() throws IOException {
+    Table table = new Table( shell, SWT.BORDER );
+    TableItem item = new TableItem( table, SWT.NONE, 0 );
+    item.setText( "Item 0" );
+    table.select( 0 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.fakeResponseWriter();
+    TableItemLCA tableItemLCA = new TableItemLCA();
+    tableItemLCA.preserveValues( item );
+    table.deselect( 0 );
+    tableItemLCA.renderChanges( item );
+    String tableId = WidgetUtil.getId( table );
+    int itemIndex = item.getParent().indexOf( item );
+    String expected = "var w = wm.findWidgetById( \"" + tableId + "\" );";
+    expected += "w.deselectItem( " + itemIndex + " );";
+    String result = Fixture.getAllMarkup();
+    assertTrue( result.indexOf( expected ) != -1 );
+  }
+  
   // see bug 338696
   public void testDeselectAfterClear() throws IOException {
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -394,7 +428,10 @@ public class TableItemLCA_Test extends TestCase {
     table.clear( 0 );
     table.deselectAll();
     tableItemLCA.renderChanges( item );
-    String expected = "w.clear();w.setSelection( false );";
+    String tableId = WidgetUtil.getId( table );
+    int itemIndex = item.getParent().indexOf( item );
+    String expected = "w.clear();var w = wm.findWidgetById( \"" + tableId + "\" );";
+    expected += "w.deselectItem( " + itemIndex + " );";
     String result = Fixture.getAllMarkup();
     assertTrue( result.indexOf( expected ) != -1 );
   }

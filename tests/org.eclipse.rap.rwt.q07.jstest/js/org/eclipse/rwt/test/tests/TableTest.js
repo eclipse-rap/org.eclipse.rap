@@ -15,6 +15,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
     var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
     testUtil.prepareTimerUse();
     testUtil.initRequestLog();
+    qx.Class.__initializeClass( org.eclipse.rwt.widgets.ScrollBar );
+    org.eclipse.rwt.widgets.ScrollBar.prototype._getMinThumbSize = function() { return 8; };
   },
   
   members : {
@@ -32,7 +34,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       assertTrue( table._rows[ 0 ] instanceof org.eclipse.swt.widgets.TableRow );
       table.destroy();
     },
-    
+
+    testSelectItem : function() {
+      var table = this._createDefaultTable();
+      var item = new org.eclipse.swt.widgets.TableItem( table, 0 );
+      table.selectItem( 0 );
+      assertTrue( table._isItemSelected( 0 ) );
+      table.deselectItem( 0 );
+      assertFalse( table._isItemSelected( 0 ) );
+      table.destroy();
+    },
+
     testTableLinesVisibleState : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var table = this._createDefaultTable( true );

@@ -19,61 +19,42 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._rootItem = new org.eclipse.rwt.widgets.TreeItem();
     this._rootItem.setExpanded( true );
     // Style-Flags:
-    this._hasCheckBoxes = false;
-    this._hasFullSelection = false;
     this._isVirtual = false;
     this._hasMultiSelection = false;
     // Internal State:
+    this._hasSelectionListeners = false;
     this._topItem = null;
     this._leadItem = null;
     this._topItemIndex = 0;
     this._selection = [];
     this._focusItem = null;
-    this._hoverItem = null;
-    this._hoverElement = null;
     this._renderQueue = {};
     this._resizeLine = null;
-    this._linesVisible = false;
     this._selectionTimestamp = null;
     this._delayedSelection = false;
-    // Metrics:
+    // Layout:
     this._headerHeight = 0;
     this._itemHeight = 16;
-    this._checkBoxLeft = null;
-    this._checkBoxWidth = null;
-    this._hasSelectionListeners = false;
-    this._selectionPadding = null;
-    this._alignment = [];
-    this._itemLeft = [];
-    this._itemWidth = [];
-    this._itemImageLeft = [];
-    this._itemImageWidth = [];
-    this._itemTextLeft = [];
-    this._itemTextWidth = [];
-    this._indentionWidth = 16;
-    this._columnCount = 0;
-    this._treeColumn = 0;
     // Timer & Border
     this._mergeEventsTimer = new qx.client.Timer( 50 );
     this._sendRequestTimer = null;
     this._vertGridBorder = null;
     this._horzGridBorder = null;
     // Subwidgets
-    this._clientArea = new qx.ui.layout.VerticalBoxLayout();
+    this._rowContainer = new org.eclipse.rwt.widgets.TreeRowContainer();
     this._columnArea = new qx.ui.layout.CanvasLayout();
     this._dummyColumn = new qx.ui.basic.Atom();
     this._horzScrollBar = new org.eclipse.rwt.widgets.ScrollBar( true );
     this._vertScrollBar = new org.eclipse.rwt.widgets.ScrollBar( false );
     this._hasScrollBarsSelectionListener = false;
-    this._rows = this._clientArea.getChildren();
     this._vertGridLines = [];
     this.add( this._columnArea );
-    this.add( this._clientArea );
+    this.add( this._rowContainer );
     this.add( this._horzScrollBar );
     this.add( this._vertScrollBar );
-    // Cell tooltip
     this._cellToolTip = null;
     // Configure:
+    this._config = this._rowContainer.getRenderConfig();
     this.setCursor( "default" );
     this.setOverflow( "hidden" );
     this.setAppearance( "tree" );
@@ -93,16 +74,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._mergeEventsTimer.dispose();
     this._mergeEventsTimer = null;
     this._dummyColumn = null;
-    this._clientArea = null;
+    this._rowContainer = null;
     this._columnArea = null;
     this._horzScrollBar = null;
     this._vertScrollBar = null;
-    this._rows = null;
     this._topItem = null;
     this._leadItem = null;
     this._focusItem = null;
-    this._hoverItem = null;
-    this._hoverElement = null;
     this._resizeLine = null;
     if( this._cellToolTip ) {
       this._cellToolTip.destroy();
@@ -117,20 +95,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _registerListeners : function() {
       this._rootItem.addEventListener( "update", this._onItemUpdate, this );
-      this.addEventListener( "changeTextColor", this._scheduleUpdate, this );
-      this.addEventListener( "changeFont", this._scheduleUpdate, this );
-      this.addEventListener( "changeEnabled", this._scheduleUpdate, this );
       this.addEventListener( "mousedown", this._onMouseDown, this );
       this.addEventListener( "mouseup", this._onMouseUp, this );
-      this.addEventListener( "mouseover", this._onMouseOver, this );
       this.addEventListener( "mouseout", this._onMouseOut, this );
-      this.addEventListener( "elementOver", this._onElementChange, this );
-      this.addEventListener( "elementOut", this._onElementChange, this );
       this.addEventListener( "keypress", this._onKeyPress, this );
-      this._clientArea.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
+      this._rowContainer.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       this._mergeEventsTimer.addEventListener( "interval", this._updateTopItemIndex, this );
       this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
       this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
+      this._rowContainer.setSelectionProvider( this.isItemSelected, this );
+      this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge, 
+                                                this._vertScrollBar );
     },
     
     _configureScrollBars : function() {
@@ -148,8 +123,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _configureAreas : function() {
-      this._clientArea.setOverflow( "hidden" );
-      this._clientArea.addEventListener( "appear", this._onClientAreaAppear, this );
       this._columnArea.setOverflow( "hidden" );
       this._columnArea.addEventListener( "appear", this._onColumnAreaAppear, this );
       this._columnArea.setTop( 0 );
@@ -185,16 +158,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // rendering any content (i.e. directly after the contructor) 
     
     setCheckBoxMetrics : function( left, width ) {
-      this._checkBoxLeft = left;
-      this._checkBoxWidth = width;
+      this._config.checkBoxLeft = left;
+      this._config.checkBoxWidth = width;
     },
     
     setHasCheckBoxes : function( value ) {
-      this._hasCheckBoxes = value;
+      this._config.hasCheckBoxes = value;
     },
     
     setHasFullSelection : function( value ) {
-      this._hasFullSelection = value;
+      this._config.fullSelection = value;
     },
 
     setHasMultiSelection : function( value ) {
@@ -203,16 +176,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     setHasNoScroll : function( value ) {
       if( value ) {
-        this._clientArea.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
+        this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       }
     },
 
     setIndentionWidth : function( offset ) {
-      this._indentionWidth = offset;
+      this._config.indentionWidth = offset;
     },
     
     setSelectionPadding : function( left, right ) {
-      this._selectionPadding = [ left, right ];
+      this._config.selectionPadding = [ left, right ];
     },
     
     setIsVirtual : function( value ) {
@@ -233,27 +206,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._columnArea.setDisplay( value );
       this._layoutX();
       this._layoutY();
-      this._scheduleUpdate( true );
     },
 
     setHeaderHeight : function( value ) {
       this._headerHeight = value;
       this._layoutX();
       this._layoutY();
-      this._scheduleUpdate( true );
     },
 
     setItemHeight : function( height ) {
       this._itemHeight = height;
       this._vertScrollBar.setIncrement( height );
-      for( var i = 0; i < this._rows.length; i++ ) {
-        this._rows[ i ].setHeight( height );
-      }
-      this._scheduleUpdate( true , true );
+      this._rowContainer.setRowHeight( height );
+      this._scheduleUpdate( true );
     },
     
     setColumnCount : function( count ) {
-      this._columnCount = count;
+      this._config.columnCount = count;
       this._scheduleUpdate();
       this._updateScrollWidth();
       this._renderGridVertical();
@@ -267,19 +236,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
                                textLeft, 
                                textWidth ) 
     {
-      this._itemLeft[ columnIndex ] = left;
-      this._itemWidth[ columnIndex ] = width;
-      this._itemImageLeft[ columnIndex ] = imageLeft;
-      this._itemImageWidth[ columnIndex ] = imageWidth;
-      this._itemTextLeft[ columnIndex ] = textLeft;
-      this._itemTextWidth[ columnIndex ] = textWidth;
+      this._config.itemLeft[ columnIndex ] = left;
+      this._config.itemWidth[ columnIndex ] = width;
+      this._config.itemImageLeft[ columnIndex ] = imageLeft;
+      this._config.itemImageWidth[ columnIndex ] = imageWidth;
+      this._config.itemTextLeft[ columnIndex ] = textLeft;
+      this._config.itemTextWidth[ columnIndex ] = textWidth;
       this._scheduleUpdate();
       this._renderGridVertical();
       this._updateScrollWidth();
     },
         
     setTreeColumn : function( columnIndex ) {
-      this._treeColumn = columnIndex;
+      this._config.treeColumn = columnIndex;
     },
     
     setTopItemIndex : function( index ) {
@@ -323,174 +292,55 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     setAlignment : function( column, value ) {
-      this._alignment[ column ] = value;
+      this._config.alignment[ column ] = value;
       this._scheduleUpdate();
     },
     
     setLinesVisible : function( value ) {
-      this._linesVisible = value;
+      this._config.linesVisible = value;
       if( value ) {
         this.addState( "linesvisible" );
       } else {
         this.removeState( "linesvisible" );
       }
-      for( var i = 0; i < this._rows.length; i++ ) {
-        this._rows[ i ].updateGridlinesState( value );
-      }
+      this._rowContainer.setRowLinesVisible( value );
       this._scheduleUpdate();
       this._renderGridHorizontal();
       this._renderGridVertical();
     },
+    
+    // TODO [tb] : set the variant directly instead of using only state
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.slice( 0, 8 ) === "variant_" ) {
+        this._config.variant = state;
+      }
+    },
         
-    //////////////////
-    // API for TreeRow
-    
-    hasNoColumns : function() {
-      return this._columnCount === 0;
-    },
-    
-    getSelectionPadding : function() {
-      return this._selectionPadding;
-    },
-    
-    getItemHeight : function() {
-      return this._itemHeight;
-    },
-    
-    getLinesVisible : function() {
-      return this._linesVisible;
-    },
-
-    getItemLeft : function( item, columnIndex, indention ) {
-      var result = this._itemLeft[ columnIndex ];
-      if( indention && this.isTreeColumn( columnIndex ) ) {
-        result = this._correctOffset( result, item );
+    removeState : function( state ) {
+      if( this._config.variant === state ) {
+        this._config.variant = null;
       }
-      return result;
+      this.base( arguments, state );
     },
-
-    getItemWidth : function( item, columnIndex, indention ) {
-      var result = this._itemWidth[ columnIndex ];
-      if( indention && this.isTreeColumn( columnIndex ) ) {
-        result -= this.getIndentionOffset( 1 );
-      }
-      return result;
-    },
-
-    getItemImageLeft : function( item, columnIndex ) {
-      var result = this._itemImageLeft[ columnIndex ];
-      if( this.isTreeColumn( columnIndex ) ) {
-        result = this._correctOffset( result, item );
-      }
-      return result;
-    },
-
-    getItemImageWidth : function( item, columnIndex ) {
-      var result = this._itemImageWidth[ columnIndex ];
-      if( this.isTreeColumn( columnIndex ) ) {
-        var offset = this.getItemImageLeft( item, columnIndex );
-        result = this._correctWidth( result, offset, item, columnIndex );
-      }
-      return result;
-    },
-
-    getItemTextLeft : function( item, columnIndex ) {
-      var result = this._itemTextLeft[ columnIndex ];
-      if( this.isTreeColumn( columnIndex ) ) {
-        result = this._correctOffset( result, item );
-      }
-      return result;
-    },
-
-    getItemTextWidth : function( item, columnIndex ) {
-      var result = this._itemTextWidth[ columnIndex ];
-      if( this.isTreeColumn( columnIndex ) ) {
-        var offset = this.getItemTextLeft( item, columnIndex );
-        result = this._correctWidth( result, offset, item, columnIndex );
-      }
-      return result;
-    },
-
-    getIndentionOffset : function( level ) {
-      // NOTE [tb] : Shoud actually add the treeColumns offsets, assumes 0 now.
-      return this._indentionWidth * level;
-    },
-
-    getHasCheckBoxes : function() {
-      return this._hasCheckBoxes;
-    },
+        
+    ////////////////////////
+    // API for Tests and DND
     
-    getHasFullSelection : function() {
-      return this._hasFullSelection;
-    },
-
-    getHasMultiSelection : function() {
-      return this._hasMultiSelection;
-    },
-
-    getIsVirtual : function() {
-      return this._isVirtual;
-    },
-
-    getCheckBoxLeft : function( item ) {
-      return this._correctOffset( this._checkBoxLeft, item );
-    },
-    
-    getCheckBoxWidth : function( item ) {
-      var result = this._checkBoxWidth;
-      var offset = this.getCheckBoxLeft( item );
-      return this._correctWidth( result, offset, item, 0 );
-    },
-    
-    getColumnCount : function() {
-      return Math.max( 1, this._columnCount );
-    },
-
-    getColumns : function() {
-      return this._columnArea.getChildren().slice( 1 );
+    getRenderConfig : function() {
+      return this._config;
     },
 
     getRootItem : function() {
       return this._rootItem;
     },
     
-    isTreeColumn : function( columnIndex ) {
-      return columnIndex === this._treeColumn;
-    },
-
-    getTreeColumnWidth : function() {
-      return this._itemWidth[ this._treeColumn ];
-    },
-    
-    isFocusItem : function( item ) {
+    isFocusItem : function( item ) { 
       return this._focusItem === item;
-    },
-
-    isHoverItem : function( item ) {
-      return this._hoverItem === item;
-    },
-
-    isHoverElement : function( element ) {
-      return element !== null && this._hoverElement === element;
     },
 
     isItemSelected : function( item ) {
       return this._selection.indexOf( item ) != -1;
-    },
-        
-    getAlignment : function( column ) {
-      return this._alignment[ column ] ? this._alignment[ column ] : "left";
-    },
-    
-    getStatesCopy : function() {
-      if( !this.__states ) {
-        this.__states = {};
-      }
-      var clone = {};
-      for( var key in this.__states ) {
-        clone[ key ] = true;
-      }
-      return clone;      
     },
     
     //////////////////////
@@ -518,7 +368,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
                                   this );
       this._columnArea.remove( column );
       this._updateScrollWidth();
-      this._updateRows();
+      this._rowContainer.renderAll();
     },
 
     _onColumnChangeSize : function( evt ) {
@@ -532,11 +382,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this.add( this._resizeLine );
         qx.ui.core.Widget.flushGlobalQueues();
       }
-      var top = this._clientArea.getTop();
+      var top = this._rowContainer.getTop();
       this._resizeLine._renderRuntimeTop( top );
       var left = x - 2 - this._horzScrollBar.getValue();
       this._resizeLine._renderRuntimeLeft( left );
-      var height = this._clientArea.getHeight();
+      var height = this._rowContainer.getHeight();
       this._resizeLine._renderRuntimeHeight( height );
       this._resizeLine.removeStyleProperty( "visibility" );
     },
@@ -568,12 +418,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         if( this._focusItem === oldItem ) {
           this._focusItem = null;
         }
-        if( this._hoverItem === oldItem ) {
-          this._hoverItem = null;
-        }
       }
-      this._sendItemChange( item, event );
-      this._renderItemChange( item, event );
+      this._sendItemUpdate( item, event );
+      this._renderItemUpdate( item, event );
     },
 
     _onVertScrollBarChangeValue : function() {
@@ -591,26 +438,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var scrollTop = this._vertScrollBar.getValue();
       var oldIndex = this._topItemIndex;
       this._topItemIndex = Math.ceil( scrollTop / this._itemHeight );
-      this._updateTopItem( oldIndex );
       if( this._inServerResponse() ) {
-        this._updateRowsEvenState();
+        this._topItem = null;
         this._scheduleUpdate();
       } else {
         this._sendTopItemIndexChange();
-        this._scrollContentVertical( oldIndex );
-      }
-    },
-    
-    _updateRowsEvenState: function() {
-      for( var i = 0; i < this._rows.length; i++ ) {
-        this._rows[ i ].updateEvenState( this._topItemIndex + i );
+        this._updateTopItem( oldIndex, true );
       }
     },
 
     _onHorzScrollBarChangeValue : function() {
-      if( this._clientArea.isSeeable() ) {
-        this._clientArea.setScrollLeft( this._horzScrollBar.getValue() );
-      }
+      this._rowContainer.setScrollLeft( this._horzScrollBar.getValue() );
       if( this._columnArea.isSeeable() ) {
         this._columnArea.setScrollLeft( this._horzScrollBar.getValue() );
       }
@@ -633,7 +471,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _onRowMouseDown : function( row, event ) {
-      var item = this._findItemByRow( row );
+      // TODO [tb] : maybe this abstraction could also be done in TreeRowContainer
+      var item = this._rowContainer.findItemByRow( row );
       if( item != null ) {
         if( row.isExpandSymbolTarget( event ) && item.hasChildren() ) {
           var expanded = !item.isExpanded();
@@ -644,13 +483,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         } else if( row.isCheckBoxTarget( event ) ) {
           item.setChecked( !item.isChecked() );
           this._sendItemCheckedChange( item );
-        } else if( row.isSelectionClick( event ) ) {
+        } else if( row.isSelectionClick( event, this._config.fullSelection ) ) {
           this._onSelectionClick( event, item );
         }
       }
     },
-    
-    _onSelectionClick: function( event, item ) {
+
+    _onSelectionClick : function( event, item ) {
       // NOTE: Using a listener for "dblclick" does not work because the
       //       item is re-rendered on mousedown which prevents the dom-event.
       var doubleClick = this._isDoubleClicked( event, item );
@@ -668,52 +507,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _delayMultiSelect : function( event, item ) {
-      if(    this._isDragSource() 
-          && this.isItemSelected( item ) 
-          && event.getType() === "mousedown" ) 
-      {
+      if( this._isDragSource() && this.isItemSelected( item ) && event.getType() === "mousedown" ) {
         this._delayedSelection = true;
       }
       return this._delayedSelection;
     },
 
-    _onMouseOver : function( event ) {
-      // TODO [tb] : ToolTips for incomplete cells
-      var target = event.getOriginalTarget();
-      if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
-        this._onRowOver( target );
-      }
-    },
-
     _onMouseOut : function( event ) {
-      var target = event.getOriginalTarget();
       this._delayedSelection = false;
-      if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
-        this._onRowOver( null );
-      }      
-    },
-
-    _onElementChange : function( event ) {
-    	var isOver = event.getType() === "elementOver";
-    	this._hoverElement = isOver ? event.getDomTarget() : null;
-    	var row = event.getTarget();
-    	var internal = row === event.getRelatedTarget();
-    	if( internal && row instanceof org.eclipse.rwt.widgets.TreeRow ) {
-    	  var hoverable =    row.isCheckBoxTarget( event )
-    	                  || row.isExpandSymbolTarget( event );
-    	  if( this._hoverItem !== null && hoverable ) { 
-    	    row.renderItem( this._hoverItem );
-    	  }
-    	}
-    },
-
-    _onRowOver : function( row ) {
-      var oldItem = this._hoverItem;
-      this._hoverItem = this._findItemByRow( row );
-      this._renderItem( oldItem );
-      if( row!= null ) {
-        row.renderItem( this._hoverItem );
-      }
     },
 
     _onClientAreaMouseWheel : function( event ) {
@@ -759,10 +560,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         }
       }
     },
-    
-    _onClientAreaAppear : function() {
-      this._clientArea.setScrollLeft( this._horzScrollBar.getValue() );
-    },
 
     _onColumnAreaAppear : function() {
       this._columnArea.setScrollLeft( this._horzScrollBar.getValue() );
@@ -778,7 +575,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _handleKeyUp : function( event ) {
-      var item = this._getPreviousItem( this._focusItem );
+      var item = this._focusItem.getPreviousItem();
       if( item != null ) {
         var itemIndex = this._findIndexByItem( item );
         this._handleKeyboardSelect( event, item, itemIndex );
@@ -786,7 +583,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _handleKeyDown : function( event ) {
-      var item = this._getNextItem( this._focusItem );
+      var item = this._focusItem.getNextItem();
       if( item != null ) {
         var itemIndex = this._findIndexByItem( item );
         this._handleKeyboardSelect( event, item, itemIndex );
@@ -795,7 +592,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _handleKeyPageUp : function( event ) {
       var oldIndex = this._findIndexByItem( this._focusItem );
-      var offset = this._rows.length - 2;
+      var offset = this._rowContainer.getChildrenLength() - 2;
       var newIndex = Math.max( 0, oldIndex - offset );
       var item = this._findItemByIndex( newIndex );
       var itemIndex = this._findIndexByItem( item );
@@ -804,7 +601,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _handleKeyPageDown : function( event ) {
       var oldIndex = this._findIndexByItem( this._focusItem );
-      var offset = this._rows.length - 2;
+      var offset = this._rowContainer.getChildrenLength() - 2;
       var max = this.getRootItem().getVisibleChildrenCount() - 1;
       var newIndex = Math.min( max, oldIndex + offset );
       var item = this._findItemByIndex( newIndex, this._topItem, this._topItemIndex );
@@ -857,17 +654,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     /////////////////
     // render content
     
-    _renderItemChange : function( item, event ) {
+    _renderItemUpdate : function( item, event ) {
       if( item.isDisplayable() ) {      
         switch( event.getData() ) {
           case "expanded":
           case "collapsed":
-            this._scheduleUpdate( false, true ); 
+            this._scheduleUpdate( true ); 
           break;
           case "add":
           case "remove":
+            // NOTE: the added/removed item is a child of this item
             if( item.isExpanded() ) {
-              this._scheduleUpdate( false, true ); 
+              this._scheduleUpdate( true ); 
             } else {
               this._scheduleItemUpdate( item );
             }
@@ -876,7 +674,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
             if( this._inServerResponse() ) {
               this._scheduleItemUpdate( item );
             } else {
-              this._renderItem( item );
+              this._rowContainer.renderItem( item );
             }  
           break;
         }
@@ -884,14 +682,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _scheduleItemUpdate : function( item ) {
-      this._renderQueue[ item.toHashCode() ] = true;
+      this._renderQueue[ item.toHashCode() ] = item;
       this.addToQueue( "updateRows" );
     },
     
-    _scheduleUpdate : function( rowCount, scrollHeight ) {
-      if( rowCount === true ) {
-        this._updateRowCount();
-      }
+    _scheduleUpdate : function( scrollHeight ) {
       if( scrollHeight === true ) {
         this.addToQueue( "scrollHeight" );
       }
@@ -904,86 +699,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( changes[ "scrollHeight" ] ) {
         this._updateScrollHeight();
       }
+      if( this._topItem === null ) {
+        this._updateTopItem();
+      }
       if( changes[ "updateRows" ] ) {
         if( this._renderQueue[ "allItems" ] ) {
-          this._updateAllRows();
+          this._rowContainer.renderAll();
         } else {
-          this._updateQueuedItems();
+          this._rowContainer.renderItemQueue( this._renderQueue );
         }
         this._renderQueue = {};
       }
     },
 
-    _updateRowCount : function() {
-      var height = this._clientArea.getHeight()
-      var rowsNeeded = Math.ceil( height / this._itemHeight );
-      var rowWidth = this._getRowWidth();
-      while( this._rows.length < rowsNeeded ) {
-        var row = new org.eclipse.rwt.widgets.TreeRow( this );
-        row.setHeight( this._itemHeight );
-        row.setWidth( rowWidth );
-        row.updateGridlinesState( this._linesVisible );
-        this._clientArea.add( row );
-      }
-      while( this._rows.length > rowsNeeded ) {
-        this._rows[ this._rows.length - 1 ].destroy();
-      }
-      this._renderGridHorizontal();
-      this._updateRowsEvenState();
-    },
-
-    _updateAllRows : function() {
-      var start = ( new Date() ).getTime();
-      this._updateRows( 0, this._rows.length );
-      this._vertScrollBar.autoEnableMerge( ( new Date() ).getTime() - start );
-    },
-    
-    _updateQueuedItems : function() {
-      var item = this._getTopItem();
-      var row = 0;
-      while( item != null && row < this._rows.length ) {
-        if( this._renderQueue[ item.toHashCode() ] ) {
-          this._rows[ row ].renderItem( item );
-        }
-        item = this._getNextItem( item );
-        row++;
-      }
-    },
-    
-    _updateRows : function( from, delta ){
-      var item = this._getTopItem();
-      var to = from + delta;
-      var row = 0;
-      while( item != null && row < this._rows.length ) {
-        if( row >= from && row <= to ) {
-          this._rows[ row ].renderItem( item );
-        }
-        item = this._getNextItem( item );
-        row++;
-      }
-      for( var i = row; i < this._rows.length; i++ ) {
-        this._rows[ i ].renderItem( null );
-      }
-    },
-    
-    _renderItem : function( item ) {
-      if( this._isCreated && item != null ) {
-        var row = this._findRowByItem( item );
-        if( row!= null ) {
-          row.renderItem( item );
-        }
-      }
-    },
-
     //////////// 
     // scrolling
-
-    _getTopItem : function() {
-      if( this._topItem === null ) {
-        this._updateTopItem();
-      }
-      return this._topItem;
-    },
     
     _updateScrollHeight : function() {
       var itemCount = this.getRootItem().getVisibleChildrenCount();
@@ -999,20 +729,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
     
-    _updateTopItem : function( oldIndex ) {
+    _updateTopItem : function( oldIndex, render ) {
       if( typeof oldIndex == "number" ) {
         this._topItem = this._findItemByIndex( this._topItemIndex, this._topItem, oldIndex );
       } else {
         this._topItem = this._findItemByIndex( this._topItemIndex );
       }
+      this._rowContainer.setTopItem( this._topItem, this._topItemIndex, render );
     },
     
     _updateScrollWidth : function() {
       var width = this._getItemWidth();
-      var rowWidth = this._getRowWidth();
-      for( var i = 0; i < this._rows.length; i++ ) {
-        this._rows[ i ].setWidth( rowWidth );
-      }
+      this._rowContainer.setRowWidth( this._getRowWidth() );
       if( !this._horzScrollBar.getDisposed() ) {
         this._horzScrollBar.setMaximum( width );
       }
@@ -1047,38 +775,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _scrollIntoView : function( index ) {
       if( index < this._topItemIndex ) {
         this.setTopItemIndex( index );
-      } else if( index > ( this._topItemIndex + this._rows.length - 2 ) ) {
-        this.setTopItemIndex( index - this._rows.length + 2 );
-      }
-    },
-    
-    _scrollContentVertical : function( oldTopItemIndex ) {
-      var delta = this._topItemIndex - oldTopItemIndex;
-      var forwards = delta > 0;
-      delta = Math.abs( delta );
-      if( delta >= this._rows.length ) {
-        this._updateRowsEvenState();
-        this._updateAllRows();
-      } else {
-        var numberOfShiftingRows = this._rows.length - delta;
-        var updateFromRow = forwards ? numberOfShiftingRows : 0;
-        var newFirstRow = forwards ? delta : numberOfShiftingRows;
-        this._switchRows( newFirstRow );
-        this._updateRowsEvenState();
-        this._updateRows( updateFromRow, delta );
-      }
-    },
-
-    _switchRows : function( newFirstRow ) {
-      // TODO [tb] : would be better placed in parent.js
-      var temp = this._rows.slice( newFirstRow );
-      this._rows = temp.concat( this._rows.slice( 0, newFirstRow ) );
-      this._clientArea._children = this._rows;
-      this._clientArea._invalidateVisibleChildren();
-      var layouter = this._clientArea.getLayoutImpl();
-      var changes = { "locationY" : true };
-      for( var i = 0; i < this._rows.length; i++ ) {
-        layouter.layoutChild( this._rows[ i ], changes );
+      } else if( index > ( this._topItemIndex + this._rowContainer.getChildrenLength() - 2 ) ) {
+        this.setTopItemIndex( index - this._rowContainer.getChildrenLength() + 2 );
       }
     },
     
@@ -1137,7 +835,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
     
-    _sendItemChange : function( item, event ) {
+    _sendItemUpdate : function( item, event ) {
       if( !this._inServerResponse() ) {
         switch( event.getData() ) {
           case "expanded":
@@ -1158,7 +856,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       req.addEvent( type, treeItemId );
       req.send();
     },
-    
+
     _sendSelectionEvent : function( item, defaultSelected, detail ) {
       if( this._hasSelectionListeners ) {
         var req = org.eclipse.swt.Request.getInstance();
@@ -1208,10 +906,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       return result.join();
     },
-    
+
     ////////////////////
     // focus & selection
-    
+
     _singleSelectItem : function( item ) {
       this._deselectAll();
       this._leadItem = null;
@@ -1219,17 +917,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._sendSelectionChange( item );
       this.setFocusItem( item );
     },
-    
+
     _multiSelectItem : function( event, item ) {
-      if(    event instanceof qx.event.type.MouseEvent
-          && event.isRightButtonPressed() ) 
-      {
+      if( event instanceof qx.event.type.MouseEvent && event.isRightButtonPressed() ) {
         if( !this.isItemSelected( item ) ) {
           this._singleSelectItem( item );
         }
       } else if( event.isCtrlPressed() ) {
-        if(   event instanceof qx.event.type.KeyEvent
-           && item != this._focusItem  ) {
+        if( event instanceof qx.event.type.KeyEvent && item != this._focusItem  ) {
           this.setFocusItem( item );
         } else {
           this._ctrlSelectItem( item );            
@@ -1257,8 +952,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _shiftSelectItem : function( item ) {
       this._deselectAll();
-      var currentItem 
-        = this._leadItem != null ? this._leadItem : this._focusItem;
+      var currentItem = this._leadItem != null ? this._leadItem : this._focusItem;
       this._leadItem = currentItem;
       var targetItem = item;
       var startIndex = this._findIndexByItem( currentItem );
@@ -1270,7 +964,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       this._selectItem( currentItem, true );
       while( currentItem !== targetItem ) {
-        currentItem = this._getNextItem( currentItem );
+        currentItem = currentItem.getNextItem();
         this._selectItem( currentItem, true );
       }
       this._sendSelectionChange( item );
@@ -1282,7 +976,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._selection.push( item );
       }
       if( render ) {
-        this._renderItem( item );
+        this._rowContainer.renderItem( item );
       }
     },
     
@@ -1291,7 +985,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._selection.splice( this._selection.indexOf( item ), 1 );
       }
       if( render ) {
-        this._renderItem( item );
+        this._rowContainer.renderItem( item );
       }
     },
 
@@ -1299,46 +993,64 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var oldSelection = this._selection;
       this._selection = [];
       for( var i = 0; i < oldSelection.length; i++ ) {
-        this._renderItem( oldSelection[ i ] );
+        this._rowContainer.renderItem( oldSelection[ i ] );
       }
     },
 
     _deselectVisibleChildren : function( item ) {
-      var currentItem = this._getNextItem( item );
-      var finalItem = this._getNextItem( item, true );
+      var currentItem = item.getNextItem();
+      var finalItem = item.getNextItem( true );
       while( currentItem !== finalItem ) {
         this._deselectItem( currentItem, false );
-        currentItem = this._getNextItem( currentItem, false );
+        currentItem = currentItem.getNextItem();
       } 
     },
 
     _applyFocused : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
+      this._config.focused = newValue;
       this._scheduleUpdate();
     },
 
-    
+    _applyEnabled : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._config.enabled = newValue;
+      this._scheduleUpdate();
+    },
+
+    _applyTextColor : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._config.textColor = newValue;
+      this._scheduleUpdate();
+    },
+
+    _applyFont : function( newValue, oldValue ) {
+      this.base( arguments, newValue, oldValue );
+      this._config.font = newValue;
+      this._scheduleUpdate();
+    },
+
     ////////////////////////////
     // internal layout & theming
-    
+
     _applyBackgroundColor : function( newValue ) {
-      this._clientArea.setBackgroundColor( newValue );
+      this._rowContainer.setBackgroundColor( newValue );
     },
 
     _applyBackgroundImage : function( newValue ) {
-      this._clientArea.setBackgroundImage( newValue );
+      this._rowContainer.setBackgroundImage( newValue );
     },
 
     _applyWidth : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._layoutX();
     },
-    
+
     _applyHeight : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._layoutY();
     },
-    
+
     _applyBorder : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._layoutX();
@@ -1347,8 +1059,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _renderGridVertical : function() {
       var lineNr = 0;
-      if( this._linesVisible ) {
-        for( var columnNr = 0; columnNr < this._columnCount; columnNr++ ) {
+      if( this._config.linesVisible ) {
+        for( var columnNr = 0; columnNr < this._config.columnCount; columnNr++ ) {
           lineNr = this._renderVerticalGridline( columnNr, lineNr );          
         }
       }
@@ -1356,22 +1068,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._vertGridLines.pop().destroy();
       }
     },
-    
+
     _renderVerticalGridline : function( columnNr, lineNr ) {
       var newLineNr = lineNr;
-      var clientWidth = this._clientArea.getWidth();
-      var left = this._itemLeft[ columnNr ] + this._itemWidth[ columnNr ] - 1;
+      var clientWidth = this._rowContainer.getWidth();
+      var left = this._config.itemLeft[ columnNr ] + this._config.itemWidth[ columnNr ] - 1;
       left -= this._horzScrollBar.getValue(); 
       if( left > 0 && left < clientWidth ) {
         var line = this._getVerticalGridline( lineNr );
         line.setLeft( left );
-        line.setTop( this._clientArea.getTop() );
-        line.setHeight( this._clientArea.getHeight() );
+        line.setTop( this._rowContainer.getTop() );
+        line.setHeight( this._rowContainer.getHeight() );
         newLineNr++
       }
       return newLineNr;
     },
-    
+
     _getVerticalGridline : function( number ) {
       if( typeof this._vertGridLines[ number ] === "undefined" ) {
         var line = new qx.ui.basic.Terminator();
@@ -1383,28 +1095,26 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       return this._vertGridLines[ number ];
     },
-    
+
     _renderGridHorizontal : function() {
-      var border = this._linesVisible ? this._getHorizontalGridBorder() : null;
-      for( var i = 0; i < this._rows.length; i++ ) {
-        this._rows[ i ].setBorder( border );
-      }      
+      var border = this._config.linesVisible ? this._getHorizontalGridBorder() : null;
+      this._rowContainer.setRowBorder( border );
     },
-    
+
     _getHorizontalGridBorder : function() {
       if( this._horzGridBorder === null ) { 
         this._horzGridBorder = this._getGridBorder( { "horizontal" : true } );
       }
       return this._horzGridBorder;
     },
-    
+
     _getVerticalGridBorder : function() {
       if( this._vertGridBorder === null ) {
         this._vertGridBorder = this._getGridBorder( { "vertical" : true } );
       }
       return this._vertGridBorder;
     },
-    
+
     _getGridBorder : function( state ) {
       var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
       var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
@@ -1418,7 +1128,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       return new org.eclipse.rwt.Border( borderWidths, "solid", gridColor );
     },
-    
+
     _layoutX : function() {
       var width = this.getWidth() - this.getFrameWidth();
       if( this._columnArea.getDisplay() ) {
@@ -1429,11 +1139,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._vertScrollBar.setLeft( width );
       }
       this._horzScrollBar.setWidth( width );
-      this._clientArea.setWidth( width );
+      this._rowContainer.setWidth( width );
       this._updateScrollWidth();
       this._renderGridVertical(); // TODO [tb] : optimize calls
     },
-    
+
     _layoutY : function() {
       var height = this.getHeight() - this.getFrameHeight();
       var top = 0;
@@ -1449,86 +1159,31 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       height = Math.max( 0, height );
       this._vertScrollBar.setHeight( height );
       this._vertScrollBar.setTop( top );
-      this._clientArea.setTop( top );
-      this._clientArea.setHeight( height );
+      this._rowContainer.setTop( top );
+      this._rowContainer.setHeight( height );
       this._renderGridVertical();
-      this._scheduleUpdate( true );
+      this._scheduleUpdate();
     },
-    
+
     _getItemWidth : function() {
       var result = 0;
-      if( this._itemLeft.length > 0 ) {
-        for( var i = 0; i < this.getColumnCount(); i++ ) {
-          result = Math.max( result, this._itemLeft[ i ] + this._itemWidth[ i ] );
+      if( this._config.itemLeft.length > 0 ) {
+        var columnCount = Math.max( 1, this._config.columnCount );
+        for( var i = 0; i < columnCount; i++ ) {
+          result = Math.max( result, this._config.itemLeft[ i ] + this._config.itemWidth[ i ] );
         }
       }
       return result;
     },
 
     _getRowWidth : function() {
-      var width = this._clientArea.getWidth()
+      var width = this._rowContainer.getWidth()
       var result = Math.max( this._getItemWidth(), width );
       return result;
     },
-        
+
     ///////////////
     // model-helper
-    
-    _getNextItem : function( item, ignoreChildren ) {
-      var result = null;
-      if( !ignoreChildren && item.hasChildren() && item.isExpanded() ) {
-        result = item.getChild( 0 );
-      } else if( item.hasNextSibling() ) {
-        result = item.getNextSibling();
-      } else if( item.getLevel() > 0 ) {
-        result = this._getNextItem( item.getParent(), true );
-      }
-      return result;
-    },
-    
-    _getPreviousItem : function( item ) {
-      var result = null;
-      if( item.hasPreviousSibling() ) {
-        result = item.getPreviousSibling();
-        while( result.hasChildren() && result.isExpanded() ) {
-          result = result.getLastChild();
-        }        
-      } else if( item.getLevel() > 0 ) {
-        result = item.getParent();
-      }
-      return result;
-    },
-    
-    _findItemByRow : function( targetRow ) {
-      var result = null;
-      if( targetRow != null ) {
-        var item = this._getTopItem();
-        var rowIndex = 0;
-        while( item != null && result == null ) {
-          if( this._rows[ rowIndex ] === targetRow ) {
-            result = item;
-          }
-          item = this._getNextItem( item );
-          rowIndex++;
-        }
-      }
-      return result;
-    },
-    
-    _findRowIndexByItem : function( targetItem ) {
-      var item = this._getTopItem();
-      var row = 0;
-      while( item != targetItem && item != null && row < this._rows.length ) {
-        item = this._getNextItem( item );
-        row++;
-      }
-      return item != null && row < this._rows.length ? row : null; 
-    },
-    
-    _findRowByItem : function( targetItem ) {
-      var index = this._findRowIndexByItem( targetItem );
-      return index != null ? this._rows[ index ] : null; 
-    },
 
     // TODO [tb] : can this be optimized to create less virtual placeholder items? 
     _findItemByIndex : function( index, startItem, startIndex ) {
@@ -1550,15 +1205,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var siblingIndex = i + item.getVisibleChildrenCount() + 1;
         if( siblingIndex <= index ) {
           i = siblingIndex;
-          item = this._getNextItem( item, true );
+          item = item.getNextItem( true );
         } else {
-          item = this._getNextItem( item, false );
+          item = item.getNextItem();
           i++;
         } 
       }
       return item;
     },
-    
+
     _findItemByIndexBackwards : function( index, startItem, startIndex ) {
       var i = startIndex;
       var item = startItem;
@@ -1570,29 +1225,32 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
             i = prevSiblingIndex;
             item = previous;              
           } else {
-            item = this._getPreviousItem( item );
+            item = item.getPreviousItem();
             i--;
           }
         } else {
-          item = this._getPreviousItem( item );
+          item = item.getPreviousItem();
           i--;
         }
       }
       return item;
     },
-    
+
     _findIndexByItem : function( item ) {
-      var forwardsItem = this._getTopItem();
-      var backwardsItem = this._getTopItem();
+      if( this._topItem === null ) {
+        this._updateTopItem();
+      }
+      var forwardsItem = this._topItem;
+      var backwardsItem = this._topItem;
       var forwardsIndex = this._topItemIndex;
       var backwardsIndex = this._topItemIndex;
       while( forwardsItem !== item && backwardsItem !== item ) {
         if( forwardsItem != null ) {
-          forwardsItem = this._getNextItem( forwardsItem );
+          forwardsItem = forwardsItem.getNextItem();
           forwardsIndex++;
         }
         if( backwardsItem != null ) {
-          backwardsItem = this._getPreviousItem( backwardsItem );
+          backwardsItem = backwardsItem.getPreviousItem();
           backwardsIndex--;
         }
         if( backwardsItem === null && forwardsItem === null ) {
@@ -1607,7 +1265,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       return result;
     },
-    
+
     _isChildOf : function( child, parent ) {
       var result = false;
       var item = child;
@@ -1617,35 +1275,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       return result;
     },
-    
-    ////////////////////
-    // row layout-helper
-    
-    _correctOffset : function( offset, item ) {
-      return offset + this.getIndentionOffset( item.getLevel() + 1 );
-    },
-    
-    _correctWidth : function( width, offset, item, column ) {
-      var result = width;
-      var columnEnd = this._itemLeft[ column ] + this._itemWidth[ column ];
-      var elementEnd = offset + result;
-      if( elementEnd > columnEnd ) {
-        result = Math.max( 0, columnEnd - offset );
-      }
-      return result;
-    },
-    
+
     //////////////
     // misc helper
-    
+
     _inServerResponse : function() {
       return org.eclipse.swt.EventUtil.getSuspended();      
     },
-    
+
     _isDragSource : function() {
       return this.hasEventListeners( "dragstart" ); 
     },
-    
+
     ////////////////////////
     // Cell tooltip handling
 
@@ -1654,11 +1295,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         this._cellToolTip = new org.eclipse.swt.widgets.TableCellToolTip( id );
-        this._clientArea.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
-        this._clientArea.setToolTip( this._cellToolTip );
+        this._rowContainer.addEventListener( "mousemove", this._onClientAreaMouseMove, this );
+        this._rowContainer.setToolTip( this._cellToolTip );
       } else {
-        this._clientArea.removeEventListener( "mousemove", this._onClientAreaMouseMove, this );
-        this._clientArea.setToolTip( null );
+        this._rowContainer.removeEventListener( "mousemove", this._onClientAreaMouseMove, this );
+        this._rowContainer.setToolTip( null );
         this._cellToolTip.destroy();
         this._cellToolTip = null;
       }
@@ -1668,16 +1309,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( this._cellToolTip != null ) {
         var pageX = evt.getPageX();
         var pageY = evt.getPageY();
-        if( this._hoverItem ) {
+        if( this._rowContainer.getHoverItem() ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var itemId = widgetManager.findIdByWidget( this._hoverItem );
+          var itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
           var columns = this.getColumns();
           var columnIndex = columns.length == 0 ? 0 : -1;
-          var element = this._clientArea.getElement();
+          var element = this._rowContainer.getElement();
           var leftOffset = qx.bom.element.Location.getLeft( element );
           for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
-            var pageLeft = leftOffset + this._itemLeft[ i ];
-            if( pageX >= pageLeft && pageX < pageLeft + this._itemWidth[ i ] ) {
+            var pageLeft = leftOffset + this._config.itemLeft[ i ];
+            if( pageX >= pageLeft && pageX < pageLeft + this._config.itemWidth[ i ] ) {
               columnIndex = i;
             }
           }

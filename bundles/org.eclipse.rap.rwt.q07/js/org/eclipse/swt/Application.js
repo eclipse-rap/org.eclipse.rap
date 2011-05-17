@@ -165,9 +165,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
         doc.setSelectable( true );
         // Fix for bug 295475:
         var docElement = document.documentElement;
-        qx.html.EventRegistration.addEventListener( docElement, 
-                                                    "mousedown", 
-                                                    this._onFFMouseDown );
+        qx.html.EventRegistration.addEventListener( docElement, "mousedown", this._onFFMouseDown );
       }
       // Observe browser history
       var history = qx.client.History.getInstance();

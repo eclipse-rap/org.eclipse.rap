@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004-2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -165,29 +165,19 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     },
 
     
-    _onkeyevent_post : function( vDomEvent, 
-                                 vType, 
-                                 vKeyCode, 
-                                 vCharCode ) 
-    {
+    _onkeyevent_post : function( vDomEvent, vType, vKeyCode, vCharCode ) {
       var process = true;
       if( typeof this._filter[ "keyevent" ] !== "undefined" ) {
         var context = this._filter[ "keyevent" ][ 1 ];
-        process = this._filter[ "keyevent" ][ 0 ].call( context, 
-                                                        vType, 
-                                                        vKeyCode, 
-                                                        vCharCode, 
-                                                        vDomEvent );
+        var func = this._filter[ "keyevent" ][ 0 ];
+        process = func.call( context, vType, vKeyCode, vCharCode, vDomEvent );
       }
       if( process ) {
         this._processKeyEvent( vDomEvent, vType, vKeyCode, vCharCode );
       }
     },
     
-    _processKeyEvent : function( vDomEvent, 
-                                 vType, 
-                                 vKeyCode, 
-                                 vCharCode ) {
+    _processKeyEvent : function( vDomEvent, vType, vKeyCode, vCharCode ) {
       var util = org.eclipse.rwt.EventHandlerUtil;
       var keyIdentifier;
       if( !isNaN( vKeyCode ) && vKeyCode !== 0 ) {
@@ -476,7 +466,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         while( target )       {
           if( target.getSelectable() != null ) {
             if ( !target.getSelectable() ) {
-             util.stopDomEvent( e );
+              util.stopDomEvent( e );
             }
             break;
           }
