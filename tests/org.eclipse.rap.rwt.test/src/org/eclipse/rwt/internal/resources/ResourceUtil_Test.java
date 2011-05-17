@@ -11,8 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import junit.framework.TestCase;
 
@@ -80,6 +79,30 @@ public class ResourceUtil_Test extends TestCase {
     ResourceUtil.write( file, getStringAsIntArray( "bar" ) );
     String result = jsConcatenator.getContent();
     assertEquals( "foo\nbar\n", result );
+  }
+
+  public void testReadText() throws IOException {
+    String input = createTestString( 10000 );
+    InputStream inputStream = new ByteArrayInputStream( input.getBytes( "UTF-8" ) );
+    int[] result = ResourceUtil.readText( inputStream, "UTF-8", false );
+    byte[] bytes = toByteArray( result );
+    assertEquals( input, new String( bytes ) );
+  }
+
+  private static byte[] toByteArray( int[] result ) {
+    byte[] bytes = new byte[ result.length ];
+    for( int i = 0; i < bytes.length; i++ ) {
+      bytes[ i ] = ( byte )result[ i ];
+    }
+    return bytes;
+  }
+
+  private static String createTestString( int length ) {
+    StringBuffer buffer = new StringBuffer( length );
+    for( int i = 0; i < length; i++ ) {
+      buffer.append( (char) ( 32 + ( i % 32 ) ) );
+    }
+    return buffer.toString();
   }
 
   private static int[] getStringAsIntArray( String string ) {

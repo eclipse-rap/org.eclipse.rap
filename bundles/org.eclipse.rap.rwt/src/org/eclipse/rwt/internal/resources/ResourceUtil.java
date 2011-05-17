@@ -88,21 +88,22 @@ public final class ResourceUtil {
   }
 
   static int[] readText( InputStream is, String charset, boolean compress ) throws IOException {
-    StringBuffer buffer = new StringBuffer();
+    StringBuffer text = new StringBuffer();
     InputStreamReader reader = new InputStreamReader( is, charset );
     BufferedReader br = new BufferedReader( reader );
+    char[] buffer = new char[ 8096 ];
     try {
-      int character = br.read();
-      while( character != -1 ) {
-        buffer.append( ( char )character );
-        character = br.read();
+      int readChars = br.read( buffer );
+      while( readChars != -1 ) {
+        text.append( buffer, 0, readChars );
+        readChars = br.read( buffer );
       }
     } finally {
       br.close();
     }
     // compress (JavaScript-) buffer if requested
     if( compress ) {
-      compress( buffer );
+      compress( text );
     }
     // write just read resource to byte array stream
     byte[] bytes;
@@ -110,7 +111,7 @@ public final class ResourceUtil {
     try {
       OutputStreamWriter osw = new OutputStreamWriter( baos, HTTP.CHARSET_UTF_8 );
       try {
-        osw.write( buffer.toString() );
+        osw.write( text.toString() );
         osw.flush();
       } finally {
         osw.close();
