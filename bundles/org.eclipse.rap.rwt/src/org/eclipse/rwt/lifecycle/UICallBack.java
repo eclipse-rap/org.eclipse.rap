@@ -12,6 +12,7 @@
 package org.eclipse.rwt.lifecycle;
 
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
@@ -69,7 +70,7 @@ public final class UICallBack {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( CurrentPhase.get() == null ) {
+    if( !ContextProvider.hasContext() || CurrentPhase.get() == null ) {
       SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }
     UICallBackServiceHandler.activateUICallBacksFor( id );
@@ -95,6 +96,9 @@ public final class UICallBack {
   public static void deactivate( final String id ) {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( !ContextProvider.hasContext() ) {
+      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }
     UICallBackServiceHandler.deactivateUICallBacksFor( id );
   }
