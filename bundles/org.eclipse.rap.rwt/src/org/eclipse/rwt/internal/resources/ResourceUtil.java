@@ -23,13 +23,13 @@ import org.eclipse.rwt.resources.IResourceManager;
 public final class ResourceUtil {
 
   // TODO [rh] avoid passing around the same set of arguments again and again
-  static int[] read( String name,
-                     String charset,
-                     boolean compress,
-                     IResourceManager resourceManager )
+  static byte[] read( String name,
+                      String charset,
+                      boolean compress,
+                      IResourceManager resourceManager )
     throws IOException
   {
-    int[] result;
+    byte[] result;
     if( charset != null ) {
       result = readText( name, charset, compress, resourceManager );
     } else {
@@ -38,8 +38,8 @@ public final class ResourceUtil {
     return result;
   }
 
-  static int[] read( InputStream is, String charset, boolean compress ) throws IOException {
-    int[] result;
+  static byte[] read( InputStream is, String charset, boolean compress ) throws IOException {
+    byte[] result;
     if( charset != null ) {
       result = readText( is, charset, compress );
     } else {
@@ -48,14 +48,12 @@ public final class ResourceUtil {
     return result;
   }
 
-  static void write( File toWrite, int[] content ) throws IOException {
+  static void write( File toWrite, byte[] content ) throws IOException {
     FileOutputStream fos = new FileOutputStream( toWrite );
     try {
       OutputStream out = new BufferedOutputStream( fos );
       try {
-        for( int i = 0; i < content.length; i++ ) {
-          out.write( content[ i ] );
-        }
+        out.write( content );
       } finally {
         out.close();
       }
@@ -70,15 +68,15 @@ public final class ResourceUtil {
     // TODO [rst] Add to concatenation buffer
   }
 
-  private static int[] readText( String name,
-                                 String charset,
-                                 boolean compress,
-                                 IResourceManager resourceManager )
+  private static byte[] readText( String name,
+                                  String charset,
+                                  boolean compress,
+                                  IResourceManager resourceManager )
     throws IOException
   {
     // read resource
     InputStream is = openStream( name, resourceManager );
-    int[] result;
+    byte[] result;
     try {
       result = readText( is, charset, compress );
     } finally {
@@ -87,50 +85,30 @@ public final class ResourceUtil {
     return result;
   }
 
-  static int[] readText( InputStream is, String charset, boolean compress ) throws IOException {
-    StringBuffer buffer = new StringBuffer();
+  static byte[] readText( InputStream is, String charset, boolean compress ) throws IOException {
+    StringBuffer text = new StringBuffer();
     InputStreamReader reader = new InputStreamReader( is, charset );
     BufferedReader br = new BufferedReader( reader );
+    char[] buffer = new char[ 8096 ];
     try {
-      int character = br.read();
-      while( character != -1 ) {
-        buffer.append( ( char )character );
-        character = br.read();
+      int readChars = br.read( buffer );
+      while( readChars != -1 ) {
+        text.append( buffer, 0, readChars );
+        readChars = br.read( buffer );
       }
     } finally {
       br.close();
     }
-    // compress (JavaScript-) buffer if requested
     if( compress ) {
-      compress( buffer );
+      compress( text );
     }
-    // write just read resource to byte array stream
-    byte[] bytes;
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    try {
-      OutputStreamWriter osw = new OutputStreamWriter( baos, HTTP.CHARSET_UTF_8 );
-      try {
-        osw.write( buffer.toString() );
-        osw.flush();
-      } finally {
-        osw.close();
-      }
-      bytes = baos.toByteArray();
-    } finally {
-      baos.close();
-    }
-    // convert byte[] to int[] and return
-    int[] result = new int[ bytes.length ];
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = ( bytes[ i ] & 0x0ff );
-    }
-    return result;
+    return text.toString().getBytes( HTTP.CHARSET_UTF_8 );
   }
 
-  private static int[] readBinary( String name, IResourceManager resourceManager ) 
+  private static byte[] readBinary( String name, IResourceManager resourceManager ) 
     throws IOException 
   {
-    int[] result;
+    byte[] result;
     InputStream is = openStream( name, resourceManager );
     try {
       result = readBinary( is );
@@ -140,7 +118,7 @@ public final class ResourceUtil {
     return result;
   }
 
-  static int[] readBinary( InputStream stream ) throws IOException {
+  static byte[] readBinary( InputStream stream ) throws IOException {
     ByteArrayOutputStream bufferedResult = new ByteArrayOutputStream();
     BufferedInputStream bufferedStream = new BufferedInputStream( stream );
     try {
@@ -153,12 +131,7 @@ public final class ResourceUtil {
     } finally {
       bufferedStream.close();
     }
-    byte[] bytes = bufferedResult.toByteArray();
-    int[] result = new int[ bytes.length ];
-    for( int i = 0; i < bytes.length; i++ ) {
-      result[ i ] = bytes[ i ];
-    }
-    return result;
+    return bufferedResult.toByteArray();
   }
 
   private static InputStream openStream( String name, IResourceManager resourceManager ) 

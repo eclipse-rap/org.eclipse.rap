@@ -273,8 +273,8 @@ public class ResourceManagerImpl_Test extends TestCase {
     manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
 
     File resourceFile = getResourceCopyFile( resource );
-    int[] origin = read( openStream( resource ) );
-    int[] copy = read( resourceFile );
+    byte[] origin = read( openStream( resource ) );
+    byte[] copy = read( resourceFile );
     assertTrue( "Resource not registered", manager.isRegistered( resource ) );
     assertTrue( "Resource was not written to disk", resourceFile.exists() );
     assertTrue( "Compressed resource too big", origin.length > copy.length );
@@ -394,9 +394,9 @@ public class ResourceManagerImpl_Test extends TestCase {
 
     manager.register( ISO_RESOURCE, charset );
 
-    int[] expected = read( openStream( UTF_8_RESOURCE ) );
+    byte[] expected = read( openStream( UTF_8_RESOURCE ) );
     File copiedFile = getResourceCopyFile( ISO_RESOURCE );
-    int[] actual = read( copiedFile );
+    byte[] actual = read( copiedFile );
     assertEquals( charset, manager.getCharset( ISO_RESOURCE ) );
     assertEquals( expected.length, actual.length );
     assertTrue( Arrays.equals( actual, expected ) );
@@ -406,8 +406,8 @@ public class ResourceManagerImpl_Test extends TestCase {
     ResourceManagerImpl manager = getResourceManager( DELIVER_BY_SERVLET );
     manager.register( ISO_RESOURCE, "ISO-8859-1" );
     
-    int[] expected = read( openStream( UTF_8_RESOURCE ) );
-    int[] actual = manager.findResource( ISO_RESOURCE, null );
+    byte[] expected = read( openStream( UTF_8_RESOURCE ) );
+    byte[] actual = manager.findResource( ISO_RESOURCE, null );
     assertEquals( expected.length, actual.length );
     assertTrue( Arrays.equals( actual, expected ) );
   }
@@ -492,24 +492,24 @@ public class ResourceManagerImpl_Test extends TestCase {
   ///////////////////
   // helping methods
 
-  private void assertEquals( int[] origin, int[] copy ) {
+  private void assertEquals( byte[] origin, byte[] copy ) {
     assertEquals( "Content sizes are different", origin.length, copy.length );
     for( int i = 0; i < copy.length; i++ ) {
       assertEquals( "Content is different", origin[ i ], copy[ i ] );
     }
   }    
 
-  private static int[] read( File file ) throws IOException {
+  private static byte[] read( File file ) throws IOException {
     return read( new FileInputStream( file ) );
   }
 
-  private static int[] read( InputStream input ) throws IOException {
+  private static byte[] read( InputStream input ) throws IOException {
     BufferedInputStream bis = new BufferedInputStream( input );
-    int[] result = null;
+    byte[] result = null;
     try {
-      result = new int[ bis.available() ];
+      result = new byte[ bis.available() ];
       for( int i = 0; i < result.length; i++ ) {
-        result[ i ] = bis.read();
+        result[ i ] = ( byte )bis.read();
       }
     } finally {
       bis.close();

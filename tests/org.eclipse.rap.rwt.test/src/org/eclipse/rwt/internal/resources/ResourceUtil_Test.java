@@ -11,8 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import junit.framework.TestCase;
 
@@ -76,19 +75,40 @@ public class ResourceUtil_Test extends TestCase {
     JSLibraryConcatenator jsConcatenator = RWTFactory.getJSLibraryConcatenator();
     jsConcatenator.startJSConcatenation();
     File file = File.createTempFile( "test", ".js" );
-    ResourceUtil.write( file, getStringAsIntArray( "foo" ) );
-    ResourceUtil.write( file, getStringAsIntArray( "bar" ) );
+    ResourceUtil.write( file, "foo".getBytes( "UTF-8" ) );
+    ResourceUtil.write( file, "bar".getBytes( "UTF-8" ) );
     String result = jsConcatenator.getContent();
     assertEquals( "foo\nbar\n", result );
   }
 
-  private static int[] getStringAsIntArray( String string ) {
-    byte[] bytes = string.getBytes();
-    int[] content = new int[ bytes.length ];
-    for( int i = 0; i < content.length; i++ ) {
-      content[ i ] = ( bytes[ i ] & 0x0ff );
+  public void testReadText() throws IOException {
+    String input = createTestString( 10000 );
+    InputStream inputStream = new ByteArrayInputStream( input.getBytes( "UTF-8" ) );
+    
+    byte[] result = ResourceUtil.readText( inputStream, "UTF-8", false );
+    
+    assertEquals( input, new String( result ) );
+  }
+
+  public void testWriteText() throws IOException {
+    String input = createTestString( 10000 );
+    byte[] content = input.getBytes( "UTF-8" );
+    File tempFile = File.createTempFile( "rap-", ".test" );
+    tempFile.deleteOnExit();
+
+    ResourceUtil.write( tempFile, content );
+
+    byte[] result = ResourceUtil.readText( new FileInputStream( tempFile ), "UTF-8", false );
+    assertEquals( input, new String( result ) );
+  }
+
+  private static String createTestString( int length ) {
+    StringBuffer buffer = new StringBuffer( length );
+    buffer.append( 'Ü' );
+    for( int i = 1; i < length; i++ ) {
+      buffer.append( ( char )( 32 + ( i % 32 ) ) );
     }
-    return content;
+    return buffer.toString();
   }
 
   protected void setUp() throws Exception {
