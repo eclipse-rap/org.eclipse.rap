@@ -60,10 +60,4 @@ final class ImageDataCache {
       }
     }
   }
-
-  public void clear() {
-    synchronized( cacheLock ) {
-      cache.clear();
-    }
-  }
 }
