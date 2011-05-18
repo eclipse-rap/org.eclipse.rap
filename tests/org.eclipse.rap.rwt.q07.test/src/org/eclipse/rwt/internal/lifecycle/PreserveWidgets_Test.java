@@ -16,8 +16,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.AdapterManager;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -42,49 +41,66 @@ public class PreserveWidgets_Test extends TestCase {
     }
   }
 
-  private static class LoggingLifeCycleAdapterFactory implements AdapterFactory {
-
+  private static class LoggingWidgetLCA extends AbstractWidgetLCA {
     private final StringBuffer log;
-
-    private LoggingLifeCycleAdapterFactory( StringBuffer log ) {
-      this.log = log;
+    
+    LoggingWidgetLCA() {
+      log= new StringBuffer();
     }
+    
+    public void preserveValues( Widget widget ) {
+      log.append( widget.getClass().getName() );
+    }
+  
+    public void readData( Widget widget ) {
+    }
+  
+    public void renderInitialization( Widget widget ) throws IOException {
+    }
+  
+    public void renderChanges( Widget widget ) throws IOException
+    {
+    }
+  
+    public void renderDispose( Widget widget ) throws IOException {
+    }
+  }
 
-    public Object getAdapter( Object adaptable, Class adapter ) {
-      Object result = null;
-      if( adaptable instanceof Display && adapter == ILifeCycleAdapter.class ) {
-        result = new IDisplayLifeCycleAdapter() {
-          public void preserveValues( Display display ) {
-            log.append( display.getClass().getName() );
-          }
-          public void readData( Display display ) {
-          }
-          public void render( Display display ) throws IOException {
-          }
-          public void clearPreserved( Display display ) {
-          }
-        };
+  private static class CustomLCAWidget extends Composite {
+    private final AbstractWidgetLCA widgetLCA;
+
+    CustomLCAWidget( Composite parent, AbstractWidgetLCA widgetLCA ) {
+      super( parent, 0 );
+      this.widgetLCA = widgetLCA;
+    }
+    
+    public Object getAdapter( Class adapter ) {
+      Object result;
+      if( adapter == ILifeCycleAdapter.class ) {
+        result = widgetLCA;
       } else {
-        result = new AbstractWidgetLCA() {
-          public void preserveValues( Widget widget ) {
-            log.append( widget.getClass().getName() );
-          }
-          public void readData( Widget widget ) {
-          }
-          public void renderInitialization( Widget widget ) throws IOException {
-          }
-          public void renderChanges( Widget widget ) throws IOException
-          {
-          }
-          public void renderDispose( Widget widget ) throws IOException {
-          }
-        };
+        result = super.getAdapter( adapter );
       }
       return result;
     }
+  }
 
-    public Class[] getAdapterList() {
-      return new LifeCycleAdapterFactory().getAdapterList();
+  private static class CustomLCAShell extends Shell {
+    private final AbstractWidgetLCA widgetLCA;
+    
+    CustomLCAShell( Display display, AbstractWidgetLCA widgetLCA ) {
+      super( display );
+      this.widgetLCA = widgetLCA;
+    }
+    
+    public Object getAdapter( Class adapter ) {
+      Object result;
+      if( adapter == ILifeCycleAdapter.class ) {
+        result = widgetLCA;
+      } else {
+        result = super.getAdapter( adapter );
+      }
+      return result;
     }
   }
 
@@ -123,29 +139,34 @@ public class PreserveWidgets_Test extends TestCase {
         return PhaseId.ANY;
       }
     } );
+    
     Fixture.executeLifeCycleFromServerThread( );
+    
     assertEquals( "copy created", log.toString() );
   }
 
   public void testExecutionOrder() {
-    StringBuffer log = new StringBuffer();
-    installLoggingLifeCycleAdapterFactory( log );
     Display display = new Display();
-    Composite shell = new Shell( display );
-    new Text( shell, SWT.NONE );
+    LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
+    Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
+    new CustomLCAWidget( shell, loggingWidgetLCA );
     Fixture.markInitialized( display );
+    
     new DisplayLCA().preserveValues( display );
-    String expected = Shell.class.getName() + Text.class.getName();
-    assertEquals( expected, log.toString() );
+    
+    String expectedorder = CustomLCAShell.class.getName() + CustomLCAWidget.class.getName();
+    assertEquals( expectedorder, loggingWidgetLCA.log.toString() );
   }
 
   public void testPreserveValuesWhenDisplayIsUninitialized() {
     StringBuffer log = new StringBuffer();
-    installLoggingLifeCycleAdapterFactory( log );
     Display display = new Display();
-    Composite shell = new Shell( display );
-    new Text( shell, SWT.NONE );
+    LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
+    Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
+    new CustomLCAWidget( shell, loggingWidgetLCA );
+    
     new DisplayLCA().preserveValues( display );
+    
     assertEquals( "", log.toString() );
   }
 
@@ -172,19 +193,5 @@ public class PreserveWidgets_Test extends TestCase {
     } catch( Exception e ) {
       fail( "clearPreserved() must succeed even with disposed display" );
     }
-  }
-
-  private static void installLoggingLifeCycleAdapterFactory( final StringBuffer log ) {
-    Fixture.disposeOfApplicationContext();
-    Fixture.createApplicationContext( new Runnable() {
-      public void run() {
-        RWTFactory.getResourceManagerProvider().registerFactory( new TestResourceManagerFactory() );
-        AdapterFactory lifeCycleAdapterFactory = new LoggingLifeCycleAdapterFactory( log );
-        AdapterManager adapterManager = RWTFactory.getAdapterManager();
-        adapterManager.registerAdapters( Display.class, lifeCycleAdapterFactory );
-        adapterManager.registerAdapters( Widget.class, lifeCycleAdapterFactory );
-      }
-    } );
-    Fixture.createServiceContext();
   }
 }
