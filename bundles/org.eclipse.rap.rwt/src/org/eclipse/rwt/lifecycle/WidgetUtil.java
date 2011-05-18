@@ -69,8 +69,7 @@ public final class WidgetUtil {
    *
    * @since 1.1
    */
-  public static final String CUSTOM_WIDGET_ID
-    = "org.eclipse.rwt.UITests#customId";
+  public static final String CUSTOM_WIDGET_ID = "org.eclipse.rwt.UITests#customId";
 
   /**
    * <p><strong>Note:</strong> This constant is provisional and subject to
@@ -88,8 +87,7 @@ public final class WidgetUtil {
    *
    * @since 1.1
    */
-  public static final String ENABLE_UI_TESTS
-    = "org.eclipse.rwt.enableUITests";
+  public static final String ENABLE_UI_TESTS = "org.eclipse.rwt.enableUITests";
 
   private WidgetUtil() {
     // prevent instantiation
@@ -102,7 +100,7 @@ public final class WidgetUtil {
    * @param widget the widget
    * @return the {@link IWidgetAdapter} instance
    */
-  public static IWidgetAdapter getAdapter( final Widget widget ) {
+  public static IWidgetAdapter getAdapter( Widget widget ) {
     IWidgetAdapter result;
     result = ( IWidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
     if( result == null ) {
@@ -119,7 +117,7 @@ public final class WidgetUtil {
    *          <code>null</code>
    * @return the id for the given <code>widget</code>
    */
-  public static String getId( final Widget widget ) {
+  public static String getId( Widget widget ) {
     // TODO [rh] consider overriding the id when Widget#setData is called
     //      - safer 1: in case someone tries to obtain id directly from addapter
     //      - safer 2: changing the id after widget was initialized could be
@@ -145,7 +143,7 @@ public final class WidgetUtil {
    * @return the variant or <code>null</code> if no variant has been specified
    *         for the given widget
    */
-  public static String getVariant( final Widget widget ) {
+  public static String getVariant( Widget widget ) {
     String result = null;
     WidgetAdapter widgetAdapter = ( WidgetAdapter )getAdapter( widget );
     Object data = widget.getData( WidgetUtil.CUSTOM_VARIANT );
@@ -174,11 +172,10 @@ public final class WidgetUtil {
   // TODO [bm] why do we return AbstractWidgetLCA instead of pulling the interesting
   // methods up to IWidgetLifeCycleAdapter and using this to talk to the outside
   // world
-  public static AbstractWidgetLCA getLCA( final Widget widget ) {
-    Class clazz = ILifeCycleAdapter.class;
-    AbstractWidgetLCA result = ( AbstractWidgetLCA )widget.getAdapter( clazz );
+  public static AbstractWidgetLCA getLCA( Widget widget ) {
+    AbstractWidgetLCA result = ( AbstractWidgetLCA )widget.getAdapter( ILifeCycleAdapter.class );
     if( result == null ) {
-      throwAdapterException( clazz );
+      throwAdapterException( ILifeCycleAdapter.class );
     }
     return result;
   }
@@ -192,11 +189,11 @@ public final class WidgetUtil {
    * @return the widget or <code>null</code> if there was no widget found with
    * the given <code>id</code> within the widget hierarchy
    */
-  public static Widget find( final Composite root, final String id ) {
+  public static Widget find( Composite root, final String id ) {
     final Widget[] result = { null };
     if( id != null ) {
       WidgetTreeVisitor.accept( root, new AllWidgetTreeVisitor() {
-        public boolean doVisit( final Widget widget ) {
+        public boolean doVisit( Widget widget ) {
           if( getId( widget ).equals( id ) ) {
             result[ 0 ] = widget;
           }
@@ -207,7 +204,7 @@ public final class WidgetUtil {
     return result[ 0 ];
   }
 
-  private static void throwAdapterException( final Class clazz ) {
+  private static void throwAdapterException( Class clazz ) {
     String text =   "Could not retrieve an instance of ''{0}''. Probably the "
                   + "AdapterFactory was not properly registered.";
     Object[] param = new Object[]{ clazz.getName() };
@@ -215,7 +212,7 @@ public final class WidgetUtil {
     throw new IllegalStateException( msg );
   }
 
-  private static boolean validateVariantString( final String variant ) {
+  private static boolean validateVariantString( String variant ) {
     boolean result = false;
     String name = variant;
     if( name.startsWith( "-" ) ) {
@@ -231,14 +228,14 @@ public final class WidgetUtil {
     return result;
   }
 
-  private static boolean isValidStart( final char ch ) {
+  private static boolean isValidStart( char ch ) {
     return ch == '_'
       || ( ch >= 'a' && ch <= 'z' )
       || ( ch >= 'A' && ch <= 'Z' )
       || ( ch >= 128 && ch <= 255 );
   }
 
-  private static boolean isValidPart( final char ch ) {
+  private static boolean isValidPart( char ch ) {
     return isValidStart( ch )
       || ( ch >= '0' && ch <= '9' )
       || ch == '-';
