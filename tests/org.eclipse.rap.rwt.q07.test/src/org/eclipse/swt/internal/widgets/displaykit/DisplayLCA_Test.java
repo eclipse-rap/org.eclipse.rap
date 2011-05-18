@@ -292,11 +292,12 @@ public class DisplayLCA_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
     lifeCycle.execute();
-    Fixture.fakeResponseWriter();
+    Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.STARTUP, null );
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     lifeCycle.execute();
-    Fixture.fakeResponseWriter();
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public PhaseId getPhaseId() {
@@ -311,7 +312,7 @@ public class DisplayLCA_Test extends TestCase {
     
     lifeCycle.execute();
     
-    String expected = "req.setRequestCounter( \"0\" );";
+    String expected = "wm.dispose( \"w2\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != - 1 );
   }
 
