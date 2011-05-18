@@ -46,13 +46,19 @@ public class Display_Test extends TestCase {
   public void testGetAdapterWithDisplayAdapter() {
     Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
-    assertNotNull( adapter );
+    assertTrue( adapter instanceof IDisplayAdapter );
   }
   
   public void testGetAdapterWithWidgetAdapter() {
     Display display = new Display();
     Object adapter = display.getAdapter( IWidgetAdapter.class );
-    assertNotNull( adapter );
+    assertTrue( adapter instanceof IWidgetAdapter );
+  }
+  
+  public void testGetAdapterWithLifeCycleAdapter() {
+    Display display = new Display();
+    Object adapter = display.getAdapter( ILifeCycleAdapter.class );
+    assertTrue( adapter instanceof IDisplayLifeCycleAdapter );
   }
 
   public void testSingleDisplayPerSession() {

@@ -17,8 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -31,9 +30,9 @@ public class Widget_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
@@ -41,11 +40,11 @@ public class Widget_Test extends TestCase {
   }
 
   public void testGetAdapter() {
-    // ensure that Widget#getAdapter can be called after widget was disposed of
     shell.dispose();
-    assertNotNull( shell.getAdapter( IWidgetAdapter.class ) );
+    Object adapterOfDisposedWidget = shell.getAdapter( IWidgetAdapter.class );
+    assertNotNull( adapterOfDisposedWidget );
   }
-
+  
   public void testCheckWidget() throws Throwable {
     final Widget widget = new Text( shell, SWT.NONE );
     Runnable target = new Runnable() {
@@ -57,7 +56,7 @@ public class Widget_Test extends TestCase {
       Fixture.runInThread( target );
       fail( "Illegal thread access expected." );
     } catch( SWTException swte ) {
-      assertEquals( "Invalid thread access", swte.getMessage() );
+      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swte.code );
     } 
   }
   
@@ -97,8 +96,7 @@ public class Widget_Test extends TestCase {
     try {
       widget.getData( null );
       fail( "Must not allow to get data for null key" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -153,13 +151,7 @@ public class Widget_Test extends TestCase {
 
   public void testCheckBits() {
     int style = SWT.VERTICAL | SWT.HORIZONTAL;
-    int result = Widget.checkBits( style,
-                                   SWT.VERTICAL,
-                                   SWT.HORIZONTAL,
-                                   0,
-                                   0,
-                                   0,
-                                   0 );
+    int result = Widget.checkBits( style, SWT.VERTICAL, SWT.HORIZONTAL, 0, 0, 0, 0 );
     assertTrue( ( result & SWT.VERTICAL ) != 0 );
     assertFalse( ( result & SWT.HORIZONTAL ) != 0 );
   }
