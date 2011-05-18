@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Used by repo-tool.sh -->
+<project name="p2 composite repositories helper">
+
+  <target name="create">
+    <mkdir dir="${repoDir}"/>
+    <p2.composite.repository>
+      <repository compressed="true" name="${repoName}" location="${repoDir}" />
+    </p2.composite.repository>
+  </target>
+
+  <target name="addChild">
+    <p2.composite.repository>
+      <repository compressed="true" location="${repoDir}" />
+      <add>
+        <repository location="${repoChild}" />
+      </add>
+    </p2.composite.repository>
+  </target>
+
+  <target name="removeChild">
+    <p2.composite.repository>
+      <repository compressed="true" location="${repoDir}" />
+      <remove>
+        <repository location="${repoChild}" />
+      </remove>
+    </p2.composite.repository>
+  </target>
+
+</project>
