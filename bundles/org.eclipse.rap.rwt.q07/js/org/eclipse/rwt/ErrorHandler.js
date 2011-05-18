@@ -14,10 +14,10 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
   statics : {
 
     showError : function( content ) {
-      org.eclipse.rwt.ErrorHandler._enableTextSelection();
-      org.eclipse.rwt.ErrorHandler._freezeApplication();
+      this._enableTextSelection();
+      this._freezeApplication();
       document.title = "Error Page";
-      org.eclipse.rwt.ErrorHandler._createErrorArea().innerHTML = content;
+      this._createErrorArea().innerHTML = content;
     },
 
     showTimeout : function( content ) {
@@ -28,24 +28,42 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       }
       var hrefAttr = "href=\"" + location + "\"";
       var html = content.replace( /{HREF_URL}/, hrefAttr );
-      org.eclipse.rwt.ErrorHandler._freezeApplication();
-      org.eclipse.rwt.ErrorHandler._createOverlay();
-      org.eclipse.rwt.ErrorHandler._createTimeoutArea( 400, 100 ).innerHTML = html;
+      this._freezeApplication();
+      this._createOverlay();
+      this._createTimeoutArea( 400, 100 ).innerHTML = html;
     },
 
     processJavaScriptErrorInResponse : function( script, error, currentRequest ) {
       var content = "<p>Could not evaluate javascript response:</p><pre>";
+      content += this._gatherErrorInfo( error, script, currentRequest );
+      content += "</pre>";
+      this.showError( content );
+    },
+
+    processJavaScriptError : function( error ) {
+      var content = "<p>Javascript error occurred:</p><pre>";
+      content += this._gatherErrorInfo( error );
+      content += "</pre>";
+      this.showError( content );
+      throw error;
+    },
+
+    _gatherErrorInfo : function( error, script, currentRequest ) {
       var info = [];
-      info.push( "Error: " + error + "\n" );
-      info.push( "Script: " + script );
       try {
+	      info.push( "Error: " + error + "\n" );
+	      if( script ) {
+		      info.push( "Script: " + script );
+	      }
         if( error instanceof Error ) {
           for( var key in error ) {
             info.push( key + ": " + error[ key ] );
           }
         }
         info.push( "Debug: " + qx.core.Variant.get( "qx.debug" ) );
-        info.push( "Request: " + currentRequest.getData() );
+        if( currentRequest ) {
+	        info.push( "Request: " + currentRequest.getData() );
+        }
         var inFlush = qx.ui.core.Widget._inFlushGlobalQueues;
         if( inFlush ) {
           info.push( "Phase: " + qx.ui.core.Widget._flushGlobalQueuesPhase );
@@ -53,15 +71,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       } catch( ex ) {
         // ensure we get a info no matter what
       }
-      content += info.join( "\n  " );
-      content += "</pre>";
-      org.eclipse.rwt.ErrorHandler.showError( content );
-    },
-
-    processJavaScriptError : function( error ) {
-      var content = "<p>Javascript error occurred:</p><pre>"  + error + "</pre>";
-      org.eclipse.rwt.ErrorHandler.showError( content );
-      throw error;
+      return info.join( "\n  " );
     },
 
     _createOverlay : function() {
