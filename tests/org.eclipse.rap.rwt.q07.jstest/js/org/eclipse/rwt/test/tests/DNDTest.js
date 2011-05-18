@@ -992,6 +992,50 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       tree.destroy();
     },
 
+    testTreeRequestItemOutsideRow_Bug_345692 : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
+      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      testUtil.prepareTimerUse();
+      testUtil.initRequestLog();
+      var tree = this.createTreeTarget();
+      var item0 = this.createTreeItem( 0, tree, tree );
+      var item1 = this.createTreeItem( 1, tree, tree );
+      var source = this.createSource();
+      testUtil.flush();
+      var sourceNode = source._getTargetNode();
+      var targetNode = tree._clientArea.getChildren()[ 0 ]._getTargetNode();
+      var treeNode = tree.getElement();
+      var doc = document.body;
+      // drag 
+      testUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
+      testUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
+      assertNotNull( dndHandler.__dragCache );
+      assertTrue( dndHandler.__dragCache.dragHandlerActive );
+      // over treeRow
+      testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
+      assertTrue( dndSupport._currentTargetWidget instanceof org.eclipse.rwt.widgets.TreeRow );
+      testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
+      assertTrue( dndSupport._isDropTargetEventScheduled( "dragEnter" ) );
+      dndSupport._cancelDropTargetEvent( "dragEnter" );
+      dndSupport._cancelDropTargetEvent( "dragOver" );
+      // over clientArea
+      // NOTE: IE may fire mousemove before mouseover, See Bug 345692
+      testUtil.fakeMouseEventDOM( doc, "mousemove", leftButton );
+      assertFalse( dndSupport._currentTargetWidget instanceof org.eclipse.rwt.widgets.TreeRow );
+      testUtil.fakeMouseEventDOM( doc, "mouseover", leftButton );
+      testUtil.forceTimerOnce();
+      assertEquals( 2, testUtil.getRequestsSend() );
+      var request = testUtil.getRequestLog()[ 1 ];
+      var expected = "dragLeave.item=null";
+      console.log( request );
+      assertTrue( request.search( expected ) != -1 );
+      source.setParent( null );
+      source.destroy();
+      tree.destroy();
+    },
+
     testTreeRequestItemIsSourceItem: function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();

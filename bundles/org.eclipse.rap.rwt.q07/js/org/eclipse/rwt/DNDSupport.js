@@ -186,6 +186,9 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _dragOutHandler : function( event ) {
       var target = event.getCurrentTarget();
       var mouseEvent = event.getMouseEvent();
+      if( this._currentTargetWidget !== mouseEvent.getTarget() ) {
+        this._onMouseOver( mouseEvent );
+      }
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
       dndHandler.clearActions();
       this.setFeedback( target, null, 0 );
@@ -386,7 +389,10 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       if(    widget instanceof org.eclipse.swt.widgets.TableRow
           || widget instanceof org.eclipse.rwt.widgets.TreeRow ) 
       {
-        result = widget;
+        // _currentDropTarget could be another tree or table
+        if( this._currentDropTarget && this._currentDropTarget.contains( widget ) ) {
+          result = widget;
+        }
       }
       return result;
     },
