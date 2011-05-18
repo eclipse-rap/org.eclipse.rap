@@ -15,7 +15,7 @@ import java.util.WeakHashMap;
 
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.internal.SingletonManager;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -133,11 +133,10 @@ public class ContextProvider {
     ISessionStore result = getContext().getSessionStore();
     if( result == null ) {
       HttpSession httpSession = getRequest().getSession( true );
-      String id = SessionStoreImpl.ATTR_SESSION_STORE;
-      result = ( ISessionStore )httpSession.getAttribute( id );
+      result = ( ISessionStore )httpSession.getAttribute( SessionStoreImpl.ATTR_SESSION_STORE );
       if( result == null ) { 
         result = new SessionStoreImpl( httpSession );
-        result.setAttribute( SessionSingletonBase.LOCK, new Object() );
+        SingletonManager.install( result );
       }
       getContext().setSessionStore( result );
     }

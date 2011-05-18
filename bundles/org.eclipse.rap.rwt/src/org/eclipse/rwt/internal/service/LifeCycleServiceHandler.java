@@ -18,8 +18,8 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.RWTMessages;
+import org.eclipse.rwt.internal.SingletonManager;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.util.HTTP;
@@ -138,6 +138,8 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     sessionStore.valueUnbound( null );
     // reinitialize session store state
     sessionStore.valueBound( null );
-    sessionStore.setAttribute( SessionSingletonBase.LOCK, new Object() );
+    // TODO [rh] ContextProvider#getSession() also initializes a session (slightly different)
+    //      merge both code passages
+    SingletonManager.install( sessionStore );
   }
 }

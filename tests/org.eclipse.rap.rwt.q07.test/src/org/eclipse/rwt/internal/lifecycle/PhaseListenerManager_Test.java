@@ -173,8 +173,8 @@ public class PhaseListenerManager_Test extends TestCase {
         succeededThreads.add( this );
       }
     };
-    Thread[] threads = startThreads( threadCount, runnable );
-    joinThreads( threads );
+    Thread[] threads = Fixture.startThreads( threadCount, runnable );
+    Fixture.joinThreads( threads );
     assertEquals( threadCount, succeededThreads.size() );
     assertEquals( 0, phaseListenerManager.getPhaseListeners().length );
   }
@@ -294,26 +294,5 @@ public class PhaseListenerManager_Test extends TestCase {
         loggedExceptions.add( throwable );
       }
     } );
-  }
-
-  private static Thread[] startThreads( int threadCount, Runnable runnable ) {
-    List threads = new ArrayList();
-    for( int i = 0; i < threadCount; i++ ) {
-      Thread thread = new Thread( runnable );
-      thread.setDaemon( true );
-      thread.start();
-      threads.add( thread );
-      Thread.yield();
-    }
-    Thread[] result = new Thread[ threads.size() ];
-    threads.toArray( result );
-    return result;
-  }
-
-  private static void joinThreads( Thread[] threads ) throws InterruptedException {
-    for( int i = 0; i < threads.length; i++ ) {
-      Thread thread = threads[ i ];
-      thread.join();
-    }
   }
 }

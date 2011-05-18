@@ -13,6 +13,8 @@
 package org.eclipse.rwt;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -398,16 +400,33 @@ public class Fixture {
     }
   }
 
+  public static Thread[] startThreads( int threadCount, Runnable runnable ) {
+    List threads = new ArrayList();
+    for( int i = 0; i < threadCount; i++ ) {
+      Thread thread = new Thread( runnable );
+      thread.setDaemon( true );
+      thread.start();
+      threads.add( thread );
+      Thread.yield();
+    }
+    Thread[] result = new Thread[ threads.size() ];
+    threads.toArray( result );
+    return result;
+  }
+
+  public static void joinThreads( Thread[] threads ) throws InterruptedException {
+    for( int i = 0; i < threads.length; i++ ) {
+      Thread thread = threads[ i ];
+      thread.join();
+    }
+  }
+
   public static void delete( final File toDelete ) {
     if( toDelete.exists() ) {
       doDelete( toDelete );
     }
   }
 
-  
-  //////////////////
-  // helping methods
-  
   private static void doDelete( final File toDelete ) {
     if( toDelete.isDirectory() ) {
       File[] children = toDelete.listFiles();
