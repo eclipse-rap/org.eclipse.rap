@@ -21,7 +21,7 @@ final class ReadData implements IPhase {
     return PhaseId.READ_DATA;
   }
 
-  public PhaseId execute(Display display) {
+  public PhaseId execute( Display display ) {
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     displayLCA.readData( display );
     displayLCA.preserveValues( display );
