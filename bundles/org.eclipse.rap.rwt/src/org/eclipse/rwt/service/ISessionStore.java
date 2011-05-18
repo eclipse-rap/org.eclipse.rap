@@ -65,7 +65,7 @@ public interface ISessionStore {
    * <code>ISessionStore</code>, or <code>null</code> if no object is bound
    * under the name.
    *
-   * @param name a string specifying the name of the object
+   * @param name a string specifying the name of the object; cannot be null
    * @return the object with the specified name or <code>null</code> if the
    *         underlying session was invalidated.
    */
@@ -81,7 +81,7 @@ public interface ISessionStore {
    * <code>HttpSessionBindingListener.valueUnbound</code> is called.
    *
    * @param name The name of the object to remove from this
-   *             <code>ISessionStore</code>.
+   *             <code>ISessionStore</code>; cannot be null
    * @return <code>true</code> if the attribute was removed or
    *         <code>false</code> if the attribute could not be removed because
    *         the session was invalidated.

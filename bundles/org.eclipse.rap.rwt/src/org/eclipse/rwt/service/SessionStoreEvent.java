@@ -8,8 +8,9 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.service;
+
+import java.util.EventObject;
 
 /**
  * <code>SessionStoreListener</code>s are
@@ -17,17 +18,16 @@ package org.eclipse.rwt.service;
  * 
  * @since 1.0
  */
-public class SessionStoreEvent {
-  
-  private final ISessionStore sessionStore;
+public class SessionStoreEvent extends EventObject {
+  private static final long serialVersionUID = 1L;
   
   /**
    * Creates a new instance of <code>SessionStoreEvent</code>.
    * 
    * @param sessionStore the session store which is about to be destroyed
    */
-  public SessionStoreEvent( final ISessionStore sessionStore ) {
-    this.sessionStore = sessionStore;
+  public SessionStoreEvent( ISessionStore sessionStore ) {
+    super( sessionStore );
   }
   
   /**
@@ -36,6 +36,6 @@ public class SessionStoreEvent {
    * @return the session store that is about to be destroyed.
    */
   public ISessionStore getSessionStore() {
-    return sessionStore;
+    return ( ISessionStore )getSource();
   }
 }

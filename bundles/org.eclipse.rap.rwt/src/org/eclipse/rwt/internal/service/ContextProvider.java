@@ -133,7 +133,7 @@ public class ContextProvider {
     ISessionStore result = getContext().getSessionStore();
     if( result == null ) {
       HttpSession httpSession = getRequest().getSession( true );
-      String id = SessionStoreImpl.ID_SESSION_STORE;
+      String id = SessionStoreImpl.ATTR_SESSION_STORE;
       result = ( ISessionStore )httpSession.getAttribute( id );
       if( result == null ) { 
         result = new SessionStoreImpl( httpSession );
