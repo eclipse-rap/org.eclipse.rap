@@ -12,17 +12,23 @@
 package org.eclipse.rap.ui.internal.progress;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
+import org.eclipse.rwt.internal.lifecycle.UICallBackManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
@@ -122,7 +128,7 @@ public class JobManagerAdapter
             public void run() {
               Job job = event.getJob();
               String id = String.valueOf( job.hashCode() );
-              UICallBackServiceHandler.deactivateUICallBacksFor( id );
+              UICallBackManager.getInstance().deactivateUICallBacksFor( id );
             }
           } );
         }
@@ -158,7 +164,7 @@ public class JobManagerAdapter
           public void run() {
             bindToSession( event.getJob() );
             String id = String.valueOf( event.getJob().hashCode() );
-            UICallBackServiceHandler.activateUICallBacksFor( id );
+            UICallBackManager.getInstance().activateUICallBacksFor( id );
           }
         };
         UICallBack.runNonUIThreadWithFakeContext( display, runnable );

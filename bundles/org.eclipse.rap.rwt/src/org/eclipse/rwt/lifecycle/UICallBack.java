@@ -73,7 +73,7 @@ public final class UICallBack {
     if( !ContextProvider.hasContext() || CurrentPhase.get() == null ) {
       SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }
-    UICallBackServiceHandler.activateUICallBacksFor( id );
+    UICallBackManager.getInstance().activateUICallBacksFor( id );
   }
   
   /**
@@ -100,7 +100,7 @@ public final class UICallBack {
     if( !ContextProvider.hasContext() ) {
       SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }
-    UICallBackServiceHandler.deactivateUICallBacksFor( id );
+    UICallBackManager.getInstance().deactivateUICallBacksFor( id );
   }
   
   private UICallBack() {

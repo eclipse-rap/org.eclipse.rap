@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler.IdManager;
+import org.eclipse.rwt.internal.lifecycle.UICallBackManager.IdManager;
 import org.eclipse.rwt.internal.util.ClassUtil;
 
 

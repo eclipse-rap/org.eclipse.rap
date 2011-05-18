@@ -21,13 +21,45 @@ import org.eclipse.rwt.service.*;
 
 public final class UICallBackManager {
 
-  public static UICallBackManager getInstance() {
-    Object inst = SessionSingletonBase.getInstance( UICallBackManager.class );
-    return ( UICallBackManager )inst;
+  static final class IdManager {
+  
+    private final Set ids;
+    private final Object lock;
+  
+    private IdManager() {
+      ids = new HashSet();
+      lock = new Object();
+    }
+  
+    int add( final String id ) {
+      synchronized( lock ) {
+        ids.add( id );
+        return ids.size();
+      }
+    }
+  
+    int remove( final String id ) {
+      synchronized( lock ) {
+        ids.remove( id );
+        return ids.size();
+      }
+    }
+  
+    boolean isEmpty() {
+      synchronized( lock ) {
+        return ids.isEmpty();
+      }
+    }
   }
 
+  public static UICallBackManager getInstance() {
+    return ( UICallBackManager )SessionSingletonBase.getInstance( UICallBackManager.class );
+  }
+  
+  private final IdManager idManager;
+
   // synchronization object to control access to the runnables List
-  private final Object lock;
+  final Object lock;
   // contains a reference to the callback request thread that is currently
   // blocked.
   private final Set blockedCallBackRequests;
@@ -38,18 +70,15 @@ public final class UICallBackManager {
   // callback thread returns earlier than the UI Thread the callback thread
   // must be blocked although the runnables are not empty
   private boolean waitForUIThread;
-  // Flag that indicates whether the UICallBack mechanism is active. If not
-  // no callback thread must be blocked.
-  private boolean active;
   // indicates whether the display has runnables to execute
   private boolean hasRunnables;
 
   private UICallBackManager() {
     lock = new Object();
+    idManager = new IdManager();
     blockedCallBackRequests = new HashSet();
     uiThreadRunning = false;
     waitForUIThread = false;
-    active = false;
   }
 
   boolean isCallBackRequestBlocked() {
@@ -58,21 +87,15 @@ public final class UICallBackManager {
     }
   }
 
-  public void setActive( final boolean active ) {
+  public void wakeClient() {
     synchronized( lock ) {
-      this.active = active;
-    }
-  }
-
-  public void sendUICallBack() {
-    synchronized( lock ) {
-      if( !uiThreadRunning || !active ) {
-        sendImmediately();
+      if( !uiThreadRunning ) {
+        releaseBlockedRequest();
       }
     }
   }
 
-  public void sendImmediately() {
+  public void releaseBlockedRequest() {
     synchronized( lock ) {
       lock.notifyAll();
     }
@@ -95,7 +118,7 @@ public final class UICallBackManager {
     synchronized( lock ) {
       uiThreadRunning = false;
       if( hasRunnables ) {
-        sendUICallBack();
+        wakeClient();
       }
     }
   }
@@ -136,11 +159,33 @@ public final class UICallBackManager {
     return result;
   }
 
-  private boolean mustBlockCallBackRequest() {
-    return    active 
-           && blockedCallBackRequests.isEmpty()
-           && (    waitForUIThread 
-                || uiThreadRunning 
-                || !hasRunnables );
+  boolean mustBlockCallBackRequest() {
+    boolean noPendingCallbackRequests = blockedCallBackRequests.isEmpty();
+    boolean prevent = !waitForUIThread && !uiThreadRunning && hasRunnables;
+    boolean isActive = !idManager.isEmpty();
+    return isActive && noPendingCallbackRequests && !prevent;
+  }
+
+  boolean isUICallBackActive() {
+    boolean result = !idManager.isEmpty();
+    if( !result ) {
+      result = hasRunnables();
+    }
+    return result;
+  }
+
+  public void activateUICallBacksFor( final String id ) {
+    int size = idManager.add( id );
+    if( size == 1 ) {
+      UICallBackServiceHandler.registerUICallBackActivator();
+    }
+  }
+
+  public void deactivateUICallBacksFor( final String id ) {
+    // release blocked callback handler request
+    int size = idManager.remove( id );
+    if( size == 0 ) {
+      releaseBlockedRequest();
+    }
   }
 }

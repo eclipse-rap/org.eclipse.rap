@@ -41,7 +41,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   
   public void testWriteActivationFromDifferentSession() throws Throwable {
     // test that on/off switching is managed in session scope
-    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().activateUICallBacksFor( ID_1 );
     final String[] otherSession = new String[ 1 ];
     Runnable runnable = new Runnable() {
       public void run() {
@@ -64,7 +64,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   
   public void testWriteActivationTwice() throws Exception {
     Fixture.fakeResponseWriter();
-    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().activateUICallBacksFor( ID_1 );
     UICallBackServiceHandler.writeActivation();
     UICallBackServiceHandler.writeActivation();
     assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
@@ -72,40 +72,40 @@ public class UICallBackServiceHandler_Test extends TestCase {
 
   public void testWriteActivationAfterDeactivate() throws Exception {
     Fixture.fakeResponseWriter();
-    UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().deactivateUICallBacksFor( ID_1 );
     UICallBackServiceHandler.writeActivation();
     assertEquals( "", Fixture.getAllMarkup() );
   }
   
   public void testWriteActivationWithDifferentIds() throws Exception {
     Fixture.fakeResponseWriter();
-    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
-    UICallBackServiceHandler.activateUICallBacksFor( ID_2 );
+    UICallBackManager.getInstance().activateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().activateUICallBacksFor( ID_2 );
     UICallBackServiceHandler.writeActivation();
     assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
   }
   
   public void testWriteActivationAfterActivateTwoDeactivateOne() throws Exception {
     Fixture.fakeResponseWriter();
-    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
-    UICallBackServiceHandler.activateUICallBacksFor( ID_2 );
-    UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().activateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().activateUICallBacksFor( ID_2 );
+    UICallBackManager.getInstance().deactivateUICallBacksFor( ID_1 );
     UICallBackServiceHandler.writeActivation();
     assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
   }
   
   public void testWriteActivateTwice() throws Exception {
-    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
-    UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
-    UICallBackServiceHandler.activateUICallBacksFor( ID_2 );
+    UICallBackManager.getInstance().activateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().deactivateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().activateUICallBacksFor( ID_2 );
     Fixture.fakeResponseWriter();
     UICallBackServiceHandler.writeActivation();
     assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
   }
 
   public void testActivateDeactivateWithPendingRunnables() throws Exception {
-    UICallBackServiceHandler.activateUICallBacksFor( ID_1 );
-    UICallBackServiceHandler.deactivateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().activateUICallBacksFor( ID_1 );
+    UICallBackManager.getInstance().deactivateUICallBacksFor( ID_1 );
     display.asyncExec( new Runnable() {
       public void run() {
       }

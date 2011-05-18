@@ -1189,17 +1189,17 @@ public class Display extends Device implements Adaptable {
       if( thread != Thread.currentThread() ) {
         UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
           public void run() {
-            UICallBackManager.getInstance().sendImmediately();
+            UICallBackManager.getInstance().releaseBlockedRequest();
           }
         } );
       }
     }
   }
 
-  void wakeThread() {
+  protected void wakeThread() {
     UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
-        UICallBackManager.getInstance().sendUICallBack();
+        UICallBackManager.getInstance().wakeClient();
       }
     } );
   }

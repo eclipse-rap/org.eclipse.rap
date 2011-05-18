@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.junit;
 
 import junit.framework.ComparisonFailure;
@@ -23,7 +23,7 @@ public class RAPTestCase extends TestCase {
     super();
   }
   
-  public RAPTestCase( final String name ) {
+  public RAPTestCase( String name ) {
     super( name );
   }
 
@@ -334,7 +334,7 @@ public class RAPTestCase extends TestCase {
   }
 
   private static void notifyClient() {
-    UICallBackManager.getInstance().sendImmediately();
+    UICallBackManager.getInstance().releaseBlockedRequest();
     Display.getCurrent().sleep();
   }
 }

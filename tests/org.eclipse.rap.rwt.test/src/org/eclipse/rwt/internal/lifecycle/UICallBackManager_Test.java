@@ -58,10 +58,9 @@ public class UICallBackManager_Test extends TestCase {
       public void run() {
         ContextProvider.setContext( context[ 0 ] );
         Fixture.fakeResponseWriter();
-        UICallBackServiceHandler uiCallBackServiceHandler
-          = new UICallBackServiceHandler();
+        UICallBackServiceHandler uiCallBackServiceHandler = new UICallBackServiceHandler();
         try {
-          UICallBackManager.getInstance().setActive( true );
+          UICallBackManager.getInstance().activateUICallBacksFor( "foo" );
           uiCallBackServiceHandler.service();
         } catch( Throwable thr ) {
           uiCallBackServiceHandlerThrowable[ 0 ] = thr;
@@ -76,7 +75,7 @@ public class UICallBackManager_Test extends TestCase {
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
 
-    UICallBackManager.getInstance().sendUICallBack();
+    UICallBackManager.getInstance().wakeClient();
     Thread.sleep( SLEEP_TIME );
     assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     Thread.sleep( SLEEP_TIME );
@@ -90,7 +89,7 @@ public class UICallBackManager_Test extends TestCase {
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     display.wake();
     assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
-    UICallBackManager.getInstance().sendImmediately();
+    UICallBackManager.getInstance().releaseBlockedRequest();
   }
   
   public void testWaitOnBackgroundThread() throws Exception {
@@ -383,7 +382,18 @@ public class UICallBackManager_Test extends TestCase {
     assertNotNull( exceptionInBgThread[ 0 ] );
     assertFalse( bgThread.isAlive() );
   }
-  
+
+  public void testMustBlock() {
+    UICallBackManager manager = UICallBackManager.getInstance();
+    assertFalse( manager.mustBlockCallBackRequest() );
+  }
+
+  public void testMustBlockWhenActive() {
+    UICallBackManager manager = UICallBackManager.getInstance();
+    manager.activateUICallBacksFor( "foo" );
+    assertTrue( manager.mustBlockCallBackRequest() );
+  }
+
   private Thread simulateUiCallBackThread(
     final Throwable[] uiCallBackServiceHandlerThrowable,
     final ServiceContext context )
@@ -395,7 +405,7 @@ public class UICallBackManager_Test extends TestCase {
         Fixture.fakeResponseWriter();
         UICallBackServiceHandler uiCallBackServiceHandler = new UICallBackServiceHandler();
         try {
-          UICallBackManager.getInstance().setActive( true );
+          UICallBackManager.getInstance().activateUICallBacksFor( "foo" );
           uiCallBackServiceHandler.service();
         } catch( Throwable thr ) {
           uiCallBackServiceHandlerThrowable[ 0 ] = thr;
