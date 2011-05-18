@@ -75,14 +75,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     // Init events
     this.addEventListener( "appear", this._onAppear, this );
     this.addEventListener( "focusin", this._onFocusIn, this );
+    this.addEventListener( "blur", this._onBlur, this );
     this.addEventListener( "changeWidth", this._onChangeSize, this );
     this.addEventListener( "changeHeight", this._onChangeSize, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "changeFont", this._onChangeFont, this );
     this.addEventListener( "changeTextColor", this._onChangeTextColor, this );
-    this.addEventListener( "changeBackgroundColor",
-                           this._onChangeBackgroundColor, 
-                           this );
+    this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
     this.addEventListener( "changeVisibility", this._onChangeVisibility, this );
     // Mouse events
     this.addEventListener( "mousedown", this._onMouseDown, this );
@@ -106,14 +105,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     cDocument.removeEventListener( "windowblur", this._onBlur, this );
     this.removeEventListener( "appear", this._onAppear, this );
     this.removeEventListener( "focusin", this._onFocusIn, this );
+    this.removeEventListener( "blur", this._onBlur, this );
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "changeFont", this._onChangeFont, this );
     this.removeEventListener( "changeTextColor", this._onChangeTextColor, this );
-    this.removeEventListener( "changeBackgroundColor",
-                              this._onChangeBackgroundColor, 
-                              this );
+    this.removeEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
     this.removeEventListener( "changeVisibility", this._onChangeVisibility, this );
     this.removeEventListener( "mousedown", this._onMouseDown, this );
     this.removeEventListener( "mouseup", this._onMouseUp, this );
@@ -562,9 +560,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           }
           break;
       }
-      if(    this._field.isCreated()
-          && !org.eclipse.swt.EventUtil.getSuspended() ) 
-      {
+      if( this._field.isCreated() && !org.eclipse.swt.EventUtil.getSuspended() ) {
         this._handleSelectionChange();
       }
     },

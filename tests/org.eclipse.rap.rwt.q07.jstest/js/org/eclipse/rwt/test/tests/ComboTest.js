@@ -34,6 +34,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
 
+    testCloseListOnBlur : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.focus();
+      combo.setListVisible( true );
+      testUtil.flush();
+      assertTrue( combo._list.isSeeable() );
+      combo.blur();
+      testUtil.flush();
+      assertFalse( combo._list.isSeeable() );
+      combo.destroy();
+    },
+
     testItems : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
