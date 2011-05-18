@@ -304,7 +304,7 @@ function generateMetadata() {
     echo "No such directory: $inputDir"
     return 1
   fi
-  # remove exiting metadata
+  # remove existing metadata
   rm -f "$inputDir/artifacts.jar" && rm -f "$inputDir/content.jar" || return 1
   # choose repo name
   local inputFile=`basename "$INPUT_ARCHIVE"`
@@ -418,22 +418,13 @@ if [ -n "$REPOSITORY_PATH" ]; then
   echo "=== pack200 signed $INPUT_ARCHIVE_NAME"
   packBuild pack renamed-$INPUT_ARCHIVE_NAME packed-$INPUT_ARCHIVE_NAME || exit 1
 
-  # download old repo
-  echo "=== merge repository dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/"
-  echo "update local copy of repository..."
+  echo "=== create repository for dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/"
   mkdir -p mirror
   localCopy=mirror/${REPOSITORY_PATH/\//_}
-  rsync -r -v --delete --progress \
-    $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ \
-    $localCopy/ || return 1
-  echo "downloaded old repository to $localCopy"
-  echo "any modifications before merging?"
-  echo -n "press Return to proceed "
-  read c
-  echo "merge new content into local copy of repository"
+  rm -rf "$localCopy"
   rm -rf newSite && unzip -q packed-$INPUT_ARCHIVE_NAME -d newSite || exit 1
   rm packed-$INPUT_ARCHIVE_NAME
-  rsync -r newSite/eclipse/ $localCopy/ || exit 1
+  mv newSite/eclipse "$localCopy" || exit 1
   rm -rf newSite
 
   # metadata
@@ -450,4 +441,3 @@ if [ -n "$REPOSITORY_PATH" ]; then
     $localCopy/ \
     $BUILD_USER@dev.eclipse.org:$DOWNLOAD_LOCATION/$REPOSITORY_PATH/ || exit 1
 fi
-
