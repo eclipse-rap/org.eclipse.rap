@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.graphics;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.graphics.ImageData;
 
 
@@ -28,15 +29,13 @@ final class ImageDataCache {
   private final Map cache;
   private final Object cacheLock;
 
-  public ImageDataCache() {
+  ImageDataCache() {
     cacheLock = new Object();
     cache = new HashMap( 25 );
   }
 
-  public ImageData getImageData( final InternalImage internalImage ) {
-    if( internalImage == null ) {
-      throw new NullPointerException( "internalImage" );
-    }
+  ImageData getImageData( InternalImage internalImage ) {
+    ParamCheck.notNull( internalImage, "internalImage" );
     ImageData cached;
     synchronized( cacheLock ) {
       cached = ( ImageData )cache.get( internalImage );
@@ -44,15 +43,9 @@ final class ImageDataCache {
     return cached != null ? ( ImageData )cached.clone() : null;
   }
 
-  public void putImageData( final InternalImage internalImage,
-                            final ImageData imageData )
-  {
-    if( internalImage == null ) {
-      throw new NullPointerException( "internalImage" );
-    }
-    if( imageData == null ) {
-      throw new NullPointerException( "imageData" );
-    }
+  void putImageData( InternalImage internalImage, ImageData imageData ) {
+    ParamCheck.notNull( internalImage, "internalImage" );
+    ParamCheck.notNull( imageData, "imageData" );
     if( imageData.data.length <= MAX_DATA_SIZE ) {
       synchronized( cacheLock ) {
         // TODO [rst] Implement replacement strategy (LRU or LFU)
