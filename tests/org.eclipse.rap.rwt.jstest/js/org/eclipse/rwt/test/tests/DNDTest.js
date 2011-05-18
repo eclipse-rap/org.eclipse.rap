@@ -1028,7 +1028,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       assertEquals( 2, testUtil.getRequestsSend() );
       var request = testUtil.getRequestLog()[ 1 ];
       var expected = "dragLeave.item=null";
-      console.log( request );
       assertTrue( request.search( expected ) != -1 );
       source.setParent( null );
       source.destroy();
