@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
@@ -18,24 +17,48 @@ import org.eclipse.rwt.Fixture;
 
 public class RWTRequestVersionControl_Test extends TestCase {
   
-  public void testIsValid() {
-    assertTrue( RWTRequestVersionControl.isValid() );
-    Integer nextRequestId = RWTRequestVersionControl.nextRequestId();
+  public void testInitialRequestId() {
+    Integer requestId = RWTRequestVersionControl.getInstance().nextRequestId();
     
-    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER,
-                              nextRequestId.toString() );
-    assertFalse( RWTRequestVersionControl.isValid() );
-
-    RWTRequestVersionControl.beforeService();
-    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER,
-                              nextRequestId.toString() );
-    assertTrue( RWTRequestVersionControl.isValid() );
-    
-    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER,
-                              "4711" );
-    assertFalse( RWTRequestVersionControl.isValid() );
+    assertEquals( 0, requestId.intValue() );
   }
+  
+  public void testIsValidForInitialRequest() {
+    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER, null );
 
+    boolean valid = RWTRequestVersionControl.getInstance().isValid();
+    
+    assertTrue( valid );
+  }
+  
+  public void testIsValid() {
+    Integer nextRequestId = RWTRequestVersionControl.getInstance().nextRequestId();
+    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER, nextRequestId.toString() );
+    
+    boolean valid = RWTRequestVersionControl.getInstance().isValid();
+    
+    assertTrue( valid );
+  }
+  
+  public void testIsValidWithUnknownRequestVersion() {
+    RWTRequestVersionControl.getInstance().nextRequestId();
+    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER, "4711" );
+    
+    boolean valid = RWTRequestVersionControl.getInstance().isValid();
+    
+    assertFalse( valid );
+  }
+  
+  public void testIsValidWhenNoRequestVersionWasSent() {
+    RWTRequestVersionControl.getInstance().nextRequestId();
+    RWTRequestVersionControl.getInstance().nextRequestId();
+    Fixture.fakeRequestParam( RWTRequestVersionControl.REQUEST_COUNTER, null );
+    
+    boolean valid = RWTRequestVersionControl.getInstance().isValid();
+    
+    assertTrue( valid );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -102,22 +103,38 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     HttpSession httpSession = sessionStore.getHttpSession();
     Object httpSessionAttribute = new Object();
     httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, httpSessionAttribute );
-    // fake required environment settings
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-    Fixture.fakeResponseWriter();
-    sessionStore.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
-    // run life cycle
-    new LifeCycleServiceHandler().service();
+    simulateSessionRestart();
     assertNull( sessionStore.getAttribute( SESSION_STORE_ATTRIBUTE ) );
-    assertSame( httpSessionAttribute,
-                httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
+    assertSame( httpSessionAttribute, httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
   }
   
+  public void testRequestCounterAfterSessionRestart() throws Exception {
+    RWTRequestVersionControl.getInstance().nextRequestId();
+    Integer version = RWTRequestVersionControl.getInstance().nextRequestId();
+    simulateSessionRestart();
+    Integer versionAfterRestart = RWTRequestVersionControl.getInstance().getCurrentRequestId();
+
+    assertEquals( version.intValue(), versionAfterRestart.intValue() );
+    
+    Fixture.fakeNewRequest();
+    Integer versionForNextRequest = RWTRequestVersionControl.getInstance().nextRequestId();
+    
+    assertFalse( versionAfterRestart.equals( versionForNextRequest ) );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakeResponseWriter();
   }
   
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private static void simulateSessionRestart() throws IOException {
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+    ISessionStore session = ContextProvider.getSession();
+    session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
+    new LifeCycleServiceHandler().service();
   }
 }

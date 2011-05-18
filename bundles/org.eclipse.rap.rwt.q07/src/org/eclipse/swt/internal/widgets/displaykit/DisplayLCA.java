@@ -180,7 +180,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static void writeRequestCounter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-    Object[] args = new Object[] { RWTRequestVersionControl.nextRequestId() };
+    Object[] args = new Object[] { RWTRequestVersionControl.getInstance().nextRequestId() };
     responseWriter.write( MessageFormat.format( PATTERN_REQUEST_COUNTER, args ) );
   }
 
