@@ -12,7 +12,7 @@
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,8 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.EncodingUtil;
-import org.eclipse.rwt.internal.util.NumberFormatUtil;
+import org.eclipse.rwt.internal.util.*;
+import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.HelpEvent;
@@ -88,7 +88,7 @@ public final class WidgetLCAUtil {
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
   //                improves performance - still under investigation.
-  private final static Map parsedFonts = new HashMap();
+  private final static SharedInstanceBuffer parsedFonts = new SharedInstanceBuffer();
   //////////////////////////////////////////////////////////////////////////////
 
   private WidgetLCAUtil() {
@@ -579,19 +579,21 @@ public final class WidgetLCAUtil {
   }
 
   public static String[] parseFontName( final String name ) {
-    synchronized( parsedFonts ) {
-      String[] result = ( String[] )parsedFonts.get( name );
-      if( result == null ) {
-        result = name.split( "," );
-        for( int i = 0; i < result.length; i++ ) {
-          result[ i ] = result[ i ].trim();
-          Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
-          result[ i ] = matcher.replaceAll( "" );
-        }
-        parsedFonts.put( name, result );
+    return ( String[] )parsedFonts.get( name, new IInstanceCreator() {
+      public Object createInstance() {
+        return parseFontNameInternal( name );
       }
-      return result;
+    } );
+  }
+
+  private static String[] parseFontNameInternal( String name ) {
+    String[] result = name.split( "," );
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = result[ i ].trim();
+      Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
+      result[ i ] = matcher.replaceAll( "" );
     }
+    return result;
   }
 
   /**

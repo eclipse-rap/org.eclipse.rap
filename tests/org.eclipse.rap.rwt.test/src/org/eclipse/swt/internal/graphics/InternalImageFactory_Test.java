@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.*;
 
 public class InternalImageFactory_Test extends TestCase {
   private static final ClassLoader CLASS_LOADER = Fixture.class.getClassLoader();
+
   private InternalImageFactory internalImageFactory;
 
   public void testRegisterResource() {

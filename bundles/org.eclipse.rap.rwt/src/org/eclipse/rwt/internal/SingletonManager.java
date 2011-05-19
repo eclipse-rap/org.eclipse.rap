@@ -12,7 +12,8 @@ package org.eclipse.rwt.internal;
 
 import java.util.*;
 
-import org.eclipse.rwt.internal.util.ClassUtil;
+import org.eclipse.rwt.internal.util.*;
+import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rwt.service.ISessionStore;
 
 
@@ -30,16 +31,14 @@ public class SingletonManager {
     return ( SingletonManager )sessionStore.getAttribute( ATTR_SINGLETON_MANAGER );
   }
   
-  private final Object lock;
   // Key: Class<T>, value: instance of T
   private final Map singletons;
   // Key: Class<T>, value: lock for T
-  private final Map typeLocks;
+  private final SharedInstanceBuffer typeLocks;
   
   private SingletonManager() {
-    lock = new Object();
     singletons = Collections.synchronizedMap( new HashMap() );
-    typeLocks = new HashMap();
+    typeLocks = new SharedInstanceBuffer();
   }
 
   public Object getSingleton( Class type ) {
@@ -53,15 +52,13 @@ public class SingletonManager {
     }
   }
   
-  private Object getTypeLock( Class type ) {
-    synchronized( lock ) {
-      Object result = typeLocks.get( type );
-      if( result == null ) {
-        result = new Object();
-        typeLocks.put( type, result );
+  private Object getTypeLock( final Class type ) {
+    Object result = typeLocks.get( type, new IInstanceCreator() {
+      public Object createInstance() {
+        return new Object();
       }
-      return result;
-    }
+    } );
+    return result;
   }
 
   private static void checkNotInstalled( ISessionStore sessionStore ) {

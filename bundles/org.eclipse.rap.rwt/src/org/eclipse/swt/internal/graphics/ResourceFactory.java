@@ -12,23 +12,21 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.rwt.internal.util.ClassUtil;
+import org.eclipse.rwt.internal.util.*;
+import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.graphics.*;
 
 
 public class ResourceFactory {
   
-  private final Map colors;
-  private final Map fonts;
-  private final Map cursors;
+  private final SharedInstanceBuffer colors;
+  private final SharedInstanceBuffer fonts;
+  private final SharedInstanceBuffer cursors;
   
   public ResourceFactory() {
-    colors = new HashMap();
-    fonts = new HashMap();
-    cursors = new HashMap();
+    colors = new SharedInstanceBuffer();
+    fonts = new SharedInstanceBuffer();
+    cursors = new SharedInstanceBuffer();
   }
   
   public Color getColor( int red, int green, int blue ) {
@@ -36,44 +34,31 @@ public class ResourceFactory {
     return getColor( colorNr );
   }
 
-  private Color getColor( int value ) {
-    Color result;
+  private Color getColor( final int value ) {
     Integer key = new Integer( value );
-    synchronized( colors ) {
-      if( colors.containsKey( key ) ) {
-        result = ( Color )colors.get( key );
-      } else {
-        result = createColorInstance( value );
-        colors.put( key, result );
+    return ( Color )colors.get( key, new IInstanceCreator() {
+      public Object createInstance() {
+        return createColorInstance( value );
       }
-    }
-    return result;
+    } );
   }
 
-  public Font getFont( FontData fontData ) {
-    Font result;
+  public Font getFont( final FontData fontData ) {
     Integer key = new Integer( fontData.hashCode() );
-    synchronized( fonts ) {
-      result = ( Font )fonts.get( key );
-      if( result == null ) {
-        result = createFontInstance( fontData );
-        fonts.put( key, result );
+    return ( Font )fonts.get( key, new IInstanceCreator() {
+      public Object createInstance() {
+        return createFontInstance( fontData );
       }
-    }
-    return result;
+    } );
   }
 
-  public Cursor getCursor( int style ) {
-    Cursor result;
+  public Cursor getCursor( final int style ) {
     Integer key = new Integer( style );
-    synchronized( Cursor.class ) {
-      result = ( Cursor )cursors.get( key );
-      if( result == null ) {
-        result = createCursorInstance( style );
-        cursors.put( key, result );
-      }
-    }
-    return result;
+    return ( Cursor )cursors.get( key, new IInstanceCreator() {
+        public Object createInstance() {
+          return createCursorInstance( style );
+        }
+      } );
   }
 
   private static Color createColorInstance( int colorNr ) {

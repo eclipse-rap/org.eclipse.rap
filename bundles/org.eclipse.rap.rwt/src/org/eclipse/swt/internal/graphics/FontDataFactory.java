@@ -11,17 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import java.util.Hashtable;
-import java.util.Map;
-
+import org.eclipse.rwt.internal.util.SharedInstanceBuffer;
+import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.graphics.FontData;
 
 
 public class FontDataFactory {
-  private final Map cache;
+  private final SharedInstanceBuffer cache;
   
   public FontDataFactory() {
-    cache = new Hashtable();
+    cache = new SharedInstanceBuffer();
   }
 
   public FontData findFontData( final FontData fontData ) {
@@ -31,11 +30,11 @@ public class FontDataFactory {
     //             other. In this rare case, two equal internal FontData
     //             instances would be in use in the system, which is harmless.
     Object key = new Integer( fontData.hashCode() );
-    FontData result = ( FontData )cache.get( key );
-    if( result == null ) {
-      result = cloneFontData( fontData );
-      cache.put( key, result );
-    }
+    FontData result = ( FontData )cache.get( key, new IInstanceCreator() {
+      public Object createInstance() {
+        return cloneFontData( fontData );
+      }
+    } );
     return result;
   }
 

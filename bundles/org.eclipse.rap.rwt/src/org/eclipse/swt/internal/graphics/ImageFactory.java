@@ -12,12 +12,11 @@
 package org.eclipse.swt.internal.graphics;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.util.ClassUtil;
+import org.eclipse.rwt.internal.util.*;
+import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
@@ -25,8 +24,7 @@ import org.eclipse.swt.graphics.Image;
 
 public class ImageFactory {
   
-  private final Map cache;
-  private final Object cacheLock;
+  private final SharedInstanceBuffer cache;
   
   public static String getImagePath( Image image ) {
     String result = null;
@@ -38,36 +36,27 @@ public class ImageFactory {
   }
 
   public ImageFactory() {
-    cache = new HashMap();
-    cacheLock = new Object();
+    cache = new SharedInstanceBuffer();
   }
 
   public Image findImage( String path ) {
     return findImage( path, RWT.getResourceManager().getContextLoader() );
   }
 
-  public Image findImage( String path, ClassLoader imageLoader ) {
-    Image result;
-    synchronized( cacheLock ) {
-      result = ( Image )cache.get( path );
-      if( result == null ) {
-        result = createImage( path, imageLoader );
-        cache.put( path, result );
+  public Image findImage( final String path, final ClassLoader imageLoader ) {
+    return ( Image )cache.get( path, new IInstanceCreator() {
+      public Object createInstance() {
+        return createImage( path, imageLoader );
       }
-    }
-    return result;
+    } );
   }
 
-  public Image findImage( String path, InputStream inputStream ) {
-    Image result;
-    synchronized( cacheLock ) {
-      result = ( Image )cache.get( path );
-      if( result == null ) {
-        result = createImage( null, path, inputStream );
-        cache.put( path, result );
+  public Image findImage( final String path, final InputStream inputStream ) {
+    return ( Image )cache.get( path, new IInstanceCreator() {
+      public Object createInstance() {
+        return createImage( null, path, inputStream );
       }
-    }
-    return result;
+    } );
   }
 
   public Image createImage( Device device, String key, InputStream inputStream ) {

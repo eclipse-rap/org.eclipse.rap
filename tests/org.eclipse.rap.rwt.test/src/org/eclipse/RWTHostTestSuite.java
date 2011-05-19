@@ -28,8 +28,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.textsize.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.*;
-import org.eclipse.rwt.internal.util.ClassUtil_Test;
-import org.eclipse.rwt.internal.util.StreamWritingUtil_Test;
+import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.internal.widgets.JSExecutor_Test;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.*;
@@ -133,6 +132,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( EncodingUtil_Test.class );
     suite.addTestSuite( ClassUtil_Test.class );
     suite.addTestSuite( StreamWritingUtil_Test.class );
+    suite.addTestSuite( SharedInstanceBuffer_Test.class );
 
     suite.addTestSuite( Display_Test.class );
     suite.addTestSuite( Monitor_Test.class );

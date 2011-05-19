@@ -12,81 +12,63 @@
 package org.eclipse.swt.internal.graphics;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.util.SharedInstanceBuffer;
+import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 
 
 public class InternalImageFactory {
-  private final Map cache;
-  private final Object cacheLock;
+  private final SharedInstanceBuffer cache;
   
   InternalImageFactory() {
-    cache = new HashMap();
-    cacheLock = new Object();
+    cache = new SharedInstanceBuffer();
   }
 
   // TODO [rst] If we do not rely on the fact that there is only one
   //            InternalImage instance, we could loose synchronization as in
   //            ImageDataFactory.
-  public InternalImage findInternalImage( String fileName ) {
-    InternalImage result;
-    synchronized( cacheLock ) {
-      result = ( InternalImage )cache.get( fileName );
-      if( result == null ) {
-        result = createInternalImage( fileName );
-        cache.put( fileName, result );
-      }
-    }
-    return result;
+  public InternalImage findInternalImage( final String fileName ) {
+    return ( InternalImage )cache.get( fileName, new IInstanceCreator() {
+        public Object createInstance() {
+          return createInternalImage( fileName );
+        }
+      } );
   }
 
   public InternalImage findInternalImage( InputStream stream ) {
-    InternalImage result;
-    BufferedInputStream bufferedStream = new BufferedInputStream( stream );
-    ImageData imageData = readImageData( bufferedStream );
-    String path = createGeneratedImagePath( imageData );
-    synchronized( cacheLock ) {
-      result = ( InternalImage )cache.get( path );
-      if( result == null ) {
-        result = createInternalImage( path, bufferedStream, imageData );
-        cache.put( path, result );
+    final BufferedInputStream bufferedStream = new BufferedInputStream( stream );
+    final ImageData imageData = readImageData( bufferedStream );
+    final String path = createGeneratedImagePath( imageData );
+    return ( InternalImage )cache.get( path, new IInstanceCreator() {
+      public Object createInstance() {
+        return createInternalImage( path, bufferedStream, imageData );
       }
-    }
-    return result;
+    } );
   }
 
-  public InternalImage findInternalImage( ImageData imageData ) {
-    InternalImage result;
-    String path = createGeneratedImagePath( imageData );
-    synchronized( cacheLock ) {
-      result = ( InternalImage )cache.get( path );
-      if( result == null ) {
+  public InternalImage findInternalImage( final ImageData imageData ) {
+    final String path = createGeneratedImagePath( imageData );
+    return ( InternalImage )cache.get( path, new IInstanceCreator() {
+      public Object createInstance() {
         InputStream stream = createInputStream( imageData );
-        result = createInternalImage( path, stream, imageData );
-        cache.put( path, result );
+        return createInternalImage( path, stream, imageData );
       }
-    }
-    return result;
+    } );
   }
 
-  InternalImage findInternalImage( String key, InputStream inputStream ) {
-    InternalImage result;
-    synchronized( cacheLock ) {
-      result = ( InternalImage )cache.get( key );
-      if( result == null ) {
+  InternalImage findInternalImage( String key, final InputStream inputStream ) {
+    return ( InternalImage )cache.get( key, new IInstanceCreator() {
+      public Object createInstance() {
         BufferedInputStream bufferedStream = new BufferedInputStream( inputStream );
         ImageData imageData = readImageData( bufferedStream );
         String path = createGeneratedImagePath( imageData );
-        result = createInternalImage( path, bufferedStream, imageData );
-        cache.put( key, result );
+        return createInternalImage( path, bufferedStream, imageData );
       }
-    }
-    return result;
+    } );
   }
 
   static ImageData readImageData( InputStream stream ) throws SWTException {
@@ -103,7 +85,7 @@ public class InternalImageFactory {
     ImageData result = new ImageData( stream );
     try {
       stream.reset();
-    } catch( final IOException shouldNotHappen ) {
+    } catch( IOException shouldNotHappen ) {
       String msg = "Could not reset input stream after reading image";
       throw new RuntimeException( msg, shouldNotHappen );
     }
