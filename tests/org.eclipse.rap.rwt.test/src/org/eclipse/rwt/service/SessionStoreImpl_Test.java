@@ -565,30 +565,23 @@ public class SessionStoreImpl_Test extends TestCase {
   }
   
   public void testGetAttributeNamesIsThreadSafe() throws InterruptedException {
-    final Exception[] exception = { null };
-    List threads = new LinkedList();
-    for( int i = 0; i < 100; i++ ) {
-      Thread thread = new Thread( new Runnable() {
-        public void run() {
-          try {
-            Object object = new Object();
-            session.setAttribute( object.toString(), object );
-            Enumeration attributeNames = session.getAttributeNames();
-            while( attributeNames.hasMoreElements() ) {
-              attributeNames.nextElement();
-            }
-          } catch( Exception e ) {
-            exception[ 0 ] = e;
+    final Throwable[] exception = { null };
+    Runnable runnable = new Runnable() {
+      public void run() {
+        try {
+          Object object = new Object();
+          session.setAttribute( object.toString(), object );
+          Enumeration attributeNames = session.getAttributeNames();
+          while( attributeNames.hasMoreElements() ) {
+            attributeNames.nextElement();
           }
+        } catch( Throwable e ) {
+          exception[ 0 ] = e;
         }
-      } );
-      thread.start();
-      threads.add( thread );
-    }
-    while( threads.size() > 0 ) {
-      Thread thread = ( Thread )threads.remove( 0 );
-      thread.join();
-    }
+      }
+    };
+    Thread[] threads = Fixture.startThreads( 100, runnable );
+    Fixture.joinThreads( threads );
     assertNull( exception[ 0 ] );
   }
   
