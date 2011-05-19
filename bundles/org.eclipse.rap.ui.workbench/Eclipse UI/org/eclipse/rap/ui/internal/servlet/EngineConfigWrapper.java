@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -55,6 +56,7 @@ import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 
 
 /**
@@ -172,8 +174,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
   private static void registerSettingStoreFactory() {
     // determine which factory to use via an environment setting / config.ini
     ISettingStoreFactory result = null;
-    String factoryId
-      = System.getProperty( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM );
+    String factoryId = getOSGiProperty( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM );
     if( factoryId != null ) {
       IExtensionRegistry registry = Platform.getExtensionRegistry();
       IExtensionPoint point = registry.getExtensionPoint( ID_SETTING_STORES );
@@ -202,6 +203,11 @@ public final class EngineConfigWrapper implements IEngineConfig {
       result = new WorkbenchFileSettingStoreFactory(); // default
     }
     RWTFactory.getSettingStoreManager().register( result );
+  }
+
+  private static String getOSGiProperty( String name ) {
+	Bundle systemBundle = Platform.getBundle( Constants.SYSTEM_BUNDLE_SYMBOLICNAME );
+	return systemBundle.getBundleContext().getProperty( name );
   }
 
   private static void registerFactories() {
