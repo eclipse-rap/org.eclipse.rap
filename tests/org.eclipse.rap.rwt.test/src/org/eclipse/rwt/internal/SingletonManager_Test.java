@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
+import java.io.*;
 import java.util.*;
 
 import javax.servlet.http.HttpSession;
@@ -41,6 +42,14 @@ public class SingletonManager_Test extends TestCase {
       };
       Fixture.runInThread( runnable );
     }
+  }
+  
+  private static class SerializableTestSingleton implements Serializable {
+    private static final long serialVersionUID = 1L;
+    Integer value;
+  }
+
+  private static class NonSerializableTestSingleton {
   }
   
   private ISessionStore sessionStore;
@@ -150,6 +159,29 @@ public class SingletonManager_Test extends TestCase {
     assertNotNull( singleton );
   }
   
+  public void testSerialize() throws Exception {
+    SingletonManager singletonManager = createSingletonManager();
+    Object instance = singletonManager.getSingleton( SerializableTestSingleton.class );
+    SerializableTestSingleton singleton = ( SerializableTestSingleton )instance;
+    singleton.value = new Integer( 4711 );
+    SingletonManager deserializedSingletonManager = serializeAndDeserialize( singletonManager );
+    
+    instance = deserializedSingletonManager.getSingleton( SerializableTestSingleton.class );
+    SerializableTestSingleton deserializedSingleton = ( SerializableTestSingleton )instance;
+
+    assertEquals( singleton.value, deserializedSingleton.value );
+  }
+  
+  public void testSerializableWithNonSerializableSingleton() throws IOException {
+    SingletonManager singletonManager = createSingletonManager();
+    singletonManager.getSingleton( NonSerializableTestSingleton.class );
+    try {
+      Fixture.serialize( singletonManager );
+      fail();
+    } catch( NotSerializableException expected ) {
+    }
+  }
+
   protected void setUp() throws Exception {
     sessionStore = createSessionStore();
   }
@@ -172,5 +204,12 @@ public class SingletonManager_Test extends TestCase {
   private static SingletonManager createSingletonManager( ISessionStore sessionStore ) {
     SingletonManager.install( sessionStore );
     return SingletonManager.getInstance( sessionStore );
+  }
+
+  private static SingletonManager serializeAndDeserialize( SingletonManager singletonManager )
+    throws Exception
+  {
+    byte[] bytes = Fixture.serialize( singletonManager );
+    return ( SingletonManager )Fixture.deserialize( bytes );
   }
 }

@@ -10,21 +10,23 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
+import java.io.Serializable;
 import java.util.*;
 
 
 
-public class SharedInstanceBuffer {
-  
+public class SharedInstanceBuffer implements Serializable {
+  private static final long serialVersionUID = 1L;
+
   public interface IInstanceCreator {
     Object createInstance();
   }
 
-  private final Object lock;
+  private final SerializableLock lock;
   private final Map store;
   
   public SharedInstanceBuffer() {
-    lock = new Object();
+    lock = new SerializableLock();
     store = new HashMap();
   }
   

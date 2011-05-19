@@ -15,9 +15,11 @@ import java.util.*;
 import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 
-public class SingletonManager {
+public class SingletonManager implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   private static final String ATTR_SINGLETON_MANAGER
     = SingletonManager.class.getName() + "#instance";
@@ -34,10 +36,14 @@ public class SingletonManager {
   // Key: Class<T>, value: instance of T
   private final Map singletons;
   // Key: Class<T>, value: lock for T
-  private final SharedInstanceBuffer typeLocks;
+  private transient SharedInstanceBuffer typeLocks;
   
   private SingletonManager() {
     singletons = Collections.synchronizedMap( new HashMap() );
+    initialize();
+  }
+  
+  private void initialize() {
     typeLocks = new SharedInstanceBuffer();
   }
 
@@ -66,5 +72,10 @@ public class SingletonManager {
       String msg = "SingletonManager already installed for session: " + sessionStore.getId();
       throw new IllegalStateException( msg );
     }
+  }
+  
+  private Object readResolve() {
+    initialize();
+    return this;
   }
 }
