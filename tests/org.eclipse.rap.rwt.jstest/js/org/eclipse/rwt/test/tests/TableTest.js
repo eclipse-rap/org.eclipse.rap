@@ -175,6 +175,35 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       table.destroy();
     },
 
+    testAdjustSelectedIndicesAfterAddingAnItem : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var table = this._createDefaultTable();
+      for( var i = 0; i < 5; i++ ) {
+        new org.eclipse.swt.widgets.TableItem( table, i );
+      }
+      table.selectItem( 1 );
+      table.selectItem( 2 );
+      table.selectItem( 4 );
+      new org.eclipse.swt.widgets.TableItem( table, 2 );
+      assertEquals( [ 1, 3, 5 ], table._selected );
+      table.destroy();
+    },
+
+    testAdjustSelectedIndicesAfterRemovingAnItem : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var table = this._createDefaultTable();
+      var items = [];
+      for( var i = 0; i < 5; i++ ) {
+        items[ i ] = new org.eclipse.swt.widgets.TableItem( table, i );
+      }
+      table.selectItem( 1 );
+      table.selectItem( 2 );
+      table.selectItem( 4 );
+      items[ 1 ].dispose();
+      assertEquals( [ 1, 3 ], table._selected );
+      table.destroy();
+    },
+
     /////////
     // Helper
     

@@ -1059,6 +1059,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       } else {
         this._items[ index ] = item;
       }
+      this._adjustSelectedIndices( index, true );
       this._updateScrollHeight();
     },
 
@@ -1070,7 +1071,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       // Order is crucial here: first deselect item then adjust indices
       this._deselectItem( itemIndex, false );
-      this._adjustSelectedIndices( itemIndex );
+      this._adjustSelectedIndices( itemIndex, false );
       this._updateScrollHeight();
     },
 
@@ -1105,11 +1106,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
 
-    _adjustSelectedIndices : function( itemIndex ) {
+    _adjustSelectedIndices : function( itemIndex, increment ) {
       for( var i = 0; i < this._selected.length; i++ ) {
         var index = this._selected[ i ];
-        if( itemIndex < index ) {
-          this._selected[ i ] = index - 1;
+        if( increment ) {
+          if( itemIndex <= index ) {
+            this._selected[ i ] = index + 1;
+          }
+        } else {
+          if( itemIndex < index ) {
+            this._selected[ i ] = index - 1;
+          }
         }
       }
     },
