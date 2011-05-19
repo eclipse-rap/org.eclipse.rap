@@ -585,6 +585,43 @@ public class SessionStoreImpl_Test extends TestCase {
     assertNull( exception[ 0 ] );
   }
   
+  public void testAttachHttpSessionWithNullArgument() {
+    try {
+      session.attachHttpSession( null );
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
+  public void testAttachHttpSession() {
+    TestSession anotherSession = new TestSession();
+    session.attachHttpSession( anotherSession );
+    
+    assertSame( session.getHttpSession(), anotherSession );
+  }
+  
+  public void testAttachSessionDoesNotChangeId() {
+    String initialId = session.getId();
+    TestSession anotherSession = new TestSession();
+    anotherSession.setId( "some.other.id" );
+    session.attachHttpSession( anotherSession );
+    
+    String id = session.getId();
+    
+    assertEquals( initialId, id );
+  }
+  
+  public void testAttachSessionDoesNotTriggerListener() {
+    final boolean[] wasCalled = { false };
+    session.addSessionStoreListener( new SessionStoreListener() {
+      public void beforeDestroy( SessionStoreEvent event ) {
+        wasCalled[ 0 ] = true;
+      }
+    } );
+    
+    session.attachHttpSession( new TestSession() );
+    assertFalse( wasCalled[ 0 ] );
+  }
+  
   protected void setUp() throws Exception {
     httpSession = new TestSession();
     session = new SessionStoreImpl( httpSession );  

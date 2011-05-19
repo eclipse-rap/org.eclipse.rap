@@ -20,30 +20,35 @@ import javax.servlet.http.*;
 import org.eclipse.rwt.internal.lifecycle.FakeContextUtil;
 import org.eclipse.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.rwt.service.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
-public final class SessionStoreImpl implements ISessionStore, HttpSessionBindingListener {
+public final class SessionStoreImpl 
+  implements ISessionStore, HttpSessionBindingListener, SerializableCompatibility 
+{
+  private static final long serialVersionUID = 1L;
+
   static final String ATTR_SESSION_STORE = SessionStoreImpl.class.getName();
   
-  private final Object lock;
+  private final SerializableLock lock;
   private final Map attributes;
   private final Set sessionStoreListeners;
-  private final HttpSession httpSession;
   private final String id;
+  private transient HttpSession httpSession;
   private boolean bound;
   private boolean aboutUnbound;
-  private ISessionShutdownAdapter shutdownAdapter;
+  private transient ISessionShutdownAdapter shutdownAdapter;
 
   
   public SessionStoreImpl( HttpSession httpSession ) {
-    ParamCheck.notNull( httpSession, "session" );
-    this.lock = new Object();
+    ParamCheck.notNull( httpSession, "httpSession" );
+    this.lock = new SerializableLock();
     this.attributes = new HashMap();
     this.sessionStoreListeners = new HashSet();
     this.id = httpSession.getId();
-    this.httpSession = httpSession;
-    this.httpSession.setAttribute( ATTR_SESSION_STORE, this );
     this.bound = true;
+    attachHttpSession( httpSession );
   }
   
   public void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
@@ -105,7 +110,17 @@ public final class SessionStoreImpl implements ISessionStore, HttpSessionBinding
   }
   
   public HttpSession getHttpSession() {
-    return httpSession;
+    synchronized( lock ) {
+      return httpSession;
+    }
+  }
+  
+  public void attachHttpSession( HttpSession httpSession ) {
+    ParamCheck.notNull( httpSession, "httpSession" );
+    synchronized( lock ) {
+      this.httpSession = httpSession;
+    }
+    this.httpSession.setAttribute( ATTR_SESSION_STORE, this );
   }
   
   public boolean isBound() {

@@ -427,6 +427,19 @@ public class Fixture {
     }
   }
 
+  public static byte[] serialize( Object object ) throws IOException {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    ObjectOutputStream objectOutputStream = new ObjectOutputStream( outputStream );
+    objectOutputStream.writeObject( object );
+    return outputStream.toByteArray();
+  }
+  
+  public static Object deserialize( byte[] bytes ) throws IOException, ClassNotFoundException {
+    ByteArrayInputStream inputStream = new ByteArrayInputStream( bytes );
+    ObjectInputStream objectInputStream = new ObjectInputStream( inputStream );
+    return objectInputStream.readObject();
+  }
+  
   private static void doDelete( final File toDelete ) {
     if( toDelete.isDirectory() ) {
       File[] children = toDelete.listFiles();

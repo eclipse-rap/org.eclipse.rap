@@ -10,10 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
+import javax.servlet.http.HttpSession;
+
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.TestRequest;
-import org.eclipse.rwt.TestResponse;
+import org.eclipse.rwt.*;
+import org.eclipse.rwt.service.ISessionStore;
 
 
 public class ContextProvider_Test extends TestCase {
@@ -91,6 +93,27 @@ public class ContextProvider_Test extends TestCase {
       fail( "Response parameter must not be null." );
     } catch( final NullPointerException npe ) {
     }
+  }
+  
+  public void testSessionIsAttachedToSessionStore() {
+    Fixture.createServiceContext();
+    ISessionStore sessionStore1 = ContextProvider.getSession();
+    HttpSession session1 = ContextProvider.getRequest().getSession();
+    Fixture.disposeOfServiceContext();
     
+    Fixture.createServiceContext();
+    HttpSession session2 = ContextProvider.getRequest().getSession();
+    session2.setAttribute( SessionStoreImpl.ATTR_SESSION_STORE, sessionStore1 );
+    ISessionStore sessionStore2 = ContextProvider.getSession();
+    
+    assertSame( sessionStore1, sessionStore2 );
+    assertNotSame( session1, session2 );
+    assertSame( session2, sessionStore2.getHttpSession() );
+  }
+  
+  protected void tearDown() throws Exception {
+    if( ContextProvider.hasContext() ) {
+      Fixture.disposeOfServiceContext();
+    }
   }
 }

@@ -130,14 +130,15 @@ public class ContextProvider {
    * to which the currently processed request belongs.
    */
   public static ISessionStore getSession() {
-    ISessionStore result = getContext().getSessionStore();
+    SessionStoreImpl result = ( SessionStoreImpl )getContext().getSessionStore();
     if( result == null ) {
       HttpSession httpSession = getRequest().getSession( true );
-      result = ( ISessionStore )httpSession.getAttribute( SessionStoreImpl.ATTR_SESSION_STORE );
+      result = ( SessionStoreImpl )httpSession.getAttribute( SessionStoreImpl.ATTR_SESSION_STORE );
       if( result == null ) { 
         result = new SessionStoreImpl( httpSession );
         SingletonManager.install( result );
       }
+      result.attachHttpSession( httpSession );
       getContext().setSessionStore( result );
     }
     return result;

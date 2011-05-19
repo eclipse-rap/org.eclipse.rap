@@ -19,22 +19,32 @@ import javax.servlet.http.*;
 
 public final class TestSession implements HttpSession {
   
-  private final Map attributes = new HashMap();
-  private ServletContext servletContext = new TestServletContext();
+  private final Map attributes;
+  private String id;
+  private ServletContext servletContext;
   private boolean isInvalidated;
   private boolean newSession;
+  
+  public TestSession() {
+    attributes = new HashMap();
+    servletContext = new TestServletContext();
+    id = String.valueOf( hashCode() );
+  }
   
   public long getCreationTime() {
     return 0;
   }
   
+  public void setId( String id ) {
+    this.id = id;
+  }
+  
   public String getId() {
     if( isInvalidated ) {
-      String text 
-        = "Unable to obtain session id. Session already invalidated.";
+      String text = "Unable to obtain session id. Session already invalidated.";
       throw new IllegalStateException( text );
     }
-    return String.valueOf( hashCode() );
+    return id;
   }
   
   public long getLastAccessedTime() {
