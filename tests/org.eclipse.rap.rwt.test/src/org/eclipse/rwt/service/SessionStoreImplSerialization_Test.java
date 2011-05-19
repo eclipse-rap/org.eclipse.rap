@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.service;
 
-import java.io.Serializable;
+import java.io.*;
 
 import junit.framework.TestCase;
 
@@ -64,16 +64,25 @@ public class SessionStoreImplSerialization_Test extends TestCase {
     assertTrue( LoggingSessionStoreListener.wasCalled );
   }
 
-  private static SessionStoreImpl serializeAndDeserialize( SessionStoreImpl sessionStore ) 
-    throws Exception 
-  {
-    byte[] bytes = Fixture.serialize( sessionStore );
-    return ( SessionStoreImpl )Fixture.deserialize( bytes );
+  public void testNonSerializableAttributeCausesException() throws IOException {
+    sessionStore.setAttribute( "foo", new Object() );
+    try {
+      Fixture.serialize( sessionStore );
+      fail();
+    } catch( NotSerializableException expected ) {
+    }
   }
   
   protected void setUp() throws Exception {
     LoggingSessionStoreListener.wasCalled = false;
     httpSession = new TestSession();
     sessionStore = new SessionStoreImpl( httpSession );  
+  }
+
+  private static SessionStoreImpl serializeAndDeserialize( SessionStoreImpl sessionStore ) 
+    throws Exception 
+  {
+    byte[] bytes = Fixture.serialize( sessionStore );
+    return ( SessionStoreImpl )Fixture.deserialize( bytes );
   }
 }
