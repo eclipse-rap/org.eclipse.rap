@@ -46,12 +46,9 @@ public final class ServiceContext {
    * @param response the corresponding response to the currently processed
    *                 request. Must not be null.
    */
-  public ServiceContext( final HttpServletRequest request,
-                         final HttpServletResponse response ) 
-  {
+  public ServiceContext( HttpServletRequest request, HttpServletResponse response ) {
     ParamCheck.notNull( request, "request" );
     ParamCheck.notNull( response, "response" );
-    
     this.request = request;
     this.response = response;
   }
@@ -67,9 +64,9 @@ public final class ServiceContext {
    *                     <code>HttpSession<code> instance to which the currently
    *                     processed request belongs to.
    */
-  public ServiceContext( final HttpServletRequest request,
-                         final HttpServletResponse response,
-                         final ISessionStore sessionStore )
+  public ServiceContext( HttpServletRequest request,
+                         HttpServletResponse response,
+                         ISessionStore sessionStore )
   {
     this( request, response );
     this.sessionStore = sessionStore;
@@ -83,7 +80,7 @@ public final class ServiceContext {
     return request;
   }
   
-  public void setRequest( final HttpServletRequest request ) {
+  public void setRequest( HttpServletRequest request ) {
     this.request = request;
   }
   
@@ -109,7 +106,7 @@ public final class ServiceContext {
    * Sets the corresponding {@link IServiceStateInfo} to the currently 
    * processed request.
    */
-  public void setStateInfo( final IServiceStateInfo stateInfo ) {
+  public void setStateInfo( IServiceStateInfo stateInfo ) {
     checkState();
     ParamCheck.notNull( stateInfo, "stateInfo" );
     if( this.stateInfo != null ) {
@@ -124,15 +121,13 @@ public final class ServiceContext {
   }
 
   public ISessionStore getSessionStore() {
-    if(    sessionStore != null 
-        && !( ( SessionStoreImpl )sessionStore ).isBound() )
-    {
+    if( sessionStore != null && !( ( SessionStoreImpl )sessionStore ).isBound() ) {
       sessionStore = null;
     }
     return sessionStore;
   }
   
-  public void setSessionStore( final ISessionStore sessionStore ) {
+  public void setSessionStore( ISessionStore sessionStore ) {
     this.sessionStore = sessionStore;
   }
   
@@ -149,9 +144,9 @@ public final class ServiceContext {
   public ApplicationContext getApplicationContext() {
     checkState();
     // TODO [ApplicationContext]: Revise performance improvement with buffering mechanism in place.
-    if( !isBuffered() ) {
+    if( !isApplicationContextBuffered() ) {
       getApplicationContextFromSession();
-      if( !isBuffered() ) {
+      if( !isApplicationContextBuffered() ) {
         getApplicationContextFromServletContext();
         bufferApplicationContextInSession();
       }
@@ -163,7 +158,7 @@ public final class ServiceContext {
   //////////////////
   // helping methods
 
-  private boolean isBuffered() {
+  private boolean isApplicationContextBuffered() {
     return applicationContext != null;
   }
   
