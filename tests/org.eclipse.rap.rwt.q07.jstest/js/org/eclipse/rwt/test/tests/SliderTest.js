@@ -443,6 +443,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       slider.destroy();
     },
 
+    testHoldOnLineMouseUpOnThumb : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var slider = this._createSlider( false );
+      var node = slider.getElement();
+      var left = qx.event.type.MouseEvent.buttons.left;
+      var thumb = slider._thumb.getElement();
+      testUtil.fakeMouseEventDOM( node, "mousedown", left, 11, 50 );
+      assertEquals( 10, slider._selection );
+      testUtil.fakeMouseEventDOM( thumb, "mouseup", left, 11, 50 );
+      try {
+        testUtil.forceInterval( slider._delayTimer ); // start scrolling
+      } catch( ex ) {
+        // expected
+      }
+      assertFalse( slider._repeatTimer.isEnabled() );
+      slider.destroy();
+    },
+
     testHoldOnLineMouseOut : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );

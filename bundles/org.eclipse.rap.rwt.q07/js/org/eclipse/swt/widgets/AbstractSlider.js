@@ -171,7 +171,9 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     },
 
     _onMouseOut : function( event ) {
-      if( this._autoRepeat.slice( 0, 4 ) === "line" ) {
+      var target = event.getRelatedTarget();
+      var outOfSlider = target !== this && !this.contains( target );
+      if( outOfSlider && this._autoRepeat.slice( 0, 4 ) === "line" ) {
         this.setCapture( true );
         this._delayTimer.stop();
         this._repeatTimer.stop();
@@ -223,10 +225,12 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     },
 
     _onThumbMouseUp : function( event ) {
-      event.stopPropagation();
-      this._repeatTimer.stop();
-      this._thumb.setCapture( false );
-      this._thumb.removeState( "pressed" );
+      if( this._thumb.hasState( "pressed" ) ) {
+        event.stopPropagation();
+        this._repeatTimer.stop();
+        this._thumb.setCapture( false );
+        this._thumb.removeState( "pressed" );
+      }
     },
 
     ////////////
