@@ -25,7 +25,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 
 
-public class SessionStore_Test extends TestCase {
+public class SessionStoreImpl_Test extends TestCase {
 
   private static class EmptySessionStoreListener implements SessionStoreListener {
     public void beforeDestroy( SessionStoreEvent event ) {

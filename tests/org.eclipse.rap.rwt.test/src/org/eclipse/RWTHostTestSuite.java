@@ -83,7 +83,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( PhaseListenerUtil_Test.class );
     suite.addTestSuite( Scope_Test.class );
     suite.addTestSuite( ServiceHandler_Test.class );
-    suite.addTestSuite( SessionStore_Test.class );
+    suite.addTestSuite( SessionStoreImpl_Test.class );
     suite.addTestSuite( SessionStoreEvent_Test.class );
     suite.addTestSuite( ApplicationStoreImpl_Test.class );
     suite.addTestSuite( EngineConfig_Test.class );
