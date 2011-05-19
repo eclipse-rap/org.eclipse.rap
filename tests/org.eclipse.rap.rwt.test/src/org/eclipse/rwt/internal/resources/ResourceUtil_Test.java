@@ -87,7 +87,7 @@ public class ResourceUtil_Test extends TestCase {
     
     byte[] result = ResourceUtil.readText( inputStream, "UTF-8", false );
     
-    assertEquals( input, new String( result ) );
+    assertEquals( input, new String( result, "UTF-8" ) );
   }
 
   public void testWriteText() throws IOException {
@@ -99,7 +99,7 @@ public class ResourceUtil_Test extends TestCase {
     ResourceUtil.write( tempFile, content );
 
     byte[] result = ResourceUtil.readText( new FileInputStream( tempFile ), "UTF-8", false );
-    assertEquals( input, new String( result ) );
+    assertEquals( input, new String( result, "UTF-8" ) );
   }
 
   private static String createTestString( int length ) {
