@@ -169,9 +169,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       for( var i = 0; i < 5; i++ ) {
         new org.eclipse.swt.widgets.TableItem( table, i );
       }
-      table.selectItem( 1 );
-      table.selectItem( 2 );
-      table.selectItem( 4 );
+      table._selectItem( 1, false );
+      table._selectItem( 2, false );
+      table._selectItem( 4, false );
       new org.eclipse.swt.widgets.TableItem( table, 2 );
       assertEquals( [ 1, 3, 5 ], table._selected );
       table.destroy();
@@ -184,9 +184,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableTest", {
       for( var i = 0; i < 5; i++ ) {
         items[ i ] = new org.eclipse.swt.widgets.TableItem( table, i );
       }
-      table.selectItem( 1 );
-      table.selectItem( 2 );
-      table.selectItem( 4 );
+      table._selectItem( 1, false );
+      table._selectItem( 2, false );
+      table._selectItem( 4, false );
       items[ 1 ].dispose();
       assertEquals( [ 1, 3 ], table._selected );
       table.destroy();
