@@ -33,7 +33,7 @@ public class RWTFactory {
   }
 
   public static LifeCycleFactory getLifeCycleFactory() {
-    return ( LifeCycleFactory )getApplicationSingleton( LifeCycleFactory.class );
+    return ApplicationContextUtil.getInstance().getLifeCycleFactory();
   }
   
   public static BrandingManager getBrandingManager() {

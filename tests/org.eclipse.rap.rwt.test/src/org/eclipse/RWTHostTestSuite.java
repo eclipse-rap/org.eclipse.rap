@@ -81,7 +81,6 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ReadData_Test.class );
     suite.addTestSuite( PhaseId_Test.class );
     suite.addTestSuite( PhaseListenerUtil_Test.class );
-    suite.addTestSuite( Scope_Test.class );
     suite.addTestSuite( ServiceHandler_Test.class );
     suite.addTestSuite( SessionStoreImpl_Test.class );
     suite.addTestSuite( SessionStoreImplSerialization_Test.class );
@@ -115,6 +114,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ResourceRegistryConfigurable_Test.class );
     suite.addTestSuite( ServiceManagerConfigurable_Test.class );
     suite.addTestSuite( ThemeManagerConfigurable_Test.class );
+    suite.addTestSuite( LifeCycleFactoryConfigurable_Test.class );
     suite.addTestSuite( ApplicationContext_Test.class );
     suite.addTestSuite( ApplicationContextLifeCycle_Test.class );
     suite.addTestSuite( ApplicationContextUtil_Test.class );

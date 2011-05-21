@@ -24,12 +24,11 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class ApplicationContextUtil_Test extends TestCase {
   
-  public void testRegisterDefaultApplicationContext() {
+  public void testCreateContext() {
     Fixture.createServiceContext();
     ServletContext servletContext = getServletContext();
     
-    ApplicationContext applicationContext
-      = ApplicationContextUtil.registerDefaultApplicationContext( servletContext );
+    ApplicationContext applicationContext = ApplicationContextUtil.createContext( servletContext );
     RWTServletContextListener.registerConfigurables( servletContext, applicationContext );
     applicationContext.activate();
 
@@ -157,13 +156,13 @@ public class ApplicationContextUtil_Test extends TestCase {
   }
 
   private static RuntimeException runWithExceptionExpected( Runnable runnable ) {
-    RuntimeException actual = null;
+    RuntimeException result = null;
     try {
       ApplicationContextUtil.runWithInstance( new ApplicationContext(), runnable );
       fail();
     } catch( RuntimeException runtimeException ) {
-      actual = runtimeException;
+      result = runtimeException;
     }
-    return actual;
+    return result;
   }
 }

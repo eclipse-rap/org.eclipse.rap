@@ -22,6 +22,7 @@ import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
@@ -120,6 +121,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
 
   private void init() {
     applicationContext.getConfigurationReader().setEngineConfig( this );
+    configureLifeCycleFactory();
     registerPhaseListener();
     registerResourceManagerFactory();
     registerSettingStoreFactory();
@@ -134,6 +136,11 @@ public final class EngineConfigWrapper implements IEngineConfig {
     registerCustomServiceHandlers();
     registerApplicationEntryPoints();
     registerBrandings();
+  }
+
+  private void configureLifeCycleFactory() {
+    ConfigurationReader configurationReader = applicationContext.getConfigurationReader();
+    applicationContext.getLifeCycleFactory().setConfigurationReader( configurationReader );
   }
 
   private void registerPhaseListener() {

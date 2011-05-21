@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.internal.IConfiguration;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rwt.internal.lifecycle.Scope;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.SWT;
@@ -30,10 +29,6 @@ public class RWT_Test extends TestCase {
     static final String REQUEST_THREAD_EXEC = "requestThreadExec";
     
     private String invocationLog = "";
-
-    public Scope getScope() {
-      return Scope.APPLICATION;
-    }
 
     public void execute() throws IOException {
     }
@@ -59,12 +54,15 @@ public class RWT_Test extends TestCase {
   }
 
   public void testGetApplicationStore() {
+    Fixture.setUp();
+    
     IApplicationStore applicationStore = RWT.getApplicationStore();
   
     assertSame( applicationStore, RWTFactory.getApplicationStore() );
   }
 
   public void testRequestThreadExecFromBackgroundThread() throws Throwable {
+    Fixture.setUp();
     Runnable runnable = new Runnable() {
       public void run() {
         RWT.requestThreadExec( new Runnable() {
@@ -84,6 +82,7 @@ public class RWT_Test extends TestCase {
   }
   
   public void testRequestThreadExec() {
+    Fixture.setUp();
     final Thread[] requestThread = { null };
     Display display = new Display();
     // use asyncExec to run code during executeLifeCycleFromServerThread
@@ -102,6 +101,7 @@ public class RWT_Test extends TestCase {
   }
 
   public void testRequestThreadExecWithoutDisplay() {
+    Fixture.setUp();
     Runnable runnable = new EmptyRunnable();
     try {
       RWT.requestThreadExec( runnable );
@@ -112,6 +112,7 @@ public class RWT_Test extends TestCase {
   }
   
   public void testRequestThreadExecWithDisposedDisplay() {
+    Fixture.setUp();
     Display display = new Display();
     display.dispose();
     Runnable runnable = new EmptyRunnable();
@@ -124,6 +125,7 @@ public class RWT_Test extends TestCase {
   }
   
   public void testRequestThreadExecWithNullRunnable() {
+    Fixture.setUp();
     new Display();
     try {
       RWT.requestThreadExec( null );
@@ -134,6 +136,7 @@ public class RWT_Test extends TestCase {
   
   public void testRequestThreadExecDelegatesToLifeCycle() {
     System.setProperty( IConfiguration.PARAM_LIFE_CYCLE, TestLifeCycle.class.getName() );
+    Fixture.setUp();
     new Display();
     
     RWT.requestThreadExec( new EmptyRunnable() );
@@ -142,10 +145,6 @@ public class RWT_Test extends TestCase {
     assertEquals( TestLifeCycle.REQUEST_THREAD_EXEC, lifeCycle.getInvocationLog() );
   }
   
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
   protected void tearDown() throws Exception {
     Fixture.tearDown();
     System.getProperties().remove( IConfiguration.PARAM_LIFE_CYCLE );

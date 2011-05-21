@@ -17,13 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import javax.servlet.http.*;
 
 import org.eclipse.rwt.ThemeManagerSingletonFactory.TestThemeManagerHolder;
 import org.eclipse.rwt.internal.engine.*;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener.ContextDestroyer;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener.ContextInitializer;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.*;
@@ -56,7 +53,6 @@ public class Fixture {
   }
 
   private static TestServletContext servletContext;
-  private static ServletContextListener servletContextListener;
   private static boolean usePerformanceOptimizations;
   
   ////////////////////////////////////////////
@@ -82,18 +78,14 @@ public class Fixture {
   public static void triggerServletContextInitialized() {
     ensureServletContext();
     ServletContextEvent event = new ServletContextEvent( servletContext );
-    servletContextListener.contextInitialized( event );
+    new RWTServletContextListener().contextInitialized( event );
   }
   
   public static void triggerServletContextDestroyed() {
     ServletContextEvent event = new ServletContextEvent( servletContext );
-    servletContextListener.contextDestroyed( event );
+    new RWTServletContextListener().contextDestroyed( event );
   }
   
-  public static void setServletContextListener( ServletContextListener lsnr ) {
-    servletContextListener = lsnr;
-  }
-
   private static void ensureServletContext() {
     if( servletContext == null ) {
       createServletContext();
@@ -106,38 +98,13 @@ public class Fixture {
   
   public static void createApplicationContext() {
     ensureServletContext();
-    createApplicationContext( new ContextInitializer( servletContext ) );
-  }
-
-  public static void createApplicationContext( Runnable initializer ) {
     createWebContextDirectories();
     ensureServletContext();
-    ApplicationContext applicationContext = ApplicationContextUtil.createApplicationContext();
-    ApplicationContextUtil.registerApplicationContext( servletContext, applicationContext );
-    
-    
-    RWTServletContextListener.registerConfigurables( servletContext, applicationContext );
-    
-    applicationContext.activate();
-//    ApplicationContextUtil.runWithInstance( applicationContext, initializer );
+    triggerServletContextInitialized();
   }
   
   public static void disposeOfApplicationContext() {
-    ContextDestroyer destroyer = new ContextDestroyer( servletContext );
-    disposeOfApplicationContext( destroyer );
-  }
-
-  public static void disposeOfApplicationContext( Runnable destroyer ) {
-    ApplicationContext applicationContext
-      = ApplicationContextUtil.getApplicationContext( servletContext );
-//    ApplicationContextUtil.runWithInstance( applicationContext, destroyer );
-    applicationContext.deactivate();
-    
-    
-    RWTServletContextListener.deregisterConfigurables( servletContext, applicationContext );
-    
-    
-    ApplicationContextUtil.deregisterApplicationContext( servletContext );
+    triggerServletContextDestroyed();
     disposeOfServletContext();
     // TODO [ApplicationContext]: At the time beeing this improves RWTAllTestSuite performance by 
     //      50% on my machine without causing any test to fail. However this has a bad smell

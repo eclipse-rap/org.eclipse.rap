@@ -128,13 +128,8 @@ public class RWTServletContextListener_Test extends TestCase {
     assertEquals( TestBranding.class, allBrandings[ 0 ].getClass() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setServletContextListener( new RWTServletContextListener() );
-  }
-
   protected void tearDown() throws Exception {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfServletContext();
-    Fixture.setServletContextListener( null );
   }
 }

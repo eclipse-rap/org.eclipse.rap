@@ -221,7 +221,7 @@ public class HttpServiceTracker extends ServiceTracker {
   }
 
   private static ApplicationContext createAndInitializeRWTContext() {
-    ApplicationContext result = ApplicationContextUtil.createApplicationContext();
+    ApplicationContext result = ApplicationContextUtil.createContext();
     result.addConfigurable( new Configurable() {
 
       public void configure( ApplicationContext context ) {

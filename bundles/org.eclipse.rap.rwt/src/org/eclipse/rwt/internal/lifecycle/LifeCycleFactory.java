@@ -12,62 +12,45 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.IConfiguration;
-import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.ConfigurationReader;
+import org.eclipse.rwt.internal.engine.Activatable;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
-public class LifeCycleFactory {
-  private static final String ATTR_SESSION_LIFE_CYCLE
-    = LifeCycle.class.getName() + "#sessionLifeCycle";
-  
-  private LifeCycle applicationScopedLifeCycle;
+public class LifeCycleFactory implements Activatable {
+  private ConfigurationReader configurationReader;
+  private LifeCycle lifeCycle;
 
   public ILifeCycle getLifeCycle() {
-    ILifeCycle result;
-    if( applicationScopedLifeCycle != null ) {
-      result = applicationScopedLifeCycle;
-    } else {
-      result = getSessionLifeCycle();
-    }
-    if( result == null ) {
-      result = loadLifeCycle();
-    }
-    return result;
+    return lifeCycle;
   }
 
-  public void destroy() {
-    applicationScopedLifeCycle = null;
+  public void setConfigurationReader( ConfigurationReader configurationReader ) {
+    this.configurationReader = configurationReader;
   }
 
-  private ILifeCycle loadLifeCycle() {
-    LifeCycle result = instantiateLifeCycle();
-    if( Scope.APPLICATION.equals( result.getScope() ) ) {
-      applicationScopedLifeCycle = result;
-    }else {
-      setSessionLifeCycle( result );
-    }
-    return result;
+  ////////////////////////
+  // interface Activatable
+  
+  public void activate() {
+    lifeCycle = instantiateLifeCycle();
   }
 
+  public void deactivate() {
+    lifeCycle = null;
+  }
+
+  //////////////////
+  // helping methods
+  
   private LifeCycle instantiateLifeCycle() {
     String className = getLifeCycleClassName();
     ClassLoader classLoader = getClass().getClassLoader();
     return ( LifeCycle )ClassUtil.newInstance( classLoader, className );
   }
-
-  private static void setSessionLifeCycle( ILifeCycle result ) {
-    ContextProvider.getSession().setAttribute( ATTR_SESSION_LIFE_CYCLE, result );
-  }
-
-  private static ILifeCycle getSessionLifeCycle() {
-    return ( ILifeCycle )ContextProvider.getSession().getAttribute( ATTR_SESSION_LIFE_CYCLE );
-  }
   
-  private static String getLifeCycleClassName() {
-    IConfiguration configuration = RWTFactory.getConfigurationReader().getConfiguration();
-    return configuration.getLifeCycle();
+  private String getLifeCycleClassName() {
+    return configurationReader.getConfiguration().getLifeCycle();
   }
 }

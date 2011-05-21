@@ -61,13 +61,13 @@ public class ApplicationContextUtil {
     ProbeStore.class,
   };
 
-  public static ApplicationContext registerDefaultApplicationContext( ServletContext context ) {
-    ApplicationContext result = createApplicationContext();
+  public static ApplicationContext createContext( ServletContext context ) {
+    ApplicationContext result = createContext();
     registerApplicationContext( context, result );
     return result;
   }
 
-  public static ApplicationContext createApplicationContext() {
+  public static ApplicationContext createContext() {
     return new ApplicationContext( INSTANCE_TYPES );
   }
 

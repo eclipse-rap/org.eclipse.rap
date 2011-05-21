@@ -49,6 +49,7 @@ public final class RWTServletContextListener implements ServletContextListener {
       configurables.add( new ResourceRegistryConfigurable( servletContext ) );
       configurables.add( new ServiceManagerConfigurable() );
       configurables.add( new ThemeManagerConfigurable( servletContext ) );
+      configurables.add( new LifeCycleFactoryConfigurable() );
     }
 
     void add( ApplicationContext applicationContext ) {
@@ -68,59 +69,23 @@ public final class RWTServletContextListener implements ServletContextListener {
     }
   }
   
-  public static class ContextDestroyer implements Runnable {
-    private final ServletContext servletContext;
-
-    public ContextDestroyer( ServletContext servletContext ) {
-      this.servletContext = servletContext;
-    }
-
-    public void run() {
-/////////////////////////////////////////////////////////////////////////
-// TODO [fappel]: check which deregistration methods are really necessary
-//                since all singletons get destroyed at the end of 
-//                the context lifecycle. Commented deregisteredThemes
-//                since this causes performance problems of tests...  
-//      deregisterThemes( servletContext );
-      
-      RWTFactory.getLifeCycleFactory().destroy();
-      ApplicationContextUtil.getApplicationContext( servletContext ).deactivate();
-    }
-  }
-
-  public static class ContextInitializer implements Runnable {
-    protected final ServletContext servletContext;
-
-    public ContextInitializer( ServletContext servletContext ) {
-      this.servletContext = servletContext;
-    }
-
-    public void run() {
-      ApplicationContextUtil.getApplicationContext( servletContext ).activate();
-    }
-  }
 
   ///////////////////////////////////////////
   // implementation of ServletContextListener
 
   public void contextInitialized( ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
-    ApplicationContext applicationContext = registerDefaultApplicationContext( servletContext );
+    ApplicationContext applicationContext = ApplicationContextUtil.createContext( servletContext );
     registerConfigurables( servletContext, applicationContext );
     applicationContext.activate();
-//    ContextInitializer initializer = new ContextInitializer( servletContext );
-//    ApplicationContextUtil.runWithInstance( applicationContext, initializer );
   }
 
   public void contextDestroyed( ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
-    ApplicationContext applicationContext
-      = ApplicationContextUtil.getApplicationContext( servletContext );
-//    ContextDestroyer destroyer = new ContextDestroyer( servletContext );
-//    ApplicationContextUtil.runWithInstance( applicationContext, destroyer );
-    applicationContext.deactivate();
-    deregisterConfigurables( servletContext, applicationContext );
-    deregisterDefaultApplicationContext( servletContext );
+    ApplicationContext appContext = ApplicationContextUtil.getApplicationContext( servletContext );
+    appContext.deactivate();
+    deregisterConfigurables( servletContext, appContext );
+    ApplicationContextUtil.deregisterApplicationContext( servletContext );
   }
 
   public static void registerConfigurables( ServletContext servletContext,
@@ -137,17 +102,6 @@ public final class RWTServletContextListener implements ServletContextListener {
     Configurables configurables = getConfigurables( servletContext );
     configurables.remove( applicationContext );
     removeConfigurables( servletContext );
-  }
-
-  //////////////////
-  // helping methods
-  
-  private ApplicationContext registerDefaultApplicationContext( ServletContext servletContext ) {
-    return ApplicationContextUtil.registerDefaultApplicationContext( servletContext );
-  }
-  
-  void deregisterDefaultApplicationContext( ServletContext servletContext ) {
-    ApplicationContextUtil.deregisterApplicationContext( servletContext );
   }
 
   static void bufferConfigurables( Configurables configurables, ServletContext servletContext ) {

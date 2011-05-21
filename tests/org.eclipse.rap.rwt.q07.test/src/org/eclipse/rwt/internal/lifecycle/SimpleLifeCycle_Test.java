@@ -66,10 +66,6 @@ public class SimpleLifeCycle_Test extends TestCase {
 
   private LifeCycle lifeCycle;
 
-  public void testGetScope() {
-    assertEquals( Scope.APPLICATION, lifeCycle.getScope() );
-  }
-  
   public void testPhaseOrderForInitialRequest() throws Exception {
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );

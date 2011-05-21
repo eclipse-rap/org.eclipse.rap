@@ -19,8 +19,6 @@ import org.eclipse.rwt.lifecycle.PhaseListener;
 
 public abstract class LifeCycle implements ILifeCycle {
 
-  public abstract Scope getScope();
-
   public abstract void execute() throws IOException;
 
   public abstract void requestThreadExec( Runnable runnable );

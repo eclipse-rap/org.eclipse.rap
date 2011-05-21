@@ -17,8 +17,7 @@ import java.util.*;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.lifecycle.PhaseListenerRegistry;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.service.SettingStoreManager;
@@ -130,6 +129,10 @@ public class ApplicationContext {
 
   public ThemeManagerHolder getThemeManager() {
     return ( ThemeManagerHolder )getInstance( ThemeManagerHolder.class );
+  }
+
+  public LifeCycleFactory getLifeCycleFactory() {
+    return ( LifeCycleFactory )getInstance( LifeCycleFactory.class );
   }
 
   private void createInstances( Class[] instanceTypes ) {

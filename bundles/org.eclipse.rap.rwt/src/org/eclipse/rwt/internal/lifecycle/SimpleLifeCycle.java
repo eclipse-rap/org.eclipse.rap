@@ -77,10 +77,6 @@ public class SimpleLifeCycle extends LifeCycle {
     phaseListenerManager.addPhaseListeners( RWTFactory.getPhaseListenerRegistry().get() );
   }
 
-  public Scope getScope() {
-    return Scope.APPLICATION;
-  }
-
   public void execute() throws IOException {
     attachThread();
     try {

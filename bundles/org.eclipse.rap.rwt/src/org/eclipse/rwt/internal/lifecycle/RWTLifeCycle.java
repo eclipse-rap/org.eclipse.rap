@@ -139,10 +139,6 @@ public class RWTLifeCycle extends LifeCycle {
     phaseListenerManager.removePhaseListener( listener );
   }
 
-  public Scope getScope() {
-    return Scope.APPLICATION;
-  }
-  
   public void requestThreadExec( Runnable runnable ) {
     setRequestThreadRunnable( runnable );
     getUIThreadHolder().switchThread();
