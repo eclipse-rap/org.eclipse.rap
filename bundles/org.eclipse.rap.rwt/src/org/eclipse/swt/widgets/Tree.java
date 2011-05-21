@@ -1203,7 +1203,6 @@ public class Tree extends Composite {
     }
   }
   
-  // TODO [DISCUSS_PERFORMANCE]
   public void changed( Control[] changed ) {
     clearItemsPreferredWidthBuffer();
     super.changed( changed );
@@ -1960,7 +1959,6 @@ public class Tree extends Composite {
   }
 
   int getPreferredCellWidth( TreeItem item, int columnIndex, boolean checkData ) {
-    // TODO [DISCUSS_PERFORMANCE]
     int result = item.getPreferredWidthBuffer();
     if( !item.hasPreferredWidthBuffer() ) {
       result = getTextOffset( columnIndex ) ;

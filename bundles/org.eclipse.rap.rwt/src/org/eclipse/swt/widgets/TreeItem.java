@@ -117,11 +117,9 @@ public class TreeItem extends Item {
   private boolean cached;
   int flatIndex;
 
-  // TODO [DISCUSS_PERFORMANCE]
-  // TODO [fappel]: Discuss this experimental stuff. Yourkit analysis with the UI workbench
-  //                testsuite showed an extensive appearance of preferred width calculations.
-  //                Buffering the preferred width speeds up the suite on my machine to 1/4th
-  //                of the time needed without buffering.
+  // Note [fappel]: Yourkit analysis with the UI workbench testsuite showed an extensive
+  //                appearance of preferred width calculations. Buffering the preferred width
+  //                speeds up the suite on my machine to 1/4th of the time needed without buffering.
   private int preferredWidthBuffer;
 
   /**
@@ -1642,22 +1640,18 @@ public class TreeItem extends Item {
   // ////////////////
   // helping methods
 
-  //TODO [DISCUSS_PERFORMANCE]
   void clearPreferredWidthBuffer() {
     preferredWidthBuffer = EMPTY_PREFERED_WIDTH_BUFFER;
   }
 
-  //TODO [DISCUSS_PERFORMANCE]
   void setPreferredWidthBuffer( int preferredWidthBuffer ) {
     this.preferredWidthBuffer = preferredWidthBuffer;
   }
 
-  //TODO [DISCUSS_PERFORMANCE]
   boolean hasPreferredWidthBuffer() {
     return preferredWidthBuffer != EMPTY_PREFERED_WIDTH_BUFFER;
   }
 
-  //TODO [DISCUSS_PERFORMANCE]
   int getPreferredWidthBuffer() {
     return preferredWidthBuffer;
   }

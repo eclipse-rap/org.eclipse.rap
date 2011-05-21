@@ -1379,7 +1379,6 @@ public class Tree_Test extends TestCase {
     assertSame( item1, result );
   }
 
-  //TODO [DISCUSS_PERFORMANCE]
   public void testPreferredWidthBufferHandlingOfTreeItem() {
     Tree tree = new Tree( composite, SWT.NONE );
     
@@ -1400,15 +1399,8 @@ public class Tree_Test extends TestCase {
     
     tree.setFont( new Font( display, "arial", 40, SWT.BOLD ) );
     assertEquals( 378, item1.getPreferredWidthBuffer() );
-    
-    // TODO [DISCUSS_PERFORMANCE]: Is there a need to override setData(String,Object) and clear
-    //                             the preferredWidthBuffer in case
-    //                             Tree.setData( WidgetUtil.CUSTOM_VARIANT, "variant" ); or
-    //                             TreeItem.setData( WidgetUtil.CUSTOM_VARIANT, "variant" );
-    //                             is used? And if so, how can we test this?
   }
 
-  // TODO [DISCUSS_PERFORMANCE]
   public void testChanged() {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
