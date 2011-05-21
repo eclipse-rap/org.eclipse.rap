@@ -460,14 +460,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.addToDocument();
       widget.initialize();
       widget.open();
-      this._performIsDraggableWidgetTest( widget, true );
+      assertTrue( this._isDraggable( widget ) );
+      assertTrue( this._isDraggable( widget ) );
       widget.destroy();
     },
     
     testIsDraggableSash : function() {
       var widget = new org.eclipse.swt.widgets.Sash();
       widget.addToDocument();
-      this._performIsDraggableWidgetTest( widget, true );
+      assertTrue( this._isDraggable( widget ) );
       widget.destroy();
     },
     
@@ -477,7 +478,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.addToDocument();
       widgetManager.add( widget, "scale", true );
       widgetManager.add( widget._thumb, "scale-thumb", false );
-      this._performIsDraggableWidgetTest( widget._thumb, true );
+      assertTrue( this._isDraggable( widget._thumb ) );
       widget.destroy();
     },
       
@@ -487,21 +488,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       widget.addToDocument();
       widgetManager.add( widget, "slider", true );
       widgetManager.add( widget._thumb, "slider-thumb", false );
-      this._performIsDraggableWidgetTest( widget._thumb, true );
+      assertTrue( this._isDraggable( widget._thumb ) );
       widget.destroy();
     },
     
     testIsDraggableScrollBar : function() {
       var widget = new org.eclipse.rwt.widgets.ScrollBar( false );
       widget.addToDocument();
-      this._performIsDraggableWidgetTest( widget, true );
+      assertTrue( this._isDraggable( widget ) );
       widget.destroy();
     },
     
     testIsDraggableScrolledComposite : function() {
       var widget = new org.eclipse.swt.custom.ScrolledComposite( false );
       widget.addToDocument();
-      this._performIsDraggableWidgetTest( widget._horzScrollBar._thumb, true );
+      assertTrue( this._isDraggable( widget._horzScrollBar._thumb ) );
       widget.destroy();
     },
       
@@ -509,7 +510,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var widget = new org.eclipse.rwt.widgets.BasicButton( "push" );
       widget.setAppearance( "scrollbar-thumb" );
       widget.addToDocument();
-      this._performIsDraggableWidgetTest( widget, true );
+      assertTrue( this._isDraggable( widget ) );
       widget.destroy();
     },
       
@@ -517,15 +518,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var widget = new qx.ui.layout.CanvasLayout();
       widget.setAppearance( "coolitem-handle" );
       widget.addToDocument();
-      this._performIsDraggableWidgetTest( widget, true );
+      assertTrue( this._isDraggable( widget ) );
       widget.destroy();
     },
     
     testIsDraggableList : function() {
       var widget = new org.eclipse.swt.widgets.List( true );
       widget.addToDocument();
-      this._performIsDraggableWidgetTest( widget._horzScrollBar._thumb, true );
-      this._performIsDraggableWidgetTest( widget._vertScrollBar._thumb, true );
+      assertTrue( this._isDraggable( widget._horzScrollBar._thumb ) );
+      assertTrue( this._isDraggable( widget._vertScrollBar._thumb ) );
       widget.destroy();
     },
     
@@ -538,11 +539,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       column.setLabel( "test" );
       column.setIcon( "http://blah.blah" );
       widgetManager.add( column, "table-column", false );
-      this._performIsDraggableWidgetTest( column, true );
-      this._performIsDraggableWidgetTest( column.getLabelObject(), true );
-      this._performIsDraggableWidgetTest( column._iconObject, true );
-      this._performIsDraggableWidgetTest( widget._horzScrollBar._thumb, true );
-      this._performIsDraggableWidgetTest( widget._vertScrollBar._thumb, true );
+      assertTrue( this._isDraggable( column ) );
+      assertTrue( this._isDraggable( column.getLabelObject() ) );
+      assertTrue( this._isDraggable( column._iconObject ) );
+      assertTrue( this._isDraggable( widget._horzScrollBar._thumb ) );
+      assertTrue( this._isDraggable( widget._vertScrollBar._thumb ) );
       widget.destroy();
     },
       
@@ -556,11 +557,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       column.setIcon( "http://blah.blah" );
       column.setParent( widget );
       widgetManager.add( column, "tree-column", false );
-      this._performIsDraggableWidgetTest( column, true );
-      this._performIsDraggableWidgetTest( column.getLabelObject(), true );
-      this._performIsDraggableWidgetTest( column._iconObject, true );
-      this._performIsDraggableWidgetTest( widget._horzScrollBar._thumb, true );
-      this._performIsDraggableWidgetTest( widget._vertScrollBar._thumb, true );
+      assertTrue( this._isDraggable( column ) );
+      assertTrue( this._isDraggable( column.getLabelObject() ) );
+      assertTrue( this._isDraggable( column._iconObject ) );
+      assertTrue( this._isDraggable( widget._horzScrollBar._thumb ) );
+      assertTrue( this._isDraggable( widget._vertScrollBar._thumb ) );
       widget.destroy();
          
       this.resetMobileWebkitSupport();
@@ -570,12 +571,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       //test basic widgets without proper appearance that might allow a broader match
       widget = new org.eclipse.rwt.widgets.BasicButton( "push" );
       widget.addToDocument();
-      this._performIsDraggableWidgetTest( widget, false );
+      assertFalse( this._isDraggable( widget ) );
       widget.destroy();
       
       widget = new qx.ui.layout.CanvasLayout();
       widget.addToDocument();
-      this._performIsDraggableWidgetTest( widget, false );
+      assertFalse( this._isDraggable( widget ) );
       widget.destroy();
       
       this.resetMobileWebkitSupport();
@@ -894,16 +895,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MobileWebkitSupportTest", {
       var tag = node.tagName;
       return tag != "INPUT" && tag != "TEXTAREA";
     },
-    
-    _performIsDraggableWidgetTest : function ( widget, testDraggable ) {
+
+    _isDraggable : function ( widget ) {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       var node = widget._getTargetNode();
-      assertFalse( typeof node === "undefined" );
-      assertNotNull( node );
-      var isDraggable = org.eclipse.rwt.MobileWebkitSupport._isDraggableWidget( node );
-      assertEquals( testDraggable, isDraggable );
-    },    
-    
+      if( node == null ) {
+      	throw new Error( "expected non-null node to test" );
+      }
+      return org.eclipse.rwt.MobileWebkitSupport._isDraggableWidget( node );
+    },
+
     touch : function( node, type, touchesNumberOrArray ) {
       var touches;
       if( touchesNumberOrArray instanceof Array ) {
