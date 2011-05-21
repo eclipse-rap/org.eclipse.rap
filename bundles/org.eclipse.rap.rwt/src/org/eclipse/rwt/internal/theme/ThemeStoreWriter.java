@@ -43,7 +43,7 @@ public final class ThemeStoreWriter {
     while( iterator.hasNext() ) {
       ThemeEntry themeEntry = ( ThemeEntry )iterator.next();
       jsCode.append( "ts.setThemeCssValues( " );
-      jsCode.append( JsonValue.quoteString( themeEntry.theme.getJsId() ) );
+      jsCode.append( JsonValue.valueOf( themeEntry.theme.getJsId() ) );
       jsCode.append( ", " );
       jsCode.append( createThemeJson( themeEntry.theme ) );
       jsCode.append( ", " );

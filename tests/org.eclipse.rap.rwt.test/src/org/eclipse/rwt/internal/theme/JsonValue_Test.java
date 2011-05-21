@@ -1,21 +1,52 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
 
 public class JsonValue_Test extends TestCase {
+
+  public void testValueOfInts() {
+    assertEquals( "0", JsonValue.valueOf( 0 ).toString() );
+    assertEquals( "23", JsonValue.valueOf( 23 ).toString() );
+    assertEquals( "-1", JsonValue.valueOf( -1 ).toString() );
+    assertEquals( "2147483647", JsonValue.valueOf( Integer.MAX_VALUE ).toString() );
+    assertEquals( "-2147483648", JsonValue.valueOf( Integer.MIN_VALUE ).toString() );
+  }
+
+  public void testValueOfFloats() {
+    assertEquals( "10.0", JsonValue.valueOf( 10f ).toString() );
+    assertEquals( "1.23E-6", JsonValue.valueOf( 0.00000123f ).toString() );
+    assertEquals( "-1.23E7", JsonValue.valueOf( -12300000f ).toString() );
+  }
+
+  public void testValueOfBooleans() {
+    assertEquals( "true", JsonValue.valueOf( true ).toString() );
+    assertEquals( "false", JsonValue.valueOf( false ).toString() );
+  }
+
+  public void testValueOfStrings() {
+    assertEquals( "null", JsonValue.valueOf( null ).toString() );
+    assertEquals( "\"\"", JsonValue.valueOf( "" ).toString() );
+    assertEquals( "\"Hallo\"", JsonValue.valueOf( "Hallo" ).toString() );
+    assertEquals( "\"\\\"Hallo\\\"\"", JsonValue.valueOf( "\"Hallo\"" ).toString() );
+  }
+
+  public void testValueOfConstants() {
+    assertSame( JsonValue.valueOf( true ), JsonValue.valueOf( true ) );
+    assertSame( JsonValue.valueOf( false ), JsonValue.valueOf( false ) );
+    assertSame( JsonValue.valueOf( null ), JsonValue.valueOf( null ) );
+  }
 
   public void testQuoteString() {
     // empty string
@@ -31,26 +62,6 @@ public class JsonValue_Test extends TestCase {
     // escape a"b -> "a\"b"
     assertEquals( "\"a\\\"b\"", JsonValue.quoteString( "a\"b" ) );
     // escape a\"b\" -> "a\\\"b\\\""
-    assertEquals( "\"a\\\\\\\"b\\\\\\\"\"",
-                  JsonValue.quoteString( "a\\\"b\\\"" ) );
-  }
-
-  public void testValueOf() {
-    assertEquals( "\"\"", JsonValue.valueOf( "" ).toString() );
-    assertEquals( "\"Hallo\"", JsonValue.valueOf( "Hallo" ).toString() );
-    assertEquals( "\"\\\"Hallo\\\"\"",
-                  JsonValue.valueOf( "\"Hallo\"" ).toString() );
-    assertEquals( "23", JsonValue.valueOf( 23 ).toString() );
-    assertEquals( "0", JsonValue.valueOf( 0 ).toString() );
-    assertEquals( "-1", JsonValue.valueOf( -1 ).toString() );
-    assertEquals( "10.0", JsonValue.valueOf( 10f ).toString() );
-    assertEquals( "1.23E-6", JsonValue.valueOf( 0.00000123f ).toString() );
-    assertEquals( "-1.23E7", JsonValue.valueOf( -12300000f ).toString() );
-    assertEquals( "true", JsonValue.valueOf( true ).toString() );
-    assertEquals( "false", JsonValue.valueOf( false ).toString() );
-    assertEquals( "null", JsonValue.valueOf( null ).toString() );
-    assertSame( JsonValue.valueOf( true ), JsonValue.valueOf( true ) );
-    assertSame( JsonValue.valueOf( false ), JsonValue.valueOf( false ) );
-    assertSame( JsonValue.valueOf( null ), JsonValue.valueOf( null ) );
+    assertEquals( "\"a\\\\\\\"b\\\\\\\"\"", JsonValue.quoteString( "a\\\"b\\\"" ) );
   }
 }

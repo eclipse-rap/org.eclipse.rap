@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -24,19 +25,23 @@ public final class JsonObject extends JsonValue {
     buffer.append( "{" );
   }
 
-  public void append( final String key, final int value ) {
+  public void append( String key, int value ) {
     append( key, valueOf( value ) );
   }
 
-  public void append( final String key, final boolean value ) {
+  public void append( String key, float value ) {
     append( key, valueOf( value ) );
   }
 
-  public void append( final String key, final String value ) {
+  public void append( String key, boolean value ) {
     append( key, valueOf( value ) );
   }
 
-  public void append( final String key, final JsonValue value ) {
+  public void append( String key, String value ) {
+    append( key, valueOf( value ) );
+  }
+
+  public void append( String key, JsonValue value ) {
     if( value != null ) {
       doAppend( key, value.toString() );
     } else {
@@ -49,7 +54,7 @@ public final class JsonObject extends JsonValue {
     return buffer.toString() + tail;
   }
 
-  private void doAppend( final String key, final String valueStr ) {
+  private void doAppend( String key, String valueStr ) {
     buffer.append( count == 0 ? "\n" : ",\n" );
     buffer.append( quoteString( key ) );
     buffer.append( ": " );

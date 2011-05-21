@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others.
+ * Copyright (c) 2009, 2011 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.theme;
@@ -16,52 +16,93 @@ import junit.framework.TestCase;
 
 public class JsonArray_Test extends TestCase {
 
-  public void testAppend() {
+  public void testToStringWhenEmpty() {
     JsonArray array = new JsonArray();
+    
     assertEquals( "[]", array.toString() );
-    array.append( "a" );
-    assertEquals( "[ \"a\" ]", array.toString() );
+  }
+
+  public void testAppendOnce() {
+    JsonArray array = new JsonArray();
+
     array.append( 23 );
-    assertEquals( "[ \"a\", 23 ]", array.toString() );
+    
+    assertEquals( "[ 23 ]", array.toString() );
+  }
+
+  public void testAppendMultiple() {
+    JsonArray array = new JsonArray();
+
+    array.append( 23 );
+    array.append( 3.14f );
+    array.append( "foo" );
     array.append( false );
-    assertEquals( "[ \"a\", 23, false ]", array.toString() );
     array.append( ( String )null );
-    assertEquals( "[ \"a\", 23, false, null ]", array.toString() );
-    array.append( 10f );
-    assertEquals( "[ \"a\", 23, false, null, 10.0 ]", array.toString() );
+
+    assertEquals( "[ 23, 3.14, \"foo\", false, null ]", array.toString() );
+  }
+
+  public void testAppendAfterToString() {
+    JsonArray array = new JsonArray();
+    
+    array.append( 23 );
+    array.toString();
+    array.append( false );
+
+    assertEquals( "[ 23, false ]", array.toString() );
   }
 
   public void testAppendArray() {
     JsonArray array = new JsonArray();
-    array.append( 1 );
+
     array.append( new JsonArray() );
-    assertEquals( "[ 1, [] ]", array.toString() );
     array.append( ( JsonArray )null );
-    assertEquals( "[ 1, [], null ]", array.toString() );
+
+    assertEquals( "[ [], null ]", array.toString() );
   }
 
   public void testAppendObject() {
     JsonArray array = new JsonArray();
-    array.append( 1 );
+
     array.append( new JsonObject() );
-    assertEquals( "[ 1, {} ]", array.toString() );
     array.append( ( JsonObject )null );
-    assertEquals( "[ 1, {}, null ]", array.toString() );
+
+    assertEquals( "[ {}, null ]", array.toString() );
   }
 
-  public void testValueOf() {
+  public void testValueOfEmptyArray() {
+    assertEquals( "[]", JsonArray.valueOf( new int[ 0 ] ).toString() );
+    assertEquals( "[]", JsonArray.valueOf( new float[ 0 ] ).toString() );
     assertEquals( "[]", JsonArray.valueOf( new String[ 0 ] ).toString() );
+  }
+
+  public void testValueOfIntArray() {
+    JsonArray expected = new JsonArray();
+    expected.append( 23 );
+    expected.append( 42 );
+
+    JsonArray created = JsonArray.valueOf( new int[] { 23, 42 } );
+
+    assertEquals( expected.toString(), created.toString() );
+  }
+
+  public void testValueOfFloatArray() {
+    JsonArray expected = new JsonArray();
+    expected.append( 23f );
+    expected.append( 3.14f );
+    
+    JsonArray created = JsonArray.valueOf( new float[] { 23f, 3.14f } );
+    
+    assertEquals( expected.toString(), created.toString() );
+  }
+
+  public void testValueOfStringArray() {
     JsonArray expected = new JsonArray();
     expected.append( "A" );
     expected.append( "B" );
-    String[] array = new String[] { "A", "B" };
-    assertEquals( expected.toString(), JsonArray.valueOf( array ).toString() );
-    expected = new JsonArray();
-    expected.append( 1f );
-    expected.append( 2f );
-    expected.append( 3f );
-    float[] floatArray = new float[] { 1f, 2f, 3f };
-    assertEquals( expected.toString(),
-                  JsonArray.valueOf( floatArray ).toString() );
+
+    JsonArray created = JsonArray.valueOf( new String[] { "A", "B" } );
+
+    assertEquals( expected.toString(), created.toString() );
   }
 }

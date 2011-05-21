@@ -55,14 +55,6 @@ public final class JsonArray extends JsonValue {
     return buffer.toString() + tail;
   }
 
-  public static JsonArray valueOf( String[] array ) {
-    JsonArray result = new JsonArray();
-    for( int i = 0; i < array.length; i++ ) {
-      result.append( array[ i ] );
-    }
-    return result;
-  }
-
   public static JsonArray valueOf( int[] array ) {
     JsonArray result = new JsonArray();
     for( int i = 0; i < array.length; i++ ) {
@@ -72,6 +64,14 @@ public final class JsonArray extends JsonValue {
   }
 
   public static JsonArray valueOf( float[] array ) {
+    JsonArray result = new JsonArray();
+    for( int i = 0; i < array.length; i++ ) {
+      result.append( array[ i ] );
+    }
+    return result;
+  }
+
+  public static JsonArray valueOf( String[] array ) {
     JsonArray result = new JsonArray();
     for( int i = 0; i < array.length; i++ ) {
       result.append( array[ i ] );

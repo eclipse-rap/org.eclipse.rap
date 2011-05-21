@@ -21,6 +21,10 @@ public abstract class JsonValue {
   public static final JsonValue TRUE = new JsonPrimitive( "true" );
   public static final JsonValue FALSE = new JsonPrimitive( "false" );
 
+  JsonValue() {
+    // prevent instantiation from outside
+  }
+
   public static JsonValue valueOf( int value ) {
     return new JsonPrimitive( String.valueOf( value ) );
   }
@@ -43,7 +47,7 @@ public abstract class JsonValue {
     return result;
   }
 
-  public static String quoteString( String string ) {
+  static String quoteString( String string ) {
     StringBuffer resultBuffer = new StringBuffer();
     resultBuffer.append( '"' );
     int length = string.length();
