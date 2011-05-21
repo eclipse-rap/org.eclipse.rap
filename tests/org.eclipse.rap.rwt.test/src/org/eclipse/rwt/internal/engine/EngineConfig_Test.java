@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-package org.eclipse.rwt.internal;
+package org.eclipse.rwt.internal.engine;
 
 import junit.framework.TestCase;
 

@@ -12,6 +12,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
+
+import org.eclipse.rwt.internal.ConfigurationReader;
+import org.eclipse.rwt.internal.IConfiguration;
+
 import junit.framework.TestCase;
 
 

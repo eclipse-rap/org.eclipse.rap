@@ -41,10 +41,16 @@ public class SettingStoreManager {
   public synchronized void register( ISettingStoreFactory factory ) {
     ParamCheck.notNull( factory, "factory" );
     if( hasFactory() ) {
-      String msg = "There is already an ISettingStoreFactory registered.";
-      throw new IllegalStateException( msg );
+      throw new IllegalStateException( "There is already an ISettingStoreFactory registered." );
     }
     this.factory = factory;
+  }
+
+  public void deregisterFactory() {
+    if( !hasFactory() ) {
+      throw new IllegalStateException( "There is no ISettingStoreFactory for deregistration." );
+    }
+    this.factory = null;
   }
 
   public synchronized boolean hasFactory() {

@@ -38,12 +38,11 @@ public class AbstractThemeAdapter_Test extends TestCase {
     CustomWidget custom = new CustomWidget( shell, SWT.NONE );
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme theme = new Theme( "customId", "Custom Theme", styleSheet );
-    ThemeManager.resetInstance();
+    Fixture.resetThemeManager();
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.registerTheme( theme );
     themeManager.initialize();
     AbstractThemeAdapter adapter = new AbstractThemeAdapter() {
-
       protected void configureMatcher( final WidgetMatcher matcher ) {
       }
     };

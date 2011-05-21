@@ -43,7 +43,7 @@ public class ApplicationContext_Test extends TestCase {
   
   public void testGetInstanceWithUnregisterClass() {
     try {
-      new ApplicationContext().getInstance( TestInstanceType.class );
+      createAndActivate().getInstance( TestInstanceType.class );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -51,7 +51,7 @@ public class ApplicationContext_Test extends TestCase {
   
   public void testGetInstanceWithNull() {
     try {
-      new ApplicationContext().getInstance( null );
+      createAndActivate().getInstance( null );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -59,14 +59,14 @@ public class ApplicationContext_Test extends TestCase {
   
   public void testRegisterInstanceTypes() {
     Class[] classes = new Class[] { TestInstanceType.class };
-    ApplicationContext applicationContext = new ApplicationContext( classes );
+    ApplicationContext applicationContext = createAndActivate( classes );
     Object instance = applicationContext.getInstance( TestInstanceType.class );
     assertTrue( instance instanceof TestInstanceType );
   }
   
   public void testGetInstanceReturnsAlwaysSameInstance() {
     Class[] classes = new Class[] { TestInstanceType.class };
-    ApplicationContext applicationContext = new ApplicationContext( classes );
+    ApplicationContext applicationContext = createAndActivate( classes );
     Object instance1 = applicationContext.getInstance( TestInstanceType.class );
     Object instance2 = applicationContext.getInstance( TestInstanceType.class );
     assertSame( instance1, instance2 );
@@ -89,7 +89,7 @@ public class ApplicationContext_Test extends TestCase {
   }
   
   public void testRegisterInstanceFactory() {
-    ApplicationContext context = new ApplicationContext( new Class[] { TestInstanceTypeFactory.class } );
+    ApplicationContext context = createAndActivate( new Class[] { TestInstanceTypeFactory.class } );
     Object instance = context.getInstance( TestInstanceType.class );
     assertTrue( instance instanceof TestInstanceType );
   }
@@ -108,7 +108,7 @@ public class ApplicationContext_Test extends TestCase {
       TestInstanceTypeFactory.class
     };
     try {
-      new ApplicationContext( instanceTypes );
+      createAndActivate( instanceTypes );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -116,11 +116,21 @@ public class ApplicationContext_Test extends TestCase {
   
   public void testGetInstanceOfNonRegisterType() {
     Class[] classes = new Class[] { TestInstanceType.class };
-    ApplicationContext applicationContext = new ApplicationContext( classes );
+    ApplicationContext applicationContext = createAndActivate( classes );
     try {
       applicationContext.getInstance( Runnable.class );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
+  }
+
+  private ApplicationContext createAndActivate() {
+    return createAndActivate( new Class[ 0 ] );
+  }
+
+  private ApplicationContext createAndActivate( Class[] classes ) {
+    ApplicationContext result = new ApplicationContext( classes );
+    result.activate();
+    return result;
   }
 }

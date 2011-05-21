@@ -9,9 +9,10 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal;
+package org.eclipse.rwt.internal.engine;
 
 import java.io.File;
+
 
 
 public class EngineConfig implements IEngineConfig {

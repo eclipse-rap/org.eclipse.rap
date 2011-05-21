@@ -28,51 +28,46 @@ class ServiceHandlerRegistry {
   private static final String SERVICEHANDLER_XML = "servicehandler.xml";
 
   private final Map handlers;
-  private boolean initialized;
   
   ServiceHandlerRegistry() {
     handlers = new HashMap();
   }
 
   boolean isCustomHandler( String customHandlerId ) {
-    ensureInitialization();
     synchronized( handlers ) {
       return handlers.containsKey( customHandlerId );
     }
   }
   
   void put( String id, IServiceHandler handler ) {
-    ensureInitialization();
     synchronized( handlers ) {
       handlers.put( id, handler );
     }
   }
 
   void remove( String id ) {
-    ensureInitialization();
     synchronized( handlers ) {
       handlers.remove( id );
     }
   }
 
   IServiceHandler get( String customHandlerId ) {
-    ensureInitialization();
     synchronized( handlers ) {
       return ( IServiceHandler )handlers.get( customHandlerId );
     }
+  }
+
+  void activate() {
+    registerHandlerInstances();
+  }
+  
+  void deactivate() {
+    handlers.clear();
   }
   
   /////////////////
   // helper methods
 
-  private void ensureInitialization() {
-    synchronized( handlers ) {
-      if( !initialized ) {
-        registerHandlerInstances();
-        initialized = true;
-      }
-    }
-  }
   
   private void registerHandlerInstances() {
     try {

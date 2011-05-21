@@ -25,18 +25,30 @@ public final class ResourceManagerProvider {
     checkNoFactoryRegistered();
     this.factory = factory;
   }
+  
+  public void deregisterFactory() {
+    checkFactoryRegistered();
+    this.factory = null;
+    this.instance = null;
+  }
 
   public synchronized IResourceManager getResourceManager() {
     if( instance == null ) {
+      checkFactoryRegistered();
       instance = factory.create();
     }
     return instance;
   }
 
+  private void checkFactoryRegistered() {
+    if( factory == null ) {      
+      throw new IllegalStateException( "There is no IResourceManagerFactory registered." );
+    }
+  }
+
   private void checkNoFactoryRegistered() {
     if( factory != null ) {
-      String msg = "There is already an IResourceManagerFactory registered.";
-      throw new IllegalStateException( msg );
+      throw new IllegalStateException( "There is already an IResourceManagerFactory registered." );
     }
   }
 }

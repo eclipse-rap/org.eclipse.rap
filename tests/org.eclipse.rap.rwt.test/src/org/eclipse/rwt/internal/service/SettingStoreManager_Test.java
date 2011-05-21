@@ -132,6 +132,23 @@ public class SettingStoreManager_Test extends TestCase {
     }
   }
   
+  public void testDeregisterFactory() {
+    SettingStoreManager settingStoreManager = new SettingStoreManager();
+    settingStoreManager.register( new TestSettingStoreFactory() );
+    
+    settingStoreManager.deregisterFactory();
+    
+    assertFalse( settingStoreManager.hasFactory() );
+  }
+  
+  public void testDeregisterFactoryIfNoFactoryHasBeenRegistered() {
+    try {
+      new SettingStoreManager().deregisterFactory();
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

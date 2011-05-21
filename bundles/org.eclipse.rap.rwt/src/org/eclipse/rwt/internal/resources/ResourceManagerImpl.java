@@ -18,8 +18,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import org.eclipse.rwt.internal.ConfigurationReader;
-import org.eclipse.rwt.internal.IEngineConfig;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.internal.util.URLHelper;

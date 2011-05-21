@@ -28,11 +28,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
-import org.eclipse.rwt.internal.IEngineConfig;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
-import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -226,11 +222,17 @@ public class HttpServiceTracker extends ServiceTracker {
 
   private static ApplicationContext createAndInitializeRWTContext() {
     ApplicationContext result = ApplicationContextUtil.createApplicationContext();
-    ApplicationContextUtil.runWithInstance( result, new Runnable() {
-      public void run() {
-        new EngineConfigWrapper();
+    result.addConfigurable( new Configurable() {
+
+      public void configure( ApplicationContext context ) {
+        new EngineConfigWrapper( context );
       }
+
+      public void reset( ApplicationContext context ) {
+      }
+      
     } );
+    result.activate();
     return result;
   }
 

@@ -27,8 +27,12 @@ public class ApplicationContextUtil_Test extends TestCase {
   public void testRegisterDefaultApplicationContext() {
     Fixture.createServiceContext();
     ServletContext servletContext = getServletContext();
+    
     ApplicationContext applicationContext
       = ApplicationContextUtil.registerDefaultApplicationContext( servletContext );
+    RWTServletContextListener.registerConfigurables( servletContext, applicationContext );
+    applicationContext.activate();
+
     assertNotNull( applicationContext );
     assertSame( applicationContext.getInstance( EntryPointManager.class ), 
                 ApplicationContextUtil.getInstance().getInstance( EntryPointManager.class ) );

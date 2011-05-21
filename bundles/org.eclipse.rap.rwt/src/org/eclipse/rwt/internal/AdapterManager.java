@@ -62,6 +62,13 @@ public class AdapterManager {
     }
   }
 
+  public void deregisterAdapters() {
+    registry.deregisterAdapters();
+    synchronized( lock ) {
+      bufferedAdapterFactories.clear();
+    }
+  }
+
   private AdapterFactory findBufferedAdapterFactory( Object adaptable, Class adapter ) {
     Integer hash = calculateHash( adaptable, adapter );
     return ( AdapterFactory )bufferedAdapterFactories.get( hash );

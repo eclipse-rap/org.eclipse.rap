@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
-import org.eclipse.rwt.internal.IEngineConfig;
+import org.eclipse.rwt.internal.engine.IEngineConfig;
 
 
 /** <p>A helping class that provides functionality for finding the URLs of

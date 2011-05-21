@@ -11,7 +11,6 @@
 package org.eclipse.rwt;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +23,16 @@ class ThemeManagerSingletonFactory implements InstanceTypeFactory {
   static {
     ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
   }
+  
+  static class TestThemeManagerHolder extends ThemeManagerHolder {
+    public void resetInstance() {
+      // ignore reset for test cases to improve performance
+    }
+    public void resetInstanceInTestCases() {
+      super.resetInstance();
+    }
+  }
+
   // TODO [ApplicationContext]: Used as performance optimized solution for tests. At the time being 
   //      buffering speeds up RWTAllTestSuite about 10% on my machine. Think about a less intrusive 
   //      solution.
@@ -69,22 +78,9 @@ class ThemeManagerSingletonFactory implements InstanceTypeFactory {
 
   public Object createInstance() {
     if( themeManagerHolder == null ) {
-      themeManagerHolder = newThemeManagerHolder();
+      themeManagerHolder = new TestThemeManagerHolder();
     }
     return themeManagerHolder;
-  }
-
-  private ThemeManagerHolder newThemeManagerHolder() {
-    ThemeManagerHolder result;
-    try {
-      Class type = ThemeManagerHolder.class;
-      Constructor constructor = type.getDeclaredConstructor( null );
-      constructor.setAccessible( true );
-      result = ( ThemeManagerHolder )constructor.newInstance( null );
-    } catch( Exception shouldNotHappen ) {
-      throw new RuntimeException( shouldNotHappen );
-    }
-    return result;
   }
 
   public Class getInstanceType() {

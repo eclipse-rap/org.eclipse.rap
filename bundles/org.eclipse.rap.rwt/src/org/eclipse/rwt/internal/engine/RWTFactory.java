@@ -17,8 +17,8 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
-import org.eclipse.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rwt.internal.textsize.ProbeStore;
+import org.eclipse.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.service.IApplicationStore;
@@ -37,16 +37,15 @@ public class RWTFactory {
   }
   
   public static BrandingManager getBrandingManager() {
-    return ( BrandingManager )getApplicationSingleton( BrandingManager.class );
+    return ApplicationContextUtil.getInstance().getBrandingManager();
   }
   
   public static EntryPointManager getEntryPointManager() {
-    return ( EntryPointManager )getApplicationSingleton( EntryPointManager.class );
+    return ApplicationContextUtil.getInstance().getEntryPointManager();
   }
 
   public static ServiceManager getServiceManager() {
-    Object singleton = getApplicationSingleton( ServiceManager.class );
-    return ( ServiceManager )singleton;
+    return ApplicationContextUtil.getInstance().getServiceManager();
   }
 
   public static StartupPage getStartupPage() {
@@ -58,19 +57,19 @@ public class RWTFactory {
   }
 
   public static SettingStoreManager getSettingStoreManager() {
-    return ( SettingStoreManager )getApplicationSingleton( SettingStoreManager.class );
+    return ApplicationContextUtil.getInstance().getSettingStoreManager();
   }
   
   public static ConfigurationReader getConfigurationReader() {
-    return ( ConfigurationReader )getApplicationSingleton( ConfigurationReader.class );
+    return ApplicationContextUtil.getInstance().getConfigurationReader();
   }
 
   public static PhaseListenerRegistry getPhaseListenerRegistry() {
-    return ( PhaseListenerRegistry )getApplicationSingleton( PhaseListenerRegistry.class );
+    return ApplicationContextUtil.getInstance().getPhaseListenerRegistry();
   }
   
   public static ThemeManagerHolder getThemeManager() {
-    return ( ThemeManagerHolder )getApplicationSingleton( ThemeManagerHolder.class );
+    return ApplicationContextUtil.getInstance().getThemeManager();
   }
 
   public static ThemeAdapterManager getThemeAdapterManager() {
@@ -110,19 +109,19 @@ public class RWTFactory {
   }
 
   public static JSLibraryConcatenator getJSLibraryConcatenator() {
-    return ( JSLibraryConcatenator )getApplicationSingleton( JSLibraryConcatenator.class );
+    return ApplicationContextUtil.getInstance().getJSLibraryConcatenator();
   }
 
   public static AdapterManager getAdapterManager() {
-    return ( AdapterManager )getApplicationSingleton( AdapterManager.class );
+    return ApplicationContextUtil.getInstance().getAdapterManager();
   }
 
   public static ResourceRegistry getResourceRegistry() {
-    return ( ResourceRegistry )getApplicationSingleton( ResourceRegistry.class );
+    return ApplicationContextUtil.getInstance().getResourceRegistry();
   }
 
   public static ResourceManagerProvider getResourceManagerProvider() {
-    return ( ResourceManagerProvider )getApplicationSingleton( ResourceManagerProvider.class );
+    return ApplicationContextUtil.getInstance().getResourceManagerProvider();
   }
   
   private static Object getApplicationSingleton( Class type ) {

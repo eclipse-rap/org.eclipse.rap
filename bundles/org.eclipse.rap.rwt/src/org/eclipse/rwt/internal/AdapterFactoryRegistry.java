@@ -22,6 +22,7 @@ class AdapterFactoryRegistry {
 
   // TODO [rh] if we decide to make the adapter mechanism internal, the concurrency lock can be 
   //      removed as AdapterFactories are then only registered during startup
+  //      +1 [fappel]
   private final Object lock;
   /* key: Class<Adaptable>, value: List<AdapterFactory> */
   private final Map registry;
@@ -36,6 +37,12 @@ class AdapterFactoryRegistry {
     ParamCheck.notNull( adaptableClass, "adaptableClass" );
     checkAdaptableClassImplementsAdaptable( adaptableClass );
     registerInternal( adaptableClass, adapterFactory ); 
+  }
+
+  void deregisterAdapters() {
+    synchronized( lock ) {
+      registry.clear();
+    }
   }
 
   private void registerInternal( Class adaptableClass, AdapterFactory adapterFactory ) {

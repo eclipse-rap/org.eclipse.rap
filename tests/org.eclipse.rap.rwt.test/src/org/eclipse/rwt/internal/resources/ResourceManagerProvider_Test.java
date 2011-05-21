@@ -20,13 +20,15 @@ import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
 public class ResourceManagerProvider_Test extends TestCase {
+  private ResourceManagerProvider resourceManagerProvider;
+  
+  
   private static class TestResourceManagerFactory implements IResourceManagerFactory {
     public IResourceManager create() {
       return new TestResourceManager();
     }
   }
 
-  private ResourceManagerProvider resourceManagerProvider;
 
   public void testRegisterFactoryWithNullArgument() {
     try {
@@ -53,7 +55,31 @@ public class ResourceManagerProvider_Test extends TestCase {
     }
   }
   
+  public void testDeregisterFactory() {
+    resourceManagerProvider.registerFactory( new TestResourceManagerFactory() );
+
+    resourceManagerProvider.deregisterFactory();
+    
+    checkFactoryHasBeenDeregistered();
+  }
+  
+  public void testDeregisterFactoryIfNoFactoryWasRegistered() {
+    try {
+      resourceManagerProvider.deregisterFactory();
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+  
   protected void setUp() {
     resourceManagerProvider = new ResourceManagerProvider();
+  }
+  
+  private void checkFactoryHasBeenDeregistered() {
+    try {
+      resourceManagerProvider.getResourceManager();
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
   }
 }

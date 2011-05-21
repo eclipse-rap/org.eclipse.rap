@@ -104,7 +104,19 @@ public class RWTHostTestSuite {
     // RWT Tests
     suite.addTestSuite( EntryPointManager_Test.class );
     suite.addTestSuite( RWTServletContextListener_Test.class );
+    suite.addTestSuite( Configurables_Test.class );
+    suite.addTestSuite( ConfigurationReaderConfigurable_Test.class );
+    suite.addTestSuite( ResourceManangerProviderConfigurable_Test.class );
+    suite.addTestSuite( EntryPointManagerConfigurable_Test.class );
+    suite.addTestSuite( BrandingManagerConfigurable_Test.class );
+    suite.addTestSuite( SettingStoreManagerConfigurable_Test.class );
+    suite.addTestSuite( PhaseListenerRegistryConfigurable_Test.class );
+    suite.addTestSuite( AdapterManagerConfigurable_Test.class );
+    suite.addTestSuite( ResourceRegistryConfigurable_Test.class );
+    suite.addTestSuite( ServiceManagerConfigurable_Test.class );
+    suite.addTestSuite( ThemeManagerConfigurable_Test.class );
     suite.addTestSuite( ApplicationContext_Test.class );
+    suite.addTestSuite( ApplicationContextLifeCycle_Test.class );
     suite.addTestSuite( ApplicationContextUtil_Test.class );
     suite.addTestSuite( RWTFactory_Test.class );
     suite.addTestSuite( PhaseListenerRegistry_Test.class );

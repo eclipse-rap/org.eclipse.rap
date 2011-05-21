@@ -18,22 +18,17 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.*;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
 import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Filter;
 
 
 public final class BrandingExtension {
-
   private static final String EP_BRANDING = "org.eclipse.rap.ui.branding"; //$NON-NLS-1$
   private static final String ATT_ID = "id"; //$NON-NLS-1$
   private static final String ATT_DEFAULT_ENTRYPOINT_ID = "defaultEntrypointId"; //$NON-NLS-1$
@@ -55,8 +50,14 @@ public final class BrandingExtension {
   private static final String ATT_VALUE = "value"; //$NON-NLS-1$
   private static final String ELEM_SERVICE_SELECTOR = "httpServiceFilter"; //$NON-NLS-1$
   private static final String ATT_CLASS = "class"; //$NON-NLS-1$
+  
+  private final ApplicationContext applicationContext;
 
-  public static void read() throws IOException {
+  public BrandingExtension( ApplicationContext applicationContext ) {
+    this.applicationContext = applicationContext;
+  }
+
+  public void read() throws IOException {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( EP_BRANDING );
     IConfigurationElement[] brandings = ep.getConfigurationElements();
@@ -70,7 +71,7 @@ public final class BrandingExtension {
   //////////////////
   // Helping methods
 
-  private static void readBranding( IConfigurationElement element ) throws IOException {
+  private void readBranding( IConfigurationElement element ) throws IOException {
     String contributor = element.getContributor().getName();
     String defEntryPointId = element.getAttribute( ATT_DEFAULT_ENTRYPOINT_ID );
     String id = element.getAttribute( ATT_ID );
@@ -106,11 +107,11 @@ public final class BrandingExtension {
     }
     Filter serviceFilter = readServiceFilter( element, branding );
     registerServletName( servletName, serviceFilter );
-    RWTFactory.getBrandingManager().register( branding );
+    applicationContext.getBrandingManager().register( branding );
   }
 
   // EXPERIMENTAL, see bug 241210
-  private static Filter readServiceFilter( IConfigurationElement element, Branding branding ) {
+  private Filter readServiceFilter( IConfigurationElement element, Branding branding ) {
     Filter serviceFilter = null;
     IConfigurationElement[] serviceFilterElements = element.getChildren( ELEM_SERVICE_SELECTOR );
     if( serviceFilterElements.length > 0 ) {
@@ -130,7 +131,7 @@ public final class BrandingExtension {
     return serviceFilter;
   }
 
-  private static IExitConfirmation findExitConfirmationImpl( IConfigurationElement element ) {
+  private IExitConfirmation findExitConfirmationImpl( IConfigurationElement element ) {
     IExitConfirmation result = null;
     String className = element.getAttribute( ATT_EXIT_CONFIRMATION_CLASS );
     if( className != null ) {
@@ -165,7 +166,7 @@ public final class BrandingExtension {
     return result;
   }
 
-  private static void registerDefaultServletName() {
+  private void registerDefaultServletName() {
     boolean found = false;
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( EP_BRANDING );
@@ -181,13 +182,13 @@ public final class BrandingExtension {
     }
   }
 
-  private static void registerServletName( String servletName, Filter filter ) {
+  private void registerServletName( String servletName, Filter filter ) {
     WorkbenchPlugin workbench = WorkbenchPlugin.getDefault();
     HttpServiceTracker httpServiceTracker = workbench.getHttpServiceTracker();
     httpServiceTracker.addServletAlias( servletName, filter );
   }
 
-  private static void readAdditionalHeader( Branding branding, IConfigurationElement elem ) {
+  private void readAdditionalHeader( Branding branding, IConfigurationElement elem ) {
     IConfigurationElement[] headers = elem.getChildren();
     for( int i = 0; i < headers.length; i++ ) {
       IConfigurationElement header = headers[ i ];
@@ -212,7 +213,7 @@ public final class BrandingExtension {
     }
   }
 
-  private static String readBody( String contributor, String path ) throws IOException {
+  private String readBody( String contributor, String path ) throws IOException {
     String result = null;
     if( path != null ) {
       URL url = Platform.getBundle( contributor ).getResource( path );
@@ -233,9 +234,5 @@ public final class BrandingExtension {
       }
     }
     return result;
-  }
-
-  private BrandingExtension() {
-    // prevent instantiation from outside
   }
 }

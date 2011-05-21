@@ -12,40 +12,22 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.servlet;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.EngineConfig;
-import org.eclipse.rwt.internal.IEngineConfig;
-import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener;
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
-import org.eclipse.rwt.internal.theme.ResourceLoader;
-import org.eclipse.rwt.internal.theme.Theme;
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -113,9 +95,11 @@ public final class EngineConfigWrapper implements IEngineConfig {
     = "org.eclipse.rap.ui.settingstores";
 
   private final EngineConfig engineConfig;
+  private final ApplicationContext applicationContext;
 
-  public EngineConfigWrapper() {
-    engineConfig = new EngineConfig( findContextPath().toString() );
+  public EngineConfigWrapper( ApplicationContext applicationContext ) {
+    this.applicationContext = applicationContext;
+    this.engineConfig = new EngineConfig( findContextPath().toString() );
     init();
   }
 
@@ -135,7 +119,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
   // helping methods
 
   private void init() {
-    RWTFactory.getConfigurationReader().setEngineConfig( this );
+    applicationContext.getConfigurationReader().setEngineConfig( this );
     registerPhaseListener();
     registerResourceManagerFactory();
     registerSettingStoreFactory();
@@ -152,7 +136,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
     registerBrandings();
   }
 
-  private static void registerPhaseListener() {
+  private void registerPhaseListener() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_PHASE_LISTENER );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -160,18 +144,19 @@ public final class EngineConfigWrapper implements IEngineConfig {
       try {
         PhaseListener listener
           = ( PhaseListener )elements[ i ].createExecutableExtension( "class" );
-        RWTFactory.getPhaseListenerRegistry().add( listener );
+        applicationContext.getPhaseListenerRegistry().add( listener );
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
       }
     }
   }
 
-  private static void registerResourceManagerFactory() {
-    RWTFactory.getResourceManagerProvider().registerFactory( new DefaultResourceManagerFactory() );
+  private void registerResourceManagerFactory() {
+    DefaultResourceManagerFactory factory = new DefaultResourceManagerFactory();
+    applicationContext.getResourceManagerProvider().registerFactory( factory );
   }
 
-  private static void registerSettingStoreFactory() {
+  private void registerSettingStoreFactory() {
     // determine which factory to use via an environment setting / config.ini
     ISettingStoreFactory result = null;
     String factoryId = getOSGiProperty( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM );
@@ -202,7 +187,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
     if( result == null ) {
       result = new WorkbenchFileSettingStoreFactory(); // default
     }
-    RWTFactory.getSettingStoreManager().register( result );
+    applicationContext.getSettingStoreManager().register( result );
   }
 
   private static String getOSGiProperty( String name ) {
@@ -210,7 +195,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
 	return systemBundle.getBundleContext().getProperty( name );
   }
 
-  private static void registerFactories() {
+  private void registerFactories() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_ADAPTER_FACTORY );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -223,7 +208,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
         Class factoryClass = bundle.loadClass( factoryName );
         Class adaptableClass = bundle.loadClass( adaptableName );
         AdapterFactory adapterFactory = ( AdapterFactory )ClassUtil.newInstance( factoryClass ) ;
-        RWTFactory.getAdapterManager().registerAdapters( adaptableClass, adapterFactory );
+        applicationContext.getAdapterManager().registerAdapters( adaptableClass, adapterFactory );
       } catch( Throwable thr ) {
         String text =   "Could not register adapter factory ''{0}'' "
                       + "for the adapter type ''{1}''.";
@@ -239,7 +224,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
     }
   }
 
-  private static void registerWorkbenchEntryPoint() {
+  private void registerWorkbenchEntryPoint() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_ENTRY_POINT );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -251,7 +236,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
       try {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
-        RWTFactory.getEntryPointManager().register( parameter, clazz );
+        applicationContext.getEntryPointManager().register( parameter, clazz );
         EntryPointExtension.bind( id, parameter );
       } catch( final Throwable thr ) {
         String text =   "Could not register entry point ''{0}'' "
@@ -268,7 +253,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
     }
   }
 
-  private static void registerThemeableWidgets() {
+  private void registerThemeableWidgets() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMEABLE_WIDGETS );
     IConfigurationElement[] widgetExts = ep.getConfigurationElements();
@@ -292,7 +277,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
           }
         };
         Class widget = bundle.loadClass( widgetClass );
-        ThemeManager.getInstance().addThemeableWidget( widget, resLoader );
+        getThemeManager().addThemeableWidget( widget, resLoader );
       } catch( final Throwable thr ) {
         String text = "Could not register themeable widget ''{0}''.";
         Object[] param = new Object[] { widgetClass };
@@ -302,11 +287,14 @@ public final class EngineConfigWrapper implements IEngineConfig {
         WorkbenchPlugin.getDefault().getLog().log( status );
       }
     }
-    ThemeManager.getInstance().initializeThemeableWidgets();
+    getThemeManager().initializeThemeableWidgets();
   }
 
+  private ThemeManager getThemeManager() {
+    return applicationContext.getThemeManager().getInstance();
+  }
 
-  private static void registerThemes() {
+  private void registerThemes() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
@@ -325,7 +313,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
               styleSheet = CssFileReader.readStyleSheet( themeFile, loader );
             }
             Theme theme = new Theme( themeId, themeName, styleSheet );
-            ThemeManager.getInstance().registerTheme( theme );
+            getThemeManager().registerTheme( theme );
           } catch( final Exception e ) {
             String text = "Could not register custom theme ''{0}'' "
                           + "from file ''{1}''.";
@@ -339,7 +327,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
     }
   }
 
-  private static void registerThemeContributions() {
+  private void registerThemeContributions() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
@@ -353,7 +341,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
           ResourceLoader loader = createResourceLoader( bundle );
           StyleSheet styleSheet = CssFileReader.readStyleSheet( themeFile,
                                                                 loader );
-          Theme theme = ThemeManager.getInstance().getTheme( themeId );
+          Theme theme = getThemeManager().getTheme( themeId );
           if( theme == null ) {
             throw new IllegalArgumentException( "No such theme defined: "
                                                 + themeId );
@@ -369,7 +357,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
         }
       }
     }
-    ThemeManager.getInstance().initialize();
+    getThemeManager().initialize();
   }
 
   private static ResourceLoader createResourceLoader( final Bundle bundle ) {
@@ -397,7 +385,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
     return stateLocation.append( "context" );
   }
 
-  private static void registerResources() {
+  private void registerResources() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_RESOURCES );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -466,24 +454,26 @@ public final class EngineConfigWrapper implements IEngineConfig {
     return result;
   }
 
-  private static void registerResources( DependentResource[] resources ) {
+  private void registerResources( DependentResource[] resources ) {
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ] != null ) {
-        RWTFactory.getResourceRegistry().add( resources[ i ].resource );
+        applicationContext.getResourceRegistry().add( resources[ i ].resource );
       }
     }
   }
 
-  private static void registerUICallBackServiceHandler() {
-    RWT.getServiceManager().registerServiceHandler( UICallBackServiceHandler.HANDLER_ID,
-    												new UICallBackServiceHandler() );
+  private void registerUICallBackServiceHandler() {
+    ServiceManager serviceManager = applicationContext.getServiceManager();
+    UICallBackServiceHandler handler = new UICallBackServiceHandler();
+    serviceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID, handler );
   }
 
   private void registerJSLibraryServiceHandler() {
+    ServiceManager serviceManager = applicationContext.getServiceManager();
     JSLibraryServiceHandler handler = new JSLibraryServiceHandler();
-    RWT.getServiceManager().registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, handler );
+    serviceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, handler );
     // TODO [SystemStart]: move this to where the actual system initialization takes place
-    RWTFactory.getJSLibraryConcatenator().startJSConcatenation();
+    applicationContext.getJSLibraryConcatenator().startJSConcatenation();
   }
 
   private void registerCustomServiceHandlers() {
@@ -496,7 +486,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
         if( id != null ) {
           Object extObject = elements[ i ].createExecutableExtension( "class" );
           IServiceHandler handler = ( IServiceHandler )extObject;
-          RWT.getServiceManager().registerServiceHandler( id, handler );
+          applicationContext.getServiceManager().registerServiceHandler( id, handler );
         }
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
@@ -506,7 +496,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
 
   private void registerBrandings() {
     try {
-      BrandingExtension.read();
+      new BrandingExtension( applicationContext ).read();
     } catch( final IOException ioe ) {
       throw new RuntimeException( "Unable to read branding extension", ioe );
     }

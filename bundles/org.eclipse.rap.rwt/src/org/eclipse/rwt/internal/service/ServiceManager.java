@@ -17,11 +17,12 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.internal.engine.Activatable;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.IServiceManager;
 
 
-public class ServiceManager implements IServiceManager {
+public class ServiceManager implements IServiceManager, Activatable {
   private final ServiceHandlerRegistry customHandlers;
   private final IServiceHandler handlerDispatcher;
   private IServiceHandler lifeCycleRequestHandler;
@@ -52,6 +53,17 @@ public class ServiceManager implements IServiceManager {
   
   public IServiceHandler getHandler() {
     return handlerDispatcher;
+  }
+
+  ////////////////////////////////
+  // implementation of Activatable
+
+  public void activate() {
+    customHandlers.activate();
+  }
+
+  public void deactivate() {
+    customHandlers.deactivate();
   }
   
   //////////////////

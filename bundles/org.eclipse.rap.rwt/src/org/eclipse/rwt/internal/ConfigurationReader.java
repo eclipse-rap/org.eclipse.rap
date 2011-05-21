@@ -15,14 +15,15 @@ package org.eclipse.rwt.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.internal.engine.IEngineConfig;
+
 
 public class ConfigurationReader {
   private IConfiguration configuration;
   private IEngineConfig engineConfig;
   
   
-  private static final class ConfigurationImpl implements IConfiguration {
-
+  private static class ConfigurationImpl implements IConfiguration {
     private final Map values;
 
     private ConfigurationImpl() {
@@ -64,7 +65,7 @@ public class ConfigurationReader {
     return engineConfig;
   }
 
-  public void setEngineConfig( final IEngineConfig engineConfig ) {
+  public void setEngineConfig( IEngineConfig engineConfig ) {
     this.engineConfig = engineConfig;
   }
 }

@@ -22,7 +22,7 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 public class ThemeUtil_Test extends TestCase {
 
   public void testSetCurrentThemeId() throws Exception {
-    ThemeManager.resetInstance();
+    Fixture.resetThemeManager();
     ThemeManager manager = ThemeManager.getInstance();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme theme = new Theme( "custom.id", "Custom Theme", styleSheet );
@@ -38,8 +38,7 @@ public class ThemeUtil_Test extends TestCase {
     try {
       ThemeUtil.setCurrentThemeId( "woo.doo.schick.schnack" );
       fail( "should throw IAE for invalid theme ids" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -50,7 +49,7 @@ public class ThemeUtil_Test extends TestCase {
   }
 
   public void testGetTheme() throws Exception {
-    ThemeManager.resetInstance();
+    Fixture.resetThemeManager();
     ThemeManager themeManager = ThemeManager.getInstance();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
@@ -64,7 +63,7 @@ public class ThemeUtil_Test extends TestCase {
   }
 
   public void testGetCssValue() throws IOException {
-    ThemeManager.resetInstance();
+    Fixture.resetThemeManager();
     ThemeManager themeManager = ThemeManager.getInstance();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
@@ -78,7 +77,6 @@ public class ThemeUtil_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeNewRequest();
   }
 
   protected void tearDown() throws Exception {

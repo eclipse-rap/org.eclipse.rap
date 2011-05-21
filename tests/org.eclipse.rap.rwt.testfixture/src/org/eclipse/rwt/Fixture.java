@@ -16,9 +16,11 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.*;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.http.*;
 
+import org.eclipse.rwt.ThemeManagerSingletonFactory.TestThemeManagerHolder;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener.ContextDestroyer;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener.ContextInitializer;
@@ -34,8 +36,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 public class Fixture {
-  public final static File TEMP_DIR 
-    = new File( System.getProperty( "java.io.tmpdir" ) );
+  public final static File TEMP_DIR = new File( System.getProperty( "java.io.tmpdir" ) );
   public static final File WEB_CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
   public static final String IMAGE1 = "resources/images/image1.gif";
   public static final String IMAGE2 = "resources/images/image2.gif";
@@ -47,13 +48,11 @@ public class Fixture {
     = "usePerformanceOptimizations";
 
   static {
-    usePerformanceOptimizations
-      = Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
+    usePerformanceOptimizations = Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
 
     // TODO [ApplicationContext]: Replacing ThemeManagerInstance improves performance of 
     //      RWTAllTestSuite. Think about a less intrusive solution.
-    ApplicationContextUtil.replace( ThemeManagerHolder.class,
-                            ThemeManagerSingletonFactory.class );
+    ApplicationContextUtil.replace( ThemeManagerHolder.class, ThemeManagerSingletonFactory.class );
   }
 
   private static TestServletContext servletContext;
@@ -115,7 +114,12 @@ public class Fixture {
     ensureServletContext();
     ApplicationContext applicationContext = ApplicationContextUtil.createApplicationContext();
     ApplicationContextUtil.registerApplicationContext( servletContext, applicationContext );
-    ApplicationContextUtil.runWithInstance( applicationContext, initializer );
+    
+    
+    RWTServletContextListener.registerConfigurables( servletContext, applicationContext );
+    
+    applicationContext.activate();
+//    ApplicationContextUtil.runWithInstance( applicationContext, initializer );
   }
   
   public static void disposeOfApplicationContext() {
@@ -126,7 +130,13 @@ public class Fixture {
   public static void disposeOfApplicationContext( Runnable destroyer ) {
     ApplicationContext applicationContext
       = ApplicationContextUtil.getApplicationContext( servletContext );
-    ApplicationContextUtil.runWithInstance( applicationContext, destroyer );
+//    ApplicationContextUtil.runWithInstance( applicationContext, destroyer );
+    applicationContext.deactivate();
+    
+    
+    RWTServletContextListener.deregisterConfigurables( servletContext, applicationContext );
+    
+    
     ApplicationContextUtil.deregisterApplicationContext( servletContext );
     disposeOfServletContext();
     // TODO [ApplicationContext]: At the time beeing this improves RWTAllTestSuite performance by 
@@ -168,7 +178,7 @@ public class Fixture {
   }
 
   public static void disposeOfServiceContext() {
-    resetThemeManager();
+    resetThemeManagerIfNeeded();
     HttpSession session = ContextProvider.getRequest().getSession();
     ContextProvider.disposeContext();
     session.invalidate();
@@ -522,16 +532,30 @@ public class Fixture {
     return result;
   }
 
-  private static void resetThemeManager() {
-    if( isThemeManagerAvailable() )
-    {
-      ThemeManager.resetInstance();
+  public static void resetThemeManager() {
+    if( isThemeManagerAvailable() ) {
+      doThemeManagerReset();
+    }
+  }
+  
+  private static void resetThemeManagerIfNeeded() {
+    if( isThemeManagerResetNeeded() ) {
+      doThemeManagerReset();
     }
   }
 
-  private static boolean isThemeManagerAvailable() {
-    return    getThemeManager() != null 
+  private static void doThemeManagerReset() {
+    TestThemeManagerHolder themeManager = ( TestThemeManagerHolder )RWTFactory.getThemeManager();
+    themeManager.resetInstanceInTestCases();
+  }
+
+  private static boolean isThemeManagerResetNeeded() {
+    return    isThemeManagerAvailable() 
            && getThemeManager().getRegisteredThemeIds().length != 1;
+  }
+
+  private static boolean isThemeManagerAvailable() {
+    return getThemeManager() != null;
   }
 
   private static ThemeManager getThemeManager() {
@@ -539,6 +563,7 @@ public class Fixture {
     try {
       result = ThemeManager.getInstance();
     } catch( IllegalStateException noApplicationContextAvailable ) {
+    } catch( IllegalArgumentException noThemeManagerRegisterd ) {
     }
     return result;
   }
