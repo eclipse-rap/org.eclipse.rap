@@ -101,6 +101,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.flush();
     },
 
+    testDragEndPropagation : function() {
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var log = [];
+      testUtil.getDocument().addEventListener( "dragend", function( event ) {
+        log.push( event );
+      } );
+      var source = this.createSource();
+      var node = source._getTargetNode();
+      testUtil.fakeMouseEventDOM( node, "mousedown", leftButton, 11, 11 );
+      testUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 19, 19 );
+      testUtil.fakeMouseEventDOM( node, "mouseup", leftButton, 19, 19 );
+      assertEquals( 0, log.length );
+      dndSupport.deregisterDragSource( source );
+      source.destroy();
+      testUtil.flush();
+    },
+
     testDragStartAndCancel : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
