@@ -88,22 +88,6 @@ public final class RWTServletContextListener implements ServletContextListener {
     ApplicationContextUtil.deregisterApplicationContext( servletContext );
   }
 
-  public static void registerConfigurables( ServletContext servletContext,
-                                            ApplicationContext applicationContext )
-  {
-    Configurables configurables = new Configurables( servletContext );
-    configurables.add( applicationContext );
-    bufferConfigurables( configurables, servletContext );
-  }
-  
-  public static void deregisterConfigurables( ServletContext servletContext,
-                                              ApplicationContext applicationContext )
-  {
-    Configurables configurables = getConfigurables( servletContext );
-    configurables.remove( applicationContext );
-    removeConfigurables( servletContext );
-  }
-
   static void bufferConfigurables( Configurables configurables, ServletContext servletContext ) {
     servletContext.setAttribute( CONFIGURABLES, configurables );
   }
@@ -115,17 +99,20 @@ public final class RWTServletContextListener implements ServletContextListener {
   static void removeConfigurables( ServletContext servletContext ) {
     servletContext.removeAttribute( CONFIGURABLES );
   }
-  
-  static  void removeBuffer( String key, ServletContext servletContext ) {
-    servletContext.removeAttribute( key );
-  }
 
-  static Set getBuffer( String key, ServletContext servletContext ) {
-    Set result = ( Set )servletContext.getAttribute( key );
-    if( result == null ) {
-      result = new HashSet();
-      servletContext.setAttribute( key, result );
-    }
-    return result;
+  private static void registerConfigurables( ServletContext servletContext, 
+                                             ApplicationContext applicationContext )
+  {
+    Configurables configurables = new Configurables( servletContext );
+    configurables.add( applicationContext );
+    bufferConfigurables( configurables, servletContext );
+  }
+  
+  private static void deregisterConfigurables( ServletContext servletContext,
+                                               ApplicationContext applicationContext )
+  {
+    Configurables configurables = getConfigurables( servletContext );
+    configurables.remove( applicationContext );
+    removeConfigurables( servletContext );
   }
 }

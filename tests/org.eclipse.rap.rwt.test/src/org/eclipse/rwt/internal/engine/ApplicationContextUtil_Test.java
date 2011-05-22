@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
+import org.eclipse.rwt.internal.engine.RWTServletContextListener.Configurables;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
@@ -29,7 +30,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     ServletContext servletContext = getServletContext();
     
     ApplicationContext applicationContext = ApplicationContextUtil.createContext( servletContext );
-    RWTServletContextListener.registerConfigurables( servletContext, applicationContext );
+    new Configurables( servletContext ).add( applicationContext );
     applicationContext.activate();
 
     assertNotNull( applicationContext );

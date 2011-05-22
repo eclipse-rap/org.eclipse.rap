@@ -73,6 +73,13 @@ public class PhaseListenerRegistry_Test extends TestCase {
     assertEquals( 0, phaseListenerRegistry.get().length );
   }
   
+  public void testRemoveAll() {
+    PhaseListener phaseListener = new TestPhaseListener();
+    phaseListenerRegistry.add( phaseListener );
+    phaseListenerRegistry.removeAll();
+    assertEquals( 0, phaseListenerRegistry.get().length );
+  }
+  
   public void testRemoveWithNullArgument() {
     try {
       phaseListenerRegistry.remove( null );

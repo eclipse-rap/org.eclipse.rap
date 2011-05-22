@@ -34,7 +34,11 @@ public class PhaseListenerRegistry {
     ParamCheck.notNull( listener, "listener" );
     phaseListeners.remove( listener );
   }
-  
+
+  public void removeAll() {
+    phaseListeners.clear();
+  }
+
   public PhaseListener[] get() {
     PhaseListener[] result = new PhaseListener[ phaseListeners.size() ];
     phaseListeners.toArray( result );

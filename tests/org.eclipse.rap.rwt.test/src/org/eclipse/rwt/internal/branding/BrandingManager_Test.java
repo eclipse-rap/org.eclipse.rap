@@ -64,6 +64,16 @@ public class BrandingManager_Test extends TestCase {
     assertEquals( 1, brandingManager.getAll().length );
   }
   
+  public void testDeregisterAll() {
+    BrandingManager brandingManager = new BrandingManager();
+    TestBranding branding = new TestBranding();
+    brandingManager.register( branding );
+    
+    brandingManager.deregisterAll();
+
+    assertEquals( 0, brandingManager.getAll().length );
+  }
+  
   public void testFindBrandingWithNullServletName() {
     BrandingManager brandingManager = new BrandingManager();
     try {

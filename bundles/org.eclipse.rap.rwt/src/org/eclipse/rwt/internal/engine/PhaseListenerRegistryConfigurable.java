@@ -11,8 +11,6 @@
 package org.eclipse.rwt.internal.engine;
 
 import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 
@@ -28,11 +26,6 @@ class PhaseListenerRegistryConfigurable implements Configurable {
     CurrentPhase.Listener.class.getName(),
     MeasurementListener.class.getName()
   };
-  private static final String PHASE_LISTENERS_PARAM
-    = RWTServletContextListener.PHASE_LISTENERS_PARAM;
-  private static final String REGISTERED_PHASE_LISTENERS
-    = PhaseListenerRegistryConfigurable.class.getName() + "#PHASE_LISTENERS";
-
   private final ServletContext servletContext;
 
   PhaseListenerRegistryConfigurable( ServletContext servletContext ) {
@@ -48,19 +41,13 @@ class PhaseListenerRegistryConfigurable implements Configurable {
   }
 
   public void reset( ApplicationContext context ) {
-    Iterator phaseListeners = getPhaseListenerBuffer().iterator();
-    while( phaseListeners.hasNext() ) {
-      PhaseListener phaseListener = ( PhaseListener )phaseListeners.next();
-      context.getPhaseListenerRegistry().remove( phaseListener );
-    }
-    removeBufferedPhaseListeners();
+    context.getPhaseListenerRegistry().removeAll();
   }
   
   String[] getPhaseListenerNames() {
     String[] result = DEFAULT_PHASE_LISTENERS;
-    String initParam = servletContext.getInitParameter( PHASE_LISTENERS_PARAM );
-    if( initParam != null ) {
-      result = initParam.split( RWTServletContextListener.PARAMETER_SEPARATOR );
+    if( getInitParameter() != null ) {
+      result = getInitParameter().split( RWTServletContextListener.PARAMETER_SEPARATOR );
     }
     return result;
   }
@@ -68,15 +55,6 @@ class PhaseListenerRegistryConfigurable implements Configurable {
   private void registerPhaseListener( ApplicationContext context, String className ) {
     PhaseListener phaseListener = createPhaseListener( className );
     context.getPhaseListenerRegistry().add( phaseListener );
-    getPhaseListenerBuffer().add( phaseListener );
-  }
-
-  private Set getPhaseListenerBuffer() {
-    return RWTServletContextListener.getBuffer( REGISTERED_PHASE_LISTENERS, servletContext );
-  }
-  
-  private void removeBufferedPhaseListeners() {
-    RWTServletContextListener.removeBuffer( REGISTERED_PHASE_LISTENERS, servletContext );
   }
 
   private PhaseListener createPhaseListener( String className ) {
@@ -89,5 +67,9 @@ class PhaseListenerRegistryConfigurable implements Configurable {
       throw new IllegalArgumentException( msg );
     }
     return result;
+  }
+
+  private String getInitParameter() {
+    return servletContext.getInitParameter( RWTServletContextListener.PHASE_LISTENERS_PARAM );
   }
 }

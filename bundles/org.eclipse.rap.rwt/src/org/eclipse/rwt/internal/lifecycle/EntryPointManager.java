@@ -23,7 +23,7 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class EntryPointManager {
   public static final String DEFAULT = "default";
-  
+
   private static final String CURRENT_ENTRY_POINT
     = EntryPointManager.class.getName() + "#currentEntryPointName";
   
@@ -58,6 +58,13 @@ public class EntryPointManager {
       registry.remove( name );
     }
   }
+  
+  public void deregisterAll() {
+    synchronized( registry ) {
+      registry.clear();
+    }
+  }
+
 
   public int createUI( String name ) {
     ParamCheck.notNull( name, "name" );

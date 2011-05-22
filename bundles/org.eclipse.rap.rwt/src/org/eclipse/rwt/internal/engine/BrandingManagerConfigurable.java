@@ -11,8 +11,6 @@
 package org.eclipse.rwt.internal.engine;
 
 import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 
@@ -21,9 +19,6 @@ import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
 
 class BrandingManagerConfigurable implements Configurable {
-  private static final String BRANDINGS
-    = BrandingManagerConfigurable.class.getName() + "#BRANDINGS";
-
   private final ServletContext servletContext;
 
   BrandingManagerConfigurable( ServletContext servletContext ) {
@@ -37,12 +32,7 @@ class BrandingManagerConfigurable implements Configurable {
   }
 
   public void reset( ApplicationContext context ) {
-    Iterator brandings = getBufferedBrandings().iterator();
-    while( brandings.hasNext() ) {
-      AbstractBranding branding = ( AbstractBranding )brandings.next();
-      context.getBrandingManager().deregister( branding );
-    }
-    removeBufferedBrandings();
+    context.getBrandingManager().deregisterAll();
   }
 
   private void registerBrandings( ApplicationContext context ) {
@@ -60,7 +50,6 @@ class BrandingManagerConfigurable implements Configurable {
   private void registerBranding( ApplicationContext context, String className ) {
     AbstractBranding branding = createBranding( className );
     context.getBrandingManager().register( branding );
-    getBufferedBrandings().add( branding );
   }
   
   private AbstractBranding createBranding( String className ) {
@@ -73,13 +62,5 @@ class BrandingManagerConfigurable implements Configurable {
       throw new IllegalArgumentException( msg );
     }
     return result;
-  }
-
-  private Set getBufferedBrandings() {
-    return RWTServletContextListener.getBuffer( BRANDINGS, servletContext );
-  }
-  
-  private void removeBufferedBrandings() {
-    RWTServletContextListener.removeBuffer( BRANDINGS, servletContext );
   }
 }

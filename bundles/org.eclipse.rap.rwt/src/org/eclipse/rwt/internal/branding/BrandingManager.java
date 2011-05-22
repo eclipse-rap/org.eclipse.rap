@@ -77,6 +77,12 @@ public class BrandingManager {
     }
   }
   
+  public void deregisterAll() {
+    synchronized( brandings ) {
+      brandings.clear();
+    }
+  }
+  
   public AbstractBranding[] getAll() {
     AbstractBranding[] result;
     synchronized( brandings ) {

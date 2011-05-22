@@ -101,6 +101,17 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  public void testDeregisterAll() {
+    EntryPointManager entryPointManager = new EntryPointManager();
+    entryPointManager.register( "abc", TestEntryPointWithLog.class );
+    entryPointManager.deregisterAll();
+    try {
+      entryPointManager.createUI( "abc" );
+      fail( "deregistering entry point failed" );
+    } catch( RuntimeException expected ) {
+    }
+  }
+
   public void testCreateUIWithNullName() {
     EntryPointManager entryPointManager = new EntryPointManager();
     try {

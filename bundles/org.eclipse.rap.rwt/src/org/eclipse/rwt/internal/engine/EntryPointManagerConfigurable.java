@@ -11,7 +11,6 @@
 package org.eclipse.rwt.internal.engine;
 
 import java.text.MessageFormat;
-import java.util.*;
 
 import javax.servlet.ServletContext;
 
@@ -19,9 +18,6 @@ import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 
 
 class EntryPointManagerConfigurable implements Configurable {
-  private static final String ENTRY_POINT_NAMES
-    = EntryPointManagerConfigurable.class.getName() + "#ENTRY_POINT_NAMES";
-
   private final ServletContext servletContext;
   
   private static class EntryPointDeclaration {
@@ -53,12 +49,7 @@ class EntryPointManagerConfigurable implements Configurable {
   }
 
   public void reset( ApplicationContext context ) {
-    Iterator entryPointNames = getBufferedEntryPointNames().iterator();
-    while( entryPointNames.hasNext() ) {
-      String entryPointName = ( String )entryPointNames.next();
-      context.getEntryPointManager().deregister( entryPointName );
-    }
-    removeBufferedEntryPointNames();
+    context.getEntryPointManager().deregisterAll();
   }
 
   private void registerEntryPoints( ApplicationContext context ) {
@@ -72,23 +63,6 @@ class EntryPointManagerConfigurable implements Configurable {
   private void registerEntryPoint( ApplicationContext context, EntryPointDeclaration declaration ) {
     Class clazz = loadClass( declaration );
     context.getEntryPointManager().register( declaration.getName(), clazz );
-    getBufferedEntryPointNames().add( declaration.getName() );
-  }
-
-  private EntryPointDeclaration parseEntryPointDeclaration( String entryPoint ) {
-    String[] parts = entryPoint.trim().split( RWTServletContextListener.PARAMETER_SPLIT );
-    String className = parts[ 0 ];
-    String name = parts.length > 1 ? parts[ 1 ] : EntryPointManager.DEFAULT;
-    return new EntryPointDeclaration( className, name );
-  }
-
-  private String[] parseEntryPoints() {
-    String param = servletContext.getInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM );
-    return param.split( RWTServletContextListener.PARAMETER_SEPARATOR );
-  }
-
-  private boolean hasEntryPointsConfigured() {
-    return null != servletContext.getInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM );
   }
 
   private Class loadClass( EntryPointDeclaration declaration ) {
@@ -103,12 +77,24 @@ class EntryPointManagerConfigurable implements Configurable {
     }
     return result;
   }
-  
-  private Set getBufferedEntryPointNames() {
-    return RWTServletContextListener.getBuffer( ENTRY_POINT_NAMES, servletContext );
+
+  private EntryPointDeclaration parseEntryPointDeclaration( String declaration ) {
+    String[] parts = declaration.trim().split( RWTServletContextListener.PARAMETER_SPLIT );
+    String className = parts[ 0 ];
+    String name = parts.length > 1 ? parts[ 1 ] : EntryPointManager.DEFAULT;
+    return new EntryPointDeclaration( className, name );
+  }
+
+  private String[] parseEntryPoints() {
+    String param = getEntryPointParameters();
+    return param.split( RWTServletContextListener.PARAMETER_SEPARATOR );
+  }
+
+  private boolean hasEntryPointsConfigured() {
+    return null != getEntryPointParameters();
   }
   
-  private void removeBufferedEntryPointNames() {
-    RWTServletContextListener.removeBuffer( ENTRY_POINT_NAMES, servletContext );
+  private String getEntryPointParameters() {
+    return servletContext.getInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM );
   }
 }
