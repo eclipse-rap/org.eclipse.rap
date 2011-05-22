@@ -567,7 +567,7 @@ public class Table extends Composite {
   public void setItemCount( int count ) {
     checkWidget();
     int newItemCount = Math.max( 0, count );
-    if( newItemCount != itemCount ) {
+    if( newItemCount != itemCount && !isInDispose() ) {
       while( newItemCount < itemCount ) {
         TableItem item = items[ newItemCount ];
         if( item != null && !item.isDisposed() ) {

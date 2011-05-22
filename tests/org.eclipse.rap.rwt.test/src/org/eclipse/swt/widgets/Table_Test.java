@@ -1402,6 +1402,37 @@ public class Table_Test extends TestCase {
     table.dispose();
   }
 
+  // ensures that there is no endless loop in Table#setItemCount (see bug 346576)
+  public void testSetItemCountInDisposeListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 10 );
+    table.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent e ) {
+        table.setItemCount( 0 );
+      }
+    } );
+    table.dispose();
+  }
+
+  public void testDisposeItemsWithSetItemCountInDisposeListener() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final Table table = new Table( shell, SWT.VIRTUAL );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    TableItem item2 = new TableItem( table, SWT.NONE );
+    TableItem item3 = new TableItem( table, SWT.NONE );
+    table.setItemCount( 10 );
+    table.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( DisposeEvent e ) {
+        table.setItemCount( 0 );
+      }
+    } );
+    table.dispose();
+    assertTrue( item1.isDisposed() );
+    assertTrue( item2.isDisposed() );
+    assertTrue( item3.isDisposed() );
+  }
+
   public void testRedrawAfterDisposeVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.VIRTUAL );
