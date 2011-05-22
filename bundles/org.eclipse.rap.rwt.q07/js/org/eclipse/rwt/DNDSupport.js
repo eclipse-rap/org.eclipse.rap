@@ -110,6 +110,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       }
       this._sendDragSourceEvent( target, "dragFinished", mouseEvent );
       this._cleanUp();
+      event.stopPropagation();
     },
 
     _sendDragSourceEvent : function( widget, type, qxDomEvent ) {
