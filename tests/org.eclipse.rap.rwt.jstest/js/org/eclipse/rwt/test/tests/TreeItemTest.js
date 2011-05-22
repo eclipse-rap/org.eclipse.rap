@@ -357,6 +357,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     testAddItemAt : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var root = new org.eclipse.rwt.widgets.TreeItem();
+      root.setItemCount( 3 );
       org.eclipse.rwt.widgets.TreeItem.createItem( root, 0, "w1" );
       org.eclipse.rwt.widgets.TreeItem.createItem( root, 1, "w2" );
       org.eclipse.rwt.widgets.TreeItem.createItem( root, 1, "w3" );
@@ -401,6 +402,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       assertEquals( [ undefined, undefined, undefined, undefined ], item._children );
       item.setItemCount( 2 );
       assertEquals( [ "add", item, "remove", item ], log );
+    },
+
+    testSetItemCountStaysOnInsert : function() {
+      var item = new org.eclipse.rwt.widgets.TreeItem();
+      var log = [];
+      item.setItemCount( 4 );
+      assertEquals( 4, item._children.length );
+      assertEquals( [ undefined, undefined, undefined, undefined ], item._children );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( item, 1 );
+      assertEquals( 4, item._children.length );
+      assertEquals( [ child1, child2, undefined, undefined ], item._children );
+      var child3 = new org.eclipse.rwt.widgets.TreeItem( item, 1 );
+      // setItemCount is not rendered by server since it stays the same
+      assertEquals( 4, item._children.length );
+      assertEquals( [ child1, child3, child2, undefined ], item._children );
+      item.dispose();
     },
 
     testReplaceUndefinedItem : function() {

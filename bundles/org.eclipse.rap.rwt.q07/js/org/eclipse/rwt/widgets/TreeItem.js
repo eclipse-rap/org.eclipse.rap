@@ -213,11 +213,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
      */
     _add : function( item, index ) {
       if( index === this._children.length || index === undefined ) {    
+        // TODO [tb] : this code is currently only used by tests, remove and refactor tests
         this._children.push( item );
         this._update( "add", item );
       } else {
         if( this._children[ index ] ) {
           this._children.splice( index, 0, item );
+          this._children.pop();
           this._update( "add", item );
         } else {
           this._children[ index ] = item;
