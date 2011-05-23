@@ -13,16 +13,10 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
@@ -57,7 +51,9 @@ public final class ApplicationRegistry {
     return application;
   }
 
-  private static void registerApplication( final IExtension extension ) {
+  private static void registerApplication( IExtension extension, 
+                                           ApplicationContext applicationContext )
+  {
     IConfigurationElement configElement
       = extension.getConfigurationElements()[0];
     String contributorName = configElement.getContributor().getName();
@@ -73,8 +69,8 @@ public final class ApplicationRegistry {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
         appEntrypointMapping.put( applicationParameter, clazz );
-        RWTFactory.getEntryPointManager().register( applicationParameter,
-                                    				EntrypointApplicationWrapper.class );
+        applicationContext.getEntryPointManager().register( applicationParameter,
+                                    				        EntrypointApplicationWrapper.class );
         EntryPointExtension.bind( applicationId, applicationParameter );
       }
     } catch( final ClassNotFoundException e ) {
@@ -88,18 +84,17 @@ public final class ApplicationRegistry {
     }
   }
 
-  public static void registerApplicationEntryPoints() {
+  public static void registerApplicationEntryPoints(ApplicationContext applicationContext) {
     IExtension[] elements = getApplicationExtensions();
     for( int i = 0; i < elements.length; i++ ) {
-      registerApplication( elements[ i ] );
+      registerApplication( elements[ i ], applicationContext );
     }
   }
 
   private static IExtension[] getApplicationExtensions() {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     String extensionPointId = PI_RUNTIME + '.' + PT_APPLICATIONS;
-    IExtensionPoint extensionPoint
-      = registry.getExtensionPoint( extensionPointId );
+    IExtensionPoint extensionPoint = registry.getExtensionPoint( extensionPointId );
     return extensionPoint.getExtensions();
   }
 

@@ -294,7 +294,6 @@ public final class EngineConfigWrapper implements IEngineConfig {
         WorkbenchPlugin.getDefault().getLog().log( status );
       }
     }
-    getThemeManager().initializeThemeableWidgets();
   }
 
   private ThemeManager getThemeManager() {
@@ -364,7 +363,6 @@ public final class EngineConfigWrapper implements IEngineConfig {
         }
       }
     }
-    getThemeManager().initialize();
   }
 
   private static ResourceLoader createResourceLoader( final Bundle bundle ) {
@@ -510,6 +508,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
   }
 
   private void registerApplicationEntryPoints() {
-    ApplicationRegistry.registerApplicationEntryPoints();
+    // TODO [fappel]: find a better solution that this static approach
+    ApplicationRegistry.registerApplicationEntryPoints( applicationContext );
   }
 }
