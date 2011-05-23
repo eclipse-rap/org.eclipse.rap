@@ -86,7 +86,7 @@ qx.Class.define("qx.ui.embed.Iframe",
         // Find iframe instance and call onload
         if( obj._QxIframe ) {
           obj._QxIframe._onload();
-        } else if( obj.parentNode ) {
+        } else if( obj.parentNode ) { // Check for parentNode necessary, see Bug 346064
           throw new Error("Could not find iframe which was loaded [B]!");
         }
       } catch( ex ) {
