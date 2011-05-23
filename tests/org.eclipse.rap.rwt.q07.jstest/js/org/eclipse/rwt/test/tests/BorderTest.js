@@ -331,6 +331,39 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       }
     },
 
+    testRemoveRadiiWithSimpleBorder : function() {
+      // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var radii = [ 0, 1, 2, 3 ];
+        var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
+        var widget = this._createWidget();
+        widget.setBorder( border );
+        testUtil.flush();
+        var simpleBorder = new org.eclipse.rwt.Border( 3, "solid", "#FF00FF" );
+        widget.setBorder( simpleBorder );
+        testUtil.flush();
+        assertEquals( [ 0, 0, 0, 0 ], this._getBorderRadii( widget._style ) );
+        border.dispose();
+      }
+    },
+
+    testRemoveRadiiWithComplexBorder : function() {
+      // NOTE: Tests for non-css3 browser are in GraphicsMixinTest
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var radii = [ 0, 1, 2, 3 ];
+        var border = new org.eclipse.rwt.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] );
+        var widget = this._createWidget();
+        widget.setBorder( border );
+        testUtil.flush();
+        var colorOuter = [ "#FF00EF", "#FF00EE", "#FF0EFF", "#FFE0FF" ];
+        var colorInner = [ "#DD00EF", "#DD00EE", "#DD0EFF", "#DDE0FF" ];
+        var complexBorder = new org.eclipse.rwt.Border( 2, "complex", colorOuter, colorInner );
+        widget.setBorder( complexBorder );
+        testUtil.flush();
+        assertEquals( [ 0, 0, 0, 0 ], this._getBorderRadii( widget._style ) );
+        border.dispose();
+      }
+    },
 
     //////////////
     // helper

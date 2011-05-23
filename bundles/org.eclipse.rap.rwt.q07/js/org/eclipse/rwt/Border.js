@@ -88,16 +88,20 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       if( widget._innerStyle ) {
         widget._innerStyle.border = "";
       }
-      try{
+      this._resetRadii( widget );
+      this._resetComplexBorder( widget );
+    },
+
+    _resetRadii : function( widget ) {
+      try {
         for( var i = 0; i < 4; i++ ) {
           widget._style[ this._BORDERRADII[ i ] ] = "";
         }
       } catch( ex ) {
-        //ignore
+        // ignore for browser without radii support
       }
-      this._resetComplexBorder( widget );
     },
-    
+
     _resetComplexBorder : qx.core.Variant.select("qx.client", {
       "gecko" : function( widget ) {
         var statics = org.eclipse.rwt.Border
@@ -122,6 +126,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
   },
 
   members : {
+
     _setColor : function( value ) {
       if( typeof value === "string" ) {
         this._singleColor = value;
@@ -268,6 +273,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     
     _renderSimpleBorder : function( widget ) {
       org.eclipse.rwt.Border._resetComplexBorder( widget );
+      org.eclipse.rwt.Border._resetRadii( widget );
       var style = widget._style;
       var statics = org.eclipse.rwt.Border
       for( var i = 0; i < 4; i++ ) {
@@ -277,9 +283,10 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       }
     },
 
-    _renderComplexBorder : qx.core.Variant.select("qx.client", {
+    _renderComplexBorder : qx.core.Variant.select( "qx.client", {
       "gecko" : function( widget ) {
         var statics = org.eclipse.rwt.Border
+        statics._resetRadii( widget );
         var style = widget._style;
         for( var i = 0; i < 4; i++ ) {
           style[ statics._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
@@ -295,6 +302,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       },
       "default" : function( widget ) {
         var statics = org.eclipse.rwt.Border
+        statics._resetRadii( widget );
         var outer = widget._style;
         var inner = widget._innerStyle;
         for( var i = 0; i < 4; i++ ) {
