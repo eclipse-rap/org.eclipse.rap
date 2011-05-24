@@ -126,7 +126,7 @@ public final class TableLCAUtil {
     ITableAdapter tableAdapter = getTableAdapter( table );
     TableItem measureItem = tableAdapter.getMeasureItem();
     if( measureItem != null ) {
-      int checkWidth = tableAdapter.getCheckWidth();
+      int checkWidth = tableAdapter.getCheckWidthWithMargin();
       int leftOffset = tableAdapter.getLeftOffset();
       for( int i = 0; i < columnCount; i++ ) {
         Rectangle bounds = measureItem.getBounds( i );

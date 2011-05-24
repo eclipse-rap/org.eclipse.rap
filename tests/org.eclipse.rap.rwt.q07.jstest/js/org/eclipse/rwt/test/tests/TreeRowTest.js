@@ -507,7 +507,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.addState( "variant_testVariant" );
       var row = this._createRow( tree );
       this._addToDom( row );
-      testUtil.fakeAppearance( "tree-indent",  {
+      testUtil.fakeAppearance( "tree-row-indent",  {
         style : function( states ) {
           var result = null;
           if( states[ "variant_testVariant" ] ) {
@@ -985,7 +985,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     testRenderNoIndentSymbols : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
-      testUtil.fakeAppearance( "tree-indent", {} );
+      testUtil.fakeAppearance( "tree-row-indent", {} );
       var row = this._createRow( tree );
       this._addToDom( row );
       var parent1 = this._createItem( tree, false, true );
@@ -1064,7 +1064,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
-    
+
+    testRenderCheckBoxForTable : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( true );
+      tree.setHasCheckBoxes( true );
+      tree.setCheckBoxMetrics( 5, 20 );
+      var row = this._createRow( tree, true );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test" ] );
+      this._setCheckBox( "mycheckboxtable.gif", true );
+      row.renderItem( item, tree._config, false, null );
+      var node = row._getTargetNode().childNodes[ 0 ];
+      var url = testUtil.getCssBackgroundImage( node );
+      assertTrue( url.indexOf( "mycheckboxtable.gif" ) != -1 );
+      tree.destroy();
+      row.destroy();
+    },
+
     testRenderCheckBoxBounds : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
@@ -1710,9 +1728,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
      /////////
      // Helper
      
-     _createRow : function( tree ) {
+     _createRow : function( tree, isTable ) {
        var result = new org.eclipse.rwt.widgets.TreeRow( tree );
-       result.setAppearance( "tree-row" );
+       if( isTable ) {
+	       result.setAppearance( "table-row" );         
+       } else {
+	       result.setAppearance( "tree-row" );
+       }
        return result;
      },
 
@@ -1721,9 +1743,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
     },
     
-    _createTree : function() {
+    _createTree : function( isTable ) {
+      var base = isTable ? "table" : "tree";
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.fakeAppearance( "tree-row",  {
+      testUtil.fakeAppearance( base + "-row",  {
         style : function( states ) {
           return {
             "itemBackground" : "undefined",
@@ -1732,7 +1755,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           }
         }
       } );      
-      testUtil.fakeAppearance( "tree-indent",  {
+      testUtil.fakeAppearance( "tree-row-indent",  {
         style : function( states ) {
           var result = null;
           if( states.line ) {
@@ -1764,7 +1787,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       result.setIndentionWidth( 16 );
       result.setColumnCount( 1 );
       result.setSelectionPadding( 3, 1 );
-      result.setAppearance( "tree" );
+      result.setAppearance( base );
+      if( isTable ) {
+        result.setTreeColumn( -1 );
+      }
       return result;
     },
 
@@ -1780,9 +1806,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       return item;
     },
     
-    _setCheckBox : function( value ) {
+    _setCheckBox : function( value, isTable ) {
+      var appearance = "tree-row-check-box";
+      if( isTable ) {
+        appearance = "table-row-check-box";
+      }
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.fakeAppearance( "tree-check-box",  {
+      testUtil.fakeAppearance( appearance,  {
         style : function( states ) {
           return {
             "backgroundImage" : states.over ? "over.gif" : value

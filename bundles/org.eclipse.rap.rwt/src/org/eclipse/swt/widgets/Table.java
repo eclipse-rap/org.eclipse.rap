@@ -93,8 +93,7 @@ public class Table extends Composite {
       if( item instanceof TableColumn ) {
         columnHolder.remove( item );
       } else {
-        String msg
-          = "Only TableColumns may be removed from CompositeItemHolder";
+        String msg = "Only TableColumns may be removed from CompositeItemHolder";
         throw new IllegalArgumentException( msg );
       }
     }
@@ -112,8 +111,18 @@ public class Table extends Composite {
     private String toolTipText;
     private ICellToolTipProvider provider;
 
-    public int getCheckWidth() {
+    public int getCheckWidthWithMargin() {
       return Table.this.getCheckSize().x;
+    }
+
+    public int getCheckLeft() {
+      Rectangle margin = Table.this.getCheckBoxMargin();
+      return margin.x;
+    }
+
+    public int getCheckWidth() {
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      return themeAdapter.getCheckBoxImageSize( Table.this ).x;
     }
 
     public int getItemImageWidth( final int columnIndex ) {
@@ -2412,22 +2421,6 @@ public class Table extends Composite {
   ////////////////////////////
   // Helping methods - various
 
-  final Point getCheckSize() {
-    Point result = new Point( 0, 0 );
-    if( ( style & SWT.CHECK ) != 0 ) {
-      Rectangle zeroMargin = new Rectangle( 0, 0, 0, 0 );
-      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
-      Point checkImageSize = themeAdapter.getCheckBoxImageSize( this );
-      Rectangle margin = themeAdapter.getCheckBoxMargin( this );
-      result.x = themeAdapter.getCheckBoxWidth( this );
-      if( !margin.equals( zeroMargin ) ) {
-        result.x = checkImageSize.x + margin.width;
-      }
-      result.y = checkImageSize.y + margin.height;
-    }
-    return result;
-  }
-
   final Point getCheckSize( final int index ) {
     Point result = new Point( 0, 0 );
     if( index == 0 && getColumnCount() == 0 ) {
@@ -2437,6 +2430,30 @@ public class Table extends Composite {
       if( columnOrder[ 0 ] == index ) {
         result = getCheckSize();
       }
+    }
+    return result;
+  }
+  
+  final Point getCheckSize() {
+    Point result = new Point( 0, 0 );
+    if( ( style & SWT.CHECK ) != 0 ) {
+      TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+      Point checkImageSize = themeAdapter.getCheckBoxImageSize( this );
+      Rectangle margin = getCheckBoxMargin();
+      result.x = checkImageSize.x + margin.width;
+      result.y = checkImageSize.y + margin.height;
+    }
+    return result;
+  }
+  
+  final Rectangle getCheckBoxMargin() {
+    TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
+    Rectangle result = themeAdapter.getCheckBoxMargin( this );
+    if( result.equals( new Rectangle( 0, 0, 0, 0 ) ) ) {
+      int width = themeAdapter.getCheckBoxWidth( this );
+      int imageWidth = themeAdapter.getCheckBoxImageSize( this ).x;
+      result.width = Math.max( 0, width - imageWidth );
+      result.x = Math.round( result.width / 2 );
     }
     return result;
   }

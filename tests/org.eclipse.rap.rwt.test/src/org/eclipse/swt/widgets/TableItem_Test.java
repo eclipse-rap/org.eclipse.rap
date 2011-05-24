@@ -1024,7 +1024,7 @@ public class TableItem_Test extends TestCase {
   private static int getCheckWidth( Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    int checkWidth = tableAdapter.getCheckWidth();
+    int checkWidth = tableAdapter.getCheckWidthWithMargin();
     return checkWidth;
   }
 }

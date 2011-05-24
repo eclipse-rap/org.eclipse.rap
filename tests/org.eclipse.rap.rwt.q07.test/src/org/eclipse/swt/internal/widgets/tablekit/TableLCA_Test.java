@@ -20,6 +20,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -36,14 +37,37 @@ public class TableLCA_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  public void testInitialization() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
+    TableLCA lca = new TableLCA();
+    Fixture.fakeResponseWriter();
+    lca.renderInitialization( table );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "w.setAppearance( \"table\" )" ) != -1 );
+    assertTrue( markup.indexOf( "w.setIndentionWidth( 0 )" ) != -1 );
+    assertTrue( markup.indexOf( "w.setTreeColumn( -1 )" ) != -1 );
+    assertFalse( markup.indexOf( "setHasNoScroll(" ) != -1 );
+    assertFalse( markup.indexOf( "setHasCheckBoxes(" ) != -1 );
+  }
+  
   public void testInitializationWithNoScroll() throws Exception {
     Table table = new Table( shell, SWT.NO_SCROLL );
     TableLCA lca = new TableLCA();
     Fixture.fakeResponseWriter();
     lca.renderInitialization( table );
     String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setAppearance( \"table\" )" ) != -1 );
     assertTrue( markup.indexOf( "setHasNoScroll( true )" ) != -1 );
+  }
+  
+  public void testInitializationWithCheck() throws Exception {
+    Table table = new Table( shell, SWT.CHECK );
+    TableLCA lca = new TableLCA();
+    Fixture.fakeResponseWriter();
+    lca.renderInitialization( table );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "setHasCheckBoxes( true )" ) != -1 );
+    // NOTE : checkbox left = ( checkbox width 21 - image width 15 ) / 2 = 3
+    assertTrue( markup.indexOf( "w.setCheckBoxMetrics( 3, 15 )" ) != -1 );    
   }
 
   public void testPreserveValues() {
@@ -65,18 +89,15 @@ public class TableLCA_Test extends TestCase {
     assertEquals( new Integer( table.getTopIndex() ), topIndex );
     Object focusIndex = adapter.getPreserved( TableLCAUtil.PROP_FOCUS_INDEX );
     assertEquals( new Integer( -1 ), focusIndex );
-    Boolean hasListeners
-      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     String prop = TableLCA.PROP_SCROLLBARS_SELECTION_LISTENER;
     hasListeners = ( Boolean )adapter.getPreserved( prop );
     assertEquals( Boolean.FALSE, hasListeners );
-    Object defaultColumnwidth
-      = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
+    Object defaultColumnwidth = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
     int defaultColumnWidth2 = TableLCA.getDefaultColumnWidth( table );
     assertEquals( new Integer( defaultColumnWidth2 ), defaultColumnwidth );
-    ItemMetrics[] itemMetrics
-      = ( ItemMetrics[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
+    ItemMetrics[] itemMetrics = ( ItemMetrics[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
     int imageLeft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
     assertEquals( imageLeft1, itemMetrics[ 0 ].imageLeft );
     int imageWidth = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
@@ -85,10 +106,8 @@ public class TableLCA_Test extends TestCase {
     assertEquals( textLeft, itemMetrics[ 0 ].textLeft );
     int textWidth1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).textWidth;
     assertEquals( textWidth1, itemMetrics[ 0 ].textWidth );
-    assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( TableLCA.PROP_ALWAYS_HIDE_SELECTION ) );
-    assertEquals( new Integer( 0 ),
-                  adapter.getPreserved( TableLCA.PROP_LEFT_OFFSET ) );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( TableLCA.PROP_ALWAYS_HIDE_SELECTION ) );
+    assertEquals( new Integer( 0 ), adapter.getPreserved( TableLCA.PROP_LEFT_OFFSET ) );
     Fixture.clearPreserved();
     TableColumn tc1 = new TableColumn( table, SWT.CENTER );
     tc1.setText( "column1" );
@@ -118,10 +137,8 @@ public class TableLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, linesVisible );
     itemHeight = adapter.getPreserved( TableLCA.PROP_ITEM_HEIGHT );
     assertEquals( new Integer( table.getItemHeight() ), itemHeight );
-    assertEquals( new Integer( 2 ),
-                  adapter.getPreserved( TableLCA.PROP_ITEM_COUNT ) );
-    assertEquals( new Integer( 1 ),
-                  adapter.getPreserved( TableLCA.PROP_TOP_ITEM_INDEX ) );
+    assertEquals( new Integer( 2 ), adapter.getPreserved( TableLCA.PROP_ITEM_COUNT ) );
+    assertEquals( new Integer( 1 ), adapter.getPreserved( TableLCA.PROP_TOP_ITEM_INDEX ) );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     defaultColumnwidth = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
@@ -483,8 +500,7 @@ public class TableLCA_Test extends TestCase {
     table.setItemCount( 100 );
     shell.layout();
     shell.open();
-    ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     // precondition: all items are resolved (TableItem#cached == true)
     // resolve all items and ensure
     for( int i = 0; i < table.getItemCount(); i++ ) {

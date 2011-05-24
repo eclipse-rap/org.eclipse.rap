@@ -60,22 +60,18 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       adapter.preserve( PROP_TEXTS, getTexts( item ) );
       adapter.preserve( PROP_IMAGES, getImages( item ) );
       adapter.preserve( PROP_INDEX, new Integer( index ) );
-      adapter.preserve( PROP_SELECTED,
-                        Boolean.valueOf( isSelected( table, index ) ) );
+      adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( table, index ) ) );
       Object itemAdapter = item.getAdapter( ITableItemAdapter.class );
       ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )itemAdapter;
       adapter.preserve( PROP_BACKGROUND, tableItemAdapter.getUserBackground() );
       adapter.preserve( PROP_FOREGROUND, tableItemAdapter.getUserForeground() );
       adapter.preserve( PROP_FONT, tableItemAdapter.getUserFont() );
-      adapter.preserve( PROP_CELL_BACKGROUNDS,
-                        tableItemAdapter.getCellBackgrounds() );
-      adapter.preserve( PROP_CELL_FOREGROUNDS,
-                        tableItemAdapter.getCellForegrounds() );
+      adapter.preserve( PROP_CELL_BACKGROUNDS, tableItemAdapter.getCellBackgrounds() );
+      adapter.preserve( PROP_CELL_FOREGROUNDS, tableItemAdapter.getCellForegrounds() );
       adapter.preserve( PROP_CELL_FONTS, tableItemAdapter.getCellFonts() );
       adapter.preserve( PROP_VARIANT, WidgetUtil.getVariant( widget ) );
     }
-    adapter.preserve( PROP_CACHED,
-                      Boolean.valueOf( isCached( table, index ) ) );
+    adapter.preserve( PROP_CACHED, Boolean.valueOf( isCached( table, index ) ) );
   }
 
   public void readData( final Widget widget ) {
@@ -90,11 +86,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Table parent = tableItem.getParent();
     Integer index  = new Integer( tableItem.getParent().indexOf( tableItem ) );
-    Object[] args = new Object[] {
-      parent,
-      index,
-      WidgetUtil.getId( widget )
-    };
+    Object[] args = new Object[] { parent, index, WidgetUtil.getId( widget ) };
     writer.callStatic( "org.eclipse.rwt.widgets.TreeItem.createItem", args );
   }
 

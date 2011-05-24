@@ -156,7 +156,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // rendering any content (i.e. directly after the contructor) 
     
     _applyAppearance : function( value, oldValue ) {
-      this.base( arguments );
+      this.base( arguments, value, oldValue );
       this._dummyColumn.setAppearance( value + "-column" );
       this._rowContainer.setRowAppearance( value + "-row" );
     },
@@ -1121,7 +1121,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _getGridBorder : function( state ) {
       var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
-      var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
+      var cssElement = qx.lang.String.toFirstUp( this.getAppearance() ) + "-GridLine"; 
+      var gridColor = tvGrid.getCssColor( cssElement, "color" );
       tvGrid.dispose();
       var borderWidths = [ 0, 0, 0, 0 ];
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;

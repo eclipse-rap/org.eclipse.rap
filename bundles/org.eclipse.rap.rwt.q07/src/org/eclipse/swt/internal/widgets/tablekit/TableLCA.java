@@ -95,14 +95,15 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    Table table = ( Table )widget;
+    Table table = ( Table )widget; 
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     JSWriter writer = JSWriter.getWriterFor( table );
     writer.newWidget( "org.eclipse.rwt.widgets.Tree" );
     ControlLCAUtil.writeStyleFlags( table );
     // configure tree as table
     writer.set( "appearance", "table" );
     writer.set( "indentionWidth", 0 );
-    writer.set( "treeColumn", 0 );
+    writer.set( "treeColumn", -1 );
     // one-time settings
     if( ( table.getStyle() & SWT.NO_SCROLL ) != 0 ) {
       writer.set( "hasNoScroll", true );
@@ -113,10 +114,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( "hasFullSelection", true );
     if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
       writer.set( "hasCheckBoxes", true );
-      // TODO [tb] : get by theme
       writer.set( "checkBoxMetrics", new Object[]{
-        new Integer( 2 ),
-        new Integer( 16 )
+        new Integer( adapter.getCheckLeft() ),
+        new Integer( adapter.getCheckWidth() )
       } );
     }
     if( ( table.getStyle() & SWT.VIRTUAL ) != 0 ) {

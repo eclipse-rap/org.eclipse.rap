@@ -295,7 +295,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testRenderOnAddRemove : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
-      testUtil.fakeAppearance( "tree-indent", {
+      testUtil.fakeAppearance( "tree-row-indent", {
         style : function( states ) {
           var children = states.collapsed || states.expanded;
           return {
@@ -321,7 +321,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testClickOnExpandSymbol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
-       testUtil.fakeAppearance( "tree-indent",  {
+       testUtil.fakeAppearance( "tree-row-indent",  {
           style : function( states ) {
             var result = null;
             var children = states.expanded || states.collapsed;
@@ -375,7 +375,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testSetTopItemAndExpandClick : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
-      testUtil.fakeAppearance( "tree-indent",  {
+      testUtil.fakeAppearance( "tree-row-indent",  {
         style : function( states ) {
           var result = null;
           var children = states.expanded || states.collapsed;
@@ -1572,7 +1572,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree();
       tree.setHasCheckBoxes( true );
       tree.setCheckBoxMetrics( 5, 5 );
-      testUtil.fakeAppearance( "tree-check-box",  {
+      testUtil.fakeAppearance( "tree-row-check-box",  {
         style : function( states ) {
           return {
             "backgroundImage" : states.over ? "over.gif" : "normal.gif"
@@ -1599,7 +1599,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree();
       tree.setHasCheckBoxes( true );
       tree.setCheckBoxMetrics( 5, 5 );
-      testUtil.fakeAppearance( "tree-check-box",  {
+      testUtil.fakeAppearance( "tree-row-check-box",  {
         style : function( states ) {
           return {
             "backgroundImage" : states.over ? "over.gif" : "normal.gif"
@@ -1627,7 +1627,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testRenderOnExpandSymbolHover : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
-      testUtil.fakeAppearance( "tree-indent",  {
+      testUtil.fakeAppearance( "tree-row-indent",  {
         style : function( states ) {
         	var result = null;
         	if( !states.line ) {
@@ -2139,7 +2139,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree();
       tree.setHasCheckBoxes( true );
       tree.setCheckBoxMetrics( 5, 5 );
-      testUtil.fakeAppearance( "tree-check-box",  {
+      testUtil.fakeAppearance( "tree-row-check-box",  {
         style : function( states ) {
           return {
             "backgroundImage" : states.grayed ? "grayed.gif" : "normal.gif"
@@ -2826,7 +2826,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testDeselectionOnCollapseByMouse : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
-      testUtil.fakeAppearance( "tree-indent",  {
+      testUtil.fakeAppearance( "tree-row-indent",  {
         style : function( states ) {
           return { "backgroundImage" : "bla.gif" };
         }
@@ -2851,7 +2851,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testNoDeselectionOnNonMouseCollapse : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
-      testUtil.fakeAppearance( "tree-indent",  {
+      testUtil.fakeAppearance( "tree-row-indent",  {
         style : function( states ) {
           return { "backgroundImage" : "bla.gif" };
         }
@@ -2881,7 +2881,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 //    testDeselectFocusedItemOnCollapse : function() {
 //      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
 //      var tree = this._createDefaultTree();
-//      testUtil.fakeAppearance( "tree-indent",  {
+//      testUtil.fakeAppearance( "tree-row-indent",  {
 //        style : function( states ) {
 //          return { "backgroundImage" : "bla.gif" };
 //        }
@@ -3124,13 +3124,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           }
         }
       }; 
-      testUtil.fakeAppearance( "tree-indent", empty );
+      testUtil.fakeAppearance( "tree-row-indent", empty );
       testUtil.fakeAppearance( "tree-row", empty );            
     },
     
     _addCheckBoxes : function( tree ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      testUtil.fakeAppearance( "tree-check-box", {
+      testUtil.fakeAppearance( "tree-row-check-box", {
         style : function( states ) {
           var result = {
             "backgroundImage" : "check.png"

@@ -945,7 +945,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree-check-box" : {
+  "tree-row-check-box" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
@@ -954,7 +954,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree-indent" : {
+  "tree-row-indent" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
@@ -1340,24 +1340,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-
-
-  "table-check-box" : {
-    include: "image",
+  "table-row-check-box" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {};
-      var checkWidth = tv.getCssDimension( "Table-Checkbox", "width" );
-      var checkImage = tv.getCssSizedImage( "Table-Checkbox", "background-image" );
-      var checkMargin =  tv.getCssBoxDimensions( "Table-Checkbox", "margin" );
-      if( checkMargin.join() !== "0,0,0,0" ) {
-        result.paddingLeft = checkMargin[ 3 ];
-      } else {
-        result.paddingLeft = Math.max( 0, ( checkWidth - checkImage[ 1 ] ) / 2 );
-      }
-      result.paddingTop = checkMargin[ 0 ]
-      result.source = checkImage[ 0 ];
-      return result;
+      return {
+        backgroundImage : tv.getCssImage( "Table-Checkbox", "background-image" )
+      } 
     }
   },
 
