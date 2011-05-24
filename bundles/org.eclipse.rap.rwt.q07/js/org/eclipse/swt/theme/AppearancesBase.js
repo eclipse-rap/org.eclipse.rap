@@ -1332,7 +1332,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.itemBackground = tv.getCssColor( "TableItem", "background-color" );
-      result.itemForeground = tv.getCssColor( "TablItem", "color" );
+      result.itemForeground = tv.getCssColor( "TableItem", "color" );
       result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
       // TODO [tb]
       //result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
