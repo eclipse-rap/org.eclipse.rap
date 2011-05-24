@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.EncodingUtil;
@@ -127,19 +126,18 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeStyleFlags( browser );
   }
 
-  private static void writeUrl( final Browser browser )
-    throws IOException
-  {
+  private static void writeUrl( Browser browser ) throws IOException {
     if( hasUrlChanged( browser ) ) {
       JSWriter writer = JSWriter.getWriterFor( browser );
       writer.set( QX_FIELD_SOURCE, getUrl( browser ) );
       writer.call( "syncSource", null );
+      getAdapter( browser ).resetUrlChanged();
     }
   }
 
-  static boolean hasUrlChanged( final Browser browser ) {
+  static boolean hasUrlChanged( Browser browser ) {
     boolean initialized = WidgetUtil.getAdapter( browser ).isInitialized();
-    return !initialized || getAdapter( browser ).getAndResetUrlChanged();
+    return !initialized || getAdapter( browser ).hasUrlChanged();
   }
 
   static String getUrl( final Browser browser ) throws IOException {

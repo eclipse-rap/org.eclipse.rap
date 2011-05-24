@@ -20,8 +20,9 @@ public interface IBrowserAdapter {
   String getExecuteScript();
   void setExecuteResult( boolean executeResult, Object evalResult );
   void setExecutePending( boolean executePending );
-  boolean getExecutePending(); 
-  boolean getAndResetUrlChanged();
+  boolean getExecutePending();
+  boolean hasUrlChanged();
+  void resetUrlChanged();
 
   BrowserFunction[] getBrowserFunctions();
 

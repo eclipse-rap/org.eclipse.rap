@@ -21,15 +21,27 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
+import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public class BrowserLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testTextChanged() throws IOException {
-    Display display = new Display();
     Fixture.markInitialized( display );
-    Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
 
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
@@ -57,33 +69,31 @@ public class BrowserLCA_Test extends TestCase {
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( "GoodBye".hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
-    
+
     browser = new Browser( shell, SWT.NONE );
     browser.setText( "" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
   }
-  
+
   public void testUrlChanged() throws IOException {
-    Display display = new Display();
     Fixture.markInitialized( display );
-    Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
-    
+
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     String expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
     assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
-    
+
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
     assertFalse( BrowserLCA.hasUrlChanged( browser ) );
-    
+
     browser = new Browser( shell, SWT.NONE );
     browser.setUrl( "http://eclipse.org/rap" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     assertEquals( "http://eclipse.org/rap", BrowserLCA.getUrl( browser ) );
-    
+
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
     browser.setUrl( "http://eclipse.org/rip" );
@@ -95,10 +105,33 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "http://eclipse.org/rip", BrowserLCA.getUrl( browser ) );
   }
 
-  public void testRenderUrl() throws IOException {
-    Display display = new Display();
+  public void testResetUrlChanged_NotInitialized() throws IOException {
     Fixture.markInitialized( display );
-    Shell shell = new Shell( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    browser.setUrl( "http://eclipse.org/rap" );
+    Fixture.fakeResponseWriter();
+
+    BrowserLCA lca = new BrowserLCA();
+    lca.renderChanges( browser );
+
+    assertFalse( getAdapter( browser).hasUrlChanged() );
+  }
+
+  public void testResetUrlChanged_Initialized() throws IOException {
+    Fixture.markInitialized( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    Fixture.markInitialized( browser );
+    browser.setUrl( "http://eclipse.org/rap" );
+    Fixture.fakeResponseWriter();
+
+    BrowserLCA lca = new BrowserLCA();
+    lca.renderChanges( browser );
+
+    assertFalse( getAdapter( browser).hasUrlChanged() );
+  }
+
+  public void testRenderUrl() throws IOException {
+    Fixture.markInitialized( display );
     Browser browser = new Browser( shell, SWT.NONE );
     browser.setUrl( "http://eclipse.org/rap" );
     BrowserLCA lca = new BrowserLCA();
@@ -110,12 +143,10 @@ public class BrowserLCA_Test extends TestCase {
     expected += "w.syncSource()";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
-  
+
   public void testExecuteFunction() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
     new BrowserFunction( browser, "func" ) {
       public Object function( final Object[] arguments ) {
@@ -291,9 +322,7 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testPreserveProgressListener() {
-    Display display = new Display();
     Fixture.markInitialized( display );
-    Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( browser );
@@ -317,9 +346,7 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testProgressEvent() {
     final ArrayList log = new ArrayList();
-    Display display = new Display();
     Fixture.markInitialized( display );
-    Shell shell = new Shell( display );
     Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {
       public void changed( final ProgressEvent event ) {
@@ -337,11 +364,7 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "completed", log.get( 1 ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  private static IBrowserAdapter getAdapter( Browser browser ) {
+    return ( IBrowserAdapter )browser.getAdapter( IBrowserAdapter.class );
   }
 }

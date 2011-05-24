@@ -78,10 +78,12 @@ public class Browser extends Composite {
       return Browser.this.getBrowserFunctions();
     }
 
-    public boolean getAndResetUrlChanged() {
-      boolean result = Browser.this.urlChanged;
+    public boolean hasUrlChanged() {
+      return Browser.this.urlChanged;
+    }
+
+    public void resetUrlChanged() {
       Browser.this.urlChanged = false;
-      return result;
     }
 
   }
@@ -95,7 +97,7 @@ public class Browser extends Composite {
 
   private String url;
   private String html;
-  private boolean urlChanged = false;
+  private boolean urlChanged;
   public String executeScript;
   private Boolean executeResult;
   private boolean executePending;
