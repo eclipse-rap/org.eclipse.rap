@@ -1,6 +1,10 @@
+#!/bin/sh
+#
+# Tool to maintain composite repositories
 
 runtimeDir=/opt/public/rt/rap/build-runtimes/eclipse-3.6.1
 publishDir=/opt/public/rt/rap/publish
+downloadDir=/home/data/httpd/download.eclipse.org/rt/rap
 
 mode=
 repoDir=
@@ -12,52 +16,37 @@ fail() {
   if [ $# -gt 0 ]; then
     echo "Error: $1"
   fi
-  echo Usage:
-  echo "  $0 create -d /path/to/repo -n \"Repo Name\""
-  echo "  $0 addChild -d /path/to/repo -c child"
-  echo "  $0 removeChild -d /path/to/repo -c child"
+  echo "Usage:"
+  echo "  $0 repo-dir create <repo name>"
+  echo "  $0 repo-dir add <child>"
+  echo "  $0 repo-dir remove <child>"
+  echo
+  echo "Example:"
+  echo "  $0 1.4/runtime create \"RAP 1.4 Runtime Repository\""
+  echo "  $0 1.4/runtime add M1"
   exit 1
 }
 
 # Check command line
-while [ $# -gt 0 ]; do
-  arg=$1
-  shift
-  case $arg in
-    create|addChild|removeChild)
-      mode=$arg;;
-    -d)
-      repoDir=$1
-      shift;;
-    -n)
-      repoName=$1
-      shift;;
-    -c)
-      repoChild=$1
-      shift;;
-    *)
-      fail "illegal parameter $arg";;
-  esac
-done
-
-if [ -z "$mode" ]; then
-  fail "mode not specified"
+if [ $# -ne 3 ]; then
+  fail "Wrong # of paramters"
 fi
 
-if [ -z "$repoDir" ]; then
-  fail "repository base directory not specified"
+repoDir="$downloadDir/$1"
+if [ ! -d "$repoDir" ]; then
+  fail "directory does not exist: $repoDir"
 fi
 
-if [ "$mode" == "create" -a -z "$repoName" ]; then
-  fail "repository name not specified"
-fi
-
-if [ "$mode" == "add" -a -z "$repoChild" ]; then
-  fail "child to add not specified"
-fi
-
-if [ "$mode" == "remove" -a -z "$repoChild" ]; then
-  fail "child to remove not specified"
+mode=$2
+if [ "$mode" == "create" ]; then
+  repoName=$3
+elif [ "$mode" == "add" -o "$mode" == "remove" ]; then
+  repoChild=$3
+  if [ ! -d "$repoDir/$repoChild" ]; then
+    fail "child to add/remove does not exist: $repoDir/$repoChild"
+  fi
+else
+  fail "Illegal mode: $mode"
 fi
 
 # Find PDE build
@@ -76,4 +65,3 @@ java -cp $launcher org.eclipse.core.launcher.Main \
     -DrepoChild="$repoChild" \
     $mode \
   || fail
-

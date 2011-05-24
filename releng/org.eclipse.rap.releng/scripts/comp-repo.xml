@@ -9,7 +9,7 @@
     </p2.composite.repository>
   </target>
 
-  <target name="addChild">
+  <target name="add">
     <p2.composite.repository>
       <repository compressed="true" location="${repoDir}" />
       <add>
@@ -18,7 +18,7 @@
     </p2.composite.repository>
   </target>
 
-  <target name="removeChild">
+  <target name="remove">
     <p2.composite.repository>
       <repository compressed="true" location="${repoDir}" />
       <remove>
