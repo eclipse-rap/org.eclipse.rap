@@ -17,23 +17,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
   members : {
 
     testCreate : function() {
-      var cont = this._createContainer();
+      var cont = new org.eclipse.rwt.widgets.TreeRowContainer();
       assertTrue( cont instanceof org.eclipse.rwt.widgets.TreeRowContainer );
       cont.destroy();
     },
     
-    testCreateTreeRowsWithAppearance : function() {
-      var cont = this._createContainer();
-      cont.setRowAppearance( "table-row" );
+    testCreateTreeRows : function() {
+      var cont = new org.eclipse.rwt.widgets.TreeRowContainer();
       cont.setRowHeight( 50 );
       cont.setHeight( 501 );
       assertEquals( 11, cont.getChildren().length );
-      assertEquals( "table-row", cont.getChildren()[ 0 ].getAppearance() );
     },
 
     testAddTreeRowsOnTreeResize : function() {
       var tree = new org.eclipse.rwt.widgets.Tree();
-      tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setHeight( 551 );
@@ -44,7 +41,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
 
     testAddTreeRowsOnRowResize : function() {
       var tree = new org.eclipse.rwt.widgets.Tree();
-      tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setItemHeight( 25 );
@@ -55,7 +51,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
 
     testRemoveTreeRowsOnTreeResize : function() {
       var tree = new org.eclipse.rwt.widgets.Tree();
-      tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setHeight( 401 );
@@ -66,7 +61,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
 
     testRemoveTreeRowsOnRowResize : function() {
       var tree = new org.eclipse.rwt.widgets.Tree();
-      tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setItemHeight( 100 );
@@ -140,7 +134,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testGetConfig : function() {
-      var cont = this._createContainer();
+      var cont = new org.eclipse.rwt.widgets.TreeRowContainer();
       var config = cont.getRenderConfig();
       assertEquals( null, config.textColor );
       assertEquals( null, config.font );
@@ -174,7 +168,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance(); 
       var tree = new org.eclipse.rwt.widgets.Tree();
-      tree.setAppearance( "tree" );
       tree.setHasFullSelection( true );
       tree.setItemHeight( 20 );
       tree.setLeft( 0 );
@@ -207,12 +200,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       }; 
       testUtil.fakeAppearance( "tree-indent", empty );
       testUtil.fakeAppearance( "tree-row", empty );            
-    },
-    
-    _createContainer : function() {
-      var result = new org.eclipse.rwt.widgets.TreeRowContainer();
-      result.setRowAppearance( "tree-row" );
-      return result;
     }
 
   }

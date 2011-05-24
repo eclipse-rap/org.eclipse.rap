@@ -22,6 +22,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     this.base( arguments );
     this.setSelectable( false ); // Prevents user from selecting text
     this.setHeight( 16 );
+    this.setAppearance( "tree-row" ); 
     this._textNodes = [];
     this._usedNodes = 0;
     this._expandElement = null;

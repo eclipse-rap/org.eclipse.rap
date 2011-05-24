@@ -90,7 +90,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( tree );
     writer.newWidget( "org.eclipse.rwt.widgets.Tree" );
     ControlLCAUtil.writeStyleFlags( tree );
-    writer.set( "appearance", "tree" );
     if( ( tree.getStyle() & SWT.NO_SCROLL ) != 0 ) {
       writer.set( "hasNoScroll", true );
     }
@@ -160,9 +159,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
       String itemId = request.getParameter( eventName + ".item" );
       Item treeItem = ( Item )WidgetUtil.find( tree, itemId );
       String detailStr = request.getParameter( eventName + ".detail" );
-      int detail = "check".equals( detailStr ) ? SWT.CHECK : SWT.NONE;
+      int detail = "check".equals( detailStr )
+                                              ? SWT.CHECK
+                                              : SWT.NONE;
       int eventType = SelectionEvent.WIDGET_SELECTED;
-      int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      int stateMask
+        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       SelectionEvent event = new SelectionEvent( tree,
                                                  treeItem,
                                                  eventType,
@@ -352,7 +354,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.set( PROP_LINES_VISIBLE, "linesVisible", newValue, Boolean.FALSE );
   }
 
-  private static void updateSelectionListener( final Tree tree ) throws IOException {
+  private static void updateSelectionListener( final Tree tree )
+    throws IOException
+  {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( tree ) );
     String prop = PROP_SELECTION_LISTENERS;
     if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
@@ -361,7 +365,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeScrollBarsSelectionListener( final Tree tree ) throws IOException {
+  private static void writeScrollBarsSelectionListener( final Tree tree )
+    throws IOException
+  {
     Boolean newValue = hasScrollBarsSelectionListener( tree );
     String prop = PROP_SCROLLBARS_SELECTION_LISTENER;
     if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
@@ -373,7 +379,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
   ////////////////
   // Cell tooltips
 
-  private static void writeEnableCellToolTip( final Tree tree ) throws IOException {
+  private static void writeEnableCellToolTip( final Tree tree )
+    throws IOException
+  {
     JSWriter writer = JSWriter.getWriterFor( tree );
     String prop = PROP_ENABLE_CELL_TOOLTIP;
     Boolean newValue = new Boolean( CellToolTipUtil.isEnabledFor( tree ) );
@@ -394,14 +402,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
         String itemId = details[ 0 ];
         int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
         TreeItem item = getItemById( tree.getItems(), itemId );
-        if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
+        if(    item != null
+            && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) )
+        {
           provider.getToolTipText( item, columnIndex );
         }
       }
     }
   }
 
-  private static void writeCellToolTipText( final Tree tree ) throws IOException {
+  private static void writeCellToolTipText( final Tree tree )
+    throws IOException
+  {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     String text = adapter.getToolTipText();
     if( text != null ) {

@@ -385,9 +385,9 @@ public class TableItemLCA_Test extends TestCase {
     table.select( 0 );
     tableItemLCA.renderChanges( item );
     String tableId = WidgetUtil.getId( table );
-    String itemId = WidgetUtil.getId( item );
+    int itemIndex = item.getParent().indexOf( item );
     String expected = "var w = wm.findWidgetById( \"" + tableId + "\" );";
-    expected += "w.selectItem( wm.findWidgetById( \"" + itemId + "\" ) );";
+    expected += "w.selectItem( " + itemIndex + " );";
     String result = Fixture.getAllMarkup();
     assertTrue( result.indexOf( expected ) != -1 );
   }
@@ -405,9 +405,9 @@ public class TableItemLCA_Test extends TestCase {
     table.deselect( 0 );
     tableItemLCA.renderChanges( item );
     String tableId = WidgetUtil.getId( table );
-    String itemId = WidgetUtil.getId( item );
+    int itemIndex = item.getParent().indexOf( item );
     String expected = "var w = wm.findWidgetById( \"" + tableId + "\" );";
-    expected += "w.deselectItem( wm.findWidgetById( \"" + itemId + "\" ) );";
+    expected += "w.deselectItem( " + itemIndex + " );";
     String result = Fixture.getAllMarkup();
     assertTrue( result.indexOf( expected ) != -1 );
   }
@@ -429,9 +429,9 @@ public class TableItemLCA_Test extends TestCase {
     table.deselectAll();
     tableItemLCA.renderChanges( item );
     String tableId = WidgetUtil.getId( table );
-    String itemId = WidgetUtil.getId( item );
+    int itemIndex = item.getParent().indexOf( item );
     String expected = "w.clear();var w = wm.findWidgetById( \"" + tableId + "\" );";
-    expected += "w.deselectItem( wm.findWidgetById( \"" + itemId + "\" ) );";    
+    expected += "w.deselectItem( " + itemIndex + " );";
     String result = Fixture.getAllMarkup();
     assertTrue( result.indexOf( expected ) != -1 );
   }

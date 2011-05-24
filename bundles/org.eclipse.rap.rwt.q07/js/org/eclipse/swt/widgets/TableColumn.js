@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
 
   construct : function( parent ) {
     this.base( arguments );
-    this._parentIsTree = parent.getAppearance() === "tree";
+    this._parentIsTree = parent instanceof org.eclipse.rwt.widgets.Tree;
     this.setAppearance( this._parentIsTree ? "tree-column" : "table-column" );
     this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT ); 
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );

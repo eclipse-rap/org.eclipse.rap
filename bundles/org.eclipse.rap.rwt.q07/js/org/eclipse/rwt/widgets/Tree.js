@@ -57,6 +57,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._config = this._rowContainer.getRenderConfig();
     this.setCursor( "default" );
     this.setOverflow( "hidden" );
+    this.setAppearance( "tree" );
     this._configureAreas();
     this._configureScrollBars();
     this._registerListeners();
@@ -133,6 +134,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       // TODO [tb] : Find a cleaner solution to block drag-events
       var dragBlocker = function( event ) { event.stopPropagation(); };
       this._columnArea.addEventListener( "dragstart", dragBlocker );
+      this._dummyColumn.setAppearance( "tree-column" );
       this._dummyColumn.setHeight( "100%" );
       this._dummyColumn.setLabel( "&nbsp;" );
       this._dummyColumn.addState( "dummy" );
@@ -154,12 +156,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     // NOTE : It is assumed that these setters are called only once and before
     // rendering any content (i.e. directly after the contructor) 
-    
-    _applyAppearance : function( value, oldValue ) {
-      this.base( arguments );
-      this._dummyColumn.setAppearance( value + "-column" );
-      this._rowContainer.setRowAppearance( value + "-row" );
-    },
     
     setCheckBoxMetrics : function( left, width ) {
       this._config.checkBoxLeft = left;

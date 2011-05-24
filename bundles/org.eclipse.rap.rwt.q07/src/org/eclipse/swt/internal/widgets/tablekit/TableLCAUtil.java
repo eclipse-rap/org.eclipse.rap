@@ -70,7 +70,9 @@ public final class TableLCAUtil {
     return hasItemMetricsChanged( table, itemMetrics );
   }
 
-  public static void writeItemMetrics( final Table table ) throws IOException {
+  public static void writeItemMetrics( final Table table )
+    throws IOException
+  {
     ItemMetrics[] itemMetrics = getItemMetrics( table );
     if( hasItemMetricsChanged( table, itemMetrics ) ) {
       JSWriter writer = JSWriter.getWriterFor( table );
@@ -86,6 +88,7 @@ public final class TableLCAUtil {
         };
         writer.set( "itemMetrics", args );
       }
+      writer.call( "updateRows", null );
     }
   }
 

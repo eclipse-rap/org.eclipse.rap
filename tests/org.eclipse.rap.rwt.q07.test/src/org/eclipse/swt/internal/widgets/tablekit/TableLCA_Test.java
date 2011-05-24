@@ -42,8 +42,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     lca.renderInitialization( table );
     String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setAppearance( \"tree\" )" ) != -1 );
-    assertTrue( markup.indexOf( "setHasNoScroll( true )" ) != -1 );
+    assertTrue( markup.indexOf( "|noScroll" ) != -1 );
   }
 
   public void testPreserveValues() {
@@ -61,7 +60,7 @@ public class TableLCA_Test extends TestCase {
     assertEquals( new Integer( table.getItemHeight() ), itemHeight );
     assertEquals( new Integer( 0 ),
                   adapter.getPreserved( TableLCA.PROP_ITEM_COUNT ) );
-    Object topIndex = adapter.getPreserved( TableLCA.PROP_TOP_ITEM_INDEX );
+    Object topIndex = adapter.getPreserved( TableLCA.PROP_TOP_INDEX );
     assertEquals( new Integer( table.getTopIndex() ), topIndex );
     Object focusIndex = adapter.getPreserved( TableLCAUtil.PROP_FOCUS_INDEX );
     assertEquals( new Integer( -1 ), focusIndex );
@@ -121,13 +120,15 @@ public class TableLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ),
                   adapter.getPreserved( TableLCA.PROP_ITEM_COUNT ) );
     assertEquals( new Integer( 1 ),
-                  adapter.getPreserved( TableLCA.PROP_TOP_ITEM_INDEX ) );
+                  adapter.getPreserved( TableLCA.PROP_TOP_INDEX ) );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    defaultColumnwidth = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
+    defaultColumnwidth
+      = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
     defaultColumnWidth2 = TableLCA.getDefaultColumnWidth( table );
     assertEquals( new Integer( defaultColumnWidth2 ), defaultColumnwidth );
-    itemMetrics = ( ItemMetrics[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
+    itemMetrics
+      = ( ItemMetrics[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
     imageLeft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
     assertEquals( imageLeft1, itemMetrics[ 0 ].imageLeft );
     imageWidth = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageWidth;
@@ -292,27 +293,27 @@ public class TableLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-//  public void testSetDataEvent() {
-//    final StringBuffer log = new StringBuffer();
-//    final Table table = new Table( shell, SWT.VIRTUAL );
-//    table.setItemCount( 10 );
-//    table.addListener( SWT.SetData, new Listener() {
-//      public void handleEvent( final Event event ) {
-//        assertSame( table.getItem( 1 ), event.item );
-//        assertEquals( 1, event.index );
-//        log.append( "SetDataEvent" );
-//      }
-//    } );
-//    String tableId = WidgetUtil.getId( table );
-//    Fixture.fakeNewRequest( display );
-//    Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
-//    Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "1" );
-//    Fixture.executeLifeCycleFromServerThread();
-//    assertEquals( 1, ItemHolder.getItems( table ).length );
-//    assertEquals( "SetDataEvent", log.toString() );
-//    String tableItemCtor = "org.eclipse.swt.widgets.TableItem";
-//    assertTrue( Fixture.getAllMarkup().indexOf( tableItemCtor ) != -1 );
-//  }
+  public void testSetDataEvent() {
+    final StringBuffer log = new StringBuffer();
+    final Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 10 );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( final Event event ) {
+        assertSame( table.getItem( 1 ), event.item );
+        assertEquals( 1, event.index );
+        log.append( "SetDataEvent" );
+      }
+    } );
+    String tableId = WidgetUtil.getId( table );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
+    Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "1" );
+    Fixture.executeLifeCycleFromServerThread();
+    assertEquals( 1, ItemHolder.getItems( table ).length );
+    assertEquals( "SetDataEvent", log.toString() );
+    String tableItemCtor = "org.eclipse.swt.widgets.TableItem";
+    assertTrue( Fixture.getAllMarkup().indexOf( tableItemCtor ) != -1 );
+  }
 
   public void testWidgetSelectedWithCheck() {
     final SelectionEvent[] events = new SelectionEvent[ 1 ];
@@ -332,9 +333,10 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     String tableId = WidgetUtil.getId( table );
     String item2Id = WidgetUtil.getId( item2 );
+    String item2Index = String.valueOf( table.indexOf( item2 ));
     Fixture.fakeRequestParam( item2Id + ".checked", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, tableId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item2Id);
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "check" );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
@@ -366,9 +368,9 @@ public class TableLCA_Test extends TestCase {
     // Simulate request that comes in after item2 was checked (but not selected)
     Fixture.fakeNewRequest( display );
     String tableId = WidgetUtil.getId( table );
-    String item2Id = WidgetUtil.getId( item2 );
+    String item2Index = String.valueOf( table.indexOf( item2 ) );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item2Id );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
@@ -387,7 +389,7 @@ public class TableLCA_Test extends TestCase {
     table.select( 0 );
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item2Id );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
@@ -407,7 +409,7 @@ public class TableLCA_Test extends TestCase {
     table.select( 1 );
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item2Id );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
@@ -426,7 +428,7 @@ public class TableLCA_Test extends TestCase {
     table.deselectAll();
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item2Id );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_INDEX, item2Index );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
@@ -459,6 +461,7 @@ public class TableLCA_Test extends TestCase {
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId  );
     Fixture.executeLifeCycleFromServerThread();
+
     assertFalse( isItemVirtual( table[ 0 ], 0  ) );
   }
 
@@ -738,7 +741,7 @@ public class TableLCA_Test extends TestCase {
     TableLCA lca = new TableLCA();
     lca.renderChanges( table );
     String markup = Fixture.getAllMarkup();
-    String expected = "w.setScrollBarsVisible( false, false );";
+    String expected = "w.setScrollBarsVisibile( false, false );";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
@@ -764,7 +767,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeNewRequest();
     lca.renderChanges( table );
     String markup = Fixture.getAllMarkup();
-    String expected = "w.setFocusItem";
+    String expected = "w.setFocusIndex";
     assertTrue( markup.indexOf( expected ) == -1 );
     table.setSelection( 0 );
     Fixture.fakeNewRequest();
@@ -773,7 +776,7 @@ public class TableLCA_Test extends TestCase {
     table.getItem( 0 ).dispose();
     lca.renderChanges( table );
     markup = Fixture.getAllMarkup();
-    expected = "w.setFocusItem( null )";
+    expected = "w.setFocusIndex( -1 )";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
@@ -786,12 +789,11 @@ public class TableLCA_Test extends TestCase {
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     String tableId = WidgetUtil.getId( table );
     // ensure that reading selection parameter does not override focusIndex
-    Fixture.fakeRequestParam( tableId + ".focusItem", indexToId( table, 4 ) );
-    String items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
-    Fixture.fakeRequestParam( tableId + ".selection", items );
+    Fixture.fakeRequestParam( tableId + ".focusIndex", "5" );
+    Fixture.fakeRequestParam( tableId + ".selection", "0,1,2,3,4,5" );
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
-    assertEquals( 4, tableAdapter.getFocusIndex() );
+    assertEquals( 5, tableAdapter.getFocusIndex() );
   }
 
   public void testReadTopIndex() {
@@ -801,15 +803,12 @@ public class TableLCA_Test extends TestCase {
       new TableItem( table, SWT.NONE );
     }
     String tableId = WidgetUtil.getId( table );
-    int[] indices = new int[]{ 
-      114,70,71,72,73,74,75,76,77,78,79,80,81,82,83,
-      84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,
-      99,100,101,102,103,104,105,106,107,108,109,
-      110,111,112,113,0
-    };
-    String items = indicesToIds( table, indices );
+    String indices = "114,70,71,72,73,74,75,76,77,78,79,80,81,82,83,"
+      + "84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,"
+      + "99,100,101,102,103,104,105,106,107,108,109,"
+      + "110,111,112,113,0";
     Fixture.fakeRequestParam( tableId + ".topIndex", "0" );
-    Fixture.fakeRequestParam( tableId + ".selection", items );
+    Fixture.fakeRequestParam( tableId + ".selection", indices );
     TableLCA tableLCA = new TableLCA();
     tableLCA.readData( table );
     assertEquals( 0, table.getTopIndex() );
@@ -901,9 +900,6 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final ArrayList log = new ArrayList();
     Table table = new Table( shell, SWT.NONE );
-    for( int i = 0; i < 20; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
     SelectionListener listener = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
         log.add( "scrollbarSelected" );
@@ -912,18 +908,19 @@ public class TableLCA_Test extends TestCase {
     table.getHorizontalBar().addSelectionListener( listener );
     Fixture.fakeNewRequest();
     String tableId = WidgetUtil.getId( table );
-    Fixture.fakeRequestParam( tableId + ".scrollLeft", "10" );
+    Fixture.fakeRequestParam( tableId + ".leftOffset", "10" );
     Fixture.readDataAndProcessAction( table );
     assertEquals( 1, log.size() );
     assertEquals( 10, table.getHorizontalBar().getSelection() );
     log.clear();
     table.getVerticalBar().addSelectionListener( listener );
     Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( tableId + ".scrollLeft", "10" );
-    Fixture.fakeRequestParam( tableId + ".topItemIndex", "10" );
+    Fixture.fakeRequestParam( tableId + ".leftOffset", "10" );
+    Fixture.fakeRequestParam( tableId + ".topIndex", "10" );
     Fixture.readDataAndProcessAction( table );
     assertEquals( 2, log.size() );
-    assertEquals( 10 * table.getItemHeight(), table.getVerticalBar().getSelection());
+    assertEquals( 10 * table.getItemHeight(),
+                  table.getVerticalBar().getSelection());
   }
 
   // Ensures that writeItemCount is called first
@@ -993,22 +990,4 @@ public class TableLCA_Test extends TestCase {
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return tableAdapter.isItemVirtual( index );
   }
-
-  private static String indicesToIds( Table table, int[] indices ) {
-    String items = new String();
-    for( int i = 0; i < indices.length; i++ ) {
-      items += indexToId( table, indices[ i ] );
-      if( i != indices.length - 1 ) {
-        items += ",";
-      }
-    }
-    return items;
-  }
-  
-  private static String indexToId( Table table, int index ) {
-    return WidgetUtil.getId( table.getItem( index ) );
-  }
-  
-  
-  
 }

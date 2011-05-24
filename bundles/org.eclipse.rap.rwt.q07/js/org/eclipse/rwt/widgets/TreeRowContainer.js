@@ -17,7 +17,6 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
     this._scrollLeft = 0;
     this._rowHeight = 16;
     this._rowWidth = 0;
-    this._rowAppearance = null;
     this._rowBorder = null;
     this._linesVisible = false;
     this._topItem = null;
@@ -117,13 +116,6 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
       }
       this._updateRowCount();
     },
-    
-    /**
-     * has to be set before creating any rows
-     */
-    setRowAppearance : function( value ) {
-      this._rowAppearance = value;
-    },
 
     setRowBorder : function( border ) {
       this._rowBorder = border;
@@ -212,7 +204,6 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
       var rowsNeeded = Math.ceil( this.getHeight() / this._rowHeight );
       while( this._children.length < rowsNeeded ) {
         var row = new org.eclipse.rwt.widgets.TreeRow( this.getParent() );
-        row.setAppearance( this._rowAppearance ); 
         row.setWidth( this._rowWidth );
         row.setHeight( this._rowHeight );
         row.setBorder( this._rowBorder );
