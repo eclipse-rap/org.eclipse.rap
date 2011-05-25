@@ -1308,15 +1308,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _onClientAreaMouseMove : function( evt ) {
       if( this._cellToolTip != null ) {
         var pageX = evt.getPageX();
-        var pageY = evt.getPageY();
         if( this._rowContainer.getHoverItem() ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
-          var columns = this.getColumns();
-          var columnIndex = columns.length == 0 ? 0 : -1;
+          var columnCount = this._config.columnCount;
+          var columnIndex = columnCount == 0 ? 0 : -1;
           var element = this._rowContainer.getElement();
           var leftOffset = qx.bom.element.Location.getLeft( element );
-          for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
+          for( var i = 0; columnIndex == -1 && i < columnCount; i++ ) {
             var pageLeft = leftOffset + this._config.itemLeft[ i ];
             if( pageX >= pageLeft && pageX < pageLeft + this._config.itemWidth[ i ] ) {
               columnIndex = i;

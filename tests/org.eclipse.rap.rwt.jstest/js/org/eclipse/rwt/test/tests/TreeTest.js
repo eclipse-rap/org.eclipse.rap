@@ -3037,11 +3037,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       widgetManager.add( tree, "w3", true );
       tree.setEnableCellToolTip( true );
+      tree.setColumnCount( 6 );
+      tree.setItemMetrics( 0, 0, 5, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 1, 5, 10, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 2, 15, 10, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 3, 25, 10, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 4, 35, 350, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 5, 400, 100, 405, 10, 430, 50 ); 
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
+      widgetManager.add( item, "w45", true );
+      testUtil.flush();
       testUtil.prepareTimerUse();
       testUtil.initRequestLog();      
-      tree._cellToolTip.setCell( "w45", 5 );
+      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var node = tree._rowContainer.getChildren()[ 0 ].getElement();
+      testUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 450, 11 );
+      testUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 450, 11 );
       testUtil.forceInterval( tree._cellToolTip._showTimer );
       var msg = testUtil.getMessage();
+      assertEquals( 1, testUtil.getRequestsSend() );
       var param1 = "org.eclipse.swt.events.cellToolTipTextRequested=w3";
       var param2 = "org.eclipse.swt.events.cellToolTipTextRequested.cell=w45%2C5";
       assertTrue( msg.indexOf( param1 ) != -1 );
@@ -3063,7 +3077,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setWidth( 500 );
       tree.setHeight( 500 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );
-      tree.setColumnCount( 1 )
+      tree.setColumnCount( 1 );
       tree.setSelectionPadding( 2, 4 );
       tree.setItemMetrics( 1, 0, 500, 0, 0, 0, 500 );
       tree.setItemMetrics( 2, 0, 500, 0, 0, 0, 500 );
