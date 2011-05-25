@@ -36,7 +36,7 @@ public class SettingStoreManagerConfigurable_Test extends TestCase {
   public void testConfigure() {
     setTestFactoryNameAsInitParam();
 
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertTrue( applicationContext.getSettingStoreManager().hasFactory() );
   }
@@ -45,7 +45,7 @@ public class SettingStoreManagerConfigurable_Test extends TestCase {
     Fixture.setInitParameter( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM, "unkown" );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -53,10 +53,10 @@ public class SettingStoreManagerConfigurable_Test extends TestCase {
   
   public void testReset() {
     setTestFactoryNameAsInitParam();
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     SettingStoreManager settingStoreManager = applicationContext.getSettingStoreManager();
     
-    applicationContext.deactivate();
+    configurable.reset( applicationContext );
     
     assertFalse( settingStoreManager.hasFactory() );
   }
@@ -64,12 +64,12 @@ public class SettingStoreManagerConfigurable_Test extends TestCase {
   protected void setUp() {
     ServletContext servletContext = Fixture.createServletContext();
     configurable = new SettingStoreManagerConfigurable( servletContext );
-    applicationContext = new ApplicationContext( new Class[] { SettingStoreManager.class } );
-    applicationContext.addConfigurable( configurable );
+    applicationContext = new ApplicationContext();
   }
   
   protected void tearDown() {
     Fixture.setInitParameter( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM, null );
+    Fixture.disposeOfServletContext();
   }
     
   private void setTestFactoryNameAsInitParam() {

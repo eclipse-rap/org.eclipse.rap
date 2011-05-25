@@ -13,12 +13,11 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.internal.ConfigurationReader;
-import org.eclipse.rwt.internal.engine.Activatable;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
-public class LifeCycleFactory implements Activatable {
+public class LifeCycleFactory {
   private ConfigurationReader configurationReader;
   private LifeCycle lifeCycle;
 
@@ -30,9 +29,6 @@ public class LifeCycleFactory implements Activatable {
     this.configurationReader = configurationReader;
   }
 
-  ////////////////////////
-  // interface Activatable
-  
   public void activate() {
     lifeCycle = instantiateLifeCycle();
   }

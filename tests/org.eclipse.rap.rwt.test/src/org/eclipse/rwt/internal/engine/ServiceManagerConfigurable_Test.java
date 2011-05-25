@@ -15,7 +15,6 @@ import java.util.HashMap;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
-import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.service.IServiceHandler;
@@ -25,7 +24,6 @@ public class ServiceManagerConfigurable_Test extends TestCase {
   private static final String ID_JS_LIBRARIES = JSLibraryServiceHandler.HANDLER_ID;
   private static final String ID_UI_CALL_BACK = UICallBackServiceHandler.HANDLER_ID;
   
-  private boolean concatenationStarted;
   private HashMap log;
 
   private class TestApplicationContext extends ApplicationContext {
@@ -39,13 +37,6 @@ public class ServiceManagerConfigurable_Test extends TestCase {
         }
       };
     }
-    public JSLibraryConcatenator getJSLibraryConcatenator() {
-      return new JSLibraryConcatenator() {
-        public void startJSConcatenation() {
-          concatenationStarted = true;
-        }
-      };
-    }
   }
   
 
@@ -56,7 +47,6 @@ public class ServiceManagerConfigurable_Test extends TestCase {
     
     assertTrue( log.get( ID_UI_CALL_BACK ) instanceof UICallBackServiceHandler );
     assertTrue( log.get( ID_JS_LIBRARIES ) instanceof JSLibraryServiceHandler );
-    assertTrue( concatenationStarted );
   }
   
   public void testReset() {
@@ -70,6 +60,5 @@ public class ServiceManagerConfigurable_Test extends TestCase {
   
   protected void setUp() throws Exception {
     log = new HashMap();
-    concatenationStarted = false;
   }
 }

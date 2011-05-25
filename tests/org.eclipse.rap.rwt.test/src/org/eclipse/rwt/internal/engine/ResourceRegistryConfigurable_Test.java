@@ -54,7 +54,7 @@ public class ResourceRegistryConfigurable_Test extends TestCase {
   public void testConfigure() {
     setInitParameter( TestResource.class.getName() );
     
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertEquals( 1, getResourceRegistry().get().length );
     assertTrue( getResourceRegistry().get()[ 0 ] instanceof TestResource );
@@ -64,7 +64,7 @@ public class ResourceRegistryConfigurable_Test extends TestCase {
     setInitParameter( "unknown" );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -72,10 +72,10 @@ public class ResourceRegistryConfigurable_Test extends TestCase {
   
   public void testReset() {
     setInitParameter( TestResource.class.getName() );
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     ResourceRegistry resourceRegistry = getResourceRegistry();
 
-    applicationContext.deactivate();
+    configurable.reset( applicationContext );
     
     assertEquals( 0, resourceRegistry.get().length );
   }
@@ -83,12 +83,12 @@ public class ResourceRegistryConfigurable_Test extends TestCase {
   protected void setUp() {
     ServletContext servletContext = Fixture.createServletContext();
     configurable = new ResourceRegistryConfigurable( servletContext );
-    applicationContext = new ApplicationContext( new Class[] { ResourceRegistry.class } );
-    applicationContext.addConfigurable( configurable );
+    applicationContext = new ApplicationContext();
   }
   
   protected void tearDown() {
     setInitParameter( null );
+    Fixture.disposeOfServletContext();
   }
 
   private void setInitParameter( String value ) {

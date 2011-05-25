@@ -21,6 +21,8 @@ public class LifeCycleFactoryConfigurable_Test extends TestCase {
   
   private TestApplicationContext context;
 
+  private LifeCycleFactoryConfigurable configurable;
+
   private final class TestApplicationContext extends ApplicationContext {
     private ConfigurationReader injected;
 
@@ -42,22 +44,21 @@ public class LifeCycleFactoryConfigurable_Test extends TestCase {
   }
 
   public void testConfigure() {
-    context.activate();
+    configurable.configure( context );
 
     assertSame( CONFIGURATION_READER, context.getInjected() );
   }
   
   public void testReset() {
-    context.activate();
-    
-    context.deactivate();
+    configurable.configure( context );
+
+    configurable.reset( context );
     
     assertSame( null, context.getInjected() );
   }
   
   protected void setUp() {
-    LifeCycleFactoryConfigurable configurable = new LifeCycleFactoryConfigurable();
+    configurable = new LifeCycleFactoryConfigurable();
     context = new TestApplicationContext();
-    context.addConfigurable( configurable );
   }
 }

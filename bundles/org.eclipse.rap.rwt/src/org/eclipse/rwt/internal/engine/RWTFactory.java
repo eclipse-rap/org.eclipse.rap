@@ -29,7 +29,7 @@ import org.eclipse.swt.internal.widgets.DisplaysHolder;
 public class RWTFactory {
   
   public static IApplicationStore getApplicationStore() {
-    return ( IApplicationStore )getApplicationSingleton( ApplicationStoreImpl.class );
+    return ApplicationContextUtil.getInstance().getApplicationStore();
   }
 
   public static LifeCycleFactory getLifeCycleFactory() {
@@ -49,11 +49,11 @@ public class RWTFactory {
   }
 
   public static StartupPage getStartupPage() {
-    return ( StartupPage )getApplicationSingleton( StartupPage.class );
+    return ApplicationContextUtil.getInstance().getStartupPage();
   }
   
   public static IStartupPageConfigurer getStartupPageConfigurer() {
-    return ( IStartupPageConfigurer )getApplicationSingleton( StartupPageConfigurer.class );
+    return ApplicationContextUtil.getInstance().getStartupPageConfigurer();
   }
 
   public static SettingStoreManager getSettingStoreManager() {
@@ -73,39 +73,39 @@ public class RWTFactory {
   }
 
   public static ThemeAdapterManager getThemeAdapterManager() {
-    return ( ThemeAdapterManager )getApplicationSingleton( ThemeAdapterManager.class );
+    return ApplicationContextUtil.getInstance().getThemeAdapterManager();
   }
 
   public static TextSizeStorage getTextSizeStorage() {
-    return ( TextSizeStorage )getApplicationSingleton( TextSizeStorage.class );
+    return ApplicationContextUtil.getInstance().getTextSizeStorage();
   }
 
   public static ProbeStore getProbeStore() {
-    return ( ProbeStore )getApplicationSingleton( ProbeStore.class );
+    return ApplicationContextUtil.getInstance().getProbeStore();
   }
   
   public static ImageFactory getImageFactory() {
-    return ( ImageFactory )getApplicationSingleton( ImageFactory.class );
+    return ApplicationContextUtil.getInstance().getImageFactory();
   }
 
   public static FontDataFactory getFontDataFactory() {
-    return ( FontDataFactory )getApplicationSingleton( FontDataFactory.class );
+    return ApplicationContextUtil.getInstance().getFontDataFactory();
   }
 
   public static ImageDataFactory getImageDataFactory() {
-    return ( ImageDataFactory )getApplicationSingleton( ImageDataFactory.class );
+    return ApplicationContextUtil.getInstance().getImageDataFactory();
   }
 
   public static ResourceFactory getResourceFactory() {
-    return ( ResourceFactory )getApplicationSingleton( ResourceFactory.class );
+    return ApplicationContextUtil.getInstance().getResourceFactory();
   }
 
   public static InternalImageFactory getInternalImageFactory() {
-    return ( InternalImageFactory )getApplicationSingleton( InternalImageFactory.class );
+    return ApplicationContextUtil.getInstance().getInternalImageFactory();
   }
   
   public static DisplaysHolder getDisplaysHolder() {
-    return ( DisplaysHolder )getApplicationSingleton( DisplaysHolder.class );
+    return ApplicationContextUtil.getInstance().getDisplaysHolder();
   }
 
   public static JSLibraryConcatenator getJSLibraryConcatenator() {
@@ -122,10 +122,6 @@ public class RWTFactory {
 
   public static ResourceManagerProvider getResourceManagerProvider() {
     return ApplicationContextUtil.getInstance().getResourceManagerProvider();
-  }
-  
-  private static Object getApplicationSingleton( Class type ) {
-    return ApplicationContextUtil.getInstance().getInstance( type );
   }
   
   private RWTFactory() {

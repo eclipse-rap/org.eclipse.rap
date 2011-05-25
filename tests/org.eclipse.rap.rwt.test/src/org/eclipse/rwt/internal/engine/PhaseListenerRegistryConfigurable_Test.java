@@ -50,7 +50,7 @@ public class PhaseListenerRegistryConfigurable_Test extends TestCase {
   public void testConfigure() {
     setPhaseListenerInitParameter();
     
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertEquals( 1, getRegistry().get().length );
     assertTrue( getRegistry().get()[ 0 ] instanceof TestPhaseListener );
@@ -60,7 +60,7 @@ public class PhaseListenerRegistryConfigurable_Test extends TestCase {
     Fixture.setInitParameter( RWTServletContextListener.PHASE_LISTENERS_PARAM, "unknown" );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -68,10 +68,10 @@ public class PhaseListenerRegistryConfigurable_Test extends TestCase {
   
   public void testReset() {
     setPhaseListenerInitParameter();
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     PhaseListenerRegistry registry = getRegistry();
     
-    applicationContext.deactivate();
+    configurable.reset( applicationContext );
     
     assertEquals( 0, registry.get().length );
   }
@@ -79,12 +79,12 @@ public class PhaseListenerRegistryConfigurable_Test extends TestCase {
   protected void setUp() {
     ServletContext servletContext = Fixture.createServletContext();
     configurable = new PhaseListenerRegistryConfigurable( servletContext );
-    applicationContext = new ApplicationContext( new Class[] { PhaseListenerRegistry.class } );
-    applicationContext.addConfigurable( configurable );
+    applicationContext = new ApplicationContext();
   }
   
   protected void tearDown() {
     Fixture.setInitParameter( RWTServletContextListener.PHASE_LISTENERS_PARAM, null );
+    Fixture.disposeOfServletContext();
   }
 
   private void setPhaseListenerInitParameter() {

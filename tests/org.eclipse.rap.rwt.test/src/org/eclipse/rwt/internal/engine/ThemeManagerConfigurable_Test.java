@@ -30,7 +30,7 @@ public class ThemeManagerConfigurable_Test extends TestCase {
   public void testConfigure() {
     setInitParameter( ( THEME_ID + SPLIT + STYLE_SHEET ) );
 
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertNotNull( getThemeManager().getTheme( THEME_ID ) );
   }
@@ -55,10 +55,10 @@ public class ThemeManagerConfigurable_Test extends TestCase {
   
   public void testReset() {
     setInitParameter( ( THEME_ID + SPLIT + STYLE_SHEET ) );
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     ThemeManagerHolder themeManager = applicationContext.getThemeManager();
 
-    applicationContext.deactivate();
+    configurable.reset( applicationContext );
     
     assertNull( themeManager.getInstance().getTheme( THEME_ID ) );
   }
@@ -66,13 +66,13 @@ public class ThemeManagerConfigurable_Test extends TestCase {
   protected void setUp() {
     ServletContext servletContext = Fixture.createServletContext();
     configurable = new ThemeManagerConfigurable( servletContext );
-    applicationContext = new ApplicationContext( new Class[] { ThemeManagerHolder.class } );
-    applicationContext.addConfigurable( configurable );
+    applicationContext = new ApplicationContext();
   }
   
   protected void tearDown() {
     Fixture.setInitParameter( RWTServletContextListener.THEMES_PARAM, null );
     resetThemeManager();
+    Fixture.disposeOfServletContext();
   }
 
   private void resetThemeManager() {
@@ -87,7 +87,7 @@ public class ThemeManagerConfigurable_Test extends TestCase {
   
   private void checkIllegalArgumentException() {
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }

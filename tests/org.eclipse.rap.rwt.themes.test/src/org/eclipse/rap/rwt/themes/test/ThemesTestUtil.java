@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -102,7 +102,7 @@ public class ThemesTestUtil {
       throw new RuntimeException( "Failed to read stylesheet from " + path, e );
     }
     Theme theme = new Theme( themeId, "Test Theme", styleSheet );
-    Fixture.resetThemeManager();
+    ThemeManagerHelper.resetThemeManager();
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.registerTheme( theme );
     themeManager.initialize();

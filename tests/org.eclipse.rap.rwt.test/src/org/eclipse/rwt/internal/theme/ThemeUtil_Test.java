@@ -16,13 +16,14 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
 public class ThemeUtil_Test extends TestCase {
 
   public void testSetCurrentThemeId() throws Exception {
-    Fixture.resetThemeManager();
+    ThemeManagerHelper.resetThemeManager();
     ThemeManager manager = ThemeManager.getInstance();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme theme = new Theme( "custom.id", "Custom Theme", styleSheet );
@@ -49,7 +50,7 @@ public class ThemeUtil_Test extends TestCase {
   }
 
   public void testGetTheme() throws Exception {
-    Fixture.resetThemeManager();
+    ThemeManagerHelper.resetThemeManager();
     ThemeManager themeManager = ThemeManager.getInstance();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
@@ -63,7 +64,7 @@ public class ThemeUtil_Test extends TestCase {
   }
 
   public void testGetCssValue() throws IOException {
-    Fixture.resetThemeManager();
+    ThemeManagerHelper.resetThemeManager();
     ThemeManager themeManager = ThemeManager.getInstance();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );

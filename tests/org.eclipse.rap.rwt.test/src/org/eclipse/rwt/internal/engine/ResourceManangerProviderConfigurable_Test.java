@@ -36,7 +36,7 @@ public class ResourceManangerProviderConfigurable_Test extends TestCase {
   public void testConfigure() {
     setTestFactoryNameAsInitParam();
 
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertTrue( getResourceManager() instanceof TestResourceManager );
   }
@@ -45,7 +45,7 @@ public class ResourceManangerProviderConfigurable_Test extends TestCase {
     Fixture.setInitParameter( RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM, "unkown" );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -53,10 +53,10 @@ public class ResourceManangerProviderConfigurable_Test extends TestCase {
   
   public void testReset() {
     setTestFactoryNameAsInitParam();
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     ResourceManagerProvider provider = applicationContext.getResourceManagerProvider();
     
-    applicationContext.deactivate();
+    configurable.reset( applicationContext );
     
     checkResourceManagerFactoryHasBeenDeregistered( provider );
   }
@@ -64,12 +64,12 @@ public class ResourceManangerProviderConfigurable_Test extends TestCase {
   protected void setUp() {
     ServletContext servletContext = Fixture.createServletContext();
     configurable = new ResourceManagerProviderConfigurable( servletContext );
-    applicationContext = new ApplicationContext( new Class[] { ResourceManagerProvider.class } );
-    applicationContext.addConfigurable( configurable );
+    applicationContext = new ApplicationContext();
   }
   
   protected void tearDown() {
     Fixture.setInitParameter( RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM, null );
+    Fixture.disposeOfServletContext();
   }
   
   private void checkResourceManagerFactoryHasBeenDeregistered( ResourceManagerProvider provider ) {

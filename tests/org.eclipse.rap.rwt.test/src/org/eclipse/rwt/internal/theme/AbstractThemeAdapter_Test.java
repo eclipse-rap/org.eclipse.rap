@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.theme;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -38,7 +39,7 @@ public class AbstractThemeAdapter_Test extends TestCase {
     CustomWidget custom = new CustomWidget( shell, SWT.NONE );
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme theme = new Theme( "customId", "Custom Theme", styleSheet );
-    Fixture.resetThemeManager();
+    ThemeManagerHelper.resetThemeManager();
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.registerTheme( theme );
     themeManager.initialize();

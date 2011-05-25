@@ -13,20 +13,10 @@ package org.eclipse.rwt.internal.engine;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.ConfigurationReader;
-import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.textsize.TextSizeStorage;
-import org.eclipse.rwt.internal.textsize.ProbeStore;
-import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
-import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.internal.graphics.*;
-import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 
 public class ApplicationContextUtil {
@@ -34,41 +24,10 @@ public class ApplicationContextUtil {
   private final static String ATTRIBUTE_APPLICATION_CONTEXT
     = ApplicationContext.class.getName() + "#instance";
  
-  private static final Class[] INSTANCE_TYPES = new Class[] {
-    ApplicationStoreImpl.class,
-    ThemeManagerHolder.class,
-    ResourceManagerProvider.class,
-    BrandingManager.class,
-    PhaseListenerRegistry.class,
-    LifeCycleFactory.class,
-    EntryPointManager.class,
-    ResourceFactory.class,
-    ImageFactory.class,
-    InternalImageFactory.class,
-    ImageDataFactory.class,
-    FontDataFactory.class,
-    AdapterManager.class,
-    SettingStoreManager.class,
-    StartupPageConfigurer.class,
-    StartupPage.class,
-    ServiceManager.class,
-    ConfigurationReader.class,
-    ResourceRegistry.class,
-    DisplaysHolder.class,
-    ThemeAdapterManager.class,
-    JSLibraryConcatenator.class,
-    TextSizeStorage.class,
-    ProbeStore.class,
-  };
-
   public static ApplicationContext createContext( ServletContext context ) {
-    ApplicationContext result = createContext();
+    ApplicationContext result = new ApplicationContext();
     registerApplicationContext( context, result );
     return result;
-  }
-
-  public static ApplicationContext createContext() {
-    return new ApplicationContext( INSTANCE_TYPES );
   }
 
   public static void registerApplicationContext( ServletContext servletContext,
@@ -119,16 +78,6 @@ public class ApplicationContextUtil {
       runnable.run();
     } finally {
       CONTEXT_HOLDER.set( null );
-    }
-  }
-
-  // TODO [ApplicationContext]: method is used by Fixture for performance speed up of test suite. 
-  //      Think about a less intrusive solution.
-  public static void replace( Class instanceType, Class replacementType ) {
-    for( int i = 0; i < INSTANCE_TYPES.length; i++ ) {
-      if( INSTANCE_TYPES[ i ] == instanceType ) {
-        INSTANCE_TYPES[ i ] = replacementType;
-      }
     }
   }
 

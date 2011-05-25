@@ -18,6 +18,8 @@ import java.util.*;
 
 import javax.servlet.*;
 
+import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
+
 
 public final class TestServletContext implements ServletContext {
 
@@ -121,6 +123,7 @@ public final class TestServletContext implements ServletContext {
   }
 
   public void setAttribute( final String arg0, final Object arg1 ) {
+    ThemeManagerHelper.adaptApplicationContext( arg1 );
     attributes .put( arg0, arg1 );
   }
 

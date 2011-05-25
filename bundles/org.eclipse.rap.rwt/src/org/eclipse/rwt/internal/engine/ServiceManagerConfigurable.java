@@ -23,8 +23,6 @@ class ServiceManagerConfigurable implements Configurable {
     ServiceManager serviceManager = context.getServiceManager();
     serviceManager.registerServiceHandler( ID_UI_CALL_BACK, new UICallBackServiceHandler() );
     serviceManager.registerServiceHandler( ID_JS_LIBRARIES, new JSLibraryServiceHandler() );
-    // TODO [SystemStart]: move this to where the actual system initialization takes place
-    context.getJSLibraryConcatenator().startJSConcatenation();
   }
 
   public void reset( ApplicationContext context ) {

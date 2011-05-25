@@ -24,7 +24,7 @@ import org.eclipse.swt.graphics.*;
 public class InternalImageFactory {
   private final SharedInstanceBuffer cache;
   
-  InternalImageFactory() {
+  public InternalImageFactory() {
     cache = new SharedInstanceBuffer();
   }
 

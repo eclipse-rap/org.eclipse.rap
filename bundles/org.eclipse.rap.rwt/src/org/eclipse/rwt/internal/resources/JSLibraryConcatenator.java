@@ -75,11 +75,8 @@ public class JSLibraryConcatenator {
     }
   }
 
-  //////////////////
-  // helping methods
-
   // TODO [SystemStart]: use this method explicitly instead of beeing lazy invoked on first access
-  private void finishJSConcatenation() {
+  public void finishJSConcatenation() {
     try {
       initialize();
     } catch( RuntimeException rte ) {
@@ -88,6 +85,9 @@ public class JSLibraryConcatenator {
       throw new RuntimeException( shouldNotHappen );
     }
   }
+  
+  //////////////////
+  // helping methods
 
   private boolean isAllowed( File toWrite ) {
     return jsConcatenator != null && toWrite.getName().endsWith( "js" );

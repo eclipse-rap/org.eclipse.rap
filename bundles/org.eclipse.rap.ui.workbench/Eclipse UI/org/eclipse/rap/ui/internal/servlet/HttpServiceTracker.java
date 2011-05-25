@@ -15,26 +15,20 @@ package org.eclipse.rap.ui.internal.servlet;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
 import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.engine.Configurable;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
@@ -221,7 +215,7 @@ public class HttpServiceTracker extends ServiceTracker {
   }
 
   private static ApplicationContext createAndInitializeRWTContext() {
-    ApplicationContext result = ApplicationContextUtil.createContext();
+    ApplicationContext result = new ApplicationContext();
     result.addConfigurable( new Configurable() {
 
       public void configure( ApplicationContext context ) {

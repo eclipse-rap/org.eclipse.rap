@@ -24,17 +24,17 @@ public class ConfigurationReaderConfigurable_Test extends TestCase {
   private ApplicationContext applicationContext;
 
   public void testConfigure() {
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertNotNull( getConfigurationReader().getEngineConfig() );
     assertEquals( getRealPath(), getConfigurationReader().getEngineConfig().getServerContextDir() );
   }
   
   public void testReset() {
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     ConfigurationReader reader = getConfigurationReader();
     
-    applicationContext.deactivate();
+    configurable.reset( applicationContext );
     
     assertNull( reader.getEngineConfig() );
   }
@@ -42,8 +42,7 @@ public class ConfigurationReaderConfigurable_Test extends TestCase {
   protected void setUp() {
     servletContext = new TestServletContext();
     configurable = new ConfigurationReaderConfigurable( servletContext );
-    applicationContext = new ApplicationContext( new Class[] { ConfigurationReader.class } );
-    applicationContext.addConfigurable( configurable );
+    applicationContext = new ApplicationContext();
   }
   
   private ConfigurationReader getConfigurationReader() {

@@ -11,7 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
-import java.text.MessageFormat;
 import java.util.*;
 
 import org.eclipse.rwt.internal.AdapterManager;
@@ -19,41 +18,75 @@ import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.service.ServiceManager;
-import org.eclipse.rwt.internal.service.SettingStoreManager;
+import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.textsize.ProbeStore;
+import org.eclipse.rwt.internal.textsize.TextSizeStorage;
+import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
-import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.service.IApplicationStore;
+import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.internal.widgets.DisplaysHolder;
 
 
 public class ApplicationContext {
-
-  private final Map instances;
+  // TODO [fappel]: themeManagerHolder isn't final for performance reasons of the testsuite.
+  //                TestServletContext#setAttribute(String,Object) will replace the runtime
+  //                implementation with an optimized version for testing purpose. Think about
+  //                a less intrusive solution.
+  private ThemeManagerHolder themeManagerHolder;
+  private final ResourceManagerProvider resourceManagerProvider;
+  private final BrandingManager brandingManager;
+  private final PhaseListenerRegistry phaseListenerRegistry;
+  private final LifeCycleFactory lifeCycleFactory;
+  private final EntryPointManager entryPointManager;
+  private final AdapterManager adapterManager;
+  private final SettingStoreManager settingStoreManager;
+  private final ServiceManager serviceManager;
+  private final ConfigurationReader configurationReader;
+  private final ResourceRegistry resourceRegistry;
+  private final JSLibraryConcatenator jsLibraryConcatenator;
+  private final ApplicationStoreImpl applicationStoreImpl;
+  private final ResourceFactory resourceFactory;
+  private final ImageFactory imageFactory;
+  private final InternalImageFactory internalImageFactory;
+  private final ImageDataFactory imageDataFactory;
+  private final FontDataFactory fontDataFactory;
+  private final StartupPageConfigurer startupPageConfigurer;
+  private final StartupPage startupPage;
+  private final DisplaysHolder displaysHolder;
+  private final ThemeAdapterManager themeAdapterManager;
+  private final TextSizeStorage textSizeStorage;
+  private final ProbeStore probeStore;
   private final Set configurables;
   private boolean activated;
   
-  public static interface InstanceTypeFactory {
-    Object createInstance();
-    Class getInstanceType();
-  }
-
   public ApplicationContext() {
-    this( new Class[ 0 ] );
-  }
-
-  public ApplicationContext( Class[] instanceTypes ) {
-    instances = new HashMap();
+    applicationStoreImpl = new ApplicationStoreImpl();
+    themeManagerHolder = new ThemeManagerHolder();
+    resourceManagerProvider = new ResourceManagerProvider();
+    brandingManager = new BrandingManager();
+    phaseListenerRegistry = new PhaseListenerRegistry();
+    lifeCycleFactory = new LifeCycleFactory();
+    entryPointManager = new EntryPointManager();
+    resourceFactory = new ResourceFactory();
+    imageFactory = new ImageFactory();
+    internalImageFactory = new InternalImageFactory();
+    imageDataFactory = new ImageDataFactory();
+    fontDataFactory = new FontDataFactory();
+    adapterManager = new AdapterManager();
+    settingStoreManager = new SettingStoreManager();
+    startupPageConfigurer = new StartupPageConfigurer();
+    startupPage = new StartupPage();
+    serviceManager = new ServiceManager();
+    configurationReader = new ConfigurationReader();
+    resourceRegistry = new ResourceRegistry();
+    displaysHolder = new DisplaysHolder();
+    themeAdapterManager = new ThemeAdapterManager();
+    jsLibraryConcatenator = new JSLibraryConcatenator();
+    textSizeStorage = new TextSizeStorage();
+    probeStore = new ProbeStore();
     configurables = new HashSet();
-    createInstances( instanceTypes );
-  }
-
-  Object getInstance( Class instanceType ) {
-    checkIsNotActivated();
-    ParamCheck.notNull( instanceType, "instanceType" );
-    Object result = findInstance( instanceType );
-    // do param check here to avoid duplicate map access
-    checkRegistered( instanceType, result );
-    return result;
   }
 
   public boolean isActivated() {
@@ -64,12 +97,12 @@ public class ApplicationContext {
     checkIsActivated();
     activated = true;
     notifyConfigurablesAboutActivation();
-    activateActivatables();
+    activateInstances();
   }
 
   public void deactivate() {
     checkIsNotActivated();
-    deactivateActivatables();
+    deactivateInstances();
     notifyConfigurablesAboutDeactivation();
     activated = false;
   }
@@ -87,113 +120,106 @@ public class ApplicationContext {
   }
   
   public ConfigurationReader getConfigurationReader() {
-    return ( ConfigurationReader )getInstance( ConfigurationReader.class );
+    return configurationReader;
   }
   
   public ResourceManagerProvider getResourceManagerProvider() {
-    return ( ResourceManagerProvider )getInstance( ResourceManagerProvider.class );
+    return resourceManagerProvider;
   }
   
   public EntryPointManager getEntryPointManager() {
-    return ( EntryPointManager )getInstance( EntryPointManager.class );
+    return entryPointManager;
   }
 
   public BrandingManager getBrandingManager() {
-    return ( BrandingManager )getInstance( BrandingManager.class );
+    return brandingManager;
   }
   
   public SettingStoreManager getSettingStoreManager() {
-    return ( SettingStoreManager )getInstance( SettingStoreManager.class );
+    return settingStoreManager;
   }
 
   public PhaseListenerRegistry getPhaseListenerRegistry() {
-    return ( PhaseListenerRegistry )getInstance( PhaseListenerRegistry.class );
+    return phaseListenerRegistry;
   }
-  
 
   public AdapterManager getAdapterManager() {
-    return ( AdapterManager )getInstance( AdapterManager.class );
+    return adapterManager;
   }
   
   public ResourceRegistry getResourceRegistry() {
-    return ( ResourceRegistry )getInstance( ResourceRegistry.class );
+    return resourceRegistry;
   }
   
   public ServiceManager getServiceManager() {
-    return ( ServiceManager )getInstance( ServiceManager.class );
+    return serviceManager;
   }
 
   public JSLibraryConcatenator getJSLibraryConcatenator() {
-    return ( JSLibraryConcatenator )getInstance( JSLibraryConcatenator.class );
+    return jsLibraryConcatenator;
   }
 
   public ThemeManagerHolder getThemeManager() {
-    return ( ThemeManagerHolder )getInstance( ThemeManagerHolder.class );
+    return themeManagerHolder;
+  }
+
+  // TODO [fappel]: setThemeManager exists only for performance reasons of the testsuite.
+  //                TestServletContext#setAttribute(String,Object) will replace the runtime
+  //                implementation with an optimized version for testing purpose using this
+  //                method. Think about a less intrusive solution.
+  void setThemeManager( ThemeManagerHolder themeManagerHolder ) {
+    this.themeManagerHolder = themeManagerHolder;
   }
 
   public LifeCycleFactory getLifeCycleFactory() {
-    return ( LifeCycleFactory )getInstance( LifeCycleFactory.class );
+    return lifeCycleFactory;
+  }
+  
+  public IApplicationStore getApplicationStore() {
+    return applicationStoreImpl;
+  }
+  
+  public ResourceFactory getResourceFactory() {
+    return resourceFactory;
+  }
+  
+  public ImageFactory getImageFactory() {
+    return imageFactory;
+  }
+  
+  public InternalImageFactory getInternalImageFactory() {
+    return internalImageFactory;
+  }
+  
+  public ImageDataFactory getImageDataFactory() {
+    return imageDataFactory;
+  }
+  
+  public FontDataFactory getFontDataFactory() {
+    return fontDataFactory;
+  }
+  
+  public StartupPageConfigurer getStartupPageConfigurer() {
+    return startupPageConfigurer;
+  }
+  public StartupPage getStartupPage() {
+    return startupPage;
+  }
+  
+  public DisplaysHolder getDisplaysHolder() {
+    return displaysHolder;
+  }
+  
+  public ThemeAdapterManager getThemeAdapterManager() {
+    return themeAdapterManager;
+  }
+  
+  public TextSizeStorage getTextSizeStorage() {
+    return textSizeStorage;
   }
 
-  private void createInstances( Class[] instanceTypes ) {
-    for( int i = 0; i < instanceTypes.length; i++ ) {
-      Object instance = ClassUtil.newInstance( instanceTypes[ i ] );
-      bufferInstance( instanceTypes[ i ], instance );
-    }
-  }
-
-  private Object findInstance( Class instanceType ) {
-    return instances.get( instanceType );
-  }
-
-  private void bufferInstance( Class instanceType, Object instance ) {
-    Object toRegister = createInstanceFromFactory( instance );
-    Class registrationType = getTypeFromFactory( instanceType, instance );
-    checkInstanceOf( toRegister, registrationType );
-    checkAlreadyRegistered( registrationType );
-    instances.put( registrationType, toRegister );
-  }
-
-  private void checkAlreadyRegistered( Class registrationType ) {
-    if( instances.containsKey( registrationType ) ) {
-      String pattern = "The instance type ''{0}'' has already been registered.";
-      Object[] arguments = new Object[] { registrationType.getName() };
-      throwIllegalArgumentException( pattern, arguments );
-    }
-  }
-
-  private static Object createInstanceFromFactory( Object instance ) {
-    Object result = instance;
-    if( instance instanceof InstanceTypeFactory ) {
-      InstanceTypeFactory factory = ( InstanceTypeFactory )instance;
-      result = factory.createInstance();
-    }
-    return result;
-  }
-
-  private static Class getTypeFromFactory( Class instanceType, Object instance ) {
-    Class result = instanceType;
-    if( instance instanceof InstanceTypeFactory ) {
-      InstanceTypeFactory factory = ( InstanceTypeFactory )instance;
-      result = factory.getInstanceType();
-    }
-    return result;
-  }
-
-  private static void checkRegistered( Class instanceType, Object instance ) {
-    if( instance == null ) {
-      String pattern = "Unregistered instance type ''{0}''";
-      Object[] arguments = new Object[] { instanceType };
-      throwIllegalArgumentException( pattern, arguments );
-    }
-  }
-
-  private static void checkInstanceOf( Object instance, Class type ) {
-    if( !type.isInstance( instance ) ) {
-      String pattern = "Instance to register does not match declared type ''{0}''.";
-      Object[] arguments = new Object[] { type.getName() };
-      throwIllegalArgumentException( pattern, arguments );
-    }
+  public ProbeStore getProbeStore() {
+    return probeStore;
   }
   
   private void checkIsNotActivated() {
@@ -206,11 +232,6 @@ public class ApplicationContext {
     if( activated ) {
       throw new IllegalStateException( "The ApplicationContext has already been activated." );
     }
-  }
-
-  private static void throwIllegalArgumentException( String pattern, Object[] arx ) {
-    String msg = MessageFormat.format( pattern, arx );
-    throw new IllegalArgumentException( msg );
   }
   
   private void notifyConfigurablesAboutActivation() {
@@ -229,39 +250,31 @@ public class ApplicationContext {
     }
   }
   
-  private void activateActivatables() {
+  private void activateInstances() {
     ApplicationContextUtil.runWithInstance( this, new Runnable() {
       public void run() {
-        doActivateActivatables();
+        doActivateInstances();
       }
     } );
   }
   
-  private void doActivateActivatables() {
-    Iterator iterator = instances.values().iterator();
-    while( iterator.hasNext() ) {
-      Object instance = iterator.next();
-      if( instance instanceof Activatable )  {
-        ( ( Activatable )instance ).activate();
-      }
-    }
+  private void doActivateInstances() {
+    lifeCycleFactory.activate();
+    serviceManager.activate();
+    themeManagerHolder.activate();
   }
   
-  private void deactivateActivatables() {
+  private void deactivateInstances() {
     ApplicationContextUtil.runWithInstance( this, new Runnable() {
       public void run() {
-        doDeactivateActivatables();
+        doDeactivateInstances();
       }
     } );
   }
 
-  private void doDeactivateActivatables() {
-    Iterator iterator = instances.values().iterator();
-    while( iterator.hasNext() ) {
-      Object instance = iterator.next();
-      if( instance instanceof Activatable )  {
-        ( ( Activatable )instance ).deactivate();
-      }
-    }
+  private void doDeactivateInstances() {
+    lifeCycleFactory.deactivate();
+    serviceManager.deactivate();
+    themeManagerHolder.deactivate();
   }
 }

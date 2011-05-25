@@ -116,7 +116,6 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ThemeManagerConfigurable_Test.class );
     suite.addTestSuite( LifeCycleFactoryConfigurable_Test.class );
     suite.addTestSuite( ApplicationContext_Test.class );
-    suite.addTestSuite( ApplicationContextLifeCycle_Test.class );
     suite.addTestSuite( ApplicationContextUtil_Test.class );
     suite.addTestSuite( RWTFactory_Test.class );
     suite.addTestSuite( PhaseListenerRegistry_Test.class );
@@ -252,6 +251,7 @@ public class RWTHostTestSuite {
     // == Theming ==
     suite.addTestSuite( Theme_Test.class );
     suite.addTestSuite( ThemeManager_Test.class );
+    suite.addTestSuite( ThemeManagerHolder_Test.class );
     suite.addTestSuite( ThemeUtil_Test.class );
     suite.addTestSuite( ThemeAdapterManager_Test.class );
     suite.addTestSuite( QxTheme_Test.class );

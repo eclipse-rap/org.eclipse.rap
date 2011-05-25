@@ -16,11 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
-import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.internal.widgets.DisplaysHolder;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -51,13 +47,13 @@ public class AdapterManagerConfigurable_Test extends TestCase {
   public void testConfigure() {
     setInitParameter( getValidFactoryAndAdaptableValuePair() );
     
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertTrue( getTestAdapter() instanceof TestAdapter );
   }
   
   public void testConfigureWithDefaultSettings() {
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     checkAdapterIsInstanceOfILifeCycleAdapter();
   }
@@ -66,7 +62,7 @@ public class AdapterManagerConfigurable_Test extends TestCase {
     setInitParameter( TestAdapterFactory.class.getName() );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -76,7 +72,7 @@ public class AdapterManagerConfigurable_Test extends TestCase {
     setInitParameter( getTooManyClassesParameterValue() );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -86,7 +82,7 @@ public class AdapterManagerConfigurable_Test extends TestCase {
     setInitParameter( getParameterValuePairWithUnknownFactory() );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -96,7 +92,7 @@ public class AdapterManagerConfigurable_Test extends TestCase {
     setInitParameter( getParameterValuePairWithUnknownAdaptable() );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -108,10 +104,10 @@ public class AdapterManagerConfigurable_Test extends TestCase {
   
   public void testReset() {
     setInitParameter( getValidFactoryAndAdaptableValuePair() );
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     AdapterManager adapterManager = applicationContext.getAdapterManager();
     
-    applicationContext.deactivate();
+    configurable.reset( applicationContext );
     
     assertNull( adapterManager.getAdapter( new TestAdaptable(), TestAdapter.class ) );
   }
@@ -119,17 +115,12 @@ public class AdapterManagerConfigurable_Test extends TestCase {
   protected void setUp() {
     ServletContext servletContext = Fixture.createServletContext();
     configurable = new AdapterManagerConfigurable( servletContext );
-    Class[] instanceTypes = new Class[] {
-      AdapterManager.class, 
-      DisplaysHolder.class, 
-      ThemeManagerHolder.class
-    };
-    applicationContext = new ApplicationContext( instanceTypes );
-    applicationContext.addConfigurable( configurable );
+    applicationContext = new ApplicationContext();
   }
   
   protected void tearDown() {
     setInitParameter( null );
+    Fixture.disposeOfServletContext();
   }
   
   private void checkAdapterIsInstanceOfILifeCycleAdapter() {
@@ -164,8 +155,8 @@ public class AdapterManagerConfigurable_Test extends TestCase {
 
   private Display createDisplay() {
     Fixture.createServiceContext();
-    ISessionStore session = ContextProvider.getSession();
-    ApplicationContextUtil.registerApplicationContext( session, applicationContext );
+    TestServletContext servletContext = Fixture.getServletContext();
+    ApplicationContextUtil.registerApplicationContext( servletContext, applicationContext );
     Display result = new Display();
     Fixture.disposeOfServiceContext();
     return result;

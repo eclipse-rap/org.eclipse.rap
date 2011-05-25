@@ -27,6 +27,7 @@ public class ThemeManager_Test extends TestCase {
   public void testCreate() {
     ThemeManager manager = new ThemeManager();
     assertEquals( "org.eclipse.rap.rwt.theme.Default", ThemeManager.DEFAULT_THEME_ID );
+    manager.initialize();
     Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme );
     assertEquals( "RAP Default Theme", defaultTheme.getName() );

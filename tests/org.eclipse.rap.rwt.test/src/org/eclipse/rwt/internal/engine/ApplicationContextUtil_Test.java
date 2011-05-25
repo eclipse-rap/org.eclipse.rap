@@ -17,7 +17,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener.Configurables;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.service.ISessionStore;
@@ -34,8 +33,8 @@ public class ApplicationContextUtil_Test extends TestCase {
     applicationContext.activate();
 
     assertNotNull( applicationContext );
-    assertSame( applicationContext.getInstance( EntryPointManager.class ), 
-                ApplicationContextUtil.getInstance().getInstance( EntryPointManager.class ) );
+    assertSame( applicationContext.getEntryPointManager(), 
+                ApplicationContextUtil.getInstance().getEntryPointManager() );
     ApplicationContextUtil.deregisterApplicationContext( servletContext );
   }
   
@@ -44,7 +43,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     ServletContext servletContext = getServletContext();
     ApplicationContextUtil.deregisterApplicationContext( servletContext );
     try {
-      ApplicationContextUtil.getInstance().getInstance( EntryPointManager.class );
+      ApplicationContextUtil.getInstance().getEntryPointManager();
       fail( "After deregistration there must be no context available." );
     } catch( IllegalStateException expected ) {
     }

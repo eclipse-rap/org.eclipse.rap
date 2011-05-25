@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.theme;
 
 import java.io.*;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.w3c.css.sac.CSSException;
@@ -67,7 +67,7 @@ public final class ThemeTestUtil {
     byte[] buf = cssCode.getBytes( "UTF-8" );
     ByteArrayInputStream inStream = new ByteArrayInputStream( buf );
     StyleSheet styleSheet = CssFileReader.readStyleSheet( inStream, cssFileName, loader );
-    Fixture.resetThemeManager();
+    ThemeManagerHelper.resetThemeManager();
     ThemeManager manager = ThemeManager.getInstance();
     Theme theme = new Theme( themeId, "Custom Theme", styleSheet );
     manager.registerTheme( theme );

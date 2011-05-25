@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.FontData;
 public class ProbeStore {
   private final Map probes; 
   
-  ProbeStore() {
+  public ProbeStore() {
     probes = new HashMap();
   }
   

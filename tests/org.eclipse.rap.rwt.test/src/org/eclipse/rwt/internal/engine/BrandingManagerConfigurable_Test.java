@@ -29,7 +29,7 @@ public class BrandingManagerConfigurable_Test extends TestCase {
   public void testConfigure() {
     setBrandingInitParameter();
     
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertEquals( 1, getBrandings().length );
     assertEquals( TestBranding.class, getBrandings()[ 0 ].getClass() );
@@ -39,7 +39,7 @@ public class BrandingManagerConfigurable_Test extends TestCase {
     Fixture.setInitParameter( RWTServletContextListener.BRANDINGS_PARAM, "unknown" );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -47,10 +47,10 @@ public class BrandingManagerConfigurable_Test extends TestCase {
   
   public void testReset() {
     setBrandingInitParameter();
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     BrandingManager brandingManager = applicationContext.getBrandingManager();
      
-    applicationContext.deactivate();
+    configurable.reset( applicationContext );
     
     assertEquals( 0, brandingManager.getAll().length );
   }
@@ -58,12 +58,12 @@ public class BrandingManagerConfigurable_Test extends TestCase {
   protected void setUp() {
     ServletContext servletContext = Fixture.createServletContext();
     configurable = new BrandingManagerConfigurable( servletContext );
-    applicationContext = new ApplicationContext( new Class[] { BrandingManager.class } );
-    applicationContext.addConfigurable( configurable );
+    applicationContext = new ApplicationContext();
   }
   
   protected void tearDown() {
     Fixture.setInitParameter( RWTServletContextListener.BRANDINGS_PARAM, null );
+    Fixture.disposeOfServletContext();
   }
   
   private AbstractBranding[] getBrandings() {

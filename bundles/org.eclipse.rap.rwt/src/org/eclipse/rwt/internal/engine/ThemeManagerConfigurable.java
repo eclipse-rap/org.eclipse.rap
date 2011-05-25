@@ -59,13 +59,10 @@ class ThemeManagerConfigurable implements Configurable {
     if( hasThemeConfigurations() ) {
       registerThemes( context );
     }
-    // TODO [SystemStart]: move this to where the actual system initialization takes place
-    context.getThemeManager().getInstance().initialize();
   }
 
   public void reset( ApplicationContext context ) {
-    // TODO [SystemStart]: move this to where the actual system initialization takes place
-    context.getThemeManager().resetInstance();
+    context.getThemeManager().deactivate();
   }
   
   private void registerThemes( ApplicationContext context ) {
@@ -89,12 +86,16 @@ class ThemeManagerConfigurable implements Configurable {
   }
 
   private String[] parseThemeDeclarations() {
-    String value = servletContext.getInitParameter( RWTServletContextListener.THEMES_PARAM );
+    String value = getInitParameter();
     return value.split( RWTServletContextListener.PARAMETER_SEPARATOR );
   }
   
   private boolean hasThemeConfigurations() {
-    return null != servletContext.getInitParameter( RWTServletContextListener.THEMES_PARAM );
+    return null != getInitParameter();
+  }
+  
+  private String getInitParameter() {
+    return servletContext.getInitParameter( RWTServletContextListener.THEMES_PARAM );
   }
   
   private Declaration parseDeclaration( String declarationString ) {

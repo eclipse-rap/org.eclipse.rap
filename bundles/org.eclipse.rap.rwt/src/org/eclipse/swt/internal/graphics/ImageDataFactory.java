@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.ImageData;
 public class ImageDataFactory {
   private final ImageDataCache imageDataCache;
   
-  ImageDataFactory() {
+  public ImageDataFactory() {
     imageDataCache = new ImageDataCache();
   }
 

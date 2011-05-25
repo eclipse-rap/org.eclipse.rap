@@ -20,7 +20,8 @@ import java.util.*;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
-import org.eclipse.rwt.internal.resources.*;
+import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rwt.internal.resources.ResourceUtil;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
@@ -115,9 +116,8 @@ public final class ThemeManager {
     customAppearances = new HashSet();
     registeredThemeFiles = new HashSet();
     registeredCssElements = new CssElementHolder();
-    defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, null );
     themes = new HashMap();
-    themes.put( DEFAULT_THEME_ID, defaultTheme );
+    defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, null );
   }
 
   /**
@@ -142,6 +142,7 @@ public final class ThemeManager {
    */
   public void initialize() {
     if( !initialized ) {
+      themes.put( DEFAULT_THEME_ID, defaultTheme );
       initializeThemeableWidgets();
       Collection allThemes = themes.values();
       Iterator iterator = allThemes.iterator();

@@ -35,7 +35,7 @@ public class EntryPointManagerConfigurable_Test extends TestCase {
   public void testConfigure() {
     setDefaultEntryPointInitParameter();
     
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertEquals( 1, getEntryPoints().length );
     assertEquals( EntryPointManager.DEFAULT, getEntryPoints()[ 0 ] );
@@ -45,7 +45,7 @@ public class EntryPointManagerConfigurable_Test extends TestCase {
     String entryPointName = "entryPointName";
     setEntryPointInitParameter( entryPointName );
     
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertEquals( 1, getEntryPoints().length );
     assertEquals( entryPointName, getEntryPoints()[ 0 ] );
@@ -54,7 +54,7 @@ public class EntryPointManagerConfigurable_Test extends TestCase {
   public void testConfigureWithMultipleEntryPoints() {
     setMultipleEntryPointsInitParameter();
     
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     
     assertEquals( 2, getEntryPoints().length );
   }
@@ -63,7 +63,7 @@ public class EntryPointManagerConfigurable_Test extends TestCase {
     Fixture.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, "unknown" );
     
     try {
-      applicationContext.activate();
+      configurable.configure( applicationContext );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
@@ -71,10 +71,10 @@ public class EntryPointManagerConfigurable_Test extends TestCase {
   
   public void testReset() {
     setDefaultEntryPointInitParameter();
-    applicationContext.activate();
+    configurable.configure( applicationContext );
     EntryPointManager entryPointManager = applicationContext.getEntryPointManager();
     
-    applicationContext.deactivate();
+    configurable.reset( applicationContext );
     
     assertEquals( 0, entryPointManager.getEntryPoints().length );
   }
@@ -82,12 +82,12 @@ public class EntryPointManagerConfigurable_Test extends TestCase {
   protected void setUp() {
     ServletContext servletContext = Fixture.createServletContext();
     configurable = new EntryPointManagerConfigurable( servletContext );
-    applicationContext = new ApplicationContext( new Class[] { EntryPointManager.class } );
-    applicationContext.addConfigurable( configurable );
+    applicationContext = new ApplicationContext();
   }
   
   protected void tearDown() {
     Fixture.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, null );
+    Fixture.disposeOfServletContext();
   }
 
   private void setDefaultEntryPointInitParameter() {

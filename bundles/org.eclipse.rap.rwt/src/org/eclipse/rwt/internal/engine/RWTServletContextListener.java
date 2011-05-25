@@ -88,18 +88,6 @@ public final class RWTServletContextListener implements ServletContextListener {
     ApplicationContextUtil.deregisterApplicationContext( servletContext );
   }
 
-  static void bufferConfigurables( Configurables configurables, ServletContext servletContext ) {
-    servletContext.setAttribute( CONFIGURABLES, configurables );
-  }
-
-  static Configurables getConfigurables( ServletContext servletContext ) {
-    return ( Configurables )servletContext.getAttribute( CONFIGURABLES );
-  }
-
-  static void removeConfigurables( ServletContext servletContext ) {
-    servletContext.removeAttribute( CONFIGURABLES );
-  }
-
   private static void registerConfigurables( ServletContext servletContext, 
                                              ApplicationContext applicationContext )
   {
@@ -114,5 +102,17 @@ public final class RWTServletContextListener implements ServletContextListener {
     Configurables configurables = getConfigurables( servletContext );
     configurables.remove( applicationContext );
     removeConfigurables( servletContext );
+  }
+  
+  static void bufferConfigurables( Configurables configurables, ServletContext servletContext ) {
+    servletContext.setAttribute( CONFIGURABLES, configurables );
+  }
+
+  static Configurables getConfigurables( ServletContext servletContext ) {
+    return ( Configurables )servletContext.getAttribute( CONFIGURABLES );
+  }
+
+  static void removeConfigurables( ServletContext servletContext ) {
+    servletContext.removeAttribute( CONFIGURABLES );
   }
 }

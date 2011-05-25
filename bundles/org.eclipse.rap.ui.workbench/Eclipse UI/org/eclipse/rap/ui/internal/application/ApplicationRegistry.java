@@ -101,5 +101,4 @@ public final class ApplicationRegistry {
   private ApplicationRegistry() {
     // prevent instantiation
   }
-
 }

@@ -19,13 +19,10 @@ import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.ThemeManagerSingletonFactory.TestThemeManagerHolder;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -46,10 +43,6 @@ public class Fixture {
 
   static {
     usePerformanceOptimizations = Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
-
-    // TODO [ApplicationContext]: Replacing ThemeManagerInstance improves performance of 
-    //      RWTAllTestSuite. Think about a less intrusive solution.
-    ApplicationContextUtil.replace( ThemeManagerHolder.class, ThemeManagerSingletonFactory.class );
   }
 
   private static TestServletContext servletContext;
@@ -70,7 +63,7 @@ public class Fixture {
   public static void disposeOfServletContext() {
     servletContext = null;
   }
-  public static void setInitParameter( final String name, final String value ) {
+  public static void setInitParameter( String name, String value ) {
     ensureServletContext();
     servletContext.setInitParameter( name, value );
   }
@@ -127,8 +120,8 @@ public class Fixture {
     createServiceContext( response, request );
   }
 
-  public static void createServiceContext( final HttpServletResponse response, 
-                                           final HttpServletRequest request ) 
+  public static void createServiceContext( HttpServletResponse response, 
+                                           HttpServletRequest request ) 
   {
     ServiceContext context = new ServiceContext( request, response );
     ServiceStateInfo stateInfo = new ServiceStateInfo();
@@ -145,7 +138,7 @@ public class Fixture {
   }
 
   public static void disposeOfServiceContext() {
-    resetThemeManagerIfNeeded();
+    ThemeManagerHelper.resetThemeManagerIfNeeded();
     HttpSession session = ContextProvider.getRequest().getSession();
     ContextProvider.disposeContext();
     session.invalidate();
@@ -206,7 +199,7 @@ public class Fixture {
   ////////////////////
   // LifeCycle helpers
   
-  public static void readDataAndProcessAction( final Display display ) {
+  public static void readDataAndProcessAction( Display display ) {
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     fakePhase( PhaseId.READ_DATA );
     displayLCA.readData( display );
@@ -216,7 +209,7 @@ public class Fixture {
     }
   }
 
-  public static void readDataAndProcessAction( final Widget widget ) {
+  public static void readDataAndProcessAction( Widget widget ) {
     AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
     fakePhase( PhaseId.READ_DATA );
     widgetLCA.readData( widget );
@@ -225,13 +218,13 @@ public class Fixture {
     }
   }
 
-  public static void markInitialized( final Widget widget ) {
+  public static void markInitialized( Widget widget ) {
     Object adapter = widget.getAdapter( IWidgetAdapter.class );
     WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
     widgetAdapter.setInitialized( true );
   }
 
-  public static void markInitialized( final Display display ) {
+  public static void markInitialized( Display display ) {
     Object adapter = display.getAdapter( IWidgetAdapter.class );
     WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
     widgetAdapter.setInitialized( true );
@@ -278,7 +271,7 @@ public class Fixture {
     LifeCycleServiceHandler.initializeSession();
   }
 
-  public static void fakeRequestParam( final String key, final String value ) {
+  public static void fakeRequestParam( String key, String value ) {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setParameter( key, value );
   }
@@ -296,7 +289,7 @@ public class Fixture {
     stateInfo.setResponseWriter( new JavaScriptResponseWriter( writer ) );
   }
 
-  public static void fakePhase( final PhaseId phase ) {
+  public static void fakePhase( PhaseId phase ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( CurrentPhase.class.getName() + "#value", phase );
   }
@@ -315,8 +308,8 @@ public class Fixture {
   ////////////////
   // general stuff
 
-  public static void copyTestResource( final String resourceName, 
-                                       final File destination )
+  public static void copyTestResource( String resourceName, 
+                                       File destination )
     throws FileNotFoundException, IOException
   {
     ClassLoader loader = Fixture.class.getClassLoader();
@@ -398,7 +391,7 @@ public class Fixture {
     }
   }
 
-  public static void delete( final File toDelete ) {
+  public static void delete( File toDelete ) {
     if( toDelete.exists() ) {
       doDelete( toDelete );
     }
@@ -417,7 +410,7 @@ public class Fixture {
     return objectInputStream.readObject();
   }
   
-  private static void doDelete( final File toDelete ) {
+  private static void doDelete( File toDelete ) {
     if( toDelete.isDirectory() ) {
       File[] children = toDelete.listFiles();
       for( int i = 0; i < children.length; i++ ) {
@@ -496,42 +489,6 @@ public class Fixture {
     };
     ISessionStore session = ContextProvider.getSession();
     LifeCycleUtil.setUIThread( session, result );
-    return result;
-  }
-
-  public static void resetThemeManager() {
-    if( isThemeManagerAvailable() ) {
-      doThemeManagerReset();
-    }
-  }
-  
-  private static void resetThemeManagerIfNeeded() {
-    if( isThemeManagerResetNeeded() ) {
-      doThemeManagerReset();
-    }
-  }
-
-  private static void doThemeManagerReset() {
-    TestThemeManagerHolder themeManager = ( TestThemeManagerHolder )RWTFactory.getThemeManager();
-    themeManager.resetInstanceInTestCases();
-  }
-
-  private static boolean isThemeManagerResetNeeded() {
-    return    isThemeManagerAvailable() 
-           && getThemeManager().getRegisteredThemeIds().length != 1;
-  }
-
-  private static boolean isThemeManagerAvailable() {
-    return getThemeManager() != null;
-  }
-
-  private static ThemeManager getThemeManager() {
-    ThemeManager result = null;
-    try {
-      result = ThemeManager.getInstance();
-    } catch( IllegalStateException noApplicationContextAvailable ) {
-    } catch( IllegalArgumentException noThemeManagerRegisterd ) {
-    }
     return result;
   }
 

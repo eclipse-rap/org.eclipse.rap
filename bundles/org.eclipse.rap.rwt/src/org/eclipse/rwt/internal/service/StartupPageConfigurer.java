@@ -34,7 +34,6 @@ import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 
 
 public final class StartupPageConfigurer implements IStartupPageConfigurer {
@@ -61,7 +60,6 @@ public final class StartupPageConfigurer implements IStartupPageConfigurer {
   public StartupPageTemplateHolder getTemplate() throws IOException {
     readContent();
     template.reset();
-    DisplayLCAFacade.registerResources();
     template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getJsLibraries() );
     template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, getAppScript() );
     applyBranding();
