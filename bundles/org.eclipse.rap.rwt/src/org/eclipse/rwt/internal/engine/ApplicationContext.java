@@ -63,11 +63,12 @@ public class ApplicationContext {
   
   public ApplicationContext() {
     applicationStoreImpl = new ApplicationStoreImpl();
-    themeManagerHolder = new ThemeManagerHolder();
+    configurationReader = new ConfigurationReader();
     resourceManagerProvider = new ResourceManagerProvider();
+    lifeCycleFactory = new LifeCycleFactory( configurationReader );
+    themeManagerHolder = new ThemeManagerHolder();
     brandingManager = new BrandingManager();
     phaseListenerRegistry = new PhaseListenerRegistry();
-    lifeCycleFactory = new LifeCycleFactory();
     entryPointManager = new EntryPointManager();
     resourceFactory = new ResourceFactory();
     imageFactory = new ImageFactory();
@@ -79,7 +80,6 @@ public class ApplicationContext {
     startupPageConfigurer = new StartupPageConfigurer();
     startupPage = new StartupPage();
     serviceManager = new ServiceManager();
-    configurationReader = new ConfigurationReader();
     resourceRegistry = new ResourceRegistry();
     displaysHolder = new DisplaysHolder();
     themeAdapterManager = new ThemeAdapterManager();

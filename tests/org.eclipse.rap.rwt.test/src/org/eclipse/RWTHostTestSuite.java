@@ -114,7 +114,6 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ResourceRegistryConfigurable_Test.class );
     suite.addTestSuite( ServiceManagerConfigurable_Test.class );
     suite.addTestSuite( ThemeManagerConfigurable_Test.class );
-    suite.addTestSuite( LifeCycleFactoryConfigurable_Test.class );
     suite.addTestSuite( ApplicationContext_Test.class );
     suite.addTestSuite( ApplicationContextUtil_Test.class );
     suite.addTestSuite( RWTFactory_Test.class );

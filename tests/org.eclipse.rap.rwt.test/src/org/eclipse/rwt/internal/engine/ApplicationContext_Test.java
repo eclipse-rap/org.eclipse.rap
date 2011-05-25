@@ -142,7 +142,7 @@ public class ApplicationContext_Test extends TestCase {
     assertTrue( configurable.isActivatedDuringConfigure() );
     checkUnallowedMethodAccessIfActivated();
   }
-
+  
   public void testApplicationContextDeactivate() {
     TestConfigurable configurable = new TestConfigurable();
     context.addConfigurable( configurable );
@@ -186,9 +186,7 @@ public class ApplicationContext_Test extends TestCase {
     ServletContext servletContext = Fixture.createServletContext();
     context = new ApplicationContext();
     context.addConfigurable( new ResourceManagerProviderConfigurable( servletContext ) );
-    context.addConfigurable( new LifeCycleFactoryConfigurable() );
     context.addConfigurable( new ConfigurationReaderConfigurable( servletContext ) );
-
   }
 
   private void checkUnallowedMethodAccessIfNotActivated() {

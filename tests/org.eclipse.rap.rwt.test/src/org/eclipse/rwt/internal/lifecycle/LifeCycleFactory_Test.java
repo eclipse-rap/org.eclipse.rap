@@ -52,8 +52,7 @@ public class LifeCycleFactory_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
-    lifeCycleFactory = new LifeCycleFactory();
-    lifeCycleFactory.setConfigurationReader( new ConfigurationReader() );
+    lifeCycleFactory = new LifeCycleFactory( new ConfigurationReader() );
   }
   
   protected void tearDown() throws Exception {

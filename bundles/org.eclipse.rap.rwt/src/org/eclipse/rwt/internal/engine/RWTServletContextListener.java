@@ -49,7 +49,6 @@ public final class RWTServletContextListener implements ServletContextListener {
       configurables.add( new ResourceRegistryConfigurable( servletContext ) );
       configurables.add( new ServiceManagerConfigurable() );
       configurables.add( new ThemeManagerConfigurable( servletContext ) );
-      configurables.add( new LifeCycleFactoryConfigurable() );
     }
 
     void add( ApplicationContext applicationContext ) {

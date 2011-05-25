@@ -14,19 +14,21 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.util.ClassUtil;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
 public class LifeCycleFactory {
-  private ConfigurationReader configurationReader;
+  private final ConfigurationReader configurationReader;
   private LifeCycle lifeCycle;
 
+  
+  public LifeCycleFactory( ConfigurationReader configurationReader ) {
+    ParamCheck.notNull( configurationReader, "configurationReader" );
+    this.configurationReader = configurationReader;
+  }
   public ILifeCycle getLifeCycle() {
     return lifeCycle;
-  }
-
-  public void setConfigurationReader( ConfigurationReader configurationReader ) {
-    this.configurationReader = configurationReader;
   }
 
   public void activate() {
