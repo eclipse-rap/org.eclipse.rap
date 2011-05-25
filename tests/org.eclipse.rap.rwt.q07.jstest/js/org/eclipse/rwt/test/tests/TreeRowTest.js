@@ -77,7 +77,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testTreeColumnMetrics : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );      
       tree.setIndentionWidth( 16 );
@@ -93,7 +93,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
     
     testFirstColumnMetricsImageOverflow : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );      
       tree.setIndentionWidth( 10 );
@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testSecondColumnAsTreeColumn : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var row = this._createRow( tree );
       item.setTexts( [ "Test", "Test2" ] );      
@@ -131,7 +131,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testGetCheckBoxMetrics : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       tree.setIndentionWidth( 16 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var row = this._createRow( tree );
@@ -142,7 +142,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testSetCheckBoxMetricsOverflow : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var row = this._createRow( tree );
       tree.setIndentionWidth( 10 );
@@ -1780,14 +1780,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           return { "backgroundImage" : result };
         }
       } );
-      var result = new org.eclipse.rwt.widgets.Tree();
+      var result = new org.eclipse.rwt.widgets.Tree( { "appearance": base } );
       result.setTextColor( "black" );
       result.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
       result.setItemHeight( 15 );
       result.setIndentionWidth( 16 );
       result.setColumnCount( 1 );
       result.setSelectionPadding( 3, 1 );
-      result.setAppearance( base );
       if( isTable ) {
         result.setTreeColumn( -1 );
       }

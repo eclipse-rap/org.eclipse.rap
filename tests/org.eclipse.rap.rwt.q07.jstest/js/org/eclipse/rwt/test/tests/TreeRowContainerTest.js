@@ -32,7 +32,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testAddTreeRowsOnTreeResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testAddTreeRowsOnRowResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testRemoveTreeRowsOnTreeResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
@@ -65,7 +65,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     },
 
     testRemoveTreeRowsOnRowResize : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
@@ -173,7 +173,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     _createDefaultTree : function( noflush ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance(); 
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       tree.setAppearance( "tree" );
       tree.setHasFullSelection( true );
       tree.setItemHeight( 20 );

@@ -14,7 +14,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
   extend : qx.ui.layout.CanvasLayout,
 
-  construct : function() {
+  construct : function( argsMap ) {
     this.base( arguments );
     this._rootItem = new org.eclipse.rwt.widgets.TreeItem();
     this._rootItem.setExpanded( true );
@@ -60,6 +60,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._configureAreas();
     this._configureScrollBars();
     this._registerListeners();
+    this._parseArgsMap( argsMap );
   },
   
   destruct : function() {
@@ -92,6 +93,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     /////////////////////
     // Contructor helpers
     
+    _parseArgsMap : function( map ) {
+      this.setAppearance( map.appearance );
+    },
+
     _registerListeners : function() {
       this._rootItem.addEventListener( "update", this._onItemUpdate, this );
       this.addEventListener( "mousedown", this._onMouseDown, this );
@@ -187,11 +192,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     setIndentionWidth : function( offset ) {
       this._config.indentionWidth = offset;
     },
-    
+
     setSelectionPadding : function( left, right ) {
       this._config.selectionPadding = [ left, right ];
     },
-    
+
     setIsVirtual : function( value ) {
       this._isVirtual = value;
       if( value ) {
@@ -790,10 +795,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._createSendRequestTimer();
       }
     },
-        
+
     //////////////
     // Send events
-    
+
     _sendSelectionChange : function( item ) {
       if( !this._inServerResponse() ) {
         var req = org.eclipse.swt.Request.getInstance();
@@ -824,7 +829,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._sendRequestTimer.start();
       }
     },
-    
+
     _sendScrollLeftChange : function() {
       // TODO [tb] : There should be a check for _inServerResponse,
       // but currently this is needed to sync the value with the 
@@ -838,7 +843,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._sendRequestTimer.start();
       }
     },
-    
+
     _sendItemUpdate : function( item, event ) {
       if( !this._inServerResponse() ) {
         switch( event.getData() ) {

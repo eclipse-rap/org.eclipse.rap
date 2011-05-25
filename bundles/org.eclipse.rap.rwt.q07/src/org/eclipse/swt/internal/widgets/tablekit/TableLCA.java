@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.theme.JsonObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -85,7 +86,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     readScrollLeft( table );
     readSelection( table ); 
     readFocusIndex( table ); // must be called *after* readSelection 
-    readSetData( table );
+//    readSetData( table );
     readWidgetSelected( table );
     readWidgetDefaultSelected( table );
     readCellToolTipTextRequested( table );
@@ -98,10 +99,12 @@ public final class TableLCA extends AbstractWidgetLCA {
     Table table = ( Table )widget; 
     ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     JSWriter writer = JSWriter.getWriterFor( table );
-    writer.newWidget( "org.eclipse.rwt.widgets.Tree" );
+    JsonObject argsMap = new JsonObject();
+    argsMap.append( "appearance", "table" );
+    Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
+    writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( table );
     // configure tree as table
-    writer.set( "appearance", "table" );
     writer.set( "indentionWidth", 0 );
     writer.set( "treeColumn", -1 );
     // one-time settings

@@ -43,7 +43,8 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     lca.renderInitialization( table );
     String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setAppearance( \"table\" )" ) != -1 );
+    assertTrue( markup.indexOf( "new org.eclipse.rwt.widgets.Tree( {" ) != -1 );
+    assertTrue( markup.indexOf( "\"appearance\": \"table\"" ) != -1 );
     assertTrue( markup.indexOf( "w.setIndentionWidth( 0 )" ) != -1 );
     assertTrue( markup.indexOf( "w.setTreeColumn( -1 )" ) != -1 );
     assertFalse( markup.indexOf( "setHasNoScroll(" ) != -1 );

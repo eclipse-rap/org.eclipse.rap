@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.theme.JsonObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -88,9 +89,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
     JSWriter writer = JSWriter.getWriterFor( tree );
-    writer.newWidget( "org.eclipse.rwt.widgets.Tree" );
+    JsonObject argsMap = new JsonObject();
+    argsMap.append( "appearance", "tree" );
+    Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
+    writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( tree );
-    writer.set( "appearance", "tree" );
+    //writer.set( "appearance", "tree" );
     if( ( tree.getStyle() & SWT.NO_SCROLL ) != 0 ) {
       writer.set( "hasNoScroll", true );
     }
