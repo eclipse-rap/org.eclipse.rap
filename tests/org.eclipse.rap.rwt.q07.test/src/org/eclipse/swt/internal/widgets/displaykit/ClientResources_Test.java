@@ -13,10 +13,14 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import javax.servlet.ServletContext;
+
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.*;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
+import org.eclipse.rwt.internal.resources.ResourceManagerProvider;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
@@ -46,12 +50,17 @@ public class ClientResources_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    Fixture.setUp();
+    ServletContext servletContext = Fixture.createServletContext();
+    Fixture.createServiceContext();
+    ApplicationContext appContext = ApplicationContextUtil.createContext( servletContext );
+    ResourceManagerProvider resourceManagerProvider = appContext.getResourceManagerProvider();
+    resourceManagerProvider.registerFactory( new TestResourceManagerFactory() );
     resourceManager = RWT.getResourceManager();
     clientResources = new ClientResources( resourceManager );
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfServletContext();
   }
 }

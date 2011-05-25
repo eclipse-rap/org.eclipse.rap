@@ -27,6 +27,7 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 
 
 public class ApplicationContext {
@@ -259,9 +260,14 @@ public class ApplicationContext {
   }
   
   private void doActivateInstances() {
+    // TODO [SystemStart]: Unit testing
     lifeCycleFactory.activate();
     serviceManager.activate();
+    // Note: order is crucial here
+    jsLibraryConcatenator.startJSConcatenation();
+    DisplayLCAFacade.registerResources();
     themeManagerHolder.activate();
+    jsLibraryConcatenator.finishJSConcatenation();
   }
   
   private void deactivateInstances() {

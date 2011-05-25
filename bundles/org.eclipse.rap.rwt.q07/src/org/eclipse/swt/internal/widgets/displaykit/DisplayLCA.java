@@ -266,7 +266,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   static void registerResources() {
     new ClientResources( RWT.getResourceManager() ).registerResources();
-    ThemeManager.getInstance().registerResources();
   }
 
   /////////////////////////////

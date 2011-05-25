@@ -13,9 +13,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
-
 
 public class ThemeManagerHolder {
   private ThemeManager instance;
@@ -34,11 +31,7 @@ public class ThemeManagerHolder {
   public void activate() {
     getInstance().initializeThemeableWidgets();
     getInstance().initialize();
-    
-    // TODO [SystemStart]: move this to where the actual system initialization takes place
-    RWTFactory.getJSLibraryConcatenator().startJSConcatenation();
-    DisplayLCAFacade.registerResources();
-    RWTFactory.getJSLibraryConcatenator().finishJSConcatenation();
+    getInstance().registerResources();
   }
 
   public void deactivate() {
