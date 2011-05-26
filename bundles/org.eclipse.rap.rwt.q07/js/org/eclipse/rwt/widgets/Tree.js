@@ -139,9 +139,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge, 
                                                 this._vertScrollBar );
     },
-    
+
     _parseArgsMap : function( map ) {
       this.setAppearance( map.appearance );
+      this._dummyColumn.setAppearance( map.appearance + "-column" );
+      this._rowContainer.setRowAppearance( map.appearance + "-row" );
       if( map.noScroll ) {
         this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       }
@@ -162,6 +164,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 	      this._isVirtual = true;
         this._createSendRequestTimer();
 	    }
+	    if( typeof map.indentionWidth === "number" ) {
+	      this._config.indentionWidth = map.indentionWidth;
+	    }
     },
 
     _createSendRequestTimer : function() {
@@ -172,22 +177,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         req.addEventListener( "send", timer.stop, timer );
         this._sendRequestTimer = timer;
       }
-    },
-    
-    /////////////////////////////////
-    // API for server - initial setup
-    
-    // NOTE : It is assumed that these setters are called only once and before
-    // rendering any content (i.e. directly after the contructor) 
-    
-    _applyAppearance : function( value, oldValue ) {
-      this.base( arguments, value, oldValue );
-      this._dummyColumn.setAppearance( value + "-column" );
-      this._rowContainer.setRowAppearance( value + "-row" );
-    },
-
-    setIndentionWidth : function( offset ) {
-      this._config.indentionWidth = offset;
     },
 
     ///////////////////////////

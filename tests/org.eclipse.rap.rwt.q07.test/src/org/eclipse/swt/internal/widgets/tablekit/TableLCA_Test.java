@@ -46,7 +46,7 @@ public class TableLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "new org.eclipse.rwt.widgets.Tree( {" ) != -1 );
     assertTrue( markup.indexOf( "\"appearance\": \"table\"" ) != -1 );
     assertTrue( markup.indexOf( "\"fullSelection\": true" ) != -1 );
-    assertTrue( markup.indexOf( "w.setIndentionWidth( 0 )" ) != -1 );
+    assertTrue( markup.indexOf( "\"indentionWidth\": 0" ) != -1 );
     assertTrue( markup.indexOf( "w.setTreeColumn( -1 )" ) != -1 );
     assertFalse( markup.indexOf( "setHasNoScroll(" ) != -1 );
     assertFalse( markup.indexOf( "setHasCheckBoxes(" ) != -1 );

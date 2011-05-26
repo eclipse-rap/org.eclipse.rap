@@ -176,7 +176,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       var tree = new org.eclipse.rwt.widgets.Tree( { 
         "appearance": "tree",
         "fullSelection": true,
-        "selectionPadding" : [ 2, 4 ]
+        "selectionPadding" : [ 2, 4 ],
+        "indentionWidth" : 16
       } );
       tree.setAppearance( "tree" );
       tree.setItemHeight( 20 );
@@ -188,7 +189,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       tree.setColumnCount( 1 )
       tree.setItemMetrics( 1, 0, 500, 0, 0, 0, 500 );
       tree.setItemMetrics( 2, 0, 500, 0, 0, 0, 500 );
-      tree.setIndentionWidth( 16 );
       tree.addToDocument();
       if( !noflush ) {
         testUtil.flush();

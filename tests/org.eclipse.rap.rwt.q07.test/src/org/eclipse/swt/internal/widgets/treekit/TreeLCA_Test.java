@@ -60,7 +60,7 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "new org.eclipse.rwt.widgets.Tree( {" ) != -1 );
     assertTrue( markup.indexOf( "\"appearance\": \"tree\"" ) != -1 );
     assertTrue( markup.indexOf( "\"selectionPadding\": [ 3, 5 ]" ) != -1 );
-    assertTrue( markup.indexOf( "w.setIndentionWidth" ) != -1 );
+    assertTrue( markup.indexOf( "\"indentionWidth\":" ) != -1 );
     assertTrue( markup.indexOf( "\"check\": true" ) == -1 );
     assertTrue( markup.indexOf( "noScroll" ) == -1 );
     assertTrue( markup.indexOf( "multiSelection" ) == -1 );

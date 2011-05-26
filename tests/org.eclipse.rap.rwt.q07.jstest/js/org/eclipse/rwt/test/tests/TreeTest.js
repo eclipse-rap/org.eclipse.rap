@@ -52,8 +52,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     },
 
     testSetIndentionWidths : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
-      tree.setIndentionWidth( 16 );
+      var tree = new org.eclipse.rwt.widgets.Tree( { 
+        "appearance": "tree",
+        "indentionWidth" : 16
+      } );
       assertEquals( 16, tree.getRenderConfig().indentionWidth );
       tree.destroy();
     },
@@ -3059,6 +3061,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       }
       args[ "fullSelection" ] = true;
       args[ "selectionPadding" ] = [ 2, 4 ];
+      args[ "indentionWidth" ] = 16;
       var tree = new org.eclipse.rwt.widgets.Tree( args );
       tree.setItemHeight( 20 );
       tree.setLeft( 0 );
@@ -3069,7 +3072,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setColumnCount( 1 );
       tree.setItemMetrics( 1, 0, 500, 0, 0, 0, 500 );
       tree.setItemMetrics( 2, 0, 500, 0, 0, 0, 500 );
-      tree.setIndentionWidth( 16 );
       tree.addToDocument();
       if( !noflush ) {
         testUtil.flush();

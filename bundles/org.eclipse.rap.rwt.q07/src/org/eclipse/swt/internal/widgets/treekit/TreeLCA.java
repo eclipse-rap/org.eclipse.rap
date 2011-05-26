@@ -89,6 +89,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
+    ITreeAdapter adapter = getTreeAdapter( tree );
     JSWriter writer = JSWriter.getWriterFor( tree );
     JsonObject argsMap = new JsonObject();
     argsMap.append( "appearance", "tree" );
@@ -102,7 +103,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
       argsMap.append( "multiSelection", true );
     }
     if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {
-      ITreeAdapter adapter = getTreeAdapter( tree );
       int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
       argsMap.append( "check", true );
       argsMap.append( "checkBoxMetrics", JsonArray.valueOf( checkMetrics ) );
@@ -114,10 +114,10 @@ public final class TreeLCA extends AbstractWidgetLCA {
       int[] selectionPadding = new int[] { textMargin.x, textMargin.width - textMargin.x };
       argsMap.append( "selectionPadding", JsonArray.valueOf( selectionPadding ) );
     }
+    argsMap.append( "indentionWidth", adapter.getIndentionWidth() );
     Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
     writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( tree );
-    writeIndentionWidth( tree );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -279,14 +279,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
   
-  private static void writeIndentionWidth( final Tree tree )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( tree );
-    ITreeAdapter treeAdapter = getTreeAdapter( tree );
-    writer.set( "indentionWidth", treeAdapter.getIndentionWidth() );
-  }
-
   private static void writeHeaderHeight( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getHeaderHeight() );

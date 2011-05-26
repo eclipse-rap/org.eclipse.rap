@@ -77,10 +77,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testTreeColumnMetrics : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Tree( { 
+        "appearance": "tree",
+        "indentionWidth" : 16
+      } );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );      
-      tree.setIndentionWidth( 16 );
       tree.setItemMetrics( 0, 10, 50, 12, 13, 30, 8 );
       var row = this._createRow( tree );
       assertEquals( 10, row._getItemLeft( item, 0, tree._config) );      
@@ -93,10 +95,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
     
     testFirstColumnMetricsImageOverflow : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Tree( { 
+        "appearance": "tree",
+        "indentionWidth" : 10
+      } );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       item.setTexts( [ "Test" ] );      
-      tree.setIndentionWidth( 10 );
       tree.setItemMetrics( 0, 0, 15, 0, 10, 10, 40 );
       var row = this._createRow( tree );
       assertEquals( 5, row._getItemImageWidth( item, 0, tree._config ) );      
@@ -105,11 +109,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testSecondColumnAsTreeColumn : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Tree( { 
+        "appearance": "tree",
+        "indentionWidth" : 16
+      } );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var row = this._createRow( tree );
       item.setTexts( [ "Test", "Test2" ] );      
-      tree.setIndentionWidth( 16 );
       tree.setItemMetrics( 0, 64, 40, 66, 13, 69, 8 );
       tree.setItemMetrics( 1, 34, 40, 36, 13, 49, 8 );
       tree.setTreeColumn( 1 );
@@ -134,9 +140,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var tree = new org.eclipse.rwt.widgets.Tree( { 
         "appearance": "tree",
         "check": true,
-        "checkBoxMetrics": [ 5, 20 ]
+        "checkBoxMetrics": [ 5, 20 ],
+        "indentionWidth" : 16
       } );
-      tree.setIndentionWidth( 16 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var row = this._createRow( tree );
       assertEquals( 21, row._getCheckBoxLeft( item, tree._config ) );
@@ -148,11 +154,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var tree = new org.eclipse.rwt.widgets.Tree( { 
         "appearance": "tree",
         "check" : true,
-        "checkBoxMetrics" : [ 5, 20 ]
+        "checkBoxMetrics" : [ 5, 20 ],
+        "indentionWidth" : 10        
       } );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var row = this._createRow( tree );
-      tree.setIndentionWidth( 10 );
       tree.setItemMetrics( 0, 0, 25, 0, 10, 10, 40 );
       assertEquals( 15, row._getCheckBoxLeft( item, tree._config ) );
       assertEquals( 10, row._getCheckBoxWidth( item, tree._config ) );
@@ -1766,6 +1772,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       } );
       var args = { "appearance": base };
       args[ "selectionPadding" ] = [ 3, 1 ];
+      args[ "indentionWidth" ] = 16;
       args[ option ] = true;
       if( option === "check" ) {
         args[ "checkBoxMetrics" ] = [ 5, 20 ];
@@ -1777,7 +1784,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       result.setTextColor( "black" );
       result.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
       result.setItemHeight( 15 );
-      result.setIndentionWidth( 16 );
       result.setColumnCount( 1 );
       if( isTable ) {
         result.setTreeColumn( -1 );
