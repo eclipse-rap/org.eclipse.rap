@@ -153,6 +153,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 		    this._config.checkBoxLeft = map.checkBoxMetrics[ 0 ];
 		    this._config.checkBoxWidth = map.checkBoxMetrics[ 1 ];
 	    }
+	    if( map.virtual ) {
+	      this._isVirtual = true;
+        this._createSendRequestTimer();
+	    }
     },
 
     _createSendRequestTimer : function() {
@@ -176,7 +180,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._dummyColumn.setAppearance( value + "-column" );
       this._rowContainer.setRowAppearance( value + "-row" );
     },
-    
+
     setHasFullSelection : function( value ) {
       this._config.fullSelection = value;
     },
@@ -187,13 +191,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     setSelectionPadding : function( left, right ) {
       this._config.selectionPadding = [ left, right ];
-    },
-
-    setIsVirtual : function( value ) {
-      this._isVirtual = value;
-      if( value ) {
-        this._createSendRequestTimer();
-      }
     },
 
     ///////////////////////////

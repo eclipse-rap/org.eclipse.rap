@@ -92,6 +92,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( tree );
     JsonObject argsMap = new JsonObject();
     argsMap.append( "appearance", "tree" );
+    if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {
+      argsMap.append( "virtual", true );
+    }
     if( ( tree.getStyle() & SWT.NO_SCROLL ) != 0 ) {
       argsMap.append( "noScroll", true );
     }
@@ -115,9 +118,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
         textMargin.x,
         textMargin.width - textMargin.x
       } );
-    }
-    if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {
-      writer.set( "isVirtual", true );
     }
     writeIndentionWidth( tree );
   }

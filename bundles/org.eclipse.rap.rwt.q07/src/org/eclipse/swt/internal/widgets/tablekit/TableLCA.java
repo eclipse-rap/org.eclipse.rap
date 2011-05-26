@@ -107,6 +107,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( ( table.getStyle() & SWT.MULTI ) != 0 ) {
       argsMap.append( "multiSelection", true );
     }
+    if( ( table.getStyle() & SWT.VIRTUAL ) != 0 ) {
+      argsMap.append( "virtual", true );
+    }
     if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
       int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
       argsMap.append( "check", true );
@@ -118,11 +121,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     // configure tree as table
     writer.set( "indentionWidth", 0 );
     writer.set( "treeColumn", -1 );
-    // one-time settings
-    writer.set( "hasFullSelection", true );
-    if( ( table.getStyle() & SWT.VIRTUAL ) != 0 ) {
-      writer.set( "isVirtual", true );
-    }
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

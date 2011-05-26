@@ -80,7 +80,7 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "\"checkBoxMetrics\": [" ) != -1 );
     assertTrue( markup.indexOf( "\"multiSelection\": true" ) != -1 );
     assertTrue( markup.indexOf( "w.setHasFullSelection( true )" ) != -1 );
-    assertTrue( markup.indexOf( "w.setIsVirtual( true )" ) != -1 );
+    assertTrue( markup.indexOf( "\"virtual\": true" ) != -1 );
     assertTrue( markup.indexOf( "w.setSelectionPadding" ) == -1 );
   }
 

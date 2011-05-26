@@ -720,10 +720,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     
     testDestroy : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createDefaultTree();
+      var tree = this._createDefaultTree( false, false, "virtual" );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       tree._showResizeLine( 0 );
-      tree.setIsVirtual( true );
       tree.setHeaderHeight( 20 );
       tree.setHeaderVisible( true );
       testUtil.flush();
@@ -2343,8 +2342,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.prepareTimerUse();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var tree = this._createDefaultTree();
-      tree.setIsVirtual( true );
+      var tree = this._createDefaultTree( false, false, "virtual" );
       wm.add( tree, "w1", false );
       for( var i = 0; i < 100; i ++ ) {
         new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
@@ -2366,8 +2364,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.prepareTimerUse();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var tree = this._createDefaultTree();
-      tree.setIsVirtual( true );
+      var tree = this._createDefaultTree( false, false, "virtual" );
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       wm.add( tree, "w1", false );
       new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
@@ -2388,8 +2385,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.prepareTimerUse();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var tree = this._createDefaultTree();
-      tree.setIsVirtual( true );
+      var tree = this._createDefaultTree( false, false, "virtual" );
       tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
       new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       testUtil.initRequestLog();

@@ -68,6 +68,15 @@ public class TableLCA_Test extends TestCase {
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "\"multiSelection\": true" ) != -1 );
   }
+  
+  public void testInitializationWithVirtual() throws Exception {
+    Table table = new Table( shell, SWT.VIRTUAL );
+    TableLCA lca = new TableLCA();
+    Fixture.fakeResponseWriter();
+    lca.renderInitialization( table );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "\"virtual\": true" ) != -1 );
+  }
 
   public void testInitializationWithCheck() throws Exception {
     Table table = new Table( shell, SWT.CHECK );
