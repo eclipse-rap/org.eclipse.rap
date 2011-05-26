@@ -776,27 +776,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     },
 
     testSetCheckBoxMetrics : function() {
-      var tree = this._createDefaultTree();
+      var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ] );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
-      tree.setCheckBoxMetrics( 5, 20 );
       assertEquals( 5, tree._config.checkBoxLeft );
       assertEquals( 20, tree._config.checkBoxWidth );
       tree.destroy();
     },
 
     testSetHasCheckBox : function() {
-      var tree = this._createDefaultTree();
-      assertFalse( tree._config.hasCheckBoxes );
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 20 );
+      var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ] );
       assertTrue( tree._config.hasCheckBoxes );
       tree.destroy();
     },
     
     testClickOnCheckBoxSymbol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createDefaultTree();
-      this._addCheckBoxes( tree );
+      var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ]  );
+      this._fakeCheckBoxAppearance();
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       testUtil.flush();
       var node = tree._rowContainer._getTargetNode().childNodes[ 0 ].childNodes[ 0 ];
@@ -819,7 +815,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testSelectionClick : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
-      tree.setCheckBoxMetrics( 5, 20 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       testUtil.flush();
       testUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() ); 
@@ -830,7 +825,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testDeselect : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
-      tree.setCheckBoxMetrics( 5, 20 );
       var item1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var item2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       testUtil.flush();
@@ -1545,9 +1539,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     testRenderOnCheckBoxHover : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createDefaultTree();
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 5 );
+      var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ] );
       testUtil.fakeAppearance( "tree-row-check-box",  {
         style : function( states ) {
           return {
@@ -1572,9 +1564,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     testRenderOnCheckBoxHoverSkip : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createDefaultTree();
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 5 );
+      var tree = this._createDefaultTree( false, false, "check", [ 5, 5 ] );
       testUtil.fakeAppearance( "tree-row-check-box",  {
         style : function( states ) {
           return {
@@ -2107,9 +2097,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     testRenderOnItemGrayed : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createDefaultTree();
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 5 );
+      var tree = this._createDefaultTree( false, false, "check", [ 5, 5 ] );
       testUtil.fakeAppearance( "tree-row-check-box",  {
         style : function( states ) {
           return {
@@ -3063,13 +3051,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     /////////
     // helper
 
-    _createDefaultTree : function( noflush, asTable, option ) {
+    _createDefaultTree : function( noflush, asTable, option, arg ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       this._fakeAppearance();
       var appearance = asTable ? "table" : "tree"; 
       var args = { "appearance": appearance };
       if( option ) {
         args[ option ] = true;
+      }
+      if( option === "check" ) {
+        args[ "checkBoxMetrics" ] = arg;
       }
       var tree = new org.eclipse.rwt.widgets.Tree( args );
       tree.setHasFullSelection( true );
@@ -3106,7 +3097,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.fakeAppearance( "tree-row", empty );            
     },
     
-    _addCheckBoxes : function( tree ) {
+    _fakeCheckBoxAppearance : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.fakeAppearance( "tree-row-check-box", {
         style : function( states ) {
@@ -3116,8 +3107,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           return result;
         }
       } );
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 20 );
     }
 
   }

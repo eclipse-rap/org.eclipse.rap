@@ -61,11 +61,11 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "\"appearance\": \"tree\"" ) != -1 );
     assertTrue( markup.indexOf( "w.setSelectionPadding( 3, 5 )" ) != -1 );
     assertTrue( markup.indexOf( "w.setIndentionWidth" ) != -1 );
-    assertTrue( markup.indexOf( "w.setHasCheckBoxes(" ) == -1 );
+    assertTrue( markup.indexOf( "\"check\": true" ) == -1 );
     assertTrue( markup.indexOf( "noScroll" ) == -1 );
     assertTrue( markup.indexOf( "multiSelection" ) == -1 );
     assertTrue( markup.indexOf( "w.setHasFullSelection(" ) == -1 );
-    assertTrue( markup.indexOf( "w.setCheckBoxMetrics( " ) == -1 );
+    assertTrue( markup.indexOf( "\"checkBoxMetrics\": [ " ) == -1 );
     assertTrue( markup.indexOf( "w.setIsVirtual( " ) == -1 );
   }
 
@@ -76,11 +76,11 @@ public class TreeLCA_Test extends TestCase {
     lca.renderInitialization( tree );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "new org.eclipse.rwt.widgets.Tree( {" ) != -1 );
-    assertTrue( markup.indexOf( "w.setHasCheckBoxes( true )" ) != -1 );
+    assertTrue( markup.indexOf( "\"check\": true" ) != -1 );
+    assertTrue( markup.indexOf( "\"checkBoxMetrics\": [" ) != -1 );
     assertTrue( markup.indexOf( "\"multiSelection\": true" ) != -1 );
     assertTrue( markup.indexOf( "w.setHasFullSelection( true )" ) != -1 );
     assertTrue( markup.indexOf( "w.setIsVirtual( true )" ) != -1 );
-    assertTrue( markup.indexOf( "w.setCheckBoxMetrics( " ) != -1 );
     assertTrue( markup.indexOf( "w.setSelectionPadding" ) == -1 );
   }
 

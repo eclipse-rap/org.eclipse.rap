@@ -148,6 +148,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 	    if( map.multiSelection ) {
 	      this._hasMultiSelection = true;
 	    }
+	    if( map.check ) {
+	      this._config.hasCheckBoxes = true;
+		    this._config.checkBoxLeft = map.checkBoxMetrics[ 0 ];
+		    this._config.checkBoxWidth = map.checkBoxMetrics[ 1 ];
+	    }
     },
 
     _createSendRequestTimer : function() {
@@ -170,15 +175,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this.base( arguments, value, oldValue );
       this._dummyColumn.setAppearance( value + "-column" );
       this._rowContainer.setRowAppearance( value + "-row" );
-    },
-    
-    setCheckBoxMetrics : function( left, width ) {
-      this._config.checkBoxLeft = left;
-      this._config.checkBoxWidth = width;
-    },
-    
-    setHasCheckBoxes : function( value ) {
-      this._config.hasCheckBoxes = value;
     },
     
     setHasFullSelection : function( value ) {

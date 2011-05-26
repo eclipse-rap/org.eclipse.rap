@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.theme.JsonArray;
 import org.eclipse.rwt.internal.theme.JsonObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
@@ -97,6 +98,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
     if( ( tree.getStyle() & SWT.MULTI ) != 0 ) {
       argsMap.append( "multiSelection", true );
     }
+    if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {
+      ITreeAdapter adapter = getTreeAdapter( tree );
+      int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
+      argsMap.append( "check", true );
+      argsMap.append( "checkBoxMetrics", JsonArray.valueOf( checkMetrics ) );
+    }
     Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
     writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( tree );
@@ -107,13 +114,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
       writer.set( "selectionPadding", new int[]{
         textMargin.x,
         textMargin.width - textMargin.x
-      } );
-    }
-    if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {
-      writer.set( "hasCheckBoxes", true );
-      writer.set( "checkBoxMetrics", new Object[]{
-        new Integer( getTreeAdapter( tree ).getCheckLeft() ),
-        new Integer( getTreeAdapter( tree ).getCheckWidth() )
       } );
     }
     if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {

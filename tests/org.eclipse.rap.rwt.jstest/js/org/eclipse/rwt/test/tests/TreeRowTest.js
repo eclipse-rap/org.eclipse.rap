@@ -131,23 +131,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testGetCheckBoxMetrics : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Tree( { 
+        "appearance": "tree",
+        "check": true,
+        "checkBoxMetrics": [ 5, 20 ]
+      } );
       tree.setIndentionWidth( 16 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var row = this._createRow( tree );
-      tree.setCheckBoxMetrics( 5, 20 );
       assertEquals( 21, row._getCheckBoxLeft( item, tree._config ) );
       assertEquals( 20, row._getCheckBoxWidth( item, tree._config ) );
       tree.destroy();
     },
 
     testSetCheckBoxMetricsOverflow : function() {
-      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      var tree = new org.eclipse.rwt.widgets.Tree( { 
+        "appearance": "tree",
+        "check" : true,
+        "checkBoxMetrics" : [ 5, 20 ]
+      } );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var row = this._createRow( tree );
       tree.setIndentionWidth( 10 );
       tree.setItemMetrics( 0, 0, 25, 0, 10, 10, 40 );
-      tree.setCheckBoxMetrics( 5, 20 );
       assertEquals( 15, row._getCheckBoxLeft( item, tree._config ) );
       assertEquals( 10, row._getCheckBoxWidth( item, tree._config ) );
       tree.destroy();
@@ -1023,12 +1029,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
     testDestroy : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
+      var tree = this._createTree( false, "check" );
       var row = this._createRow( tree );
       var item = this._createItem( tree, false, false );
       item.setTexts( [ "Test" ] );
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 20 );
       this._addToDom( row );
       row.renderItem( item, tree._config, false, null );
       assertNotNull( row._expandImage );
@@ -1049,9 +1053,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
     testRenderCheckBox : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 20 );
+      var tree = this._createTree( false, "check" );
       var row = this._createRow( tree );
       this._addToDom( row );
       var item = this._createItem( tree );
@@ -1067,9 +1069,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
     testRenderCheckBoxForTable : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree( true );
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 20 );
+      var tree = this._createTree( true, "check" );
       var row = this._createRow( tree, true );
       this._addToDom( row );
       var item = this._createItem( tree );
@@ -1085,10 +1085,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
     testRenderCheckBoxBounds : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 20 );
-      var row = this._createRow( tree );
+      var tree = this._createTree( false, "check" );
+     var row = this._createRow( tree );
       row.setHeight( 15 );
       this._addToDom( row );
       var item = this._createItem( tree );
@@ -1106,9 +1104,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     
     testIsCheckBoxClick : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 20 );
+      var tree = this._createTree( false, "check" );
       var row = this._createRow( tree );
       this._setCheckBox( "mycheckbox.gif" );
       var log = [];
@@ -1496,11 +1492,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     
     testIsSelectionClick : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
+      var tree = this._createTree( false, "check" );
       tree.setItemMetrics( 1, 50, 40, 50, 12, 65, 12 );
       tree.setColumnCount( 2 );
-      tree.setHasCheckBoxes( true );
-      tree.setCheckBoxMetrics( 5, 20 );
       var row = this._createRow( tree );
       this._addToDom( row );
       var parent = this._createItem( tree, false, true );
@@ -1528,12 +1522,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     
     testIsSelectionClickFullSelection : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
+      var tree = this._createTree( false, "check" );
       tree.setItemMetrics( 1, 50, 40, 50, 12, 65, 12 );
       tree.setColumnCount( 2 );
-      tree.setHasCheckBoxes( true );
       tree.setHasFullSelection( true );
-      tree.setCheckBoxMetrics( 5, 20 );
       var row = this._createRow( tree );
       this._addToDom( row );
       var parent = this._createItem( tree, false, true  );
@@ -1743,7 +1735,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
     },
     
-    _createTree : function( isTable ) {
+    _createTree : function( isTable, option ) {
       var base = isTable ? "table" : "tree";
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.fakeAppearance( base + "-row",  {
@@ -1780,7 +1772,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           return { "backgroundImage" : result };
         }
       } );
-      var result = new org.eclipse.rwt.widgets.Tree( { "appearance": base } );
+      var args = { "appearance": base };
+      args[ option ] = true;
+      if( option === "check" ) {
+        args[ "checkBoxMetrics" ] = [ 5, 20 ];
+      }
+      var result = new org.eclipse.rwt.widgets.Tree( args );
       result.setTextColor( "black" );
       result.setItemMetrics( 0, 4, 66, 24, 10, 5, 45 );
       result.setItemHeight( 15 );
