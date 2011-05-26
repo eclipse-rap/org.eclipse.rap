@@ -95,6 +95,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _parseArgsMap : function( map ) {
       this.setAppearance( map.appearance );
+      if( map.noScroll ) {
+        this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
+      }
     },
 
     _registerListeners : function() {
@@ -181,12 +184,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     setHasMultiSelection : function( value ) {
       this._hasMultiSelection = value;
-    },
-
-    setHasNoScroll : function( value ) {
-      if( value ) {
-        this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
-      }
     },
 
     setIndentionWidth : function( offset ) {

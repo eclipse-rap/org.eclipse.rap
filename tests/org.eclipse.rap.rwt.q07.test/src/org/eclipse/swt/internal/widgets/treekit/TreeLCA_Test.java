@@ -89,7 +89,7 @@ public class TreeLCA_Test extends TestCase {
     TreeLCA lca = new TreeLCA();
     lca.renderInitialization( tree );
     String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setHasNoScroll( true )" ) != -1 );
+    assertTrue( markup.indexOf( "\"noScroll\": true" ) != -1 );
   }
 
   public void testRenderTopItemIndex() throws Exception {

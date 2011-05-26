@@ -57,7 +57,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     lca.renderInitialization( table );
     String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setHasNoScroll( true )" ) != -1 );
+    assertTrue( markup.indexOf( "\"noScroll\": true" ) != -1 );
   }
   
   public void testInitializationWithCheck() throws Exception {

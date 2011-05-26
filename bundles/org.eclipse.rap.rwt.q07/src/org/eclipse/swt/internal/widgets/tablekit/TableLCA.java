@@ -50,7 +50,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
   private static final Integer DEFAULT_ITEM_COUNT = new Integer( 0 );
   private static final Integer DEFAUT_ITEM_HEIGHT = new Integer( 0 );
-  private static final Integer DEFAULT_COLUMN_WIDTH = new Integer( 0 );
+  private static final Integer DEFAULT_COLUMN_WIDTH = new Integer( 0 ); // TODO [tb] : delete??
   private static final Integer DEFAULT_LEFT_OFFSET = new Integer( 0 );
   private static final Integer DEFAULT_COLUMN_COUNT = new Integer( 0 );
   
@@ -86,7 +86,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     readScrollLeft( table );
     readSelection( table ); 
     readFocusIndex( table ); // must be called *after* readSelection 
-//    readSetData( table );
     readWidgetSelected( table );
     readWidgetDefaultSelected( table );
     readCellToolTipTextRequested( table );
@@ -101,6 +100,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( table );
     JsonObject argsMap = new JsonObject();
     argsMap.append( "appearance", "table" );
+    if( ( table.getStyle() & SWT.NO_SCROLL ) != 0 ) {
+      argsMap.append( "noScroll", true );
+    }
     Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
     writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( table );
@@ -108,9 +110,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( "indentionWidth", 0 );
     writer.set( "treeColumn", -1 );
     // one-time settings
-    if( ( table.getStyle() & SWT.NO_SCROLL ) != 0 ) {
-      writer.set( "hasNoScroll", true );
-    }
     if( ( table.getStyle() & SWT.MULTI ) != 0 ) {
       writer.set( "hasMultiSelection", true );
     }
