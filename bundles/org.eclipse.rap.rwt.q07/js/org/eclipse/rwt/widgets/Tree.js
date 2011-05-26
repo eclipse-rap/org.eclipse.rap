@@ -92,43 +92,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     /////////////////////
     // Contructor helpers
-    
-    _parseArgsMap : function( map ) {
-      this.setAppearance( map.appearance );
-      if( map.noScroll ) {
-        this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
-      }
-    },
 
-    _registerListeners : function() {
-      this._rootItem.addEventListener( "update", this._onItemUpdate, this );
-      this.addEventListener( "mousedown", this._onMouseDown, this );
-      this.addEventListener( "mouseup", this._onMouseUp, this );
-      this.addEventListener( "mouseout", this._onMouseOut, this );
-      this.addEventListener( "keypress", this._onKeyPress, this );
-      this._rowContainer.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
-      this._mergeEventsTimer.addEventListener( "interval", this._updateTopItemIndex, this );
-      this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
-      this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
-      this._rowContainer.setSelectionProvider( this.isItemSelected, this );
-      this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge, 
-                                                this._vertScrollBar );
-    },
-    
-    _configureScrollBars : function() {
-      var dragBlocker = function( event ) { event.stopPropagation(); };
-      this._horzScrollBar.setZIndex( 1e8 );
-      this._horzScrollBar.setVisibility( false );
-      this._horzScrollBar.setLeft( 0 );
-      this._horzScrollBar.setMergeEvents( false );
-      this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
-      this._vertScrollBar.setZIndex( 1e8 );
-      this._vertScrollBar.setVisibility( false );
-      this._vertScrollBar.setIncrement( 16 );
-      this._vertScrollBar.setMergeEvents( false );
-      this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
-    },
-    
     _configureAreas : function() {
       this._columnArea.setOverflow( "hidden" );
       this._columnArea.addEventListener( "appear", this._onColumnAreaAppear, this );
@@ -146,7 +110,46 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._dummyColumn.addState( "dummy" );
       this._columnArea.add( this._dummyColumn );
     },
+
+    _configureScrollBars : function() {
+      var dragBlocker = function( event ) { event.stopPropagation(); };
+      this._horzScrollBar.setZIndex( 1e8 );
+      this._horzScrollBar.setVisibility( false );
+      this._horzScrollBar.setLeft( 0 );
+      this._horzScrollBar.setMergeEvents( false );
+      this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
+      this._vertScrollBar.setZIndex( 1e8 );
+      this._vertScrollBar.setVisibility( false );
+      this._vertScrollBar.setIncrement( 16 );
+      this._vertScrollBar.setMergeEvents( false );
+      this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
+    },
+
+    _registerListeners : function() {
+      this._rootItem.addEventListener( "update", this._onItemUpdate, this );
+      this.addEventListener( "mousedown", this._onMouseDown, this );
+      this.addEventListener( "mouseup", this._onMouseUp, this );
+      this.addEventListener( "mouseout", this._onMouseOut, this );
+      this.addEventListener( "keypress", this._onKeyPress, this );
+      this._rowContainer.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
+      this._mergeEventsTimer.addEventListener( "interval", this._updateTopItemIndex, this );
+      this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
+      this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
+      this._rowContainer.setSelectionProvider( this.isItemSelected, this );
+      this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge, 
+                                                this._vertScrollBar );
+    },
     
+    _parseArgsMap : function( map ) {
+      this.setAppearance( map.appearance );
+      if( map.noScroll ) {
+        this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
+      }
+	    if( map.multiSelection ) {
+	      this._hasMultiSelection = true;
+	    }
+    },
+
     _createSendRequestTimer : function() {
       if( this._sendRequestTimer === null ) {
         var timer = new qx.client.Timer( 400 );
@@ -180,10 +183,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     setHasFullSelection : function( value ) {
       this._config.fullSelection = value;
-    },
-
-    setHasMultiSelection : function( value ) {
-      this._hasMultiSelection = value;
     },
 
     setIndentionWidth : function( offset ) {

@@ -60,6 +60,15 @@ public class TableLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "\"noScroll\": true" ) != -1 );
   }
   
+  public void testInitializationWithMultiSelection() throws Exception {
+    Table table = new Table( shell, SWT.MULTI );
+    TableLCA lca = new TableLCA();
+    Fixture.fakeResponseWriter();
+    lca.renderInitialization( table );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "\"multiSelection\": true" ) != -1 );
+  }
+
   public void testInitializationWithCheck() throws Exception {
     Table table = new Table( shell, SWT.CHECK );
     TableLCA lca = new TableLCA();

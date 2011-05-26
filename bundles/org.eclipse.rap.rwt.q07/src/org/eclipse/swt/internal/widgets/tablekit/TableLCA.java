@@ -103,6 +103,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( ( table.getStyle() & SWT.NO_SCROLL ) != 0 ) {
       argsMap.append( "noScroll", true );
     }
+    if( ( table.getStyle() & SWT.MULTI ) != 0 ) {
+      argsMap.append( "multiSelection", true );
+    }
     Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
     writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( table );
@@ -110,9 +113,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( "indentionWidth", 0 );
     writer.set( "treeColumn", -1 );
     // one-time settings
-    if( ( table.getStyle() & SWT.MULTI ) != 0 ) {
-      writer.set( "hasMultiSelection", true );
-    }
     writer.set( "hasFullSelection", true );
     if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
       writer.set( "hasCheckBoxes", true );
