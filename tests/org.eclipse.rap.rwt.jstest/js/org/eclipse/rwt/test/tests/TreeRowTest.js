@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
   // TODO [tb] : Since TreeRow has been refactored to work without reference to Tree, the 
   //             tests could also be refactored to not use the an tree instance anymore. 
   members : {
-     
+
     testCreateRow : function() {
       var tree = this._createTree();
       var row = this._createRow( tree );
@@ -1125,8 +1125,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     
     testRenderState : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
-      tree.setHasFullSelection( true );
+      var tree = this._createTree( false, false, "fullSelection" );
       var row = this._createRow( tree );
       this._addToDom( row );
       var item = this._createItem( tree );
@@ -1157,8 +1156,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     
     testRenderStateWidthDNDSelected : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
-      tree.setHasFullSelection( true );
+      var tree = this._createTree(  false, false, "fullSelection" );
       var row = this._createRow( tree );
       this._addToDom( row );
       var item = this._createItem( tree );
@@ -1268,7 +1266,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
     testSelectionBackgroundTheming : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
+      var tree = this._createTree( false, false, "fullSelection" );
       testUtil.fakeAppearance( "tree-row", {
         style : function( states ) {
           var result = {};
@@ -1280,7 +1278,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           return result;
         }
       } );  
-      tree.setHasFullSelection( true );
       var row = this._createRow( tree );
       this._addToDom( row );
       row.setAppearance( "tree-row" );
@@ -1297,7 +1294,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
     testFullSelectionOverwritesTheming : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
+      var tree = this._createTree( false, false, "fullSelection" );
       testUtil.fakeAppearance( "tree-row", {
         style : function( states ) {
           var result = {};
@@ -1311,7 +1308,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           return result;
         }
       } );  
-      tree.setHasFullSelection( true );
       var row = this._createRow( tree );
       this._addToDom( row );
       row.setAppearance( "tree-row" );
@@ -1335,7 +1331,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
    testHoverColorsOverwritesTheming : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
+      var tree = this._createTree( false, false, "fullSelection" );
       testUtil.fakeAppearance( "tree-row", {
         style : function( states ) {
           var result = {};
@@ -1349,7 +1345,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           return result;
         }
       } );
-      tree.setHasFullSelection( false );
       var row = this._createRow( tree );
       this._addToDom( row );
       row.setAppearance( "tree-row" );
@@ -1374,8 +1369,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
    testHoverWithoutColorDoesNotOverwriteTheming : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
-      tree.setHasFullSelection( false );
+      var tree = this._createTree( false, false, "fullSelection" );
       var row = this._createRow( tree );
       this._addToDom( row );
       row.setAppearance( "tree-row" );
@@ -1455,8 +1449,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     
     testSelectionForegroundThemingFullSelection : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree();
-      tree.setHasFullSelection( true );
+      var tree = this._createTree( false, false, "fullSelection" );
       tree.setItemMetrics( 1, 50, 40, 50, 12, 65, 12 );
       tree.setColumnCount( 2 );
       testUtil.fakeAppearance( "tree-row", {
@@ -1522,10 +1515,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     
     testIsSelectionClickFullSelection : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createTree( false, "check" );
+      var tree = this._createTree( false, "check", "fullSelection" );
       tree.setItemMetrics( 1, 50, 40, 50, 12, 65, 12 );
       tree.setColumnCount( 2 );
-      tree.setHasFullSelection( true );
       var row = this._createRow( tree );
       this._addToDom( row );
       var parent = this._createItem( tree, false, true  );
@@ -1735,7 +1727,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
     },
     
-    _createTree : function( isTable, option ) {
+    _createTree : function( isTable, option, option2 ) {
       var base = isTable ? "table" : "tree";
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.fakeAppearance( base + "-row",  {
@@ -1773,9 +1765,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
         }
       } );
       var args = { "appearance": base };
+      args[ "selectionPadding" ] = [ 3, 1 ];
       args[ option ] = true;
       if( option === "check" ) {
         args[ "checkBoxMetrics" ] = [ 5, 20 ];
+      }
+      if( option2 ) {
+        args[ option2 ] = true;      
       }
       var result = new org.eclipse.rwt.widgets.Tree( args );
       result.setTextColor( "black" );
@@ -1783,7 +1779,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       result.setItemHeight( 15 );
       result.setIndentionWidth( 16 );
       result.setColumnCount( 1 );
-      result.setSelectionPadding( 3, 1 );
       if( isTable ) {
         result.setTreeColumn( -1 );
       }

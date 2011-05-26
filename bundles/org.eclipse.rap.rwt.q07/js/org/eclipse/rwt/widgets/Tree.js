@@ -145,9 +145,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( map.noScroll ) {
         this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       }
-	    if( map.multiSelection ) {
-	      this._hasMultiSelection = true;
-	    }
+      if( map.multiSelection ) {
+        this._hasMultiSelection = true;
+      }
+      if( map.fullSelection ) {
+	      this._config.fullSelection = true;
+      } else {
+	      this._config.selectionPadding = map.selectionPadding;
+      }
 	    if( map.check ) {
 	      this._config.hasCheckBoxes = true;
 		    this._config.checkBoxLeft = map.checkBoxMetrics[ 0 ];
@@ -181,16 +186,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._rowContainer.setRowAppearance( value + "-row" );
     },
 
-    setHasFullSelection : function( value ) {
-      this._config.fullSelection = value;
-    },
-
     setIndentionWidth : function( offset ) {
       this._config.indentionWidth = offset;
-    },
-
-    setSelectionPadding : function( left, right ) {
-      this._config.selectionPadding = [ left, right ];
     },
 
     ///////////////////////////

@@ -107,18 +107,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
       argsMap.append( "check", true );
       argsMap.append( "checkBoxMetrics", JsonArray.valueOf( checkMetrics ) );
     }
+    if( ( tree.getStyle() & SWT.FULL_SELECTION ) != 0 ) {
+      argsMap.append( "fullSelection", true );
+    } else {
+      Rectangle textMargin = getTreeAdapter( tree ).getTextMargin();
+      int[] selectionPadding = new int[] { textMargin.x, textMargin.width - textMargin.x };
+      argsMap.append( "selectionPadding", JsonArray.valueOf( selectionPadding ) );
+    }
     Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
     writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( tree );
-    if( ( tree.getStyle() & SWT.FULL_SELECTION ) != 0 ) {
-      writer.set( "hasFullSelection", true );
-    } else {
-      Rectangle textMargin = getTreeAdapter( tree ).getTextMargin();
-      writer.set( "selectionPadding", new int[]{
-        textMargin.x,
-        textMargin.width - textMargin.x
-      } );
-    }
     writeIndentionWidth( tree );
   }
 

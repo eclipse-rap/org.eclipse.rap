@@ -676,7 +676,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "Test51", itemNode.firstChild.innerHTML );
       tree.destroy();
     },
-    
+
     testScrollBugExpanded : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -699,7 +699,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "Test5", itemNode.firstChild.innerHTML );
       tree.destroy();
     },
-    
+
     testScrollBugCollapsed : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -717,7 +717,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "Test5", itemNode.firstChild.innerHTML );
       tree.destroy();
     },
-    
+
     testDestroy : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "virtual" );
@@ -801,16 +801,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( item.isChecked() );
       tree.destroy();
     },
-    
+
     testHasFullSelection : function() {
       var tree = this._createDefaultTree();
-      tree.setHasFullSelection( false );
-      assertFalse( tree.getRenderConfig().fullSelection );
-      tree.setHasFullSelection( true );
       assertTrue( tree.getRenderConfig().fullSelection );
       tree.destroy();
     },
-    
+
     testSelectionClick : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -820,7 +817,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isItemSelected( item ) );
       tree.destroy();
     },
-    
+
     testDeselect : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -836,7 +833,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertFalse( tree.isItemSelected( item1 ) );
       tree.destroy();
     },
-    
+
     testWheelScroll : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -852,7 +849,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( 40, tree._vertScrollBar.getValue() );
       tree.destroy();
     },
-    
+
     testWheelScrollStopProppagation : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -869,7 +866,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( log[ 1 ].getDefaultPrevented() );
       tree.destroy();
     },
-    
+
     testFocusItem : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -882,7 +879,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isFocusItem( item2 ) );
       tree.destroy();
     },
-    
+
     testChangeFocusItem : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -918,7 +915,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isItemSelected( item2 ) );
       tree.destroy();
     },    
-    
+
     testCtrlMultiSelection : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "multiSelection" );
@@ -934,7 +931,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isItemSelected( item2 ) );
       tree.destroy();
     },    
-    
+
     testCtrlMultiSelectionDeselection : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "multiSelection" );
@@ -951,7 +948,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertFalse( tree.isItemSelected( item2 ) );
       tree.destroy();
     },    
-    
+
     testCtrlMultiSelectionSingleSelection : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "multiSelection" );
@@ -971,7 +968,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertFalse( tree.isItemSelected( item2 ) );
       tree.destroy();
     },    
-    
+
     testShiftMultiSelection : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "multiSelection" );
@@ -987,7 +984,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isItemSelected( item2 ) );
       tree.destroy();
     },
-    
+
     testShiftMultiSelectionWithoutFocusItem : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "multiSelection" );
@@ -1001,7 +998,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertFalse( tree.isItemSelected( item2 ) );
       tree.destroy();
     },
-    
+
     testShiftMultiSelectionChangedFocus : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "multiSelection" );
@@ -1156,8 +1153,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     },
 
     testSelectionPadding : function() {
-       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
-       tree.setSelectionPadding( 2, 4 );
+       var tree = new org.eclipse.rwt.widgets.Tree( { 
+         "appearance": "tree",
+         "selectionPadding" : [ 2, 4 ]
+       } );
        assertEquals( [ 2, 4 ], tree._config.selectionPadding );
        tree.destroy();
     },
@@ -3058,8 +3057,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       if( option === "check" ) {
         args[ "checkBoxMetrics" ] = arg;
       }
+      args[ "fullSelection" ] = true;
+      args[ "selectionPadding" ] = [ 2, 4 ];
       var tree = new org.eclipse.rwt.widgets.Tree( args );
-      tree.setHasFullSelection( true );
       tree.setItemHeight( 20 );
       tree.setLeft( 0 );
       tree.setTop( 0 );
@@ -3067,7 +3067,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setHeight( 500 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );
       tree.setColumnCount( 1 );
-      tree.setSelectionPadding( 2, 4 );
       tree.setItemMetrics( 1, 0, 500, 0, 0, 0, 500 );
       tree.setItemMetrics( 2, 0, 500, 0, 0, 0, 500 );
       tree.setIndentionWidth( 16 );

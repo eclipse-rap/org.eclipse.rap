@@ -101,6 +101,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( table );
     JsonObject argsMap = new JsonObject();
     argsMap.append( "appearance", "table" );
+    argsMap.append( "fullSelection", true );
     if( ( table.getStyle() & SWT.NO_SCROLL ) != 0 ) {
       argsMap.append( "noScroll", true );
     }
