@@ -51,7 +51,7 @@ public class TableLCA_Test extends TestCase {
     assertFalse( markup.indexOf( "setHasNoScroll(" ) != -1 );
     assertFalse( markup.indexOf( "setHasCheckBoxes(" ) != -1 );
   }
-  
+
   public void testInitializationWithNoScroll() throws Exception {
     Table table = new Table( shell, SWT.NO_SCROLL );
     TableLCA lca = new TableLCA();
@@ -60,7 +60,7 @@ public class TableLCA_Test extends TestCase {
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "\"noScroll\": true" ) != -1 );
   }
-  
+
   public void testInitializationWithMultiSelection() throws Exception {
     Table table = new Table( shell, SWT.MULTI );
     TableLCA lca = new TableLCA();
@@ -69,7 +69,7 @@ public class TableLCA_Test extends TestCase {
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "\"multiSelection\": true" ) != -1 );
   }
-  
+
   public void testInitializationWithVirtual() throws Exception {
     Table table = new Table( shell, SWT.VIRTUAL );
     TableLCA lca = new TableLCA();
@@ -555,38 +555,72 @@ public class TableLCA_Test extends TestCase {
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
-//  public void testSelectUnresolvedVirtualItem() {
-//    // Set up VIRTUAL table with SetData listener
-//    shell.setSize( 100, 100 );
-//    Table table = new Table( shell, SWT.VIRTUAL );
-//    Listener listener = new Listener() {
-//      public void handleEvent( Event event ) {
-//        Item item = ( Item )event.item;
-//        item.setText( "Item " + event.index );
-//      }
-//    };
-//    table.addListener( SWT.SetData, listener );
-//    table.setSize( 90, 90 );
-//    table.setItemCount( 1000 );
-//    shell.layout();
-//    shell.open();
-//    String tableId = WidgetUtil.getId( table );
-//    // Run test request
-//    assertTrue( isItemVirtual( table, 500 ) ); // ensure precondition
-//    Fixture.fakeNewRequest( display );
-//    Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
-//    Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "500" );
-//    Fixture.fakeRequestParam( tableId + ".topIndex", "500" );
-//    Fixture.fakeRequestParam( tableId + ".selection", "500" );
-//    Fixture.executeLifeCycleFromServerThread();
-//    // Remove SetData listener to not accidentially resolve item with asserts
-//    table.removeListener( SWT.SetData, listener );
-//    // assert request results
-//    assertFalse( isItemVirtual( table, 500 ) );
-//    assertEquals( "Item 500", table.getItem( 500 ).getText() );
-//    assertEquals( 500, table.getSelectionIndices()[ 0 ] );
-//    assertTrue( Fixture.getAllMarkup().indexOf( "Item 500" ) != -1 );
-//  }
+  public void testSetDataEvent() {
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
+        Item item = ( Item )event.item;
+        item.setText( "Item " + event.index );
+      }
+    };
+    table.addListener( SWT.SetData, listener );
+    table.setSize( 90, 90 );
+    table.setItemCount( 1000 );
+    shell.layout();
+    shell.open();
+    String tableId = WidgetUtil.getId( table );
+    // Run test request
+    assertTrue( isItemVirtual( table, 500 ) ); // ensure precondition
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( tableId + ".topItemIndex", "500" );
+    Fixture.executeLifeCycleFromServerThread();
+    // Remove SetData listener to not accidentially resolve item with asserts
+    table.removeListener( SWT.SetData, listener );
+    // assert request results
+    assertFalse( isItemVirtual( table, 500 ) );
+    assertFalse( isItemVirtual( table, 502 ) );
+    assertTrue( isItemVirtual( table, 510 ) );
+    assertEquals( "Item 500", table.getItem( 500 ).getText() );
+    assertEquals( "Item 502", table.getItem( 502 ).getText() );
+  }
+
+  public void testReadSelection() {
+    Table table = new Table( shell, SWT.MULTI );
+    String tableId = WidgetUtil.getId( table );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    String item1Id = WidgetUtil.getId( item1 );
+    TableItem item2 = new TableItem( table, SWT.NONE );
+    String item2Id = WidgetUtil.getId( item2 );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( tableId + ".selection", item1Id + "," + item2Id );
+    Fixture.executeLifeCycleFromServerThread();
+
+    TableItem[] selectedItems = table.getSelection();
+    assertEquals( 2, selectedItems.length );
+    assertSame( item1, selectedItems[ 1 ] );
+    assertSame( item2, selectedItems[ 0 ] );
+  }
+
+  public void testReadSelection_UnresolvedItem() {
+    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
+    String tableId = WidgetUtil.getId( table );
+    table.setItemCount( 3 );
+    TableItem item = table.getItem( 0 );
+    item.setText( "Item 1" );
+    String itemId = WidgetUtil.getId( item );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( tableId + ".selection", itemId + "," + tableId + "#2" );
+    Fixture.executeLifeCycleFromServerThread();
+
+    int[] selectedIndices = table.getSelectionIndices();
+    assertEquals( 2, selectedIndices.length );
+    assertEquals( 0, selectedIndices[ 1 ] );
+    assertEquals( 2, selectedIndices[ 0 ] );
+    assertTrue( isItemVirtual( table, 2 ) );
+  }
 
   /*
    * Ensures that checkData calls with an invalid index are silently ignored.
@@ -815,7 +849,7 @@ public class TableLCA_Test extends TestCase {
       new TableItem( table, SWT.NONE );
     }
     String tableId = WidgetUtil.getId( table );
-    int[] indices = new int[]{ 
+    int[] indices = new int[]{
       114,70,71,72,73,74,75,76,77,78,79,80,81,82,83,
       84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,
       99,100,101,102,103,104,105,106,107,108,109,
@@ -940,6 +974,56 @@ public class TableLCA_Test extends TestCase {
     assertEquals( 10 * table.getItemHeight(), table.getVerticalBar().getSelection());
   }
 
+  public void testSelectionEvent() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final ArrayList log = new ArrayList();
+    Table table = new Table( shell, SWT.NONE );
+    String tableId = WidgetUtil.getId( table );
+    for( int i = 0; i < 5; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    TableItem item = table.getItem( 3 );
+    String itemId = WidgetUtil.getId( item );
+    SelectionListener listener = new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        log.add( event.item );
+      }
+    };
+    table.addSelectionListener( listener );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( tableId + ".selection", itemId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, tableId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, itemId );
+    Fixture.readDataAndProcessAction( table );
+
+    assertEquals( 1, log.size() );
+    assertSame( item, log.get( 0 ) );
+  }
+
+  public void testSelectionEvent_UnresolvedItem() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final ArrayList log = new ArrayList();
+    Table table = new Table( shell, SWT.VIRTUAL );
+    String tableId = WidgetUtil.getId( table );
+    table.setItemCount( 3 );
+    SelectionListener listener = new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        log.add( event.item );
+      }
+    };
+    table.addSelectionListener( listener );
+
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( tableId + ".selection", tableId + "#2" );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, tableId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, tableId + "#2" );
+    Fixture.readDataAndProcessAction( table );
+
+    assertEquals( 1, log.size() );
+    assertSame( table.getItem( 2 ), log.get( 0 ) );
+  }
+
   // Ensures that writeItemCount is called first
   // see bug 326941
   public void testWriteItemCount() throws Exception {
@@ -1018,11 +1102,11 @@ public class TableLCA_Test extends TestCase {
     }
     return items;
   }
-  
+
   private static String indexToId( Table table, int index ) {
     return WidgetUtil.getId( table.getItem( index ) );
   }
-  
-  
-  
+
+
+
 }

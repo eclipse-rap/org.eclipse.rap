@@ -54,7 +54,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_COLUMN_WIDTH = new Integer( 0 ); // TODO [tb] : delete??
   private static final Integer DEFAULT_LEFT_OFFSET = new Integer( 0 );
   private static final Integer DEFAULT_COLUMN_COUNT = new Integer( 0 );
-  
+
   public void preserveValues( final Widget widget ) {
     Table table = ( Table )widget;
     ControlLCAUtil.preserveValues( table );
@@ -77,16 +77,16 @@ public final class TableLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( table ) );
     adapter.preserve( PROP_LEFT_OFFSET, getLeftOffset( table ) );
     adapter.preserve( PROP_SCROLLBARS_SELECTION_LISTENER, hasScrollBarsSelectionListener( table ) );
-    adapter.preserve( PROP_ENABLE_CELL_TOOLTIP, 
+    adapter.preserve( PROP_ENABLE_CELL_TOOLTIP,
                       new Boolean( CellToolTipUtil.isEnabledFor( table ) ) );
   }
 
   public void readData( final Widget widget ) {
     Table table = ( Table )widget;
-    readTopItemIndex( table ); // topIndex MUST be read *before* processSetData 
+    readTopItemIndex( table );
     readScrollLeft( table );
-    readSelection( table ); 
-    readFocusIndex( table ); // must be called *after* readSelection 
+    readSelection( table );
+    readFocusIndex( table ); // must be called *after* readSelection
     readWidgetSelected( table );
     readWidgetDefaultSelected( table );
     readCellToolTipTextRequested( table );
@@ -96,7 +96,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    Table table = ( Table )widget; 
+    Table table = ( Table )widget;
     ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     JSWriter writer = JSWriter.getWriterFor( table );
     JsonObject argsMap = new JsonObject();
@@ -116,7 +116,7 @@ public final class TableLCA extends AbstractWidgetLCA {
       argsMap.append( "check", true );
       argsMap.append( "checkBoxMetrics", JsonArray.valueOf( checkMetrics ) );
     }
-    argsMap.append( "indentionWidth", 0 );    
+    argsMap.append( "indentionWidth", 0 );
     Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
     writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( table );
@@ -173,7 +173,9 @@ public final class TableLCA extends AbstractWidgetLCA {
         String[] selectedItems = value.split( "," );
         newSelection = new int[ selectedItems.length ];
         for( int i = 0; i < selectedItems.length; i++ ) {
-          TableItem item = ( TableItem )WidgetUtil.find( table, selectedItems[ i ] );
+          TableItem item = null;
+          String itemId = selectedItems[ i ];
+          item = getItemFromSelectionId( table, itemId );
           newSelection[ i ] = table.indexOf( item );
         }
       }
@@ -235,13 +237,13 @@ public final class TableLCA extends AbstractWidgetLCA {
       // TODO [rh] do something reasonable when index points to unresolved item
       TableItem item = getWidgetSelectedItem( table );
       // Bugfix: check if index is valid before firing event to avoid problems with fast scrolling
-      // TODO [tb] : no longer useful, bugzilla id? 
+      // TODO [tb] : no longer useful, bugzilla id?
       if( item != null ) {
         int detail = getWidgetSelectedDetail();
         int id = SelectionEvent.WIDGET_SELECTED;
         Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
         int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
-        SelectionEvent event 
+        SelectionEvent event
           = new SelectionEvent( table, item, id, bounds, stateMask, "", true, detail );
         event.processEvent();
       }
@@ -275,8 +277,8 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static TableItem getWidgetSelectedItem( Table table ) {
     HttpServletRequest request = ContextProvider.getRequest();
-    String itemId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_ITEM );
-    return ( TableItem )WidgetUtil.find( table, itemId );
+    String selectionId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_ITEM );
+    return getItemFromSelectionId( table, selectionId );
   }
 
   private static TableItem getFocusedItem( final Table table ) {
@@ -483,6 +485,18 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static TableItem getItemFromSelectionId( Table table, String itemId ) {
+    TableItem item;
+    String[] idParts = itemId.split( "#" );
+    if( idParts.length == 2 ) {
+      int index = Integer.parseInt( idParts[ 1 ] );
+      item = table.getItem( index );
+    } else {
+      item = ( TableItem )WidgetUtil.find( table, itemId );
+    }
+    return item;
+  }
 
   private static Boolean hasHScrollBar( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );

@@ -25,7 +25,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "default", tree.getCursor() );
       tree.destroy();
     },
-    
+
     testItemHeight : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       assertEquals( 16, tree._rowContainer._rowHeight );
@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( 23, tree._vertScrollBar._increment );
       tree.destroy();
     },
-    
+
     testSetItemMetrics : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       var item = new org.eclipse.rwt.widgets.TreeItem();
@@ -94,7 +94,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( 600, parseInt( node.style.width ) );
       tree.destroy();
     },
-    
+
     testSimpleInternalLayoutResize : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       this._fakeAppearance();
@@ -158,7 +158,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( 15, bounds.height );
       tree.destroy();
     },
-    
+
     testRenderFirstLayer : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -177,7 +177,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( 20, bounds.height );
       tree.destroy();
     },
-    
+
     testRenderBeforeCreate : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( true );
@@ -190,7 +190,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( 1, sample.childNodes.length );
       tree.destroy();
     },
-    
+
     testRenderMoreItemsThanRows : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -247,7 +247,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "none", style9.display );
       tree.destroy();
     },
-    
+
     testRenderMultipleLayer : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -266,7 +266,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "Test2", rowNodes[ 3 ].childNodes[ 0 ].innerHTML );
       tree.destroy();
     },
-    
+
     testRenderExpand : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -315,8 +315,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( node.innerHTML.indexOf( "empty.gif" ) != -1 );
       tree.destroy();
     },
-    
-    
+
     testClickOnExpandSymbol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -351,7 +350,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "Test1sub", rows[ 2 ].childNodes[ 1 ].innerHTML );
       tree.destroy();
     },
-    
+
     testSetTopItemIndex : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
@@ -1290,6 +1289,38 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( log[ 1 ].indexOf( expected2a ) != -1 );            
       assertTrue( log[ 1 ].indexOf( expected2b ) != -1 );            
       assertTrue( log[ 1 ].indexOf( expected3 ) == -1 );            
+      tree.destroy();
+    },
+
+    testSendSelectionForUnresolved : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var tree = this._createDefaultTree( false, false, "multiSelection" );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0, false );
+      var child1_1 = new org.eclipse.rwt.widgets.TreeItem( child1, 0, false );
+      var child1_1_1 = new org.eclipse.rwt.widgets.TreeItem( child1_1, 0, true );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1, true );
+      child1.setExpanded( true );
+      child1_1.setExpanded( true );
+      wm.add( tree, "w1", true );
+      wm.add( child1, "w2", false );
+      wm.add( child1_1, "w3", false );
+      testUtil.initRequestLog();
+      testUtil.flush();
+      testUtil.click( tree._rowContainer._children[ 0 ] );
+      tree._selectionTimestamp = null;
+      tree.setHasSelectionListeners( true );
+      testUtil.shiftClick( tree._rowContainer._children[ 3 ] );
+      assertEquals( 1, testUtil.getRequestsSend() );
+      var request = testUtil.getMessage();
+      var expected1 = "w1.selection=" + encodeURIComponent( "w2,w3,w3#0,w1#1" );
+      var expected2 = "org.eclipse.swt.events.widgetSelected=w1";
+      var expected3 = "org.eclipse.swt.events.widgetSelected.item=" + encodeURIComponent( "w1#1" );
+      console.log( expected3 );
+      console.log( request );
+      assertTrue( request.indexOf( expected1 ) != -1 );      
+      assertTrue( request.indexOf( expected2 ) != -1 );      
+      assertTrue( request.indexOf( expected3 ) != -1 );      
       tree.destroy();
     },
     

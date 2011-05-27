@@ -779,7 +779,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var req = org.eclipse.swt.Request.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
-        var selection = this._getSelectionIndices();        
+        var selection = this._getSelectionList();        
         req.addParameter( id + ".selection", selection );
         this._sendSelectionEvent( item, false, null );
       }
@@ -848,7 +848,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var id = wm.findIdByWidget( this );
         var eventName = "org.eclipse.swt.events.widget";
         eventName += defaultSelected ? "DefaultSelected" : "Selected";
-        var itemId = wm.findIdByWidget( item );
+        var itemId = this._getItemId( item );
         req.addEvent( eventName, id );
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.addParameter( eventName + ".item", itemId );
@@ -882,13 +882,29 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return result;
     },
 
-    _getSelectionIndices : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+    _getSelectionList : function() {
       var result = [];
       for( var i = 0; i < this._selection.length; i++ ) {
-        result.push( wm.findIdByWidget( this._selection[ i ] ) );
+        result.push( this._getItemId( this._selection[ i ] ) );
       }
       return result.join();
+    },
+    
+    _getItemId : function( item ) {
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var result;
+    	if( item.isCached() ) {
+    		result = wm.findIdByWidget( item );
+    	} else {
+    		var parent = item.getParent()
+    		if( parent.isRootItem() ) {
+      		result = wm.findIdByWidget( this );    			
+    		} else {
+      		result = wm.findIdByWidget( parent );    			
+    		}
+    		result += "#" + parent.getIndexOfChild( item );
+    	}
+    	return result;
     },
 
     ////////////////////
